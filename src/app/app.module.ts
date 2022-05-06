@@ -12,7 +12,8 @@ import { SidebarDirective } from './layout/sidebar.directive';
 import { HttpClientModule } from '@angular/common/http';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
-
+import { AlertComponent } from '../app/_components/alert.component';
+import { ResetPasswordComponent } from './login/reset-password/reset-password.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -21,7 +22,9 @@ import { FormsModule } from '@angular/forms';
     RegisterComponent,
     ForgotPasswordComponent,
     DashboardComponent,
-    SidebarDirective
+    SidebarDirective,
+    AlertComponent,
+    ResetPasswordComponent
 
   ],
   imports: [

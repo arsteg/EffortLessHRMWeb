@@ -20,16 +20,33 @@ export class AuthenticationService {
     public get currentUserValue(): User {
         return this.currentUserSubject.value;
     }
-
-    login(username, password) {
-        const params = new HttpParams();
-        params.set('email', username);
-        params.set('password', password);
+    forgotPassword(email)
+    {
         var queryHeaders = new HttpHeaders();
         queryHeaders.append('Content-Type', 'application/json');
         queryHeaders.append('Access-Control-Allow-Origin','*');
+        return this.http.post<any>(`${environment.apiUrlDotNet}/users/forgotpassword`, {email:email},{ headers: queryHeaders});
 
-       // alert(`${environment.apiUrlDotNet}/users/login?email=${username}&password=${password}`);
+    }
+    resetPassword(password,confirm_password,token)
+    {
+        
+        var qureyParams=new HttpParams();
+        qureyParams.append("token",token);
+        var queryHeaders = new HttpHeaders();
+        queryHeaders.append('Content-Type', 'application/json');
+        queryHeaders.append('Access-Control-Allow-Origin','*');   
+        return this.http.patch<any>(`${environment.apiUrlDotNet}/users/resetpassword`, {password:password,passwordConfirm:confirm_password},{ headers: queryHeaders,params: qureyParams})
+            .pipe(map(user => {
+                // store user details and jwt token in local storage to keep user logged in between page refreshes
+                //this.currentUserSubject.next(user);
+                return user;
+            }));
+    }
+    login(username, password) {       
+        var queryHeaders = new HttpHeaders();
+        queryHeaders.append('Content-Type', 'application/json');
+        queryHeaders.append('Access-Control-Allow-Origin','*');
         return this.http.post<any>(`${environment.apiUrlDotNet}/users/login`, {email:username,password:password},{ headers: queryHeaders})
             .pipe(map(user => {
                 // store user details and jwt token in local storage to keep user logged in between page refreshes

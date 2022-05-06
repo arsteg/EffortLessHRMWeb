@@ -13,14 +13,14 @@
                 <label class="mb-2 text-muted" for="email">E-Mail Address</label>
                 <input type="text" formControlName="username" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.username.errors }" />
        <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
-                  <div *ngIf="f.username.errors.required">Username is required</div>
+                  <div *ngIf="f.username.errors.required">Email is required</div>
               </div>
               </div>
 
               <div class="mb-3">
                 <div class="mb-2 w-100">
                   <label class="text-muted" for="password">Password</label>
-                  <a routerLink="/forgot" class="float-end">
+                  <a routerLink="/forgotPassword" class="float-end">
                     Forgot Password?
                   </a>
                 </div>

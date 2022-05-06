@@ -5,12 +5,14 @@ import { LoginComponent } from './login/login.component';
 import { LayoutComponentComponent } from './layout/layout-component.component';
 import { RegisterComponent } from './login/register/register.component';
 import { ForgotPasswordComponent } from './login/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './login/reset-password/reset-password.component';
 
 const routes: Routes = [
   {path:'',component:LayoutComponentComponent, pathMatch:'full'},
   {path:'login',component:LoginComponent},
   {path:'register',component:RegisterComponent},
-  {path:'resetPassword',component:ForgotPasswordComponent}
+  {path:'resetPassword/:tokan',component:ResetPasswordComponent},
+  {path:'forgotPassword',component:ForgotPasswordComponent}
 ];
 
 @NgModule({

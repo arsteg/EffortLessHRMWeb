@@ -15,9 +15,6 @@ export class LoginComponent implements OnInit {
   loading = false;
   submitted = false;
   returnUrl: string;
-  username: string;
-  password: string;
-
   constructor( private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
@@ -29,7 +26,8 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.loginForm = this.formBuilder.group({
-      username: ['', Validators.required],
+      username: ['', [Validators.required, 
+        Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$")] ],
       password: ['', Validators.required]
   });
 
@@ -42,10 +40,10 @@ export class LoginComponent implements OnInit {
   {
     this.submitted = true;
 
-        // reset alerts on submit
-        this.alertService.clear();
+   // reset alerts on submit
+   this.alertService.clear();
 
-        // stop here if form is invalid
+    // stop here if form is invalid
 
 
     this.loading = true;
