@@ -17,13 +17,13 @@ export class LoginComponent implements OnInit {
   returnUrl: string;
   username: string;
   password: string;
-  
+
   constructor( private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
     private authenticationService: AuthenticationService,
     private alertService: AlertService) {if (this.authenticationService.currentUserValue) {
-      this.router.navigate(['/']);
+      //this.router.navigate(['/']);
   }
 }
 
@@ -46,16 +46,16 @@ export class LoginComponent implements OnInit {
         this.alertService.clear();
 
         // stop here if form is invalid
-        
+
 
     this.loading = true;
-   
+
    // username:String=this.f.username.value;
    this.authenticationService.login(this.loginForm.value.username, this.loginForm.value.password)
             .pipe(first())
         .subscribe(
             data => {
-
+              this.loading = false;
                 this.router.navigate([this.returnUrl]);
             },
             error => {

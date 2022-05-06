@@ -22,18 +22,16 @@ export class AuthenticationService {
     }
 
     login(username, password) {
-        debugger;
         const params = new HttpParams();
         params.set('email', username);
-        params.set('password', password);    
+        params.set('password', password);
         var queryHeaders = new HttpHeaders();
         queryHeaders.append('Content-Type', 'application/json');
         queryHeaders.append('Access-Control-Allow-Origin','*');
-      
+
        // alert(`${environment.apiUrlDotNet}/users/login?email=${username}&password=${password}`);
-        return this.http.post<any>(`${environment.apiUrlDotNet}/users/login`, params,{ headers: queryHeaders})
+        return this.http.post<any>(`${environment.apiUrlDotNet}/users/login`, {email:username,password:password},{ headers: queryHeaders})
             .pipe(map(user => {
-                alert("called");
                 // store user details and jwt token in local storage to keep user logged in between page refreshes
                 localStorage.setItem('currentUser', JSON.stringify(user));
                 this.currentUserSubject.next(user);
