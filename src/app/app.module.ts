@@ -14,6 +14,9 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 import { AlertComponent } from '../app/_components/alert.component';
 import { ResetPasswordComponent } from './login/reset-password/reset-password.component';
+import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -32,8 +35,9 @@ import { ResetPasswordComponent } from './login/reset-password/reset-password.co
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
-    FormsModule
-
+    FormsModule,
+    ToastrModule.forRoot(),
+    BrowserAnimationsModule, NoopAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

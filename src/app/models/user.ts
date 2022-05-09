@@ -7,3 +7,11 @@ export class User {
     lastName: string;
     token: string;
 }
+
+export class signup{
+  name: string;
+  email: string;
+  password: string;
+  passwordConfirm: string;
+  role: string;
+}
