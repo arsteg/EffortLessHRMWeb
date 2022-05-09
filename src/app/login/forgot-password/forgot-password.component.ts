@@ -44,7 +44,7 @@ export class ForgotPasswordComponent implements OnInit {
       },
      
     error => {
-        this.alertService.error(error);
+        this.alertService.error("There is no user with email address.");
         this.loading = false;
     });
 }
