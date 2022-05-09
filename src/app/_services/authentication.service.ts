@@ -29,19 +29,14 @@ export class AuthenticationService {
 
     }
     resetPassword(password,confirm_password,token)
-    {
-        
+    {        
         var qureyParams=new HttpParams();
         qureyParams.append("token",token);
         var queryHeaders = new HttpHeaders();
         queryHeaders.append('Content-Type', 'application/json');
-        queryHeaders.append('Access-Control-Allow-Origin','*');   
-        return this.http.patch<any>(`${environment.apiUrlDotNet}/users/resetpassword`, {password:password,passwordConfirm:confirm_password},{ headers: queryHeaders,params: qureyParams})
-            .pipe(map(user => {
-                // store user details and jwt token in local storage to keep user logged in between page refreshes
-                //this.currentUserSubject.next(user);
-                return user;
-            }));
+        queryHeaders.append('Access-Control-Allow-Origin','*');        
+        return this.http.patch<any>(`${environment.apiUrlDotNet}/users/resetpassword/${token}`, {password:password,passwordConfirm:confirm_password},{ headers: queryHeaders});
+        
     }
     login(username, password) {       
         var queryHeaders = new HttpHeaders();
