@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs';
-import { AlertService } from 'src/app/_services/alert.service';
+import { NotificationService } from '../../_services/notification.service'
 import { AuthenticationService } from 'src/app/_services/authentication.service';
+import { signup } from 'src/app/models/user';
 
 @Component({
   selector: 'app-reset-password',
@@ -11,41 +12,37 @@ import { AuthenticationService } from 'src/app/_services/authentication.service'
   styleUrls: ['./reset-password.component.css']
 })
 export class ResetPasswordComponent implements OnInit {
-  loading=false;
-  resetPasswordForm: FormGroup; 
+  loading=false;  
   resetToken: null;
   CurrentState: any; 
   submitted=false;
+  user:signup= new signup();
+  @ViewChild('f') resetPasswordForm: NgForm;
+
   constructor( private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
     private authenticationService: AuthenticationService,
-    private alertService: AlertService) {     
+    private notifyService: NotificationService) {     
       this.route.params.subscribe(params => {
       this.resetToken = params['token'];           
     }); }
    
-  ngOnInit(): void {
-    this.resetPasswordForm = this.formBuilder.group({
-      password: ['',Validators.required],
-      confirm_password: ['', Validators.required]
-  });
-  
+  ngOnInit(): void {   
   }
-  get f() { return this.resetPasswordForm.controls; }
+  
  
   onSubmit() {
     this.submitted = true;
-    // reset alerts on submit
-    this.alertService.clear();
-    // stop here if form is invalid
-if(this.resetPasswordForm.value.password!==this.resetPasswordForm.value.confirm_password)
-{
-  this.alertService.error("Passwords don't match");
-  return;
-}
+    this.user.password=this.resetPasswordForm.value.password;
+    this.user.passwordConfirm=this.resetPasswordForm.value.confirm_password;  
+    if(this.resetPasswordForm.value.password!==this.resetPasswordForm.value.confirm_password)
+    {
+      this.notifyService.showWarning("Passwords don't match","warning");
+      return;
+    }
     this.loading = true;       
-      this.authenticationService.resetPassword(this.resetPasswordForm.value.password,this.resetPasswordForm.value.confirm_password,this.resetToken)
+      this.authenticationService.resetPassword(this.user.password,this.user.passwordConfirm,this.resetToken)
       .pipe(first())
       .subscribe(
         data => {
@@ -53,19 +50,16 @@ if(this.resetPasswordForm.value.password!==this.resetPasswordForm.value.confirm_
            setTimeout(() => {
             this.loading = false;
              this.router.navigate(['login']);
-             this.alertService.success("Password change Successfully , You can Login now with your new password");
+             this.notifyService.showSuccess("Password Link Send Successfully", "success")
           
           }, 30);
         },
         err => {
           if (err.error) {  
             this.loading = false;     
-            this.alertService.error("Token is invalid or has expired");   
-          }
-         
-        }
-        
-      );   
+            this.notifyService.showError(err.message, "Error")
+          }         
+        }        
+      );
   }
-
 }

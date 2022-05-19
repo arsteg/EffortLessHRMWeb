@@ -1,66 +1,55 @@
-import { Component, OnInit,Input} from '@angular/core';
+import { Component, OnInit,Input, ViewChild} from '@angular/core';
 import { Router,ActivatedRoute  } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 //import {slideToTop} from '../router.animations'
 import { first } from 'rxjs/operators';
-import { AlertService } from '../_services/alert.service';
 import { AuthenticationService } from '../_services/authentication.service';
+import { NotificationService } from '../_services/notification.service';
+import { signup, User } from '../models/user';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
-  loginForm: FormGroup;
+
+export class LoginComponent implements OnInit { 
+
   loading = false;
   submitted = false;
   returnUrl: string;
+  user:signup= new signup();
+  @ViewChild('f') loginForm: NgForm;
+
   constructor( private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
     private authenticationService: AuthenticationService,
-    private alertService: AlertService) {if (this.authenticationService.currentUserValue) {
+    private notifyService : NotificationService) {if (this.authenticationService.currentUserValue) {
       //this.router.navigate(['/']);
   }
 }
-
-  ngOnInit(): void {
-    this.loginForm = this.formBuilder.group({
-      username: ['', [Validators.required, 
-        Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$")] ],
-      password: ['', Validators.required]
-  });
-
+  ngOnInit(): void { 
   // get return url from route parameters or default to '/'
   this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
-  get f() { return this.loginForm.controls; }
-
+ 
   onSubmit() {
   {
-    this.submitted = true;
-
-   // reset alerts on submit
-   this.alertService.clear();
-
-    // stop here if form is invalid
-
-
+    this.submitted = true;  
     this.loading = true;
-
-   // username:String=this.f.username.value;
-   this.authenticationService.login(this.loginForm.value.username, this.loginForm.value.password)
+    this.user.email=this.loginForm.value.username;
+    this.user.password=this.loginForm.value.password;   
+    this.authenticationService.login(this.user.email, this.user.password)
       .pipe(first())
         .subscribe(
             data => {
               this.loading = false;
                 this.router.navigate([this.returnUrl]);
             },
-            error => {
-                this.alertService.error("Incorrect email or password");
+            err => {
+              this.notifyService.showError(err.message, "Error")
                 this.loading = false;
             });
      }
   }
-
 }

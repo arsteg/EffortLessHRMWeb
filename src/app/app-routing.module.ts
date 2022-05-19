@@ -6,13 +6,16 @@ import { LayoutComponentComponent } from './layout/layout-component.component';
 import { RegisterComponent } from './login/register/register.component';
 import { ForgotPasswordComponent } from './login/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './login/reset-password/reset-password.component';
+import { UserProfileComponent } from './profile/user-profile/user-profile.component';
 
 const routes: Routes = [
   {path:'',component:LayoutComponentComponent, pathMatch:'full'},
   {path:'login',component:LoginComponent},
+  {path:'logout',component:LoginComponent},
   {path:'register',component:RegisterComponent},
   {path:'resetPassword/:token',component:ResetPasswordComponent},
-  {path:'forgotPassword',component:ForgotPasswordComponent}
+  {path:'forgotPassword',component:ForgotPasswordComponent},
+  {path:'userProfile',component:UserProfileComponent}
 ];
 
 @NgModule({

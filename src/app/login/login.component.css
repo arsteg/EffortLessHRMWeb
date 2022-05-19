@@ -8,3 +8,9 @@
   font-size: 12px;
   padding-top: 4px
 }
+input.ng-invalid.ng-touched{
+  border:1px solid red;
+}
+.validationErroMessage{
+  color:red;
+}
