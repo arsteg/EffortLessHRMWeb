@@ -6,11 +6,29 @@ import { LayoutComponentComponent } from './layout/layout-component.component';
 import { RegisterComponent } from './login/register/register.component';
 import { ForgotPasswordComponent } from './login/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './login/reset-password/reset-password.component';
-import { UserProfileComponent } from './profile/user-profile/user-profile.component';
+
+import { ProjectListComponent } from './Project/project-list/project-list.component';
+import { AuthGuard } from './_helpers/auth.guard';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { ChangePasswordComponent } from './login/change-password/change-password.component';
+import { UserProfileComponent } from './users/user-profile/user-profile.component';
 
 const routes: Routes = [
-  {path:'',component:LayoutComponentComponent, pathMatch:'full'},
-  {path:'login',component:LoginComponent},
+ // {path:'',component:LayoutComponentComponent, canActivate: [AuthGuard]},
+ {
+  path: '',
+  redirectTo: 'dashboard',
+  pathMatch: 'full',
+}, {
+  path: '',
+  component: LayoutComponentComponent,
+  children: [{
+    path: '',
+    loadChildren: () => import('./layout/layout.module').then(m => m.LayoutModule)
+  }]
+},
+  {path:'login',component:LoginComponent}, 
+  {path:'dashboard',component:DashboardComponent},
   {path:'logout',component:LoginComponent},
   {path:'register',component:RegisterComponent},
   {path:'resetPassword/:token',component:ResetPasswordComponent},
@@ -21,7 +39,8 @@ const routes: Routes = [
 @NgModule({
   imports: [
     CommonModule,
-    RouterModule.forRoot(routes,{relativeLinkResolution:'legacy'}),
+    RouterModule.forRoot(routes,{relativeLinkResolution:'legacy', useHash: true}),
+   
   ],
   exports: [RouterModule]
 })

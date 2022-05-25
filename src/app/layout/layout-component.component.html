@@ -1,0 +1,49 @@
+<div class="wrapper">
+    <div class="sidebar" data-color="danger" data-background-color="white" data-image="./assets/img/sidebar-1.jpg">
+    
+    </div>
+    <div class="main-panel">
+        <nav class="navbar navbar-dark bg-primary fixed-top">
+            <div class="container">
+                <!-- Mobile Menu Toggle Button *ngIf="isLoggedIn$ | async" -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>               
+                <!-- Menus List -->
+                <div class="offcanvas offcanvas-start shadow navbar navbar-dark bg-primary" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+                  <div class="offcanvas-body">
+                        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                              <li class="nav-item active"><a  routerLink="/dashboard"  class="navbar-brand"><i class="bi bi-shop"></i> <span class="item-text">Dashboard</span></a></li>
+                              <li class="nav-item"><a routerLink="/calendar" class="navbar-brand"><i class="bi bi-calendar3"></i> <span class="item-text">Calendar</span></a></li>
+                              <li class="nav-item"><a routerLink="/graph"  class="navbar-brand"><i class="bi bi-graph-up"></i> <span class="item-text">Reports</span></a></li>
+                              
+    
+                             <li class="nav-item"><a routerLink="/company"  class="navbar-brand"><i class="bi bi-building"></i> <span class="item-text">Company</span></a></li>
+                             <li class="nav-item"><a routerLink="/project"  class="navbar-brand"><i class="bi bi-window-stack"></i> <span class="item-text">Project</span></a></li>
+                           
+                             <li class="nav-item"><a href="#" class="navbar-brand"><i class="bi bi-pencil-square"></i> <span class="item-text">Task</span></a></li>
+                           
+                             <li class="nav-item"><a  routerLink="/users" class="navbar-brand"><i class="bi bi-people"></i> <span class="item-text">Users</span></a></li>
+                                                </ul>
+                  </div>
+                </div>
+      
+                <div class="btn-group">
+                    <a href="#" class="dropdown-toggle text-white text-decoration-none" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="usericon "><i class="bi bi-person-circle "></i></span>
+                        <span class="textnone">{{this.user.firstName}} {{this.user.lastName}}</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li routerLinkActive="active"><button class="dropdown-item" type="button"><i class="bi bi-lock-fill"></i> <a routerLink="/changePassword">Change Password</a></button></li>
+                        <li routerLinkActive="active"><button class="dropdown-item" type="button"><i class="bi bi-gear-fill"></i> <a routerLink="/user-profile">Admin Setion</a></button></li>
+                        <li><button class="dropdown-item" type="button"><i class="bi bi-gear-wide-connected"></i> <a routerLink="/user-profile">My Profile</a></button></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><button class="dropdown-item" type="button"><i class="bi bi-box-arrow-right"></i> Sign out</button></li>
+                    </ul>
+                </div>      
+            </div>
+        </nav>
+        <router-outlet></router-outlet>
+  </div>
+  </div>
+  

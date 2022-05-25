@@ -1,0 +1,22 @@
+<div class="row"> 
+    <div [class]="control.class">
+        <div [formGroup]="form">
+            <label class="mb-2 text-muted" [attr.for]="control.key">{{control.label}}</label>
+          
+            <div [ngSwitch]="control.controlType">
+          
+              <input *ngSwitchCase="'textbox'" class="form-control" [formControlName]="control.key" [readonly]="control.readonly"
+              [value]="control.value"  [name]="control.key" 
+                      [id]="control.key" [type]="control.type">
+          
+              <select [id]="control.key" class="form-control" *ngSwitchCase="'dropdown'" [formControlName]="control.key">
+                <option *ngFor="let opt of control.options" [value]="opt.key">{{opt.value}}</option>
+              </select>
+          
+            </div>
+          
+            <div class="validationErroMessage" *ngIf="!isValid">{{control.label}} is required</div>
+          </div>
+          </div>
+        
+</div>

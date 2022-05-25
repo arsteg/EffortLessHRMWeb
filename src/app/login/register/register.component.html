@@ -10,10 +10,17 @@
             <h1 class="fs-4 card-title fw-bold mb-4">Register</h1>
             <form   (ngSubmit)=onSubmit()  #f="ngForm"  class="needs-validation" novalidate="" autocomplete="off">
               <div class="mb-3">
-                <label class="mb-2 text-muted" for="name">Name</label>
-                <input id="name" type="text" class="form-control" ngModel name="name" required autofocus #name="ngModel">
-                <div *ngIf="!name.valid && name.touched" class="validationErroMessage">
-                  Name is required
+                <label class="mb-2 text-muted" for="firstName">First Name</label>
+                <input id="firstName" type="text" class="form-control" ngModel name="firstName" required autofocus #firstName="ngModel">
+                <div *ngIf="!firstName.valid && firstName.touched" class="validationErroMessage">
+                 First Name is required
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="mb-2 text-muted" for="lastName">Last Name</label>
+                <input id="lastName" type="text" class="form-control" ngModel name="lastName" required autofocus #lastName="ngModel">
+                <div *ngIf="!lastName.valid && lastName.touched" class="validationErroMessage">
+                 Last Name is required
                 </div>
               </div>
 
@@ -26,12 +33,28 @@
               </div>
 
               <div class="mb-3">
+                <label class="mb-2 text-muted" for="name">Company Name</label>
+                <input id="companyName" type="text" class="form-control" ngModel name="companyName" required autofocus #companyName="ngModel">
+                <div *ngIf="!companyName.valid && companyName.touched" class="validationErroMessage">
+                  Company Name is required
+                </div>
+              </div>
+
+              <div class="mb-3">
                 <label class="mb-2 text-muted" for="password">Password</label>
                 <input id="password" type="password" class="form-control" ngModel name="password" required #password="ngModel">
                   <div *ngIf="!password.valid && password.touched" class="validationErroMessage">
                     Password is required
                   </div>
               </div>
+              <div class="mb-3">
+                <label class="mb-2 text-muted" for="passwordConfirm">Confirm Password</label>
+                <input id="passwordConfirm" type="password" class="form-control" ngModel name="passwordConfirm" required #passwordConfirm="ngModel">
+                  <div *ngIf="!passwordConfirm.valid && passwordConfirm.touched" class="validationErroMessage">
+                  Confirm  Password is required
+                  </div>
+              </div>
+             
 
               <p class="form-text text-muted mb-3">
                 By registering you agree with our terms and condition.

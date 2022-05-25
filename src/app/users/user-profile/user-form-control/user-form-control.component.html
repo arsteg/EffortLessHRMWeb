@@ -1,0 +1,10 @@
+<form (ngSubmit)="onSubmit()" [formGroup]="form">
+  
+ 
+      <app-form-controls [control]="control" [form]="form" *ngFor="let control of controls"></app-form-controls>
+
+
+<div class="form-row">
+  <button type="submit" class="btn btn-primary ms-auto" [disabled]="!form.valid">Save</button>
+</div>
+</form>

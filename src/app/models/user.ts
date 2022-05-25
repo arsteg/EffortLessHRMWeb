@@ -1,6 +1,6 @@
 
 export class User {
-    id: number;
+    id: string;
     username: string;
     password: string;
     firstName: string;
@@ -9,9 +9,34 @@ export class User {
 }
 
 export class signup{
-  name: string;
+  id: string;
+  firstName: string;
+  lastName:string;
   email: string;
   password: string;
   passwordConfirm: string;
-  role: string;
+  companyName: string;
+  role:string;
+  jobTitle: String;
+  address: String;
+  city: String;
+  state: String;
+  country:string;
+  pincode: String;
+  phone: Number;
+  extraDetails: String;
+  isSuperAdmin: Boolean;
+  status: String;zation
+  photo: String;
+  active: Boolean;
+  createdBy: String;
+  updatedBy: String;
+  createdOn: Date;   
+  updatedOn: Date;
+}
+export class changeUserPassword{
+  passwordCurrent:string;
+  password: string;
+  passwordConfirm: string;  
+  id:string;
 }
