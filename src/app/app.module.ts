@@ -27,6 +27,7 @@ import { UserListComponent } from './users/user-list/user-list.component';
 import { UserFormCOntrolComponent } from './users/user-profile/user-form-control/user-form-control.component';
 import { UserProfileComponent } from './users/user-profile/user-profile.component';
 import { FormControlsComponent } from './common/form-controls/form-controls.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -61,4 +62,5 @@ import { FormControlsComponent } from './common/form-controls/form-controls.comp
   providers: [],
   bootstrap: [AppComponent]
 })
+
 export class AppModule { }

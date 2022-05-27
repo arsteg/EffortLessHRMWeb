@@ -4,15 +4,15 @@ import { Observable } from 'rxjs';
 import { ProjectService } from '../project.service';
 import { NotificationService } from '../../_services/notification.service';
 import { project } from '../model/project';
+
 @Component({
   selector: 'app-project-list',
   templateUrl: './project-list.component.html',
   styleUrls: ['./project-list.component.css']
 })
-export class ProjectListComponent implements OnInit {
-  //public rowData: any[] = [];
 
-  constructor(  private projectService: ProjectService, private notifyService : NotificationService) { }
+export class ProjectListComponent implements OnInit {
+ constructor(  private projectService: ProjectService, private notifyService : NotificationService) { }
  rowData = [
      { projectName: 'Toyota1', startDate: 'Celica', endDate: 35000 , estimatedTime: 'Toyota', notes: 'Celica', company: 35000,
      createdOn: 'Toyota', createdBy: 'Celica',updatedOn: 'Toyota', updatedBy: 'Celica'},
@@ -22,13 +22,12 @@ export class ProjectListComponent implements OnInit {
      createdOn: 'Toyota', createdBy: 'Celica',updatedOn: 'Toyota', updatedBy: 'Celica'},
  ];
   ngOnInit(): void {
-   }
-    
+
+   }    
   
   columnDefs: ColDef[] = [
     { field: 'projectName'},
-    { field: 'startDate' ,
-    width:100},
+    { field: 'startDate' ,width:100},
     { field: 'endDate',width:100 },
     {field:'estimatedTime',width:100},
     {field:'notes',width:300},

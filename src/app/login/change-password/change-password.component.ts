@@ -30,32 +30,27 @@ export class ChangePasswordComponent implements OnInit {
 
   ngOnInit(): void {
   }
+  
   onSubmit() {
     this.submitted = true;
     this.user.passwordCurrent=this.changePasswordForm.value.passwordCurrent;
     this.user.password=this.changePasswordForm.value.password;
     this.user.passwordConfirm=this.changePasswordForm.value.confirm_password;  
-    this.user.id=this.authenticationService.currentUserValue["data"].user.id;
-   
+    this.user.id=this.authenticationService.currentUserValue["data"].user.id;   
     if(this.changePasswordForm.value.password!==this.changePasswordForm.value.confirm_password)
     {
       this.notifyService.showWarning("Passwords don't match","warning");
       return;
     }
-    this.loading = true;       
-    debugger;
-      this.authenticationService.changePassword(this.user)
+    this.loading = true;  
+    this.authenticationService.changePassword(this.user)
       .pipe(first())
-      .subscribe(
-        
+      .subscribe(        
         data => {
-        
-          // this.resetPasswordForm.reset();
-           setTimeout(() => {
-            this.loading = false;
+             setTimeout(() => {
+             this.loading = false;
              this.router.navigate(['/']);
-             this.notifyService.showSuccess("Password change Successfully", "success")
-          
+             this.notifyService.showSuccess("Password change Successfully", "success")          
           }, 30);
         },
         err => {

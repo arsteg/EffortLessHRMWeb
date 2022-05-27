@@ -11,6 +11,7 @@ import { signup } from 'src/app/models/user';
   templateUrl: './reset-password.component.html',
   styleUrls: ['./reset-password.component.css']
 })
+
 export class ResetPasswordComponent implements OnInit {
   loading=false;  
   resetToken: null;
@@ -24,14 +25,14 @@ export class ResetPasswordComponent implements OnInit {
     private router: Router,
     private authenticationService: AuthenticationService,
     private notifyService: NotificationService) {     
-      this.route.params.subscribe(params => {
-      this.resetToken = params['token'];           
-    }); }
+    this.route.params.subscribe(params => {
+    this.resetToken = params['token'];           
+    }); 
+  }
    
   ngOnInit(): void {   
   }
   
- 
   onSubmit() {
     this.submitted = true;
     this.user.password=this.resetPasswordForm.value.password;
@@ -46,12 +47,10 @@ export class ResetPasswordComponent implements OnInit {
       .pipe(first())
       .subscribe(
         data => {
-          // this.resetPasswordForm.reset();
-           setTimeout(() => {
+            setTimeout(() => {
             this.loading = false;
              this.router.navigate(['login']);
-             this.notifyService.showSuccess("Password Link Send Successfully", "success")
-          
+             this.notifyService.showSuccess("Password Link Send Successfully", "success")          
           }, 30);
         },
         err => {

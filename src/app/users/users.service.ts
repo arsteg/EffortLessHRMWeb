@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-
 import { Dropdown } from '../controls/dropdown';
 import { Base } from '../controls/base';
 import { Textbox } from '../controls/textbox';
@@ -11,13 +10,11 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 
 @Injectable()
 export class UserService {
-  static getQuestions: any;
- 
+  static getQuestions: any; 
   constructor(private http: HttpClient) {
    }
   // TODO: get from a remote source of question metadata
- public getQuestions(user:signup): Observable<Base<any>[]> {
-   
+ public getQuestions(user:signup): Observable<Base<any>[]> {   
     const controls: Base<string>[] = [   
       new Textbox({
         key: 'firstName',
@@ -25,7 +22,7 @@ export class UserService {
         required: true,
         value:'firstname',
         rowclass:"row" ,
-        class:"col-md-12",
+        class:"col-md-6",
         order: 1
       }),      
       new Textbox({
@@ -33,7 +30,8 @@ export class UserService {
         label: 'Last name',
         value:user.lastName,
         required: true,
-        class:"col-md-12",
+        rowclass:"col-md-6",
+        class:"col-md-6",
         order: 2
       }),
       new Textbox({
@@ -102,19 +100,15 @@ export class UserService {
         class:"col-md-12",    
         rows:3,  
         order: 11
-      })
-      
-    ];
-   
+      })      
+    ];   
     return of(controls.sort((a, b) => a.order - b.order));
   }
-
    GetMe(id:string): Observable<signup[]> {
     var queryHeaders = new HttpHeaders();
     queryHeaders.append('Content-Type', 'application/json');
     queryHeaders.append('Access-Control-Allow-Origin','*');   
-    return this.http.get<any>(`${environment.apiUrlDotNet}/users/${id}`,{ headers: queryHeaders})
-       
+    return this.http.get<any>(`${environment.apiUrlDotNet}/users/${id}`,{ headers: queryHeaders})       
 }
 updateMe(user: signup): Observable<signup> {
   return this.http.patch<any>(`${environment.apiUrlDotNet}/users/${user.id}`, user, {

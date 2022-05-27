@@ -12,23 +12,18 @@ import { AuthenticationService } from '../_services/authentication.service';
 })
 export class LayoutComponentComponent implements OnInit {
 
-  isLoggedIn$: Observable<boolean>; 
-  name = 'Angular 6';
-  menuItems = ['dashboard', 'sales', 'orders', 'customers', 'products'];
-  public user: signup=new signup();
-  private _router: Subscription;
-  private lastPoppedUrl: string;
-  private yScrollStack: number[] = [];
-   constructor(private route: ActivatedRoute, private router: Router,
-    private authenticationService: AuthenticationService,
-    ) {     
+  isLoggedIn$: Observable<boolean>;   
+  public user: signup=new signup(); 
+  constructor(private router: Router,
+  private authenticationService: AuthenticationService,
+    )
+     {     
       if(!localStorage.getItem('currentUser')){
          this.router.navigate(['/login']);
       }
      }
 
-
-  ngOnInit() {
+ ngOnInit() {
     this.user=this.authenticationService.currentUserValue["data"].user;  
     if(localStorage.getItem('currentUser')){    
       this.isLoggedIn$ = this.authenticationService.isLoggedIn;

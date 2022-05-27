@@ -6,7 +6,6 @@ import { LayoutComponentComponent } from './layout/layout-component.component';
 import { RegisterComponent } from './login/register/register.component';
 import { ForgotPasswordComponent } from './login/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './login/reset-password/reset-password.component';
-
 import { ProjectListComponent } from './Project/project-list/project-list.component';
 import { AuthGuard } from './_helpers/auth.guard';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -39,8 +38,7 @@ const routes: Routes = [
 @NgModule({
   imports: [
     CommonModule,
-    RouterModule.forRoot(routes,{relativeLinkResolution:'legacy', useHash: true}),
-   
+    RouterModule.forRoot(routes,{relativeLinkResolution:'legacy', useHash: true}),   
   ],
   exports: [RouterModule]
 })

@@ -8,5 +8,8 @@
         padding: 30px 15px;
         min-height: calc(100vh - 123px);
     }
+    .float{
+        float:left;
+    }
 
 /* You can add global styles to this file, and also import other style files */

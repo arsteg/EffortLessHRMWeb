@@ -1,7 +1,11 @@
 <form (ngSubmit)="onSubmit()" [formGroup]="form">
   
  
-      <app-form-controls [control]="control" [form]="form" *ngFor="let control of controls"></app-form-controls>
+      <app-form-controls [control]="control" [form]="form" *ngFor="let control of controls">
+        <div [class]="control.rowclass">
+
+        </div>
+      </app-form-controls>
 
 
 <div class="form-row">

@@ -8,6 +8,7 @@ import { NgForm } from '@angular/forms';
   styleUrls: ['./form-controls.component.css']
 })
 export class FormControlsComponent implements OnInit {
+  
   @Input() control!: Base<string>;
   @Input() form!: FormGroup;
   get isValid() { return this.form.controls[this.control.key].valid; }

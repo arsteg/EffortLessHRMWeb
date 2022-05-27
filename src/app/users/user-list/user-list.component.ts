@@ -5,15 +5,14 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.css']
 })
+
 export class UserListComponent implements OnInit {
- 
-  
+
   constructor() { }
 
   ngOnInit() {
-  
   }
-
+  
   columnDefs = [  
       { headerName: 'ArtNo', field: 'ArtNo', sortable: true, filter: true },  
       { headerName: 'Provider', field: 'Provider', sortable: true, filter: true },  
@@ -22,9 +21,7 @@ export class UserListComponent implements OnInit {
       { headerName: 'Price', field: 'Price', sortable: true, filter: true },  
       { headerName: 'BuyAccount', field: 'BuyAccount', sortable: true, filter: true }  
     ];  
-  
- 
-    rowData = [  
+   rowData = [  
       {  
         ArtNo: "100",  
         Provider: "IPhone 11",  
@@ -89,7 +86,5 @@ export class UserListComponent implements OnInit {
         Price: 5810.23,  
         BuyAccount: "123",  
       }  
-    ];  
-  
-
+    ]; 
 }

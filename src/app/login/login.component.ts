@@ -6,6 +6,7 @@ import { first } from 'rxjs/operators';
 import { AuthenticationService } from '../_services/authentication.service';
 import { NotificationService } from '../_services/notification.service';
 import { signup, User } from '../models/user';
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',

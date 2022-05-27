@@ -6,13 +6,14 @@ import { environment } from 'src/environments/environment';
 import { signup, User,changeUserPassword } from '../models/user';
 
 @Injectable({ providedIn: 'root' })
+
 export class AuthenticationService {
     private loggedIn = new BehaviorSubject<boolean>(false);
     private currentUserSubject: BehaviorSubject<User>;
     public currentUser: Observable<User>;
 
     get isLoggedIn() {
-        return this.loggedIn.asObservable(); // {2}
+        return this.loggedIn.asObservable(); 
         }
     constructor(private http: HttpClient) {
         this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
@@ -22,6 +23,7 @@ export class AuthenticationService {
     public get currentUserValue(): User {
         return this.currentUserSubject.value;
     }
+
     forgotPassword(email)
     {
         var queryHeaders = new HttpHeaders();
@@ -73,9 +75,8 @@ export class AuthenticationService {
     var queryHeaders = new HttpHeaders();
     queryHeaders.append('Content-Type', 'application/json');
     queryHeaders.append('Access-Control-Allow-Origin','*');   
-    return this.http.get<any>(`${environment.apiUrlDotNet}/users/${id}`,{ headers: queryHeaders})
-       
-}
+    return this.http.get<any>(`${environment.apiUrlDotNet}/users/${id}`,{ headers: queryHeaders})       
+  }
   changePassword(user: changeUserPassword): Observable<User> {
     return this.http.patch<any>(`${environment.apiUrlDotNet}/users/updateMyPassword`, user, {
       headers: new HttpHeaders({

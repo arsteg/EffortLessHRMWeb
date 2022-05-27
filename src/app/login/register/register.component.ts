@@ -10,11 +10,12 @@ import { Router,ActivatedRoute  } from '@angular/router';
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css']
 })
+
 export class RegisterComponent implements OnInit {
 loading=false;
 user:signup= new signup();
 @ViewChild('f') registerForm: NgForm;
-  constructor( private authenticationService: AuthenticationService,private router: Router,
+constructor( private authenticationService: AuthenticationService,private router: Router,
     private notifyService : NotificationService) { }
 
   ngOnInit(): void {

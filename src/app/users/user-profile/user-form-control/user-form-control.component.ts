@@ -14,13 +14,14 @@ import { UserService } from '../../users.service';
   styleUrls: ['./user-form-control.component.css'],  
   providers:  [UserService]
 })
-export class UserFormCOntrolComponent implements OnInit {
-  
+
+export class UserFormCOntrolComponent implements OnInit {  
   @Input() controls: Base<string>[] | null = [];
   form!: FormGroup;
   payLoad = '';
   id: string; 
   public user: signup=new signup(); 
+
   constructor(private ControlService: ControlService,private UserService: UserService, private notifyService: NotificationService,private authenticationService:AuthenticationService) {
    }   
 
@@ -35,8 +36,8 @@ export class UserFormCOntrolComponent implements OnInit {
         err => {
         }); 
   }
-  setProfile(){
-    
+
+  setProfile(){    
     this.form.get("lastName").setValue(this.user.lastName);
     this.form.get("email").setValue(this.user.email); 
     this.form.get("firstName").setValue(this.user.firstName);
@@ -48,18 +49,16 @@ export class UserFormCOntrolComponent implements OnInit {
     this.form.get("jobTitle").setValue(this.user.jobTitle);
     this.form.get("pincode").setValue(this.user.pincode);   
     this.form.get("state").setValue(this.user.state);  
-
   }
-  onSubmit() {  
-   
+  
+  onSubmit() {     
     this.user=this.form.value;  
-   this.user.id=this.id;   
+    this.user.id=this.id;   
       this.UserService.updateMe(this.user)
       .pipe(first())
       .subscribe(        
-        data => {        
-          // this.resetPasswordForm.reset();
-           setTimeout(() => {          
+        data => { 
+             setTimeout(() => {          
              this.notifyService.showSuccess("update Successfully", "success")          
           }, 30);
         },
