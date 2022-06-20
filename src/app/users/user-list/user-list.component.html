@@ -14,7 +14,6 @@
                     <div class="card-body">
                         <div class="container-fluid">
                             <div class="row">
-                            
                                 <div class="col-md-2">Member</div>
                                 <div class="col-md-2">status</div>
                                 <div class="col-md-2">Project</div>
@@ -22,19 +21,49 @@
                                 <div class="col-md-2">Go</div>
                                 </div>
                                 <div class="row">
+                                    <div class="col-md-2">
+                                        <select class="form-control">
+                                            <option value="1">Option1</option>
+                                            <option value="2">Option2</option>
+                                            <option value="3">Option3</option>
+                                          </select>
+                                      </div>
+                                    <div class="col-md-2">
+                                        <select class="form-control">
+                                            <option value="1">Option1</option>
+                                            <option value="2">Option2</option>
+                                            <option value="3">Option3</option>
+                                          </select>    </div>
+                                    <div class="col-md-2"> 
+                                        <select class="form-control">
+                                            <option value="1">Option1</option>
+                                            <option value="2">Option2</option>
+                                            <option value="3">Option3</option>
+                                          </select> </div>
+                                    <div class="col-md-2"> 
+                                        <select class="form-control">
+                                            <option value="1">Option1</option>
+                                            <option value="2">Option2</option>
+                                            <option value="3">Option3</option>
+                                          </select>
+                                          </div>
+                                    <div class="col-md-2"> <button type="submit" class="btn btn-primary ms-auto">
+                                        Go
+                                      </button></div>
+                                    </div>
+                                   <div class="row"></div>
+                                <div class="row">
                                     <div class="table-responsive">
                                     <div class="col-md-12">
-                                        
                                         <ag-grid-angular
-                                        style="width: 100%; height: 500px;"
-                                        class="ag-theme-alpine"  [enableSorting]="true" [animateRows]="true" [pagination]="true" [paginationPageSize]="10" [floatingFilter]="true"    
+                                        style="width: 100%; height: 520px;"
+                                        class="ag-theme-alpine" [enableSorting]="true" [animateRows]="true" [pagination]="true" [paginationPageSize]="10" [floatingFilter]="true"    
                                         [animateRows]="true"
-                                        [rowData]="rowData"
+                                        [rowData]="users"  (cellClicked)="onCellClicked($event)"
                                         [columnDefs]="columnDefs">
-                                    </ag-grid-angular>                                    
+                                    </ag-grid-angular>         
                                     </div>
-                                    </div>
-                          
+                                    </div>                         
                           </div>
 
   </div>

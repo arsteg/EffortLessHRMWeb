@@ -3,7 +3,7 @@ import { Dropdown } from '../controls/dropdown';
 import { Base } from '../controls/base';
 import { Textbox } from '../controls/textbox';
 import { map, Observable, of } from 'rxjs';
-import { signup } from '../models/user';
+import { signup, User } from '../models/user';
 import { HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
@@ -20,30 +20,33 @@ export class UserService {
         key: 'firstName',
         label: 'First name',
         required: true,
-        value:'firstname',
-        rowclass:"row" ,
-        class:"col-md-6",
+        rowclass:true,
+        rowend:false,
+        class:"col-md-12",
         order: 1
-      }),      
+      }),
       new Textbox({
         key: 'lastName',
         label: 'Last name',
         value:user.lastName,
         required: true,
-        rowclass:"col-md-6",
-        class:"col-md-6",
+        rowclass:false,
+        rowend:true,
+        class:"col-md-12",
         order: 2
       }),
       new Textbox({
         key: 'jobTitle',
         label: 'Job Title',
         class:"col-md-12",
+        rowclass:false,
         order: 3
       }),
       new Textbox({
         key: 'address',
         label: 'Address',
         class:"col-md-12",
+        rowclass:false,
         rows:3,
         order: 4
       }),
@@ -51,12 +54,14 @@ export class UserService {
         key: 'city',
         label: 'City',
         class:"col-md-12",
+        rowclass:false,
         order: 5
       }),
       new Textbox({
         key: 'state',
         label: 'State',       
         class:"col-md-12",
+        rowclass:false,
         order: 6
       }),
       new Dropdown({
@@ -69,13 +74,14 @@ export class UserService {
           {key: 'unproven', value: 'Unproven'}
         ],
         class:"col-md-12",
-        rowclass:"row",
+        rowclass:true,
         order: 7
       }),
       new Textbox({
         key: 'pincode',
         label: 'Pin Code',
          class:"col-md-12",
+         rowclass:true,
         order: 8
       }),
       new Textbox({
@@ -83,6 +89,7 @@ export class UserService {
         label: 'Phone',     
         required: true,
         class:"col-md-12",
+        rowclass:true,
         order: 9
       }),
       new Textbox({
@@ -91,6 +98,7 @@ export class UserService {
         type: 'email',
         required: true,
         readonly:'readonly',
+        rowclass:true,
         class:"col-md-12",
         order: 10
       }),
@@ -98,13 +106,14 @@ export class UserService {
         key: 'extraDetails',
         label: 'Extra Details',       
         class:"col-md-12",    
+        rowclass:true,
         rows:3,  
         order: 11
       })      
     ];   
     return of(controls.sort((a, b) => a.order - b.order));
   }
-   GetMe(id:string): Observable<signup[]> {
+GetMe(id:string): Observable<signup[]> {
     var queryHeaders = new HttpHeaders();
     queryHeaders.append('Content-Type', 'application/json');
     queryHeaders.append('Access-Control-Allow-Origin','*');   
@@ -117,4 +126,13 @@ updateMe(user: signup): Observable<signup> {
     })
   });
 }
+getUserList(): Observable<any> {
+  return this.http.get(`${environment.apiUrlDotNet}/users`, {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json'
+    })
+  });
+}
+
+
 }

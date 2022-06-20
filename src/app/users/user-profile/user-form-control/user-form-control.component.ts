@@ -36,7 +36,7 @@ export class UserFormCOntrolComponent implements OnInit {
         err => {
         }); 
   }
-
+  
   setProfile(){    
     this.form.get("lastName").setValue(this.user.lastName);
     this.form.get("email").setValue(this.user.email); 

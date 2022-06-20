@@ -9,11 +9,10 @@ describe('UserListComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ UserListComponent ]
-    })
-    .compileComponents();
+    }).compileComponents();
   });
 
-  beforeEach(() => {
+  beforeEach(()=> {
     fixture = TestBed.createComponent(UserListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

@@ -1,90 +1,49 @@
 import { Component, OnInit } from '@angular/core';
-
+import { User } from 'src/app/models/user';
+import { UserService } from '../users.service';
+import * as moment from 'moment';
 @Component({
   selector: 'app-user-list',
   templateUrl: './user-list.component.html',
-  styleUrls: ['./user-list.component.css']
+  styleUrls: ['./user-list.component.css'],
+  providers:  [UserService]
 })
 
 export class UserListComponent implements OnInit {
-
-  constructor() { }
-
+  public users: Array<User>=[];
+  constructor( private UserService: UserService) {     
+    this.UserService.getUserList()
+      .subscribe(data => {        
+       this.users=data.data.data;
+      })}
   ngOnInit() {
+    
   }
-  
-  columnDefs = [  
-      { headerName: 'ArtNo', field: 'ArtNo', sortable: true, filter: true },  
-      { headerName: 'Provider', field: 'Provider', sortable: true, filter: true },  
-      { headerName: 'ProviderArtNo', field: 'ProviderArtNo', sortable: true, filter: true },  
-      { headerName: 'Brand', field: 'Brand', sortable: true, filter: true },  
-      { headerName: 'Price', field: 'Price', sortable: true, filter: true },  
-      { headerName: 'BuyAccount', field: 'BuyAccount', sortable: true, filter: true }  
+  columnDefs = [
+      { headerName: 'User Name', field: 'name', sortable: true, filter: true},  
+      { headerName: 'Email', field: 'email', sortable: true, filter: true,width: 200 },  
+      { headerName: 'Role', field: 'role.roleName', sortable: true, filter: true,width: 150 }, 
+      { headerName: 'Company', field: 'company.companyName', sortable: true, filter: true,width: 200 },  
+      { headerName: 'Status', field: 'status', sortable: true, filter: true ,width: 100},  
+      
+      { headerName: 'Updated On', field: 'updatedOn', sortable: true, filter: true , valueFormatter: function (params) {
+        return moment(params.value).format('DD-MM-yyyy');
+    },}, 
+      { headerName: 'Updated By', field: 'updatedBy.firstName', sortable: true, filter: true,width: 150},   
+      {
+        headerName: 'Edit',
+        cellRenderer: (params) => {return '<span><i class="fa fa-edit" data-action-type="edit"></i></span>'},width:80
+       
+      },
+      {
+        headerName: 'Delete',
+        cellRenderer: (params) => {return '<span><i class="fa fa-trash" data-action-type="delete"></i></span>'},width: 80
+       
+      },
     ];  
-   rowData = [  
-      {  
-        ArtNo: "100",  
-        Provider: "IPhone 11",  
-        ProviderArtNo: "1Yu",  
-        Brand: "Apple",  
-        Price: 7810.23,  
-        BuyAccount: "123",  
-      },  
-      {  
-        ArtNo: "101",  
-        Provider: "Samsung galaxy",  
-        ProviderArtNo: "1Yu",  
-        Brand: "Samsung",  
-        Price: 2310.23,  
-        BuyAccount: "123",  
-      },  
-      {  
-        ArtNo: "102",  
-        Provider: "Iphone 11 Pro",  
-        ProviderArtNo: "1Yu",  
-        Brand: "Apple",  
-        Price: 7810.23,  
-        BuyAccount: "123",  
-      },  
-      {  
-        ArtNo: "103",  
-        Provider: "Intex",  
-        ProviderArtNo: "1Yu",  
-        Brand: "Intex",  
-        Price: 5810.23,  
-        BuyAccount: "123",  
-      },  
-      {  
-        ArtNo: "100",  
-        Provider: "IPhone 11",  
-        ProviderArtNo: "1Yu",  
-        Brand: "Apple",  
-        Price: 7810.23,  
-        BuyAccount: "123",  
-      },  
-      {  
-        ArtNo: "101",  
-        Provider: "Samsung galaxy",  
-        ProviderArtNo: "1Yu",  
-        Brand: "Samsung",  
-        Price: 2310.23,  
-        BuyAccount: "123",  
-      },  
-      {  
-        ArtNo: "102",  
-        Provider: "Iphone 11 Pro",  
-        ProviderArtNo: "1Yu",  
-        Brand: "Apple",  
-        Price: 7810.23,  
-        BuyAccount: "123",  
-      },  
-      {  
-        ArtNo: "103",  
-        Provider: "Intex",  
-        ProviderArtNo: "1Yu",  
-        Brand: "Intex",  
-        Price: 5810.23,  
-        BuyAccount: "123",  
-      }  
-    ]; 
+    onCellClicked(result: any): void {
+     alert(result.data.id)
+   
+    }
+    
 }

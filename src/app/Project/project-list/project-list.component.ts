@@ -14,12 +14,7 @@ import { project } from '../model/project';
 export class ProjectListComponent implements OnInit {
  constructor(  private projectService: ProjectService, private notifyService : NotificationService) { }
  rowData = [
-     { projectName: 'Toyota1', startDate: 'Celica', endDate: 35000 , estimatedTime: 'Toyota', notes: 'Celica', company: 35000,
-     createdOn: 'Toyota', createdBy: 'Celica',updatedOn: 'Toyota', updatedBy: 'Celica'},
-     { projectName: 'Toyota1', startDate: 'Celica', endDate: 35000 , estimatedTime: 'Toyota', notes: 'Celica', company: 35000,
-     createdOn: 'Toyota', createdBy: 'Celica',updatedOn: 'Toyota', updatedBy: 'Celica'},
-     { projectName: 'Toyota1', startDate: 'Celica', endDate: 35000 , estimatedTime: 'Toyota', notes: 'Celica', company: 35000,
-     createdOn: 'Toyota', createdBy: 'Celica',updatedOn: 'Toyota', updatedBy: 'Celica'},
+    
  ];
   ngOnInit(): void {
 

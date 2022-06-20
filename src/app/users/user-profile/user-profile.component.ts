@@ -14,7 +14,7 @@ import { UserService } from '../users.service';
   providers:  [UserService]
 })
 
-export class UserProfileComponent implements OnInit {
+export class UserProfileComponent implements OnInit {  
   controls$: Observable<Base<any>[]>;
   public user: signup=new signup();
   constructor(private UserService: UserService,private authenticationService:AuthenticationService) {
@@ -22,5 +22,6 @@ export class UserProfileComponent implements OnInit {
   }
   
   ngOnInit(): void {
+    
   }
 }

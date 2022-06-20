@@ -1,13 +1,8 @@
-<form (ngSubmit)="onSubmit()" [formGroup]="form">
-  
- 
-      <app-form-controls [control]="control" [form]="form" *ngFor="let control of controls">
-        <div [class]="control.rowclass">
-
-        </div>
-      </app-form-controls>
-
-
+<form (ngSubmit)="onSubmit()" [formGroup]="form">  
+ <div *ngFor="let control of controls" class="form-row">
+  <app-form-controls [control]="control" [form]="form">
+  </app-form-controls>
+</div>
 <div class="form-row">
   <button type="submit" class="btn btn-primary ms-auto" [disabled]="!form.valid">Save</button>
 </div>
