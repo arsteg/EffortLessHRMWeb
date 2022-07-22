@@ -1,0 +1,34 @@
+
+figcaption {
+  color: #fff;
+  font: smaller sans-serif;
+  padding: 3px;
+  text-align: center;
+}
+
+figure {
+  border: thin #c0c0c0 solid;
+  border-radius: 10px;
+  display: flex;
+  flex-flow: column;
+  padding: 5px;
+  max-width: 220px;
+  margin: auto;
+}
+
+.modal-dialog {
+  border-radius: 5;
+  background-color: red;
+}
+
+.modal-content {
+  background-color: green;
+}
+
+
+.modal-image {
+  width: 100%; /* or any custom size */
+  height: 100%;
+  object-fit: contain;
+}
+

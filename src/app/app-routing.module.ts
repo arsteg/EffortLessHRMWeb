@@ -26,7 +26,8 @@ const routes: Routes = [
     loadChildren: () => import('./layout/layout.module').then(m => m.LayoutModule)
   }]
 },
-  {path:'login',component:LoginComponent}, 
+  {path:'./',component:DashboardComponent},
+  {path:'login',component:LoginComponent},
   {path:'dashboard',component:DashboardComponent},
   {path:'logout',component:LoginComponent},
   {path:'register',component:RegisterComponent},
@@ -38,7 +39,7 @@ const routes: Routes = [
 @NgModule({
   imports: [
     CommonModule,
-    RouterModule.forRoot(routes,{relativeLinkResolution:'legacy', useHash: true}),   
+    RouterModule.forRoot(routes,{relativeLinkResolution:'legacy', useHash: true}),
   ],
   exports: [RouterModule]
 })

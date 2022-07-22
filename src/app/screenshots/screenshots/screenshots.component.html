@@ -1,0 +1,125 @@
+<div class="main-content">
+  <div class="container-fluid">
+
+    <div class="row">
+      <div class="col-sm-3">
+        <div class="input-group">
+          <input type='button' value='<' name='next' (click)="SetPreviousDay()"/>
+          <input type="date" name="date" id="date" class="form-control" [(ngModel)]="selectedDate" (change)="showScreenShots()"/>
+          <input type='button' value='>' name='prev' (click)="SetNextDay()" [disabled]="DisableNext()"/>
+        </div>
+      </div>
+      <div class="col-sm-1">
+        <input type="button" id="btnRefresh" class="btn-primary" (click)="showScreenShots()" value="Refresh">
+      </div>
+      <div class="col-sm-2">
+        <div class="btn-group">
+          <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            Select Project
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item">Action</a></li>
+            <li><a class="dropdown-item">Another action</a></li>
+            <li><a class="dropdown-item">Something else here</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item">Separated link</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-sm-6">
+      </div>
+    </div>
+    <div class="row">
+    </div>
+    <div class="row">
+      <hr style="margin:10px;">
+    </div>
+
+  <div *ngFor="let timeLog of screenshotRows" class="row">
+        <div class="col-sm-2" *ngIf="timeLog?.col1?.fileString">
+            <figure>
+            <img src="{{'data:image/jpg;base64,' + timeLog.col1.fileString}}" width="200" height="137" data-bs-toggle="modal" data-bs-target="#bigImageModal" (click)="setSelectedScreenshot($event)"/>
+            <figcaption class="figure-caption text-center" [style.background-color]="getActivityColor(timeLog.col1.GetActivityLevel)">{{timeLog.col1.timeLabel}}</figcaption>
+          </figure>
+        </div>
+        <div class="col-sm-2" *ngIf="!timeLog?.col1?.fileString">
+          <figure>
+          <img src="{{'data:image/jpeg;base64,'+defaultScreenshot}}" width="200" height="137"/>
+          <figcaption class="figure-caption text-center" [style.background-color]="getActivityColor(timeLog?.col1?.GetActivityLevel)">{{timeLog?.col1?.timeLabel}}</figcaption>
+        </figure>
+        </div>
+        <div class="col-sm-2" *ngIf="timeLog?.col2?.fileString">
+        <figure>
+          <img src="{{'data:image/jpg;base64,' + timeLog.col2.fileString}}" width="200" height="137" data-bs-toggle="modal" data-bs-target="#bigImageModal" (click)="setSelectedScreenshot($event)"/>
+          <figcaption class="figure-caption text-center" [style.background-color]="getActivityColor(timeLog?.col2?.GetActivityLevel)">{{timeLog.col2.timeLabel}}</figcaption>
+        </figure>
+        </div>
+        <div class="col-sm-2" *ngIf="!timeLog?.col2?.fileString">
+          <figure>
+          <img src="{{'data:image/jpeg;base64,'+defaultScreenshot}}" width="200" height="137"/>
+          <figcaption class="figure-caption text-center" [style.background-color]="getActivityColor(timeLog?.col2?.GetActivityLevel)">{{timeLog?.col2?.timeLabel}}</figcaption>
+        </figure>
+        </div>
+        <div class="col-sm-2" *ngIf="timeLog?.col3?.fileString">
+          <figure>
+          <img  src="{{'data:image/jpg;base64,' + timeLog.col3.fileString}}" width="200" height="137" data-bs-toggle="modal" data-bs-target="#bigImageModal" (click)="setSelectedScreenshot($event)"/>
+          <figcaption class="figure-caption text-center" [style.background-color]="getActivityColor(timeLog?.col3?.GetActivityLevel)">{{timeLog?.col3?.timeLabel}}</figcaption>
+        </figure>
+        </div>
+        <div class="col-sm-2" *ngIf="!timeLog?.col3?.fileString">
+          <figure>
+          <img src="{{'data:image/jpeg;base64,'+defaultScreenshot}}" width="200" height="137"/>
+          <figcaption class="figure-caption text-center" [style.background-color]="getActivityColor(timeLog?.col3?.GetActivityLevel)">{{timeLog?.col3?.timeLabel}}</figcaption>
+        </figure>
+        </div>
+        <div class="col-sm-2" *ngIf="timeLog?.col4?.fileString" >
+          <figure>
+          <img src="{{'data:image/jpg;base64,' + timeLog.col4.fileString}}" width="200" height="137" data-bs-toggle="modal" data-bs-target="#bigImageModal" (click)="setSelectedScreenshot($event)"/>
+          <figcaption class="figure-caption text-center" [style.background-color]="getActivityColor(timeLog?.col4?.GetActivityLevel)">{{timeLog?.col4?.timeLabel}}</figcaption>
+        </figure>
+        </div>
+        <div class="col-sm-2" *ngIf="!timeLog?.col4?.fileString">
+          <figure>
+          <img src="{{'data:image/jpeg;base64,'+defaultScreenshot}}" width="200" height="137"/>
+          <figcaption class="figure-caption text-center" [style.background-color]="getActivityColor(timeLog?.col4?.GetActivityLevel)">{{timeLog?.col4?.timeLabel}}</figcaption>
+        </figure>
+        </div>
+        <div class="col-sm-2" *ngIf="timeLog?.col5?.fileString" >
+         <figure>
+          <img src="{{'data:image/jpg;base64,' + timeLog.col5.fileString}}" width="200" height="137" data-bs-toggle="modal" data-bs-target="#bigImageModal" (click)="setSelectedScreenshot($event)"/>
+          <figcaption class="figure-caption text-center" [style.background-color]="getActivityColor(timeLog?.col5?.GetActivityLevel)">{{timeLog.col5.timeLabel}}</figcaption>
+        </figure>
+        </div>
+        <div class="col-sm-2" *ngIf="!timeLog?.col5?.fileString">
+          <figure>
+          <img src="{{'data:image/jpeg;base64,'+defaultScreenshot}}" width="200" height="137"/>
+          <figcaption class="figure-caption text-center" [style.background-color]="getActivityColor(timeLog?.col5?.GetActivityLevel)">{{timeLog?.col5?.timeLabel}}</figcaption>
+        </figure>
+        </div>
+        <div class="col-sm-2" *ngIf="timeLog?.col6?.fileString" >
+          <figure>
+          <img src="{{'data:image/jpg;base64,' + timeLog.col6.fileString}}" width="200" height="137" data-bs-toggle="modal" data-bs-target="#bigImageModal" (click)="setSelectedScreenshot($event)"/>
+          <figcaption class="figure-caption text-center" [style.background-color]="getActivityColor(timeLog?.col6?.GetActivityLevel)">{{timeLog.col6.timeLabel}}</figcaption>
+        </figure>
+        </div>
+        <div class="col-sm-2" *ngIf="!timeLog?.col6?.fileString">
+          <figure>
+          <img src="{{'data:image/jpeg;base64,'+ defaultScreenshot}}" width="200" height="137"/>
+          <figcaption class="figure-caption text-center" [style.background-color]="getActivityColor(timeLog?.col6?.GetActivityLevel)">{{timeLog?.col6?.timeLabel}}</figcaption>
+        </figure>
+        <div>
+        </div>
+        </div>
+  </div>
+</div>
+
+<div class="modal fade" role="dialog" id="bigImageModal" tabindex="-1" aria-labelledby="bigImageModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-body">
+        <img class="modal-image" src="{{selectedScreenShot}}"/>
+      </div>
+    </div>
+  </div>
+</div>
+</div>

@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, NgForm } from '@angular/forms';
+import { UntypedFormBuilder, NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs';
 import { changeUserPassword, signup } from 'src/app/models/user';
@@ -19,7 +19,7 @@ export class ChangePasswordComponent implements OnInit {
   user:changeUserPassword= new changeUserPassword();
   @ViewChild('f') changePasswordForm: NgForm;
 
-  constructor( private formBuilder: FormBuilder,
+  constructor( private formBuilder: UntypedFormBuilder,
     private route: ActivatedRoute,
     private router: Router,
     private authenticationService: AuthenticationService,

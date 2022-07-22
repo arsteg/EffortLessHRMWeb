@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { Base } from 'src/app/controls/base';
 import { NgForm } from '@angular/forms';
 @Component({
@@ -10,7 +10,7 @@ import { NgForm } from '@angular/forms';
 export class FormControlsComponent implements OnInit {
   
   @Input() control!: Base<string>;
-  @Input() form!: FormGroup;
+  @Input() form!: UntypedFormGroup;
   get isValid() { return this.form.controls[this.control.key].valid; }
 
   constructor() { }

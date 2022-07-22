@@ -27,6 +27,9 @@ import { UserListComponent } from './users/user-list/user-list.component';
 import { UserFormCOntrolComponent } from './users/user-profile/user-form-control/user-form-control.component';
 import { UserProfileComponent } from './users/user-profile/user-profile.component';
 import { FormControlsComponent } from './common/form-controls/form-controls.component';
+import { ScreenshotsComponent } from './screenshots/screenshots/screenshots.component';
+import { DatePipe } from '@angular/common';
+import { NgHttpLoaderModule } from 'ng-http-loader';
 
 @NgModule({
   declarations: [
@@ -34,16 +37,17 @@ import { FormControlsComponent } from './common/form-controls/form-controls.comp
     LoginComponent,
     LayoutComponentComponent,
     RegisterComponent,
-    ForgotPasswordComponent,    
+    ForgotPasswordComponent,
     SidebarDirective,
     ResetPasswordComponent,
-    ProjectListComponent,    
+    ProjectListComponent,
     AddProjectComponent,
           ChangePasswordComponent,
           UserListComponent,
           UserProfileComponent,
           UserFormCOntrolComponent,
-          FormControlsComponent  
+          FormControlsComponent,
+          ScreenshotsComponent
   ],
   imports: [
     BrowserModule,
@@ -52,6 +56,7 @@ import { FormControlsComponent } from './common/form-controls/form-controls.comp
     ReactiveFormsModule,
     FormsModule,
     ToastrModule.forRoot(),
+    NgHttpLoaderModule.forRoot(),
     AgGridModule.withComponents([]),
     BrowserAnimationsModule, NoopAnimationsModule, LayoutModule, MatToolbarModule, MatButtonModule, MatSidenavModule, MatIconModule, MatListModule
   ],
@@ -59,7 +64,7 @@ import { FormControlsComponent } from './common/form-controls/form-controls.comp
     CUSTOM_ELEMENTS_SCHEMA,
     NO_ERRORS_SCHEMA
   ],
-  providers: [],
+  providers: [DatePipe],
   bootstrap: [AppComponent]
 })
 

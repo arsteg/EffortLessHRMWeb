@@ -13,7 +13,7 @@ export class AuthenticationService {
     public currentUser: Observable<User>;
 
     get isLoggedIn() {
-        return this.loggedIn.asObservable(); 
+        return this.loggedIn.asObservable();
         }
     constructor(private http: HttpClient) {
         this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
@@ -42,14 +42,12 @@ export class AuthenticationService {
         return this.http.patch<any>(`${environment.apiUrlDotNet}/users/resetpassword/${token}`, {password:password,passwordConfirm:confirm_password},{ headers: queryHeaders});
 
     }
-    login(username, password) {
+    login(user) {
         var queryHeaders = new HttpHeaders();
         queryHeaders.append('Content-Type', 'application/json');
         queryHeaders.append('Access-Control-Allow-Origin','*');
-        return this.http.post<any>(`${environment.apiUrlDotNet}/users/login`, {email:username,password:password},{ headers: queryHeaders})
+        return this.http.post<any>(`${environment.apiUrlDotNet}/users/login`, {email:user.email,password:user.password},{ headers: queryHeaders})
             .pipe(map(user => {
-                // store user details and jwt token in local storage to keep user logged in between page refreshes
-                localStorage.setItem('currentUser', JSON.stringify(user));
                 this.currentUserSubject.next(user);
                 this.loggedIn.next(true);
                 return user;
@@ -69,13 +67,13 @@ export class AuthenticationService {
         'Content-Type': 'application/json'
       })
     });
-    
+
   }
   GetMe(id:string): Observable<signup[]> {
     var queryHeaders = new HttpHeaders();
     queryHeaders.append('Content-Type', 'application/json');
-    queryHeaders.append('Access-Control-Allow-Origin','*');   
-    return this.http.get<any>(`${environment.apiUrlDotNet}/users/${id}`,{ headers: queryHeaders})       
+    queryHeaders.append('Access-Control-Allow-Origin','*');
+    return this.http.get<any>(`${environment.apiUrlDotNet}/users/${id}`,{ headers: queryHeaders})
   }
   changePassword(user: changeUserPassword): Observable<User> {
     return this.http.patch<any>(`${environment.apiUrlDotNet}/users/updateMyPassword`, user, {

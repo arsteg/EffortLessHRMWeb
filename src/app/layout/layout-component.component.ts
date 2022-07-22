@@ -12,21 +12,24 @@ import { AuthenticationService } from '../_services/authentication.service';
 })
 export class LayoutComponentComponent implements OnInit {
 
-  isLoggedIn$: Observable<boolean>;   
-  public user: signup=new signup(); 
+  isLoggedIn$: Observable<boolean>;
+  public user: signup=new signup();
   constructor(private router: Router,
   private authenticationService: AuthenticationService,
     )
-     {     
+     {
       if(!localStorage.getItem('currentUser')){
          this.router.navigate(['/login']);
       }
      }
 
  ngOnInit() {
-    this.user=this.authenticationService.currentUserValue["data"].user;  
-    if(localStorage.getItem('currentUser')){    
-      this.isLoggedIn$ = this.authenticationService.isLoggedIn;
-      }
+    //this.user=this.authenticationService.currentUserValue["data"].user;
+    this.isLoggedIn$ = this.authenticationService.isLoggedIn;
+     }
+
+     signOut(){
+      this.authenticationService.logout();
+      this.router.navigate(['/login']);
      }
 }

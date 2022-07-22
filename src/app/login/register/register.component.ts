@@ -28,8 +28,8 @@ constructor( private authenticationService: AuthenticationService,private router
     this.user.email=this.registerForm.value.email;
     this.user.password=this.registerForm.value.password;
     this.user.passwordConfirm=this.registerForm.value.passwordConfirm;
-    this.user.companyName=this.registerForm.value.companyName;  
-    this.user.role="627e16f8722cd08ad4875526"; 
+    this.user.companyId="6281e9be9ba15a372c35b434";
+    this.user.role="627e16f8722cd08ad4875526";
     if(this.user.password!==this.user.passwordConfirm)
     {
       this.notifyService.showWarning("Passwords don't match","warning");

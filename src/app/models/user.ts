@@ -16,6 +16,7 @@ export class signup{
   password: string;
   passwordConfirm: string;
   companyName: string;
+  companyId:string;
   role:string;
   jobTitle: String;
   address: String;
@@ -31,12 +32,12 @@ export class signup{
   active: Boolean;
   createdBy: String;
   updatedBy: String;
-  createdOn: Date;   
+  createdOn: Date;
   updatedOn: Date;
 }
 export class changeUserPassword{
   passwordCurrent:string;
   password: string;
-  passwordConfirm: string;  
+  passwordConfirm: string;
   id:string;
 }

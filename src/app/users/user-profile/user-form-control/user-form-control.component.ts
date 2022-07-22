@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { first } from 'rxjs';
 import { signup } from 'src/app/models/user';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
@@ -17,7 +17,7 @@ import { UserService } from '../../users.service';
 
 export class UserFormCOntrolComponent implements OnInit {  
   @Input() controls: Base<string>[] | null = [];
-  form!: FormGroup;
+  form!: UntypedFormGroup;
   payLoad = '';
   id: string; 
   public user: signup=new signup(); 
