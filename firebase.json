@@ -1,0 +1,16 @@
+{
+  "hosting": {
+    "public": "dist/effort-less-hrmweb",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}
