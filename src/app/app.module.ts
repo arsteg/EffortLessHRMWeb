@@ -30,6 +30,9 @@ import { FormControlsComponent } from './common/form-controls/form-controls.comp
 import { ScreenshotsComponent } from './screenshots/screenshots/screenshots.component';
 import { DatePipe } from '@angular/common';
 import { NgHttpLoaderModule } from 'ng-http-loader';
+import { TeammembersComponent } from './manage/teammembers/teammembers.component';
+
+
 
 @NgModule({
   declarations: [
@@ -47,7 +50,8 @@ import { NgHttpLoaderModule } from 'ng-http-loader';
           UserProfileComponent,
           UserFormCOntrolComponent,
           FormControlsComponent,
-          ScreenshotsComponent
+          ScreenshotsComponent,
+          TeammembersComponent
   ],
   imports: [
     BrowserModule,
@@ -58,7 +62,12 @@ import { NgHttpLoaderModule } from 'ng-http-loader';
     ToastrModule.forRoot(),
     NgHttpLoaderModule.forRoot(),
     AgGridModule.withComponents([]),
-    BrowserAnimationsModule, NoopAnimationsModule, LayoutModule, MatToolbarModule, MatButtonModule, MatSidenavModule, MatIconModule, MatListModule
+    BrowserAnimationsModule,
+    NoopAnimationsModule,
+    LayoutModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatSidenavModule, MatIconModule, MatListModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

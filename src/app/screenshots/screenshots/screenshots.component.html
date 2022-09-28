@@ -1,4 +1,4 @@
-<div class="main-content">
+<div class="main-content form-group">
   <div class="container-fluid">
 
     <div class="row">
@@ -10,23 +10,24 @@
         </div>
       </div>
       <div class="col-sm-1">
-        <input type="button" id="btnRefresh" class="btn-primary" (click)="showScreenShots()" value="Refresh">
+        <label for="member"> Select Members    </label>
+      </div>
+    <div class="col-sm-1">
+      <select id="member" name="member" class="form-control" [(ngModel)]="member" class="form-select form-select-sm" aria-label=".form-select-sm example">
+        <option *ngFor="let m of members" [value]="m.id">{{m.name}}</option>
+      </select>
+    </div>
+
+    <div class="col-sm-1">
+      <input type="button" id="btnRefresh" class="btn-primary" (click)="showScreenShots()" value="Refresh">
+    </div>
+      <div class="col-sm-2">
+      <label>Total time: {{padValue(totalHours)}} hrs {{padValue(totalMinutes)}} m</label>
       </div>
       <div class="col-sm-2">
-        <div class="btn-group">
-          <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-            Select Project
-          </button>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item">Action</a></li>
-            <li><a class="dropdown-item">Another action</a></li>
-            <li><a class="dropdown-item">Something else here</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item">Separated link</a></li>
-          </ul>
+        <label>This week: {{padValue(currentWeekTotalHours)}} hrs {{padValue(currentWeekTotalMinutes)}} m</label>
         </div>
-      </div>
-      <div class="col-sm-6">
+      <div class="col-sm-4">
       </div>
     </div>
     <div class="row">
@@ -36,7 +37,7 @@
     </div>
 
   <div *ngFor="let timeLog of screenshotRows" class="row">
-        <div class="col-sm-2" *ngIf="timeLog?.col1?.fileString">
+        <div class="col-sm-2" *ngIf="timeLog?.col1?.fileString" >
             <figure>
             <img src="{{'data:image/jpg;base64,' + timeLog.col1.fileString}}" width="200" height="137" data-bs-toggle="modal" data-bs-target="#bigImageModal" (click)="setSelectedScreenshot($event)"/>
             <figcaption class="figure-caption text-center" [style.background-color]="getActivityColor(timeLog.col1.GetActivityLevel)">{{timeLog.col1.timeLabel}}</figcaption>
@@ -117,7 +118,25 @@
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
       <div class="modal-body">
-        <img class="modal-image" src="{{selectedScreenShot}}"/>
+        <div class="row">
+          <div class="col-sm-12">
+          <div class="row">
+            <div class="col-sm-12">
+              <img class="modal-image" src="{{selectedScreenShot}}"/>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-1">
+              <button (click)=SetPreviousScreen()>BACK</button>
+            </div>
+            <div class="col-sm-10">
+            </div>
+            <div class="col-sm-1 bottompmNav">
+              <button (click)="SetNextScreen()">NEXT</button>
+            </div>
+            </div>
+        </div>
+        </div>
       </div>
     </div>
   </div>

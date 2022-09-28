@@ -1,11 +1,11 @@
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
-let apiUrlDotNet="https://arstegeffortlesshrmapi.azurewebsites.net/api/v1";
-if(window.location.host.includes('localhost'))
-{
-  apiUrlDotNet="http://localhost:8080/api/v1";
-}
+let apiUrlDotNet="http://localhost:8080/api/v1";
+// if(window.location.host.includes('localhost'))
+// {
+//   apiUrlDotNet="http://localhost:8080/api/v1";
+// }
 export const environment = {
   production: false,
   apiUrlDotNet:apiUrlDotNet

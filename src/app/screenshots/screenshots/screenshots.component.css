@@ -18,11 +18,11 @@ figure {
 
 .modal-dialog {
   border-radius: 5;
-  background-color: red;
+  background-color: lightgray;
 }
 
 .modal-content {
-  background-color: green;
+  background-color: transparent;
 }
 
 
@@ -30,5 +30,15 @@ figure {
   width: 100%; /* or any custom size */
   height: 100%;
   object-fit: contain;
+}
+
+label {
+  font: smaller sans-serif;
+  padding: 3px;
+  text-align: center;
+}
+
+.bottompmNav{
+  text-align: right;
 }
 

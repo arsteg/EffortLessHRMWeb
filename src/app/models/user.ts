@@ -1,3 +1,4 @@
+import { Role } from "./role.model";
 
 export class User {
     id: string;
@@ -6,6 +7,8 @@ export class User {
     firstName: string;
     lastName: string;
     token: string;
+    role: Role;
+    name:string;
 }
 
 export class signup{

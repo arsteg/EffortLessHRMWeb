@@ -1,19 +1,23 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { company } from '../models/company';
 import { environment } from 'src/environments/environment';
 import { timeLog } from '../models/timeLog';
 import {response} from '../models/response'
+import { baseService } from './base';
+import { User } from '../models/user';
 
 
 @Injectable({
   providedIn: 'root'
 })
-export class TimeLogService {
+export class TimeLogService extends baseService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+    super();
+  }
 
   getCompanyList(): Observable<company> {
     return this.http.get<company>(`/api/books`)
@@ -24,10 +28,11 @@ export class TimeLogService {
   }
 
   getLogsWithImages(email, selectedDate): Observable<response<timeLog[]>> {
+    let token = this.getToken();
     const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json',
       'Access-Control-Allow-Origin':'*',
-      'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxZGMyMzhjZjE1MmM0YmU4MTQwMmNjMiIsImlhdCI6MTY1NzgxMjU4NywiZXhwIjoxNjY1NTg4NTg3fQ.ewCl3BxgDOI8O2VIjBbCGLWQwb4gFIqos73n6Vz0WsA'})
+      'Authorization': `Bearer ${token}`})
     };
     var response  = this.http.post<response<timeLog[]>>(`${environment.apiUrlDotNet}/timeLogs/getLogsWithImages`,{
       "user":email,
@@ -35,6 +40,55 @@ export class TimeLogService {
    }, httpOptions);
    return response;
   }
+  getCurrentWeekTotalTime(email, startDate, endDate): Observable<response<timeLog[]>> {
+    let token = this.getToken();
+    const httpOptions = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin':'*',
+      'Authorization': `Bearer ${token}`})
+    };
+    var response  = this.http.post<response<timeLog[]>>(`${environment.apiUrlDotNet}/timeLogs/getCurrentWeekTotalTime`,{
+      "user":email,
+      "startDate":startDate,
+      "endDate":endDate,
+   }, httpOptions);
+   return response;
+  }
+
+
+  getTeamMembers(userId): any {
+    let token = this.getToken();
+    const httpOptions = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin':'*',
+      'Authorization': `Bearer ${token}`})
+    };
+
+    const params = new HttpParams().set('userId', userId);
+
+    var response  = this.http.get<any>(`${environment.apiUrlDotNet}/auth/roles/getSubordinates/${userId}`);
+
+   return response;
+
+  }
+
+  getusers(ids): any {
+    let token = this.getToken();
+    const httpOptions = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin':'*',
+      'Authorization': `Bearer ${token}`})
+    };
+
+
+    var response  = this.http.post<any>(`${environment.apiUrlDotNet}/users/getUsers`,{"userId":ids},httpOptions);
+
+   return response;
+
+  }
+
+
+
 
   //mostPopularBook: Book = allBooks[0];
 

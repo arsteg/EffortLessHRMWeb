@@ -21,6 +21,7 @@ const routes: Routes = [
 }, {
   path: '',
   component: LayoutComponentComponent,
+  canActivate:[AuthGuard],
   children: [{
     path: '',
     loadChildren: () => import('./layout/layout.module').then(m => m.LayoutModule)

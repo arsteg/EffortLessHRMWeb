@@ -43,12 +43,9 @@ export class LoginComponent implements OnInit {
         .subscribe(
             data => {
               this.loading = false;
-              if(this.rememberMe){
-                localStorage.setItem('currentUser', JSON.stringify(this.user));
-              }
-              else{
-                localStorage.removeItem("currentUser");
-              }
+              this.user.id = data.data.user.id;
+              localStorage.setItem('jwtToken', data.token);
+              localStorage.setItem('currentUser', JSON.stringify(this.user));
               localStorage.setItem('rememberMe', JSON.stringify(this.rememberMe));
               this.router.navigate([this.returnUrl]);
             },
