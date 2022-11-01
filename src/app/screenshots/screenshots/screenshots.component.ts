@@ -92,7 +92,7 @@ export class ScreenshotsComponent implements OnInit {
 const startDate=this.getMonday(new Date());
 const endDate=new Date();
 
-this.timeLogService.getCurrentWeekTotalTime(this.member, startDate, endDate).subscribe({
+this.timeLogService.getCurrentWeekTotalTime(this.member, this.formatDate1(startDate), this.formatDate1(endDate)).subscribe({
   next: data => {
     let totalMinutes =  data.data.length*10;
     this.currentWeekTotalHours = Math.floor(totalMinutes/60);
@@ -102,7 +102,6 @@ this.timeLogService.getCurrentWeekTotalTime(this.member, startDate, endDate).sub
       console.log('There was an error!', error);
   }
 })
-
 }
 
 populateScreenShots(timeLogs:timeLog[]){
@@ -199,6 +198,13 @@ addDays(date: Date, days: number): Date {
     var sDay = this.padValue(newDate.getDate());
     var sYear = newDate.getFullYear();
     return sYear + "-" + sMonth + "-" + sDay + "T00:00:00.000+00:00";
+}
+formatDate1(dateVal) {
+  var newDate = new Date(dateVal);
+  var sMonth = this.padValue(newDate.getMonth() + 1);
+  var sDay = this.padValue(newDate.getDate());
+  var sYear = newDate.getFullYear();
+  return sYear + "-" + sMonth + "-" + sDay + "T00:00:00.000";
 }
 
 padValue(value){
