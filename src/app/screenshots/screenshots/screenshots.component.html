@@ -1,17 +1,17 @@
-<div class="container-fluid">
+<div class="container-fluid selectdate">
   <div class="row mt-5">
-    <div class="col-sm-3">
-      <div class="input-group">
-        <input type='button' value='<' name='next' (click)="SetPreviousDay()" />
+    <div class="col-sm-2">
+      <div class="input-group date-style">
+        <input type='button' value='<' name='prev' (click)="SetPreviousDay()" />
         <input type="date" name="date" id="date" class="form-control" [(ngModel)]="selectedDate"
           (change)="showScreenShots()" />
-        <input type='button' value='>' name='prev' (click)="SetNextDay()" [disabled]="DisableNext()" />
+        <input type='button' value='>' name='next' (click)="SetNextDay()" [disabled]="DisableNext()" />
       </div>
     </div>
     <div class="col-sm-1">
       <label for="member">Member</label>
     </div>
-    <div class="col-sm-2">
+    <div class="col-sm-1">
       <select id="member" name="member" class="form-control" [(ngModel)]="member" class="form-select form-select-sm"
         aria-label=".form-select-sm example">
         <option *ngFor="let m of members" [value]="m.id">{{m.name}}</option>
