@@ -1,0 +1,70 @@
+<div class="d-flex" id="wrapper">
+    <!-- Sidebar -->
+    <div class="bg-light border-right" id="sidebar-wrapper"  [ngClass]="status ? 'hide' : 'show'">
+      <div class="sidebar-heading">Effortless HRM</div>
+      <div class="list-group list-group-flush">
+        <ul class="nav flex-column" id="nav_accordion" *ngFor="let menu of menuList" >
+          <li class="nav-item has-submenu">
+            <a class="nav-link" [routerLink]="menu.url" routerLinkActive="active" (click)="clickMenu(menu.id)" [ngClass]="menu.icon"> {{menu.title}} </a>
+            <ul class="submenu" *ngFor="let sm of menu.subMenu">
+              <span *ngIf="menu.show">
+                <a class="nav-link" [routerLink]="sm.url" routerLinkActive="active" [ngClass]="sm.icon"> {{sm.title}} </a>
+              </span>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div id="page-content-wrapper">
+      <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container-fluid">
+          <li class="fas fa-bars" (click)="clickEvent()"></li>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Link</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Dropdown
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <li><a class="dropdown-item" href="#">Action</a></li>
+                  <li><a class="dropdown-item" href="#">Another action</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="#">Something else here</a></li>
+                </ul>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+              </li>
+            </ul>
+            <div class="text-right">
+                <form class="d-flex">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="button">Search</button>
+                    <button class="btn btn-outline-danger btn-sm mx-2" type="button" (click)="onLogout()">Logout</button>
+                    <img src="../assets/profileimg.jpg" width="80px" height="40px" alt="profileimg">
+                </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+      <div class="container-fluid">
+        <router-outlet></router-outlet>
+        <ng-http-loader [backdrop]="false" [backgroundColor]="'#ff0000'" [debounceDelay]="100"
+            [extraDuration]="1000" [minDuration]="1000"  [backdropBackgroundColor]="'#777777'"
+            [spinner]="spinnerStyle.skThreeBounce">
+        </ng-http-loader>
+      </div>
+    </div>
+    <!-- /#page-content-wrapper -->
+  </div>
+  <!-- /#wrapper -->
+  

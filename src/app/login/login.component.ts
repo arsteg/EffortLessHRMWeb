@@ -28,8 +28,8 @@ export class LoginComponent implements OnInit {
   }
 }
   ngOnInit(): void {
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
-    this.rememberMe = localStorage.getItem('rememberMe')=='true';
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
+    this.rememberMe = localStorage.getItem('rememberMe')=='tr`ue';
   }
 
   onSubmit() {
@@ -38,6 +38,8 @@ export class LoginComponent implements OnInit {
     this.loading = true;
     this.user.email=this.loginForm.value.username;
     this.user.password=this.loginForm.value.password;
+    localStorage.setItem('user.email', '1234');
+    this.router.navigateByUrl('/dashboard')
     this.authenticationService.login(this.user)
       .pipe(first())
         .subscribe(

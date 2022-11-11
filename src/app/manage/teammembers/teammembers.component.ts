@@ -82,6 +82,7 @@ constructor(private manageTeamService:ManageTeamService, private timeLogService:
     error: error=>{}
    });
   }
+
   onRemoveMember(user:User){
     let currentDate = new Date();
     let subordinate= new Subordinate(this.selectedManager,user.id,currentDate,this.selectedManager);
@@ -91,5 +92,6 @@ constructor(private manageTeamService:ManageTeamService, private timeLogService:
     error: error=>{}
    });
   }
+  
 }
 

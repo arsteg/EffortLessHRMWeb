@@ -12,12 +12,17 @@ import { ChangePasswordComponent } from './login/change-password/change-password
 import { UserProfileComponent } from './users/user-profile/user-profile.component';
 import { ScreenshotsComponent } from './screenshots/screenshots/screenshots.component';
 import { TeammembersComponent } from './manage/teammembers/teammembers.component';
+import { HomeComponent } from './home/home.component';
 
 const routes: Routes = [
  // {path:'',component:LayoutComponentComponent, canActivate: [AuthGuard]},
 
-  {path:'',component:DashboardComponent},
+
+  {path:'',component:LoginComponent},
   {path:'login',component:LoginComponent},
+  {path:'',  redirectTo:'login', pathMatch:'full'},
+  {path:'', component:HomeComponent,
+     children:[
   {path:'dashboard',component:DashboardComponent},
   {path:'logout',component:LoginComponent},
   {path:'register',component:RegisterComponent},
@@ -26,7 +31,8 @@ const routes: Routes = [
   {path:'userProfile',component:UserProfileComponent},
   {path:'screenshots',component:ScreenshotsComponent},
   {path:'teamMembers',component:TeammembersComponent}
-];
+]}
+]
 
 @NgModule({
   imports: [

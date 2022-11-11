@@ -30,6 +30,7 @@ import { ScreenshotsComponent } from './screenshots/screenshots/screenshots.comp
 import { DatePipe } from '@angular/common';
 import { NgHttpLoaderModule } from 'ng-http-loader';
 import { TeammembersComponent } from './manage/teammembers/teammembers.component';
+import { HomeComponent } from './home/home.component';
 
 
 
@@ -49,7 +50,8 @@ import { TeammembersComponent } from './manage/teammembers/teammembers.component
           UserFormCOntrolComponent,
           FormControlsComponent,
           ScreenshotsComponent,
-          TeammembersComponent
+          TeammembersComponent,
+          HomeComponent
   ],
   imports: [
     BrowserModule,
