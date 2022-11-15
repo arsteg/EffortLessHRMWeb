@@ -1,6 +1,7 @@
 import { DatePipe, KeyValue } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { Subordinate } from 'src/app/models/subordinate.Model';
 import { User } from 'src/app/models/user';
 import { ManageTeamService} from 'src/app/_services/manage-team.service';
@@ -16,14 +17,17 @@ name:string;
   templateUrl: './teammembers.component.html',
   styleUrls: ['./teammembers.component.css']
 })
-export class TeammembersComponent implements OnInit {
+export class TeammembersComponent implements OnInit, OnDestroy{
 //#region Private Members
 resetToken: null;
 teamOfUsers:User[]=[];
 allUsers:User[]=[];
-selectedUsers:User[]=[];
-selectedUser?: User;
-selectedManager:string;
+selectedUsers:any;
+selectedUser: any;
+selectedManager:any;
+subscription: Subscription;
+message:[]=[];
+selectedValue:any;
 
 onSelect(user: User): void {
   this.selectedUser = user;
@@ -32,6 +36,7 @@ onSelect(user: User): void {
 //#endregion
 
 //#region Constructor
+
 constructor(private manageTeamService:ManageTeamService, private timeLogService:TimeLogService,
   private route: ActivatedRoute,
   private router: Router,
@@ -43,6 +48,10 @@ constructor(private manageTeamService:ManageTeamService, private timeLogService:
 //#endregion
   ngOnInit(): void {
     this.populateTeamOfUsers();
+    this.subscription = this.timeLogService.currentMessage.subscribe(message => this.selectedValue = message)
+  }
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
   //#region Private methods
   populateTeamOfUsers(){
@@ -50,17 +59,27 @@ constructor(private manageTeamService:ManageTeamService, private timeLogService:
     next:result=>{
       this.teamOfUsers = result.data.data;
       this.allUsers = result.data.data;
+      console.log("team", this.teamOfUsers)
     },
     error:error=>{}
     })
   }
 
   Selectmanager(event:any){
+ 
     this.timeLogService.getTeamMembers(event.target.value).subscribe({
       next: response => {
+     console.log("response", response);
         this.timeLogService.getusers(response.data).subscribe({
           next: result => {
-            this.selectedUsers = result.data;
+            debugger;
+            let arr = [];
+            this.selectedValue =JSON.parse(event.target.value); 
+            arr.push(this.selectedValue)
+            console.log(arr);
+            this.timeLogService.changeMessage(arr);
+
+            
           },
           error: error => {
               console.log('There was an error!', error);
@@ -72,6 +91,8 @@ constructor(private manageTeamService:ManageTeamService, private timeLogService:
       }
   });
   }
+
+ 
 
   onAddMember(user:User){
     let currentDate = new Date();

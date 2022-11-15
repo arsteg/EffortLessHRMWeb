@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { company } from '../models/company';
 import { environment } from 'src/environments/environment';
@@ -14,7 +14,10 @@ import { User } from '../models/user';
   providedIn: 'root'
 })
 export class TimeLogService extends baseService {
-
+ 
+  private messageSource = new BehaviorSubject<any>(0);
+  currentMessage = this.messageSource.asObservable();
+  
   constructor(private http: HttpClient) {
     super();
   }
@@ -67,7 +70,6 @@ export class TimeLogService extends baseService {
     const params = new HttpParams().set('userId', userId);
 
     var response  = this.http.get<any>(`${environment.apiUrlDotNet}/auth/roles/getSubordinates/${userId}`);
-
    return response;
 
   }
@@ -158,4 +160,10 @@ export class TimeLogService extends baseService {
   //   return this.http.delete<void>(`/api/books/${bookID}`);
   // }
 
+  changeMessage(message: any) {
+    debugger;
+    this.messageSource.next(message)
+  }
+
+ 
 }

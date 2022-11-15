@@ -9,7 +9,8 @@ import { timeLog,screenshotRow,screenShotCell,ActivityLevel } from 'src/app/mode
 import { DatePipe } from '@angular/common';
 import * as moment from 'moment'; // import moment.
 import { AnimationDurations } from '@angular/material/core';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
+// import { threadId } from 'worker_threads';
 
 interface teamMember{
 id:string;
@@ -36,6 +37,10 @@ export class ScreenshotsComponent implements OnInit {
   members:teamMember[];
   member:string="";
   currentTargetLabel:string="";
+  message:any;
+  subscription: Subscription;
+ 
+  
 
   constructor(
     private timeLogService:TimeLogService,
@@ -45,14 +50,23 @@ export class ScreenshotsComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.resetToken = params['token'];
       });
+      
   }
 
   ngOnInit(): void {
+  
     this.members = [];
     this.populateMembers();
     this.showScreenShots();
+    this.subscription = this.timeLogService.currentMessage.subscribe((message:any) => this.message = message);
+    console.log(this.message);
+    
   }
 
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+  
   populateMembers(){
     this.members=[];
     let currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -60,6 +74,7 @@ export class ScreenshotsComponent implements OnInit {
     this.member= currentUser.email;
     this.timeLogService.getTeamMembers(currentUser.id).subscribe({
       next: response => {
+      
         this.timeLogService.getusers(response.data).subscribe({
           next: result => {
             result.data.forEach(user=>{
@@ -379,7 +394,10 @@ geCellDetails(r:number, c:number,timeLogs:timeLog[]){
         setNextScreenValues(r,c){
 
         }
+
+       
       }
+     
 
 
 

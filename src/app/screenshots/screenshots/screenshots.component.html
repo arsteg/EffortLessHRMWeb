@@ -12,9 +12,9 @@
       <label for="member">Member</label>
     </div>
     <div class="col-sm-1">
-      <select id="member" name="member" class="form-control" [(ngModel)]="member" class="form-select form-select-sm"
+      <select id="member" name="member" class="form-control"  class="form-select form-select-sm"
         aria-label=".form-select-sm example">
-        <option *ngFor="let m of members" [value]="m.id">{{m.name}}</option>
+        <option *ngFor="let m of message" value="{{m|json}}">{{m.firstName}} {{m.lastName}}</option>
       </select>
     </div>
 

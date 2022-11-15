@@ -15,10 +15,10 @@
             <div class="row"></div>
             <div class="row mt-4">
               <div class="col-md-2">Team of</div>
-              <div class="col-md-2">
+              <div class="col-md-3">
                 <select id="member" name="member" class="form-control" class="form-select form-select-sm "
-                   aria-label=".form-select-sm example" [(ngModel)]="selectedManager" (change)="Selectmanager($event)">
-                  <option *ngFor="let user of teamOfUsers" [value]="user.id">
+                   aria-label=".form-select-sm example" [ngModel]="selectedManager | json" (change)="Selectmanager($event)">
+                  <option *ngFor="let user of teamOfUsers" value = "{{user|json}}">
                     {{ user.firstName }} {{ user.lastName }}
                   </option>
                 </select>
