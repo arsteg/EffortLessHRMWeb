@@ -141,6 +141,12 @@ export class HomeComponent implements OnInit {
    url: '',
    show:true,
    subMenu: [
+    {
+      id: '50',
+      title: 'Roles',
+      icon: 'fa fa-users',
+      url: '/roles',
+     },
      {
        id: '51',
        title: 'People',

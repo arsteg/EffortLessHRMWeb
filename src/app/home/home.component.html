@@ -8,7 +8,7 @@
             <a class="nav-link" [routerLink]="menu.url" routerLinkActive="active" (click)="clickMenu(menu.id)" [ngClass]="menu.icon"> {{menu.title}} </a>
             <ul class="submenu" *ngFor="let sm of menu.subMenu">
               <span *ngIf="menu.show">
-                <a class="nav-link" [routerLink]="sm.url" routerLinkActive="active" [ngClass]="sm.icon"> {{sm.title}} </a>
+                <a class="nav-link" [routerLink]="sm.url==''? '\dashboard':sm.url"  routerLinkActive="active" [ngClass]="sm.icon"> {{sm.title}} </a>
               </span>
             </ul>
           </li>

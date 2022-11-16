@@ -1,0 +1,166 @@
+<!-- Post UserRole Create -->
+<div class="container-fluid  mt-5">
+    <div class="row d-flex justify-content-center">
+        <div class="mt-1" [ngClass]="isSidePanelOpen?'col-md-4':'col-md-6' ">
+            <div class="card">
+                <div class="card-header bg-primary">
+                    <h4 class="text-center">UserRole Create</h4>
+                </div>
+                <div class="card-body">
+                    <form class="row" #form="ngForm">
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-md-8  ">
+                                <label for="">Id</label><br>
+                                <input type="text" name="id" [(ngModel)]="userRoleObj._id" class="form-control"
+                                    #id="ngModel" required>
+                                <div class="text-danger" *ngIf="id.touched">
+                                    <span *ngIf="id.errors?.['required']">This field is required</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-md-8">
+                                <label for="">RoleName</label><br>
+                                <input type="text" name="rolename" [(ngModel)]="userRoleObj.RoleName" class="form-control"
+                                    #rolename="ngModel" required>
+                                <div class="text-danger" *ngIf="rolename.touched">
+                                    <span *ngIf="rolename.errors?.['required']">This field is required</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row d-flex justify-content-center">
+                               
+                        <div class="col-md-8">
+                            <label for="">RoleId</label><br>
+                            <input type="text" name="roleid" [(ngModel)]="userRoleObj.RoleId" class="form-control"
+                                #name="ngModel" required>
+                            <div class="text-danger" *ngIf="id.touched">
+                                <span *ngIf="id.errors?.['required']">This field is required</span>
+                            </div>
+                        </div>
+                        </div>
+
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-md-8">
+                                <label for="">__v</label><br>
+                                <input type="text" name="__v" [(ngModel)]="userRoleObj.__v" class="form-control"
+                                    #__v="ngModel" required>
+                                <div class="text-danger" *ngIf="__v.touched">
+                                    <span *ngIf="__v.errors?.['required']">This field is required</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-md-8 ">
+                                <label for="">Id</label><br>
+                                <input type="text" name="id" [(ngModel)]="userRoleObj.id" class="form-control"
+                                    #id="ngModel" required>
+                                <div class="text-danger" *ngIf="id.touched">
+                                    <span *ngIf="id.errors?.['required']">This field is required</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row d-flex justify-content-center">
+
+                            <div class="col-md-8 mb-3 mt-3">
+                                <button class="btn btn-success" type="button" [disabled]="form.invalid"
+                                    (click)="createUserRole()">Create</button>
+                                
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        
+    </div>
+</div>
+
+<!-- GET UserRole Id -->
+<div class="container">
+    <div class="row mt-3 d-flex justify-content-center">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-header bg-primary">
+                    <h4 class="text-center">GET UserRole Id </h4>
+                </div>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Sr. No</th>
+                            <th>Id</th>
+                            <th>RoleName</th>
+                            <th>RoleId</th>
+                            <th>__v</th>
+                            <th>Id</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of userRoleAll; let sr = index">
+                            <td>{{sr+1}}</td>
+                            <td>{{item._id}}</td>
+                            <td>{{item.RoleName}}</td>
+                            <td>{{item.RoleId}}</td>
+                            <td>{{item.__v}}</td>
+                            <td>{{item.id}}</td>
+                            <td>
+                                <button type="button" class="btn btn-warning btn-sm text-dark">Edit</button>
+                                <button type="button" class="btn btn-danger btn-sm mx-1" >Delete</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- GET UserRole All -->
+<div class="container">
+    <div class="row mt-3 d-flex justify-content-center">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-header bg-primary">
+                    <h4 class="text-center">GET UserRole All </h4>
+                </div>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Sr. No</th>
+                            <th>Id</th>
+                            <th>RoleName</th>
+                            <th>RoleId</th>
+                            <th>__v</th>
+                            <th>Id</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of userRoleAll; let sr = index">
+                            <td>{{sr+1}}</td>
+                            <td>{{item._id}}</td>
+                            <td>{{item.RoleName}}</td>
+                            <td>{{item.RoleId}}</td>
+                            <td>{{item.__v}}</td>
+                            <td>{{item.id}}</td>
+                            <td>
+                                <button type="button" class="btn btn-warning btn-sm text-dark" >Update</button>
+                                <button type="button" class="btn btn-danger btn-sm mx-1" >Delete</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+

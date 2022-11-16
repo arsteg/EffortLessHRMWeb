@@ -13,6 +13,7 @@ import { UserProfileComponent } from './users/user-profile/user-profile.componen
 import { ScreenshotsComponent } from './screenshots/screenshots/screenshots.component';
 import { TeammembersComponent } from './manage/teammembers/teammembers.component';
 import { HomeComponent } from './home/home.component';
+import { RolesComponent } from './manage/roles/roles/roles.component';
 
 const routes: Routes = [
  // {path:'',component:LayoutComponentComponent, canActivate: [AuthGuard]},
@@ -30,7 +31,8 @@ const routes: Routes = [
   {path:'forgotPassword',component:ForgotPasswordComponent},
   {path:'userProfile',component:UserProfileComponent},
   {path:'screenshots',component:ScreenshotsComponent},
-  {path:'teamMembers',component:TeammembersComponent}
+  {path:'teamMembers',component:TeammembersComponent},
+  {path:'roles',component:RolesComponent},
 ]}
 ]
 
