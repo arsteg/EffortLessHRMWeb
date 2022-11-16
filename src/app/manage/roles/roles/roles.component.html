@@ -1,29 +1,18 @@
 <!-- Post UserRole Create -->
 <div class="container-fluid  mt-5">
     <div class="row d-flex justify-content-center">
-        <div class="mt-1" [ngClass]="isSidePanelOpen?'col-md-4':'col-md-6' ">
-            <div class="card">
+        <div class="col-md-8">
+            <div class="card border border-dark">
                 <div class="card-header bg-primary">
-                    <h4 class="text-center">UserRole Create</h4>
+                    <h4 class="text-center">Create UserRole </h4>
                 </div>
                 <div class="card-body">
                     <form class="row" #form="ngForm">
                         <div class="row d-flex justify-content-center">
-                            <div class="col-md-8  ">
-                                <label for="">Id</label><br>
-                                <input type="text" name="id" [(ngModel)]="userRoleObj._id" class="form-control"
-                                    #id="ngModel" required>
-                                <div class="text-danger" *ngIf="id.touched">
-                                    <span *ngIf="id.errors?.['required']">This field is required</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row d-flex justify-content-center">
                             <div class="col-md-8">
                                 <label for="">RoleName</label><br>
-                                <input type="text" name="rolename" [(ngModel)]="userRoleObj.RoleName" class="form-control"
-                                    #rolename="ngModel" required>
+                                <input type="text" name="rolename" [(ngModel)]="userRoleObj.RoleName"
+                                    class="form-control" #rolename="ngModel" required>
                                 <div class="text-danger" *ngIf="rolename.touched">
                                     <span *ngIf="rolename.errors?.['required']">This field is required</span>
                                 </div>
@@ -31,45 +20,9 @@
                         </div>
 
                         <div class="row d-flex justify-content-center">
-                               
-                        <div class="col-md-8">
-                            <label for="">RoleId</label><br>
-                            <input type="text" name="roleid" [(ngModel)]="userRoleObj.RoleId" class="form-control"
-                                #name="ngModel" required>
-                            <div class="text-danger" *ngIf="id.touched">
-                                <span *ngIf="id.errors?.['required']">This field is required</span>
-                            </div>
-                        </div>
-                        </div>
-
-                        <div class="row d-flex justify-content-center">
-                            <div class="col-md-8">
-                                <label for="">__v</label><br>
-                                <input type="text" name="__v" [(ngModel)]="userRoleObj.__v" class="form-control"
-                                    #__v="ngModel" required>
-                                <div class="text-danger" *ngIf="__v.touched">
-                                    <span *ngIf="__v.errors?.['required']">This field is required</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row d-flex justify-content-center">
-                            <div class="col-md-8 ">
-                                <label for="">Id</label><br>
-                                <input type="text" name="id" [(ngModel)]="userRoleObj.id" class="form-control"
-                                    #id="ngModel" required>
-                                <div class="text-danger" *ngIf="id.touched">
-                                    <span *ngIf="id.errors?.['required']">This field is required</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row d-flex justify-content-center">
-
                             <div class="col-md-8 mb-3 mt-3">
                                 <button class="btn btn-success" type="button" [disabled]="form.invalid"
                                     (click)="createUserRole()">Create</button>
-                                
                             </div>
                         </div>
                     </form>
@@ -77,90 +30,270 @@
             </div>
         </div>
 
-        
+
     </div>
 </div>
 
 <!-- GET UserRole Id -->
-<div class="container">
-    <div class="row mt-3 d-flex justify-content-center">
-        <div class="col-md-10">
-            <div class="card">
+<div class="container-fluid">
+    <div class="row mt-5 d-flex justify-content-center">
+        <div class="col-md-12">
+            <div class="card border border-dark">
                 <div class="card-header bg-primary">
                     <h4 class="text-center">GET UserRole Id </h4>
                 </div>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Sr. No</th>
-                            <th>Id</th>
-                            <th>RoleName</th>
-                            <th>RoleId</th>
-                            <th>__v</th>
-                            <th>Id</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let item of userRoleAll; let sr = index">
-                            <td>{{sr+1}}</td>
-                            <td>{{item._id}}</td>
-                            <td>{{item.RoleName}}</td>
-                            <td>{{item.RoleId}}</td>
-                            <td>{{item.__v}}</td>
-                            <td>{{item.id}}</td>
-                            <td>
-                                <button type="button" class="btn btn-warning btn-sm text-dark">Edit</button>
-                                <button type="button" class="btn btn-danger btn-sm mx-1" >Delete</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="row d-flex justify-content-center">
+                    <div class="col-md-12">
+                        <table class="table table-bordered mt-4 ">
+                            <thead>
+                                <tr>
+                                    <th>Sr. No</th>
+                                    <th>Id</th>
+                                    <th>RoleName</th>
+                                    <th>RoleId</th>
+                                    <th>__v</th>
+                                    <th>Id</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of userRoleAll; let sr = index">
+                                    <td>{{sr+1}}</td>
+                                    <td>{{item._id}}</td>
+                                    <td>{{item.RoleName}}</td>
+                                    <td>{{item.RoleId}}</td>
+                                    <td>{{item.__v}}</td>
+                                    <td>{{item.id}}</td>
+                                    <td>
+                                        <button type="button"><i style="color: green; border:none;"
+                                                class="fa fa-pencil-square-o"></i></button>
+                                        <button type="button"><i style="color: red; border:none;"
+                                                class="fa fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
 </div>
 
 <!-- GET UserRole All -->
-<div class="container">
-    <div class="row mt-3 d-flex justify-content-center">
-        <div class="col-md-10">
-            <div class="card">
+<div class="container-fluid">
+    <div class="row mt-5  text-end">
+        <div class="col-md-12">
+            <div class="col-md-11 my-3  ">
+                <button class="btn btn-primary btn-sm text-white text-end" data-bs-toggle="modal"
+                    data-bs-target="#addModal" type="button"><i class="fa fa-plus-square-o mx-1"></i> Add</button>
+            </div>
+            <div class="col-md-12 text-end pb-2">
+                <i style="background-color: #0d6efd;padding:6px" class="fa fa-search"></i>
+                <input type="search" placeholder="search">
+            </div>
+            <div class="card border border-dark">
                 <div class="card-header bg-primary">
                     <h4 class="text-center">GET UserRole All </h4>
                 </div>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Sr. No</th>
-                            <th>Id</th>
-                            <th>RoleName</th>
-                            <th>RoleId</th>
-                            <th>__v</th>
-                            <th>Id</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let item of userRoleAll; let sr = index">
-                            <td>{{sr+1}}</td>
-                            <td>{{item._id}}</td>
-                            <td>{{item.RoleName}}</td>
-                            <td>{{item.RoleId}}</td>
-                            <td>{{item.__v}}</td>
-                            <td>{{item.id}}</td>
-                            <td>
-                                <button type="button" class="btn btn-warning btn-sm text-dark" >Update</button>
-                                <button type="button" class="btn btn-danger btn-sm mx-1" >Delete</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="row d-flex justify-content-center">
+                    <div class="col-md-12 ">
+                        <table class="table table-bordered mt-4">
+                            <thead>
+                                <tr>
+                                    <th>Sr. No                                   
+                                    </th>
+                                    <th>Id 
+                                        <span>
+                                            <i class="fa fa-sort-up" (click)="sortByAsc('Id')"></i>
+                                            <i class="fa fa-sort-down " (click)="sortByDsc()"></i>
+                                        </span>  
+                                    </th>
+                                    <th>RoleName
+                                        <span>
+                                            <i class="fa fa-sort-up" (click)="sortByAsc('RoleName')"></i>
+                                            <i class="fa fa-sort-down " (click)="sortByDsc()"></i>
+                                        </span>
+                                    </th>
+                                    <th>RoleId
+                                        <span>
+                                            <i class="fa fa-sort-up" (click)="sortByAsc('RoleId')"></i>
+                                            <i class="fa fa-sort-down " (click)="sortByDsc()"></i>
+                                        </span>
+                                    </th>
+                                    <th>__v
+                                        <span>
+                                            <i class="fa fa-sort-up" (click)="sortByAsc('v')"></i>
+                                            <i class="fa fa-sort-down " (click)="sortByDsc()"></i>
+                                        </span>
+                                    </th>
+                                    <th>Id
+                                        <span>
+                                            <i class="fa fa-sort-up" (click)="sortByAsc('Id2')"></i>
+                                            <i class="fa fa-sort-down " (click)="sortByDsc()"></i>
+                                        </span>
+                                    </th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of userRoleAll; let sr = index">
+                                    <td>{{sr+1}}</td>
+                                    <td>{{item._id}}</td>
+                                    <td>{{item.RoleName}}</td>
+                                    <td>{{item.RoleId}}</td>
+                                    <td>{{item.__v}}</td>
+                                    <td>{{item.id}}</td>
+                                    <td>
+                                        <button type="button"><i style="color: green; border:none;"
+                                                class="fa fa-pencil-square-o" data-bs-toggle="modal"
+                                                data-bs-target="#updateModal"></i></button>
+                                        <button type="button"><i style="color: red; border:none;" class="fa fa-trash"
+                                                data-bs-toggle="modal" data-bs-target="#deleteModal"></i></button>
+                                    </td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        <!-- Modal Add -->
+                        <div class="modal" id="addModal">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <h4 class="modal-title text-start">Add</h4>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <button type="button" class="btn-close text-end"
+                                                    data-bs-dismiss="modal"></button>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <form class="row" #form="ngForm">
+                                                <div class="row d-flex justify-content-center">
+                                                    <div class="col-md-8">
+                                                        <div class="row">
+                                                            <label for="" class="text-start">RoleName</label>
+                                                        </div>
+                                                         <input type="text" name="rolename"
+                                                            [(ngModel)]="userRoleObj.RoleName" class="form-control"
+                                                            #rolename="ngModel" required>
+                                                        <div class="text-danger" *ngIf="rolename.touched">
+                                                            <span *ngIf="rolename.errors?.['required']">This field is
+                                                                required</span>
+                                                        </div>
+                                                    </div>
+                                                </div>                                           
+                                                <div class="row d-flex justify-content-center">
+                                                    <div class="col-md-8 mb-3 mt-3">
+
+                                                        <button type="button"
+                                                            class="btn-sm border mx-2 border-secondary"
+                                                            data-bs-dismiss="modal">Close</button>
+                                                        <button type="button"
+                                                            class=" btn btn-primary btn-sm border border-secondary"
+                                                            data-bs-dismiss="modal" [disabled]="form.invalid"
+                                                            (click)="createUserRole()">Add</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>                                    
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modal Update -->
+                        <div class="modal" id="updateModal">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <h4 class="modal-title text-start">Update</h4>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <button type="button" class="btn-close text-end"
+                                                    data-bs-dismiss="modal"></button>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <form class="row" #form="ngForm">
+                                                <div class="row d-flex justify-content-center">
+                                                    <div class="col-md-8">
+                                                        <div class="row">
+                                                            <label for="" class="text-start">RoleName</label>
+                                                        </div>
+
+                                                        <input type="text" name="rolename"
+                                                            [(ngModel)]="userRoleObj.RoleName" class="form-control"
+                                                            #rolename="ngModel" required>
+                                                        <div class="text-danger" *ngIf="rolename.touched">
+                                                            <span *ngIf="rolename.errors?.['required']">This field is
+                                                                required</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row d-flex justify-content-center">
+                                                    <div class="col-md-8 mb-3 mt-3">
+                                                        <button type="button"
+                                                            class="btn-sm border mx-2 border-secondary"
+                                                            data-bs-dismiss="modal">Close</button>
+                                                        <button type="button"
+                                                            class=" btn btn-primary btn-sm border border-secondary"
+                                                            data-bs-dismiss="modal" [disabled]="form.invalid"
+                                                            (click)="createUserRole()">Update</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modal Delete -->
+                        <div class="modal" id="deleteModal">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <h4 class="modal-title text-start">Delete</h4>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <button type="button" class="btn-close text-end"
+                                                    data-bs-dismiss="modal"></button>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12 text-center">
+                                                <h5>Do you really want to delete ?</h5>
+                                            </div>
+
+                                        </div>
+                                        <div class="row d-flex justify-content-center">
+                                            <div class="col-md-8 mb-3 mt-3">
+
+                                                <button type="button" class="btn-sm border mx-2 border-secondary"
+                                                    data-bs-dismiss="modal">Close</button>
+                                                <button type="button"
+                                                    class=" btn btn-primary btn-sm border border-secondary"
+                                                    data-bs-dismiss="modal" [disabled]="form.invalid"
+                                                    (click)="createUserRole()">Delete</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
-
-
-
 
