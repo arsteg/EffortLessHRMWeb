@@ -49,7 +49,7 @@ export class HomeComponent implements OnInit {
     id: '2',
     title: 'RealTime',
     icon: 'fa fa-clock',
-    url: '',
+    // url: '',
     show:true,
    },
    {
@@ -63,7 +63,7 @@ export class HomeComponent implements OnInit {
    id: '4',
    title: 'Reports',
    icon: 'icon-layout menu-icon',
-   url: '',
+  //  url: '',
    show:true,
    subMenu: [
      {
@@ -138,15 +138,10 @@ export class HomeComponent implements OnInit {
    id: '5',
    title: 'Manage',
    icon: 'icon-layout menu-icon',
-   url: '',
+  //  url: '',
    show:true,
    subMenu: [
-    {
-      id: '50',
-      title: 'Roles',
-      icon: 'fa fa-users',
-      url: '/roles',
-     },
+   
      {
        id: '51',
        title: 'People',
@@ -194,6 +189,18 @@ export class HomeComponent implements OnInit {
         title: 'Settings',
         icon: 'fa fa-gear',
         url: '',
+       },
+       {
+        id: '59',
+        title: 'Roles',
+        icon: 'fa fa-users',
+        url: '/roles',
+       },
+       {
+        id: '50',
+        title: 'Permission',
+        icon: 'fa fa-users',
+        url: '/permissionModel',
        },
     ],
   }

@@ -1,28 +1,50 @@
-<!-- Post UserRole Create -->
+<!-- Post Permission Create -->
 <div class="container-fluid  mt-5">
     <div class="row ">
-        <div class="col-md-6 mt-5">
+        <div class="col-md-4 mt-5">
             <div class="card border border-dark mt-4">
-                <div class="card-header bg-primary">
-                    <h4 class="text-center">Create UserRole </h4>
+                <div class="card-headesr bg-primary">
+                    <h4 class="text-center">Create Permission Model </h4>
                 </div>
                 <div class="card-body">
                     <form class="row" #form="ngForm">
                         <div class="row d-flex justify-content-center">
                             <div class="col-md-8">
-                                <label for="">RoleName</label><br>
-                                <input type="text" name="rolename" [(ngModel)]="userRoleObj.RoleName"
-                                    class="form-control" #rolename="ngModel" required>
-                                <div class="text-danger" *ngIf="rolename.touched">
-                                    <span *ngIf="rolename.errors?.['required']">This field is required</span>
+                                <label for="">Permisson Name</label><br>
+                                <input type="text" name="rolename" [(ngModel)]="permissionObj.permissionName"
+                                    class="form-control" #permissionName="ngModel" required>
+                                <div class="text-danger" *ngIf="permissionName.touched">
+                                    <span *ngIf="permissionName.errors?.['required']">This field is required</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-md-8">
+                                <label for="">Permisson Details</label><br>
+                                <input type="text" name="rolename" [(ngModel)]="permissionObj.permissionDetails"
+                                    class="form-control" #permissionDetails="ngModel" required>
+                                <div class="text-danger" *ngIf="permissionDetails.touched">
+                                    <span *ngIf="permissionDetails.errors?.['required']">This field is required</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-md-8">
+                                <label for="">Parent Permisson</label><br>
+                                <input type="text" name="rolename" [(ngModel)]="permissionObj.parentPermission"
+                                    class="form-control" #parentPermission="ngModel" required>
+                                <div class="text-danger" *ngIf="parentPermission.touched">
+                                    <span *ngIf="parentPermission.errors?.['required']">This field is required</span>
                                 </div>
                             </div>
                         </div>
 
                         <div class="row d-flex justify-content-center">
                             <div class="col-md-8 mb-3 mt-3">
-                                <button class="btn btn-success" type="button" [disabled]="form.invalid"
-                                    (click)="createUserRole()">Create</button>
+                                <!-- <button class="btn btn-success" type="button" [disabled]="form.invalid"
+                                    (click)="createUserRole()">Create</button> -->
                             </div>
                         </div>
                     </form>
@@ -30,8 +52,8 @@
             </div>
         </div>
 
-<!-- GET UserRole All -->
-        <div class="col-md-6">
+         <!-- GET Permission Model  -->
+        <div class="col-md-8">
             <div class="col-md-11 text-end pb-1">
                 <button class="btn btn-primary btn-sm text-white text-end" data-bs-toggle="modal"
                     data-bs-target="#addModal" type="button"><i class="fa fa-plus-square-o mx-1"></i> Add</button>
@@ -42,27 +64,43 @@
             </div>
             <div class="card border border-dark">
                 <div class="card-header bg-primary">
-                    <h4 class="text-center">GET UserRole All </h4>
+                    <h4 class="text-center">GET Permission Model </h4>
                 </div>
                 <div class="row d-flex justify-content-center">
-                    <div class="col-md-10 ">
+                    <div class="col-md-11 ">
                         <table class="table table-bordered my-4">
                             <thead class="text-center">
                                 <tr>
-                                    <th>Sr. No</th>                                                                                                   
-                                    <th>RoleName
+                                    <th>Sr. No</th> 
+                                    <th>RoleName</th>                                                                                                  
+                                    <th>PermissionName
                                         <span>
-                                            <i class="fa fa-sort-up" (click)="sortByAsc()"></i>
+                                            <i class="fa fa-sort-up" (click)="sortByAsc('PermissionName')"></i>
                                             <i class="fa fa-sort-down " (click)="sortByDsc()"></i>
                                         </span>
-                                    </th>                                  
+                                    </th>    
+                                    <th>PermissionDetails
+                                        <span>
+                                            <i class="fa fa-sort-up" (click)="sortByAsc('PermissionDetails')"></i>
+                                            <i class="fa fa-sort-down " (click)="sortByDsc()"></i>
+                                        </span>
+                                    </th>                               
+                                    <th>ParentPermission
+                                        <span>
+                                            <i class="fa fa-sort-up" (click)="sortByAsc('ParentPermission')"></i>
+                                            <i class="fa fa-sort-down " (click)="sortByDsc()"></i>
+                                        </span>
+                                    </th> 
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody class="text-center">
-                                <tr *ngFor="let item of userRoleAll; let sr = index">
-                                    <td>{{sr+1}}</td>                                 
-                                    <td>{{item.RoleName}}</td>
+                                <tr *ngFor="let item of userPermissions; let sr = index"> 
+                                     <td>{{sr+1}}</td>  
+                                     <td></td>                               
+                                    <td>{{item.permissionName}}</td>
+                                    <td>{{item.permissionDetails}}</td>
+                                    <td>{{item.parentPermission}}</td>
                                     <td>
                                         <button type="button"><i style="color: green; border:none;"
                                                 class="fa fa-pencil-square-o" data-bs-toggle="modal"
@@ -70,7 +108,7 @@
                                         <button type="button"><i style="color: red; border:none;" class="fa fa-trash"
                                                 data-bs-toggle="modal" data-bs-target="#deleteModal"></i></button>
                                     </td>
-                                </tr>
+                                </tr> 
                                 
                             </tbody>
                         </table>
@@ -93,27 +131,57 @@
                                                 <div class="row d-flex justify-content-center">
                                                     <div class="col-md-8">
                                                         <div class="row">
-                                                            <label for="" class="text-start">RoleName</label>
+                                                            <label for="" class="text-start">PermissionName</label>
                                                         </div>
                                                          <input type="text" name="rolename"
-                                                            [(ngModel)]="userRoleObj.RoleName" class="form-control"
-                                                            #rolename="ngModel" required>
-                                                        <div class="text-danger" *ngIf="rolename.touched">
-                                                            <span *ngIf="rolename.errors?.['required']">This field is
+                                                            [(ngModel)]="permissionObj.PermissionName" class="form-control"
+                                                            #PermissionName="ngModel" required>
+                                                        <div class="text-danger" *ngIf="PermissionName.touched">
+                                                            <span *ngIf="PermissionName.errors?.['required']">This field is
                                                                 required</span>
                                                         </div>
                                                     </div>
-                                                </div>                                           
+                                                </div>    
+                                                
+                                                <div class="row d-flex justify-content-center">
+                                                    <div class="col-md-8">
+                                                        <div class="row">
+                                                            <label for="" class="text-start">PermissionDetails</label>
+                                                        </div>
+                                                         <input type="text" name="rolename"
+                                                            [(ngModel)]="permissionObj.PermissionDetails" class="form-control"
+                                                            #PermissionDetails="ngModel" required>
+                                                        <div class="text-danger" *ngIf="PermissionDetails.touched">
+                                                            <span *ngIf="PermissionDetails.errors?.['required']">This field is
+                                                                required</span>
+                                                        </div>
+                                                    </div>
+                                                </div> 
+
+                                                <div class="row d-flex justify-content-center">
+                                                    <div class="col-md-8">
+                                                        <div class="row">
+                                                            <label for="" class="text-start">ParentPermission</label>
+                                                        </div>
+                                                         <input type="text" name="rolename"
+                                                            [(ngModel)]="permissionObj.ParentPermission" class="form-control"
+                                                            #ParentPermission="ngModel" required>
+                                                        <div class="text-danger" *ngIf="ParentPermission.touched">
+                                                            <span *ngIf="ParentPermission.errors?.['required']">This field is
+                                                                required</span>
+                                                        </div>
+                                                    </div>
+                                                </div> 
                                                 <div class="row d-flex justify-content-center">
                                                     <div class="col-md-8 mb-3 mt-3">
 
                                                         <button type="button"
                                                             class="btn-sm border mx-2 border-secondary"
                                                             data-bs-dismiss="modal">Close</button>
-                                                        <button type="button"
+                                                        <!-- <button type="button"
                                                             class=" btn btn-primary btn-sm border border-secondary"
                                                             data-bs-dismiss="modal" [disabled]="form.invalid"
-                                                            (click)="createUserRole()">Add</button>
+                                                            (click)="createUserRole()">Add</button> -->
                                                     </div>
                                                 </div>
                                             </form>
@@ -138,11 +206,11 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <form class="row" #form="ngForm">
+                                            <!-- <form class="row" #form="ngForm">
                                                 <div class="row d-flex justify-content-center">
                                                     <div class="col-md-8">
                                                         <div class="row">
-                                                            <label for="" class="text-start">RoleName</label>
+                                                            <label for="" class="text-start"</label>
                                                         </div>
 
                                                         <input type="text" name="rolename"
@@ -165,7 +233,7 @@
                                                             (click)="createUserRole()">Update</button>
                                                     </div>
                                                 </div>
-                                            </form>
+                                            </form> -->
                                         </div>
 
                                     </div>
@@ -198,10 +266,10 @@
 
                                                 <button type="button" class="btn-sm border mx-2 border-secondary"
                                                     data-bs-dismiss="modal">Close</button>
-                                                <button type="button"
+                                                <!-- <button type="button"
                                                     class=" btn btn-primary btn-sm border border-secondary"
                                                     data-bs-dismiss="modal" [disabled]="form.invalid"
-                                                    (click)="createUserRole()">Delete</button>
+                                                    (click)="createUserRole()">Delete</button> -->
                                             </div>
                                         </div>
                                     </div>
@@ -215,44 +283,14 @@
     </div>
 
 </div>
-<!-- GET UserRole Id -->
-<div class="container-fluid">
-    <div class="row mt-5 d-flex justify-content-center">
-        <div class="col-md-12">
-            <div class="card border border-dark">
-                <div class="card-header bg-primary">
-                    <h4 class="text-center">GET UserRole Id </h4>
-                </div>
-                <div class="row d-flex justify-content-center">
-                    <div class="col-md-12">
-                        <table class="table table-bordered mt-4 ">
-                            <thead class="text-center">
-                                <tr>
-                                    <th>Sr. No</th>                         
-                                    <th>RoleName</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody class="text-center">
-                                <tr *ngFor="let item of userRoleAll; let sr = index">
-                                    <td>{{sr+1}}</td>                             
-                                    <td>{{item.RoleName}}</td>
-                                    <td>
-                                        <button type="button"><i style="color: green; border:none;"
-                                                class="fa fa-pencil-square-o"></i></button>
-                                        <button type="button"><i style="color: red; border:none;"
-                                                class="fa fa-trash"></i></button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
 
-            </div>
-        </div>
-    </div>
-</div>
+
+
+
+
+
+
+
 
 
 

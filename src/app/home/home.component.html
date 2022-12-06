@@ -1,44 +1,46 @@
 <div class="d-flex" id="wrapper">
     <!-- Sidebar -->
-    <div class="bg-light border-right" id="sidebar-wrapper"  [ngClass]="status ? 'hide' : 'show'">
+    <div class="bg-light border-right" id="sidebar-wrapper" *ngIf="!status"
+     [ngClass]="status ? 'hide' : 'show'" style="width: 17%">
       <div class="sidebar-heading">Effortless HRM</div>
       <div class="list-group list-group-flush">
         <ul class="nav flex-column" id="nav_accordion" *ngFor="let menu of menuList" >
           <li class="nav-item has-submenu">
-            <a class="nav-link" [routerLink]="menu.url" routerLinkActive="active" (click)="clickMenu(menu.id)" [ngClass]="menu.icon"> {{menu.title}} </a>
-            <ul class="submenu" *ngFor="let sm of menu.subMenu">
+            <a class="nav-link sidebar-links" [routerLink]="menu.url" routerLinkActive="active" (click)="clickMenu(menu.id)"><span  [ngClass]="menu.icon" class="me-2"></span> {{menu.title}} </a>
+            <ul class="submenu p-0" *ngFor="let sm of menu.subMenu">
               <span *ngIf="menu.show">
-                <a class="nav-link" [routerLink]="sm.url==''? '\dashboard':sm.url"  routerLinkActive="active" [ngClass]="sm.icon"> {{sm.title}} </a>
+                <a class="nav-link sidebar-links " [routerLink]="sm.url==''? '\dashboard':sm.url"  routerLinkActive="active"><span [ngClass]="sm.icon" class="me-2"></span> {{sm.title}} </a>
               </span>
             </ul>
           </li>
         </ul>
       </div>
     </div>
-    <div id="page-content-wrapper">
-      <nav class="navbar navbar-expand-lg navbar-light">
+    <div id="page-content-wrapper" class="w-100">
+    
+      <nav class="navbar navbar-expand-lg navbar-light" >
         <div class="container-fluid">
           <li class="fas fa-bars" (click)="clickEvent()"></li>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <div class="collapse navbar-collapse" id="navbarSupportedContent" >
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">Home</a>
+                <a class="nav-link ac6666tive" aria-current="page" [routerLink]="['dashboard']">Home</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">Link</a>
+                <a class="nav-link" [routerLink]="['dashboard']">Link</a>
               </li>
               <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <a class="nav-link dropdown-toggle"  id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                   Dropdown
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <li><a class="dropdown-item" href="#">Action</a></li>
-                  <li><a class="dropdown-item" href="#">Another action</a></li>
+                  <li><a class="dropdown-item">Action</a></li>
+                  <li><a class="dropdown-item">Another action</a></li>
                   <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="#">Something else here</a></li>
+                  <li><a class="dropdown-item" >Something else here</a></li>
                 </ul>
               </li>
               <li class="nav-item">

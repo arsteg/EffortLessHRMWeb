@@ -14,6 +14,7 @@ import { ScreenshotsComponent } from './screenshots/screenshots/screenshots.comp
 import { TeammembersComponent } from './manage/teammembers/teammembers.component';
 import { HomeComponent } from './home/home.component';
 import { RolesComponent } from './manage/roles/roles/roles.component';
+import { PermissionModelComponent } from './manage/permissonModel/permission-model/permission-model.component';
 
 const routes: Routes = [
  // {path:'',component:LayoutComponentComponent, canActivate: [AuthGuard]},
@@ -33,6 +34,7 @@ const routes: Routes = [
   {path:'screenshots',component:ScreenshotsComponent},
   {path:'teamMembers',component:TeammembersComponent},
   {path:'roles',component:RolesComponent},
+  {path:'permissionModel',component:PermissionModelComponent},
 ]}
 ]
 

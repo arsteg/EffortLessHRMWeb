@@ -28,8 +28,14 @@ export class LoginComponent implements OnInit {
   }
 }
   ngOnInit(): void {
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
-    this.rememberMe = localStorage.getItem('rememberMe')=='tr`ue';
+
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+    if (this.returnUrl) {
+      this.router.navigateByUrl(this.returnUrl);
+    } else {
+      this.router.navigateByUrl('/');
+    }
+    this.rememberMe = localStorage.getItem('rememberMe')=='true';
   }
 
   onSubmit() {

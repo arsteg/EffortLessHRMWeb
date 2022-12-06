@@ -18,8 +18,6 @@ export class RolesComponent implements OnInit {
   scol:any;
   dummy:any = [];
  
- 
-
   constructor(private roleSrv:RoleService) { 
    this.userRoleObj = {
     _id : '',
@@ -96,47 +94,15 @@ export class RolesComponent implements OnInit {
     }
 
  
-       sortByAsc(val:string){
+       sortByAsc(){
         debugger;
         let filteredData;
-        
-        switch(val){
-          case 'Id':
-             filteredData = this.dummy.sort((a:any, b:any)=>
-            a._id.localeCompare(b._id));
-            this.dummy = filteredData;
-            break;
-
-           case 'RoleName' :
             debugger;
             filteredData = this.dummy.sort((a:any, b:any)=>
             a.RoleName.localeCompare(b.RoleName));
-            this.dummy = filteredData;
-            break;
-
-            case 'RoleId' :
-            filteredData = this.dummy.sort((a:any, b:any)=>
-            a.RoleId.localeCompare(b.RoleId));
-            this.dummy = filteredData;
-            break;
-
-            case 'v' :
-              debugger;
-            filteredData = this.dummy.sort((a:any, b:any)=>
-            (a.__v).localeCompare(b.__v));
-            this.dummy = filteredData;
-            break;
-
-            case 'Id2' :
-            filteredData = this.dummy.sort((a:any, b:any)=>
-            a.id.localeCompare(b.id));
-            this.dummy = filteredData;
-            break;
+            this.dummy = filteredData; 
         }
-     
-      
-       }
-
+    
        sortByDsc(){
         const filteredData = this.dummy.sort((a:any, b:any)=>
          a._id.localeCompare(b._id));

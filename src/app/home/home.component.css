@@ -1,0 +1,10 @@
+.sidebar-links{
+    margin: 10px 0;
+}
+.sidebar-links:hover{
+    background: #0a58ca;
+    color: white;
+    margin-right: 30px;
+    border-bottom-right-radius: 15px;
+    border-top-right-radius: 15px;
+}
