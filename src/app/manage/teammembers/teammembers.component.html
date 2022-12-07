@@ -6,52 +6,41 @@
           <div class="card-header card-header-danger">
             <div class="row">
               <div class="col-md-10">
-                <h4 class="card-title">Team Members</h4>
+                <h4 class="card-title headings">Team Members</h4>
               </div>
+             
             </div>
           </div>
 
           <div class="container-fluid">
             <div class="row"></div>
             <div class="row mt-4">
-              <div class="col-md-2">Team of</div>
-              <div class="col-md-3">
-                <select id="member" name="member" class="form-control" class="form-select form-select-sm "
-                   aria-label=".form-select-sm example" [ngModel]="selectedManager | json" (change)="Selectmanager($event)">
-                  <option *ngFor="let user of teamOfUsers" value = "{{user|json}}">
+              
+              <div class="col-md-6">
+
+                <label id="example-radio-group-label" class="headings">Manager</label><br>
+                <mat-radio-group id="member" name="member" aria-labelledby="example-radio-group-label"
+                  class="example-radio-group" [ngModel]="selectedManager | json" (change)="Selectmanager($event)">
+                  <mat-radio-button class="example-radio-button" *ngFor="let user of teamOfUsers" value="{{user|json}}">
                     {{ user.firstName }} {{ user.lastName }}
-                  </option>
-                </select>
+                  </mat-radio-button>
+                </mat-radio-group><br>
               </div>
-              <div class="col-md-6"></div>
-            </div>
-            <div class="row">
-              <div class="col-md-2">
+              <div class="col-md-6">
                 <ul class="users">
-                  <li *ngFor="let user of teamOfUsers">
+                  <p class="headings">Members</p>
+                  <div class="members">
+                  <li *ngFor="let user of teamOfUsers" type="none">
                     <label [class.selected]="user === selectedUser">
-                      <span class="name">{{user.firstName}} {{user.lastName}}</span>
-                      <span class="badge" (click)="onAddMember(user)">></span>
+                      <mat-checkbox (click)="onAddMember(user)">{{user.firstName}} {{user.lastName}}</mat-checkbox>
                     </label>
                   </li>
-                </ul>
-              </div>
-              <div class="col-md-2">
-                <ul class="users">
-                  <li *ngFor="let user of selectedUsers">
-                    <label [class.selected]="user === selectedUser" (click)="onSelect(user)">
-                      <span class="badge" (click)="onRemoveMember(user)"><</span>
-                      <span class="name">{{user.firstName}} {{user.lastName}}</span>
-                    </label>
-                  </li>
+                </div>
                 </ul>
               </div>
             </div>
-            <div class="row">
-              <div class="table-responsive">
-                <div class="col-md-12"></div>
-              </div>
-            </div>
+           
+            
           </div>
         </div>
       </div>

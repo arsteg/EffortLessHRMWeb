@@ -1,10 +1,32 @@
 .sidebar-links{
     margin: 10px 0;
 }
-.sidebar-links:hover{
+ .sidebar-links.active{
     background: #0a58ca;
     color: white;
     margin-right: 30px;
     border-bottom-right-radius: 15px;
     border-top-right-radius: 15px;
+}
+.sidebar-sublinks{
+    margin-top: -1px;
+}
+ .sidebar-sublinks.active{
+    margin-top: 12px;
+    background: #0a58ca;
+    color: white;
+    margin-right: 30px;
+    border-bottom-right-radius: 15px;
+    border-top-right-radius: 15px;
+}
+.collapsible-nav{
+left: 0;
+width: 60px;
+}
+.sidebar-title{
+    margin: 0 0 0 -20px;
+    width: 15%;
+}
+.col-links{
+    margin-top: -1.3px;
 }

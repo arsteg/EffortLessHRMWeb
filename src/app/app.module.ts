@@ -33,7 +33,8 @@ import { TeammembersComponent } from './manage/teammembers/teammembers.component
 import { HomeComponent } from './home/home.component';
 import { RolesComponent } from './manage/roles/roles/roles.component';
 import { PermissionModelComponent } from './manage/permissonModel/permission-model/permission-model.component';
-
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatRadioModule} from '@angular/material/radio';
 
 
 @NgModule({
@@ -71,7 +72,8 @@ import { PermissionModelComponent } from './manage/permissonModel/permission-mod
     LayoutModule,
     MatToolbarModule,
     MatButtonModule,
-    MatSidenavModule, MatIconModule, MatListModule
+    MatSidenavModule, MatIconModule, MatListModule,
+    MatCheckboxModule, MatRadioModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

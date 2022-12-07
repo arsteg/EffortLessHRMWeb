@@ -1,23 +1,39 @@
 <div class="d-flex" id="wrapper">
     <!-- Sidebar -->
-    <div class="bg-light border-right" id="sidebar-wrapper" *ngIf="!status"
-     [ngClass]="status ? 'hide' : 'show'" style="width: 17%">
+    <div class="list-group list-group-flush collapse-text pt-4 bg-light ">
+      <ul class="collapsible-nav nav flex-column" id="nav_accordion" *ngFor="let menu of menuList" >
+      <li class="nav-item has-submenu sidebar-sublinks">
+        <a class="nav-link sidebar-links" [ngClass]="{'active': menu.url== ''}" [routerLink]="menu.url" routerLinkActive="active" (click)="clickMenu(menu.id)"><span  [ngClass]="menu.icon" class="me-2 collapse-icons"></span> </a>
+        <ul class="submenu p-0" *ngFor="let sm of menu.subMenu">
+          <span *ngIf="menu.show">
+            <a class="nav-link sidebar-links  sidebar-sublinks " [routerLink]="sm.url==''? '\dashboard':sm.url"  ><span [ngClass]="sm.icon" class="me-2 collapse-icons"></span> </a>
+          </span>
+        </ul>
+      </li>
+      </ul>
+      </div>
+
+    <div class="bg-light sidebar-title border-right" id="sidebar-wrapper" *ngIf="!status"
+     [ngClass]="status ? 'hide' : 'show'" >
       <div class="sidebar-heading">Effortless HRM</div>
       <div class="list-group list-group-flush">
         <ul class="nav flex-column" id="nav_accordion" *ngFor="let menu of menuList" >
           <li class="nav-item has-submenu">
-            <a class="nav-link sidebar-links" [routerLink]="menu.url" routerLinkActive="active" (click)="clickMenu(menu.id)"><span  [ngClass]="menu.icon" class="me-2"></span> {{menu.title}} </a>
+            <a class="nav-link sidebar-links" [ngClass]="{'active': menu.url== ''}" [routerLink]="menu.url" routerLinkActive="active" (click)="clickMenu(menu.id)">{{menu.title}} </a>
             <ul class="submenu p-0" *ngFor="let sm of menu.subMenu">
               <span *ngIf="menu.show">
-                <a class="nav-link sidebar-links " [routerLink]="sm.url==''? '\dashboard':sm.url"  routerLinkActive="active"><span [ngClass]="sm.icon" class="me-2"></span> {{sm.title}} </a>
+                <a class="nav-link sidebar-links " [ngClass]="{'active': menu.url== ''}" [routerLink]="sm.url==''? '\dashboard':sm.url"  > {{sm.title}} </a>
               </span>
             </ul>
           </li>
         </ul>
       </div>
     </div>
-    <div id="page-content-wrapper" class="w-100">
+   
     
+
+    <div id="page-content-wrapper" class="w-100">
+      
       <nav class="navbar navbar-expand-lg navbar-light" >
         <div class="container-fluid">
           <li class="fas fa-bars" (click)="clickEvent()"></li>
@@ -58,6 +74,9 @@
           </div>
         </div>
       </nav>
+
+     
+
       <div class="container-fluid">
         <router-outlet></router-outlet>
         <ng-http-loader [backdrop]="false" [backgroundColor]="'#ff0000'" [debounceDelay]="100"
@@ -66,6 +85,8 @@
         </ng-http-loader>
       </div>
     </div>
+ 
+   
     <!-- /#page-content-wrapper -->
   </div>
   <!-- /#wrapper -->

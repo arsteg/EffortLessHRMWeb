@@ -1,5 +1,5 @@
 /* HeroesComponent's private CSS styles */
-.users {
+/* .users {
   margin: 0 0 2em 0;
   list-style-type: none;
   padding: 0;
@@ -64,4 +64,39 @@
 .users .name {
   align-self: center;
   width: 200px;
+} */
+
+.example-section {
+  margin: 12px 0;
 }
+.example-radio-group {
+  display: flex;
+  flex-direction: column;
+  margin: 15px 0;
+  align-items: flex-start;
+  border: 1px solid #c9c3c3;
+    border-radius: 7px;
+    margin-right: 20px;
+    padding-left: 20px;
+    line-height: 2;
+}
+
+.example-radio-button {
+  margin: 5px;
+}
+.members{
+  border: 1px solid #c9c3c3;
+  border-radius: 7px;
+  margin-right: 20px;
+  padding-left: 20px;
+  }
+  .members li{
+    line-height: 2.83;
+  }
+  .mat-fab{
+    border-radius: 5px;
+  }
+  .headings{
+    font-size: 18px;
+    color:#0d6efd;
+  }
