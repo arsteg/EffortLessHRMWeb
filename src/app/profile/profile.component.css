@@ -1,0 +1,41 @@
+.profile{
+    background-color: #ebf1f1;;
+}
+.profile-img{
+    height: 200px;
+    width: 200px;
+    border: 2px solid white;
+    border-radius: 50%;
+    box-shadow: 0px 0px 20px;
+}
+.alarm{
+    height: 80px;
+    margin-top: -70px;
+}
+.timer{
+    font-weight: 500;
+    letter-spacing: 2px;
+}
+.footer .fa{
+    font-size: 24px;
+}
+.cards-area{
+    background:#c6c9c9;
+}
+.cards{
+    background: rgb(234 229 229);
+    margin: 5px 8px;
+    height: 200px;
+    width: 140px;
+    border-radius: 5px;
+}
+.cards img{
+    height: 70px;
+    border-radius: 50%;
+    border: 2px solid white;
+    padding: 3px;
+}
+.cards span{
+    line-height: 5;
+    color: #888585;
+}

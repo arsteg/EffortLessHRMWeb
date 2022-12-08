@@ -35,6 +35,7 @@ import { RolesComponent } from './manage/roles/roles/roles.component';
 import { PermissionModelComponent } from './manage/permissonModel/permission-model/permission-model.component';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatRadioModule} from '@angular/material/radio';
+import { ProfileComponent } from './profile/profile.component';
 
 
 @NgModule({
@@ -56,7 +57,8 @@ import {MatRadioModule} from '@angular/material/radio';
           TeammembersComponent,
           HomeComponent,
           RolesComponent,
-          PermissionModelComponent
+          PermissionModelComponent,
+          ProfileComponent
   ],
   imports: [
     BrowserModule,

@@ -68,7 +68,9 @@
                     <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                     <button class="btn btn-outline-success" type="button">Search</button>
                     <button class="btn btn-outline-danger btn-sm mx-2" type="button" (click)="onLogout()">Logout</button>
-                    <img src="../assets/profileimg.jpg" width="80px" height="40px" alt="profileimg">
+                    
+                    <img src="../assets/profileimg.jpg" [routerLink]="['Profile']" width="80px" height="40px" alt="profileimg">
+                    
                 </form>
             </div>
           </div>
