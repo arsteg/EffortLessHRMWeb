@@ -27,10 +27,10 @@
                 </mat-radio-group><br>
               </div>
               <div class="col-md-6">
-                <ul class="users">
+                <ul class="users" type="none">
                   <p class="headings">Members</p>
                   <div class="members">
-                  <li *ngFor="let user of teamOfUsers" type="none">
+                  <li *ngFor="let user of teamOfUsers" >
                     <label [class.selected]="user === selectedUser">
                       <mat-checkbox (click)="onAddMember(user)">{{user.firstName}} {{user.lastName}}</mat-checkbox>
                     </label>

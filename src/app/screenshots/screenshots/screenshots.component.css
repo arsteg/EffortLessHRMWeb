@@ -81,3 +81,10 @@ height:100%;
   
 }
 
+.level{
+  margin-top: -15px;
+}
+.level .content{
+  padding: 10px;
+  opacity: 0.82;
+}

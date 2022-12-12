@@ -23,7 +23,8 @@
     background:#c6c9c9;
 }
 .cards{
-    background: rgb(234 229 229);
+    border: 2px solid white;
+    background: #ebf1f1;
     margin: 5px 8px;
     height: 200px;
     width: 140px;
@@ -31,10 +32,12 @@
 }
 .cards img{
     height: 70px;
-    border-radius: 50%;
-    border: 2px solid white;
-    padding: 3px;
-}
+    border-radius: 100%;
+     padding: 3px;
+      border: 2px solid white;
+     
+    }
+     
 .cards span{
     line-height: 5;
     color: #888585;

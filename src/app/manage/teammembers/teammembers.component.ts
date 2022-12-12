@@ -53,6 +53,7 @@ constructor(private manageTeamService:ManageTeamService, private timeLogService:
   ngOnDestroy() {
     this.subscription.unsubscribe();
   }
+  
   //#region Private methods
   populateTeamOfUsers(){
     this.manageTeamService.getAllUsers().subscribe({

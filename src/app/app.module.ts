@@ -36,7 +36,7 @@ import { PermissionModelComponent } from './manage/permissonModel/permission-mod
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatRadioModule} from '@angular/material/radio';
 import { ProfileComponent } from './profile/profile.component';
-
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 @NgModule({
   declarations: [
@@ -75,7 +75,7 @@ import { ProfileComponent } from './profile/profile.component';
     MatToolbarModule,
     MatButtonModule,
     MatSidenavModule, MatIconModule, MatListModule,
-    MatCheckboxModule, MatRadioModule
+    MatCheckboxModule, MatRadioModule, TooltipModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

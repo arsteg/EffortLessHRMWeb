@@ -67,6 +67,7 @@ export class ScreenshotsComponent implements OnInit {
     this.subscription.unsubscribe();
   }
   
+    
   populateMembers(){
     this.members=[];
     let currentUser = JSON.parse(localStorage.getItem('currentUser'));
