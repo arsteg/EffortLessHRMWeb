@@ -43,8 +43,8 @@
         <img *ngIf="timeLog?.col1?.fileString" src="{{'data:image/jpg;base64,' + timeLog.col1.fileString}}"
           data-bs-toggle="modal" data-bs-target="#bigImageModal" (click)="setSelectedScreenshot($event)" />
         <img *ngIf="!timeLog?.col1?.fileString" src="{{'data:image/jpeg;base64,'+defaultScreenshot}}" />
-        <figcaption class="figure-caption text-center"
-          [tooltip]="'Level: Mouse:' + (timeLog.col1.clicks || 0) + ' Keyboard: '+ (timeLog.col1.keysPressed || 0)"
+        <figcaption class="figure-caption text-center" 
+          [tooltip]="'Clicks: ' + (timeLog.col1.clicks || 0) + ', Keyboard: '+ (timeLog.col1.keysPressed || 0)"
           [style.background-color]="getActivityColor(timeLog.col1.GetActivityLevel)">{{timeLog.col1.timeLabel}}
         </figcaption>
       </figure>
@@ -56,7 +56,7 @@
           data-bs-target="#bigImageModal" (click)="setSelectedScreenshot($event)" />
           <img *ngIf="!timeLog?.col2?.fileString" src="{{'data:image/jpeg;base64,'+defaultScreenshot}}" />
         <figcaption class="figure-caption text-center"
-        [tooltip]="'Level: Mouse:' + (timeLog.col2.clicks || 0) + ' Keyboard: '+ (timeLog.col2.keysPressed || 0)"
+        [tooltip]="'Clicks: ' + (timeLog.col2.clicks || 0) + ', Keyboard: '+ (timeLog.col2.keysPressed || 0)"
           [style.background-color]="getActivityColor(timeLog?.col2?.GetActivityLevel)">{{timeLog.col2.timeLabel}}
         </figcaption>
       </figure>
@@ -68,7 +68,7 @@
           data-bs-target="#bigImageModal" (click)="setSelectedScreenshot($event)" />
           <img *ngIf="!timeLog?.col3?.fileString" src="{{'data:image/jpeg;base64,'+defaultScreenshot}}" />
         <figcaption class="figure-caption text-center"
-        [tooltip]="'Level: Mouse:' + (timeLog.col3.clicks || 0) + ' Keyboard: '+ (timeLog.col3.keysPressed || 0)"
+        [tooltip]="'Clicks: ' + (timeLog.col3.clicks || 0) + ', Keyboard: '+ (timeLog.col3.keysPressed || 0)"
           [style.background-color]="getActivityColor(timeLog?.col3?.GetActivityLevel)">{{timeLog?.col3?.timeLabel}}
         </figcaption>
       </figure>
@@ -80,7 +80,7 @@
           data-bs-target="#bigImageModal" (click)="setSelectedScreenshot($event)" />
           <img *ngIf="!timeLog?.col4?.fileString" src="{{'data:image/jpeg;base64,'+defaultScreenshot}}" />
         <figcaption class="figure-caption text-center"
-        [tooltip]="'Level: Mouse:' + (timeLog.col4.clicks || 0) + ' Keyboard: '+ (timeLog.col4.keysPressed || 0)"
+        [tooltip]="'Clicks: ' + (timeLog.col4.clicks || 0) + ', Keyboard: '+ (timeLog.col4.keysPressed || 0)"
           [style.background-color]="getActivityColor(timeLog?.col4?.GetActivityLevel)">{{timeLog?.col4?.timeLabel}}
         </figcaption>
       </figure>
@@ -92,7 +92,7 @@
           data-bs-target="#bigImageModal" (click)="setSelectedScreenshot($event)" />
           <img *ngIf="!timeLog?.col5?.fileString" src="{{'data:image/jpeg;base64,'+defaultScreenshot}}" />
         <figcaption class="figure-caption text-center"
-        [tooltip]="'Level: Mouse:' + (timeLog.col5.clicks || 0) + ' Keyboard: '+ (timeLog.col5.keysPressed || 0)"
+        [tooltip]="'Clicks: ' + (timeLog.col5.clicks || 0) + ', Keyboard: '+ (timeLog.col5.keysPressed || 0)"
           [style.background-color]="getActivityColor(timeLog?.col5?.GetActivityLevel)">{{timeLog.col5.timeLabel}}
         </figcaption>
       </figure>
@@ -104,7 +104,7 @@
           data-bs-target="#bigImageModal" (click)="setSelectedScreenshot($event)" />
           <img *ngIf="!timeLog?.col6?.fileString" src="{{'data:image/jpeg;base64,'+ defaultScreenshot}}" />
         <figcaption class="figure-caption text-center"
-        [tooltip]="'Level: Mouse:' + (timeLog.col6.clicks || 0) + ' Keyboard: '+ (timeLog.col6.keysPressed || 0)"
+        [tooltip]="'Clicks: ' + (timeLog.col6.clicks || 0) + ', Keyboard: '+ (timeLog.col6.keysPressed || 0)"
           [style.background-color]="getActivityColor(timeLog?.col6?.GetActivityLevel)">{{timeLog.col6.timeLabel}}
         </figcaption>
       </figure>
