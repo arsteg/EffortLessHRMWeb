@@ -55,7 +55,7 @@ export class LoginComponent implements OnInit {
               localStorage.setItem('jwtToken', data.token);
               localStorage.setItem('currentUser', JSON.stringify(this.user));
               localStorage.setItem('rememberMe', JSON.stringify(this.rememberMe));
-              this.router.navigate([this.returnUrl]);
+              this.router.navigate(['/dashboard']);
             },
             err => {
               this.notifyService.showError(err.message, "Error")
