@@ -97,9 +97,6 @@ export class TeammembersComponent implements OnInit, OnDestroy {
     });
   }
 
-  isChecked(){
-    
-  }
 
 
   onAddMember(user: User) {
