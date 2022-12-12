@@ -88,3 +88,21 @@ height:100%;
   padding: 10px;
   opacity: 0.82;
 }
+
+:host >>> .tooltip-inner {
+  background-color: black;
+  color: white;
+  border-color: black;
+  border-style: solid;
+  border-width: 0.5px;
+  text-align: center;
+  margin-bottom: -25px;
+  opacity: 0.8;
+  padding-inline: 10px;
+}
+:host >>> .tooltip.top .tooltip-arrow:before,
+:host >>> .tooltip.top .tooltip-arrow {
+  /* border-top-color: black; */
+  display: none;
+}
+  
