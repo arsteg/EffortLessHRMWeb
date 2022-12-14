@@ -37,6 +37,11 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatRadioModule} from '@angular/material/radio';
 import { ProfileComponent } from './profile/profile.component';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { ReportsComponent } from './reports/reports.component';
+import { TimelineComponent } from './reports/timeline/timeline.component';
+import {MatTableModule} from '@angular/material/table';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @NgModule({
   declarations: [
@@ -58,7 +63,9 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
           HomeComponent,
           RolesComponent,
           PermissionModelComponent,
-          ProfileComponent
+          ProfileComponent,
+          ReportsComponent,
+          TimelineComponent
   ],
   imports: [
     BrowserModule,
@@ -75,7 +82,8 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
     MatToolbarModule,
     MatButtonModule,
     MatSidenavModule, MatIconModule, MatListModule,
-    MatCheckboxModule, MatRadioModule, TooltipModule
+    MatCheckboxModule, MatRadioModule, TooltipModule,
+    MatTableModule, MatFormFieldModule, MatInputModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

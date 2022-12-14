@@ -16,34 +16,38 @@ import { HomeComponent } from './home/home.component';
 import { RolesComponent } from './manage/roles/roles/roles.component';
 import { PermissionModelComponent } from './manage/permissonModel/permission-model/permission-model.component';
 import { ProfileComponent } from './profile/profile.component';
+import { TimelineComponent } from './reports/timeline/timeline.component';
 
 const routes: Routes = [
- // {path:'',component:LayoutComponentComponent, canActivate: [AuthGuard]},
+  // {path:'',component:LayoutComponentComponent, canActivate: [AuthGuard]},
 
 
-  {path:'',component:LoginComponent},
-  {path:'login',component:LoginComponent},
-  {path:'',  redirectTo:'login', pathMatch:'full'},
-  {path:'', component:HomeComponent,
-     children:[
-  {path:'dashboard',component:DashboardComponent},
-  {path:'logout',component:LoginComponent},
-  {path:'register',component:RegisterComponent},
-  {path:'resetPassword/:token',component:ResetPasswordComponent},
-  {path:'forgotPassword',component:ForgotPasswordComponent},
-  {path:'userProfile',component:UserProfileComponent},
-  {path:'screenshots',component:ScreenshotsComponent},
-  {path:'teamMembers',component:TeammembersComponent},
-  {path:'roles',component:RolesComponent},
-  {path:'permissionModel',component:PermissionModelComponent},
-  {path:'Profile', component: ProfileComponent}
-]}
+  { path: '', component: LoginComponent },
+  { path: 'login', component: LoginComponent },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: 'forgotPassword', component: ForgotPasswordComponent },
+  { path: 'register', component: RegisterComponent },
+  {
+    path: '', component: HomeComponent,
+    children: [
+      { path: 'dashboard', component: DashboardComponent },
+      { path: 'logout', component: LoginComponent },
+      { path: 'resetPassword/:token', component: ResetPasswordComponent },
+      { path: 'userProfile', component: UserProfileComponent },
+      { path: 'screenshots', component: ScreenshotsComponent },
+      { path: 'teamMembers', component: TeammembersComponent },
+      { path: 'roles', component: RolesComponent },
+      { path: 'permissionModel', component: PermissionModelComponent },
+      { path: 'Profile', component: ProfileComponent },
+      { path: 'timeline', component: TimelineComponent }
+    ]
+  }
 ]
 
 @NgModule({
   imports: [
     CommonModule,
-    RouterModule.forRoot(routes,{relativeLinkResolution:'legacy', useHash: true}),
+    RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy', useHash: true }),
   ],
   exports: [RouterModule]
 })

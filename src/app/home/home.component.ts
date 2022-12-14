@@ -32,10 +32,9 @@ export class HomeComponent implements OnInit {
     }
     
   clickEvent(){
-      this.status = !this.status;
-    }
+      this.status = !this.status
+         }
   }
-  
   
   export const SideBarMenu = [
   {
@@ -69,13 +68,15 @@ export class HomeComponent implements OnInit {
      {
        id: '41',
        title: 'Timesheet',
-       icon: 'fa fa-clock',
+       icon: 'fa fa-clock'
      
       },
      {
        id: '42',
        title: 'Timeline',
        icon: 'fa fa-clock',
+       url: '/timeline',
+       show:true,
       
      },
      {

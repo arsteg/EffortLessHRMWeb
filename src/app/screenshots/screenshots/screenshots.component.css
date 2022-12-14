@@ -34,16 +34,29 @@ figure {
 }
 
 label {
-  font: smaller sans-serif;
+  font-size: 13px;
+  font:  sans-serif;
   padding: 3px;
   text-align: center;
 }
-
+#date{
+  font-weight: 300;
+}
 .bottompmNav{
   text-align: right;
 }
 .carousel-control-prev-icon, .carousel-control-next-icon {
   background-color:#0d6efd;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+.carousel-control-prev{
+  justify-content: flex-start;
+  margin-left: 10px;
+}
+.carousel-control-next{
+  justify-content: flex-end;
+  margin-right: 10px;
 }
 .modal-body{
   position: relative;

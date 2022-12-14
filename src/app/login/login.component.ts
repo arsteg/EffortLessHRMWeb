@@ -60,7 +60,8 @@ export class LoginComponent implements OnInit {
             err => {
               this.notifyService.showError(err.message, "Error")
                 this.loading = false;
-            });
+            }
+            );
      }
   }
 }

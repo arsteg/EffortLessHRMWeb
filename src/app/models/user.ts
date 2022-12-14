@@ -9,6 +9,7 @@ export class User {
     token: string;
     role: Role;
     name:string;
+    email: string;
 }
 
 export class signup{
