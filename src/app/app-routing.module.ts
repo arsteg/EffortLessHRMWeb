@@ -17,6 +17,7 @@ import { RolesComponent } from './manage/roles/roles/roles.component';
 import { PermissionModelComponent } from './manage/permissonModel/permission-model/permission-model.component';
 import { ProfileComponent } from './profile/profile.component';
 import { TimelineComponent } from './reports/timeline/timeline.component';
+import { UserListComponent } from './users/user-list/user-list.component';
 
 const routes: Routes = [
   // {path:'',component:LayoutComponentComponent, canActivate: [AuthGuard]},
@@ -39,7 +40,9 @@ const routes: Routes = [
       { path: 'roles', component: RolesComponent },
       { path: 'permissionModel', component: PermissionModelComponent },
       { path: 'Profile', component: ProfileComponent },
-      { path: 'timeline', component: TimelineComponent }
+      { path: 'timeline', component: TimelineComponent },
+      { path: 'project', component: ProjectListComponent},
+      { path: 'people' , component: UserListComponent}
     ]
   }
 ]

@@ -1,17 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { ManageTeamService } from 'src/app/_services/manage-team.service';
 import { User } from 'src/app/models/user'; 
-
+import { UserService } from 'src/app/users/users.service';
+import * as moment from 'moment';
 @Component({
   selector: 'app-timeline',
   templateUrl: './timeline.component.html',
-  styleUrls: ['./timeline.component.css']
+  styleUrls: ['./timeline.component.css'],
+  providers:  [UserService]
 })
 export class TimelineComponent implements OnInit {
   teamOfUsers: User[] = [];
   allUsers: User[] = [];
-
-  constructor(private manageTeamService: ManageTeamService) { }
+  public users: Array<User>=[];
+  constructor(private UserService: UserService,private manageTeamService: ManageTeamService) { 
+    this.UserService.getUserList()
+    .subscribe(data => {        
+     this.users=data.data.data;
+    })
+  }
 
   ngOnInit(): void {
     this.populateTeamOfUsers();

@@ -147,6 +147,7 @@ export class HomeComponent implements OnInit {
        id: '51',
        title: 'People',
        icon: 'fa fa-users',
+       url: 'people'
         
       },
       {
@@ -159,7 +160,7 @@ export class HomeComponent implements OnInit {
        id: '53',
        title: 'Projects',
        icon: 'fa fa-pencil-square',
-        
+       url: 'project',
       },
       {
         id: '54',

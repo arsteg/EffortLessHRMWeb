@@ -1,76 +1,115 @@
 <div class="main-content">
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header card-header-danger">
-                        <div class="row"> <div class="col-md-10">
-                        <h4 class="card-title ">Members</h4> </div> <div class="col-md-2 float-right"> <button type="button" class="btn btn-primary ms-auto float-right" >
-                           
-                    Invite New User
-                  </button></div></div>
-                        <p class="card-category"> Welcome </p>
-                    </div>
-                    <div class="card-body">
-                        <div class="container-fluid">
-                            <div class="row">
-                                <div class="col-md-2">Member</div>
-                                <div class="col-md-2">status</div>
-                                <div class="col-md-2">Project</div>
-                                <div class="col-md-2">Role</div>
-                                <div class="col-md-2">Go</div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <select class="form-control">
-                                            <option value="1">Option1</option>
-                                            <option value="2">Option2</option>
-                                            <option value="3">Option3</option>
-                                          </select>
-                                      </div>
-                                    <div class="col-md-2">
-                                        <select class="form-control">
-                                            <option value="1">Option1</option>
-                                            <option value="2">Option2</option>
-                                            <option value="3">Option3</option>
-                                          </select>    </div>
-                                    <div class="col-md-2"> 
-                                        <select class="form-control">
-                                            <option value="1">Option1</option>
-                                            <option value="2">Option2</option>
-                                            <option value="3">Option3</option>
-                                          </select> </div>
-                                    <div class="col-md-2"> 
-                                        <select class="form-control">
-                                            <option value="1">Option1</option>
-                                            <option value="2">Option2</option>
-                                            <option value="3">Option3</option>
-                                          </select>
-                                          </div>
-                                    <div class="col-md-2"> <button type="submit" class="btn btn-primary ms-auto">
-                                        Go
-                                      </button></div>
-                                    </div>
-                                   <div class="row"></div>
-                                <div class="row">
-                                    <div class="table-responsive">
-                                    <div class="col-md-12">
-                                        <ag-grid-angular
-                                        style="width: 100%; height: 520px;"
-                                        class="ag-theme-alpine" [enableSorting]="true" [animateRows]="true" [pagination]="true" [paginationPageSize]="10" [floatingFilter]="true"    
-                                        [animateRows]="true"
-                                        [rowData]="users"  (cellClicked)="onCellClicked($event)"
-                                        [columnDefs]="columnDefs">
-                                    </ag-grid-angular>         
-                                    </div>
-                                    </div>                         
-                          </div>
 
-  </div>
-  </div>
-  </div>
-  </div>
-  </div>
-  </div>
-  </div>
-  
+        <div class="d-flex justify-content-between">
+            <h1 class="pt-4">User Data for Remote Source</h1>
+            <div class="d-flex h-25">
+                <input class="form-control search" type="text" placeholder="search..."
+                 [(ngModel)]="searchText" name="searchText"  aria-label="default input example"
+                 style="border-bottom: 1px solid grey; border-radius: 0;"> 
+                <button mat-raised-button color="accent" class="ms-5" style="
+                padding: 5px 35px 0 20px;
+            ">Add New</button>
+            </div>
+        </div>
+        <hr>
+        <div class="card-body">
+            <div class="container-fluid">
+                <div class="row d-flex justify-content-evenly">
+                    <div class="col-md-2 text-center">Member</div>
+                    <div class="col-md-2 text-center">Status</div>
+                    <div class="col-md-2 text-center">Project</div>
+                    <div class="col-md-2 text-center">Role</div>
+                    <div class="col-md-2 text-center">Go</div>
+                </div>
+                <div class="row d-flex justify-content-evenly">
+                    <div class="col-md-2">
+                        <select class="form-control text-center">
+                            <option value="1">Option1</option>
+                            <option value="2">Option2</option>
+                            <option value="3">Option3</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <select class="form-control text-center">
+                            <option value="1">Option1</option>
+                            <option value="2">Option2</option>
+                            <option value="3">Option3</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <select class="form-control text-center">
+                            <option value="1">Option1</option>
+                            <option value="2">Option2</option>
+                            <option value="3">Option3</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 ">
+                        <select class="form-control text-center">
+                            <option value="1">Option1</option>
+                            <option value="2">Option2</option>
+                            <option value="3">Option3</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2  text-center"> <button type="submit" class="btn btn-primary ms-auto">
+                            Go
+                        </button></div>
+                </div>
+
+                <!-- <table class="table mt-4">
+                    <thead>
+                        <tr class="text-center">
+                            <th scope="col">Profile</th>
+                            <th scope="col" [app-sort]="teamOfUsers" data-order="desc" data-name="firstName">First Name &nbsp; <i class="bi bi-arrow-down-up sort text-primary"></i></th>
+                            <th scope="col" [app-sort]="teamOfUsers" data-order="desc" data-name="lastName">Last Name &nbsp; <i class="bi bi-arrow-down-up text-primary"></i></th>
+                            <th scope="col" [app-sort]="teamOfUsers" data-order="desc" data-name="email">E-mail &nbsp; <i class="bi bi-arrow-down-up text-primary"></i></th>
+                            <th scope="col" [app-sort]="teamOfUsers" data-order="desc">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let user of teamOfUsers; let i=index" class="text-center">
+                            <th scope="row"><i class="bi bi-person-square"></i></th>
+                            <td>{{user.firstName}}</td>
+                            <td>{{user.lastName}}</td>
+                            <td>{{user.email}}</td>
+                            <td><i class="bi bi-trash3 text-danger" ></i> &nbsp; 
+                                <i class="bi bi-check2-all text-primary"></i> &nbsp; 
+                                <i class="bi bi-pencil text-success"></i></td>
+                        </tr>
+
+                    </tbody>
+                </table> -->
+
+                <table class="table mt-4">
+                    <thead>
+                        <tr>
+                            <th scope="col">Profile</th>
+                            <th scope="col" [appSort]="teamOfUsers" data-order="desc" data-name="firsName" data-name="lastName">Name &nbsp;
+                                <i class="bi bi-arrow-down-up sort text-primary"></i></th>
+                           <th scope="col" [appSort]="teamOfUsers" data-order="desc" data-name="email">E-Mail &nbsp; <i
+                                    class="bi bi-arrow-down-up sort text-primary"></i></th>
+                            <th scope="col" [appSort]="teamOfUsers" data-order="desc" data-name="id">User ID &nbsp; <i
+                                    class="bi bi-arrow-down-up sort text-primary"></i></th>
+                            <th scope="col">Action</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let data of teamOfUsers | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
+                            <td><i class="bi bi-person-square"></i></td>
+                            <td>{{ data.firstName }} {{data.lastName}}</td>
+                            <td>{{ data.email }}</td>
+                            <td>{{ data.id }}</td>
+                            <td><i class="bi bi-trash3 text-danger"></i> &nbsp;
+                                <i class="bi bi-check2-all text-primary"></i> &nbsp;
+                                <i class="bi bi-pencil text-success"></i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <pagination-controls (pageChange)="p = $event" class="pagination"></pagination-controls>
+               
+              </div>
+        </div>
+    </div>
+</div>

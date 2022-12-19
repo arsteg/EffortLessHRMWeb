@@ -42,6 +42,9 @@ import { TimelineComponent } from './reports/timeline/timeline.component';
 import {MatTableModule} from '@angular/material/table';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { SortDirective } from './directive/sort.directive';
+import { SearchPipe } from './search.pipe';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 @NgModule({
   declarations: [
@@ -65,7 +68,9 @@ import { MatInputModule } from '@angular/material/input';
           PermissionModelComponent,
           ProfileComponent,
           ReportsComponent,
-          TimelineComponent
+          TimelineComponent,
+          SortDirective,
+          SearchPipe
   ],
   imports: [
     BrowserModule,
@@ -83,7 +88,8 @@ import { MatInputModule } from '@angular/material/input';
     MatButtonModule,
     MatSidenavModule, MatIconModule, MatListModule,
     MatCheckboxModule, MatRadioModule, TooltipModule,
-    MatTableModule, MatFormFieldModule, MatInputModule
+    MatTableModule, MatFormFieldModule, MatInputModule,
+    NgxPaginationModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,
