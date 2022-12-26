@@ -29,11 +29,11 @@ export class LoginComponent implements OnInit {
 }
   ngOnInit(): void {
 
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '';
     if (this.returnUrl) {
       this.router.navigateByUrl(this.returnUrl);
     } else {
-      this.router.navigateByUrl('/');
+      this.router.navigateByUrl('login');
     }
     this.rememberMe = localStorage.getItem('rememberMe')=='true';
   }

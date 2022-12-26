@@ -19,7 +19,7 @@ export class HomeComponent implements OnInit {
   }
   onLogout(){
     localStorage.removeItem('user.email')
-   this.router.navigateByUrl('/login')
+   this.router.navigateByUrl('/main')
    }
    
     clickMenu(id:string){
@@ -48,7 +48,7 @@ export class HomeComponent implements OnInit {
     id: '2',
     title: 'RealTime',
     icon: 'fa fa-clock',
-    //  
+     url:'/realtime',
     show:true,
    },
    {
@@ -83,7 +83,7 @@ export class HomeComponent implements OnInit {
       id: '43',
       title: 'Attendance',
       icon: 'fa fa-pencil-square',
-     
+      url: '/attendance',
     },
     {
       id: '44',

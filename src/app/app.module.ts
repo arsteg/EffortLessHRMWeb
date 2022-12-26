@@ -45,6 +45,9 @@ import { MatInputModule } from '@angular/material/input';
 import { SortDirective } from './directive/sort.directive';
 import { SearchPipe } from './search.pipe';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { AttendanceComponent } from './reports/attendance/attendance.component';
+import { RealtimeComponent } from './realtime/realtime.component';
+import { MainComponent } from './main/main.component';
 
 @NgModule({
   declarations: [
@@ -70,7 +73,10 @@ import { NgxPaginationModule } from 'ngx-pagination';
           ReportsComponent,
           TimelineComponent,
           SortDirective,
-          SearchPipe
+          SearchPipe,
+          AttendanceComponent,
+          RealtimeComponent,
+          MainComponent
   ],
   imports: [
     BrowserModule,

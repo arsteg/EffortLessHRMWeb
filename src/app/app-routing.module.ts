@@ -18,21 +18,26 @@ import { PermissionModelComponent } from './manage/permissonModel/permission-mod
 import { ProfileComponent } from './profile/profile.component';
 import { TimelineComponent } from './reports/timeline/timeline.component';
 import { UserListComponent } from './users/user-list/user-list.component';
+import { AttendanceComponent } from './reports/attendance/attendance.component';
+import { RealtimeComponent } from './realtime/realtime.component';
+import { MainComponent } from './main/main.component';
 
 const routes: Routes = [
   // {path:'',component:LayoutComponentComponent, canActivate: [AuthGuard]},
 
 
-  { path: '', component: LoginComponent },
+  { path: '', component: MainComponent },
+  { path: '', redirectTo: 'main', pathMatch: 'full' },
+  { path: 'main', component: MainComponent },
   { path: 'login', component: LoginComponent },
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'forgotPassword', component: ForgotPasswordComponent },
-  { path: 'register', component: RegisterComponent },
+  { path: 'register', component: RegisterComponent }, 
   {
     path: '', component: HomeComponent,
     children: [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'logout', component: LoginComponent },
+      // { path: 'login', component: LoginComponent },
       { path: 'resetPassword/:token', component: ResetPasswordComponent },
       { path: 'userProfile', component: UserProfileComponent },
       { path: 'screenshots', component: ScreenshotsComponent },
@@ -42,7 +47,9 @@ const routes: Routes = [
       { path: 'Profile', component: ProfileComponent },
       { path: 'timeline', component: TimelineComponent },
       { path: 'project', component: ProjectListComponent},
-      { path: 'people' , component: UserListComponent}
+      { path: 'people' , component: UserListComponent},
+      { path: 'attendance', component: AttendanceComponent },
+      { path: 'realtime', component: RealtimeComponent }
     ]
   }
 ]
