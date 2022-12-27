@@ -1,5 +1,7 @@
+import { ThisReceiver } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import { userRole } from 'src/app/models/role.model';
+import { Role } from 'src/app/models/role.model';
 import { RoleService } from 'src/app/_services/role.service';
 
 @Component({
@@ -13,11 +15,13 @@ export class RolesComponent implements OnInit {
   form:any;
   name: string;
   userRoleId :any = [];
-  userRoleAll :any = [];
+  userRoleAll :userRole[] = [];
   dataSource: any;
   scol:any;
   dummy:any = [];
- 
+  searchText = '';
+  p: number = 1;
+
   constructor(private roleSrv:RoleService) { 
    this.userRoleObj = {
     _id : '',
@@ -35,45 +39,39 @@ export class RolesComponent implements OnInit {
   }
 
   getUserRoleId(){
-    debugger;
+    // debugger;
     this.roleSrv.getUserRoleId().subscribe((result:any) => {
-      debugger;
+      // debugger;
       this.userRoleId = result['data'];
       console.log("Result", this.userRoleId);
     })
   }
 
   getUserRoleAll(){
-    debugger
-    this.roleSrv.getUserRoleAll().subscribe((result:any) => {
-      debugger;
-      this.userRoleAll = result['data'];
-      this.dummy = this.userRoleAll;
-      this.dummy.push({
-        _id : '627e16f8722cd08ad4875527',
-       RoleName : 'student',
-       RoleId : '2',
-       __v : 10,
-        id : '627e16f8722cd08ad4875527'
-       });
-       this.dummy.push({
-        _id : '627e16f8722cd08ad4875524',
-       RoleName : 'admin2',
-       RoleId : '3',
-       __v : 5,
-        id : '627e16f8722cd08ad4875524'
-       });
-      console.log("Result", this.userRoleAll);
-    })
-  }
-  createUserRole(){
-    debugger;
-    this.roleSrv.createUserRole(this.userRoleObj).subscribe((result)=>{
-      debugger;
-    this.getUserRoleAll();
+    this.roleSrv.getUserRoleAll().subscribe({
+      next: result => {
+        this.userRoleAll = result['data'];
+        console.log('Roles', this.userRoleAll)
+      },
+      error: error => console.log("ERROR!!!")
     })
   }
 
+  addRole() {
+   this.roleSrv.createUserRole(this.userRoleObj).subscribe(data => {
+    this.ngOnInit();
+    console.log(data);
+   })
+  }
+
+  deleteUserRole() {
+  
+      this.roleSrv.deleteUserRole(this.userRoleId.id).subscribe(data => {
+      this.ngOnInit();
+      console.log(" successfully Deleted!!!", data);
+    });
+  }
+  
     updateUserRole(){
      this.roleSrv.updateUserRole(this.userRoleObj).subscribe((result)=>{
       this.getUserRoleAll();
@@ -87,30 +85,30 @@ export class RolesComponent implements OnInit {
      })
     }
 
-    deleteUserRole(obj:any){
-      this.roleSrv.deleteUserRole(obj).subscribe((result)=>{
-        this.getUserRoleAll();
-      })
-    }
+    // deleteUserRole(obj:any){
+    //   this.roleSrv.deleteUserRole(obj).subscribe((result)=>{
+    //     this.getUserRoleAll();
+    //   })
+   
 
  
-       sortByAsc(){
-        debugger;
-        let filteredData;
-            debugger;
-            filteredData = this.dummy.sort((a:any, b:any)=>
-            a.RoleName.localeCompare(b.RoleName));
-            this.dummy = filteredData; 
-        }
+      //  sortByAsc(){
+      //   debugger;
+      //   let filteredData;
+      //       debugger;
+      //       filteredData = this.dummy.sort((a:any, b:any)=>
+      //       a.RoleName.localeCompare(b.RoleName));
+      //       this.dummy = filteredData; 
+      //   }
     
-       sortByDsc(){
-        const filteredData = this.dummy.sort((a:any, b:any)=>
-         a._id.localeCompare(b._id));
-         this.dummy = filteredData.reverse();
-         console.log(this.dummy);
-        }
-  }
-
+      //  sortByDsc(){
+      //   const filteredData = this.dummy.sort((a:any, b:any)=>
+      //    a._id.localeCompare(b._id));
+      //    this.dummy = filteredData.reverse();
+      //    console.log(this.dummy);
+      //   }
+  
+    }
  
 
 

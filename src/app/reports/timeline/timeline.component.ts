@@ -12,6 +12,7 @@ import * as moment from 'moment';
 export class TimelineComponent implements OnInit {
   teamOfUsers: User[] = [];
   allUsers: User[] = [];
+  p: number = 1;
   public users: Array<User>=[];
   constructor(private UserService: UserService,private manageTeamService: ManageTeamService) { 
     this.UserService.getUserList()

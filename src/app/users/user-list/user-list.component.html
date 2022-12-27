@@ -2,12 +2,12 @@
     <div class="container-fluid">
 
         <div class="d-flex justify-content-between">
-            <h1 class="pt-4">User Data for Remote Source</h1>
+            <h1 class="pt-4">Role for Remote Source</h1>
             <div class="d-flex h-25">
-                <input class="form-control search" type="text" placeholder="search..."
-                 [(ngModel)]="searchText" name="searchText"  aria-label="default input example"
-                 style="border-bottom: 1px solid grey; border-radius: 0;"> 
-                <button mat-raised-button color="accent" class="ms-5" style="
+                <input class="form-control search" type="text" placeholder="search..." [(ngModel)]="searchText"
+                    name="searchText" aria-label="default input example"
+                    style="border-bottom: 1px solid grey; border-radius: 0;">
+                <button mat-raised-button color="primary" class="ms-5" style="
                 padding: 5px 35px 0 20px;
             ">Add New</button>
             </div>
@@ -84,9 +84,11 @@
                     <thead>
                         <tr>
                             <th scope="col">Profile</th>
-                            <th scope="col" [appSort]="teamOfUsers" data-order="desc" data-name="firsName" data-name="lastName">Name &nbsp;
-                                <i class="bi bi-arrow-down-up sort text-primary"></i></th>
-                           <th scope="col" [appSort]="teamOfUsers" data-order="desc" data-name="email">E-Mail &nbsp; <i
+                            <th scope="col" [appSort]="teamOfUsers" data-order="desc" data-name="firsName"
+                                data-name="lastName">Name &nbsp;
+                                <i class="bi bi-arrow-down-up sort text-primary"></i>
+                            </th>
+                            <th scope="col" [appSort]="teamOfUsers" data-order="desc" data-name="email">E-Mail &nbsp; <i
                                     class="bi bi-arrow-down-up sort text-primary"></i></th>
                             <th scope="col" [appSort]="teamOfUsers" data-order="desc" data-name="id">User ID &nbsp; <i
                                     class="bi bi-arrow-down-up sort text-primary"></i></th>
@@ -95,7 +97,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let data of teamOfUsers | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
+                        <tr
+                            *ngFor="let data of teamOfUsers | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
                             <td><i class="bi bi-person-square"></i></td>
                             <td>{{ data.firstName }} {{data.lastName}}</td>
                             <td>{{ data.email }}</td>
@@ -108,8 +111,8 @@
                     </tbody>
                 </table>
                 <pagination-controls (pageChange)="p = $event" class="pagination"></pagination-controls>
-               
-              </div>
+
+            </div>
         </div>
     </div>
 </div>

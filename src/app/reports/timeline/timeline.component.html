@@ -10,7 +10,7 @@
              
             </mat-form-field>
           
-          <button mat-raised-button color="accent" class="ms-5">Add New</button>
+          <button mat-raised-button color="primary" class="ms-5">Add New</button>
           </div>
         </div><hr>
         <table class="table">
@@ -24,7 +24,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let user of teamOfUsers"  class="text-center">
+              <tr *ngFor="let user of teamOfUsers | paginate: { itemsPerPage: 5, currentPage: p }"  class="text-center">
                 <th scope="row"><i class="bi bi-person-square"></i></th>
                 <td>{{user.firstName}}</td>
                 <td>{{user.lastName}}</td>
@@ -34,23 +34,7 @@
              
             </tbody>
           </table>
-          <nav aria-label="Page navigation example">
-            <ul class="pagination justify-content-center">
-              <li class="page-item">
-                <a class="page-link" href="#" aria-label="Previous">
-                  <span aria-hidden="true">&laquo;</span>
-                  <span class="sr-only">Previous</span>
-                </a>
-              </li>
-              <li class="page-item"><a class="page-link" href="#">1</a></li>
-              <li class="page-item"><a class="page-link" href="#">2</a></li>
-              <li class="page-item"><a class="page-link" href="#">3</a></li>
-              <li class="page-item">
-                <a class="page-link" href="#" aria-label="Next">
-                  <span aria-hidden="true">&raquo;</span>
-                  <span class="sr-only">Next</span>
-                </a>
-              </li>
-            </ul>
-          </nav>
+          <pagination-controls (pageChange)="p = $event" class="pagination"></pagination-controls>
+
+         
 </div>

@@ -22,3 +22,12 @@ body{
     /* --navbar-scroll-text: white; */
     --navbar-scroll-shadow: none;
    }
+
+   .input{
+    border: none;
+    border-bottom: 0.8px solid #ced4da;
+    border-radius: 0;
+   }
+   .form-control:focus {
+    box-shadow: none;
+   }

@@ -13,29 +13,29 @@ export class RoleService {
   constructor(private http:HttpClient) { }
   
   getUserRoleId():Observable<userRole[]>{
-    debugger;
+    // debugger;
     console.log('url ' + environment.apiUrlDotNet+constant.apiEndPoint.userRoleId);
     return this.http.get<userRole[]>(environment.apiUrlDotNet+constant.apiEndPoint.userRoleId);
   }
   getUserRoleAll():Observable<userRole[]>{
-    debugger;
+    // debugger;
     console.log('url ' + environment.apiUrlDotNet+constant.apiEndPoint.userRoleAll);
     return this.http.get<userRole[]>(environment.apiUrlDotNet+constant.apiEndPoint.userRoleAll);
   }
   createUserRole(obj:any):Observable<any>{
-    debugger;
+    // debugger;
     console.log('url ' + environment.apiUrlDotNet+constant.apiEndPoint.userRoleCreate);
     return this.http.post<any>(environment.apiUrlDotNet+constant.apiEndPoint.userRoleCreate, obj);
   }
   updateUserRole(obj:any):Observable<userRole>{
-    debugger;
+    // debugger;
     console.log('url ' + environment.apiUrlDotNet+constant.apiEndPoint.userRoleUpdate);
     return this.http.post<any>(environment.apiUrlDotNet+constant.apiEndPoint.userRoleUpdate, obj);
   }
   deleteUserRole(obj:any):Observable<any>{
-    debugger;
-    console.log('url ' + environment.apiUrlDotNet+constant.apiEndPoint.userRoleDelete);
-    return this.http.post<userRole>(environment.apiUrlDotNet+constant.apiEndPoint.userRoleDelete, obj);
+    // debugger;
+    console.log('url ' + environment.apiUrlDotNet+constant.apiEndPoint.userRoleDelete, obj);
+    return this.http.delete<any>(environment.apiUrlDotNet+constant.apiEndPoint.userRoleDelete, obj);
   }
 }
 

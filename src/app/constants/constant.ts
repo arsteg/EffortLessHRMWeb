@@ -1,11 +1,11 @@
 export const constant = {
     apiEndPoint:{
         
-        userRoleId:'/auth/userRole/:id',
-        userRoleAll:'/auth/userRole/All',
-        userRoleCreate:'/auth/userRole/create',
-        userRoleUpdate:'/auth/userRole/update/:id',
-        userRoleDelete:'/auth/userRole/delete/:id',
+        userRoleId:'/auth/role/:id',
+        userRoleAll:'/auth/role/:id',
+        userRoleCreate:'/auth/role',
+        userRoleUpdate:'/auth/role/update/:id',
+        userRoleDelete:'/auth/role/:id',
 
         rolePermissionId :'/auth/rolePermission/:id',
         rolePermissions :'/auth/rolePermissions',
