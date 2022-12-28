@@ -111,7 +111,7 @@ const startDate=this.getMonday(new Date());
 const endDate=new Date();
 
 
-this.timeLogService.getCurrentWeekTotalTime(this.member, this.formatDate1(startDate), this.formatDate1(endDate)).subscribe({
+this.timeLogService.getCurrentWeekTotalTime(this.member.email, this.formatDate1(startDate), this.formatDate1(endDate)).subscribe({
   next: data => {
     let totalMinutes =  data.data.length*10;
     this.currentWeekTotalHours = Math.floor(totalMinutes/60);
@@ -127,7 +127,7 @@ const date=new Date();
 const firstday = new Date(date.getFullYear(), date.getMonth(), 1);
 const lastday = new Date(date.getFullYear(), date.getMonth() + 1, 0);
 
-this.timeLogService.getCurrentWeekTotalTime(this.member, this.formatDate1(firstday), this.formatDate1(lastday)).subscribe({
+this.timeLogService.getCurrentWeekTotalTime(this.member.email, this.formatDate1(firstday), this.formatDate1(lastday)).subscribe({
   next: data => {
     let totalMinutes =  data.data.length*10;
 
