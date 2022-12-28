@@ -40,12 +40,11 @@ export class LoginComponent implements OnInit {
 
   onSubmit() {
   {
+    debugger;
     this.submitted = true;
     this.loading = true;
     this.user.email=this.loginForm.value.username;
     this.user.password=this.loginForm.value.password;
-    localStorage.setItem('user.email', '1234');
-    this.router.navigateByUrl('/dashboard')
     this.authenticationService.login(this.user)
       .pipe(first())
         .subscribe(
