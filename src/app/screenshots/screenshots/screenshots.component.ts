@@ -298,6 +298,7 @@ geCellDetails(r:number, c:number,timeLogs:timeLog[]){
                 this.currentTargetLabel=this.screenshotRows[i].col1.timeLabel;
                 this.selectedScreenShot=`${this.imageBasepath}${this.screenshotRows[i].col1.fileString}`;
                 return;
+                console.log("previuos button works")
               }
               else{
                 this.currentTargetLabel=this.screenshotRows[i].col1.timeLabel;

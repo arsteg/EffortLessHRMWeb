@@ -21,7 +21,7 @@
                 <label id="example-radio-group-label" class="headings">Manager</label><br>
                 <mat-radio-group id="member" name="member" aria-labelledby="example-radio-group-label" class="example-radio-group" 
                 [ngModel]="selectedManager " >
-                  <mat-radio-button class="example-radio-button" *ngFor="let user of teamOfUsers" (click)="Selectmanager(user)"
+                  <mat-radio-button color="primary" class="example-radio-button" *ngFor="let user of teamOfUsers" (click)="Selectmanager(user)"
                    [value]="user">
                     {{ user.firstName }} {{ user.lastName }}
                   </mat-radio-button>
@@ -33,7 +33,7 @@
                   <div class="members">
                   <li *ngFor="let user of teamOfUsers" >
                     <label [class.selected]="user === selectedUser">
-                      <mat-checkbox [checked]="user['isChecked']" [disabled]="selectedManager && selectedManager.id == user.id"
+                      <mat-checkbox color="primary" [checked]="user['isChecked']" [disabled]="selectedManager && selectedManager.id == user.id"
                       (click)="onAddMember(user)">{{user.firstName}} {{user.lastName}}</mat-checkbox>
                     </label>
                   </li>

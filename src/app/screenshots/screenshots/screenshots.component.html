@@ -33,13 +33,16 @@
 
  <hr>
 
-  <div *ngFor="let timeLog of screenshotRows; let index = index " class="row">
+
+
+
+<div *ngFor="let timeLog of screenshotRows; let index = index " class="row">
 
     <div class="col-sm-2">
       <figure>
-        <img *ngIf="timeLog?.col1?.fileString" src="{{'data:image/jpg;base64,' + timeLog.col1.fileString}}"
+        <img *ngIf="timeLog?.col1?.fileString" src="{{imageBasepath + timeLog.col1.fileString}}"
           data-bs-toggle="modal" data-bs-target="#bigImageModal" (click)="setSelectedScreenshot($event)" />
-        <img *ngIf="!timeLog?.col1?.fileString" src="{{'data:image/jpeg;base64,'+defaultScreenshot}}" />
+        <img *ngIf="!timeLog?.col1?.fileString" src="{{imageBasepath+defaultScreenshot}}" />
         <figcaption class="figure-caption text-center"
           [tooltip]="'Clicks: ' + (timeLog.col1.clicks || 0) + ', Keyboard: '+ (timeLog.col1.keysPressed || 0)"
           [style.background-color]="getActivityColor(timeLog.col1.GetActivityLevel)">{{timeLog.col1.timeLabel}}
@@ -49,9 +52,9 @@
 
     <div class="col-sm-2" >
       <figure>
-        <img *ngIf="timeLog?.col2?.fileString" src="{{'data:image/jpg;base64,' + timeLog.col2.fileString}}" data-bs-toggle="modal"
+        <img *ngIf="timeLog?.col2?.fileString" src="{{imageBasepath + timeLog.col2.fileString}}" data-bs-toggle="modal"
           data-bs-target="#bigImageModal" (click)="setSelectedScreenshot($event)" />
-          <img *ngIf="!timeLog?.col2?.fileString" src="{{'data:image/jpeg;base64,'+defaultScreenshot}}" />
+          <img *ngIf="!timeLog?.col2?.fileString" src="{{imageBasepath+defaultScreenshot}}" />
         <figcaption class="figure-caption text-center"
         [tooltip]="'Clicks: ' + (timeLog.col2.clicks || 0) + ', Keyboard: '+ (timeLog.col2.keysPressed || 0)"
           [style.background-color]="getActivityColor(timeLog?.col2?.GetActivityLevel)">{{timeLog.col2.timeLabel}}
@@ -61,9 +64,9 @@
 
     <div class="col-sm-2" >
       <figure>
-        <img *ngIf="timeLog?.col3?.fileString" src="{{'data:image/jpg;base64,' + timeLog.col3.fileString}}" data-bs-toggle="modal"
+        <img *ngIf="timeLog?.col3?.fileString" src="{{imageBasepath + timeLog.col3.fileString}}" data-bs-toggle="modal"
           data-bs-target="#bigImageModal" (click)="setSelectedScreenshot($event)" />
-          <img *ngIf="!timeLog?.col3?.fileString" src="{{'data:image/jpeg;base64,'+defaultScreenshot}}" />
+          <img *ngIf="!timeLog?.col3?.fileString" src="{{imageBasepath+defaultScreenshot}}" />
         <figcaption class="figure-caption text-center"
         [tooltip]="'Clicks: ' + (timeLog.col3.clicks || 0) + ', Keyboard: '+ (timeLog.col3.keysPressed || 0)"
           [style.background-color]="getActivityColor(timeLog?.col3?.GetActivityLevel)">{{timeLog?.col3?.timeLabel}}
@@ -73,9 +76,9 @@
 
     <div class="col-sm-2">
       <figure>
-        <img *ngIf="timeLog?.col4?.fileString" src="{{'data:image/jpg;base64,' + timeLog.col4.fileString}}" data-bs-toggle="modal"
+        <img *ngIf="timeLog?.col4?.fileString" src="{{imageBasepath + timeLog.col4.fileString}}" data-bs-toggle="modal"
           data-bs-target="#bigImageModal" (click)="setSelectedScreenshot($event)" />
-          <img *ngIf="!timeLog?.col4?.fileString" src="{{'data:image/jpeg;base64,'+defaultScreenshot}}" />
+          <img *ngIf="!timeLog?.col4?.fileString" src="{{imageBasepath+defaultScreenshot}}" />
         <figcaption class="figure-caption text-center"
         [tooltip]="'Clicks: ' + (timeLog.col4.clicks || 0) + ', Keyboard: '+ (timeLog.col4.keysPressed || 0)"
           [style.background-color]="getActivityColor(timeLog?.col4?.GetActivityLevel)">{{timeLog?.col4?.timeLabel}}
@@ -85,9 +88,9 @@
 
     <div class="col-sm-2" >
       <figure>
-        <img  *ngIf="timeLog?.col5?.fileString" src="{{'data:image/jpg;base64,' + timeLog.col5.fileString}}" data-bs-toggle="modal"
+        <img  *ngIf="timeLog?.col5?.fileString" src="{{imageBasepath + timeLog.col5.fileString}}" data-bs-toggle="modal"
           data-bs-target="#bigImageModal" (click)="setSelectedScreenshot($event)" />
-          <img *ngIf="!timeLog?.col5?.fileString" src="{{'data:image/jpeg;base64,'+defaultScreenshot}}" />
+          <img *ngIf="!timeLog?.col5?.fileString" src="{{imageBasepath+defaultScreenshot}}" />
         <figcaption class="figure-caption text-center"
         [tooltip]="'Clicks: ' + (timeLog.col5.clicks || 0) + ', Keyboard: '+ (timeLog.col5.keysPressed || 0)"
           [style.background-color]="getActivityColor(timeLog?.col5?.GetActivityLevel)">{{timeLog.col5.timeLabel}}
@@ -97,9 +100,9 @@
 
     <div class="col-sm-2">
       <figure>
-        <img *ngIf="timeLog?.col6?.fileString" src="{{'data:image/jpg;base64,' + timeLog.col6.fileString}}" data-bs-togglze="modal"
+        <img *ngIf="timeLog?.col6?.fileString" src="{{imageBasepath + timeLog.col6.fileString}}" data-bs-toggle="modal"
           data-bs-target="#bigImageModal" (click)="setSelectedScreenshot($event)" />
-          <img *ngIf="!timeLog?.col6?.fileString" src="{{'data:image/jpeg;base64,'+ defaultScreenshot}}" />
+          <img *ngIf="!timeLog?.col6?.fileString" src="{{imageBasepath + defaultScreenshot}}" />
         <figcaption class="figure-caption text-center"
         [tooltip]="'Clicks: ' + (timeLog.col6.clicks || 0) + ', Keyboard: '+ (timeLog.col6.keysPressed || 0)"
           [style.background-color]="getActivityColor(timeLog?.col6?.GetActivityLevel)">{{timeLog.col6.timeLabel}}
@@ -124,24 +127,15 @@
                 <div class="carousel-item active">
                   <img class="modal-image" src="{{selectedScreenShot}}" />
                 </div>
-                <a class="carousel-control-prev" href="#demo" data-slide="prev">
+                <a class="carousel-control-prev" href="#demo" data-bs-slide="prev">
                   <span class="carousel-control-prev-icon" (click)=SetPreviousScreen()></span>
                 </a>
-                <a class="carousel-control-next" href="#demo" data-slide="next">
+                <a class="carousel-control-next" href="#demo" data-bs-slide="next">
                   <span class="carousel-control-next-icon" (click)="SetNextScreen()"></span>
                 </a>
               </div>
-            </div>
-            <!-- <div class="row">
-              <div class="col-sm-1">
-                <button (click)=SetPreviousScreen()>BACK</button>
-              </div>
-              <div class="col-sm-10">
-              </div>
-              <div class="col-sm-1 bottompmNav">
-                <button (click)="SetNextScreen()">NEXT</button>
-              </div>
-            </div> -->
+            </div> 
+
           </div>
         </div>
       </div>
