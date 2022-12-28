@@ -10,13 +10,12 @@
               </div>
             </div>
           </div>
-
           <div class="container-fluid">
             <div class="row"></div>
             <div class="row mt-4">
               <div class="col-md-6">
                 <label id="example-radio-group-label" class="headings">Manager</label><br>
-                <mat-radio-group id="member" name="member" aria-labelledby="example-radio-group-label" class="example-radio-group"
+                <mat-radio-group id="member" name="member" aria-labelledby="example-radio-group-label" class="example-radio-group managers"
                 [ngModel]="selectedManager " >
                   <mat-radio-button color="primary" class="example-radio-button" *ngFor="let user of teamOfUsers" (click)="Selectmanager(user)"
                    [value]="user">
@@ -25,10 +24,10 @@
                 </mat-radio-group><br>
               </div>
               <div class="col-md-6">
-                <ul class="users" type="none">
+                <ul class="users" type="none" class="overflow-auto">
                   <p class="headings">Members</p>
                   <div class="members">
-                  <li *ngFor="let user of teamOfUsers" >
+                  <li *ngFor="let user of teamOfUsers">
                     <label [class.selected]="user === selectedUser">
                       <mat-checkbox color="primary" [checked]="user['isChecked']" [disabled]="selectedManager && selectedManager.id == user.id"
                       (click)="onAddMember(user)">{{user.firstName}} {{user.lastName}}</mat-checkbox>

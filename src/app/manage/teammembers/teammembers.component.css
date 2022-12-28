@@ -75,20 +75,27 @@
   margin: 15px 0;
   align-items: flex-start;
   border: 1px solid #c9c3c3;
-    border-radius: 7px;
-    margin-right: 20px;
-    padding-left: 20px;
-    line-height: 2;
+  border-radius: 7px;
+  margin-right: 20px;
+  padding-left: 20px;
+  line-height: 2;
 }
 
 .example-radio-button {
   margin: 5px;
 }
+.managers{
+  overflow: hidden;
+    overflow-y: scroll;
+}
+
 .members{
   border: 1px solid #c9c3c3;
   border-radius: 7px;
   margin-right: 20px;
   padding-left: 20px;
+    overflow: hidden;
+    overflow-y: scroll;
   }
   .members li{
     line-height: 2.83;
