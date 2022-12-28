@@ -15,6 +15,7 @@ import { Observable, Subscription } from 'rxjs';
 interface teamMember{
 id:string;
 name:string;
+email:string
 }
 
 @Component({
@@ -37,11 +38,10 @@ export class ScreenshotsComponent implements OnInit {
   currentMonthTotalMinutes: number=0;
   imagePath:string="iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAApgAAAKYB3X3/OAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAANCSURBVEiJtZZPbBtFFMZ/M7ubXdtdb1xSFyeilBapySVU8h8OoFaooFSqiihIVIpQBKci6KEg9Q6H9kovIHoCIVQJJCKE1ENFjnAgcaSGC6rEnxBwA04Tx43t2FnvDAfjkNibxgHxnWb2e/u992bee7tCa00YFsffekFY+nUzFtjW0LrvjRXrCDIAaPLlW0nHL0SsZtVoaF98mLrx3pdhOqLtYPHChahZcYYO7KvPFxvRl5XPp1sN3adWiD1ZAqD6XYK1b/dvE5IWryTt2udLFedwc1+9kLp+vbbpoDh+6TklxBeAi9TL0taeWpdmZzQDry0AcO+jQ12RyohqqoYoo8RDwJrU+qXkjWtfi8Xxt58BdQuwQs9qC/afLwCw8tnQbqYAPsgxE1S6F3EAIXux2oQFKm0ihMsOF71dHYx+f3NND68ghCu1YIoePPQN1pGRABkJ6Bus96CutRZMydTl+TvuiRW1m3n0eDl0vRPcEysqdXn+jsQPsrHMquGeXEaY4Yk4wxWcY5V/9scqOMOVUFthatyTy8QyqwZ+kDURKoMWxNKr2EeqVKcTNOajqKoBgOE28U4tdQl5p5bwCw7BWquaZSzAPlwjlithJtp3pTImSqQRrb2Z8PHGigD4RZuNX6JYj6wj7O4TFLbCO/Mn/m8R+h6rYSUb3ekokRY6f/YukArN979jcW+V/S8g0eT/N3VN3kTqWbQ428m9/8k0P/1aIhF36PccEl6EhOcAUCrXKZXXWS3XKd2vc/TRBG9O5ELC17MmWubD2nKhUKZa26Ba2+D3P+4/MNCFwg59oWVeYhkzgN/JDR8deKBoD7Y+ljEjGZ0sosXVTvbc6RHirr2reNy1OXd6pJsQ+gqjk8VWFYmHrwBzW/n+uMPFiRwHB2I7ih8ciHFxIkd/3Omk5tCDV1t+2nNu5sxxpDFNx+huNhVT3/zMDz8usXC3ddaHBj1GHj/As08fwTS7Kt1HBTmyN29vdwAw+/wbwLVOJ3uAD1wi/dUH7Qei66PfyuRj4Ik9is+hglfbkbfR3cnZm7chlUWLdwmprtCohX4HUtlOcQjLYCu+fzGJH2QRKvP3UNz8bWk1qMxjGTOMThZ3kvgLI5AzFfo379UAAAAASUVORK5CYII=";
   members:teamMember[];
-  member:string="";
+  member:any;
   currentTargetLabel:string="";
   message:any;
   subscription: Subscription;
-  
 
   constructor(
     private timeLogService:TimeLogService,
@@ -51,36 +51,37 @@ export class ScreenshotsComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.resetToken = params['token'];
       });
-      
+
   }
 
   ngOnInit(): void {
-  
+
     this.members = [];
     this.populateMembers();
     this.showScreenShots();
     this.subscription = this.timeLogService.currentMessage.subscribe((message:any) => this.message = message);
-    console.log(this.message);
-    
   }
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
   }
-  
-    
+
+  onMemberSelectionChange(member:any){
+  this.member=JSON.parse(member.value);
+  this.showScreenShots();
+  }
+
   populateMembers(){
     this.members=[];
     let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    this.members.push({id:currentUser.email, name:"Me"});
-    this.member= currentUser.email;
-    this.timeLogService.getTeamMembers(currentUser.id).subscribe({
+    this.members.push({id:currentUser.email, name:"Me",email:currentUser.email});
+    this.member= currentUser;
+    this.timeLogService.getTeamMembers(this.member.id).subscribe({
       next: response => {
-      
         this.timeLogService.getusers(response.data).subscribe({
           next: result => {
             result.data.forEach(user=>{
-              this.members.push({id:user.email, name: `${user.firstName} ${user.lastName}`});
+              this.members.push({id:user.email, name: `${user.firstName} ${user.lastName}`,email:user.email});
             })
           },
           error: error => {
@@ -96,7 +97,7 @@ export class ScreenshotsComponent implements OnInit {
   showScreenShots(){
   let currentUser = JSON.parse(localStorage.getItem('currentUser'));
   let formattedDate = this.formatDate(this.selectedDate);
-  var result  = this.timeLogService.getLogsWithImages(this.member, formattedDate);
+  var result  = this.timeLogService.getLogsWithImages(this.member.email, formattedDate);
   result.subscribe({
     next: data => {
       this.screenshotRows = [];
@@ -109,11 +110,11 @@ export class ScreenshotsComponent implements OnInit {
 const startDate=this.getMonday(new Date());
 const endDate=new Date();
 
-  
+
 this.timeLogService.getCurrentWeekTotalTime(this.member, this.formatDate1(startDate), this.formatDate1(endDate)).subscribe({
   next: data => {
     let totalMinutes =  data.data.length*10;
-    this.currentWeekTotalHours = Math.floor(totalMinutes/60);  
+    this.currentWeekTotalHours = Math.floor(totalMinutes/60);
     this.currentWeekTotalMinutes = totalMinutes%60;
 
   },
@@ -129,7 +130,7 @@ const lastday = new Date(date.getFullYear(), date.getMonth() + 1, 0);
 this.timeLogService.getCurrentWeekTotalTime(this.member, this.formatDate1(firstday), this.formatDate1(lastday)).subscribe({
   next: data => {
     let totalMinutes =  data.data.length*10;
-    
+
     this.currentMonthTotalHours = Math.floor(totalMinutes/60);
     this.currentMonthTotalMinutes = (totalMinutes%60);
     },
@@ -139,8 +140,6 @@ this.timeLogService.getCurrentWeekTotalTime(this.member, this.formatDate1(firstd
 });
 
 }
-
-
 
 populateScreenShots(timeLogs:timeLog[]){
   let startRowFlag=false;
@@ -418,9 +417,9 @@ geCellDetails(r:number, c:number,timeLogs:timeLog[]){
 
         }
 
-       
+
       }
-     
+
 
 
 
