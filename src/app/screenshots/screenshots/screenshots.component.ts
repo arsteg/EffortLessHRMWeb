@@ -208,7 +208,7 @@ return row;
 
 setSelectedScreenshot(event:any){
 this.selectedScreenShot=event.currentTarget.src;
-this.currentTargetLabel =  event.currentTarget.nextSibling.innerText;
+this.currentTargetLabel =  event.currentTarget.nextSibling.nextElementSibling.innerText;
 }
 
 SetPreviousDay(){
