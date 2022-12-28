@@ -60,7 +60,6 @@ export class TeammembersComponent implements OnInit, OnDestroy {
       next: result => {
         this.teamOfUsers = result.data.data;
         this.allUsers = result.data.data;
-        console.log("team", this.teamOfUsers)
       },
       error: error => { }
     })
@@ -79,7 +78,7 @@ export class TeammembersComponent implements OnInit, OnDestroy {
             });
             //  debugger;
             // let arr = [];
-            // this.selectedValue =JSON.parse(user.target.value); 
+            // this.selectedValue =JSON.parse(user.target.value);
             // arr.push(this.selectedValue)
             // console.log(arr);
             // this.timeLogService.changeMessage(arr);
