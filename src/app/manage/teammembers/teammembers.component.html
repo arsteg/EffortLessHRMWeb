@@ -8,18 +8,15 @@
               <div class="col-md-10">
                 <h4 class="card-title headings">Team Members</h4>
               </div>
-             
             </div>
           </div>
 
           <div class="container-fluid">
             <div class="row"></div>
             <div class="row mt-4">
-              
               <div class="col-md-6">
-
                 <label id="example-radio-group-label" class="headings">Manager</label><br>
-                <mat-radio-group id="member" name="member" aria-labelledby="example-radio-group-label" class="example-radio-group" 
+                <mat-radio-group id="member" name="member" aria-labelledby="example-radio-group-label" class="example-radio-group"
                 [ngModel]="selectedManager " >
                   <mat-radio-button color="primary" class="example-radio-button" *ngFor="let user of teamOfUsers" (click)="Selectmanager(user)"
                    [value]="user">
@@ -41,8 +38,8 @@
                 </ul>
               </div>
             </div>
-           
-            
+
+
           </div>
         </div>
       </div>

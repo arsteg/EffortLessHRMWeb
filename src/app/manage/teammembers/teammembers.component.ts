@@ -60,6 +60,12 @@ export class TeammembersComponent implements OnInit, OnDestroy {
       next: result => {
         this.teamOfUsers = result.data.data;
         this.allUsers = result.data.data;
+        let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        this.teamOfUsers.forEach((user:any, index:number)=>{
+        if(user.id==currentUser.id){
+            this.selectedManager = user;
+            this.Selectmanager(user);
+        }});
       },
       error: error => { }
     })
