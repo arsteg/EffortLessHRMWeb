@@ -20,6 +20,7 @@ export class HomeComponent implements OnInit {
     let roleId = localStorage.getItem('roleId');
     this.auth.getRole(roleId).subscribe((response: any) => {
       let role = response && response.data && response.data[0].Name;
+      role = 'admin'
       if (role.toLowerCase() == 'user') {
         this.menuList = SideBarUserMenu
       }
@@ -81,17 +82,17 @@ export const SideBarAdminMenu = [
       {
         id: '42',
         title: 'Employee Fields',
-        icon: 'fa fa-clock'      
+        icon: 'fa fa-file-alt'      
       },
       {
         id: '43',
         title: 'Employee Tree',
-        icon: 'fa fa-pencil-square',
+        icon: 'fa fa-sitemap',
       },
       {
         id: '44',
         title: 'Documents',
-        icon: 'fa fa-pencil-square',
+        icon: 'fa fa-file',
       },
       {
         id: '45',
@@ -148,7 +149,7 @@ export const SideBarAdminMenu = [
       {
         id: '81',
         title: 'Settings',
-        icon: 'fa fa-clock'
+        icon: 'fa fa-wrench'
       },
       {
         id: '82',
@@ -205,7 +206,7 @@ export const SideBarAdminMenu = [
       {
         id: '91',
         title: 'Settings',
-        icon: 'fa fa-clock'
+        icon: 'fa fa-wrench'
       },
       {
         id: '91',
@@ -235,7 +236,7 @@ export const SideBarAdminMenu = [
       {
         id: '71',
         title: 'Settings',
-        icon: 'fa fa-clock',
+        icon: 'fa fa-wrench',
       },
       {
         id: '72',
@@ -267,7 +268,7 @@ export const SideBarAdminMenu = [
       {
         id: '111',
         title: 'Settings',
-        icon: 'fa fa-clock'
+        icon: 'fa fa-wrench'
 
       },
       {
@@ -312,7 +313,7 @@ export const SideBarAdminMenu = [
       {
         id: '121',
         title: 'Settings',
-        icon: 'fa fa-clock'
+        icon: 'fa fa-wrench'
 
       },
       {
@@ -357,31 +358,31 @@ export const SideBarAdminMenu = [
       {
         id: '131',
         title: 'Settings',
-        icon: 'fa fa-clock'
+        icon: 'fa fa-wrench'
 
       },
       {
         id: '132',
         title: 'Tax Exemptions',
-        icon: 'fa fa-clock'
+        icon: 'fa fa-file'
 
       },
       {
         id: '133',
         title: 'Tax Declarations',
-        icon: 'fa fa-clock'
+        icon: 'fa fa-file'
 
       },
       {
         id: '134',
         title: 'Tax Overrides',
-        icon: 'fa fa-clock'
+        icon: 'fa fa-file'
 
       },
       {
         id: '135',
         title: 'eTDS',
-        icon: 'fa fa-clock'
+        icon: 'fa fa-file'
 
       }
     ]
