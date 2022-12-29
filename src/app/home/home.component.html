@@ -1,98 +1,91 @@
 <div class="d-flex" id="wrapper">
-    <!-- Sidebar -->
+  <!-- Sidebar -->
 
-    <!-- <div class="list-group list-group-flush collapse-text bg-light icons-only">
-      <div class="sidebar-heading">Effortless HRM</div>
-      <ul class="collapsible-nav nav flex-column" id="nav_accordion" *ngFor="let menu of menuList" >
-      <li class="nav-item has-submenu sidebar-sublinks">
-        <a class="nav-link sidebar-links" [ngClass]="{'active': menu.url== ''}" [routerLink]="menu.url" routerLinkActive="active" (click)="clickMenu(menu.id)">
-          <span  [ngClass]="menu.icon" class="me-2 collapse-icons"></span> </a>
-        <ul class="submenu p-0" *ngFor="let sm of menu.subMenu">
-          <span *ngIf="menu.show">
-            <a class="nav-link sidebar-links  sidebar-sublinks " [routerLink]="sm.url==''? '\dashboard':sm.url"  >
-              <span [ngClass]="sm.icon" class="me-2 collapse-icons"></span> </a>
-          </span>
-        </ul>
-      </li>
+  <div class="bg-light sidebar-title border-right" id="sidebar-wrapper" 
+    [ngClass]="status ? 'collapsed-menu' : 'show'">
+    <div class="sidebar-heading">Effortless HRM</div>
+    <div class="list-group list-group-flush">
+      <ul class="nav flex-column" id="nav_accordion" *ngFor="let menu of menuList">
+        <li class="nav-item has-submenu">
+          <a class="nav-link sidebar-links" [ngClass]="{'active': menu.url== ''}" [routerLink]="menu.url"
+            routerLinkActive="active" (click)="clickMenu(menu.id)">
+            <span [ngClass]="menu.icon" class="me-2 collapse-icons"></span>
+            <ng-container *ngIf="!status">{{menu.title}}</ng-container>
+          </a>
+          <ul class="submenu p-0" *ngFor="let sm of menu.subMenu">
+            <span *ngIf="menu.show">
+              <a class="nav-link sidebar-links" [ngClass]="{'active': menu.url== ''}"
+                [routerLink]="sm.url==''? '\dashboard':sm.url">
+                <span [ngClass]="sm.icon" class="me-2 collapse-icons"></span>
+                <ng-container *ngIf="!status">{{sm.title}}</ng-container>
+              </a>
+            </span>
+          </ul>
+        </li>
       </ul>
-      </div> -->
-
-    <div class="bg-light sidebar-title border-right" id="sidebar-wrapper" *ngIf="!status"
-     [ngClass]="status ? 'hide' : 'show'" >
-      <div class="sidebar-heading">Effortless HRM</div>
-      <div class="list-group list-group-flush">
-        <ul class="nav flex-column" id="nav_accordion" *ngFor="let menu of menuList" >
-          <li class="nav-item has-submenu">
-            <a class="nav-link sidebar-links" [ngClass]="{'active': menu.url== ''}" [routerLink]="menu.url" routerLinkActive="active" (click)="clickMenu(menu.id)"><span  [ngClass]="menu.icon" class="me-2 collapse-icons"></span>  {{menu.title}} </a>
-            <ul class="submenu p-0" *ngFor="let sm of menu.subMenu">
-              <span *ngIf="menu.show">
-                <a class="nav-link sidebar-links " [ngClass]="{'active': menu.url== ''}" [routerLink]="sm.url==''? '\dashboard':sm.url"  > <span [ngClass]="sm.icon" class="me-2 collapse-icons"></span> {{sm.title}} </a>
-              </span>
-            </ul>
-          </li>
-        </ul>
-      </div>
     </div>
-   
-    
+  </div>
 
-    <div id="page-content-wrapper" class="w-100">
-      
-      <nav class="navbar navbar-expand-lg navbar-light" >
-        <div class="container-fluid">
-          <li class="fas fa-bars" (click)="clickEvent()"></li>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarSupportedContent" >
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-              <li class="nav-item">
-                <a class="nav-link ac6666tive" aria-current="page" [routerLink]="['dashboard']">Home</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" [routerLink]="['dashboard']">Link</a>
-              </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle"  id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Dropdown
-                </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <li><a class="dropdown-item">Action</a></li>
-                  <li><a class="dropdown-item">Another action</a></li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" >Something else here</a></li>
-                </ul>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-              </li>
-            </ul>
-            <div class="text-right">
-                <form class="d-flex">
-                  <button mat-raised-button color="primary" (click)="onLogout()" class="me-3">Log Out</button>
-                   
-                    
-                    <img src="../assets/profileimg.jpg" [routerLink]="['Profile']" class="mx-3" height="45px" alt="profileimg">
-                    
-                </form>
-            </div>
+  <div id="page-content-wrapper" class="w-100">
+
+    <nav class="navbar navbar-expand-lg navbar-light">
+      <div class="container-fluid">
+        <li class="fas fa-bars" (click)="clickEvent()"></li>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link ac6666tive" aria-current="page" [routerLink]="['dashboard']">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="['dashboard']">Link</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Dropdown
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item">Action</a></li>
+                <li><a class="dropdown-item">Another action</a></li>
+                <li>
+                  <hr class="dropdown-divider">
+                </li>
+                <li><a class="dropdown-item">Something else here</a></li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+            </li>
+          </ul>
+          <div class="text-right">
+            <form class="d-flex">
+              <button mat-raised-button color="primary" (click)="onLogout()" class="me-3">Log Out</button>
+
+
+              <img src="../assets/profileimg.jpg" [routerLink]="['Profile']" class="mx-3" height="45px"
+                alt="profileimg">
+
+            </form>
           </div>
         </div>
-      </nav>
-
-     
-
-      <div class="container-fluid">
-        <router-outlet></router-outlet>
-        <ng-http-loader [backdrop]="false" [backgroundColor]="'#ff0000'" [debounceDelay]="100"
-            [extraDuration]="1000" [minDuration]="1000"  [backdropBackgroundColor]="'#777777'"
-            [spinner]="spinnerStyle.skThreeBounce">
-        </ng-http-loader>
       </div>
+    </nav>
+
+
+
+    <div class="container-fluid">
+      <router-outlet></router-outlet>
+      <ng-http-loader [backdrop]="false" [backgroundColor]="'#ff0000'" [debounceDelay]="100" [extraDuration]="1000"
+        [minDuration]="1000" [backdropBackgroundColor]="'#777777'" [spinner]="spinnerStyle.skThreeBounce">
+      </ng-http-loader>
     </div>
- 
-   
-    <!-- /#page-content-wrapper -->
   </div>
-  <!-- /#wrapper -->
-  
+
+
+  <!-- /#page-content-wrapper -->
+</div>
+<!-- /#wrapper -->

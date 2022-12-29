@@ -40,7 +40,7 @@ export class LoginComponent implements OnInit {
 
   onSubmit() {
   {
-    debugger;
+    // debugger;
     this.submitted = true;
     this.loading = true;
     this.user.email=this.loginForm.value.username;
@@ -54,6 +54,7 @@ export class LoginComponent implements OnInit {
               localStorage.setItem('jwtToken', data.token);
               localStorage.setItem('currentUser', JSON.stringify(this.user));
               localStorage.setItem('rememberMe', JSON.stringify(this.rememberMe));
+              localStorage.setItem('roleId', data.data.user.role.id);
               this.router.navigate(['/dashboard']);
             },
             err => {

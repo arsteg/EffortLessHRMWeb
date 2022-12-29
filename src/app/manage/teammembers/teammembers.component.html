@@ -17,7 +17,7 @@
                 <label id="example-radio-group-label" class="headings">Manager</label><br>
                 <mat-radio-group id="member" name="member" aria-labelledby="example-radio-group-label" class="example-radio-group managers"
                 [ngModel]="selectedManager " >
-                  <mat-radio-button color="primary" class="example-radio-button" *ngFor="let user of teamOfUsers" (click)="Selectmanager(user)"
+                  <mat-radio-button color="primary" class="manager example-radio-button" *ngFor="let user of teamOfUsers" (click)="Selectmanager(user)"
                    [value]="user">
                     {{ user.firstName }} {{ user.lastName }}
                   </mat-radio-button>

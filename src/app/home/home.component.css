@@ -47,5 +47,8 @@
 }
 #page-content-wrapper{
     transition: margin-left .5s;
- 
+}
+
+.collapsed-menu{
+    width: 3%!important;
 }
