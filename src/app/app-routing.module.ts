@@ -21,6 +21,8 @@ import { UserListComponent } from './users/user-list/user-list.component';
 import { AttendanceComponent } from './reports/attendance/attendance.component';
 import { RealtimeComponent } from './realtime/realtime.component';
 import { MainComponent } from './main/main.component';
+import { changeUserPassword } from './models/user';
+
 
 const routes: Routes = [
   // {path:'',component:LayoutComponentComponent, canActivate: [AuthGuard]},
@@ -31,7 +33,8 @@ const routes: Routes = [
   { path: 'main', component: MainComponent },
   { path: 'login', component: LoginComponent },
   { path: 'forgotPassword', component: ForgotPasswordComponent },
-  { path: 'register', component: RegisterComponent }, 
+  { path: 'register', component: RegisterComponent },
+  { path: 'changePassword', component: ChangePasswordComponent },
   {
     path: '', component: HomeComponent,
     children: [

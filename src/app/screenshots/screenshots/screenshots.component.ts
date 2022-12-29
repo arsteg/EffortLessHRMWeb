@@ -81,7 +81,9 @@ export class ScreenshotsComponent implements OnInit {
         this.timeLogService.getusers(response.data).subscribe({
           next: result => {
             result.data.forEach(user=>{
+              if(user.id!=currentUser.id){
               this.members.push({id:user.email, name: `${user.firstName} ${user.lastName}`,email:user.email});
+            }
             })
           },
           error: error => {
