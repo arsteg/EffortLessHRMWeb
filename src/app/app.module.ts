@@ -48,6 +48,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { AttendanceComponent } from './reports/attendance/attendance.component';
 import { RealtimeComponent } from './realtime/realtime.component';
 import { MainComponent } from './main/main.component';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 
 @NgModule({
   declarations: [
@@ -87,6 +88,7 @@ import { MainComponent } from './main/main.component';
     ToastrModule.forRoot(),
     NgHttpLoaderModule.forRoot(),
     AgGridModule.withComponents([]),
+    BsDropdownModule.forRoot(),
     BrowserAnimationsModule,
     NoopAnimationsModule,
     LayoutModule,

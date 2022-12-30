@@ -1,11 +1,18 @@
 .sidebar-links {
-    margin: 10px 0;
+    margin: 5px 0;
+}
+
+.menuitem, .sidebar-links{
+    cursor: pointer; 
+}
+
+.sidebar-links:hover{
+    background-color: #e3efff;
 }
 
 .sidebar-links.active {
     background: #0a58ca;
     color: white;
-    margin-right: 30px;
     border-bottom-right-radius: 15px;
     border-top-right-radius: 15px;
 }
@@ -50,5 +57,8 @@
 }
 
 .collapsed-menu{
-    width: 3%!important;
+    width: 4%!important;
+}
+.submenu .sidebar-links{
+    padding: .25rem 1rem .25rem 2.5rem;
 }

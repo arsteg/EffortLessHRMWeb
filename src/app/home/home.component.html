@@ -1,29 +1,55 @@
 <div class="d-flex" id="wrapper">
   <!-- Sidebar -->
-
-  <div class="bg-light sidebar-title border-right" id="sidebar-wrapper" 
-    [ngClass]="status ? 'collapsed-menu' : 'show'">
+  <div class="bg-light sidebar-title border-right" id="sidebar-wrapper"
+    [ngClass]="isCollapsedMenu ? 'collapsed-menu' : 'show'">
     <div class="sidebar-heading">Effortless HRM</div>
-    <div class="list-group list-group-flush">
+    <!--Expanded Menu-->
+    <div class="list-group list-group-flush" *ngIf="!isCollapsedMenu">
       <ul class="nav flex-column" id="nav_accordion" *ngFor="let menu of menuList">
         <li class="nav-item has-submenu">
           <a class="nav-link sidebar-links" [ngClass]="{'active': menu.url== ''}" [routerLink]="menu.url"
             routerLinkActive="active" (click)="clickMenu(menu.id)">
             <span [ngClass]="menu.icon" class="me-2 collapse-icons"></span>
-            <ng-container *ngIf="!status">{{menu.title}}</ng-container>
+            {{menu.title}} 
+            <span class="fa fa-caret-down pull-right mt-1" *ngIf="menu.subMenu && menu.subMenu.length"></span>
           </a>
           <ul class="submenu p-0" *ngFor="let sm of menu.subMenu">
             <span *ngIf="menu.show">
               <a class="nav-link sidebar-links" [ngClass]="{'active': menu.url== ''}"
                 [routerLink]="sm.url==''? '\dashboard':sm.url">
-                <span [ngClass]="sm.icon" class="me-2 collapse-icons"></span>
-                <ng-container *ngIf="!status">{{sm.title}}</ng-container>
+                {{sm.title}}
               </a>
             </span>
           </ul>
         </li>
       </ul>
     </div>
+    <!--Collapsed Menu-->
+    <div *ngIf="isCollapsedMenu">
+      <ul class="nav flex-column" id="nav_accordion" *ngFor="let menu of menuList">
+        <li class="nav-item has-submenu" dropdown container="body"  placement="right">
+          <a class="nav-link sidebar-links" dropdownToggle [ngClass]="{'active': menu.url== ''}" [routerLink]="menu.url"
+            routerLinkActive="active"  [tooltip]="menu.title">
+            <span [ngClass]="menu.icon" class="me-2 collapse-icons fa-lg"></span>
+          </a>
+          <ng-container *ngIf="menu.subMenu && menu.subMenu.length">
+          <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-basic">
+            <li class="menuitem text-center">
+              {{menu.title}}
+            </li>
+            <li class="divider dropdown-divider"></li>
+            <li class="menuitem" *ngFor="let sm of menu.subMenu">
+              <a class="dropdown-item nav-link" [ngClass]="{'active': menu.url== ''}"
+                  [routerLink]="sm.url==''? '\dashboard':sm.url">
+                  {{sm.title}}
+                </a>
+            </li>
+          </ul> 
+        </ng-container>
+        </li>
+      </ul>
+    </div>
+
   </div>
 
   <div id="page-content-wrapper" class="w-100">
