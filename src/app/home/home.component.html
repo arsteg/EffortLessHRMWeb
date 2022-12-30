@@ -10,7 +10,7 @@
           <a class="nav-link sidebar-links" [ngClass]="{'active': menu.url== ''}" [routerLink]="menu.url"
             routerLinkActive="active" (click)="clickMenu(menu.id)">
             <span [ngClass]="menu.icon" class="me-2 collapse-icons"></span>
-            {{menu.title}} 
+            {{menu.title}}
             <span class="fa fa-caret-down pull-right mt-1" *ngIf="menu.subMenu && menu.subMenu.length"></span>
           </a>
           <ul class="submenu p-0" *ngFor="let sm of menu.subMenu">
@@ -27,25 +27,25 @@
     <!--Collapsed Menu-->
     <div *ngIf="isCollapsedMenu">
       <ul class="nav flex-column" id="nav_accordion" *ngFor="let menu of menuList">
-        <li class="nav-item has-submenu" dropdown container="body"  placement="right">
+        <li class="nav-item has-submenu" dropdown container="body" placement="right">
           <a class="nav-link sidebar-links" dropdownToggle [ngClass]="{'active': menu.url== ''}" [routerLink]="menu.url"
-            routerLinkActive="active"  [tooltip]="menu.title">
+            routerLinkActive="active" [tooltip]="menu.title">
             <span [ngClass]="menu.icon" class="me-2 collapse-icons fa-lg"></span>
           </a>
           <ng-container *ngIf="menu.subMenu && menu.subMenu.length">
-          <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-basic">
-            <li class="menuitem text-center">
-              {{menu.title}}
-            </li>
-            <li class="divider dropdown-divider"></li>
-            <li class="menuitem" *ngFor="let sm of menu.subMenu">
-              <a class="dropdown-item nav-link" [ngClass]="{'active': menu.url== ''}"
+            <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-basic">
+              <li class="menuitem text-center">
+                {{menu.title}}
+              </li>
+              <li class="divider dropdown-divider"></li>
+              <li class="menuitem" *ngFor="let sm of menu.subMenu">
+                <a class="dropdown-item nav-link" [ngClass]="{'active': menu.url== ''}"
                   [routerLink]="sm.url==''? '\dashboard':sm.url">
                   {{sm.title}}
                 </a>
-            </li>
-          </ul> 
-        </ng-container>
+              </li>
+            </ul>
+          </ng-container>
         </li>
       </ul>
     </div>
@@ -66,6 +66,15 @@
             <li class="nav-item">
               <a class="nav-link ac6666tive" aria-current="page" [routerLink]="['dashboard']">Home</a>
             </li>
+
+            <!-- <li>
+              <div class="container-fluid mt-3">
+                <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#demo">
+                  Offcanvas
+                </button>
+              </div>
+            </li> -->
+
             <li class="nav-item">
               <a class="nav-link" [routerLink]="['dashboard']">Link</a>
             </li>
@@ -90,19 +99,17 @@
           <div class="text-right">
             <form class="d-flex">
               <button mat-raised-button color="primary" (click)="onLogout()" class="me-3">Log Out</button>
-
-
-              <img src="../assets/profileimg.jpg" [routerLink]="['Profile']" class="mx-3" height="45px"
-                alt="profileimg">
-
+              <!-- <img src="../assets/profileimg.jpg" class="mx-3" height="45px" alt="profileimg"> -->
+              <div class="">
+                <span data-bs-toggle="offcanvas" data-bs-target="#demo">
+                  <img src="../assets/profileimg.jpg" class="mx-3" height="45px" alt="profileimg">
+                </span>
+              </div>
             </form>
           </div>
         </div>
       </div>
     </nav>
-
-
-
     <div class="container-fluid">
       <router-outlet></router-outlet>
       <ng-http-loader [backdrop]="false" [backgroundColor]="'#ff0000'" [debounceDelay]="100" [extraDuration]="1000"
@@ -110,7 +117,76 @@
       </ng-http-loader>
     </div>
   </div>
+  <div class="offcanvas offcanvas-end" id="demo">
 
+    <div class="offcanvas-body">
+      <div class="container p-0">
+        <div class="profile py-2">
+          <div class="d-flex justify-content-end">
+            <span class="fa fa-edit fa-lg m-3"></span>
+          </div>
+          <div class="text-center">
+            <img src="../assets/profile-image.png" class="profile-img mb-5" alt="Profile Picture">
+            <p class="employee-id">UserName-01</p>
+            <p cclass="position">Position</p>
+            <p class="email text-primary">UserEmail</p>
+            <div class="my-4 d-flex justify-content-center">
+              <div class="mx-4" *ngIf="portalType == 'admin'">
+                <button mat-raised-button class="text-primary" 
+                  (click)="switchView('user')" *ngIf="adminView == 'admin'">
+                 User Portal
+                </button>
+                <button mat-raised-button class="text-primary"
+                  (click)="switchView('admin')" *ngIf="adminView == 'user'">
+                 Admin Portal
+
+                </button>
+              </div>
+              <div>
+                <button mat-button color="warn" class="">Sign Out</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="main my-4">
+          <div class="d-flex justify-content-between">
+            <div class="text-center">
+              <button type="button" class="btn btn-danger rounded-pill px-2">CHECK-IN <span
+                  class="fa fa-clock-o"></span></button>
+              <br>
+              <h4>00:00:00</h4>
+            </div>
+            <div class="text-center">
+              <button type="button" class="btn btn-info text-light rounded-pill px-2">CHECK-OUT <span
+                  class="fa fa-clock-o"></span></button>
+              <br>
+              <h4>00:00:00</h4>
+            </div>
+          </div>
+        </div>
+        <div class="text-center">
+          <img src="../assets/alarm.webp" class="alarm text-center" alt="">
+          <h3 class="date mb-0">00:00:00</h3>
+          <h1 class="timer">00:00:00hrs</h1>
+        </div>
+        <div class="features container ps-3">
+          <p class="border-bottom pb-3"><span class="fa fa-rocket pe-3" style="color:  rgb(72, 71, 71)"></span>Getting
+            Started</p>
+          <p class="border-bottom pb-3"><span class="fa fa-question pe-3" style="color:  red"></span>Help</p>
+          <p class="border-bottom pb-3"><span class="fa fa-weixin pe-3" style="color:  #2acc06"></span>Contact-Support
+          </p>
+          <p class="border-bottom pb-3"><span class="fa fa-bullhorn pe-3" style="color:  red"></span>What's
+            New</p>
+        </div>
+        <div class="footer d-flex justify-content-evenly mt-5">
+          <span class="fa fa-android" style="color: #78C257"></span>
+          <span class="fa fa-apple" style="color: black"></span>
+          <span class="fa fa-facebook" style="color: #4267B2"></span>
+          <span class="fa fa-twitter" style="color:  #00acee"></span>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- /#page-content-wrapper -->
 </div>

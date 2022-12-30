@@ -3,17 +3,20 @@ import { Router } from '@angular/router';
 import { Spinkit } from 'ng-http-loader';
 import { AuthenticationService } from '../_services/authentication.service';
 
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-
   title = 'sideBarNav';
   isCollapsedMenu: boolean = false;
   menuList: any = SideBarUserMenu;
   spinnerStyle = Spinkit;
+  portalType: string = 'user';
+  adminView: string = 'admin';
+
   constructor(private router: Router, private auth: AuthenticationService) { }
 
   ngOnInit(): void {
@@ -21,13 +24,33 @@ export class HomeComponent implements OnInit {
     this.auth.getRole(roleId).subscribe((response: any) => {
       let role = response && response.data && response.data[0].Name;
       if (role.toLowerCase() == 'user') {
-        this.menuList = SideBarUserMenu
+        this.menuList = SideBarUserMenu;
+        this.portalType = "user";
       }
       if (role.toLowerCase() == 'admin') {
-        this.menuList = SideBarAdminMenu
+        this.menuList = SideBarAdminMenu;
+        this.portalType = "admin"
       }
     });
+
+    let currentUser = JSON.parse(localStorage.getItem('currentUser'))
+    this.auth.GetMe(currentUser.id).subscribe((response: any) => {
+      let currentProfile = response && response.data;
+      return currentProfile;
+    })
   }
+
+  switchView(view: string) {
+    this.adminView = view;
+    if (view == 'user') {
+      this.menuList = SideBarUserMenu;
+    }
+    if (view == 'admin') {
+      this.menuList = SideBarAdminMenu;
+    }
+    this.router.navigate(['dashboard'])
+  }
+
   onLogout() {
     localStorage.removeItem('user.email')
     this.router.navigateByUrl('/main')
@@ -45,6 +68,7 @@ export class HomeComponent implements OnInit {
   clickEvent() {
     this.isCollapsedMenu = !this.isCollapsedMenu;
   }
+
 }
 
 export const SideBarAdminMenu = [
@@ -53,14 +77,12 @@ export const SideBarAdminMenu = [
     title: 'Dashboard',
     icon: 'fa fa-chart-bar',
     url: '/dashboard',
-
   },
   {
     id: '2',
     title: 'Screenshots',
     icon: 'fa fa-camera',
     url: '/screenshots',
-
   },
   {
     id: '3',
@@ -182,20 +204,20 @@ export const SideBarAdminMenu = [
     icon: 'fa fa-clock',
     subMenu: [
       {
-        id: '91',
+        id: '81',
         title: 'Settings',
       },
       {
-        id: '91',
+        id: '82',
         title: 'Projects',
       },
       {
-        id: '91',
+        id: '83',
         title: 'Timesheets',
 
       },
       {
-        id: '91',
+        id: '84',
         title: 'Time Approvals',
       }
     ]
@@ -206,23 +228,23 @@ export const SideBarAdminMenu = [
     icon: 'fas fa-walking',
     subMenu: [
       {
-        id: '71',
+        id: '91',
         title: 'Settings',
       },
       {
-        id: '72',
+        id: '92',
         title: 'Leave Grant',
       },
       {
-        id: '73',
+        id: '93',
         title: 'Leave Balance',
       },
       {
-        id: '72',
+        id: '94',
         title: 'Leave Application',
       },
       {
-        id: '73',
+        id: '95',
         title: 'Short Leave',
       }
     ]
@@ -233,15 +255,15 @@ export const SideBarAdminMenu = [
     icon: 'fa fa-money-bill',
     subMenu: [
       {
-        id: '111',
+        id: '101',
         title: 'Settings',
       },
       {
-        id: '112',
+        id: '102',
         title: 'Expense Reports',
       },
       {
-        id: '113',
+        id: '103',
         title: 'Advanced Reports',
       }
     ]
@@ -494,7 +516,7 @@ export const SideBarUserMenu = [
     icon: 'fas fa-divide',
     subMenu: [
       {
-        id: '121',
+        id: '131',
         title: 'Initiate/Check Status',
       }
     ]

@@ -67,12 +67,19 @@ export class AuthenticationService {
     });
 
   }
+  
   GetMe(id: string): Observable<signup[]> {
-    var queryHeaders = new HttpHeaders();
-    queryHeaders.append('Content-Type', 'application/json');
-    queryHeaders.append('Access-Control-Allow-Origin', '*');
-    return this.http.get<any>(`${environment.apiUrlDotNet}/users/${id}`, { headers: queryHeaders })
+    let token = localStorage.getItem('jwtToken');
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Authorization': `Bearer ${token}`
+      })
+     };
+    return this.http.get<any>(`${environment.apiUrlDotNet}/users/me`, httpOptions)
   }
+  
   changePassword(user: changeUserPassword): Observable<User> {
     return this.http.patch<any>(`${environment.apiUrlDotNet}/users/updateMyPassword`, user, {
       headers: new HttpHeaders({
