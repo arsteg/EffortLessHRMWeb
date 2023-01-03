@@ -2,20 +2,19 @@
     <div class="container-fluid">
 
         <div class="d-flex justify-content-between">
-            <h1 class="pt-4">Role for Remote Source</h1>
+            <h1 class="pt-4">Members: {{teamOfUsers.length}}</h1>
             <div class="d-flex h-25">
                 <input class="form-control search" type="text" placeholder="search..." [(ngModel)]="searchText"
                     name="searchText" aria-label="default input example"
                     style="border-bottom: 1px solid grey; border-radius: 0;">
                 <button mat-raised-button color="primary" class="ms-5" style="
                 padding: 5px 35px 0 20px;
-            ">Add New</button>
+            " data-bs-toggle="modal" data-bs-target="#addModal">Add New</button>
             </div>
         </div>
         <hr>
-        <div class="card-body">
-            <div class="container-fluid">
-                <div class="row d-flex justify-content-evenly">
+        <div class="container-fluid">
+            <!-- <div class="row d-flex justify-content-evenly">
                     <div class="col-md-2 text-center">Member</div>
                     <div class="col-md-2 text-center">Status</div>
                     <div class="col-md-2 text-center">Project</div>
@@ -54,64 +53,194 @@
                     <div class="col-md-2  text-center"> <button type="submit" class="btn btn-primary ms-auto">
                             Go
                         </button></div>
+                </div> -->
+
+            <table class="table mt-4">
+                <thead>
+                    <tr>
+                        <th scope="col">Profile</th>
+                        <th scope="col" [appSort]="teamOfUsers" data-order="desc" data-name="firsName"
+                            data-name="lastName">Members &nbsp;
+                            <i class="bi bi-arrow-down-up sort text-primary"></i>
+                        </th>
+                        <th scope="col" [appSort]="teamOfUsers" data-order="desc" data-name="email">E-Mail &nbsp; <i
+                                class="bi bi-arrow-down-up sort text-primary"></i></th>
+                        <th scope="col" [appSort]="teamOfUsers" data-order="desc" data-name="role">Member Type &nbsp;
+                            <i class="bi bi-arrow-down-up sort text-primary"></i>
+                        </th>
+                        <th scope="col" [appSort]="teamOfUsers" data-order="desc" data-name="createdOn">Member Since
+                            &nbsp;
+                            <i class="bi bi-arrow-down-up sort text-primary"></i>
+                        </th>
+                        <th scope="col" [appSort]="teamOfUsers" data-order="desc" data-name="status">Status</th>
+                        <th scope="col">Action</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        *ngFor="let data of teamOfUsers | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
+                        <td><i class="bi bi-person-square"></i></td>
+                        <td>{{ data.firstName }} {{data.lastName}}</td>
+                        <td>{{ data.email }}</td>
+                        <td>
+                            <span *ngIf="data.role== null">Employee</span>
+                            <span *ngIf="data.role!== null">Executive Manager</span>
+                        </td>
+                        <td>{{ data.createdOn | date:'medium'}}</td>
+                        <td>{{data.status}}</td>
+                        <td><i class="bi bi-trash3 text-danger" data-bs-toggle="modal"
+                                data-bs-target="#deleteModal"></i> &nbsp;
+                            <i class="bi bi-check2-all text-primary" data-bs-toggle="modal"
+                                data-bs-target="#updateModal"></i> &nbsp;
+                            <i class="bi bi-pencil text-success" data-bs-toggle="modal"
+                                data-bs-target="#updateModal"></i>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <pagination-controls (pageChange)="p = $event" class="pagination"></pagination-controls>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- Add -->
+<div class="modal" id="addModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class=" d-flex justify-content-between">
+                    <div class="">
+                        <h4 class="modal-title text-start">Add New Member</h4>
+                    </div>
+                    <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
+                    </div>
+                </div>
+                <hr class="mt-0">
+                <div class="row">
+                    <form class="row" #form="ngForm">
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-md-8">
+                                <div class="row">
+                                    <label for="" class="text-start">Member Name</label>
+                                </div>
+                                <input type="text" name="memberName" class="form-control input pt-0" required>
+                                <div class="row mt-3">
+                                    <label for="" class="text-start">E-mail</label>
+                                </div>
+                                <input type="text" name="email" class="form-control input pt-0" required>
+                                <div class="row mt-3">
+                                    <label for="" class="text-start">Member Type</label>
+                                </div>
+                                <input type="text" name="memberType" class="form-control input  pt-0" required>
+                                <!-- <div class="text-danger" *ngIf="rolename.touched">
+                                    <span *ngIf="rolename.errors?.['required']">This field is
+                                        required</span>
+                                </div> -->
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between m-3">
+
+                            <div>
+                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal">Cancel</button>
+                            </div>
+                            <div>
+                                <button mat-raised-button color="primary" data-bs-dismiss="modal"
+                                    [disabled]="form.invalid">Add</button>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Update -->
+<div class="modal" id="updateModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="d-flex justify-content-between">
+                    <div class="">
+                        <h4 class="modal-title text-start">Update Member</h4>
+                    </div>
+                    <div class="">
+                        <button type="button" class="btn-close text-end" data-bs-dismiss="modal"></button>
+                    </div>
+                </div>
+                <div class="row">
+                    <form class="row" #form="ngForm">
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-md-8">
+                                <div class="row">
+                                    <label for="" class="text-start">Member Name</label>
+                                </div>
+                                <input type="text" name="memberName" class="form-control input pt-0" required>
+                                <div class="row mt-3">
+                                    <label for="" class="text-start">E-mail</label>
+                                </div>
+                                <input type="text" name="email" class="form-control input pt-0" required>
+                                <div class="row mt-3">
+                                    <label for="" class="text-start">Member Type</label>
+                                </div>
+                                <input type="text" name="memberType" class="form-control input  pt-0" required>
+                                <!-- <div class="text-danger" >
+                                    <span *ngIf="rolename.errors?.['required']">This field is
+                                        required</span>
+                                </div> -->
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between m-3">
+                            <div class="">
+                                <button mat-raised-button class="mx-2"
+                                    data-bs-dismiss="modal">Cancel</button>
+                            </div>
+                            <div>
+                                <button mat-raised-button color="primary" class=""
+                                    data-bs-dismiss="modal">Update</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
 
-                <!-- <table class="table mt-4">
-                    <thead>
-                        <tr class="text-center">
-                            <th scope="col">Profile</th>
-                            <th scope="col" [app-sort]="teamOfUsers" data-order="desc" data-name="firstName">First Name &nbsp; <i class="bi bi-arrow-down-up sort text-primary"></i></th>
-                            <th scope="col" [app-sort]="teamOfUsers" data-order="desc" data-name="lastName">Last Name &nbsp; <i class="bi bi-arrow-down-up text-primary"></i></th>
-                            <th scope="col" [app-sort]="teamOfUsers" data-order="desc" data-name="email">E-mail &nbsp; <i class="bi bi-arrow-down-up text-primary"></i></th>
-                            <th scope="col" [app-sort]="teamOfUsers" data-order="desc">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let user of teamOfUsers; let i=index" class="text-center">
-                            <th scope="row"><i class="bi bi-person-square"></i></th>
-                            <td>{{user.firstName}}</td>
-                            <td>{{user.lastName}}</td>
-                            <td>{{user.email}}</td>
-                            <td><i class="bi bi-trash3 text-danger" ></i> &nbsp; 
-                                <i class="bi bi-check2-all text-primary"></i> &nbsp; 
-                                <i class="bi bi-pencil text-success"></i></td>
-                        </tr>
+            </div>
+        </div>
+    </div>
+</div>
 
-                    </tbody>
-                </table> -->
+<!-- Delete -->
+<div class="modal" id="deleteModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="d-flex justify-content-between">
+                    <div class="">
+                        <h4 class="modal-title text-start">Delete Member</h4>
+                    </div>
+                    <div class="">
+                        <button type="button" class="btn-close text-end" data-bs-dismiss="modal"></button>
+                    </div>
+                </div>
+                <hr class="mt-0">
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <h3>Do you really want to delete ?</h3>
+                    </div>
 
-                <table class="table mt-4">
-                    <thead>
-                        <tr>
-                            <th scope="col">Profile</th>
-                            <th scope="col" [appSort]="teamOfUsers" data-order="desc" data-name="firsName"
-                                data-name="lastName">Name &nbsp;
-                                <i class="bi bi-arrow-down-up sort text-primary"></i>
-                            </th>
-                            <th scope="col" [appSort]="teamOfUsers" data-order="desc" data-name="email">E-Mail &nbsp; <i
-                                    class="bi bi-arrow-down-up sort text-primary"></i></th>
-                            <th scope="col" [appSort]="teamOfUsers" data-order="desc" data-name="id">User ID &nbsp; <i
-                                    class="bi bi-arrow-down-up sort text-primary"></i></th>
-                            <th scope="col">Action</th>
+                </div>
+                <div class="d-flex justify-content-between m-3">
+                    <div>
 
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr
-                            *ngFor="let data of teamOfUsers | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
-                            <td><i class="bi bi-person-square"></i></td>
-                            <td>{{ data.firstName }} {{data.lastName}}</td>
-                            <td>{{ data.email }}</td>
-                            <td>{{ data.id }}</td>
-                            <td><i class="bi bi-trash3 text-danger"></i> &nbsp;
-                                <i class="bi bi-check2-all text-primary"></i> &nbsp;
-                                <i class="bi bi-pencil text-success"></i>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <pagination-controls (pageChange)="p = $event" class="pagination"></pagination-controls>
-
+                        <button mat-raised-button class="mx-2" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                    <div>
+                        <button mat-raised-button color="primary" class="" data-bs-dismiss="modal">Delete</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

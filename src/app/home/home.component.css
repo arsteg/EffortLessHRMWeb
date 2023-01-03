@@ -2,11 +2,12 @@
     margin: 5px 0;
 }
 
-.menuitem, .sidebar-links{
-    cursor: pointer; 
+.menuitem,
+.sidebar-links {
+    cursor: pointer;
 }
 
-.sidebar-links:hover{
+.sidebar-links:hover {
     background-color: #e3efff;
 }
 
@@ -49,26 +50,30 @@
 }
 
 #sidebar-wrapper {
-   
-    width:17%;
+
+    width: 17%;
 }
-#page-content-wrapper{
+
+#page-content-wrapper {
     transition: margin-left .5s;
 }
 
-.collapsed-menu{
-    width: 4%!important;
+.collapsed-menu {
+    width: 4% !important;
 }
-.submenu .sidebar-links{
+
+.submenu .sidebar-links {
     padding: .25rem 1rem .25rem 2.5rem;
 }
 
 
 /* Offcanvas */
-.profile{
-    background-color: #ebf1f1;;
+.profile {
+    background-color: #ebf1f1;
+    ;
 }
-.profile-img{
+
+.profile-img {
     position: relative;
     margin-top: -30px;
     height: 150px;
@@ -76,21 +81,26 @@
     border-radius: 50%;
     box-shadow: 0px 0px 20px;
 }
-.alarm{
+
+.alarm {
     height: 80px;
     margin-top: -70px;
 }
-.timer{
+
+.timer {
     font-weight: 500;
     letter-spacing: 2px;
 }
-.footer .fa{
+
+.footer .fa {
     font-size: 24px;
 }
-.cards-area{
-    background:#c6c9c9;
+
+.cards-area {
+    background: #c6c9c9;
 }
-.cards{
+
+.cards {
     border: 2px solid white;
     background: #ebf1f1;
     margin: 5px 8px;
@@ -98,20 +108,21 @@
     width: 140px;
     border-radius: 5px;
 }
-.cards img{
+
+.cards img {
     height: 70px;
     border-radius: 100%;
-     padding: 3px;
-      border: 2px solid white;
-     
-    }
-     
-.cards span{
+    padding: 3px;
+    border: 2px solid white;
+
+}
+
+.cards span {
     line-height: 5;
     color: #888585;
 }
 
-.alarm{
+.alarm {
     -webkit-animation: shake 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
     animation: shake 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
     -webkit-animation-timing-function: ease;
@@ -127,24 +138,39 @@
     -webkit-perspective: 1000px;
     perspective: 1000px;
 }
-@keyframes shake{
-    10%, 90% {
+
+@keyframes shake {
+
+    10%,
+    90% {
         -webkit-transform: translate3d(-1px, 0, 0);
         transform: translate3d(-1px, 0, 0);
     }
-  
-    20%, 80% {
+
+    20%,
+    80% {
         -webkit-transform: translate3d(2px, 0, 0);
         transform: translate3d(2px, 0, 0);
     }
-   
-    30%, 50%, 70% {
+
+    30%,
+    50%,
+    70% {
         -webkit-transform: translate3d(-4px, 0, 0);
         transform: translate3d(-4px, 0, 0);
     }
-    
-    40%, 60% {
+
+    40%,
+    60% {
         -webkit-transform: translate3d(4px, 0, 0);
         transform: translate3d(4px, 0, 0);
     }
+}
+
+.edit {
+    cursor: pointer;
+    color: #555f80;
+    font-weight: 500;
+    font-size: 25px;
+    margin: 10px;
 }

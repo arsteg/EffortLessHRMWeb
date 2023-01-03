@@ -10,5 +10,6 @@ export class project{
       updatedOn: Date;
       createdBy: User;
       updatedBy: User;
-      status: String;      
+      status: String;
+    //   length: Number;      
   }

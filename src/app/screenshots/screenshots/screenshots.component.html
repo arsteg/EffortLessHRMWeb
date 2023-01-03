@@ -10,8 +10,8 @@
     </div>
     <div class=" pt-1 d-flex text-center mx-4">
       <label for="member" class="pt-2 pe-3">Member </label>
-   <select id="member" name="member" class="form-control" class="form-select form-select-sm"
-        aria-label=".form-select-sm example" #member  (change)="onMemberSelectionChange(member)">
+      <select id="member" name="member" class="form-control" class="form-select form-select-sm"
+        aria-label=".form-select-sm example" #member (change)="onMemberSelectionChange(member)">
         <option *ngFor="let m of members" value="{{m|json}}">{{m.name}}</option>
       </select>
     </div>
@@ -26,93 +26,130 @@
       <label>This month: {{padValue(currentMonthTotalHours)}} h {{padValue(currentMonthTotalMinutes)}} m</label>
     </div>
     <div class="mx-4">
-      <button mat-raised-button color="primary"  id="btnRefresh" (click)="showScreenShots()">Refresh</button>
-        </div>
+      <button mat-raised-button color="primary" id="btnRefresh" (click)="showScreenShots()">Refresh</button>
+    </div>
 
   </div>
+  <hr>
 
- <hr>
+  <div *ngFor="let timeLog of screenshotRows; let index = index " class="row my-2">
 
-
-
-
-<div *ngFor="let timeLog of screenshotRows; let index = index " class="row">
-
-    <div class="col-sm-2">
+    <div class="col-sm-2" *ngIf="timeLog?.col1?.url">
       <figure>
-        <img *ngIf="timeLog?.col1?.fileString" src="{{imageBasepath + timeLog.col1.fileString}}"
-          data-bs-toggle="modal" data-bs-target="#bigImageModal" (click)="setSelectedScreenshot($event)" />
-        <img *ngIf="!timeLog?.col1?.fileString" src="{{imageBasepath+defaultScreenshot}}" />
+        <img src="{{timeLog.col1.url}}" data-bs-toggle="modal" data-bs-target="#bigImageModal"
+          (click)="setSelectedScreenshot($event)" />
         <figcaption class="figure-caption text-center"
           [tooltip]="'Clicks: ' + (timeLog.col1.clicks || 0) + ', Keyboard: '+ (timeLog.col1.keysPressed || 0)"
           [style.background-color]="getActivityColor(timeLog.col1.GetActivityLevel)">{{timeLog.col1.timeLabel}}
         </figcaption>
       </figure>
     </div>
-
-    <div class="col-sm-2" >
+    <div class="col-sm-2" *ngIf="!timeLog?.col1?.url">
       <figure>
-        <img *ngIf="timeLog?.col2?.fileString" src="{{imageBasepath + timeLog.col2.fileString}}" data-bs-toggle="modal"
+        <img *ngIf="timeLog?.col1?.url" src="{{timeLog.col1.url}}" data-bs-toggle="modal"
           data-bs-target="#bigImageModal" (click)="setSelectedScreenshot($event)" />
-          <img *ngIf="!timeLog?.col2?.fileString" src="{{imageBasepath+defaultScreenshot}}" />
+        <img *ngIf="!timeLog?.col1?.url" src="{{imageBasepath+defaultScreenshot}}" />
         <figcaption class="figure-caption text-center"
-        [tooltip]="'Clicks: ' + (timeLog.col2.clicks || 0) + ', Keyboard: '+ (timeLog.col2.keysPressed || 0)"
+          [style.background-color]="getActivityColor(timeLog.col1.GetActivityLevel)">{{timeLog.col1.timeLabel}}
+        </figcaption>
+      </figure>
+    </div>
+
+    <div class="col-sm-2" *ngIf="timeLog?.col2?.url">
+      <figure>
+        <img src="{{timeLog.col2.url}}" data-bs-toggle="modal" data-bs-target="#bigImageModal"
+          (click)="setSelectedScreenshot($event)" />
+        <figcaption class="figure-caption text-center"
+          [tooltip]="'Clicks: ' + (timeLog.col2.clicks || 0) + ', Keyboard: '+ (timeLog.col2.keysPressed || 0)"
+          [style.background-color]="getActivityColor(timeLog?.col2?.GetActivityLevel)">{{timeLog.col2.timeLabel}}
+        </figcaption>
+      </figure>
+    </div>
+    <div class="col-sm-2" *ngIf="!timeLog?.col2?.url">
+      <figure>
+        <img src="{{imageBasepath+defaultScreenshot}}" />
+        <figcaption class="figure-caption text-center"
           [style.background-color]="getActivityColor(timeLog?.col2?.GetActivityLevel)">{{timeLog.col2.timeLabel}}
         </figcaption>
       </figure>
     </div>
 
-    <div class="col-sm-2" >
+    <div class="col-sm-2" *ngIf="timeLog?.col3?.url">
       <figure>
-        <img *ngIf="timeLog?.col3?.fileString" src="{{imageBasepath + timeLog.col3.fileString}}" data-bs-toggle="modal"
-          data-bs-target="#bigImageModal" (click)="setSelectedScreenshot($event)" />
-          <img *ngIf="!timeLog?.col3?.fileString" src="{{imageBasepath+defaultScreenshot}}" />
+        <img src="{{timeLog.col3.url}}" data-bs-toggle="modal" data-bs-target="#bigImageModal"
+          (click)="setSelectedScreenshot($event)" />
         <figcaption class="figure-caption text-center"
-        [tooltip]="'Clicks: ' + (timeLog.col3.clicks || 0) + ', Keyboard: '+ (timeLog.col3.keysPressed || 0)"
+          [tooltip]="'Clicks: ' + (timeLog.col3.clicks || 0) + ', Keyboard: '+ (timeLog.col3.keysPressed || 0)"
+          [style.background-color]="getActivityColor(timeLog?.col3?.GetActivityLevel)">{{timeLog?.col3?.timeLabel}}
+        </figcaption>
+      </figure>
+    </div>
+    <div class="col-sm-2" *ngIf="!timeLog?.col3?.url">
+      <figure>
+        <img src="{{imageBasepath+defaultScreenshot}}" />
+        <figcaption class="figure-caption text-center"
           [style.background-color]="getActivityColor(timeLog?.col3?.GetActivityLevel)">{{timeLog?.col3?.timeLabel}}
         </figcaption>
       </figure>
     </div>
 
-    <div class="col-sm-2">
+    <div class="col-sm-2" *ngIf="timeLog?.col4?.url">
       <figure>
-        <img *ngIf="timeLog?.col4?.fileString" src="{{imageBasepath + timeLog.col4.fileString}}" data-bs-toggle="modal"
-          data-bs-target="#bigImageModal" (click)="setSelectedScreenshot($event)" />
-          <img *ngIf="!timeLog?.col4?.fileString" src="{{imageBasepath+defaultScreenshot}}" />
+        <img src="{{timeLog.col4.url}}" data-bs-toggle="modal" data-bs-target="#bigImageModal"
+          (click)="setSelectedScreenshot($event)" />
         <figcaption class="figure-caption text-center"
-        [tooltip]="'Clicks: ' + (timeLog.col4.clicks || 0) + ', Keyboard: '+ (timeLog.col4.keysPressed || 0)"
+          [tooltip]="'Clicks: ' + (timeLog.col4.clicks || 0) + ', Keyboard: '+ (timeLog.col4.keysPressed || 0)"
+          [style.background-color]="getActivityColor(timeLog?.col4?.GetActivityLevel)">{{timeLog?.col4?.timeLabel}}
+        </figcaption>
+      </figure>
+    </div>
+    <div class="col-sm-2" *ngIf="!timeLog?.col4?.url">
+      <figure>
+        <img src="{{imageBasepath+defaultScreenshot}}" />
+        <figcaption class="figure-caption text-center"
           [style.background-color]="getActivityColor(timeLog?.col4?.GetActivityLevel)">{{timeLog?.col4?.timeLabel}}
         </figcaption>
       </figure>
     </div>
 
-    <div class="col-sm-2" >
+    <div class="col-sm-2" *ngIf="timeLog?.col5?.url">
       <figure>
-        <img  *ngIf="timeLog?.col5?.fileString" src="{{imageBasepath + timeLog.col5.fileString}}" data-bs-toggle="modal"
-          data-bs-target="#bigImageModal" (click)="setSelectedScreenshot($event)" />
-          <img *ngIf="!timeLog?.col5?.fileString" src="{{imageBasepath+defaultScreenshot}}" />
+        <img src="{{timeLog.col5.url}}" data-bs-toggle="modal" data-bs-target="#bigImageModal"
+          (click)="setSelectedScreenshot($event)" />
         <figcaption class="figure-caption text-center"
-        [tooltip]="'Clicks: ' + (timeLog.col5.clicks || 0) + ', Keyboard: '+ (timeLog.col5.keysPressed || 0)"
+          [tooltip]="'Clicks: ' + (timeLog.col5.clicks || 0) + ', Keyboard: '+ (timeLog.col5.keysPressed || 0)"
+          [style.background-color]="getActivityColor(timeLog?.col5?.GetActivityLevel)">{{timeLog.col5.timeLabel}}
+        </figcaption>
+      </figure>
+    </div>
+    <div class="col-sm-2" *ngIf="!timeLog?.col5?.url">
+      <figure>
+        <img src="{{imageBasepath+defaultScreenshot}}" />
+        <figcaption class="figure-caption text-center"
           [style.background-color]="getActivityColor(timeLog?.col5?.GetActivityLevel)">{{timeLog.col5.timeLabel}}
         </figcaption>
       </figure>
     </div>
 
-    <div class="col-sm-2">
+    <div class="col-sm-2" *ngIf="timeLog?.col6?.url">
       <figure>
-        <img *ngIf="timeLog?.col6?.fileString" src="{{imageBasepath + timeLog.col6.fileString}}" data-bs-toggle="modal"
-          data-bs-target="#bigImageModal" (click)="setSelectedScreenshot($event)" />
-          <img *ngIf="!timeLog?.col6?.fileString" src="{{imageBasepath + defaultScreenshot}}" />
+        <img src="{{timeLog.col6.url}}" data-bs-toggle="modal" data-bs-target="#bigImageModal"
+          (click)="setSelectedScreenshot($event)" />
         <figcaption class="figure-caption text-center"
-        [tooltip]="'Clicks: ' + (timeLog.col6.clicks || 0) + ', Keyboard: '+ (timeLog.col6.keysPressed || 0)"
+          [tooltip]="'Clicks: ' + (timeLog.col6.clicks || 0) + ', Keyboard: '+ (timeLog.col6.keysPressed || 0)"
           [style.background-color]="getActivityColor(timeLog?.col6?.GetActivityLevel)">{{timeLog.col6.timeLabel}}
         </figcaption>
       </figure>
     </div>
-
+    <div class="col-sm-2" *ngIf="!timeLog?.col6?.url">
+      <figure>
+        <img src="{{imageBasepath+defaultScreenshot}}" />
+        <figcaption class="figure-caption text-center"
+          [style.background-color]="getActivityColor(timeLog?.col6?.GetActivityLevel)">{{timeLog.col6.timeLabel}}
+        </figcaption>
+      </figure>
+    </div>
   </div>
-
-
 </div>
 
 <div class="modal fade" role="dialog" id="bigImageModal" tabindex="0" aria-labelledby="bigImageModalLabel"

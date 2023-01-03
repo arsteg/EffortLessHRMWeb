@@ -8,6 +8,7 @@ export class timeLog{
   fileString: string;
   keysPressed:number;
   clicks: number;
+  url: string;
 }
 
 export class screenshotRow {
@@ -28,11 +29,13 @@ export class screenShotCell{
     public fileString:string,
     public clicks:number,
     public keysPressed:number,
+    public url:string,
     public hasValue:boolean){}
     public get GetActivityLevel() {
       let count =  this.clicks + this.keysPressed;
       return count<=0? ActivityLevel.none:count<=30? ActivityLevel.low: count<100?  ActivityLevel.medium: ActivityLevel.high;
   }
+  
 }
 
 export enum ActivityLevel{

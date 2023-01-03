@@ -22,6 +22,7 @@ import { AttendanceComponent } from './reports/attendance/attendance.component';
 import { RealtimeComponent } from './realtime/realtime.component';
 import { MainComponent } from './main/main.component';
 import { changeUserPassword } from './models/user';
+import { TasksComponent } from './tasks/tasks.component';
 
 
 const routes: Routes = [
@@ -52,7 +53,8 @@ const routes: Routes = [
       { path: 'project', component: ProjectListComponent},
       { path: 'people' , component: UserListComponent},
       { path: 'attendance', component: AttendanceComponent },
-      { path: 'realtime', component: RealtimeComponent }
+      { path: 'realtime', component: RealtimeComponent },
+      { path: 'tasks', component: TasksComponent }
     ]
   }
 ]

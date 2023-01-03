@@ -67,14 +67,6 @@
               <a class="nav-link ac6666tive" aria-current="page" [routerLink]="['dashboard']">Home</a>
             </li>
 
-            <!-- <li>
-              <div class="container-fluid mt-3">
-                <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#demo">
-                  Offcanvas
-                </button>
-              </div>
-            </li> -->
-
             <li class="nav-item">
               <a class="nav-link" [routerLink]="['dashboard']">Link</a>
             </li>
@@ -99,7 +91,6 @@
           <div class="text-right">
             <form class="d-flex">
               <button mat-raised-button color="primary" (click)="onLogout()" class="me-3">Log Out</button>
-              <!-- <img src="../assets/profileimg.jpg" class="mx-3" height="45px" alt="profileimg"> -->
               <div class="">
                 <span data-bs-toggle="offcanvas" data-bs-target="#demo">
                   <img src="../assets/profileimg.jpg" class="mx-3" height="45px" alt="profileimg">
@@ -123,27 +114,27 @@
       <div class="container p-0">
         <div class="profile py-2">
           <div class="d-flex justify-content-end">
-            <span class="fa fa-edit fa-lg m-3"></span>
+            <span class="fa fa-edit fa-lg edit" [routerLink]="['userProfile']"></span>
           </div>
           <div class="text-center">
             <img src="../assets/profile-image.png" class="profile-img mb-5" alt="Profile Picture">
-            <p class="employee-id">UserName-01</p>
+            <p class="employee-id">{{currentProfile.firstName}} {{currentProfile.lastName}} - 01</p>
             <p cclass="position">Position</p>
-            <p class="email text-primary">UserEmail</p>
+            <p class="email text-primary">{{currentProfile.email}}</p>
             <div class="my-4 d-flex justify-content-center">
               <div class="mx-4" *ngIf="portalType == 'admin'">
-                <button mat-raised-button class="text-primary" 
-                  (click)="switchView('user')" *ngIf="adminView == 'admin'">
-                 User Portal
+                <button mat-raised-button class="text-primary" (click)="switchView('user')"
+                  *ngIf="adminView == 'admin'">
+                  User Portal
                 </button>
-                <button mat-raised-button class="text-primary"
-                  (click)="switchView('admin')" *ngIf="adminView == 'user'">
-                 Admin Portal
+                <button mat-raised-button class="text-primary" (click)="switchView('admin')"
+                  *ngIf="adminView == 'user'">
+                  Admin Portal
 
                 </button>
               </div>
               <div>
-                <button mat-button color="warn" class="">Sign Out</button>
+                <button mat-button color="warn" class="" (click)="onLogout()">Sign Out</button>
               </div>
             </div>
           </div>

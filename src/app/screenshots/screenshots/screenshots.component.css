@@ -1,4 +1,3 @@
-
 figcaption {
   color: #fff;
   font: smaller sans-serif;
@@ -17,7 +16,7 @@ figure {
 }
 
 .modal-dialog {
- 
+
   border-radius: 5;
   background-color: lightgray;
 }
@@ -28,94 +27,102 @@ figure {
 
 
 .modal-image {
-  width: 100%; /* or any custom size */
+  width: 100%;
+  /* or any custom size */
   height: 100%;
   object-fit: contain;
 }
 
 label {
   font-size: 13px;
-  font:  sans-serif;
+  font: sans-serif;
   padding: 3px;
   text-align: center;
 }
-#date{
+
+#date {
   font-weight: 300;
 }
-.bottompmNav{
+
+.bottompmNav {
   text-align: right;
 }
-.carousel-control-prev-icon, .carousel-control-next-icon {
-  background-color:#0d6efd;
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-color: #0d6efd;
   border-radius: 50%;
   border: 2px solid white;
 }
-.carousel-control-prev{
+
+.carousel-control-prev {
   justify-content: flex-start;
   margin-left: 10px;
 }
-.carousel-control-next{
+
+.carousel-control-next {
   justify-content: flex-end;
   margin-right: 10px;
 }
-.modal-body{
+
+.modal-body {
   position: relative;
   flex: 1 1 auto;
   padding: 0.2rem;
 }
-.selectdate{
-width: 100%;
-height:100%;
+
+.selectdate {
+  width: 100%;
+  height: 100%;
 }
 
-.date-style input[type=button]{
- border-radius:5px;
- border:1px solid #ced4da;
+.date-style input[type=button] {
+  border-radius: 5px;
+  border: 1px solid #ced4da;
 }
 
 /* Extra small devices (phones, 600px and down) */
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 600px) {}
 
-}
 /* Small devices (portrait tablets and large phones, 600px and up) */
-@media only screen and (min-width: 600px) {
+@media only screen and (min-width: 600px) {}
 
-}
 /* Medium devices (landscape tablets, 768px and up) */
-@media only screen and (min-width: 768px) {
+@media only screen and (min-width: 768px) {}
 
-}
 /* Large devices (laptops/desktops, 992px and up) */
-@media only screen and (min-width: 992px) {
+@media only screen and (min-width: 992px) {}
 
-}
 /* Extra large devices (large laptops and desktops, 1200px and up) */
-@media only screen and (min-width: 1200px) {
-  
-}
+@media only screen and (min-width: 1200px) {}
 
-.level{
+.level {
   margin-top: -15px;
 }
-.level .content{
+
+.level .content {
   padding: 10px;
   opacity: 0.82;
 }
 
-:host >>> .tooltip-inner {
+:host>>>.tooltip-inner {
   background-color: black;
   color: white;
   border-color: black;
   border-style: solid;
   border-width: 0.5px;
   text-align: center;
-  margin-bottom: -25px;
-  opacity: 0.8;
-  padding-inline: 10px;
+  /* margin-bottom: -25px; */
+  opacity: 0.9;
+  padding-inline: 15px;
+  border-radius: 0;
 }
-:host >>> .tooltip.top .tooltip-arrow:before,
-:host >>> .tooltip.top .tooltip-arrow {
-  /* border-top-color: black; */
-  display: none;
+
+:host>>>.tooltip.top .tooltip-arrow:before,
+:host>>>.tooltip.top .tooltip-arrow {
+  opacity: 0.9;
 }
-  
+
+figure img {
+  height: 120px;
+}

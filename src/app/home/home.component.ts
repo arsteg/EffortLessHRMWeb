@@ -16,7 +16,7 @@ export class HomeComponent implements OnInit {
   spinnerStyle = Spinkit;
   portalType: string = 'user';
   adminView: string = 'admin';
-
+  currentProfile: any;
   constructor(private router: Router, private auth: AuthenticationService) { }
 
   ngOnInit(): void {
@@ -35,8 +35,8 @@ export class HomeComponent implements OnInit {
 
     let currentUser = JSON.parse(localStorage.getItem('currentUser'))
     this.auth.GetMe(currentUser.id).subscribe((response: any) => {
-      let currentProfile = response && response.data;
-      return currentProfile;
+      this.currentProfile = response && response.data.users;
+      return this.currentProfile;
     })
   }
 
@@ -138,11 +138,17 @@ export const SideBarAdminMenu = [
       {
         id: '54',
         title: 'Tasks',
+        url: 'tasks'
       },
       {
         id: '55',
         title: 'Manual Time',
       },
+      {
+        id: '56',
+        title: 'Team Members',
+        url: 'teamMembers'
+      }
 
     ]
   },

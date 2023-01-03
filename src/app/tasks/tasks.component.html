@@ -4,66 +4,45 @@
             <div class="col-md-12">
                 <div class="">
                     <div class="d-flex justify-content-between">
-                        <h1 class="pt-4">Projects: {{projectList.length}}</h1>
+                        <h1 class="pt-4">Tasks: </h1>
                         <div class="d-flex h-25">
-                            <input class="form-control search" type="text" placeholder="search..."
-                                [(ngModel)]="searchText" name="searchText" aria-label="default input example"
+                            <input class="form-control search" type="text" placeholder="search..." [(ngModel)]="searchText"
+                                name="searchText" aria-label="default input example"
                                 style="border-bottom: 1px solid grey; border-radius: 0;">
                             <button mat-raised-button color="primary" class="ms-5" style="
-                            padding: 5px 35px 0 20px;" data-bs-toggle="modal" data-bs-target="#addModal">Add
-                                New</button>
+                            padding: 5px 35px 0 20px;" data-bs-toggle="modal" data-bs-target="#addModal">Add New</button>
                         </div>
                     </div>
                     <hr>
                     <table class="table mt-4">
                         <thead>
                             <tr>
-                                <th scope="col" [appSort]="projectList" data-order="desc" data-name="projectName">
-                                    Project Name &nbsp;
+                                <th scope="col" [appSort]="" data-order="desc" data-name="projectName">Project Name &nbsp;
                                     <i class="bi bi-arrow-down-up sort text-primary"></i>
                                 </th>
-                                <th scope="col" [appSort]="projectList" data-order="desc" data-name="startDate">Start
-                                    Date &nbsp;
+                                <th scope="col" [appSort]="" data-order="desc" data-name="startDate">Start Date &nbsp;
                                     <i class="bi bi-arrow-down-up sort text-primary"></i>
                                 </th>
-                                <th scope="col" [appSort]="projectList" data-order="desc" data-name="endDate">End Date
-                                    &nbsp;
+                                <th scope="col" [appSort]="" data-order="desc" data-name="endDate">End Date &nbsp;
                                     <i class="bi bi-arrow-down-up sort text-primary"></i>
                                 </th>
-                                <th scope="col" [appSort]="projectList" data-order="desc" data-name="estimatedTime">
-                                    Estimated Time &nbsp;
+                                <th scope="col" [appSort]="" data-order="desc" data-name="estimatedTime">Estimated Time &nbsp;
                                     <i class="bi bi-arrow-down-up sort text-primary"></i>
                                 </th>
-                                <th scope="col" [appSort]="projectList" data-order="desc" data-name="notes">Notes &nbsp;
+                                <th scope="col" [appSort]="" data-order="desc" data-name="notes">Notes &nbsp;
                                     <i class="bi bi-arrow-down-up sort text-primary"></i>
                                 </th>
-                                <th scope="col" [appSort]="projectList" data-order="desc" data-name="status">Status</th>
+                                <th scope="col" [appSort]="" data-order="desc" data-name="status">Status</th>
                                 <th scope="col">Action</th>
-
+        
                             </tr>
                         </thead>
                         <tbody>
-                            <tr
-                                *ngFor="let data of projectList | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
-                                <!-- <td><i class="bi bi-person-square"></i></td> -->
-                                <td>{{ data.projectName }}</td>
-                                <td>{{data.startDate | date:'medium'}}</td>
-                                <td>{{data.endDate | date:'medium'}}</td>
-                                <td>{{data.estimatedTime}}</td>
-                                <td>{{ data.notes }}</td>
-                                <td>{{data.status}}</td>
-                                <td><i class="bi bi-trash3 text-danger" data-bs-toggle="modal"
-                                        data-bs-target="#deleteModal"></i> &nbsp;
-                                    <i class="bi bi-check2-all text-primary" data-bs-toggle="modal"
-                                        data-bs-target="#updateModal"></i> &nbsp;
-                                    <i class="bi bi-pencil text-success" data-bs-toggle="modal"
-                                        data-bs-target="#updateModal"></i>
-                                </td>
-                            </tr>
+                            
                         </tbody>
                     </table>
                     <pagination-controls (pageChange)="p = $event" class="pagination"></pagination-controls>
-
+        
                 </div>
             </div>
         </div>
@@ -84,21 +63,25 @@
                 </div>
                 <hr class="mt-0">
                 <div class="row">
-                    <form class="row" #form="ngForm" (ngSubmit)="addProject(form.value)">
+                    <form class="row" #form="ngForm">
                         <div class="row d-flex justify-content-center">
                             <div class="col-md-8">
                                 <div class="row">
-                                    <label for="projectname" class="text-start" >Project Name</label>
+                                    <label for="" class="text-start">Project Name</label>
                                 </div>
-                                <input type="text" name="projectname" class="form-control input pt-0" ngModel required>
+                                <input type="text" name="memberName" class="form-control input pt-0" required>
                                 <div class="row mt-3">
-                                    <label for="estimatedtime" class="text-start">Estimated Time</label>
+                                    <label for="" class="text-start">Estimated Time</label>
                                 </div>
-                                <input type="text" name="estimatedtime" class="form-control input pt-0" ngModel required>
+                                <input type="text" name="email" class="form-control input pt-0" required>
                                 <div class="row mt-3">
-                                    <label for="notes" class="text-start">Notes</label>
+                                    <label for="" class="text-start">Notes</label>
                                 </div>
-                                <input type="text" name="notes" class="form-control input  pt-0" ngModel required>
+                                <input type="text" name="memberType" class="form-control input  pt-0" required>
+                               <!-- <div class="text-danger" *ngIf="rolename.touched">
+                                    <span *ngIf="rolename.errors?.['required']">This field is
+                                        required</span>
+                                </div>  -->
                             </div>
                         </div>
                         <div class="d-flex justify-content-between m-3">
@@ -107,7 +90,7 @@
                                 <button mat-raised-button class="mx-2" data-bs-dismiss="modal">Cancel</button>
                             </div>
                             <div>
-                                <button mat-raised-button color="primary" data-bs-dismiss="modal" type="submit">Add</button>
+                                <button mat-raised-button color="primary" data-bs-dismiss="modal">Add</button>
                             </div>
 
                         </div>
@@ -155,7 +138,8 @@
                         </div>
                         <div class="d-flex justify-content-between m-3">
                             <div class="">
-                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal">Cancel</button>
+                                <button mat-raised-button class="mx-2"
+                                    data-bs-dismiss="modal">Cancel</button>
                             </div>
                             <div>
                                 <button mat-raised-button color="primary" class=""

@@ -49,6 +49,7 @@ import { AttendanceComponent } from './reports/attendance/attendance.component';
 import { RealtimeComponent } from './realtime/realtime.component';
 import { MainComponent } from './main/main.component';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { TasksComponent } from './tasks/tasks.component';
 
 @NgModule({
   declarations: [
@@ -77,7 +78,8 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
           SearchPipe,
           AttendanceComponent,
           RealtimeComponent,
-          MainComponent
+          MainComponent,
+          TasksComponent
   ],
   imports: [
     BrowserModule,

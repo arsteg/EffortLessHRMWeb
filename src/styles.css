@@ -31,3 +31,12 @@ body{
    .form-control:focus {
     box-shadow: none;
    }
+   .search{
+    border: none;
+    box-shadow: none;
+}
+.pagination{
+        position: absolute;
+        left: 45%;
+        top: 80%;
+    }

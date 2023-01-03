@@ -12,27 +12,23 @@ import { project } from '../model/project';
 })
 
 export class ProjectListComponent implements OnInit {
- constructor(  private projectService: ProjectService, private notifyService : NotificationService) { }
- rowData = [
-    
- ];
+  // projectList: project[] = [];
+  projectList : any;
+  searchText = '';
+  p: number = 1;
+  date = new Date('MMM d, y, h:mm:ss a');
+
+  constructor(private projectService: ProjectService, private notifyService: NotificationService) {
+  }
+
   ngOnInit(): void {
+    this.projectService.getprojectlist().subscribe((response: any) => {
+      this.projectList = response && response.data && response.data['projectList'];
+    })
+  }
 
-   }    
-  
-  columnDefs: ColDef[] = [
-    { field: 'projectName'},
-    { field: 'startDate' ,width:100},
-    { field: 'endDate',width:100 },
-    {field:'estimatedTime',width:100},
-    {field:'notes',width:300},
-    {field:'company',width:200},
-    {field:'createdOn',width:120},
-    {field:'createdBy',width:120},  
-    {field:'updatedOn',width:120},
-    {field:'updatedBy',width:120},
-];
-
-
+  addProject(form) {
+      console.log("New Project added", form)
+  }
 
 }

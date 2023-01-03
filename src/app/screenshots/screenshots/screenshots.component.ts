@@ -113,7 +113,7 @@ const startDate=this.getMonday(new Date());
 const endDate=new Date();
 
 
-this.timeLogService.getCurrentWeekTotalTime(this.member.email, this.formatDate1(startDate), this.formatDate1(endDate)).subscribe({
+this.timeLogService.getCurrentWeekTotalTime(this.member.email, this.formatDate(startDate), this.formatDate(endDate)).subscribe({
   next: data => {
     let totalMinutes =  data.data.length*10;
     this.currentWeekTotalHours = Math.floor(totalMinutes/60);
@@ -199,18 +199,18 @@ populateScreenShots(timeLogs:timeLog[]){
 
 attachTimelabel(rowNum:number,row:screenshotRow){
 let h =  this.padValue(rowNum);
-if(!row.col1){row.col1 = new screenShotCell(`${h}:00`,null,null,null,null)}
-if(!row.col2){row.col2 = new screenShotCell(`${h}:10`,null,null,null,null)}
-if(!row.col3){row.col3 = new screenShotCell(`${h}:20`,null,null,null,null)}
-if(!row.col4){row.col4 = new screenShotCell(`${h}:30`,null,null,null,null)}
-if(!row.col5){row.col5 = new screenShotCell(`${h}:40`,null,null,null,null)}
-if(!row.col6){row.col6 = new screenShotCell(`${h}:50`,null,null,null,null)}
+if(!row.col1){row.col1 = new screenShotCell(`${h}:00`,null,null,null,null,null)}
+if(!row.col2){row.col2 = new screenShotCell(`${h}:10`,null,null,null,null,null)}
+if(!row.col3){row.col3 = new screenShotCell(`${h}:20`,null,null,null,null,null)}
+if(!row.col4){row.col4 = new screenShotCell(`${h}:30`,null,null,null,null,null)}
+if(!row.col5){row.col5 = new screenShotCell(`${h}:40`,null,null,null,null,null)}
+if(!row.col6){row.col6 = new screenShotCell(`${h}:50`,null,null,null,null,null)}
 return row;
 }
 
 setSelectedScreenshot(event:any){
 this.selectedScreenShot=event.currentTarget.src;
-this.currentTargetLabel =  event.currentTarget.nextSibling.nextElementSibling.innerText;
+this.currentTargetLabel =  event.currentTarget.nextSibling.innerText;
 }
 
 SetPreviousDay(){
@@ -264,7 +264,7 @@ geCellDetails(r:number, c:number,timeLogs:timeLog[]){
                 var mm = +fileName.split('-')[1];
                 if (hh==r && mm <= (c * 10 + 9) && mm>=(c*10)){
                   mm= this.padValue(mm - (mm % 10))  ;
-                  result = new  screenShotCell(`${hh}:${mm}`,timeLogs[i].fileString,timeLogs[i].clicks,timeLogs[i].keysPressed,true);
+                  result = new  screenShotCell(`${hh}:${mm}`,timeLogs[i].fileString,timeLogs[i].clicks,timeLogs[i].keysPressed,timeLogs[i].url,true);
                 }
               };
           }
@@ -285,9 +285,9 @@ geCellDetails(r:number, c:number,timeLogs:timeLog[]){
           for(let i=this.screenshotRows.length-1;i>=0;i--){
             if(this.screenshotRows[i].col1.timeLabel==this.currentTargetLabel ){
               if(i>=1){
-                if(this.screenshotRows[i-1].col6.fileString!=null){
+                if(this.screenshotRows[i-1].col6.url!=null){
                   this.currentTargetLabel=this.screenshotRows[i-1].col6.timeLabel;
-                  this.selectedScreenShot=`${this.imageBasepath}${this.screenshotRows[i-1].col6.fileString}`;
+                  this.selectedScreenShot=`${this.screenshotRows[i-1].col6.url}`;
                   return;
                 }
                 else{
@@ -296,20 +296,19 @@ geCellDetails(r:number, c:number,timeLogs:timeLog[]){
               }
             }
             if(this.screenshotRows[i].col2.timeLabel==this.currentTargetLabel ){
-              if(this.screenshotRows[i].col1.fileString!=null){
+              if(this.screenshotRows[i].col1.url!=null){
                 this.currentTargetLabel=this.screenshotRows[i].col1.timeLabel;
-                this.selectedScreenShot=`${this.imageBasepath}${this.screenshotRows[i].col1.fileString}`;
+                this.selectedScreenShot=`${this.screenshotRows[i].col1.url}`;
                 return;
-                console.log("previuos button works")
               }
               else{
                 this.currentTargetLabel=this.screenshotRows[i].col1.timeLabel;
               }
             }
             if(this.screenshotRows[i].col3.timeLabel==this.currentTargetLabel ){
-              if(this.screenshotRows[i].col2.fileString!=null){
+              if(this.screenshotRows[i].col2.url!=null){
                 this.currentTargetLabel=this.screenshotRows[i].col2.timeLabel;
-                this.selectedScreenShot=`${this.imageBasepath}${this.screenshotRows[i].col2.fileString}`;
+                this.selectedScreenShot=`${this.screenshotRows[i].col2.url}`;
                 return;
               }
               else{
@@ -317,9 +316,9 @@ geCellDetails(r:number, c:number,timeLogs:timeLog[]){
               }
             }
             if(this.screenshotRows[i].col4.timeLabel==this.currentTargetLabel ){
-              if(this.screenshotRows[i].col3.fileString!=null){
+              if(this.screenshotRows[i].col3.url!=null){
                 this.currentTargetLabel=this.screenshotRows[i].col3.timeLabel;
-                this.selectedScreenShot=`${this.imageBasepath}${this.screenshotRows[i].col3.fileString}`;
+                this.selectedScreenShot=`${this.screenshotRows[i].col3.url}`;
                 return;
               }
               else{
@@ -327,9 +326,9 @@ geCellDetails(r:number, c:number,timeLogs:timeLog[]){
               }
             }
             if(this.screenshotRows[i].col5.timeLabel==this.currentTargetLabel ){
-              if(this.screenshotRows[i].col4.fileString!=null){
+              if(this.screenshotRows[i].col4.url!=null){
                 this.currentTargetLabel=this.screenshotRows[i].col4.timeLabel;
-                this.selectedScreenShot=`${this.imageBasepath}${this.screenshotRows[i].col4.fileString}`;
+                this.selectedScreenShot=`${this.screenshotRows[i].col4.url}`;
                 return;
               }
               else{
@@ -337,9 +336,9 @@ geCellDetails(r:number, c:number,timeLogs:timeLog[]){
               }
             }
             if(this.screenshotRows[i].col6.timeLabel==this.currentTargetLabel ){
-                if(this.screenshotRows[i].col5.fileString!=null){
+                if(this.screenshotRows[i].col5.url!=null){
                   this.currentTargetLabel=this.screenshotRows[i].col5.timeLabel;
-                  this.selectedScreenShot=`${this.imageBasepath}${this.screenshotRows[i].col5.fileString}`;
+                  this.selectedScreenShot=`${this.screenshotRows[i].col5.url}`;
                   return;
                 }
                 else{
@@ -352,9 +351,9 @@ geCellDetails(r:number, c:number,timeLogs:timeLog[]){
         SetNextScreen(){
           for(let i=0;i<this.screenshotRows.length;i++){
             if(this.screenshotRows[i].col1.timeLabel==this.currentTargetLabel ){
-              if(this.screenshotRows[i].col2.fileString!=null){
+              if(this.screenshotRows[i].col2.url!=null){
                 this.currentTargetLabel=this.screenshotRows[i].col2.timeLabel;
-                this.selectedScreenShot=`${this.imageBasepath}${this.screenshotRows[i].col2.fileString}`;
+                this.selectedScreenShot=`${this.screenshotRows[i].col2.url}`;
                 return;
               }
               else{
@@ -362,9 +361,9 @@ geCellDetails(r:number, c:number,timeLogs:timeLog[]){
               }
             }
             if(this.screenshotRows[i].col2.timeLabel==this.currentTargetLabel ){
-              if(this.screenshotRows[i].col3.fileString!=null){
+              if(this.screenshotRows[i].col3.url!=null){
                 this.currentTargetLabel=this.screenshotRows[i].col3.timeLabel;
-                this.selectedScreenShot=`${this.imageBasepath}${this.screenshotRows[i].col3.fileString}`;
+                this.selectedScreenShot=`${this.screenshotRows[i].col3.url}`;
                 return;
               }
               else{
@@ -372,9 +371,9 @@ geCellDetails(r:number, c:number,timeLogs:timeLog[]){
               }
             }
             if(this.screenshotRows[i].col3.timeLabel==this.currentTargetLabel ){
-              if(this.screenshotRows[i].col4.fileString!=null){
+              if(this.screenshotRows[i].col4.url!=null){
                 this.currentTargetLabel=this.screenshotRows[i].col4.timeLabel;
-                this.selectedScreenShot=`${this.imageBasepath}${this.screenshotRows[i].col4.fileString}`;
+                this.selectedScreenShot=`${this.screenshotRows[i].col4.url}`;
                 return;
               }
               else{
@@ -382,9 +381,9 @@ geCellDetails(r:number, c:number,timeLogs:timeLog[]){
               }
             }
             if(this.screenshotRows[i].col4.timeLabel==this.currentTargetLabel ){
-              if(this.screenshotRows[i].col5.fileString!=null){
+              if(this.screenshotRows[i].col5.url!=null){
                 this.currentTargetLabel=this.screenshotRows[i].col5.timeLabel;
-                this.selectedScreenShot=`${this.imageBasepath}${this.screenshotRows[i].col5.fileString}`;
+                this.selectedScreenShot=`${this.screenshotRows[i].col5.url}`;
                 return;
               }
               else{
@@ -392,9 +391,9 @@ geCellDetails(r:number, c:number,timeLogs:timeLog[]){
               }
             }
             if(this.screenshotRows[i].col5.timeLabel==this.currentTargetLabel ){
-              if(this.screenshotRows[i].col6.fileString!=null){
+              if(this.screenshotRows[i].col6.url!=null){
                 this.currentTargetLabel=this.screenshotRows[i].col6.timeLabel;
-                this.selectedScreenShot=`${this.imageBasepath}${this.screenshotRows[i].col6.fileString}`;
+                this.selectedScreenShot=`${this.screenshotRows[i].col6.url}`;
                 return;
               }
               else{
@@ -403,9 +402,9 @@ geCellDetails(r:number, c:number,timeLogs:timeLog[]){
             }
             if(this.screenshotRows[i].col6.timeLabel==this.currentTargetLabel ){
               if((i+1)<this.screenshotRows.length){
-                if(this.screenshotRows[i+1].col1.fileString!=null){
+                if(this.screenshotRows[i+1].col1.url!=null){
                   this.currentTargetLabel=this.screenshotRows[i+1].col1.timeLabel;
-                  this.selectedScreenShot=`${this.imageBasepath}${this.screenshotRows[i+1].col1.fileString}`;
+                  this.selectedScreenShot=`${this.screenshotRows[i+1].col1.url}`;
                   return;
                 }
                 else{

@@ -33,7 +33,7 @@ export class ManageTeamService extends baseService {
       'Authorization': `Bearer ${token}`})
     };
     var response  = this.http.post<any>(`${environment.apiUrlDotNet}/auth/roles/addSubordinate`,subordinate,httpOptions);
-   return response;
+    return response;
   }
 
   public deleteSubordinate(userId:string,subordinateUserId:string ): any {
@@ -44,7 +44,7 @@ export class ManageTeamService extends baseService {
       'Authorization': `Bearer ${token}`})
     };
     var response  = this.http.delete<any>(`${environment.apiUrlDotNet}/auth/roles/deleteSubordinate/${userId}/${subordinateUserId}`,httpOptions);
-   return response;
+    return response;
   }
 
 

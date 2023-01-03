@@ -17,13 +17,9 @@ export class UserListComponent implements OnInit {
   searchText = '';
   p: number = 1;
   public users: Array<User> = [];
-  constructor(private UserService: UserService, private manageTeamService: ManageTeamService) {
-    this.UserService.getUserList()
-      .subscribe(data => {
-        this.users = data.data.data;
-      })
-    
-  }
+  date = new Date('MMM d, y, h:mm:ss a');
+  constructor(private UserService: UserService, private manageTeamService: ManageTeamService) {}
+  
   ngOnInit() {
     this.populateTeamOfUsers();
   }
@@ -33,7 +29,6 @@ export class UserListComponent implements OnInit {
       next: result => {
         this.teamOfUsers = result.data.data;
         this.allUsers = result.data.data;
-        console.log("team", this.teamOfUsers)
       },
       error: error => { }
     })
