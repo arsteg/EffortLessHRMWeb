@@ -35,8 +35,28 @@ body{
     border: none;
     box-shadow: none;
 }
+.table td{
+    padding: 20px 10px;
+}
+.table thead{
+    background: #f6f7f9;
+}
+.table thead th{
+    font-weight: 500;
+    font-size: large;
+    padding: 20px;
+}
+.table tbody{
+    border-top: 1px solid black !important;
+}
 .pagination{
         position: absolute;
         left: 45%;
         top: 80%;
     }
+.error{
+    padding: 5px;
+    background-color: white;
+    border: none;
+    color: red;
+}

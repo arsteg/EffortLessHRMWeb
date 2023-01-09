@@ -7,8 +7,7 @@ import { RegisterComponent } from './login/register/register.component';
 import { ForgotPasswordComponent } from './login/forgot-password/forgot-password.component';
 import { SidebarDirective } from './layout/sidebar.directive';
 import { HttpClientModule } from '@angular/common/http';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { ResetPasswordComponent } from './login/reset-password/reset-password.component';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -50,7 +49,7 @@ import { RealtimeComponent } from './realtime/realtime.component';
 import { MainComponent } from './main/main.component';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TasksComponent } from './tasks/tasks.component';
-
+import { ModalModule } from 'ngx-bootstrap/modal';
 @NgModule({
   declarations: [
     AppComponent,
@@ -99,7 +98,8 @@ import { TasksComponent } from './tasks/tasks.component';
     MatSidenavModule, MatIconModule, MatListModule,
     MatCheckboxModule, MatRadioModule, TooltipModule,
     MatTableModule, MatFormFieldModule, MatInputModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    ModalModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

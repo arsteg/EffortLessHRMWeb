@@ -12,6 +12,16 @@ export class User {
     email: string;
 }
 
+// export class newUser{
+//   firstName: "";
+//   lastName: "";
+//   email: "";
+//   password: "";
+//   passwordConfirm: "";
+//   role: Role;
+//   phone: Number
+// }
+
 export class signup{
   id: string;
   firstName: string;

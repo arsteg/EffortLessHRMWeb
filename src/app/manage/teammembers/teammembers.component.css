@@ -11,27 +11,32 @@
   line-height: 2;
   overflow: hidden;
   overflow-y: scroll;
+  height: 60vh;
 }
 
 .manager {
   margin: 5px;
 }
 
-.members{
+.members {
   border: 1px solid #c9c3c3;
   border-radius: 7px;
   margin-right: 20px;
   padding-left: 20px;
-    overflow: hidden;
-    overflow-y: scroll;
-  }
-  .members li{
-    line-height: 2.83;
-  }
-  .mat-fab{
-    border-radius: 5px;
-  }
-  .headings{
-    font-size: 18px;
-    color: #3f51b5;
-  }
+  overflow: hidden;
+  overflow-y: scroll;
+  height: 60vh;
+}
+
+.members li {
+  line-height: 2.83;
+}
+
+.mat-fab {
+  border-radius: 5px;
+}
+
+.headings {
+  font-size: 18px;
+  color: #3f51b5;
+}

@@ -11,18 +11,6 @@ export class ProjectService {
     constructor(private http: HttpClient) {
     }
 
-  addproject(project: project): Observable<project> {
-    let token = localStorage.getItem('jwtToken');
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Authorization': `Bearer ${token}`
-      })
-    };
-    return this.http.post<project>(`${environment.apiUrlDotNet}/project/newproject`, { project }, httpOptions);
-  }
-
   getprojectlist() {
     let token = localStorage.getItem('jwtToken');
     const httpOptions = {
@@ -33,5 +21,42 @@ export class ProjectService {
       })
     };
     return this.http.get<project[]>(`${environment.apiUrlDotNet}/project/projectlist`, httpOptions)
+  }
+
+  addproject(project: project): Observable<project> {
+    let token = localStorage.getItem('jwtToken');
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Authorization': `Bearer ${token}`
+      })
+    };
+    return this.http.post<project>(`${environment.apiUrlDotNet}/project/newproject`, project, httpOptions);
+  }
+
+  deleteproject(id){
+    let token = localStorage.getItem('jwtToken');
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Authorization': `Bearer ${token}`
+      })
+    };
+    return this.http.delete<project>(`${environment.apiUrlDotNet}/project/${id}`,httpOptions);
+  }
+  
+  updateproject(id, project):Observable<project>{
+    let token = localStorage.getItem('jwtToken');
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Authorization': `Bearer ${token}`
+      })
+    };
+    return this.http.patch<project>(`${environment.apiUrlDotNet}/project/${id}`, project , httpOptions);
+
   }
 }

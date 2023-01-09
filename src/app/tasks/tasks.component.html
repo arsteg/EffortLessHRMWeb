@@ -4,45 +4,61 @@
             <div class="col-md-12">
                 <div class="">
                     <div class="d-flex justify-content-between">
-                        <h1 class="pt-4">Tasks: </h1>
+                        <h1 class="pt-4">Tasks: {{tasks.length}}</h1>
                         <div class="d-flex h-25">
-                            <input class="form-control search" type="text" placeholder="search..." [(ngModel)]="searchText"
-                                name="searchText" aria-label="default input example"
+                            <input class="form-control search" type="text" placeholder="search..."
+                                [(ngModel)]="searchText" name="searchText" aria-label="default input example"
                                 style="border-bottom: 1px solid grey; border-radius: 0;">
                             <button mat-raised-button color="primary" class="ms-5" style="
-                            padding: 5px 35px 0 20px;" data-bs-toggle="modal" data-bs-target="#addModal">Add New</button>
+                            padding: 5px 35px 0 20px;" data-bs-toggle="modal" data-bs-target="#addModal">Add
+                                New</button>
                         </div>
                     </div>
                     <hr>
                     <table class="table mt-4">
                         <thead>
                             <tr>
-                                <th scope="col" [appSort]="" data-order="desc" data-name="projectName">Project Name &nbsp;
+                                <th scope="col" [appSort]="" data-order="desc" data-name="taskName">Task Name &nbsp;
                                     <i class="bi bi-arrow-down-up sort text-primary"></i>
                                 </th>
-                                <th scope="col" [appSort]="" data-order="desc" data-name="startDate">Start Date &nbsp;
+                                <th scope="col" [appSort]="" data-order="desc" data-name="duedate">Due Date &nbsp;
                                     <i class="bi bi-arrow-down-up sort text-primary"></i>
                                 </th>
-                                <th scope="col" [appSort]="" data-order="desc" data-name="endDate">End Date &nbsp;
+                                <th scope="col" [appSort]="" data-order="desc" data-name="priority">Priotity &nbsp;
                                     <i class="bi bi-arrow-down-up sort text-primary"></i>
                                 </th>
-                                <th scope="col" [appSort]="" data-order="desc" data-name="estimatedTime">Estimated Time &nbsp;
+                                <th scope="col" [appSort]="" data-order="desc" data-name="comments">Comments &nbsp;
                                     <i class="bi bi-arrow-down-up sort text-primary"></i>
                                 </th>
-                                <th scope="col" [appSort]="" data-order="desc" data-name="notes">Notes &nbsp;
+                                <th scope="col" [appSort]="" data-order="desc" data-name="status">Status &nbsp;
                                     <i class="bi bi-arrow-down-up sort text-primary"></i>
                                 </th>
-                                <th scope="col" [appSort]="" data-order="desc" data-name="status">Status</th>
+                                <th scope="col" [appSort]="" data-order="desc" data-name="assignee">Assignee &nbsp;
+                                    <i class="bi bi-arrow-down-up sort text-primary"></i>
+                                </th>
                                 <th scope="col">Action</th>
-        
+
                             </tr>
                         </thead>
                         <tbody>
-                            
+                            <tr *ngFor="let task of tasks | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
+                                <td>{{task.taskName}}</td>
+                                <td>{{task.endDate | date:'mediumDate'}}</td>
+                                <td>{{task.priority}}</td>
+                                <td>{{task.comment}}</td>
+                                <td>{{task.status}}</td>
+                                <td>{{task.TaskUser}}</td>
+                                <td>
+                                    <i class="bi bi-trash3 text-danger" data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal" (click)="selectedTask=task"></i> &nbsp;
+                                    <!-- <i class="bi bi-pencil text-success" data-bs-toggle="modal"
+                                    data-bs-target="#updateModal" (click)="selectedTask=data"></i> -->
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                     <pagination-controls (pageChange)="p = $event" class="pagination"></pagination-controls>
-        
+
                 </div>
             </div>
         </div>
@@ -63,25 +79,110 @@
                 </div>
                 <hr class="mt-0">
                 <div class="row">
-                    <form class="row" #form="ngForm">
+                    <form class="row" [formGroup]="addForm" (ngSubmit)="addTask(addForm.value)">
                         <div class="row d-flex justify-content-center">
                             <div class="col-md-8">
                                 <div class="row">
-                                    <label for="" class="text-start">Project Name</label>
+                                    <label for="taskName" class="text-start">Task Name</label>
                                 </div>
-                                <input type="text" name="memberName" class="form-control input pt-0" required>
-                                <div class="row mt-3">
-                                    <label for="" class="text-start">Estimated Time</label>
+                                <input type="text" name="taskName" class="form-control input pt-0"
+                                    formControlName="taskName" ngModel required>
+                                <div *ngIf="addForm.controls['taskName'].invalid && addForm.controls['taskName'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="addForm.controls['taskName'].errors['required']">
+                                        Task Name is required.
+                                    </div>
                                 </div>
-                                <input type="text" name="email" class="form-control input pt-0" required>
+
                                 <div class="row mt-3">
-                                    <label for="" class="text-start">Notes</label>
+                                    <label for="startDate" class="text-start">Start Date</label>
+                                </div>
+                                <input type="date" name="startDate" id="startDate" class="form-control input pt-0"
+                                    formControlName="startDate" ngModel required>
+                                <div *ngIf="addForm.controls['startDate'].invalid && addForm.controls['startDate'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="addForm.controls['startDate'].errors['required']">
+                                        Start Date is required.
+                                    </div>
+                                </div>
+
+                                <div class="row mt-3">
+                                    <label for="endDate" class="text-start">End Date</label>
+                                </div>
+                                <input type="date" name="endDate" id="endDate" class="form-control input pt-0"
+                                    formControlName="endDate" ngModel required>
+                                <div *ngIf="addForm.controls['endDate'].invalid && addForm.controls['endDate'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="addForm.controls['endDate'].errors['required']">
+                                        End Date is required.
+                                    </div>
+                                </div>
+
+                                <div class="row mt-3">
+                                    <label for="description" class="text-start">Description</label>
+                                </div>
+                                <input type="text" name="description" id="description" class="form-control input pt-0"
+                                    formControlName="description" ngModel required>
+                                <div *ngIf="addForm.controls['description'].invalid && addForm.controls['description'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="addForm.controls['description'].errors['required']">
+                                        Description is required!
+                                    </div>
+                                </div>
+
+                                <div class="row mt-3">
+                                    <label for="priority" class="text-start">Priority</label>
+                                </div>
+                                <input type="text" name="priority" class="form-control input  pt-0"
+                                    formControlName="priority" ngModel required>
+                                <div *ngIf="addForm.controls['priority'].invalid && addForm.controls['priority'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="addForm.controls['priority'].errors['required']">
+                                        Priority Name is required!
+                                    </div>
+                                </div>
+
+                                <div class="row mt-3">
+                                    <label for="comment" class="text-start">Comments</label>
+                                </div>
+                                <input type="text" name="comment" class="form-control input  pt-0"
+                                    formControlName="comment" ngModel required>
+                                <div *ngIf="addForm.controls['comment'].invalid && addForm.controls['comment'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="addForm.controls['comment'].errors['required']">
+                                        Comment is required!
+                                    </div>
+                                </div>
+
+                                <!-- <div class="row mt-3">
+                                    <label for="status" class="text-start">Status</label>
                                 </div>
                                 <input type="text" name="memberType" class="form-control input  pt-0" required>
-                               <!-- <div class="text-danger" *ngIf="rolename.touched">
-                                    <span *ngIf="rolename.errors?.['required']">This field is
-                                        required</span>
-                                </div>  -->
+                                <select class="form-select" aria-label="Default select example" formControlName="status" ngModel required>
+                                    <option selected> -- </option>
+                                    <option value="1">Open</option>
+                                    <option value="2">In Progress</option>
+                                    <option value="3">Done</option>
+                                  </select>
+                                  <div *ngIf="addForm.controls['status'].invalid && addForm.controls['status'].touched" class="alert alert-danger error">
+                                    <div *ngIf="addForm.controls['status'].errors['required']">
+                                   Status is required!
+                                  </div>
+                                </div> -->
+
+
+                                <div class="row mt-3">
+                                    <label for="TaskUser" class="text-start">Assignee</label>
+                                </div>
+                                <input type="text" name="TaskUser" class="form-control input  pt-0"
+                                    formControlName="TaskUser" ngModel required>
+                                <div *ngIf="addForm.controls['TaskUser'].invalid && addForm.controls['TaskUser'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="addForm.controls['TaskUser'].errors['required']">
+                                        Assignee is required!
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                         <div class="d-flex justify-content-between m-3">
@@ -90,7 +191,8 @@
                                 <button mat-raised-button class="mx-2" data-bs-dismiss="modal">Cancel</button>
                             </div>
                             <div>
-                                <button mat-raised-button color="primary" data-bs-dismiss="modal">Add</button>
+                                <button mat-raised-button color="primary" data-bs-dismiss="modal"
+                                    [disabled]="!addForm.valid">Add</button>
                             </div>
 
                         </div>
@@ -102,7 +204,7 @@
 </div>
 
 <!-- Update -->
-<div class="modal" id="updateModal">
+<!-- <div class="modal" id="updateModal">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-body">
@@ -115,36 +217,110 @@
                     </div>
                 </div>
                 <div class="row">
-                    <form class="row" #form="ngForm">
+                    <form class="row" [formGroup]="updateForm" (ngSubmit)="updateTask(updateForm.value)">
                         <div class="row d-flex justify-content-center">
                             <div class="col-md-8">
                                 <div class="row">
-                                    <label for="" class="text-start">Project Name</label>
+                                    <label for="taskName" class="text-start">Task Name</label>
                                 </div>
-                                <input type="text" name="memberName" class="form-control input pt-0" required>
-                                <div class="row mt-3">
-                                    <label for="" class="text-start">Estimated Time</label>
+                                <input type="text" name="taskName" class="form-control input pt-0"
+                                    formControlName="taskName" ngModel required>
+                                <div *ngIf="updateForm.controls['taskName'].invalid && updateForm.controls['taskName'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="updateForm.controls['taskName'].errors['required']">
+                                        Task Name is required.
+                                    </div>
                                 </div>
-                                <input type="text" name="email" class="form-control input pt-0" required>
+
                                 <div class="row mt-3">
-                                    <label for="" class="text-start">Notes</label>
+                                    <label for="endDate" class="text-start">Due Date</label>
+                                </div>
+                                <input type="date" name="endDate" id="endDate" class="form-control input pt-0"
+                                    formControlName="endDate" ngModel required>
+                                <div *ngIf="updateForm.controls['endDate'].invalid && updateForm.controls['endDate'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="updateForm.controls['endDate'].errors['required']">
+                                        Due Date is required.
+                                    </div>
+                                </div>
+
+                                <div class="row mt-3">
+                                    <label for="description" class="text-start">Description</label>
+                                </div>
+                                <input type="text" name="description" id="description" class="form-control input pt-0"
+                                    formControlName="description" ngModel required>
+                                <div *ngIf="updateForm.controls['description'].invalid && updateForm.controls['description'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="updateForm.controls['description'].errors['required']">
+                                        Description is required!
+                                    </div>
+                                </div>
+
+                                <div class="row mt-3">
+                                    <label for="priority" class="text-start">Priority</label>
+                                </div>
+                                <input type="text" name="priority" class="form-control input  pt-0"
+                                    formControlName="priority" ngModel required>
+                                <div *ngIf="updateForm.controls['priority'].invalid && updateForm.controls['priority'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="updateForm.controls['priority'].errors['required']">
+                                        Priority Name is required!
+                                    </div>
+                                </div>
+
+                                <div class="row mt-3">
+                                    <label for="comment" class="text-start">Comments</label>
+                                </div>
+                                <input type="text" name="comment" class="form-control input  pt-0"
+                                    formControlName="comment" ngModel required>
+                                <div *ngIf="updateForm.controls['comment'].invalid && updateForm.controls['comment'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="updateForm.controls['comment'].errors['required']">
+                                        Comment is required!
+                                    </div>
+                                </div>
+                            -->
+                                <!-- <div class="row mt-3">
+                                    <label for="status" class="text-start">Status</label>
                                 </div>
                                 <input type="text" name="memberType" class="form-control input  pt-0" required>
-                                <!-- <div class="text-danger" >
-                                    <span *ngIf="rolename.errors?.['required']">This field is
-                                        required</span>
+                                <select class="form-select" aria-label="Default select example" formControlName="status" ngModel required>
+                                    <option selected> -- </option>
+                                    <option value="1">Open</option>
+                                    <option value="2">In Progress</option>
+                                    <option value="3">Done</option>
+                                  </select>
+                                  <div *ngIf="addForm.controls['status'].invalid && addForm.controls['status'].touched" class="alert alert-danger error">
+                                    <div *ngIf="addForm.controls['status'].errors['required']">
+                                   Status is required!
+                                  </div>
                                 </div> -->
+
+
+                               <!-- <div class="row mt-3">
+                                    <label for="TaskUser" class="text-start">Assignee</label>
+                                </div>
+                                <input type="text" name="TaskUser" class="form-control input  pt-0"
+                                    formControlName="TaskUser" ngModel required>
+                                <div *ngIf="updateForm.controls['TaskUser'].invalid && updateForm.controls['TaskUser'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="updateForm.controls['TaskUser'].errors['required']">
+                                        Assignee is required!
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                         <div class="d-flex justify-content-between m-3">
-                            <div class="">
-                                <button mat-raised-button class="mx-2"
-                                    data-bs-dismiss="modal">Cancel</button>
+
+                            <div>
+                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal">Cancel</button>
                             </div>
                             <div>
-                                <button mat-raised-button color="primary" class=""
-                                    data-bs-dismiss="modal">Update</button>
+                                <button mat-raised-button color="primary" data-bs-dismiss="modal"
+                                    [disabled]="!updateForm.valid">Update</button>
                             </div>
+
                         </div>
                     </form>
                 </div>
@@ -152,7 +328,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
 <!-- Delete -->
 <div class="modal" id="deleteModal">
@@ -177,10 +353,11 @@
                 <div class="d-flex justify-content-between m-3">
                     <div>
 
-                        <button mat-raised-button class="mx-2" data-bs-dismiss="modal">Cancel</button>
+                        <button mat-raised-button class="mx-2" data-bs-dismiss="modal" type="button">Cancel</button>
                     </div>
                     <div>
-                        <button mat-raised-button color="primary" class="" data-bs-dismiss="modal">Delete</button>
+                        <button mat-raised-button color="primary" class="" (click)="deleteTask()"
+                            data-bs-dismiss="modal" type="submit">Delete</button>
                     </div>
                 </div>
             </div>

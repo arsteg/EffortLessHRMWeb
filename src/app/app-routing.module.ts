@@ -51,7 +51,7 @@ const routes: Routes = [
       { path: 'Profile', component: ProfileComponent },
       { path: 'timeline', component: TimelineComponent },
       { path: 'project', component: ProjectListComponent},
-      { path: 'people' , component: UserListComponent},
+      { path: 'employees' , component: UserListComponent},
       { path: 'attendance', component: AttendanceComponent },
       { path: 'realtime', component: RealtimeComponent },
       { path: 'tasks', component: TasksComponent }

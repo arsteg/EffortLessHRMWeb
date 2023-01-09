@@ -4,14 +4,15 @@ import { Base } from '../controls/base';
 import { Textbox } from '../controls/textbox';
 import { map, Observable, of } from 'rxjs';
 import { signup, User } from '../models/user';
-import { HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpHeaders, HttpClient, HttpParams } from '@angular/common/http';
+import { baseService } from '../_services/base';
 
 @Injectable()
-export class UserService {
+export class UserService extends baseService{
   static getQuestions: any; 
   constructor(private http: HttpClient) {
+    super();
    }
   // TODO: get from a remote source of question metadata
  public getQuestions(user:signup): Observable<Base<any>[]> {   
@@ -127,12 +128,39 @@ updateMe(user: signup): Observable<signup> {
   });
 }
 getUserList(): Observable<any> {
-  return this.http.get(`${environment.apiUrlDotNet}/users`, {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json'
-    })
-  });
+  let token = this.getToken();
+  const httpOptions = {
+    headers: new HttpHeaders({ 'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin':'*',
+    'Authorization': `Bearer ${token}`})
+  };
+  var response  = this.http.get<any>(`${environment.apiUrlDotNet}/users`,httpOptions);
+ return response;
 }
 
+addUser(newUser: signup): Observable<signup> {
+  let token = localStorage.getItem('jwtToken');
+  const httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      'Authorization': `Bearer ${token}`
+    })
+  };
+  return this.http.post<signup>(`${environment.apiUrlDotNet}/users/inviteUser`, newUser, httpOptions);
+}
+
+deleteUser(id){
+  let token = localStorage.getItem('jwtToken');
+  const httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      'Authorization': `Bearer ${token}`
+    })
+  };
+  var response= this.http.delete<User>(`${environment.apiUrlDotNet}/users/deleteuser/${id}`,  httpOptions);
+  return response;
+}
 
 }

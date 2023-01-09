@@ -47,5 +47,5 @@ export class ManageTeamService extends baseService {
     return response;
   }
 
-
+ 
 }

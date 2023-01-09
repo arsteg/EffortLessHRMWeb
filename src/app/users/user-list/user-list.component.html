@@ -14,47 +14,6 @@
         </div>
         <hr>
         <div class="container-fluid">
-            <!-- <div class="row d-flex justify-content-evenly">
-                    <div class="col-md-2 text-center">Member</div>
-                    <div class="col-md-2 text-center">Status</div>
-                    <div class="col-md-2 text-center">Project</div>
-                    <div class="col-md-2 text-center">Role</div>
-                    <div class="col-md-2 text-center">Go</div>
-                </div>
-                <div class="row d-flex justify-content-evenly">
-                    <div class="col-md-2">
-                        <select class="form-control text-center">
-                            <option value="1">Option1</option>
-                            <option value="2">Option2</option>
-                            <option value="3">Option3</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <select class="form-control text-center">
-                            <option value="1">Option1</option>
-                            <option value="2">Option2</option>
-                            <option value="3">Option3</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <select class="form-control text-center">
-                            <option value="1">Option1</option>
-                            <option value="2">Option2</option>
-                            <option value="3">Option3</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2 ">
-                        <select class="form-control text-center">
-                            <option value="1">Option1</option>
-                            <option value="2">Option2</option>
-                            <option value="3">Option3</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2  text-center"> <button type="submit" class="btn btn-primary ms-auto">
-                            Go
-                        </button></div>
-                </div> -->
-
             <table class="table mt-4">
                 <thead>
                     <tr>
@@ -89,10 +48,8 @@
                         </td>
                         <td>{{ data.createdOn | date:'medium'}}</td>
                         <td>{{data.status}}</td>
-                        <td><i class="bi bi-trash3 text-danger" data-bs-toggle="modal"
-                                data-bs-target="#deleteModal"></i> &nbsp;
-                            <i class="bi bi-check2-all text-primary" data-bs-toggle="modal"
-                                data-bs-target="#updateModal"></i> &nbsp;
+                        <td><i class="bi bi-trash3 text-danger" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                (click)="selectedUser = data"></i> &nbsp;
                             <i class="bi bi-pencil text-success" data-bs-toggle="modal"
                                 data-bs-target="#updateModal"></i>
                         </td>
@@ -120,35 +77,93 @@
                 </div>
                 <hr class="mt-0">
                 <div class="row">
-                    <form class="row" #form="ngForm">
+                    <form class="row" [formGroup]="addForm" (ngSubmit)="addUser(addForm.value)">
                         <div class="row d-flex justify-content-center">
                             <div class="col-md-8">
                                 <div class="row">
-                                    <label for="" class="text-start">Member Name</label>
+                                    <label for="firstName" class="text-start">First Name</label>
                                 </div>
-                                <input type="text" name="memberName" class="form-control input pt-0" required>
-                                <div class="row mt-3">
-                                    <label for="" class="text-start">E-mail</label>
+                                <input type="text" name="firstName" id="firstName" class="form-control input pt-0"
+                                    formControlName="firstName" ngModel required>
+                                <div *ngIf="addForm.controls['firstName'].invalid && addForm.controls['firstName'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="addForm.controls['firstName'].errors['required']">
+                                        first Name is required.
+                                    </div>
                                 </div>
-                                <input type="text" name="email" class="form-control input pt-0" required>
-                                <div class="row mt-3">
-                                    <label for="" class="text-start">Member Type</label>
+
+                                <div class="row">
+                                    <label for="lastName" class="text-start mt-3">Last Name</label>
                                 </div>
-                                <input type="text" name="memberType" class="form-control input  pt-0" required>
-                                <!-- <div class="text-danger" *ngIf="rolename.touched">
-                                    <span *ngIf="rolename.errors?.['required']">This field is
-                                        required</span>
+                                <input type="text" name="lastName" id="lastName" class="form-control input pt-0"
+                                    formControlName="lastName" ngModel required>
+                                <div *ngIf="addForm.controls['lastName'].invalid && addForm.controls['lastName'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="addForm.controls['lastName'].errors['required']">
+                                        Last Name is required.
+                                    </div>
+                                </div>
+
+                                <!-- <div class="row mt-3">
+                                    <label for="role" class="text-start">Role</label>
+                                </div>
+                                <input type="text" name="role" id="role" class="form-control input pt-0"
+                                    formControlName="role" ngModel required> -->
+                                <!-- <div *ngIf="addForm.controls['role'].invalid && addForm.controls['role'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="addForm.controls['role'].errors['required']">
+                                        Role is required.
+                                    </div>
                                 </div> -->
+
+                                <div class="row mt-3">
+                                    <label for="email" class="text-start">E-mail</label>
+                                </div>
+                                <input type="text" name="email" id="email" class="form-control input pt-0"
+                                    formControlName="email" ngModel required>
+                                <div *ngIf="addForm.controls['email'].invalid && addForm.controls['email'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="addForm.controls['email'].errors['required']">
+                                        E-Mail is required!
+                                    </div>
+                                </div>
+
+                                <div class="row mt-3">
+                                    <label for="password" class="text-start">Password</label>
+                                </div>
+                                <input type="password" name="password" id="password" class="form-control input pt-0"
+                                    formControlName="password" ngModel required>
+                                <div *ngIf="addForm.controls['password'].invalid && addForm.controls['password'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="addForm.controls['password'].errors['required']">
+                                        Password is required.
+                                    </div>
+                                </div>
+
+                                <div class="row mt-3">
+                                    <label for="passwordConfirm" class="text-start">Confirm Password</label>
+                                </div>
+                                <input type="password" name="passwordConfirm" id="passwordConfirm"
+                                    class="form-control input pt-0" formControlName="passwordConfirm" ngModel required>
+                                <div *ngIf="addForm.controls['passwordConfirm'].invalid && addForm.controls['passwordConfirm'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="addForm.controls['passwordConfirm'].errors['required']">
+                                        Confirm Password is required.
+                                    </div>
+                                </div>
+
+
                             </div>
                         </div>
                         <div class="d-flex justify-content-between m-3">
 
                             <div>
-                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal">Cancel</button>
+                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
+                                    type="button">Cancel</button>
                             </div>
                             <div>
-                                <button mat-raised-button color="primary" data-bs-dismiss="modal"
-                                    [disabled]="form.invalid">Add</button>
+                                <button mat-raised-button color="primary" data-bs-dismiss="modal" type="submit"
+                                    [disabled]="!addForm.valid">Add</button>
                             </div>
 
                         </div>
@@ -196,8 +211,7 @@
                         </div>
                         <div class="d-flex justify-content-between m-3">
                             <div class="">
-                                <button mat-raised-button class="mx-2"
-                                    data-bs-dismiss="modal">Cancel</button>
+                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal">Cancel</button>
                             </div>
                             <div>
                                 <button mat-raised-button color="primary" class=""
@@ -238,7 +252,8 @@
                         <button mat-raised-button class="mx-2" data-bs-dismiss="modal">Cancel</button>
                     </div>
                     <div>
-                        <button mat-raised-button color="primary" class="" data-bs-dismiss="modal">Delete</button>
+                        <button mat-raised-button color="primary" class="" data-bs-dismiss="modal"
+                            (click)="deleteUser()">Delete</button>
                     </div>
                 </div>
             </div>

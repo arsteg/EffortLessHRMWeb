@@ -89,7 +89,7 @@ export class AuthenticationService {
     });
   }
 
-  getRole(roleId: string): Observable<any> {
+  getRole(id): Observable<any> {
     let token = localStorage.getItem('jwtToken');
     const httpOptions = {
       headers: new HttpHeaders({
@@ -98,6 +98,6 @@ export class AuthenticationService {
         'Authorization': `Bearer ${token}`
       })
     };
-    return this.http.get(`${environment.apiUrlDotNet}/auth/role/${roleId}`, httpOptions)
+    return this.http.get(`${environment.apiUrlDotNet}/auth/role/${id}`, httpOptions)
   }
 }

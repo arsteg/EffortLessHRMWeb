@@ -118,9 +118,9 @@
           </div>
           <div class="text-center">
             <img src="../assets/profile-image.png" class="profile-img mb-5" alt="Profile Picture">
-            <p class="employee-id">{{currentProfile.firstName}} {{currentProfile.lastName}} - 01</p>
+            <p class="employee-id">{{currentProfile?.firstName}} {{currentProfile?.lastName}} - 01</p>
             <p cclass="position">Position</p>
-            <p class="email text-primary">{{currentProfile.email}}</p>
+            <p class="email text-primary">{{currentProfile?.email}}</p>
             <div class="my-4 d-flex justify-content-center">
               <div class="mx-4" *ngIf="portalType == 'admin'">
                 <button mat-raised-button class="text-primary" (click)="switchView('user')"
@@ -132,6 +132,9 @@
                   Admin Portal
 
                 </button>
+              </div>
+              <div class="mx-2">
+                <button mat-raised-button class="text-primary" (click)="guestview('guest')">Guest Portal</button>
               </div>
               <div>
                 <button mat-button color="warn" class="" (click)="onLogout()">Sign Out</button>

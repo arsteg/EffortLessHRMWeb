@@ -16,6 +16,7 @@ export class HomeComponent implements OnInit {
   spinnerStyle = Spinkit;
   portalType: string = 'user';
   adminView: string = 'admin';
+  guestView: string = 'guest';
   currentProfile: any;
   constructor(private router: Router, private auth: AuthenticationService) { }
 
@@ -26,6 +27,10 @@ export class HomeComponent implements OnInit {
       if (role.toLowerCase() == 'user') {
         this.menuList = SideBarUserMenu;
         this.portalType = "user";
+      }
+      if (role.toLowerCase() == 'user') {
+        this.menuList = SideBarUserMenu;
+        this.portalType = "guest";
       }
       if (role.toLowerCase() == 'admin') {
         this.menuList = SideBarAdminMenu;
@@ -49,6 +54,13 @@ export class HomeComponent implements OnInit {
       this.menuList = SideBarAdminMenu;
     }
     this.router.navigate(['dashboard'])
+  }
+
+  guestview(view: string){
+    this.guestView = view;
+    if (view == 'guest') {
+      this.menuList = SideBarUserMenu;
+    }
   }
 
   onLogout() {
@@ -128,7 +140,7 @@ export const SideBarAdminMenu = [
       {
         id: '51',
         title: 'Employees',
-        url: 'people'
+        url: 'employees'
       },
       {
         id: '53',
