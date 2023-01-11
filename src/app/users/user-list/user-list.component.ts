@@ -4,6 +4,9 @@ import { ManageTeamService } from 'src/app/_services/manage-team.service';
 import { UserService } from '../users.service';
 import { Validators, FormGroup, FormBuilder } from '@angular/forms';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
+import { RoleService } from 'src/app/_services/role.service';
+import { TransitionCheckState } from '@angular/material/checkbox';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-user-list',
@@ -15,8 +18,8 @@ import { AuthenticationService } from 'src/app/_services/authentication.service'
 export class UserListComponent implements OnInit {
   teamOfUsers: User[] = [];
   allUsers: User[] = [];
-  
-  inviteUser: signup[]=[];
+
+  inviteUser: signup[] = [];
 
   searchText = '';
   p: number = 1;
@@ -24,20 +27,36 @@ export class UserListComponent implements OnInit {
   date = new Date('MMM d, y, h:mm:ss a');
   selectedUser: any;
   addForm: FormGroup;
+  updateForm: FormGroup
+  roleName: any = [];
 
-  constructor(private UserService: UserService, private fb: FormBuilder, private auth: AuthenticationService) {
-   this.addForm = this.fb.group({
-    firstName: ['', Validators.required],
-    lastName: ['', Validators.required],
-    // role: ['Role', Validators.required],
-    email: ['', Validators.required],
-    password: ['', Validators.required],
-    passwordConfirm: ['', Validators.required],
-   })
+
+  constructor(
+    private UserService: UserService,
+    private fb: FormBuilder,
+    private auth: AuthenticationService,
+    private roleService: RoleService,
+    private toastrrr: ToastrService) {
+    this.addForm = this.fb.group({
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      role: ['', Validators.required],
+      email: ['', Validators.required],
+      password: ['', Validators.required],
+      passwordConfirm: ['', Validators.required],
+    });
+    this.updateForm = this.fb.group({
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      email: ['', Validators.required],
+    });
   }
+
   ngOnInit() {
     this.populateTeamOfUsers();
+    this.getAllRoles();
   }
+
 
   populateTeamOfUsers() {
     this.UserService.getUserList().subscribe({
@@ -49,28 +68,54 @@ export class UserListComponent implements OnInit {
     })
   }
 
+  getAllRoles() {
+    this.roleService.getAllRole().subscribe(
+      response => {
+        this.roleName = response.data;
+      })
+  }
+  getRoleName(id)
+   {
+    let rolename = this.roleName.find((role) => {   return role.id == id;  });
+    if(rolename && rolename.Name){
+      return rolename.Name
+    }
+    else 
+    {return 'Employee' }
+   
+  }
+
   addUser(addForm) {
-      //   let roleId = localStorage.getItem('roleId');
-      //   this.auth.getRole(roleId).subscribe((response: any) => {
-      //     console.log(response)
-      //  response = this.UserService.addUser(addForm.roleId).subscribe({
-      //   next: result => {
-      //     console.log(result);
-      //     this.populateTeamOfUsers();
-      //   }
-      // });
-      //   });
-
-    }      
- 
-
-  deleteUser(){
-    this.UserService.deleteUser(this.selectedUser._id)
-    .subscribe(response => {
+    this.UserService.addUser(addForm).subscribe(result => {
+      console.log(result);
       this.populateTeamOfUsers();
-    });
+      this.toastrrr.success('New User Added', 'Successfully Added!')
+    },
+      err => {
+        this.toastrrr.error('Can not be Added', 'ERROR!')
+      })
+  }
+
+  deleteUser() {
+    this.UserService.deleteUser(this.selectedUser._id)
+      .subscribe(response => {
+        this.populateTeamOfUsers();
+        this.toastrrr.success('Existing User Deleted', 'Successfully Deleted!')
+      },
+        err => {
+          this.toastrrr.error('Can not be Deleted', 'ERROR!')
+        })
+  }
+
+  updateUser(updateForm) {
+    this.UserService.updateUser(this.selectedUser._id, updateForm).subscribe(resonse => {
+      this.populateTeamOfUsers();
+      this.toastrrr.success('Existing User Updated', 'Successfully Updated!')
+    },
+      err => {
+        this.toastrrr.error('Can not be Updated', 'ERROR!')
+      })
   }
 
 }
 
- 

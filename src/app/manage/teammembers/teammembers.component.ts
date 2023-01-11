@@ -6,6 +6,7 @@ import { Subordinate } from 'src/app/models/subordinate.Model';
 import { User } from 'src/app/models/user';
 import { ManageTeamService } from 'src/app/_services/manage-team.service';
 import { TimeLogService } from 'src/app/_services/timeLogService';
+import { ToastrService } from 'ngx-toastr';
 
 export class Hero {
   id: number;
@@ -37,10 +38,13 @@ export class TeammembersComponent implements OnInit, OnDestroy {
 
   //#region Constructor
 
-  constructor(private manageTeamService: ManageTeamService, private timeLogService: TimeLogService,
+  constructor(private manageTeamService: ManageTeamService,
+    private timeLogService: TimeLogService,
     private route: ActivatedRoute,
     private router: Router,
-    private datePipe: DatePipe) {
+    private datePipe: DatePipe,
+    private toastt: ToastrService) 
+    {
     this.route.params.subscribe(params => {
       this.resetToken = params['token'];
     });
@@ -75,7 +79,6 @@ export class TeammembersComponent implements OnInit, OnDestroy {
     this.selectedManager = user;
     this.timeLogService.getTeamMembers(user.id).subscribe({
       next: response => {
-        console.log("response", response);
         this.timeLogService.getusers(response.data).subscribe({
           next: result => {
             this.selectedUsers = result.data;
@@ -88,8 +91,8 @@ export class TeammembersComponent implements OnInit, OnDestroy {
             // arr.push(this.selectedValue)
             // console.log(arr);
             // this.timeLogService.changeMessage(arr);
-
-
+      
+          
           },
           error: error => {
             console.log('There was an error!', error);
@@ -107,11 +110,14 @@ export class TeammembersComponent implements OnInit, OnDestroy {
   onAddMember(user: User) {
     let currentDate = new Date();
     let subordinate = new Subordinate(this.selectedManager, user.id, currentDate, this.selectedManager);
-    this.manageTeamService.addSubordinate(subordinate).subscribe({
-      next: result => {
+    this.manageTeamService.addSubordinate(subordinate).subscribe(result => {
+        this.toastt.success('Selected', 'Successfully Added!')
+
       },
-      error: error => { }
-    });
+      err => {
+      this.toastt.error(' Can not be Selected', 'Error!')
+      }
+    );
   }
 
   onRemoveMember(user: User) {

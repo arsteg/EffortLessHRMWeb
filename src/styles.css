@@ -49,14 +49,28 @@ body{
 .table tbody{
     border-top: 1px solid black !important;
 }
-.pagination{
+
+    /* .pagination{
         position: absolute;
         left: 45%;
         top: 80%;
-    }
+    } */
+
 .error{
     padding: 5px;
     background-color: white;
     border: none;
     color: red;
+}
+
+select ,  select :focus-visible{
+    border: none;
+    width: 100%;
+    border-bottom: 1px solid #ced4da;
+}
+.table-button {
+    border-radius: 50rem!important;
+    background: #f6f7f9;
+    font-size: 13px;
+    font-weight: 500;
 }

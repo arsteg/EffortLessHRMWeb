@@ -3,7 +3,7 @@ import { Dropdown } from '../controls/dropdown';
 import { Base } from '../controls/base';
 import { Textbox } from '../controls/textbox';
 import { map, Observable, of } from 'rxjs';
-import { signup, User } from '../models/user';
+import { newUser, signup, User, updateUser } from '../models/user';
 import { environment } from 'src/environments/environment';
 import { HttpHeaders, HttpClient, HttpParams } from '@angular/common/http';
 import { baseService } from '../_services/base';
@@ -138,7 +138,7 @@ getUserList(): Observable<any> {
  return response;
 }
 
-addUser(newUser: signup): Observable<signup> {
+addUser(newUser: newUser): Observable<newUser> {
   let token = localStorage.getItem('jwtToken');
   const httpOptions = {
     headers: new HttpHeaders({
@@ -147,7 +147,7 @@ addUser(newUser: signup): Observable<signup> {
       'Authorization': `Bearer ${token}`
     })
   };
-  return this.http.post<signup>(`${environment.apiUrlDotNet}/users/inviteUser`, newUser, httpOptions);
+  return this.http.post<newUser>(`${environment.apiUrlDotNet}/users/inviteUser`, newUser, httpOptions);
 }
 
 deleteUser(id){
@@ -160,6 +160,19 @@ deleteUser(id){
     })
   };
   var response= this.http.delete<User>(`${environment.apiUrlDotNet}/users/deleteuser/${id}`,  httpOptions);
+  return response;
+}
+
+updateUser(id , updateUser): Observable<updateUser>{
+  let token = localStorage.getItem('jwtToken');
+  const httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      'Authorization': `Bearer ${token}`
+    })
+  };
+  var response= this.http.patch<updateUser>(`${environment.apiUrlDotNet}/users/updateUser/${id}`, updateUser, httpOptions);
   return response;
 }
 

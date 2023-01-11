@@ -59,7 +59,7 @@
                             </tr>
                         </tbody>
                     </table>
-                    <pagination-controls (pageChange)="p = $event" class="pagination"></pagination-controls>
+                    <pagination-controls (pageChange)="p = $event" class="pagination d-flex justify-content-end"></pagination-controls>
 
                 </div>
             </div>
@@ -151,7 +151,7 @@
                             </div>
                             <div>
                                 <button mat-raised-button color="primary" data-bs-dismiss="modal"
-                                    type="submit" [disabled]="!form.valid" (click)="showAdd()">Add</button>
+                                    type="submit" [disabled]="!form.valid">Add</button>
                             </div>
 
                         </div>
@@ -246,7 +246,7 @@
                             </div>
                             <div>
                                 <button mat-raised-button color="primary" class="" data-bs-dismiss="modal"
-                                    type="submit" [disabled]="!updateForm.valid" (click)="showUpdate()">Update</button>
+                                    type="submit" [disabled]="!updateForm.valid">Update</button>
                             </div>
                         </div>
                     </form>
@@ -284,7 +284,7 @@
                     </div>
                     <div>
                         <button mat-raised-button color="primary" class="" (click)="deleteProject()"
-                            data-bs-dismiss="modal" type="submit" (click)="showDelete()">Delete</button>
+                            data-bs-dismiss="modal" type="submit">Delete</button>
                     </div>
                 </div>
             </div>

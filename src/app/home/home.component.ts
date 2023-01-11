@@ -61,6 +61,7 @@ export class HomeComponent implements OnInit {
     if (view == 'guest') {
       this.menuList = SideBarUserMenu;
     }
+    this.router.navigate(['dashboard'])
   }
 
   onLogout() {

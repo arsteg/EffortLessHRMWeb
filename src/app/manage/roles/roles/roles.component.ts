@@ -35,7 +35,7 @@ export class RolesComponent implements OnInit {
 
   ngOnInit(): void {
     this.getUserRoleId();
-   this.getUserRoleAll();
+  //  this.getUserRoleAll();
   }
 
   getUserRoleId(){
@@ -47,15 +47,15 @@ export class RolesComponent implements OnInit {
     })
   }
 
-  getUserRoleAll(){
-    this.roleSrv.getUserRoleAll().subscribe({
-      next: result => {
-        this.userRoleAll = result['data'];
-        console.log('Roles', this.userRoleAll)
-      },
-      error: error => console.log("ERROR!!!")
-    })
-  }
+  // getUserRoleAll(){
+  //   this.roleSrv.getUserRoleAll().subscribe({
+  //     next: result => {
+  //       this.userRoleAll = result['data'];
+  //       console.log('Roles', this.userRoleAll)
+  //     },
+  //     error: error => console.log("ERROR!!!")
+  //   })
+  // }
 
   addRole() {
    this.roleSrv.createUserRole(this.userRoleObj).subscribe(data => {
@@ -74,7 +74,7 @@ export class RolesComponent implements OnInit {
   
     updateUserRole(){
      this.roleSrv.updateUserRole(this.userRoleObj).subscribe((result)=>{
-      this.getUserRoleAll();
+      // this.getUserRoleAll();
       this.userRoleObj = {
         _id : '',
         RoleName : '',

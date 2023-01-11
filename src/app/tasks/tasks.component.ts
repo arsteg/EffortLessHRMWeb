@@ -3,6 +3,7 @@ import { Task } from './task';
 import { TasksService } from './tasks.service';
 import { Validators, FormGroup, FormBuilder } from '@angular/forms';
 import { response } from '../models/response';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-tasks',
@@ -19,7 +20,8 @@ export class TasksComponent implements OnInit {
   updateForm: FormGroup;
   selectedTask: any;
 
-  constructor(private tasksService: TasksService, private fb: FormBuilder) {
+    private toastr: ToastrService
+    constructor(private tasksService: TasksService, private fb: FormBuilder, private toast: ToastrService) {
     this.addForm = this.fb.group({
       taskName: ['', Validators.required],
       startDate: ['', Validators.required],
@@ -31,7 +33,6 @@ export class TasksComponent implements OnInit {
     });
     this.updateForm = this.fb.group({
       taskName: ['', Validators.required],
-      startDate: ['', Validators.required],
       endDate: ['', Validators.required],
       description: ['', Validators.required],
       comment: ['', Validators.required],
@@ -43,7 +44,6 @@ export class TasksComponent implements OnInit {
   ngOnInit(): void {
     this.listAllTasks();
   }
-
   listAllTasks() {
     this.tasksService.getAllTasks().subscribe((response: any) => {
       this.tasks = response && response.data && response.data['taskList'];
@@ -52,11 +52,14 @@ export class TasksComponent implements OnInit {
   }
 
   addTask(form) {
-    this.tasksService.addtask(form).subscribe({
-      next: result => {
-        console.log(result)
+    this.tasksService.addtask(form).subscribe( response =>
+     {
+       
         this.listAllTasks();
-      }
+        this.toast.success('New Task','Successfully Added!')
+      },
+    err => {
+      this.toast.error('Task Can not be Added','Error!')
     })
   }
  
@@ -65,7 +68,21 @@ export class TasksComponent implements OnInit {
     this.tasksService.deletetask(this.selectedTask.id).subscribe( response =>{
      
       this.listAllTasks();
+      this.toast.success('Successfully Deleted!')
+    },
+    err=>{
+      this.toast.error('Task Can not be Deleted', 'Error!');
     })
   }
  
+  updateTask(updateForm) {
+    this.tasksService.updateproject(this.selectedTask._id, updateForm).subscribe(response => {
+      this.listAllTasks();
+      this.toast.success('Existing Task Updated', 'Successfully Updated!')
+    },
+      err => {
+        this.toast.error('Task Can not be Updated', 'ERROR!')
+      })
+  }
+
 }

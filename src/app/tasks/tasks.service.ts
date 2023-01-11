@@ -49,4 +49,15 @@ deletetask(id){
     return this.http.delete<Task>(`${environment.apiUrlDotNet}/task/${id}`,httpOptions);
 }
 
+updateproject(id, Task):Observable<Task>{
+  let token = localStorage.getItem('jwtToken');
+  const httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      'Authorization': `Bearer ${token}`
+    })
+  };
+  return this.http.patch<Task>(`${environment.apiUrlDotNet}/task/update/${id}`, Task , httpOptions);
+}
 }

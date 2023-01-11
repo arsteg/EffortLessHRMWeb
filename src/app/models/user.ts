@@ -1,4 +1,5 @@
-import { Role } from "./role.model";
+import { company } from "./company";
+import { Role, userRole } from "./role.model";
 
 export class User {
     id: string;
@@ -11,16 +12,27 @@ export class User {
     name:string;
     email: string;
 }
+export class updateUser{
+  firstName: string;
+  lastName: string;
+  jobTitle: string;
+  address: string;
+  city: string;
+  state: string;
+  pincode: string;
+  phone: string;
+  extraDetails: string;
+}
 
-// export class newUser{
-//   firstName: "";
-//   lastName: "";
-//   email: "";
-//   password: "";
-//   passwordConfirm: "";
-//   role: Role;
-//   phone: Number
-// }
+export class newUser{
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  passwordConfirm: string;
+  role: string;
+  phone: Number;
+ }
 
 export class signup{
   id: string;

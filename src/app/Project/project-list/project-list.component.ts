@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { ProjectService } from '../project.service';
 import { NotificationService } from '../../_services/notification.service';
 import { project } from '../model/project';
-import {  Validators, FormGroup, FormBuilder } from '@angular/forms';
+import { Validators, FormGroup, FormBuilder } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -22,47 +22,34 @@ export class ProjectListComponent implements OnInit {
   project: any;
   selectedProject: any;
   form: FormGroup;
-  updateForm : FormGroup;
+  updateForm: FormGroup;
 
   constructor(
     private projectService: ProjectService,
     private notifyService: NotificationService,
     private fb: FormBuilder,
     private toastr: ToastrService
-    ) {
+  ) {
     this.form = this.fb.group({
-      projectName: ['', Validators.required ],
-      startDate: ['', Validators.required ],
-      endDate: ['', Validators.required ],
+      projectName: ['', Validators.required],
+      startDate: ['', Validators.required],
+      endDate: ['', Validators.required],
       estimatedTime: ['', Validators.required],
-      notes: ['', Validators.required ]
-      });
+      notes: ['', Validators.required]
+    });
 
-      this.updateForm = this.fb.group({
-      projectName: ['', Validators.required ],
-      startDate: ['', Validators.required ],
-      endDate: ['', Validators.required ],
+    this.updateForm = this.fb.group({
+      projectName: ['', Validators.required],
+      startDate: ['', Validators.required],
+      endDate: ['', Validators.required],
       estimatedTime: ['', Validators.required],
-      notes: ['', Validators.required ]
-      })
+      notes: ['', Validators.required]
+    })
   }
 
   ngOnInit(): void {
     this.getProjectList();
   }
-
-  showUpdate() {
-    this.toastr.success('Existing Project','Succesfully Updated!');
-  }
-
-  showAdd(){
-    this.toastr.success('New Project','Successfully Added!')
-  }
-
-  showDelete(){
-    this.toastr.success('Successfully Deleted!')
-  }
-
 
   getProjectList() {
     this.projectService.getprojectlist().subscribe((response: any) => {
@@ -71,24 +58,35 @@ export class ProjectListComponent implements OnInit {
   }
 
   addProject(form) {
-    this.projectService.addproject(form).subscribe({
-      next: result => {
-        this.getProjectList();
+    this.projectService.addproject(form).subscribe(result => {
+      this.getProjectList();
+      this.toastr.success('New Project', 'Successfully Added!')
+    },
+      err => {
+        this.toastr.error('Can not be Added', 'ERROR!')
       }
-    })
+    )
   }
 
   deleteProject() {
     this.projectService.deleteproject(this.selectedProject._id)
       .subscribe(response => {
         this.getProjectList();
-      });
+        this.toastr.success('Successfully Deleted!')
+      },
+        err => {
+          this.toastr.error('Can not be Deleted', 'ERROR!')
+        })
   }
 
   updateProject(updateForm) {
     this.projectService.updateproject(this.selectedProject._id, updateForm).subscribe(response => {
       this.getProjectList();
-    });
+      this.toastr.success('Existing Project Updated', 'Successfully Updated!')
+    },
+      err => {
+        this.toastr.error('Can not be Updated', 'ERROR!')
+      })
   }
 
 }
