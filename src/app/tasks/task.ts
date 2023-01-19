@@ -1,3 +1,4 @@
+import { project } from "../Project/model/project";
 export class Task {
     _id: Number;
     taskName: string;
@@ -9,5 +10,5 @@ export class Task {
     priority: string;
     TaskUser: [''];
     status: string;
-
+    project: project[];
 }

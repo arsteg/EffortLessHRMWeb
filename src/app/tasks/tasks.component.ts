@@ -4,7 +4,8 @@ import { TasksService } from './tasks.service';
 import { Validators, FormGroup, FormBuilder } from '@angular/forms';
 import { response } from '../models/response';
 import { ToastrService } from 'ngx-toastr';
-
+import { project } from '../Project/model/project';
+import { ProjectService } from '../Project/project.service';
 @Component({
   selector: 'app-tasks',
   templateUrl: './tasks.component.html',
@@ -13,6 +14,7 @@ import { ToastrService } from 'ngx-toastr';
 export class TasksComponent implements OnInit {
   searchText = '';
   p: number = 1;
+  projectList: project[]=[];
   taskList: any;
   tasks: Task[] = [];
   date = new Date();
@@ -21,7 +23,12 @@ export class TasksComponent implements OnInit {
   selectedTask: any;
 
     private toastr: ToastrService
-    constructor(private tasksService: TasksService, private fb: FormBuilder, private toast: ToastrService) {
+    constructor(
+      private tasksService: TasksService,
+      private fb: FormBuilder,
+      private toast: ToastrService,
+      private projectService: ProjectService
+      ){
     this.addForm = this.fb.group({
       taskName: ['', Validators.required],
       startDate: ['', Validators.required],
@@ -29,7 +36,8 @@ export class TasksComponent implements OnInit {
       description: ['', Validators.required],
       comment: ['', Validators.required],
       priority: ['', Validators.required],
-      TaskUser: ['', Validators.required]
+      TaskUser: ['', Validators.required],
+      project: ['', Validators.required]
     });
     this.updateForm = this.fb.group({
       taskName: ['', Validators.required],
@@ -37,17 +45,25 @@ export class TasksComponent implements OnInit {
       description: ['', Validators.required],
       comment: ['', Validators.required],
       priority: ['', Validators.required],
-      TaskUser: ['', Validators.required]
+      TaskUser: ['', Validators.required],
+      project: ['', Validators.required]
     });
   }
 
   ngOnInit(): void {
     this.listAllTasks();
+    this. getProjectList();
+  }
+
+  getProjectList() {
+    this.projectService.getprojectlist().subscribe((response: any) => {
+      this.projectList = response && response.data && response.data['projectList'];
+      console.log(this.projectList)
+    })
   }
   listAllTasks() {
     this.tasksService.getAllTasks().subscribe((response: any) => {
       this.tasks = response && response.data && response.data['taskList'];
-      console.log(this.tasks)
     })
   }
 

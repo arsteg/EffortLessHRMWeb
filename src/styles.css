@@ -24,9 +24,9 @@ body{
    }
 
    .input{
-    border: none;
+    /* border: none;
     border-bottom: 0.8px solid #ced4da;
-    border-radius: 0;
+    border-radius: 0; */
    }
    .form-control:focus {
     box-shadow: none;
@@ -64,9 +64,9 @@ body{
 }
 
 select ,  select :focus-visible{
-    border: none;
+    /* border: none; */
     width: 100%;
-    border-bottom: 1px solid #ced4da;
+    /* border-bottom: 1px solid #ced4da; */
 }
 .table-button {
     border-radius: 50rem!important;

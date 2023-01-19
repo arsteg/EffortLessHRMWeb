@@ -16,11 +16,11 @@
             <div class="row mt-4">
               <div class="col-md-6">
                 <label id="example-radio-group-label" class="headings">Manager</label><br>
-                <mat-radio-group id="member" name="member" aria-labelledby="example-radio-group-label" class="example-radio-group managers"
-                [ngModel]="selectedManager " >
-                  <mat-radio-button color="primary" class="manager example-radio-button" *ngFor="let user of teamOfUsers" (click)="Selectmanager(user)"
-                   [value]="user">
-                    {{ user.firstName }} {{ user.lastName }}
+                <mat-radio-group id="member" name="member" aria-labelledby="example-radio-group-label"
+                  class="example-radio-group managers" [ngModel]="selectedManager ">
+                  <mat-radio-button color="primary" class="manager example-radio-button"
+                    *ngFor="let user of teamOfUsers" (click)="Selectmanager(user)" [value]="user">
+                    {{ user.firstName | titlecase }} {{ user.lastName | titlecase}}
                   </mat-radio-button>
                 </mat-radio-group><br>
               </div>
@@ -28,13 +28,15 @@
                 <ul class="users" type="none" class="overflow-auto">
                   <p class="headings">Members</p>
                   <div class="members">
-                  <li *ngFor="let user of teamOfUsers">
-                    <label [class.selected]="user === selectedUser">
-                      <mat-checkbox color="primary" [checked]="user['isChecked']" [disabled]="selectedManager && selectedManager.id == user.id"
-                      (click)="onAddMember(user)">{{user.firstName}} {{user.lastName}}</mat-checkbox>
-                    </label>
-                  </li>
-                </div>
+                    <li *ngFor="let user of teamOfUsers">
+                      <label [class.selected]="user === selectedUser">
+                        <mat-checkbox color="primary" [checked]="user['isChecked']"
+                          [disabled]="selectedManager && selectedManager.id == user.id" [(ngModel)]="user['isChecked']"
+                          (ngModelChange)="onModelChange($event,user)">{{user.firstName | titlecase}}
+                          {{user.lastName | titlecase}}</mat-checkbox>
+                      </label>
+                    </li>
+                  </div>
                 </ul>
               </div>
             </div>

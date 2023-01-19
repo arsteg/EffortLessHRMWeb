@@ -9,6 +9,7 @@ export class timeLog{
   keysPressed:number;
   clicks: number;
   url: string;
+  _id: string;
 }
 
 export class screenshotRow {
@@ -30,6 +31,8 @@ export class screenShotCell{
     public clicks:number,
     public keysPressed:number,
     public url:string,
+    public _id:string,
+    public isSelected: boolean,
     public hasValue:boolean){}
     public get GetActivityLevel() {
       let count =  this.clicks + this.keysPressed;

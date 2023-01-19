@@ -45,12 +45,12 @@
                         <tbody>
                             <tr
                                 *ngFor="let data of projectList | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
-                                <td>{{ data.projectName }}</td>
+                                <td>{{ data.projectName | titlecase }}</td>
                                 <td>{{data.startDate | date:'mediumDate'}}</td>
                                 <td>{{data.endDate | date:'mediumDate'}}</td>
                                 <td>{{data.estimatedTime}}</td>
                                 <td>{{ data.notes }}</td>
-                                <td>{{data.status}}</td>
+                                <td> <span class="badge rounded-pill table-button  bg-success text-light px-4 py-2"  *ngIf="data.status=='Active'" >{{data.status}}</span> </td>
                                 <td><i class="bi bi-trash3 text-danger" data-bs-toggle="modal"
                                         data-bs-target="#deleteModal" (click)="selectedProject=data"></i> &nbsp;
                                     <i class="bi bi-pencil text-success" data-bs-toggle="modal"

@@ -40,7 +40,7 @@
                     <tr
                         *ngFor="let data of teamOfUsers | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
                         <td><i class="bi bi-person-square"></i></td>
-                        <td>{{ data.firstName }} {{data.lastName}}</td>
+                        <td>{{ data.firstName | titlecase }} {{data.lastName | titlecase}}</td>
                         <td>{{ data.email }}</td>
                         <td>
                             <span class="badge rounded-pill table-button text-dark px-4 py-2">{{getRoleName(data?.role?.id)}}</span></td>

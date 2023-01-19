@@ -8,6 +8,7 @@ import { timeLog } from '../models/timeLog';
 import {response} from '../models/response'
 import { baseService } from './base';
 import { User } from '../models/user';
+import { stringToArray } from 'ag-grid-community';
 
 
 @Injectable({
@@ -62,14 +63,15 @@ export class TimeLogService extends baseService {
   getTeamMembers(userId): any {
     let token = this.getToken();
     const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json',
+      headers: new HttpHeaders({ 
+      'Content-Type': 'application/json',
       'Access-Control-Allow-Origin':'*',
       'Authorization': `Bearer ${token}`})
     };
 
-    const params = new HttpParams().set('userId', userId);
+    // const params = new HttpParams().set('userId', userId);
 
-    var response  = this.http.get<any>(`${environment.apiUrlDotNet}/auth/roles/getSubordinates/${userId}`);
+    var response  = this.http.get<any>(`${environment.apiUrlDotNet}/auth/roles/getSubordinates/${userId}`, httpOptions);
    return response;
 
   }
@@ -89,6 +91,19 @@ export class TimeLogService extends baseService {
 
   }
 
+  deletetimelog():Observable<timeLog>{
+    let token = localStorage.getItem('jwtToken');
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Authorization': `Bearer ${token}`
+      }),
+      body:{ _id : []}
+     
+    };
+    return this.http.delete<timeLog>(`${environment.apiUrlDotNet}/timelogs`, httpOptions);
+  }
 
 
 

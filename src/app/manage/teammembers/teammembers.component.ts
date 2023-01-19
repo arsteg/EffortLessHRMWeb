@@ -43,8 +43,7 @@ export class TeammembersComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private datePipe: DatePipe,
-    private toastt: ToastrService) 
-    {
+    private toastt: ToastrService) {
     this.route.params.subscribe(params => {
       this.resetToken = params['token'];
     });
@@ -65,11 +64,12 @@ export class TeammembersComponent implements OnInit, OnDestroy {
         this.teamOfUsers = result.data.data;
         this.allUsers = result.data.data;
         let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        this.teamOfUsers.forEach((user:any, index:number)=>{
-        if(user.id==currentUser.id){
+        this.teamOfUsers.forEach((user: any, index: number) => {
+          if (user.id == currentUser.id) {
             this.selectedManager = user;
             this.Selectmanager(user);
-        }});
+          }
+        });
       },
       error: error => { }
     })
@@ -82,17 +82,9 @@ export class TeammembersComponent implements OnInit, OnDestroy {
         this.timeLogService.getusers(response.data).subscribe({
           next: result => {
             this.selectedUsers = result.data;
-            this.teamOfUsers.forEach((user:any, index:number)=>{
-              user['isChecked'] = this.selectedUsers.some((selectedUser:any)=>selectedUser.id == user.id);
+            this.teamOfUsers.forEach((user: any, index: number) => {
+              user['isChecked'] = this.selectedUsers.some((selectedUser: any) => selectedUser.id == user.id);
             });
-            //  debugger;
-            // let arr = [];
-            // this.selectedValue =JSON.parse(user.target.value);
-            // arr.push(this.selectedValue)
-            // console.log(arr);
-            // this.timeLogService.changeMessage(arr);
-      
-          
           },
           error: error => {
             console.log('There was an error!', error);
@@ -105,30 +97,35 @@ export class TeammembersComponent implements OnInit, OnDestroy {
     });
   }
 
-
-
-  onAddMember(user: User) {
-    let currentDate = new Date();
-    let subordinate = new Subordinate(this.selectedManager, user.id, currentDate, this.selectedManager);
-    this.manageTeamService.addSubordinate(subordinate).subscribe(result => {
+  onModelChange(isChecked, user: User) {
+    if (isChecked) {
+      let subordinate: any = new Subordinate(this.selectedManager, user.id);
+      this.manageTeamService.addSubordinate(subordinate).subscribe(result => {
+        this.populateTeamOfUsers();
         this.toastt.success('Selected', 'Successfully Added!')
 
       },
-      err => {
-      this.toastt.error(' Can not be Selected', 'Error!')
-      }
-    );
-  }
-
-  onRemoveMember(user: User) {
-    let currentDate = new Date();
-    let subordinate = new Subordinate(this.selectedManager, user.id, currentDate, this.selectedManager);
-    this.manageTeamService.deleteSubordinate(this.selectedManager, user.id,).subscribe({
-      next: result => {
+        err => {
+          this.toastt.error(' Can not be Selected', 'Error!')
+        }
+      );
+    } else {
+        this.manageTeamService.deleteSubordinate(this.selectedManager, user.id).subscribe(result => {
+        this.populateTeamOfUsers();
+        this.toastt.success('Deleted', 'Successfully Deleted!')
       },
-      error: error => { }
+        err => {
+          this.toastt.error('Can not be Deleted', 'Error!')
+        }
+      );
+    }
+  }
+  removeField(index, value) {
+    this.selectedManager.splice(index, 1);
+    this.selectedManager.map((x) => {
+      if (x.Name === value) {
+        x.isChecked = false;
+      }
     });
   }
-
 }
-

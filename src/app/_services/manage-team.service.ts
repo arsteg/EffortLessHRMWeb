@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { baseService } from './base';
 import { environment } from 'src/environments/environment';
-import { Subordinate } from '../models/subordinate.Model';
+import { Subordinate,  } from '../models/subordinate.Model';
 
 
 @Injectable({
@@ -25,25 +25,25 @@ export class ManageTeamService extends baseService {
    return response;
   }
 
-  public addSubordinate(subordinate:Subordinate): any {
+  public addSubordinate(subordinates:Subordinate): any {
     let token = this.getToken();
     const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json',
       'Access-Control-Allow-Origin':'*',
       'Authorization': `Bearer ${token}`})
     };
-    var response  = this.http.post<any>(`${environment.apiUrlDotNet}/auth/roles/addSubordinate`,subordinate,httpOptions);
+    var response  = this.http.post<any>(`${environment.apiUrlDotNet}/auth/roles/addSubordinate`,subordinates,httpOptions);
     return response;
   }
 
-  public deleteSubordinate(userId:string,subordinateUserId:string ): any {
+  public deleteSubordinate(userId,subordinateUserId:string ): any {
     let token = this.getToken();
     const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json',
       'Access-Control-Allow-Origin':'*',
       'Authorization': `Bearer ${token}`})
     };
-    var response  = this.http.delete<any>(`${environment.apiUrlDotNet}/auth/roles/deleteSubordinate/${userId}/${subordinateUserId}`,httpOptions);
+    var response  = this.http.delete<any>(`${environment.apiUrlDotNet}/auth/roles/deleteSubordinate/${userId.id}/${subordinateUserId}`,httpOptions);
     return response;
   }
 

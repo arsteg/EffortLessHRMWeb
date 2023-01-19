@@ -44,13 +44,14 @@
                         <tbody>
                             <tr
                                 *ngFor="let task of tasks | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
-                                <td>{{task.taskName}}</td>
+                                <td>{{task.taskName| titlecase}}</td>
                                 <td>{{task.endDate | date:'mediumDate'}}</td>
                                 <td><span
                                         class="badge rounded-pill table-button text-dark px-4 py-2">{{task.priority}}</span>
                                 </td>
                                 <td>{{task.comment}}</td>
-                                <td>{{task.status}}</td>
+                                <td> <span class="badge rounded-pill table-button  bg-success text-light px-4 py-2"
+                                        *ngIf="task.status=='Active'">{{task.status}}</span> </td>
                                 <td>{{task.TaskUser}}</td>
                                 <td>
                                     <i class="bi bi-trash3 text-danger" data-bs-toggle="modal"
@@ -61,7 +62,8 @@
                             </tr>
                         </tbody>
                     </table>
-                    <pagination-controls (pageChange)="p = $event" class="pagination d-flex justify-content-end"></pagination-controls>
+                    <pagination-controls (pageChange)="p = $event"
+                        class="pagination d-flex justify-content-end"></pagination-controls>
 
                 </div>
             </div>
@@ -86,6 +88,20 @@
                     <form class="row" [formGroup]="addForm" (ngSubmit)="addTask(addForm.value)">
                         <div class="row d-flex justify-content-center">
                             <div class="col-md-8">
+                                <div class="row mt-3">
+                                    <label for="project" class="text-start">Project</label>
+                                </div>
+
+                                <select class="custom-select mb-3 p-2"  formControlName="project" ngModel>
+                                    <option [value]="project.id" *ngFor="let project of projectList">{{project.projectName}}</option>
+                                </select> 
+                               <div *ngIf="addForm.controls['project'].invalid && addForm.controls['project'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="addForm.controls['project'].errors['required']">
+                                        Please Select Project Name!
+                                    </div>
+                                </div>
+                               
                                 <div class="row">
                                     <label for="taskName" class="text-start">Task Name</label>
                                 </div>
@@ -185,7 +201,7 @@
                             </div>
                             <div>
                                 <button mat-raised-button color="primary" data-bs-dismiss="modal"
-                                    [disabled]="!addForm.valid" type="submit">Add</button>
+                                   [disabled]="!addForm.valid"  type="submit">Add</button>
                             </div>
 
                         </div>
@@ -213,6 +229,20 @@
                     <form class="row" [formGroup]="updateForm" (ngSubmit)="updateTask(updateForm.value)">
                         <div class="row d-flex justify-content-center">
                             <div class="col-md-8">
+                                <div class="row mt-3">
+                                    <label for="project" class="text-start">Project</label>
+                                </div>
+
+                                <select class="custom-select mb-3 p-2" id="project"  formControlName="project" [(ngModel)]="selectedTask.project" required>
+                                    <option [value]="project.id" *ngFor="let project of projectList">{{project.projectName}}</option>
+                                </select>
+                                <div *ngIf="updateForm.controls['project'].invalid && updateForm.controls['project'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="updateForm.controls['project'].errors['required']">
+                                        Please Select Project Name!
+                                    </div>
+                                </div>
+
                                 <div class="row">
                                     <label for="taskName" class="text-start">Task Name</label>
                                 </div>

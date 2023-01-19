@@ -126,3 +126,20 @@ label {
 figure img {
   height: 120px;
 }
+
+.calendar {
+  border-radius: 2px !important;
+}
+
+.check {
+  position: absolute;
+  font-size: 20px;
+}
+
+.row-check {
+  font-size: 20px;
+}
+
+.header-icons {
+  font-size: x-large;
+}

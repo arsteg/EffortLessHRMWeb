@@ -4,6 +4,7 @@ import { environment } from 'src/environments/environment';
 import { HttpHeaders, HttpClient, HttpParams } from '@angular/common/http';
 import { baseService } from '../_services/base';
 import { Task } from './task';
+import { project } from '../Project/model/project';
 
 @Injectable({
   providedIn: 'root'
