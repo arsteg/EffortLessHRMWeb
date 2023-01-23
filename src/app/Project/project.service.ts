@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { project } from './model/project';
+import { User } from '../models/user';
 
 @Injectable({ providedIn: 'root' })
 
@@ -57,6 +58,17 @@ export class ProjectService {
       })
     };
     return this.http.patch<project>(`${environment.apiUrlDotNet}/project/${id}`, project , httpOptions);
+  }
 
+ getProjectByUserId(userId: string): Observable<any> {
+    let token = localStorage.getItem('jwtToken');
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Authorization': `Bearer ${token}`
+      })
+    };
+    return this.http.post<project>(`${environment.apiUrlDotNet}/project/projectlistbyuser`, {userId}, httpOptions);
   }
 }

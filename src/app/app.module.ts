@@ -50,6 +50,7 @@ import { MainComponent } from './main/main.component';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TasksComponent } from './tasks/tasks.component';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import {MatSelectModule} from '@angular/material/select';
 @NgModule({
   declarations: [
     AppComponent,
@@ -99,7 +100,8 @@ import { ModalModule } from 'ngx-bootstrap/modal';
     MatCheckboxModule, MatRadioModule, TooltipModule,
     MatTableModule, MatFormFieldModule, MatInputModule,
     NgxPaginationModule,
-    ModalModule
+    ModalModule,
+    MatSelectModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

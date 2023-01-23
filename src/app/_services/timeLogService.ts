@@ -91,7 +91,7 @@ export class TimeLogService extends baseService {
 
   }
 
-  deletetimelog():Observable<timeLog>{
+  deletetimelog(logs:any):Observable<timeLog>{
     let token = localStorage.getItem('jwtToken');
     const httpOptions = {
       headers: new HttpHeaders({
@@ -99,9 +99,9 @@ export class TimeLogService extends baseService {
         'Access-Control-Allow-Origin': '*',
         'Authorization': `Bearer ${token}`
       }),
-      body:{ _id : []}
-     
-    };
+      body: logs
+    }
+
     return this.http.delete<timeLog>(`${environment.apiUrlDotNet}/timelogs`, httpOptions);
   }
 

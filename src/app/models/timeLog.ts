@@ -7,6 +7,7 @@ export class timeLog{
   filePath:string;
   fileString: string;
   keysPressed:number;
+  scrolls: number;
   clicks: number;
   url: string;
   _id: string;
@@ -30,6 +31,7 @@ export class screenShotCell{
     public fileString:string,
     public clicks:number,
     public keysPressed:number,
+    public scrolls: number,
     public url:string,
     public _id:string,
     public isSelected: boolean,

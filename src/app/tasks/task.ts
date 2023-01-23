@@ -1,3 +1,4 @@
+import { User } from "../models/user";
 import { project } from "../Project/model/project";
 export class Task {
     _id: Number;
@@ -8,7 +9,7 @@ export class Task {
     comment: string;
     isSubTask: boolean;
     priority: string;
-    TaskUser: [''];
+    TaskUser: User[];
     status: string;
     project: project[];
 }

@@ -14,7 +14,7 @@
         </div>
         <hr class="mt-0">
         <div class="container-fluid">
-            <table class="table mt-4">
+            <table class="table table-striped mt-4">
                 <thead>
                     <tr>
                         <th scope="col">Profile</th>
@@ -39,6 +39,7 @@
                 <tbody>
                     <tr
                         *ngFor="let data of teamOfUsers | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
+                        <td class="highlight"><div></div></td>
                         <td><i class="bi bi-person-square"></i></td>
                         <td>{{ data.firstName | titlecase }} {{data.lastName | titlecase}}</td>
                         <td>{{ data.email }}</td>
@@ -52,6 +53,7 @@
                             <i class="bi bi-pencil text-success" data-bs-toggle="modal" data-bs-target="#updateModal"
                                 (click)="selectedUser=data"></i>
                         </td>
+                        <td class="highlight"><div></div></td>
                     </tr>
                 </tbody>
             </table>

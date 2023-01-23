@@ -42,7 +42,7 @@ export class ScreenshotsComponent implements OnInit {
   currentTargetLabel: string = "";
   message: any;
   subscription: Subscription;
-  selectTimelog: any = [];
+  selectedTimelog: any = [];
   logs = [];
   selectAllChecked: false;
 
@@ -105,6 +105,7 @@ export class ScreenshotsComponent implements OnInit {
     result.subscribe({
       next: data => {
         this.screenshotRows = [];
+        this.selectedTimelog = [];
         this.populateScreenShots(data.data);
       },
       error: error => {
@@ -146,40 +147,75 @@ export class ScreenshotsComponent implements OnInit {
   }
 
   deleteScreenShot() {
-    this.timeLogService.deletetimelog()
+    console.log(this.selectedTimelog);
+    let logs = { logs: this.selectedTimelog.map((id) => { return { logId: id } }) };
+    console.log(logs)
+    this.timeLogService.deletetimelog(logs)
       .subscribe(response => {
-        // this.showScreenShots();
+        this.selectedTimelog = [];
+        this.showScreenShots();
       })
-    this.selectTimelog = [];
-    this.selectAllChecked = false;
   }
 
-  onCheckboxChange(event, id) {
-
+  isRowSelected(event, id, index: number) {
+    this.screenshotRows[index]['isRowSelected'] =
+      (this.screenshotRows[index].col1['isSelected'] || (!this.screenshotRows[index].col1['isSelected'] && !this.screenshotRows[index].col1.url)) &&
+      (this.screenshotRows[index].col2['isSelected'] || (!this.screenshotRows[index].col2['isSelected'] && !this.screenshotRows[index].col2.url)) &&
+      (this.screenshotRows[index].col3['isSelected'] || (!this.screenshotRows[index].col3['isSelected'] && !this.screenshotRows[index].col3.url)) &&
+      (this.screenshotRows[index].col4['isSelected'] || (!this.screenshotRows[index].col4['isSelected'] && !this.screenshotRows[index].col4.url)) &&
+      (this.screenshotRows[index].col5['isSelected'] || (!this.screenshotRows[index].col5['isSelected'] && !this.screenshotRows[index].col5.url)) &&
+      (this.screenshotRows[index].col6['isSelected'] || (!this.screenshotRows[index].col6['isSelected'] && !this.screenshotRows[index].col6.url));
     if (event.target.checked) {
-      this.selectTimelog.push(id);
+      this.selectedTimelog.push(id);
     } else {
-      let index = this.selectTimelog.indexOf(id)
+      let index = this.selectedTimelog.indexOf(id)
       if (index > -1) {
-        this.selectTimelog.splice(index, 1);
+        this.selectedTimelog.splice(index, 1);
       }
     }
-    console.log(this.selectTimelog)
+    console.log(this.selectedTimelog)
   }
-  selectAll(event, timeLog) {
-    this.selectAllChecked = event.target.checked;
-    if (this.selectAllChecked) {
-      if (timeLog.col1.url) this.selectTimelog.push(timeLog.col1._id)
-      if (timeLog.col2.url) this.selectTimelog.push(timeLog.col2._id)
-      if (timeLog.col3.url) this.selectTimelog.push(timeLog.col3._id)
-      if (timeLog.col4.url) this.selectTimelog.push(timeLog.col4._id)
-      if (timeLog.col5.url) this.selectTimelog.push(timeLog.col5._id)
-      if (timeLog.col6.url) this.selectTimelog.push(timeLog.col6._id)
+
+  selectAll(event, index) {
+    this.screenshotRows[index].col1['isSelected'] = this.screenshotRows[index]['isRowSelected'];
+    this.screenshotRows[index].col2['isSelected'] = this.screenshotRows[index]['isRowSelected'];
+    this.screenshotRows[index].col3['isSelected'] = this.screenshotRows[index]['isRowSelected'];
+    this.screenshotRows[index].col4['isSelected'] = this.screenshotRows[index]['isRowSelected'];
+    this.screenshotRows[index].col5['isSelected'] = this.screenshotRows[index]['isRowSelected'];
+    this.screenshotRows[index].col6['isSelected'] = this.screenshotRows[index]['isRowSelected'];
+    if (this.screenshotRows[index]['isRowSelected']) {
+      if (this.screenshotRows[index].col1.url) {
+        this.selectedTimelog.push(this.screenshotRows[index].col1._id);
+      }
+      if (this.screenshotRows[index].col2.url) {
+        this.selectedTimelog.push(this.screenshotRows[index].col2._id);
+      }
+      if (this.screenshotRows[index].col3.url) {
+        this.selectedTimelog.push(this.screenshotRows[index].col3._id);
+      }
+      if (this.screenshotRows[index].col4.url) {
+        this.selectedTimelog.push(this.screenshotRows[index].col4._id);
+      }
+      if (this.screenshotRows[index].col5.url) {
+        this.selectedTimelog.push(this.screenshotRows[index].col5._id);
+      }
+      if (this.screenshotRows[index].col6.url) {
+        this.selectedTimelog.push(this.screenshotRows[index].col6._id);
+      }
     }
     else {
-      this.selectTimelog = [];
+      let elementsToDelete = [];
+      this.selectedTimelog.forEach((timelogId: any, i: number) => {
+        if (this.screenshotRows[index].col1._id == timelogId) { elementsToDelete.push(timelogId) }
+        if (this.screenshotRows[index].col2._id == timelogId) { elementsToDelete.push(timelogId) }
+        if (this.screenshotRows[index].col3._id == timelogId) { elementsToDelete.push(timelogId) }
+        if (this.screenshotRows[index].col4._id == timelogId) { elementsToDelete.push(timelogId) }
+        if (this.screenshotRows[index].col5._id == timelogId) { elementsToDelete.push(timelogId) }
+        if (this.screenshotRows[index].col6._id == timelogId) { elementsToDelete.push(timelogId) }
+      });
+      this.selectedTimelog = this.selectedTimelog.filter(x => !elementsToDelete.includes(x) ? x : '');
     }
-    console.log(this.selectTimelog)
+    console.log(this.selectedTimelog)
   }
 
   populateScreenShots(timeLogs: timeLog[]) {
@@ -190,7 +226,6 @@ export class ScreenshotsComponent implements OnInit {
       let row = new screenshotRow();
       for (let c = 0; c < 6; c++) {
         var cellDetail = this.geCellDetails(r, c, timeLogs);
-        
         if (cellDetail != null) {
           totalTime += 10;
           countRowstoPop = 0;
@@ -223,7 +258,7 @@ export class ScreenshotsComponent implements OnInit {
         countRowstoPop++;
       }
       if (startRowFlag || row.hasData()) {
-        row['isRowSelected']=false;
+        row['isRowSelected'] = false;
         this.screenshotRows.push(this.attachTimelabel(r, row));
       }
     }
@@ -233,17 +268,17 @@ export class ScreenshotsComponent implements OnInit {
 
     this.totalHours = Math.floor(totalTime / 60);
     this.totalMinutes = totalTime % 60;
-   console.log(this.screenshotRows)
+    //  console.log(this.screenshotRows)
   }
 
   attachTimelabel(rowNum: number, row: screenshotRow) {
     let h = this.padValue(rowNum);
-    if (!row.col1) { row.col1 = new screenShotCell(`${h}:00`, null, null, null, null, null, null, null) }
-    if (!row.col2) { row.col2 = new screenShotCell(`${h}:10`, null, null, null, null, null, null, null) }
-    if (!row.col3) { row.col3 = new screenShotCell(`${h}:20`, null, null, null, null, null, null, null) }
-    if (!row.col4) { row.col4 = new screenShotCell(`${h}:30`, null, null, null, null, null, null, null) }
-    if (!row.col5) { row.col5 = new screenShotCell(`${h}:40`, null, null, null, null, null, null, null) }
-    if (!row.col6) { row.col6 = new screenShotCell(`${h}:50`, null, null, null, null, null, null, null) }
+    if (!row.col1) { row.col1 = new screenShotCell(`${h}:00`, null, null, null, null, null, null, null, null) }
+    if (!row.col2) { row.col2 = new screenShotCell(`${h}:10`, null, null, null, null, null, null, null, null) }
+    if (!row.col3) { row.col3 = new screenShotCell(`${h}:20`, null, null, null, null, null, null, null, null) }
+    if (!row.col4) { row.col4 = new screenShotCell(`${h}:30`, null, null, null, null, null, null, null, null) }
+    if (!row.col5) { row.col5 = new screenShotCell(`${h}:40`, null, null, null, null, null, null, null, null) }
+    if (!row.col6) { row.col6 = new screenShotCell(`${h}:50`, null, null, null, null, null, null, null, null) }
     return row;
   }
 
@@ -302,10 +337,11 @@ export class ScreenshotsComponent implements OnInit {
         var mm = +fileName.split('-')[1];
         if (hh == r && mm <= (c * 10 + 9) && mm >= (c * 10)) {
           mm = this.padValue(mm - (mm % 10));
-          result = new screenShotCell(`${hh}:${mm}`, timeLogs[i].fileString, timeLogs[i].clicks, timeLogs[i].keysPressed, timeLogs[i].url, timeLogs[i]._id, false, true);
+          result = new screenShotCell(`${hh}:${mm}`, timeLogs[i].fileString, timeLogs[i].clicks, timeLogs[i].keysPressed, timeLogs[i].scrolls, timeLogs[i].url, timeLogs[i]._id, false, true);
         }
       };
     }
+    // console.log(result)
     return result;
   }
   GetFileNameWithoutExtension(fileName) {

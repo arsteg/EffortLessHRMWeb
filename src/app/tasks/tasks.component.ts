@@ -6,10 +6,13 @@ import { response } from '../models/response';
 import { ToastrService } from 'ngx-toastr';
 import { project } from '../Project/model/project';
 import { ProjectService } from '../Project/project.service';
+import { UserService } from '../users/users.service';
+import { User } from '../models/user';
 @Component({
   selector: 'app-tasks',
   templateUrl: './tasks.component.html',
-  styleUrls: ['./tasks.component.css']
+  styleUrls: ['./tasks.component.css'],
+  providers: [UserService]
 })
 export class TasksComponent implements OnInit {
   searchText = '';
@@ -21,13 +24,15 @@ export class TasksComponent implements OnInit {
   addForm: FormGroup;
   updateForm: FormGroup;
   selectedTask: any;
-
+  allAssignee: User[] = [];
+  
     private toastr: ToastrService
     constructor(
       private tasksService: TasksService,
       private fb: FormBuilder,
       private toast: ToastrService,
-      private projectService: ProjectService
+      private projectService: ProjectService,
+      private userService: UserService
       ){
     this.addForm = this.fb.group({
       taskName: ['', Validators.required],
@@ -53,6 +58,7 @@ export class TasksComponent implements OnInit {
   ngOnInit(): void {
     this.listAllTasks();
     this. getProjectList();
+    this.populateUsers();
   }
 
   getProjectList() {
@@ -101,4 +107,13 @@ export class TasksComponent implements OnInit {
       })
   }
 
+  populateUsers() {
+    this.userService.getUserList().subscribe({
+      next: result => {
+        this.allAssignee = result.data.data;
+       
+        console.log(this.allAssignee)
+      }
+    })
+  }
 }

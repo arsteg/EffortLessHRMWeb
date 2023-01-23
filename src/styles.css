@@ -5,7 +5,8 @@
 
      .main-content{
         margin-top: 10px;
-        padding: 30px 15px;
+        padding: 30px 0px;
+        background: #f6f7f9;
         min-height: calc(100vh - 123px);
     }
     .float{
@@ -18,16 +19,10 @@ html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 body{
-    /* --navbar-scroll: transparent;  */
-    /* --navbar-scroll-text: white; */
     --navbar-scroll-shadow: none;
    }
 
-   .input{
-    /* border: none;
-    border-bottom: 0.8px solid #ced4da;
-    border-radius: 0; */
-   }
+  
    .form-control:focus {
     box-shadow: none;
    }
@@ -38,9 +33,9 @@ body{
 .table td{
     padding: 20px 10px;
 }
-.table thead{
+/* .table thead{
     background: #f6f7f9;
-}
+} */
 .table thead th{
     font-weight: 500;
     font-size: large;
@@ -49,13 +44,6 @@ body{
 .table tbody{
     border-top: 1px solid black !important;
 }
-
-    /* .pagination{
-        position: absolute;
-        left: 45%;
-        top: 80%;
-    } */
-
 .error{
     padding: 5px;
     background-color: white;
@@ -64,13 +52,51 @@ body{
 }
 
 select ,  select :focus-visible{
-    /* border: none; */
     width: 100%;
-    /* border-bottom: 1px solid #ced4da; */
-}
+   }
 .table-button {
     border-radius: 50rem!important;
     background: #f6f7f9;
     font-size: 13px;
     font-weight: 500;
 }
+tr {
+    border: 1px solid transparent;
+    z-index:7;
+  }
+  td {
+    text-align:center;
+    padding: 20px;
+    transition: all 0.5s ease-in-out;
+  }
+  td.highlight {
+    padding:0;
+    width:4px;
+    display: none;
+  }
+  td.highlight div {
+    width:4px;
+    height:60px;
+    border-radius:4px;
+    background-color: white;
+    transition: all 0.5s ease-in-out;
+  }
+  tr:hover {
+   box-shadow: 0px 9px 4px -6px grey;
+  }
+  tr:hover td{
+    cursor:pointer;
+    color:#0d6efd;
+    border-top: 1px solid grey;
+    border-bottom: 1px solid grey;
+  }
+  tr:hover td.highlight div {
+    transform: scaleX(3);
+  }
+  .cdk-global-overlay-wrapper, .cdk-overlay-container {
+    z-index: 99999 !important;
+ }
+ .mat-select-panel:not{
+  min-width: calc(100% + 70px);
+    transform: scaleY(0.9);
+ }

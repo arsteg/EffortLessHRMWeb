@@ -4,13 +4,16 @@ import { Observable } from 'rxjs';
 import { ProjectService } from '../project.service';
 import { NotificationService } from '../../_services/notification.service';
 import { project } from '../model/project';
-import { Validators, FormGroup, FormBuilder } from '@angular/forms';
+import { Validators, FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { UserService } from 'src/app/users/users.service';
+import { User } from 'src/app/models/user';
 
 @Component({
   selector: 'app-project-list',
   templateUrl: './project-list.component.html',
-  styleUrls: ['./project-list.component.css']
+  styleUrls: ['./project-list.component.css'],
+  providers: [UserService]
 })
 
 export class ProjectListComponent implements OnInit {
@@ -23,19 +26,24 @@ export class ProjectListComponent implements OnInit {
   selectedProject: any;
   form: FormGroup;
   updateForm: FormGroup;
+  allAssignee: User[] = [];
+  member: any;
+  userId: string;
 
   constructor(
     private projectService: ProjectService,
     private notifyService: NotificationService,
     private fb: FormBuilder,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private userService: UserService
   ) {
     this.form = this.fb.group({
       projectName: ['', Validators.required],
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
       estimatedTime: ['', Validators.required],
-      notes: ['', Validators.required]
+      notes: ['', Validators.required],
+      firstName: ['', Validators.required]
     });
 
     this.updateForm = this.fb.group({
@@ -43,18 +51,42 @@ export class ProjectListComponent implements OnInit {
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
       estimatedTime: ['', Validators.required],
-      notes: ['', Validators.required]
+      notes: ['', Validators.required],
+      firstName: ['', Validators.required]
     })
   }
 
   ngOnInit(): void {
     this.getProjectList();
+    this.populateUsers();
   }
 
   getProjectList() {
     this.projectService.getprojectlist().subscribe((response: any) => {
-      this.projectList = response && response.data && response.data['projectList'];
+     this.projectList = response && response.data && response.data['projectList'];
     })
+  }
+
+
+  populateUsers() {
+    this.userService.getUserList().subscribe({
+      next: result => {
+        this.allAssignee = result.data.data;       
+      }
+    })
+  }
+  getProjects() {
+    this.projectService.getProjectByUserId(this.userId).subscribe(response => {
+      console.log(response)
+        this.projectList = response && response.data && response.data['projectList'];
+    });
+}
+
+
+  onMemberSelectionChange(user) {
+    // this.userId = JSON.parse(user.id);
+    console.log("project by user: ", user)
+    this.getProjects();
   }
 
   addProject(form) {
