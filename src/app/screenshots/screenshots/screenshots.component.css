@@ -132,8 +132,12 @@ figure img {
 }
 
 .check {
-  position: absolute;
   font-size: 20px;
+  margin-top: -20px;
+  position: relative;
+  justify-content: end;
+  display: flex;
+  top: 20px;
 }
 
 .row-check {
@@ -141,5 +145,5 @@ figure img {
 }
 
 .header-icons {
-  font-size: x-large;
+  font-size: large;
 }

@@ -87,7 +87,6 @@ export class UserListComponent implements OnInit {
 
   addUser(addForm) {
     this.UserService.addUser(addForm).subscribe(result => {
-      console.log(result);
       this.populateTeamOfUsers();
       this.toastrrr.success('New User Added', 'Successfully Added!')
     },
@@ -116,6 +115,25 @@ export class UserListComponent implements OnInit {
         this.toastrrr.error('Can not be Updated', 'ERROR!')
       })
   }
+
+  getColor(char: string): string {
+    switch (char) {
+        case 'A':
+            return 'A';
+        case 'B':
+            return 'B';
+        case 'C':
+            return 'C';
+        case 'D':
+          return 'D';
+          case 'E':
+            return 'E';
+            case 'R':
+            return 'R';
+        default:
+            return 'defaults';
+    }
+}
 
 }
 

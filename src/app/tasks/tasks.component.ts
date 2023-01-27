@@ -72,11 +72,18 @@ export class TasksComponent implements OnInit {
       this.tasks = response && response.data && response.data['taskList'];
     })
   }
+  populateUsers() {
+    this.userService.getUserList().subscribe(result => {
+        this.allAssignee = result.data.data;
+       
+        console.log(this.allAssignee)
+      })
+  }
 
   addTask(form) {
-    this.tasksService.addtask(form).subscribe( response =>
+//  let newTask = { ...form.value, result: this.allAssignee}
+     this.tasksService.addtask(form).subscribe( response =>
      {
-       
         this.listAllTasks();
         this.toast.success('New Task','Successfully Added!')
       },
@@ -107,13 +114,5 @@ export class TasksComponent implements OnInit {
       })
   }
 
-  populateUsers() {
-    this.userService.getUserList().subscribe({
-      next: result => {
-        this.allAssignee = result.data.data;
-       
-        console.log(this.allAssignee)
-      }
-    })
-  }
+  
 }

@@ -17,7 +17,7 @@
             <table class="table table-striped mt-4">
                 <thead>
                     <tr>
-                        <th scope="col">Profile</th>
+                        <th scope="col"></th>
                         <th scope="col" [appSort]="teamOfUsers" data-order="desc" data-name="firsName"
                             data-name="lastName">Members &nbsp;
                             <i class="bi bi-arrow-down-up sort text-primary"></i>
@@ -40,7 +40,7 @@
                     <tr
                         *ngFor="let data of teamOfUsers | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
                         <td class="highlight"><div></div></td>
-                        <td><i class="bi bi-person-square"></i></td>
+                        <td><span class="letter" [ngClass]="getColor(data.firstName)">{{data.firstName.slice(0,1) | uppercase}}{{data.lastName.slice(0,1) | uppercase}}</span> </td>
                         <td>{{ data.firstName | titlecase }} {{data.lastName | titlecase}}</td>
                         <td>{{ data.email }}</td>
                         <td>

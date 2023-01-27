@@ -51,6 +51,8 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TasksComponent } from './tasks/tasks.component';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import {MatSelectModule} from '@angular/material/select';
+import { CdkTableModule } from '@angular/cdk/table';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 @NgModule({
   declarations: [
     AppComponent,
@@ -101,7 +103,9 @@ import {MatSelectModule} from '@angular/material/select';
     MatTableModule, MatFormFieldModule, MatInputModule,
     NgxPaginationModule,
     ModalModule,
-    MatSelectModule
+    MatSelectModule,
+    CdkTableModule, 
+    DragDropModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

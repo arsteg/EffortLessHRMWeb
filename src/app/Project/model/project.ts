@@ -10,6 +10,21 @@ export class project{
       updatedOn: Date;
       createdBy: User;
       updatedBy: User;
-      status: String;
+      status: string;
       id: string;
+      company: {
+        _id: string,
+        companyName: string,
+        id: string
+      };
+      
+  }
+
+  export class addUser{
+    projectId: project[];
+    projectUsers: [
+        {
+            users: string
+        }
+    ]
   }

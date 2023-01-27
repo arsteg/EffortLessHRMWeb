@@ -1,0 +1,28 @@
+.letter {
+    border-radius: 5px;
+    padding: 8px;
+    color: white;
+    font-size: large;
+    font-family: 'Roboto';
+    font-weight: 600;
+}
+.A{
+    background-color:brown;
+   
+}
+.B{
+    background-color: pink;
+   
+}
+.C{
+    background-color: yellow;
+   
+}
+.R{
+    background-color: orange;
+    
+}
+.defaults{
+    background-color: #556def;
+   
+}

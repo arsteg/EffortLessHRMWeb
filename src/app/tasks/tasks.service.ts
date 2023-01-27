@@ -26,7 +26,7 @@ export class TasksService extends baseService{
    return response;
   }
 
-  addtask(task: Task):Observable<any> {
+  addtask(Task):Observable<any> {
     let token = localStorage.getItem('jwtToken');
     const httpOptions = {
       headers: new HttpHeaders({
@@ -35,7 +35,7 @@ export class TasksService extends baseService{
         'Authorization': `Bearer ${token}`
       })
     };
-    return this.http.post<any>(`${environment.apiUrlDotNet}/task/newtask`, task, httpOptions);
+    return this.http.post<any>(`${environment.apiUrlDotNet}/task/newtask`, Task, httpOptions);
   }
 
 deletetask(id){
