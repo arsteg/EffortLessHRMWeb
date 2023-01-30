@@ -43,8 +43,7 @@
                         <td><span class="letter" [ngClass]="getColor(data.firstName)">{{data.firstName.slice(0,1) | uppercase}}{{data.lastName.slice(0,1) | uppercase}}</span> </td>
                         <td>{{ data.firstName | titlecase }} {{data.lastName | titlecase}}</td>
                         <td>{{ data.email }}</td>
-                        <td>
-                            <span class="badge rounded-pill table-button text-dark px-4 py-2">{{getRoleName(data?.role?.id)}}</span></td>
+                        <td><span class="badge rounded-pill table-button text-dark px-4 py-2">{{getRoleName(data?.role?.id)}}</span></td>
                         <td>{{ data.createdOn | date:'medium'}}</td>
                         <td><span class="badge rounded-pill table-button  bg-success text-light px-4 py-2"  *ngIf="data.status=='Active'" >{{data.status}}</span></td>
                         <td>

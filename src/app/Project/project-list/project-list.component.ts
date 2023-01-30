@@ -36,7 +36,7 @@ export class ProjectListComponent implements OnInit {
   projectUserList: any;
   projectId: string;
   isChecked: true;
- 
+ showContent: boolean=false;
   constructor(
     private projectService: ProjectService,
     private notifyService: NotificationService,
@@ -81,8 +81,11 @@ export class ProjectListComponent implements OnInit {
   }
 
   getProjectList() {
+    let index: number;
     this.projectService.getprojectlist().subscribe((response: any) => {
       this.projectList = response && response.data && response.data['projectList'];
+      // console.log(this.projectList)
+      console.log(this.projectList)
     })
   }
 
@@ -156,31 +159,36 @@ export class ProjectListComponent implements OnInit {
 //  Method to Delete assigned User to project
   onModelChange(isChecked, projectUserList) {
     if (isChecked) {
-      this.getProjectUser(projectUserList);
+     this.getProjectUser(projectUserList);
     }
     else {
-      console.log(projectUserList.id)
+      console.log(projectUserList.id);
+      const index = this.projectUserList.findIndex(user => user.id === projectUserList);
       this.projectService.deleteprojectUser(projectUserList.id).subscribe(response => {
-      projectUserList.id = response && response.data && response.data['projectUserList'];
-        console.log("project user list:", projectUserList.id);
-      })
+        this.projectUserList.splice(index, 1);
+        this.toastr.success(projectUserList.user.firstName.toUpperCase(), 'Successfully Removed!')
+      },
+        err => {
+          this.toastr.error(projectUserList.user.firstName.toUpperCase(), 'ERROR! Can not be Removed')
+        })
     }
   }
 
+ 
   getColor(char: string): string {
     switch (char) {
-      case 'A' || 'a':
-        return 'A';
-      case 'B' || 'b':
-        return 'B';
-      case 'C' || 'c':
-        return 'C';
-      case 'D' || 'd':
-        return 'D';
-      case 'E' || 'e':
-        return 'E';
-      case 'R' || 'r':
-        return 'R';
+      case 'A':
+        return 'a';
+      case 'B':
+        return 'b';
+      case 'C':
+        return 'c';
+      case 'D':
+        return 'd';
+      case 'E':
+        return 'e';
+      case 'R':
+        return 'r';
       default:
         return 'defaults';
     }

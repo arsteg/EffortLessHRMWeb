@@ -16,7 +16,7 @@ export class HomeComponent implements OnInit {
   spinnerStyle = Spinkit;
   portalType: string = 'user';
   adminView: string = 'admin';
-  guestView: string = 'guest';
+  // guestView: string = 'guest';
   currentProfile: any;
   constructor(private router: Router, private auth: AuthenticationService) { }
 
@@ -28,14 +28,15 @@ export class HomeComponent implements OnInit {
         this.menuList = SideBarUserMenu;
         this.portalType = "user";
       }
-      if (role.toLowerCase() == 'user') {
-        this.menuList = SideBarUserMenu;
-        this.portalType = "guest";
-      }
       if (role.toLowerCase() == 'admin') {
         this.menuList = SideBarAdminMenu;
         this.portalType = "admin"
       }
+      // if (role.toLowerCase() == 'user') {
+      //   this.menuList = SideBarUserMenu;
+      //   this.portalType = "guest";
+      // }
+
     });
 
     let currentUser = JSON.parse(localStorage.getItem('currentUser'))
@@ -47,22 +48,24 @@ export class HomeComponent implements OnInit {
 
   switchView(view: string) {
     this.adminView = view;
+    localStorage.setItem(this.adminView, 'view')
     if (view == 'user') {
-      this.menuList = SideBarUserMenu;
+     this.menuList = SideBarUserMenu;
     }
+    // localStorage.setItem(this.adminView, 'view')
     if (view == 'admin') {
-      this.menuList = SideBarAdminMenu;
+    this.menuList = SideBarAdminMenu;
     }
     this.router.navigate(['dashboard'])
   }
 
-  guestview(view: string){
-    this.guestView = view;
-    if (view == 'guest') {
-      this.menuList = SideBarUserMenu;
-    }
-    this.router.navigate(['dashboard'])
-  }
+  // guestview(view: string){
+  //   this.guestView = view;
+  //   if (view == 'guest') {
+  //     this.menuList = SideBarUserMenu;
+  //   }
+  //   this.router.navigate(['dashboard'])
+  // }
 
   onLogout() {
     localStorage.removeItem('user.email')

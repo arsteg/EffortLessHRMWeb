@@ -117,21 +117,28 @@ tr {
   font-size: large;
   font-family: 'Roboto';
   font-weight: 600;
+  margin-left: -12px;
+  transition: all .2s;
 }
-.A{
-    background-color:brown;
+.letter:hover{
+  -ms-transform: scale(1.5);
+  -webkit-transform: scale(1.5); 
+  transform: scale(1.2); 
+}
+.a{
+    background-color:#a52a2a;
    
 }
-.B{
-    background-color: pink;
+.b{
+    background-color: #ffc0cb;
    
 }
-.C{
-    background-color: yellow;
+.c{
+    background-color: #ffff00;
    
 }
-.R{
-    background-color: orange;
+.r{
+    background-color: #ffa500;
     
 }
 .defaults{
