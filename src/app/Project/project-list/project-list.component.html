@@ -77,16 +77,26 @@
                                         *ngIf="data.status=='Active'">{{data.status}}</span> </td>
 
                                 <td class="d-flex flex-nowrap">
-                                    <i class="fa fa-user-plus addUser me-3 mt-2" data-bs-toggle="modal"
+                                    <i class="fa fa-user-plus addUser me-3 mt-1" data-bs-toggle="modal"
                                      data-bs-target="#addUserModal" (click)="selectedProject=data"></i>
-                                       <span *ngFor="let users of data.ProjectUser" class="letter text-light" [ngClass]="getColor(users)">
-                                        {{users?.user?.firstName.slice(0,1) | uppercase}}</span>
+                                       <span *ngFor="let users of data.ProjectUser" class="letter text-light" 
+                                       [tooltip]="(users?.user?.firstName| titlecase) + (' ') +( users?.user?.lastName | titlecase)" [style.background-color]="getRandomColor(users?.user?.firstName)">
+                                        {{users?.user?.firstName.charAt(0) | uppercase}}
+                                    </span>
                                 </td>
 
-                                <td class="action"><i class="bi bi-trash3 text-danger" data-bs-toggle="modal"
-                                        data-bs-target="#deleteModal" (click)="selectedProject=data"></i> &nbsp;
-                                    <i class="bi bi-pencil text-success" data-bs-toggle="modal"
-                                        data-bs-target="#updateModal" (click)="selectedProject=data"></i>
+                                <td class="action">
+                                        <div class="dropdown-center">
+                                              <i class="bi bi-three-dots actions" data-bs-toggle="dropdown" aria-expanded="false"></i>
+                                            <ul class="dropdown-menu">
+                                              <li class="d-flex" data-bs-toggle="modal" data-bs-target="#deleteModal" (click)="selectedProject=data">
+                                                <i class="bi bi-trash3 text-danger dropdown-item w-25" ></i><span class="pt-1 text-muted">Delete</span> </li>
+                                                <hr class="mx-2 my-0">
+                                              <li class="d-flex" data-bs-toggle="modal" data-bs-target="#updateModal" (click)="selectedProject=data">
+                                                <i class="bi bi-pencil text-success  dropdown-item w-25" ></i><span class="pt-1 text-muted">Edit</span> </li>
+                                                
+                                            </ul>
+                                          </div>
                                 </td>
                                 <td class="highlight">
                                     <div></div>
@@ -124,7 +134,8 @@
                                 <mat-form-field appearance="outline" class="w-100">
                                     <mat-label>Select User</mat-label>
                                     <mat-select multiple formControlName="userName" [(ngModel)]="selectedProject._id">
-                                      <mat-option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                                      <mat-option *ngFor="let assignee of allAssignee" [value]="assignee.id"
+                                      [selected]="selectedProject._id?.includes(assignee?.id)">
                                         {{assignee.firstName | titlecase}} {{assignee.lastName | titlecase}}</mat-option>
                                     </mat-select>
                                 
@@ -172,8 +183,9 @@
                             <div class="col-md-8">
                                 <li *ngFor="let assignee of projectUserList; let i = index" type="none">
                                     <label *ngIf="assignee.user!=null">
-                                      <mat-checkbox color="primary"  name="firstName"  (ngModelChange)="onModelChange($event, assignee)" 
-                                       [(ngModel)]="isChecked">{{assignee?.user?.firstName | titlecase}}</mat-checkbox>
+                                      <mat-checkbox color="primary"  name="firstName" 
+                                     [checked]="isChecked" (ngModelChange)="onModelChange($event, assignee)" 
+                                       [(ngModel)]="isChecked">{{assignee?.user?.firstName | titlecase}} {{assignee?.user?.lastName | titlecase}}</mat-checkbox>
                                     </label>
                                     
                                   </li>

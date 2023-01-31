@@ -10,6 +10,7 @@ import { UserService } from 'src/app/users/users.service';
 import { User } from 'src/app/models/user';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
+
 @Component({
   selector: 'app-project-list',
   templateUrl: './project-list.component.html',
@@ -36,7 +37,11 @@ export class ProjectListComponent implements OnInit {
   projectUserList: any;
   projectId: string;
   isChecked: true;
- showContent: boolean=false;
+  firstLetter: string;
+  color: string;
+  selectedIds: string[] = [];
+  selectedUser: string;
+
   constructor(
     private projectService: ProjectService,
     private notifyService: NotificationService,
@@ -74,6 +79,42 @@ export class ProjectListComponent implements OnInit {
     this.isChecked = true;
     this.getProjectList();
     this.populateUsers();
+   
+  }
+
+  
+  
+  getRandomColor(firstName: string) {
+    let colorMap = {
+      A: '#556def',
+      B: '#faba5c',
+      C: '#0000ff',
+      D: '#ffff00',
+      E: '#00ffff',
+      F: '#ff00ff',
+      G: '#f1421d',
+      H: '#1633eb',
+      I: '#f1836c',
+      J: '#824b40',
+      K: '#256178',
+      L: '#0d3e50',
+      M: '#3c8dad',
+      N: '#67a441',
+      O: '#dc57c3',
+      P: '#673a05',
+      Q: '#ec8305',
+      R: '#00a19d',
+      S: '#2ee8e8',
+      T: '#5c9191',
+      U: '#436a2b',
+      V: '#dd573b',
+      W: '#424253',
+      X: '#74788d',
+      Y: '#16cf96',
+      Z: '#4916cf'
+    };
+    this.firstLetter= firstName.charAt(0).toUpperCase();
+    return colorMap[this.firstLetter] || '#000000';
   }
 
   drop(event: CdkDragDrop<any[]>) {
@@ -163,9 +204,10 @@ export class ProjectListComponent implements OnInit {
     }
     else {
       console.log(projectUserList.id);
-      const index = this.projectUserList.findIndex(user => user.id === projectUserList);
+      let index = this.projectUserList.findIndex(user => user.id === projectUserList.id);
       this.projectService.deleteprojectUser(projectUserList.id).subscribe(response => {
         this.projectUserList.splice(index, 1);
+        this.getProjectList();
         this.toastr.success(projectUserList.user.firstName.toUpperCase(), 'Successfully Removed!')
       },
         err => {
@@ -173,9 +215,8 @@ export class ProjectListComponent implements OnInit {
         })
     }
   }
-
  
-  getColor(char: string): string {
+  getColor(char: string) {
     switch (char) {
       case 'A':
         return 'a';

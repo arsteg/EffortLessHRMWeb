@@ -53,6 +53,7 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import {MatSelectModule} from '@angular/material/select';
 import { CdkTableModule } from '@angular/cdk/table';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+
 @NgModule({
   declarations: [
     AppComponent,

@@ -107,16 +107,19 @@ tr {
     transform: scaleY(0.9);
  }
  .addUser{
-  color: #3f51b5;
+  color: #797a7d;
+    border: 1px dashed #797a7d;
+    padding: 4px;
+    border-radius: 5px;
+    cursor: pointer;
  }
 
  .letter {
   border-radius: 5px;
-  padding: 8px;
+  padding: 5px 8px;
   color: white;
-  font-size: large;
+  font-size: medium;
   font-family: 'Roboto';
-  font-weight: 600;
   margin-left: -12px;
   transition: all .2s;
 }
@@ -144,4 +147,7 @@ tr {
 .defaults{
     background-color: #556def;
    
+}
+.action .actions{
+  font-size: large;
 }
