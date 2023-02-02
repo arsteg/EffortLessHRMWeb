@@ -23,6 +23,7 @@ import { RealtimeComponent } from './realtime/realtime.component';
 import { MainComponent } from './main/main.component';
 import { changeUserPassword } from './models/user';
 import { TasksComponent } from './tasks/tasks.component';
+import { RequestManualTimeComponent } from './manualTime/request-manual-time/request-manual-time.component';
 
 
 const routes: Routes = [
@@ -53,7 +54,9 @@ const routes: Routes = [
       { path: 'employees' , component: UserListComponent},
       { path: 'attendance', component: AttendanceComponent },
       { path: 'realtime', component: RealtimeComponent },
-      { path: 'tasks', component: TasksComponent }
+      { path: 'tasks', component: TasksComponent },
+      { path: 'requestManualTime', component: RequestManualTimeComponent }
+
     ]
   }
 ]

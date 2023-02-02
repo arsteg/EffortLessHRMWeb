@@ -9,16 +9,16 @@ import {response} from '../models/response'
 import { baseService } from './base';
 import { User } from '../models/user';
 import { stringToArray } from 'ag-grid-community';
-
+import {manualTimeRequest}  from '../models/manualTime/manualTimeRequest'
 
 @Injectable({
   providedIn: 'root'
 })
 export class TimeLogService extends baseService {
- 
+
   private messageSource = new BehaviorSubject<any>(0);
   currentMessage = this.messageSource.asObservable();
-  
+
   constructor(private http: HttpClient) {
     super();
   }
@@ -63,7 +63,7 @@ export class TimeLogService extends baseService {
   getTeamMembers(userId): any {
     let token = this.getToken();
     const httpOptions = {
-      headers: new HttpHeaders({ 
+      headers: new HttpHeaders({
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin':'*',
       'Authorization': `Bearer ${token}`})
@@ -103,6 +103,18 @@ export class TimeLogService extends baseService {
     }
 
     return this.http.delete<timeLog>(`${environment.apiUrlDotNet}/timelogs`, httpOptions);
+  }
+
+  addManualTimeRequest(request:manualTimeRequest):Observable<any>{
+    let token = localStorage.getItem('jwtToken');
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Authorization': `Bearer ${token}`
+      })
+    }
+    return this.http.post(`${environment.apiUrlDotNet}/manualTime/addManualTimeRequest`, request,httpOptions);
   }
 
 
@@ -180,5 +192,5 @@ export class TimeLogService extends baseService {
     this.messageSource.next(message)
   }
 
- 
+
 }

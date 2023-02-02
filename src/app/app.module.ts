@@ -53,6 +53,8 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import {MatSelectModule} from '@angular/material/select';
 import { CdkTableModule } from '@angular/cdk/table';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { RequestManualTimeComponent } from './manualTime/request-manual-time/request-manual-time.component';
+import { CommonModule } from "@angular/common";
 
 @NgModule({
   declarations: [
@@ -82,7 +84,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
           AttendanceComponent,
           RealtimeComponent,
           MainComponent,
-          TasksComponent
+          TasksComponent,
+          RequestManualTimeComponent
   ],
   imports: [
     BrowserModule,
@@ -105,8 +108,9 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     NgxPaginationModule,
     ModalModule,
     MatSelectModule,
-    CdkTableModule, 
-    DragDropModule
+    CdkTableModule,
+    DragDropModule,
+    CommonModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

@@ -1,0 +1,162 @@
+<div class="main-content">
+  <div class="container-fluid">
+
+      <div class="d-flex justify-content-between">
+          <h1 class="pt-4 mb-0">Requests: {{0}}</h1>
+          <div class="d-flex h-25">
+              <input class="form-control search" type="text" placeholder="search..." [(ngModel)]="searchText"
+                  name="searchText" aria-label="default input example"
+                  style="border-bottom: 1px solid grey; border-radius: 0;">
+              <button mat-raised-button color="primary" class="ms-5" style="
+              padding: 2px 35px 0 5px;
+          " data-bs-toggle="modal" data-bs-target="#addModal">New Request</button>
+          </div>
+      </div>
+      <hr class="mt-0">
+      <div class="container-fluid">
+          <table class="table table-striped mt-4">
+              <thead>
+                  <tr>
+                      <th scope="col"></th>
+                      <th scope="col" [appSort]="teamOfUsers" data-order="desc" data-name="firsName"
+                          data-name="lastName">Members &nbsp;
+                          <i class="bi bi-arrow-down-up sort text-primary"></i>
+                      </th>
+                      <th scope="col" [appSort]="teamOfUsers" data-order="desc" data-name="email">E-Mail &nbsp; <i
+                              class="bi bi-arrow-down-up sort text-primary"></i></th>
+                      <th scope="col" [appSort]="teamOfUsers" data-order="desc" data-name="role">Member Type &nbsp;
+                          <i class="bi bi-arrow-down-up sort text-primary"></i>
+                      </th>
+                      <th scope="col" [appSort]="teamOfUsers" data-order="desc" data-name="createdOn">Member Since
+                          &nbsp;
+                          <i class="bi bi-arrow-down-up sort text-primary"></i>
+                      </th>
+                      <th scope="col" [appSort]="teamOfUsers" data-order="desc" data-name="status">Status</th>
+                      <th scope="col">Action</th>
+
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr
+                      *ngFor="let data of teamOfUsers | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
+                      <td class="highlight"><div></div></td>
+                      <td><span class="letter" [ngClass]="getColor(data.firstName)">{{data.firstName.slice(0,1) | uppercase}}{{data.lastName.slice(0,1) | uppercase}}</span> </td>
+                      <td>{{ data.firstName | titlecase }} {{data.lastName | titlecase}}</td>
+                      <td>{{ data.email }}</td>
+                      <td>
+                          <span class="badge rounded-pill table-button text-dark px-4 py-2">{{getRoleName(data?.role?.id)}}</span></td>
+                      <td>{{ data.createdOn | date:'medium'}}</td>
+                      <td><span class="badge rounded-pill table-button  bg-success text-light px-4 py-2"  *ngIf="data.status=='Active'" >{{data.status}}</span></td>
+                      <td>
+                          <i class="bi bi-trash3 text-danger" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                              (click)="selectedUser = data"></i> &nbsp;
+                          <i class="bi bi-pencil text-success" data-bs-toggle="modal" data-bs-target="#updateModal"
+                              (click)="selectedUser=data"></i>
+                      </td>
+                      <td class="highlight"><div></div></td>
+                  </tr>
+              </tbody>
+          </table>
+          <pagination-controls (pageChange)="p = $event" class="pagination d-flex justify-content-end"></pagination-controls>
+
+      </div>
+
+  </div>
+</div>
+
+<ng-template #mymodal let-modal>
+  <div class="modal-header">
+    <div>
+      <h4 class="modal-title text-start">Add Manual Time Request</h4>
+  </div>
+  <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end" (click)="modal.close('Escape clicked')"></button>
+  </div>
+  </div>
+  <form [formGroup]="addRequestForm" (ngSubmit)="onSubmit()">
+  <div class="modal-body">
+    <div class="row">
+            <div class="row d-flex justify-content-center">
+                <div class="col-md-10">
+                    <div class="row">
+                        <label for="manager" class="text-start">Manager</label>
+                    </div>
+                    <select class="custom-select mb-3 p-2" formControlName="manager">
+                      <option value="">Choose Any Manager</option>
+                      <option *ngFor="let manager of managers" [value]="manager.id">
+                      {{manager.name}}
+                      </option>
+                    </select>
+                    <div *ngIf="addRequestForm.controls['manager'].invalid && addRequestForm.controls['manager'].touched"
+                    class="alert alert-danger error">
+                    <div *ngIf="addRequestForm.controls['manager'].errors['required']">
+                      Manager is required.
+                    </div>
+                  </div>
+
+                    <div class="row mt-3">
+                      <label for="project" class="text-start">Project</label>
+                  </div>
+                  <select class="custom-select mb-3 p-2" formControlName="project">
+                      <option value="">Choose Any Project</option>
+                      <option *ngFor="let project of projects" [value]="project.id">
+                      {{project.projectName}}
+                      </option>
+                  </select>
+                  <div *ngIf="addRequestForm.controls['project'].invalid && addRequestForm.controls['project'].touched"
+                  class="alert alert-danger error">
+                  <div *ngIf="addRequestForm.controls['project'].errors['required']">
+                    Project is required.
+                  </div>
+                </div>
+
+               <div class="row mt-3">
+                  <label for="startDate" class="text-start">Start Date</label>
+              </div>
+              <input matInput type="datetime-local" name="startDate" id="startDate" placeholder="start date" formControlName="startDate" [ngModel]="startDate | date:'yyyy-MM-ddTHH:mm'"  class="form-control input pt-0"
+                   ngModel required>
+
+                <div *ngIf="addRequestForm.controls['startDate'].invalid && addRequestForm.controls['startDate'].touched"
+                class="alert alert-danger error">
+                <div *ngIf="addRequestForm.controls['startDate'].errors['required']">
+                  Start Date is required.
+                </div>
+                <div *ngIf="addRequestForm.get('startDate').hasError('endDateBeforeStartDate')">
+                  End date must be after start date.
+                </div>
+              </div>
+              <div class="row mt-3">
+                  <label for="endDate" class="text-start">End Date</label>
+              </div>
+
+                <input matInput type="datetime-local"  name="endDate" id="endDate" placeholder="end date" formControlName="endDate" class="form-control input pt-0" [ngModel]="endDate | date:'yyyy-MM-ddTHH:mm'">
+
+                <div *ngIf="addRequestForm.controls['endDate'].invalid && addRequestForm.controls['endDate'].touched"
+                class="alert alert-danger error">
+                <div *ngIf="addRequestForm.controls['endDate'].errors['required']">
+                  End Date is required.
+                </div>
+                <div *ngIf="addRequestForm.get('endDate').hasError('endDateBeforeStartDate')">
+                  End date must be after start date.
+                </div>
+              </div>
+
+                    <div class="row">
+                      <label for="reason" class="text-start mt-3">Reason</label>
+                  </div>
+                  <input type="text" name="reason" id="reason" class="form-control input pt-0" formControlName="reason" ngModel ngModel required>
+                  <div *ngIf="addRequestForm.controls['reason'].invalid && addRequestForm.controls['reason'].touched"
+                  class="alert alert-danger error">
+                  <div *ngIf="addRequestForm.controls['reason'].errors['required']">
+                    Reason is required.
+                  </div>
+                </div>
+                </div>
+            </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button mat-raised-button color="primary" data-bs-dismiss="modal" type="submit"
+    [disabled]="!addRequestForm.valid">Add Request</button>
+  </div>
+</form>
+</ng-template>
