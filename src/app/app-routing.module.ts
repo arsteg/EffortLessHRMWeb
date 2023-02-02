@@ -41,7 +41,6 @@ const routes: Routes = [
     children: [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'logout', component: LoginComponent },
-      // { path: 'login', component: LoginComponent },
       { path: 'resetPassword/:token', component: ResetPasswordComponent },
       { path: 'userProfile', component: UserProfileComponent },
       { path: 'screenshots', component: ScreenshotsComponent },

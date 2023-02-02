@@ -9,24 +9,26 @@ import { project } from '../Project/model/project';
 @Injectable({
   providedIn: 'root'
 })
-export class TasksService extends baseService{
+export class TasksService extends baseService {
 
-  constructor(private http: HttpClient) { 
+  constructor(private http: HttpClient) {
     super();
   }
 
   getAllTasks(): Observable<any> {
     let token = this.getToken();
     const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin':'*',
-      'Authorization': `Bearer ${token}`})
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Authorization': `Bearer ${token}`
+      })
     };
-    var response  = this.http.get<any>(`${environment.apiUrlDotNet}/task/tasklist`,httpOptions);
-   return response;
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/task/tasklist`, httpOptions);
+    return response;
   }
 
-  addtask(Task):Observable<any> {
+  addtask(Task): Observable<any> {
     let token = localStorage.getItem('jwtToken');
     const httpOptions = {
       headers: new HttpHeaders({
@@ -38,8 +40,8 @@ export class TasksService extends baseService{
     return this.http.post<any>(`${environment.apiUrlDotNet}/task/newtask`, Task, httpOptions);
   }
 
-deletetask(id){
-  let token = localStorage.getItem('jwtToken');
+  deletetask(id) {
+    let token = localStorage.getItem('jwtToken');
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
@@ -47,18 +49,43 @@ deletetask(id){
         'Authorization': `Bearer ${token}`
       })
     };
-    return this.http.delete<Task>(`${environment.apiUrlDotNet}/task/${id}`,httpOptions);
-}
+    return this.http.delete<Task>(`${environment.apiUrlDotNet}/task/${id}`, httpOptions);
+  }
 
-updateproject(id, Task):Observable<Task>{
-  let token = localStorage.getItem('jwtToken');
-  const httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*',
-      'Authorization': `Bearer ${token}`
-    })
-  };
-  return this.http.patch<Task>(`${environment.apiUrlDotNet}/task/update/${id}`, Task , httpOptions);
-}
+  updateproject(id, Task): Observable<Task> {
+    let token = localStorage.getItem('jwtToken');
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Authorization': `Bearer ${token}`
+      })
+    };
+    return this.http.patch<Task>(`${environment.apiUrlDotNet}/task/update/${id}`, Task, httpOptions);
+  }
+
+  addUserToTask(taskId, taskUsers): Observable<any> {
+    let token = localStorage.getItem('jwtToken');
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Authorization': `Bearer ${token}`
+      })
+    };
+    return this.http.post<any>(`${environment.apiUrlDotNet}/task/newtaskuser`, { taskId, taskUsers }, httpOptions);
+  }
+ 
+  getTaskByProjectId(projectId: string): Observable<any> {
+    let token = localStorage.getItem('jwtToken');
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Authorization': `Bearer ${token}`
+      })
+    };
+    return this.http.get<project>(`${environment.apiUrlDotNet}/task/tasklistbyproject/${projectId}`, httpOptions);
+  }
+
 }

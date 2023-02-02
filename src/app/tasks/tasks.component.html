@@ -3,9 +3,20 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="">
-                    <div class="d-flex justify-content-between">
+                    <div class="d-flex">
                         <h1 class="pt-4">Tasks: {{tasks.length}}</h1>
-                        <div class="d-flex h-25">
+                        <div class=" pt-1 d-flex text-center mx-4 h-25">
+                            <label for="project" class="pt-1 pe-3">Projects: </label>
+
+                            <select id="project" name="project" class="form-control" class="form-select form-select-sm"
+                                aria-label=".form-select-sm example" [(ngModel)]="projectId" (change)="onMemberSelectionChange(projectId)">
+                                <option [value]="project.id" *ngFor="let project of projectList">
+                                    {{project.projectName}}</option>
+                            </select>
+
+                        </div>
+
+                        <div class="d-flex h-25 ms-auto">
                             <input class="form-control search" type="text" placeholder="search..."
                                 [(ngModel)]="searchText" name="searchText" aria-label="default input example"
                                 style="border-bottom: 1px solid grey; border-radius: 0;">
@@ -44,7 +55,9 @@
                         <tbody>
                             <tr
                                 *ngFor="let task of tasks | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
-                                <td class="highlight"><div></div></td>
+                                <td class="highlight">
+                                    <div></div>
+                                </td>
                                 <td>{{task.taskName| titlecase}}</td>
                                 <td>{{task.endDate | date:'mediumDate'}}</td>
                                 <td><span
@@ -53,20 +66,83 @@
                                 <td>{{task.comment}}</td>
                                 <td> <span class="badge rounded-pill table-button  bg-success text-light px-4 py-2"
                                         *ngIf="task.status=='Active'">{{task.status}}</span> </td>
-                                <td>{{task?.TaskUser}}</td>
+                                <td class="d-flex flex-nowrap">
+                                    <i class="fa fa-user-plus addUser me-3 mt-1" data-bs-toggle="modal"
+                                        data-bs-target="#addUserModal" (click)="selectedTask=task"></i>
+                                    <span *ngFor="let users of task.TaskUsers" class="letter text-light"
+                                        [tooltip]="(users?.user?.firstName | titlecase)"
+                                        [style.background-color]="getRandomColor(users)">
+                                        {{users?.user?.firstName.charAt(0) | uppercase}}
+                                       
+                                    </span>
+                                </td>
                                 <td>
                                     <i class="bi bi-trash3 text-danger" data-bs-toggle="modal"
                                         data-bs-target="#deleteModal" (click)="selectedTask=task"></i> &nbsp;
                                     <i class="bi bi-pencil text-success" data-bs-toggle="modal"
                                         data-bs-target="#updateModal" (click)="selectedTask=task"></i>
-                                </td>    
-                                <td class="highlight"><div></div></td>                        
+                                </td>
+                                <td class="highlight">
+                                    <div></div>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
                     <pagination-controls (pageChange)="p = $event"
                         class="pagination d-flex justify-content-end"></pagination-controls>
 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Add User -->
+<div class="modal" id="addUserModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class=" d-flex justify-content-between">
+                    <div class="">
+                        <h4 class="modal-title text-start">Add New Member</h4>
+                    </div>
+                    <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
+                    </div>
+                </div>
+                <hr class="mt-0">
+                <div class="row" *ngIf="selectedTask">
+                    <form class="row" [formGroup]="addUserForm" (ngSubmit)="addUserToTask(addUserForm.value)">
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-md-8">
+
+                                <div class="mt-3">
+                                    <mat-form-field appearance="outline" class="w-100">
+                                        <mat-label>Select User</mat-label>
+                                        <mat-select multiple formControlName="userName" [(ngModel)]="selectedTask._id">
+                                            <mat-option *ngFor="let assignee of allAssignee" [value]="assignee.id"
+                                                [selected]="selectedTask.id?.includes(assignee)">
+                                                {{assignee.firstName | titlecase}} {{assignee.lastName |
+                                                titlecase}}</mat-option>
+                                        </mat-select>
+
+                                    </mat-form-field>
+                                </div>
+
+
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between m-3">
+
+                            <div>
+                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
+                                    type="button">Cancel</button>
+                            </div>
+                            <div>
+                                <button mat-raised-button color="primary" data-bs-dismiss="modal"
+                                    type="submit">Add</button>
+                            </div>
+
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -182,12 +258,12 @@
                                     </div>
                                 </div>
 
-                                <div class="row mt-3">
+                                <!-- <div class="row mt-3">
                                     <label for="project" class="text-start">Assignee</label>
                                 </div>
 
                                 <select class="custom-select mb-3 p-2" formControlName="TaskUser" ngModel>
-                                    <option  *ngFor="let assignee of allAssignee"  [value]="assignee.firstName">
+                                    <option *ngFor="let assignee of allAssignee" [value]="assignee.firstName">
                                         {{assignee.firstName | titlecase}} {{assignee.lastName | titlecase}}
                                     </option>
                                 </select>
@@ -196,7 +272,7 @@
                                     <div *ngIf="addForm.controls['TaskUser'].errors['required']">
                                         Assignee is required!
                                     </div>
-                                </div>
+                                </div> -->
 
 
                             </div>
@@ -322,12 +398,13 @@
 
 
 
-                                <div class="row mt-3">
+                                <!-- <div class="row mt-3">
                                     <label for="project" class="text-start">Assignee</label>
                                 </div>
 
-                                <select class="custom-select mb-3 p-2" formControlName="TaskUser" [(ngModel)]="selectedTask.selectedOption">
-                                    <option  *ngFor="let assignee of allAssignee" [value]="assignee.firstName">
+                                <select class="custom-select mb-3 p-2" formControlName="TaskUser"
+                                    [(ngModel)]="selectedTask.selectedOption">
+                                    <option *ngFor="let assignee of allAssignee" [value]="assignee.firstName">
                                         {{assignee.firstName | titlecase}} {{assignee.lastName | titlecase}}
                                     </option>
                                 </select>
@@ -336,7 +413,7 @@
                                     <div *ngIf="updateForm.controls['TaskUser'].errors['required']">
                                         Assignee is required!
                                     </div>
-                                </div>
+                                </div> -->
 
                             </div>
                         </div>

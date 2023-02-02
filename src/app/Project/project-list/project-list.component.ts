@@ -77,8 +77,6 @@ export class ProjectListComponent implements OnInit {
     this.populateUsers();
   }
 
-  
-  
   getRandomColor(firstName: string) {
     let colorMap = {
       A: '#556def',
