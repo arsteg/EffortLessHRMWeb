@@ -10,13 +10,13 @@ import { baseService } from '../_services/base';
 
 @Injectable()
 export class UserService extends baseService{
-  static getQuestions: any; 
+  static getQuestions: any;
   constructor(private http: HttpClient) {
     super();
    }
   // TODO: get from a remote source of question metadata
- public getQuestions(user:signup): Observable<Base<any>[]> {   
-    const controls: Base<string>[] = [   
+ public getQuestions(user:signup): Observable<Base<any>[]> {
+    const controls: Base<string>[] = [
       new Textbox({
         key: 'firstName',
         label: 'First name',
@@ -60,7 +60,7 @@ export class UserService extends baseService{
       }),
       new Textbox({
         key: 'state',
-        label: 'State',       
+        label: 'State',
         class:"col-md-12",
         rowclass:false,
         order: 6
@@ -87,7 +87,7 @@ export class UserService extends baseService{
       }),
       new Textbox({
         key: 'phone',
-        label: 'Phone',     
+        label: 'Phone',
         required: true,
         class:"col-md-12",
         rowclass:true,
@@ -105,20 +105,20 @@ export class UserService extends baseService{
       }),
       new Textbox({
         key: 'extraDetails',
-        label: 'Extra Details',       
-        class:"col-md-12",    
+        label: 'Extra Details',
+        class:"col-md-12",
         rowclass:true,
-        rows:3,  
+        rows:3,
         order: 11
-      })      
-    ];   
+      })
+    ];
     return of(controls.sort((a, b) => a.order - b.order));
   }
 GetMe(id:string): Observable<signup[]> {
     var queryHeaders = new HttpHeaders();
     queryHeaders.append('Content-Type', 'application/json');
-    queryHeaders.append('Access-Control-Allow-Origin','*');   
-    return this.http.get<any>(`${environment.apiUrlDotNet}/users/${id}`,{ headers: queryHeaders})       
+    queryHeaders.append('Access-Control-Allow-Origin','*');
+    return this.http.get<any>(`${environment.apiUrlDotNet}/users/${id}`,{ headers: queryHeaders})
 }
 updateMe(user: signup): Observable<signup> {
   return this.http.patch<any>(`${environment.apiUrlDotNet}/users/${user.id}`, user, {

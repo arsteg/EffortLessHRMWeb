@@ -603,6 +603,13 @@ export const SideBarUserMenu = [
     id: '15',
     title: 'Settings',
     icon: 'fa fa-wrench',
-  }];
+  },
+  {
+    id: '15',
+    title: 'Manual Time',
+    icon: 'fa fa-wrench',
+    url: '/requestManualTime',
+  }
+];
 
 

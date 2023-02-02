@@ -160,7 +160,7 @@
     "uuid" "8.3.2"
     "yargs" "17.5.1"
 
-"@angular/common@^13.0.0", "@angular/common@^13.0.0 || ^14.0.0-0", "@angular/common@^14.1.0", "@angular/common@>= 8.0.0", "@angular/common@>=12.0.0-0", "@angular/common@>=13.0.0", "@angular/common@14.1.0":
+"@angular/common@^13.0.0", "@angular/common@^13.0.0 || ^14.0.0-0", "@angular/common@^14.1.0", "@angular/common@>= 8.0.0", "@angular/common@>=12.0.0-0", "@angular/common@>=13.0.0", "@angular/common@>=2.0.0", "@angular/common@14.1.0":
   "integrity" "sha512-leethDtLbA3qySaOEBUto602DF0qH1maK9u2zHncrUFOpnHAYUEd7N9MFMdIYASurTnwOSglEoIDCML94qzImQ=="
   "resolved" "https://registry.npmjs.org/@angular/common/-/common-14.1.0.tgz"
   "version" "14.1.0"
@@ -190,7 +190,7 @@
   dependencies:
     "tslib" "^2.3.0"
 
-"@angular/core@^13.0.0", "@angular/core@^13.0.0 || ^14.0.0-0", "@angular/core@^14.1.0", "@angular/core@>= 8.0.0", "@angular/core@>=12.0.0-0", "@angular/core@>=13.0.0", "@angular/core@14.1.0":
+"@angular/core@^13.0.0", "@angular/core@^13.0.0 || ^14.0.0-0", "@angular/core@^14.1.0", "@angular/core@>= 8.0.0", "@angular/core@>=12.0.0-0", "@angular/core@>=13.0.0", "@angular/core@>=2.0.0", "@angular/core@14.1.0":
   "integrity" "sha512-3quEsHmQifJOQ2oij5K+cjGjmhsKsyZI1+OTHWNZ6IXeuYviZv4U/Cui9fUJ1RN3CZxH3NzWB3gB/5qYFQfOgg=="
   "resolved" "https://registry.npmjs.org/@angular/core/-/core-14.1.0.tgz"
   "version" "14.1.0"
@@ -3807,9 +3807,9 @@
   "version" "1.0.0"
 
 "json5@^2.1.2", "json5@^2.2.1":
-  "integrity" "sha512-1hqLFMSrGHRHxav9q9gNjJ5EXznIxGVO09xQRrwplcS8qs28pZ8s8hupZAmqDwZUmVZ2Qb2jnyPOWcDH8m8dlA=="
-  "resolved" "https://registry.npmjs.org/json5/-/json5-2.2.1.tgz"
-  "version" "2.2.1"
+  "integrity" "sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg=="
+  "resolved" "https://registry.npmjs.org/json5/-/json5-2.2.3.tgz"
+  "version" "2.2.3"
 
 "jsonc-parser@3.1.0":
   "integrity" "sha512-DRf0QjnNeCUds3xTjKlQQ3DpJD51GvDjJfnxUVWg6PZTo2otSm+slzNAxU/35hF8/oJIKoG9slq30JYOsF2azg=="
@@ -4310,6 +4310,13 @@
   "version" "12.0.0"
   dependencies:
     "tslib" "^2.3.0"
+
+"ng-multiselect-dropdown@^0.3.9":
+  "integrity" "sha512-y5fb8SVz8c59vEJGVe5XZ5ov6LZNoO8FqMxCBvpZKqw9tY1+f7UCDfILleOWPy8QMxO2Fpr8b+B+Az0zOS6b9g=="
+  "resolved" "https://registry.npmjs.org/ng-multiselect-dropdown/-/ng-multiselect-dropdown-0.3.9.tgz"
+  "version" "0.3.9"
+  dependencies:
+    "tslib" "^1.9.0"
 
 "ngx-bootstrap@^8.0.0":
   "integrity" "sha512-UjJ/57Pr7ctdI2L113QX1IqJPYtOMrp5Qq/RLvUT1TOwPQWPi9LXTQ/7BtipkptQjer7Fk9yueITH3Y8vD+Dmg=="
@@ -6037,9 +6044,9 @@
   "version" "4.6.3"
 
 "ua-parser-js@^0.7.30":
-  "integrity" "sha512-qLK/Xe9E2uzmYI3qLeOmI0tEOt+TBBQyUIAh4aAgU05FVYzeZrKUdkAZfBNVGRaHVgV0TDkdEngJSw/SyQchkQ=="
-  "resolved" "https://registry.npmjs.org/ua-parser-js/-/ua-parser-js-0.7.31.tgz"
-  "version" "0.7.31"
+  "integrity" "sha512-s8ax/CeZdK9R/56Sui0WM6y9OFREJarMRHqLB2EwkovemBxNQ+Bqu8GAsUnVcXKgphb++ghr/B2BZx4mahujPw=="
+  "resolved" "https://registry.npmjs.org/ua-parser-js/-/ua-parser-js-0.7.33.tgz"
+  "version" "0.7.33"
 
 "unicode-canonical-property-names-ecmascript@^2.0.0":
   "integrity" "sha512-yY5PpDlfVIU5+y/BSCxAJRBIS1Zc2dDG3Ujq+sR0U+JjUevW2JhocOF+soROYDSaAezOzOKuyyixhD6mBknSmQ=="

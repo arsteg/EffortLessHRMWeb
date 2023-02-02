@@ -67,7 +67,7 @@ export class AuthenticationService {
     });
 
   }
-  
+
   GetMe(id: string): Observable<signup[]> {
     let token = localStorage.getItem('jwtToken');
       const httpOptions = {
@@ -78,9 +78,9 @@ export class AuthenticationService {
       })
      };
     return this.http.post<any>(`${environment.apiUrlDotNet}/users/me`, { id }, httpOptions);
-    
+
   }
-  
+
   changePassword(user: changeUserPassword): Observable<User> {
     return this.http.patch<any>(`${environment.apiUrlDotNet}/users/updateMyPassword`, user, {
       headers: new HttpHeaders({
@@ -100,4 +100,28 @@ export class AuthenticationService {
     };
     return this.http.get(`${environment.apiUrlDotNet}/auth/role/${id}`, httpOptions)
   }
+  getUserManagers(id): Observable<any> {
+    let token = localStorage.getItem('jwtToken');
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Authorization': `Bearer ${token}`
+      })
+    };
+    return this.http.get(`${environment.apiUrlDotNet}/users/getUserManagers/${id}`, httpOptions)
+  }
+  getUserProjects(id): Observable<any> {
+    let token = localStorage.getItem('jwtToken');
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Authorization': `Bearer ${token}`
+      })
+    };
+    return this.http.get(`${environment.apiUrlDotNet}/users/getUserProjects/${id}`, httpOptions)
+  }
+  
+
 }
