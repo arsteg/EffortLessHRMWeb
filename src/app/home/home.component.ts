@@ -48,12 +48,11 @@ export class HomeComponent implements OnInit {
 
   switchView(view: string) {
     this.adminView = view;
-    localStorage.setItem(this.adminView, 'view')
+    localStorage.setItem('roleId', this.adminView);
     if (view == 'user') {
      this.menuList = SideBarUserMenu;
     }
-    // localStorage.setItem(this.adminView, 'view')
-    if (view == 'admin') {
+    else if (view == 'admin') {
     this.menuList = SideBarAdminMenu;
     }
     this.router.navigate(['dashboard'])

@@ -19,7 +19,6 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 })
 
 export class ProjectListComponent implements OnInit {
-  // projectList: project[] = [];
   projectList: any;
   searchText = '';
   p: number = 1;
@@ -32,16 +31,12 @@ export class ProjectListComponent implements OnInit {
   allAssignee: User[];
   member: any;
   userId: string;
-  items: any[];
   addUser: addUser[] = [];
   projectUserList: any;
-  projectId: string;
   isChecked: true;
   firstLetter: string;
   color: string;
-  selectedIds: string[] = [];
-  selectedUser: string;
-
+  
   constructor(
     private projectService: ProjectService,
     private notifyService: NotificationService,
@@ -79,7 +74,6 @@ export class ProjectListComponent implements OnInit {
     this.isChecked = true;
     this.getProjectList();
     this.populateUsers();
-   
   }
 
   
@@ -122,14 +116,10 @@ export class ProjectListComponent implements OnInit {
   }
 
   getProjectList() {
-    let index: number;
     this.projectService.getprojectlist().subscribe((response: any) => {
       this.projectList = response && response.data && response.data['projectList'];
-      // console.log(this.projectList)
-      console.log(this.projectList)
     })
   }
-
 
   populateUsers() {
     this.userService.getUserList().subscribe({
@@ -216,22 +206,5 @@ export class ProjectListComponent implements OnInit {
     }
   }
  
-  getColor(char: string) {
-    switch (char) {
-      case 'A':
-        return 'a';
-      case 'B':
-        return 'b';
-      case 'C':
-        return 'c';
-      case 'D':
-        return 'd';
-      case 'E':
-        return 'e';
-      case 'R':
-        return 'r';
-      default:
-        return 'defaults';
-    }
-  }
+  
 }

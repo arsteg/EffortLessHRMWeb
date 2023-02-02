@@ -18,9 +18,7 @@ import { ToastrService } from 'ngx-toastr';
 export class UserListComponent implements OnInit {
   teamOfUsers: User[] = [];
   allUsers: User[] = [];
-
   inviteUser: signup[] = [];
-
   searchText = '';
   p: number = 1;
   public users: Array<User> = [];
@@ -29,7 +27,8 @@ export class UserListComponent implements OnInit {
   addForm: FormGroup;
   updateForm: FormGroup
   roleName: any = [];
-
+  firstLetter: string;
+  color: string;
 
   constructor(
     private UserService: UserService,
@@ -116,24 +115,37 @@ export class UserListComponent implements OnInit {
       })
   }
 
-  getColor(char: string): string {
-    switch (char) {
-        case 'A':
-            return 'A';
-        case 'B':
-            return 'B';
-        case 'C':
-            return 'C';
-        case 'D':
-          return 'D';
-          case 'E':
-            return 'E';
-            case 'R':
-            return 'R';
-        default:
-            return 'defaults';
-    }
+getRandomColor(lastName: string) {
+  let colorMap = {
+    A: '#556def',
+    B: '#faba5c',
+    C: '#0000ff',
+    D: '#ffff00',
+    E: '#00ffff',
+    F: '#ff00ff',
+    G: '#f1421d',
+    H: '#1633eb',
+    I: '#f1836c',
+    J: '#824b40',
+    K: '#256178',
+    L: '#0d3e50',
+    M: '#3c8dad',
+    N: '#67a441',
+    O: '#dc57c3',
+    P: '#673a05',
+    Q: '#ec8305',
+    R: '#00a19d',
+    S: '#2ee8e8',
+    T: '#5c9191',
+    U: '#436a2b',
+    V: '#dd573b',
+    W: '#424253',
+    X: '#74788d',
+    Y: '#16cf96',
+    Z: '#4916cf'
+  };
+  this.firstLetter= lastName.charAt(0).toUpperCase();
+  return colorMap[this.firstLetter] || '#000000';
 }
-
 }
 
