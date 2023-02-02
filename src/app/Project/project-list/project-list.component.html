@@ -67,20 +67,20 @@
                                 </td>
 
                                 <td class="action text-start" data-bs-toggle="modal" data-bs-target="#getUsers"
-                                    (click)="getProjectUser(data.id)" (click)="selectedProject=data">
+                                    (click)="getProjectUser(data.id)" (click)="selectedProject=data" *ngIf="data !== null">
                                     <span class="bi bi-grip-horizontal text-secondary data mt-2 me-3"></span>
                                     {{ data?.projectName | titlecase }}
                                 </td>
-                                <td>{{data?.startDate | date:'mediumDate'}}</td>
-                                <td>{{data?.endDate | date:'mediumDate'}}</td>
-                                <td>{{data?.estimatedTime}}</td>
-                                <td>{{data?.notes }}
+                                <td *ngIf="data !== null">{{data?.startDate | date:'mediumDate'}}</td>
+                                <td *ngIf="data !== null">{{data?.endDate | date:'mediumDate'}}</td>
+                                <td *ngIf="data !== null">{{data?.estimatedTime}}</td>
+                                <td *ngIf="data !== null">{{data?.notes }}
 
                                 </td>
-                                <td> <span class="badge rounded-pill table-button  bg-success text-light px-4 py-2"
+                                <td *ngIf="data !== null"> <span class="badge rounded-pill table-button  bg-success text-light px-4 py-2"
                                         *ngIf="data?.status=='Active'">{{data?.status}}</span> </td>
 
-                                <td class="d-flex flex-nowrap" *ngIf="!userId">
+                                <td class="d-flex flex-nowrap" *ngIf="!userId && data !==null">
                                     <i class="fa fa-user-plus addUser me-3 mt-1" data-bs-toggle="modal"
                                         data-bs-target="#addUserModal" (click)="selectedProject=data"></i>
                                     <span *ngFor="let users of data.ProjectUser" class="letter text-light"
@@ -90,7 +90,7 @@
                                     </span>
                                 </td>
 
-                                <td class="action">
+                                <td class="action" *ngIf="data !== null">
                                     <div class="dropdown-center">
                                         <i class="bi bi-three-dots actions" data-bs-toggle="dropdown"
                                             aria-expanded="false"></i>
@@ -147,9 +147,9 @@
                                     <mat-form-field appearance="outline" class="w-100">
                                         <mat-label>Select User</mat-label>
                                         <mat-select multiple formControlName="userName"
-                                            [(ngModel)]="selectedProject._id">
+                                            [(ngModel)]="selectedProject._id && selectedMembers">
                                             <mat-option *ngFor="let assignee of allAssignee" [value]="assignee.id"
-                                                [selected]="selectedProject._id?.includes(assignee?.id)">
+                                                [selected]="selectedProject.id?.includes(assignee)">
                                                 {{assignee.firstName | titlecase}} {{assignee.lastName |
                                                 titlecase}}</mat-option>
                                         </mat-select>
@@ -330,7 +330,8 @@
             <div class="modal-body">
                 <div class="d-flex justify-content-between">
                     <div class="">
-                        <h4 class="modal-title text-start">Update Project</h4>
+                        <h4 class="modal-title text-start">Update Project <b
+                            style="color: #556def">{{selectedProject.projectName | titlecase}}</b></h4>
                     </div>
                     <div class="">
                         <button type="button" class="btn-close text-end" data-bs-dismiss="modal"></button>
@@ -430,7 +431,8 @@
             <div class="modal-body">
                 <div class="d-flex justify-content-between">
                     <div class="">
-                        <h4 class="modal-title text-start">Delete Project</h4>
+                        <h4 class="modal-title text-start">Delete Project <b
+                            style="color: #556def">{{selectedProject.projectName | titlecase}}</b></h4>
                     </div>
                     <div class="">
                         <button type="button" class="btn-close text-end" data-bs-dismiss="modal"></button>

@@ -36,6 +36,7 @@ export class ProjectListComponent implements OnInit {
   isChecked: true;
   firstLetter: string;
   color: string;
+  selectedMembers;
   
   constructor(
     private projectService: ProjectService,
@@ -177,10 +178,10 @@ export class ProjectListComponent implements OnInit {
       this.toastr.success('New Member Added', 'Successfully Added!')
     },
       err => {
-        this.toastr.error('Can not be Added Member', 'ERROR!')
+        this.toastr.error('Member Already Exist', 'ERROR!')
       })
   }
-
+ 
   getProjectUser(id) {
     this.projectService.getprojectUser(id).subscribe(response => {
       this.projectUserList = response && response.data && response.data['projectUserList'];
@@ -197,7 +198,9 @@ export class ProjectListComponent implements OnInit {
       let index = this.projectUserList.findIndex(user => user.id === projectUserList.id);
       this.projectService.deleteprojectUser(projectUserList.id).subscribe(response => {
         this.projectUserList.splice(index, 1);
+       
         this.getProjectList();
+        this.isChecked = true;
         this.toastr.success(projectUserList.user.firstName.toUpperCase(), 'Successfully Removed!')
       },
         err => {
