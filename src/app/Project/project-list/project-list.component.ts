@@ -36,8 +36,9 @@ export class ProjectListComponent implements OnInit {
   isChecked: true;
   firstLetter: string;
   color: string;
-  selectedMembers;
-  
+  selectedUser: any;
+  selectedUsers = [];
+
   constructor(
     private projectService: ProjectService,
     private notifyService: NotificationService,
@@ -68,7 +69,7 @@ export class ProjectListComponent implements OnInit {
         firstName: ['', Validators.required],
         lastName: ['', Validators.required]
       }
-    });  
+    });
   }
 
   ngOnInit(): void {
@@ -106,7 +107,7 @@ export class ProjectListComponent implements OnInit {
       Y: '#16cf96',
       Z: '#4916cf'
     };
-    this.firstLetter= firstName.charAt(0).toUpperCase();
+    this.firstLetter = firstName.charAt(0).toUpperCase();
     return colorMap[this.firstLetter] || '#000000';
   }
 
@@ -127,7 +128,7 @@ export class ProjectListComponent implements OnInit {
       }
     })
   }
-  getProjects() {
+  getProjectsByUser() {
     this.projectService.getProjectByUserId(this.userId).subscribe(response => {
       console.log(response)
       this.projectList = response && response.data && response.data['projectList'];
@@ -135,7 +136,7 @@ export class ProjectListComponent implements OnInit {
   }
 
   onMemberSelectionChange(user) {
-    this.getProjects();
+    this.getProjectsByUser();
   }
 
   addProject(form) {
@@ -169,43 +170,74 @@ export class ProjectListComponent implements OnInit {
         this.toastr.error('Can not be Updated', 'ERROR!')
       })
   }
+  
+
   addUserToProject(addUserForm) {
-    let project_Users = this.addUserForm.get('userName').value.map((id) => { return { user: id } })
-    this.projectService.addUserToProject(this.selectedProject.id, project_Users).subscribe(result => {
-      this.getProjectList();
-      this.toastr.success('New Member Added', 'Successfully Added!')
-    },
-      err => {
-        this.toastr.error('Member Already Exist', 'ERROR!')
-      })
+    console.log("Already Existing Users : ", this.projectUserList)
+    let selectedUsers = this.addUserForm.get('userName').value;
+    let newUsers = selectedUsers.filter(id => !this.projectUserList.find(user => user.user.id === id));
+    let project_Users = newUsers.map((id) => { return { user: id } });
+    if (project_Users.length > 0) {
+      this.projectService.addUserToProject(this.selectedProject.id, project_Users).subscribe(result => {
+        this.getProjectList();
+        this.toastr.success('New Member Added', 'Successfully Added!')
+      },
+        err => {
+          this.toastr.error('Member Already Exist', 'ERROR!')
+        })
+    } else {
+      this.toastr.error('All selected users already exist', 'ERROR!')
+    }
   }
- 
+
   getProjectUser(id) {
     this.projectService.getprojectUser(id).subscribe(response => {
       this.projectUserList = response && response.data && response.data['projectUserList'];
+      this.selectedUser = this.projectUserList.map(user => user.user.id);
     });
   }
 
-//  Method to Delete assigned User to project
-  onModelChange(isChecked, projectUserList) {
-    if (isChecked) {
-     this.getProjectUser(projectUserList);
-    }
-    else {
-      console.log(projectUserList.id);
-      let index = this.projectUserList.findIndex(user => user.id === projectUserList.id);
-      this.projectService.deleteprojectUser(projectUserList.id).subscribe(response => {
-        this.projectUserList.splice(index, 1);
-       
-        this.getProjectList();
-        this.isChecked = true;
-        this.toastr.success(projectUserList.user.firstName.toUpperCase(), 'Successfully Removed!')
-      },
-        err => {
-          this.toastr.error(projectUserList.user.firstName.toUpperCase(), 'ERROR! Can not be Removed')
-        })
-    }
+  // onModelChange(isChecked, projectUserList) {
+  //   if (isChecked) {
+  //     this.getProjectUser(projectUserList);
+  //   }
+  //   else {
+  //     let index = this.projectUserList.findIndex(user => user.id === projectUserList.id);
+  //     this.projectService.deleteprojectUser(projectUserList.id).subscribe(response => {
+  //       this.projectUserList.splice(index, 1);
+  //       this.getProjectList();
+  //       this.isChecked = true;
+  //       this.toastr.success(projectUserList.user.firstName.toUpperCase(), 'Successfully Removed!')
+  //     },
+  //       err => {
+  //         this.toastr.error(projectUserList.user.firstName.toUpperCase(), 'ERROR! Can not be Removed')
+  //       })
+  //   }
+  // }
+
+  onModelChange(projectUserList) {
+    let index = this.projectUserList.findIndex(user => user.id === projectUserList.id);
+    this.projectService.deleteprojectUser(projectUserList.id).subscribe(response => {
+      this.projectUserList.splice(index, 1);
+      this.getProjectList();
+      this.toastr.success(projectUserList.user.firstName.toUpperCase(), 'Successfully Removed!')
+    },
+      err => {
+        this.toastr.error(projectUserList.user.firstName.toUpperCase(), 'ERROR! Can not be Removed')
+      })
   }
- 
-  
+
+// deleteSelected() {
+//   for (let id of this.selectedUsers) {
+//     let index = this.projectUserList.findIndex(user => user.user.id === id);
+//     this.projectService.deleteprojectUser(id).subscribe(response => {
+//       this.projectUserList.splice(index, 1);
+//       this.getProjectList();
+//       this.toastr.success(this.projectUserList[index].user.firstName.toUpperCase(), 'Successfully Removed!')
+//     },
+//       err => {
+//         this.toastr.error(this.projectUserList[index].user.firstName.toUpperCase(), 'ERROR! Can not be Removed')
+//       });
+//   }
+// }
 }

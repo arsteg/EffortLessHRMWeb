@@ -19,7 +19,7 @@ export class TasksComponent implements OnInit {
   p: number = 1;
   projectList: project[] = [];
   taskList: any;
-  tasks: Task[] = [];
+  tasks:any;
   date = new Date();
   addForm: FormGroup;
   updateForm: FormGroup;
@@ -29,6 +29,9 @@ export class TasksComponent implements OnInit {
   firstLetter: string;
   color: string;
   projectId: string;
+  taskUserList: any;
+  isChecked= true;
+  userId: string;
 
   private toastr: ToastrService
   constructor(
@@ -67,6 +70,7 @@ export class TasksComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.isChecked= true;
     this.listAllTasks();
     this.getProjectList();
     this.populateUsers();
@@ -75,7 +79,6 @@ export class TasksComponent implements OnInit {
   getProjectList() {
     this.projectService.getprojectlist().subscribe((response: any) => {
       this.projectList = response && response.data && response.data['projectList'];
-      console.log(this.projectList)
     })
   }
   listAllTasks() {
@@ -123,8 +126,7 @@ export class TasksComponent implements OnInit {
   addUserToTask(addUserForm) {
     let task_Users = this.addUserForm.get('userName').value.map((firstName) => { return { user: firstName } })
     this.tasksService.addUserToTask(this.selectedTask.id, task_Users).subscribe(result => {
-      console.log(task_Users)
-      this.getProjectList();
+      this.listAllTasks();
       this.tost.success('New Member Added', 'Successfully Added!')
     },
       err => {
@@ -164,13 +166,47 @@ export class TasksComponent implements OnInit {
     return colorMap[this.firstLetter] || '#000000';
   }
   
+  getTaskUser(id) {
+    this.tasksService.gettaskUser(id).subscribe(response => {
+      this.taskUserList = response && response.data && response.data['taskUserList'];
+    });
+  }
+
+//  Method to Delete assigned User to project
+  onModelChange(isChecked, taskUserList) {
+    if (isChecked) {
+     this.getTaskUser(taskUserList);
+    }
+    else {
+      let index = this.taskUserList.findIndex(user => user.id === taskUserList.id);
+      this.tasksService.deleteTaskUser(taskUserList.id).subscribe(response => {
+        this.taskUserList.splice(index, 1);
+       
+        this.listAllTasks();
+        this.isChecked = true;
+        this.tost.success(taskUserList.user.firstName.toUpperCase(), 'Successfully Removed!')
+      },
+        err => {
+          this.tost.error(taskUserList.user.firstName.toUpperCase(), 'ERROR! Can not be Removed')
+        })
+    }
+  }
+ 
   getTasksByProject() {
     this.tasksService.getTaskByProjectId(this.projectId).subscribe(response => {
-      console.log(response)
-      this.taskList = response && response.data && response.data['taskList'];
+      this.tasks = response && response.data && response.data['taskList'];
+    });
+  }
+  onProjectSelectionChange(project) {
+    this.getTasksByProject();
+  }
+
+  getTaskByUsers(){
+    this.tasksService.getTaskByUser(this.userId).subscribe(response => {
+      this.tasks = response && response.data && response.data['taskList'];
     });
   }
   onMemberSelectionChange(project) {
-    this.getTasksByProject();
+    this.getTaskByUsers();
   }
 }

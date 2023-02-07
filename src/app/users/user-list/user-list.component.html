@@ -2,7 +2,7 @@
     <div class="container-fluid">
 
         <div class="d-flex justify-content-between">
-            <h1 class="pt-4 mb-0">Members: {{teamOfUsers.length}}</h1>
+            <h1 class="pt-4 mb-0">Members: {{usersList.length}}</h1>
             <div class="d-flex h-25">
                 <input class="form-control search" type="text" placeholder="search..." [(ngModel)]="searchText"
                     name="searchText" aria-label="default input example"
@@ -18,26 +18,26 @@
                 <thead>
                     <tr>
                         <th scope="col"></th>
-                        <th scope="col" [appSort]="teamOfUsers" data-order="desc" data-name="firsName"
+                        <th scope="col" [appSort]="usersList" data-order="desc" data-name="firsName"
                             data-name="lastName">Members &nbsp;
                             <i class="bi bi-arrow-down-up sort text-primary"></i>
                         </th>
-                        <th scope="col" [appSort]="teamOfUsers" data-order="desc" data-name="email">E-Mail &nbsp; <i
+                        <th scope="col" [appSort]="usersList" data-order="desc" data-name="email">E-Mail &nbsp; <i
                                 class="bi bi-arrow-down-up sort text-primary"></i></th>
-                        <th scope="col" [appSort]="teamOfUsers" data-order="desc" data-name="role?.id">Member Type &nbsp;
+                        <th scope="col" [appSort]="usersList" data-order="desc" data-name="role?.id">Member Type &nbsp;
                             <i class="bi bi-arrow-down-up sort text-primary"></i>
                         </th>
-                        <th scope="col" [appSort]="teamOfUsers" data-order="desc" data-name="createdOn">Member Since
+                        <th scope="col" [appSort]="usersList" data-order="desc" data-name="createdOn">Member Since
                             &nbsp;
                             <i class="bi bi-arrow-down-up sort text-primary"></i>
                         </th>
-                        <th scope="col" [appSort]="teamOfUsers" data-order="desc" data-name="status">Status</th>
+                        <th scope="col" [appSort]="usersList" data-order="desc" data-name="status">Status</th>
                         <th scope="col">Action</th>
 
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let data of teamOfUsers | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
+                    <tr *ngFor="let data of usersList | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
                         <td class="highlight"><div></div></td>
                         <td><span class="letter ms-2" [style.background-color]="getRandomColor(data.lastName)">{{data.firstName.slice(0,1) | uppercase}}{{data.lastName.slice(0,1) | uppercase}}</span> </td>
                         <td>{{ data.firstName | titlecase }} {{data.lastName | titlecase}}</td>

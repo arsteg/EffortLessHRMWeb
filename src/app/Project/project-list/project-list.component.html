@@ -60,14 +60,16 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr cdkDrag *ngFor="let data of projectList | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
+                            <tr cdkDrag
+                                *ngFor="let data of projectList | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
 
                                 <td class="highlight">
                                     <div></div>
                                 </td>
 
                                 <td class="action text-start" data-bs-toggle="modal" data-bs-target="#getUsers"
-                                    (click)="getProjectUser(data.id)" (click)="selectedProject=data" *ngIf="data !== null">
+                                    (click)="getProjectUser(data.id)" (click)="selectedProject=data"
+                                    *ngIf="data !== null">
                                     <span class="bi bi-grip-horizontal text-secondary data mt-2 me-3"></span>
                                     {{ data?.projectName | titlecase }}
                                 </td>
@@ -77,12 +79,14 @@
                                 <td *ngIf="data !== null">{{data?.notes }}
 
                                 </td>
-                                <td *ngIf="data !== null"> <span class="badge rounded-pill table-button  bg-success text-light px-4 py-2"
+                                <td *ngIf="data !== null"> <span
+                                        class="badge rounded-pill table-button  bg-success text-light px-4 py-2"
                                         *ngIf="data?.status=='Active'">{{data?.status}}</span> </td>
 
                                 <td class="d-flex flex-nowrap" *ngIf="!userId && data !==null">
                                     <i class="fa fa-user-plus addUser me-3 mt-1" data-bs-toggle="modal"
-                                        data-bs-target="#addUserModal" (click)="selectedProject=data"></i>
+                                        data-bs-target="#addUserModal" (click)="getProjectUser(data.id)"
+                                        (click)="selectedProject=data"></i>
                                     <span *ngFor="let users of data.ProjectUser" class="letter text-light"
                                         [tooltip]="(users?.user?.firstName| titlecase) + (' ') +( users?.user?.lastName | titlecase)"
                                         [style.background-color]="getRandomColor(users?.user?.firstName)">
@@ -146,22 +150,17 @@
                                 <div class="mt-3">
                                     <mat-form-field appearance="outline" class="w-100">
                                         <mat-label>Select User</mat-label>
-                                        <mat-select multiple formControlName="userName"
-                                            [(ngModel)]="selectedProject._id && selectedMembers">
+                                        <mat-select multiple formControlName="userName" [(ngModel)]="selectedUser">
                                             <mat-option *ngFor="let assignee of allAssignee" [value]="assignee.id"
-                                                [selected]="selectedProject.id?.includes(assignee)">
-                                                {{assignee.firstName | titlecase}} {{assignee.lastName |
-                                                titlecase}}</mat-option>
+                                                [selected]="selectedUser?.includes(assignee?.id)">
+                                                {{assignee.firstName | titlecase}} {{assignee.lastName | titlecase}}
+                                            </mat-option>
                                         </mat-select>
-
                                     </mat-form-field>
                                 </div>
-
-
                             </div>
                         </div>
                         <div class="d-flex justify-content-between m-3">
-
                             <div>
                                 <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
                                     type="button">Cancel</button>
@@ -170,7 +169,6 @@
                                 <button mat-raised-button color="primary" data-bs-dismiss="modal"
                                     type="submit">Add</button>
                             </div>
-
                         </div>
                     </form>
                 </div>
@@ -194,19 +192,18 @@
                 </div>
                 <hr class="mt-0">
                 <div class="row" *ngIf="selectedProject">
-                    <form class="row" (ngSubmit)="getProjectUser(projectList._id)">
+                    <form class="row">
                         <div class="row d-flex justify-content-center">
                             <div class="col-md-8">
-                                <li *ngFor="let assignee of projectUserList; let i = index" type="none">
+                                <li *ngFor="let assignee of projectUserList;" type="none">
                                     <label *ngIf="assignee.user!=null">
-                                        <mat-checkbox color="primary" name="firstName" [checked]="isChecked"
-                                            (ngModelChange)="onModelChange($event, assignee)"
-                                            [(ngModel)]="isChecked">{{assignee?.user?.firstName | titlecase}}
+                                        <mat-checkbox color="primary" name="firstName"
+                                            (change)="onModelChange(assignee)"
+                                            [checked]="true">{{assignee?.user?.firstName | titlecase}}
                                             {{assignee?.user?.lastName | titlecase}}</mat-checkbox>
                                     </label>
 
                                 </li>
-
                             </div>
                         </div>
                     </form>
@@ -214,248 +211,239 @@
             </div>
         </div>
     </div>
-</div>
 
-<!-- Add -->
-<div class="modal" id="addModal">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-body">
-                <div class=" d-flex justify-content-between">
-                    <div class="">
-                        <h4 class="modal-title text-start">Add New Project</h4>
-                    </div>
-                    <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
-                    </div>
-                </div>
-                <hr class="mt-0">
-                <div class="row">
-                    <form class="row" [formGroup]="form" (ngSubmit)="addProject(form.value)">
-                        <div class="row d-flex justify-content-center">
-                            <div class="col-md-8">
-                                <div class="row">
-                                    <label for="projectName" class="text-start">Project Name</label>
-                                </div>
-                                <input type="text" name="projectName" id="projectName" formControlName="projectName"
-                                    class="form-control input pt-0" ngModel required>
-                                <div *ngIf="form.controls['projectName'].invalid && form.controls['projectName'].touched"
-                                    class="alert alert-danger error">
-                                    <div *ngIf="form.controls['projectName'].errors['required']">
-                                        Project Name is required.
-                                    </div>
-                                </div>
-
-                                <div class="row mt-3">
-                                    <label for="startDate" class="text-start">Start Date</label>
-                                </div>
-                                <input type="date" name="startDate" id="startDate" class="form-control input pt-0"
-                                    formControlName="startDate" ngModel required>
-                                <div *ngIf="form.controls['startDate'].invalid && form.controls['startDate'].touched"
-                                    class="alert alert-danger error">
-                                    <div *ngIf="form.controls['startDate'].errors['required']">
-                                        Start Date is required.
-                                    </div>
-                                </div>
-
-                                <div class="row mt-3">
-                                    <label for="endDate" class="text-start">End Date</label>
-                                </div>
-                                <input type="date" name="endDate" id="endDate" class="form-control input pt-0"
-                                    formControlName="endDate" ngModel required>
-                                <div *ngIf="form.controls['endDate'].invalid && form.controls['endDate'].touched"
-                                    class="alert alert-danger error">
-                                    <div *ngIf="form.controls['endDate'].errors['required']">
-                                        End Date is required.
-                                    </div>
-                                </div>
-
-                                <div class="row mt-3">
-                                    <label for="estimatedTime" class="text-start">Estimated Time</label>
-                                </div>
-                                <input type="text" name="estimatedTime" id="estimatedTime"
-                                    class="form-control input pt-0" formControlName="estimatedTime" ngModel required>
-                                <div *ngIf="form.controls['estimatedTime'].invalid && form.controls['estimatedTime'].touched"
-                                    class="alert alert-danger error">
-                                    <div *ngIf="form.controls['estimatedTime'].errors['required']">
-                                        Estimated Time is required.
-                                    </div>
-
-                                </div>
-                                <!-- <div class="mt-3">
-                                <mat-form-field appearance="outline" class="w-100">
-                                    <mat-label>Select User</mat-label>
-                                    <mat-select multiple formControlName="firstName">
-                                      <mat-option *ngFor="let assignee of allAssignee" [value]="assignee.firstName">{{assignee.firstName | titlecase}} {{assignee.lastName | titlecase}}</mat-option>
-                                    </mat-select>
-                                
-                                  </mat-form-field>
-                                </div> -->
-
-                                <div class="row mt-3">
-                                    <label for="notes" class="text-start">Notes</label>
-                                </div>
-                                <input type="text" name="notes" id="notes" class="form-control input  pt-0"
-                                    formControlName="notes" ngModel required>
-                                <div *ngIf="form.controls['notes'].invalid && form.controls['notes'].touched"
-                                    class="alert alert-danger error">
-                                    <div *ngIf="form.controls['notes'].errors['required']">
-                                        Note is required.
-                                    </div>
-                                </div>
-                            </div>
+    <!-- Add -->
+    <div class="modal" id="addModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class=" d-flex justify-content-between">
+                        <div class="">
+                            <h4 class="modal-title text-start">Add New Project</h4>
                         </div>
-                        <div class="d-flex justify-content-between m-3">
-
-                            <div>
-                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
-                                    type="button">Cancel</button>
-                            </div>
-                            <div>
-                                <button mat-raised-button color="primary" data-bs-dismiss="modal"
-                                    type="submit">Add</button>
-                            </div>
-
+                        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
                         </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Update -->
-<div class="modal" id="updateModal">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-body">
-                <div class="d-flex justify-content-between">
-                    <div class="">
-                        <h4 class="modal-title text-start">Update Project <b
-                            style="color: #556def">{{selectedProject.projectName | titlecase}}</b></h4>
                     </div>
-                    <div class="">
-                        <button type="button" class="btn-close text-end" data-bs-dismiss="modal"></button>
-                    </div>
-                </div>
-                <div class="row" *ngIf="selectedProject">
-                    <form class="row" [formGroup]="updateForm" (ngSubmit)="updateProject(updateForm.value)">
-                        <div class="row d-flex justify-content-center">
-                            <div class="col-md-8">
-                                <div class="row">
-                                    <label for="projectName" class="text-start">Project Name</label>
-                                </div>
-                                <input type="text" name="projectName" id="projectName" class="form-control input pt-0"
-                                    [(ngModel)]="selectedProject.projectName" formControlName="projectName" required>
-                                <div *ngIf="updateForm.controls['projectName'].invalid && updateForm.controls['projectName'].touched"
-                                    class="alert alert-danger error">
-                                    <div *ngIf="updateForm.controls['projectName'].errors['required']">
-                                        Project Name is required.
+                    <hr class="mt-0">
+                    <div class="row">
+                        <form class="row" [formGroup]="form" (ngSubmit)="addProject(form.value)">
+                            <div class="row d-flex justify-content-center">
+                                <div class="col-md-8">
+                                    <div class="row">
+                                        <label for="projectName" class="text-start">Project Name</label>
                                     </div>
-                                </div>
+                                    <input type="text" name="projectName" id="projectName" formControlName="projectName"
+                                        class="form-control input pt-0" ngModel required>
+                                    <div *ngIf="form.controls['projectName'].invalid && form.controls['projectName'].touched"
+                                        class="alert alert-danger error">
+                                        <div *ngIf="form.controls['projectName'].errors['required']">
+                                            Project Name is required.
+                                        </div>
+                                    </div>
 
-                                <div class="row mt-3">
-                                    <label for="startDate" class="text-start">Start Date</label>
-                                </div>
-                                <input type="date" name="startDate" id="startDate" class="form-control input pt-0"
-                                    [(ngModel)]="selectedProject.startDate" formControlName="startDate" required>
-                                <div *ngIf="updateForm.controls['startDate'].invalid && updateForm.controls['startDate'].touched"
-                                    class="alert alert-danger error">
-                                    <div *ngIf="updateForm.controls['startDate'].errors['required']">
-                                        Start Date is required.
+                                    <div class="row mt-3">
+                                        <label for="startDate" class="text-start">Start Date</label>
                                     </div>
-                                </div>
+                                    <input type="date" name="startDate" id="startDate" class="form-control input pt-0"
+                                        formControlName="startDate" ngModel required>
+                                    <div *ngIf="form.controls['startDate'].invalid && form.controls['startDate'].touched"
+                                        class="alert alert-danger error">
+                                        <div *ngIf="form.controls['startDate'].errors['required']">
+                                            Start Date is required.
+                                        </div>
+                                    </div>
 
-                                <div class="row mt-3">
-                                    <label for="endDate" class="text-start">End Date</label>
-                                </div>
-                                <input type="date" name="endDate" id="endDate" class="form-control input pt-0"
-                                    [(ngModel)]="selectedProject.endDate" formControlName="endDate" required>
-                                <div *ngIf="updateForm.controls['endDate'].invalid && updateForm.controls['endDate'].touched"
-                                    class="alert alert-danger error">
-                                    <div *ngIf="updateForm.controls['endDate'].errors['required']">
-                                        End Date is required.
+                                    <div class="row mt-3">
+                                        <label for="endDate" class="text-start">End Date</label>
                                     </div>
-                                </div>
+                                    <input type="date" name="endDate" id="endDate" class="form-control input pt-0"
+                                        formControlName="endDate" ngModel required>
+                                    <div *ngIf="form.controls['endDate'].invalid && form.controls['endDate'].touched"
+                                        class="alert alert-danger error">
+                                        <div *ngIf="form.controls['endDate'].errors['required']">
+                                            End Date is required.
+                                        </div>
+                                    </div>
 
-                                <div class="row mt-3">
-                                    <label for="estimatedTime" class="text-start">Estimated Time</label>
-                                </div>
-                                <input type="text" name="estimatedTime" id="estimatedTime"
-                                    class="form-control input pt-0" [(ngModel)]="selectedProject.estimatedTime"
-                                    formControlName="estimatedTime" required pattern="^[0-9]*$">
-                                <div *ngIf="updateForm.controls['estimatedTime'].invalid && updateForm.controls['estimatedTime'].touched"
-                                    class="alert alert-danger error">
-                                    <div *ngIf="updateForm.controls['estimatedTime'].errors['required']">
-                                        Estimated Time is required.
+                                    <div class="row mt-3">
+                                        <label for="estimatedTime" class="text-start">Estimated Time</label>
                                     </div>
-                                    <div *ngIf="updateForm.controls['estimatedTime'].errors['pattern']">
-                                        Estimated Time must be in Number.
-                                    </div>
-                                </div>
+                                    <input type="text" name="estimatedTime" id="estimatedTime"
+                                        class="form-control input pt-0" formControlName="estimatedTime" ngModel
+                                        required>
+                                    <div *ngIf="form.controls['estimatedTime'].invalid && form.controls['estimatedTime'].touched"
+                                        class="alert alert-danger error">
+                                        <div *ngIf="form.controls['estimatedTime'].errors['required']">
+                                            Estimated Time is required.
+                                        </div>
 
-                                <div class="row mt-3">
-                                    <label for="notes" class="text-start">Notes</label>
-                                </div>
-                                <input type="text" name="notes" id="notes" class="form-control input  pt-0"
-                                    [(ngModel)]="selectedProject.notes" formControlName="notes" required>
-                                <div *ngIf="updateForm.controls['notes'].invalid && updateForm.controls['notes'].touched"
-                                    class="alert alert-danger error">
-                                    <div *ngIf="updateForm.controls['notes'].errors['required']">
-                                        Note is required.
+                                    </div>
+                                    <div class="row mt-3">
+                                        <label for="notes" class="text-start">Notes</label>
+                                    </div>
+                                    <input type="text" name="notes" id="notes" class="form-control input  pt-0"
+                                        formControlName="notes" ngModel required>
+                                    <div *ngIf="form.controls['notes'].invalid && form.controls['notes'].touched"
+                                        class="alert alert-danger error">
+                                        <div *ngIf="form.controls['notes'].errors['required']">
+                                            Note is required.
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="d-flex justify-content-between m-3">
-                            <div class="">
-                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
-                                    type="button">Cancel</button>
+                            <div class="d-flex justify-content-between m-3">
+
+                                <div>
+                                    <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
+                                        type="button">Cancel</button>
+                                </div>
+                                <div>
+                                    <button mat-raised-button color="primary" data-bs-dismiss="modal"
+                                        type="submit">Add</button>
+                                </div>
+
                             </div>
-                            <div>
-                                <button mat-raised-button color="primary" class="" data-bs-dismiss="modal" type="submit"
-                                    [disabled]="!updateForm.valid">Update</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Delete -->
-<div class="modal" id="deleteModal">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-body">
-                <div class="d-flex justify-content-between">
-                    <div class="">
-                        <h4 class="modal-title text-start">Delete Project <b
-                            style="color: #556def">{{selectedProject.projectName | titlecase}}</b></h4>
-                    </div>
-                    <div class="">
-                        <button type="button" class="btn-close text-end" data-bs-dismiss="modal"></button>
-                    </div>
-                </div>
-                <hr class="mt-0">
-                <div class="row">
-                    <div class="col-md-12 text-center">
-                        <h3>Do you really want to Delete?</h3>
-                    </div>
-
-                </div>
-                <div class="d-flex justify-content-between m-3">
-                    <div>
-
-                        <button mat-raised-button class="mx-2" data-bs-dismiss="modal" type="button">Cancel</button>
-                    </div>
-                    <div>
-                        <button mat-raised-button color="primary" class="" (click)="deleteProject()"
-                            data-bs-dismiss="modal" type="submit">Delete</button>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+
+    <!-- Update -->
+    <div class="modal" id="updateModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="d-flex justify-content-between">
+                        <div class="">
+                            <h4 class="modal-title text-start">Update Project <b
+                                    style="color: #556def">{{selectedProject.projectName | titlecase}}</b></h4>
+                        </div>
+                        <div class="">
+                            <button type="button" class="btn-close text-end" data-bs-dismiss="modal"></button>
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="selectedProject">
+                        <form class="row" [formGroup]="updateForm" (ngSubmit)="updateProject(updateForm.value)">
+                            <div class="row d-flex justify-content-center">
+                                <div class="col-md-8">
+                                    <div class="row">
+                                        <label for="projectName" class="text-start">Project Name</label>
+                                    </div>
+                                    <input type="text" name="projectName" id="projectName"
+                                        class="form-control input pt-0" [(ngModel)]="selectedProject.projectName"
+                                        formControlName="projectName" required>
+                                    <div *ngIf="updateForm.controls['projectName'].invalid && updateForm.controls['projectName'].touched"
+                                        class="alert alert-danger error">
+                                        <div *ngIf="updateForm.controls['projectName'].errors['required']">
+                                            Project Name is required.
+                                        </div>
+                                    </div>
+
+                                    <div class="row mt-3">
+                                        <label for="startDate" class="text-start">Start Date</label>
+                                    </div>
+                                    <input type="date" name="startDate" id="startDate" class="form-control input pt-0"
+                                        [(ngModel)]="selectedProject.startDate" formControlName="startDate" required>
+                                    <div *ngIf="updateForm.controls['startDate'].invalid && updateForm.controls['startDate'].touched"
+                                        class="alert alert-danger error">
+                                        <div *ngIf="updateForm.controls['startDate'].errors['required']">
+                                            Start Date is required.
+                                        </div>
+                                    </div>
+
+                                    <div class="row mt-3">
+                                        <label for="endDate" class="text-start">End Date</label>
+                                    </div>
+                                    <input type="date" name="endDate" id="endDate" class="form-control input pt-0"
+                                        [(ngModel)]="selectedProject.endDate" formControlName="endDate" required>
+                                    <div *ngIf="updateForm.controls['endDate'].invalid && updateForm.controls['endDate'].touched"
+                                        class="alert alert-danger error">
+                                        <div *ngIf="updateForm.controls['endDate'].errors['required']">
+                                            End Date is required.
+                                        </div>
+                                    </div>
+
+                                    <div class="row mt-3">
+                                        <label for="estimatedTime" class="text-start">Estimated Time</label>
+                                    </div>
+                                    <input type="text" name="estimatedTime" id="estimatedTime"
+                                        class="form-control input pt-0" [(ngModel)]="selectedProject.estimatedTime"
+                                        formControlName="estimatedTime" required pattern="^[0-9]*$">
+                                    <div *ngIf="updateForm.controls['estimatedTime'].invalid && updateForm.controls['estimatedTime'].touched"
+                                        class="alert alert-danger error">
+                                        <div *ngIf="updateForm.controls['estimatedTime'].errors['required']">
+                                            Estimated Time is required.
+                                        </div>
+                                        <div *ngIf="updateForm.controls['estimatedTime'].errors['pattern']">
+                                            Estimated Time must be in Number.
+                                        </div>
+                                    </div>
+
+                                    <div class="row mt-3">
+                                        <label for="notes" class="text-start">Notes</label>
+                                    </div>
+                                    <input type="text" name="notes" id="notes" class="form-control input  pt-0"
+                                        [(ngModel)]="selectedProject.notes" formControlName="notes" required>
+                                    <div *ngIf="updateForm.controls['notes'].invalid && updateForm.controls['notes'].touched"
+                                        class="alert alert-danger error">
+                                        <div *ngIf="updateForm.controls['notes'].errors['required']">
+                                            Note is required.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between m-3">
+                                <div class="">
+                                    <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
+                                        type="button">Cancel</button>
+                                </div>
+                                <div>
+                                    <button mat-raised-button color="primary" class="" data-bs-dismiss="modal"
+                                        type="submit">Update</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete -->
+    <div class="modal" id="deleteModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="d-flex justify-content-between">
+                        <div class="">
+                            <h4 class="modal-title text-start">Delete Project <b
+                                    style="color: #556def">{{selectedProject.projectName | titlecase}}</b></h4>
+                        </div>
+                        <div class="">
+                            <button type="button" class="btn-close text-end" data-bs-dismiss="modal"></button>
+                        </div>
+                    </div>
+                    <hr class="mt-0">
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <h3>Do you really want to Delete?</h3>
+                        </div>
+
+                    </div>
+                    <div class="d-flex justify-content-between m-3">
+                        <div>
+
+                            <button mat-raised-button class="mx-2" data-bs-dismiss="modal" type="button">Cancel</button>
+                        </div>
+                        <div>
+                            <button mat-raised-button color="primary" class="" (click)="deleteProject()"
+                                data-bs-dismiss="modal" type="submit">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

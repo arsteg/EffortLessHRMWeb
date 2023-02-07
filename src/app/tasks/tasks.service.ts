@@ -87,5 +87,39 @@ export class TasksService extends baseService {
     };
     return this.http.get<project>(`${environment.apiUrlDotNet}/task/tasklistbyproject/${projectId}`, httpOptions);
   }
-
+  deleteTaskUser(id: string): Observable<any>{
+    let token = localStorage.getItem('jwtToken');
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Authorization': `Bearer ${token}`
+      })
+    };
+    return this.http.delete<any>(`${environment.apiUrlDotNet}/task/taskuser/${id}`,httpOptions);
+  }
+  gettaskUser(id: string) : Observable<any>{
+    let token = localStorage.getItem('jwtToken');
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Authorization': `Bearer ${token}`
+      }),
+      
+    };
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/task/gettaskuserslist/${id}`,httpOptions);
+    return response;
+  }
+  getTaskByUser(userId): Observable<any> {
+    let token = localStorage.getItem('jwtToken');
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Authorization': `Bearer ${token}`
+      })
+    };
+    return this.http.post<any>(`${environment.apiUrlDotNet}/task/tasklistbyuser`, {userId }, httpOptions);
+  }
 }

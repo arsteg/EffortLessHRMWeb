@@ -16,28 +16,34 @@ export class HomeComponent implements OnInit {
   spinnerStyle = Spinkit;
   portalType: string = 'user';
   adminView: string = 'admin';
-  // guestView: string = 'guest';
   currentProfile: any;
+
   constructor(private router: Router, private auth: AuthenticationService) { }
 
   ngOnInit(): void {
     let roleId = localStorage.getItem('roleId');
+    this.adminView = localStorage.getItem('adminView');
     this.auth.getRole(roleId).subscribe((response: any) => {
       let role = response && response.data && response.data[0].Name;
-      if (role.toLowerCase() == 'user') {
-        this.menuList = SideBarUserMenu;
-        this.portalType = "user";
+      if (this.adminView) {
+        if (this.adminView.toLowerCase() == 'admin') {
+          this.menuList = SideBarAdminMenu;
+        }
+        if (this.adminView.toLowerCase() == 'user') {
+          this.menuList = SideBarUserMenu;
+        }
+      } else {
+        if (role.toLowerCase() == 'admin') {
+          this.menuList = SideBarAdminMenu;
+        }
+        if (role.toLowerCase() == 'user') {
+          this.menuList = SideBarUserMenu;
+        }
       }
-      if (role.toLowerCase() == 'admin') {
-        this.menuList = SideBarAdminMenu;
-        this.portalType = "admin"
-      }
-      // if (role.toLowerCase() == 'user') {
-      //   this.menuList = SideBarUserMenu;
-      //   this.portalType = "guest";
-      // }
+      this.portalType = role.toLowerCase();
 
     });
+
 
     let currentUser = JSON.parse(localStorage.getItem('currentUser'))
     this.auth.GetMe(currentUser.id).subscribe((response: any) => {
@@ -48,23 +54,15 @@ export class HomeComponent implements OnInit {
 
   switchView(view: string) {
     this.adminView = view;
-    localStorage.setItem('roleId', this.adminView);
+    localStorage.setItem('adminView', view);
     if (view == 'user') {
-     this.menuList = SideBarUserMenu;
+      this.menuList = SideBarUserMenu;
     }
     else if (view == 'admin') {
-    this.menuList = SideBarAdminMenu;
+      this.menuList = SideBarAdminMenu;
     }
     this.router.navigate(['dashboard'])
   }
-
-  // guestview(view: string){
-  //   this.guestView = view;
-  //   if (view == 'guest') {
-  //     this.menuList = SideBarUserMenu;
-  //   }
-  //   this.router.navigate(['dashboard'])
-  // }
 
   onLogout() {
     localStorage.removeItem('user.email')

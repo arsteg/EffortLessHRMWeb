@@ -43,7 +43,7 @@ export class TeammembersComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private datePipe: DatePipe,
-    private toastt: ToastrService) {
+    private toasttt: ToastrService) {
     this.route.params.subscribe(params => {
       this.resetToken = params['token'];
     });
@@ -101,21 +101,19 @@ export class TeammembersComponent implements OnInit, OnDestroy {
     if (isChecked) {
       let subordinate: any = new Subordinate(this.selectedManager, user.id);
       this.manageTeamService.addSubordinate(subordinate).subscribe(result => {
-        this.populateTeamOfUsers();
-        this.toastt.success('Selected', 'Successfully Added!')
+        this.toasttt.success(user.firstName + (' ')+ user.lastName, 'Successfully Assigned!')
 
       },
         err => {
-          this.toastt.error(' Can not be Selected', 'Error!')
+          this.toasttt.error(' Can not be Selected', user.firstName + (' ')+ user.lastName)
         }
       );
     } else {
         this.manageTeamService.deleteSubordinate(this.selectedManager, user.id).subscribe(result => {
-        this.populateTeamOfUsers();
-        this.toastt.success('Deleted', 'Successfully Deleted!')
+        this.toasttt.success(user.firstName + (' ')+ user.lastName, 'Successfully Deleted!')
       },
         err => {
-          this.toastt.error('Can not be Deleted', 'Error!')
+          this.toasttt.error('Can not be Deleted', user.firstName + (' ')+ user.lastName,)
         }
       );
     }

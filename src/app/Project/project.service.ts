@@ -12,7 +12,7 @@ export class ProjectService {
     constructor(private http: HttpClient) {
     }
 
-  getprojectlist() : Observable<any>{
+  getprojectlist() : Observable<project>{
     let token = localStorage.getItem('jwtToken');
     const httpOptions = {
       headers: new HttpHeaders({
@@ -20,9 +20,8 @@ export class ProjectService {
         'Access-Control-Allow-Origin': '*',
         'Authorization': `Bearer ${token}`
       }),
-      
     };
-    var response = this.http.get<any>(`${environment.apiUrlDotNet}/project/projectlist`,httpOptions);
+    var response = this.http.get<project>(`${environment.apiUrlDotNet}/project/projectlist`,httpOptions);
     return response;
   }
 

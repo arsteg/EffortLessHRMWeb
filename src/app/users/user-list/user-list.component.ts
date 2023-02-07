@@ -16,8 +16,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 
 export class UserListComponent implements OnInit {
-  teamOfUsers: User[] = [];
-  allUsers: User[] = [];
+  usersList: User[] = [];
   inviteUser: signup[] = [];
   searchText = '';
   p: number = 1;
@@ -52,16 +51,15 @@ export class UserListComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.populateTeamOfUsers();
+    this.populateUsers();
     this.getAllRoles();
   }
 
 
-  populateTeamOfUsers() {
+  populateUsers() {
     this.UserService.getUserList().subscribe({
       next: result => {
-        this.teamOfUsers = result.data.data;
-        this.allUsers = result.data.data;
+        this.usersList = result.data.data;
       },
       error: error => { }
     })
@@ -86,7 +84,7 @@ export class UserListComponent implements OnInit {
 
   addUser(addForm) {
     this.UserService.addUser(addForm).subscribe(result => {
-      this.populateTeamOfUsers();
+      this.populateUsers();
       this.toastrrr.success('New User Added', 'Successfully Added!')
     },
       err => {
@@ -97,7 +95,7 @@ export class UserListComponent implements OnInit {
   deleteUser() {
     this.UserService.deleteUser(this.selectedUser._id)
       .subscribe(response => {
-        this.populateTeamOfUsers();
+        this.populateUsers();
         this.toastrrr.success('Existing User Deleted', 'Successfully Deleted!')
       },
         err => {
@@ -107,7 +105,7 @@ export class UserListComponent implements OnInit {
 
   updateUser(updateForm) {
     this.UserService.updateUser(this.selectedUser._id, updateForm).subscribe(resonse => {
-      this.populateTeamOfUsers();
+      this.populateUsers();
       this.toastrrr.success('Existing User Updated', 'Successfully Updated!')
     },
       err => {
