@@ -28,20 +28,22 @@ export class HomeComponent implements OnInit {
       if (this.adminView) {
         if (this.adminView.toLowerCase() == 'admin') {
           this.menuList = SideBarAdminMenu;
+          this.portalType = this.adminView
         }
         if (this.adminView.toLowerCase() == 'user') {
           this.menuList = SideBarUserMenu;
         }
-      } else {
-        if (role.toLowerCase() == 'admin') {
+      } 
+      else {
+        if (role && role.toLowerCase() == 'admin') {
           this.menuList = SideBarAdminMenu;
+           this.portalType = role.toLowerCase()
         }
-        if (role.toLowerCase() == 'user') {
+        if (role && role.toLowerCase() == 'user') {
           this.menuList = SideBarUserMenu;
         }
+        this.adminView = role.toLowerCase();
       }
-      this.portalType = role.toLowerCase();
-
     });
 
 
