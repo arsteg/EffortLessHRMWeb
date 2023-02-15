@@ -335,13 +335,17 @@ export class ScreenshotsComponent implements OnInit {
         let fileName = this.GetFileNameWithoutExtension(timeLogs[i].filePath);
         var hh = +fileName.split('-')[0];
         var mm = +fileName.split('-')[1];
+        let localTime = new Date();
+        localTime.setUTCHours(hh);
+        localTime.setUTCMinutes(mm);
+        hh = localTime.getHours();
+        mm = localTime.getMinutes();
         if (hh == r && mm <= (c * 10 + 9) && mm >= (c * 10)) {
           mm = this.padValue(mm - (mm % 10));
           result = new screenShotCell(`${hh}:${mm}`, timeLogs[i].fileString, timeLogs[i].clicks, timeLogs[i].keysPressed, timeLogs[i].scrolls, timeLogs[i].url, timeLogs[i]._id, false, true);
         }
       };
     }
-    // console.log(result)
     return result;
   }
   GetFileNameWithoutExtension(fileName) {
