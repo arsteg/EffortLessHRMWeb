@@ -7,6 +7,7 @@ import { first } from 'rxjs';
 import { TimeLogService } from 'src/app/_services/timeLogService';
 import { manualTimeRequest} from 'src/app/models/manualTime/manualTimeRequest';
 import { NotificationService } from 'src/app/_services/notification.service';
+import { ManualTimeRequestService } from 'src/app/_services/manualTimeRequest.Service';
 
 @Component({
   selector: 'app-request-manual-time',
@@ -23,11 +24,18 @@ export class RequestManualTimeComponent implements OnInit {
   id:string;
   closeResult: string = '';
   addRequestForm: FormGroup;
+  updateRequestForm: FormGroup;
   searchText:string="";
   teamOfUsers: [] = [];
   p: number = 1;
+  manualTimeRequests:manualTimeRequest[]=[];
+  selectedRequest:any;
+  changeMode='Add';
   constructor(private modalService: NgbModal, private formBuilder: FormBuilder,
-    private authenticationService:AuthenticationService, private timeLogService:TimeLogService,private notifyService: NotificationService) {
+    private authenticationService:AuthenticationService,
+    private timeLogService:TimeLogService,
+    private notifyService: NotificationService,
+    private manualTimeRequestService:ManualTimeRequestService) {
 
       this.addRequestForm = this.formBuilder.group({
       manager: ['', Validators.required],
@@ -49,6 +57,7 @@ export class RequestManualTimeComponent implements OnInit {
 
   ngOnInit(): void {
     this.id=this.authenticationService.currentUserValue.id;
+    this.authenticationService.currentUserValue.id
     this.authenticationService.getUserManagers(this.id).pipe(first())
     .subscribe((res:any) => {
       res.data.forEach(element => {
@@ -66,6 +75,7 @@ export class RequestManualTimeComponent implements OnInit {
         },
         err => {
         });
+        this.fetchManualTimeRequests();
       }
       onChange(newId: number) {
         console.log(`Selected item with id: ${newId}`);
@@ -121,7 +131,8 @@ export class RequestManualTimeComponent implements OnInit {
     request.toDate =  this.addRequestForm.value.startDate;
     this.timeLogService.addManualTimeRequest(request).subscribe((res:any) => {
       setTimeout(() => {
-        this.notifyService.showSuccess("Manual time request is sent successfully", "success")
+        this.notifyService.showSuccess("Manual time request is sent successfully", "success");
+        this.fetchManualTimeRequests();
      }, 30);
       },
       err => {
@@ -147,5 +158,33 @@ export class RequestManualTimeComponent implements OnInit {
       }
   }
   getRoleName(r:string){}
+
   selectedUser(){}
+
+  deleteRequest(){
+    this.manualTimeRequestService.DeleteManualTimeRequest(this.selectedRequest._id).pipe(first())
+    .subscribe((res:any) => {
+      this.notifyService.showSuccess("Manual time request has been deleted successfully!", "success");
+      this.fetchManualTimeRequests();
+    },
+        err => {
+        });
+  }
+
+  fetchManualTimeRequests(){
+    this.manualTimeRequestService.getManualTimeRequestsByUser(this.id).pipe(first())
+    .subscribe((res:any) => {
+      this.manualTimeRequests.length=0;
+      res.data.forEach(r => {
+        this.manualTimeRequests.push(r);
+      });
+        },
+        err => {
+        });
+  }
+  OpenWithEditMode(record,mymodal){
+    this.selectedRequest=record;
+    this.changeMode='Update';
+    open(mymodal)
+  }
 }
