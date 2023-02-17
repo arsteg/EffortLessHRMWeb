@@ -17,20 +17,20 @@ import { ManualTimeRequestService } from 'src/app/_services/manualTimeRequest.Se
 export class RequestManualTimeComponent implements OnInit {
   startDate: any;
   endDate: any;
-  selectedManagerId:string="";
+  reason:string='';
   managers: {id:string, name:string }[]=[];
   projects:{id:string,projectName:string}[]=[];
-  title = 'appBootstrap';
   id:string;
+  projectId:string;
   closeResult: string = '';
   addRequestForm: FormGroup;
-  updateRequestForm: FormGroup;
   searchText:string="";
-  teamOfUsers: [] = [];
   p: number = 1;
   manualTimeRequests:manualTimeRequest[]=[];
-  selectedRequest:any;
   changeMode='Add';
+  selectedRequest:any;
+  selectedProject:string='undefined';
+  selectedManager:string='undefined';
   constructor(private modalService: NgbModal, private formBuilder: FormBuilder,
     private authenticationService:AuthenticationService,
     private timeLogService:TimeLogService,
@@ -122,22 +122,37 @@ export class RequestManualTimeComponent implements OnInit {
   }
   onSubmit(){
     let request = new manualTimeRequest();
-    request.date =  "2023-01-26";
+    request.date =  new Date().toString().slice(0, 15);;
     request.manager =  this.addRequestForm.value.manager;
     request.project =  this.addRequestForm.value.project;
     request.reason =  this.addRequestForm.value.reason;
     request.user =  this.authenticationService.currentUserValue.id;
     request.fromDate =  this.addRequestForm.value.startDate;
-    request.toDate =  this.addRequestForm.value.startDate;
-    this.timeLogService.addManualTimeRequest(request).subscribe((res:any) => {
+    request.toDate =  this.addRequestForm.value.endDate;
+
+    if(this.changeMode=='Add'){
+    this.manualTimeRequestService.addManualTimeRequest(request).subscribe((res:any) => {
       setTimeout(() => {
-        this.notifyService.showSuccess("Manual time request is sent successfully", "success");
+        this.notifyService.showSuccess("Manual time request created successfully", "success");
         this.fetchManualTimeRequests();
      }, 30);
       },
       err => {
         this.notifyService.showError(err.message, "Error")
       });
+    }
+    else{
+      request.id=this.selectedRequest._id;
+      this.manualTimeRequestService.updateManualTimeRequest(request).subscribe((res:any) => {
+        setTimeout(() => {
+          this.notifyService.showSuccess("Manual time request updated successfully", "success");
+          this.fetchManualTimeRequests();
+       }, 30);
+        },
+        err => {
+          this.notifyService.showError(err.message, "Error")
+        });
+    }
     }
     getColor(char: string): string {
       switch (char) {
@@ -162,7 +177,7 @@ export class RequestManualTimeComponent implements OnInit {
   selectedUser(){}
 
   deleteRequest(){
-    this.manualTimeRequestService.DeleteManualTimeRequest(this.selectedRequest._id).pipe(first())
+    this.manualTimeRequestService.DeleteManualTimeRequest(this.selectedRequest.id).pipe(first())
     .subscribe((res:any) => {
       this.notifyService.showSuccess("Manual time request has been deleted successfully!", "success");
       this.fetchManualTimeRequests();
@@ -182,9 +197,19 @@ export class RequestManualTimeComponent implements OnInit {
         err => {
         });
   }
-  OpenWithEditMode(record,mymodal){
-    this.selectedRequest=record;
-    this.changeMode='Update';
-    open(mymodal)
-  }
+clearselectedRequest(){
+  this.selectedRequest={};
+  this.startDate = new Date().toString().slice(0, 15);
+  this.endDate = new Date();
+  this.endDate.setHours(23,59,59,999);
+  this.selectedRequest.toDate = this.endDate;
+  this.selectedProject="undefined";
+  this.selectedManager="undefined";
+}
+
+setUpdateMode(record){
+  this.selectedRequest=record;
+  this.selectedProject=this.selectedRequest.project.id;
+  this.selectedManager=this.selectedRequest.manager.id;
+}
 }

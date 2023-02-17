@@ -1,4 +1,5 @@
 export class manualTimeRequest{
+  id:string;
   user:string;
   date:string;
   project:string;

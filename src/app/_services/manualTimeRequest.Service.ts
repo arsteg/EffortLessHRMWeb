@@ -2,6 +2,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { baseService } from './base';
 import { environment } from 'src/environments/environment';
+import { manualTimeRequest } from '../models/manualTime/manualTimeRequest';
+import { Observable } from 'rxjs/internal/Observable';
 
 
 @Injectable({
@@ -30,5 +32,27 @@ export class ManualTimeRequestService extends baseService{
     };
     var response  = this.http.delete<any>(`${environment.apiUrlDotNet}/manualTime/manualTimeRequest/${Id}`,httpOptions);
     return response;
+  }
+  addManualTimeRequest(request:manualTimeRequest):Observable<any>{
+    let token = localStorage.getItem('jwtToken');
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Authorization': `Bearer ${token}`
+      })
+    }
+    return this.http.post(`${environment.apiUrlDotNet}/manualTime/addManualTimeRequest`, request,httpOptions);
+  }
+  updateManualTimeRequest(request:manualTimeRequest):Observable<any>{
+    let token = localStorage.getItem('jwtToken');
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Authorization': `Bearer ${token}`
+      })
+    }
+    return this.http.post(`${environment.apiUrlDotNet}/manualTime/updateManualTimeRequest`, request,httpOptions);
   }
 }
