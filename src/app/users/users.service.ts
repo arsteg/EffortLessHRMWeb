@@ -132,7 +132,8 @@ getUserList(): Observable<any> {
   const httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json',
     'Access-Control-Allow-Origin':'*',
-    'Authorization': `Bearer ${token}`})
+    'Authorization': `Bearer ${token}`}),
+    withCredentials: true
   };
   var response  = this.http.get<any>(`${environment.apiUrlDotNet}/users`,httpOptions);
  return response;
@@ -145,7 +146,8 @@ addUser(newUser: newUser): Observable<newUser> {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
       'Authorization': `Bearer ${token}`
-    })
+    }),
+    withCredentials: true
   };
   return this.http.post<newUser>(`${environment.apiUrlDotNet}/users/inviteUser`, newUser, httpOptions);
 }
@@ -157,7 +159,8 @@ deleteUser(id){
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
       'Authorization': `Bearer ${token}`
-    })
+    }),
+    withCredentials: true
   };
   var response= this.http.delete<User>(`${environment.apiUrlDotNet}/users/deleteuser/${id}`,  httpOptions);
   return response;
@@ -170,7 +173,8 @@ updateUser(id , updateUser): Observable<updateUser>{
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
       'Authorization': `Bearer ${token}`
-    })
+    }),
+    withCredentials: true
   };
   var response= this.http.patch<updateUser>(`${environment.apiUrlDotNet}/users/updateUser/${id}`, updateUser, httpOptions);
   return response;

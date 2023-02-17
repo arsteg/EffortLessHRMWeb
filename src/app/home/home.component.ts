@@ -28,7 +28,7 @@ export class HomeComponent implements OnInit {
       if (this.adminView) {
         if (this.adminView.toLowerCase() == 'admin') {
           this.menuList = SideBarAdminMenu;
-          this.portalType = this.adminView
+          this.portalType = this.adminView.toLowerCase();
         }
         if (this.adminView.toLowerCase() == 'user') {
           this.menuList = SideBarUserMenu;
@@ -44,6 +44,7 @@ export class HomeComponent implements OnInit {
         }
         this.adminView = role.toLowerCase();
       }
+      this.portalType = role && role.toLowerCase();
     });
 
 

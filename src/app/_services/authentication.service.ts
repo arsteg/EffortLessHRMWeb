@@ -44,7 +44,7 @@ export class AuthenticationService {
     var queryHeaders = new HttpHeaders();
     queryHeaders.append('Content-Type', 'application/json');
     queryHeaders.append('Access-Control-Allow-Origin', '*');
-    return this.http.post<any>(`${environment.apiUrlDotNet}/users/login`, { email: user.email, password: user.password }, { headers: queryHeaders })
+    return this.http.post<any>(`${environment.apiUrlDotNet}/users/login`, { email: user.email, password: user.password }, { headers: queryHeaders, withCredentials: true })
       .pipe(map(user => {
         this.currentUserSubject.next(user);
         this.loggedIn.next(true);

@@ -55,7 +55,9 @@ import { CdkTableModule } from '@angular/cdk/table';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { RequestManualTimeComponent } from './manualTime/request-manual-time/request-manual-time.component';
 import { CommonModule } from "@angular/common";
-
+import { CommonService } from './common/common.service';
+import { UserService } from './users/users.service';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 @NgModule({
   declarations: [
     AppComponent,
@@ -110,13 +112,14 @@ import { CommonModule } from "@angular/common";
     MatSelectModule,
     CdkTableModule,
     DragDropModule,
-    CommonModule
+    CommonModule,
+    BsDatepickerModule.forRoot(),
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,
     NO_ERRORS_SCHEMA
   ],
-  providers: [DatePipe],
+  providers: [DatePipe, CommonService, UserService, DatePipe],
   bootstrap: [AppComponent]
 })
 

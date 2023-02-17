@@ -7,16 +7,16 @@ import { AuthenticationService } from 'src/app/_services/authentication.service'
 import { RoleService } from 'src/app/_services/role.service';
 import { TransitionCheckState } from '@angular/material/checkbox';
 import { ToastrService } from 'ngx-toastr';
+import { CommonService } from 'src/app/common/common.service';
 
 @Component({
   selector: 'app-user-list',
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.css'],
-  providers: [UserService]
 })
 
 export class UserListComponent implements OnInit {
-  usersList: User[] = [];
+  usersList: any[];
   inviteUser: signup[] = [];
   searchText = '';
   p: number = 1;
@@ -34,7 +34,8 @@ export class UserListComponent implements OnInit {
     private fb: FormBuilder,
     private auth: AuthenticationService,
     private roleService: RoleService,
-    private toastrrr: ToastrService) {
+    private toastrrr: ToastrService,
+    public commonservice: CommonService) {
     this.addForm = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
@@ -51,18 +52,11 @@ export class UserListComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.populateUsers();
     this.getAllRoles();
-  }
-
-
-  populateUsers() {
-    this.UserService.getUserList().subscribe({
-      next: result => {
-        this.usersList = result.data.data;
-      },
-      error: error => { }
-    })
+    this.commonservice.populateUsers().subscribe(result => {
+      this.usersList = result && result.data && result.data.data;
+    });
+    this.firstLetter = this.commonservice.firstletter;
   }
 
   getAllRoles() {
@@ -84,7 +78,7 @@ export class UserListComponent implements OnInit {
 
   addUser(addForm) {
     this.UserService.addUser(addForm).subscribe(result => {
-      this.populateUsers();
+      this.ngOnInit();
       this.toastrrr.success('New User Added', 'Successfully Added!')
     },
       err => {
@@ -95,7 +89,7 @@ export class UserListComponent implements OnInit {
   deleteUser() {
     this.UserService.deleteUser(this.selectedUser._id)
       .subscribe(response => {
-        this.populateUsers();
+        this.ngOnInit();
         this.toastrrr.success('Existing User Deleted', 'Successfully Deleted!')
       },
         err => {
@@ -105,7 +99,7 @@ export class UserListComponent implements OnInit {
 
   updateUser(updateForm) {
     this.UserService.updateUser(this.selectedUser._id, updateForm).subscribe(resonse => {
-      this.populateUsers();
+      this.ngOnInit();
       this.toastrrr.success('Existing User Updated', 'Successfully Updated!')
     },
       err => {
@@ -113,37 +107,5 @@ export class UserListComponent implements OnInit {
       })
   }
 
-getRandomColor(lastName: string) {
-  let colorMap = {
-    A: '#556def',
-    B: '#faba5c',
-    C: '#0000ff',
-    D: '#ffff00',
-    E: '#00ffff',
-    F: '#ff00ff',
-    G: '#f1421d',
-    H: '#1633eb',
-    I: '#f1836c',
-    J: '#824b40',
-    K: '#256178',
-    L: '#0d3e50',
-    M: '#3c8dad',
-    N: '#67a441',
-    O: '#dc57c3',
-    P: '#673a05',
-    Q: '#ec8305',
-    R: '#00a19d',
-    S: '#2ee8e8',
-    T: '#5c9191',
-    U: '#436a2b',
-    V: '#dd573b',
-    W: '#424253',
-    X: '#74788d',
-    Y: '#16cf96',
-    Z: '#4916cf'
-  };
-  this.firstLetter= lastName.charAt(0).toUpperCase();
-  return colorMap[this.firstLetter] || '#000000';
-}
 }
 

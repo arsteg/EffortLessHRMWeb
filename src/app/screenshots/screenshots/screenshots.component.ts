@@ -147,9 +147,7 @@ export class ScreenshotsComponent implements OnInit {
   }
 
   deleteScreenShot() {
-    console.log(this.selectedTimelog);
     let logs = { logs: this.selectedTimelog.map((id) => { return { logId: id } }) };
-    console.log(logs)
     this.timeLogService.deletetimelog(logs)
       .subscribe(response => {
         this.selectedTimelog = [];
@@ -173,7 +171,6 @@ export class ScreenshotsComponent implements OnInit {
         this.selectedTimelog.splice(index, 1);
       }
     }
-    console.log(this.selectedTimelog)
   }
 
   selectAll(event, index) {
@@ -215,7 +212,6 @@ export class ScreenshotsComponent implements OnInit {
       });
       this.selectedTimelog = this.selectedTimelog.filter(x => !elementsToDelete.includes(x) ? x : '');
     }
-    console.log(this.selectedTimelog)
   }
 
   populateScreenShots(timeLogs: timeLog[]) {
@@ -268,7 +264,6 @@ export class ScreenshotsComponent implements OnInit {
 
     this.totalHours = Math.floor(totalTime / 60);
     this.totalMinutes = totalTime % 60;
-    //  console.log(this.screenshotRows)
   }
 
   attachTimelabel(rowNum: number, row: screenshotRow) {

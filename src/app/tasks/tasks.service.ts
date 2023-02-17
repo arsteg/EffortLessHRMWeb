@@ -22,7 +22,8 @@ export class TasksService extends baseService {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
         'Authorization': `Bearer ${token}`
-      })
+      }),
+      withCredentials: true
     };
     var response = this.http.get<any>(`${environment.apiUrlDotNet}/task/tasklist`, httpOptions);
     return response;
@@ -35,7 +36,8 @@ export class TasksService extends baseService {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
         'Authorization': `Bearer ${token}`
-      })
+      }),
+      withCredentials: true
     };
     return this.http.post<any>(`${environment.apiUrlDotNet}/task/newtask`, Task, httpOptions);
   }
@@ -47,19 +49,21 @@ export class TasksService extends baseService {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
         'Authorization': `Bearer ${token}`
-      })
+      }),
+      withCredentials: true
     };
     return this.http.delete<Task>(`${environment.apiUrlDotNet}/task/${id}`, httpOptions);
   }
 
-  updateproject(id, Task): Observable<Task> {
+  updatetask(id, Task): Observable<Task> {
     let token = localStorage.getItem('jwtToken');
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
         'Authorization': `Bearer ${token}`
-      })
+      }),
+      withCredentials: true
     };
     return this.http.patch<Task>(`${environment.apiUrlDotNet}/task/update/${id}`, Task, httpOptions);
   }
@@ -71,7 +75,8 @@ export class TasksService extends baseService {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
         'Authorization': `Bearer ${token}`
-      })
+      }),
+      withCredentials: true
     };
     return this.http.post<any>(`${environment.apiUrlDotNet}/task/newtaskuser`, { taskId, taskUsers }, httpOptions);
   }
@@ -83,7 +88,8 @@ export class TasksService extends baseService {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
         'Authorization': `Bearer ${token}`
-      })
+      }),
+      withCredentials: true
     };
     return this.http.get<project>(`${environment.apiUrlDotNet}/task/tasklistbyproject/${projectId}`, httpOptions);
   }
@@ -94,7 +100,8 @@ export class TasksService extends baseService {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
         'Authorization': `Bearer ${token}`
-      })
+      }),
+      withCredentials: true
     };
     return this.http.delete<any>(`${environment.apiUrlDotNet}/task/taskuser/${id}`,httpOptions);
   }
@@ -106,7 +113,7 @@ export class TasksService extends baseService {
         'Access-Control-Allow-Origin': '*',
         'Authorization': `Bearer ${token}`
       }),
-      
+      withCredentials: true
     };
     var response = this.http.get<any>(`${environment.apiUrlDotNet}/task/gettaskuserslist/${id}`,httpOptions);
     return response;
@@ -118,7 +125,8 @@ export class TasksService extends baseService {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
         'Authorization': `Bearer ${token}`
-      })
+      }),
+      withCredentials: true
     };
     return this.http.post<any>(`${environment.apiUrlDotNet}/task/tasklistbyuser`, {userId }, httpOptions);
   }
