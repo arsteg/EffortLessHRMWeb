@@ -21,7 +21,7 @@ export class RequestApprovalComponent implements OnInit {
   searchText:string="";
   p: number = 1;
   selectedRequest:any;
-
+  id:string='';
   constructor(private modalService: NgbModal, private formBuilder: FormBuilder,
     private authenticationService:AuthenticationService,
     private timeLogService:TimeLogService,
@@ -30,11 +30,12 @@ export class RequestApprovalComponent implements OnInit {
     }
 
   ngOnInit(): void {
-  this.fetchManualTimeRequests();
+    this.id=this.authenticationService.currentUserValue.id;
+    this.fetchManualTimeRequests();
   }
 
   fetchManualTimeRequests(){
-    this.manualTimeRequestService.getManualTimeRequestsForApprovalByUser('62dfa6993babb9ac20728636').pipe(first())
+    this.manualTimeRequestService.getManualTimeRequestsForApprovalByUser(this.id).pipe(first())
     .subscribe((res:any) => {
       this.manualTimeRequests.length=0;
       res.data.forEach(r => {
