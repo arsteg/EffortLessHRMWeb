@@ -55,4 +55,14 @@ export class ManualTimeRequestService extends baseService{
     }
     return this.http.post(`${environment.apiUrlDotNet}/manualTime/updateManualTimeRequest`, request,httpOptions);
   }
+getManualTimeRequestsForApprovalByUser(userId:string): any {
+    let token = this.getToken();
+    const httpOptions = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin':'*',
+      'Authorization': `Bearer ${token}`})
+    };
+    var response  = this.http.get<any>(`${environment.apiUrlDotNet}/manualTime/getManualTimeRequestsForApproval/${userId}`,httpOptions);
+    return response;
+  }
 }

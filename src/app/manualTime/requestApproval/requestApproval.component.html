@@ -1,0 +1,44 @@
+<div class="main-content">
+  <div class="container-fluid">
+      <div class="d-flex justify-content-between">
+        <h1 class="pt-4 mb-0">Approval/Rejection</h1>
+      </div>
+      <hr class="mt-0">
+      <div class="container-fluid">
+          <table class="table table-striped mt-4">
+              <thead>
+                  <tr>
+                      <th>Date</th>
+                      <th>Project</th>
+                      <th>From Date</th>
+                      <th>To Date</th>
+                      <th>Reason</th>
+                      <th>Status</th>
+                      <th>Action</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr
+                      *ngFor="let record of manualTimeRequests | search: searchText |  paginate: { itemsPerPage: 20, currentPage: p }">
+                      <td><div>{{record.date | date: 'MM/dd/yyyy'}}</div></td>
+                      <td><span>{{record.project.projectName | uppercase}}</span> </td>
+                      <td>{{ record.fromDate | date: 'MM/dd/yyyy'}} {{ record.fromDate | date: 'shortTime'}}</td>
+                      <td>{{ record.toDate | date: 'MM/dd/yyyy'}} {{ record.toDate | date: 'shortTime'}}</td>
+                      <td>{{ record.reason}}</td>
+                      <td> <span>
+                        <i *ngIf="record.status=='approved'" class="fas fa-thumbs-up" style="color:green" [title]="record.status"></i>
+                        <i *ngIf="record.status=='rejected'"class="fas fa-thumbs-down" style="color:red" [title]="record.status"></i>
+                        <i *ngIf="record.status=='pending'"class="fa fa-clock-o" style="color:blue" [title]="record.status"></i>
+                      </span></td>
+                      <td>
+                          <label title="Approve"><i *ngIf="record.status=='pending'" class="fas fa-thumbs-up" style="color:green;margin:5px;" (click)="selectedRequest = record;approveRequest()"></i></label>
+                          <span title="Reject"><i *ngIf="record.status=='pending'" class="fas fa-thumbs-down" style="color:red;margin:5px" (click)="selectedRequest = record;rejectRequest()"></i></span>
+                      </td>
+                      <td class="highlight"><div></div></td>
+                  </tr>
+              </tbody>
+          </table>
+          <pagination-controls (pageChange)="p = $event" class="pagination d-flex justify-content-end"></pagination-controls>
+      </div>
+  </div>
+</div>
