@@ -53,11 +53,12 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import {MatSelectModule} from '@angular/material/select';
 import { CdkTableModule } from '@angular/cdk/table';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { RequestManualTimeComponent } from './manualTime/request-manual-time/request-manual-time.component';
 import { CommonModule } from "@angular/common";
 import { CommonService } from './common/common.service';
 import { UserService } from './users/users.service';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { RequestManualTimeComponent } from './manualTime/request-manual-time/request-manual-time.component';
+import { RequestApprovalComponent } from './manualTime/requestApproval/requestApproval.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -87,7 +88,8 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
           RealtimeComponent,
           MainComponent,
           TasksComponent,
-          RequestManualTimeComponent
+          RequestManualTimeComponent,
+          RequestApprovalComponent
   ],
   imports: [
     BrowserModule,

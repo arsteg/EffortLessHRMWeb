@@ -9,7 +9,6 @@ import {response} from '../models/response'
 import { baseService } from './base';
 import { User } from '../models/user';
 import { stringToArray } from 'ag-grid-community';
-import {manualTimeRequest}  from '../models/manualTime/manualTimeRequest'
 
 @Injectable({
   providedIn: 'root'
@@ -104,21 +103,6 @@ export class TimeLogService extends baseService {
 
     return this.http.delete<timeLog>(`${environment.apiUrlDotNet}/timelogs`, httpOptions);
   }
-
-  addManualTimeRequest(request:manualTimeRequest):Observable<any>{
-    let token = localStorage.getItem('jwtToken');
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Authorization': `Bearer ${token}`
-      })
-    }
-    return this.http.post(`${environment.apiUrlDotNet}/manualTime/addManualTimeRequest`, request,httpOptions);
-  }
-
-
-
   //mostPopularBook: Book = allBooks[0];
 
   // setMostPopularBook(popularBook: Book): void {

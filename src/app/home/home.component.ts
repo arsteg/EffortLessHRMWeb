@@ -33,7 +33,7 @@ export class HomeComponent implements OnInit {
         if (this.adminView.toLowerCase() == 'user') {
           this.menuList = SideBarUserMenu;
         }
-      } 
+      }
       else {
         if (role && role.toLowerCase() == 'admin') {
           this.menuList = SideBarAdminMenu;
@@ -80,11 +80,9 @@ export class HomeComponent implements OnInit {
     });
 
   }
-
   clickEvent() {
     this.isCollapsedMenu = !this.isCollapsedMenu;
   }
-
 }
 
 export const SideBarAdminMenu = [
@@ -391,6 +389,18 @@ export const SideBarAdminMenu = [
     id: '16',
     title: 'Settings',
     icon: 'fa fa-wrench'
+  },
+  {
+    id: '16',
+    title: 'Manual Time',
+    icon: 'fa fa-wrench',
+    subMenu: [
+      {
+        id: '161',
+        title: 'Approve/Reject',
+        url: 'ManualTimeRequestApproval'
+      },
+    ]
   }
 ];
 
