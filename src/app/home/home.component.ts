@@ -366,6 +366,63 @@ export const SideBarAdminMenu = [
     id: '14',
     title: 'Reports',
     icon: 'fa fa-chart-line',
+    subMenu: [
+      // {
+      //   id: '141',
+      //   title: 'General Reports',
+      // },
+      // {
+      //   id: '142',
+      //   title: 'My Reports',
+      // },
+      // {
+      //   id: '143',
+      //   title: 'Timesheet',
+      // },
+      // {
+      //   id: '144',
+      //   title: 'Timeline',
+      //   url: '/timeline',
+      // },
+      // {
+      //   id: '145',
+      //   title: 'Attendance',
+      //   url: '/attendance',
+      // },
+      // {
+      //   id: '146',
+      //   title: 'Activity Level',
+      // },
+      // {
+      //   id: '147',
+      //   title: 'Statistics',
+      // },
+      // {
+      //   id: '148',
+      //   title: 'Activity Description',
+      //   url: '/activityDescription',
+      // },
+      {
+        id: '149',
+        title: 'Apps and Websites',
+        url: '/applicationusages'
+      },
+      {
+        id: '1410',
+        title: 'Tasks',
+        url: '/task',
+      },
+      {
+        id: '1411',
+        title: 'Productivity',
+        url: '/productivity'
+      },
+      {
+        id: '1412',
+        title: 'Leave',
+        url: '/leave'
+      }
+    ],
   },
   {
     id: '15',
@@ -589,25 +646,30 @@ export const SideBarUserMenu = [
         id: '147',
         title: 'Statistics',
       },
-      {
-        id: '148',
-        title: 'Activity Description',
-      },
+      // {
+      //   id: '148',
+      //   title: 'Activity Description',
+      //   url: '/activityDescription',
+      // },
       {
         id: '149',
         title: 'Apps and Websites',
+        url: '/applicationusages'
       },
       {
         id: '1410',
         title: 'Tasks',
+        url: '/task',
       },
       {
         id: '1411',
         title: 'Productivity',
+        url: '/productivity'
       },
       {
         id: '1412',
         title: 'Leave',
+        url: 'leave'
       }
     ],
   },

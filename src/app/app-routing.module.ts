@@ -26,6 +26,11 @@ import { TasksComponent } from './tasks/tasks.component';
 import { RequestManualTimeComponent } from './manualTime/request-manual-time/request-manual-time.component';
 import { RequestApprovalComponent } from './manualTime/requestApproval/requestApproval.component';
 import { AddManualTimeComponent } from './manualTime/addManualTime/add-manual-time.component';
+import { ActivityDescriptionComponent } from './reports/activity-description/activity-description.component';
+import { AppAndWebsiteUsageComponent } from './reports/app-and-website-usage/app-and-website-usage.component';
+import { TaskreportComponent } from './reports/taskreport/taskreport.component';
+import { LeaveReportComponent } from './reports/leave-report/leave-report.component';
+import { ProductivityReportComponent } from './reports/productivity-report/productivity-report.component';
 
 const routes: Routes = [
   // {path:'',component:LayoutComponentComponent, canActivate: [AuthGuard]},
@@ -59,6 +64,11 @@ const routes: Routes = [
       { path: 'requestManualTime', component: RequestManualTimeComponent },
       { path: 'ManualTimeRequestApproval', component: RequestApprovalComponent },
       { path: 'AddManualTime', component: AddManualTimeComponent},
+      { path: 'activityDescription', component: ActivityDescriptionComponent },
+      { path: 'applicationusages', component: AppAndWebsiteUsageComponent },
+      { path: 'task', component: TaskreportComponent },
+      { path: 'leave', component: LeaveReportComponent },
+      { path: 'productivity', component: ProductivityReportComponent}
     ]
   }
 ]

@@ -59,6 +59,11 @@ import { UserService } from './users/users.service';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { RequestManualTimeComponent } from './manualTime/request-manual-time/request-manual-time.component';
 import { RequestApprovalComponent } from './manualTime/requestApproval/requestApproval.component';
+import { ActivityDescriptionComponent } from './reports/activity-description/activity-description.component';
+import { AppAndWebsiteUsageComponent } from './reports/app-and-website-usage/app-and-website-usage.component';
+import { TaskreportComponent } from './reports/taskreport/taskreport.component';
+import { LeaveReportComponent } from './reports/leave-report/leave-report.component';
+import { ProductivityReportComponent } from './reports/productivity-report/productivity-report.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -89,7 +94,12 @@ import { RequestApprovalComponent } from './manualTime/requestApproval/requestAp
           MainComponent,
           TasksComponent,
           RequestManualTimeComponent,
-          RequestApprovalComponent
+          RequestApprovalComponent,
+          ActivityDescriptionComponent,
+          AppAndWebsiteUsageComponent,
+          TaskreportComponent,
+          LeaveReportComponent,
+          ProductivityReportComponent
   ],
   imports: [
     BrowserModule,

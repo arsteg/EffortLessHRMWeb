@@ -1,0 +1,51 @@
+
+[
+    {
+        "application": "Windows RDP",
+        "type": "Windows hbkjhjkj",
+        "project": "Dovestones Software",
+        "user": "Sandeep Kumar",
+	    "mouse": 20,
+	    "mouseScroll": 200,
+	    "keyboard": 45,
+	    "inactive": 10,
+        "total": 2000000,
+        "date": "2023-02-13"
+    },
+    {
+        "application": "Visual Studio",
+        "type": "Ide",
+        "project": "Albiware",
+        "user": "Kumar",
+	    "mouse": 50,
+	    "mouseScroll": 20,
+	    "keyboard": 34,
+	    "inactive": 50,
+        "total": 1560000,
+        "date": "2023-02-13"
+    },
+    {
+        "application": "Notepad",
+        "type": "Editor",
+        "project": "Albiware",
+        "user": "Random user",
+	    "mouse": 30,
+	    "mouseScroll": 100,
+	    "keyboard": 0,
+	    "inactive": 70,
+        "total": 3400000,
+        "date": "2023-02-10"
+    },
+    {
+        "application": "Time tracker",
+        "type": "Windows",
+        "project": "Effortless Hrms",
+        "user": "Test User",
+	    "mouse": 70,
+	    "mouseScroll": 0,
+	    "keyboard": 45,
+	    "inactive": 10,
+        "total": 6000000,
+        "date": "2023-02-13"
+    }
+]

@@ -1,0 +1,42 @@
+
+[
+    {
+        "member": "Sandeep Kumar",
+        "team": "N/A",
+        "leaveType": "Sick Leave",
+        "total": "2"
+    },
+    {
+        "member": "Ashish Kumar",
+        "team": "N/A",
+        "leaveType": "Privilege Leave",
+        "total": "1"
+    },
+    {
+        "member": "Kumar",
+        "team": "N/A",
+        "leaveType": "Earned Leave",
+        "total": "1"
+    }
+    ,
+    {
+        "member": "user 2 Kumar",
+        "team": "N/A",
+        "leaveType": "Sick Leave",
+        "total": "4"
+    }
+    ,
+    {
+        "member": "User 1",
+        "team": "N/A",
+        "leaveType": "Privilege Leave",
+        "total": "1"
+    }
+    ,
+    {
+        "member": "Xyz Kumar",
+        "team": "N/A",
+        "leaveType": "Casual Leave",
+        "total": "2"
+    }
+]

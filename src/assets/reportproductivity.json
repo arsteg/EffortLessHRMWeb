@@ -1,0 +1,22 @@
+    {
+        "user": "Sandeep Kumar",
+        "doj": "2023-02-13",
+        "totalTimeTracked": 20,
+        "totalIdleTime": 1,
+        "totalMouse": 323,
+        "totalKeyboardClicks": 200,
+        "totalScroll": 100,
+        "applicationUsages":[
+            {
+                "applicationName": "Windowns RDP",
+                "totalTimeSpand": 9,
+                "applicationCategory": "Productive"
+            }
+            ,
+            {
+                "applicationName": "Visual Studio Code",
+                "totalTimeSpand": 10,
+                "applicationCategory": "Non-Productive"
+            }
+        ]
+    }
