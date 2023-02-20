@@ -25,6 +25,7 @@ import { changeUserPassword } from './models/user';
 import { TasksComponent } from './tasks/tasks.component';
 import { RequestManualTimeComponent } from './manualTime/request-manual-time/request-manual-time.component';
 import { RequestApprovalComponent } from './manualTime/requestApproval/requestApproval.component';
+import { AddManualTimeComponent } from './manualTime/addManualTime/add-manual-time.component';
 
 const routes: Routes = [
   // {path:'',component:LayoutComponentComponent, canActivate: [AuthGuard]},
@@ -56,7 +57,8 @@ const routes: Routes = [
       { path: 'realtime', component: RealtimeComponent },
       { path: 'tasks', component: TasksComponent },
       { path: 'requestManualTime', component: RequestManualTimeComponent },
-      { path: 'ManualTimeRequestApproval', component: RequestApprovalComponent }
+      { path: 'ManualTimeRequestApproval', component: RequestApprovalComponent },
+      { path: 'AddManualTime', component: AddManualTimeComponent},
     ]
   }
 ]
