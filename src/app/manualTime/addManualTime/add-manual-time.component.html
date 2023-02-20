@@ -1,0 +1,166 @@
+<div [style.width.%]="50">
+  <div>
+    <div class="modal-title h4">Add Manual Time</div>
+  </div>
+  <br />
+  <div>
+    <form [formGroup]="addRequestForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="row d-flex justify-content-left">
+          <div class="col-md-12">
+            <div class="col-md-12">
+              <label for="project" class="text-start">Project</label>
+            </div>
+            <select
+              class="custom-select mb-3 p-2"
+              formControlName="project"
+              [(ngModel)]="selectedProject"
+            >
+              <option disabled selected value="undefined">
+                Choose Any Project
+              </option>
+              <option *ngFor="let project of projects" [value]="project.id">
+                {{ project.projectName }}
+              </option>
+            </select>
+            <div
+              *ngIf="
+                addRequestForm.controls['project'].invalid &&
+                addRequestForm.controls['project'].touched
+              "
+              class="alert alert-danger error"
+            >
+              <div
+                *ngIf="addRequestForm.controls['project'].errors['required']"
+              >
+                Project is required.
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-12">
+            <div class="row mt-3">
+              <label for="project" class="text-start">Task</label>
+            </div>
+            <select
+              class="custom-select mb-3 p-2"
+              formControlName="task"
+              [(ngModel)]="selectedProject"
+            >
+              <option disabled selected value="undefined">
+                Choose Any Task
+              </option>
+              <option *ngFor="let project of projects" [value]="project.id">
+                {{ project.projectName }}
+              </option>
+            </select>
+            <div
+              *ngIf="
+                addRequestForm.controls['project'].invalid &&
+                addRequestForm.controls['project'].touched
+              "
+              class="alert alert-danger error"
+            >
+              <div
+                *ngIf="addRequestForm.controls['project'].errors['required']"
+              >
+                Project is required.
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-12">
+            <label for="startDate" class="text-start">Start Date</label>
+          </div>
+          <div class="col-md-12">
+            <input
+              matInput
+              type="datetime-local"
+              name="startDate"
+              id="startDate"
+              placeholder="start date"
+              formControlName="startDate"
+              [ngModel]="startDate | date : 'yyyy-MM-ddTHH:mm'"
+              class="form-control input pt-0"
+              ngModel
+              required
+            />
+
+            <div
+              *ngIf="
+                addRequestForm.controls['startDate'].invalid &&
+                addRequestForm.controls['startDate'].touched
+              "
+              class="alert alert-danger error"
+            >
+              <div
+                *ngIf="addRequestForm.controls['startDate'].errors['required']"
+              >
+                Start Date is required.
+              </div>
+              <div
+                *ngIf="
+                  addRequestForm
+                    .get('startDate')
+                    .hasError('endDateBeforeStartDate')
+                "
+              >
+                End date must be after start date.
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-12"></div>
+
+          <div class="col-md-12">
+            <label for="endDate" class="text-start">End Date</label>
+          </div>
+
+          <div class="col-md-12">
+            <input
+              matInput
+              type="datetime-local"
+              name="endDate"
+              id="endDate"
+              placeholder="end date"
+              formControlName="endDate"
+              class="form-control input pt-0"
+              [ngModel]="selectedRequest?.toDate | date : 'yyyy-MM-ddTHH:mm'"
+            />
+
+            <div
+              *ngIf="
+                addRequestForm.controls['endDate'].invalid &&
+                addRequestForm.controls['endDate'].touched
+              "
+              class="alert alert-danger error"
+            >
+              <div
+                *ngIf="addRequestForm.controls['endDate'].errors['required']"
+              >
+                End Date is required.
+              </div>
+              <div
+                *ngIf="
+                  addRequestForm
+                    .get('endDate')
+                    .hasError('endDateBeforeStartDate')
+                "
+              >
+                End date must be after start date.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit">
+          Add
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

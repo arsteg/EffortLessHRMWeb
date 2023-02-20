@@ -620,6 +620,19 @@ export const SideBarUserMenu = [
     title: 'Manual Time',
     icon: 'fa fa-wrench',
     url: '/requestManualTime',
+    subMenu: [
+      {
+        id: '151',
+        title: 'Request',
+        url: '/requestManualTime',
+      },
+      {
+        id: '152',
+        title: 'Add Manual Time',
+        url: 'AddManualTime'
+      }
+    ]
+
   }
 ];
 
