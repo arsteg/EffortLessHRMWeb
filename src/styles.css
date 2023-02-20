@@ -119,8 +119,11 @@ tr {
     border-radius: 3px;
     padding: 3px 15px;
  }
- .bottom .bs-datepicker-body table tbody tr td{
+ /* .bottom .bs-datepicker-body table tbody tr td{
   padding: 10px !important;
+ } */
+ .bs-datepicker-head bs-datepicker-navigation-view{
+  display: flex;
  }
  .mat-select-panel:not{
   min-width: calc(100% + 70px);

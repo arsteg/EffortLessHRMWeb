@@ -157,6 +157,7 @@ export const SideBarAdminMenu = [
       {
         id: '55',
         title: 'Manual Time',
+        url: '/requestManualTime'
       },
       {
         id: '56',

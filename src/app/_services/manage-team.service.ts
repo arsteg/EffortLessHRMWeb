@@ -19,7 +19,8 @@ export class ManageTeamService extends baseService {
     const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json',
       'Access-Control-Allow-Origin':'*',
-      'Authorization': `Bearer ${token}`})
+      'Authorization': `Bearer ${token}`}),
+      withCredentials: true
     };
     var response  = this.http.get<any>(`${environment.apiUrlDotNet}/users`,httpOptions);
    return response;
