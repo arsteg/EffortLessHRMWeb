@@ -49,6 +49,7 @@ export class LoginComponent implements OnInit {
       .pipe(first())
         .subscribe(
             data => {
+              debugger;
               this.loading = false;
               this.user.id = data.data.user.id;
               localStorage.setItem('jwtToken', data.token);
