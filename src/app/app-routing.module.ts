@@ -31,7 +31,6 @@ import { AppAndWebsiteUsageComponent } from './reports/app-and-website-usage/app
 import { TaskreportComponent } from './reports/taskreport/taskreport.component';
 import { LeaveReportComponent } from './reports/leave-report/leave-report.component';
 import { ProductivityReportComponent } from './reports/productivity-report/productivity-report.component';
-import { AppWebsiteSettingsComponent } from './settings/app-website-settings/app-website-settings.component';
 
 const routes: Routes = [
   // {path:'',component:LayoutComponentComponent, canActivate: [AuthGuard]},
@@ -69,8 +68,7 @@ const routes: Routes = [
       { path: 'applicationusages', component: AppAndWebsiteUsageComponent },
       { path: 'task', component: TaskreportComponent },
       { path: 'leave', component: LeaveReportComponent },
-      { path: 'productivity', component: ProductivityReportComponent},
-      { path: 'appwebsitesettings', component: AppWebsiteSettingsComponent}
+      { path: 'productivity', component: ProductivityReportComponent}
     ]
   }
 ]

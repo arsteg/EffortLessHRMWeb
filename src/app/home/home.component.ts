@@ -446,22 +446,15 @@ export const SideBarAdminMenu = [
   {
     id: '16',
     title: 'Settings',
-    icon: 'fa fa-wrench',
-    subMenu: [
-      {
-        id : '161',
-        title: 'App Website',
-        url: '/appwebsitesettings',
-      }
-    ]
+    icon: 'fa fa-wrench'
   },
   {
-    id: '17',
+    id: '16',
     title: 'Manual Time',
     icon: 'fa fa-wrench',
     subMenu: [
       {
-        id: '171',
+        id: '161',
         title: 'Approve/Reject',
         url: 'ManualTimeRequestApproval'
       },
