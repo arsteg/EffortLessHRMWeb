@@ -1,0 +1,303 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="">
+                    <div class="d-flex py-2">
+                        <h1 class="">App/Website: {{applications?.length}}</h1>
+                        <div class="d-flex h-25 ms-auto">
+                            <input class="form-control search" type="text" placeholder="search..."
+                                [(ngModel)]="searchText" name="searchText" aria-label="default input example"
+                                style="border-bottom: 1px solid grey; border-radius: 0;">
+                            <button mat-raised-button color="primary" class="ms-5" style="
+                            padding: 5px 35px 0 20px;" data-bs-toggle="modal" data-bs-target="#addModal">Add
+                                New</button>
+                        </div>
+                    </div>
+                    <hr>
+                    <table class="table table-striped mt-4">
+                        <thead>
+                            <tr>
+                                <th scope="col"></th>
+                                <th scope="col" data-name="icon">Icon
+                                </th>
+                                <th scope="col" [appSort]="applications" data-order="desc" data-name="name">Name &nbsp;
+                                    <i class="bi bi-arrow-down-up sort "></i>
+                                </th>
+                                <th scope="col" [appSort]="applications" data-order="desc" data-name="key">Key &nbsp;
+                                    <i class="bi bi-arrow-down-up sort "></i>
+                                </th>
+                                <th scope="col" [appSort]="applications" data-order="desc" data-name="isProductive">Is Productive &nbsp;
+                                    <i class="bi bi-arrow-down-up sort "></i>
+                                </th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                *ngFor="let application of applications | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
+                                <td class="highlight">
+                                    <div></div>
+                                </td>
+                                <td class="action text-start" *ngIf="application !== null">
+                                    <span class="bi bi-grip-horizontal text-secondary data mt-2 me-3"></span>
+                                </td>
+                                <td>
+                                    <img [src]="application?.icon" *ngIf="application?.icon">
+                                </td>
+                                <td data-bs-toggle="modal">{{application?.name | titlecase}}</td>
+                                <td>{{ application?.key }}</td>
+                                <td>{{ application?.isProductive ? "Yes" : "No"}}</td>
+                                <td>
+                                    <div class="dropdown-center">
+                                        <i class="bi bi-three-dots actions" data-bs-toggle="dropdown"
+                                            aria-expanded="false"></i>
+                                        <ul class="dropdown-menu">
+                                            <li class="d-flex" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                                (click)="selectedApplication = application">
+                                                <i class="bi bi-trash3 text-danger dropdown-item w-25"></i><span
+                                                    class="pt-1 text-muted">Delete</span>
+                                            </li>
+                                            <hr class="mx-2 my-0">
+                                            <li class="d-flex" data-bs-toggle="modal" data-bs-target="#updateModal"
+                                                (click)="selectApplication(application)">
+                                                <i class="bi bi-pencil text-success  dropdown-item w-25"></i><span
+                                                    class="pt-1 text-muted">Edit</span>
+                                            </li>
+
+                                        </ul>
+                                    </div>
+                                </td>
+                                <td class="highlight">
+                                    <div></div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <pagination-controls (pageChange)="p = $event"
+                        class="pagination d-flex justify-content-end"></pagination-controls>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Website -->
+<div class="modal" id="addModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class=" d-flex justify-content-between">
+                    <div class="">
+                        <h4 class="modal-title text-start">Add New Application</h4>
+                    </div>
+                    <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
+                    </div>
+                </div>
+                <hr class="mt-0">
+                <div class="row">
+                    <form class="row" [formGroup]="addForm" (ngSubmit)="addApplication(addForm.value)">
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-md-8">
+                                <div class="row">
+                                    <label for="appkey" class="text-start">Key</label>
+                                </div>
+                                <input type="text" name="appkey" id="appkey" class="form-control input pt-0"
+                                    formControlName="key" ngModel required>
+                                <div *ngIf="addForm.controls['key'].invalid && addForm.controls['key'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="addForm.controls['key'].errors['required']">
+                                        Key is required.
+                                    </div>
+                                </div>
+
+                                <div class="row mt-3">
+                                    <label for="appname" class="text-start">Name</label>
+                                </div>
+                                <input type="text" name="appname" id="appname" class="form-control input pt-0"
+                                    formControlName="name" ngModel required>
+                                <div *ngIf="addForm.controls['name'].invalid && addForm.controls['name'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="addForm.controls['name'].errors['required']">
+                                        Name is required.
+                                    </div>
+                                </div>
+
+                                <div class="row mt-3">
+                                    <div class="col-md-4">
+                                    <label for="productive" class="text-start">Productive</label>
+                                </div>
+                                    <div class="col-md-8">
+                                        <input id="productivityyes" type="radio" [value]="true" checked name="isProductive" ngModel />
+                                        <label class="custom-control-label me-3" for="productivityyes">Yes</label>
+                                        <input id="productivityno" type="radio" [value]="false" name="isProductive" ngModel />
+                                        <label class="custom-control-label" for="productivityno">No</label>
+                                        <div *ngIf="addForm.controls['isProductive'].invalid && addForm.controls['isProductive'].touched"
+                                            class="alert alert-danger error">
+                                            <div *ngIf="addForm.controls['isProductive'].errors['required']">
+                                                Productive is required!
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- <div class="row mt-3">
+                                    <label for="icon" class="text-start">Icon</label>
+                                </div>
+                                <input type="file" name="appicon" id="appicon" formControlName="icon" (change)="onFileSelected($event)">
+                                <img [src]="imageUrl" *ngIf="imageUrl"> -->
+                                <!-- <div *ngIf="addForm.controls['icon'].invalid && addForm.controls['icon'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="addForm.controls['icon'].errors['required']">
+                                        Icon is required!
+                                    </div>
+                                </div> -->
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between m-3">
+
+                            <div>
+                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
+                                    type="button">Cancel</button>
+                            </div>
+                            <div>
+                                <button mat-raised-button color="primary" data-bs-dismiss="modal"
+                                    type="submit">Add</button>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Update -->
+<div class="modal" id="updateModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="d-flex justify-content-between">
+                    <div class="">
+                        <h4 class="modal-title text-start">Update Application</h4>
+                    </div>
+                    <div class="">
+                        <button type="button" class="btn-close text-end" data-bs-dismiss="modal"></button>
+                    </div>
+                </div>
+                <div class="row" *ngIf="selectedApplication">
+                    <form class="row" [formGroup]="updateForm" (ngSubmit)="updateApplication(updateForm?.value)">
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-md-8">
+
+                                <div class="row">
+                                    <label for="appkey" class="text-start">Key</label>
+                                </div>
+                                <input type="text" name="appkey" id="appkey" class="form-control input pt-0"
+                                    formControlName="key" [(ngModel)]="selectedApplication.key" required>
+                                <div *ngIf="addForm.controls['key'].invalid && addForm.controls['key'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="addForm.controls['key'].errors['required']">
+                                        Key is required.
+                                    </div>
+                                </div>
+
+                                <div class="row mt-3">
+                                    <label for="appname" class="text-start">Name</label>
+                                </div>
+                                <input type="text" name="appname" id="appname" class="form-control input pt-0"
+                                    formControlName="name" [(ngModel)]="selectedApplication.name" required>
+                                <div *ngIf="addForm.controls['name'].invalid && addForm.controls['name'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="addForm.controls['name'].errors['required']">
+                                        Name is required.
+                                    </div>
+                                </div>
+
+                                <div class="row mt-3">
+                                    <div class="col-md-4">
+                                        <label for="productive" class="text-start">Productive</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input id="productiveyes" type="radio" [value]="true" [checked]="selectedApplication?.isProductive ? true: false" name="isProductive" [(ngModel)]="selectedApplication.isProductive" formControlName="isProductive" />
+                                        <label class="custom-control-label me-3" for="productiveyes">Yes</label>
+                                        <input id="productiveno" type="radio" [value]="false" [checked]="!selectedApplication?.isProductive ? true: false" name="isProductive" [(ngModel)]="selectedApplication.isProductive" formControlName="isProductive" />
+                                        <label class="custom-control-label" for="productiveno">No</label>
+
+                                        <div *ngIf="addForm.controls['isProductive'].invalid && addForm.controls['isProductive'].touched"
+                                            class="alert alert-danger error">
+                                            <div *ngIf="addForm.controls['isProductive'].errors['required']">
+                                                Productive option is required!
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- <div class="row mt-3">
+                                    <label for="icon" class="text-start">Icon</label>
+                                </div> -->
+                                <!-- <input type="file" name="appicon" id="appicon" formControlName="icon" [(ngModel)]="selectedApplication.icon" (change)="onFileSelected($event)">
+                                <img [src]="imageUrl" *ngIf="imageUrl"> -->
+                                <!-- <div *ngIf="addForm.controls['icon'].invalid && addForm.controls['icon'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="addForm.controls['icon'].errors['required']">
+                                        Icon is required!
+                                    </div>
+                                </div> -->
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between m-3">
+
+                            <div>
+                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
+                                    type="button">Cancel</button>
+                            </div>
+                            <div>
+                                <button mat-raised-button color="primary" data-bs-dismiss="modal"
+                                    type="submit">Update</button>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete -->
+<div class="modal" id="deleteModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="d-flex justify-content-between">
+                    <div class="">
+                        <h4 class="modal-title text-start">Delete Application</h4>
+                    </div>
+                    <div class="">
+                        <button type="button" class="btn-close text-end" data-bs-dismiss="modal"></button>
+                    </div>
+                </div>
+                <hr class="mt-0">
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <h3>Do you really want to Delete?</h3>
+                    </div>
+
+                </div>
+                <div class="d-flex justify-content-between m-3">
+                    <div>
+                        <button mat-raised-button class="mx-2" data-bs-dismiss="modal" type="button">Cancel</button>
+                    </div>
+                    <div>
+                        <button mat-raised-button color="primary" class="" (click)="deleteApplication()"
+                            data-bs-dismiss="modal" type="submit">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
