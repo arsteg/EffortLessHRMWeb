@@ -122,6 +122,17 @@ export class AuthenticationService {
     };
     return this.http.get(`${environment.apiUrlDotNet}/users/getUserProjects/${id}`, httpOptions)
   }
-  
+
+  getUserTaskListByProject(userId,projectId): Observable<any> {
+    let token = localStorage.getItem('jwtToken');
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Authorization': `Bearer ${token}`
+      })
+    };
+    return this.http.post(`${environment.apiUrlDotNet}/task/getUserTaskListByProject`,{userId,projectId}, httpOptions)
+  }
 
 }

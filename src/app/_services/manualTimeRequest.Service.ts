@@ -65,4 +65,16 @@ getManualTimeRequestsForApprovalByUser(userId:string): any {
     var response  = this.http.get<any>(`${environment.apiUrlDotNet}/manualTime/getManualTimeRequestsForApproval/${userId}`,httpOptions);
     return response;
   }
+
+  getManualTimeApprovedRequests(userId:string,projectId:string,managerId:string): any {
+    let token = this.getToken();
+    const httpOptions = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin':'*',
+      'Authorization': `Bearer ${token}`})
+    };
+    var response  = this.http.get<manualTimeRequest>(`${environment.apiUrlDotNet}/manualTime/getManualTimeApprovedRequests/${userId}/${projectId}/${managerId}`,httpOptions);
+    return response;
+  }
+
 }

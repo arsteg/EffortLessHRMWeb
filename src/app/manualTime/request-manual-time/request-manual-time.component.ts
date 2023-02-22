@@ -56,7 +56,8 @@ export class RequestManualTimeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.id=this.authenticationService.currentUserValue.id;
+    var currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    this.id= currentUser?.id;
     this.authenticationService.currentUserValue.id
     this.authenticationService.getUserManagers(this.id).pipe(first())
     .subscribe((res:any) => {

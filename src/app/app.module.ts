@@ -65,6 +65,9 @@ import { TaskreportComponent } from './reports/taskreport/taskreport.component';
 import { LeaveReportComponent } from './reports/leave-report/leave-report.component';
 import { ProductivityReportComponent } from './reports/productivity-report/productivity-report.component';
 import { AppWebsiteSettingsComponent } from './settings/app-website-settings/app-website-settings.component';
+import { AddManualTimeComponent } from './manualTime/addManualTime/add-manual-time.component';
+import { MatTabsModule } from '@angular/material/tabs';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -101,7 +104,8 @@ import { AppWebsiteSettingsComponent } from './settings/app-website-settings/app
           TaskreportComponent,
           LeaveReportComponent,
           ProductivityReportComponent,
-          AppWebsiteSettingsComponent
+          AppWebsiteSettingsComponent,
+          AddManualTimeComponent
   ],
   imports: [
     BrowserModule,
@@ -127,6 +131,7 @@ import { AppWebsiteSettingsComponent } from './settings/app-website-settings/app
     CdkTableModule,
     DragDropModule,
     CommonModule,
+    MatTabsModule,
     BsDatepickerModule.forRoot(),
   ],
   schemas: [

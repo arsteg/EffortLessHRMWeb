@@ -13,9 +13,12 @@ import { TimeLogService } from 'src/app/_services/timeLogService';
   styleUrls: ['./add-manual-time.component.css']
 })
 export class AddManualTimeComponent implements OnInit {
-
+  managers: {id:string, name:string }[]=[];
   projects:{id:string,projectName:string}[]=[];
+  tasks:{id:string,name:string}[]=[];
   selectedProject:string;
+  selectedTask:string;
+  selectedManager:string;
   addRequestForm: FormGroup;
   startDate: any;
   endDate: any;
@@ -28,6 +31,7 @@ export class AddManualTimeComponent implements OnInit {
     private manualTimeRequestService:ManualTimeRequestService) {
 
       this.addRequestForm = this.formBuilder.group({
+        manager: ['', Validators.required],
         project: ['', Validators.required],
         task: ['', Validators.required],
         startDate: ['', [Validators.required,this.validateStartDate]],
@@ -42,7 +46,8 @@ export class AddManualTimeComponent implements OnInit {
     }
 
   ngOnInit(): void {
-    this.id=this.authenticationService.currentUserValue.id;
+    var currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    this.id= currentUser?.id;
     this.authenticationService.getUserProjects(this.id).pipe(first())
     .subscribe((res:any) => {
       res.data.forEach(p => {
@@ -51,7 +56,19 @@ export class AddManualTimeComponent implements OnInit {
         },
         err => {
         });
-  }
+
+        this.authenticationService.getUserManagers(this.id).pipe(first())
+        .subscribe((res:any) => {
+          res.data.forEach(m => {
+            this.managers.push({id:m.id,name:m.name});
+          });
+            },
+            err => {
+            });
+        this.startDate = new Date().toString().slice(0, 15);
+        this.endDate = new Date();
+        this.endDate.setHours(23,59,59,999);
+      }
 
   validateStartDate(control: FormControl) {
     const startDate = control.value;
@@ -72,7 +89,34 @@ export class AddManualTimeComponent implements OnInit {
     return null;
   }
 
+  onProjectChange(event) {
+    const projectId = event.value;
+    this.getUserTaskListByProject(projectId);
+    this.getManualTimeApprovedRequests();
+}
+  getUserTaskListByProject(projectId){
+    this.tasks.length=0;
+    this.id=this.authenticationService.currentUserValue.id;
+    this.authenticationService.getUserTaskListByProject(this.id,projectId).pipe(first())
+    .subscribe((res:any) => {
+      res.data.forEach(t => {
+        this.tasks.push({id:t.id,name:t.name});
+      });
+        },
+        err => {
+        });
+  }
   onSubmit(){
     this.notifyService.showSuccess("Manual time added successfully", "success");
+  }
+  getManualTimeApprovedRequests(){
+    this.manualTimeRequestService.getManualTimeApprovedRequests(this.id,this.selectedProject,this.selectedManager).pipe(first())
+    .subscribe((res:any) => {
+            let approvedRequest =  res.data.length==0?null:res.data[0];
+            this.startDate=approvedRequest.fromDate;
+            this.endDate=approvedRequest.toDate;
+    },
+        err => {
+        });
   }
 }
