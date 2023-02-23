@@ -15,18 +15,25 @@
         <table class="table  mt-4">
             <thead>
                 <tr>
-                    <th scope="col" [appSort]="allRolePermission" data-order="desc" data-name="permissionId?.permissionName">
+
+                    <th scope="col" [appSort]="allRolePermission" data-order="{{ sortOrder }}"
+                        data-name="permissionId?.permissionName"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
                         Permission Name &nbsp;
-                        <i class="bi bi-arrow-up sort text-light"></i>
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                     </th>
-                    <th scope="col" [appSort]="allRolePermission" data-order="desc" data-name="roleId?.Name">Role Name
-                        &nbsp;
-                        <i class="bi bi-arrow-up sort text-light"></i>
+
+                    <th scope="col" [appSort]="allRolePermission" data-order="{{ sortOrder }}" data-name="roleId?.Name"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                        Role Name &nbsp;
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                     </th>
-                    <th scope="col" [appSort]="allRolePermission" data-order="desc" data-name="company?.companyName">
+                    <th scope="col" [appSort]="allRolePermission" data-order="{{ sortOrder }}"
+                        data-name="company?.companyName" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
                         Company Name &nbsp;
-                        <i class="bi bi-arrow-up sort text-light"></i>
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                     </th>
+
                     <th scope="col">Action</th>
 
                 </tr>
@@ -95,7 +102,8 @@
                                 </select>
                                 <div *ngIf="create_update_RolePermission.controls['permissionId'].invalid && create_update_RolePermission.controls['permissionId'].touched"
                                     class="alert alert-danger error">
-                                    <div *ngIf="create_update_RolePermission.controls['permissionId'].errors['required']">
+                                    <div
+                                        *ngIf="create_update_RolePermission.controls['permissionId'].errors['required']">
                                         Permission is required!
                                     </div>
                                 </div>
@@ -157,13 +165,14 @@
                                     <label for="name" class="text-start">Permission</label>
                                 </div>
 
-                                <select class="custom-select mb-3 p-2" formControlName="permissionId" >
+                                <select class="custom-select mb-3 p-2" formControlName="permissionId">
                                     <option [value]="permission.id" *ngFor="let permission of permission">
                                         {{permission?.permissionName}}</option>
                                 </select>
                                 <div *ngIf="create_update_RolePermission.controls['permissionId'].invalid && create_update_RolePermission.controls['permissionId'].touched"
                                     class="alert alert-danger error">
-                                    <div *ngIf="create_update_RolePermission.controls['permissionId'].errors['required']">
+                                    <div
+                                        *ngIf="create_update_RolePermission.controls['permissionId'].errors['required']">
                                         Permission is required!
                                     </div>
                                 </div>
@@ -198,7 +207,8 @@
                     <div class="">
                         <button type="button" class="btn-close text-end" data-bs-dismiss="modal"></button>
                     </div>
-                </div><hr class="mt-0">
+                </div>
+                <hr class="mt-0">
                 <div class="row">
                     <div class="col-md-12 text-center">
                         <h3>Do you really want to delete ?</h3>
@@ -208,15 +218,14 @@
                 <div class="d-flex justify-content-between m-3">
                     <div>
 
-                        <button type="button" mat-raised-button 
-                            data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" mat-raised-button data-bs-dismiss="modal">Cancel</button>
                     </div>
                     <div>
-                        <button type="button"mat-raised-button color="primary" data-bs-dismiss="modal"
+                        <button type="button" mat-raised-button color="primary" data-bs-dismiss="modal"
                             (click)="deleteRolePermission()">Delete</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div> 
+</div>

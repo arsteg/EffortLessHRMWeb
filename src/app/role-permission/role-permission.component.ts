@@ -19,6 +19,8 @@ export class RolePermissionComponent implements OnInit {
   roles: any[];
   permission: any[];
   selectedRolePermissionId: string;
+  public sortOrder: string = ''; // 'asc' or 'desc'
+
   constructor(private rolePermission: PermissionModelService,
     private fb: FormBuilder,
     private roleService: RoleService, 

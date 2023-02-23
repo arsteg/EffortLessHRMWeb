@@ -42,21 +42,36 @@
                         <thead>
                             <tr>
                                 <th scope="col"></th>
-                                <th scope="col" [appSort]="tasks" data-order="desc" data-name="taskName">Task Name
-                                    &nbsp;
-                                    <i class="bi bi-arrow-up sort "></i>
-                                </th>
-                                <th scope="col" [appSort]="tasks" data-order="desc" data-name="endDate">Due Date &nbsp;
-                                    <i class="bi bi-arrow-up sort "></i>
-                                </th>
-                                <th scope="col" [appSort]="tasks" data-order="desc" data-name="priority">Priotity &nbsp;
-                                    <i class="bi bi-arrow-up sort "></i>
-                                </th>
-                                <th scope="col" [appSort]="tasks" data-order="desc" data-name="comment">Comments &nbsp;
-                                    <i class="bi bi-arrow-up sort "></i>
-                                </th>
+
+                                <th scope="col" [appSort]="tasks" data-order="{{ sortOrder }}"
+                                data-name="taskName"
+                                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                                Task Name &nbsp;
+                                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                            </th>
+                                
+                                <th scope="col" [appSort]="tasks" data-order="{{ sortOrder }}"
+                                data-name="endDate"
+                                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                                Due Date &nbsp;
+                                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                            </th>
+                               
+                                <th scope="col" [appSort]="tasks" data-order="{{ sortOrder }}"
+                                data-name="priority"
+                                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                                Priority &nbsp;
+                                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                            </th>
+                               
+                                <th scope="col" [appSort]="tasks" data-order="{{ sortOrder }}"
+                                data-name="comment"
+                                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                                Comments &nbsp;
+                                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                            </th>
                                 <th scope="col" [appSort]="tasks" data-order="desc" data-name="status">Status &nbsp;
-                                    <i class="bi bi-arrow-up sort "></i>
+                                 
                                 </th>
                                 <th scope="col" [appSort]="tasks" data-order="desc" data-name="TaskUser"
                                     *ngIf="!userId">Members &nbsp;

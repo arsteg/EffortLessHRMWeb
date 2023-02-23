@@ -19,16 +19,17 @@
                 <thead>
                     <tr>
                         <th scope="col"></th>
-
+                        <th scope="col" [appSort]="allPermissions" data-order="{{ sortOrder }}"
+                        data-name="permissionName" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                        Permission Name &nbsp;
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
                       
-                        <th scope="col" [appSort]="allPermissions" data-order="desc" data-name="permissionName">
-                            Permission Name &nbsp;
-                            <i class="bi bi-arrow-up sort "></i>
-                        </th>
-                        <th scope="col" [appSort]="allPermissions" data-order="desc" data-name="permissionDetails">
-                            Permission Detail &nbsp;
-                            <i class="bi bi-arrow-up sort "></i>
-                        </th>
+                         <th scope="col" [appSort]="allPermissions" data-order="{{ sortOrder }}"
+                        data-name="permissionDetails" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                        Permission Detail &nbsp;
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
 
                         <th scope="col">Action</th>
 

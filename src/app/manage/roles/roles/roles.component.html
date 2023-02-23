@@ -15,15 +15,24 @@
         <table class="table  mt-4">
             <thead>
                 <tr>
-                    <th scope="col" [appSort]="allRoles" data-order="desc" data-name="Name">Role &nbsp;
-                        <i class="bi bi-arrow-up sort text-light"></i>
-                    </th>
-                    <th scope="col" [appSort]="allRoles" data-order="desc" data-name="createdOn">Created On &nbsp;
-                        <i class="bi bi-arrow-up sort text-light"></i>
-                    </th>
-                    <th scope="col" [appSort]="allRoles" data-order="desc" data-name="updatedOn">Created On &nbsp;
-                        <i class="bi bi-arrow-up sort text-light"></i>
-                    </th>
+                    
+                    <th scope="col" [appSort]="allRoles" data-order="{{ sortOrder }}"
+                    data-name="Name" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                    Role &nbsp;
+                    <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                </th>
+                <th scope="col" [appSort]="allRoles" data-order="{{ sortOrder }}"
+                    data-name="createdOn" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                    Created On &nbsp;
+                    <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                </th>
+                   
+                <th scope="col" [appSort]="allRoles" data-order="{{ sortOrder }}"
+                    data-name="updatedOn" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                    Updated On &nbsp;
+                    <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                </th>
+                    
                     <th scope="col">Action</th>
 
                 </tr>

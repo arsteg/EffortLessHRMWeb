@@ -32,26 +32,46 @@
                         <thead>
                             <tr>
                                 <th scope="col"></th>
-                                <th scope="col" [appSort]="projectList" data-order="desc" data-name="projectName">
+
+                                <th scope="col" [appSort]="projectList" data-order="{{ sortOrder }}"
+                                    data-name="projectName"
+                                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
                                     Project Name &nbsp;
-                                    <i class="bi bi-arrow-up sort "></i>
+                                    <i
+                                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                                 </th>
-                                <th scope="col" [appSort]="projectList" data-order="desc" data-name="startDate">Start
-                                    Date &nbsp;
-                                    <i class="bi bi-arrow-up sort "></i>
+                               
+                                <th scope="col" [appSort]="projectList" data-order="{{ sortOrder }}"
+                                    data-name="startDate"
+                                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                                    Start Date &nbsp;
+                                    <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                                 </th>
-                                <th scope="col" [appSort]="projectList" data-order="desc" data-name="endDate">End Date
-                                    &nbsp;
-                                    <i class="bi bi-arrow-up sort "></i>
+                                
+                                <th scope="col" [appSort]="projectList" data-order="{{ sortOrder }}"
+                                    data-name="endDate"
+                                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                                    End Date &nbsp;
+                                    <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                                 </th>
-                                <th scope="col" [appSort]="projectList" data-order="desc" data-name="estimatedTime">
+
+                               
+
+                                <th scope="col" [appSort]="projectList" data-order="{{ sortOrder }}"
+                                    data-name="estimatedTime"
+                                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
                                     Estimated Time &nbsp;
-                                    <i class="bi bi-arrow-up sort "></i>
+                                    <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                                 </th>
-                                <th scope="col" [appSort]="projectList" data-order="desc" data-name="notes">Notes &nbsp;
-                                    <i class="bi bi-arrow-up sort "></i>
+
+                              
+                                <th scope="col" [appSort]="projectList" data-order="{{ sortOrder }}"
+                                    data-name="notes"
+                                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                                    Notes &nbsp;
+                                    <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                                 </th>
-                                <th scope="col" [appSort]="projectList" data-order="desc" data-name="status">Status</th>
+                                <th scope="col" data-order="desc" data-name="status">Status</th>
                                 <th scope="col" [appSort]="projectList" data-order="desc"
                                     data-name="users?.user?.firstName" *ngIf="!userId">Members</th>
 

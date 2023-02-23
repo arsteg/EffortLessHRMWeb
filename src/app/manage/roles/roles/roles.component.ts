@@ -27,18 +27,11 @@ export class RolesComponent implements OnInit {
   createRole: FormGroup;
   updateRole: FormGroup;
   selected_Role: any;
+  public sortOrder: string = ''; // 'asc' or 'desc'
 
   constructor(private roleSrv: RoleService,
     private fb : FormBuilder,
     private toastRole: ToastrService) {
-    // this.roleData = {
-    //   _id: '',
-    //   RoleName: '',
-    //   RoleId: null,
-    //   __v: null,
-    //   id: ''
-    // }
-    // this.dummy = [];
     this.createRole = this.fb.group({
       name : ['', Validators.required]
     });

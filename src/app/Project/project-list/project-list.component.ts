@@ -40,6 +40,9 @@ export class ProjectListComponent implements OnInit {
     dateYMD: new FormControl(new Date()),
 
   });
+  public sortOrder: string = ''; // 'asc' or 'desc'
+
+
   constructor(
     private projectService: ProjectService,
     private fb: FormBuilder,

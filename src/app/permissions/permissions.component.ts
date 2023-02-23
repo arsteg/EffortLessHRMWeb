@@ -15,6 +15,8 @@ export class PermissionsComponent implements OnInit {
   addPermissions: FormGroup;
   updatePermissions: FormGroup;
 selectedPermission: any;
+public sortOrder: string = ''; // 'asc' or 'desc'
+
   constructor(private permissionService: PermissionsService,
     private fb: FormBuilder,
     private toastPerm: ToastrService) {

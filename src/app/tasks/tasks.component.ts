@@ -35,6 +35,7 @@ export class TasksComponent implements OnInit {
   userId: string;
   selectedUser: any;
   selectedUsers = [];
+  public sortOrder: string = ''; // 'asc' or 'desc'
 
   private toastr: ToastrService
   constructor(
