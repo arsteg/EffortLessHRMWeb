@@ -18,20 +18,20 @@
       </select>
     </div>
 
-    <div class="text-center pt-1 mx-4">
-      <label>Total time: {{padValue(totalHours)}} h {{padValue(totalMinutes)}} m</label>
+    <div class="text-center pt-1 me-2">
+      <label>Total time: {{padValue(totalHours)}} h {{padValue(totalMinutes)}}&nbsp;m</label>
     </div>
     <div class="pt-1">
-      <label>This week: {{padValue(currentWeekTotalHours)}} h {{padValue(currentWeekTotalMinutes)}} m</label>
+      <label>This week: {{padValue(currentWeekTotalHours)}} h {{padValue(currentWeekTotalMinutes)}}&nbsp;m</label>
     </div>
-    <div class="pt-1 mx-4">
-      <label>This month: {{padValue(currentMonthTotalHours)}} h {{padValue(currentMonthTotalMinutes)}} m</label>
+    <div class="pt-1 me-2">
+      <label>This month: {{padValue(currentMonthTotalHours)}} h {{padValue(currentMonthTotalMinutes)}}&nbsp;m</label>
     </div>
-    <div class="mx-4">
+    <div class="me-2">
       <button mat-raised-button id="btnRefresh" (click)="showScreenShots()"
         class="bi bi-arrow-repeat header-icons text-primary"></button>
     </div>
-    <div class="mx-4">
+    <div class="me-2">
       <button mat-raised-button class="bi bi-trash header-icons text-danger" (click)="deleteScreenShot()"></button>
     </div>
   </div>
