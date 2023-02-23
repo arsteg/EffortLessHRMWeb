@@ -1,0 +1,222 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between">
+            <h1 class="pt-4">Roles : {{allRolePermission?.length}}</h1>
+            <div class="d-flex h-25">
+                <input class="form-control search" type="text" placeholder="search..." [(ngModel)]="searchText"
+                    name="searchText" aria-label="default input example"
+                    style="border-bottom: 1px solid grey; border-radius: 0;">
+
+                <button mat-raised-button color="primary" class="ms-5" style="
+        padding: 5px 35px 0 20px; " data-bs-toggle="modal" data-bs-target="#addModal">Add New</button>
+            </div>
+        </div>
+        <hr class="mt-0">
+        <table class="table  mt-4">
+            <thead>
+                <tr>
+                    <th scope="col" [appSort]="allRolePermission" data-order="desc" data-name="permissionId?.permissionName">
+                        Permission Name &nbsp;
+                        <i class="bi bi-arrow-up sort text-light"></i>
+                    </th>
+                    <th scope="col" [appSort]="allRolePermission" data-order="desc" data-name="roleId?.Name">Role Name
+                        &nbsp;
+                        <i class="bi bi-arrow-up sort text-light"></i>
+                    </th>
+                    <th scope="col" [appSort]="allRolePermission" data-order="desc" data-name="company?.companyName">
+                        Company Name &nbsp;
+                        <i class="bi bi-arrow-up sort text-light"></i>
+                    </th>
+                    <th scope="col">Action</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr
+                    *ngFor="let rolePermisssion of allRolePermission |  search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
+                    <td>{{rolePermisssion?.permissionId?.permissionName}}</td>
+                    <td>{{ rolePermisssion?.roleId?.Name }}</td>
+                    <td>{{rolePermisssion?.company?.companyName}}</td>
+
+                    <td>
+                        <i class="bi bi-trash3 text-danger" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                            (click)="selectedRolePermission(rolePermisssion)"></i>
+                        &nbsp;
+                        <i class="bi bi-pencil text-success" data-bs-toggle="modal" data-bs-target="#updateModal"
+                            (click)="selectedRolePermission(rolePermisssion)"></i>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <pagination-controls (pageChange)="p = $event"
+            class="pagination d-flex justify-content-end"></pagination-controls>
+
+    </div>
+</div>
+<!-- Add -->
+<div class="modal" id="addModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class=" d-flex justify-content-between">
+                    <div class="">
+                        <h4 class="modal-title text-start">Add</h4>
+                    </div>
+                    <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
+                    </div>
+                </div>
+                <hr class="mt-0">
+                <div class="row">
+                    <form class="row" [formGroup]="create_update_RolePermission"
+                        (ngSubmit)="addRolePermission(create_update_RolePermission.value)">
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-md-8">
+                                <div class="row">
+                                    <label for="name" class="text-start">Role</label>
+                                </div>
+
+                                <select class="custom-select mb-3 p-2" formControlName="roleId" ngModel>
+                                    <option [value]="role.id" *ngFor="let role of roles">
+                                        {{role?.Name}}</option>
+                                </select>
+                                <div *ngIf="create_update_RolePermission.controls['roleId'].invalid && create_update_RolePermission.controls['roleId'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="create_update_RolePermission.controls['roleId'].errors['required']">
+                                        Role Id is required!
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label for="permission" class="text-start">Permission</label>
+                                </div>
+
+                                <select class="custom-select mb-3 p-2" formControlName="permissionId" ngModel>
+                                    <option [value]="permission.id" *ngFor="let permission of permission">
+                                        {{permission?.permissionName}}</option>
+                                </select>
+                                <div *ngIf="create_update_RolePermission.controls['permissionId'].invalid && create_update_RolePermission.controls['permissionId'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="create_update_RolePermission.controls['permissionId'].errors['required']">
+                                        Permission is required!
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between m-3">
+
+                            <div>
+                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
+                                    type="button">Cancel</button>
+                            </div>
+                            <div>
+                                <button mat-raised-button color="primary" data-bs-dismiss="modal"
+                                    type="submit">Add</button>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Update -->
+<div class="modal" id="updateModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class=" d-flex justify-content-between">
+                    <div class="">
+                        <h4 class="modal-title text-start">Update</h4>
+                    </div>
+                    <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
+                    </div>
+                </div>
+                <hr class="mt-0">
+                <div class="row" *ngIf="selectedRolePermission">
+                    <form class="row" [formGroup]="create_update_RolePermission"
+                        (ngSubmit)="updateRolePermission(create_update_RolePermission.value)">
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-md-8">
+                                <div class="row">
+                                    <label for="name" class="text-start">Role</label>
+                                </div>
+
+                                <select class="custom-select mb-3 p-2" formControlName="roleId" ngModel>
+                                    <option [value]="role.id" *ngFor="let role of roles">
+                                        {{role?.Name}}</option>
+                                </select>
+                                <div *ngIf="create_update_RolePermission.controls['roleId'].invalid && create_update_RolePermission.controls['roleId'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="create_update_RolePermission.controls['roleId'].errors['required']">
+                                        Role Id is required.
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <label for="name" class="text-start">Permission</label>
+                                </div>
+
+                                <select class="custom-select mb-3 p-2" formControlName="permissionId" >
+                                    <option [value]="permission.id" *ngFor="let permission of permission">
+                                        {{permission?.permissionName}}</option>
+                                </select>
+                                <div *ngIf="create_update_RolePermission.controls['permissionId'].invalid && create_update_RolePermission.controls['permissionId'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="create_update_RolePermission.controls['permissionId'].errors['required']">
+                                        Permission is required!
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between m-3">
+                            <div>
+                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
+                                    type="button">Cancel</button>
+                            </div>
+                            <div>
+                                <button mat-raised-button color="primary" data-bs-dismiss="modal"
+                                    type="submit">Update</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete -->
+<div class="modal" id="deleteModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="d-flex justify-content-between">
+                    <div class="">
+                        <h4 class="modal-title text-start">Delete</h4>
+                    </div>
+                    <div class="">
+                        <button type="button" class="btn-close text-end" data-bs-dismiss="modal"></button>
+                    </div>
+                </div><hr class="mt-0">
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <h3>Do you really want to delete ?</h3>
+                    </div>
+
+                </div>
+                <div class="d-flex justify-content-between m-3">
+                    <div>
+
+                        <button type="button" mat-raised-button 
+                            data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                    <div>
+                        <button type="button"mat-raised-button color="primary" data-bs-dismiss="modal"
+                            (click)="deleteRolePermission()">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

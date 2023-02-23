@@ -84,6 +84,7 @@ export class TeammembersComponent implements OnInit, OnDestroy {
             this.selectedUsers = result.data;
             this.teamOfUsers.forEach((user: any, index: number) => {
               user['isChecked'] = this.selectedUsers.some((selectedUser: any) => selectedUser.id == user.id);
+              
             });
           },
           error: error => {

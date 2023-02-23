@@ -1,24 +1,28 @@
 <div class="main-content">
     <div class="container-fluid">
         <div class="d-flex justify-content-between">
-            <h1 class="pt-4">User Data for Remote Source</h1>
+            <h1 class="pt-4">Roles : {{allRoles?.length}}</h1>
             <div class="d-flex h-25">
-                <input class="form-control search input" type="text" placeholder="search..." [(ngModel)]="searchText"
-                    name="searchText" aria-label="default input example">
+                <input class="form-control search" type="text" placeholder="search..." [(ngModel)]="searchText"
+                    name="searchText" aria-label="default input example"
+                    style="border-bottom: 1px solid grey; border-radius: 0;">
 
                 <button mat-raised-button color="primary" class="ms-5" style="
         padding: 5px 35px 0 20px; " data-bs-toggle="modal" data-bs-target="#addModal">Add New</button>
             </div>
         </div>
-
-        <table class="table mt-4">
+        <hr class="mt-0">
+        <table class="table  mt-4">
             <thead>
                 <tr>
-                    <th scope="col" [appSort]="userRoleAll" data-order="desc" data-name="sno">SNo. &nbsp;
-                        <i class="bi bi-arrow-down-up sort text-primary"></i>
+                    <th scope="col" [appSort]="allRoles" data-order="desc" data-name="Name">Role &nbsp;
+                        <i class="bi bi-arrow-up sort text-light"></i>
                     </th>
-                    <th scope="col" [appSort]="userRoleAll" data-order="desc" data-name="rolename">Role Name &nbsp;
-                        <i class="bi bi-arrow-down-up sort text-primary"></i>
+                    <th scope="col" [appSort]="allRoles" data-order="desc" data-name="createdOn">Created On &nbsp;
+                        <i class="bi bi-arrow-up sort text-light"></i>
+                    </th>
+                    <th scope="col" [appSort]="allRoles" data-order="desc" data-name="updatedOn">Created On &nbsp;
+                        <i class="bi bi-arrow-up sort text-light"></i>
                     </th>
                     <th scope="col">Action</th>
 
@@ -26,19 +30,22 @@
             </thead>
             <tbody>
                 <tr
-                    *ngFor="let item of userRoleAll |  search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
-                    <td>{{item._id}}</td>
-                    <td>{{ item.Name }}</td>
-                    <td><i class="bi bi-trash3 text-danger" (click)="deleteUserRole()"></i>
+                    *ngFor="let item of allRoles |  search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
+                   
+                    <td>{{ item?.Name }}</td>
+                    <td>{{item?.createdOn | date}}</td>
+                    <td>{{item?.updatedOn | date}}</td>
+                    <td><i class="bi bi-trash3 text-danger" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                        (click)="selectedRole(item)"></i>
                         &nbsp;
-                        <i class="bi bi-check2-all text-primary"></i> &nbsp;
-                        <i class="bi bi-pencil text-success" data-bs-toggle="modal" data-bs-target="#updateModal"></i>
+                        <i class="bi bi-pencil text-success" data-bs-toggle="modal" data-bs-target="#updateModal"
+                        (click)="selectedRole(item)"></i>
                     </td>
                 </tr>
             </tbody>
         </table>
-        <pagination-controls (pageChange)="p = $event" class="pagination d-flex justify-content-end"></pagination-controls>
-
+        <pagination-controls (pageChange)="p = $event"
+        class="pagination d-flex justify-content-end"></pagination-controls>
 
     </div>
 </div>
@@ -53,31 +60,33 @@
                     </div>
                     <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
                     </div>
-                </div>
+                </div><hr class="mt-0">
                 <div class="row">
-                    <form class="row" #form="ngForm">
+                    <form class="row" [formGroup]="createRole" (ngSubmit)="addRole(createRole.value)">
                         <div class="row d-flex justify-content-center">
                             <div class="col-md-8">
                                 <div class="row">
-                                    <label for="" class="text-start">Role Name</label>
+                                    <label for="name" class="text-start">Role Name</label>
                                 </div>
-                                <input type="text" name="rolename" [(ngModel)]="userRoleObj.RoleName"
-                                    class="form-control input" #rolename="ngModel" required>
-                                <div class="text-danger" *ngIf="rolename.touched">
-                                    <span *ngIf="rolename.errors?.['required']">This field is
-                                        required</span>
+                                <input type="text" name="name"  class="form-control input"
+                                formControlName="name" ngModel required>
+                                <div *ngIf="createRole.controls['name'].invalid && createRole.controls['name'].touched"
+                                class="alert alert-danger error">
+                                <div *ngIf="createRole.controls['name'].errors['required']">
+                                    Permission Name is required.
                                 </div>
+                            </div>
                             </div>
                         </div>
                         <div class="d-flex justify-content-between m-3">
 
                             <div>
-                                <button type="button" class="btn-sm border mx-2 btn-primary"
-                                    data-bs-dismiss="modal">Cancel</button>
+                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
+                                    type="button">Cancel</button>
                             </div>
                             <div>
-                                <button type="button" class="btn-sm border mx-2 next" data-bs-dismiss="modal"
-                                    [disabled]="form.invalid" (click)="addRole()">Add</button>
+                                <button mat-raised-button color="primary" data-bs-dismiss="modal"
+                                    type="submit">Add</button>
                             </div>
 
                         </div>
@@ -100,31 +109,35 @@
                     <div class="">
                         <button type="button" class="btn-close text-end" data-bs-dismiss="modal"></button>
                     </div>
-                </div>
-                <div class="row">
-                    <form class="row" #form="ngForm">
+                </div><hr class="mt-0">
+                <div class="row" *ngIf="selected_Role">
+                    <form class="row" [formGroup]="updateRole" (ngSubmit)="update_Role(updateRole.value)">
                         <div class="row d-flex justify-content-center">
                             <div class="col-md-8">
                                 <div class="row">
-                                    <label for="" class="text-start">Role Name</label>
+                                    <label for="name" class="text-start">Role Name</label>
                                 </div>
-
-                                <input type="text" name="rolename" class="input" [(ngModel)]="userRoleObj.RoleName"
-                                    class="form-control input" #rolename="ngModel" required>
-                                <div class="text-danger" *ngIf="rolename.touched">
-                                    <span *ngIf="rolename.errors?.['required']">This field is
-                                        required</span>
+                                <input type="text" name="name"  class="form-control input" [(ngModel)]="selected_Role.Name" 
+                                formControlName="name"required>
+                                <div *ngIf="updateRole.controls['name'].invalid && updateRole.controls['name'].touched"
+                                class="alert alert-danger error">
+                                <div *ngIf="updateRole.controls['name'].errors['required']">
+                                    Permission Name is required.
                                 </div>
+                            </div>
                             </div>
                         </div>
                         <div class="d-flex justify-content-between m-3">
-                            <div class="">
-                                <button type="button" class="btn-sm border mx-2 btn-primary"
-                                    data-bs-dismiss="modal">Cancel</button>
+
+                            <div>
+                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
+                                    type="button">Cancel</button>
                             </div>
-                            <div> <button type="button" class=" btn  next btn-sm border " data-bs-dismiss="modal"
-                                    (click)="updateUserRole()">Update</button>
+                            <div>
+                                <button mat-raised-button color="primary" data-bs-dismiss="modal"
+                                    type="submit">Update</button>
                             </div>
+
                         </div>
                     </form>
                 </div>
@@ -146,7 +159,7 @@
                     <div class="">
                         <button type="button" class="btn-close text-end" data-bs-dismiss="modal"></button>
                     </div>
-                </div>
+                </div><hr class="mt-0">
                 <div class="row">
                     <div class="col-md-12 text-center">
                         <h3>Do you really want to delete ?</h3>
@@ -156,12 +169,12 @@
                 <div class="d-flex justify-content-between m-3">
                     <div>
 
-                        <button type="button" class="btn-sm border mx-2 btn-primary"
+                        <button type="button" mat-raised-button 
                             data-bs-dismiss="modal">Cancel</button>
                     </div>
                     <div>
-                        <button type="button" class=" btn btn-primary next btn-sm border" data-bs-dismiss="modal"
-                            (click)="deleteUserRole()">Delete</button>
+                        <button type="button"mat-raised-button color="primary" data-bs-dismiss="modal"
+                            (click)="deleteRole()">Delete</button>
                     </div>
                 </div>
             </div>

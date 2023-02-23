@@ -14,52 +14,75 @@
         </div>
         <hr class="mt-0">
         <div class="container-fluid">
-            <table class="table table-striped mt-4">
+            <table class="table  mt-4">
                 <thead>
                     <tr>
                         <th scope="col"></th>
                         <th scope="col"></th>
-                        <th scope="col" [appSort]="usersList" data-order="desc" data-name="firsName"
-                            data-name="lastName">Members &nbsp;
-                            <i class="bi bi-arrow-down-up sort "></i>
+
+                        <th scope="col" [appSort]="usersList" data-order="{{ sortOrder }}" data-name="firsName"
+                            data-name="lastName" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                            Members &nbsp;
+                            <i
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                         </th>
-                        <th scope="col" [appSort]="usersList" data-order="desc" data-name="email">E-Mail &nbsp; <i
-                                class="bi bi-arrow-down-up sort "></i></th>
-                        <th scope="col" [appSort]="usersList" data-order="desc" data-name="role?.id">Member Type &nbsp;
-                            <i class="bi bi-arrow-down-up sort "></i>
+                        <th scope="col" [appSort]="usersList" data-order="{{ sortOrder }}" data-name="email"
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                            Email &nbsp;
+                            <i
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                         </th>
-                        <th scope="col" [appSort]="usersList" data-order="desc" data-name="createdOn">Member Since
-                            &nbsp;
-                            <i class="bi bi-arrow-down-up sort "></i>
+                        <th scope="col" [appSort]="usersList" data-order="{{ sortOrder }}" data-name="role?.id"
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                            Member Type &nbsp;
+                            <i
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                         </th>
-                        <th scope="col" [appSort]="usersList" data-order="desc" data-name="status">Status</th>
+                        <th scope="col" [appSort]="usersList" data-order="{{ sortOrder }}" data-name="createdOn"
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                            Member Since &nbsp;
+                            <i
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                        </th>
+                        <th scope="col" data-order="desc" data-name="status">Status</th>
                         <th scope="col">Action</th>
 
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let data of usersList | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
-                        <td class="highlight"><div></div></td>
+                    <tr
+                        *ngFor="let data of usersList | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
+                        <td class="highlight">
+                            <div></div>
+                        </td>
                         <td class="action text-start">
                             <span class="bi bi-grip-horizontal text-secondary data mt-2 me-3"></span>
                         </td>
-                        <td><span class="letter ms-2" [style.background-color]="commonservice.getRandomColor(data.lastName)">{{data.firstName.slice(0,1) | uppercase}}{{data.lastName.slice(0,1) | uppercase}}</span> </td>
+                        <td><span class="letter ms-2"
+                                [style.background-color]="commonservice.getRandomColor(data.lastName)">{{data.firstName.slice(0,1)
+                                | uppercase}}{{data.lastName.slice(0,1) | uppercase}}</span> </td>
                         <td>{{ data.firstName | titlecase }} {{data.lastName | titlecase}}</td>
                         <td>{{ data.email }}</td>
-                        <td><span class="badge rounded-pill table-button text-dark px-4 py-2">{{getRoleName(data?.role?.id)}}</span></td>
+                        <td><span
+                                class="badge rounded-pill table-button text-dark px-4 py-2">{{getRoleName(data?.role?.id)}}</span>
+                        </td>
                         <td>{{ data.createdOn | date:'medium'}}</td>
-                        <td><span class="badge rounded-pill table-button  bg-success text-light px-4 py-2"  *ngIf="data.status=='Active'" >{{data.status}}</span></td>
+                        <td><span class="badge rounded-pill table-button  bg-success text-light px-4 py-2"
+                                *ngIf="data.status=='Active'">{{data.status}}</span></td>
                         <td>
                             <i class="bi bi-trash3 text-danger" data-bs-toggle="modal" data-bs-target="#deleteModal"
                                 (click)="selectedUser = data"></i> &nbsp;
                             <i class="bi bi-pencil text-success" data-bs-toggle="modal" data-bs-target="#updateModal"
                                 (click)="selectedUser=data"></i>
                         </td>
-                        <td class="highlight"><div></div></td>
+                        <td class="highlight">
+                            <div></div>
+                        </td>
                     </tr>
                 </tbody>
             </table>
-            <pagination-controls (pageChange)="p = $event" class="pagination d-flex justify-content-end"></pagination-controls>
+            <pagination-controls (pageChange)="p = $event"
+                class="pagination d-flex justify-content-end"></pagination-controls>
 
         </div>
 
@@ -114,7 +137,7 @@
                                 <select class="custom-select mb-3 p-2" formControlName="role">
                                     <option value="">Choose Any Role</option>
                                     <option *ngFor="let role of roleName" [value]="role.id">
-                                    {{ role.Name}}
+                                        {{ role.Name}}
                                     </option>
                                 </select>
                                 <div *ngIf="addForm.controls['role'].invalid && addForm.controls['role'].touched"

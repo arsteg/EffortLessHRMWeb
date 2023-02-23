@@ -28,7 +28,7 @@ import { FormControlsComponent } from './common/form-controls/form-controls.comp
 import { ScreenshotsComponent } from './screenshots/screenshots/screenshots.component';
 import { DatePipe } from '@angular/common';
 import { NgHttpLoaderModule } from 'ng-http-loader';
-import { TeammembersComponent } from './manage/teammembers/teammembers.component';
+// import { TeammembersComponent } from './manage/teammembers/teammembers.component';
 import { HomeComponent } from './home/home.component';
 import { RolesComponent } from './manage/roles/roles/roles.component';
 import { PermissionModelComponent } from './manage/permissonModel/permission-model/permission-model.component';
@@ -68,6 +68,9 @@ import { AppWebsiteSettingsComponent } from './settings/app-website-settings/app
 import { AddManualTimeComponent } from './manualTime/addManualTime/add-manual-time.component';
 import { MatTabsModule } from '@angular/material/tabs';
 
+import { ManageModule } from './manage/manage.module';
+import { PermissionsComponent } from './permissions/permissions.component';
+import { RolePermissionComponent } from './role-permission/role-permission.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -84,7 +87,7 @@ import { MatTabsModule } from '@angular/material/tabs';
           UserFormCOntrolComponent,
           FormControlsComponent,
           ScreenshotsComponent,
-          TeammembersComponent,
+          // TeammembersComponent,
           HomeComponent,
           RolesComponent,
           PermissionModelComponent,
@@ -105,7 +108,9 @@ import { MatTabsModule } from '@angular/material/tabs';
           LeaveReportComponent,
           ProductivityReportComponent,
           AppWebsiteSettingsComponent,
-          AddManualTimeComponent
+          AddManualTimeComponent,
+          PermissionsComponent,
+          RolePermissionComponent
   ],
   imports: [
     BrowserModule,
@@ -133,6 +138,7 @@ import { MatTabsModule } from '@angular/material/tabs';
     CommonModule,
     MatTabsModule,
     BsDatepickerModule.forRoot(),
+    ManageModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

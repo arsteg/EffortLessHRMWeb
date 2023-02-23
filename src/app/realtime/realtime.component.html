@@ -1,0 +1,120 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between">
+            <h1 class="pt-4">Realtime Monitoring</h1>
+
+        </div>
+        <hr class="mt-0">
+        <div class="row">
+            <div class="col-4">
+                <div class="d-flex  justify-content-between p-4 bg-white ">
+                    <div>
+                        <p class="text-muted"> Number of Members</p>
+                        <h3 class="mb-0">{{selectedUsers?.length}}</h3>
+                    </div>
+                    <b class="bi bi-people people bg-light"></b>
+                </div>
+            </div>
+            <div class="col-4 ">
+                <div class="d-flex bg-white justify-content-between p-4">
+                    <div>
+                        <p class="text-muted">Working Now</p>
+                        <h3 class="mb-0">0</h3>
+                    </div>
+                    <i class="bi bi-clock clock bg-light"></i>
+                </div>
+            </div>
+
+            <div class="col-4">
+                <div class="d-flex bg-white justify-content-between p-4">
+
+                    <div>
+                        <p class="text-muted">Currently Non-Productive</p>
+                        <h3 class="mb-0">0</h3>
+                    </div>
+                    <i class="bi bi-graph-down-arrow graph bg-light"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex mt-4">
+
+            <span class="pt-3 text-muted me-3">Filter&nbsp;by: </span>
+            <mat-form-field class="filter mx-1">
+                <mat-label>Members</mat-label>
+                <mat-select multiple [(ngModel)]="selectedUser">
+                    <mat-option *ngFor="let member of selectedUsers" [value]="member.id" (click)="filterData()"
+                        [selected]="selectedUser?.includes(member?.id)">
+                        {{member.firstName | titlecase}} {{member.lastName | titlecase}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field class="filter mx-3">
+                <mat-label>Projects</mat-label>
+                <mat-select multiple [(ngModel)]="selectedProject">
+                    <mat-option *ngFor="let project of projectList" [value]="project.id" (click)="filterData()"
+                        [selected]="selectedProject?.includes(project?.id)">
+                        {{project.projectName | titlecase}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <input class="form-control  search mb-3 pb-0 mx-1" type="text" placeholder="Search..."
+                [(ngModel)]="searchText" name="searchText" aria-label="default input example"
+                style="border-bottom: 1px solid grey; border-radius: 0; background: transparent;">
+
+            <div class="align-items-start flex-wrap gap-3 ms-auto">
+                <div class="dropdown order-first order-sm-last d-flex">
+                    <button class="export-btn dropdown-toggle formrow-inputState form-select select-styled active"
+                        type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                        <p class="mb-0 text-muted"> Export </p>
+                    </button>
+                    <ul class="dropdown-menu p-0" aria-labelledby="dropdownMenuButton1" id="dropdown-export">
+                        <li><a class="export-button" (click)="exportToCsv()">CSV</a></li>
+                        <li><a class="export-button" (click)="exportToExcel()">XLS</a></li>
+                        <li><a class="export-button" (click)="exportToPdf()">PDF</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <table class="table  mt-4">
+            <thead>
+                <tr>
+                    <th scope="col">
+                        Online User &nbsp;
+                        <i class="bi bi-arrow-up sort text-light"></i>
+                    </th>
+                    <th scope="col">Project
+                        &nbsp;
+                        <i class="bi bi-arrow-up sort text-light"></i>
+                    </th>
+                    <th scope="col">
+                        Task &nbsp;
+                        <i class="bi bi-arrow-up sort text-light"></i>
+                    </th>
+                    <th scope="col">Apps/Websites &nbsp;
+                        <i class="bi bi-arrow-up sort text-light"></i>
+                    </th>
+
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let users of selectedUsers">
+                    <td><span class="letter ms-2"
+                            [style.background-color]="commonService.getRandomColor(users.lastName)">
+                            {{users.firstName.slice(0,1) | uppercase}}{{users.lastName.slice(0,1) | uppercase}}</span>
+                        {{users?.firstName | titlecase}} {{users?.lastName | titlecase}}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <button mat-raised-button color="primary">Live Screen</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>

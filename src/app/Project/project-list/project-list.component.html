@@ -28,28 +28,28 @@
                         </div>
                     </div>
                     <hr>
-                    <table class="table table-striped mt-4" cdkDropList (cdkDropListDropped)="drop($event)">
+                    <table class="table  mt-4" cdkDropList (cdkDropListDropped)="drop($event)">
                         <thead>
                             <tr>
                                 <th scope="col"></th>
                                 <th scope="col" [appSort]="projectList" data-order="desc" data-name="projectName">
                                     Project Name &nbsp;
-                                    <i class="bi bi-arrow-down-up sort "></i>
+                                    <i class="bi bi-arrow-up sort "></i>
                                 </th>
                                 <th scope="col" [appSort]="projectList" data-order="desc" data-name="startDate">Start
                                     Date &nbsp;
-                                    <i class="bi bi-arrow-down-up sort "></i>
+                                    <i class="bi bi-arrow-up sort "></i>
                                 </th>
                                 <th scope="col" [appSort]="projectList" data-order="desc" data-name="endDate">End Date
                                     &nbsp;
-                                    <i class="bi bi-arrow-down-up sort "></i>
+                                    <i class="bi bi-arrow-up sort "></i>
                                 </th>
                                 <th scope="col" [appSort]="projectList" data-order="desc" data-name="estimatedTime">
                                     Estimated Time &nbsp;
-                                    <i class="bi bi-arrow-down-up sort "></i>
+                                    <i class="bi bi-arrow-up sort "></i>
                                 </th>
                                 <th scope="col" [appSort]="projectList" data-order="desc" data-name="notes">Notes &nbsp;
-                                    <i class="bi bi-arrow-down-up sort "></i>
+                                    <i class="bi bi-arrow-up sort "></i>
                                 </th>
                                 <th scope="col" [appSort]="projectList" data-order="desc" data-name="status">Status</th>
                                 <th scope="col" [appSort]="projectList" data-order="desc"

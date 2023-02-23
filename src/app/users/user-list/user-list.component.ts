@@ -8,6 +8,7 @@ import { RoleService } from 'src/app/_services/role.service';
 import { TransitionCheckState } from '@angular/material/checkbox';
 import { ToastrService } from 'ngx-toastr';
 import { CommonService } from 'src/app/common/common.service';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-user-list',
@@ -28,6 +29,7 @@ export class UserListComponent implements OnInit {
   roleName: any = [];
   firstLetter: string;
   color: string;
+  public sortOrder: string = ''; // 'asc' or 'desc'
 
   constructor(
     private UserService: UserService,
@@ -58,7 +60,9 @@ export class UserListComponent implements OnInit {
     });
     this.firstLetter = this.commonservice.firstletter;
   }
-
+  drop(event: CdkDragDrop<any[]>) {
+    moveItemInArray(this.usersList, event.previousIndex, event.currentIndex);
+  }
   getAllRoles() {
     this.roleService.getAllRole().subscribe(
       response => {

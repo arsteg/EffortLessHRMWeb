@@ -102,6 +102,7 @@ export const SideBarAdminMenu = [
     id: '3',
     title: 'RealTime',
     icon: 'fa fa-clock',
+    url: '/realtime'
   },
   {
     id: '4',
@@ -466,7 +467,26 @@ export const SideBarAdminMenu = [
         url: 'ManualTimeRequestApproval'
       },
     ]
-  }
+  },
+  {
+    id: '17',
+    icon: 'fa fa-lock',
+  title: 'Permissions',
+  url: '/permissions'
+
+},
+{
+  id: '17',
+  icon: 'fa fa-universal-access',
+title: 'Roles',
+url: '/roles'
+},
+{
+  id: '18',
+  icon: 'fa  fa-id-badge',
+title: 'Role Permission',
+url: '/rolePermission'
+}
 ];
 
 export const SideBarUserMenu = [

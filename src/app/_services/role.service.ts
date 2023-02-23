@@ -25,23 +25,46 @@ export class RoleService extends baseService {
     const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json',
       'Access-Control-Allow-Origin':'*',
-      'Authorization': `Bearer ${token}`})
+      'Authorization': `Bearer ${token}`}),
+      withCredentials: true
     };
     var response  = this.http.get<any>(`${environment.apiUrlDotNet}/auth/roles`, httpOptions);
    return response;
   }
 
-  createUserRole(obj:any):Observable<any>{
-    console.log('url ' + environment.apiUrlDotNet+constant.apiEndPoint.userRoleCreate);
-    return this.http.post<any>(environment.apiUrlDotNet+constant.apiEndPoint.userRoleCreate, obj);
+  addRole(role): Observable<any> {
+    let token = this.getToken();
+    const httpOptions = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin':'*',
+      'Authorization': `Bearer ${token}`}),
+      withCredentials: true
+    };
+    var response  = this.http.post<any>(`${environment.apiUrlDotNet}/auth/role`, role ,httpOptions);
+   return response;
   }
-  updateUserRole(obj:any):Observable<userRole>{
-    console.log('url ' + environment.apiUrlDotNet+constant.apiEndPoint.userRoleUpdate);
-    return this.http.post<any>(environment.apiUrlDotNet+constant.apiEndPoint.userRoleUpdate, obj);
+  updateRole(id: string , Name: string): Observable<any> {
+    let token = this.getToken();
+    const httpOptions = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin':'*',
+      'Authorization': `Bearer ${token}`}),
+      withCredentials: true
+    };
+    var response  = this.http.post<any>(`${environment.apiUrlDotNet}/auth/role/update/${id}`, { Name } ,httpOptions);
+   return response;
   }
-  deleteUserRole(obj:any):Observable<any>{
-    console.log('url ' + environment.apiUrlDotNet+constant.apiEndPoint.userRoleDelete, obj);
-    return this.http.delete<any>(environment.apiUrlDotNet+constant.apiEndPoint.userRoleDelete, obj);
+  deleteRole(id: string): Observable<any> {
+    let token = this.getToken();
+    const httpOptions = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin':'*',
+      'Authorization': `Bearer ${token}`}),
+      withCredentials: true
+    };
+    var response  = this.http.delete<any>(`${environment.apiUrlDotNet}/auth/role/${id}` ,httpOptions);
+   return response;
   }
+  
 }
 

@@ -1,0 +1,230 @@
+<div class="main-content">
+    <div class="container-fluid">
+
+        <div class="d-flex justify-content-between">
+            <h1 class="pt-4 mb-0">Permissions: {{allPermissions?.length}}</h1>
+
+            <div class="d-flex h-25">
+                <input class="form-control search" type="text" placeholder="search..." [(ngModel)]="searchText"
+                    name="searchText" aria-label="default input example"
+                    style="border-bottom: 1px solid grey; border-radius: 0;">
+                <button mat-raised-button color="primary" class="ms-5" style="
+                padding: 5px 35px 0 20px;
+            " data-bs-toggle="modal" data-bs-target="#addModal">Add New</button>
+            </div>
+        </div>
+        <hr class="mt-0">
+        <div class="container-fluid">
+            <table class="table  mt-4">
+                <thead>
+                    <tr>
+                        <th scope="col"></th>
+
+                      
+                        <th scope="col" [appSort]="allPermissions" data-order="desc" data-name="permissionName">
+                            Permission Name &nbsp;
+                            <i class="bi bi-arrow-up sort "></i>
+                        </th>
+                        <th scope="col" [appSort]="allPermissions" data-order="desc" data-name="permissionDetails">
+                            Permission Detail &nbsp;
+                            <i class="bi bi-arrow-up sort "></i>
+                        </th>
+
+                        <th scope="col">Action</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        *ngFor="let permission of allPermissions | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
+                        <td class="highlight">
+                            <div></div>
+                        </td>
+                        <td class="action text-start">
+                            <span class="bi bi-grip-horizontal text-secondary data mt-2 me-3"></span>
+                        </td>
+                        <td>{{permission.permissionName}}</td>
+                        <td>{{permission.permissionDetails}}</td>
+                        <td>
+                            <i class="bi bi-trash3 text-danger" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                (click)="selectedPermissions(permission)"></i> &nbsp;
+                            <i class="bi bi-pencil text-success" data-bs-toggle="modal" data-bs-target="#updateModal"
+                                (click)="selectedPermissions(permission)"></i>
+                        </td>
+                        <td class="highlight">
+                            <div></div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <pagination-controls (pageChange)="p = $event"
+                class="pagination d-flex justify-content-end"></pagination-controls>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- Add -->
+<div class="modal" id="addModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class=" d-flex justify-content-between">
+                    <div class="">
+                        <h4 class="modal-title text-start">Add New Permission</h4>
+                    </div>
+                    <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
+                    </div>
+                </div>
+                <hr class="mt-0">
+                <div class="row">
+                    <form class="row" [formGroup]="addPermissions" (ngSubmit)="addPermission(addPermissions.value)">
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-md-8">
+                                <div class="row">
+                                    <label for="firstName" class="text-start">Permission Name</label>
+                                </div>
+                                <input type="text" name="firstName" id="firstName" class="form-control input pt-0"
+                                    formControlName="permissionName" ngModel required>
+                                <div *ngIf="addPermissions.controls['permissionName'].invalid && addPermissions.controls['permissionName'].touched"
+                                class="alert alert-danger error">
+                                <div *ngIf="addPermissions.controls['permissionName'].errors['required']">
+                                    Permission Name is required.
+                                </div>
+                            </div>
+
+                                <div class="row">
+                                    <label for="lastName" class="text-start mt-3">Permission Detail</label>
+                                </div>
+                                <input type="text" name="lastName" id="lastName" class="form-control input pt-0" ngModel
+                                    formControlName="permissionDetails" required>
+                                    <div *ngIf="addPermissions.controls['permissionDetails'].invalid && addPermissions.controls['permissionDetails'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="addPermissions.controls['permissionDetails'].errors['required']">
+                                        Permission Details is required.
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between m-3">
+
+                            <div>
+                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
+                                    type="button">Cancel</button>
+                            </div>
+                            <div>
+                                <button mat-raised-button color="primary" data-bs-dismiss="modal"
+                                    type="submit">Add</button>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Update -->
+<div class="modal" id="updateModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="d-flex justify-content-between">
+                    <div class="">
+                        <h4 class="modal-title text-start">Update Permission  <b  style="color: #556def"> {{selectedPermission?.permissionName}}</b></h4>
+                    </div>
+                    <div class="">
+                        <button type="button" class="btn-close text-end" data-bs-dismiss="modal"></button>
+                    </div>
+                </div>
+                <div class="row" *ngIf="selectedPermission">
+                    <form class="row" [formGroup]="updatePermissions"
+                        (ngSubmit)="updatePermission(updatePermissions.value)">
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-md-8">
+                                <div class="row">
+                                    <label for="firstName" class="text-start">Permission Name</label>
+                                </div>
+                                <input type="text" name="firstName" id="firstName" class="form-control input pt-0"
+                                  [(ngModel)]="selectedPermission.permissionName"  formControlName="permissionName" ngModel required>
+                                <div *ngIf="updatePermissions.controls['permissionName'].invalid && updatePermissions.controls['permissionName'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="updatePermissions.controls['permissionName'].errors['required']">
+                                        Permission Name is required.
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+                                    <label for="lastName" class="text-start mt-3">Permission Detail</label>
+                                </div>
+                                <input type="text" name="lastName" id="lastName" class="form-control input pt-0" ngModel
+                                 [(ngModel)]="selectedPermission.permissionDetails"   formControlName="permissionDetails" required>
+                                 <div *ngIf="updatePermissions.controls['permissionDetails'].invalid && updatePermissions.controls['permissionDetails'].touched"
+                                 class="alert alert-danger error">
+                                 <div *ngIf="updatePermissions.controls['permissionDetails'].errors['required']">
+                                     Permission Name is required.
+                                 </div>
+                             </div>
+
+
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between m-3">
+
+                            <div>
+                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
+                                    type="button">Cancel</button>
+                            </div>
+                            <div>
+                                <button mat-raised-button color="primary" data-bs-dismiss="modal"
+                                    type="submit">Update</button>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete -->
+<div class="modal" id="deleteModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="d-flex justify-content-between">
+                    <div class="">
+                        <h4 class="modal-title text-start">Delete Permission <b  style="color: #556def"> {{selectedPermission?.permissionName}}</b></h4>
+                    </div>
+                    <div class="">
+                        <button type="button" class="btn-close text-end" data-bs-dismiss="modal"></button>
+                    </div>
+                </div>
+                <hr class="mt-0">
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <h3>Do you really want to delete ?</h3>
+                    </div>
+
+                </div>
+                <div class="d-flex justify-content-between m-3">
+                    <div>
+
+                        <button mat-raised-button class="mx-2" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                    <div>
+                        <button mat-raised-button color="primary" class="" data-bs-dismiss="modal" (click)="deletePermission()">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

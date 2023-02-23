@@ -7,3 +7,7 @@ export enum Permission {
     permissionDetails : string; 
     parentPermission : number;
   }
+  export class createRolePermissions{
+    roleId: string;
+    permissionId: string;
+  }
