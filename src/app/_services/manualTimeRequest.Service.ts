@@ -77,4 +77,15 @@ getManualTimeRequestsForApprovalByUser(userId:string): any {
     return response;
   }
 
+  addManualTime(user:string,task:string,projectId:string, startTime:string, endTime:string,date:string): any {
+    let token = this.getToken();
+    const httpOptions = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin':'*',
+      'Authorization': `Bearer ${token}`})
+    };
+    var response  = this.http.post<any>(`${environment.apiUrlDotNet}/manualTime/addManualTime`,{user,task,projectId, startTime, endTime,date},httpOptions);
+    return response;
+  }
+
 }

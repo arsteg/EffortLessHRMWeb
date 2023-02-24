@@ -8,6 +8,7 @@ import { TimeLogService } from 'src/app/_services/timeLogService';
 import { manualTimeRequest} from 'src/app/models/manualTime/manualTimeRequest';
 import { NotificationService } from 'src/app/_services/notification.service';
 import { ManualTimeRequestService } from 'src/app/_services/manualTimeRequest.Service';
+import { UtilsService } from 'src/app/_services/utils.service';
 
 @Component({
   selector: 'app-request-manual-time',
@@ -35,7 +36,8 @@ export class RequestManualTimeComponent implements OnInit {
     private authenticationService:AuthenticationService,
     private timeLogService:TimeLogService,
     private notifyService: NotificationService,
-    private manualTimeRequestService:ManualTimeRequestService) {
+    private manualTimeRequestService:ManualTimeRequestService,
+    private utilsService: UtilsService) {
 
       this.addRequestForm = this.formBuilder.group({
       manager: ['', Validators.required],
@@ -128,8 +130,9 @@ export class RequestManualTimeComponent implements OnInit {
     request.project =  this.addRequestForm.value.project;
     request.reason =  this.addRequestForm.value.reason;
     request.user =  this.authenticationService.currentUserValue.id;
-    request.fromDate =  this.addRequestForm.value.startDate;
-    request.toDate =  this.addRequestForm.value.endDate;
+
+    request.fromDate =  this.utilsService.convertToUTC(this.addRequestForm.value.startDate);
+    request.toDate =  this.utilsService.convertToUTC(this.addRequestForm.value.endDate);
 
     if(this.changeMode=='Add'){
     this.manualTimeRequestService.addManualTimeRequest(request).subscribe((res:any) => {
@@ -178,7 +181,7 @@ export class RequestManualTimeComponent implements OnInit {
   selectedUser(){}
 
   deleteRequest(){
-    this.manualTimeRequestService.DeleteManualTimeRequest(this.selectedRequest.id).pipe(first())
+    this.manualTimeRequestService.DeleteManualTimeRequest(this.selectedRequest._id).pipe(first())
     .subscribe((res:any) => {
       this.notifyService.showSuccess("Manual time request has been deleted successfully!", "success");
       this.fetchManualTimeRequests();

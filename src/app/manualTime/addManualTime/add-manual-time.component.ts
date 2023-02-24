@@ -6,6 +6,8 @@ import { AuthenticationService } from 'src/app/_services/authentication.service'
 import { ManualTimeRequestService } from 'src/app/_services/manualTimeRequest.Service';
 import { NotificationService } from 'src/app/_services/notification.service';
 import { TimeLogService } from 'src/app/_services/timeLogService';
+import { UtilsService } from 'src/app/_services/utils.service';
+
 
 @Component({
   selector: 'app-add-manual-time',
@@ -24,11 +26,13 @@ export class AddManualTimeComponent implements OnInit {
   endDate: any;
   selectedRequest:any;
   id:string='';
+  userEmail='';
   constructor(private modalService: NgbModal, private formBuilder: FormBuilder,
     private authenticationService:AuthenticationService,
     private timeLogService:TimeLogService,
     private notifyService: NotificationService,
-    private manualTimeRequestService:ManualTimeRequestService) {
+    private manualTimeRequestService:ManualTimeRequestService,
+    private utilsService: UtilsService) {
 
       this.addRequestForm = this.formBuilder.group({
         manager: ['', Validators.required],
@@ -48,6 +52,8 @@ export class AddManualTimeComponent implements OnInit {
   ngOnInit(): void {
     var currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.id= currentUser?.id;
+    this.userEmail=currentUser.email;
+
     this.authenticationService.getUserProjects(this.id).pipe(first())
     .subscribe((res:any) => {
       res.data.forEach(p => {
@@ -107,14 +113,24 @@ export class AddManualTimeComponent implements OnInit {
         });
   }
   onSubmit(){
-    this.notifyService.showSuccess("Manual time added successfully", "success");
+    this.timeLogService.addManualTime(this.userEmail,this.selectedTask,this.selectedProject, this.utilsService.convertToUTC( this.startDate), this.utilsService.convertToUTC(this.endDate),this.utilsService.convertToUTC(new Date())).pipe(first())
+    .subscribe((res:any) => {
+      this.notifyService.showSuccess("Manual time added successfully", "success");
+    },
+        err => {
+          this.notifyService.showError("Something went wrong!", "Failure");
+        });
   }
   getManualTimeApprovedRequests(){
     this.manualTimeRequestService.getManualTimeApprovedRequests(this.id,this.selectedProject,this.selectedManager).pipe(first())
     .subscribe((res:any) => {
             let approvedRequest =  res.data.length==0?null:res.data[0];
-            this.startDate=approvedRequest.fromDate;
-            this.endDate=approvedRequest.toDate;
+            if(approvedRequest!=null){
+              this.startDate=new Date(approvedRequest.fromDate);
+              this.endDate= new Date(approvedRequest.toDate);
+
+              console.log(this.endDate);
+            }
     },
         err => {
         });
