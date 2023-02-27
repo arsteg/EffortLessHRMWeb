@@ -6,7 +6,7 @@ import { RegisterComponent } from './login/register/register.component';
 import { ForgotPasswordComponent } from './login/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './login/reset-password/reset-password.component';
 import { ProjectListComponent } from './Project/project-list/project-list.component';
-import { AuthGuard } from './_helpers/auth.guard';
+import { AuthGuard } from './auth.guard';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ChangePasswordComponent } from './login/change-password/change-password.component';
 import { UserProfileComponent } from './users/user-profile/user-profile.component';
@@ -40,16 +40,15 @@ const routes: Routes = [
 
 
   { path: '', component: MainComponent },
-  { path: '', redirectTo: 'main', pathMatch: 'full' },
   { path: 'main', component: MainComponent },
   { path: 'login', component: LoginComponent },
   { path: 'forgotPassword', component: ForgotPasswordComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'changePassword', component: ChangePasswordComponent },
   {
-    path: '', component: HomeComponent,
+    path: '', component: HomeComponent,  canActivate: [AuthGuard] ,
     children: [
-      { path: 'dashboard', component: DashboardComponent },
+      { path: 'dashboard', component: DashboardComponent},
       { path: 'logout', component: LoginComponent },
       { path: 'resetPassword/:token', component: ResetPasswordComponent },
       { path: 'userProfile', component: UserProfileComponent },

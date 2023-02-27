@@ -12,8 +12,11 @@ export class AuthenticationService {
   private currentUserSubject: BehaviorSubject<User>;
   public currentUser: Observable<User>;
 
-  get isLoggedIn() {
-    return this.loggedIn.asObservable();
+  // get isLoggedIn() {
+  //   return this.loggedIn.asObservable();
+  // }
+  isLoggedIn(): boolean {
+    return !!localStorage.getItem('jwtToken');
   }
   constructor(private http: HttpClient) {
     this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));

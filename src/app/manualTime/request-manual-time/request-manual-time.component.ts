@@ -9,7 +9,7 @@ import { manualTimeRequest} from 'src/app/models/manualTime/manualTimeRequest';
 import { NotificationService } from 'src/app/_services/notification.service';
 import { ManualTimeRequestService } from 'src/app/_services/manualTimeRequest.Service';
 import { UtilsService } from 'src/app/_services/utils.service';
-
+import { CommonService } from 'src/app/common/common.service';
 @Component({
   selector: 'app-request-manual-time',
   templateUrl: './request-manual-time.component.html',
@@ -32,12 +32,17 @@ export class RequestManualTimeComponent implements OnInit {
   selectedRequest:any;
   selectedProject:string='undefined';
   selectedManager:string='undefined';
+  public sortOrder: string = ''; // 'asc' or 'desc'
+  firstLetter: string;
+  color: string;
+  
   constructor(private modalService: NgbModal, private formBuilder: FormBuilder,
     private authenticationService:AuthenticationService,
     private timeLogService:TimeLogService,
     private notifyService: NotificationService,
     private manualTimeRequestService:ManualTimeRequestService,
-    private utilsService: UtilsService) {
+    private utilsService: UtilsService,
+    public commonservice: CommonService) {
 
       this.addRequestForm = this.formBuilder.group({
       manager: ['', Validators.required],
@@ -58,6 +63,7 @@ export class RequestManualTimeComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.firstLetter = this.commonservice.firstletter;
     var currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.id= currentUser?.id;
     this.authenticationService.currentUserValue.id

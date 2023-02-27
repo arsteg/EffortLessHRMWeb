@@ -119,9 +119,7 @@ tr {
     border-radius: 3px;
     padding: 3px 15px;
  }
- /* .bottom .bs-datepicker-body table tbody tr td{
-  padding: 10px !important;
- } */
+ 
  .bs-datepicker-head bs-datepicker-navigation-view{
   display: flex;
  }
@@ -151,26 +149,18 @@ tr {
   -webkit-transform: scale(1.5); 
   transform: scale(1.2); 
 }
-.a{
-    background-color:#a52a2a;
-   
-}
-.b{
-    background-color: #ffc0cb;
-   
-}
-.c{
-    background-color: #ffff00;
-   
-}
-.r{
-    background-color: #ffa500;
-    
-}
-.defaults{
-    background-color: #556def;
-   
-}
+
 .action .actions{
   font-size: large;
 }
+select{
+  border: 1px solid #ced4da;
+    border-radius: 4px;
+  }
+  .modal-body label{
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .modal-title{
+    font-weight: 500;
+  }

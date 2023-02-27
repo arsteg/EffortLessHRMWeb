@@ -37,7 +37,7 @@ export class HomeComponent implements OnInit {
       else {
         if (role && role.toLowerCase() == 'admin') {
           this.menuList = SideBarAdminMenu;
-           this.portalType = role.toLowerCase()
+          this.portalType = role.toLowerCase()
         }
         if (role && role.toLowerCase() == 'user') {
           this.menuList = SideBarUserMenu;
@@ -68,6 +68,7 @@ export class HomeComponent implements OnInit {
   }
 
   onLogout() {
+    localStorage.removeItem('jwtToken');
     localStorage.removeItem('user.email')
     this.router.navigateByUrl('/main')
   }
@@ -459,7 +460,7 @@ export const SideBarAdminMenu = [
   {
     id: '17',
     title: 'Manual Time',
-    icon: 'fa fa-wrench',
+    icon: 'bi bi-clock-history',
     subMenu: [
       {
         id: '171',
@@ -471,22 +472,22 @@ export const SideBarAdminMenu = [
   {
     id: '17',
     icon: 'fa fa-lock',
-  title: 'Permissions',
-  url: '/permissions'
+    title: 'Permissions',
+    url: '/permissions'
 
-},
-{
-  id: '17',
-  icon: 'fa fa-universal-access',
-title: 'Roles',
-url: '/roles'
-},
-{
-  id: '18',
-  icon: 'fa  fa-id-badge',
-title: 'Role Permission',
-url: '/rolePermission'
-}
+  },
+  {
+    id: '17',
+    icon: 'fa fa-universal-access',
+    title: 'Roles',
+    url: '/roles'
+  },
+  {
+    id: '18',
+    icon: 'fa  fa-id-badge',
+    title: 'Role Permission',
+    url: '/rolePermission'
+  }
 ];
 
 export const SideBarUserMenu = [
@@ -708,8 +709,8 @@ export const SideBarUserMenu = [
   {
     id: '15',
     title: 'Manual Time',
-    icon: 'fa fa-wrench',
-    url: '/requestManualTime',
+    icon: 'bi bi-clock-history',
+
     subMenu: [
       {
         id: '151',

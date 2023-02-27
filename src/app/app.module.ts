@@ -28,7 +28,7 @@ import { FormControlsComponent } from './common/form-controls/form-controls.comp
 import { ScreenshotsComponent } from './screenshots/screenshots/screenshots.component';
 import { DatePipe } from '@angular/common';
 import { NgHttpLoaderModule } from 'ng-http-loader';
-// import { TeammembersComponent } from './manage/teammembers/teammembers.component';
+import { TeammembersComponent } from './manage/teammembers/teammembers.component';
 import { HomeComponent } from './home/home.component';
 import { RolesComponent } from './manage/roles/roles/roles.component';
 import { PermissionModelComponent } from './manage/permissonModel/permission-model/permission-model.component';
@@ -71,6 +71,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { ManageModule } from './manage/manage.module';
 import { PermissionsComponent } from './permissions/permissions.component';
 import { RolePermissionComponent } from './role-permission/role-permission.component';
+import { AuthGuard } from './auth.guard';
 @NgModule({
   declarations: [
     AppComponent,
@@ -87,7 +88,7 @@ import { RolePermissionComponent } from './role-permission/role-permission.compo
           UserFormCOntrolComponent,
           FormControlsComponent,
           ScreenshotsComponent,
-          // TeammembersComponent,
+          TeammembersComponent,
           HomeComponent,
           RolesComponent,
           PermissionModelComponent,
@@ -144,7 +145,7 @@ import { RolePermissionComponent } from './role-permission/role-permission.compo
     CUSTOM_ELEMENTS_SCHEMA,
     NO_ERRORS_SCHEMA
   ],
-  providers: [DatePipe, CommonService, UserService, DatePipe],
+  providers: [DatePipe, CommonService, UserService, DatePipe, AuthGuard],
   bootstrap: [AppComponent]
 })
 
