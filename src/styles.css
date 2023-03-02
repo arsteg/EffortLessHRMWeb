@@ -1,141 +1,172 @@
-
 @import "ag-grid-community/dist/styles/ag-grid.css";
 @import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 
 
-     .main-content{
-        margin-top: 10px;
-        padding: 30px 0px;
-        /* background: #f6f7f9; */
-        min-height: calc(100vh - 123px);
-    }
-    .float{
-        float:left;
-    }
+.main-content {
+  margin-top: 10px;
+  padding: 30px 0px;
+  /* background: #f6f7f9; */
+  min-height: calc(100vh - 123px);
+}
+
+.float {
+  float: left;
+}
 
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
-
-body{
-    --navbar-scroll-shadow: none;
-   }
-
-  
-   .form-control:focus {
-    box-shadow: none;
-   }
-   .search{
-    border: none;
-    box-shadow: none;
+html,
+body {
+  height: 100%;
 }
-.table td{
-    padding: 12px 10px;
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
 }
-.table thead{
+
+body {
+  --navbar-scroll-shadow: none;
+}
+
+
+.form-control:focus {
+  box-shadow: none;
+}
+
+.search {
+  border: none;
+  box-shadow: none;
+}
+
+.table td {
+  padding: 12px 10px;
+}
+
+.table thead {
   background: #f3f4f7;
   /* color: white; */
 }
-.table thead th{
-    font-weight: 500;
-    padding: 15px;
-}
-.table tbody{
-    border-top: 1px solid black !important;
-}
-.error{
-    padding: 5px;
-    background-color: white;
-    border: none;
-    color: red;
+
+.table thead th {
+  font-weight: 500;
+  padding: 15px;
 }
 
-select ,  select :focus-visible{
-    width: 100%;
-   }
-.table-button {
-    border-radius: 50rem!important;
-    background: #f6f7f9;
-    font-size: 13px;
-    font-weight: 500;
+.table tbody {
+  border-top: 1px solid black !important;
 }
-tr {
-    border: 1px solid transparent;
-    z-index:7;
-  }
-  td {
-    padding: 15px;
-    transition: all 0.5s ease-in-out;
-  }
-  td.highlight {
-    padding:0;
-    width:4px;
-    display: none;
-  }
-  td.highlight div {
-    width:4px;
-    height:60px;
-    border-radius:4px;
-    background-color: white;
-    transition: all 0.5s ease-in-out;
-  }
-  tr:hover {
-   box-shadow: 0px 9px 4px -6px grey;
-   background: #f3f4f7;
-  }
-  tr:hover .data{
-    cursor: all-scroll;
-    color:#0d6efd;
-  }
-  tr .data{
-    font-size: 28px;
-    vertical-align: middle;
-  }
-  
-  tr:hover .action{
-    cursor: pointer;
-  }
-  tr:hover td.highlight div {
-    transform: scaleX(3);
-  }
-  .cdk-global-overlay-wrapper, .cdk-overlay-container , .bottom {
-    z-index: 99999 !important;
- }
- .bottom{
-  transform: translate3d(600px, 290px, 0px) !important;
+
+.error {
+  padding: 5px;
+  background-color: white;
+  border: none;
+  color: red;
+}
+
+select,
+select :focus-visible {
+  width: 100%;
+}
+
+.table-button {
+  border-radius: 50rem !important;
+  background: #f6f7f9;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.table-row {
+  /* border: 1px solid transparent; */
+  z-index: 7;
+}
+
+td {
+  padding: 15px;
+  transition: all 0.5s ease-in-out;
+}
+
+td.highlight {
+  padding: 0;
+  width: 4px;
+  display: none;
+}
+
+td.highlight div {
+  width: 4px;
+  height: 60px;
+  border-radius: 4px;
+  background-color: white;
+  transition: all 0.5s ease-in-out;
+}
+
+tr:hover {
+  box-shadow: 0px 9px 4px -6px grey;
+  background: #f3f4f7;
+}
+
+tr:hover .data {
+  cursor: all-scroll;
+  color: #0d6efd;
+}
+
+tr .data {
+  font-size: 28px;
+  vertical-align: middle;
+}
+
+tr:hover .action {
+  cursor: pointer;
+}
+
+tr:hover td.highlight div {
+  transform: scaleX(3);
+}
+
+.cdk-global-overlay-wrapper,
+.cdk-overlay-container,
+.bottom {
+  z-index: 99999 !important;
+}
+
+.bottom {
+  /* transform: translate3d(600px, 290px, 0px) !important; */
   background: white;
   border: 1px solid rgb(158, 157, 157);
   border-radius: 5px;
- }
- .bottom .bs-datepicker-head{
+}
+
+.bottom .bs-datepicker-head {
   display: flex;
   justify-content: center;
- }
- .bottom .bs-datepicker-head button{
-  border: none;
-    color: white;
-    background: #3f51b5;
-    border-radius: 3px;
-    padding: 3px 15px;
- }
- 
- .bs-datepicker-head bs-datepicker-navigation-view{
-  display: flex;
- }
- .mat-select-panel:not{
-  min-width: calc(100% + 70px);
-    transform: scaleY(0.9);
- }
- .addUser{
-  color: #797a7d;
-    border: 1px dashed #797a7d;
-    padding: 4px;
-    border-radius: 5px;
-    cursor: pointer;
- }
+}
 
- .letter {
+.bottom .bs-datepicker-head button {
+  border: none;
+  color: white;
+  background: #3f51b5;
+  border-radius: 3px;
+  padding: 3px 15px;
+}
+
+.bs-datepicker-head bs-datepicker-navigation-view {
+  display: flex;
+}
+
+.mat-select-panel:not {
+  min-width: calc(100% + 70px);
+  transform: scaleY(0.9);
+}
+
+.addUser {
+  color: #797a7d;
+  border: 1px dashed #797a7d;
+  padding: 4px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.letter {
   border-radius: 5px;
   padding: 5px 8px;
   color: white;
@@ -144,23 +175,142 @@ tr {
   margin-left: -12px;
   transition: all .2s;
 }
-.letter:hover{
+
+.letter:hover {
   -ms-transform: scale(1.5);
-  -webkit-transform: scale(1.5); 
-  transform: scale(1.2); 
+  -webkit-transform: scale(1.5);
+  transform: scale(1.2);
 }
 
-.action .actions{
+.action .actions {
   font-size: large;
 }
-select{
+
+select {
   border: 1px solid #ced4da;
-    border-radius: 4px;
-  }
-  .modal-body label{
-    font-size: 14px;
-    font-weight: 500;
-  }
-  .modal-title{
-    font-weight: 500;
-  }
+  border-radius: 4px;
+}
+
+.modal-body label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.modal-title {
+  font-weight: 500;
+}
+
+.dash-members h1 {
+  font-size: 40px;
+}
+
+.dash-members p {
+  font-size: 12px;
+}
+
+.content-info {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  color: #424253;
+}
+
+.content-head {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+  color: #9699a8;
+}
+
+.content__title {
+  font-family: Poppins, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  color: #424253;
+  margin-right: 20px;
+}
+
+.top-text {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  font-family: Poppins, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 19px;
+}
+
+.text {
+  color: #37434e;
+  margin-right: 5px;
+}
+
+.text span {
+  color: #c0baff
+}
+
+.hours {
+  height: 18px;
+  background: #c0baff;
+
+  text-align: center;
+  border-radius: 2px;
+  padding: 0 2px;
+}
+
+.dash-boxes {
+  width: 300px;
+}
+
+.dash-table-row {
+  border-top: 1px solid #9699a8 !important;
+}
+
+.dash-report {
+  width: 410px;
+}
+
+.dash-percent {
+  border: 3px solid #ebebed;
+  border-radius: 100%;
+  padding: 5px;
+}
+
+.dash-screenshot {
+  background-color: #2f324a;
+  border-radius: 0.25rem;
+}
+
+.dash-select {
+  border: none;
+  box-shadow: none;
+  width: 95px;
+}
+
+.dash-select:focus {
+  box-shadow: none;
+}
+
+.productive {
+  background: #e3f9f7;
+  border: 1px solid #6a7580;
+  color: #6a7580;
+  font-size: 20px;
+}
+
+.non-productive {
+  background: #ffeaea;
+  border: 1px solid #6a7580;
+  color: #6a7580;
+  font-size: 20px;
+}
+.activity {
+  background: #fee9c9;
+  border: 1px solid #6a7580;
+  color: #6a7580;
+  font-size: 20px;
+}

@@ -40,8 +40,7 @@ export class AuthenticationService {
     var queryHeaders = new HttpHeaders();
     queryHeaders.append('Content-Type', 'application/json');
     queryHeaders.append('Access-Control-Allow-Origin', '*');
-    return this.http.patch<any>(`${environment.apiUrlDotNet}/users/resetpassword/${token}`, { password: password, passwordConfirm: confirm_password }, { headers: queryHeaders });
-
+    return this.http.patch<any>(`${environment.apiUrlDotNet}/users/resetPassword/${token}`, { password: password, passwordConfirm: confirm_password }, { headers: queryHeaders });
   }
   login(user) {
     var queryHeaders = new HttpHeaders();

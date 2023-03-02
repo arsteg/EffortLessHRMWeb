@@ -67,11 +67,13 @@ import { ProductivityReportComponent } from './reports/productivity-report/produ
 import { AppWebsiteSettingsComponent } from './settings/app-website-settings/app-website-settings.component';
 import { AddManualTimeComponent } from './manualTime/addManualTime/add-manual-time.component';
 import { MatTabsModule } from '@angular/material/tabs';
-
+import {MatDatepickerModule} from '@angular/material/datepicker';
 import { ManageModule } from './manage/manage.module';
 import { PermissionsComponent } from './permissions/permissions.component';
 import { RolePermissionComponent } from './role-permission/role-permission.component';
 import { AuthGuard } from './auth.guard';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { MatNativeDateModule } from '@angular/material/core';
 @NgModule({
   declarations: [
     AppComponent,
@@ -111,7 +113,8 @@ import { AuthGuard } from './auth.guard';
           AppWebsiteSettingsComponent,
           AddManualTimeComponent,
           PermissionsComponent,
-          RolePermissionComponent
+          RolePermissionComponent,
+          DashboardComponent
   ],
   imports: [
     BrowserModule,
@@ -139,7 +142,9 @@ import { AuthGuard } from './auth.guard';
     CommonModule,
     MatTabsModule,
     BsDatepickerModule.forRoot(),
-    ManageModule
+    ManageModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

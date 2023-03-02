@@ -2,11 +2,9 @@
   <div class=" d-flex justify-content-between mt-5">
     <div class="">
       <div class="input-group date-style">
-        <!-- <input type='button' name='prev' (click)="SetPreviousDay()" class="arrows"/> -->
         <span (click)="SetPreviousDay()" class="fa fa-angle-left fa-lg p-3"></span>
         <input type="date" name="date" id="date" class="form-control calendar" [(ngModel)]="selectedDate"
           (change)="showScreenShots()" />
-        <!-- <input type='button' name='next' (click)="SetNextDay()" [disabled]="DisableNext()" class="arrows"/> -->
         <span (click)="SetNextDay()" class="fa fa-angle-right fa-lg p-3"></span>
       </div>
     </div>

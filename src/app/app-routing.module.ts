@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './login/register/register.component';
 import { ForgotPasswordComponent } from './login/forgot-password/forgot-password.component';
-import { ResetPasswordComponent } from './login/reset-password/reset-password.component';
 import { ProjectListComponent } from './Project/project-list/project-list.component';
 import { AuthGuard } from './auth.guard';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -35,6 +34,7 @@ import { AppWebsiteSettingsComponent } from './settings/app-website-settings/app
 
 import { PermissionsComponent } from './permissions/permissions.component';
 import { RolePermissionComponent } from './role-permission/role-permission.component';
+import { ResetPasswordComponent } from './login/reset-password/reset-password.component';
 const routes: Routes = [
   // {path:'',component:LayoutComponentComponent, canActivate: [AuthGuard]},
 
@@ -45,12 +45,13 @@ const routes: Routes = [
   { path: 'forgotPassword', component: ForgotPasswordComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'changePassword', component: ChangePasswordComponent },
+  { path: 'resetPassword/:token', component: ResetPasswordComponent },
+
   {
     path: '', component: HomeComponent,  canActivate: [AuthGuard] ,
     children: [
       { path: 'dashboard', component: DashboardComponent},
       { path: 'logout', component: LoginComponent },
-      { path: 'resetPassword/:token', component: ResetPasswordComponent },
       { path: 'userProfile', component: UserProfileComponent },
       { path: 'screenshots', component: ScreenshotsComponent },
       { path: 'teamMembers', component: TeammembersComponent },
