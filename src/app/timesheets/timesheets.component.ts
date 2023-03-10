@@ -1,20 +1,22 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { CommonService } from 'src/app/common/common.service'; 
-import { ManageTeamService } from 'src/app/_services/manage-team.service'; 
-import { TimeLogService } from 'src/app/_services/timeLogService'; 
-import { Timesheet } from '../model/productivityModel'; 
-import { ReportsService } from '../reports.service'; 
-import { ProjectService } from 'src/app/Project/project.service'; 
-import { ExportService } from 'src/app/_services/export.service';
+import { CommonService } from '../common/common.service';
+import { ManageTeamService } from '../_services/manage-team.service';
+import { TimeLogService } from '../_services/timeLogService';
+import { Timesheet } from '../reports/model/productivityModel';
+import { DatePipe } from '@angular/common';
+import { ReportsService } from '../reports/reports.service';
+import { ProjectService } from '../Project/project.service';
+import { ExportService } from '../_services/export.service';
+import { HttpClient } from '@angular/common/http';
+import * as moment from 'moment';
+
 @Component({
-  selector: 'app-timeline',
-  templateUrl: './timeline.component.html',
-  styleUrls: ['./timeline.component.css'],
- 
+  selector: 'app-timesheets',
+  templateUrl: './timesheets.component.html',
+  styleUrls: ['./timesheets.component.css']
 })
 
-
-export class TimelineComponent implements OnInit {
+export class TimesheetsComponent implements OnInit {
   projectList: any;
   userId: string;
   projectId: string;
@@ -36,21 +38,31 @@ export class TimelineComponent implements OnInit {
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
  public sortOrder: string = ''; // 'asc' or 'desc'
  daysOfWeek:any= [];
-allComplete: boolean = false;
 
 
 
   constructor(
     private projectService: ProjectService
-    
+    , private datepipe: DatePipe
+    , private http: HttpClient
     , private timeLogService: TimeLogService
     , private exportService: ExportService
     , private reportService: ReportsService
     )
   {
+    this.fromDate= this.datepipe.transform(new Date(this.currentDate.setDate(this.diff)),'yyyy-MM-dd');  
+    this.toDate=this.datepipe.transform(new Date(this.currentDate.setDate(this.lastday)),'yyyy-MM-dd');
     this.getTimeSheet();
 
-    
+    // Get the start and end dates for the current week
+const startOfWeek = moment().startOf('week');
+const endOfWeek = moment().endOf('week');
+
+// Create an array of date strings for the current week
+this.daysOfWeek = [];
+for (let day = startOfWeek; day <= endOfWeek; day = day.clone().add(1, 'day')) {
+  this.daysOfWeek.push(day.format('YYYY-MM-DD'));
+}
   }
 
   ngOnInit(): void {
@@ -60,8 +72,6 @@ allComplete: boolean = false;
     
 
   }
-
-  
   getCurrentWeekDates() {
     let currentDate = new Date();
     let currentDay = currentDate.getDay() - 1;

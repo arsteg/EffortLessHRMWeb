@@ -35,6 +35,8 @@ import { AppWebsiteSettingsComponent } from './settings/app-website-settings/app
 import { PermissionsComponent } from './permissions/permissions.component';
 import { RolePermissionComponent } from './role-permission/role-permission.component';
 import { ResetPasswordComponent } from './login/reset-password/reset-password.component';
+import { TimesheetsComponent } from './timesheets/timesheets.component';
+import { ActivityLevelComponent } from './reports/activity-level/activity-level.component';
 const routes: Routes = [
   // {path:'',component:LayoutComponentComponent, canActivate: [AuthGuard]},
 
@@ -48,9 +50,9 @@ const routes: Routes = [
   { path: 'resetPassword/:token', component: ResetPasswordComponent },
 
   {
-    path: '', component: HomeComponent,  canActivate: [AuthGuard] ,
+    path: '', component: HomeComponent, canActivate: [AuthGuard],
     children: [
-      { path: 'dashboard', component: DashboardComponent},
+      { path: 'dashboard', component: DashboardComponent },
       { path: 'logout', component: LoginComponent },
       { path: 'userProfile', component: UserProfileComponent },
       { path: 'screenshots', component: ScreenshotsComponent },
@@ -59,23 +61,24 @@ const routes: Routes = [
       { path: 'permissionModel', component: PermissionModelComponent },
       { path: 'Profile', component: ProfileComponent },
       { path: 'timeline', component: TimelineComponent },
-      { path: 'project', component: ProjectListComponent},
-      { path: 'employees' , component: UserListComponent},
+      { path: 'project', component: ProjectListComponent },
+      { path: 'employees', component: UserListComponent },
       { path: 'attendance', component: AttendanceComponent },
       { path: 'realtime', component: RealtimeComponent },
       { path: 'tasks', component: TasksComponent },
       { path: 'requestManualTime', component: RequestManualTimeComponent },
       { path: 'ManualTimeRequestApproval', component: RequestApprovalComponent },
-      { path: 'AddManualTime', component: AddManualTimeComponent},
+      { path: 'AddManualTime', component: AddManualTimeComponent },
       { path: 'activityDescription', component: ActivityDescriptionComponent },
       { path: 'applicationusages', component: AppAndWebsiteUsageComponent },
       { path: 'task', component: TaskreportComponent },
       { path: 'leave', component: LeaveReportComponent },
-      { path: 'productivity', component: ProductivityReportComponent},
-      { path: 'appwebsitesettings', component: AppWebsiteSettingsComponent},
+      { path: 'productivity', component: ProductivityReportComponent },
+      { path: 'appwebsitesettings', component: AppWebsiteSettingsComponent },
       { path: 'permissions', component: PermissionsComponent },
-      { path: 'rolePermission', component: RolePermissionComponent}
-    
+      { path: 'rolePermission', component: RolePermissionComponent },
+      { path: 'timesheets', component: TimesheetsComponent },
+      { path: 'activityLevel', component: ActivityLevelComponent }
     ]
   }
 ]

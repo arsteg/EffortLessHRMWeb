@@ -186,6 +186,7 @@ export const SideBarAdminMenu = [
       {
         id: '82',
         title: 'Attendance Records',
+        url: '/attendance'
       },
       {
         id: '83',
@@ -234,13 +235,9 @@ export const SideBarAdminMenu = [
         id: '82',
         title: 'Projects',
       },
+     
       {
         id: '83',
-        title: 'Timesheets',
-
-      },
-      {
-        id: '84',
         title: 'Time Approvals',
       }
     ]
@@ -377,15 +374,16 @@ export const SideBarAdminMenu = [
       //   id: '142',
       //   title: 'My Reports',
       // },
-      // {
-      //   id: '143',
-      //   title: 'Timesheet',
-      // },
-      // {
-      //   id: '144',
-      //   title: 'Timeline',
-      //   url: '/timeline',
-      // },
+      {
+        id: '143',
+        title: 'Timesheet',
+      url: '/timesheets'
+      },
+      {
+        id: '144',
+        title: 'Timeline',
+        url: '/timeline',
+      },
       // {
       //   id: '145',
       //   title: 'Attendance',
@@ -423,6 +421,11 @@ export const SideBarAdminMenu = [
         id: '1412',
         title: 'Leave',
         url: '/leave'
+      },
+      {
+        id: '1413',
+        title: 'Activity Level',
+        url: '/activityLevel'
       }
     ],
   },
@@ -567,6 +570,7 @@ export const SideBarUserMenu = [
       {
         id: '81',
         title: 'My Attendance Records',
+        url: '/attendance'
       },
       {
         id: '82',
@@ -669,6 +673,7 @@ export const SideBarUserMenu = [
       {
         id: '146',
         title: 'Activity Level',
+        url: '/activityLevel'
       },
       {
         id: '147',

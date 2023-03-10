@@ -1,0 +1,209 @@
+<div class="main-content pt-0">
+    <div class="container-fluid">
+        <div class="d-flex pt-4 w-50">
+            <h1 class="">Timesheet</h1>
+            <div class="ms-5 ps-4 pt-2">
+                <button class="buttons">Contract</button>
+                <button class="buttons mx-3">Project</button>
+                <button class="buttons">Members</button>
+            </div>
+        </div>
+        <hr class="mt-0">
+        <div class="d-flex mt-4">
+
+            <span class="pt-3 text-muted me-3">Filter&nbsp;by: </span>
+            <mat-form-field appearance="outline" class="w-25 mx-1">
+                <mat-label>Select User</mat-label>
+                <mat-select multiple [(ngModel)]="selectedUser">
+                    <mat-option *ngFor="let member of members" [value]="member.id" (click)="filterData()"
+                        [selected]="selectedUser?.includes(member?.id)">
+                        {{member.name | titlecase}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-25 mx-1">
+                <mat-label>Select Project</mat-label>
+                <mat-select multiple [(ngModel)]="selectedProject">
+                    <mat-option *ngFor="let project of projectList" [value]="project.id" (click)="filterData()"
+                        [selected]="selectedProject?.includes(project?.id)">
+                        {{project.projectName | titlecase}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <input type="date" name="fromDate" id="fromDate" (change)="filterData()" [(ngModel)]="fromDate"
+                class="form-control calendar mb-4 mx-1" />
+            <div class="mx-1 pt-3">
+                <i class="fa fa-long-arrow-right text-primary"></i>
+            </div>
+            <input type="date" name="toDate" id="toDate" (change)="filterData()" [(ngModel)]="toDate"
+                class="form-control calendar mb-4 mx-1" />
+
+            <div class="align-items-start flex-wrap gap-3 ms-auto">
+                <div class="dropdown order-first order-sm-last d-flex">
+                    <button class="export-btn dropdown-toggle formrow-inputState form-select select-styled active"
+                        type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                        <p class="mb-0 text-muted"> Export </p>
+                    </button>
+                    <ul class="dropdown-menu p-0" aria-labelledby="dropdownMenuButton1" id="dropdown-export">
+                        <li><a class="export-button" (click)="exportToCsv()">CSV</a></li>
+                        <li><a class="export-button" (click)="exportToExcel()">XLS</a></li>
+                        <li><a class="export-button" (click)="exportToPdf()">PDF</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <table class="table  mt-4" id="timeSheet" #timeSheet>
+            <thead>
+                <tr>
+                    <th scope="col" [appSort]="timeSheett" data-order="{{ sortOrder }}" data-name="users?.user"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                        Users &nbsp;
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+
+                    <th scope="col" [appSort]="timeSheett" data-order="{{ sortOrder }}" data-name="users?.user"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                        Projects &nbsp;
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <!-- <th scope="col" [appSort]="timeSheett" data-order="{{ sortOrder }}" data-name=""
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                        Mon &nbsp;
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th scope="col" [appSort]="timeSheett" data-order="{{ sortOrder }}" data-name=""
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                        Tue &nbsp;
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th scope="col" [appSort]="timeSheett" data-order="{{ sortOrder }}" data-name=""
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                        Wed &nbsp;
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th scope="col" [appSort]="timeSheett" data-order="{{ sortOrder }}" data-name=""
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                        Thu &nbsp;
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th scope="col" [appSort]="timeSheett" data-order="{{ sortOrder }}" data-name=""
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                        Fri &nbsp;
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th scope="col" [appSort]="timeSheett" data-order="{{ sortOrder }}" data-name=""
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                        Sat &nbsp;
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th scope="col" [appSort]="timeSheett" data-order="{{ sortOrder }}" data-name=""
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                        Sun &nbsp;
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th> -->
+
+                    <th *ngFor="let day of daysOfWeek" [appSort]="timeSheett" data-order="{{ sortOrder }}"
+                        data-name="users?.user" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">{{ day |
+                        date: 'EEE' }}
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+
+                    <th scope="col" [appSort]="timeSheett" data-order="{{ sortOrder }}" data-name="users?.user"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                        Total &nbsp;
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let users of timeSheett">
+                    <td> {{users?.user}}</td>
+                    <td>{{users?.project}}</td>
+                    <td>
+                        <ul type="none">
+                            <li *ngFor="let log of users.logs">
+                                {{ minutesToTime(log.time) }}
+                            </li>
+                        </ul>
+                    </td>
+                    <td>
+                        <ul type="none">
+                            <li *ngFor="let log of users.logs">
+                                {{ minutesToTime(log.time) }}
+                            </li>
+                        </ul>
+                    </td>
+                    <td>
+                        <ul type="none">
+                            <li *ngFor="let log of users.logs">
+                                {{ minutesToTime(log.time) }}
+                            </li>
+                        </ul>
+                    </td>
+                    <td>
+                        <ul type="none">
+                            <li *ngFor="let log of users.logs">
+                                {{ minutesToTime(log.time) }}
+                            </li>
+                        </ul>
+                    </td>
+                    <td>
+                        <ul type="none">
+                            <li *ngFor="let log of users.logs">
+                                {{ minutesToTime(log.time) }}
+                            </li>
+                        </ul>
+                    </td>
+                    <td>
+                        <ul type="none">
+                            <li *ngFor="let log of users.logs">
+                                {{ minutesToTime(log.time) }}
+                            </li>
+                        </ul>
+                    </td>
+                    <td>
+                        <ul type="none">
+                            <li *ngFor="let log of users.logs">
+                                {{ minutesToTime(log.time) }}
+                            </li>
+                        </ul>
+                    </td>
+                    <!-- total in a week of particular user -->
+                    <td>
+                        <ul type="none">
+                            <li *ngFor="let item of users.logs">
+                                {{ minutesToTime(item.time) }}
+                            </li>
+                        </ul>
+                    </td>
+
+                </tr>
+
+            </tbody>
+            <tfoot>
+                <tr>
+
+                    <td colspan="2" class="text-end"><b>Total</b></td>
+                    <td><b>--</b></td>
+                    <td><b>--</b></td>
+                    <td><b>--</b></td>
+                    <td><b>--</b></td>
+                    <td><b>--</b></td>
+                    <td><b>--</b></td>
+                    <td><b>--</b></td>
+
+                    <td><b>{{ minutesToTime(totalHours) }}</b></td>
+                </tr>
+            </tfoot>
+        </table>
+
+       
+
+
+
+    </div>
+</div>

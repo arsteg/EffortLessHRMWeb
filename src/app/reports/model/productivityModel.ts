@@ -23,3 +23,9 @@ export class SearchTaskRequest {
   fromdate:Date = new Date();      
   todate: Date= new Date();
 }
+export class Timesheet{
+  users: [];
+  projects: [];
+  fromdate:Date = new Date();      
+  todate: Date= new Date();
+}

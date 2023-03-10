@@ -74,6 +74,8 @@ import { RolePermissionComponent } from './role-permission/role-permission.compo
 import { AuthGuard } from './auth.guard';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { MatNativeDateModule } from '@angular/material/core';
+import { TimesheetsComponent } from './timesheets/timesheets.component';
+import { ActivityLevelComponent } from './reports/activity-level/activity-level.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -114,7 +116,9 @@ import { MatNativeDateModule } from '@angular/material/core';
           AddManualTimeComponent,
           PermissionsComponent,
           RolePermissionComponent,
-          DashboardComponent
+          DashboardComponent,
+          TimesheetsComponent,
+          ActivityLevelComponent
   ],
   imports: [
     BrowserModule,

@@ -4,3 +4,64 @@
 table{
     box-shadow: 5px 5px 5px 5px #e4dede;
 }
+/* for checkboxes */
+.type-tracked input {
+    display: none;
+}
+.type-tracked__control {
+   
+    border-radius: 3px;
+    display: inline-block;
+    height: 15px;
+    margin-right: 2px;
+    position: relative;
+    vertical-align: middle;
+    width: 15px;
+}
+.type-tracked input:checked+.type-tracked__control:after {
+   
+    border-radius: 2px;
+    content: "";
+    display: block;
+    height: 9px;
+    left: 2px;
+    position: absolute;
+    top: 2px;
+    width: 9px;
+}
+.tracked{
+    border: 1px solid #2ECD6F;
+}
+.tracked:after{
+    background-color: #2ECD6F;
+}
+.manual{
+    border: 1px solid #FFC107;
+}
+.manual:after{
+    background-color: #FFC107;
+}
+.mobile{
+    border: 1px solid #6385FD;
+}
+.mobile:after{
+    background-color: #6385FD;
+}
+.web{
+    border: 1px solid #FFE102;
+}
+.web:after{
+    background-color: #FFE102;
+}
+.extension{
+    border: 1px solid #8276FF;
+}
+.extension:after{
+    background-color: #8276FF;
+}
+.idle{
+    border: 1px solid #C8CCDE;
+}
+.idle:after{
+    background-color: #C8CCDE;
+}
