@@ -1,7 +1,9 @@
 .sidebar-links {
     margin: 5px 0;
 }
-
+.navbar{
+    box-shadow: 1px 1px 5px #e2dcdc;
+}
 .menuitem,
 .sidebar-links {
     cursor: pointer;
@@ -36,9 +38,14 @@
     width: 60px;
 }
 
-.sidebar-title {
-    width: 15%;
+.header-icons{
+    color: grey;
+    font-size: 24px;
 }
+/* .sidebar-title:hover{
+    overflow-y: scroll;
+    overflow-x: hidden;
+} */
 
 .col-links {
     margin-top: -1.3px;
@@ -47,11 +54,6 @@
 .icons-only {
     position: relative;
     /* width: 105px; */
-}
-
-#sidebar-wrapper {
-
-    width: 17%;
 }
 
 #page-content-wrapper {
@@ -173,4 +175,32 @@
     font-weight: 500;
     font-size: 25px;
     margin: 10px;
+}
+
+/* width */
+*::-webkit-scrollbar {
+    width: 5px;
+  }
+  
+  /* Track */
+  *::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey; 
+    border-radius: 10px;
+  }
+   
+  /* Handle */
+  *::-webkit-scrollbar-thumb {
+    background: grey; 
+    border-radius: 10px;
+  }
+  
+  .mat-drawer-container .mat-drawer .mat-drawer-inner-container{
+    overflow:hidden !important;
+    height: auto !important;
+  }
+  .mat-drawer-container{
+    overflow: visible !important;
+  }
+  .mat-drawer-inner-container::-webkit-scrollbar {
+    /* display: none !important; */
 }

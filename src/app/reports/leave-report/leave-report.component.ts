@@ -1,9 +1,11 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { DatePipe } from '@angular/common'; 
+import { DatePipe } from '@angular/common';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { TimeLogService } from 'src/app/_services/timeLogService';
 import { ExportService } from 'src/app/_services/export.service';
+import { ReportsService } from '../reports.service';
+import { Leave } from '../model/productivityModel';
 
 @Component({
   selector: 'app-leave-report',
@@ -18,8 +20,8 @@ export class LeaveReportComponent implements OnInit {
   member: any;
   fromDate: any;
   toDate: any;
-  totalDay:number=0;
-  searchText ='';
+  totalDay: number = 0;
+  searchText = '';
   currentDate: Date = new Date();
   diff: any = this.currentDate.getDate() - this.currentDate.getDay() + (this.currentDate.getDay() === 0 ? -6 : 1);
   lastday: any = this.currentDate.getDate() - (this.currentDate.getDay() - 1) + 6;
@@ -28,7 +30,8 @@ export class LeaveReportComponent implements OnInit {
   selectedUser: any = [];
   roleId = localStorage.getItem('roleId');
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
-  
+  totalHours: number = 0;
+
   public getJSON(): Observable<any> {
     return this.http.get(this._jsonURL);
   }
@@ -37,19 +40,20 @@ export class LeaveReportComponent implements OnInit {
     private datepipe: DatePipe
     , private http: HttpClient
     , private timeLogService: TimeLogService
-    , private exportService: ExportService
-    )
-  {
-    this.fromDate= this.datepipe.transform(new Date(this.currentDate.setDate(this.diff)),'yyyy-MM-dd');  
-    this.toDate=this.datepipe.transform(new Date(this.currentDate.setDate(this.lastday)),'yyyy-MM-dd');
-    this.getLeaveData();
+    , private exportService: ExportService,
+    private reportService: ReportsService
+  ) {
+    this.fromDate = this.datepipe.transform(new Date(this.currentDate.setDate(this.diff)), 'yyyy-MM-dd');
+    this.toDate = this.datepipe.transform(new Date(this.currentDate.setDate(this.lastday)), 'yyyy-MM-dd');
+    this.getLeaveReport();
   }
 
   ngOnInit(): void {
     this.populateUsers();
+    this.getLeaveReport()
   }
 
-  populateUsers() {    
+  populateUsers() {
     this.members = [];
     this.members.push({ id: this.currentUser.id, name: "Me", email: this.currentUser.email });
     this.member = this.currentUser;
@@ -74,29 +78,34 @@ export class LeaveReportComponent implements OnInit {
     });
   }
 
-  filterData(){
-    let users = (this.selectedUser === undefined || this.selectedUser.length==0) ? null : this.selectedUser;
+  filterData() {
+    let users = (this.selectedUser === undefined || this.selectedUser.length == 0) ? null : this.selectedUser;
     let fromDate = this.fromDate;
     let toDate = this.toDate;
   }
 
-  getLeaveData(){
-    this.getJSON().subscribe(data => {
-      this.leaveList = data;
-      this.totalDay = data.reduce((sum, elem) => parseInt(sum) + parseInt(elem.total), 0);
-     });
-  }
-
-  exportToExcel(){
+  exportToExcel() {
     this.exportService.exportToExcel('Leave', 'leaveReport', this.leaveList);
   }
-  exportToCsv(){
+  exportToCsv() {
     this.exportService.exportToCSV('Leave', 'leaveReport', this.leaveList);
   }
-  
+
   @ViewChild('leaveReport') content!: ElementRef
-  exportToPdf(){
+  exportToPdf() {
     this.exportService.exportToPdf('Leave', this.content.nativeElement)
+  }
+
+  getLeaveReport() {
+    let searchLeave = new Leave();
+    searchLeave.fromdate = new Date(this.fromDate);
+    searchLeave.todate = new Date(this.toDate);
+
+    searchLeave.users = (this.roleId == "639acb77b5e1ffe22eaa4a39" || this.roleId == "63b56b9ca3396271e4a54b96") ? this.selectedUser : [this.currentUser.email];
+    this.reportService.getLeave(searchLeave).subscribe(result => {
+      this.leaveList = result.data;
+    }
+    )
   }
 
 }

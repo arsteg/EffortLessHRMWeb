@@ -11,33 +11,30 @@
         <div class="d-flex mt-4">
 
             <span class="pt-3 text-muted me-3">Filter&nbsp;by: </span>
-            <mat-form-field appearance="outline" class="filter mx-1 w-25">
-                <mat-label>Members</mat-label>
+            <mat-form-field appearance="outline" class="w-25 mx-1">
+                <mat-label>Select User</mat-label>
                 <mat-select multiple [(ngModel)]="selectedUser">
-                    <mat-option *ngFor="let member of selectedUsers" [value]="member.id"
+                    <mat-option *ngFor="let member of members" [value]="member.id" (click)="filterData()"
                         [selected]="selectedUser?.includes(member?.id)">
-                        {{member.firstName | titlecase}} {{member.lastName | titlecase}}
+                        {{member.name | titlecase}}
                     </mat-option>
                 </mat-select>
             </mat-form-field>
 
-         
-            <input type="date" name="fromDate" id="fromDate" (change)="filterData()" [(ngModel)]="fromDate"
-                class="form-control w-25 calendar mb-4 mx-1" />
-            <div class="mx-1 pt-2">
-                <i class="fa fa-long-arrow-right text-primary mt-2 pt-1"></i>
+            <div class="input-group date-style w-25">
+                <span (click)="SetPreviousDay()" class="fa fa-angle-left fa-lg p-3"></span>
+                <input type="date" name="fromDate" id="fromDate" (change)="filterData()" [(ngModel)]="selectedDate"
+                    class="form-control w-25 calendar mb-4 mx-1" />
+                <span (click)="SetNextDay()" class="fa fa-angle-right fa-lg p-3"></span>
             </div>
-            <input type="date" name="toDate" id="toDate" (change)="filterData()" [(ngModel)]="toDate"
-                class="form-control w-25 calendar mb-4 mx-1" />
 
-                <select class="form-select h-25 dash-select" aria-label="Default select example">
-                    <option selected>All</option>
-                    <option value="1">Late Coming</option>
-                    <option value="2">Early Leaving</option>
-                    <option value="3">Less Tracking</option>
-                    <option value="4">Absent</option>
-                </select>
-
+            <select class="form-select h-25 dash-select" aria-label="Default select example" [(ngModel)]="filterOption">
+                <option value="All" selected>All</option>
+                <option value="Late Coming">Late Coming</option>
+                <option value="Early Leaving">Early Leaving</option>
+                <option value="Less Tracking">Less Tracking</option>
+                <option value="Absent">Absent</option>
+              </select>
             <div class="align-items-start flex-wrap gap-3 ms-auto">
                 <div class="dropdown order-first order-sm-last d-flex">
                     <button class="export-btn dropdown-toggle formrow-inputState form-select select-styled active"
@@ -53,41 +50,41 @@
             </div>
         </div>
 
-        <table class="table  mt-4" id="timeSheet" #timeSheet>
+        <table class="table  mt-4" id="attendances" #attendances>
             <thead>
                 <tr>
-                    <th scope="col" [appSort]="selectedUsers" data-order="{{ sortOrder }}" data-name="firstName"
+                    <th scope="col" [appSort]="attendance" data-order="{{ sortOrder }}" data-name="firstName"
                         (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
                         Users &nbsp;
                         <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                     </th>
 
-                    <th scope="col" [appSort]="selectedUsers" data-order="{{ sortOrder }}" data-name="firstName"
+                    <th scope="col" [appSort]="attendance" data-order="{{ sortOrder }}" data-name="firstName"
                         (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
                         Start &nbsp;
                         <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                     </th>
-                    <th scope="col" [appSort]="selectedUsers" data-order="{{ sortOrder }}" data-name=""
+                    <th scope="col" [appSort]="attendance" data-order="{{ sortOrder }}" data-name=""
                         (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
                         End &nbsp;
                         <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                     </th>
-                    <th scope="col" [appSort]="selectedUsers" data-order="{{ sortOrder }}" data-name=""
+                    <th scope="col" [appSort]="attendance" data-order="{{ sortOrder }}" data-name=""
                         (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
                         Tracked &nbsp;
                         <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                     </th>
-                    <th scope="col" [appSort]="selectedUsers" data-order="{{ sortOrder }}" data-name=""
+                    <th scope="col" [appSort]="attendance" data-order="{{ sortOrder }}" data-name=""
                         (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
                         Manual &nbsp;
                         <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                     </th>
-                    <th scope="col" [appSort]="selectedUsers" data-order="{{ sortOrder }}" data-name=""
+                    <th scope="col" [appSort]="attendance" data-order="{{ sortOrder }}" data-name=""
                         (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
                         Total &nbsp;
                         <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                     </th>
-                    <th scope="col" [appSort]="selectedUsers" data-order="{{ sortOrder }}" data-name=""
+                    <th scope="col" [appSort]="attendance" data-order="{{ sortOrder }}" data-name=""
                         (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
                         Activity &nbsp;
                         <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
@@ -95,19 +92,23 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let users of selectedUsers">
-                    <td><span class="letter ms-2"
-                            [style.background-color]="commonService.getRandomColor(users.lastName)">
-                            {{users.firstName.slice(0,1) | uppercase}}{{users.lastName.slice(0,1) | uppercase}}</span>
-                        {{users?.firstName | titlecase}} {{users?.lastName | titlecase}}</td>
-                    <td>10:00 AM</td>
-                    <td>08.00 PM</td>
-                    <td>08.00</td>
-                    <td>0</td>
-                    <td>08.00</td>
-                    <td>80%</td>
-                </tr>
-               
+                <tr *ngFor="let data of attendance">
+                    <ng-container *ngIf="(filterOption === 'All') || (filterOption === 'Late Coming' && data.starttime > '4:00:00')
+                        || (filterOption === 'Absent' && data.starttime == null)  || (filterOption === 'Early Leaving' && data.time < '480')
+                        || (filterOption === 'Less Tracking' && data.total < '480')">
+                      <td> <span class="letter ms-2"
+                        [style.background-color]="commonservice.getRandomColor(data.lastName)">{{data.firstName.slice(0,1)
+                        | uppercase}}{{data.lastName.slice(0,1) | uppercase}}</span> 
+                        {{data?.firstName | titlecase}} {{data?.lastName | titlecase}}</td>
+                      <td>{{data?.starttime}}</td>
+                      <td>{{data?.endtime}}</td>
+                      <td>{{minutesToTime(data?.time)}}</td>
+                      <td>{{minutesToTime(data?.manual)}}</td>
+                      <td>{{minutesToTime(data?.total)}}</td>
+                      <td>{{data?.activity | date}}</td>
+                    </ng-container>
+                  </tr>
+                  
             </tbody>
         </table>
 

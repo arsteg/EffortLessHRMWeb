@@ -2,10 +2,10 @@
     <div class="container-fluid">
         <div class="d-flex pt-4 w-50">
             <h1 class="">Timesheet</h1>
-            <div class="ms-5 ps-4 pt-2">
-                <button class="buttons">Contract</button>
-                <button class="buttons mx-3">Project</button>
-                <button class="buttons">Members</button>
+            <div class="ms-5 ps-4">
+                <button class="buttons" (click)="toggleAllColumns()"  [ngClass]="{'active': activeButton === 'Contract'}">Contract</button>
+                <button class="buttons mx-3" (click)="toggleProjectsColumn()" [ngClass]="{'active': activeButton === 'Project'}">Project</button>
+                <button class="buttons" (click)="toggleMembersColumn()"  [ngClass]="{'active': activeButton === 'Members'}">Members</button>
             </div>
         </div>
         <hr class="mt-0">
@@ -53,64 +53,30 @@
                 </div>
             </div>
         </div>
-
-        <table class="table  mt-4" id="timeSheet" #timeSheet>
+       
+        
+      <table class="table  mt-4" id="timeSheet" #timeSheet>
             <thead>
                 <tr>
-                    <th scope="col" [appSort]="timeSheett" data-order="{{ sortOrder }}" data-name="users?.user"
+                    <th  *ngIf="showMembersColumn"  scope="col" [appSort]="timeSheett" data-order="{{ sortOrder }}" data-name="user"
                         (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
                         Users &nbsp;
                         <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                     </th>
 
-                    <th scope="col" [appSort]="timeSheett" data-order="{{ sortOrder }}" data-name="users?.user"
+                    <th  *ngIf="showProjectsColumn" scope="col" [appSort]="timeSheett" data-order="{{ sortOrder }}" data-name="project"
                         (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
                         Projects &nbsp;
                         <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                     </th>
-                    <!-- <th scope="col" [appSort]="timeSheett" data-order="{{ sortOrder }}" data-name=""
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-                        Mon &nbsp;
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                    <th scope="col" [appSort]="timeSheett" data-order="{{ sortOrder }}" data-name=""
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-                        Tue &nbsp;
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                    <th scope="col" [appSort]="timeSheett" data-order="{{ sortOrder }}" data-name=""
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-                        Wed &nbsp;
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                    <th scope="col" [appSort]="timeSheett" data-order="{{ sortOrder }}" data-name=""
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-                        Thu &nbsp;
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                    <th scope="col" [appSort]="timeSheett" data-order="{{ sortOrder }}" data-name=""
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-                        Fri &nbsp;
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                    <th scope="col" [appSort]="timeSheett" data-order="{{ sortOrder }}" data-name=""
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-                        Sat &nbsp;
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                    <th scope="col" [appSort]="timeSheett" data-order="{{ sortOrder }}" data-name=""
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-                        Sun &nbsp;
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th> -->
 
-                    <th *ngFor="let day of daysOfWeek" [appSort]="timeSheett" data-order="{{ sortOrder }}"
-                        data-name="users?.user" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">{{ day |
-                        date: 'EEE' }}
+                    <th width="100" *ngFor="let day of daysOfWeek" [appSort]="timeSheett" data-order="{{ sortOrder }}"
+                        data-name="logs?.time" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                        {{ day | date:'LLL'+' ' +'dd' }}
                         <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                     </th>
 
-                    <th scope="col" [appSort]="timeSheett" data-order="{{ sortOrder }}" data-name="users?.user"
+                    <th scope="col" [appSort]="timeSheett" data-order="{{ sortOrder }}" data-name=""
                         (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
                         Total &nbsp;
                         <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
@@ -121,89 +87,28 @@
             </thead>
             <tbody>
                 <tr *ngFor="let users of timeSheett">
-                    <td> {{users?.user}}</td>
-                    <td>{{users?.project}}</td>
-                    <td>
-                        <ul type="none">
-                            <li *ngFor="let log of users.logs">
-                                {{ minutesToTime(log.time) }}
-                            </li>
-                        </ul>
-                    </td>
-                    <td>
-                        <ul type="none">
-                            <li *ngFor="let log of users.logs">
-                                {{ minutesToTime(log.time) }}
-                            </li>
-                        </ul>
-                    </td>
-                    <td>
-                        <ul type="none">
-                            <li *ngFor="let log of users.logs">
-                                {{ minutesToTime(log.time) }}
-                            </li>
-                        </ul>
-                    </td>
-                    <td>
-                        <ul type="none">
-                            <li *ngFor="let log of users.logs">
-                                {{ minutesToTime(log.time) }}
-                            </li>
-                        </ul>
-                    </td>
-                    <td>
-                        <ul type="none">
-                            <li *ngFor="let log of users.logs">
-                                {{ minutesToTime(log.time) }}
-                            </li>
-                        </ul>
-                    </td>
-                    <td>
-                        <ul type="none">
-                            <li *ngFor="let log of users.logs">
-                                {{ minutesToTime(log.time) }}
-                            </li>
-                        </ul>
-                    </td>
-                    <td>
-                        <ul type="none">
-                            <li *ngFor="let log of users.logs">
-                                {{ minutesToTime(log.time) }}
-                            </li>
-                        </ul>
-                    </td>
-                    <!-- total in a week of particular user -->
-                    <td>
-                        <ul type="none">
-                            <li *ngFor="let item of users.logs">
-                                {{ minutesToTime(item.time) }}
-                            </li>
-                        </ul>
-                    </td>
+                    <td  *ngIf="showMembersColumn">
+                        <span class="letter ms-2"
+                        [style.background-color]="commonservice.getRandomColor(users.lastName)">{{users.firstName.slice(0,1)
+                        | uppercase}}{{users.lastName.slice(0,1) | uppercase}}</span> 
+                        {{users?.firstName | titlecase}} {{users?.lastName | titlecase}}</td>
+                    <td *ngIf="showProjectsColumn">{{users?.project}}</td>
 
+                    <td *ngFor="let day of daysOfWeek">
+                        <ng-container *ngFor="let log of users.logs">
+                            <ng-container *ngIf="datepipe.transform(log.date, 'yyyy-MM-dd') === day">
+                                {{ minutesToTime(log.time) }}
+                            </ng-container>
+                        </ng-container>
+                    </td>
+                    <td>{{ minutesToTime(getTotalTime(users.logs)) }}</td>
                 </tr>
-
-            </tbody>
-            <tfoot>
                 <tr>
-
-                    <td colspan="2" class="text-end"><b>Total</b></td>
-                    <td><b>--</b></td>
-                    <td><b>--</b></td>
-                    <td><b>--</b></td>
-                    <td><b>--</b></td>
-                    <td><b>--</b></td>
-                    <td><b>--</b></td>
-                    <td><b>--</b></td>
-
-                    <td><b>{{ minutesToTime(totalHours) }}</b></td>
+                    <td colspan="2" class="text-center pe-2"><b>Total</b></td>
+                    <td *ngFor="let day of daysOfWeek"><b>{{ minutesToTime(getTotalTimeByDay(day)) }}</b></td>
+                    <td><b>{{ minutesToTime(getTotalTimeAllDays()) }}</b></td>
                 </tr>
-            </tfoot>
-        </table>
-
-       
-
-
-
+            </tbody>
+        </table> 
     </div>
 </div>

@@ -24,8 +24,8 @@ export class TimesheetsComponent implements OnInit {
   member: any;
   fromDate: any;
   toDate: any;
-  totalHours:number=0;
-  searchText ='';
+  totalHours: number = 0;
+  searchText = '';
   currentDate: Date = new Date();
   diff: any = this.currentDate.getDate() - this.currentDate.getDay() + (this.currentDate.getDay() === 0 ? -6 : 1);
   lastday: any = this.currentDate.getDate() - (this.currentDate.getDay() - 1) + 6;
@@ -36,74 +36,76 @@ export class TimesheetsComponent implements OnInit {
   selectedTask: any = [];
   roleId = localStorage.getItem('roleId');
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
- public sortOrder: string = ''; // 'asc' or 'desc'
- daysOfWeek:any= [];
-
+  public sortOrder: string = ''; // 'asc' or 'desc'
+  daysOfWeek: any = [];
+  showProjectsColumn = true;
+  showMembersColumn = true;
+  activeButton: string = 'Contract';
+  firstLetter: string;
 
 
   constructor(
     private projectService: ProjectService
-    , private datepipe: DatePipe
+    , public datepipe: DatePipe
     , private http: HttpClient
     , private timeLogService: TimeLogService
     , private exportService: ExportService
-    , private reportService: ReportsService
-    )
-  {
-    this.fromDate= this.datepipe.transform(new Date(this.currentDate.setDate(this.diff)),'yyyy-MM-dd');  
-    this.toDate=this.datepipe.transform(new Date(this.currentDate.setDate(this.lastday)),'yyyy-MM-dd');
+    , private reportService: ReportsService, public commonservice: CommonService
+  ) {
+    this.fromDate = this.datepipe.transform(new Date(this.currentDate.setDate(this.diff)), 'yyyy-MM-dd');
+    this.toDate = this.datepipe.transform(new Date(this.currentDate.setDate(this.lastday)), 'yyyy-MM-dd');
     this.getTimeSheet();
 
     // Get the start and end dates for the current week
-const startOfWeek = moment().startOf('week');
-const endOfWeek = moment().endOf('week');
+    const startOfWeek = moment().startOf('isoWeek');
+    const endOfWeek = moment().endOf('isoWeek');
 
-// Create an array of date strings for the current week
-this.daysOfWeek = [];
-for (let day = startOfWeek; day <= endOfWeek; day = day.clone().add(1, 'day')) {
-  this.daysOfWeek.push(day.format('YYYY-MM-DD'));
-}
+    // Create an array of date strings for the current week
+    this.daysOfWeek = [];
+    for (let day = startOfWeek; day <= endOfWeek; day = day.clone().add(1, 'day')) {
+      this.daysOfWeek.push(day.format('YYYY-MM-DD'));
+    }
+
   }
 
   ngOnInit(): void {
     this.getProjectList();
     this.populateUsers();
     this.getTimeSheet();
-    
+    this.firstLetter = this.commonservice.firstletter;
+  }
+  toggleProjectsColumn() {
+    this.showProjectsColumn = true;
+    this.showMembersColumn = false;
+    this.activeButton = 'Project';
+  }
 
+  toggleMembersColumn() {
+    this.showProjectsColumn = false;
+    this.showMembersColumn = true;
+    this.activeButton = 'Members';
   }
-  getCurrentWeekDates() {
-    let currentDate = new Date();
-    let currentDay = currentDate.getDay() - 1;
-    let currentMonday = new Date(currentDate.setDate(currentDate.getDate() - currentDay));
-    let weekDates = [];
-  
-    for (let i = 0; i < 7; i++) {
-      let nextDay = new Date(currentMonday);
-      nextDay.setDate(currentMonday.getDate() + i);
-      weekDates.push(nextDay);
-    }
-  
-    return weekDates;
+
+  toggleAllColumns() {
+    this.showProjectsColumn = true;
+    this.showMembersColumn = true;
+    this.activeButton = 'Contract';
   }
-  
-  
-    
   getProjectList() {
     //Admin and Manager can see the list of all projects
-    if(this.roleId == "639acb77b5e1ffe22eaa4a39" || this.roleId == "63b56b9ca3396271e4a54b96"){
-        this.projectService.getprojectlist().subscribe((response: any) => {
+    if (this.roleId == "639acb77b5e1ffe22eaa4a39" || this.roleId == "63b56b9ca3396271e4a54b96") {
+      this.projectService.getprojectlist().subscribe((response: any) => {
         this.projectList = response && response.data && response.data['projectList'];
       });
     }
-    else{
+    else {
       this.projectService.getProjectByUserId(this.currentUser.id).subscribe((response: any) => {
         this.projectList = response && response.data && response.data['projectList'];
       });
     }
   }
 
-  populateUsers() {    
+  populateUsers() {
     this.members = [];
     this.members.push({ id: this.currentUser.email, name: "Me", email: this.currentUser.email });
     this.member = this.currentUser;
@@ -128,7 +130,23 @@ for (let day = startOfWeek; day <= endOfWeek; day = day.clone().add(1, 'day')) {
     });
   }
 
-  filterData(){
+  filterData() {
+    // Get the start and end dates from the form inputs
+    const startDate = new Date(this.fromDate);
+    const endDate = new Date(this.toDate);
+
+    // Create a new array of dates for the selected range
+    const startOfWeek = moment(startDate).startOf('isoWeek');
+    const endOfWeek = moment(endDate).endOf('isoWeek');
+    const newDaysOfWeek = [];
+    for (let day = startOfWeek; day <= endOfWeek; day = day.clone().add(1, 'day')) {
+      newDaysOfWeek.push(day.format('YYYY-MM-DD'));
+    }
+
+    // Update the daysOfWeek array with the new dates
+    this.daysOfWeek = newDaysOfWeek;
+
+    // Call the getTimeSheet function to update the time sheet data
     this.getTimeSheet();
   }
 
@@ -137,7 +155,6 @@ for (let day = startOfWeek; day <= endOfWeek; day = day.clone().add(1, 'day')) {
     searchTimesheet.fromdate = new Date(this.fromDate);
     searchTimesheet.todate = new Date(this.toDate);
     searchTimesheet.projects = this.selectedProject;
-   
     searchTimesheet.users = (this.roleId == "639acb77b5e1ffe22eaa4a39" || this.roleId == "63b56b9ca3396271e4a54b96") ? this.selectedUser : [this.currentUser.email];
     this.reportService.getTimesheet(searchTimesheet).subscribe(result => {
       this.timeSheett = result.data;
@@ -145,11 +162,40 @@ for (let day = startOfWeek; day <= endOfWeek; day = day.clone().add(1, 'day')) {
     }
     )
   }
+  minutesToTime(minutes: number): string {
+    const hours: string = Math.floor(minutes / 60).toString().padStart(2, '0');
+    const mins: string = (minutes % 60).toString().padStart(2, '0');
+    return `${hours}:${mins}`;
+  }
 
-  minutesToTime(minutes) {
-    let hours = Math.floor(minutes / 60);
-    minutes = minutes % 60;
-    return hours + ' hr ' + minutes + ' m';
+  getTotalTime(logs: any[]): number {
+    let totalTime = 0;
+    for (const log of logs) {
+      totalTime += log.time;
+    }
+    return totalTime;
+  }
+  getTotalTimeByDay(day: Date): number {
+    let totalTime = 0;
+    this.timeSheett.forEach(user => {
+      user.logs.forEach(log => {
+        if (this.datepipe.transform(log.date, 'yyyy-MM-dd') === this.datepipe.transform(day, 'yyyy-MM-dd')) {
+          totalTime += log.time;
+        }
+      });
+    });
+    return totalTime;
+  }
+
+  // Calculate total time for all days
+  getTotalTimeAllDays(): number {
+    let totalTime = 0;
+    this.timeSheett.forEach(user => {
+      user.logs.forEach(log => {
+        totalTime += log.time;
+      });
+    });
+    return totalTime;
   }
   exportToExcel() {
     this.exportService.exportToExcel('TimeSheets', 'timeSheet', this.timeSheett);
@@ -162,12 +208,5 @@ for (let day = startOfWeek; day <= endOfWeek; day = day.clone().add(1, 'day')) {
   exportToPdf() {
     this.exportService.exportToPdf('TimeSheets', this.content.nativeElement)
   }
-  // getTimeSheet(timeSheet){
-  //   this.reportService.getTimesheet(timeSheet).subscribe( result=> {
-  //     this.timeSheets = result.data;
-  //     this.ngOnInit();
-  //     console.log(this.timeSheets);
-  //   })
-  // }
 
 }

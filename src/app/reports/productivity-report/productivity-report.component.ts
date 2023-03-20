@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { DatePipe } from '@angular/common'; 
+import { DatePipe } from '@angular/common';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { TimeLogService } from 'src/app/_services/timeLogService';
-import { productivityModel } from '../model/productivityModel';
+import { Productivity } from '../model/productivityModel';
+import { ReportsService } from '../reports.service';
+import { CommonService } from 'src/app/common/common.service';
 
 @Component({
   selector: 'app-productivity-report',
@@ -26,32 +28,43 @@ export class ProductivityReportComponent implements OnInit {
   roleId = localStorage.getItem('roleId');
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   firstLetter: string;
-  productivityModel: productivityModel;
   totalActiveTime: Number;
-  
-  public getJSON(): Observable<productivityModel> {
-    var response = this.http.get<productivityModel>(this._jsonURL);
-    return response;
-    //return this.http.get(this._jsonURL);
-  }
+  productivity: any = [];
+  showSingleMember: boolean = true;
+  showAllMembers: boolean = true;
+  public sortOrder: string = ''; // 'asc' or 'desc'
+  activeButton: string = 'Members';
+  // totalProductiveTime = 0;
+  // totalNonProductiveTime = 0;
+
 
   constructor(
     private datepipe: DatePipe
     , private http: HttpClient
-    , private timeLogService: TimeLogService
-  )
-  {
-    this.fromDate= this.datepipe.transform(new Date(this.currentDate.setDate(this.diff)),'yyyy-MM-dd');  
-    this.toDate=this.datepipe.transform(new Date(this.currentDate.setDate(this.lastday)),'yyyy-MM-dd');
-    this.getJSON().subscribe((response: productivityModel) => {
-      this.productivityModel = response;
-      this.totalActiveTime = Number(response.totalTimeTracked) - Number(response.totalIdleTime);
-    })
-    //this.productivityModel = this.getJSON();
+    , private timeLogService: TimeLogService,
+    private reportService: ReportsService,
+    public commonservice: CommonService
+  ) {
+    this.fromDate = this.datepipe.transform(new Date(this.currentDate.setDate(this.diff)), 'yyyy-MM-dd');
+    this.toDate = this.datepipe.transform(new Date(this.currentDate.setDate(this.lastday)), 'yyyy-MM-dd');
+    // const totalProductivePercentage = (totalProductiveTime / (totalProductiveTime + totalNonProductiveTime)) * 100;
   }
 
   ngOnInit(): void {
     this.populateUsers();
+    this.getProductivity();
+    this.toggleSingleMember();
+  }
+
+  toggleSingleMember() {
+    this.showSingleMember = true;
+    this.showAllMembers = false;
+    this.activeButton = 'Single';
+  }
+  toggleAllMembers() {
+    this.showSingleMember = false;
+    this.showAllMembers = true;
+    this.activeButton = 'Members';
   }
 
   populateUsers() {
@@ -79,15 +92,8 @@ export class ProductivityReportComponent implements OnInit {
     });
   }
 
-  filterData(){
-    let users = (this.selectedUser === undefined || this.selectedUser.length==0) ? null : this.selectedUser;
-    let fromDate = this.fromDate;
-    let toDate = this.toDate;
-  }
-
-  millisecondsToMinutes(milliseconds) {
-    let hours = Math.floor((milliseconds / (1000 * 60 * 60)) % 24);
-    return (hours *60) +  Math.floor((milliseconds / (1000 * 60)) % 60);
+  filterData() {
+    this.getProductivity();
   }
 
   minutesToTime(minutes) {
@@ -95,54 +101,56 @@ export class ProductivityReportComponent implements OnInit {
     minutes = minutes % 60;
     return hours + ' hr ' + minutes + ' m';
   }
-  millisecondsToTime(milliseconds) {
-    let hours = Math.floor((milliseconds / (1000 * 60 * 60)) % 24);
-    let minutes = Math.floor((milliseconds / (1000 * 60)) % 60);
-    return hours + ' hr ' + minutes + ' m';
+
+
+  convertToPercentage(total, consumed) {
+    return ((consumed * 100) / total);
   }
 
-  convertToPercentage(total, consumed){
-    return ((consumed*100)/total);
-  }
-
-  averageCount(totalTime, totalCount){
-    return Math.floor(totalCount/totalTime);
-  }
-
-  // calculateActiveTime(totalTime, totalIdleTime){
-  //   return this.minutesToTime(Number(this.millisecondsToMinutes(totalTime)) - Number(this.millisecondsToMinutes(totalIdleTime)));
+  // averageCount(totalTime, totalCount) {
+  //   return Math.floor(totalCount / totalTime);
   // }
 
-  getRandomColor(lastName: string) {
-    let colorMap = {
-      A: '#556def',
-      B: '#faba5c',
-      C: '#0000ff',
-      D: '#ffff00',
-      E: '#00ffff',
-      F: '#ff00ff',
-      G: '#f1421d',
-      H: '#1633eb',
-      I: '#f1836c',
-      J: '#824b40',
-      K: '#256178',
-      L: '#0d3e50',
-      M: '#3c8dad',
-      N: '#67a441',
-      O: '#dc57c3',
-      P: '#673a05',
-      Q: '#ec8305',
-      R: '#00a19d',
-      S: '#2ee8e8',
-      T: '#5c9191',
-      U: '#436a2b',
-      V: '#dd573b',
-      W: '#424253',
-      X: '#74788d',
-      Y: '#16cf96',
-      Z: '#4916cf'
-    };
-    this.firstLetter= lastName.charAt(0).toUpperCase();
-    return colorMap[this.firstLetter] || '#000000';
+  // getRandomColor(lastName: string) {
+  //   let colorMap = {
+  //     A: '#556def',
+  //     B: '#faba5c',
+  //     C: '#0000ff',
+  //     D: '#ffff00',
+  //     E: '#00ffff',
+  //     F: '#ff00ff',
+  //     G: '#f1421d',
+  //     H: '#1633eb',
+  //     I: '#f1836c',
+  //     J: '#824b40',
+  //     K: '#256178',
+  //     L: '#0d3e50',
+  //     M: '#3c8dad',
+  //     N: '#67a441',
+  //     O: '#dc57c3',
+  //     P: '#673a05',
+  //     Q: '#ec8305',
+  //     R: '#00a19d',
+  //     S: '#2ee8e8',
+  //     T: '#5c9191',
+  //     U: '#436a2b',
+  //     V: '#dd573b',
+  //     W: '#424253',
+  //     X: '#74788d',
+  //     Y: '#16cf96',
+  //     Z: '#4916cf'
+  //   };
+  //   this.firstLetter= lastName.charAt(0).toUpperCase();
+  //   return colorMap[this.firstLetter] || '#000000';
+  // }
+  getProductivity() {
+    let searchPrudctivity = new Productivity();
+    searchPrudctivity.fromdate = new Date(this.fromDate);
+    searchPrudctivity.todate = new Date(this.toDate);
+    searchPrudctivity.users = (this.roleId == "639acb77b5e1ffe22eaa4a39" || this.roleId == "63b56b9ca3396271e4a54b96") ? this.selectedUser : [this.currentUser.email];
+    this.reportService.getProductivity(searchPrudctivity).subscribe(result => {
+      this.productivity = result.data;
+    }
+    )
   }
 }

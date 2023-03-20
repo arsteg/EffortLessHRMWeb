@@ -29,3 +29,27 @@ export class Timesheet{
   fromdate:Date = new Date();      
   todate: Date= new Date();
 }
+export class Leave{
+    users: [];
+    fromdate:Date = new Date();      
+    todate: Date= new Date();
+}
+
+export class Activity{
+  users: [];
+  projects: [];
+  tasks: [];
+  fromdate:Date = new Date();      
+  todate: Date= new Date();
+}
+
+export class Productivity{
+  users: [];
+  fromdate:Date = new Date();      
+  todate: Date= new Date();
+}
+export class Attendance{
+  users: [];
+  fromdate:Date = new Date();      
+  todate: Date= new Date();
+}

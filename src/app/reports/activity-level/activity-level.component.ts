@@ -1,12 +1,14 @@
 import { Component,ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CommonService } from 'src/app/common/common.service';
-import { ManageTeamService } from 'src/app/_services/manage-team.service'; 
+import { ManageTeamService } from 'src/app/_services/manage-team.service';
 import { TimeLogService } from 'src/app/_services/timeLogService';
-import { SearchTaskRequest } from '../model/productivityModel';
+import { Activity } from 'src/app/reports/model/productivityModel';
 import { DatePipe } from '@angular/common';
-import { ReportsService } from '../reports.service';
-import { ProjectService } from 'src/app/Project/project.service'; 
-import { ExportService } from 'src/app/_services/export.service'; 
+import { ReportsService } from 'src/app/reports/reports.service';
+import { ProjectService } from 'src/app/Project/project.service';
+import { ExportService } from 'src/app/_services/export.service';
+import { HttpClient } from '@angular/common/http';
+import * as moment from 'moment';
 @Component({
   selector: 'app-activity-level',
   templateUrl: './activity-level.component.html',
@@ -14,8 +16,8 @@ import { ExportService } from 'src/app/_services/export.service';
 })
 export class ActivityLevelComponent implements OnInit {
   selectedManager: any;
-  selectedUsers: any;
-  selectedUser: any;
+  members: any;
+  member: any;
   teamOfUsers: any[];
   firstLetter: string;
   color: string;
@@ -34,58 +36,82 @@ export class ActivityLevelComponent implements OnInit {
   lastday: any = this.currentDate.getDate() - (this.currentDate.getDay() - 1) + 6;
   totalHours: number = 0;
   userId: string;
+  activity: any [];
+  daysOfWeek: any = [];
+  showProjectsColumn = true;
+  showMembersColumn = true;
+  selectedUser: any = [];
+  activeButton: string = 'Contract';
 
   constructor(private timelog: TimeLogService,
     private manageTeamService: ManageTeamService,
-    public commonService: CommonService,
-    private datepipe: DatePipe,
+    public commonservice: CommonService,
+    public datepipe: DatePipe,
     private reportService: ReportsService,
     private projectService: ProjectService,
     private exportService: ExportService) {
 
     this.fromDate = this.datepipe.transform(new Date(this.currentDate.setDate(this.diff)), 'yyyy-MM-dd');
     this.toDate = this.datepipe.transform(new Date(this.currentDate.setDate(this.lastday)), 'yyyy-MM-dd');
-    this.getTaskData();
+    this.getActivity();
 
+    
+    // Get the start and end dates for the current week
+    const startOfWeek = moment().startOf('isoWeek');
+    const endOfWeek = moment().endOf('isoWeek');
+
+    // Create an array of date strings for the current week
+    this.daysOfWeek = [];
+    for (let day = startOfWeek; day <= endOfWeek; day = day.clone().add(1, 'day')) {
+      this.daysOfWeek.push(day.format('YYYY-MM-DD'));
+    }
   }
 
   ngOnInit(): void {
-    this.populateTeamOfUsers();
-    this.getProjectsByUser();
-    this.firstLetter = this.commonService.firstletter;
+    this.getProjectList();
+    this.populateUsers();
+    this.firstLetter = this.commonservice.firstletter;
+    this.getActivity();
   }
-  getProjectsByUser() {
-    this.projectService.getProjectByUserId(this.selectedUsers).subscribe(response => {
-      this.projectList = response && response.data && response.data['projectList'];
-    });
-  }
-  populateTeamOfUsers() {
-    this.manageTeamService.getAllUsers().subscribe({
-      next: result => {
-        this.teamOfUsers = result.data.data;
-        console.log(this.teamOfUsers)
-        let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        this.teamOfUsers.forEach((user: any, index: number) => {
-          if (user.id == currentUser.id) {
-            this.selectedManager = user;
-            this.Selectmanager(user);
-          }
-        });
-      },
-      error: error => { }
-    })
+  toggleMembersColumn() {
+    this.showProjectsColumn = false;
+    this.showMembersColumn = true;
+    this.activeButton = 'Members';
   }
 
-  Selectmanager(user: any) {
-    this.selectedManager = user;
-    this.timelog.getTeamMembers(user.id).subscribe({
-      next: response => {
+  toggleAllColumns() {
+    this.showProjectsColumn = true;
+    this.showMembersColumn = true;
+    this.activeButton = 'Contract';
+  }
+  
+  getProjectList() {
+    //Admin and Manager can see the list of all projects
+    if (this.roleId == "639acb77b5e1ffe22eaa4a39" || this.roleId == "63b56b9ca3396271e4a54b96") {
+      this.projectService.getprojectlist().subscribe((response: any) => {
+        this.projectList = response && response.data && response.data['projectList'];
+      });
+    }
+    else {
+      this.projectService.getProjectByUserId(this.currentUser.id).subscribe((response: any) => {
+        this.projectList = response && response.data && response.data['projectList'];
+      });
+    }
+  }
+
+  populateUsers() {
+    this.members = [];
+    this.members.push({ id: this.currentUser.email, name: "Me", email: this.currentUser.email });
+    this.member = this.currentUser;
+    this.timelog.getTeamMembers(this.member.id).subscribe({
+      next: (response: { data: any; }) => {
         this.timelog.getusers(response.data).subscribe({
           next: result => {
-            this.selectedUsers = result.data;
-            this.teamOfUsers.forEach((user: any, index: number) => {
-              user['isChecked'] = this.selectedUsers.some((selectedUser: any) => selectedUser.id == user.id);
-            });
+            result.data.forEach(user => {
+              if (user.email != this.currentUser.email) {
+                this.members.push({ id: user.email, name: `${user.firstName} ${user.lastName}`, email: user.email });
+              }
+            })
           },
           error: error => {
             console.log('There was an error!', error);
@@ -98,33 +124,42 @@ export class ActivityLevelComponent implements OnInit {
     });
   }
 
+  minutesToTime(minutes) {
+    let hours = Math.floor(minutes / 60);
+    minutes = minutes % 60;
+    return hours + ' hr ' + minutes + ' m';
+  }
+  
   filterData() {
-    this.getTaskData();
+    this.getActivity();
   }
 
-  getTaskData() {
-    let searchTaskRequest = new SearchTaskRequest();
-    searchTaskRequest.fromdate = new Date(this.fromDate);
-    searchTaskRequest.todate = new Date(this.toDate);
-    searchTaskRequest.projects = this.selectedProject;
-    searchTaskRequest.tasks = this.selectedTask;
-    searchTaskRequest.users = (this.roleId == "639acb77b5e1ffe22eaa4a39" || this.roleId == "63b56b9ca3396271e4a54b96") ? this.selectedUser : [this.currentUser.email];
-    this.reportService.getTaskReport(searchTaskRequest).subscribe(result => {
-      this.taskList = result.data;
-      this.totalHours = result.data.reduce((sum, elem) => parseInt(sum) + parseInt(elem.time), 0);
-    }
-    )
-  }
+  
   exportToExcel() {
-    this.exportService.exportToExcel('TimeSheets', 'timeSheet', this.selectedUsers);
+    this.exportService.exportToExcel('Activity', 'activityExport', this.activity);
   }
   exportToCsv() {
-    this.exportService.exportToCSV('TimeSheets', 'timeSheet', this.selectedUsers);
+    this.exportService.exportToCSV('Activity', 'activityExport', this.activity);
   }
 
-  @ViewChild('timeSheet') content!: ElementRef
+  @ViewChild('activityExport') content!: ElementRef
   exportToPdf() {
-    this.exportService.exportToPdf('TimeSheets', this.content.nativeElement)
+    this.exportService.exportToPdf('Activity', this.content.nativeElement)
+  }
+
+  getActivity(){
+    let searchActivity = new Activity();
+    searchActivity.projects = this.selectedProject;
+    searchActivity.tasks = [];
+    searchActivity.fromdate = new Date(this.fromDate);
+    searchActivity.todate = new Date(this.toDate);
+    searchActivity.users = (this.roleId == "639acb77b5e1ffe22eaa4a39" || this.roleId == "63b56b9ca3396271e4a54b96") ? this.selectedUser : [this.currentUser.email];
+    this.reportService.getActivity(searchActivity).subscribe(result => {
+      this.activity = result.data;
+      this.totalHours = result.data.reduce((sum, elem) => parseInt(sum) + parseInt(elem.time), 0);
+      console.log("activity: ",this.activity)
+    }
+    )
   }
 }
 

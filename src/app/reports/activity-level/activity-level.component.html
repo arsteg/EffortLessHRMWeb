@@ -1,42 +1,42 @@
 <div class="main-content pt-0">
     <div class="container-fluid">
         <div class="d-flex pt-4 w-50">
-            <h1 class="">Activity Level</h1>
-            <div class="ms-5 ps-4 pt-2">
-                <button class="buttons">Contracts</button>
-                <button class="buttons mx-3">Members</button>
+            <h1 class="">Activity</h1>
+            <div class="ms-5 ps-4">
+                <button class="buttons" (click)="toggleAllColumns()"  [ngClass]="{'active': activeButton === 'Contract'}">Contract</button>
+                <button class="buttons" (click)="toggleMembersColumn()"  [ngClass]="{'active': activeButton === 'Members'}">Members</button>
             </div>
         </div>
         <hr class="mt-0">
         <div class="d-flex mt-4">
 
             <span class="pt-3 text-muted me-3">Filter&nbsp;by: </span>
-            <mat-form-field appearance="outline" class="filter w-25 mx-1">
-                <mat-label>Members</mat-label>
+            <mat-form-field appearance="outline" class="w-25 mx-1">
+                <mat-label>Select User</mat-label>
                 <mat-select multiple [(ngModel)]="selectedUser">
-                    <mat-option *ngFor="let member of selectedUsers" [value]="member.id"
+                    <mat-option *ngFor="let member of members" [value]="member.id" (click)="filterData()"
                         [selected]="selectedUser?.includes(member?.id)">
-                        {{member.firstName | titlecase}} {{member.lastName | titlecase}}
+                        {{member.name | titlecase}}
                     </mat-option>
                 </mat-select>
             </mat-form-field>
 
-
+            <mat-form-field appearance="outline" class="w-25 mx-1">
+                <mat-label>Select Project</mat-label>
+                <mat-select multiple [(ngModel)]="selectedProject">
+                    <mat-option *ngFor="let project of projectList" [value]="project.id" (click)="filterData()"
+                        [selected]="selectedProject?.includes(project?.id)">
+                        {{project.projectName | titlecase}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
             <input type="date" name="fromDate" id="fromDate" (change)="filterData()" [(ngModel)]="fromDate"
-                class="form-control w-25 calendar mb-4 mx-1" />
-            <div class="mx-1 pt-2">
-                <i class="fa fa-long-arrow-right text-primary  mt-2 pt-1"></i>
+                class="form-control calendar mb-4 mx-1" />
+            <div class="mx-1 pt-3">
+                <i class="fa fa-long-arrow-right text-primary"></i>
             </div>
             <input type="date" name="toDate" id="toDate" (change)="filterData()" [(ngModel)]="toDate"
-                class="form-control w-25 calendar mb-4 mx-1" />
-
-            <select class="form-select h-25 dash-select" aria-label="Default select example">
-                <option selected>All</option>
-                <option value="1">Late Coming</option>
-                <option value="2">Early Leaving</option>
-                <option value="3">Less Tracking</option>
-                <option value="4">Absent</option>
-            </select>
+                class="form-control calendar mb-4 mx-1" />
 
             <div class="align-items-start flex-wrap gap-3 ms-auto">
                 <div class="dropdown order-first order-sm-last d-flex">
@@ -52,57 +52,30 @@
                 </div>
             </div>
         </div>
-
-        <table class="table  mt-4" id="timeSheet" #timeSheet>
+       
+        
+      <table class="table  mt-4" id="activityExport" #activityExport>
             <thead>
                 <tr>
-                    <th scope="col" [appSort]="" data-order="{{ sortOrder }}" data-name="firstName"
+                    <th  *ngIf="showMembersColumn"  scope="col" [appSort]="activity" data-order="{{ sortOrder }}" data-name="user"
                         (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
                         Users &nbsp;
                         <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                     </th>
 
-                    <th scope="col" [appSort]="" data-order="{{ sortOrder }}" data-name="firstName"
+                    <th *ngIf="showProjectsColumn" scope="col" [appSort]="activity" data-order="{{ sortOrder }}" data-name="project"
                         (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
                         Projects &nbsp;
                         <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                     </th>
-                    <th scope="col" [appSort]="" data-order="{{ sortOrder }}" data-name=""
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-                        Mon &nbsp;
+
+                    <th width="100" *ngFor="let day of daysOfWeek" [appSort]="activity" data-order="{{ sortOrder }}"
+                        data-name="logs?.time" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                        {{ day | date:'LLL'+' ' +'dd' }}
                         <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                     </th>
-                    <th scope="col" [appSort]="" data-order="{{ sortOrder }}" data-name=""
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-                        Tue &nbsp;
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                    <th scope="col" [appSort]="" data-order="{{ sortOrder }}" data-name=""
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-                        Wed &nbsp;
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                    <th scope="col" [appSort]="" data-order="{{ sortOrder }}" data-name=""
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-                        Thu &nbsp;
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                    <th scope="col" [appSort]="" data-order="{{ sortOrder }}" data-name=""
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-                        Fri &nbsp;
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                    <th scope="col" [appSort]="" data-order="{{ sortOrder }}" data-name=""
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-                        Sat &nbsp;
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                    <th scope="col" [appSort]="" data-order="{{ sortOrder }}" data-name=""
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-                        Sun &nbsp;
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                    <th scope="col" [appSort]="" data-order="{{ sortOrder }}" data-name=""
+
+                    <th scope="col" [appSort]="activity" data-order="{{ sortOrder }}" data-name=""
                         (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
                         Average &nbsp;
                         <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
@@ -110,20 +83,20 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let users of selectedUsers">
-                    <td><span class="letter ms-2"
-                            [style.background-color]="commonService.getRandomColor(users.lastName)">
-                            {{users.firstName.slice(0,1) | uppercase}}{{users.lastName.slice(0,1) | uppercase}}</span>
+                <tr *ngFor="let users of activity">
+                    <td *ngIf="showMembersColumn"> 
+                        <span class="letter ms-2"
+                                [style.background-color]="commonservice.getRandomColor(users.lastName)">{{users.firstName.slice(0,1)
+                                | uppercase}}{{users.lastName.slice(0,1) | uppercase}}</span> 
                         {{users?.firstName | titlecase}} {{users?.lastName | titlecase}}</td>
-                    <td></td>
-
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td *ngIf="showProjectsColumn">{{users?.project}}</td>
+                    <td *ngFor="let day of daysOfWeek">
+                        <ng-container >
+                            <ng-container *ngIf="datepipe.transform(users.date, 'yyyy-MM-dd') === day">
+                                {{ minutesToTime(users.time) }}
+                            </ng-container>
+                        </ng-container>
+                    </td>
                     <td class="px-3 d-flex">
                         <div class="progress w-100 mt-1">
                             <div class="progress-bar bg-danger" role="progressbar" style="width: 30%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
@@ -131,9 +104,7 @@
                           <span class="progress-percentage">30%</span>
                     </td>
                 </tr>
-
             </tbody>
-        </table>
-
+        </table> 
     </div>
 </div>
