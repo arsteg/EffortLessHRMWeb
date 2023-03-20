@@ -1,10 +1,11 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ProjectService } from '../../Project/project.service';
 import { DatePipe } from '@angular/common'; 
-import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { TimeLogService } from 'src/app/_services/timeLogService';
 import { ExportService } from 'src/app/_services/export.service';
+import { SearchAppUsagesRequest } from '../model/productivityModel';
+import { ReportsService } from '../reports.service';
 
 @Component({
   selector: 'app-app-and-website-usage',
@@ -13,7 +14,6 @@ import { ExportService } from 'src/app/_services/export.service';
 })
 export class AppAndWebsiteUsageComponent implements OnInit {
 
-  private _jsonURL = '.../../../assets/appreports.json';
   projectList: any;
   userId: string;
   projectId: string;
@@ -30,12 +30,8 @@ export class AppAndWebsiteUsageComponent implements OnInit {
   p: number = 1;
   selectedUser: any = [];
   selectedProject: any = [];
-  roleId = localStorage.getItem('roleId');
+  roleName = localStorage.getItem('roleName');
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
-  
-  public getJSON(): Observable<any> {
-    return this.http.get(this._jsonURL);
-  }
 
   constructor(
     private projectService: ProjectService,
@@ -43,21 +39,22 @@ export class AppAndWebsiteUsageComponent implements OnInit {
     , private http: HttpClient
     , private timeLogService: TimeLogService
     , private exportService: ExportService
+    , private reportService: ReportsService
     )
   {
     this.fromDate= this.datepipe.transform(new Date(this.currentDate.setDate(this.diff)),'yyyy-MM-dd');  
     this.toDate=this.datepipe.transform(new Date(this.currentDate.setDate(this.lastday)),'yyyy-MM-dd');
-    this.getApplicationData();
   }
 
   ngOnInit(): void {
     this.getProjectList();
     this.populateUsers();
+    this.getApplicationData();
   }
 
   getProjectList() {
     //Admin and Manage can see the list of all projects
-    if(this.roleId == "639acb77b5e1ffe22eaa4a39" || this.roleId == "63b56b9ca3396271e4a54b96"){
+    if(this.roleName.toLocaleLowerCase() === "admin"){
         this.projectService.getprojectlist().subscribe((response: any) => {
         this.projectList = response && response.data && response.data['projectList'];
       });
@@ -95,26 +92,24 @@ export class AppAndWebsiteUsageComponent implements OnInit {
   }
 
   filterData(){
-    let users = (this.selectedUser === undefined || this.selectedUser.length==0) ? null : this.selectedUser;
-    let project = (this.selectedProject=== undefined || this.selectedProject.length==0) ? null : this.selectedProject;
-    let fromDate = this.fromDate;
-    let toDate = this.toDate;
-    //this.getApplicationDatav1();
+    this.getApplicationData();
   }
 
-  // getApplicationDatav1(){
-  //   this.getJSON().subscribe(data => {
-  //     data = data.filter(d => d.task == "Dovestones software ticket")
-  //     this.appUsagesList = data;
-  //     this.totalHours = data.reduce((sum, elem) => parseInt(sum) + parseInt(elem.duration), 0);
-  //    });
-  // }
-
   getApplicationData(){
-    this.getJSON().subscribe(data => {
-      this.appUsagesList = data;
-      this.totalHours = data.reduce((sum, elem) => parseInt(sum) + parseInt(elem.total), 0);
-     });
+    let searchAppUsagesRequest = new SearchAppUsagesRequest();
+    searchAppUsagesRequest.fromdate = new Date(this.fromDate);
+    searchAppUsagesRequest.todate = new Date(this.toDate);
+    searchAppUsagesRequest.projects = this.selectedProject;
+    searchAppUsagesRequest.users = (this.roleName.toLocaleLowerCase() === "admin") ? this.selectedUser : [this.currentUser.id];
+    this.reportService.getAppUsagesReport(searchAppUsagesRequest).subscribe(result => {
+      this.appUsagesList = result.data;
+      this.totalHours = result.data.reduce((sum, elem) => parseInt(sum) + parseInt(elem.timeSpent), 0);
+    }
+    )
+  }
+
+  InactivitTime(idletime, totalTime){
+    return Math.floor((idletime*100) / totalTime);
   }
 
   millisecondsToTime(milliseconds) {

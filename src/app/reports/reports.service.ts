@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { Activity, Attendance, Leave, Productivity, SearchTaskRequest, Timesheet } from './model/productivityModel';
+import { Activity, Attendance, Leave, Productivity, SearchAppUsagesRequest, SearchTaskRequest, Timesheet } from './model/productivityModel';
 
 @Injectable({ providedIn: 'root' })
 
@@ -87,6 +87,19 @@ export class ReportsService {
       withCredentials: true
     };
     return this.http.post<any>(`${environment.apiUrlDotNet}/report/getattandance`, attendance, httpOptions);
+  }
+
+  getAppUsagesReport(searchTaskRequest: SearchAppUsagesRequest): Observable<any> {
+    let token = localStorage.getItem('jwtToken');
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Authorization': `Bearer ${token}`
+      }),
+      withCredentials: true
+    };
+    return this.http.post<any>(`${environment.apiUrlDotNet}/report/getappwebsite`, searchTaskRequest, httpOptions);
   }
   
 }

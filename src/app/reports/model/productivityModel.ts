@@ -53,3 +53,10 @@ export class Attendance{
   fromdate:Date = new Date();      
   todate: Date= new Date();
 }
+
+export class SearchAppUsagesRequest {
+  users: [];
+  projects: []; 
+  fromdate:Date = new Date();      
+  todate: Date= new Date();
+}

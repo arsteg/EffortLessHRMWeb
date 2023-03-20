@@ -46,10 +46,7 @@
             <table class="table  mt-4" id="applicationUsages" #applicationUsages>
                 <thead>
                     <tr>
-                        <th scope="col" [appSort]="appUsagesList" data-order="desc" data-name="application">Application &nbsp;
-                            <i class="bi bi-arrow-up sort"></i>
-                        </th>
-                        <th scope="col" [appSort]="appUsagesList" data-order="desc" data-name="type">Type &nbsp; 
+                        <th scope="col" [appSort]="appUsagesList" data-order="desc" data-name="name">Application &nbsp;
                             <i class="bi bi-arrow-up sort"></i>
                         </th>
                         <th scope="col" [appSort]="appUsagesList" data-order="desc" data-name="project">Project &nbsp; 
@@ -58,41 +55,40 @@
                         <th scope="col" [appSort]="appUsagesList" data-order="desc" data-name="user">Member &nbsp;
                             <i class="bi bi-arrow-up sort"></i>
                         </th>
-                        <th scope="col" [appSort]="appUsagesList" data-order="desc" data-name="mouse">Mouse &nbsp;
+                        <th scope="col" [appSort]="appUsagesList" data-order="desc" data-name="mouseClicks">Mouse Clicks &nbsp;
                             <i class="bi bi-arrow-up sort"></i>
                         </th>
-                        <th scope="col" [appSort]="appUsagesList" data-order="desc" data-name="mouseScroll">Scroll &nbsp;
+                        <th scope="col" [appSort]="appUsagesList" data-order="desc" data-name="scrollingNumber">Mouse Scroll &nbsp;
                             <i class="bi bi-arrow-up sort"></i>
                         </th>
-                        <th scope="col" [appSort]="appUsagesList" data-order="desc" data-name="keyboard">Keyboard &nbsp;
+                        <th scope="col" [appSort]="appUsagesList" data-order="desc" data-name="keyboardStrokes">keyboard Strokes &nbsp;
                             <i class="bi bi-arrow-up sort"></i>
                         </th>
                         <th scope="col" [appSort]="appUsagesList" data-order="desc" data-name="inactive">Inactive (%) &nbsp;
                             <i class="bi bi-arrow-up sort"></i>
                         </th>
-                        <th scope="col" [appSort]="appUsagesList" data-order="desc" data-name="total">Hours &nbsp;
+                        <th scope="col" [appSort]="appUsagesList" data-order="desc" data-name="TimeSpent">Hours &nbsp;
                             <i class="bi bi-arrow-up sort"></i>
                         </th>
-                        <th scope="col" [appSort]="appUsagesList" data-order="desc" data-name="date">Date</th>
+                        <!-- <th scope="col" [appSort]="appUsagesList" data-order="desc" data-name="date">Date</th> -->
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngFor="let data of appUsagesList | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
-                        <td>{{ data.application | titlecase }}</td>
-                        <td>{{ data.type }}</td>
+                        <td>{{ data.name | titlecase }}</td>
                         <td>{{ data.project }}</td>
                         <td>{{ data.user }}</td>
-                        <td>{{ data.mouse }}</td>
-                        <td>{{ data.mouseScroll }}</td>
-                        <td>{{ data.keyboard }}</td>
-                        <td>{{ data.inactive }}</td>
-                        <td>{{ millisecondsToTime(data.total) }}</td>
-                        <td>{{ data.date | date:'dd MMM, yyyy'}}</td>
+                        <td>{{ data.mouseClicks }}</td>
+                        <td>{{ data.scrollingNumber }}</td>
+                        <td>{{ data.keyboardStrokes }}</td>
+                        <td>{{ InactivitTime(data.inactive, data.timeSpent) }}</td>
+                        <td>{{ millisecondsToTime(data.timeSpent) }}</td>
+                        <!-- <td>{{ data.date | date:'dd MMM, yyyy'}}</td> -->
                     </tr>
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="7" style="text-align:right;"><b>Total</b></td>
+                        <td colspan="6" style="text-align:right;"><b>Total</b></td>
                         <td></td>
                         <td colspan="2"><b>{{millisecondsToTime(totalHours)}}</b></td>
                     </tr>
