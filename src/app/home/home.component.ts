@@ -21,10 +21,12 @@ export class HomeComponent implements OnInit {
   constructor(private router: Router, private auth: AuthenticationService) { }
 
   ngOnInit(): void {
+    localStorage.setItem('roleName', 'user');
     let roleId = localStorage.getItem('roleId');
     this.adminView = localStorage.getItem('adminView');
     this.auth.getRole(roleId).subscribe((response: any) => {
       let role = response && response.data && response.data[0].Name;
+      localStorage.setItem('roleName', role.toLowerCase());
       if (this.adminView) {
         if (this.adminView.toLowerCase() == 'admin') {
           this.menuList = SideBarAdminMenu;
@@ -68,6 +70,7 @@ export class HomeComponent implements OnInit {
   }
 
   onLogout() {
+    localStorage.removeItem('roleName');
     localStorage.removeItem('jwtToken');
     localStorage.removeItem('user.email')
     this.router.navigateByUrl('/main')
