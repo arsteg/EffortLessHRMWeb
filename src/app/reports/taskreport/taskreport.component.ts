@@ -31,7 +31,7 @@ export class TaskreportComponent implements OnInit {
   selectedUser: any = [];
   selectedProject: any = [];
   selectedTask: any = [];
-  roleId = localStorage.getItem('roleId');
+  roleName = localStorage.getItem('roleName');
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
   constructor(
@@ -45,17 +45,17 @@ export class TaskreportComponent implements OnInit {
   {
     this.fromDate= this.datepipe.transform(new Date(this.currentDate.setDate(this.diff)),'yyyy-MM-dd');  
     this.toDate=this.datepipe.transform(new Date(this.currentDate.setDate(this.lastday)),'yyyy-MM-dd');
-    this.getTaskData();
   }
 
   ngOnInit(): void {
     this.getProjectList();
     this.populateUsers();
+    this.getTaskData();
   }
 
   getProjectList() {
     //Admin and Manager can see the list of all projects
-    if(this.roleId == "639acb77b5e1ffe22eaa4a39" || this.roleId == "63b56b9ca3396271e4a54b96"){
+    if(this.roleName.toLocaleLowerCase() === "admin"){
         this.projectService.getprojectlist().subscribe((response: any) => {
         this.projectList = response && response.data && response.data['projectList'];
       });
@@ -102,7 +102,7 @@ export class TaskreportComponent implements OnInit {
     searchTaskRequest.todate = new Date(this.toDate);
     searchTaskRequest.projects = this.selectedProject;
     searchTaskRequest.tasks = this.selectedTask;
-    searchTaskRequest.users = (this.roleId == "639acb77b5e1ffe22eaa4a39" || this.roleId == "63b56b9ca3396271e4a54b96") ? this.selectedUser : [this.currentUser.email];
+    searchTaskRequest.users = (this.roleName.toLocaleLowerCase() === "admin") ? this.selectedUser : [this.currentUser.email];
     this.reportService.getTaskReport(searchTaskRequest).subscribe(result => {
       this.taskList = result.data;
       this.totalHours = result.data.reduce((sum, elem) => parseInt(sum) + parseInt(elem.time), 0);
