@@ -1,6 +1,6 @@
 <div class="d-flex" id="wrapper">
   <mat-drawer-container class="example-container" [hasBackdrop]="hasBackdrop.value">
-    <mat-drawer #drawer [mode]="mode.value" class="pe-3">
+    <mat-drawer #drawer  [mode]="mode.value" class=" drawer">
       <div class="bg-light sidebar-title border-right" id="sidebar-wrapper"
     [ngClass]="isCollapsedMenu ? 'collapsed-menu' : 'show'">
     <div class="sidebar-heading">Effortless HRM</div>
@@ -10,8 +10,8 @@
         <li class="nav-item has-submenu">
           <a class="nav-link sidebar-links d-flex" [ngClass]="{'active': menu.url== ''}" [routerLink]="menu.url"
             routerLinkActive="active" (click)="clickMenu(menu.id)">
-            <span [ngClass]="menu.icon" class="me-2 collapse-icons"></span>
-            {{menu.title}}
+            <span [ngClass]="menu.icon" class=" pt-1 collapse-icons"></span>
+           <span class="menu-title"> {{menu.title}}</span>
             <span class="fa fa-caret-down pull-right mt-1" *ngIf="menu.subMenu && menu.subMenu.length"></span>
           </a>
           <ul class="submenu p-0" *ngFor="let sm of menu.subMenu">

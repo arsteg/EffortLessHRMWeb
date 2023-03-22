@@ -28,7 +28,7 @@ export class LeaveReportComponent implements OnInit {
   leaveList: any = [];
   p: number = 1;
   selectedUser: any = [];
-  roleId = localStorage.getItem('roleId');
+  roleName = localStorage.getItem('roleName');
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   totalHours: number = 0;
 
@@ -101,7 +101,7 @@ export class LeaveReportComponent implements OnInit {
     searchLeave.fromdate = new Date(this.fromDate);
     searchLeave.todate = new Date(this.toDate);
 
-    searchLeave.users = (this.roleId == "639acb77b5e1ffe22eaa4a39" || this.roleId == "63b56b9ca3396271e4a54b96") ? this.selectedUser : [this.currentUser.email];
+    searchLeave.users = (this.roleName.toLocaleLowerCase() === "admin") ? this.selectedUser : [this.currentUser.id];
     this.reportService.getLeave(searchLeave).subscribe(result => {
       this.leaveList = result.data;
     }

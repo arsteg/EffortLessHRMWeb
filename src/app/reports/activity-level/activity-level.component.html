@@ -57,7 +57,7 @@
       <table class="table  mt-4" id="activityExport" #activityExport>
             <thead>
                 <tr>
-                    <th  *ngIf="showMembersColumn"  scope="col" [appSort]="activity" data-order="{{ sortOrder }}" data-name="user"
+                    <th  *ngIf="showMembersColumn"  scope="col" [appSort]="activity" data-order="{{ sortOrder }}" data-name="firstName"
                         (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
                         Users &nbsp;
                         <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>

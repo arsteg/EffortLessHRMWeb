@@ -1,9 +1,11 @@
 .sidebar-links {
     margin: 5px 0;
 }
-.navbar{
+
+.navbar {
     box-shadow: 1px 1px 5px #e2dcdc;
 }
+
 .menuitem,
 .sidebar-links {
     cursor: pointer;
@@ -38,15 +40,14 @@
     width: 60px;
 }
 
-.header-icons{
+.header-icons {
     color: grey;
     font-size: 24px;
 }
-/* .sidebar-title:hover{
-    overflow-y: scroll;
-    overflow-x: hidden;
-} */
 
+.menu-title{
+    padding-inline: inherit;
+}
 .col-links {
     margin-top: -1.3px;
 }
@@ -177,30 +178,29 @@
     margin: 10px;
 }
 
-/* width */
+
 *::-webkit-scrollbar {
     width: 5px;
-  }
-  
-  /* Track */
-  *::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 5px grey; 
+}
+
+*::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey;
     border-radius: 10px;
-  }
-   
-  /* Handle */
-  *::-webkit-scrollbar-thumb {
-    background: grey; 
+}
+
+*::-webkit-scrollbar-thumb {
+    background: grey;
     border-radius: 10px;
-  }
-  
-  .mat-drawer-container .mat-drawer .mat-drawer-inner-container{
-    overflow:hidden !important;
-    height: auto !important;
-  }
-  .mat-drawer-container{
+}
+
+.mat-drawer-inner-container {
+    overflow: initial !important;
+}
+
+.mat-drawer-container {
     overflow: visible !important;
-  }
-  .mat-drawer-inner-container::-webkit-scrollbar {
-    /* display: none !important; */
+}
+
+.mat-drawer-inner-container::-webkit-scrollbar {
+    display: none !important;
 }

@@ -331,6 +331,7 @@ select {
   font-size: 13px;
   padding: 6px 12px;
   text-decoration: none;
+  cursor: pointer;
 }
 
 #dropdown-export {

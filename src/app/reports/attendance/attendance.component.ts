@@ -34,7 +34,7 @@ export class AttendanceComponent implements OnInit {
   selectedUser: any = [];
   selectedProject: any = [];
   selectedTask: any = [];
-  roleId = localStorage.getItem('roleId');
+  roleName = localStorage.getItem('roleName');
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   public sortOrder: string = ''; // 'asc' or 'desc'
   daysOfWeek: any = [];
@@ -43,6 +43,7 @@ export class AttendanceComponent implements OnInit {
   selectedDate: any = this.datepipe.transform(new Date(), "yyyy-MM-dd");
   selectedFilter = 'All';
   firstLetter: string;
+  portalType : string;
 
 filterOption: string = 'All'
   constructor(
@@ -98,7 +99,7 @@ filterOption: string = 'All'
     let attendance = new Attendance();
     attendance.fromdate = new Date(this.selectedDate);
     attendance.todate = new Date(this.selectedDate);
-    attendance.users = (this.roleId == "639acb77b5e1ffe22eaa4a39" || this.roleId == "63b56b9ca3396271e4a54b96") ? this.selectedUser : [this.currentUser.email];
+    attendance.users = (this.roleName.toLocaleLowerCase() === "admin") ? this.selectedUser : [this.currentUser.id];
     this.reportService.getAttendance(attendance).subscribe(result => {
       this.attendance = result.data;
       // this.totalHours = result.data.reduce((sum, elem) => parseInt(sum) + parseInt(elem.logs[0].time), 0);

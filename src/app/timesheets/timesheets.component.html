@@ -58,7 +58,7 @@
       <table class="table  mt-4" id="timeSheet" #timeSheet>
             <thead>
                 <tr>
-                    <th  *ngIf="showMembersColumn"  scope="col" [appSort]="timeSheett" data-order="{{ sortOrder }}" data-name="user"
+                    <th  *ngIf="showMembersColumn"  scope="col" [appSort]="timeSheett" data-order="{{ sortOrder }}" data-name="firstName"
                         (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
                         Users &nbsp;
                         <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
@@ -76,7 +76,7 @@
                         <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                     </th>
 
-                    <th scope="col" [appSort]="timeSheett" data-order="{{ sortOrder }}" data-name=""
+                    <th scope="col" [appSort]="timeSheett" data-order="{{ sortOrder }}" data-name="project"
                         (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
                         Total &nbsp;
                         <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
@@ -104,8 +104,9 @@
                     <td>{{ minutesToTime(getTotalTime(users.logs)) }}</td>
                 </tr>
                 <tr>
-                    <td colspan="2" class="text-center pe-2"><b>Total</b></td>
-                    <td *ngFor="let day of daysOfWeek"><b>{{ minutesToTime(getTotalTimeByDay(day)) }}</b></td>
+                    <td  *ngIf="showMembersColumn && showProjectsColumn"></td>
+                    <td  class="text-center pe-2"><b>Total</b></td>
+                    <td *ngFor="let day of daysOfWeek" ><b>{{ minutesToTime(getTotalTimeByDay(day)) }}</b></td>
                     <td><b>{{ minutesToTime(getTotalTimeAllDays()) }}</b></td>
                 </tr>
             </tbody>

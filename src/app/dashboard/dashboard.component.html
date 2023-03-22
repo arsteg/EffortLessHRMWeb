@@ -1,8 +1,17 @@
 <div class="main-content">
     <div class="container-fluid">
-        
-        <div class="row d-flex justify-content-between">
-            <div class="col-8 border py-4 rounded">
+        <div class="col-2 ms-auto">
+            <mat-form-field appearance="outline" >
+                <mat-label>Select Date</mat-label>
+                <div class="w-100 d-flex" style="margin: -15px 0;">
+                <input matInput [matDatepicker]="picker1" [formControl]="date">
+                <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+                <mat-datepicker #picker1></mat-datepicker>
+            </div>
+              </mat-form-field>
+        </div>
+        <div class="row d-flex justify-content-evenly container-fluid ">
+            <div class="border py-4 rounded">
                 <div class="d-flex justify-content-evenly ">
                     <div class="dash-members text-center pt-2">
                         <h1 class="mb-2"> <b>{{selectedUsers?.length}}</b> </h1>
@@ -25,19 +34,9 @@
                     </div>
                 </div>
             </div>
-            <div class="col-3 ms-auto">
-                <!-- <input type="date"> -->
-                <mat-form-field appearance="outline" >
-                    <mat-label>Select Date</mat-label>
-                    <div class="w-100 d-flex" style="margin: -15px 0;">
-                    <input matInput [matDatepicker]="picker1" [formControl]="date">
-                    <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
-                    <mat-datepicker #picker1></mat-datepicker>
-                </div>
-                  </mat-form-field>
-            </div>
+           
         </div>
-        <div class="row my-3 justify-content-between">
+        <div class="row my-3 justify-content-evenly">
             <div class="col-md-3 border rounded dash-boxes  p-3">
                 <div class="about__top mb-3">
                     <div class="about__title d-flex ">
@@ -139,7 +138,7 @@
             </div>
         </div>
 
-        <div class="row justify-content-between">
+        <div class="row justify-content-evenly">
             <div class="col-md-4 border rounded p-3 dash-report">
                 <div class="d-flex justify-content-between">
                     <h3>Today's Activity</h3>
@@ -212,7 +211,7 @@
             </div>
         </div>
 
-        <div class="row justify-content-between my-3">
+        <div class="row justify-content-evenly my-3">
             <div class="col-md-4 border rounded p-3 dash-report">
 
 

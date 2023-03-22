@@ -1,243 +1,3 @@
-/* @font-face {
-    font-family: Poppins;
-    src: url(../fonts/Poppins/Poppins-Black.woff2) format("woff2"), url(../fonts/Poppins/Poppins-Black.woff) format("woff");
-    font-weight: 900;
-    font-style: normal;
-    font-display: swap
-}
-
-@font-face {
-    font-family: Poppins;
-    src: url(../fonts/Poppins/Poppins-BlackItalic.woff2) format("woff2"), url(../fonts/Poppins/Poppins-BlackItalic.woff) format("woff");
-    font-weight: 900;
-    font-style: italic;
-    font-display: swap
-}
-
-@font-face {
-    font-family: Poppins;
-    src: url(../fonts/Poppins/Poppins-Bold.woff2) format("woff2"), url(../fonts/Poppins/Poppins-Bold.woff) format("woff");
-    font-weight: 700;
-    font-style: normal;
-    font-display: swap
-}
-
-@font-face {
-    font-family: Poppins;
-    src: url(../fonts/Poppins/Poppins/Poppins-Italic.woff2) format("woff2"), url(../fonts/Poppins/Poppins/Poppins-Italic.woff) format("woff");
-    font-weight: 400;
-    font-style: italic;
-    font-display: swap
-}
-
-@font-face {
-    font-family: Poppins;
-    src: url(../fonts/Poppins/Poppins-Regular.woff2) format("woff2"), url(../fonts/Poppins/Poppins-Regular.woff) format("woff");
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap
-}
-
-@font-face {
-    font-family: Poppins;
-    src: url(../fonts/Poppins/Poppins-Thin.woff2) format("woff2"), url(../fonts/Poppins/Poppins-Thin.woff) format("woff");
-    font-weight: 100;
-    font-style: normal;
-    font-display: swap
-}
-
-@font-face {
-    font-family: Poppins;
-    src: url(../fonts/Poppins/Poppins-BoldItalic.woff2) format("woff2"), url(../fonts/Poppins/Poppins-BoldItalic.woff) format("woff");
-    font-weight: 700;
-    font-style: italic;
-    font-display: swap
-}
-
-@font-face {
-    font-family: Poppins;
-    src: url(../fonts/Poppins/Poppins-MediumItalic.woff2) format("woff2"), url(../fonts/Poppins/Poppins-MediumItalic.woff) format("woff");
-    font-weight: 500;
-    font-style: italic;
-    font-display: swap
-}
-
-@font-face {
-    font-family: Poppins;
-    src: url(../fonts/Poppins/Poppins-ExtraLightItalic.woff2) format("woff2"), url(../fonts/Poppins/Poppins-ExtraLightItalic.woff) format("woff");
-    font-weight: 200;
-    font-style: italic;
-    font-display: swap
-}
-
-@font-face {
-    font-family: Poppins;
-    src: url(../fonts/Poppins/Poppins-ThinItalic.woff2) format("woff2"), url(../fonts/Poppins/Poppins-ThinItalic.woff) format("woff");
-    font-weight: 100;
-    font-style: italic;
-    font-display: swap
-}
-
-@font-face {
-    font-family: Poppins;
-    src: url(../fonts/Poppins/Poppins-SemiBold.woff2) format("woff2"), url(../fonts/Poppins/Poppins-SemiBold.woff) format("woff");
-    font-weight: 600;
-    font-style: normal;
-    font-display: swap
-}
-
-@font-face {
-    font-family: Poppins;
-    src: url(../fonts/Poppins/Poppins-Medium.woff2) format("woff2"), url(../fonts/Poppins/Poppins-Medium.woff) format("woff");
-    font-weight: 500;
-    font-style: normal;
-    font-display: swap
-}
-
-@font-face {
-    font-family: Poppins;
-    src: url(../fonts/Poppins/Poppins-Light.woff2) format("woff2"), url(../fonts/Poppins/Poppins-Light.woff) format("woff");
-    font-weight: 300;
-    font-style: normal;
-    font-display: swap
-}
-
-@font-face {
-    font-family: Poppins;
-    src: url(../fonts/Poppins/Poppins-SemiBoldItalic.woff2) format("woff2"), url(../fonts/Poppins/Poppins-SemiBoldItalic.woff) format("woff");
-    font-weight: 600;
-    font-style: italic;
-    font-display: swap
-}
-
-@font-face {
-    font-family: Poppins;
-    src: url(../fonts/Poppins/Poppins-ExtraBold.woff2) format("woff2"), url(../fonts/Poppins/Poppins-ExtraBold.woff) format("woff");
-    font-weight: 700;
-    font-style: normal;
-    font-display: swap
-}
-
-@font-face {
-    font-family: Poppins;
-    src: url(../fonts/Poppins/Poppins-ExtraLight.woff2) format("woff2"), url(../fonts/Poppins/Poppins-ExtraLight.woff) format("woff");
-    font-weight: 200;
-    font-style: normal;
-    font-display: swap
-}
-
-@font-face {
-    font-family: Poppins;
-    src: url(../fonts/Poppins/Poppins-LightItalic.woff2) format("woff2"), url(../fonts/Poppins/Poppins-LightItalic.woff) format("woff");
-    font-weight: 300;
-    font-style: italic;
-    font-display: swap
-}
-
-@font-face {
-    font-family: Poppins;
-    src: url(../fonts/Poppins/Poppins-ExtraBoldItalic.woff2) format("woff2"), url(../fonts/Poppins/Poppins-ExtraBoldItalic.woff) format("woff");
-    font-weight: 700;
-    font-style: italic;
-    font-display: swap
-}
-
-@font-face {
-    font-family: Source Sans Pro;
-    src: url(../fonts/SourceSansPro/SourceSansPro-BlackItalic.woff2) format("woff2"), url(../fonts/SourceSansPro/SourceSansPro-BlackItalic.woff) format("woff");
-    font-weight: 900;
-    font-style: italic;
-    font-display: swap
-}
-
-@font-face {
-    font-family: Source Sans Pro;
-    src: url(../fonts/SourceSansPro/SourceSansPro-Bold.woff2) format("woff2"), url(../fonts/SourceSansPro/SourceSansPro-Bold.woff) format("woff");
-    font-weight: 700;
-    font-style: normal;
-    font-display: swap
-}
-
-@font-face {
-    font-family: Source Sans Pro;
-    src: url(../fonts/SourceSansPro/SourceSansPro-Black.woff2) format("woff2"), url(../fonts/SourceSansPro/SourceSansPro-Black.woff) format("woff");
-    font-weight: 900;
-    font-style: normal;
-    font-display: swap
-}
-
-@font-face {
-    font-family: Source Sans Pro;
-    src: url(../fonts/SourceSansPro/SourceSansPro-ExtraLightItalic.woff2) format("woff2"), url(../fonts/SourceSansPro/SourceSansPro-ExtraLightItalic.woff) format("woff");
-    font-weight: 200;
-    font-style: italic;
-    font-display: swap
-}
-
-@font-face {
-    font-family: Source Sans Pro;
-    src: url(../fonts/SourceSansPro/SourceSansPro-BoldItalic.woff2) format("woff2"), url(../fonts/SourceSansPro/SourceSansPro-BoldItalic.woff) format("woff");
-    font-weight: 700;
-    font-style: italic;
-    font-display: swap
-}
-
-@font-face {
-    font-family: Source Sans Pro;
-    src: url(../fonts/SourceSansPro/SourceSansPro-Italic.woff2) format("woff2"), url(../fonts/SourceSansPro/SourceSansPro-Italic.woff) format("woff");
-    font-weight: 400;
-    font-style: italic;
-    font-display: swap
-}
-
-@font-face {
-    font-family: Source Sans Pro;
-    src: url(../fonts/SourceSansPro/SourceSansPro-ExtraLight.woff2) format("woff2"), url(../fonts/SourceSansPro/SourceSansPro-ExtraLight.woff) format("woff");
-    font-weight: 200;
-    font-style: normal;
-    font-display: swap
-}
-
-@font-face {
-    font-family: Source Sans Pro;
-    src: url(../fonts/SourceSansPro/SourceSansPro-SemiBold.woff2) format("woff2"), url(../fonts/SourceSansPro/SourceSansPro-SemiBold.woff) format("woff");
-    font-weight: 600;
-    font-style: normal;
-    font-display: swap
-}
-
-@font-face {
-    font-family: Source Sans Pro;
-    src: url(../fonts/SourceSansPro/SourceSansPro-LightItalic.woff2) format("woff2"), url(../fonts/SourceSansPro/SourceSansPro-LightItalic.woff) format("woff");
-    font-weight: 300;
-    font-style: italic;
-    font-display: swap
-}
-
-@font-face {
-    font-family: Source Sans Pro;
-    src: url(../fonts/SourceSansPro/SourceSansPro-Regular.woff2) format("woff2"), url(../fonts/SourceSansPro/SourceSansPro-Regular.woff) format("woff");
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap
-}
-
-@font-face {
-    font-family: Source Sans Pro;
-    src: url(../fonts/SourceSansPro/SourceSansPro-SemiBoldItalic.woff2) format("woff2"), url(../fonts/SourceSansPro/SourceSansPro-SemiBoldItalic.woff) format("woff");
-    font-weight: 600;
-    font-style: italic;
-    font-display: swap
-}
-
-@font-face {
-    font-family: Source Sans Pro;
-    src: url(../fonts/SourceSansPro/SourceSansPro-Light.woff2) format("woff2"), url(../fonts/SourceSansPro/SourceSansPro-Light.woff) format("woff");
-    font-weight: 300;
-    font-style: normal;
-    font-display: swap
-} */
-
 a,
 abbr,
 acronym,
@@ -399,9 +159,9 @@ button {
     padding: 0 12px;
     height: 38px;
     font-size: 1.25rem !important;
-    color: #8276ff;
+    color: #0a58ca;
     border-radius: 6px !important;
-    border: 3px solid #8276ff !important;
+    border: 3px solid #0a58ca !important;
     transition: all .3s ease-in-out !important
 }
 
@@ -418,13 +178,15 @@ button {
 header.active__scroll {
     box-shadow: 0 18px 30px rgba(0, 0, 0, .03)
 }
+
 .header {
     background-color: var(--navbar-scroll);
     transition: background-color 1s ease;
-   
+
     -webkit-box-shadow: var(--navbar-scroll-shadow);
     box-shadow: var(--navbar-scroll-shadow);
-  }
+}
+
 header.active .burger:before,
 header.active__scroll .burger:before,
 header.header-static .burger:before {
@@ -464,8 +226,8 @@ header.active__scroll .auth__block .get__started,
 header.header-static .auth__block .get__started,
 header.is-expanded .auth__block .get__started {
     background: #fff;
-    color: #8276ff;
-    border-color: #8276ff
+    color: #0a58ca;
+    border-color: #0a58ca
 }
 
 header.header {
@@ -594,7 +356,7 @@ header .auth__block .get__started {
     transition: all .3s ease;
     background: #fff;
     border-radius: 131px;
-    border: 1px solid #8276ff
+    border: 1px solid #0a58ca
 }
 
 header .auth__block .get__started:hover {
@@ -756,7 +518,7 @@ header .navigation__dropdown-item {
 }
 
 header .navigation__dropdown-item span {
-    color: #8276ff
+    color: #0a58ca
 }
 
 header .navigation__dropdown-item--btn {
@@ -786,7 +548,7 @@ header .navigation__dropdown-link--btn {
     font-size: 16px;
     font-weight: 600;
     line-height: 20px;
-    color: #8276ff !important
+    color: #0a58ca !important
 }
 
 header .navigation__dropdown-link--btn:hover {
@@ -1074,13 +836,13 @@ header .mobile-nav .auth__block .top-login {
 
 header .mobile-nav .auth__block .top-login {
     margin-top: 10px;
-    border: 1px solid #8276ff;
-    color: #8276ff
+    border: 1px solid #0a58ca;
+    color: #0a58ca
 }
 
 header .mobile-nav .auth__block .get-started {
     color: #fff;
-    background-color: #8276ff
+    background-color: #0a58ca
 }
 
 header .mobile-nav__drop {
@@ -1123,7 +885,7 @@ header .mobile-nav__dropdown-link--btn {
     font-size: 16px;
     font-weight: 600;
     line-height: 20px;
-    color: #8276ff !important;
+    color: #0a58ca !important;
     transition: all .3s ease
 }
 
@@ -1224,7 +986,7 @@ header .mobile-nav__item--download .mobile-nav__dropdown-text strong {
     margin: 0 auto;
     justify-content: center;
     text-align: center;
-    color: #8276ff;
+    color: #0a58ca;
     text-decoration: none;
     align-items: center;
     font-weight: 600;
@@ -1700,7 +1462,7 @@ p {
     align-items: center;
     margin: 0 auto;
     color: #fff;
-    background-color: #ffc107;
+    background-color: #302ee9;
     font-weight: 700;
     border-radius: 30px;
     font-size: 16px;
@@ -1859,7 +1621,7 @@ p {
     font-size: 17px;
     line-height: 21px;
     color: #fff;
-    background: #8276ff;
+    background: #0a58ca;
     box-shadow: 0 4.07788px 14.2726px rgba(130, 118, 255, .3)
 }
 
@@ -1868,7 +1630,7 @@ p {
     font-size: 16px;
     line-height: 20px;
     color: #828298;
-    border: .7px solid #8276ff
+    border: .7px solid #0a58ca
 }
 
 .main-homepage .hero__btn-2 svg {
@@ -1946,13 +1708,24 @@ p {
     animation-duration: 4s;
     animation-delay: 2s;
 }
+
 @keyframes example {
-    0%   { left:0px; top:200px;}
-  
-    50%  { left:0px; top:0px;}
-    
-    100% { left:0px; top:0px;}
-  }
+    0% {
+        left: 0px;
+        top: 200px;
+    }
+
+    50% {
+        left: 0px;
+        top: 0px;
+    }
+
+    100% {
+        left: 0px;
+        top: 0px;
+    }
+}
+
 .main-homepage .success__wrapper {
     margin-top: 73px;
     width: 100%;
@@ -2003,10 +1776,11 @@ p {
 
 .main-homepage .choose-features {
     padding: 93px 0 91px;
-    background-color: #242136;
+    /* background-color: #242136; */
     position: relative;
     overflow: hidden;
-    z-index: 1
+    z-index: 1;
+    margin-top: 10%;
 }
 
 .main-homepage .choose-features .choose-features__bg {
@@ -2056,7 +1830,7 @@ p {
     padding-left: 21px;
     width: 236px;
     height: 88px;
-    border: .8px solid var(--highlight);
+    border: .8px solid #0a58ca;
     background: hsla(0, 0%, 100%, .05);
     border-radius: 8px;
     position: relative;
@@ -2068,7 +1842,11 @@ p {
     font-weight: 600;
     font-size: 18px;
     line-height: 23px;
-    color: #fff
+}
+.feature-icon{
+    color: #0a58ca;
+    font-weight: 700;
+    font-size: 30px;
 }
 
 .main-homepage .choose-features__btns {
@@ -2089,7 +1867,7 @@ p {
     font-size: 16px;
     line-height: 20px;
     color: #fff;
-    background: #8276ff;
+    background: #0a58ca;
     border-radius: 31px
 }
 
@@ -2377,7 +2155,7 @@ p {
     font-size: 16px;
     line-height: 20px;
     color: #fff;
-    background: #8276ff;
+    background: #0a58ca;
     box-shadow: 0 4.07788px 14.2726px rgba(130, 118, 255, .3);
     border-radius: 31px
 }
@@ -2389,7 +2167,7 @@ p {
     font-size: 16px;
     line-height: 20px;
     white-space: nowrap;
-    color: #8276ff
+    color: #0a58ca
 }
 
 .main-homepage .bh-inv__btns .link:hover {
@@ -2397,7 +2175,7 @@ p {
 }
 
 .main-homepage .awards {
-    padding:  0;
+    padding: 0;
     /* background: url(../images/time-tracker/home/awards-background.webp) no-repeat 50%/cover */
 }
 
@@ -2490,12 +2268,13 @@ p {
     max-width: 829px;
     min-height: 522px;
     width: 100%;
-    background-image: url(/assets/monitor-employees-1__bg.webp)
+    background-image: url(/assets/background.avif)
 }
 
 .main-homepage .monitor-employees__item-1 img {
     margin-top: 57px;
-    max-width: 900px
+    max-width: 624px;
+    height: 250px;
 }
 
 .main-homepage .monitor-employees__item-1 .monitor-employees__item_info {
@@ -2545,7 +2324,7 @@ p {
     max-width: 829px;
     width: 100%;
     border-radius: 26.934px;
-    background-image: linear-gradient(118.33deg, #ffc076 4.7%, #ffd392 101.9%);
+    background-image: linear-gradient(118.33deg, #302ee9 4.7%, #4d4af7 101.9%);
     background-position: bottom
 }
 
@@ -2704,7 +2483,7 @@ p {
     padding: 36px 60px 19px 90px;
     margin-bottom: 49px;
     border-color: transparent;
-    background: linear-gradient(164.62deg, #2b283f 12.47%, #4d3e78 229.58%)
+    background: linear-gradient(164.62deg, #4a47f5 12.47%, #0d67ed 229.58%)
 }
 
 .main-homepage .manage__item-1 .manage__item_info {
@@ -2724,7 +2503,7 @@ p {
     min-height: 571px;
     max-width: 442px;
     width: 100%;
-    background: linear-gradient(180deg, #5cd2a8 29.51%, #5ed2bd 121.02%)
+    background: linear-gradient(180deg, #302ee9 29.51%, #4d4af7 121.02%)
 }
 
 .main-homepage .manage__item-2 .manage__item_info {
@@ -2772,10 +2551,11 @@ p {
 }
 
 .main-homepage .manage__item-4 img {
-    position: absolute;
+    /* position: absolute;
     right: 20px;
-    top: -5px;
-    max-width: 572px
+    top: -5px; */
+    max-width: 572px;
+    height: 400px;
 }
 
 .main-homepage .manage__item-4 .manage__item_info {
@@ -2888,7 +2668,6 @@ p {
 .main-homepage .benefit__item-1 {
     min-height: 240px;
     padding: 54px 40px;
-    background: url(/assets/saves-time-background.svg) no-repeat
 }
 
 .main-homepage .benefit__item-1 .benefit__item_descr {
@@ -2907,7 +2686,7 @@ p {
     display: flex;
     align-items: center;
     background: #fff;
-    border: 1.5px solid #8276ff
+    border: 1.5px solid #0a58ca
 }
 
 .main-homepage .benefit__item-2 .benefit__item_info {
@@ -2933,7 +2712,7 @@ p {
     min-height: 524px;
     width: 100%;
     padding: 58px 44px;
-    background: url(/assets/increases-revenue-background.webp) no-repeat;
+    background: #302ee9;
     background-position-x: -110px
 }
 
@@ -2976,7 +2755,7 @@ p {
     font-weight: 600;
     font-size: 16px;
     line-height: 20px;
-    color: #8276ff
+    color: #0a58ca
 }
 
 .main-homepage .integrate__link a:hover {
@@ -3055,12 +2834,12 @@ p {
     align-items: center;
     justify-content: center;
     background: #fff;
-    border: 1px solid #8276ff;
+    border: 1px solid #0a58ca;
     border-radius: 31px;
     font-weight: 600;
     font-size: 16px;
     line-height: 20px;
-    color: #8276ff
+    color: #0a58ca
 }
 
 .main-homepage .chrome-extension__btn svg {
@@ -3128,12 +2907,12 @@ p {
     justify-content: center;
     width: 122px;
     height: 33px;
-    border: 1px solid #8276ff;
+    border: 1px solid #0a58ca;
     border-radius: 16.4566px;
     font-weight: 600;
     font-size: 16px;
     line-height: 18px;
-    color: #8276ff
+    color: #0a58ca
 }
 
 .main-homepage .expand__item_btns .link {
@@ -3214,7 +2993,7 @@ p {
 }
 
 .main-homepage .track-time .tab-item.active svg path {
-    stroke: #8276ff
+    stroke: #0a58ca
 }
 
 .main-homepage .track-time .tab-indicator {
@@ -3223,7 +3002,7 @@ p {
     z-: 5;
     width: 77px;
     height: 5px;
-    background: #8276ff;
+    background: #0a58ca;
     border-radius: 16px;
     left: 0;
     transition: all .5s
@@ -3270,7 +3049,7 @@ p {
     display: flex;
     align-items: center;
     letter-spacing: .007em;
-    color: #ffc107;
+    color: #302ee9;
     margin-bottom: 10px
 }
 
@@ -3536,7 +3315,7 @@ p {
     top: 0;
     width: 100%;
     height: 1px;
-    background: linear-gradient(90deg, #8276ff 10.28%, #91b0ff 86.92%, #99ceff 127.38%);
+    background: linear-gradient(90deg, #0a58ca 10.28%, #91b0ff 86.92%, #99ceff 127.38%);
     border-radius: 14px
 }
 
@@ -3551,7 +3330,7 @@ p {
 .main-homepage .free-trial .section-container {
     display: flex;
     justify-content: space-between;
-    background: linear-gradient(87.69deg, #8276ff 45.13%, rgba(129, 126, 255, .62) 166.39%);
+    background: linear-gradient(87.69deg, #e3e4e6 45.13%, rgba(211, 211, 213, 0.62) 166.39%);
     border-radius: 27px
 }
 
@@ -3593,8 +3372,8 @@ p {
     justify-content: center;
     width: 283px;
     height: 54px;
-    background: #ffc107;
-    border: 1px solid #ffc107;
+    background: #302ee9;
+    border: 1px solid #302ee9;
     border-radius: 31px;
     font-weight: 700;
     font-size: 18px;
@@ -3619,7 +3398,7 @@ p {
     }
 
     .main-homepage .hero__img {
-        margin-right: -90px;
+        margin-right: 25px;
         max-width: 845px
     }
 
@@ -6352,4 +6131,9 @@ body[data-aos-easing=ease-in-out-quart] [data-aos] {
 
 [data-aos=flip-down].aos-animate {
     transform: perspective(2500px) rotateX(0)
+}
+
+.social-icons {
+    font-size: 30px;
+    color: #302ee9;
 }

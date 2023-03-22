@@ -23,7 +23,7 @@ export class ActivityLevelComponent implements OnInit {
   color: string;
   selectedProject: any = [];
   selectedTask: any = [];
-  roleId = localStorage.getItem('roleId');
+  roleName = localStorage.getItem('roleName');
   taskList: any = [];
   projectList: any;
   searchText = '';
@@ -53,7 +53,6 @@ export class ActivityLevelComponent implements OnInit {
 
     this.fromDate = this.datepipe.transform(new Date(this.currentDate.setDate(this.diff)), 'yyyy-MM-dd');
     this.toDate = this.datepipe.transform(new Date(this.currentDate.setDate(this.lastday)), 'yyyy-MM-dd');
-    this.getActivity();
 
     
     // Get the start and end dates for the current week
@@ -87,7 +86,7 @@ export class ActivityLevelComponent implements OnInit {
   
   getProjectList() {
     //Admin and Manager can see the list of all projects
-    if (this.roleId == "639acb77b5e1ffe22eaa4a39" || this.roleId == "63b56b9ca3396271e4a54b96") {
+    if (this.roleName.toLocaleLowerCase() == "admin" || this.roleName.toLocaleLowerCase() == "manager") {
       this.projectService.getprojectlist().subscribe((response: any) => {
         this.projectList = response && response.data && response.data['projectList'];
       });
@@ -153,11 +152,10 @@ export class ActivityLevelComponent implements OnInit {
     searchActivity.tasks = [];
     searchActivity.fromdate = new Date(this.fromDate);
     searchActivity.todate = new Date(this.toDate);
-    searchActivity.users = (this.roleId == "639acb77b5e1ffe22eaa4a39" || this.roleId == "63b56b9ca3396271e4a54b96") ? this.selectedUser : [this.currentUser.email];
+    searchActivity.users = (this.roleName.toLocaleLowerCase() === "admin") ? this.selectedUser : [this.currentUser.id];
     this.reportService.getActivity(searchActivity).subscribe(result => {
       this.activity = result.data;
       this.totalHours = result.data.reduce((sum, elem) => parseInt(sum) + parseInt(elem.time), 0);
-      console.log("activity: ",this.activity)
     }
     )
   }

@@ -40,7 +40,7 @@
         <div class="d-flex mt-4">
 
             <span class="pt-3 text-muted me-3">Filter&nbsp;by: </span>
-            <mat-form-field class="filter mx-1">
+            <mat-form-field class="filter mx-1" appearance="outline">
                 <mat-label>Members</mat-label>
                 <mat-select multiple [(ngModel)]="selectedUser">
                     <mat-option *ngFor="let member of selectedUsers" [value]="member.id" (click)="filterData()"
@@ -49,7 +49,7 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field>
-            <mat-form-field class="filter mx-3">
+            <mat-form-field class="filter mx-3" appearance="outline">
                 <mat-label>Projects</mat-label>
                 <mat-select multiple [(ngModel)]="selectedProject">
                     <mat-option *ngFor="let project of projectList" [value]="project.id" (click)="filterData()"

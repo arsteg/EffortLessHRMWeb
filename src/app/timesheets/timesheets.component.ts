@@ -34,7 +34,7 @@ export class TimesheetsComponent implements OnInit {
   selectedUser: any = [];
   selectedProject: any = [];
   selectedTask: any = [];
-  roleId = localStorage.getItem('roleId');
+  roleName = localStorage.getItem('roleName');
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   public sortOrder: string = ''; // 'asc' or 'desc'
   daysOfWeek: any = [];
@@ -93,7 +93,7 @@ export class TimesheetsComponent implements OnInit {
   }
   getProjectList() {
     //Admin and Manager can see the list of all projects
-    if (this.roleId == "639acb77b5e1ffe22eaa4a39" || this.roleId == "63b56b9ca3396271e4a54b96") {
+    if (this.roleName.toLocaleLowerCase() == "admin" || this.roleName.toLocaleLowerCase() == "manager") {
       this.projectService.getprojectlist().subscribe((response: any) => {
         this.projectList = response && response.data && response.data['projectList'];
       });
@@ -155,7 +155,7 @@ export class TimesheetsComponent implements OnInit {
     searchTimesheet.fromdate = new Date(this.fromDate);
     searchTimesheet.todate = new Date(this.toDate);
     searchTimesheet.projects = this.selectedProject;
-    searchTimesheet.users = (this.roleId == "639acb77b5e1ffe22eaa4a39" || this.roleId == "63b56b9ca3396271e4a54b96") ? this.selectedUser : [this.currentUser.email];
+    searchTimesheet.users = (this.roleName.toLocaleLowerCase() === "admin") ? this.selectedUser : [this.currentUser.id];
     this.reportService.getTimesheet(searchTimesheet).subscribe(result => {
       this.timeSheett = result.data;
       this.totalHours = result.data.reduce((sum, elem) => parseInt(sum) + parseInt(elem.logs[0].time), 0);

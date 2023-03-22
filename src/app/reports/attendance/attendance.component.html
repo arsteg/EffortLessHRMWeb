@@ -11,7 +11,7 @@
         <div class="d-flex mt-4">
 
             <span class="pt-3 text-muted me-3">Filter&nbsp;by: </span>
-            <mat-form-field appearance="outline" class="w-25 mx-1">
+            <!-- <mat-form-field appearance="outline" class="w-25 mx-1">
                 <mat-label>Select User</mat-label>
                 <mat-select multiple [(ngModel)]="selectedUser">
                     <mat-option *ngFor="let member of members" [value]="member.id" (click)="filterData()"
@@ -19,22 +19,33 @@
                         {{member.name | titlecase}}
                     </mat-option>
                 </mat-select>
-            </mat-form-field>
-
+            </mat-form-field> -->
+            <ng-container *ngIf="roleName !== 'user'">
+                <mat-form-field appearance="outline" class="w-25 mx-1">
+                  <mat-label>Select User</mat-label>
+                  <mat-select multiple [(ngModel)]="selectedUser">
+                    <mat-option *ngFor="let member of members" [value]="member.id" (click)="filterData()"
+                      [selected]="selectedUser?.includes(member?.id)">
+                      {{member.name | titlecase}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </ng-container>
             <div class="input-group date-style w-25">
                 <span (click)="SetPreviousDay()" class="fa fa-angle-left fa-lg p-3"></span>
                 <input type="date" name="fromDate" id="fromDate" (change)="filterData()" [(ngModel)]="selectedDate"
-                    class="form-control w-25 calendar mb-4 mx-1" />
+                    class="form-control w-25 calendar mb-4 mx-1 rounded" />
                 <span (click)="SetNextDay()" class="fa fa-angle-right fa-lg p-3"></span>
             </div>
-
+            <ng-container *ngIf="roleName !== 'user'">
             <select class="form-select h-25 dash-select" aria-label="Default select example" [(ngModel)]="filterOption">
                 <option value="All" selected>All</option>
                 <option value="Late Coming">Late Coming</option>
                 <option value="Early Leaving">Early Leaving</option>
                 <option value="Less Tracking">Less Tracking</option>
                 <option value="Absent">Absent</option>
-              </select>
+            </select>
+            </ng-container>
             <div class="align-items-start flex-wrap gap-3 ms-auto">
                 <div class="dropdown order-first order-sm-last d-flex">
                     <button class="export-btn dropdown-toggle formrow-inputState form-select select-styled active"
@@ -96,19 +107,30 @@
                     <ng-container *ngIf="(filterOption === 'All') || (filterOption === 'Late Coming' && data.starttime > '4:00:00')
                         || (filterOption === 'Absent' && data.starttime == null)  || (filterOption === 'Early Leaving' && data.time < '480')
                         || (filterOption === 'Less Tracking' && data.total < '480')">
-                      <td> <span class="letter ms-2"
-                        [style.background-color]="commonservice.getRandomColor(data.lastName)">{{data.firstName.slice(0,1)
-                        | uppercase}}{{data.lastName.slice(0,1) | uppercase}}</span> 
-                        {{data?.firstName | titlecase}} {{data?.lastName | titlecase}}</td>
-                      <td>{{data?.starttime}}</td>
-                      <td>{{data?.endtime}}</td>
-                      <td>{{minutesToTime(data?.time)}}</td>
-                      <td>{{minutesToTime(data?.manual)}}</td>
-                      <td>{{minutesToTime(data?.total)}}</td>
-                      <td>{{data?.activity | date}}</td>
+                        <td> <span class="letter ms-2"
+                                [style.background-color]="commonservice.getRandomColor(data.lastName)">{{data.firstName.slice(0,1)
+                                | uppercase}}{{data.lastName.slice(0,1) | uppercase}}</span>
+                            {{data?.firstName | titlecase}} {{data?.lastName | titlecase}}</td>
+                        <td>{{data?.starttime}}</td>
+                        <td>{{data?.endtime}}</td>
+                        <td>{{minutesToTime(data?.time)}}</td>
+                        <td>{{minutesToTime(data?.manual)}}</td>
+                        <td>{{minutesToTime(data?.total)}}</td>
+                        <td>{{data?.activity | date}}</td>
                     </ng-container>
-                  </tr>
-                  
+                </tr>
+                <ng-container *ngIf="attendance.length === 0">
+                    <tr>
+                        <td colspan="10">
+                            <div class="text-center">
+                                <!-- <h3 class="text-muted"> No records found !</h3> -->
+                                <img src="assets/norecordfound.png" alt="No Record Found">
+                            </div>
+                        </td>
+                    </tr>
+
+                </ng-container>
+
             </tbody>
         </table>
 
