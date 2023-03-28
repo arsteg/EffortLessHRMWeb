@@ -1,0 +1,7 @@
+.hover-icons {
+  display: none;
+}
+
+tr:hover .hover-icons {
+  display: inline;
+}

@@ -49,21 +49,21 @@
                                 Task Name &nbsp;
                                 <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                             </th>
-                                
+
                                 <th scope="col" [appSort]="tasks" data-order="{{ sortOrder }}"
                                 data-name="endDate"
                                 (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
                                 Due Date &nbsp;
                                 <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                             </th>
-                               
+
                                 <th scope="col" [appSort]="tasks" data-order="{{ sortOrder }}"
                                 data-name="priority"
                                 (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
                                 Priority &nbsp;
                                 <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                             </th>
-                               
+
                                 <th scope="col" [appSort]="tasks" data-order="{{ sortOrder }}"
                                 data-name="comment"
                                 (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
@@ -71,7 +71,7 @@
                                 <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                             </th>
                                 <th scope="col" [appSort]="tasks" data-order="desc" data-name="status">Status &nbsp;
-                                 
+
                                 </th>
                                 <th scope="col" [appSort]="tasks" data-order="desc" data-name="TaskUser"
                                     *ngIf="!userId">Members &nbsp;
@@ -98,7 +98,7 @@
                                 </td>
                                 <td>{{task?.comment}}</td>
                                 <td> <span class="badge rounded-pill table-button  bg-success text-light px-4 py-2"
-                                        *ngIf="task?.status=='Active'">{{task?.status}}</span> </td>
+                                        *ngIf="task?.status=='Active'">{{task?.status}}</span> <span> <i title="Done" class="fa fa-thumbs-up hover-icons" style="color:green"> </i> </span> <span><i class="fa fa-check-circle hover-icons" title="completed"></i> </span>  </td>
                                 <td class="d-flex flex-nowrap" *ngIf="!userId">
                                     <i class="fa fa-user-plus addUser me-3 mt-1" data-bs-toggle="modal"
                                         data-bs-target="#addUserModal" (click)="selectedTask=task"
