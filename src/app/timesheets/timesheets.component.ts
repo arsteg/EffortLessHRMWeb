@@ -158,7 +158,6 @@ export class TimesheetsComponent implements OnInit {
     searchTimesheet.users = (this.roleName.toLocaleLowerCase() === "admin") ? this.selectedUser : [this.currentUser.id];
     this.reportService.getTimesheet(searchTimesheet).subscribe(result => {
       this.timeSheett = result.data;
-      this.totalHours = result.data.reduce((sum, elem) => parseInt(sum) + parseInt(elem.logs[0].time), 0);
     }
     )
   }

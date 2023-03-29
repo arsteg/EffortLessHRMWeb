@@ -442,7 +442,7 @@ select {
   box-shadow: 0 0px 20px 0 #dedbdb;
 }
 .common:hover{
-  transform: scale(1.05);
+  transform: scale(1.01);
   background: #edf5fe !important;
   color: blue
 }
