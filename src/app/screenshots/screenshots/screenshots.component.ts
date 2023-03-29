@@ -84,7 +84,7 @@ export class ScreenshotsComponent implements OnInit {
           next: result => {
             result.data.forEach(user => {
               if (user.id != currentUser.id) {
-                this.members.push({ id: user.email, name: `${user.firstName} ${user.lastName}`, email: user.email });
+                this.members.push({ id: user.id, name: `${user.firstName} ${user.lastName}`, email: user.email });
               }
             })
           },
@@ -101,7 +101,7 @@ export class ScreenshotsComponent implements OnInit {
   showScreenShots() {
     let currentUser = JSON.parse(localStorage.getItem('currentUser'));
     let formattedDate = this.formatDate(this.selectedDate);
-    var result = this.timeLogService.getLogsWithImages(this.member.email, formattedDate);
+    var result = this.timeLogService.getLogsWithImages(this.member.id, formattedDate);
     result.subscribe({
       next: data => {
         this.screenshotRows = [];
@@ -116,7 +116,7 @@ export class ScreenshotsComponent implements OnInit {
     const endDate = new Date();
 
 
-    this.timeLogService.getCurrentWeekTotalTime(this.member.email, this.formatDate(startDate), this.formatDate(endDate)).subscribe({
+    this.timeLogService.getCurrentWeekTotalTime(this.member.id, this.formatDate(startDate), this.formatDate(endDate)).subscribe({
       next: data => {
         let totalMinutes = data.data.length * 10;
         this.currentWeekTotalHours = Math.floor(totalMinutes / 60);
@@ -132,7 +132,7 @@ export class ScreenshotsComponent implements OnInit {
     const firstday = new Date(date.getFullYear(), date.getMonth(), 1);
     const lastday = new Date(date.getFullYear(), date.getMonth() + 1, 0);
 
-    this.timeLogService.getCurrentWeekTotalTime(this.member.email, this.formatDate1(firstday), this.formatDate1(lastday)).subscribe({
+    this.timeLogService.getCurrentWeekTotalTime(this.member.id, this.formatDate1(firstday), this.formatDate1(lastday)).subscribe({
       next: data => {
         let totalMinutes = data.data.length * 10;
 

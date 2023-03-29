@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonService } from '../common/common.service';
 import { ManageTeamService } from '../_services/manage-team.service';
 import { TimeLogService } from '../_services/timeLogService';
-import {FormControl} from '@angular/forms';
+import { FormControl } from '@angular/forms';
+import { AuthenticationService } from '../_services/authentication.service';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -18,10 +19,14 @@ export class DashboardComponent implements OnInit {
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   date = new FormControl(new Date());
   serializedDate = new FormControl(new Date().toISOString());
+  currentProfile: any;
+  role=  localStorage.getItem('roleName');
+
   constructor(
-     private timelog: TimeLogService,
+    private timelog: TimeLogService,
     private manageTeamService: ManageTeamService,
     public commonService: CommonService,
+    private auth: AuthenticationService
   ) {
 
   }
@@ -29,6 +34,13 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.populateTeamOfUsers();
     this.firstLetter = this.commonService.firstletter;
+   
+    let currentUser = JSON.parse(localStorage.getItem('currentUser'))
+    this.auth.GetMe(currentUser.id).subscribe((response: any) => {
+      this.currentProfile = response && response.data.users;
+      return this.currentProfile;
+    });
+console.log(this.role)
   }
 
   populateTeamOfUsers() {

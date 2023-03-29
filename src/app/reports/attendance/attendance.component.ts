@@ -66,7 +66,7 @@ filterOption: string = 'All'
 
   populateUsers() {
     this.members = [];
-    this.members.push({ id: this.currentUser.email, name: "Me", email: this.currentUser.email });
+    this.members.push({ id: this.currentUser.id, name: "Me", email: this.currentUser.email });
     this.member = this.currentUser;
     this.timeLogService.getTeamMembers(this.member.id).subscribe({
       next: (response: { data: any; }) => {
@@ -74,7 +74,7 @@ filterOption: string = 'All'
           next: result => {
             result.data.forEach(user => {
               if (user.email != this.currentUser.email) {
-                this.members.push({ id: user.email, name: `${user.firstName} ${user.lastName}`, email: user.email });
+                this.members.push({ id: user.id, name: `${user.firstName} ${user.lastName}`, email: user.email });
               }
             })
           },
@@ -102,7 +102,6 @@ filterOption: string = 'All'
     attendance.users = (this.roleName.toLocaleLowerCase() === "admin") ? this.selectedUser : [this.currentUser.id];
     this.reportService.getAttendance(attendance).subscribe(result => {
       this.attendance = result.data;
-      // this.totalHours = result.data.reduce((sum, elem) => parseInt(sum) + parseInt(elem.logs[0].time), 0);
     }
     )
   }

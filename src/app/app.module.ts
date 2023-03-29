@@ -76,6 +76,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { MatNativeDateModule } from '@angular/material/core';
 import { TimesheetsComponent } from './timesheets/timesheets.component';
 import { ActivityLevelComponent } from './reports/activity-level/activity-level.component';
+import {MatPaginatorModule} from '@angular/material/paginator';
 @NgModule({
   declarations: [
     AppComponent,
@@ -148,7 +149,8 @@ import { ActivityLevelComponent } from './reports/activity-level/activity-level.
     BsDatepickerModule.forRoot(),
     ManageModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatPaginatorModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

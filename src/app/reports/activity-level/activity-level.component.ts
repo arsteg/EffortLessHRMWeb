@@ -100,7 +100,7 @@ export class ActivityLevelComponent implements OnInit {
 
   populateUsers() {
     this.members = [];
-    this.members.push({ id: this.currentUser.email, name: "Me", email: this.currentUser.email });
+    this.members.push({ id: this.currentUser.id, name: "Me", email: this.currentUser.email });
     this.member = this.currentUser;
     this.timelog.getTeamMembers(this.member.id).subscribe({
       next: (response: { data: any; }) => {
@@ -108,7 +108,7 @@ export class ActivityLevelComponent implements OnInit {
           next: result => {
             result.data.forEach(user => {
               if (user.email != this.currentUser.email) {
-                this.members.push({ id: user.email, name: `${user.firstName} ${user.lastName}`, email: user.email });
+                this.members.push({ id: user.id, name: `${user.firstName} ${user.lastName}`, email: user.email });
               }
             })
           },

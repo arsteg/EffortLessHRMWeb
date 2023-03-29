@@ -18,7 +18,6 @@
             <table class="table  mt-4">
                 <thead>
                     <tr>
-                        <th scope="col"></th>
                         <th scope="col" [appSort]="allPermissions" data-order="{{ sortOrder }}"
                         data-name="permissionName" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
                         Permission Name &nbsp;
@@ -41,9 +40,7 @@
                         <td class="highlight">
                             <div></div>
                         </td>
-                        <td class="action text-start">
-                            <span class="bi bi-grip-horizontal text-secondary data mt-2 me-3"></span>
-                        </td>
+                       
                         <td>{{permission.permissionName}}</td>
                         <td>{{permission.permissionDetails}}</td>
                         <td>

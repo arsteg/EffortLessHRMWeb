@@ -2,11 +2,11 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-12">
-        <div class="card">
+        <div class="">
           <div class="pt-3 ps-3">
             <div class="row">
               <div class="col-md-10">
-                <h4 class="card-title headings">Team Members</h4>
+                <h1 class="">Team Members</h1>
               </div>
             </div>
             <hr class="mt-0">
@@ -17,7 +17,7 @@
               <div class="col-md-6">
                 <label id="example-radio-group-label" class="headings">Manager</label><br>
                 <mat-radio-group id="member" name="member" aria-labelledby="example-radio-group-label"
-                  class="example-radio-group managers" [ngModel]="selectedManager ">
+                  class="example-radio-group managers bg-white common" [ngModel]="selectedManager ">
                   <mat-radio-button color="primary" class="manager example-radio-button"
                     *ngFor="let user of teamOfUsers" (click)="Selectmanager(user)" [value]="user">
                     {{ user.firstName | titlecase }} {{ user.lastName | titlecase}}
@@ -27,7 +27,7 @@
               <div class="col-md-6">
                 <ul class="users" type="none" class="overflow-auto">
                   <p class="headings">Members</p>
-                  <div class="members">
+                  <div class="members bg-white common">
                     <li *ngFor="let user of teamOfUsers">
                       <label [class.selected]="user === selectedUser">
                         <mat-checkbox color="primary" [checked]="user['isChecked']"

@@ -70,10 +70,10 @@
                     </th>
 
                     <th width="100" *ngFor="let day of daysOfWeek" [appSort]="activity" data-order="{{ sortOrder }}"
-                        data-name="logs?.time" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-                        {{ day | date:'LLL'+' ' +'dd' }}
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
+                    data-name="logs?.time" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                    {{ day | date:'LLL'+' ' +'dd' }}
+                    <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                </th>
 
                     <th scope="col" [appSort]="activity" data-order="{{ sortOrder }}" data-name=""
                         (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
@@ -90,10 +90,11 @@
                                 | uppercase}}{{users.lastName.slice(0,1) | uppercase}}</span> 
                         {{users?.firstName | titlecase}} {{users?.lastName | titlecase}}</td>
                     <td *ngIf="showProjectsColumn">{{users?.project}}</td>
+                   
                     <td *ngFor="let day of daysOfWeek">
                         <ng-container >
-                            <ng-container *ngIf="datepipe.transform(users.date, 'yyyy-MM-dd') === day">
-                                {{ minutesToTime(users.time) }}
+                            <ng-container *ngIf="datepipe.transform(users?.date, 'yyyy-MM-dd') === day">
+                                {{ minutesToTime(users?.time) }}
                             </ng-container>
                         </ng-container>
                     </td>

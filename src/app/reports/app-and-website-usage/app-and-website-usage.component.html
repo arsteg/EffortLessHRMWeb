@@ -84,7 +84,6 @@
                         <th scope="col" [appSort]="appUsagesList" data-order="desc" data-name="TimeSpent">Hours &nbsp;
                             <i class="bi bi-arrow-up sort"></i>
                         </th>
-                        <!-- <th scope="col" [appSort]="appUsagesList" data-order="desc" data-name="date">Date</th> -->
                     </tr>
                 </thead>
                 <tbody>
@@ -97,7 +96,6 @@
                         <td>{{ data.keyboardStrokes }}</td>
                         <td>{{ InactivitTime(data.inactive, data.timeSpent) }}</td>
                         <td>{{ millisecondsToTime(data.timeSpent) }}</td>
-                        <!-- <td>{{ data.date | date:'dd MMM, yyyy'}}</td> -->
                     </tr>
                 </tbody>
                 <tfoot>

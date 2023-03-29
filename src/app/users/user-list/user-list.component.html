@@ -18,9 +18,7 @@
                 <thead>
                     <tr>
                         <th scope="col"></th>
-                        <th scope="col"></th>
-
-                        <th scope="col" [appSort]="usersList" data-order="{{ sortOrder }}" data-name="firsName"
+                       <th scope="col" [appSort]="usersList" data-order="{{ sortOrder }}" data-name="firsName"
                             data-name="lastName" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
                             Members &nbsp;
                             <i
@@ -54,9 +52,6 @@
                         *ngFor="let data of usersList | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
                         <td class="highlight">
                             <div></div>
-                        </td>
-                        <td class="action text-start">
-                            <span class="bi bi-grip-horizontal text-secondary data mt-2 me-3"></span>
                         </td>
                         <td><span class="letter ms-2"
                                 [style.background-color]="commonservice.getRandomColor(data.lastName)">{{data.firstName.slice(0,1)

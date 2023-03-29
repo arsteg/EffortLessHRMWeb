@@ -1,9 +1,11 @@
 <div class="main-content">
     <div class="container-fluid">
         <div class="col-2 ms-auto">
-            <mat-form-field appearance="outline" >
-                <mat-label>Select Date</mat-label>
-                <div class="w-100 d-flex" style="margin: -15px 0;">
+            <mat-form-field appearance="outline" class="bg-white date" style="border-radius: 5px;
+            height: 49px;
+            margin: -20px 0 11px 0;">
+                <mat-label class="">Select Date</mat-label>
+                <div  class="w-100 d-flex" style="margin: -15px 0;">
                 <input matInput [matDatepicker]="picker1" [formControl]="date">
                 <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
                 <mat-datepicker #picker1></mat-datepicker>
@@ -11,24 +13,33 @@
               </mat-form-field>
         </div>
         <div class="row d-flex justify-content-evenly container-fluid ">
-            <div class="border py-4 rounded">
+            <div class="border py-4 rounded common">
                 <div class="d-flex justify-content-evenly ">
-                    <div class="dash-members text-center pt-2">
+                    <div class="mt-2 border-end pe-5">
+                        <h1 class="letter ms-2 header-letter"
+                        [style.background-color]="commonService.getRandomColor(currentProfile?.lastName)">
+                        {{currentProfile.firstName.slice(0,1) | uppercase}}{{currentProfile.lastName.slice(0,1) |
+                        uppercase}}</h1>
+                        <h4 class="content-info mb-0">{{currentProfile?.firstName}} {{currentProfile?.lastName}}</h4>
+                        <p>{{role | titlecase}}</p>
+                    </div>
+
+                    <div class="dash-members text-center mt-4 pt-2">
                         <h1 class="mb-2"> <b>{{selectedUsers?.length}}</b> </h1>
                         <p>Members</p>
                     </div>
 
-                    <div class="mt-2">
+                    <div class="mt-4 pt-2">
                         <h4 class="content-head mb-1">Projects</h4>
                         <p class="content-info">4</p>
                     </div>
 
-                    <div class="mt-2">
+                    <div class="mt-4 pt-2">
                         <h4 class="content-head mb-1">Teams</h4>
                         <p class="content-info">0</p>
                     </div>
 
-                    <div class="mt-2">
+                    <div class="mt-4 pt-2">
                         <h4 class="content-head mb-1">Tasks</h4>
                         <p class="content-info">100</p>
                     </div>
@@ -37,7 +48,7 @@
            
         </div>
         <div class="row my-3 justify-content-evenly">
-            <div class="col-md-3 border rounded dash-boxes  p-3">
+            <div class="col-md-3 border rounded dash-boxes  p-3 common">
                 <div class="about__top mb-3">
                     <div class="about__title d-flex ">
                         <h1 class="content__title me-3">Today</h1>
@@ -62,7 +73,7 @@
                 </div>
             </div>
 
-            <div class="col-md-3 border rounded dash-boxes  p-3">
+            <div class="col-md-3 border rounded dash-boxes  p-3 common">
                 <div class="about__top mb-3">
                     <div class="about__title d-flex ">
                         <h1 class="content__title me-3">Yesterday</h1>
@@ -87,7 +98,7 @@
                 </div>
             </div>
 
-            <div class="col-md-3 border rounded dash-boxes  p-3">
+            <div class="col-md-3 border rounded dash-boxes  p-3 common">
                 <div class="about__top mb-3">
                     <div class="about__title d-flex">
                         <h1 class="content__title me-3">This Week</h1>
@@ -112,7 +123,7 @@
                 </div>
             </div>
 
-            <div class="col-md-3 border rounded dash-boxes  p-3">
+            <div class="col-md-3 border rounded dash-boxes  p-3 common">
                 <div class="about__top mb-3">
                     <div class="about__title d-flex ">
                         <h1 class="content__title me-3">Last Week</h1>
@@ -139,10 +150,10 @@
         </div>
 
         <div class="row justify-content-evenly">
-            <div class="col-md-4 border rounded p-3 dash-report">
+            <div class="col-md-4 border rounded p-3 dash-report common">
                 <div class="d-flex justify-content-between">
                     <h3>Today's Activity</h3>
-                    <select class="form-select w-25 dash-select" aria-label="Default select example">
+                    <select class="form-select w-25 dash-select mb-1" aria-label="Default select example">
                         <option selected>Today</option>
                         <option value="1">Week</option>
                     </select>
@@ -168,10 +179,10 @@
                     </tbody>
                 </table>
             </div>
-            <div class="col-md-4 border rounded p-3 dash-report">
+            <div class="col-md-4 border rounded p-3 dash-report common">
                 <div class="d-flex justify-content-between">
                     <h3>Productivity</h3>
-                    <select class="form-select w-25 dash-select" aria-label="Default select example">
+                    <select class="form-select w-25 dash-select mb-1" aria-label="Default select example">
                         <option selected>Today</option>
                         <option value="1">Week</option>
                     </select>
@@ -184,19 +195,21 @@
                 </div>
             </div>
 
-            <div class="col-md-4 border rounded p-3 dash-report">
-                <div class="d-flex justify-content-between">
-                    <h3>Non Productive</h3>
-                    <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="end">
-                        <mat-tab label="Apps">
-                            <div class="d-flex justify-content-end pe-3">
-                                <select class="form-select dash-select pe-2" aria-label="Default select example">
+            <div class="col-md-4 border rounded p-3 dash-report common">
+                <div class="">
+                    <h3 class="mb-0">Non Productive</h3><hr class="my-0">
+                    <mat-tab-group mat-stretch-tabs="false"  class="">
+                        <mat-tab label="Apps" class="w-25">
+                            <div class="d-flex justify-content-end pe-2">
+                                <select class="form-select dash-select my-1 non-product pe-0" aria-label="Default select example">
                                     <option selected>Today</option>
                                     <option value="1">Week</option>
                                 </select>
                             </div>
                         </mat-tab>
-                        <mat-tab label="Members"></mat-tab>
+                        <mat-tab label="Members" class="w-25">
+                            This Tab is for members
+                        </mat-tab>
                     </mat-tab-group>
 
 
@@ -212,14 +225,14 @@
         </div>
 
         <div class="row justify-content-evenly my-3">
-            <div class="col-md-4 border rounded p-3 dash-report">
+            <div class="col-md-4 border rounded p-3 dash-report common">
 
 
             </div>
-            <div class="col-md-4 border rounded p-3 dash-report">
+            <div class="col-md-4 border rounded p-3 dash-report common">
                 <div class="d-flex justify-content-between">
                     <h3>Attendance</h3>
-                    <select class="form-select w-25 dash-select" aria-label="Default select example">
+                    <select class="form-select w-25 dash-select mb-1" aria-label="Default select example">
                         <option selected>Today</option>
                         <option value="1">Week</option>
                     </select>
@@ -232,11 +245,11 @@
                 </div>
             </div>
 
-            <div class="col-md-4 border rounded p-3 dash-report">
+            <div class="col-md-4 border rounded p-3 dash-report common">
                 <div class="d-flex justify-content-between">
                     <h3>Activity</h3>
 
-                    <select class="form-select w-25 dash-select" aria-label="Default select example">
+                    <select class="form-select w-25 dash-select mb-1" aria-label="Default select example">
                         <option selected>Today</option>
                         <option value="1">Week</option>
                     </select>
@@ -248,8 +261,8 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-12 dash-screenshot text-light text-center py-5">
+        <div class="row mx-2">
+            <div class="col-12 dash-screenshot text-light text-center py-5" style="background: #3f51b5;">
                 <h1><i class="bi bi-clock-history" style="font-size: 44px;"></i></h1>
                 <p>Unfortunately, there are no screenshots to show.</p>
             </div>

@@ -3,10 +3,9 @@
 
 
 .main-content {
-  margin-top: 10px;
   padding: 30px 0px;
-  /* background: #f6f6f9; */
-  min-height: calc(100vh - 123px);
+  background: #f5f7fb;
+  min-height: calc(100vh - 80px);
 }
 
 .float {
@@ -39,23 +38,6 @@ body {
   box-shadow: none;
 }
 
-.table td {
-  padding: 12px 10px;
-}
-
-.table thead {
-  background: #f3f4f7;
-  /* color: white; */
-}
-
-.table thead th {
-  font-weight: 500;
-  padding: 15px;
-}
-
-.table tbody {
-  border-top: 1px solid black !important;
-}
 
 .error {
   padding: 5px;
@@ -75,7 +57,10 @@ select :focus-visible {
   font-size: 13px;
   font-weight: 500;
 }
-
+.table{
+  border-collapse: separate;
+  border-spacing: 0 0.5rem;
+}
 .table-row {
   /* border: 1px solid transparent; */
   z-index: 7;
@@ -102,7 +87,7 @@ td.highlight div {
 
 tr:hover {
   box-shadow: 0px 9px 4px -6px grey;
-  background: #f3f4f7;
+ color: #3f51b5;
 }
 
 tr:hover .data {
@@ -121,6 +106,52 @@ tr:hover .action {
 
 tr:hover td.highlight div {
   transform: scaleX(3);
+}
+.table td {
+  padding: 12px 10px;
+}
+.table tbody tr{
+  background: white;
+}
+
+.table thead th {
+  font-weight: 500;
+  padding: 15px;
+}
+.table thead tr:hover {
+ color: white !important;
+}
+.table tbody {
+  border-top: 1px solid black !important;
+}
+
+thead th:first-child {
+  border-top-left-radius: 10px;
+}
+
+thead th:last-child {
+  border-top-right-radius: 10px;
+}
+
+thead {
+  background: #3f51b5;
+  color: white;
+}
+
+thead th {
+  padding: 10px
+}
+
+tbody {
+  color: #605e5e !important;
+  --bs-table-striped-color: #605e5e !important;
+  font-size: 13.5px;
+}
+
+:host ::ng-deep .pagination .ngx-pagination .current {
+  background: #3f51b5 !important;
+  border: transparent !important;
+  border-radius: 20px !important;
 }
 
 .cdk-global-overlay-wrapper,
@@ -376,18 +407,42 @@ select {
   width: 200px;
 }
 
-.progress{
-  height : 10px !important;
-}
-.progress-percentage{
-  font-size: 12px;
-  padding-left:10px;
-  
+.progress {
+  height: 10px !important;
 }
 
-.buttons.active{
+.progress-percentage {
+  font-size: 12px;
+  padding-left: 10px;
+
+}
+
+.buttons.active {
   color: #107dfb;
   background: #eeecec;
   padding: 5px 10px;
   border-radius: 20px;
+}
+*::-webkit-scrollbar {
+  width: 5px;
+}
+
+*::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+  border-radius: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgb(163, 162, 162);
+  border-radius: 10px;
+}
+.common {
+  background-color: white;
+  border-radius: 10px !important;
+  box-shadow: 0 0px 20px 0 #dedbdb;
+}
+.common:hover{
+  transform: scale(1.05);
+  background: #edf5fe !important;
+  color: blue
 }
