@@ -4,10 +4,6 @@
 // let apiUrlDotNet="http://arstegeffortlesshrmapi-dev.us-east-1.elasticbeanstalk.com/api/v1";
 let apiUrlDotNet="http://localhost:8080/api/v1";
 
-// if(window.location.host.includes('localhost'))
-// {
-//   apiUrlDotNet="http://localhost:8080/api/v1";
-// }
 export const environment = {
   production: false,
   apiUrlDotNet:apiUrlDotNet
