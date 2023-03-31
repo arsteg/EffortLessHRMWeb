@@ -1,7 +1,7 @@
-let apiUrlDotNet="http://arstegeffortlesshrmapi-dev.us-east-1.elasticbeanstalk.com/api/v1";
+let apiUrlDotNet="https://effortlesshrmapi.azurewebsites.net/api/v1";
 if(window.location.host.includes('localhost'))
 {
-  apiUrlDotNet="http://arstegeffortlesshrmapi-dev.us-east-1.elasticbeanstalk.com/api/v1/";
+  apiUrlDotNet="https://effortlesshrmapi.azurewebsites.net/api/v1/";
 }
 export const environment = {
   production: true,
