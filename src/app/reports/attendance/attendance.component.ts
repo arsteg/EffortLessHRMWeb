@@ -13,7 +13,7 @@ import * as moment from 'moment';
 @Component({
   selector: 'app-attendance',
   templateUrl: './attendance.component.html',
-  styleUrls: ['./attendance.component.css']
+  styleUrls: ['./attendance.component.css'],
 })
 
 export class AttendanceComponent implements OnInit {
@@ -43,19 +43,18 @@ export class AttendanceComponent implements OnInit {
   selectedDate: any = this.datepipe.transform(new Date(), "yyyy-MM-dd");
   selectedFilter = 'All';
   firstLetter: string;
-  portalType : string;
-
-filterOption: string = 'All'
+  portalType: string;
+  localTime: string;
+  filterOption: string = 'All'
   constructor(
     public commonservice: CommonService,
-     public datepipe: DatePipe
+    public datepipe: DatePipe
     , private timeLogService: TimeLogService
     , private exportService: ExportService
     , private reportService: ReportsService
   ) {
     this.fromDate = this.datepipe.transform(new Date(this.currentDate), 'yyyy-MM-dd');
     this.toDate = this.datepipe.transform(new Date(this.currentDate), 'yyyy-MM-dd');
-    this.getAttendance();
   }
 
   ngOnInit(): void {
@@ -64,6 +63,18 @@ filterOption: string = 'All'
     this.firstLetter = this.commonservice.firstletter;
   }
 
+  formatTime(time: string): string {
+    if (!time) {
+      return '';
+    }
+  
+    const date = new Date(time);
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const seconds = date.getSeconds().toString().padStart(2, '0');
+  
+    return `${hours}:${minutes}:${seconds}`;
+  }
   populateUsers() {
     this.members = [];
     this.members.push({ id: this.currentUser.id, name: "Me", email: this.currentUser.email });
@@ -90,9 +101,7 @@ filterOption: string = 'All'
   }
 
   filterData() {
-
     this.getAttendance();
-    
   }
 
   getAttendance() {
@@ -102,8 +111,7 @@ filterOption: string = 'All'
     attendance.users = (this.roleName.toLocaleLowerCase() === "admin") ? this.selectedUser : [this.currentUser.id];
     this.reportService.getAttendance(attendance).subscribe(result => {
       this.attendance = result.data;
-    }
-    )
+    });
   }
   minutesToTime(minutes: number): string {
     const hours: string = Math.floor(minutes / 60).toString().padStart(2, '0');
@@ -163,12 +171,12 @@ filterOption: string = 'All'
     this.selectedDate = this.datepipe.transform(this.addDays(this.selectedDate, -1), "yyyy-MM-dd");
     this.getAttendance();
   }
-  
+
   SetNextDay() {
     this.selectedDate = this.datepipe.transform(this.addDays(this.selectedDate, 1), "yyyy-MM-dd");
     this.getAttendance();
   }
-  
+
   filterAttendance() {
     if (this.selectedFilter === 'All') {
       this.attendance = this.getAttendance(); // reset to original data
@@ -176,5 +184,5 @@ filterOption: string = 'All'
       this.attendance = this.attendance.filter(data => data.status === this.selectedFilter);
     }
   }
-  
+
 }

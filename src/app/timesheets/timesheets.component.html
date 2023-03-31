@@ -89,8 +89,8 @@
                 <tr *ngFor="let users of timeSheett">
                     <td  *ngIf="showMembersColumn">
                         <span class="letter ms-2"
-                        [style.background-color]="commonservice.getRandomColor(users.lastName)">{{users.firstName.slice(0,1)
-                        | uppercase}}{{users.lastName.slice(0,1) | uppercase}}</span> 
+                        [style.background-color]="commonservice?.getRandomColor(users?.lastName)">{{users?.firstName.slice(0,1)
+                        | uppercase}}{{users?.lastName.slice(0,1) | uppercase}}</span> 
                         {{users?.firstName | titlecase}} {{users?.lastName | titlecase}}</td>
                     <td *ngIf="showProjectsColumn">{{users?.project}}</td>
 
