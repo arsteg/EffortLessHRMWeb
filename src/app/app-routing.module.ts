@@ -37,6 +37,11 @@ import { RolePermissionComponent } from './role-permission/role-permission.compo
 import { ResetPasswordComponent } from './login/reset-password/reset-password.component';
 import { TimesheetsComponent } from './timesheets/timesheets.component';
 import { ActivityLevelComponent } from './reports/activity-level/activity-level.component';
+import { ProfileSettingsComponent } from './settings/profile-settings/profile-settings.component';
+import { WorkspaceSettingsComponent } from './settings/workspace-settings/workspace-settings.component';
+import { FeaturesSettingsComponent } from './settings/features-settings/features-settings.component';
+import { AttendanceSettingsComponent } from './settings/attendance-settings/attendance-settings.component';
+import { LeaveSettingsComponent } from './settings/leave-settings/leave-settings.component';
 const routes: Routes = [
   // {path:'',component:LayoutComponentComponent, canActivate: [AuthGuard]},
 
@@ -78,7 +83,12 @@ const routes: Routes = [
       { path: 'permissions', component: PermissionsComponent },
       { path: 'rolePermission', component: RolePermissionComponent },
       { path: 'timesheets', component: TimesheetsComponent },
-      { path: 'activityLevel', component: ActivityLevelComponent }
+      { path: 'activityLevel', component: ActivityLevelComponent },
+      { path: 'profileSettings', component: ProfileSettingsComponent },
+      { path: 'workspace', component: WorkspaceSettingsComponent },
+      { path: 'features', component: FeaturesSettingsComponent },
+      { path: 'attendancesettings', component: AttendanceSettingsComponent },
+      { path: 'leavesettings', component: LeaveSettingsComponent }
     ]
   }
 ]

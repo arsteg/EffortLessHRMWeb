@@ -77,6 +77,13 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { TimesheetsComponent } from './timesheets/timesheets.component';
 import { ActivityLevelComponent } from './reports/activity-level/activity-level.component';
 import {MatPaginatorModule} from '@angular/material/paginator';
+import { ProfileSettingsComponent } from './settings/profile-settings/profile-settings.component';
+import { WorkspaceSettingsComponent } from './settings/workspace-settings/workspace-settings.component';
+import { FeaturesSettingsComponent } from './settings/features-settings/features-settings.component';
+import { AttendanceSettingsComponent } from './settings/attendance-settings/attendance-settings.component';
+import { Ng5SliderModule } from 'ng5-slider';
+import { LeaveSettingsComponent } from './settings/leave-settings/leave-settings.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -119,7 +126,12 @@ import {MatPaginatorModule} from '@angular/material/paginator';
           RolePermissionComponent,
           DashboardComponent,
           TimesheetsComponent,
-          ActivityLevelComponent
+          ActivityLevelComponent,
+          ProfileSettingsComponent,
+          WorkspaceSettingsComponent,
+          FeaturesSettingsComponent,
+          AttendanceSettingsComponent,
+          LeaveSettingsComponent
   ],
   imports: [
     BrowserModule,
@@ -150,7 +162,8 @@ import {MatPaginatorModule} from '@angular/material/paginator';
     ManageModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    Ng5SliderModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

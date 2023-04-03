@@ -461,6 +461,31 @@ export const SideBarAdminMenu = [
         title: 'App/Website',
         url: '/appwebsitesettings'
       },
+      {
+        id: '162',
+        title: 'Profile Settings',
+        url: '/profileSettings'
+      },
+      {
+        id: '163',
+        title: 'Workspace',
+        url: '/workspace'
+      },
+      {
+        id: '164',
+        title: 'Features',
+        url: '/features'
+      },
+      {
+        id: '164',
+        title: 'Attendance',
+        url: '/attendancesettings'
+      },
+      {
+        id: '164',
+        title: 'Leave',
+        url: '/leavesettings'
+      },
     ]
   },
   {

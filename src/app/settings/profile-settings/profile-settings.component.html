@@ -1,0 +1,140 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <h1 class="pt-0 pb-3 mb-0">Profile Settings</h1>
+        <div class="d-flex">
+            <div class="card">
+                <div class="card-body p-2">
+                    <div class="d-flex text-black">
+                      <div class="flex-shrink-0 pt-3" style="background-color: aqua; border-radius: 8px; padding: 5px;">
+                        <span style="font-size: 50px;">SK</span>
+                      </div>
+                      <div class="flex-grow-1 ms-3">
+                        <div><span>Sandeep Kumar</span></div>
+                        <h5 class="mb-1">Member since: </h5>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-3">
+                <button class="buttons" (click)="toggleGeneralSettings()" [ngClass]="{'active': activeButton === 'General'}">General</button>
+                <button class="buttons mx-3"  (click)="toggleManagePasswordSettings()" [ngClass]="{'active': activeButton === 'ManagePassword'}">Manage Password</button>
+            </div>
+        </div>
+        <hr/>
+        <div class="row" *ngIf="showGeneralSettings">
+            <form class="row">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="row">
+                            <label for="firstName" class="text-start">First Name</label>
+                        </div>
+                        <input type="text" name="firstName" id="firstName" class="form-control input pt-0"
+                            formControlName="firstName" ngModel required>
+                        <div
+                            class="alert alert-danger error">
+                            <div>
+                                First Name is required.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <label for="lastName" class="text-start">Last Name</label>
+                        </div>
+                        <input type="text" name="lastName" id="lastName" class="form-control input pt-0"
+                            formControlName="lastName" ngModel required>
+                        <div
+                            class="alert alert-danger error">
+                            <div>
+                                Last Name is required.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <label for="email" class="text-start">E-mail</label>
+                        </div>
+                        <input type="text" name="email" id="email" class="form-control input pt-0"
+                            formControlName="email" ngModel required>
+                        <div
+                            class="alert alert-danger error">
+                            <div>
+                                E-Mail is required!
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <label for="email" class="text-start">Date of birth</label>
+                        </div>
+                        <select id="member" name="member" class="form-control" class="form-select form-select-sm"
+                            aria-label=".form-select-sm example"
+                            >
+                            <option value="value" disabled selected>Select Timezone</option>
+                            <option>UTC 1</option>
+                            <option>UTC 2</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <label for="email" class="text-start">Date of birth</label>
+                        </div>
+                        <input type="date" name="dob" id="dob" class="form-control input pt-0"
+                            formControlName="dob" ngModel>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="row" *ngIf="showManagePasswordSettings">
+            <form class="row">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="row">
+                            <label for="oldPassword" class="text-start">Old Password</label>
+                        </div>
+                        <input type="password" name="oldPassword" id="oldPassword" class="form-control input pt-0"
+                            formControlName="oldPassword" ngModel required>
+                        <div
+                            class="alert alert-danger error">
+                            <div>
+                                Old password is required.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <label for="newPassword" class="text-start">New Password</label>
+                        </div>
+                        <input type="text" name="newPassword" id="newPassword" class="form-control input pt-0"
+                            formControlName="newPassword" ngModel required>
+                        <div
+                            class="alert alert-danger error">
+                            <div>
+                                New password is required.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <label for="confirmPassword" class="text-start">Confirm Password</label>
+                        </div>
+                        <input type="text" name="confirmPassword" id="confirmPassword" class="form-control input pt-0"
+                            formControlName="confirmPassword" ngModel required>
+                        <div
+                            class="alert alert-danger error">
+                            <div>
+                                Confirm password is required!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="d-flex justify-content-between m-3">
+            <div>
+                <button mat-raised-button color="primary" data-bs-dismiss="modal" type="submit">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
