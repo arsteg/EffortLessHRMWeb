@@ -49,3 +49,9 @@ low,
 medium,
 high
 }
+export class RealTime{
+  users: string;
+  projects: string;
+  tasks: string;
+ 
+}

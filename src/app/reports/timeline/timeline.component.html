@@ -31,14 +31,12 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <input type="date" name="fromDate" id="fromDate" (change)="filterData()" [(ngModel)]="fromDate"
-        class="form-control calendar mb-4 mx-1" />
-      <div class="mx-1 pt-3">
-        <i class="fa fa-long-arrow-right text-primary"></i>
+      <div class="input-group date-style w-25">
+        <span (click)="SetPreviousDay()" class="fa fa-angle-left fa-lg p-3"></span>
+        <input type="date" name="fromDate" id="fromDate" (change)="filterData()" [(ngModel)]="selectedDate"
+          class="form-control w-25 calendar mb-4 mx-1 rounded" />
+        <span (click)="SetNextDay()" class="fa fa-angle-right fa-lg p-3"></span>
       </div>
-      <input type="date" name="toDate" id="toDate" (change)="filterData()" [(ngModel)]="toDate"
-        class="form-control calendar mb-4 mx-1" />
-
       <div class="align-items-start flex-wrap gap-3 ms-auto">
         <div class="dropdown order-first order-sm-last d-flex">
           <button class="export-btn dropdown-toggle formrow-inputState form-select select-styled active" type="button"
@@ -56,90 +54,100 @@
     <div class="d-flex justify-content-between">
       <div class="col-sm-8 d-flex gap-3 color-bgs">
         <div class="mb-3 d-flex align-items-center gap-1">
-            <label class="type-tracked">
-                <input type="checkbox" checked="" value="tracked" >
-                <span class="type-tracked__control tracked"></span>
-                <span class="type-tracked__label">Tracked</span>
-            </label>
+          <label class="type-tracked">
+            <input type="checkbox" checked="" value="tracked">
+            <span class="type-tracked__control tracked"></span>
+            <span class="type-tracked__label">Tracked</span>
+          </label>
         </div>
         <div class="mb-3 d-flex align-items-center gap-1">
-        <label class="type-tracked">
-                <input type="checkbox" checked=""  value="manual">
-                <span class="type-tracked__control manual"></span>
-                <span class="type-tracked__label text-dark">Manual </span>
-            </label>
+          <label class="type-tracked">
+            <input type="checkbox" checked="" value="manual">
+            <span class="type-tracked__control manual"></span>
+            <span class="type-tracked__label text-dark">Manual </span>
+          </label>
         </div>
         <div class="mb-3 d-flex align-items-center gap-1">
-        <label class="type-tracked">
-                <input type="checkbox" checked=""  value="mobile" >
-                <span class="type-tracked__control mobile"></span>
-                <span class="type-tracked__label text-dark">Mobile</span>
-            </label>
+          <label class="type-tracked">
+            <input type="checkbox" checked="" value="mobile">
+            <span class="type-tracked__control mobile"></span>
+            <span class="type-tracked__label text-dark">Mobile</span>
+          </label>
 
         </div>
         <div class="mb-3 d-flex align-items-center gap-1">
-        <label class="type-tracked">
-                <input type="checkbox" checked=""  value="website" >
-                <span class="type-tracked__control web"></span>
-                <span class="type-tracked__label text-dark">Web</span>
-            </label>
+          <label class="type-tracked">
+            <input type="checkbox" checked="" value="website">
+            <span class="type-tracked__control web"></span>
+            <span class="type-tracked__label text-dark">Web</span>
+          </label>
 
         </div>
         <div class="mb-3 d-flex align-items-center gap-1">
-        <label class="type-tracked">
-                <input type="checkbox" checked=""  value="extension" >
-                <span class="type-tracked__control extension"></span>
-                <span class="type-tracked__label text-dark">Extension</span>
-            </label>
+          <label class="type-tracked">
+            <input type="checkbox" checked="" value="extension">
+            <span class="type-tracked__control extension"></span>
+            <span class="type-tracked__label text-dark">Extension</span>
+          </label>
         </div>
         <div class="mb-3 d-flex align-items-center gap-1">
-        <label class="type-tracked">
-                <input type="checkbox" checked=""  value="idle" >
-                <span class="type-tracked__control idle"></span>
-                <span class="type-tracked__label text-dark">Idle</span>
-            </label>
+          <label class="type-tracked">
+            <input type="checkbox" checked="" value="idle">
+            <span class="type-tracked__control idle"></span>
+            <span class="type-tracked__label text-dark">Idle</span>
+          </label>
         </div>
-    </div>
+      </div>
 
     </div>
     <table class="table  mt-4" id="timeSheet" #timeSheet>
       <thead>
         <tr>
-          <th scope="col" [appSort]="timeSheett" data-order="{{ sortOrder }}" data-name="users?.user"
+          <th scope="col" [appSort]="timeline" data-order="{{ sortOrder }}" data-name="users?.user"
             (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
             Users &nbsp;
             <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
           </th>
 
-          <th scope="col" [appSort]="timeSheett" data-order="{{ sortOrder }}" data-name="users?.user"
+          <th scope="col" [appSort]="timeline" data-order="{{ sortOrder }}" data-name="users?.user"
             (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
             Projects &nbsp;
             <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
           </th>
 
 
-          <th scope="col" [appSort]="timeSheett" data-order="{{ sortOrder }}" data-name="users?.user"
+          <th scope="col" [appSort]="timeline" data-order="{{ sortOrder }}" data-name="users?.user"
             (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
             Time &nbsp;
             <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
           </th>
-          <th>10:00 </th>
-          <th>11:00 </th>
-          <th>12:00 </th>
-          <th>01:00 </th>
-          <th>02:00 </th>
-          <th>04:00 </th>
-          <th>06:00 </th>
+
+           <th *ngFor="let hour of hours" scope="col">{{ startTime.getHours() + hour }}:00</th>
+           <!-- <th *ngFor="let hour of hours" scope="col">{{ data.startHour + hour }}:00</th> -->
+
         </tr>
       </thead>
+
+
       <tbody>
-        <tr>
-          <td>user name</td>
-          <td>project name</td>
-          <td>8.00 </td>
-         
-          <td colspan="7"><div style="height:40px; width: 100%; background: #2ECD6F; border-radius: 5px;"></div></td>
-          
+        <tr *ngFor="let data of timeline;  let i = index;">
+          <td>
+            <!-- <span class="letter ms-2"
+              [style.background-color]="commonservice.getRandomColor(data?.logs[i]?.user?.lastName)">{{data?.logs[i]?.user?.firstName.slice(0,1)
+              | uppercase}}{{data?.logs[i]?.user?.lastName.slice(0,1) | uppercase}}</span> -->
+            {{data?.logs[i]?.user?.firstName | titlecase}} {{data?.logs[i]?.user?.lastName | titlecase}}
+          </td>
+          <td>{{data?.logs[i]?.project?.projectName}}</td>
+          <td>
+            {{ minutesToTime(data?.logs.length * 10) }}
+          </td>
+
+          <td *ngFor="let hour of hours" [style.padding]="0">
+            <div [style.height.px]="40" [style.width.%]="isUserActiveInHour(data.logs, startTime.getHours() + hour)"
+              [style.background-color]="isUserActiveInHour(data.logs, startTime.getHours() + hour) ? '#2ECD6F' : 'rgb(46 205 111)'"
+              [title]="getTitle(data.logs)">
+            </div>
+          </td>
 
         </tr>
 

@@ -30,7 +30,7 @@
                 <span (click)="SetNextDay()" class="fa fa-angle-right fa-lg p-3"></span>
             </div>
             <ng-container *ngIf="roleName !== 'user'">
-                <select class="form-select h-25 mt-2 dash-select border" aria-label="Default select example"
+                <select class="form-select h-25 mt-2 dash-select border" aria-label="Entry"
                     [(ngModel)]="filterOption">
                     <option value="All" selected>All</option>
                     <option value="Late Coming">Late Coming</option>
@@ -97,8 +97,8 @@
             </thead>
             <tbody>
                 <tr *ngFor="let data of attendance">
-                    <ng-container *ngIf="(filterOption === 'All') || (filterOption === 'Late Coming' && data.starttime > '10:0:0')
-                        || (filterOption === 'Absent' && data.starttime == null)  || (filterOption === 'Early Leaving' && data.time < '480')
+                    <ng-container *ngIf="(filterOption === 'All') || (filterOption === 'Late Coming' && data.starttime < '9:1:1')
+                        || (filterOption === 'Absent' && data.starttime == null)  || (filterOption === 'Early Leaving' && data.endtime < '18:1:1')
                         || (filterOption === 'Less Tracking' && data.total < '480')">
                         <td> <span class="letter ms-2"
                                 [style.background-color]="commonservice.getRandomColor(data.lastName)">{{data.firstName.slice(0,1)

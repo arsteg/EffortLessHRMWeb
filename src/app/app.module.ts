@@ -52,6 +52,7 @@ import { AuthGuard } from './auth.guard';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { TimesheetsComponent } from './timesheets/timesheets.component';
 import { ActivityLevelComponent } from './reports/activity-level/activity-level.component';
+<<<<<<< Updated upstream
 import { ProfileSettingsComponent } from './settings/profile-settings/profile-settings.component';
 import { WorkspaceSettingsComponent } from './settings/workspace-settings/workspace-settings.component';
 import { FeaturesSettingsComponent } from './settings/features-settings/features-settings.component';
@@ -61,6 +62,10 @@ import { LeaveSettingsComponent } from './settings/leave-settings/leave-settings
 import { taskModule } from './tasks/task.Module';
 import { SharedModule } from './shared/shared.Module';
 
+=======
+import {MatPaginatorModule} from '@angular/material/paginator';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+>>>>>>> Stashed changes
 @NgModule({
   declarations: [
     AppComponent,
@@ -121,9 +126,16 @@ import { SharedModule } from './shared/shared.Module';
     ModalModule,
     DragDropModule,
     ManageModule,
+<<<<<<< Updated upstream
     Ng5SliderModule,
     SharedModule,
     taskModule
+=======
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatPaginatorModule,
+    MatSlideToggleModule
+>>>>>>> Stashed changes
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

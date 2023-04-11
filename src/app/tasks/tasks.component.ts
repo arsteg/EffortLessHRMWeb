@@ -36,8 +36,10 @@ export class TasksComponent implements OnInit {
   selectedUser: any;
   selectedUsers = [];
   public sortOrder: string = ''; // 'asc' or 'desc'
+  showBadge = true;
+  currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  public allOption: string = "ALL"; 
 
-  private toastr: ToastrService
   constructor(
     private tasksService: TasksService,
     private fb: FormBuilder,
@@ -84,6 +86,13 @@ export class TasksComponent implements OnInit {
     });
     this.firstLetter = this.commonservice.firstletter;
   }
+
+  changeStatus(newStatus: string) {
+      this.tasks.status = newStatus;
+      this.showBadge = true;
+      console.log("Testing Status: ",this.tasks.status)
+  }
+ 
 
   listAllTasks() {
     this.tasksService.getAllTasks().subscribe((response: any) => {
@@ -185,5 +194,10 @@ export class TasksComponent implements OnInit {
   }
   onMemberSelectionChange(project) {
     this.getTaskByUsers();
+  }
+  getCurrentUserTasks(){
+    this.tasksService.getTaskByUser(this.currentUser.id).subscribe(response => {
+      this.tasks = response && response.data && response.data['taskList'];
+    })
   }
 }

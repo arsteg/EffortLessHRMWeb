@@ -736,11 +736,6 @@ export const SideBarUserMenu = [
   },
   {
     id: '15',
-    title: 'Settings',
-    icon: 'fa fa-wrench',
-  },
-  {
-    id: '15',
     title: 'Manual Time',
     icon: 'bi bi-clock-history',
 
@@ -757,7 +752,13 @@ export const SideBarUserMenu = [
       }
     ]
 
+  },
+  {
+    id: '16',
+    title: 'Settings',
+    icon: 'fa fa-wrench',
   }
+  
 ];
 
 

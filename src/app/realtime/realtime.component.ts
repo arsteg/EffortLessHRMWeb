@@ -7,6 +7,7 @@ import { DatePipe } from '@angular/common';
 import { ReportsService } from '../reports/reports.service';
 import { ProjectService } from '../Project/project.service';
 import { ExportService } from '../_services/export.service';
+import { RealTime } from '../models/timeLog';
 
 @Component({
   selector: 'app-realtime',
@@ -16,7 +17,7 @@ import { ExportService } from '../_services/export.service';
 export class RealtimeComponent implements OnInit {
   selectedManager: any;
   selectedUsers: any;
-  selectedUser: any;
+  selectedUser: any = [];
   teamOfUsers: any[];
   firstLetter: string;
   color: string;
@@ -27,50 +28,56 @@ export class RealtimeComponent implements OnInit {
   projectList: any;
   searchText = '';
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
-
+  realtime: any;
+  roleName = localStorage.getItem('roleName');
+  members: any;
+  member: any;
+  p: number = 1;
+  
   constructor(private timelog: TimeLogService,
     private manageTeamService: ManageTeamService,
     public commonService: CommonService,
     private datepipe: DatePipe,
     private reportService: ReportsService,
     private projectService: ProjectService,
-    private exportService: ExportService) {
+    private exportService: ExportService,) {
 
   }
 
   ngOnInit(): void {
-    this.populateTeamOfUsers();
+    this.populateUsers();
     this.getProjectList();
     this.firstLetter = this.commonService.firstletter;
+    this.getRealtime();
   }
 
-  populateTeamOfUsers() {
-    this.manageTeamService.getAllUsers().subscribe({
-      next: result => {
-        this.teamOfUsers = result.data.data;
-        let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        this.teamOfUsers.forEach((user: any, index: number) => {
-          if (user.id == currentUser.id) {
-            this.selectedManager = user;
-            this.Selectmanager(user);
-          }
-        });
-      },
-      error: error => { }
-    })
+  getProjectList() {
+    //Admin and Manager can see the list of all projects
+    if (this.roleName.toLocaleLowerCase() == "admin" || this.roleName.toLocaleLowerCase() == "manager") {
+      this.projectService.getprojectlist().subscribe((response: any) => {
+        this.projectList = response && response.data && response.data['projectList'];
+      });
+    }
+    else {
+      this.projectService.getProjectByUserId(this.currentUser.id).subscribe((response: any) => {
+        this.projectList = response && response.data && response.data['projectList'];
+      });
+    }
   }
 
-  Selectmanager(user: any) {
-    this.selectedManager = user;
-    this.timelog.getTeamMembers(user.id).subscribe({
-      next: response => {
+  populateUsers() {
+    this.members = [];
+    this.members.push({ id: this.currentUser.id, name: "Me", email: this.currentUser.id });
+    this.member = this.currentUser;
+    this.timelog.getTeamMembers(this.member.id).subscribe({
+      next: (response: { data: any; }) => {
         this.timelog.getusers(response.data).subscribe({
           next: result => {
-            this.selectedUsers = result.data;
-            this.teamOfUsers.forEach((user: any, index: number) => {
-              user['isChecked'] = this.selectedUsers.some((selectedUser: any) => selectedUser.id == user.id);
-
-            });
+            result.data.forEach(user => {
+              if (user.email != this.currentUser.email) {
+                this.members.push({ id: user.id, name: `${user.firstName} ${user.lastName}`, email: user.email });
+              }
+            })
           },
           error: error => {
             console.log('There was an error!', error);
@@ -82,39 +89,34 @@ export class RealtimeComponent implements OnInit {
       }
     });
   }
+
   filterData() {
-    this.getTaskData();
+    this.getRealtime();
   }
 
-  getTaskData() {
-    let searchTaskRequest = new SearchTaskRequest();
-
-    searchTaskRequest.projects = this.selectedProject;
-    searchTaskRequest.tasks = this.selectedTask;
-    searchTaskRequest.users = (this.roleId == "639acb77b5e1ffe22eaa4a39" || this.roleId == "63b56b9ca3396271e4a54b96") ? this.selectedUser : [this.currentUser.email];
-    this.reportService.getTaskReport(searchTaskRequest).subscribe(result => {
-      this.taskList = result.data;
-    }
-    )
-  }
-
-  getProjectList() {
-    if(this.roleId == "639acb77b5e1ffe22eaa4a39" || this.roleId == "63b56b9ca3396271e4a54b96"){
-        this.projectService.getprojectlist().subscribe((response: any) => {
-        this.projectList = response && response.data && response.data['projectList'];
-      });
-    }
-  }
-
-  exportToExcel(){
-    this.exportService.exportToExcel('RealTime', 'realTime', this.selectedUsers);
-  }
-  exportToCsv(){
-    this.exportService.exportToCSV('RealTime', 'realTime', this.selectedUsers);
-  }
   
+
+  
+  exportToExcel() {
+    this.exportService.exportToExcel('RealTime', 'realTime', this.realtime);
+  }
+  exportToCsv() {
+    this.exportService.exportToCSV('RealTime', 'realTime', this.realtime);
+  }
+
   @ViewChild('realTime') content!: ElementRef
-  exportToPdf(){
-    this.exportService.exportToPdf('RealTimes', this.content.nativeElement)
+  exportToPdf() {
+    this.exportService.exportToPdf('realTime', this.content.nativeElement)
+  }
+
+  getRealtime() {
+    let realtime = new RealTime();
+    realtime.projects = this.selectedProject ;
+    realtime.tasks = this.selectedTask;
+    realtime.users = (this.roleName.toLocaleLowerCase() === "admin") ? this.selectedUser : [this.currentUser.id];
+    this.timelog.realTime(realtime).subscribe(result => {
+      this.realtime = result.data;
+      console.log("realtime :", this.realtime[0])
+    })
   }
 }

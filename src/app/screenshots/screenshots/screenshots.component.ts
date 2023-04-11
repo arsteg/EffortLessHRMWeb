@@ -76,7 +76,7 @@ export class ScreenshotsComponent implements OnInit {
   populateMembers() {
     this.members = [];
     let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    this.members.push({ id: currentUser.email, name: "Me", email: currentUser.email });
+    this.members.push({ id: currentUser.id, name: "Me", email: currentUser.email });
     this.member = currentUser;
     this.timeLogService.getTeamMembers(this.member.id).subscribe({
       next: response => {

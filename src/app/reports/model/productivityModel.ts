@@ -60,3 +60,9 @@ export class SearchAppUsagesRequest {
   fromdate:Date = new Date();      
   todate: Date= new Date();
 }
+export class TimeLine{
+  users: [];
+  projects: [];
+  fromdate:Date = new Date();      
+  todate: Date= new Date();
+}

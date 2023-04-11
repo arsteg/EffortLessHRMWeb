@@ -193,7 +193,7 @@
 }
 
 .mat-drawer-container {
-    height: 100vh;
+    /* height: 100vh; */
     box-shadow: 0px 0px 5px #e2dcdc;
     margin-top: 2px;
 }
