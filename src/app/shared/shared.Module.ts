@@ -25,6 +25,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AgGridModule } from 'ag-grid-angular';
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatSortModule } from '@angular/material/sort';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 @NgModule({
   declarations:[SortDirective,SearchPipe],
@@ -47,7 +48,8 @@ import { MatSortModule } from '@angular/material/sort';
     AgGridModule.withComponents([]),
     BsDatepickerModule.forRoot(),
     MatTooltipModule,
-    MatSortModule
+    MatSortModule,
+    TooltipModule
     ],
   exports:[
     SortDirective,

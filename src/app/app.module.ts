@@ -6,7 +6,7 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './login/register/register.component';
 import { ForgotPasswordComponent } from './login/forgot-password/forgot-password.component';
 import { SidebarDirective } from './layout/sidebar.directive';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { ResetPasswordComponent } from './login/reset-password/reset-password.component';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -52,7 +52,6 @@ import { AuthGuard } from './auth.guard';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { TimesheetsComponent } from './timesheets/timesheets.component';
 import { ActivityLevelComponent } from './reports/activity-level/activity-level.component';
-<<<<<<< Updated upstream
 import { ProfileSettingsComponent } from './settings/profile-settings/profile-settings.component';
 import { WorkspaceSettingsComponent } from './settings/workspace-settings/workspace-settings.component';
 import { FeaturesSettingsComponent } from './settings/features-settings/features-settings.component';
@@ -62,10 +61,11 @@ import { LeaveSettingsComponent } from './settings/leave-settings/leave-settings
 import { taskModule } from './tasks/task.Module';
 import { SharedModule } from './shared/shared.Module';
 
-=======
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
->>>>>>> Stashed changes
+import { MatNativeDateModule } from '@angular/material/core'; 
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { DatePipe } from '@angular/common';
 @NgModule({
   declarations: [
     AppComponent,
@@ -126,22 +126,19 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
     ModalModule,
     DragDropModule,
     ManageModule,
-<<<<<<< Updated upstream
     Ng5SliderModule,
     SharedModule,
-    taskModule
-=======
+    taskModule,
     MatDatepickerModule,
     MatNativeDateModule,
     MatPaginatorModule,
     MatSlideToggleModule
->>>>>>> Stashed changes
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,
     NO_ERRORS_SCHEMA
   ],
-  providers: [CommonService, UserService, AuthGuard],
+  providers: [CommonService, UserService, AuthGuard, DatePipe, HttpClient],
   bootstrap: [AppComponent]
 })
 
