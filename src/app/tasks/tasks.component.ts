@@ -38,7 +38,7 @@ export class TasksComponent implements OnInit {
   public sortOrder: string = ''; // 'asc' or 'desc'
   showBadge = true;
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
-  public allOption: string = "ALL"; 
+  public allOption: string = "ALL";
 
   constructor(
     private tasksService: TasksService,
@@ -49,10 +49,12 @@ export class TasksComponent implements OnInit {
     public commonservice: CommonService
   ) {
     this.addForm = this.fb.group({
-      taskName: ['', Validators.required],
+      taskName: [''],
+      title: ['', Validators.required],
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
       description: ['', Validators.required],
+      estimate: [0],
       comment: ['', Validators.required],
       priority: ['', Validators.required],
       TaskUser: ['', Validators.required],
@@ -92,7 +94,7 @@ export class TasksComponent implements OnInit {
       this.showBadge = true;
       console.log("Testing Status: ",this.tasks.status)
   }
- 
+
 
   listAllTasks() {
     this.tasksService.getAllTasks().subscribe((response: any) => {
@@ -101,6 +103,7 @@ export class TasksComponent implements OnInit {
   }
 
   addTask(form) {
+    form.taskName=form.description;
     this.tasksService.addtask(form).subscribe(response => {
       this.listAllTasks();
       this.toast.success('New Task', 'Successfully Added!')
@@ -150,7 +153,7 @@ export class TasksComponent implements OnInit {
       this.tost.error('All selected users already exist', 'ERROR!')
     }
   }
-  
+
   getTaskUser(id) {
     this.tasksService.gettaskUser(id).subscribe(response => {
       this.taskUserList = response && response.data && response.data['taskUserList'];
@@ -167,7 +170,7 @@ export class TasksComponent implements OnInit {
       let index = this.taskUserList.findIndex(user => user.id === taskUserList.id);
       this.tasksService.deleteTaskUser(taskUserList.id).subscribe(response => {
         this.taskUserList.splice(index, 1);
-       
+
         this.ngOnInit();
         this.isChecked = true;
         this.tost.success(taskUserList.user.firstName.toUpperCase(), 'Successfully Removed!')
@@ -177,7 +180,7 @@ export class TasksComponent implements OnInit {
         })
     }
   }
- 
+
   getTasksByProject() {
     this.tasksService.getTaskByProjectId(this.projectId).subscribe(response => {
       this.tasks = response && response.data && response.data['taskList'];
