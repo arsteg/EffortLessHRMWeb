@@ -168,8 +168,12 @@ export const SideBarAdminMenu = [
         id: '56',
         title: 'Team Members',
         url: 'teamMembers'
+      },
+      {
+        id: '57',
+        title: 'Tags',
+        url: 'tags'
       }
-
     ]
   },
   {
@@ -238,7 +242,7 @@ export const SideBarAdminMenu = [
         id: '82',
         title: 'Projects',
       },
-     
+
       {
         id: '83',
         title: 'Time Approvals',
@@ -758,7 +762,7 @@ export const SideBarUserMenu = [
     title: 'Settings',
     icon: 'fa fa-wrench',
   }
-  
+
 ];
 
 

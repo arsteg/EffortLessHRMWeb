@@ -132,7 +132,9 @@
                                 <td><span class="badge rounded-pill table-button text-dark px-4 py-2">{{task?.priority |
                                         titlecase}}</span>
                                 </td>
-                                <td>{{task?.comment}}</td>
+                                <td>
+                                  <i class="fa fa-solid fa-comment-plus"></i>
+                                </td>
                                 <td class="status">
                                     <span class="badge rounded-pill table-button bg-success text-light px-4 py-2"
                                         *ngIf="showBadge">
@@ -479,16 +481,28 @@
                               </div>
 
                               <div class="row">
-                                  <label for="taskName" class="text-start">Task Name</label>
+                                  <label for="taskName" class="text-start">Title</label>
                               </div>
-                              <input type="text" id="taskName" name="taskName" class="form-control input pt-0"
-                                  formControlName="taskName" [(ngModel)]="selectedTask.taskName" required>
-                              <div *ngIf="updateForm.controls['taskName'].invalid && updateForm.controls['taskName'].touched"
+                              <input type="text" id="title" name="title" class="form-control input pt-0"
+                                  formControlName="title" [(ngModel)]="selectedTask.title" required>
+                              <div *ngIf="updateForm.controls['title'].invalid && updateForm.controls['title'].touched"
                                   class="alert alert-danger error">
-                                  <div *ngIf="updateForm.controls['taskName'].errors['required']">
-                                      Task Name is required.
+                                  <div *ngIf="updateForm.controls['title'].errors['required']">
+                                    Title is required!
                                   </div>
                               </div>
+
+                              <div class="row mt-3">
+                                <label for="description" class="text-start">Description</label>
+                            </div>
+                            <input type="text" name="description" id="description" class="form-control input pt-0"
+                                formControlName="description" [(ngModel)]="selectedTask.description" required>
+                            <div *ngIf="updateForm.controls['description'].invalid && updateForm.controls['description'].touched"
+                                class="alert alert-danger error">
+                                <div *ngIf="updateForm.controls['description'].errors['required']">
+                                    Description is required!
+                                </div>
+                            </div>
 
                               <div class="row mt-3">
                                   <label for="endDate" class="text-start">Due Date</label>
@@ -509,16 +523,16 @@
                               </div>
 
                               <div class="row mt-3">
-                                  <label for="description" class="text-start">Description</label>
-                              </div>
-                              <input type="text" name="description" id="description" class="form-control input pt-0"
-                                  formControlName="description" [(ngModel)]="selectedTask.description" required>
-                              <div *ngIf="updateForm.controls['description'].invalid && updateForm.controls['description'].touched"
-                                  class="alert alert-danger error">
-                                  <div *ngIf="updateForm.controls['description'].errors['required']">
-                                      Description is required!
-                                  </div>
-                              </div>
+                                <label for="estimate" class="text-start">Estimate (Hours)</label>
+                            </div>
+                            <input type="number" name="estimate" id="estimate" class="form-control input  pt-0"
+                               formControlName="estimate">
+
+                               <div class="row mt-3">
+                                <label for="timeTaken" class="text-start">Time Taken (Hours)</label>
+                            </div>
+                            <input type="number" name="timeTaken" id="timeTaken" class="form-control input  pt-0"
+                               formControlName="timeTaken">
 
                               <div class="row mt-3">
                                   <label for="priority" class="text-start">Priority</label>
@@ -540,6 +554,26 @@
                                   </div>
                               </div>
 
+
+                              <div class="row mt-3">
+                                <label for="priority" class="text-start">Status</label>
+                            </div>
+                            <select class="custom-select mb-3 p-2" id="status" formControlName="status"
+                                [(ngModel)]="selectedTask.status" required>
+                                <option value="">Select Status</option>
+                                <option value="open" [selected]="selectedTask?.status === 'open'">Open</option>
+                                <option value="inprogress" [selected]="selectedTask?.status === 'inprogress'">In Progress
+                                </option>
+                                <option value="done" [selected]="selectedTask?.status === 'done'">Done</option>
+                                <option value="completed" [selected]="selectedTask?.status === 'completed'">Completed
+                                </option>
+                            </select>
+                            <div *ngIf="updateForm.controls['status'].invalid && updateForm.controls['status'].touched"
+                                class="alert alert-danger error">
+                                <div *ngIf="updateForm.controls['status'].errors['required']">
+                                    Status is required!
+                                </div>
+                            </div>
 
 
                               <div class="row mt-3">

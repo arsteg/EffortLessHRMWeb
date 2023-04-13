@@ -61,13 +61,16 @@ export class TasksComponent implements OnInit {
       project: ['', Validators.required]
     });
     this.updateForm = this.fb.group({
-      taskName: ['', Validators.required],
+      title: ['', Validators.required],
       endDate: ['', Validators.required],
       description: ['', Validators.required],
       comment: ['', Validators.required],
       priority: ['', Validators.required],
       TaskUser: ['', Validators.required],
-      project: ['', Validators.required]
+      project: ['', Validators.required],
+      status: ['', Validators.required],
+      estimate: [0],
+      timeTaken: [0],
     });
     this.addUserForm = this.fb.group({
       userName: {
@@ -125,12 +128,13 @@ export class TasksComponent implements OnInit {
   }
 
   updateTask(updateForm) {
+    updateForm.taskName=updateForm.description;
     this.tasksService.updatetask(this.selectedTask._id, updateForm).subscribe(response => {
       this.ngOnInit();
       this.toast.success('Existing Task Updated', 'Successfully Updated!')
     },
       err => {
-        this.toast.error('Task Can not be Updated', 'ERROR!')
+        this.toast.error('Task could not be updated', 'ERROR!')
       })
   }
   selectTask(selectedTask){
