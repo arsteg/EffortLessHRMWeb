@@ -186,6 +186,17 @@ export class TasksService extends baseService {
     var response = this.http.delete<tag>(`${environment.apiUrlDotNet}/task/tag/${tagId}`, httpOptions);
     return response;
   }
-
+  updatetaskFlex(id, task:any): Observable<Task> {
+    let token = localStorage.getItem('jwtToken');
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Authorization': `Bearer ${token}`
+      }),
+      withCredentials: true
+    };
+    return this.http.put<Task>(`${environment.apiUrlDotNet}/task/update/${id}`, task, httpOptions);
+  }
 
 }

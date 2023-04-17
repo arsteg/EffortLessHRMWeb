@@ -39,7 +39,13 @@ export class TasksComponent implements OnInit {
   showBadge = true;
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   public allOption: string = "ALL";
+  priorityList:priority[]= [{name:'Urgent',url:"assets/images/icon-urgent.svg"},
+  {name:'High',url:"assets/images/icon-high.svg"},
+   {name:'Normal',url:"assets/images/icon-normal.svg"}];
+   unKnownImage= "assets/images/icon-unknown.svg";
 
+   showPriorityDropdown=false;
+   selectedTaskIndex=-1;
   constructor(
     private tasksService: TasksService,
     private fb: FormBuilder,
@@ -207,4 +213,26 @@ export class TasksComponent implements OnInit {
       this.tasks = response && response.data && response.data['taskList'];
     })
   }
+
+  getTaskPriorityUrl(currentPriority){
+    const priority = this.priorityList.find(x=>x.name.toLowerCase()===currentPriority?.toLowerCase());
+    return priority?.url?priority?.url:this.unKnownImage;
+  }
+
+  updateTaskPriority(selectedTask:Task,priority:string){
+    const payload = {"priority":priority=priority}
+    selectedTask.priority= priority;
+    this.tasksService.updatetaskFlex(selectedTask._id, payload).subscribe(response => {
+      this.toast.success('Task priority updated successfully', 'Success')
+    },
+      err => {
+        this.toast.error('Task could not be updated', 'ERROR!')
+      })
+  }
+}
+
+
+interface priority{
+  name:string,
+  url:string
 }

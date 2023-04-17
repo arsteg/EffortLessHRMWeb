@@ -119,7 +119,7 @@
                         </thead>
                         <tbody>
                             <tr
-                                *ngFor="let task of tasks | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
+                                *ngFor="let task of tasks | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p };let i = index">
                                 <td class="highlight">
                                     <div></div>
                                 </td>
@@ -129,11 +129,37 @@
                                 <td data-bs-toggle="modal" data-bs-target="#getUsers" (click)="getTaskUser(task?.id)"
                                     (click)="selectedTask=task">{{task?.taskName| titlecase}}</td>
                                 <td>{{task?.endDate | date:'mediumDate'}}</td>
-                                <td><span class="badge rounded-pill table-button text-dark px-4 py-2">{{task?.priority |
-                                        titlecase}}</span>
+                                <td (click)="selectedTaskIndex === i?selectedTaskIndex=-1:selectedTaskIndex=i">
+                                    <div class="dropdown show">
+                                        <span data-toggle="dropdown" aria-haspopup="true" class="align-items-center d-flex justify-content-center status-picker-image-span" aria-expanded="true">
+                                        <div aria-label="Normal priority" class="">
+                                        <div class="d-none">
+                                        </div>
+                                        <div class="align-self-center text-center align-items-center pointer d-flex position-relative">
+                                        <img class="align-self-center" [src]="getTaskPriorityUrl(task.priority)" height="24" width="24">
+                                        </div>
+                                        </div>
+                                        </span>
+                                        <div tabindex="-1" *ngIf="selectedTaskIndex===i" role="menu" aria-hidden="false" class="dropdown-menu show" data-popper-placement="bottom-start" style="position: absolute; inset: 0px auto auto 0px; transform: translate(0px, 28px);">
+                                        <button *ngFor="let priority of priorityList" type="button" tabindex="0" role="menuitem" class="dropdown-item" (click)="updateTaskPriority(task,priority.name)">
+                                        <span class="d-flex align-items-center">
+                                        <img [src]="priority.url" class="me-3" height="18" width="18">
+                                        <span>{{priority.name}}</span>
+                                        </span>
+                                        </button>
+                                        <button type="button" tabindex="0" role="menuitem" class="dropdown-item" (click)="updateTaskPriority(task,'')">
+                                          <span class="d-flex align-items-center"><span>Remove Priority</span></span>
+                                        </button>
+                                        </div>
+                                        </div>
                                 </td>
                                 <td>
-                                  <i class="fa fa-solid fa-comment-plus"></i>
+                                  <ng-container *ngIf="task.comment">
+                                    <i class="fa-solid fa-comment-plus fa-fw"></i>
+                                  </ng-container>
+                                  <ng-container *ngIf="!task.comment">
+                                    <i class="fas fa-solid fa-comment-plus"></i>
+                                  </ng-container>
                                 </td>
                                 <td class="status">
                                     <span class="badge rounded-pill table-button bg-success text-light px-4 py-2"
