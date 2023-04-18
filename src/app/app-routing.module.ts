@@ -42,6 +42,7 @@ import { WorkspaceSettingsComponent } from './settings/workspace-settings/worksp
 import { FeaturesSettingsComponent } from './settings/features-settings/features-settings.component';
 import { AttendanceSettingsComponent } from './settings/attendance-settings/attendance-settings.component';
 import { LeaveSettingsComponent } from './settings/leave-settings/leave-settings.component';
+import { TagComponent } from './tasks/task.tag/tag.component';
 const routes: Routes = [
   // {path:'',component:LayoutComponentComponent, canActivate: [AuthGuard]},
 
@@ -71,6 +72,7 @@ const routes: Routes = [
       { path: 'attendance', component: AttendanceComponent },
       { path: 'realtime', component: RealtimeComponent },
       { path: 'tasks', component: TasksComponent },
+      { path: 'tags', component: TagComponent },
       { path: 'requestManualTime', component: RequestManualTimeComponent },
       { path: 'ManualTimeRequestApproval', component: RequestApprovalComponent },
       { path: 'AddManualTime', component: AddManualTimeComponent },

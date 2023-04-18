@@ -5,6 +5,7 @@ import { HttpHeaders, HttpClient, HttpParams } from '@angular/common/http';
 import { baseService } from '../_services/base';
 import { Task } from './task';
 import { project } from '../Project/model/project';
+import { tag } from '../models/tag';
 
 @Injectable({
   providedIn: 'root'
@@ -80,7 +81,7 @@ export class TasksService extends baseService {
     };
     return this.http.post<any>(`${environment.apiUrlDotNet}/task/newtaskuser`, { taskId, taskUsers }, httpOptions);
   }
- 
+
   getTaskByProjectId(projectId: string): Observable<any> {
     let token = localStorage.getItem('jwtToken');
     const httpOptions = {
@@ -130,4 +131,72 @@ export class TasksService extends baseService {
     };
     return this.http.post<any>(`${environment.apiUrlDotNet}/task/tasklistbyuser`, {userId }, httpOptions);
   }
+
+  getAllTags(): Observable<tag[]> {
+    let token = this.getToken();
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Authorization': `Bearer ${token}`
+      }),
+      withCredentials: true
+    };
+    var response = this.http.get<tag[]>(`${environment.apiUrlDotNet}/task/tags/0`, httpOptions);
+    return response;
+  }
+
+  AddTag(tag:tag): Observable<tag> {
+    let token = this.getToken();
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Authorization': `Bearer ${token}`
+      }),
+      withCredentials: true
+    };
+    var response = this.http.post<tag>(`${environment.apiUrlDotNet}/task/tag/add`, tag,httpOptions);
+    return response;
+  }
+  UpdateTag(tag:tag): Observable<tag> {
+    let token = this.getToken();
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Authorization': `Bearer ${token}`
+      }),
+      withCredentials: true
+    };
+    var response = this.http.post<tag>(`${environment.apiUrlDotNet}/task/tag/update`, tag,httpOptions);
+    return response;
+  }
+
+  DeleteTag(tagId:string): Observable<tag> {
+    let token = this.getToken();
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Authorization': `Bearer ${token}`
+      }),
+      withCredentials: true
+    };
+    var response = this.http.delete<tag>(`${environment.apiUrlDotNet}/task/tag/${tagId}`, httpOptions);
+    return response;
+  }
+  updatetaskFlex(id, task:any): Observable<Task> {
+    let token = localStorage.getItem('jwtToken');
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Authorization': `Bearer ${token}`
+      }),
+      withCredentials: true
+    };
+    return this.http.put<Task>(`${environment.apiUrlDotNet}/task/update/${id}`, task, httpOptions);
+  }
+
 }

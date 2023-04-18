@@ -38,8 +38,14 @@ export class TasksComponent implements OnInit {
   public sortOrder: string = ''; // 'asc' or 'desc'
   showBadge = true;
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
-  public allOption: string = "ALL"; 
+  public allOption: string = "ALL";
+  priorityList:priority[]= [{name:'Urgent',url:"assets/images/icon-urgent.svg"},
+  {name:'High',url:"assets/images/icon-high.svg"},
+   {name:'Normal',url:"assets/images/icon-normal.svg"}];
+   unKnownImage= "assets/images/icon-unknown.svg";
 
+   showPriorityDropdown=false;
+   selectedTaskIndex=-1;
   constructor(
     private tasksService: TasksService,
     private fb: FormBuilder,
@@ -49,23 +55,28 @@ export class TasksComponent implements OnInit {
     public commonservice: CommonService
   ) {
     this.addForm = this.fb.group({
-      taskName: ['', Validators.required],
+      taskName: [''],
+      title: ['', Validators.required],
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
       description: ['', Validators.required],
+      estimate: [0],
       comment: ['', Validators.required],
       priority: ['', Validators.required],
       TaskUser: ['', Validators.required],
       project: ['', Validators.required]
     });
     this.updateForm = this.fb.group({
-      taskName: ['', Validators.required],
+      title: ['', Validators.required],
       endDate: ['', Validators.required],
       description: ['', Validators.required],
       comment: ['', Validators.required],
       priority: ['', Validators.required],
       TaskUser: ['', Validators.required],
-      project: ['', Validators.required]
+      project: ['', Validators.required],
+      status: ['', Validators.required],
+      estimate: [0],
+      timeTaken: [0],
     });
     this.addUserForm = this.fb.group({
       userName: {
@@ -92,7 +103,7 @@ export class TasksComponent implements OnInit {
       this.showBadge = true;
       console.log("Testing Status: ",this.tasks.status)
   }
- 
+
 
   listAllTasks() {
     this.tasksService.getAllTasks().subscribe((response: any) => {
@@ -101,6 +112,7 @@ export class TasksComponent implements OnInit {
   }
 
   addTask(form) {
+    form.taskName=form.description;
     this.tasksService.addtask(form).subscribe(response => {
       this.listAllTasks();
       this.toast.success('New Task', 'Successfully Added!')
@@ -122,12 +134,13 @@ export class TasksComponent implements OnInit {
   }
 
   updateTask(updateForm) {
+    updateForm.taskName=updateForm.description;
     this.tasksService.updatetask(this.selectedTask._id, updateForm).subscribe(response => {
       this.ngOnInit();
       this.toast.success('Existing Task Updated', 'Successfully Updated!')
     },
       err => {
-        this.toast.error('Task Can not be Updated', 'ERROR!')
+        this.toast.error('Task could not be updated', 'ERROR!')
       })
   }
   selectTask(selectedTask){
@@ -150,7 +163,7 @@ export class TasksComponent implements OnInit {
       this.tost.error('All selected users already exist', 'ERROR!')
     }
   }
-  
+
   getTaskUser(id) {
     this.tasksService.gettaskUser(id).subscribe(response => {
       this.taskUserList = response && response.data && response.data['taskUserList'];
@@ -167,7 +180,7 @@ export class TasksComponent implements OnInit {
       let index = this.taskUserList.findIndex(user => user.id === taskUserList.id);
       this.tasksService.deleteTaskUser(taskUserList.id).subscribe(response => {
         this.taskUserList.splice(index, 1);
-       
+
         this.ngOnInit();
         this.isChecked = true;
         this.tost.success(taskUserList.user.firstName.toUpperCase(), 'Successfully Removed!')
@@ -177,7 +190,7 @@ export class TasksComponent implements OnInit {
         })
     }
   }
- 
+
   getTasksByProject() {
     this.tasksService.getTaskByProjectId(this.projectId).subscribe(response => {
       this.tasks = response && response.data && response.data['taskList'];
@@ -200,4 +213,26 @@ export class TasksComponent implements OnInit {
       this.tasks = response && response.data && response.data['taskList'];
     })
   }
+
+  getTaskPriorityUrl(currentPriority){
+    const priority = this.priorityList.find(x=>x.name.toLowerCase()===currentPriority?.toLowerCase());
+    return priority?.url?priority?.url:this.unKnownImage;
+  }
+
+  updateTaskPriority(selectedTask:Task,priority:string){
+    const payload = {"priority":priority=priority}
+    selectedTask.priority= priority;
+    this.tasksService.updatetaskFlex(selectedTask._id, payload).subscribe(response => {
+      this.toast.success('Task priority updated successfully', 'Success')
+    },
+      err => {
+        this.toast.error('Task could not be updated', 'ERROR!')
+      })
+  }
+}
+
+
+interface priority{
+  name:string,
+  url:string
 }

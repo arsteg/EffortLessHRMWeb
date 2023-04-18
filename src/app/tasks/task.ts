@@ -1,6 +1,6 @@
 import { project } from "../Project/model/project";
 export class Task {
-    _id: Number;
+    _id: string;
     taskName: string;
     startDate: string;
     endDate: string;

@@ -26,6 +26,7 @@ import { AgGridModule } from 'ag-grid-angular';
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatSortModule } from '@angular/material/sort';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations:[SortDirective,SearchPipe],
@@ -49,7 +50,8 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
     BsDatepickerModule.forRoot(),
     MatTooltipModule,
     MatSortModule,
-    TooltipModule
+    TooltipModule,
+    ToastrModule
     ],
   exports:[
     SortDirective,
@@ -77,7 +79,8 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
     FormsModule,
     AgGridModule,
     BsDatepickerModule,
-    MatSortModule
+    MatSortModule,
+    ToastrModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

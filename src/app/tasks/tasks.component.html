@@ -15,7 +15,7 @@
                                 <div tabindex="-1" role="menu" aria-hidden="false" class="dropdown-menu show"
                                 data-popper-placement="bottom-start"
                                 style="position: absolute; inset: 0px auto auto 0px;">
-                                
+
                                 <span tabindex="-1" class="dropdown-item-text status-filter">
                                     <div class="form-check form-switch switch-left "><label class="form-check-label">
                                            In Progress<input class="form-check-input" type="checkbox" role="switch"
@@ -38,7 +38,7 @@
                                 </span>
 
                                 </div>
-                             
+
                             </ul>
                           </div>
                         <div class=" pt-1 d-flex text-center mx-4 h-25">
@@ -93,7 +93,7 @@
                                         [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                                 </th>
 
-                                <th scope="col" [appSort]="tasks"  data-name="priority"                                                                                             
+                                <th scope="col" [appSort]="tasks"  data-name="priority"
                                     (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
                                     Priority &nbsp;
                                     <i
@@ -119,7 +119,7 @@
                         </thead>
                         <tbody>
                             <tr
-                                *ngFor="let task of tasks | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
+                                *ngFor="let task of tasks | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p };let i = index">
                                 <td class="highlight">
                                     <div></div>
                                 </td>
@@ -129,10 +129,38 @@
                                 <td data-bs-toggle="modal" data-bs-target="#getUsers" (click)="getTaskUser(task?.id)"
                                     (click)="selectedTask=task">{{task?.taskName| titlecase}}</td>
                                 <td>{{task?.endDate | date:'mediumDate'}}</td>
-                                <td><span class="badge rounded-pill table-button text-dark px-4 py-2">{{task?.priority |
-                                        titlecase}}</span>
+                                <td (click)="selectedTaskIndex === i?selectedTaskIndex=-1:selectedTaskIndex=i">
+                                    <div class="dropdown show">
+                                        <span data-toggle="dropdown" aria-haspopup="true" class="align-items-center d-flex justify-content-center status-picker-image-span" aria-expanded="true">
+                                        <div aria-label="Normal priority" class="">
+                                        <div class="d-none">
+                                        </div>
+                                        <div class="align-self-center text-center align-items-center pointer d-flex position-relative">
+                                        <img class="align-self-center" [src]="getTaskPriorityUrl(task.priority)" height="24" width="24">
+                                        </div>
+                                        </div>
+                                        </span>
+                                        <div tabindex="-1" *ngIf="selectedTaskIndex===i" role="menu" aria-hidden="false" class="dropdown-menu show" data-popper-placement="bottom-start" style="position: absolute; inset: 0px auto auto 0px; transform: translate(0px, 28px);">
+                                        <button *ngFor="let priority of priorityList" type="button" tabindex="0" role="menuitem" class="dropdown-item" (click)="updateTaskPriority(task,priority.name)">
+                                        <span class="d-flex align-items-center">
+                                        <img [src]="priority.url" class="me-3" height="18" width="18">
+                                        <span>{{priority.name}}</span>
+                                        </span>
+                                        </button>
+                                        <button type="button" tabindex="0" role="menuitem" class="dropdown-item" (click)="updateTaskPriority(task,'')">
+                                          <span class="d-flex align-items-center"><span>Remove Priority</span></span>
+                                        </button>
+                                        </div>
+                                        </div>
                                 </td>
-                                <td>{{task?.comment}}</td>
+                                <td>
+                                  <ng-container *ngIf="task.comment">
+                                    <i class="fa-solid fa-comment-plus fa-fw"></i>
+                                  </ng-container>
+                                  <ng-container *ngIf="!task.comment">
+                                    <i class="fas fa-solid fa-comment-plus"></i>
+                                  </ng-container>
+                                </td>
                                 <td class="status">
                                     <span class="badge rounded-pill table-button bg-success text-light px-4 py-2"
                                         *ngIf="showBadge">
@@ -165,7 +193,7 @@
                                             data-bs-target="#addUserModal" (click)="selectedTask=task"
                                             (click)="getTaskUser(task.id)"></i>
                                         <span *ngFor="let users of task?.TaskUsers" class="letter text-light"
-                                        
+
                                         [style.background-color]="commonservice.getRandomColor(users?.user?.firstName)">
                                             {{users?.user?.firstName.charAt(0) | uppercase}}
 <!-- [tooltip]="(users?.user?.firstName| titlecase) + (' ') +( users?.user?.lastName | titlecase)" -->
@@ -329,16 +357,28 @@
                               </div>
 
                               <div class="row">
-                                  <label for="taskName" class="text-start">Task Name</label>
+                                  <label for="taskTitle" class="text-start">Title</label>
                               </div>
-                              <input type="text" name="taskName" id="taskName" class="form-control input pt-0"
-                                  formControlName="taskName"  required>
-                              <div *ngIf="addForm.controls['taskName'].invalid && addForm.controls['taskName'].touched"
+                              <input type="text" name="taskTitle" id="taskTitle" class="form-control input pt-0"
+                                  formControlName="title"  required>
+                              <div *ngIf="addForm.controls['title'].invalid && addForm.controls['title'].touched"
                                   class="alert alert-danger error">
-                                  <div *ngIf="addForm.controls['taskName'].errors['required']">
-                                      Task Name is required.
+                                  <div *ngIf="addForm.controls['title'].errors['required']">
+                                    Title is required!
                                   </div>
                               </div>
+
+                              <div class="row mt-3">
+                                <label for="description" class="text-start">Description</label>
+                            </div>
+                            <input type="text" name="description" id="description" class="form-control input pt-0"
+                                formControlName="description" ngModel required>
+                            <div *ngIf="addForm.controls['description'].invalid && addForm.controls['description'].touched"
+                                class="alert alert-danger error">
+                                <div *ngIf="addForm.controls['description'].errors['required']">
+                                    Description is required!
+                                </div>
+                            </div>
 
                               <div class="row mt-3">
                                   <label for="startDate" class="text-start">Start Date</label>
@@ -377,18 +417,6 @@
                               </div>
 
                               <div class="row mt-3">
-                                  <label for="description" class="text-start">Description</label>
-                              </div>
-                              <input type="text" name="description" id="description" class="form-control input pt-0"
-                                  formControlName="description" ngModel required>
-                              <div *ngIf="addForm.controls['description'].invalid && addForm.controls['description'].touched"
-                                  class="alert alert-danger error">
-                                  <div *ngIf="addForm.controls['description'].errors['required']">
-                                      Description is required!
-                                  </div>
-                              </div>
-
-                              <div class="row mt-3">
                                   <label for="priority" class="text-start">Priority</label>
                               </div>
 
@@ -405,6 +433,12 @@
                                       Priority Name is required!
                                   </div>
                               </div>
+
+                              <div class="row mt-3">
+                                <label for="estimate" class="text-start">Estimate (Hours)</label>
+                            </div>
+                            <input type="number" name="estimate" id="estimate" class="form-control input  pt-0"
+                               formControlName="estimate">
 
                               <div class="row mt-3">
                                   <label for="comment" class="text-start">Comments</label>
@@ -473,16 +507,28 @@
                               </div>
 
                               <div class="row">
-                                  <label for="taskName" class="text-start">Task Name</label>
+                                  <label for="taskName" class="text-start">Title</label>
                               </div>
-                              <input type="text" id="taskName" name="taskName" class="form-control input pt-0"
-                                  formControlName="taskName" [(ngModel)]="selectedTask.taskName" required>
-                              <div *ngIf="updateForm.controls['taskName'].invalid && updateForm.controls['taskName'].touched"
+                              <input type="text" id="title" name="title" class="form-control input pt-0"
+                                  formControlName="title" [(ngModel)]="selectedTask.title" required>
+                              <div *ngIf="updateForm.controls['title'].invalid && updateForm.controls['title'].touched"
                                   class="alert alert-danger error">
-                                  <div *ngIf="updateForm.controls['taskName'].errors['required']">
-                                      Task Name is required.
+                                  <div *ngIf="updateForm.controls['title'].errors['required']">
+                                    Title is required!
                                   </div>
                               </div>
+
+                              <div class="row mt-3">
+                                <label for="description" class="text-start">Description</label>
+                            </div>
+                            <input type="text" name="description" id="description" class="form-control input pt-0"
+                                formControlName="description" [(ngModel)]="selectedTask.description" required>
+                            <div *ngIf="updateForm.controls['description'].invalid && updateForm.controls['description'].touched"
+                                class="alert alert-danger error">
+                                <div *ngIf="updateForm.controls['description'].errors['required']">
+                                    Description is required!
+                                </div>
+                            </div>
 
                               <div class="row mt-3">
                                   <label for="endDate" class="text-start">Due Date</label>
@@ -503,16 +549,16 @@
                               </div>
 
                               <div class="row mt-3">
-                                  <label for="description" class="text-start">Description</label>
-                              </div>
-                              <input type="text" name="description" id="description" class="form-control input pt-0"
-                                  formControlName="description" [(ngModel)]="selectedTask.description" required>
-                              <div *ngIf="updateForm.controls['description'].invalid && updateForm.controls['description'].touched"
-                                  class="alert alert-danger error">
-                                  <div *ngIf="updateForm.controls['description'].errors['required']">
-                                      Description is required!
-                                  </div>
-                              </div>
+                                <label for="estimate" class="text-start">Estimate (Hours)</label>
+                            </div>
+                            <input type="number" name="estimate" id="estimate" class="form-control input  pt-0"
+                               formControlName="estimate">
+
+                               <div class="row mt-3">
+                                <label for="timeTaken" class="text-start">Time Taken (Hours)</label>
+                            </div>
+                            <input type="number" name="timeTaken" id="timeTaken" class="form-control input  pt-0"
+                               formControlName="timeTaken">
 
                               <div class="row mt-3">
                                   <label for="priority" class="text-start">Priority</label>
@@ -534,6 +580,26 @@
                                   </div>
                               </div>
 
+
+                              <div class="row mt-3">
+                                <label for="priority" class="text-start">Status</label>
+                            </div>
+                            <select class="custom-select mb-3 p-2" id="status" formControlName="status"
+                                [(ngModel)]="selectedTask.status" required>
+                                <option value="">Select Status</option>
+                                <option value="open" [selected]="selectedTask?.status === 'open'">Open</option>
+                                <option value="inprogress" [selected]="selectedTask?.status === 'inprogress'">In Progress
+                                </option>
+                                <option value="done" [selected]="selectedTask?.status === 'done'">Done</option>
+                                <option value="completed" [selected]="selectedTask?.status === 'completed'">Completed
+                                </option>
+                            </select>
+                            <div *ngIf="updateForm.controls['status'].invalid && updateForm.controls['status'].touched"
+                                class="alert alert-danger error">
+                                <div *ngIf="updateForm.controls['status'].errors['required']">
+                                    Status is required!
+                                </div>
+                            </div>
 
 
                               <div class="row mt-3">
