@@ -117,7 +117,7 @@
                         </thead>
                         <tbody>
                             <tr
-                                *ngFor="let task of tasks | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p };let i = index">
+                                *ngFor="let task of tasks | search: searchText |  paginate: { itemsPerPage: 10, currentPage: p };let i = index">
                                 <td class="highlight">
                                     <div></div>
                                 </td>
