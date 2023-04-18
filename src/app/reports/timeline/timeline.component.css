@@ -36,10 +36,10 @@ table{
     background-color: #2ECD6F;
 }
 .manual{
-    border: 1px solid #FFC107;
+    border: 1px solid #f87a3b;
 }
 .manual:after{
-    background-color: #FFC107;
+    background-color: #f87a3b;
 }
 .mobile{
     border: 1px solid #6385FD;
@@ -48,10 +48,10 @@ table{
     background-color: #6385FD;
 }
 .web{
-    border: 1px solid #FFE102;
+    border: 1px solid #0cc6f8;
 }
 .web:after{
-    background-color: #FFE102;
+    background-color: #0cc6f8;
 }
 .extension{
     border: 1px solid #8276FF;
@@ -64,4 +64,16 @@ table{
 }
 .idle:after{
     background-color: #C8CCDE;
+}
+.medium{
+    border: 1px solid #FFC107;
+}
+.medium:after{
+    background-color: #FFC107;
+}
+.low{
+    border: 1px solid red;
+}
+.low:after{
+    background-color: red;
 }

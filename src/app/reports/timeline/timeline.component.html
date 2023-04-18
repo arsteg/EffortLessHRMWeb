@@ -69,6 +69,20 @@
         </div>
         <div class="mb-3 d-flex align-items-center gap-1">
           <label class="type-tracked">
+            <input type="checkbox" checked="" value="medium">
+            <span class="type-tracked__control medium"></span>
+            <span class="type-tracked__label text-dark">Medium Activity </span>
+          </label>
+        </div>
+        <div class="mb-3 d-flex align-items-center gap-1">
+          <label class="type-tracked">
+            <input type="checkbox" checked="" value="low">
+            <span class="type-tracked__control low"></span>
+            <span class="type-tracked__label text-dark">Low Activity </span>
+          </label>
+        </div>
+        <div class="mb-3 d-flex align-items-center gap-1">
+          <label class="type-tracked">
             <input type="checkbox" checked="" value="mobile">
             <span class="type-tracked__control mobile"></span>
             <span class="type-tracked__label text-dark">Mobile</span>
@@ -122,19 +136,24 @@
             <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
           </th>
 
-           <th *ngFor="let hour of hours" scope="col">{{ startTime.getHours() + hour }}:00</th>
-           <!-- <th *ngFor="let hour of hours" scope="col">{{ data.startHour + hour }}:00</th> -->
+          <!-- <th *ngFor="let hour of hours" scope="col">{{ startTime.getHours() + hour }}:00</th> -->
+
+          <!-- <th *ngFor="let hour of hours" scope="col">
+            {{ startTime.getHours() + hour }}:{{ startTime.getMinutes() }} - {{ startTime.getHours() + hour + 1 }}:{{
+            startTime.getMinutes() }}
+          </th> -->
+          <th *ngFor="let hour of hours" scope="col">
+            {{ startTime.getHours() + hour }}:00
+          </th>
 
         </tr>
       </thead>
-
-
       <tbody>
         <tr *ngFor="let data of timeline;  let i = index;">
           <td>
-            <!-- <span class="letter ms-2"
+            <span class="letter ms-2"
               [style.background-color]="commonservice.getRandomColor(data?.logs[i]?.user?.lastName)">{{data?.logs[i]?.user?.firstName.slice(0,1)
-              | uppercase}}{{data?.logs[i]?.user?.lastName.slice(0,1) | uppercase}}</span> -->
+              | uppercase}}{{data?.logs[i]?.user?.lastName.slice(0,1) | uppercase}}</span>
             {{data?.logs[i]?.user?.firstName | titlecase}} {{data?.logs[i]?.user?.lastName | titlecase}}
           </td>
           <td>{{data?.logs[i]?.project?.projectName}}</td>
@@ -150,14 +169,7 @@
           </td>
 
         </tr>
-
       </tbody>
-
     </table>
-
-
-
-
-
   </div>
 </div>

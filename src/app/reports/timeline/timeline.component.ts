@@ -14,7 +14,6 @@ import { CommonService } from 'src/app/common/common.service';
 
 })
 
-
 export class TimelineComponent implements OnInit {
   projectList: any;
   userId: string;
@@ -41,7 +40,7 @@ export class TimelineComponent implements OnInit {
   selectedDate: any = this.datepipe.transform(new Date(), "yyyy-MM-dd");
   hours: number[] = [];
   startTime: Date;
-
+  count: number = 0;
 
   constructor(
     private projectService: ProjectService,
@@ -201,6 +200,35 @@ export class TimelineComponent implements OnInit {
     return percentage;
   }
   
+  // isUserWorking(logs: any[], hour: number, minute: number): boolean {
+  //   const start = new Date(logs[0].startTime);
+  //   const end = new Date(logs[logs.length - 1].endTime);
+  
+  //   // Check if the specified hour and minute is within the start and end times
+  //   if (hour < start.getHours() || hour > end.getHours()) {
+  //     return false;
+  //   } else if (hour === start.getHours() && minute < start.getMinutes()) {
+  //     return false;
+  //   } else if (hour === end.getHours() && minute > end.getMinutes()) {
+  //     return false;
+  //   }
+  
+  //   // Check if there is a log entry for the specified hour and minute
+  //   const log = logs.find(l => {
+  //     const logStart = new Date(l.startTime);
+  //     return logStart.getHours() === hour && logStart.getMinutes() === minute;
+  //   });
+  
+  //   if (log) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }
+  
+  
+  
+  
   getTitle(logs: any[]) {
     if (!logs || logs.length === 0) {
       return "";
@@ -209,6 +237,9 @@ export class TimelineComponent implements OnInit {
     const endTime = this.formatTime(logs[logs.length - 1].endTime);
     return `${startTime} - ${endTime}`;
   }
+  
+
+  
   
   formatTime(time: string) {
     const date = new Date(time);
@@ -249,4 +280,42 @@ export class TimelineComponent implements OnInit {
   }
 
 
+  getLogDetails(logs: any[], hour: number, minute: number): string {
+    const log = logs.find(l => {
+      const logStart = new Date(l.startTime);
+      const logEnd = new Date(l.endTime);
+      return logStart.getHours() <= hour && logEnd.getHours() >= hour && logStart.getMinutes() <= minute && logEnd.getMinutes() >= minute;
+    });
+    
+    if (log) {
+      const logStart = new Date(log.startTime);
+      const logEnd = new Date(log.endTime);
+      return `Project: ${log.project.projectName}\nStart Time: ${this.formatTime(log.startTime)}\nEnd Time: ${this.formatTime(log.endTime)}`;
+    } else {
+      return 'No logs available for this hour.';
+    }
+  }
+  
+
+  isUserWorking(logs: any[], hour: number, minute: number): boolean {
+    const currentTime = new Date();
+    const startTime = new Date(currentTime.getFullYear(), currentTime.getMonth(), currentTime.getDate(), hour, minute);
+    const endTime = new Date(currentTime.getFullYear(), currentTime.getMonth(), currentTime.getDate(), hour + 1, minute);
+    
+    for (let i = 0; i < logs.length; i++) {
+      const logStart = new Date(logs[i].startTime);
+      const logEnd = new Date(logs[i].endTime);
+  
+      if (startTime >= logStart && endTime <= logEnd) {
+        return true;
+      }
+    }
+  
+    return false;
+  }
+  
+  
+  
+  
+  
 }
