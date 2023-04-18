@@ -10,7 +10,7 @@ import { Tag } from '../models/tag';
   providedIn: 'root'
 })
 export class TasksService {
-  private token:string="";
+  private readonly token=this.getToken();
   private readonly apiUrl = environment.apiUrlDotNet;
   private readonly httpOptions = {
     headers: new HttpHeaders({
@@ -22,11 +22,10 @@ export class TasksService {
   };
 
   constructor(private http: HttpClient) {
-    this.getToken();
   }
 
   public getToken(){
-    this.token= localStorage.getItem('jwtToken');
+    return localStorage.getItem('jwtToken');
   }
 
   getAllTasks(): Observable<Task[]> {
@@ -49,8 +48,8 @@ export class TasksService {
     return this.http.post<any>(`${this.apiUrl}/task/newtaskuser`, { taskId, taskUsers }, this.httpOptions);
   }
 
-  getTasksByProjectId(projectId: string): Observable<Task[]> {
-    return this.http.get<Task[]>(`${this.apiUrl}/task/tasklistbyproject/${projectId}`, this.httpOptions);
+  getTasksByProjectId(projectId: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/task/tasklistbyproject/${projectId}`, this.httpOptions);
   }
 
   deleteTaskUser(id: string): Observable<void> {

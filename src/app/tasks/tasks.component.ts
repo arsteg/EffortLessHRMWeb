@@ -192,7 +192,8 @@ export class TasksComponent implements OnInit {
 
   getTasksByProject() {
     this.tasksService.getTasksByProjectId(this.projectId).subscribe(response => {
-      //this.tasks = response && response.data && response.data['taskList'];
+
+      //this.tasks = response && response.da && response.data['taskList'];
     });
   }
   onProjectSelectionChange(project) {
