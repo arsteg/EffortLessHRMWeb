@@ -1,64 +1,29 @@
-.hover-icons {
-  display: none;
-}
-
-tr:hover .hover-icons {
-  display: flex;
-}
-
 :host ::ng-deep .pagination .ngx-pagination .current {
   background: #3f51b5 !important;
   border: transparent !important;
   border-radius: 20px !important;
 }
-
-tr:hover .status {
-  padding: 4px;
-
+.position-absolute {
+  position: absolute!important;
 }
-.status-icon{
+.position-relative {
+  position: relative!important;
+}
+.comments-count {
+  background-color:#3f51b5 ;
+  color: #ffffff;
+  min-width: 20px;
+  max-width: 50px;
+  padding: 0 2px;
+  font-family: Poppins;
+  font-weight: 500;
+  font-size: 9px;
+  line-height: 13px;
   display: flex;
-justify-content: space-between;
-}
-tr:hover .badge {
-  margin-bottom: 2px;
-}
-
-.done {
-  color: green;
-  padding: 5px;
-  background: rgb(214, 250, 214);
-  border-radius: 100%;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3.12px;
+  right: 20px;
+  top: -3px;
 }
 
-.open {
-  color: red;
-  background: rgb(246, 182, 182);
-  border-radius: 100%;
-  padding: 5px;
-}
-
-.in_progress {
-  color: #e8c409;
-  background: rgb(239, 239, 194);
-  border-radius: 100%;
-  padding: 5px;
-}
-
-.complete {
-  background: rgb(208, 208, 247);
-  border-radius: 100%;
-  padding: 5px;
-}
-tr:hover .users{
-  padding-top: 20px !important;
-}
-.my-tasks{
-  color: #3f51b5;
-    background: #edf5fe ;
-    font-size: 14px;
-}
-.status-filter{
-  color: #605e82;
-    font-size: 14px;
-}

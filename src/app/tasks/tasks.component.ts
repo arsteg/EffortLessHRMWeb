@@ -36,16 +36,22 @@ export class TasksComponent implements OnInit {
   selectedUser: any;
   selectedUsers = [];
   public sortOrder: string = ''; // 'asc' or 'desc'
-  showBadge = true;
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   public allOption: string = "ALL";
   priorityList:priority[]= [{name:'Urgent',url:"assets/images/icon-urgent.svg"},
   {name:'High',url:"assets/images/icon-high.svg"},
    {name:'Normal',url:"assets/images/icon-normal.svg"}];
+
+   statusList:status[]= [{name:'ToDo',faclass:""},
+  {name:'In Progress',faclass:""},
+   {name:'Done',faclass:""},
+   {name:'Closed',faclass:""}]
+
    unKnownImage= "assets/images/icon-unknown.svg";
 
    showPriorityDropdown=false;
    selectedTaskIndex=-1;
+   selectedTaskStatusIndex=-1;
   constructor(
     private tasksService: TasksService,
     private fb: FormBuilder,
@@ -98,13 +104,6 @@ export class TasksComponent implements OnInit {
     this.firstLetter = this.commonservice.firstletter;
   }
 
-  changeStatus(newStatus: string) {
-      this.tasks.status = newStatus;
-      this.showBadge = true;
-      console.log("Testing Status: ",this.tasks.status)
-  }
-
-
   listAllTasks() {
     this.tasksService.getAllTasks().subscribe((response: any) => {
       this.tasks = response && response.data && response.data['taskList'];
@@ -113,7 +112,7 @@ export class TasksComponent implements OnInit {
 
   addTask(form) {
     form.taskName=form.description;
-    this.tasksService.addtask(form).subscribe(response => {
+    this.tasksService.addTask(form).subscribe(response => {
       this.listAllTasks();
       this.toast.success('New Task', 'Successfully Added!')
     },
@@ -123,7 +122,7 @@ export class TasksComponent implements OnInit {
   }
 
   deleteTask() {
-    this.tasksService.deletetask(this.selectedTask.id).subscribe(response => {
+    this.tasksService.deleteTask(this.selectedTask.id).subscribe(response => {
 
       this.ngOnInit();
       this.toast.success('Successfully Deleted!')
@@ -135,7 +134,7 @@ export class TasksComponent implements OnInit {
 
   updateTask(updateForm) {
     updateForm.taskName=updateForm.description;
-    this.tasksService.updatetask(this.selectedTask._id, updateForm).subscribe(response => {
+    this.tasksService.updateTask(this.selectedTask._id, updateForm).subscribe(response => {
       this.ngOnInit();
       this.toast.success('Existing Task Updated', 'Successfully Updated!')
     },
@@ -165,7 +164,7 @@ export class TasksComponent implements OnInit {
   }
 
   getTaskUser(id) {
-    this.tasksService.gettaskUser(id).subscribe(response => {
+    this.tasksService.getTaskUsers(id).subscribe(response => {
       this.taskUserList = response && response.data && response.data['taskUserList'];
       this.selectedUser = this.taskUserList.map(user => user.user.id);
     });
@@ -192,8 +191,8 @@ export class TasksComponent implements OnInit {
   }
 
   getTasksByProject() {
-    this.tasksService.getTaskByProjectId(this.projectId).subscribe(response => {
-      this.tasks = response && response.data && response.data['taskList'];
+    this.tasksService.getTasksByProjectId(this.projectId).subscribe(response => {
+      //this.tasks = response && response.data && response.data['taskList'];
     });
   }
   onProjectSelectionChange(project) {
@@ -220,10 +219,21 @@ export class TasksComponent implements OnInit {
   }
 
   updateTaskPriority(selectedTask:Task,priority:string){
-    const payload = {"priority":priority=priority}
+    const payload = {"priority":priority}
     selectedTask.priority= priority;
     this.tasksService.updatetaskFlex(selectedTask._id, payload).subscribe(response => {
       this.toast.success('Task priority updated successfully', 'Success')
+    },
+      err => {
+        this.toast.error('Task could not be updated', 'ERROR!')
+      })
+  }
+
+  updateTaskStatus(selectedTask:Task,status:string){
+    const payload = {"status":status}
+    selectedTask.status= status;
+    this.tasksService.updatetaskFlex(selectedTask._id, payload).subscribe(response => {
+      this.toast.success('Task status updated successfully', 'Success')
     },
       err => {
         this.toast.error('Task could not be updated', 'ERROR!')
@@ -235,4 +245,8 @@ export class TasksComponent implements OnInit {
 interface priority{
   name:string,
   url:string
+}
+interface status{
+  name:string,
+  faclass:string
 }

@@ -1,0 +1,13 @@
+<div class="comment-list">
+  <div class="comment" *ngFor="let comment of comments; let i = index;">
+    <app-task-comment
+      [comment]="comment"
+      (commentUpdated)="updateComment(i, $event)"
+      (commentDeleted)="deleteComment(i)">
+    </app-task-comment>
+  </div>
+  <div class="comment-form">
+    <textarea [(ngModel)]="newComment"></textarea>
+    <button (click)="addComment()">Add Comment</button>
+  </div>
+</div>

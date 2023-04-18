@@ -1,0 +1,10 @@
+<div *ngIf="!isEditMode">{{ comment }}</div>
+<div *ngIf="isEditMode">
+  <textarea [(ngModel)]="editedComment"></textarea>
+  <button (click)="updateComment()">Save</button>
+  <button (click)="toggleEditMode()">Cancel</button>
+</div>
+<div>
+  <button (click)="toggleEditMode()">Edit</button>
+  <button (click)="deleteComment()">Delete</button>
+</div>

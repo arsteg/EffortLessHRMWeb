@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { tag } from '../../models/tag'
+import { Tag } from '../../models/tag'
 import { TasksService } from '../tasks.service';
 import { ToastrService } from 'ngx-toastr';
 
@@ -11,12 +11,11 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./tag.component.css']
 })
 export class TagComponent implements OnInit {
-
-  tagList: tag[] = [];
-  filteredList: tag[] = [];
+  tagList: Tag[] = [];
+  filteredList: Tag[] = [];
   tagForm: FormGroup;
   isEdit = false;
-  selectedTag: tag;
+  selectedTag: Tag;
   p = 1;
 
   constructor(private fb: FormBuilder,private tasksService: TasksService,private toast: ToastrService) { }
@@ -43,7 +42,7 @@ export class TagComponent implements OnInit {
 
   async addTag() {
     try {
-      await this.tasksService.AddTag(this.tagForm.value).toPromise();
+      await this.tasksService.addTag(this.tagForm.value).toPromise();
       this.getTagList();
       this.toast.success('Tag added successfully!');
       this.getTagList();
@@ -53,7 +52,7 @@ export class TagComponent implements OnInit {
   }
 
 
-  editTag(tag: tag) {
+  editTag(tag: Tag) {
     this.isEdit = true;
     this.selectedTag = tag;
     this.tagForm.patchValue({
@@ -65,7 +64,7 @@ export class TagComponent implements OnInit {
     try {
       const updatedTag = this.tagList.find(tag => tag._id === this.selectedTag._id);
       updatedTag.title = this.tagForm.value.title;
-      const response = await this.tasksService.UpdateTag(updatedTag).toPromise();
+      const response = await this.tasksService.updateTag(updatedTag).toPromise();
       this.toast.success('Tag updated successfully!');
       this.getTagList();
       this.isEdit = false;
@@ -77,11 +76,11 @@ export class TagComponent implements OnInit {
     return window.confirm('Are you sure you want to perform this action?');
   }
 
-  deleteTag(tag: tag) {
+  deleteTag(tag: Tag) {
     try{
     const result = this.confirmAction();
     if(result){
-    this.tasksService.DeleteTag(tag._id).subscribe((response: any) => {
+    this.tasksService.deleteTag(tag._id).subscribe((response: any) => {
       this.toast.success('Tag has been deleted successfully!')
       this.getTagList();
     })}
