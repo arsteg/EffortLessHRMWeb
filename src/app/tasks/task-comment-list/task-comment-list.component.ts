@@ -1,4 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { TasksService } from '../tasks.service';
+import { taskComment } from 'src/app/models/task/taskComment';
 
 @Component({
   selector: 'app-task-comment-list',
@@ -6,21 +8,23 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
   styleUrls: ['./task-comment-list.component.css']
 })
 export class TaskCommentListComponent implements OnInit {
-  @Input() comments: string[];
-  @Output() commentAdded = new EventEmitter<string>();
-  @Output() commentUpdated = new EventEmitter<{ index: number, text: string }>();
+  @Input() comments: taskComment[];
+  @Output() commentAdded = new EventEmitter<taskComment>();
+  @Output() commentUpdated = new EventEmitter<{ index: number, text: taskComment }>();
   @Output() commentDeleted = new EventEmitter<number>();
 
-  newComment: string;
+  constructor(private taskService:TasksService){
+  }
 
-  ngOnInit() {
-    this.newComment = '';
+  newComment: taskComment;
+
+  ngOnInit(){
   }
 
   addComment() {
-    if (this.newComment.trim()) {
+    if (this.newComment) {
       this.commentAdded.emit(this.newComment);
-      this.newComment = '';
+      //this.newComment = '';
     }
   }
 

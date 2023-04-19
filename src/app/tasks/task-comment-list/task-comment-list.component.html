@@ -6,8 +6,12 @@
       (commentDeleted)="deleteComment(i)">
     </app-task-comment>
   </div>
-  <div class="comment-form">
-    <textarea [(ngModel)]="newComment"></textarea>
-    <button (click)="addComment()">Add Comment</button>
+  <div class="row comment-form">
+    <div class="col-sm-12">
+    <textarea></textarea>
+    </div>
+    <div class="col-sm-12">
+      <button (click)="addComment()">Add Comment</button>
+    </div>
   </div>
 </div>

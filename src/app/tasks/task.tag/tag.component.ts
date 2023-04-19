@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Tag } from '../../models/tag'
 import { TasksService } from '../tasks.service';
 import { ToastrService } from 'ngx-toastr';
+import { taskComment } from 'src/app/models/task/taskComment';
 
 
 @Component({
@@ -17,8 +18,9 @@ export class TagComponent implements OnInit {
   isEdit = false;
   selectedTag: Tag;
   p = 1;
+  comments: taskComment[];
 
-  constructor(private fb: FormBuilder,private tasksService: TasksService,private toast: ToastrService) { }
+  constructor(private fb: FormBuilder,private taskService: TasksService,private toast: ToastrService) { }
 
   ngOnInit(): void {
     this.initTagForm();
@@ -34,7 +36,7 @@ export class TagComponent implements OnInit {
   getTagList() {
     this.tagList = [
     ];
-    this.tasksService.getAllTags().subscribe((response: any) => {
+    this.taskService.getAllTags().subscribe((response: any) => {
       this.tagList = response && response.data;
       this.filteredList= this.tagList;
     })
@@ -42,7 +44,7 @@ export class TagComponent implements OnInit {
 
   async addTag() {
     try {
-      await this.tasksService.addTag(this.tagForm.value).toPromise();
+      await this.taskService.addTag(this.tagForm.value).toPromise();
       this.getTagList();
       this.toast.success('Tag added successfully!');
       this.getTagList();
@@ -64,7 +66,7 @@ export class TagComponent implements OnInit {
     try {
       const updatedTag = this.tagList.find(tag => tag._id === this.selectedTag._id);
       updatedTag.title = this.tagForm.value.title;
-      const response = await this.tasksService.updateTag(updatedTag).toPromise();
+      const response = await this.taskService.updateTag(updatedTag).toPromise();
       this.toast.success('Tag updated successfully!');
       this.getTagList();
       this.isEdit = false;
@@ -80,7 +82,7 @@ export class TagComponent implements OnInit {
     try{
     const result = this.confirmAction();
     if(result){
-    this.tasksService.deleteTag(tag._id).subscribe((response: any) => {
+    this.taskService.deleteTag(tag._id).subscribe((response: any) => {
       this.toast.success('Tag has been deleted successfully!')
       this.getTagList();
     })}
@@ -98,5 +100,16 @@ export class TagComponent implements OnInit {
   onTagEdittFocus(event: FocusEvent) {
     const input = event.target as HTMLInputElement;
     input.select();
+  }
+
+  getComments(taskId){
+    this.taskService.getComments(taskId).toPromise()
+    .then(response => {
+      this.comments = response.data;
+      this.comments.forEach(e=>{console.log(e.content)});
+    })
+    .catch(error => {
+      this.toast.error('Something went wrong, Please try again.', 'Error!');
+    });
   }
 }

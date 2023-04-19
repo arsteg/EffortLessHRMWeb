@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Task } from './task';
 import { Tag } from '../models/tag';
+import { taskComment } from '../models/task/taskComment';
 
 
 @Injectable({
@@ -83,5 +84,8 @@ export class TasksService {
   }
   deleteTag(tagId:string): Observable<Tag> {
     return this.http.delete<Tag>(`${environment.apiUrlDotNet}/task/tag/${tagId}`, this.httpOptions);
+  }
+  getComments(taskId:string): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrlDotNet}/task/comments/${taskId}`, this.httpOptions);
   }
 }
