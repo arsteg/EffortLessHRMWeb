@@ -1,71 +1,61 @@
 import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { constant } from '../constants/constant';
-import { Observable } from 'rxjs';
-import { rolePermission, createRolePermissions } from '../models/permissionModel';
 import { baseService } from './base';
+import { rolePermission, createRolePermissions } from '../models/permissionModel';
 
 @Injectable({
   providedIn: 'root'
 })
-export class PermissionModelService extends baseService{
+export class PermissionModelService extends baseService {
 
-  constructor(private http:HttpClient) {
+  constructor(private http: HttpClient) {
     super();
-   }
-
-  getRolePermissionId():Observable<rolePermission[]>{
-    debugger;
-    console.log('url ' + environment.apiUrlDotNet+constant.apiEndPoint.rolePermissionId);
-    return this.http.get<rolePermission[]>(environment.apiUrlDotNet+constant.apiEndPoint.rolePermissionId);
   }
+
+  private getHttpOptions(): { headers: HttpHeaders, withCredentials: boolean } {
+    const token = this.getToken();
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      'Authorization': `Bearer ${token}`
+    });
+    const withCredentials = true;
+    return { headers, withCredentials };
+  }
+
+  private getEndpointUrl(endpoint: string): string {
+    return `${environment.apiUrlDotNet}${endpoint}`;
+  }
+
+  getRolePermissionId(): Observable<rolePermission[]> {
+    const url = this.getEndpointUrl(constant.apiEndPoint.rolePermissionId);
+    return this.http.get<rolePermission[]>(url);
+  }
+
   getRolePermissions(): Observable<any> {
-    let token = this.getToken();
-    const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin':'*',
-      'Authorization': `Bearer ${token}`}),
-      withCredentials: true
-    };
-    var response  = this.http.get<any>(`${environment.apiUrlDotNet}/auth/rolePermissions`, httpOptions);
-   return response;
+    const httpOptions = this.getHttpOptions();
+    const url = this.getEndpointUrl('/auth/rolePermissions');
+    return this.http.get<any>(url, httpOptions);
   }
 
-  createRolePermission(createRolePermissions : createRolePermissions):Observable<any>{
-    let token = this.getToken();
-    const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin':'*',
-      'Authorization': `Bearer ${token}`}),
-      withCredentials: true
-    };
-    var response  = this.http.post<any>(`${environment.apiUrlDotNet}/auth/rolePermission/create`, createRolePermissions ,httpOptions);
-   return response;
+  createRolePermission(createRolePermissions: createRolePermissions): Observable<any> {
+    const httpOptions = this.getHttpOptions();
+    const url = this.getEndpointUrl('/auth/rolePermission/create');
+    return this.http.post<any>(url, createRolePermissions, httpOptions);
   }
-  updateRolePermission(id: string, createRolePermissions):Observable<any>{
-    let token = this.getToken();
-    const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin':'*',
-      'Authorization': `Bearer ${token}`}),
-      withCredentials: true
-    };
-    var response  = this.http.post<any>(`${environment.apiUrlDotNet}/auth/rolePermission/update/${id}`, createRolePermissions ,httpOptions);
-   return response;
-   }
-   
-   deleteRolePermission(id: string):Observable<any>{
-    let token = this.getToken();
-    const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin':'*',
-      'Authorization': `Bearer ${token}`}),
-      withCredentials: true
-    };
-    var response  = this.http.delete<any>(`${environment.apiUrlDotNet}/auth/rolePermission/delete/${id}`, httpOptions);
-   return response;
+
+  updateRolePermission(id: string, createRolePermissions: createRolePermissions): Observable<any> {
+    const httpOptions = this.getHttpOptions();
+    const url = this.getEndpointUrl(`/auth/rolePermission/update/${id}`);
+    return this.http.post<any>(url, createRolePermissions, httpOptions);
+  }
+
+  deleteRolePermission(id: string): Observable<any> {
+    const httpOptions = this.getHttpOptions();
+    const url = this.getEndpointUrl(`/auth/rolePermission/delete/${id}`);
+    return this.http.delete<any>(url, httpOptions);
   }
 }
-
-

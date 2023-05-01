@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { AppWebsiteService } from './appWebsite.service';
+import { AppWebsiteService } from '../../_services/appWebsite.service';
 
 @Component({
   selector: 'app-app-website-settings',

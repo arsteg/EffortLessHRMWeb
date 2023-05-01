@@ -5,7 +5,7 @@ import { first, Observable } from 'rxjs';
 import { signup } from 'src/app/models/user';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { Base } from '../../controls/base';
-import { UserService } from '../users.service';
+import { UserService } from '../../_services/users.service';
 
 @Component({
   selector: 'app-user-profile',

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { Task } from './task';
+import { Task } from '../tasks/task';
 import { Tag } from '../models/tag';
 import { taskComment } from '../models/task/taskComment';
 

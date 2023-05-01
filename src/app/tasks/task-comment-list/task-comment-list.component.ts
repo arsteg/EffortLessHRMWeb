@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { TasksService } from '../tasks.service';
+import { TasksService } from '../../_services/tasks.service';
 import { taskComment } from 'src/app/models/task/taskComment';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { CommonService } from 'src/app/common/common.service';

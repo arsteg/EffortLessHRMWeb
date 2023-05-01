@@ -13,79 +13,40 @@ export class ManualTimeRequestService extends baseService{
   constructor(private http: HttpClient) {
     super();
   }
+  
+  private httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      'Authorization': `Bearer ${this.getToken()}`
+    })
+  };
+  
   public getManualTimeRequestsByUser(userId:string): any {
-    let token = this.getToken();
-    const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin':'*',
-      'Authorization': `Bearer ${token}`})
-    };
-    var response  = this.http.get<any>(`${environment.apiUrlDotNet}/manualTime/getManualTimeRequests/${userId}`,httpOptions);
-    return response;
+    return this.http.get<any>(`${environment.apiUrlDotNet}/manualTime/getManualTimeRequests/${userId}`, this.httpOptions);
   }
+  
   public DeleteManualTimeRequest(Id:string): any {
-    let token = this.getToken();
-    const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin':'*',
-      'Authorization': `Bearer ${token}`})
-    };
-    var response  = this.http.delete<any>(`${environment.apiUrlDotNet}/manualTime/manualTimeRequest/${Id}`,httpOptions);
-    return response;
+    return this.http.delete<any>(`${environment.apiUrlDotNet}/manualTime/manualTimeRequest/${Id}`, this.httpOptions);
   }
+  
   addManualTimeRequest(request:manualTimeRequest):Observable<any>{
-    let token = localStorage.getItem('jwtToken');
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Authorization': `Bearer ${token}`
-      })
-    }
-    return this.http.post(`${environment.apiUrlDotNet}/manualTime/addManualTimeRequest`, request,httpOptions);
+    return this.http.post(`${environment.apiUrlDotNet}/manualTime/addManualTimeRequest`, request, this.httpOptions);
   }
+  
   updateManualTimeRequest(request:manualTimeRequest):Observable<any>{
-    let token = localStorage.getItem('jwtToken');
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Authorization': `Bearer ${token}`
-      })
-    }
-    return this.http.post(`${environment.apiUrlDotNet}/manualTime/updateManualTimeRequest`, request,httpOptions);
+    return this.http.post(`${environment.apiUrlDotNet}/manualTime/updateManualTimeRequest`, request, this.httpOptions);
   }
-getManualTimeRequestsForApprovalByUser(userId:string): any {
-    let token = this.getToken();
-    const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin':'*',
-      'Authorization': `Bearer ${token}`})
-    };
-    var response  = this.http.get<any>(`${environment.apiUrlDotNet}/manualTime/getManualTimeRequestsForApproval/${userId}`,httpOptions);
-    return response;
+  
+  getManualTimeRequestsForApprovalByUser(userId:string): any {
+    return this.http.get<any>(`${environment.apiUrlDotNet}/manualTime/getManualTimeRequestsForApproval/${userId}`, this.httpOptions);
   }
 
   getManualTimeApprovedRequests(userId:string,projectId:string,managerId:string): any {
-    let token = this.getToken();
-    const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin':'*',
-      'Authorization': `Bearer ${token}`})
-    };
-    var response  = this.http.get<manualTimeRequest>(`${environment.apiUrlDotNet}/manualTime/getManualTimeApprovedRequests/${userId}/${projectId}/${managerId}`,httpOptions);
-    return response;
+    return this.http.get<manualTimeRequest>(`${environment.apiUrlDotNet}/manualTime/getManualTimeApprovedRequests/${userId}/${projectId}/${managerId}`, this.httpOptions);
   }
 
   addManualTime(user:string,task:string,projectId:string, startTime:string, endTime:string,date:string): any {
-    let token = this.getToken();
-    const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin':'*',
-      'Authorization': `Bearer ${token}`})
-    };
-    var response  = this.http.post<any>(`${environment.apiUrlDotNet}/manualTime/addManualTime`,{user,task,projectId, startTime, endTime,date},httpOptions);
-    return response;
+    return this.http.post<any>(`${environment.apiUrlDotNet}/manualTime/addManualTime`,{user,task,projectId, startTime, endTime,date}, this.httpOptions);
   }
-
 }

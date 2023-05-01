@@ -13,15 +13,26 @@ import { stringToArray } from 'ag-grid-community';
 @Injectable({
   providedIn: 'root'
 })
-export class TimeLogService extends baseService {
-
+export class TimeLogService{
+  private readonly token = this.getToken();
+  private readonly apiUrl = environment.apiUrlDotNet;
+  private readonly httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      'Authorization': `Bearer ${this.token}`
+    }),
+    withCredentials: true
+  };
   private messageSource = new BehaviorSubject<any>(0);
   currentMessage = this.messageSource.asObservable();
 
   constructor(private http: HttpClient) {
-    super();
+    
   }
-
+  public getToken() {
+    return localStorage.getItem('jwtToken');
+  }
   getCompanyList(): Observable<company> {
     return this.http.get<company>(`/api/books`)
       .pipe(
@@ -31,62 +42,31 @@ export class TimeLogService extends baseService {
   }
 
   getLogsWithImages(email, selectedDate): Observable<response<timeLog[]>> {
-    let token = this.getToken();
-    const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin':'*',
-      'Authorization': `Bearer ${token}`})
-    };
     var response  = this.http.post<response<timeLog[]>>(`${environment.apiUrlDotNet}/timeLogs/getLogsWithImages`,{
       "user":email,
       "date":selectedDate
-   }, httpOptions);
+   }, this.httpOptions);
    return response;
   }
   getCurrentWeekTotalTime(email, startDate, endDate): Observable<response<timeLog[]>> {
-    let token = this.getToken();
-    const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin':'*',
-      'Authorization': `Bearer ${token}`})
-    };
     var response  = this.http.post<response<timeLog[]>>(`${environment.apiUrlDotNet}/timeLogs/getCurrentWeekTotalTime`,{
       "user":email,
       "startDate":startDate,
       "endDate":endDate,
-   }, httpOptions);
+   }, this.httpOptions);
    return response;
   }
 
 
   getTeamMembers(userId): any {
-    let token = this.getToken();
-    const httpOptions = {
-      headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin':'*',
-      'Authorization': `Bearer ${token}`})
-    };
-
-    // const params = new HttpParams().set('userId', userId);
-
-    var response  = this.http.get<any>(`${environment.apiUrlDotNet}/auth/roles/getSubordinates/${userId}`, httpOptions);
+    var response  = this.http.get<any>(`${environment.apiUrlDotNet}/auth/roles/getSubordinates/${userId}`, this.httpOptions);
    return response;
 
   }
 
   getusers(ids): any {
-    let token = this.getToken();
-    const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin':'*',
-      'Authorization': `Bearer ${token}`})
-    };
-
-
-    var response  = this.http.post<any>(`${environment.apiUrlDotNet}/users/getUsers`,{"userId":ids},httpOptions);
-
-   return response;
+  var response  = this.http.post<any>(`${environment.apiUrlDotNet}/users/getUsers`,{"userId":ids}, this.httpOptions);
+  return response;
 
   }
 
@@ -105,24 +85,12 @@ export class TimeLogService extends baseService {
   }
 
   addManualTime(user:string,task:string,projectId:string, startTime:string, endTime:string,date:string): any {
-    let token = this.getToken();
-    const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin':'*',
-      'Authorization': `Bearer ${token}`})
-    };
-    var response  = this.http.post<any>(`${environment.apiUrlDotNet}/timelogs/addTimeLog`,{user,task,projectId, startTime, endTime,date},httpOptions);
+    var response  = this.http.post<any>(`${environment.apiUrlDotNet}/timelogs/addTimeLog`,{user,task,projectId, startTime, endTime,date},this.httpOptions);
     return response;
   }
 
   realTime(realtime: RealTime): any {
-    let token = this.getToken();
-    const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin':'*',
-      'Authorization': `Bearer ${token}`})
-    };
-    var response  = this.http.post<any>(`${environment.apiUrlDotNet}/timelogs/getLogInUsers`, realtime, httpOptions);
+    var response  = this.http.post<any>(`${environment.apiUrlDotNet}/timelogs/getLogInUsers`, realtime, this.httpOptions);
     return response;
   }
   //mostPopularBook: Book = allBooks[0];

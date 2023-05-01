@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { User } from '../models/user';
-import { ProjectService } from '../Project/project.service';
-import { UserService } from '../users/users.service';
+import { ProjectService } from '../_services/project.service';
+import { UserService } from '../_services/users.service';
 
 @Injectable({
   providedIn: 'root'

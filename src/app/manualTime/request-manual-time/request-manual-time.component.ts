@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 import { Validators, FormGroup, FormBuilder,AbstractControl,FormControl } from '@angular/forms';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
-import { UserService } from 'src/app/users/users.service';
+import { UserService } from 'src/app/_services/users.service';
 import { first } from 'rxjs';
 import { TimeLogService } from 'src/app/_services/timeLogService';
 import { manualTimeRequest} from 'src/app/models/manualTime/manualTimeRequest';

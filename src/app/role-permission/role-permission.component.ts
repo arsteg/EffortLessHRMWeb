@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { PermissionsService } from '../permissions/permissions.service';
+import { PermissionsService } from '../_services/permissions.service';
 import { PermissionModelService } from '../_services/permission-model.service';
 import { RoleService } from '../_services/role.service';
 

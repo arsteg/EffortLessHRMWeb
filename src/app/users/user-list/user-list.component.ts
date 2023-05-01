@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { signup, User } from 'src/app/models/user';
 import { ManageTeamService } from 'src/app/_services/manage-team.service';
-import { UserService } from '../users.service';
+import { UserService } from '../../_services/users.service';
 import { Validators, FormGroup, FormBuilder } from '@angular/forms';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { RoleService } from 'src/app/_services/role.service';

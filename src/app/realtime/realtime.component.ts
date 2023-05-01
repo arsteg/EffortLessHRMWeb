@@ -4,8 +4,8 @@ import { ManageTeamService } from '../_services/manage-team.service';
 import { TimeLogService } from '../_services/timeLogService';
 import { SearchTaskRequest } from '../reports/model/productivityModel';
 import { DatePipe } from '@angular/common';
-import { ReportsService } from '../reports/reports.service';
-import { ProjectService } from '../Project/project.service';
+import { ReportsService } from '../_services/reports.service';
+import { ProjectService } from '../_services/project.service';
 import { ExportService } from '../_services/export.service';
 import { RealTime } from '../models/timeLog';
 

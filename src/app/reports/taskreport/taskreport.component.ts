@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { ProjectService } from '../../Project/project.service';
-import { ReportsService } from '../reports.service';
+import { ProjectService } from '../../_services/project.service';
+import { ReportsService } from '../../_services/reports.service';
 import { DatePipe } from '@angular/common'; 
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';

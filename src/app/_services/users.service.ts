@@ -6,7 +6,7 @@ import { map, Observable, of } from 'rxjs';
 import { newUser, signup, User, updateUser } from '../models/user';
 import { environment } from 'src/environments/environment';
 import { HttpHeaders, HttpClient, HttpParams } from '@angular/common/http';
-import { baseService } from '../_services/base';
+import { baseService } from './base';
 
 @Injectable()
 export class UserService {

@@ -35,7 +35,7 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CommonService } from './common/common.service';
-import { UserService } from './users/users.service';
+import { UserService } from './_services/users.service';
 import { RequestManualTimeComponent } from './manualTime/request-manual-time/request-manual-time.component';
 import { RequestApprovalComponent } from './manualTime/requestApproval/requestApproval.component';
 import { ActivityDescriptionComponent } from './reports/activity-description/activity-description.component';

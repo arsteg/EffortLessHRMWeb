@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PermissionsService } from './permissions.service';
+import { PermissionsService } from '../_services/permissions.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Validators, FormGroup, FormBuilder, FormControl, AbstractControl } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';

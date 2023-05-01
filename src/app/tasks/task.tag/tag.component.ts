@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Tag } from '../../models/tag'
-import { TasksService } from '../tasks.service';
+import { TasksService } from '../../_services/tasks.service';
 import { ToastrService } from 'ngx-toastr';
 import { taskComment } from 'src/app/models/task/taskComment';
 

@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Task } from './task';
-import { TasksService } from './tasks.service';
+import { TasksService } from '../_services/tasks.service';
 import { Validators, FormGroup, FormBuilder } from '@angular/forms';
 import { response } from '../models/response';
 import { ToastrService } from 'ngx-toastr';
 import { project } from '../Project/model/project';
-import { ProjectService } from '../Project/project.service';
-import { UserService } from '../users/users.service';
+import { ProjectService } from '../_services/project.service';
+import { UserService } from '../_services/users.service';
 import { User } from '../models/user';
 import { CommonService } from '../common/common.service';
 import { Router } from '@angular/router';

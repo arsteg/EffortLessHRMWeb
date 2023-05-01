@@ -1,8 +1,8 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { TimeLogService } from 'src/app/_services/timeLogService';
 import { TimeLine, Timesheet } from '../model/productivityModel';
-import { ReportsService } from '../reports.service';
-import { ProjectService } from 'src/app/Project/project.service';
+import { ReportsService } from '../../_services/reports.service';
+import { ProjectService } from 'src/app/_services/project.service';
 import { ExportService } from 'src/app/_services/export.service';
 import { DatePipe } from '@angular/common';
 import * as moment from 'moment';

@@ -6,7 +6,7 @@ import { AuthenticationService } from 'src/app/_services/authentication.service'
 import { NotificationService } from 'src/app/_services/notification.service';
 import { Base } from '../../../controls/base';
 import { ControlService } from '../../../_services/control.service';
-import { UserService } from '../../users.service';
+import { UserService } from '../../../_services/users.service';
 
 @Component({
   selector: 'app-user-form-control',

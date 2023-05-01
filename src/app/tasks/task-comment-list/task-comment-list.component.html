@@ -1,24 +1,26 @@
 <div class="comment-list">
-  
+
   <ng-container *ngFor="let comment of comments; let i = index">
-    <app-task-comment 
-    [comment]="comment" 
-    (commentAdded)="addComment()"
-    [authorfirstName]="comment.authorfirstName" 
-    [authorlastName]="comment.authorlastName" 
-    (commentDeleted)="onDeleteComment(comment)"
-    (commentUpdated)="updateComment(i, $event)">
-  </app-task-comment>
+    <app-task-comment [comment]="comment" (commentAdded)="addComment()" [authorfirstName]="comment.authorfirstName"
+      [authorlastName]="comment.authorlastName" (commentDeleted)="onDeleteComment(comment)"
+      (commentUpdated)="updateComment(i, $event)">
+    </app-task-comment>
   </ng-container>
   <div class="row comment-form">
     <div class="d-flex">
-    <span class="letter text-light comment-user-letter addComment-User" [title]="(user | titlecase)"
-      [style.background-color]="commonService.getRandomColor(user?.charAt(0) | uppercase)">
-      {{user?.charAt(0) | uppercase}}
-    </span>
-    <div class="m-3 w-100 rounded"><textarea name="" id="" cols="" rows="2" class="w-100 form-control"
-        [(ngModel)]="newComment"></textarea></div>
+      <span class="letter text-light comment-user-letter addComment-User" [title]="(user | titlecase)"
+        [style.background-color]="commonService.getRandomColor(user?.charAt(0) | uppercase)">
+        {{user?.charAt(0) | uppercase}}
+      </span>
+      <div class="m-3 w-100 rounded"><textarea name="" id="" cols="" rows="2" class="w-100 form-control"
+          [(ngModel)]="newComment">
+      </textarea>
+        <div class="position-relative add-task-action-box pointer me-2"><input type="file" class="d-none" multiple=""
+            accept=".jpeg, .mp4, .glb, .svg, .blend, .jpg, .png, .gif, .pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx, .odt, .fodt, .ods, .fods, .odp, .fodp, .odg, .fodg, .odf, .csv, .html, .css, .txt, .zip">
+          <span class=" subtask-icon creating-icon fa fa-paperclip" title="Attach Files"></span>
+        </div>
       </div>
+    </div>
     <div class="col-sm-12">
       <button mat-raised-button color="primary" (click)="addComment()">Add Comment</button>
     </div>

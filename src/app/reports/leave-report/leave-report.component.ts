@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { TimeLogService } from 'src/app/_services/timeLogService';
 import { ExportService } from 'src/app/_services/export.service';
-import { ReportsService } from '../reports.service';
+import { ReportsService } from '../../_services/reports.service';
 import { Leave } from '../model/productivityModel';
 
 @Component({

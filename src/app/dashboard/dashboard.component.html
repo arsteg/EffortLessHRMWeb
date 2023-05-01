@@ -17,8 +17,8 @@
                 <div class="d-flex justify-content-evenly ">
                     <div class="mt-2 border-end pe-5">
                         <h1 class="letter ms-2 header-letter"
-                        [style.background-color]="commonService.getRandomColor(currentProfile?.lastName)">
-                        {{currentProfile.firstName.slice(0,1) | uppercase}}{{currentProfile.lastName.slice(0,1) |
+                        [style.background-color]="commonService?.getRandomColor(currentProfile?.lastName)">
+                        {{currentProfile?.firstName.slice(0,1) | uppercase}}{{currentProfile?.lastName.slice(0,1) |
                         uppercase}}</h1>
                         <h4 class="content-info mb-0">{{currentProfile?.firstName}} {{currentProfile?.lastName}}</h4>
                         <p>{{role | titlecase}}</p>

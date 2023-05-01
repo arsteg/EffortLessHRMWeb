@@ -1,11 +1,11 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { ProjectService } from '../../Project/project.service';
+import { ProjectService } from '../../_services/project.service';
 import { DatePipe } from '@angular/common'; 
 import { HttpClient } from '@angular/common/http';
 import { TimeLogService } from 'src/app/_services/timeLogService';
 import { ExportService } from 'src/app/_services/export.service';
 import { SearchAppUsagesRequest } from '../model/productivityModel';
-import { ReportsService } from '../reports.service';
+import { ReportsService } from '../../_services/reports.service';
 
 @Component({
   selector: 'app-app-and-website-usage',

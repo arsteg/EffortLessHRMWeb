@@ -12,9 +12,17 @@ export class AuthenticationService {
   private currentUserSubject: BehaviorSubject<User>;
   public currentUser: Observable<User>;
 
-  // get isLoggedIn() {
-  //   return this.loggedIn.asObservable();
-  // }
+  private getHttpOptions() {
+    const token = localStorage.getItem('jwtToken');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      'Authorization': `Bearer ${token}`
+    });
+    const httpOptions = { headers, withCredentials: true };
+    return httpOptions;
+  }
+
   isLoggedIn(): boolean {
     return !!localStorage.getItem('jwtToken');
   }
@@ -43,10 +51,8 @@ export class AuthenticationService {
     return this.http.patch<any>(`${environment.apiUrlDotNet}/users/resetPassword/${token}`, { password: password, passwordConfirm: confirm_password }, { headers: queryHeaders });
   }
   login(user) {
-    var queryHeaders = new HttpHeaders();
-    queryHeaders.append('Content-Type', 'application/json');
-    queryHeaders.append('Access-Control-Allow-Origin', '*');
-    return this.http.post<any>(`${environment.apiUrlDotNet}/users/login`, { email: user.email, password: user.password }, { headers: queryHeaders, withCredentials: true })
+    const httpOptions = this.getHttpOptions();
+    return this.http.post<any>(`${environment.apiUrlDotNet}/users/login`, { email: user.email, password: user.password }, httpOptions)
       .pipe(map(user => {
         this.currentUserSubject.next(user);
         this.loggedIn.next(true);
@@ -71,14 +77,7 @@ export class AuthenticationService {
   }
 
   GetMe(id: string): Observable<signup[]> {
-    let token = localStorage.getItem('jwtToken');
-      const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Authorization': `Bearer ${token}`
-      })
-     };
+    const httpOptions = this.getHttpOptions();
     return this.http.post<any>(`${environment.apiUrlDotNet}/users/me`, { id }, httpOptions);
 
   }
@@ -92,48 +91,20 @@ export class AuthenticationService {
   }
 
   getRole(id): Observable<any> {
-    let token = localStorage.getItem('jwtToken');
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Authorization': `Bearer ${token}`
-      })
-    };
+    const httpOptions = this.getHttpOptions();
     return this.http.get(`${environment.apiUrlDotNet}/auth/role/${id}`, httpOptions)
   }
   getUserManagers(id): Observable<any> {
-    let token = localStorage.getItem('jwtToken');
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Authorization': `Bearer ${token}`
-      })
-    };
+    const httpOptions = this.getHttpOptions();
     return this.http.get(`${environment.apiUrlDotNet}/users/getUserManagers/${id}`, httpOptions)
   }
   getUserProjects(id): Observable<any> {
-    let token = localStorage.getItem('jwtToken');
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Authorization': `Bearer ${token}`
-      })
-    };
+    const httpOptions = this.getHttpOptions();
     return this.http.get(`${environment.apiUrlDotNet}/users/getUserProjects/${id}`, httpOptions)
   }
 
   getUserTaskListByProject(userId,projectId): Observable<any> {
-    let token = localStorage.getItem('jwtToken');
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Authorization': `Bearer ${token}`
-      })
-    };
+    const httpOptions = this.getHttpOptions();
     return this.http.post(`${environment.apiUrlDotNet}/task/getUserTaskListByProject`,{userId,projectId}, httpOptions)
   }
 

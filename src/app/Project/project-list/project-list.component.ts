@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ColDef, ListOption } from 'ag-grid-community';
 import { Observable } from 'rxjs';
-import { ProjectService } from '../project.service';
+import { ProjectService } from '../../_services/project.service';
 import { NotificationService } from '../../_services/notification.service';
 import { addUser, project } from '../model/project';
 import { Validators, FormGroup, FormBuilder, FormControl, AbstractControl } from '@angular/forms';
