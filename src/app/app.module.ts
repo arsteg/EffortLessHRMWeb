@@ -66,6 +66,9 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { DatePipe } from '@angular/common';
+import { EditTaskComponent } from './tasks/edit-task/edit-task.component';
+import {MatDialogModule} from '@angular/material/dialog';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -110,7 +113,7 @@ import { DatePipe } from '@angular/common';
           WorkspaceSettingsComponent,
           FeaturesSettingsComponent,
           AttendanceSettingsComponent,
-          LeaveSettingsComponent
+          LeaveSettingsComponent, EditTaskComponent
   ],
   imports: [
     BrowserModule,
@@ -132,7 +135,8 @@ import { DatePipe } from '@angular/common';
     MatDatepickerModule,
     MatNativeDateModule,
     MatPaginatorModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    MatDialogModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

@@ -9,11 +9,26 @@ import { HttpHeaders, HttpClient, HttpParams } from '@angular/common/http';
 import { baseService } from '../_services/base';
 
 @Injectable()
-export class UserService extends baseService{
+export class UserService {
+  private readonly token = this.getToken();
+  private readonly apiUrl = environment.apiUrlDotNet;
+  private readonly httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      'Authorization': `Bearer ${this.token}`
+    }),
+    withCredentials: true
+  };
+
+
   static getQuestions: any;
   constructor(private http: HttpClient) {
-    super();
    }
+   
+  public getToken() {
+    return localStorage.getItem('jwtToken');
+  }
   // TODO: get from a remote source of question metadata
  public getQuestions(user:signup): Observable<Base<any>[]> {
     const controls: Base<string>[] = [
@@ -115,10 +130,7 @@ export class UserService extends baseService{
     return of(controls.sort((a, b) => a.order - b.order));
   }
 GetMe(id:string): Observable<signup[]> {
-    var queryHeaders = new HttpHeaders();
-    queryHeaders.append('Content-Type', 'application/json');
-    queryHeaders.append('Access-Control-Allow-Origin','*');
-    return this.http.get<any>(`${environment.apiUrlDotNet}/users/${id}`,{ headers: queryHeaders})
+    return this.http.get<any>(`${environment.apiUrlDotNet}/users/${id}`, this.httpOptions)
 }
 updateMe(user: signup): Observable<signup> {
   return this.http.patch<any>(`${environment.apiUrlDotNet}/users/${user.id}`, user, {
@@ -128,56 +140,19 @@ updateMe(user: signup): Observable<signup> {
   });
 }
 getUserList(): Observable<any> {
-  let token = this.getToken();
-  const httpOptions = {
-    headers: new HttpHeaders({ 'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin':'*',
-    'Authorization': `Bearer ${token}`}),
-    withCredentials: true
-  };
-  var response  = this.http.get<any>(`${environment.apiUrlDotNet}/users`,httpOptions);
- return response;
+return this.http.get<any>(`${environment.apiUrlDotNet}/users`, this.httpOptions);
 }
 
 addUser(newUser: newUser): Observable<newUser> {
-  let token = localStorage.getItem('jwtToken');
-  const httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*',
-      'Authorization': `Bearer ${token}`
-    }),
-    withCredentials: true
-  };
-  return this.http.post<newUser>(`${environment.apiUrlDotNet}/users/inviteUser`, newUser, httpOptions);
+  return this.http.post<newUser>(`${environment.apiUrlDotNet}/users/inviteUser`, newUser, this.httpOptions);
 }
 
 deleteUser(id){
-  let token = localStorage.getItem('jwtToken');
-  const httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*',
-      'Authorization': `Bearer ${token}`
-    }),
-    withCredentials: true
-  };
-  var response= this.http.delete<User>(`${environment.apiUrlDotNet}/users/deleteuser/${id}`,  httpOptions);
-  return response;
+ return this.http.delete<User>(`${environment.apiUrlDotNet}/users/deleteuser/${id}`,  this.httpOptions);
 }
 
 updateUser(id , updateUser): Observable<updateUser>{
-  let token = localStorage.getItem('jwtToken');
-  const httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*',
-      'Authorization': `Bearer ${token}`
-    }),
-    withCredentials: true
-  };
-  var response= this.http.patch<updateUser>(`${environment.apiUrlDotNet}/users/updateUser/${id}`, updateUser, httpOptions);
-  return response;
+  return this.http.patch<updateUser>(`${environment.apiUrlDotNet}/users/updateUser/${id}`, updateUser, this.httpOptions);
 }
 
 }

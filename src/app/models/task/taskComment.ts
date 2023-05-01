@@ -1,10 +1,12 @@
-export interface taskComment{
-  id:string,
+export interface taskComment {
+  id: string,
   content: string,
-    author: string,
-    task: string,
-    commentedAt: string,
-    parent: string,
-    status: string,
-    commentType: string
+  author: string,
+  task: string,
+  commentedAt: Date,
+  // parent: string,
+  status: string,
+  // commentType: string,
+  authorfirstName : string,
+  authorlastName: string
 }

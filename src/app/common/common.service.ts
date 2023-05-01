@@ -62,7 +62,7 @@ export class CommonService {
       Y: '#16cf96',
       Z: '#4916cf'
     };
-    this.firstletter = firstName.charAt(0).toUpperCase();
+    this.firstletter = firstName?.charAt(0).toUpperCase();
     return colorMap[this.firstletter] || '#000000';
   }
 }

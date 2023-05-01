@@ -6,94 +6,99 @@
                     <div class="d-flex py-2">
                         <h1 class="">Tasks: {{tasks?.length}}</h1>
                         <div class="mx-5"><button class="btn border my-tasks" (click)="getCurrentUserTasks()"
-                            [(ngModel)]="currentUser.id"><i class="fa fa-user-o "></i> My Tasks</button></div>
-                       <div class="dropdown">
-                            <button class="btn border my-tasks dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fa fa-eye"></i> Show
+                                [(ngModel)]="currentUser.id"><i class="fa fa-user-o "></i> My Tasks</button></div>
+                        <div class="dropdown">
+                            <button class="btn border my-tasks dropdown-toggle" type="button" id="dropdownMenuButton1"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa fa-eye"></i> Show
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                 <div tabindex="-1" role="menu" aria-hidden="false" class="dropdown-menu show"
-                                data-popper-placement="bottom-start"
-                                style="position: absolute; inset: 0px auto auto 0px;">
+                                    data-popper-placement="bottom-start"
+                                    style="position: absolute; inset: 0px auto auto 0px;">
 
-                                <span tabindex="-1" class="dropdown-item-text status-filter">
-                                    <div class="form-check form-switch switch-left "><label class="form-check-label">
-                                           In Progress<input class="form-check-input" type="checkbox" role="switch"
-                                                checked=""></label></div>
-                                </span>
-                                <span tabindex="-1" class="dropdown-item-text status-filter">
-                                    <div class="form-check form-switch switch-left "><label class="form-check-label">
-                                            Open<input class="form-check-input" type="checkbox" role="switch"
-                                                checked=""></label></div>
-                                </span>
-                                <span tabindex="-1" class="dropdown-item-text status-filter">
-                                    <div class="form-check form-switch switch-left "><label class="form-check-label">
-                                            Done<input class="form-check-input" type="checkbox" role="switch"
-                                                checked=""></label></div>
-                                </span>
-                                <span tabindex="-1" class="dropdown-item-text status-filter">
-                                    <div class="form-check form-switch switch-left "><label class="form-check-label">
-                                            Complete<input class="form-check-input" type="checkbox" role="switch"
-                                                checked=""></label></div>
-                                </span>
+                                    <span tabindex="-1" class="dropdown-item-text status-filter">
+                                        <div class="form-check form-switch switch-left "><label
+                                                class="form-check-label">
+                                                In Progress<input class="form-check-input" type="checkbox" role="switch"
+                                                    checked=""></label></div>
+                                    </span>
+                                    <span tabindex="-1" class="dropdown-item-text status-filter">
+                                        <div class="form-check form-switch switch-left "><label
+                                                class="form-check-label">
+                                                Open<input class="form-check-input" type="checkbox" role="switch"
+                                                    checked=""></label></div>
+                                    </span>
+                                    <span tabindex="-1" class="dropdown-item-text status-filter">
+                                        <div class="form-check form-switch switch-left "><label
+                                                class="form-check-label">
+                                                Done<input class="form-check-input" type="checkbox" role="switch"
+                                                    checked=""></label></div>
+                                    </span>
+                                    <span tabindex="-1" class="dropdown-item-text status-filter">
+                                        <div class="form-check form-switch switch-left "><label
+                                                class="form-check-label">
+                                                Complete<input class="form-check-input" type="checkbox" role="switch"
+                                                    checked=""></label></div>
+                                    </span>
 
                                 </div>
 
                             </ul>
-                          </div>
+                        </div>
                         <div class=" pt-1 d-flex text-center mx-4 h-25">
                             <label for="project" class="pt-1 pe-3">Projects: </label>
 
-                          <select id="project" name="project" class="form-control" class="form-select form-select-sm"
-                              aria-label=".form-select-sm example" [(ngModel)]="projectId"
-                              (change)="onProjectSelectionChange(projectId)">
-                              <option *ngFor="let project of projectList" [value]="project.id">
-                                  {{project.projectName}}</option>
-                          </select>
+                            <select id="project" name="project" class="form-control" class="form-select form-select-sm"
+                                aria-label=".form-select-sm example" [(ngModel)]="projectId"
+                                (change)="onProjectSelectionChange(projectId)">
+                                <option *ngFor="let project of projectList" [value]="project.id">
+                                    {{project.projectName}}</option>
+                            </select>
 
-                      </div>
-                      <div class=" pt-1 d-flex text-center mx-4 h-25">
-                          <label for="project" class="pt-1 pe-3">Members: </label>
+                        </div>
+                        <div class=" pt-1 d-flex text-center mx-4 h-25">
+                            <label for="project" class="pt-1 pe-3">Members: </label>
 
-                          <select id="project" name="project" class="form-control" class="form-select form-select-sm"
-                              aria-label=".form-select-sm example" [(ngModel)]="userId"
-                              (change)="onMemberSelectionChange(userId)">
-                              <option *ngFor="let user of allAssignee" [value]="user.id">
-                                  {{user.firstName | titlecase}} {{user.lastName | titlecase}}</option>
-                          </select>
+                            <select id="project" name="project" class="form-control" class="form-select form-select-sm"
+                                aria-label=".form-select-sm example" [(ngModel)]="userId"
+                                (change)="onMemberSelectionChange(userId)">
+                                <option *ngFor="let user of allAssignee" [value]="user.id">
+                                    {{user.firstName | titlecase}} {{user.lastName | titlecase}}</option>
+                            </select>
 
-                      </div>
+                        </div>
 
-                      <div class="d-flex h-25 ms-auto">
-                          <input class="form-control search" type="text" placeholder="search..."
-                              [(ngModel)]="searchText" name="searchText" aria-label="default input example"
-                              style="border-bottom: 1px solid grey; border-radius: 0;">
-                          <button mat-raised-button color="primary" class="ms-5" style="
+                        <div class="d-flex h-25 ms-auto">
+                            <input class="form-control search" type="text" placeholder="search..."
+                                [(ngModel)]="searchText" name="searchText" aria-label="default input example"
+                                style="border-bottom: 1px solid grey; border-radius: 0;">
+                            <button mat-raised-button color="primary" class="ms-5" style="
                           padding: 5px 35px 0 20px;" data-bs-toggle="modal" data-bs-target="#addModal">Add
-                              New</button>
-                      </div>
-                  </div>
-                  <hr>
-                  <table class="table  mt-4">
-                      <thead>
-                          <tr>
-                              <th scope="col"></th>
+                                New</button>
+                        </div>
+                    </div>
+                    <hr>
+                    <table class="table  mt-4">
+                        <thead>
+                            <tr>
+                                <th scope="col"></th>
 
-                                <th scope="col" [appSort]="tasks"  data-name="taskName"
+                                <th scope="col" [appSort]="tasks" data-name="taskName"
                                     (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
                                     Task Name &nbsp;
                                     <i
                                         [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                                 </th>
 
-                                <th scope="col" [appSort]="tasks"  data-name="endDate"
+                                <th scope="col" [appSort]="tasks" data-name="endDate"
                                     (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
                                     Due Date &nbsp;
                                     <i
                                         [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                                 </th>
 
-                                <th scope="col" [appSort]="tasks"  data-name="priority"
+                                <th scope="col" [appSort]="tasks" data-name="priority"
                                     (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
                                     Priority &nbsp;
                                     <i
@@ -101,7 +106,7 @@
                                 </th>
                                 <th scope="col" [appSort]="tasks" data-order="desc" data-name="status">Status &nbsp;
                                 </th>
-                                <th scope="col" [appSort]="tasks"  data-name="comment"
+                                <th scope="col" [appSort]="tasks" data-name="comment"
                                     (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
                                     Comments &nbsp;
                                     <i
@@ -129,65 +134,89 @@
                                 <td>{{task?.endDate | date:'mediumDate'}}</td>
                                 <td (click)="selectedTaskIndex === i?selectedTaskIndex=-1:selectedTaskIndex=i">
                                     <div class="dropdown show">
-                                        <span data-toggle="dropdown" aria-haspopup="true" class="align-items-left d-flex justify-content-left status-picker-image-span" aria-expanded="true">
-                                        <div aria-label="Normal priority" class="">
-                                        <div class="d-none">
-                                        </div>
-                                        <div class="align-self-left text-left align-items-left pointer d-flex position-relative">
-                                        <img class="align-self-center" [src]="getTaskPriorityUrl(task.priority)" height="24" width="24">
-                                        </div>
-                                        </div>
+                                        <span data-toggle="dropdown" aria-haspopup="true"
+                                            class="align-items-left d-flex justify-content-left status-picker-image-span"
+                                            aria-expanded="true">
+                                            <div aria-label="Normal priority" class="">
+                                                <div class="d-none">
+                                                </div>
+                                                <div
+                                                    class="align-self-left text-left align-items-left pointer d-flex position-relative">
+                                                    <img class="align-self-center"
+                                                        [src]="getTaskPriorityUrl(task.priority)" height="24"
+                                                        width="24">
+                                                </div>
+                                            </div>
                                         </span>
-                                        <div tabindex="-1" *ngIf="selectedTaskIndex===i" role="menu" aria-hidden="false" class="dropdown-menu show" data-popper-placement="bottom-start" style="position: absolute; inset: 0px auto auto 0px; transform: translate(0px, 28px);">
-                                        <button *ngFor="let priority of priorityList" type="button" tabindex="0" role="menuitem" class="dropdown-item" (click)="updateTaskPriority(task,priority.name)">
-                                        <span class="d-flex align-items-center">
-                                        <img [src]="priority.url" class="me-3" height="18" width="18">
-                                        <span>{{priority.name}}</span>
-                                        </span>
-                                        </button>
-                                        <button type="button" tabindex="0" role="menuitem" class="dropdown-item" (click)="updateTaskPriority(task,'')">
-                                          <span class="d-flex align-items-center"><span>Remove Priority</span></span>
-                                        </button>
+                                        <div tabindex="-1" *ngIf="selectedTaskIndex===i" role="menu" aria-hidden="false"
+                                            class="dropdown-menu show" data-popper-placement="bottom-start"
+                                            style="position: absolute; inset: 0px auto auto 0px; transform: translate(0px, 28px);">
+                                            <button *ngFor="let priority of priorityList" type="button" tabindex="0"
+                                                role="menuitem" class="dropdown-item"
+                                                (click)="updateTaskPriority(task,priority.name)">
+                                                <span class="d-flex align-items-center">
+                                                    <img [src]="priority.url" class="me-3" height="18" width="18">
+                                                    <span>{{priority.name}}</span>
+                                                </span>
+                                            </button>
+                                            <button type="button" tabindex="0" role="menuitem" class="dropdown-item"
+                                                (click)="updateTaskPriority(task,'')">
+                                                <span class="d-flex align-items-center"><span>Remove
+                                                        Priority</span></span>
+                                            </button>
                                         </div>
-                                        </div>
+                                    </div>
                                 </td>
-                                <td class="status" (click)="selectedTaskStatusIndex === i?selectedTaskStatusIndex=-1:selectedTaskStatusIndex=i">
-                                  <div class="dropdown show">
-                                    <span data-toggle="dropdown" aria-haspopup="true" class="align-items-left d-flex" aria-expanded="true">
-                                    <div aria-label="Normal priority">
-                                    <div class="d-none">
-                                    </div>
-                                    <div class="align-self-left text-left align-items-left pointer d-flex position-relative">
-                                      <i class="fa fa-tasks"></i>
-                                      <span>&nbsp;{{task.status}}</span>
-                                    </div>
-                                    </div>
-                                    </span>
-                                    <div tabindex="-1" *ngIf="selectedTaskStatusIndex===i" role="menu" aria-hidden="false" class="dropdown-menu show" data-popper-placement="bottom-start" style="position: absolute; inset: 0px auto auto 0px; transform: translate(0px, 28px);">
-                                    <button *ngFor="let s of statusList"  type="button" tabindex="0" role="menuitem" class="dropdown-item" (click)="updateTaskStatus(task,s.name)">
-                                    <span class="d-flex align-items-center">
-                                    <span>{{s.name}}</span>
-                                    </span>
-                                    </button>
-                                    <button type="button" tabindex="0" role="menuitem" class="dropdown-item" (click)="updateTaskStatus(task,'')">
-                                      <span class="d-flex align-items-center"><span>Remove Status</span></span>
-                                    </button>
-                                    </div>
+                                <td class="status"
+                                    (click)="selectedTaskStatusIndex === i?selectedTaskStatusIndex=-1:selectedTaskStatusIndex=i">
+                                    <div class="dropdown show">
+                                        <span data-toggle="dropdown" aria-haspopup="true"
+                                            class="align-items-left d-flex" aria-expanded="true">
+                                            <div aria-label="Normal priority">
+                                                <div class="d-none">
+                                                </div>
+                                                <div
+                                                    class="align-self-left text-left align-items-left pointer d-flex position-relative">
+                                                    <i class="fa fa-tasks"></i>
+                                                    <span>&nbsp;{{task.status}}</span>
+                                                </div>
+                                            </div>
+                                        </span>
+                                        <div tabindex="-1" *ngIf="selectedTaskStatusIndex===i" role="menu"
+                                            aria-hidden="false" class="dropdown-menu show"
+                                            data-popper-placement="bottom-start"
+                                            style="position: absolute; inset: 0px auto auto 0px; transform: translate(0px, 28px);">
+                                            <button *ngFor="let s of statusList" type="button" tabindex="0"
+                                                role="menuitem" class="dropdown-item"
+                                                (click)="updateTaskStatus(task,s.name)">
+                                                <span class="d-flex align-items-center">
+                                                    <span>{{s.name}}</span>
+                                                </span>
+                                            </button>
+                                            <button type="button" tabindex="0" role="menuitem" class="dropdown-item"
+                                                (click)="updateTaskStatus(task,'')">
+                                                <span class="d-flex align-items-center"><span>Remove
+                                                        Status</span></span>
+                                            </button>
+                                        </div>
                                     </div>
                                 </td>
                                 <td>
-                                  <span *ngIf="task.comment.length==0 else addComment">
-                                    <div style="position:relative">
-                                    <img src="assets/images/icon-comment-add.svg" class="me-3" height="24" width="24">
-                                    <app-task-comment-list></app-task-comment-list>
-                                  </div>
-                                  </span>
-                                  <ng-template #addComment>
-                                    <div style="position:relative;max-width:60px;">
-                                      <img src="https://www.webwork-tracker.com/images/tasks/icons/icon-comment.svg" height="24" width="=24">
-                                      <span class="position-absolute comments-count" style="margin-left:12em;">1</span>
-                                    </div>
-                                  </ng-template>
+                                    <span *ngIf="task.comment.length==0 else addComment">
+                                        <div style="position:relative">
+                                            <img src="assets/images/icon-comment-add.svg" class="me-3" height="24"
+                                                width="24">
+                                            <app-task-comment-list></app-task-comment-list>
+                                        </div>
+                                    </span>
+                                    <ng-template #addComment>
+                                        <div style="position:relative;max-width:60px;">
+                                            <img src="https://www.webwork-tracker.com/images/tasks/icons/icon-comment.svg"
+                                                height="24" width="=24">
+                                            <span class="position-absolute comments-count"
+                                                style="margin-left:12em;">1</span>
+                                        </div>
+                                    </ng-template>
                                 </td>
                                 <td *ngIf="!userId || !currentUser">
                                     <div class="d-flex flex-nowrap users">
@@ -195,10 +224,9 @@
                                             data-bs-target="#addUserModal" (click)="selectedTask=task"
                                             (click)="getTaskUser(task.id)"></i>
                                         <span *ngFor="let users of task?.TaskUsers" class="letter text-light"
-
-                                        [style.background-color]="commonservice.getRandomColor(users?.user?.firstName)">
+                                            [tooltip]="(users?.user?.firstName| titlecase) + (' ') +( users?.user?.lastName | titlecase)"
+                                            [style.background-color]="commonservice.getRandomColor(users?.user?.firstName)">
                                             {{users?.user?.firstName.charAt(0) | uppercase}}
-<!-- [tooltip]="(users?.user?.firstName| titlecase) + (' ') +( users?.user?.lastName | titlecase)" -->
                                         </span>
                                     </div>
                                 </td>
@@ -213,462 +241,464 @@
                                                     class="pt-1 text-muted">Delete</span>
                                             </li>
                                             <hr class="mx-2 my-0">
-                                            <li class="d-flex" data-bs-toggle="modal" data-bs-target="#updateModal"
-                                                (click)="selectTask(task)">
+                                           
+
+                                            <li class="d-flex" (click)="navigateToEditPage(task)">
                                                 <i class="bi bi-pencil text-success  dropdown-item w-25"></i><span
                                                     class="pt-1 text-muted">Edit</span>
                                             </li>
+                                        </ul>
+                                    </div>
+                                </td>
+                                <td class="highlight">
+                                    <div></div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <pagination-controls (pageChange)="p = $event"
+                        class="pagination d-flex justify-content-end"></pagination-controls>
 
-                                      </ul>
-                                  </div>
-                              </td>
-                              <td class="highlight">
-                                  <div></div>
-                              </td>
-                          </tr>
-                      </tbody>
-                  </table>
-                  <pagination-controls (pageChange)="p = $event"
-                      class="pagination d-flex justify-content-end"></pagination-controls>
-
-              </div>
-          </div>
-      </div>
-  </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <app-task-comment-list></app-task-comment-list>
 <!-- Add User -->
 <div class="modal" id="addUserModal">
-  <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-          <div class="modal-body">
-              <div class=" d-flex justify-content-between">
-                  <div class="">
-                      <h4 class="modal-title text-start">Add New Member</h4>
-                  </div>
-                  <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
-                  </div>
-              </div>
-              <hr class="mt-0">
-              <div class="row" *ngIf="selectedTask">
-                  <form class="row" [formGroup]="addUserForm" (ngSubmit)="addUserToTask(addUserForm.value)">
-                      <div class="row d-flex justify-content-center">
-                          <div class="col-md-8">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class=" d-flex justify-content-between">
+                    <div class="">
+                        <h4 class="modal-title text-start">Add New Member</h4>
+                    </div>
+                    <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
+                    </div>
+                </div>
+                <hr class="mt-0">
+                <div class="row" *ngIf="selectedTask">
+                    <form class="row" [formGroup]="addUserForm" (ngSubmit)="addUserToTask(addUserForm.value)">
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-md-8">
 
-                              <div class="mt-3">
-                                  <mat-form-field appearance="outline" class="w-100">
-                                      <mat-label>Select User</mat-label>
-                                      <mat-select multiple formControlName="userName" [(ngModel)]="selectedUser">
-                                          <mat-option *ngFor="let assignee of allAssignee" [value]="assignee.id">
-                                              {{assignee.firstName | titlecase}} {{assignee.lastName |
-                                              titlecase}}</mat-option>
-                                      </mat-select>
+                                <div class="mt-3">
+                                    <mat-form-field appearance="outline" class="w-100">
+                                        <mat-label>Select User</mat-label>
+                                        <mat-select multiple formControlName="userName" [(ngModel)]="selectedUser">
+                                            <mat-option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                                                {{assignee.firstName | titlecase}} {{assignee.lastName |
+                                                titlecase}}</mat-option>
+                                        </mat-select>
 
-                                  </mat-form-field>
-                              </div>
+                                    </mat-form-field>
+                                </div>
 
 
-                          </div>
-                      </div>
-                      <div class="d-flex justify-content-between m-3">
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between m-3">
 
-                          <div>
-                              <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
-                                  type="button">Cancel</button>
-                          </div>
-                          <div>
-                              <button mat-raised-button color="primary" data-bs-dismiss="modal"
-                                  type="submit">Add</button>
-                          </div>
+                            <div>
+                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
+                                    type="button">Cancel</button>
+                            </div>
+                            <div>
+                                <button mat-raised-button color="primary" data-bs-dismiss="modal"
+                                    type="submit">Add</button>
+                            </div>
 
-                      </div>
-                  </form>
-              </div>
-          </div>
-      </div>
-  </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 
 <!-- Get Users List -->
 <div class="modal" id="getUsers">
-  <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-          <div class="modal-body">
-              <div class=" d-flex justify-content-between">
-                  <div class="">
-                      <h4 class="modal-title text-start">Users Assigned to the <b
-                              style="color: #556def">{{selectedTask?.taskName | titlecase}}</b></h4>
-                  </div>
-                  <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
-                  </div>
-              </div>
-              <hr class="mt-0">
-              <div class="row" *ngIf="selectedTask">
-                  <form class="row" (ngSubmit)="getTaskUser(tasks._id)">
-                      <div class="row d-flex justify-content-center">
-                          <div class="col-md-8">
-                              <li *ngFor="let members of taskUserList; let i = index" type="none">
-                                  <label *ngIf="members.user!=null">
-                                      <mat-checkbox color="primary" name="firstName" [checked]="isChecked"
-                                          (ngModelChange)="onModelChange($event, members)"
-                                          [(ngModel)]="isChecked">{{members?.user?.firstName |
-                                          titlecase}}</mat-checkbox>
-                                  </label>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class=" d-flex justify-content-between">
+                    <div class="">
+                        <h4 class="modal-title text-start">Users Assigned to the <b
+                                style="color: #556def">{{selectedTask?.taskName | titlecase}}</b></h4>
+                    </div>
+                    <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
+                    </div>
+                </div>
+                <hr class="mt-0">
+                <div class="row" *ngIf="selectedTask">
+                    <form class="row" (ngSubmit)="getTaskUser(tasks._id)">
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-md-8">
+                                <li *ngFor="let members of taskUserList; let i = index" type="none">
+                                    <label *ngIf="members.user!=null">
+                                        <mat-checkbox color="primary" name="firstName" [checked]="isChecked"
+                                            (ngModelChange)="onModelChange($event, members)"
+                                            [(ngModel)]="isChecked">{{members?.user?.firstName |
+                                            titlecase}}</mat-checkbox>
+                                    </label>
 
-                              </li>
+                                </li>
 
-                          </div>
-                      </div>
-                  </form>
-              </div>
-          </div>
-      </div>
-  </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Add -->
 <div class="modal" id="addModal">
-  <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-          <div class="modal-body">
-              <div class=" d-flex justify-content-between">
-                  <div class="">
-                      <h4 class="modal-title text-start">Add New Task</h4>
-                  </div>
-                  <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
-                  </div>
-              </div>
-              <hr class="mt-0">
-              <div class="row">
-                  <form class="row" [formGroup]="addForm" (ngSubmit)="addTask(addForm.value)">
-                      <div class="row d-flex justify-content-center">
-                          <div class="col-md-8">
-                              <div class="row mt-3">
-                                  <label for="project" class="text-start">Project</label>
-                              </div>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class=" d-flex justify-content-between">
+                    <div class="">
+                        <h4 class="modal-title text-start">Add New Task</h4>
+                    </div>
+                    <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
+                    </div>
+                </div>
+                <hr class="mt-0">
+                <div class="row">
+                    <form class="row" [formGroup]="addForm" (ngSubmit)="addTask(addForm.value)">
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-md-8">
+                                <div class="row mt-3">
+                                    <label for="project" class="text-start">Project</label>
+                                </div>
 
-                              <select class="custom-select mb-3 p-2" formControlName="project" >
-                                  <option [value]="project.id" *ngFor="let project of projectList">
-                                      {{project?.projectName}}</option>
-                              </select>
-                              <div *ngIf="addForm.controls['project'].invalid && addForm.controls['project'].touched"
-                                  class="alert alert-danger error">
-                                  <div *ngIf="addForm.controls['project'].errors['required']">
-                                      Please Select Project Name!
-                                  </div>
-                              </div>
+                                <select class="custom-select mb-3 p-2" formControlName="project">
+                                    <option [value]="project.id" *ngFor="let project of projectList">
+                                        {{project?.projectName}}</option>
+                                </select>
+                                <div *ngIf="addForm.controls['project'].invalid && addForm.controls['project'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="addForm.controls['project'].errors['required']">
+                                        Please Select Project Name!
+                                    </div>
+                                </div>
 
-                              <div class="row">
-                                  <label for="taskTitle" class="text-start">Title</label>
-                              </div>
-                              <input type="text" name="taskTitle" id="taskTitle" class="form-control input pt-0"
-                                  formControlName="title"  required>
-                              <div *ngIf="addForm.controls['title'].invalid && addForm.controls['title'].touched"
-                                  class="alert alert-danger error">
-                                  <div *ngIf="addForm.controls['title'].errors['required']">
-                                    Title is required!
-                                  </div>
-                              </div>
+                                <div class="row">
+                                    <label for="taskTitle" class="text-start">Title</label>
+                                </div>
+                                <input type="text" name="taskTitle" id="taskTitle" class="form-control input pt-0"
+                                    formControlName="title" required>
+                                <div *ngIf="addForm.controls['title'].invalid && addForm.controls['title'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="addForm.controls['title'].errors['required']">
+                                        Title is required!
+                                    </div>
+                                </div>
 
-                              <div class="row mt-3">
-                                <label for="description" class="text-start">Description</label>
-                            </div>
-                            <input type="text" name="description" id="description" class="form-control input pt-0"
-                                formControlName="description" ngModel required>
-                            <div *ngIf="addForm.controls['description'].invalid && addForm.controls['description'].touched"
-                                class="alert alert-danger error">
-                                <div *ngIf="addForm.controls['description'].errors['required']">
-                                    Description is required!
+                                <div class="row mt-3">
+                                    <label for="description" class="text-start">Description</label>
+                                </div>
+                                <input type="text" name="description" id="description" class="form-control input pt-0"
+                                    formControlName="description" ngModel required>
+                                <div *ngIf="addForm.controls['description'].invalid && addForm.controls['description'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="addForm.controls['description'].errors['required']">
+                                        Description is required!
+                                    </div>
+                                </div>
+
+                                <div class="row mt-3">
+                                    <label for="startDate" class="text-start">Start Date</label>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 form-group mb-3">
+                                        <input placeholder="YYYY-MM-DD" class="form-control"
+                                            #datepickerYMD="bsDatepicker" bsDatepicker
+                                            [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="endDate"
+                                            ngModel required>
+                                    </div>
+                                </div>
+                                <div *ngIf="addForm.controls['startDate'].invalid && addForm.controls['startDate'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="addForm.controls['startDate'].errors['required']">
+                                        Start Date is required.
+                                    </div>
+                                </div>
+
+                                <div class="row mt-3">
+                                    <label for="endDate" class="text-start">End Date</label>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 form-group mb-3">
+                                        <input placeholder="YYYY-MM-DD" class="form-control"
+                                            #datepickerYMD="bsDatepicker" bsDatepicker
+                                            [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="endDate"
+                                            required>
+                                    </div>
+                                </div>
+                                <div *ngIf="addForm.controls['endDate'].invalid && addForm.controls['endDate'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="addForm.controls['endDate'].errors['required']">
+                                        End Date is required.
+                                    </div>
+                                </div>
+
+                                <div class="row mt-3">
+                                    <label for="priority" class="text-start">Priority</label>
+                                </div>
+
+                                <select class="custom-select mb-3 p-2" formControlName="priority" ngModel required>
+                                    <option value="">Select Priority</option>
+                                    <option value="Low">Low</option>
+                                    <option value="Normal">Normal</option>
+                                    <option value="High">High</option>
+                                    <option value="Highest">Highest</option>
+                                </select>
+                                <div *ngIf="addForm.controls['priority'].invalid && addForm.controls['priority'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="addForm.controls['priority'].errors['required']">
+                                        Priority Name is required!
+                                    </div>
+                                </div>
+
+                                <div class="row mt-3">
+                                    <label for="estimate" class="text-start">Estimate (Hours)</label>
+                                </div>
+                                <input type="number" name="estimate" id="estimate" class="form-control input  pt-0"
+                                    formControlName="estimate">
+
+                                <div class="row mt-3">
+                                    <label for="comment" class="text-start">Comments</label>
+                                </div>
+                                <input type="text" name="comment" id="comment" class="form-control input  pt-0"
+                                    formControlName="comment" ngModel required>
+                                <div *ngIf="addForm.controls['comment'].invalid && addForm.controls['comment'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="addForm.controls['comment'].errors['required']">
+                                        Comment is required!
+                                    </div>
                                 </div>
                             </div>
+                        </div>
+                        <div class="d-flex justify-content-between m-3">
 
-                              <div class="row mt-3">
-                                  <label for="startDate" class="text-start">Start Date</label>
-                              </div>
-                              <div class="row">
-                                  <div class="col-12 form-group mb-3">
-                                      <input placeholder="YYYY-MM-DD" class="form-control"
-                                          #datepickerYMD="bsDatepicker" bsDatepicker
-                                          [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="endDate"
-                                          ngModel required>
-                                  </div>
-                              </div>
-                              <div *ngIf="addForm.controls['startDate'].invalid && addForm.controls['startDate'].touched"
-                                  class="alert alert-danger error">
-                                  <div *ngIf="addForm.controls['startDate'].errors['required']">
-                                      Start Date is required.
-                                  </div>
-                              </div>
-
-                              <div class="row mt-3">
-                                  <label for="endDate" class="text-start">End Date</label>
-                              </div>
-                              <div class="row">
-                                  <div class="col-12 form-group mb-3">
-                                      <input placeholder="YYYY-MM-DD" class="form-control"
-                                          #datepickerYMD="bsDatepicker" bsDatepicker
-                                          [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="endDate"
-                                          required>
-                                  </div>
-                              </div>
-                              <div *ngIf="addForm.controls['endDate'].invalid && addForm.controls['endDate'].touched"
-                                  class="alert alert-danger error">
-                                  <div *ngIf="addForm.controls['endDate'].errors['required']">
-                                      End Date is required.
-                                  </div>
-                              </div>
-
-                              <div class="row mt-3">
-                                  <label for="priority" class="text-start">Priority</label>
-                              </div>
-
-                              <select class="custom-select mb-3 p-2" formControlName="priority" ngModel required>
-                                  <option value="">Select Priority</option>
-                                  <option value="Low">Low</option>
-                                  <option value="Normal">Normal</option>
-                                  <option value="High">High</option>
-                                  <option value="Highest">Highest</option>
-                              </select>
-                              <div *ngIf="addForm.controls['priority'].invalid && addForm.controls['priority'].touched"
-                                  class="alert alert-danger error">
-                                  <div *ngIf="addForm.controls['priority'].errors['required']">
-                                      Priority Name is required!
-                                  </div>
-                              </div>
-
-                              <div class="row mt-3">
-                                <label for="estimate" class="text-start">Estimate (Hours)</label>
+                            <div>
+                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
+                                    type="button">Cancel</button>
                             </div>
-                            <input type="number" name="estimate" id="estimate" class="form-control input  pt-0"
-                               formControlName="estimate">
+                            <div>
+                                <button mat-raised-button color="primary" data-bs-dismiss="modal"
+                                    type="submit">Add</button>
+                            </div>
 
-                              <div class="row mt-3">
-                                  <label for="comment" class="text-start">Comments</label>
-                              </div>
-                              <input type="text" name="comment" id="comment" class="form-control input  pt-0"
-                                  formControlName="comment" ngModel required>
-                              <div *ngIf="addForm.controls['comment'].invalid && addForm.controls['comment'].touched"
-                                  class="alert alert-danger error">
-                                  <div *ngIf="addForm.controls['comment'].errors['required']">
-                                      Comment is required!
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-                      <div class="d-flex justify-content-between m-3">
-
-                          <div>
-                              <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
-                                  type="button">Cancel</button>
-                          </div>
-                          <div>
-                              <button mat-raised-button color="primary" data-bs-dismiss="modal"
-                                  type="submit">Add</button>
-                          </div>
-
-                      </div>
-                  </form>
-              </div>
-          </div>
-      </div>
-  </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Update -->
 <div class="modal" id="updateModal">
-  <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-          <div class="modal-body">
-              <div class="d-flex justify-content-between">
-                  <div class="">
-                      <h4 class="modal-title text-start">Update Task</h4>
-                  </div>
-                  <div class="">
-                      <button type="button" class="btn-close text-end" data-bs-dismiss="modal"></button>
-                  </div>
-              </div>
-              <div class="row" *ngIf="selectedTask">
-                  <form class="row" [formGroup]="updateForm" (ngSubmit)="updateTask(updateForm?.value)">
-                      <div class="row d-flex justify-content-center">
-                          <div class="col-md-8">
-                              <div class="row mt-3">
-                                  <label for="project" class="text-start">Project</label>
-                              </div>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="d-flex justify-content-between">
+                    <div class="">
+                        <h4 class="modal-title text-start">Update Task</h4>
+                    </div>
+                    <div class="">
+                        <button type="button" class="btn-close text-end" data-bs-dismiss="modal"></button>
+                    </div>
+                </div>
+                <div class="row" *ngIf="selectedTask">
+                    <form class="row" [formGroup]="updateForm" (ngSubmit)="updateTask(updateForm?.value)">
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-md-8">
+                                <div class="row mt-3">
+                                    <label for="project" class="text-start">Project</label>
+                                </div>
 
-                              <select class="custom-select mb-3 p-2" id="project" formControlName="project"
-                                  [(ngModel)]="selectedTask.project" required>
-                                  <option *ngFor="let project of projectList" [value]="project?.id"
-                                      [selected]="project.id === selectedTask.project?.id">
-                                      {{project?.projectName}}</option>
-                              </select>
-                              <div *ngIf="updateForm.controls['project'].invalid && updateForm.controls['project'].touched"
-                                  class="alert alert-danger error">
-                                  <div *ngIf="updateForm.controls['project'].errors['required']">
-                                      Please Select Project Name!
-                                  </div>
-                              </div>
+                                <select class="custom-select mb-3 p-2" id="project" formControlName="project"
+                                    [(ngModel)]="selectedTask.project" required>
+                                    <option *ngFor="let project of projectList" [value]="project?.id"
+                                        [selected]="project.id === selectedTask.project?.id">
+                                        {{project?.projectName}}</option>
+                                </select>
+                                <div *ngIf="updateForm.controls['project'].invalid && updateForm.controls['project'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="updateForm.controls['project'].errors['required']">
+                                        Please Select Project Name!
+                                    </div>
+                                </div>
 
-                              <div class="row">
-                                  <label for="taskName" class="text-start">Title</label>
-                              </div>
-                              <input type="text" id="title" name="title" class="form-control input pt-0"
-                                  formControlName="title" [(ngModel)]="selectedTask.title" required>
-                              <div *ngIf="updateForm.controls['title'].invalid && updateForm.controls['title'].touched"
-                                  class="alert alert-danger error">
-                                  <div *ngIf="updateForm.controls['title'].errors['required']">
-                                    Title is required!
-                                  </div>
-                              </div>
+                                <div class="row">
+                                    <label for="taskName" class="text-start">Title</label>
+                                </div>
+                                <input type="text" id="title" name="title" class="form-control input pt-0"
+                                    formControlName="title" [(ngModel)]="selectedTask.title" required>
+                                <div *ngIf="updateForm.controls['title'].invalid && updateForm.controls['title'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="updateForm.controls['title'].errors['required']">
+                                        Title is required!
+                                    </div>
+                                </div>
 
-                              <div class="row mt-3">
-                                <label for="description" class="text-start">Description</label>
-                            </div>
-                            <input type="text" name="description" id="description" class="form-control input pt-0"
-                                formControlName="description" [(ngModel)]="selectedTask.description" required>
-                            <div *ngIf="updateForm.controls['description'].invalid && updateForm.controls['description'].touched"
-                                class="alert alert-danger error">
-                                <div *ngIf="updateForm.controls['description'].errors['required']">
-                                    Description is required!
+                                <div class="row mt-3">
+                                    <label for="description" class="text-start">Description</label>
+                                </div>
+                                <input type="text" name="description" id="description" class="form-control input pt-0"
+                                    formControlName="description" [(ngModel)]="selectedTask.description" required>
+                                <div *ngIf="updateForm.controls['description'].invalid && updateForm.controls['description'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="updateForm.controls['description'].errors['required']">
+                                        Description is required!
+                                    </div>
+                                </div>
+
+                                <div class="row mt-3">
+                                    <label for="endDate" class="text-start">Due Date</label>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 form-group mb-3">
+                                        <input placeholder="YYYY-MM-DD" class="form-control"
+                                            #datepickerYMD="bsDatepicker" bsDatepicker
+                                            [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="endDate"
+                                            [(ngModel)]="selectedTask.endDate" required>
+                                    </div>
+                                </div>
+                                <div *ngIf="updateForm.controls['endDate'].invalid && updateForm.controls['endDate'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="updateForm.controls['endDate'].errors['required']">
+                                        Due Date is required.
+                                    </div>
+                                </div>
+
+                                <div class="row mt-3">
+                                    <label for="estimate" class="text-start">Estimate (Hours)</label>
+                                </div>
+                                <input type="number" name="estimate" id="estimate" class="form-control input  pt-0"
+                                    formControlName="estimate">
+
+                                <div class="row mt-3">
+                                    <label for="timeTaken" class="text-start">Time Taken (Hours)</label>
+                                </div>
+                                <input type="number" name="timeTaken" id="timeTaken" class="form-control input  pt-0"
+                                    formControlName="timeTaken">
+
+                                <div class="row mt-3">
+                                    <label for="priority" class="text-start">Priority</label>
+                                </div>
+                                <select class="custom-select mb-3 p-2" id="priority" formControlName="priority"
+                                    [(ngModel)]="selectedTask.priority" required>
+                                    <option value="">Select Priority</option>
+                                    <option value="Low" [selected]="selectedTask?.priority === 'low'">Low</option>
+                                    <option value="Normal" [selected]="selectedTask?.priority === 'Normal'">Normal
+                                    </option>
+                                    <option value="High" [selected]="selectedTask?.priority === 'High'">High</option>
+                                    <option value="Highest" [selected]="selectedTask?.priority === 'Highest'">Highest
+                                    </option>
+                                </select>
+                                <div *ngIf="updateForm.controls['priority'].invalid && updateForm.controls['priority'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="updateForm.controls['priority'].errors['required']">
+                                        Priority Name is required!
+                                    </div>
+                                </div>
+
+
+                                <div class="row mt-3">
+                                    <label for="priority" class="text-start">Status</label>
+                                </div>
+                                <select class="custom-select mb-3 p-2" id="status" formControlName="status"
+                                    [(ngModel)]="selectedTask.status" required>
+                                    <option value="">Select Status</option>
+                                    <option value="open" [selected]="selectedTask?.status === 'open'">Open</option>
+                                    <option value="inprogress" [selected]="selectedTask?.status === 'inprogress'">In
+                                        Progress
+                                    </option>
+                                    <option value="done" [selected]="selectedTask?.status === 'done'">Done</option>
+                                    <option value="completed" [selected]="selectedTask?.status === 'completed'">
+                                        Completed
+                                    </option>
+                                </select>
+                                <div *ngIf="updateForm.controls['status'].invalid && updateForm.controls['status'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="updateForm.controls['status'].errors['required']">
+                                        Status is required!
+                                    </div>
+                                </div>
+
+
+                                <div class="row mt-3">
+                                    <label for="comment" class="text-start">Comments</label>
+                                </div>
+                                <input type="text" name="comment" class="form-control input  pt-0"
+                                    formControlName="comment" [(ngModel)]="selectedTask.comment" required>
+                                <div *ngIf="updateForm.controls['comment'].invalid && updateForm.controls['comment'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="updateForm.controls['comment'].errors['required']">
+                                        Comment is required!
+                                    </div>
                                 </div>
                             </div>
+                        </div>
+                        <div class="d-flex justify-content-between m-3">
 
-                              <div class="row mt-3">
-                                  <label for="endDate" class="text-start">Due Date</label>
-                              </div>
-                              <div class="row">
-                                  <div class="col-12 form-group mb-3">
-                                      <input placeholder="YYYY-MM-DD" class="form-control"
-                                          #datepickerYMD="bsDatepicker" bsDatepicker
-                                          [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="endDate"
-                                          [(ngModel)]="selectedTask.endDate" required>
-                                  </div>
-                              </div>
-                              <div *ngIf="updateForm.controls['endDate'].invalid && updateForm.controls['endDate'].touched"
-                                  class="alert alert-danger error">
-                                  <div *ngIf="updateForm.controls['endDate'].errors['required']">
-                                      Due Date is required.
-                                  </div>
-                              </div>
-
-                              <div class="row mt-3">
-                                <label for="estimate" class="text-start">Estimate (Hours)</label>
+                            <div>
+                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
+                                    type="button">Cancel</button>
                             </div>
-                            <input type="number" name="estimate" id="estimate" class="form-control input  pt-0"
-                               formControlName="estimate">
-
-                               <div class="row mt-3">
-                                <label for="timeTaken" class="text-start">Time Taken (Hours)</label>
-                            </div>
-                            <input type="number" name="timeTaken" id="timeTaken" class="form-control input  pt-0"
-                               formControlName="timeTaken">
-
-                              <div class="row mt-3">
-                                  <label for="priority" class="text-start">Priority</label>
-                              </div>
-                              <select class="custom-select mb-3 p-2" id="priority" formControlName="priority"
-                                  [(ngModel)]="selectedTask.priority" required>
-                                  <option value="">Select Priority</option>
-                                  <option value="Low" [selected]="selectedTask?.priority === 'low'">Low</option>
-                                  <option value="Normal" [selected]="selectedTask?.priority === 'Normal'">Normal
-                                  </option>
-                                  <option value="High" [selected]="selectedTask?.priority === 'High'">High</option>
-                                  <option value="Highest" [selected]="selectedTask?.priority === 'Highest'">Highest
-                                  </option>
-                              </select>
-                              <div *ngIf="updateForm.controls['priority'].invalid && updateForm.controls['priority'].touched"
-                                  class="alert alert-danger error">
-                                  <div *ngIf="updateForm.controls['priority'].errors['required']">
-                                      Priority Name is required!
-                                  </div>
-                              </div>
-
-
-                              <div class="row mt-3">
-                                <label for="priority" class="text-start">Status</label>
-                            </div>
-                            <select class="custom-select mb-3 p-2" id="status" formControlName="status"
-                                [(ngModel)]="selectedTask.status" required>
-                                <option value="">Select Status</option>
-                                <option value="open" [selected]="selectedTask?.status === 'open'">Open</option>
-                                <option value="inprogress" [selected]="selectedTask?.status === 'inprogress'">In Progress
-                                </option>
-                                <option value="done" [selected]="selectedTask?.status === 'done'">Done</option>
-                                <option value="completed" [selected]="selectedTask?.status === 'completed'">Completed
-                                </option>
-                            </select>
-                            <div *ngIf="updateForm.controls['status'].invalid && updateForm.controls['status'].touched"
-                                class="alert alert-danger error">
-                                <div *ngIf="updateForm.controls['status'].errors['required']">
-                                    Status is required!
-                                </div>
+                            <div>
+                                <button mat-raised-button color="primary" data-bs-dismiss="modal"
+                                    type="submit">Update</button>
                             </div>
 
+                        </div>
+                    </form>
+                </div>
 
-                              <div class="row mt-3">
-                                  <label for="comment" class="text-start">Comments</label>
-                              </div>
-                              <input type="text" name="comment" class="form-control input  pt-0"
-                                  formControlName="comment" [(ngModel)]="selectedTask.comment" required>
-                              <div *ngIf="updateForm.controls['comment'].invalid && updateForm.controls['comment'].touched"
-                                  class="alert alert-danger error">
-                                  <div *ngIf="updateForm.controls['comment'].errors['required']">
-                                      Comment is required!
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-                      <div class="d-flex justify-content-between m-3">
-
-                          <div>
-                              <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
-                                  type="button">Cancel</button>
-                          </div>
-                          <div>
-                              <button mat-raised-button color="primary" data-bs-dismiss="modal"
-                                  type="submit">Update</button>
-                          </div>
-
-                      </div>
-                  </form>
-              </div>
-
-          </div>
-      </div>
-  </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Delete -->
 <div class="modal" id="deleteModal">
-  <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-          <div class="modal-body">
-              <div class="d-flex justify-content-between">
-                  <div class="">
-                      <h4 class="modal-title text-start">Delete Task</h4>
-                  </div>
-                  <div class="">
-                      <button type="button" class="btn-close text-end" data-bs-dismiss="modal"></button>
-                  </div>
-              </div>
-              <hr class="mt-0">
-              <div class="row">
-                  <div class="col-md-12 text-center">
-                      <h3>Do you really want to Delete?</h3>
-                  </div>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="d-flex justify-content-between">
+                    <div class="">
+                        <h4 class="modal-title text-start">Delete Task</h4>
+                    </div>
+                    <div class="">
+                        <button type="button" class="btn-close text-end" data-bs-dismiss="modal"></button>
+                    </div>
+                </div>
+                <hr class="mt-0">
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <h3>Do you really want to Delete?</h3>
+                    </div>
 
-              </div>
-              <div class="d-flex justify-content-between m-3">
-                  <div>
+                </div>
+                <div class="d-flex justify-content-between m-3">
+                    <div>
 
-                      <button mat-raised-button class="mx-2" data-bs-dismiss="modal" type="button">Cancel</button>
-                  </div>
-                  <div>
-                      <button mat-raised-button color="primary" class="" (click)="deleteTask()"
-                          data-bs-dismiss="modal" type="submit">Delete</button>
-                  </div>
-              </div>
-          </div>
-      </div>
-  </div>
+                        <button mat-raised-button class="mx-2" data-bs-dismiss="modal" type="button">Cancel</button>
+                    </div>
+                    <div>
+                        <button mat-raised-button color="primary" class="" (click)="deleteTask()"
+                            data-bs-dismiss="modal" type="submit">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

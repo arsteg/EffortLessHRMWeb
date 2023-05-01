@@ -1,7 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { TasksService } from '../tasks.service';
 import { taskComment } from 'src/app/models/task/taskComment';
-
+import { AuthenticationService } from 'src/app/_services/authentication.service';
+import { CommonService } from 'src/app/common/common.service';
 @Component({
   selector: 'app-task-comment-list',
   templateUrl: './task-comment-list.component.html',
@@ -13,27 +14,79 @@ export class TaskCommentListComponent implements OnInit {
   @Output() commentUpdated = new EventEmitter<{ index: number, text: taskComment }>();
   @Output() commentDeleted = new EventEmitter<number>();
 
-  constructor(private taskService:TasksService){
+  constructor(private taskService: TasksService,
+    private authentication: AuthenticationService,
+    public commonService: CommonService) {
   }
 
-  newComment: taskComment;
+  newComment: '';
+  commentsArray: taskComment[] = [];
+  author = JSON.parse(localStorage.getItem('currentUser'));
+  task = localStorage.getItem('activeTaskId');
+user = localStorage.getItem('currentProfile');
 
-  ngOnInit(){
+  ngOnInit() {
+    this.commentsArray = [...this.comments];
+    const taskId = this.task;
+    this.taskService.getComments(taskId).subscribe((response) => {
+      this.comments = response.data;
+      this.comments.forEach((comment) => {
+        this.authentication.GetMe(comment.author).subscribe((response: any) => {
+         const author = response && response.data.users;
+          if (author) {
+            comment.authorfirstName = `${author.firstName}`;
+            comment.authorlastName = `${author.lastName}`           
+          }
+        });
+      }
+      );
+    });
   }
 
   addComment() {
     if (this.newComment) {
-      this.commentAdded.emit(this.newComment);
-      //this.newComment = '';
+      const comment: taskComment = {
+        id: '',
+        content: this.newComment,
+        author: this.author.id,
+        task: this.task,
+        commentedAt: new Date,
+        status: '',
+        authorfirstName: '',
+        authorlastName: ''
+      };
+
+      this.taskService.addComments(comment).subscribe((result) => {
+        // update the comments array with the new comment
+        this.comments.push(result);
+
+        // emit the updated comments array to the child component
+        this.commentsArray = [...this.comments];
+
+        // emit the event to parent component
+        this.commentAdded.emit(result);
+
+        // clear the new comment field
+        this.newComment = '';
+        this.ngOnInit();
+      });
     }
   }
 
   updateComment(index: number, text: any) {
-    this.commentUpdated.emit({ index, text });
+    const comment = this.comments[index];
+    comment.content = text;
+    this.taskService.updateComment(comment.id).subscribe((updatedComment) => {
+      this.commentUpdated.emit({ index, text });
+    });
   }
 
-  deleteComment(index: number) {
-    this.commentDeleted.emit(index);
+  onDeleteComment(comment: taskComment) {
+    const index = this.comments.indexOf(comment);
+    if (index !== -1) {
+      this.taskService.deleteComment(comment.id).subscribe(() => {
+        this.comments.splice(index, 1);
+      });
+    }
   }
 }
-

@@ -9,6 +9,7 @@ import { ProjectService } from '../Project/project.service';
 import { UserService } from '../users/users.service';
 import { User } from '../models/user';
 import { CommonService } from '../common/common.service';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-tasks',
   templateUrl: './tasks.component.html',
@@ -58,7 +59,8 @@ export class TasksComponent implements OnInit {
     private toast: ToastrService,
     private projectService: ProjectService,
     private tost: ToastrService,
-    public commonservice: CommonService
+    public commonservice: CommonService,
+    private router: Router
   ) {
     this.addForm = this.fb.group({
       taskName: [''],
@@ -102,6 +104,10 @@ export class TasksComponent implements OnInit {
       this.allAssignee = result && result.data && result.data.data;
     });
     this.firstLetter = this.commonservice.firstletter;
+  }
+  navigateToEditPage(task: any) {
+    // navigate to the edit page with the task ID as a route parameter
+    this.router.navigate(['/edit-task', task.id]);
   }
 
   listAllTasks() {
@@ -239,6 +245,11 @@ export class TasksComponent implements OnInit {
       err => {
         this.toast.error('Task could not be updated', 'ERROR!')
       })
+  }
+  getTaskById(id: string): void {
+    this.tasksService.getTaskById(id).subscribe(task => {
+      this.tasks = task;
+    });
   }
 }
 

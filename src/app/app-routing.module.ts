@@ -43,6 +43,8 @@ import { FeaturesSettingsComponent } from './settings/features-settings/features
 import { AttendanceSettingsComponent } from './settings/attendance-settings/attendance-settings.component';
 import { LeaveSettingsComponent } from './settings/leave-settings/leave-settings.component';
 import { TagComponent } from './tasks/task.tag/tag.component';
+import { EditTaskComponent } from './tasks/edit-task/edit-task.component';
+import { TaskCommentComponent } from './tasks/task-comment/task-comment.component';
 const routes: Routes = [
   // {path:'',component:LayoutComponentComponent, canActivate: [AuthGuard]},
 
@@ -90,7 +92,9 @@ const routes: Routes = [
       { path: 'workspace', component: WorkspaceSettingsComponent },
       { path: 'features', component: FeaturesSettingsComponent },
       { path: 'attendancesettings', component: AttendanceSettingsComponent },
-      { path: 'leavesettings', component: LeaveSettingsComponent }
+      { path: 'leavesettings', component: LeaveSettingsComponent },
+      { path: 'edit-task/:id', component: EditTaskComponent },
+      {path: 'comments', component: TaskCommentComponent}
     ]
   }
 ]
