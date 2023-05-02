@@ -1,0 +1,62 @@
+<div class="main-content m-2">
+  <h3 class="mb-sm-0 font-size-18 text-capitalize">Timesheet</h3>
+  <div class="row">
+    <form (ngSubmit)="onSubmit()" #timesheetForm="ngForm">
+    <div class="d-flex mt-2">
+    <span  class="mt-2">Between</span>
+    <div>
+    <input type="date" name="fromDate" id="fromDate" (change)="filterData()" [(ngModel)]="fromDate"
+        class="form-control calendar mb-4 mx-1" [formControl]="fromDateControl"/>
+        <div *ngIf="fromDateControl.invalid && (fromDateControl.dirty || fromDateControl.touched)" class="text-danger">
+          <div *ngIf="fromDateControl.errors">Invalid start or end date</div>
+        </div>
+      </div>
+    <div class="m-2">
+        <span>and</span>
+    </div>
+<div>
+    <input type="date" name="toDate" id="toDate" (change)="filterData()" [(ngModel)]="toDate" #toDateRef
+        class="form-control calendar mb-4 mx-1"  [formControl]="toDateControl"/>
+        <div *ngIf="toDateControl.invalid && (toDateControl.dirty || toDateControl.touched)" class="text-danger">
+          <div *ngIf="fromDateControl.errors">Invalid start or end date</div>
+      </div>
+    </div>
+      <div class="align-items-start flex-wrap gap-3 ms-auto">
+        <div class="dropdown order-first order-sm-last d-flex">
+            <button class="export-btn dropdown-toggle formrow-inputState form-select select-styled active"
+                type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                <p class="mb-0 text-muted"> Export </p>
+            </button>
+            <ul class="dropdown-menu p-0" aria-labelledby="dropdownMenuButton1" id="dropdown-export">
+                <li><a class="export-button" (click)="exportToCsv()">CSV</a></li>
+                <li><a class="export-button" (click)="exportToExcel()">XLS</a></li>
+                <li><a class="export-button" (click)="exportToPdf()">PDF</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+</form>
+<div class="table-container">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Project</th>
+        <th *ngFor="let date of timeLogs?.columns|slice:1">{{ date | date: 'MM.dd.yy' }}</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of timeLogs?.matrix">
+        <td > {{ getProjectName(row[0]) }}</td>
+        <td *ngFor="let cell of row|slice:1">{{+cell | secondsToTime}}</td>
+        <td>{{getTotalHours(row.slice(1)) | secondsToTime}}</td>
+      </tr>
+      <tr *ngIf="this.timeLogs?.matrix.length>0">
+        <td>Total</td>
+        <td *ngFor="let cell of timesheetTotals|slice:1">{{+cell | secondsToTime}}</td>
+        <td >{{getTotalHours(timesheetTotals)|secondsToTime}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</div>

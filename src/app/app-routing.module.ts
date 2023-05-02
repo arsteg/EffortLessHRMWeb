@@ -45,6 +45,7 @@ import { LeaveSettingsComponent } from './settings/leave-settings/leave-settings
 import { TagComponent } from './tasks/task.tag/tag.component';
 import { EditTaskComponent } from './tasks/edit-task/edit-task.component';
 import { TaskCommentComponent } from './tasks/task-comment/task-comment.component';
+import { UserTimesheetComponent } from './timesheets/user-timesheet/user-timesheet.component';
 const routes: Routes = [
   // {path:'',component:LayoutComponentComponent, canActivate: [AuthGuard]},
 
@@ -87,6 +88,7 @@ const routes: Routes = [
       { path: 'permissions', component: PermissionsComponent },
       { path: 'rolePermission', component: RolePermissionComponent },
       { path: 'timesheets', component: TimesheetsComponent },
+      { path: 'userTimesheet', component: UserTimesheetComponent },
       { path: 'activityLevel', component: ActivityLevelComponent },
       { path: 'profileSettings', component: ProfileSettingsComponent },
       { path: 'workspace', component: WorkspaceSettingsComponent },

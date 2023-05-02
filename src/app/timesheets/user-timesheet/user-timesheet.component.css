@@ -1,0 +1,17 @@
+.table-container {
+  max-width: 100%;
+  overflow-x: auto;
+}
+.table {
+  width: 100%;
+}
+.table th,
+.table td {
+  padding: 0.5rem;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.align-center {
+  vertical-align: center;
+}

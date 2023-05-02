@@ -50,7 +50,6 @@ import { PermissionsComponent } from './permissions/permissions.component';
 import { RolePermissionComponent } from './role-permission/role-permission.component';
 import { AuthGuard } from './auth.guard';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { TimesheetsComponent } from './timesheets/timesheets.component';
 import { ActivityLevelComponent } from './reports/activity-level/activity-level.component';
 import { ProfileSettingsComponent } from './settings/profile-settings/profile-settings.component';
 import { WorkspaceSettingsComponent } from './settings/workspace-settings/workspace-settings.component';
@@ -60,7 +59,6 @@ import { Ng5SliderModule } from 'ng5-slider';
 import { LeaveSettingsComponent } from './settings/leave-settings/leave-settings.component';
 import { taskModule } from './tasks/task.Module';
 import { SharedModule } from './shared/shared.Module';
-
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -68,6 +66,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { DatePipe } from '@angular/common';
 import { EditTaskComponent } from './tasks/edit-task/edit-task.component';
 import {MatDialogModule} from '@angular/material/dialog';
+import { timesheetModule } from './timesheets/timesheet.Module';
 
 @NgModule({
   declarations: [
@@ -107,7 +106,6 @@ import {MatDialogModule} from '@angular/material/dialog';
           PermissionsComponent,
           RolePermissionComponent,
           DashboardComponent,
-          TimesheetsComponent,
           ActivityLevelComponent,
           ProfileSettingsComponent,
           WorkspaceSettingsComponent,
@@ -136,7 +134,8 @@ import {MatDialogModule} from '@angular/material/dialog';
     MatNativeDateModule,
     MatPaginatorModule,
     MatSlideToggleModule,
-    MatDialogModule
+    MatDialogModule,
+    timesheetModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

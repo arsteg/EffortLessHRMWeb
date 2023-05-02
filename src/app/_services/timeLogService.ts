@@ -28,7 +28,7 @@ export class TimeLogService{
   currentMessage = this.messageSource.asObservable();
 
   constructor(private http: HttpClient) {
-    
+
   }
   public getToken() {
     return localStorage.getItem('jwtToken');
@@ -80,7 +80,6 @@ export class TimeLogService{
       }),
       body: logs
     }
-
     return this.http.delete<timeLog>(`${environment.apiUrlDotNet}/timelogs`, httpOptions);
   }
 
@@ -93,6 +92,13 @@ export class TimeLogService{
     var response  = this.http.post<any>(`${environment.apiUrlDotNet}/timelogs/getLogInUsers`, realtime, this.httpOptions);
     return response;
   }
+
+  getUserTimeSheet(userId:string,fromDate:string,toDate:string ): any {
+    var response  = this.http.get<any>(`${environment.apiUrlDotNet}/timelogs/timesheet/${userId}/${fromDate}/${toDate}`, this.httpOptions);
+    return response;
+  }
+
+
   //mostPopularBook: Book = allBooks[0];
 
   // setMostPopularBook(popularBook: Book): void {
