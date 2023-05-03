@@ -69,10 +69,10 @@
         <td *ngFor="let cell of row|slice:1">{{+cell | milliSecondsToTime}}</td>
         <td>{{getTotalHours(row.slice(1)) | milliSecondsToTime}}</td>
       </tr>
-      <tr>
-        <td *ngIf="timesheetAllTotals[user].length>0">Total</td>
-        <td *ngIf="timesheetAllTotals[user].length>0"></td>
-        <td *ngFor="let row of timesheetAllTotals[user];index as i">{{row| milliSecondsToTime }}</td>
+      <tr class="table-active" *ngIf="timeLogs?.matrix[user]?.length>0">
+        <td >Total</td>
+        <td ></td>
+        <td *ngFor="let row of timesheetAllTotals[user]">{{row| milliSecondsToTime }}</td>
       </tr>
     </ng-container>
       <!-- <tr *ngIf="this.timeLogs?.matrix.length>0">
