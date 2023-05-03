@@ -1,9 +1,9 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'secondsToTime'
+  name: 'milliSecondsToTime'
 })
-export class SecondsToTimePipe implements PipeTransform {
+export class MilliSecondsToTimePipe implements PipeTransform {
   transform(totalSeconds: number): string {
     const hours = Math.floor(totalSeconds / 3600000);
     const minutes = Math.floor((totalSeconds % 3600) / 60);

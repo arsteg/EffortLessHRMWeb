@@ -20,14 +20,14 @@ export class ProjectService  {
     withCredentials: true
   };
     constructor(private http: HttpClient) {
-     
+
     }
     public getToken() {
       return localStorage.getItem('jwtToken');
     }
 
-  getprojectlist() : Observable<project>{
-    var response = this.http.get<project>(`${environment.apiUrlDotNet}/project/projectlist`, this.httpOptions);
+  getprojectlist() : Observable<any>{
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/project/projectlist`, this.httpOptions);
     return response;
   }
 
@@ -35,11 +35,11 @@ export class ProjectService  {
   var response =  this.http.post<project>(`${environment.apiUrlDotNet}/project/newproject`, project,  this.httpOptions);
     return response;
   }
-  
+
   deleteproject(id){
     return this.http.delete<project>(`${environment.apiUrlDotNet}/project/${id}`, this.httpOptions);
   }
-  
+
   updateproject(id, project):Observable<project>{
     return this.http.patch<project>(`${environment.apiUrlDotNet}/project/${id}`, project ,  this.httpOptions);
   }

@@ -111,7 +111,8 @@ import { timesheetModule } from './timesheets/timesheet.Module';
           WorkspaceSettingsComponent,
           FeaturesSettingsComponent,
           AttendanceSettingsComponent,
-          LeaveSettingsComponent, EditTaskComponent
+          LeaveSettingsComponent,
+          EditTaskComponent
   ],
   imports: [
     BrowserModule,

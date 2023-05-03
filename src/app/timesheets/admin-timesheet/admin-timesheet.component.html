@@ -21,7 +21,22 @@
           <div *ngIf="fromDateControl.errors">Invalid start or end date</div>
       </div>
     </div>
-      <div class="align-items-start flex-wrap gap-3 ms-auto">
+
+    <div>
+      <ng-container>
+        <mat-form-field appearance="outline" class="w-100 mx-2">
+            <mat-label>Select User</mat-label>
+            <mat-select name="users" multiple [(ngModel)]="selectedUser">
+                <mat-option *ngFor="let member of members" [value]="member.id" (click)="filterData()"
+                    [selected]="selectedUser?.includes(member?.id)">
+                    {{member.name | titlecase}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </ng-container>
+    </div>
+
+    <div class="align-items-start flex-wrap gap-3 ms-auto">
         <div class="dropdown order-first order-sm-last d-flex">
             <button class="export-btn dropdown-toggle formrow-inputState form-select select-styled active"
                 type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -40,22 +55,31 @@
   <table class="table">
     <thead>
       <tr>
+        <th>User</th>
         <th>Project</th>
-        <th *ngFor="let date of timeLogs?.columns|slice:1">{{ date | date: 'dd-MMM' }}</th>
+        <th *ngFor="let date of timeLogs?.columns|slice:2">{{ date | date: 'dd-MMM' }}</th>
         <th>Total</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let row of timeLogs?.matrix">
+      <ng-container *ngFor="let user of selectedUser">
+      <tr *ngFor="let row of timeLogs?.matrix[user];index as i">
+        <td> {{ i==0?getUsertName(user):"" }}</td>
         <td > {{ getProjectName(row[0]) }}</td>
         <td *ngFor="let cell of row|slice:1">{{+cell | milliSecondsToTime}}</td>
         <td>{{getTotalHours(row.slice(1)) | milliSecondsToTime}}</td>
       </tr>
-      <tr *ngIf="this.timeLogs?.matrix.length>0">
-        <td>Total</td>
-        <td *ngFor="let cell of timesheetTotals|slice:1">{{+cell | milliSecondsToTime}}</td>
-        <td >{{getTotalHours(timesheetTotals)|milliSecondsToTime}}</td>
+      <tr>
+        <td *ngIf="timesheetAllTotals[user].length>0">Total</td>
+        <td *ngIf="timesheetAllTotals[user].length>0"></td>
+        <td *ngFor="let row of timesheetAllTotals[user];index as i">{{row| milliSecondsToTime }}</td>
       </tr>
+    </ng-container>
+      <!-- <tr *ngIf="this.timeLogs?.matrix.length>0">
+        <td>Total</td>
+        <td *ngFor="let cell of timesheetTotals|slice:1">{{+cell | secondsToTime}}</td>
+        <td >{{getTotalHours(timesheetTotals)|secondsToTime}}</td>
+      </tr> -->
     </tbody>
   </table>
 </div>

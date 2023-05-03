@@ -243,10 +243,14 @@ export const SideBarAdminMenu = [
         id: '82',
         title: 'Projects',
       },
-
       {
         id: '83',
         title: 'Time Approvals',
+      },
+      {
+        id: '84',
+        title: 'Timesheets',
+        url:'/adminTimesheets'
       }
     ]
   },

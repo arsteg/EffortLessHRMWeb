@@ -98,7 +98,10 @@ export class TimeLogService{
     return response;
   }
 
-
+  geAdminTimeSheet(userId:string,fromDate:string,toDate:string ): any {
+    var response  = this.http.get<any>(`${environment.apiUrlDotNet}/timelogs/timesheets/${userId}/${fromDate}/${toDate}`, this.httpOptions);
+    return response;
+  }
   //mostPopularBook: Book = allBooks[0];
 
   // setMostPopularBook(popularBook: Book): void {

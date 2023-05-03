@@ -27,10 +27,10 @@ import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatSortModule } from '@angular/material/sort';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
-import { SecondsToTimePipe } from '../pipes/SecondsToTimePipe';
+import { MilliSecondsToTimePipe } from '../pipes/SecondsToTimePipe';
 
 @NgModule({
-  declarations:[SortDirective,SearchPipe,SecondsToTimePipe],
+  declarations:[SortDirective,SearchPipe,MilliSecondsToTimePipe],
   imports:[
     CommonModule,
     MatToolbarModule,
@@ -82,7 +82,7 @@ import { SecondsToTimePipe } from '../pipes/SecondsToTimePipe';
     BsDatepickerModule,
     MatSortModule,
     ToastrModule,
-    SecondsToTimePipe
+    MilliSecondsToTimePipe
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,
