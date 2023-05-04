@@ -24,7 +24,7 @@
 
     <div>
       <ng-container>
-        <mat-form-field appearance="outline" class="w-100 mx-2">
+        <mat-form-field appearance="outline" class="w-100 mx-1">
             <mat-label>Select User</mat-label>
             <mat-select name="users" multiple [(ngModel)]="selectedUser">
                 <mat-option *ngFor="let member of members" [value]="member.id" (click)="filterData()"
