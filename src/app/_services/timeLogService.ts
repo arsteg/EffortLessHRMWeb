@@ -99,7 +99,7 @@ export class TimeLogService{
   }
 
   geAdminTimeSheet(userId:string,fromDate:string,toDate:string ): any {
-    var response  = this.http.post<any>(`${environment.apiUrlDotNet}/timelogs/timesheets`, {"userIds" :userId, "fromDate":fromDate, "toDate":toDate},this.httpOptions);
+    var response  = this.http.post<any>(`${environment.apiUrlDotNet}/timelogs/timesheets`, {"userIds" :userId, "startDate":fromDate, "endDate":toDate},this.httpOptions);
     return response;
   }
   //mostPopularBook: Book = allBooks[0];
