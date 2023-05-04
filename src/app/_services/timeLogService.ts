@@ -93,8 +93,8 @@ export class TimeLogService{
     return response;
   }
 
-  getUserTimeSheet(userId:string,fromDate:string,toDate:string ): any {
-    var response  = this.http.get<any>(`${environment.apiUrlDotNet}/timelogs/timesheet/${userId}/${fromDate}/${toDate}`, this.httpOptions);
+  getUserTimeSheet(userId:string,startDate:string,endDate:string ): any {
+    var response  = this.http.post<any>(`${environment.apiUrlDotNet}/timelogs/timesheet`,{"userId":userId,"startDate":startDate,"endDate":endDate}, this.httpOptions);
     return response;
   }
 
