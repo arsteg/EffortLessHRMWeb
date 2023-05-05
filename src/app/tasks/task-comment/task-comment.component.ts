@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { taskComment } from 'src/app/models/task/taskComment';
+import { TaskAttachment, taskComment } from 'src/app/models/task/taskComment';
 import { TasksService } from '../../_services/tasks.service';
 import { UserService } from 'src/app/_services/users.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -19,6 +19,7 @@ export class TaskCommentComponent implements OnInit {
   @Output() commentDeleted = new EventEmitter<taskComment>();
   @Input() authorfirstName: string;
   @Input() authorlastName: string;
+  @Input() attachments: TaskAttachment[]; 
 
   isEditMode: boolean = false;
   editedComment: taskComment;

@@ -16,13 +16,18 @@
   <div class="d-flex">
     <span class="letter text-light comment-user-letter" [title]="(authorfirstName | titlecase)+ ' ' + (authorlastName | titlecase)"
       [style.background-color]="commonService.getRandomColor(authorfirstName?.charAt(0) | uppercase)">
-      {{authorfirstName?.charAt(0) | uppercase}} {{authorlastName?.charAt(0) | uppercase}}
+      {{authorfirstName?.charAt(0) | uppercase}} {{authorlastName.charAt(0) | uppercase}}
     </span>
     <span class="mx-2 comment-user"> {{authorfirstName | titlecase}} </span><small> {{editedComment?.commentedAt | date:
       'medium'}}</small><br>
 
   </div>
   <p class="ps-4"> {{editedComment?.content}}</p>
+
+  <ul>
+    <li *ngFor="let attachment of attachments">{{ attachment.attachmentName }}</li>
+  </ul>
+  
   <div class="d-flex ms-3 my-2">
 
     <button class="comment-btn" (click)="toggleEditMode()">Edit .</button>

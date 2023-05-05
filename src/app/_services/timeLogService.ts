@@ -24,9 +24,19 @@ export class TimeLogService{
     }),
     withCredentials: true
   };
+
+  
   private messageSource = new BehaviorSubject<any>(0);
   currentMessage = this.messageSource.asObservable();
 
+  private getAuthorizationHeader() {
+    const token = localStorage.getItem('jwtToken');
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      'Authorization': `Bearer ${token}`
+    });
+  }
   constructor(private http: HttpClient) {
 
   }
@@ -71,16 +81,7 @@ export class TimeLogService{
   }
 
   deletetimelog(logs:any):Observable<timeLog>{
-    let token = localStorage.getItem('jwtToken');
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Authorization': `Bearer ${token}`
-      }),
-      body: logs
-    }
-    return this.http.delete<timeLog>(`${environment.apiUrlDotNet}/timelogs`, httpOptions);
+    return this.http.delete<timeLog>(`${environment.apiUrlDotNet}/timelogs`, { headers: this.getAuthorizationHeader(), body: logs });
   }
 
   addManualTime(user:string,task:string,projectId:string, startTime:string, endTime:string,date:string): any {

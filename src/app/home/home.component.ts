@@ -53,7 +53,8 @@ export class HomeComponent implements OnInit {
     let currentUser = JSON.parse(localStorage.getItem('currentUser'))
     this.auth.GetMe(currentUser.id).subscribe((response: any) => {
       this.currentProfile = response && response.data.users;
-      localStorage.setItem('currentProfile', this.currentProfile.firstName)
+      localStorage.setItem('firstName', this.currentProfile.firstName);
+      localStorage.setItem('lastName', this.currentProfile.lastName)
       return this.currentProfile;
     })
   }

@@ -78,10 +78,8 @@ export class EditTaskComponent implements OnInit {
     }
     this.firstLetter = this.commonService.firstletter;
     this.listAllTasks();
-
     const storedActiveTaskId = localStorage.getItem('activeTaskId');
     this.activeTaskId = storedActiveTaskId;
-
   }
 
 onCommentAdd(event: taskComment) {
@@ -149,9 +147,7 @@ onCommentDeleted(commentId: string) {
       })
   }
   deleteTask() {
-    console.log(this.activeTaskId)
     this.tasksService.deleteTask(this.activeTaskId).subscribe(response => {
-console.log("Deleted: " , this.activeTaskId)
       this.ngOnInit();
       this.toast.success('Successfully Deleted!')
     },

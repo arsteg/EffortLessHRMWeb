@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { Task } from '../tasks/task';
+import { Task, taskAttachment } from '../tasks/task';
 import { Tag } from '../models/tag';
 import { taskComment } from '../models/task/taskComment';
 
@@ -105,4 +105,7 @@ export class TasksService {
     return this.http.delete<any>(`${environment.apiUrlDotNet}/task/Comment/${commentId}`, this.httpOptions);
   }
   
+  addTaskAttachment( taskAttachment: taskAttachment[]): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrlDotNet}/task/new/taskattachment`, taskAttachment, this.httpOptions);
+  }
 }

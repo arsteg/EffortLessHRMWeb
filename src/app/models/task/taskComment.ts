@@ -4,9 +4,26 @@ export interface taskComment {
   author: string,
   task: string,
   commentedAt: Date,
-  // parent: string,
   status: string,
-  // commentType: string,
-  authorfirstName : string,
-  authorlastName: string
+  authorfirstName: string,
+  authorlastName: string,
+  // parent: string,
+  // commentType: string
 }
+export class TaskAttachment {
+  attachmentType: string;
+  attachmentName: string;
+  attachmentSize: string;
+  filePath: string;
+}
+
+// export class TaskAttachments {
+//   task: string;
+//   attachments: TaskAttachment[];
+//   comment: string;
+//   status: string;
+//   createdOn: Date;
+//   updatedOn: Date;
+//   createdBy: string;
+//   updatedBy: string;
+// }
