@@ -47,6 +47,9 @@ import { EditTaskComponent } from './tasks/edit-task/edit-task.component';
 import { TaskCommentComponent } from './tasks/task-comment/task-comment.component';
 import { UserTimesheetComponent } from './timesheets/user-timesheet/user-timesheet.component';
 import { AdminTimesheetComponent } from './timesheets/admin-timesheet/admin-timesheet.component';
+import { GenericSettingsComponent } from './settings/generic-settings/generic-settings.component';
+import { ViewLiveScreenComponent } from './viewLiveScreen/view-live-screen/view-live-screen.component';
+
 const routes: Routes = [
   // {path:'',component:LayoutComponentComponent, canActivate: [AuthGuard]},
 
@@ -98,7 +101,9 @@ const routes: Routes = [
       { path: 'attendancesettings', component: AttendanceSettingsComponent },
       { path: 'leavesettings', component: LeaveSettingsComponent },
       { path: 'edit-task/:id', component: EditTaskComponent },
-      {path: 'comments', component: TaskCommentComponent}
+      {path: 'comments', component: TaskCommentComponent},
+      { path: 'genericSettings', component: GenericSettingsComponent },
+      { path: 'viewLiveScreen', component: ViewLiveScreenComponent }
     ]
   }
 ]

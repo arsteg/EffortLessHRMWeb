@@ -67,6 +67,8 @@ import { DatePipe } from '@angular/common';
 import { EditTaskComponent } from './tasks/edit-task/edit-task.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import { timesheetModule } from './timesheets/timesheet.Module';
+import { GenericSettingsComponent } from './settings/generic-settings/generic-settings.component';
+import { ViewLiveScreenComponent } from './viewLiveScreen/view-live-screen/view-live-screen.component';
 
 @NgModule({
   declarations: [
@@ -112,7 +114,9 @@ import { timesheetModule } from './timesheets/timesheet.Module';
           FeaturesSettingsComponent,
           AttendanceSettingsComponent,
           LeaveSettingsComponent,
-          EditTaskComponent
+          EditTaskComponent,
+          GenericSettingsComponent,
+          ViewLiveScreenComponent
   ],
   imports: [
     BrowserModule,

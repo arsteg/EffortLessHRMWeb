@@ -1,0 +1,9 @@
+<div *ngFor="let user of users">
+    <div class="row">
+        <button id="btnStart{{user.id}}" (click)="StartLivePreview(user.id)" *ngIf="!user.isLivePreviewStarted">Start ({{user.name}})</button>
+        <button id="btnStop{{user.id}}" (click)="StopLivePreview(user.id)" *ngIf="user.isLivePreviewStarted">Stop ({{user.name}})</button>
+    </div>
+    <div class="row m-5">
+        <img [src]="imageVideo[user.id]" alt="{{user.name}} screen" style="width: 500px; height: 200px;"/>
+    </div>
+</div>

@@ -1,0 +1,137 @@
+{
+	"Category": [{
+			"CategoryName": "Profile Settings",
+			"ControlType": "text",
+			"ControlLabel": "First Name",
+			"ToolTip": "Enter the first name",
+			"DBFieldName": "firstName",
+			"DefaultValue": null,
+			"ListValue": null
+		},
+		{
+			"CategoryName": "Profile Settings",
+			"ControlType": "text",
+			"ControlLabel": "Last Name",
+			"ToolTip": "Enter the last name",
+			"DBFieldName": "lastName",
+			"DefaultValue": null,
+			"ListValue": null
+		},
+		{
+			"CategoryName": "Profile Settings",
+			"ControlType": "email",
+			"ControlLabel": "Email",
+			"ToolTip": "Enter the email",
+			"DBFieldName": "email",
+			"DefaultValue": null,
+			"ListValue": null
+		},
+		{
+			"CategoryName": "Profile Settings",
+			"ControlType": "date",
+			"ControlLabel": "DOB",
+			"ToolTip": "Date of Birth",
+			"DBFieldName": "",
+			"DefaultValue": false,
+			"ListValue": null
+		},
+		{
+			"CategoryName": "Profile Settings",
+			"ControlType": "memo",
+			"ControlLabel": "Description",
+			"ToolTip": "Description",
+			"DBFieldName": "",
+			"DefaultValue": false,
+			"ListValue": null
+		},
+		{
+			"CategoryName": "Profile Settings",
+			"ControlType": "memo",
+			"ControlLabel": "Description",
+			"ToolTip": "Description",
+			"DBFieldName": "",
+			"DefaultValue": false,
+			"ListValue": null
+		},
+		{
+			"CategoryName": "Profile Settings",
+			"ControlType": "number",
+			"ControlLabel": "Working hours per day (hour)",
+			"ToolTip": "working hours per day",
+			"DBFieldName": "",
+			"DefaultValue": false,
+			"ListValue": null
+		},
+		{
+			"CategoryName": "Profile Settings",
+			"ControlType": "multiselectlist",
+			"ControlLabel": "Working Day",
+			"ToolTip": "organization working day",
+			"DBFieldName": "workingday",
+			"DefaultValue": null,
+			"ListValue": [{
+					"key": "Mon",
+					"value": "Monday"
+				},
+				{
+					"key": "Tue",
+					"value": "Tuesday"
+				},
+				{
+					"key": "Wed",
+					"value": "Wednesday"
+				},
+				{
+					"key": "Thu",
+					"value": "Thursday"
+				},
+				{
+					"key": "Fri",
+					"value": "Friday"
+				},
+				{
+					"key": "Sat",
+					"value": "Saturday"
+				},
+				{
+					"key": "Sun",
+					"value": "Sunday"
+				}
+			]
+		},
+		{
+			"CategoryName": "Workspace",
+			"ControlType": "bool",
+			"ControlLabel": "Disable deleting screenshots by employees",
+			"ToolTip": "When you check this option, your employees will not be able to delete their screenshots any more.",
+			"DBFieldName": "",
+			"DefaultValue": false,
+			"ListValue": null
+		},
+		{
+			"CategoryName": "Workspace",
+			"ControlType": "list",
+			"ControlLabel": "Time Zone",
+			"ToolTip": "The timezone you choose will be set for the whole workspace and system, including all members and reports. Note that if you change the timezone, it may cause slight mismatches in the screenshots and reports of that day only",
+			"DBFieldName": "timeZone",
+			"DefaultValue": null,
+			"ListValue": [{
+					"key": "Time Zone 1",
+					"value": "Time Zone 1"
+				},
+				{
+					"key": "Time Zone 2",
+					"value": "Time Zone 2"
+				},
+				{
+					"key": "Time Zone 3",
+					"value": "Time Zone 3"
+				},
+				{
+					"key": "Time Zone 4",
+					"value": "Time Zone 4"
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,85 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <h1 class="pt-0 pb-3 mb-0">Setting</h1>
+        <div class="d-flex">
+            <div class="card">
+                <div class="card-body p-2">
+                    <div class="d-flex text-black">
+                      <div class="flex-shrink-0 pt-3" style="background-color: aqua; border-radius: 8px; padding: 5px;">
+                        <span style="font-size: 50px;">SK</span>
+                      </div>
+                      <div class="flex-grow-1 ms-3">
+                        <div><span>Sandeep Kumar</span></div>
+                        <h5 class="mb-1">Member since: </h5>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr/>
+
+        <div class="row">
+            <div class="row" >
+                <div class="form-group d-flex p-2 justify-content-around">
+                    <select id="settings" name="settings" (change)="OnCategoryChange()" [(ngModel)] = "selectedCategory" class="form-control" class="form-control form-select form-select-sm"
+                    aria-label=".form-select-sm example">
+                        <option *ngFor="let category of categoriesData" [value]="category">
+                            {{ category }}
+                        </option>    
+                    <!-- <option value="0" selected >Select category setting</option>
+                        <option>Profile Settings</option>
+                        <option>Workspace</option> -->
+                    </select>
+                </div>
+            
+                <div *ngIf="selectedJsonData && selectedJsonData.length > 0">
+                    <div *ngFor="let settingData of selectedJsonData">
+
+                        <div *ngIf="settingData && (settingData.ControlType=='number' || settingData.ControlType=='text' || settingData.ControlType=='email' || settingData.ControlType=='date')" class="col-md-6 form-group">
+                            <label class="form-label" [tooltip] ="settingData.ToolTip">{{settingData.ControlLabel}}</label>
+                            <input class="form-control" [type]="settingData.ControlType" value="" ngModel />
+                        </div>
+                        
+                        <div *ngIf="settingData && settingData.ControlType=='bool'" class="col-md-6 form-group form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" ngModel>
+                            <label class="form-controlform-check-label" for="flexSwitchCheckDefault" [tooltip] ="settingData.ToolTip">{{settingData.ControlLabel}}</label>
+                        </div>
+                        
+                        <div *ngIf="settingData && settingData.ControlType=='list'" class="col-md-6 form-group">
+                            <label class="form-label" [tooltip] ="settingData.ToolTip">{{settingData.ControlLabel}}</label>
+                            <select class="form-controlcustom-select mb-3 p-2" ngModel>
+                                <option disabled selected value="0">Select</option>
+                                <option *ngFor="let listValue of settingData.ListValue" [value]="listValue.key">
+                                    {{listValue.value}}
+                                </option>
+                            </select>
+                        </div>
+
+                        <div *ngIf="settingData && settingData.ControlType=='multiselectlist'" class="col-md-6 form-group">
+                            <mat-form-field appearance="outline" class="w-100 mx-1">
+                                <mat-label [tooltip]="settingData.ToolTip">{{settingData.ControlLabel}}</mat-label>
+                                <mat-select multiple ngModel>
+                                    <mat-option *ngFor="let listValue of settingData.ListValue" [value]="listValue.key">
+                                        {{listValue.value | titlecase}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+
+                        <div *ngIf="settingData && settingData.ControlType=='memo'" class="col-md-6 form-group">
+                            <label class="form-label" [tooltip] ="settingData.ToolTip">{{settingData.ControlLabel}}</label>
+                            <textarea class="form-control" [rows]="2" ngModel></textarea>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between m-3">
+            <div>
+                <button mat-raised-button color="primary" data-bs-dismiss="modal" type="submit">Save</button>
+            </div>
+        </div>
+    </div>
+</div>

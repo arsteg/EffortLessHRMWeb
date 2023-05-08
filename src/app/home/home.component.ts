@@ -105,6 +105,12 @@ export const SideBarAdminMenu = [
     url: '/screenshots',
   },
   {
+    id: '19',
+    icon: 'fa fa-video',
+    title: 'View Live Screen',
+    url: '/viewLiveScreen'
+  },
+  {
     id: '3',
     title: 'RealTime',
     icon: 'fa fa-clock',
@@ -473,29 +479,34 @@ export const SideBarAdminMenu = [
       },
       {
         id: '162',
-        title: 'Profile Settings',
-        url: '/profileSettings'
-      },
-      {
-        id: '163',
-        title: 'Workspace',
-        url: '/workspace'
-      },
-      {
-        id: '164',
-        title: 'Features',
-        url: '/features'
-      },
-      {
-        id: '164',
-        title: 'Attendance',
-        url: '/attendancesettings'
-      },
-      {
-        id: '164',
-        title: 'Leave',
-        url: '/leavesettings'
-      },
+        title: 'Generic Settings',
+        url: '/genericSettings'
+      }
+      // {
+      //   id: '162',
+      //   title: 'Profile Settings',
+      //   url: '/profileSettings'
+      // },
+      // {
+      //   id: '163',
+      //   title: 'Workspace',
+      //   url: '/workspace'
+      // },
+      // {
+      //   id: '164',
+      //   title: 'Features',
+      //   url: '/features'
+      // },
+      // {
+      //   id: '164',
+      //   title: 'Attendance',
+      //   url: '/attendancesettings'
+      // },
+      // {
+      //   id: '164',
+      //   title: 'Leave',
+      //   url: '/leavesettings'
+      // },
     ]
   },
   {
@@ -545,6 +556,12 @@ export const SideBarUserMenu = [
     icon: 'fa fa-camera',
     url: '/screenshots',
 
+  },
+  {
+    id: '17',
+    title: 'View Live Screen',
+    icon: 'fa fa-video',
+    url: '/viewLiveScreen'
   },
   {
     id: '3',
