@@ -49,7 +49,6 @@ import { ManageModule } from './manage/manage.module';
 import { PermissionsComponent } from './permissions/permissions.component';
 import { RolePermissionComponent } from './role-permission/role-permission.component';
 import { AuthGuard } from './auth.guard';
-import { DashboardComponent } from './dashboard/dashboard.component';
 import { ActivityLevelComponent } from './reports/activity-level/activity-level.component';
 import { ProfileSettingsComponent } from './settings/profile-settings/profile-settings.component';
 import { WorkspaceSettingsComponent } from './settings/workspace-settings/workspace-settings.component';
@@ -69,6 +68,7 @@ import {MatDialogModule} from '@angular/material/dialog';
 import { timesheetModule } from './timesheets/timesheet.Module';
 import { GenericSettingsComponent } from './settings/generic-settings/generic-settings.component';
 import { ViewLiveScreenComponent } from './viewLiveScreen/view-live-screen/view-live-screen.component';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @NgModule({
   declarations: [
@@ -107,7 +107,6 @@ import { ViewLiveScreenComponent } from './viewLiveScreen/view-live-screen/view-
           AddManualTimeComponent,
           PermissionsComponent,
           RolePermissionComponent,
-          DashboardComponent,
           ActivityLevelComponent,
           ProfileSettingsComponent,
           WorkspaceSettingsComponent,
@@ -140,7 +139,8 @@ import { ViewLiveScreenComponent } from './viewLiveScreen/view-live-screen/view-
     MatPaginatorModule,
     MatSlideToggleModule,
     MatDialogModule,
-    timesheetModule
+    timesheetModule,
+    DashboardModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

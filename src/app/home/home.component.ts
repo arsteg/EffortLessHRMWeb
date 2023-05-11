@@ -547,7 +547,7 @@ export const SideBarUserMenu = [
     id: '1',
     title: 'Dashboard',
     icon: 'fa fa-chart-bar',
-    url: '/dashboard',
+    url: '/userDashboard',
 
   },
   {
