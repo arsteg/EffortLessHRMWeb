@@ -86,36 +86,24 @@
     <div class="row justify-content-evenly">
       <div class="col-md-4 border rounded p-3 dash-report common">
         <div class="d-flex justify-content-between">
-          <h3>Today's Activity</h3>
-          <select
-            class="form-select w-25 dash-select mb-1"
-            aria-label="Default select example"
-          >
-            <option selected>Today</option>
-            <option value="1">Week</option>
-          </select>
+          <h3>Project-wise Time Spent on Each Task</h3>
         </div>
         <table class="table">
           <tbody>
-            <tr *ngFor="let users of selectedUsers">
-              <td>
-                <span
-                  class="letter ms-2"
-                  [style.background-color]="
-                    commonService.getRandomColor(users?.lastName)
-                  "
-                >
-                  {{ users.firstName.slice(0, 1) | uppercase
-                  }}{{ users.lastName.slice(0, 1) | uppercase }}</span
-                >
-                {{ users?.firstName | titlecase }}
-                {{ users?.lastName.slice(0, 1) | titlecase }}.
-              </td>
-              <td>0m</td>
-              <td>
-                <span class="dash-percent"> 0%</span>
-              </td>
-            </tr>
+            <th>Project</th>
+            <th>Task</th>
+            <th>Time</th>
+            <ng-container *ngFor="let projectTask of projectTasks">
+              <tr *ngFor="let task of projectTask.tasks;let i = index ">
+                <td>
+                  {{i==0?projectTask?.projectName:''}}
+                </td>
+                <td>{{task?.taskName}}</td>
+                <td>
+                  <span class="dash-percent"> {{ task.totalTime | milliSecondsToTime }} </span>
+                </td>
+              </tr>
+          </ng-container>
           </tbody>
         </table>
       </div>
