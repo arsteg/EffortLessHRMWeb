@@ -73,14 +73,14 @@
             <div class="about__top mb-3">
               <div class="about__title d-flex">
                 <h1 class="content__title me-3">This week</h1>
-                <h1 class="content__title title-hidden">{{weeklySummary.currentWeek | milliSecondsToTime}}</h1>
+                <h1 class="content__title title-hidden"> {{ weeklySummary.currentWeek | milliSecondsToTime}}</h1>
               </div>
               <div class="top-text pb-3">
                 <p class="text mb-0 me-2">
-                  <span style="color: rgb(255, 190, 91)">0% </span
-                  ><span> last week </span>
+                  <span style="color: rgb(255, 190, 91)">{{ weeklySummary.change }}% </span>
+                  <span> last week </span>
                 </p>
-                <div class="hours"><span class="p-2 py-3 text-light">{{weeklySummary.previousWeek | milliSecondsToTime }}</span></div>
+                <div class="hours"><span class="p-2 py-3 text-light">{{ weeklySummary.previousWeek | milliSecondsToTime }}</span></div>
               </div>
               <div class="d-flex justify-content-between">
                 <img  *ngIf="hoursWorked.increased==true" src="../assets/images/graph-up-green.svg" height="50"  alt="Profile Picture">
@@ -94,16 +94,18 @@
             <div class="about__top mb-3">
               <div class="about__title d-flex">
                 <h1 class="content__title me-3">This Month</h1>
-                <h1 class="content__title title-hidden">0m</h1>
+                <h1 class="content__title title-hidden">{{monthlySummary.currentMonth | milliSecondsToTime}}m</h1>
               </div>
               <div class="top-text">
                 <p class="text mb-0 me-2">
-                  <span style="color: rgb(255, 190, 91)">0% </span
+                  <span style="color: rgb(255, 190, 91)">{{monthlySummary.change}}% </span
                   ><span> a week before </span>
                 </p>
-                <div class="hours"><span class="p-2 py-3 text-light">0m</span></div>
+                <div class="hours"><span class="p-2 py-3 text-light">{{monthlySummary.previousMonth | milliSecondsToTime}}m</span></div>
               </div>
               <div class="d-flex justify-content-between">
+                <img  *ngIf="monthlySummary.increased==true" src="../assets/images/graph-up-green.svg" height="50"  alt="Profile Picture">
+                <img  *ngIf="monthlySummary.increased==false" src="../assets/images/graph-down-red.svg" height="50"  alt="Profile Picture">
               </div>
             </div>
           </div>
