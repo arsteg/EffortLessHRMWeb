@@ -35,6 +35,7 @@ export class ExportService {
 
   exportToPdf(fileName:string, content: HTMLElement): void
   {
+    
     let pdf = new jsPDF();
     html2canvas(content).then((canvas) => {
       let fileWidth = 208;

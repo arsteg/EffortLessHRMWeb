@@ -9,7 +9,7 @@
                 <div class="d-flex  justify-content-between p-4 bg-white common">
                     <div>
                         <p class="text-muted"> Number of Members</p>
-                        <h3 class="mb-0">{{realtime[0]?.totalMember}}</h3>
+                        <h3 class="mb-0">{{realtime?.totalMember}}</h3>
                     </div>
                     <b class="bi bi-people people"></b>
                 </div>
@@ -18,7 +18,7 @@
                 <div class="d-flex bg-white justify-content-between p-4 common">
                     <div>
                         <p class="text-muted">Working Now</p>
-                        <h3 class="mb-0">{{realtime[0]?.activeMember}}</h3>
+                        <h3 class="mb-0">{{realtime?.activeMember}}</h3>
                     </div>
                     <i class="bi bi-clock clock "></i>
                 </div>
@@ -29,7 +29,7 @@
 
                     <div>
                         <p class="text-muted">Currently Non-Productive</p>
-                        <h3 class="mb-0">{{realtime[0]?.totalNonProductiveMember}}</h3>
+                        <h3 class="mb-0">{{realtime?.totalNonProductiveMember}}</h3>
                     </div>
                     <i class="bi bi-graph-down-arrow graph"></i>
                 </div>
@@ -39,28 +39,22 @@
         <div class="d-flex mt-4 px-2" style="height: 50px;">
 
             <span class="pt-3 text-muted me-3">Filter&nbsp;by: </span>
-            <mat-form-field appearance="outline" class="w-25 mx-1">
-                <mat-label>Select User</mat-label>
-                <mat-select multiple [(ngModel)]="selectedUser">
-                    <mat-option *ngFor="let member of members" [value]="member.id" (click)="filterData()"
-                        [selected]="selectedUser?.includes(member?.id)">
-                        {{member.name | titlecase}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
+            <ng-container *ngIf="roleName !== 'user'">
+                <mat-form-field appearance="outline" class="w-25 mx-1">
+                    <mat-label>Select User</mat-label>
+                    <mat-select multiple [(ngModel)]="selectedUser">
+                        <mat-option *ngFor="let member of members" [value]="member.id" (click)="filterData()"
+                            [selected]="selectedUser?.includes(member?.id)">
+                            {{member.name | titlecase}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </ng-container>
 
-            <!-- <mat-form-field appearance="outline" class="w-25 mx-1">
-                <mat-label>Select Project</mat-label>
-                <mat-select multiple [(ngModel)]="selectedProject">
-                    <mat-option *ngFor="let project of projectList" [value]="project.id" (click)="filterData()"
-                        [selected]="selectedProject?.includes(project?.id)">
-                        {{project.projectName | titlecase}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field> -->
+           
 
-            <input class="form-control  search pb-0 mx-1" type="text" placeholder="Search..."
-                [(ngModel)]="searchText" name="searchText" aria-label="default input example"
+            <input class="form-control  search pb-0 mx-1" type="text" placeholder="Search..." [(ngModel)]="searchText"
+                name="searchText" aria-label="default input example"
                 style="border-bottom: 1px solid grey; border-radius: 0; background: transparent;">
 
             <div class="align-items-start flex-wrap gap-3 ms-auto">
@@ -77,8 +71,8 @@
                 </div>
             </div>
         </div>
-       <!-- Data:  <pre>{{realtime[0]?.onlineUsers[i]?.project | json}}</pre> -->
-        <table class="table  mt-4" id="realTime #realTime">
+       
+        <table class="table  mt-4" id="realTime" #realTime>
             <thead>
                 <tr>
                     <th scope="col">
@@ -101,16 +95,16 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let data of realtime ; let i as index | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
-                  
+                <tr *ngFor="let data of realtime?.onlineUsers;  search: searchText |  paginate: { itemsPerPage: 10, currentPage: p }">
                     <td>
-                        <!-- <span class="letter ms-2"
+                        <span class="letter ms-2"
                             [style.background-color]="commonService.getRandomColor(data?.user?.lastName)">
-                            {{data?.user?.firstName.slice(0,1) | uppercase}}{{data?.user?.lastName.slice(0,1) | uppercase}}</span> -->
-                       <pre> {{data[0]?.onlineUsers[i]?.user?.firstName | titlecase}} {{data[0]?.onlineUsers[i]?.user?.lastName | titlecase}}</pre>
+                            {{data.user.firstName.slice(0,1) |
+                            uppercase}}{{data.user.lastName.slice(0,1) | uppercase}}</span>
+                            {{data.user.firstName |titlecase}} {{data.user.lastName |titlecase}}
                     </td>
-                    <td>{{data[0]?.onlineUsers[i]?.project}}</td>
-                    <td>{{data[0]?.onlineUsers[i]?.task}}</td>
+                    <td>{{data?.project}}</td>
+                    <td>{{data?.task}}</td>
                     <td></td>
                     <td>
                         <button mat-raised-button color="primary">Live Screen</button>
@@ -119,7 +113,7 @@
             </tbody>
         </table>
         <pagination-controls (pageChange)="p = $event"
-        class="pagination d-flex justify-content-end"></pagination-controls>
-       
+            class="pagination d-flex justify-content-end"></pagination-controls>
+
     </div>
 </div>

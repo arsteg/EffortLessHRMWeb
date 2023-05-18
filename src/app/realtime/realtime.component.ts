@@ -33,7 +33,8 @@ export class RealtimeComponent implements OnInit {
   members: any;
   member: any;
   p: number = 1;
-  
+  onlineUserData:any;
+  user:any;
   constructor(private timelog: TimeLogService,
     private manageTeamService: ManageTeamService,
     public commonService: CommonService,
@@ -106,17 +107,19 @@ export class RealtimeComponent implements OnInit {
 
   @ViewChild('realTime') content!: ElementRef
   exportToPdf() {
-    this.exportService.exportToPdf('realTime', this.content.nativeElement)
+    this.exportService.exportToPdf('RealTime', this.content.nativeElement)
   }
-
+ 
+  
   getRealtime() {
     let realtime = new RealTime();
     realtime.projects = this.selectedProject ;
     realtime.tasks = this.selectedTask;
     realtime.users = (this.roleName.toLocaleLowerCase() === "admin") ? this.selectedUser : [this.currentUser.id];
     this.timelog.realTime(realtime).subscribe(result => {
-      this.realtime = result.data;
-      console.log("realtime :", this.realtime[0])
+      this.realtime = result.data[0];
+         
+      
     })
   }
 }
