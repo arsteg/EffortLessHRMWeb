@@ -1,3 +1,5 @@
+import { attachments } from "src/app/tasks/task";
+
 export interface taskComment {
   id: string,
   content: string,
@@ -7,6 +9,7 @@ export interface taskComment {
   status: string,
   authorfirstName: string,
   authorlastName: string,
+  taskAttachments: attachments[]
   // parent: string,
   // commentType: string
 }
@@ -16,14 +19,3 @@ export class TaskAttachment {
   attachmentSize: string;
   filePath: string;
 }
-
-// export class TaskAttachments {
-//   task: string;
-//   attachments: TaskAttachment[];
-//   comment: string;
-//   status: string;
-//   createdOn: Date;
-//   updatedOn: Date;
-//   createdBy: string;
-//   updatedBy: string;
-// }

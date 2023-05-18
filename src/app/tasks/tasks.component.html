@@ -129,8 +129,7 @@
                                 <td class="action text-start" *ngIf="task !== null">
                                     <span class="bi bi-grip-horizontal text-secondary data mt-2 me-3"></span>
                                 </td>
-                                <td data-bs-toggle="modal" data-bs-target="#getUsers" (click)="getTaskUser(task?.id)"
-                                    (click)="selectedTask=task">{{task?.taskName| titlecase}}</td>
+                                <td>{{task?.taskName| titlecase}}</td>
                                 <td>{{task?.endDate | date:'mediumDate'}}</td>
                                 <td (click)="selectedTaskIndex === i?selectedTaskIndex=-1:selectedTaskIndex=i">
                                     <div class="dropdown show">
@@ -369,7 +368,7 @@
                 </div>
                 <hr class="mt-0">
                 <div class="row">
-                    <form class="row" [formGroup]="addForm" (ngSubmit)="addTask(addForm.value)">
+                    <form class="row" [formGroup]="addForm" (ngSubmit)="onSubmit()">
                         <div class="row d-flex justify-content-center">
                             <div class="col-md-8">
                                 <div class="row mt-3">
@@ -468,22 +467,22 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="mt-3 d-flex flex-wrap align-items-center"><label
-                                            class="sc-bczRLJ kEeNDb  "><input style="display: none;"
-                                                accept=".jpeg,.mp4,.glb,.svg,.blend,.jpg,.png,.gif,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.odt,.fodt,.ods,.fods,.odp,.fodp,.odg,.fodg,.odf,.csv,.html,.css,.txt,.zip"
-                                                type="file" multiple="" formControlName="taskAttachments" >
-                                            <div
-                                                class="details-attach-file d-flex align-items-center justify-content-center me-2 pointer">
-                                                <span class="fa fa-paperclip attachment"> Attach a File</span>
-                                            </div>
-                                        </label>
+                                    <div class="attachment mt-4 d-flex flex-wrap"><label class="sc-bczRLJ kEeNDb  "><input
+                                        style="display: none;"
+                                        accept=".jpeg,.mp4,.glb,.svg,.blend,.jpg,.png,.gif,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.odt,.fodt,.ods,.fods,.odp,.fodp,.odg,.fodg,.odf,.csv,.html,.css,.txt,.zip"
+                                        type="file" multiple (change)="onFileSelect($event)">
+                                    <div
+                                        class="details-attach-file d-flex align-items-center justify-content-center me-2 pointer">
+                                        <span class="fa fa-paperclip"> attach a file </span>
                                     </div>
-                                    <div *ngIf="selectedFiles.length > 0">
-                                        <p>Selected files:</p>
-                                        <ul>
-                                          <li *ngFor="let file of selectedFiles">{{ file }}</li>
-                                        </ul>
-                                      </div>                     
+                                </label>
+                                <ul type="none">
+                                    <li class="text-primary" *ngFor="let files of selectedFiles; let i = index" (click)="removeFile(i)" >
+                                      {{files.name}} <i class="bi bi-x-circle-fill text-danger deleteTaskAttachment"></i>
+                                    </li>
+                                </ul>
+                            </div>
+                                    <!-- <input type="file" (change)="onFileSelect($event)" multiple  formControlName="taskAttachments">           -->
 
                                 </div>
                                 <div class="row mt-3">

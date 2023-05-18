@@ -566,7 +566,8 @@ export const SideBarUserMenu = [
   {
     id: '3',
     title: 'RealTime',
-    icon: 'fa fa-clock'
+    icon: 'fa fa-clock',
+    
   },
   {
     id: '4',

@@ -109,7 +109,7 @@
                                         <i class="bi bi-three-dots-vertical actions" data-bs-toggle="dropdown"
                                             aria-expanded="false"></i>
                                         <ul class="dropdown-menu">
-                                            <li class="d-flex"  data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                            <li class="d-flex" data-bs-toggle="modal" data-bs-target="#deleteModal">
                                                 <i class="bi bi-trash3 text-danger dropdown-item w-25"></i><span
                                                     class="pt-1 text-muted">Delete Task</span>
                                             </li>
@@ -165,14 +165,148 @@
                                 </div>
                                 <div class="attachment mt-4 d-flex flex-wrap"><label class="sc-bczRLJ kEeNDb  "><input
                                             style="display: none;"
-                                            accept=".jpeg,.mp4,.glb,.svg,.blend,.jpg,.png,.gif,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.odt,.fodt,.ods,.fods,.odp,.fodp,.odg,.fodg,.odf,.csv,.html,.css,.txt,.zip"
-                                            type="file" multiple="">
+                                            accept=".jpeg,.json,.mp4,.glb,.svg,.blend,.jpg,.png,.gif,.pdf,.webp,.avif,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.odt,.fodt,.ods,.fods,.odp,.fodp,.odg,.fodg,.odf,.csv,.html,.css,.txt,.zip"
+                                            type="file" multiple (change)="onFileSelect($event)">
                                         <div
                                             class="details-attach-file d-flex align-items-center justify-content-center me-2 pointer">
                                             <span class="fa fa-paperclip"> attach a file</span>
                                         </div>
-                                    </label></div>
+                                    </label>
+                                    <ul type="none">
+                                        <li class="text-primary" *ngFor="let files of selectedFiles">
+                                            {{files.name}}
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div class="d-flex row">
+                                    <ng-container *ngFor="let attachment of taskAttachment ; let i = index">
+                                        <div *ngIf="attachment?.comment === null" class="col-md-2 me-3 mb-5">
+
+
+                                            <div class="card cardAttachment"
+                                                *ngIf="attachment?.attachmentType == 'image/png'">
+                                                <button type="button"
+                                                    class="bi bi-trash btn text-danger text-right deleteAttachment"
+                                                    (click)="deleteTaskAttachment(attachment.id)"></button>
+                                                <img src="{{attachment.url}}" class="card-img-top" alt="..."
+                                                    data-bs-toggle="modal" data-bs-target="#bigAttachmentModal"
+                                                    (click)="openTaskAttachmentModal(attachment)" />
+                                                <div class="card-body py-0 border-top">
+                                                    <small class="card-text"> {{attachment?.attachmentName}}</small>
+                                                </div>
+                                            </div>
+
+                                            <div class="card cardAttachment"
+                                                *ngIf="attachment?.attachmentType == 'image/jpg'">
+                                                <button type="button"
+                                                    class="bi bi-trash btn text-danger text-right deleteAttachment"
+                                                    (click)="deleteTaskAttachment(attachment.id)"></button>
+                                                <img src="{{attachment.url}}" class="card-img-top" alt="..."
+                                                    data-bs-toggle="modal" data-bs-target="#bigAttachmentModal"
+                                                    (click)="openTaskAttachmentModal(attachment)" />
+                                                <div class="card-body py-0  border-top">
+                                                    <small class="card-text"> {{attachment?.attachmentName}}</small>
+                                                </div>
+                                            </div>
+
+                                            <div class="card cardAttachment"
+                                                *ngIf="attachment?.attachmentType == 'image/jpeg'">
+                                                <button type="button"
+                                                    class="bi bi-trash btn text-danger text-right deleteAttachment"
+                                                    (click)="deleteTaskAttachment(attachment.id)"></button>
+                                                <img src="{{attachment.url}}" class="card-img-top" alt="..."
+                                                    data-bs-toggle="modal" data-bs-target="#bigAttachmentModal"
+                                                    (click)="openTaskAttachmentModal(attachment)" />
+                                                <div class="card-body py-0  border-top">
+                                                    <small class="card-text"> {{attachment?.attachmentName}}</small>
+                                                </div>
+                                            </div>
+
+                                            <div class="card cardAttachment"
+                                                *ngIf="attachment?.attachmentType == 'image/avif'">
+                                                <button type="button"
+                                                    class="bi bi-trash btn text-danger text-right deleteAttachment"
+                                                    (click)="deleteTaskAttachment(attachment.id)"></button>
+                                                <img src="{{attachment.url}}" class="card-img-top" alt="..."
+                                                    data-bs-toggle="modal" data-bs-target="#bigAttachmentModal"
+                                                    (click)="openTaskAttachmentModal(attachment)" />
+                                                <div class="card-body py-0  border-top">
+                                                    <small class="card-text"> {{attachment?.attachmentName}}</small>
+                                                </div>
+                                            </div>
+
+                                            <div class="card cardAttachment"
+                                                *ngIf="attachment?.attachmentType == 'image/webp'">
+                                                <button type="button"
+                                                    class="bi bi-trash btn text-danger text-right deleteAttachment"
+                                                    (click)="deleteTaskAttachment(attachment.id)"></button>
+                                                <img src="{{attachment.url}}" class="card-img-top" alt="..."
+                                                    data-bs-toggle="modal" data-bs-target="#bigAttachmentModal"
+                                                    (click)="openTaskAttachmentModal(attachment)" />
+                                                <div class="card-body py-0  border-top">
+                                                    <small class="card-text"> {{attachment?.attachmentName}}</small>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="card cardAttachment"
+                                                *ngIf="attachment?.attachmentType == 'image/svg+xml'">
+                                                <button type="button"
+                                                    class="bi bi-trash btn text-danger text-right deleteAttachment"
+                                                    (click)="deleteTaskAttachment(attachment.id)"></button>
+                                                <a href="{{attachment.url}}" class="card-img-top">
+                                                    <i class="bi bi-filetype-svg file"></i>
+                                                    <div class="card-body py-0  border-top">
+                                                        <small class="card-text"> {{attachment?.attachmentName}}</small>
+                                                    </div>
+                                                </a>
+                                            </div>
+
+
+
+                                            <a *ngIf="attachment?.attachmentType == 'application/pdf'"
+                                                href="{{attachment.url}}" target="_blank"
+                                                download="{{attachment.attachmentName}}">
+                                                <i class="bi bi-filetype-pdf file text-danger"></i>
+                                                <figcaption class="figure-caption text-center">
+                                                    {{attachment?.attachmentName}}</figcaption>
+                                            </a>
+
+                                            <a *ngIf="attachment?.attachmentType == 'application/json'"
+                                                href="{{attachment.url}}" target="_blank">
+                                                <i class="bi bi-filetype-json file text-info"></i>
+                                                <figcaption class="figure-caption text-center">
+                                                    {{attachment?.attachmentName}}</figcaption>
+                                            </a>
+
+                                            <a *ngIf="attachment?.attachmentType == 'text/plain'"
+                                                href="{{attachment.url}}" target="_blank">
+                                                <i class="bi bi-filetype-txt file"></i>
+                                                <figcaption class="figure-caption text-center">
+                                                    {{attachment?.attachmentName}}</figcaption>
+                                            </a>
+
+                                            <a *ngIf="attachment?.attachmentType == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'"
+                                                href="{{attachment.url}}" target="_blank">
+                                                <i class="bi bi-filetype-docx text-info file"></i>
+                                                <figcaption class="figure-caption text-center">
+                                                    {{attachment?.attachmentName}}</figcaption>
+                                            </a>
+
+                                            <a *ngIf="attachment?.attachmentType == 'text/csv'"
+                                                href="{{attachment.url}}" target="_blank">
+                                                <i class="bi bi-filetype-csv text-info file"></i>
+                                                <figcaption class="figure-caption text-center">
+                                                    {{attachment?.attachmentName}}</figcaption>
+                                            </a>
+
+
+                                        </div>
+                                    </ng-container>
+                                </div>
                             </div>
+
                             <div class="section-task px-0 my-4">
                                 <h4 class="taskDetail-heading ">Subtasks</h4>
                                 <div class="subtask-creating-row-wrapper bg-white rounded p-4">
@@ -268,9 +402,8 @@
         </div>
 
         <div *ngIf="tasks?.data?.task == null">
-            <a href="" [routerLink]="['/tasks']"> <button class="btn"><span
-                class="back-btn bi bi-arrow-left ">
-                Back</span></button></a>
+            <a href="" [routerLink]="['/tasks']"> <button class="btn"><span class="back-btn bi bi-arrow-left ">
+                        Back</span></button></a>
             <h2>This Task No Longer To show !!!</h2>
         </div>
     </div>
@@ -310,3 +443,28 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" role="dialog" id="bigAttachmentModal" tabindex="0" aria-labelledby="bigAttachmentModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <button type="button" class="btn-close m-3" data-bs-dismiss="modal" aria-label="Close"></button><br>
+            <div class="d-flex"> <span class="bi bi-image text-warning px-3" style="font-size: 40px;"></span>
+                <small>{{selectedAttachment?.attachmentName }}<br>image - {{
+                    convertBytesToKB(selectedAttachment?.attachmentSize) }}</small>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="carousel-item active text-center">
+                                        <img class="modal-image big-img" [src]="selectedAttachment?.url" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

@@ -1,8 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { TasksService } from '../../_services/tasks.service';
-import { TaskAttachment,  taskComment } from 'src/app/models/task/taskComment';
+import { taskComment } from 'src/app/models/task/taskComment';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { CommonService } from 'src/app/common/common.service';
+import { attachments, commentAttachment, taskAttachments } from '../task';
 @Component({
   selector: 'app-task-comment-list',
   templateUrl: './task-comment-list.component.html',
@@ -13,15 +14,8 @@ export class TaskCommentListComponent implements OnInit {
   @Output() commentAdded = new EventEmitter<taskComment>();
   @Output() commentUpdated = new EventEmitter<{ index: number, text: taskComment }>();
   @Output() commentDeleted = new EventEmitter<number>();
-  // @Output() attachmentAdded = new EventEmitter<taskAttachment>();
   @Input() authorfirstName: string;
   @Input() authorlastName: string;
-  newAttachments: TaskAttachment[] = [];
-
-  constructor(private taskService: TasksService,
-    private authentication: AuthenticationService,
-    public commonService: CommonService) {
-  }
 
   newComment: '';
   commentsArray: taskComment[] = [];
@@ -29,6 +23,20 @@ export class TaskCommentListComponent implements OnInit {
   task = localStorage.getItem('activeTaskId');
   firstName = localStorage.getItem('firstName');
   lastName = localStorage.getItem('lastName');
+  fileProperties: any = {};
+  taskAttachment: any = [];
+  public selectedAttachment: any;
+  selectedFiles: File[] = [];
+  activeTaskId = localStorage.getItem('activeTaskId');
+  comment: any = [];
+  commentAttachment: any = [];
+  newCommentId: string = '';
+
+
+  constructor(private taskService: TasksService,
+    private authentication: AuthenticationService,
+    public commonService: CommonService) {
+  }
 
   ngOnInit() {
     this.commentsArray = [...this.comments];
@@ -36,88 +44,13 @@ export class TaskCommentListComponent implements OnInit {
     this.taskService.getComments(taskId).subscribe((response) => {
       this.comments = response.data;
     });
+    this.getTaskAttachments();
   }
 
-  addComment() {
-    if (this.newComment) {
-      const comment: taskComment = {
-        id: '',
-        content: this.newComment,
-        author: this.author.id,
-        task: this.task,
-        commentedAt: new Date,
-        status: '',
-        authorfirstName: this.firstName,
-        authorlastName: this.lastName
-      };
-
-      this.taskService.addComments(comment).subscribe((result) => {
-        // update the comments array with the new comment
-        this.comments.push(result);
-
-        // emit the updated comments array to the child component
-        this.commentsArray = [...this.comments];
-
-        // emit the event to parent component
-        this.commentAdded.emit(result);
-
-        // clear the new comment field
-        this.newComment = '';
-        this.ngOnInit();
-      });
-    }
-  }
-  // addComment() {
-  //   if (this.newComment || this.newAttachments.length > 0) {
-  //     const comment: taskComment = {
-  //       id: '',
-  //       content: this.newComment,
-  //       author: this.author.id,
-  //       task: this.task,
-  //       commentedAt: new Date(),
-  //       status: '',
-  //       authorfirstName: this.firstName,
-  //       authorlastName: this.lastName,
-  //     };
-  
-  //     this.taskService.addComments(comment).subscribe((result) => {
-  //       // update the comments array with the new comment
-  //       this.comments.push(result);
-  
-  //       // emit the updated comments array to the child component
-  //       this.commentsArray = [...this.comments];
-  
-  //       // emit the event to parent component
-  //       this.commentAdded.emit(result);
-  
-  //       // clear the new comment field
-  //       this.newComment = '';
-  
-  //       // Add attachment
-  //       if (this.newAttachments.length > 0) {
-  //         const taskAttachment: TaskAttachments = {
-  //           task: this.task,
-  //           attachments: this.newAttachments,
-  //           status: '',
-  //           createdOn: new Date(),
-  //           updatedOn: new Date(),
-  //           createdBy: this.author.id,
-  //           updatedBy: this.author.id,
-  //           comment: result.id, // pass the comment id to the commentId field
-  //         };
-  //         this.taskService.addTaskAttachment(taskAttachment).subscribe(() => {
-  //           // clear the new attachments array
-  //           this.newAttachments = [];
-  //           this.ngOnInit();
-  //         });
-  //       }
-  //     });
-  //   }
-  // }
-    updateComment(index: number, text: any) {
+  updateComment(index: number, text: any) {
     const comment = this.comments[index];
     comment.content = text;
-    this.taskService.updateComment(comment.id).subscribe((updatedComment) => {
+    this.taskService.updateComment(comment.id, comment).subscribe((updatedComment) => {
       this.commentUpdated.emit({ index, text });
     });
   }
@@ -130,4 +63,120 @@ export class TaskCommentListComponent implements OnInit {
       });
     }
   }
+  addComment() {
+    const comment: taskComment = {
+      id: '',
+      content: this.newComment,
+      author: this.author.id,
+      task: this.task,
+      commentedAt: new Date,
+      status: '',
+      authorfirstName: this.firstName,
+      authorlastName: this.lastName,
+      taskAttachments: []
+    };
+    const taskAttachments: attachments[] = [];
+    comment.taskAttachments = taskAttachments;
+
+    this.taskService.addComments(comment).subscribe(response => {
+      this.newCommentId = response.data.id
+      this.comments.push(response);
+      this.commentsArray = [...this.comments];
+      this.commentAdded.emit(response);
+      this.newComment = '';
+      this.ngOnInit();
+
+
+      if (taskAttachments) {
+        const attachments: attachments[] = [];
+
+        for (let i = 0; i < this.selectedFiles.length; i++) {
+          const file: File = this.selectedFiles[i];
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => {
+            const base64String = reader.result.toString().split(',')[1];
+            const fileSize = file.size; // size of the file in bytes
+            const fileType = file.type; // type of the file (e.g. image/png)
+            const fileNameParts = file.name.split('.');
+            const extension = fileNameParts[fileNameParts.length - 1];
+
+            attachments.push({
+              attachmentName: file.name,
+              attachmentType: fileType,
+              attachmentSize: fileSize,
+              extension: extension,
+              file: base64String
+            });
+
+            if (i === this.selectedFiles.length - 1) {
+              const commentAttachment: commentAttachment = {
+                taskId: this.activeTaskId,
+                comment: this.newCommentId,
+                taskAttachments: attachments
+              };
+
+              this.taskService.addTaskAttachment(commentAttachment).subscribe((response) => {
+                this.commentAttachment = response.data['taskAttachmentList']
+                this.ngOnInit();
+              },
+                (error) => {
+                  console.error('Error creating task attachment:', error);
+                }
+              );
+            }
+          };
+        }
+
+      }
+      err => {
+        console.log("Error creating task!");
+      }
+    });
+  }
+
+
+
+  onFileSelect(event) {
+    const files: FileList = event.target.files;
+    if (files) {
+      for (let i = 0; i < files.length; i++) {
+        const file: File = files.item(i);
+        if (file) {
+          this.selectedFiles.push(file);
+        }
+      }
+    }
+  }
+
+  getTaskAttachments(): void {
+    this.taskService.getTaskAttachment(this.activeTaskId).subscribe(result => {
+      this.commentAttachment = result.data.newTaskAttachmentList;
+    });
+  }
+
+  public openModal(attachment: any): void {
+    this.selectedAttachment = attachment;
+  }
+  removeFile(index: number) {
+    if (index !== -1) {
+      this.selectedFiles.splice(index, 1);
+    }
+  }
+  deleteCommentAttachment(commentAttachmentId: string): void {
+    this.taskService.deleteTaskAttachment(commentAttachmentId).subscribe(
+      (response) => {
+        this.ngOnInit();
+        this.taskAttachment = this.taskAttachment.filter(attachment => attachment.id !== commentAttachmentId);
+      },
+      (error) => {
+        console.error('Error deleting task attachment:', error);
+      }
+    );
+  }
+
+convertBytesToKB(bytes: number): string {
+  const kilobytes = bytes / 1024;
+  return kilobytes.toFixed(2) + ' KB';
+}
 }

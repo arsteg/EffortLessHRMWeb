@@ -15,7 +15,7 @@ import { CommonService } from 'src/app/common/common.service';
 export class TaskCommentComponent implements OnInit {
 
   @Input() comment: taskComment;
-  @Output() commentUpdated = new EventEmitter<{ index: number, text: string }>();
+  @Output() commentUpdated = new EventEmitter<{text: string }>();
   @Output() commentDeleted = new EventEmitter<taskComment>();
   @Input() authorfirstName: string;
   @Input() authorlastName: string;
@@ -44,7 +44,7 @@ export class TaskCommentComponent implements OnInit {
   }
 
     updateComment() {
-    this.commentUpdated.emit({ index: this.index, text: this.editedComment.content });
+    this.commentUpdated.emit( {text: this.editedComment.content} );
     this.isEditMode = false;
   }
 

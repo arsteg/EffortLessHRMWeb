@@ -25,3 +25,6 @@
   border: transparent !important;
   border-radius: 20px !important;
 }
+.calendar{
+  height: 52px;
+}

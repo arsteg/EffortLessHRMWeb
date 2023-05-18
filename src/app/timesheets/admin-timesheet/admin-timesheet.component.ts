@@ -6,6 +6,7 @@ import { ProjectService } from 'src/app/_services/project.service';
 import { TimeLogService } from 'src/app/_services/timeLogService';
 import { MatrixData } from '../model/timesheet';
 import { Attendance } from 'src/app/reports/model/productivityModel';
+import { ExportService } from 'src/app/_services/export.service';
 
 @Component({
   selector: 'app-admin-timesheet',
@@ -22,12 +23,14 @@ export class AdminTimesheetComponent implements OnInit {
   timeLogs: MatrixData;
   dateRange: Date[];
   timesheetTotals:any[]=[];
-  timesheetAllTotals:any={};
+  timesheetAllTotals:any=[];
   projectList:any[]=[];
   selectedUser: string[] = [];
   members: any;
   member:any;
   @ViewChild('toDateRef') toDateRef: ElementRef;
+  adminTimeSheets: any = [];
+  selectAll: boolean = false;
 
   fromDateControl = new FormControl('', [
     Validators.required,
@@ -41,7 +44,7 @@ export class AdminTimesheetComponent implements OnInit {
 
 
   constructor(private datePipe:DatePipe,private timeLogService:TimeLogService, private toast:ToastrService,
-    private projectService:ProjectService, private fb: FormBuilder) { }
+    private projectService:ProjectService, private fb: FormBuilder, private exportService: ExportService) { }
 
 
   ngOnInit(): void {
@@ -59,6 +62,11 @@ export class AdminTimesheetComponent implements OnInit {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     const fromDt= this.formatDate(this.fromDate);
     const toDt= this.formatDate(this.toDate);
+    if (this.selectedUser.length === 0) {
+        this.timesheetTotals=[];
+        this.timesheetAllTotals={};
+        return;
+    }
     this.timeLogService.geAdminTimeSheet(`${this.selectedUser.join()}`, fromDt,toDt ).toPromise()
     .then(response => {
       this.timeLogs = response.data;
@@ -87,16 +95,24 @@ export class AdminTimesheetComponent implements OnInit {
   }
 
   filterData(){
+    // Remove 'all' from selectedUser array, if present
+  if (this.selectedUser.includes('all')) {
+    this.selectedUser.splice(this.selectedUser.indexOf('all'), 1);
+  }
     this.populateTimesheet();
   }
-  exportToCsv(){
+  exportToExcel() {
+    console.log(this.timesheetAllTotals)
+this.exportService.exportToExcel('Admin Timesheet', 'adminTimeSheets', this.timesheetAllTotals);
+}
+  exportToCsv() {
+    console.log(this.timesheetAllTotals)
+    this.exportService.exportToCSV('Admin Timesheet', 'adminTimeSheets', this.timesheetAllTotals);
   }
-  exportToExcel(){
 
-  }
-
-  exportToPdf(){
-
+  @ViewChild('adminTimeSheets') content!: ElementRef
+  exportToPdf() {
+    this.exportService.exportToPdf('Admin Timesheet', this.content.nativeElement)
   }
 
   formatDate(dateVal) {
@@ -136,10 +152,11 @@ export class AdminTimesheetComponent implements OnInit {
   getProjectName(id:string){
     return this.projectList.find(p=>p.id==id)?.projectName;
   }
-  getUsertName(id:string){
-    return this.members.find(p=>p.id==id)?.name;
+  getUserName(id: string) {
+    const user = this.members.find((p) => p.id === id);
+    return user ? user.name.replace(/\b\w+/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()) : '';
+  
   }
-
   getFirstDayOfWeek(){
     const today = new Date();
     const dayOfWeek = today.getDay();
@@ -214,4 +231,15 @@ export class AdminTimesheetComponent implements OnInit {
       }
     });
   }
+  selectAllUsers() {
+    if (!this.selectAll) {
+      this.selectedUser = this.members.map(member => member.id);
+    } else {
+      this.selectedUser = [];
+    }
+    this.selectAll = !this.selectAll;
+    this.filterData();
+  }
+  
+  
 }
