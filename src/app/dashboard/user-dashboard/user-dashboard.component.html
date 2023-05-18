@@ -23,14 +23,20 @@
         <div class="about__top mb-3">
           <div class="about__title d-flex">
             <h1 class="content__title me-3">Today</h1>
-            <h1 class="content__title title-hidden">{{ hoursWorked.today }}</h1>
+            <h1 class="content__title title-hidden">{{ hoursWorked.today | milliSecondsToTime }}</h1>
+          </div>
+          <div class="about__title d-flex">
+            <span> Yesterday </span>
+            <span class="hours"> {{  hoursWorked.previousDay | milliSecondsToTime}}</span>
           </div>
           <div class="top-text pb-3">
-            <p class="text mb-0 me-2">
-              <span style="color: rgb(255, 190, 91)">0% </span
-              ><span> yesterday </span>
-            </p>
-            <div class="hours"><span class="p-2 py-3 text-light">0m</span></div>
+              <span class="text mb-0 me-2">
+                <span style="color: rgb(255, 190, 91)">{{hoursWorked.change}}%</span>
+              </span>
+            <span>
+              <img  *ngIf="hoursWorked.increased==true" src="../assets/images/graph-up-green.svg" height="50" width="100%" alt="Profile Picture">
+              <img  *ngIf="hoursWorked.increased==false" src="../assets/images/graph-down-red.svg" height="50" width="50" alt="Profile Picture">
+            </span>
           </div>
         </div>
       </div>
@@ -39,27 +45,22 @@
         <div class="about__top mb-3">
           <div class="about__title d-flex">
             <h1 class="content__title me-3">This week</h1>
-            <h1 class="content__title title-hidden">0m</h1>
+            <h1 class="content__title title-hidden">{{weeklySummary.currentWeek | milliSecondsToTime}}</h1>
           </div>
           <div class="top-text pb-3">
             <p class="text mb-0 me-2">
               <span style="color: rgb(255, 190, 91)">0% </span
-              ><span> the day before </span>
+              ><span> last week </span>
             </p>
-            <div class="hours"><span class="p-2 py-3 text-light">0m</span></div>
+            <div class="hours"><span class="p-2 py-3 text-light">{{weeklySummary.previousWeek | milliSecondsToTime }}</span></div>
           </div>
           <div class="d-flex justify-content-between">
-            <div>
-              <h4 class="text-muted mb-1">Active members</h4>
-              <b>0</b>
-            </div>
-            <div>
-              <h4 class="text-muted mb-1">Active Projects</h4>
-              <b>0</b>
-            </div>
+            <img  *ngIf="hoursWorked.increased==true" src="../assets/images/graph-up-green.svg" height="50"  alt="Profile Picture">
+            <img  *ngIf="hoursWorked.increased==false" src="../assets/images/graph-down-red.svg" height="50"  alt="Profile Picture">
           </div>
         </div>
       </div>
+
 
       <div class="col-md-4 border rounded dash-boxes p-3 common">
         <div class="about__top mb-3">
@@ -75,14 +76,6 @@
             <div class="hours"><span class="p-2 py-3 text-light">0m</span></div>
           </div>
           <div class="d-flex justify-content-between">
-            <div>
-              <h4 class="text-muted mb-1">Active members</h4>
-              <b>0</b>
-            </div>
-            <div>
-              <h4 class="text-muted mb-1">Active Projects</h4>
-              <b>0</b>
-            </div>
           </div>
         </div>
       </div>

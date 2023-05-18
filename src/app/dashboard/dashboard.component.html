@@ -14,7 +14,7 @@
         </div>
         <div class="row d-flex justify-content-evenly container-fluid ">
             <div class="border py-4 rounded common">
-                <div class="d-flex justify-content-evenly ">
+                <div class="d-flex justify-content-evenly">
                     <div class="mt-2 border-end pe-5">
                         <h1 class="letter ms-2 header-letter"
                         [style.background-color]="commonService?.getRandomColor(currentProfile?.lastName)">
@@ -23,130 +23,90 @@
                         <h4 class="content-info mb-0">{{currentProfile?.firstName}} {{currentProfile?.lastName}}</h4>
                         <p>{{role | titlecase}}</p>
                     </div>
-
-                    <div class="dash-members text-center mt-4 pt-2">
-                        <h1 class="mb-2"> <b>{{selectedUsers?.length}}</b> </h1>
-                        <p>Members</p>
-                    </div>
-
-                    <div class="mt-4 pt-2">
-                        <h4 class="content-head mb-1">Projects</h4>
-                        <p class="content-info">4</p>
-                    </div>
-
-                    <div class="mt-4 pt-2">
-                        <h4 class="content-head mb-1">Teams</h4>
-                        <p class="content-info">0</p>
-                    </div>
-
-                    <div class="mt-4 pt-2">
-                        <h4 class="content-head mb-1">Tasks</h4>
-                        <p class="content-info">100</p>
-                    </div>
+                    <div class="mt-2 border-end pe-5">
+                      <p class="">Members</p>
+                      <h1 class="">1</h1>
+                      </div>
+                      <div class="mt-2 border-end pe-5">
+                        <p class="">Next payment on</p>
+                        <h1 class="">09 Jun, 2023</h1>
+                      </div>
+                        <div class="mt-2 border-end pe-5">
+                          <p class="">Latest Invoice</p>
+                          <h1 class="">$2.99</h1>
+                          <a class="" href="">My Invoices</a>
+                        </div>
+                        <div class="mt-2 border-end pe-5">
+                          <p class="">Balance</p>
+                          <h1 class="">$0</h1>
+                          <div class="fill-balance"><a href="">Make Payment</a>
+                          </div>
+                        </div>
                 </div>
             </div>
 
         </div>
         <div class="row my-3 justify-content-evenly">
-            <div class="col-md-3 border rounded dash-boxes  p-3 common">
-                <div class="about__top mb-3">
-                    <div class="about__title d-flex ">
-                        <h1 class="content__title me-3">Today</h1>
-                        <h1 class="content__title title-hidden">0m</h1>
-                    </div>
-                    <div class="top-text pb-3">
-                        <p class="text mb-0 me-2"><span style="color: rgb(255, 190, 91);">0% </span><span> yesterday
-                            </span> </p>
-                        <div class="hours"><span class="p-2 py-3 text-light">0m</span></div>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h4 class="text-muted mb-1">Active members</h4>
-                            <b>0</b>
-                        </div>
-                        <div>
-                            <h4 class="text-muted mb-1">Active Projects</h4>
-                            <b>0</b>
-                        </div>
-
-                    </div>
-                </div>
+          <div class="col-md-4 border rounded dash-boxes p-3 common">
+            <div class="about__top mb-3">
+              <div class="about__title d-flex">
+                <h1 class="content__title me-3">Today</h1>
+                <h1 class="content__title title-hidden">{{ hoursWorked.today | milliSecondsToTime }}</h1>
+              </div>
+              <div class="about__title d-flex">
+                <span> Yesterday </span>
+                <span class="hours"> {{  hoursWorked.previousDay | milliSecondsToTime}}</span>
+              </div>
+              <div class="top-text pb-3">
+                  <span class="text mb-0 me-2">
+                    <span style="color: rgb(255, 190, 91)">{{hoursWorked.change}}%</span>
+                  </span>
+                <span>
+                  <img  *ngIf="hoursWorked.increased==true" src="../assets/images/graph-up-green.svg" height="50" width="100%" alt="Profile Picture">
+                  <img  *ngIf="hoursWorked.increased==false" src="../assets/images/graph-down-red.svg" height="50" width="50" alt="Profile Picture">
+                </span>
+              </div>
             </div>
+          </div>
 
-            <div class="col-md-3 border rounded dash-boxes  p-3 common">
-                <div class="about__top mb-3">
-                    <div class="about__title d-flex ">
-                        <h1 class="content__title me-3">Yesterday</h1>
-                        <h1 class="content__title title-hidden">0m</h1>
-                    </div>
-                    <div class="top-text pb-3">
-                        <p class="text mb-0 me-2"><span style="color: rgb(255, 190, 91);">0% </span><span> the day
-                                before </span> </p>
-                        <div class="hours"><span class="p-2 py-3 text-light">0m</span></div>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h4 class="text-muted mb-1">Active members</h4>
-                            <b>0</b>
-                        </div>
-                        <div>
-                            <h4 class="text-muted mb-1">Active Projects</h4>
-                            <b>0</b>
-                        </div>
-
-                    </div>
-                </div>
+          <div class="col-md-4 border rounded dash-boxes p-3 common">
+            <div class="about__top mb-3">
+              <div class="about__title d-flex">
+                <h1 class="content__title me-3">This week</h1>
+                <h1 class="content__title title-hidden">{{weeklySummary.currentWeek | milliSecondsToTime}}</h1>
+              </div>
+              <div class="top-text pb-3">
+                <p class="text mb-0 me-2">
+                  <span style="color: rgb(255, 190, 91)">0% </span
+                  ><span> last week </span>
+                </p>
+                <div class="hours"><span class="p-2 py-3 text-light">{{weeklySummary.previousWeek | milliSecondsToTime }}</span></div>
+              </div>
+              <div class="d-flex justify-content-between">
+                <img  *ngIf="hoursWorked.increased==true" src="../assets/images/graph-up-green.svg" height="50"  alt="Profile Picture">
+                <img  *ngIf="hoursWorked.increased==false" src="../assets/images/graph-down-red.svg" height="50"  alt="Profile Picture">
+              </div>
             </div>
+          </div>
 
-            <div class="col-md-3 border rounded dash-boxes  p-3 common">
-                <div class="about__top mb-3">
-                    <div class="about__title d-flex">
-                        <h1 class="content__title me-3">This Week</h1>
-                        <h1 class="content__title title-hidden">0m</h1>
-                    </div>
-                    <div class="top-text pb-3">
-                        <p class="text mb-0 me-2"><span style="color: rgb(255, 190, 91);">0% </span><span> last week
-                            </span> </p>
-                        <div class="hours"><span class="p-2 py-3 text-light">0m</span></div>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h4 class="text-muted mb-1">Active members</h4>
-                            <b>0</b>
-                        </div>
-                        <div>
-                            <h4 class="text-muted mb-1">Active Projects</h4>
-                            <b>0</b>
-                        </div>
 
-                    </div>
-                </div>
+          <div class="col-md-4 border rounded dash-boxes p-3 common">
+            <div class="about__top mb-3">
+              <div class="about__title d-flex">
+                <h1 class="content__title me-3">This Month</h1>
+                <h1 class="content__title title-hidden">0m</h1>
+              </div>
+              <div class="top-text">
+                <p class="text mb-0 me-2">
+                  <span style="color: rgb(255, 190, 91)">0% </span
+                  ><span> a week before </span>
+                </p>
+                <div class="hours"><span class="p-2 py-3 text-light">0m</span></div>
+              </div>
+              <div class="d-flex justify-content-between">
+              </div>
             </div>
-
-            <div class="col-md-3 border rounded dash-boxes  p-3 common">
-                <div class="about__top mb-3">
-                    <div class="about__title d-flex ">
-                        <h1 class="content__title me-3">Last Week</h1>
-                        <h1 class="content__title title-hidden">0m</h1>
-                    </div>
-                    <div class="top-text">
-                        <p class="text mb-0 me-2"><span style="color: rgb(255, 190, 91);">0% </span><span> a week before
-                            </span> </p>
-                        <div class="hours"><span class="p-2 py-3 text-light">0m</span></div>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h4 class="text-muted mb-1">Active members</h4>
-                            <b>0</b>
-                        </div>
-                        <div>
-                            <h4 class="text-muted mb-1">Active Projects</h4>
-                            <b>0</b>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
+          </div>
         </div>
 
         <div class="row justify-content-evenly">
