@@ -6,7 +6,7 @@ import { DashboardService } from 'src/app/_services/dashboard.Service';
 import { ManageTeamService } from 'src/app/_services/manage-team.service';
 import { TimeLogService } from 'src/app/_services/timeLogService';
 import { CommonService } from 'src/app/common/common.service';
-import { HoursWorked } from 'src/app/models/dashboard/userdashboardModel';
+import { HoursWorked, MonthlySummary, WeeklySummary,ProjectTask } from 'src/app/models/dashboard/userdashboardModel';
 
 @Component({
   selector: 'app-user-dashboard',
@@ -27,6 +27,9 @@ export class UserDashboardComponent implements OnInit {
   currentProfile: any;
   role=  localStorage.getItem('roleName');
   hoursWorked:HoursWorked
+  weeklySummary:WeeklySummary
+  monthlySummary:MonthlySummary
+  projectTasks:ProjectTask[]
 
   constructor(
     private timelog: TimeLogService,
@@ -41,30 +44,58 @@ export class UserDashboardComponent implements OnInit {
 
   ngOnInit(): void {
   let currentUser = JSON.parse(localStorage.getItem('currentUser'))
-  const currentDate = "2023-05-05";
+  const currentDate = "2023-05-12";
   this.dashboardService.HoursWorked(this.currentUser.id,currentDate).subscribe(response=>{
       this.hoursWorked = response.data;
+      this.hoursWorked.increased = this.hoursWorked.today> this.hoursWorked.previousDay;
+      if(this.hoursWorked.increased){
+        const change = this.hoursWorked.today-this.hoursWorked.previousDay;
+        this.hoursWorked.change = change*100/ this.hoursWorked.previousDay;
+      }
+      else{
+        const change = this.hoursWorked.previousDay - this.hoursWorked.today;
+        this.hoursWorked.change = change * 100/ this.hoursWorked.previousDay;
+      }
   },
   err => {
     this.toastr.error('Can not be Updated', 'ERROR!')
   });
 
   this.dashboardService.weeklySummary(this.currentUser.id ,currentDate).subscribe(response=>{
-    console.log(response);
+    this.weeklySummary =  response.data;
+      this.weeklySummary.increased = this.weeklySummary.currentWeek> this.weeklySummary.previousWeek;
+      if(this.weeklySummary.increased){
+        const change = this.weeklySummary.currentWeek-this.weeklySummary.previousWeek;
+        this.weeklySummary.change = change*100/ this.weeklySummary.previousWeek;
+      }
+      else{
+        const change = this.weeklySummary.previousWeek - this.weeklySummary.currentWeek;
+        this.weeklySummary.change = change * 100/ this.weeklySummary.previousWeek;
+      }
+
   },
   err => {
     this.toastr.error(err, 'ERROR!')
   });
 
   this.dashboardService.monthlySummary(this.currentUser.id ,currentDate).subscribe(response=>{
-    console.log(response);
+    this.monthlySummary = response.data;
+    this.monthlySummary.increased = this.monthlySummary.currentMonth> this.monthlySummary.previousMonth;
+      if(this.monthlySummary.increased){
+        const change = this.monthlySummary.currentMonth-this.monthlySummary.previousMonth;
+        this.monthlySummary.change = change*100/ this.monthlySummary.previousMonth;
+      }
+      else{
+        const change = this.monthlySummary.previousMonth - this.monthlySummary.currentMonth;
+        this.monthlySummary.change = change * 100/ this.monthlySummary.previousMonth;
+      }
   },
   err => {
     this.toastr.error(err, 'ERROR!')
   });
 
   this.dashboardService.taskwiseHours(this.currentUser.id).subscribe(response=>{
-    console.log(response);
+    this.projectTasks = response.data;
   },
   err => {
     this.toastr.error(err, 'ERROR!')

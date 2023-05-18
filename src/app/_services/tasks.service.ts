@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { Task, taskAttachment } from '../tasks/task';
+import { Task, TaskAttachment } from '../tasks/task';
 import { Tag } from '../models/tag';
 import { taskComment } from '../models/task/taskComment';
 
@@ -98,14 +98,20 @@ export class TasksService {
     return this.http.post<any>(`${environment.apiUrlDotNet}/task/comment`, comment, this.httpOptions);
   }
 
-  updateComment(commentId:string): Observable<any> {
-    return this.http.put<any>(`${environment.apiUrlDotNet}/task/Comment/${commentId}`,  this.httpOptions);
+  updateComment(commentId,comment: taskComment): Observable<taskComment> {
+    return this.http.put<taskComment>(`${environment.apiUrlDotNet}/task/Comment/${commentId}`, comment,  this.httpOptions);
   }
   deleteComment(commentId: string): Observable<any> {
     return this.http.delete<any>(`${environment.apiUrlDotNet}/task/Comment/${commentId}`, this.httpOptions);
   }
   
-  addTaskAttachment( taskAttachment: taskAttachment[]): Observable<any> {
+  addTaskAttachment( taskAttachment): Observable<any> {
     return this.http.post<any>(`${environment.apiUrlDotNet}/task/new/taskattachment`, taskAttachment, this.httpOptions);
+  }
+  getTaskAttachment(taskId: string):Observable<any>{
+    return this.http.get<any>(`${environment.apiUrlDotNet}/task/gettaskattachmentslist/${taskId}`, this.httpOptions);
+  }
+  deleteTaskAttachment(attachmentId: string):Observable<any>{
+    return this.http.delete<any>(`${environment.apiUrlDotNet}/task/taskattachment/${attachmentId}`, this.httpOptions);
   }
 }

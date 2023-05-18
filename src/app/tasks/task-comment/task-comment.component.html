@@ -1,22 +1,26 @@
 <div class="row" *ngIf="isEditMode">
   <div class="col-sm-12">
-    <div class="m-3  rounded">
+    <div class="m-3 d-flex rounded">
+      <span class="letter text-light h-25 me-2 comment-user-letter" [title]="(authorfirstName | titlecase)+ ' ' + (authorlastName | titlecase)"
+      [style.background-color]="commonService.getRandomColor(authorfirstName?.charAt(0) | uppercase)">
+      {{authorfirstName?.charAt(0) | uppercase}} {{authorlastName?.charAt(0) | uppercase}}
+    </span>
       <textarea name="" id="" cols="" rows="3" placeholder="Type something..." class="w-100 form-control"
         [(ngModel)]="editedComment.content"></textarea>
     </div>
 
   </div>
-  <div class="d-flex ms-3">
+  <div class="d-flex ms-5 mb-3">
     <button mat-raised-button color="primary" (click)="updateComment()">Save</button>
     <button mat-raised-button class="mx-2" type="button" (click)="toggleEditMode()">Cancel</button>
   </div>
 </div>
 
-<div *ngIf="!isEditMode">
+<div *ngIf="!isEditMode" class="pt-4">
   <div class="d-flex">
     <span class="letter text-light comment-user-letter" [title]="(authorfirstName | titlecase)+ ' ' + (authorlastName | titlecase)"
       [style.background-color]="commonService.getRandomColor(authorfirstName?.charAt(0) | uppercase)">
-      {{authorfirstName?.charAt(0) | uppercase}} {{authorlastName.charAt(0) | uppercase}}
+      {{authorfirstName?.charAt(0) | uppercase}} {{authorlastName?.charAt(0) | uppercase}}
     </span>
     <span class="mx-2 comment-user"> {{authorfirstName | titlecase}} </span><small> {{editedComment?.commentedAt | date:
       'medium'}}</small><br>

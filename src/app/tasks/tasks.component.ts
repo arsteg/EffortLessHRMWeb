@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Task, taskAttachment, taskAttachments } from './task';
+import { Task, TaskAttachment, attachments, taskAttachments } from './task';
 import { TasksService } from '../_services/tasks.service';
 import { Validators, FormGroup, FormBuilder } from '@angular/forms';
 import { response } from '../models/response';
@@ -53,9 +53,14 @@ export class TasksComponent implements OnInit {
   showPriorityDropdown = false;
   selectedTaskIndex = -1;
   selectedTaskStatusIndex = -1;
-  attachments: taskAttachments[]=[];
-attachment : taskAttachment[] =[];
-task: any
+  attachments: TaskAttachment[] = [];
+  task: any;
+  selectedFiles: any = [];
+  fileProperties: any = {};
+  taskAttachment: any = [];
+  activeTaskId: string = '';
+
+
   constructor(
     private tasksService: TasksService,
     private fb: FormBuilder,
@@ -76,7 +81,7 @@ task: any
       priority: ['', Validators.required],
       TaskUser: ['', Validators.required],
       project: ['', Validators.required],
-      taskAttachments: [this.attachments]
+      taskAttachments: [[]]
     });
     this.updateForm = this.fb.group({
       title: ['', Validators.required],
@@ -86,7 +91,7 @@ task: any
       priority: ['', Validators.required],
       TaskUser: ['', Validators.required],
       project: ['', Validators.required],
-      status: ['', Validators.required], 
+      status: ['', Validators.required],
       estimate: [0],
       timeTaken: [0],
     });
@@ -112,6 +117,7 @@ task: any
   navigateToEditPage(task: any) {
     // navigate to the edit page with the task ID as a route parameter
     this.router.navigate(['/edit-task', task.id]);
+    localStorage.setItem('activeTaskId', task.id.toString());
   }
 
   listAllTasks() {
@@ -120,172 +126,101 @@ task: any
     })
   }
 
-  // addTask(form) {
-  //   form.taskName = form.description;
-  //   this.tasksService.addTask(form).subscribe(response => {
-  //     this.listAllTasks();
-  //     this.toast.success('New Task', 'Successfully Added!')
-  //   },
-  //     err => {
-  //       this.toast.error('Task Can not be Added', 'Error!')
-  //     })
-  // }
-  // addTask(form) {
-  //   // Create new task object
-  //   const newTask: Task = {
-  //     _id: '',
-  //     taskName: form.title,
-  //     title: form.title,
-  //     estimate: form.estimate,
-  //     startDate: form.startDate,
-  //     endDate: form.endDate,
-  //     description: form.description,
-  //     comment: form.comment,
-  //     isSubTask: false,
-  //     priority: form.priority,
-  //     TaskUser: form.TaskUser,
-  //     status: "Open",
-  //     project: form.project,
-  //     taskAttachments: []
-  //   };
-  
-  //   // Add new task to database
-  //   this.tasksService.addTask(newTask).subscribe(response => {
-  //     // Get the ID of the new task
-      
-  //     this.task = response;
-  //     const newTaskId = this.task.data.newTask.id;
-  
-  //     // Create an array of task attachments with the new task ID
-  //     const taskAttachments = [];
-  //     if (form.attachments && form.attachments.length > 0) {
-  //       for (const attachment of form.attachments) {
-  //         taskAttachments.push({
-  //           attachmentType: attachment.attachmentType,
-  //           attachmentName: attachment.attachmentName,
-  //           attachmentSize: attachment.attachmentSize,
-  //           file: attachment.file,
-  //           task: newTaskId,
-  //           comment: ""
-  //         });
-  //       }
-  //     }
-  
-  //     // Add the task attachments to the new task
-  //     newTask.taskAttachments = taskAttachments;
-  //     console.log(taskAttachments);
-  
-  //     // Add the task attachments to the database
-  //     if (taskAttachments.length > 0) {
-  //       this.tasksService.addTaskAttachment(taskAttachments).subscribe(attachmentResponse => {
-  //         console.log("New task Id : ", taskAttachments)
-  //         this.listAllTasks();
-  //         this.toast.success('New Task', 'Successfully Added!')
-  //       },
-  //       err => {
-  //         this.toast.error('Task Attachment Cannot be Added', 'Error!')
-  //       });
-  //     } else {
-  //       this.listAllTasks();
-  //       this.toast.success('New Task', 'Successfully Added!')
-  //     }
-  //   },
-  //   err => {
-  //     this.toast.error('Task Cannot be Added', 'Error!')
-  //   });
-  // }
-  
-// Define a variable to hold the selected files
-selectedFiles: any[] = [];
-
-addTask(form) {
-  // Create new task object
-  const newTask: Task = {
-    _id: '',
-    taskName: form.title,
-    title: form.title,
-    estimate: form.estimate,
-    startDate: form.startDate,
-    endDate: form.endDate,
-    description: form.description,
-    comment: form.comment,
-    isSubTask: false,
-    priority: form.priority,
-    TaskUser: form.TaskUser,
-    status: "Open",
-    project: form.project,
-    taskAttachments: []
-  };
-
-  // Add new task to database
-  this.tasksService.addTask(newTask).subscribe(response => {
-    // Get the ID of the new task
-    this.task = response;
-    const newTaskId = this.task.data.newTask.id;
-
+  onSubmit() {
+    // Create new task object
+    const newTask: Task = {
+      _id: '',
+      taskName: this.addForm.value.title,
+      title: this.addForm.value.title,
+      estimate: this.addForm.value.estimate,
+      startDate: this.addForm.value.startDate,
+      endDate: this.addForm.value.endDate,
+      description: this.addForm.value.description,
+      comment: this.addForm.value.comment,
+      isSubTask: false,
+      priority: this.addForm.value.priority,
+      TaskUser: this.addForm.value.TaskUser,
+      status: "Open",
+      project: this.addForm.value.project,
+      taskAttachments: []
+    };
     // Create an array of task attachments with the new task ID
-    const taskAttachments = [];
-    if (form.attachments && form.attachments.length > 0) {
-      for (const attachment of form.attachments) {
-        taskAttachments.push({
-          attachmentType: attachment.attachmentType,
-          attachmentName: attachment.attachmentName,
-          attachmentSize: attachment.attachmentSize,
-          file: attachment.file,
-          task: newTaskId,
-          comment: ""
-        });
+    const taskAttachments: TaskAttachment[] = [];
+    newTask.taskAttachments = taskAttachments;
 
-        // Add the selected files to the selectedFiles variable
-        this.selectedFiles.push(attachment.file.name);
+    this.tasksService.addTask(newTask).subscribe(response => {
+      this.task = response;
+      const newTask = this.task.data.newTask;
+
+      if (taskAttachments) {
+        const attachments: attachments[] = [];
+
+        for (let i = 0; i < this.selectedFiles.length; i++) {
+          const file: File = this.selectedFiles[i];
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => {
+            const base64String = reader.result.toString().split(',')[1];
+            const fileSize = file.size; // size of the file in bytes
+            const fileType = file.type; // type of the file (e.g. image/png)
+            const fileNameParts = file.name.split('.');
+            const extension = fileNameParts[fileNameParts.length - 1];
+        
+            attachments.push({
+              attachmentName: file.name,
+              attachmentType: fileType,
+              attachmentSize: fileSize,
+              extension: extension,
+              file: base64String
+            });
+
+            if (i === this.selectedFiles.length - 1) {
+              // This is the last file, so create the task attachment
+              const taskAttachment: taskAttachments = {
+                taskId: newTask._id,
+                comment: null,
+                taskAttachments: attachments
+              };
+
+              this.tasksService.addTaskAttachment(taskAttachment).subscribe(
+                (response) => {
+                  this.ngOnInit();
+                },
+                (error) => {
+                  console.error('Error creating task attachment:', error);
+                }
+              );
+            }
+          };
+        }
+
+      }
+      err => {
+        console.log("Error creating task!");
+      }
+    });
+
+  }
+
+
+  onFileSelect(event) {
+    const files: FileList = event.target.files;
+    if (files) {
+      for (let i = 0; i < files.length; i++) {
+        const file: File = files.item(i);
+        if (file) {
+          this.selectedFiles.push(file);
+        }
       }
     }
-
-    // Add the task attachments to the new task
-    newTask.taskAttachments = taskAttachments;
-    console.log(taskAttachments);
-
-    // Add the task attachments to the database
-    if (taskAttachments.length > 0) {
-      this.tasksService.addTaskAttachment(taskAttachments).subscribe(attachmentResponse => {
-        console.log("New task Id : ", taskAttachments)
-        this.listAllTasks();
-        this.toast.success('New Task', 'Successfully Added!')
-      },
-      err => {
-        this.toast.error('Task Attachment Cannot be Added', 'Error!')
-      });
-    } else {
-      this.listAllTasks();
-      this.toast.success('New Task', 'Successfully Added!')
+  }
+  removeFile(index: number) {
+    if (index !== -1) {
+      // Remove file from selectedFiles array
+      this.selectedFiles.splice(index, 1);
     }
-  },
-  err => {
-    this.toast.error('Task Cannot be Added', 'Error!')
-  });
-}
-
+  }
  
-  
-  
-
-  // onFileSelected(event) {
-  //   const files = event.target.files;
-  //   for (let i = 0; i < files.length; i++) {
-  //     const file = files[i];
-  //     const reader = new FileReader();
-  //     reader.onload = (e: any) => {
-  //       const attachment: TaskAttachment = {
-  //         attachmentType: file.type,
-  //         attachmentName: file.name,
-  //         attachmentSize: file.size.toString(),
-  //         filePath: e.target.result
-  //       };
-  //       this.attachmentsList.push(attachment);
-  //     };
-  //     reader.readAsDataURL(file);
-  //   }
-  // }
 
   deleteTask() {
     this.tasksService.deleteTask(this.selectedTask.id).subscribe(response => {

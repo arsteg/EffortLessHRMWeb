@@ -63,7 +63,7 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { DatePipe } from '@angular/common';
-import { EditTaskComponent } from './tasks/edit-task/edit-task.component';
+// import { EditTaskComponent } from './tasks/edit-task/edit-task.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import { timesheetModule } from './timesheets/timesheet.Module';
 import { GenericSettingsComponent } from './settings/generic-settings/generic-settings.component';
@@ -113,7 +113,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
           FeaturesSettingsComponent,
           AttendanceSettingsComponent,
           LeaveSettingsComponent,
-          EditTaskComponent,
+          // EditTaskComponent,
           GenericSettingsComponent,
           ViewLiveScreenComponent
   ],

@@ -13,23 +13,44 @@ export class Task {
     TaskUser: User;
     status: string;
     project: project[];
-    taskAttachments: taskAttachments[];
+    taskAttachments: TaskAttachment[];
 }
 export class User {
     firstName: string;
     lastName: string;
 }
 
-export class taskAttachment{
-    taskId: Task['_id'];
-    comment: string;
-    taskAttachments: taskAttachments[]
-}
-
-export class taskAttachments{
-    attachmentType: string;
+export interface TaskAttachment {
+    _id: string;
+    task: string;
     attachmentName: string;
-    attachmentSize: string;
+    attachmentType: string;
+    attachmentSize: number;
+    filePath: string;
+    createdOn: Date;
+    updatedOn: Date;
+    createdBy: string;
+    comment: string;
+    updatedBy: string;
+    company: string;
+    status: string;
+  }
+  export interface attachments{
+    attachmentType: string;
+    attachmentSize: number;
+    attachmentName: string;
+    extension: string;
     file: string
+  }
+
+export interface taskAttachments{
+    taskId: string;
+    comment : null;
+    taskAttachments: attachments[]
+}
+export interface commentAttachment{
+  taskId: string;
+  comment: string,
+  taskAttachments: attachments[]
 }
 

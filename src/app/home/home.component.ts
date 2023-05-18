@@ -567,7 +567,11 @@ export const SideBarUserMenu = [
     id: '3',
     title: 'RealTime',
     icon: 'fa fa-clock',
+<<<<<<< HEAD
     url: '/realtime'
+=======
+    
+>>>>>>> 00fe194f270832adb87cff6b90dfd311283fc47d
   },
   {
     id: '4',

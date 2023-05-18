@@ -3,14 +3,17 @@
   border: transparent !important;
   border-radius: 20px !important;
 }
+
 .position-absolute {
-  position: absolute!important;
+  position: absolute !important;
 }
+
 .position-relative {
-  position: relative!important;
+  position: relative !important;
 }
+
 .comments-count {
-  background-color:#3f51b5 ;
+  background-color: #3f51b5;
   color: #ffffff;
   min-width: 20px;
   max-width: 50px;
@@ -27,10 +30,14 @@
   top: -3px;
 }
 
-.attachment{
+.attachment {
   font-size: 16px;
   font-weight: 500;
   padding: 8px;
   border: 1px dashed darkgrey;
   border-radius: 2px;
+}
+
+.deleteTaskAttachment {
+  font-size: smaller;
 }
