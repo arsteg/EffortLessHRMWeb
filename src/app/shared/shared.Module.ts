@@ -18,7 +18,7 @@ import { CommonModule } from "@angular/common";
 import {MatSelectModule} from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import {MatDatepickerModule} from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
+import { MatNativeDateModule, MatRippleModule } from '@angular/material/core';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -52,7 +52,10 @@ import { MilliSecondsToTimePipe } from '../pipes/SecondsToTimePipe';
     MatTooltipModule,
     MatSortModule,
     TooltipModule,
-    ToastrModule
+    ToastrModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatRippleModule
     ],
   exports:[
     SortDirective,
@@ -82,7 +85,8 @@ import { MilliSecondsToTimePipe } from '../pipes/SecondsToTimePipe';
     BsDatepickerModule,
     MatSortModule,
     ToastrModule,
-    MilliSecondsToTimePipe
+    MilliSecondsToTimePipe,
+    MatFormFieldModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

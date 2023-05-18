@@ -4,72 +4,63 @@
 			"ControlType": "text",
 			"ControlLabel": "First Name",
 			"ToolTip": "Enter the first name",
-			"DBFieldName": "firstName",
-			"DefaultValue": null,
-			"ListValue": null
+			"FieldName": "firstName",
+			"Value": "",
+			"ListData": null
 		},
 		{
 			"CategoryName": "Profile Settings",
 			"ControlType": "text",
 			"ControlLabel": "Last Name",
 			"ToolTip": "Enter the last name",
-			"DBFieldName": "lastName",
-			"DefaultValue": null,
-			"ListValue": null
+			"FieldName": "lastName",
+			"Value": "",
+			"ListData": null
 		},
 		{
 			"CategoryName": "Profile Settings",
 			"ControlType": "email",
 			"ControlLabel": "Email",
 			"ToolTip": "Enter the email",
-			"DBFieldName": "email",
-			"DefaultValue": null,
-			"ListValue": null
+			"FieldName": "email",
+			"Value": "",
+			"ListData": null
 		},
 		{
 			"CategoryName": "Profile Settings",
 			"ControlType": "date",
 			"ControlLabel": "DOB",
 			"ToolTip": "Date of Birth",
-			"DBFieldName": "",
-			"DefaultValue": false,
-			"ListValue": null
+			"FieldName": "",
+			"Value": "",
+			"ListData": null
 		},
 		{
 			"CategoryName": "Profile Settings",
 			"ControlType": "memo",
 			"ControlLabel": "Description",
 			"ToolTip": "Description",
-			"DBFieldName": "",
-			"DefaultValue": false,
-			"ListValue": null
-		},
-		{
-			"CategoryName": "Profile Settings",
-			"ControlType": "memo",
-			"ControlLabel": "Description",
-			"ToolTip": "Description",
-			"DBFieldName": "",
-			"DefaultValue": false,
-			"ListValue": null
+			"FieldName": "pdescription",
+			"Value": "Test desc",
+			"ListData": null
 		},
 		{
 			"CategoryName": "Profile Settings",
 			"ControlType": "number",
 			"ControlLabel": "Working hours per day (hour)",
 			"ToolTip": "working hours per day",
-			"DBFieldName": "",
-			"DefaultValue": false,
-			"ListValue": null
+			"FieldName": "workinghoursperday",
+			"Value": "8",
+			"ListData": null
 		},
 		{
 			"CategoryName": "Profile Settings",
 			"ControlType": "multiselectlist",
 			"ControlLabel": "Working Day",
 			"ToolTip": "organization working day",
-			"DBFieldName": "workingday",
-			"DefaultValue": null,
-			"ListValue": [{
+			"FieldName": "workingday",
+			"Value": ["Tue", "Thu"],
+			"ListData": [{
 					"key": "Mon",
 					"value": "Monday"
 				},
@@ -104,18 +95,27 @@
 			"ControlType": "bool",
 			"ControlLabel": "Disable deleting screenshots by employees",
 			"ToolTip": "When you check this option, your employees will not be able to delete their screenshots any more.",
-			"DBFieldName": "",
-			"DefaultValue": false,
-			"ListValue": null
+			"FieldName": "disableDeleteScreenshot",
+			"Value": true,
+			"ListData": null
+		},
+		{
+			"CategoryName": "Workspace",
+			"ControlType": "bool",
+			"ControlLabel": "Disable editing tasks by employees",
+			"ToolTip": "do not allow employees to edit and delete tasks",
+			"FieldName": "disableeditingtasks",
+			"Value": true,
+			"ListData": null
 		},
 		{
 			"CategoryName": "Workspace",
 			"ControlType": "list",
 			"ControlLabel": "Time Zone",
 			"ToolTip": "The timezone you choose will be set for the whole workspace and system, including all members and reports. Note that if you change the timezone, it may cause slight mismatches in the screenshots and reports of that day only",
-			"DBFieldName": "timeZone",
-			"DefaultValue": null,
-			"ListValue": [{
+			"FieldName": "timeZone",
+			"Value": "Time Zone 2",
+			"ListData": [{
 					"key": "Time Zone 1",
 					"value": "Time Zone 1"
 				},
@@ -132,6 +132,104 @@
 					"value": "Time Zone 4"
 				}
 			]
+		},
+		{
+			"CategoryName": "Screenshots",
+			"ControlType": "list",
+			"ControlLabel": "Default Screenshot Mode",
+			"ToolTip": "",
+			"FieldName": "DefaultScreenshotMode",
+			"Value": "Screenshot",
+			"ListData": [
+				{
+					"key": "Screenshot",
+					"value": "Screenshot"
+				},
+				{
+					"key": "No screenshot",
+					"value": "No screenshot"
+				},
+				{
+					"key": "Blurred screenshot",
+					"value": "Blurred screenshot"
+				}
+			]
+		},{
+			"CategoryName": "Attendance",
+			"ControlType": "number",
+			"ControlLabel": "Daily work duration",
+			"ToolTip": "",
+			"FieldName": "dailyWorkDuration",
+			"Value": "8",
+			"ListData": null
+		},{
+			"CategoryName": "Attendance",
+			"ControlType": "time",
+			"ControlLabel": "Start Time",
+			"ToolTip": "",
+			"FieldName": "starttime",
+			"Value": "10:00",
+			"ListData": null
+		},{
+			"CategoryName": "Attendance",
+			"ControlType": "time",
+			"ControlLabel": "End Time",
+			"ToolTip": "",
+			"FieldName": "endtime",
+			"Value": "18:00",
+			"ListData": null
+		},{
+			"CategoryName": "Attendance",
+			"ControlType": "text",
+			"ControlLabel": "Allowed Deviation from Schedule (after start)",
+			"ToolTip": "",
+			"FieldName": "startdeviation",
+			"Value": "10 min",
+			"ListData": null
+		},{
+			"CategoryName": "Attendance",
+			"ControlType": "text",
+			"ControlLabel": "Allowed Deviation from Schedule (before end)",
+			"ToolTip": "",
+			"FieldName": "enddeviation",
+			"Value": "10 min",
+			"ListData": null
+		}, {
+			"CategoryName": "Attendance",
+			"ControlType": "checkboxlist",
+			"ControlLabel": "Working Days",
+			"ToolTip": "",
+			"FieldName": "wokingdays",
+			"Value": [ "Mon", "Tue", "Wed", "Thu", "Fri" ],
+			"ListData": [{
+				"key": "Mon",
+				"value": "Monday"
+			},
+			{
+				"key": "Tue",
+				"value": "Tuesday"
+			},
+			{
+				"key": "Wed",
+				"value": "Wednesday"
+			},
+			{
+				"key": "Thu",
+				"value": "Thursday"
+			},
+			{
+				"key": "Fri",
+				"value": "Friday"
+			},
+			{
+				"key": "Sat",
+				"value": "Saturday"
+			},
+			{
+				"key": "Sun",
+				"value": "Sunday"
+			}
+		]
 		}
 	]
 }

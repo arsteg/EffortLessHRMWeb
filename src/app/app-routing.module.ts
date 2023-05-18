@@ -49,6 +49,7 @@ import { UserTimesheetComponent } from './timesheets/user-timesheet/user-timeshe
 import { AdminTimesheetComponent } from './timesheets/admin-timesheet/admin-timesheet.component';
 import { GenericSettingsComponent } from './settings/generic-settings/generic-settings.component';
 import { ViewLiveScreenComponent } from './viewLiveScreen/view-live-screen/view-live-screen.component';
+import { UserDashboardComponent } from './dashboard/user-dashboard/user-dashboard.component';
 
 const routes: Routes = [
   // {path:'',component:LayoutComponentComponent, canActivate: [AuthGuard]},
@@ -66,6 +67,7 @@ const routes: Routes = [
     path: '', component: HomeComponent, canActivate: [AuthGuard],
     children: [
       { path: 'dashboard', component: DashboardComponent },
+      { path: 'userDashboard', component: UserDashboardComponent },
       { path: 'logout', component: LoginComponent },
       { path: 'userProfile', component: UserProfileComponent },
       { path: 'screenshots', component: ScreenshotsComponent },
