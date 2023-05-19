@@ -16,7 +16,7 @@
   </div>
 </div>
 
-<div *ngIf="!isEditMode" class="pt-4">
+<div *ngIf="!isEditMode" class="pt-4 ps-3">
   <div class="d-flex">
     <span class="letter text-light comment-user-letter" [title]="(authorfirstName | titlecase)+ ' ' + (authorlastName | titlecase)"
       [style.background-color]="commonService.getRandomColor(authorfirstName?.charAt(0) | uppercase)">

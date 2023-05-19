@@ -42,7 +42,7 @@ export class TasksService {
   }
 
   updateTask(id: string, task: Task): Observable<Task> {
-    return this.http.patch<Task>(`${this.apiUrl}/task/update/${id}`, task, this.httpOptions);
+    return this.http.put<Task>(`${this.apiUrl}/task/update/${id}`, task, this.httpOptions);
   }
 
   addUserToTask(taskId: string, taskUsers: any): Observable<any> {

@@ -201,11 +201,10 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <span *ngIf="task.comment.length==0 else addComment">
+                                    <span *ngIf="task?.comment?.length==0 else addComment">
                                         <div style="position:relative">
                                             <img src="assets/images/icon-comment-add.svg" class="me-3" height="24"
                                                 width="24">
-                                            <!-- <app-task-comment-list></app-task-comment-list> -->
                                         </div>
                                     </span>
                                     <ng-template #addComment>
@@ -524,7 +523,7 @@
 </div>
 
 <!-- Update -->
-<div class="modal" id="updateModal">
+<!-- <div class="modal" id="updateModal">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-body">
@@ -686,7 +685,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
 <!-- Delete -->
 <div class="modal" id="deleteModal">

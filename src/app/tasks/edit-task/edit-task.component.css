@@ -12,16 +12,16 @@
     color: #9090a7;
 }
 .taskDetails {
-    /* min-height: 50%; */
-    max-height: 37rem;
+    max-height: 42.2rem;
     overflow-y: scroll;
     position: relative;
     overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .taskList {
     padding-left: 0;
-    max-height: 37rem;
+    max-height: 41.2rem;
     position: relative;
     overflow-y: scroll;
     overflow-x: hidden;
@@ -147,3 +147,15 @@ input:focus-visible {
 .card-img-top{
     height: 150px;
 }
+.deleteTask:hover{
+background: none;
+cursor: pointer
+}
+
+/* ------------- */
+.sub-header {
+    box-shadow: -5px 10px 29px -22px rgba(0, 0, 0, 0.55) !important;
+    background: white !important;
+    border-radius: 5px;
+}
+

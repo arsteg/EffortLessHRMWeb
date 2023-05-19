@@ -233,16 +233,6 @@ export class TasksComponent implements OnInit {
       })
   }
 
-  updateTask(updateForm) {
-    updateForm.taskName = updateForm.description;
-    this.tasksService.updateTask(this.selectedTask._id, updateForm).subscribe(response => {
-      this.ngOnInit();
-      this.toast.success('Existing Task Updated', 'Successfully Updated!')
-    },
-      err => {
-        this.toast.error('Task could not be updated', 'ERROR!')
-      })
-  }
   selectTask(selectedTask) {
     this.selectedTask = selectedTask
   }

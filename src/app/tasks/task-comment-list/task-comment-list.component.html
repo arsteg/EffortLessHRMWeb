@@ -7,7 +7,7 @@
     <div class="d-flex row mb-3">
       <ng-container *ngFor="let attachment of commentAttachment">
         <div style="height: 150px; width: 150px" class="col-md-2 me-3 mb-5 "
-          *ngIf="attachment.comment !== null && comment.id == attachment.comment.id">
+          *ngIf="attachment?.comment !== null && comment.id == attachment?.comment?.id">
 
           <div class="card cardAttachment" *ngIf="attachment?.attachmentType == 'image/png'">
             <button type="button" class="bi bi-trash btn text-danger text-end deleteAttachment"
