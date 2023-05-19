@@ -7,13 +7,13 @@ export interface HoursWorked {
 export interface WeeklySummary {
   currentWeek: number;
   previousWeek: number;
-  change:number
+  change:number;
   increased:boolean
 }
 export interface MonthlySummary {
   currentMonth: number;
   previousMonth: number;
-  change:number
+  change:number;
   increased:boolean
 }
 export interface ProjectTask {

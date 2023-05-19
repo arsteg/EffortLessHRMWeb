@@ -51,6 +51,7 @@ export class DashboardComponent implements OnInit {
     console.log(this.role)
 
   const currentDate = "2023-05-12";
+  
   this.dashboardService.HoursWorked(this.currentUser.id,currentDate).subscribe(response=>{
       this.hoursWorked = response.data;
       this.hoursWorked.increased = this.hoursWorked.today> this.hoursWorked.previousDay;
