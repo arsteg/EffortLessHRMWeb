@@ -17,6 +17,12 @@
                             (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Date&nbsp;
                             <i
                                 [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                        </th>
+                        <th [appSort]="manualTimeRequests" data-order="{{ sortOrder }}" data-name="user"
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Requested by&nbsp;
+                            <i
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                        </th>
                         <th [appSort]="manualTimeRequests" data-order="{{ sortOrder }}" data-name="project?.projectName"
                             (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Project&nbsp;
                             <i
@@ -44,6 +50,7 @@
                         <td>
                             <div>{{record.date | date: 'MM/dd/yyyy'}}</div>
                         </td>
+                        <td><span>{{record?.user?.firstName +' '+ record?.user?.lastName }}</span> </td>
                         <td><span>{{record?.project?.projectName | uppercase}}</span> </td>
                         <td>{{ record.fromDate | date: 'MM/dd/yyyy'}} {{ record.fromDate | date: 'shortTime'}}</td>
                         <td>{{ record.toDate | date: 'MM/dd/yyyy'}} {{ record.toDate | date: 'shortTime'}}</td>
