@@ -149,6 +149,16 @@ export class EditTaskComponent implements OnInit {
         this.toast.error('Task could not be updated', 'ERROR!')
       })
   }
+  updateTaskStatus(selectedTask: Task, status: string) {
+    const payload = { "status": status }
+    this.tasks.data.task.status = status;
+    this.tasksService.updatetaskFlex(this.tasks.data.task.id, payload).subscribe(response => {
+      this.toast.success('Task status updated successfully', 'Success')
+    },
+      err => {
+        this.toast.error('Task could not be updated', 'ERROR!')
+      })
+  }
   deleteTask() {
     this.tasksService.deleteTask(this.activeTaskId).subscribe(response => {
       this.ngOnInit();
