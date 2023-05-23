@@ -96,6 +96,7 @@ export class AppAndWebsiteUsageComponent implements OnInit {
   }
 
   getApplicationData(){
+    debugger;
     let searchAppUsagesRequest = new SearchAppUsagesRequest();
     searchAppUsagesRequest.fromdate = new Date(this.fromDate);
     searchAppUsagesRequest.todate = new Date(this.toDate);
@@ -107,7 +108,6 @@ export class AppAndWebsiteUsageComponent implements OnInit {
     }
     )
   }
-
   InactivitTime(idletime, totalTime){
     return Math.floor((idletime*100) / totalTime);
   }
