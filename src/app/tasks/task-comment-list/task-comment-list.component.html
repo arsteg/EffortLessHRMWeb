@@ -7,7 +7,7 @@
     <div class="d-flex row mb-3">
       <ng-container *ngFor="let attachment of commentAttachment">
         <div style="height: 150px; width: 150px" class="col-md-2 me-3 mb-5 "
-          *ngIf="attachment.comment !== null && comment.id == attachment.comment.id">
+          *ngIf="attachment?.comment !== null && comment.id == attachment?.comment?.id">
 
           <div class="card cardAttachment" *ngIf="attachment?.attachmentType == 'image/png'">
             <button type="button" class="bi bi-trash btn text-danger text-end deleteAttachment"
@@ -132,7 +132,7 @@
 
   </ng-container>
   <div class="row comment-form">
-    <div class="d-flex">
+    <div class="d-flex ps-4">
       <span class="letter text-light comment-user-letter addComment-User" [title]="(firstName | titlecase)"
         [style.background-color]="commonService.getRandomColor(firstName?.charAt(0) | uppercase)">
         {{firstName?.charAt(0) | uppercase}}
@@ -142,7 +142,10 @@
       </textarea>
       </div>
     </div>
-    <div class="attachment d-flex"><label class="ms-5"><input style="display: none;"
+
+
+  
+    <div class="attachment d-flex"><label class="ms-5 btn btn-outline-primary btn-block rounded-pill shadow"><input style="display: none;"
           accept=".jpeg,.json,.mp4,.glb,.svg,.blend,.jpg,.png,.gif,.pdf,.webp,.avif,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.odt,.fodt,.ods,.fods,.odp,.fodp,.odg,.fodg,.odf,.csv,.html,.css,.txt,.zip"
           type="file" multiple (change)="onFileSelect($event)">
         <div class="details-attach-file d-flex align-items-center justify-content-center me-2 pointer">

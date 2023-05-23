@@ -5,7 +5,7 @@
                 <div class="">
                     <div class="d-flex py-2">
                         <h1 class="">Tasks: {{tasks?.length}}</h1>
-                        <div class="mx-5"><button class="btn border my-tasks" (click)="getCurrentUserTasks()"
+                        <div class="mx-1"><button class="btn border my-tasks" (click)="getCurrentUserTasks()"
                                 [(ngModel)]="currentUser.id"><i class="fa fa-user-o "></i> My Tasks</button></div>
                         <div class="dropdown">
                             <button class="btn border my-tasks dropdown-toggle" type="button" id="dropdownMenuButton1"
@@ -68,6 +68,22 @@
                             </select>
 
                         </div>
+                        <div>
+                            <button (click)="toggleViewMode()" class="btn btn-outline-primary">
+                                <ng-container *ngIf="isListView; else boardIcon">
+                                  
+                                    <i class="fa fa-trello text-primary bg-light"></i>
+                                    <span> Board View </span>
+                                  
+                                </ng-container>
+                                <ng-template #boardIcon>
+                                    <i class="fa fa-align-left "></i>
+                                    <span> List View </span>
+
+                                </ng-template>
+                              </button>
+                              
+                        </div>
 
                         <div class="d-flex h-25 ms-auto">
                             <input class="form-control search" type="text" placeholder="search..."
@@ -79,191 +95,544 @@
                         </div>
                     </div>
                     <hr>
-                    <table class="table  mt-4">
-                        <thead>
-                            <tr>
-                                <th scope="col"></th>
+                    <div *ngIf="isListView">
+                        <table class="table  mt-4">
+                            <thead>
+                                <tr>
+                                    <th scope="col"></th>
 
-                                <th scope="col" [appSort]="tasks" data-name="taskName"
-                                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-                                    Task Name &nbsp;
-                                    <i
-                                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                                </th>
+                                    <th scope="col" [appSort]="tasks" data-name="taskName"
+                                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                                        Task Name &nbsp;
+                                        <i
+                                            [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                                    </th>
 
-                                <th scope="col" [appSort]="tasks" data-name="endDate"
-                                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-                                    Due Date &nbsp;
-                                    <i
-                                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                                </th>
+                                    <th scope="col" [appSort]="tasks" data-name="endDate"
+                                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                                        Due Date &nbsp;
+                                        <i
+                                            [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                                    </th>
 
-                                <th scope="col" [appSort]="tasks" data-name="priority"
-                                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-                                    Priority &nbsp;
-                                    <i
-                                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                                </th>
-                                <th scope="col" [appSort]="tasks" data-order="desc" data-name="status">Status &nbsp;
-                                </th>
-                                <th scope="col" [appSort]="tasks" data-name="comment"
-                                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-                                    Comments &nbsp;
-                                    <i
-                                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                                </th>
-                                <th scope="col" [appSort]="tasks" data-order="desc" data-name="TaskUser"
-                                    *ngIf="!userId || !currentUser">Members &nbsp;
-                                    <i class="bi bi-arrow-up sort "></i>
-                                </th>
-                                <th scope="col">Action</th>
+                                    <th scope="col" [appSort]="tasks" data-name="priority"
+                                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                                        Priority &nbsp;
+                                        <i
+                                            [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                                    </th>
+                                    <th scope="col" [appSort]="tasks" data-order="desc" data-name="status">Status &nbsp;
+                                    </th>
+                                    <th scope="col" [appSort]="tasks" data-name="comment"
+                                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                                        Comments &nbsp;
+                                        <i
+                                            [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                                    </th>
+                                    <th scope="col" [appSort]="tasks" data-order="desc" data-name="TaskUser"
+                                        *ngIf="!userId || !currentUser">Members &nbsp;
+                                        <i class="bi bi-arrow-up sort "></i>
+                                    </th>
+                                    <th scope="col">Action</th>
 
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr
-                                *ngFor="let task of tasks | search: searchText |  paginate: { itemsPerPage: 10, currentPage: p };let i = index">
-                                <td class="highlight">
-                                    <div></div>
-                                </td>
-                                <td class="action text-start" *ngIf="task !== null">
-                                    <span class="bi bi-grip-horizontal text-secondary data mt-2 me-3"></span>
-                                </td>
-                                <td>{{task?.taskName| titlecase}}</td>
-                                <td>{{task?.endDate | date:'mediumDate'}}</td>
-                                <td (click)="selectedTaskIndex === i?selectedTaskIndex=-1:selectedTaskIndex=i">
-                                    <div class="dropdown show">
-                                        <span data-toggle="dropdown" aria-haspopup="true"
-                                            class="align-items-left d-flex justify-content-left status-picker-image-span"
-                                            aria-expanded="true">
-                                            <div aria-label="Normal priority" class="">
-                                                <div class="d-none">
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    *ngFor="let task of tasks | search: searchText |  paginate: { itemsPerPage: 10, currentPage: p };let i = index">
+                                    <td class="highlight">
+                                        <div></div>
+                                    </td>
+                                    <td class="action text-start" *ngIf="task !== null">
+                                        <span class="bi bi-grip-horizontal text-secondary data mt-2 me-3"></span>
+                                    </td>
+                                    <td>{{task?.taskName| titlecase}}</td>
+                                    <td>{{task?.endDate | date:'mediumDate'}}</td>
+                                    <td (click)="selectedTaskIndex === i?selectedTaskIndex=-1:selectedTaskIndex=i">
+                                        <div class="dropdown show">
+                                            <span data-toggle="dropdown" aria-haspopup="true"
+                                                class="align-items-left d-flex justify-content-left status-picker-image-span"
+                                                aria-expanded="true">
+                                                <div aria-label="Normal priority" class="">
+                                                    <div class="d-none">
+                                                    </div>
+                                                    <div
+                                                        class="align-self-left text-left align-items-left pointer d-flex position-relative">
+                                                        <img class="align-self-center"
+                                                            [src]="getTaskPriorityUrl(task.priority)" height="24"
+                                                            width="24">
+                                                    </div>
                                                 </div>
-                                                <div
-                                                    class="align-self-left text-left align-items-left pointer d-flex position-relative">
-                                                    <img class="align-self-center"
-                                                        [src]="getTaskPriorityUrl(task.priority)" height="24"
-                                                        width="24">
+                                            </span>
+                                            <div tabindex="-1" *ngIf="selectedTaskIndex===i" role="menu"
+                                                aria-hidden="false" class="dropdown-menu show"
+                                                data-popper-placement="bottom-start"
+                                                style="position: absolute; inset: 0px auto auto 0px; transform: translate(0px, 28px);">
+                                                <button *ngFor="let priority of priorityList" type="button" tabindex="0"
+                                                    role="menuitem" class="dropdown-item"
+                                                    (click)="updateTaskPriority(task,priority.name)">
+                                                    <span class="d-flex align-items-center">
+                                                        <img [src]="priority.url" class="me-3" height="18" width="18">
+                                                        <span>{{priority.name}}</span>
+                                                    </span>
+                                                </button>
+                                                <button type="button" tabindex="0" role="menuitem" class="dropdown-item"
+                                                    (click)="updateTaskPriority(task,'')">
+                                                    <span class="d-flex align-items-center"><span>Remove
+                                                            Priority</span></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="status"
+                                        (click)="selectedTaskStatusIndex === i?selectedTaskStatusIndex=-1:selectedTaskStatusIndex=i">
+                                        <div class="dropdown show">
+                                            <span data-toggle="dropdown" aria-haspopup="true"
+                                                class="align-items-left d-flex" aria-expanded="true">
+                                                <div aria-label="Normal priority">
+                                                    <div class="d-none">
+                                                    </div>
+                                                    <div
+                                                        class="align-self-left text-left align-items-left pointer d-flex position-relative">
+                                                        <i class="fa fa-tasks"></i>
+                                                        <span>&nbsp;{{task.status}}</span>
+                                                    </div>
                                                 </div>
+                                            </span>
+                                            <div tabindex="-1" *ngIf="selectedTaskStatusIndex===i" role="menu"
+                                                aria-hidden="false" class="dropdown-menu show"
+                                                data-popper-placement="bottom-start"
+                                                style="position: absolute; inset: 0px auto auto 0px; transform: translate(0px, 28px);">
+                                                <button *ngFor="let s of statusList" type="button" tabindex="0"
+                                                    role="menuitem" class="dropdown-item"
+                                                    (click)="updateTaskStatus(task,s.name)">
+                                                    <span class="d-flex align-items-center">
+                                                        <span>{{s.name}}</span>
+                                                    </span>
+                                                </button>
+                                                <button type="button" tabindex="0" role="menuitem" class="dropdown-item"
+                                                    (click)="updateTaskStatus(task,'')">
+                                                    <span class="d-flex align-items-center"><span>Remove
+                                                            Status</span></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span *ngIf="task?.comment?.length==0 else addComment">
+                                            <div style="position:relative">
+                                                <img src="assets/images/icon-comment-add.svg" class="me-3" height="24"
+                                                    width="24">
                                             </div>
                                         </span>
-                                        <div tabindex="-1" *ngIf="selectedTaskIndex===i" role="menu" aria-hidden="false"
-                                            class="dropdown-menu show" data-popper-placement="bottom-start"
-                                            style="position: absolute; inset: 0px auto auto 0px; transform: translate(0px, 28px);">
-                                            <button *ngFor="let priority of priorityList" type="button" tabindex="0"
-                                                role="menuitem" class="dropdown-item"
-                                                (click)="updateTaskPriority(task,priority.name)">
-                                                <span class="d-flex align-items-center">
-                                                    <img [src]="priority.url" class="me-3" height="18" width="18">
-                                                    <span>{{priority.name}}</span>
-                                                </span>
-                                            </button>
-                                            <button type="button" tabindex="0" role="menuitem" class="dropdown-item"
-                                                (click)="updateTaskPriority(task,'')">
-                                                <span class="d-flex align-items-center"><span>Remove
-                                                        Priority</span></span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="status"
-                                    (click)="selectedTaskStatusIndex === i?selectedTaskStatusIndex=-1:selectedTaskStatusIndex=i">
-                                    <div class="dropdown show">
-                                        <span data-toggle="dropdown" aria-haspopup="true"
-                                            class="align-items-left d-flex" aria-expanded="true">
-                                            <div aria-label="Normal priority">
-                                                <div class="d-none">
-                                                </div>
-                                                <div
-                                                    class="align-self-left text-left align-items-left pointer d-flex position-relative">
-                                                    <i class="fa fa-tasks"></i>
-                                                    <span>&nbsp;{{task.status}}</span>
-                                                </div>
+                                        <ng-template #addComment>
+                                            <div style="position:relative;max-width:60px;">
+                                                <img src="https://www.webwork-tracker.com/images/tasks/icons/icon-comment.svg"
+                                                    height="24" width="=24">
+                                                <span class="position-absolute comments-count"
+                                                    style="margin-left:12em;">1</span>
                                             </div>
-                                        </span>
-                                        <div tabindex="-1" *ngIf="selectedTaskStatusIndex===i" role="menu"
-                                            aria-hidden="false" class="dropdown-menu show"
-                                            data-popper-placement="bottom-start"
-                                            style="position: absolute; inset: 0px auto auto 0px; transform: translate(0px, 28px);">
-                                            <button *ngFor="let s of statusList" type="button" tabindex="0"
-                                                role="menuitem" class="dropdown-item"
-                                                (click)="updateTaskStatus(task,s.name)">
-                                                <span class="d-flex align-items-center">
-                                                    <span>{{s.name}}</span>
-                                                </span>
-                                            </button>
-                                            <button type="button" tabindex="0" role="menuitem" class="dropdown-item"
-                                                (click)="updateTaskStatus(task,'')">
-                                                <span class="d-flex align-items-center"><span>Remove
-                                                        Status</span></span>
-                                            </button>
+                                        </ng-template>
+                                    </td>
+                                    <td *ngIf="!userId || !currentUser">
+                                        <div class="d-flex flex-nowrap users">
+                                            <i class="fa fa-user-plus addUser me-3 mt-1" data-bs-toggle="modal"
+                                                data-bs-target="#addUserModal" (click)="selectedTask=task"
+                                                (click)="getTaskUser(task.id)"></i>
+                                            <span *ngFor="let users of task?.TaskUsers" class="letter text-light"
+                                                [tooltip]="(users?.user?.firstName| titlecase) + (' ') +( users?.user?.lastName | titlecase)"
+                                                [style.background-color]="commonservice.getRandomColor(users?.user?.firstName)">
+                                                {{users?.user?.firstName.charAt(0) | uppercase}}
+                                            </span>
                                         </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <span *ngIf="task.comment.length==0 else addComment">
-                                        <div style="position:relative">
-                                            <img src="assets/images/icon-comment-add.svg" class="me-3" height="24"
-                                                width="24">
-                                            <!-- <app-task-comment-list></app-task-comment-list> -->
-                                        </div>
-                                    </span>
-                                    <ng-template #addComment>
-                                        <div style="position:relative;max-width:60px;">
-                                            <img src="https://www.webwork-tracker.com/images/tasks/icons/icon-comment.svg"
-                                                height="24" width="=24">
-                                            <span class="position-absolute comments-count"
-                                                style="margin-left:12em;">1</span>
-                                        </div>
-                                    </ng-template>
-                                </td>
-                                <td *ngIf="!userId || !currentUser">
-                                    <div class="d-flex flex-nowrap users">
-                                        <i class="fa fa-user-plus addUser me-3 mt-1" data-bs-toggle="modal"
-                                            data-bs-target="#addUserModal" (click)="selectedTask=task"
-                                            (click)="getTaskUser(task.id)"></i>
-                                        <span *ngFor="let users of task?.TaskUsers" class="letter text-light"
-                                            [tooltip]="(users?.user?.firstName| titlecase) + (' ') +( users?.user?.lastName | titlecase)"
-                                            [style.background-color]="commonservice.getRandomColor(users?.user?.firstName)">
-                                            {{users?.user?.firstName.charAt(0) | uppercase}}
-                                        </span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="dropdown-center">
-                                        <i class="bi bi-three-dots actions" data-bs-toggle="dropdown"
-                                            aria-expanded="false"></i>
-                                        <ul class="dropdown-menu">
-                                            <li class="d-flex" data-bs-toggle="modal" data-bs-target="#deleteModal"
-                                                (click)="selectedTask = task">
-                                                <i class="bi bi-trash3 text-danger dropdown-item w-25"></i><span
-                                                    class="pt-1 text-muted">Delete</span>
-                                            </li>
-                                            <hr class="mx-2 my-0">
+                                    </td>
+                                    <td>
+                                        <div class="dropdown-center">
+                                            <i class="bi bi-three-dots actions" data-bs-toggle="dropdown"
+                                                aria-expanded="false"></i>
+                                            <ul class="dropdown-menu">
+                                                <li class="d-flex" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                                    (click)="selectedTask = task">
+                                                    <i class="bi bi-trash3 text-danger dropdown-item w-25"></i><span
+                                                        class="pt-1 text-muted">Delete</span>
+                                                </li>
+                                                <hr class="mx-2 my-0">
 
 
-                                            <li class="d-flex" (click)="navigateToEditPage(task)">
-                                                <i class="bi bi-pencil text-success  dropdown-item w-25"></i><span
-                                                    class="pt-1 text-muted">Edit</span>
-                                            </li>
+                                                <li class="d-flex" (click)="navigateToEditPage(task)">
+                                                    <i class="bi bi-pencil text-success  dropdown-item w-25"></i><span
+                                                        class="pt-1 text-muted">Edit</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                    <td class="highlight">
+                                        <div></div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <pagination-controls (pageChange)="p = $event"
+                            class="pagination d-flex justify-content-end"></pagination-controls>
+                    </div>
+
+
+                    <div *ngIf="!isListView">
+                        <h1>Board View</h1>
+
+                        <div class="row row-eq-height">
+                            <div class="col-12 col-lg-3 mt-3 pr-lg-0">
+                                <div class="card border-none">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <h4 class="card-title">TODO</h4>
+                                        <div class="dropdown">
+                                            <span>{{ calculateTasksLength('ToDo') }} Tasks</span>
+
+                                        </div>
+                                    </div>
+                                    <div class="card-body  taskBoard">
+                                        <ul class="tasks chat-menu ui-sortable ps-0" id="task-list-1" type="none">
+                                            <ng-container *ngFor="let task of tasks">
+                                                <li *ngIf="task.status == 'ToDo'" 
+                                                    class="taskToDo task-card border-bottom py-3 px-2 border-left  ui-sortable-handle">
+                                                    <div class="d-flex">
+                                                        <b  (click)="navigateToEditPage(task)">{{task?.taskName}}</b>
+
+
+                                                        <span class="ms-auto boardAction d-flex">
+                                                            <i class="bi bi-pencil edit-taskBoard me-2 text-success"
+                                                                (click)="navigateToEditPage(task)"></i>
+
+                                                            <i class="bi bi-trash delete-taskBoard text-danger"
+                                                                data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                                                (click)="selectedTask = task"></i></span>
+                                                    </div>
+                                                    <div class="d-flex">
+                                                        <span class="text-muted">Created by:
+                                                            {{task?.createdBy?.firstName |
+                                                            titlecase}}
+                                                            {{task?.createdBy?.lastName | titlecase}}</span>
+                                                        <span class="ms-auto">
+
+                                                            <img class="align-self-center" [title]="task?.priority"
+                                                                [src]="getTaskPriorityUrl(task?.priority)" height="24"
+                                                                width="24">
+                                                        </span>
+                                                    </div>
+
+                                                    <div class="ms-3">
+                                                        <span *ngFor="let users of task?.TaskUsers"
+                                                            class="letter text-light"
+                                                            [tooltip]="(users?.user?.firstName| titlecase) + (' ') +( users?.user?.lastName | titlecase)"
+                                                            [style.background-color]="commonservice.getRandomColor(users?.user?.firstName)">
+                                                            {{users?.user?.firstName.charAt(0) | uppercase}}
+                                                        </span>
+                                                    </div>
+                                                </li>
+                                            </ng-container>
+                                            <div *ngIf="showToDoTask" class="add-task-container mt-4">
+                                                
+
+                                                <div class="d-flex">
+                                                    <span class="bi bi-x-lg me-2" (click)="toggleToDoTask()"></span>
+                                                    <input type="text" class="w-100 newTaskBoard border-bottom"
+                                                        placeholder="Please type task name..."
+                                                        [(ngModel)]="newTask.taskName">
+                                                </div>
+                                                <div>
+                                                    <div class="row mt-3">
+                                                        <label for="priority" class="text-start">Priority</label>
+                                                    </div>
+                                                    <select class="custom-select mb-3 p-2"
+                                                        [(ngModel)]="newTask.priority">
+                                                        <option value="">Select Priority</option>
+                                                        <option value="Low">Urgent</option>
+                                                        <option value="Normal">Normal</option>
+                                                        <option value="High">High</option>
+                                                    </select>
+                                                </div>
+                                                <button mat-raised-button color="primary"
+                                                    (click)="addTaskToDo()">Submit</button>
+                                            </div>
+
                                         </ul>
+                                        <button class="btn btn-outline-primary  mt-2" (click)="toggleToDoTask()">Add
+                                            Task</button>
                                     </div>
-                                </td>
-                                <td class="highlight">
-                                    <div></div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <pagination-controls (pageChange)="p = $event"
-                        class="pagination d-flex justify-content-end"></pagination-controls>
+                                </div>
+
+                            </div>
+                            <div class="col-12 col-lg-3 mt-3 pr-lg-0">
+                                <div class="card">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <h4 class="card-title">IN PROGRESS</h4>
+                                        <span>{{ calculateTasksLength('In Progress') }} Tasks</span>
+
+
+                                    </div>
+                                    <div class="card-body  taskBoard">
+                                        <ul class="tasks chat-menu ui-sortable  ps-0" id="task-list-2" type="none">
+                                            <ng-container *ngFor="let task of tasks">
+                                                <li *ngIf="task.status == 'In Progress' || 'Active'"
+                                                    class="taskInProgress task-card border-bottom py-3 px-2 border-left  ui-sortable-handle">
+                                                    <div class="d-flex">
+                                                        <b  (click)="navigateToEditPage(task)">{{task?.taskName}}</b>
+
+
+                                                        <span class="ms-auto boardAction d-flex">
+                                                            <i class="bi bi-pencil edit-taskBoard text-success me-2"
+                                                                (click)="navigateToEditPage(task)"></i>
+
+                                                            <i class="bi bi-trash delete-taskBoard text-danger"
+                                                                data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                                                (click)="selectedTask = task"></i></span>
+                                                    </div>
+                                                    <div class="d-flex">
+                                                        <span class="text-muted">Created by:
+                                                            {{task?.createdBy?.firstName |
+                                                            titlecase}}
+                                                            {{task?.createdBy?.lastName | titlecase}}</span>
+                                                        <span class="ms-auto">
+                                                            <img class="align-self-center" [title]="task.priority"
+                                                                [src]="getTaskPriorityUrl(task.priority)" height="24"
+                                                                width="24">
+                                                        </span>
+                                                    </div>
+
+
+                                                    <div class="ms-3">
+                                                        <span *ngFor="let users of task?.TaskUsers"
+                                                            class="letter text-light"
+                                                            [tooltip]="(users?.user?.firstName| titlecase) + (' ') +( users?.user?.lastName | titlecase)"
+                                                            [style.background-color]="commonservice.getRandomColor(users?.user?.firstName)">
+                                                            {{users?.user?.firstName.charAt(0) | uppercase}}
+                                                        </span>
+                                                    </div>
+
+                                                </li>
+                                            </ng-container>
+                                            <div *ngIf="showInProgressTask" class="add-task-container mt-4">
+                                                <div class="d-flex">
+                                                <span class="bi bi-x-lg me-2" (click)="toggleInProgressTask()"></span>
+                                                <input type="text" class="w-100 newTaskBoard border-bottom"
+                                                placeholder="Please type task name..."
+                                                [(ngModel)]="newTask.taskName">
+                                              </div>
+                                                <div>
+                                                    <div class="row mt-3">
+                                                        <label for="priority" class="text-start">Priority</label>
+                                                    </div>
+                                                    <select class="custom-select mb-3 p-2"
+                                                        [(ngModel)]="newTask.priority">
+                                                        <option value="">Select Priority</option>
+                                                        <option value="Low">Urgent</option>
+                                                        <option value="Normal">Normal</option>
+                                                        <option value="High">High</option>
+                                                    </select>
+                                                </div>
+                                                <button mat-raised-button color="primary"
+                                                    (click)="addTaskInProgress()">Submit</button>
+                                            </div>
+
+                                        </ul>
+                                        <button class="btn btn-outline-primary  mt-2"
+                                            (click)="toggleInProgressTask()">Add
+                                            Task</button>
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <div class="col-12 col-lg-3 mt-3 pr-lg-0">
+                                <div class="card">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <h4 class="card-title">DONE</h4>
+
+                                        <span>{{ calculateTasksLength('Done') }} Tasks</span>
+
+
+                                    </div>
+                                    <div class="card-body  taskBoard">
+                                        <ul class="tasks chat-menu ui-sortable  ps-0" id="task-list-3" type="none">
+                                            <ng-container *ngFor="let task of tasks">
+                                                <li *ngIf="task.status == 'Done'"
+                                                    class="taskDone task-card border-bottom py-3 px-2 border-left  ui-sortable-handle">
+                                                    <div class="d-flex">
+                                                        <b  (click)="navigateToEditPage(task)">{{task?.taskName}}</b>
+
+
+                                                        <span class="ms-auto boardAction d-flex">
+                                                            <i class="bi bi-pencil edit-taskBoard text-success  me-2"
+                                                                (click)="navigateToEditPage(task)"></i>
+
+                                                            <i class="bi bi-trash delete-taskBoard text-danger"
+                                                                data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                                                (click)="selectedTask = task"></i></span>
+                                                    </div>
+                                                    <div class="d-flex">
+                                                        <span class="text-muted">Created by:
+                                                            {{task?.createdBy?.firstName |
+                                                            titlecase}}
+                                                            {{task?.createdBy?.lastName | titlecase}}</span>
+                                                        <span class="ms-auto">
+
+                                                            <span *ngFor="let users of task?.TaskUsers"
+                                                                class="letter text-light"
+                                                                [tooltip]="(users?.user?.firstName| titlecase) + (' ') +( users?.user?.lastName | titlecase)"
+                                                                [style.background-color]="commonservice.getRandomColor(users?.user?.firstName)">
+                                                                {{users?.user?.firstName.charAt(0) | uppercase}}
+                                                            </span>
+
+                                                            <img class="align-self-center" [title]="task.priority"
+                                                                [src]="getTaskPriorityUrl(task.priority)" height="24"
+                                                                width="24">
+                                                        </span>
+                                                    </div>
+
+
+                                                    <div class="ms-3">
+                                                        <span *ngFor="let users of task?.TaskUsers"
+                                                            class="letter text-light"
+                                                            [tooltip]="(users?.user?.firstName| titlecase) + (' ') +( users?.user?.lastName | titlecase)"
+                                                            [style.background-color]="commonservice.getRandomColor(users?.user?.firstName)">
+                                                            {{users?.user?.firstName.charAt(0) | uppercase}}
+                                                        </span>
+                                                    </div>
+
+                                                </li>
+                                            </ng-container>
+                                            <div *ngIf="showDoneTask" class="add-task-container mt-4">
+                                               
+                                                <div class=" d-flex">
+                                                     <span class="bi bi-x-lg me-2" (click)="toggleDoneTask()"></span>
+                                                    <input type="text" class="w-100 newTaskBoard border-bottom"
+                                                    placeholder="Please type task name..."
+                                                    [(ngModel)]="newTask.taskName">
+                                                </div>
+                                                <div>
+                                                    <div class="row mt-3">
+                                                        <label for="priority" class="text-start">Priority</label>
+                                                    </div>
+                                                    <select class="custom-select mb-3 p-2"
+                                                        [(ngModel)]="newTask.priority">
+                                                        <option value="">Select Priority</option>
+                                                        <option value="Low">Urgent</option>
+                                                        <option value="Normal">Normal</option>
+                                                        <option value="High">High</option>
+                                                    </select>
+                                                </div>
+                                                <button mat-raised-button color="primary"
+                                                    (click)="addTaskDone()">Submit</button>
+                                            </div>
+
+                                        </ul>
+                                        <button class="btn btn-outline-primary  mt-2" (click)="toggleDoneTask()">Add
+                                            Task</button>
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <div class="col-12 col-lg-3 mt-3 pr-lg-0">
+                                <div class="card">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <h4 class="card-title">CLOSED</h4>
+
+                                        <span>{{ calculateTasksLength('Closed') }} Tasks </span>
+
+
+                                    </div>
+                                    <div class="card-body  taskBoard">
+                                        <ul class="tasks chat-menu ui-sortable  ps-0" id="task-list-4" type="none">
+                                            <ng-container *ngFor="let task of tasks">
+                                                <li *ngIf="task.status == 'Closed'"
+                                                    class="taskClosed task-card border-bottom py-3 px-2 border-left  ui-sortable-handle">
+                                                    <div class="d-flex">
+                                                        <b (click)="navigateToEditPage(task)">{{task?.taskName}}</b>
+
+
+                                                        <span class="ms-auto d-flex boardAction">
+                                                            <i class="bi bi-pencil edit-taskBoard text-success me-2"
+                                                                (click)="navigateToEditPage(task)"></i>
+
+                                                            <i class="bi bi-trash delete-taskBoard text-danger"
+                                                                data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                                                (click)="selectedTask = task"></i></span>
+                                                    </div>
+                                                    <div class="d-flex">
+                                                        <span class="text-muted">Created by:
+                                                            {{task?.createdBy?.firstName |
+                                                            titlecase}}
+                                                            {{task?.createdBy?.lastName | titlecase}}</span>
+                                                        <span class="ms-auto">
+
+
+                                                            <img class="align-self-center" [title]="task.priority"
+                                                                [src]="getTaskPriorityUrl(task.priority)" height="24"
+                                                                width="24">
+                                                        </span>
+                                                    </div>
+
+                                                    <div class="ms-3">
+                                                        <span *ngFor="let users of task?.TaskUsers"
+                                                            class="letter text-light"
+                                                            [tooltip]="(users?.user?.firstName| titlecase) + (' ') +( users?.user?.lastName | titlecase)"
+                                                            [style.background-color]="commonservice.getRandomColor(users?.user?.firstName)">
+                                                            {{users?.user?.firstName.charAt(0) | uppercase}}
+                                                        </span>
+                                                    </div>
+                                                </li>
+                                            </ng-container>
+                                            <div *ngIf="showClosedTask" class="add-task-container mt-4">
+                                               
+                                                <div class="d-flex">
+                                                   <span class="bi bi-x-lg me-2" (click)="toggleClosedTask()"></span>
+                                                    <input type="text" class="w-100 newTaskBoard border-bottom"
+                                                    placeholder="Please type task name..."
+                                                    [(ngModel)]="newTask.taskName">
+                                                </div>
+
+                                                <div>
+                                                    <div class="row mt-3">
+                                                        <label for="priority" class="text-start">Priority</label>
+                                                    </div>
+                                                    <select class="custom-select mb-3 p-2"
+                                                        [(ngModel)]="newTask.priority">
+                                                        <option value="">Select Priority</option>
+                                                        <option value="Low">Urgent</option>
+                                                        <option value="Normal">Normal</option>
+                                                        <option value="High">High</option>
+                                                    </select>
+                                                </div>
+                                                <button mat-raised-button color="primary"
+                                                    (click)="addTaskClosed()">Submit</button>
+                                            </div>
+
+                                        </ul>
+                                        <button class="btn btn-outline-primary  mt-2" (click)="toggleClosedTask()">Add
+                                            Task</button>
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+
+
+
+
+
+                    </div>
 
                 </div>
             </div>
         </div>
     </div>
 </div>
-<!-- <app-task-comment-list></app-task-comment-list> -->
 <!-- Add User -->
 <div class="modal" id="addUserModal">
     <div class="modal-dialog modal-dialog-centered">
@@ -451,7 +820,7 @@
                                         <div class="row mt-3">
                                             <label for="priority" class="text-start">Priority</label>
                                         </div>
-                                        
+
                                         <select class="custom-select mb-3 p-2" formControlName="priority" ngModel
                                             required>
                                             <option value="">Select Priority</option>
@@ -467,21 +836,23 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="attachment mt-4 d-flex flex-wrap"><label class="sc-bczRLJ kEeNDb  "><input
-                                        style="display: none;"
-                                        accept=".jpeg,.mp4,.glb,.svg,.blend,.jpg,.png,.gif,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.odt,.fodt,.ods,.fods,.odp,.fodp,.odg,.fodg,.odf,.csv,.html,.css,.txt,.zip"
-                                        type="file" multiple (change)="onFileSelect($event)">
-                                    <div
-                                        class="details-attach-file d-flex align-items-center justify-content-center me-2 pointer">
-                                        <span class="fa fa-paperclip"> attach a file </span>
+                                    <div class="attachment mt-4 d-flex flex-wrap"><label
+                                            class="sc-bczRLJ kEeNDb  "><input style="display: none;"
+                                                accept=".jpeg,.mp4,.glb,.svg,.blend,.jpg,.png,.gif,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.odt,.fodt,.ods,.fods,.odp,.fodp,.odg,.fodg,.odf,.csv,.html,.css,.txt,.zip"
+                                                type="file" multiple (change)="onFileSelect($event)">
+                                            <div
+                                                class="details-attach-file d-flex align-items-center justify-content-center me-2 pointer">
+                                                <span class="fa fa-paperclip"> attach a file </span>
+                                            </div>
+                                        </label>
+                                        <ul type="none">
+                                            <li class="text-primary" *ngFor="let files of selectedFiles; let i = index"
+                                                (click)="removeFile(i)">
+                                                {{files.name}} <i
+                                                    class="bi bi-x-circle-fill text-danger deleteTaskAttachment"></i>
+                                            </li>
+                                        </ul>
                                     </div>
-                                </label>
-                                <ul type="none">
-                                    <li class="text-primary" *ngFor="let files of selectedFiles; let i = index" (click)="removeFile(i)" >
-                                      {{files.name}} <i class="bi bi-x-circle-fill text-danger deleteTaskAttachment"></i>
-                                    </li>
-                                </ul>
-                            </div>
                                     <!-- <input type="file" (change)="onFileSelect($event)" multiple  formControlName="taskAttachments">           -->
 
                                 </div>
@@ -524,7 +895,7 @@
 </div>
 
 <!-- Update -->
-<div class="modal" id="updateModal">
+<!-- <div class="modal" id="updateModal">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-body">
@@ -686,7 +1057,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
 <!-- Delete -->
 <div class="modal" id="deleteModal">

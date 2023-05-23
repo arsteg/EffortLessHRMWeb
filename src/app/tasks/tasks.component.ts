@@ -59,7 +59,13 @@ export class TasksComponent implements OnInit {
   fileProperties: any = {};
   taskAttachment: any = [];
   activeTaskId: string = '';
-
+  isListView: boolean = true;
+  filteredTasks: any[];
+  showToDoTask: boolean = false;
+  showInProgressTask: boolean = false;
+  showDoneTask: boolean = false;
+  showClosedTask: boolean = false;
+  newTask: any = {};
 
   constructor(
     private tasksService: TasksService,
@@ -165,7 +171,7 @@ export class TasksComponent implements OnInit {
             const fileType = file.type; // type of the file (e.g. image/png)
             const fileNameParts = file.name.split('.');
             const extension = fileNameParts[fileNameParts.length - 1];
-        
+
             attachments.push({
               attachmentName: file.name,
               attachmentType: fileType,
@@ -220,7 +226,7 @@ export class TasksComponent implements OnInit {
       this.selectedFiles.splice(index, 1);
     }
   }
- 
+
 
   deleteTask() {
     this.tasksService.deleteTask(this.selectedTask.id).subscribe(response => {
@@ -233,16 +239,6 @@ export class TasksComponent implements OnInit {
       })
   }
 
-  updateTask(updateForm) {
-    updateForm.taskName = updateForm.description;
-    this.tasksService.updateTask(this.selectedTask._id, updateForm).subscribe(response => {
-      this.ngOnInit();
-      this.toast.success('Existing Task Updated', 'Successfully Updated!')
-    },
-      err => {
-        this.toast.error('Task could not be updated', 'ERROR!')
-      })
-  }
   selectTask(selectedTask) {
     this.selectedTask = selectedTask
   }
@@ -345,6 +341,85 @@ export class TasksComponent implements OnInit {
     this.tasksService.getTaskById(id).subscribe(task => {
       this.tasks = task;
     });
+  }
+
+  toggleViewMode() {
+    this.isListView = !this.isListView; 
+  }
+
+  calculateTasksLength(status: string): number {
+    this.filteredTasks = this.tasks?.filter(task => task?.status === status);
+    return this.filteredTasks?.length;
+  }
+
+  toggleToDoTask() {
+    this.showToDoTask = !this.showToDoTask;
+    this.newTask = {}; 
+  }
+  toggleInProgressTask() {
+    this.showInProgressTask = !this.showInProgressTask;
+    this.newTask = {};
+  }
+  toggleDoneTask() {
+    this.showDoneTask = !this.showDoneTask;
+    this.newTask = {}; 
+  }
+  toggleClosedTask() {
+    this.showClosedTask = !this.showClosedTask;
+    this.newTask = {};
+  }
+  addTaskToDo() {
+    this.newTask.status = 'ToDo'
+    this.newTask.title = this.newTask.taskName
+    this.tasksService.addTask(this.newTask).subscribe(response => {
+      this.task = response;
+      this.tasks.push(this.newTask);
+      this.newTask = ''
+      this.toggleToDoTask();
+    }
+    )
+  }
+
+  addTaskInProgress() {
+    this.newTask.status = 'In Progress'
+    this.newTask.title = this.newTask.taskName
+    this.tasksService.addTask(this.newTask).subscribe(response => {
+      this.task = response;
+      this.tasks.push(this.newTask);
+      this.newTask = ''
+      this.toggleInProgressTask();
+    }
+    )
+  }
+
+  addTaskDone() {
+    this.newTask.status = 'Done'
+    this.newTask.title = this.newTask.taskName
+    this.tasksService.addTask(this.newTask).subscribe(response => {
+      this.task = response;
+      this.tasks.push(this.newTask);
+      this.newTask = ''
+      this.toggleDoneTask();
+    }
+    )
+  }
+  addTaskClosed() {
+    this.newTask.status = 'Closed'
+    this.newTask.title = this.newTask.taskName
+    this.tasksService.addTask(this.newTask).subscribe(response => {
+      this.task = response;
+      this.tasks.push(this.newTask);
+      this.newTask = ''
+      this.toggleClosedTask();
+    }
+    )
+  }
+  setPriority(priority: any) {
+    this.newTask.priority = priority;
+  }
+
+  removePriority() {
+    this.newTask.priority = null;
   }
 }
 

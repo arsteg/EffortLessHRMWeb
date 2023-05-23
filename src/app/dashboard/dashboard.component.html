@@ -4,11 +4,238 @@
       <mat-form-field appearance="outline" class="" style="border-radius: 5px;
             height: 49px;
             margin: -20px 0 11px 0;">
+<<<<<<< HEAD
         <mat-label class="">Select Date</mat-label>
         <div class="w-100 d-flex" style="margin: -15px 0;">
           <input matInput [matDatepicker]="picker1" [formControl]="date">
           <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
           <mat-datepicker #picker1></mat-datepicker>
+=======
+                <mat-label class="">Select Date</mat-label>
+                <div  class="w-100 d-flex" style="margin: -15px 0;">
+                <input matInput [matDatepicker]="picker1" [formControl]="date">
+                <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+                <mat-datepicker #picker1></mat-datepicker>
+            </div>
+              </mat-form-field>
+        </div>
+        <div class="row d-flex justify-content-evenly container-fluid ">
+            <div class="border py-4 rounded common">
+                <div class="d-flex justify-content-evenly">
+                    <div class="mt-2 border-end pe-5">
+                        <h1 class="letter ms-2 header-letter"
+                        [style.background-color]="commonService?.getRandomColor(currentProfile?.lastName)">
+                        {{currentProfile?.firstName.slice(0,1) | uppercase}}{{currentProfile?.lastName.slice(0,1) |
+                        uppercase}}</h1>
+                        <h4 class="content-info mb-0">{{currentProfile?.firstName}} {{currentProfile?.lastName}}</h4>
+                        <p>{{role | titlecase}}</p>
+                    </div>
+                    <div class="mt-2 border-end pe-5">
+                      <p class="">Members</p>
+                      <h1 class="">1</h1>
+                      </div>
+                      <div class="mt-2 border-end pe-5">
+                        <p class="">Next payment on</p>
+                        <h1 class="">09 Jun, 2023</h1>
+                      </div>
+                        <div class="mt-2 border-end pe-5">
+                          <p class="">Latest Invoice</p>
+                          <h1 class="">$2.99</h1>
+                          <a class="" href="">My Invoices</a>
+                        </div>
+                        <div class="mt-2 border-end pe-5">
+                          <p class="">Balance</p>
+                          <h1 class="">$0</h1>
+                          <div class="fill-balance"><a href="">Make Payment</a>
+                          </div>
+                        </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="row my-3 justify-content-evenly">
+          <div class="col-md-4 border rounded dash-boxes p-3 common">
+            <div class="about__top mb-3">
+              <div class="about__title d-flex">
+                <h1 class="content__title me-3">Today</h1>
+                <h1 class="content__title title-hidden">{{ hoursWorked?.today | milliSecondsToTime }}</h1>
+              </div>
+              <div class="about__title d-flex">
+                <span> Yesterday </span>
+                <span class="hours"> {{  hoursWorked?.previousDay | milliSecondsToTime}}</span>
+              </div>
+              <div class="top-text pb-3">
+                  <span class="text mb-0 me-2">
+                    <span style="color: rgb(255, 190, 91)">{{hoursWorked?.change}}%</span>
+                  </span>
+                <span>
+                  <img  *ngIf="hoursWorked?.increased==true" src="../assets/images/graph-up-green.svg" height="50" width="100%" alt="Profile Picture">
+                  <img  *ngIf="hoursWorked?.increased==false" src="../assets/images/graph-down-red.svg" height="50" width="50" alt="Profile Picture">
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4 border rounded dash-boxes p-3 common">
+            <div class="about__top mb-3">
+              <div class="about__title d-flex">
+                <h1 class="content__title me-3">This week</h1>
+                <h1 class="content__title title-hidden"> {{ weeklySummary?.currentWeek | milliSecondsToTime}}</h1>
+              </div>
+              <div class="top-text pb-3">
+                <p class="text mb-0 me-2">
+                  <span style="color: rgb(255, 190, 91)">{{ weeklySummary?.change }}% </span>
+                  <span> last week </span>
+                </p>
+                <div class="hours"><span class="p-2 py-3 text-light">{{ weeklySummary?.previousWeek | milliSecondsToTime }}</span></div>
+              </div>
+              <div class="d-flex justify-content-between">
+                <img  *ngIf="hoursWorked?.increased==true" src="../assets/images/graph-up-green.svg" height="50"  alt="Profile Picture">
+                <img  *ngIf="hoursWorked?.increased==false" src="../assets/images/graph-down-red.svg" height="50"  alt="Profile Picture">
+              </div>
+            </div>
+          </div>
+
+
+          <div class="col-md-4 border rounded dash-boxes p-3 common">
+            <div class="about__top mb-3">
+              <div class="about__title d-flex">
+                <h1 class="content__title me-3">This Month</h1>
+                <h1 class="content__title title-hidden">{{monthlySummary?.currentMonth | milliSecondsToTime}}m</h1>
+              </div>
+              <div class="top-text">
+                <p class="text mb-0 me-2">
+                  <span style="color: rgb(255, 190, 91)">{{monthlySummary?.change}}% </span
+                  ><span> a week before </span>
+                </p>
+                <div class="hours"><span class="p-2 py-3 text-light">{{monthlySummary?.previousMonth | milliSecondsToTime}}m</span></div>
+              </div>
+              <div class="d-flex justify-content-between">
+                <img  *ngIf="monthlySummary?.increased==true" src="../assets/images/graph-up-green.svg" height="50"  alt="Profile Picture">
+                <img  *ngIf="monthlySummary?.increased==false" src="../assets/images/graph-down-red.svg" height="50"  alt="Profile Picture">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row justify-content-evenly">
+            <div class="col-md-4 border rounded p-3 dash-report common">
+                <div class="d-flex justify-content-between">
+                    <h3>Today's Activity</h3>
+                    <select class="form-select w-25 dash-select mb-1" aria-label="Default select example">
+                        <option selected>Today</option>
+                        <option value="1">Week</option>
+                    </select>
+
+                </div>
+                <table class="table">
+                    <tbody>
+                        <tr *ngFor="let users of selectedUsers">
+
+                            <td>
+                                <span class="letter ms-2"
+                                    [style.background-color]="commonService.getRandomColor(users?.lastName)">
+                                    {{users?.firstName?.slice(0,1) | uppercase}}{{users?.lastName?.slice(0,1) |
+                                    uppercase}}</span>
+                                {{users?.firstName | titlecase}} {{users?.lastName?.slice(0,1) | titlecase}}.
+                            </td>
+                            <td>0m</td>
+                            <td>
+                                <span class="dash-percent"> 0%</span>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-4 border rounded p-3 dash-report common">
+                <div class="d-flex justify-content-between">
+                    <h3>Productivity</h3>
+                    <select class="form-select w-25 dash-select mb-1" aria-label="Default select example">
+                        <option selected>Today</option>
+                        <option value="1">Week</option>
+                    </select>
+
+                </div>
+
+                <div class="text-center mt-5 pt-5">
+                    <span class=" bi bi-graph-up-arrow productive p-2 rounded"></span><br>
+                    <p class="text-muted pt-3">Oops, there is no data for your team's productivity yet.</p>
+                </div>
+            </div>
+
+            <div class="col-md-4 border rounded p-3 dash-report common">
+                <div class="">
+                    <h3 class="mb-0">Non Productive</h3><hr class="my-0">
+                    <mat-tab-group mat-stretch-tabs="false"  class="">
+                        <mat-tab label="Apps" class="w-25">
+                            <div class="d-flex justify-content-end pe-2">
+                                <select class="form-select dash-select my-1 non-product pe-0" aria-label="Default select example">
+                                    <option selected>Today</option>
+                                    <option value="1">Week</option>
+                                </select>
+                            </div>
+                        </mat-tab>
+                        <mat-tab label="Members" class="w-25">
+                            This Tab is for members
+                        </mat-tab>
+                    </mat-tab-group>
+
+
+                </div>
+
+                <div class="text-center mt-5 pt-5">
+                    <span class=" bi bi-graph-down-arrow non-productive p-2 rounded"></span><br>
+                    <p class="text-muted pt-3">Select which apps and websites are productive and non productive for your
+                        workspace.</p>
+                    <a class="text-secondary" [routerLink]="['/productivity']">Set up Productivity</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-evenly my-3">
+            <div class="col-md-4 border rounded p-3 dash-report common">
+
+
+            </div>
+            <div class="col-md-4 border rounded p-3 dash-report common">
+                <div class="d-flex justify-content-between">
+                    <h3>Attendance</h3>
+                    <select class="form-select w-25 dash-select mb-1" aria-label="Default select example">
+                        <option selected>Today</option>
+                        <option value="1">Week</option>
+                    </select>
+
+                </div>
+                <div class="text-center mt-5 pt-5">
+                    <span class=" bi bi-person-check productive p-2 rounded"></span><br>
+                    <p class="text-muted pt-3">Set up your workspace's Attendance settings.</p>
+                    <a class="text-secondary" [routerLink]="['/dashboard']">Schedule Attendance</a>
+                </div>
+            </div>
+
+            <div class="col-md-4 border rounded p-3 dash-report common">
+                <div class="d-flex justify-content-between">
+                    <h3>Activity</h3>
+
+                    <select class="form-select w-25 dash-select mb-1" aria-label="Default select example">
+                        <option selected>Today</option>
+                        <option value="1">Week</option>
+                    </select>
+                </div>
+                <div class="text-center mt-5 pt-5">
+                    <span class=" bi bi-activity activity p-2 rounded"></span><br>
+                    <p class="text-muted pt-3">We can't show you anything here.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mx-2">
+            <div class="col-12 dash-screenshot text-light text-center py-5" style="background: #3f51b5;">
+                <h1><i class="bi bi-clock-history" style="font-size: 44px;"></i></h1>
+                <p>Unfortunately, there are no screenshots to show.</p>
+            </div>
+>>>>>>> 51dfe73066a537acb72eb40986c7a61c4de3f26d
         </div>
       </mat-form-field>
     </div>

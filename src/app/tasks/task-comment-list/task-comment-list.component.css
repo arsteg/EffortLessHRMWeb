@@ -16,3 +16,6 @@
     width: 150px;
     cursor: pointer;
 }
+.btn-outline-primary:hover {
+background: none;
+}

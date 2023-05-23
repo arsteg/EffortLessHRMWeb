@@ -23,7 +23,7 @@ export class RequestApprovalComponent implements OnInit {
   selectedRequest:any;
   id:string='';
   public sortOrder: string = ''; // 'asc' or 'desc'
-  
+
   constructor(private modalService: NgbModal, private formBuilder: FormBuilder,
     private authenticationService:AuthenticationService,
     private timeLogService:TimeLogService,
