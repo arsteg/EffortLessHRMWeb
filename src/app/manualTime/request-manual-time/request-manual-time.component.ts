@@ -35,7 +35,7 @@ export class RequestManualTimeComponent implements OnInit {
   public sortOrder: string = ''; // 'asc' or 'desc'
   firstLetter: string;
   color: string;
-  
+
   constructor(private modalService: NgbModal, private formBuilder: FormBuilder,
     private authenticationService:AuthenticationService,
     private timeLogService:TimeLogService,
@@ -135,7 +135,8 @@ export class RequestManualTimeComponent implements OnInit {
     request.manager =  this.addRequestForm.value.manager;
     request.project =  this.addRequestForm.value.project;
     request.reason =  this.addRequestForm.value.reason;
-    request.user =  this.authenticationService.currentUserValue.id;
+    var currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    request.user =  currentUser?.id;
 
     request.fromDate =  this.utilsService.convertToUTC(this.addRequestForm.value.startDate);
     request.toDate =  this.utilsService.convertToUTC(this.addRequestForm.value.endDate);
