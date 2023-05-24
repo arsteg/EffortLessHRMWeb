@@ -69,6 +69,7 @@ import { timesheetModule } from './timesheets/timesheet.Module';
 import { GenericSettingsComponent } from './settings/generic-settings/generic-settings.component';
 import { ViewLiveScreenComponent } from './viewLiveScreen/view-live-screen/view-live-screen.component';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { EmailTemplateComponent } from './email-template/email-template.component';
 
 @NgModule({
   declarations: [
@@ -115,7 +116,8 @@ import { DashboardModule } from './dashboard/dashboard.module';
           LeaveSettingsComponent,
           // EditTaskComponent,
           GenericSettingsComponent,
-          ViewLiveScreenComponent
+          ViewLiveScreenComponent,
+          EmailTemplateComponent
   ],
   imports: [
     BrowserModule,
