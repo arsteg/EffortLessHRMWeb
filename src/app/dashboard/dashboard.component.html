@@ -4,13 +4,239 @@
       <mat-form-field appearance="outline" class="" style="border-radius: 5px;
             height: 49px;
             margin: -20px 0 11px 0;">
+<<<<<<< Updated upstream
         <mat-label class="">Select Date</mat-label>
         <div class="w-100 d-flex" style="margin: -15px 0;">
           <input matInput [matDatepicker]="picker1" [formControl]="date">
           <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
           <mat-datepicker #picker1></mat-datepicker>
+=======
+                <mat-label class="">Select Date</mat-label>
+                <div  class="w-100 d-flex" style="margin: -15px 0;">
+                <input matInput [matDatepicker]="picker1" [formControl]="date">
+                <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+                <mat-datepicker #picker1></mat-datepicker>
+            </div>
+              </mat-form-field>
         </div>
-      </mat-form-field>
+        <div class="row d-flex justify-content-evenly container-fluid ">
+            <div class="border py-4 rounded common">
+                <div class="d-flex justify-content-evenly">
+                    <div class="mt-2 border-end pe-5">
+                        <h1 class="letter ms-2 header-letter"
+                        [style.background-color]="commonService?.getRandomColor(currentProfile?.lastName)">
+                        {{currentProfile?.firstName.slice(0,1) | uppercase}}{{currentProfile?.lastName.slice(0,1) |
+                        uppercase}}</h1>
+                        <h4 class="content-info mb-0">{{currentProfile?.firstName}} {{currentProfile?.lastName}}</h4>
+                        <p>{{role | titlecase}}</p>
+                    </div>
+                    <div class="mt-2 border-end pe-5">
+                      <p class="">Members</p>
+                      <h1 class="">1</h1>
+                      </div>
+                      <div class="mt-2 border-end pe-5">
+                        <p class="">Next payment on</p>
+                        <h1 class="">09 Jun, 2023</h1>
+                      </div>
+                        <div class="mt-2 border-end pe-5">
+                          <p class="">Latest Invoice</p>
+                          <h1 class="">$2.99</h1>
+                          <a class="" href="">My Invoices</a>
+                        </div>
+                        <div class="mt-2 border-end pe-5">
+                          <p class="">Balance</p>
+                          <h1 class="">$0</h1>
+                          <div class="fill-balance"><a href="">Make Payment</a>
+                          </div>
+                        </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="row my-3 justify-content-evenly">
+          <div class="col-md-4 border rounded dash-boxes p-3 common">
+            <div class="about__top mb-3">
+              <div class="about__title d-flex">
+                <h1 class="content__title me-3">Today</h1>
+                <h1 class="content__title title-hidden">{{ hoursWorked?.today | milliSecondsToTime }}</h1>
+              </div>
+              <div class="about__title d-flex">
+                <span> Yesterday </span>
+                <span class="hours"> {{  hoursWorked?.previousDay | milliSecondsToTime}}</span>
+              </div>
+              <div class="top-text pb-3">
+                  <span class="text mb-0 me-2">
+                    <span style="color: rgb(255, 190, 91)">{{hoursWorked?.change}}%</span>
+                  </span>
+                <span>
+                  <img  *ngIf="hoursWorked?.increased==true" src="../assets/images/graph-up-green.svg" height="50" width="100%" alt="Profile Picture">
+                  <img  *ngIf="hoursWorked?.increased==false" src="../assets/images/graph-down-red.svg" height="50" width="50" alt="Profile Picture">
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4 border rounded dash-boxes p-3 common">
+            <div class="about__top mb-3">
+              <div class="about__title d-flex">
+                <h1 class="content__title me-3">This week</h1>
+                <h1 class="content__title title-hidden"> {{ weeklySummary?.currentWeek | milliSecondsToTime}}</h1>
+              </div>
+              <div class="top-text pb-3">
+                <p class="text mb-0 me-2">
+                  <span style="color: rgb(255, 190, 91)">{{ weeklySummary?.change }}% </span>
+                  <span> last week </span>
+                </p>
+                <div class="hours"><span class="p-2 py-3 text-light">{{ weeklySummary?.previousWeek | milliSecondsToTime }}</span></div>
+              </div>
+              <div class="d-flex justify-content-between">
+                <img  *ngIf="hoursWorked?.increased==true" src="../assets/images/graph-up-green.svg" height="50"  alt="Profile Picture">
+                <img  *ngIf="hoursWorked?.increased==false" src="../assets/images/graph-down-red.svg" height="50"  alt="Profile Picture">
+              </div>
+            </div>
+          </div>
+
+
+          <div class="col-md-4 border rounded dash-boxes p-3 common">
+            <div class="about__top mb-3">
+              <div class="about__title d-flex">
+                <h1 class="content__title me-3">This Month</h1>
+                <h1 class="content__title title-hidden">{{monthlySummary?.currentMonth | milliSecondsToTime}}m</h1>
+              </div>
+              <div class="top-text">
+                <p class="text mb-0 me-2">
+                  <span style="color: rgb(255, 190, 91)">{{monthlySummary?.change}}% </span
+                  ><span> a week before </span>
+                </p>
+                <div class="hours"><span class="p-2 py-3 text-light">{{monthlySummary?.previousMonth | milliSecondsToTime}}m</span></div>
+              </div>
+              <div class="d-flex justify-content-between">
+                <img  *ngIf="monthlySummary?.increased==true" src="../assets/images/graph-up-green.svg" height="50"  alt="Profile Picture">
+                <img  *ngIf="monthlySummary?.increased==false" src="../assets/images/graph-down-red.svg" height="50"  alt="Profile Picture">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row justify-content-evenly">
+            <div class="col-md-4 border rounded p-3 dash-report common">
+                <div class="d-flex justify-content-between">
+                    <h3>Today's Activity</h3>
+                    <select class="form-select w-25 dash-select mb-1" aria-label="Default select example">
+                        <option selected>Today</option>
+                        <option value="1">Week</option>
+                    </select>
+
+                </div>
+                <table class="table">
+                    <tbody>
+                        <tr *ngFor="let users of selectedUsers">
+
+                            <td>
+                                <span class="letter ms-2"
+                                    [style.background-color]="commonService.getRandomColor(users?.lastName)">
+                                    {{users?.firstName?.slice(0,1) | uppercase}}{{users?.lastName?.slice(0,1) |
+                                    uppercase}}</span>
+                                {{users?.firstName | titlecase}} {{users?.lastName?.slice(0,1) | titlecase}}.
+                            </td>
+                            <td>0m</td>
+                            <td>
+                                <span class="dash-percent"> 0%</span>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-4 border rounded p-3 dash-report common">
+                <div class="d-flex justify-content-between">
+                    <h3>Productivity</h3>
+                    <select class="form-select w-25 dash-select mb-1" aria-label="Default select example">
+                        <option selected>Today</option>
+                        <option value="1">Week</option>
+                    </select>
+
+                </div>
+
+                <div class="text-center mt-5 pt-5">
+                    <span class=" bi bi-graph-up-arrow productive p-2 rounded"></span><br>
+                    <p class="text-muted pt-3">Oops, there is no data for your team's productivity yet.</p>
+                </div>
+            </div>
+
+            <div class="col-md-4 border rounded p-3 dash-report common">
+                <div class="">
+                    <h3 class="mb-0">Non Productive</h3><hr class="my-0">
+                    <mat-tab-group mat-stretch-tabs="false"  class="">
+                        <mat-tab label="Apps" class="w-25">
+                            <div class="d-flex justify-content-end pe-2">
+                                <select class="form-select dash-select my-1 non-product pe-0" aria-label="Default select example">
+                                    <option selected>Today</option>
+                                    <option value="1">Week</option>
+                                </select>
+                            </div>
+                        </mat-tab>
+                        <mat-tab label="Members" class="w-25">
+                            This Tab is for members
+                        </mat-tab>
+                    </mat-tab-group>
+
+
+                </div>
+
+                <div class="text-center mt-5 pt-5">
+                    <span class=" bi bi-graph-down-arrow non-productive p-2 rounded"></span><br>
+                    <p class="text-muted pt-3">Select which apps and websites are productive and non productive for your
+                        workspace.</p>
+                    <a class="text-secondary" [routerLink]="['/productivity']">Set up Productivity</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-evenly my-3">
+            <div class="col-md-4 border rounded p-3 dash-report common">
+
+
+            </div>
+            <div class="col-md-4 border rounded p-3 dash-report common">
+                <div class="d-flex justify-content-between">
+                    <h3>Attendance</h3>
+                    <select class="form-select w-25 dash-select mb-1" aria-label="Default select example">
+                        <option selected>Today</option>
+                        <option value="1">Week</option>
+                    </select>
+
+                </div>
+                <div class="text-center mt-5 pt-5">
+                    <span class=" bi bi-person-check productive p-2 rounded"></span><br>
+                    <p class="text-muted pt-3">Set up your workspace's Attendance settings.</p>
+                    <a class="text-secondary" [routerLink]="['/dashboard']">Schedule Attendance</a>
+                </div>
+            </div>
+
+            <div class="col-md-4 border rounded p-3 dash-report common">
+                <div class="d-flex justify-content-between">
+                    <h3>Activity</h3>
+
+                    <select class="form-select w-25 dash-select mb-1" aria-label="Default select example">
+                        <option selected>Today</option>
+                        <option value="1">Week</option>
+                    </select>
+                </div>
+                <div class="text-center mt-5 pt-5">
+                    <span class=" bi bi-activity activity p-2 rounded"></span><br>
+                    <p class="text-muted pt-3">We can't show you anything here.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mx-2">
+            <div class="col-12 dash-screenshot text-light text-center py-5" style="background: #3f51b5;">
+                <h1><i class="bi bi-clock-history" style="font-size: 44px;"></i></h1>
+                <p>Unfortunately, there are no screenshots to show.</p>
+            </div>
+>>>>>>> Stashed changes
+        </div>
     </div>
     <div class="row d-flex justify-content-evenly container-fluid ">
       <div class=" py-4 rounded bg-white">
@@ -75,14 +301,22 @@
         <div class="about__top mb-3">
           <div class="about__title d-flex">
             <h1 class="content__title me-3">This week</h1>
+<<<<<<< Updated upstream
             <h1 class="content__title title-hidden"> {{ weeklySummary?.currentWeek | milliSecondsToTime}}</h1>
+=======
+            <h1 class="content__title title-hidden">{{weeklySummary?.currentWeek | milliSecondsToTime}}</h1>
+>>>>>>> Stashed changes
           </div>
           <div class="top-text pb-3">
             <p class="text mb-0 me-2">
               <span style="color: rgb(255, 190, 91)">{{ weeklySummary?.change }}% </span>
               <span> last week </span>
             </p>
+<<<<<<< Updated upstream
             <div class="hours"><span class="p-2 py-3 text-light">{{ weeklySummary?.previousWeek | milliSecondsToTime
+=======
+            <div class="hours"><span class="p-2 py-3 text-light">{{weeklySummary?.previousWeek | milliSecondsToTime
+>>>>>>> Stashed changes
                 }}</span></div>
           </div>
           <div class="d-flex justify-content-between">
@@ -134,7 +368,11 @@
 
               <td>
                 <span class="letter ms-2" [style.background-color]="commonService.getRandomColor(users?.lastName)">
+<<<<<<< Updated upstream
                   {{users?.firstName?.slice(0,1) | uppercase}}{{users?.lastName?.slice(0,1) |
+=======
+                  {{users?.firstName.slice(0,1) | uppercase}}{{users?.lastName.slice(0,1) |
+>>>>>>> Stashed changes
                   uppercase}}</span>
                 {{users?.firstName | titlecase}} {{users?.lastName?.slice(0,1) | titlecase}}.
               </td>
@@ -158,9 +396,149 @@
         </div>
 
         <div class="text-center mt-5 pt-5">
+<<<<<<< Updated upstream
           <span class=" bi bi-graph-up-arrow productive p-2 rounded"></span><br>
           <p class="text-muted pt-3">Oops, there is no data for your team's productivity yet.</p>
         </div>
+=======
+          <div class="top__item">
+            <div class="left-box">
+              <img src="../assets/red-Rectangle.svg">
+              <span class="frame"><img src="../assets/warning-triangle"></span>
+              <span class="text">0% less productive hours than previous day</span>
+            </div>
+            <div class="content-items">
+              <div class="left__content">
+                <div class="left__item">
+                  
+                  <div class="text"><span>0%</span>
+                    <p>Productive</p>
+                  </div>
+                </div>
+                <div class="left__item">
+                  
+                  <div class="text"><span>100%</span>
+                    <p>Neutral</p>
+                  </div>
+                </div>
+                <div class="left__item">
+                 
+                  <div class="text"><span>0%</span>
+                    <p>Non-productive</p>
+                  </div>
+                </div>
+              </div>
+              <div class="right__content">
+                <div class="calc-height doughnut-chart productivityScore__chart">
+                  <div class="chart">
+                    <div options="[object Object]" series="0,100,0" type="radialBar" height="280" width="100%"
+                      style="min-height: 258.7px;">
+                      <div id="apexchartsiy94ih3qf" class="apexcharts-canvas apexchartsiy94ih3qf apexcharts-theme-light"
+                        style="width: 207px; height: 258.7px;"><svg id="SvgjsSvg1203" width="207" height="258.7"
+                          xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
+                          xmlns:svgjs="http://svgjs.dev" class="apexcharts-svg" xmlns:data="ApexChartsNS"
+                          transform="translate(0, 0)" style="background: transparent;">
+                          <g id="SvgjsG1205" class="apexcharts-inner apexcharts-graphical"
+                            transform="translate(-23.5, 0)">
+                            <defs id="SvgjsDefs1204">
+                              <clipPath id="gridRectMaskiy94ih3qf">
+                                <rect id="SvgjsRect1207" width="262" height="280" x="-3" y="-1" rx="0" ry="0"
+                                  opacity="1" stroke-width="0" stroke="none" stroke-dasharray="0" fill="#fff"></rect>
+                              </clipPath>
+                              <clipPath id="forecastMaskiy94ih3qf"></clipPath>
+                              <clipPath id="nonForecastMaskiy94ih3qf"></clipPath>
+                              <clipPath id="gridRectMarkerMaskiy94ih3qf">
+                                <rect id="SvgjsRect1208" width="260" height="282" x="-2" y="-2" rx="0" ry="0"
+                                  opacity="1" stroke-width="0" stroke="none" stroke-dasharray="0" fill="#fff"></rect>
+                              </clipPath>
+                            </defs>
+                            <g id="SvgjsG1209" class="apexcharts-radialbar">
+                              <g id="SvgjsG1210">
+                                <g id="SvgjsG1211" class="apexcharts-tracks">
+                                  <g id="SvgjsG1212" class="apexcharts-radialbar-track apexcharts-track" rel="1">
+                                    <path id="apexcharts-radialbarTrack-0"
+                                      d="M 128 34.32743902439023 A 93.67256097560977 93.67256097560977 0 1 1 34.32743902439023 128"
+                                      fill="none" fill-opacity="1" stroke="rgba(242,242,242,0.85)" stroke-opacity="1"
+                                      stroke-linecap="round" stroke-width="8.539548780487806" stroke-dasharray="0"
+                                      class="apexcharts-radialbar-area"
+                                      data:pathOrig="M 128 34.32743902439023 A 93.67256097560977 93.67256097560977 0 1 1 34.32743902439023 128">
+                                    </path>
+                                  </g>
+                                  <g id="SvgjsG1214" class="apexcharts-radialbar-track apexcharts-track" rel="2">
+                                    <path id="apexcharts-radialbarTrack-1"
+                                      d="M 128 55.131097560975604 A 72.8689024390244 72.8689024390244 0 1 1 55.131097560975604 128"
+                                      fill="none" fill-opacity="1" stroke="rgba(242,242,242,0.85)" stroke-opacity="1"
+                                      stroke-linecap="round" stroke-width="8.539548780487806" stroke-dasharray="0"
+                                      class="apexcharts-radialbar-area"
+                                      data:pathOrig="M 128 55.131097560975604 A 72.8689024390244 72.8689024390244 0 1 1 55.131097560975604 128">
+                                    </path>
+                                  </g>
+                                  <g id="SvgjsG1216" class="apexcharts-radialbar-track apexcharts-track" rel="3">
+                                    <path id="apexcharts-radialbarTrack-2"
+                                      d="M 128 75.93475609756098 A 52.06524390243902 52.06524390243902 0 1 1 75.93475609756098 128"
+                                      fill="none" fill-opacity="1" stroke="rgba(242,242,242,0.85)" stroke-opacity="1"
+                                      stroke-linecap="round" stroke-width="8.539548780487806" stroke-dasharray="0"
+                                      class="apexcharts-radialbar-area"
+                                      data:pathOrig="M 128 75.93475609756098 A 52.06524390243902 52.06524390243902 0 1 1 75.93475609756098 128">
+                                    </path>
+                                  </g>
+                                </g>
+                                <g id="SvgjsG1218">
+                                  <g id="SvgjsG1220" class="apexcharts-series apexcharts-radial-series"
+                                    seriesName="Productive" rel="1" data:realIndex="0">
+                                    <path id="SvgjsPath1221"
+                                      d="M 128 34.32743902439023 A 93.67256097560977 93.67256097560977 0 0 1 128 34.32743902439023"
+                                      fill="none" fill-opacity="0.85" stroke="rgba(22,207,150,0.85)" stroke-opacity="1"
+                                      stroke-linecap="round" stroke-width="8.803658536585367" stroke-dasharray="0"
+                                      class="apexcharts-radialbar-area apexcharts-radialbar-slice-0" data:angle="0"
+                                      data:value="0" index="0" j="0"
+                                      data:pathOrig="M 128 34.32743902439023 A 93.67256097560977 93.67256097560977 0 0 1 128 34.32743902439023">
+                                    </path>
+                                  </g>
+                                  <g id="SvgjsG1222" class="apexcharts-series apexcharts-radial-series"
+                                    seriesName="Neutral" rel="2" data:realIndex="1">
+                                    <path id="SvgjsPath1223"
+                                      d="M 128 55.131097560975604 A 72.8689024390244 72.8689024390244 0 1 1 55.131097560975604 128"
+                                      fill="none" fill-opacity="0.85" stroke="rgba(206,212,215,0.85)" stroke-opacity="1"
+                                      stroke-linecap="round" stroke-width="8.803658536585367" stroke-dasharray="0"
+                                      class="apexcharts-radialbar-area apexcharts-radialbar-slice-1" data:angle="270"
+                                      data:value="100" index="0" j="1"
+                                      data:pathOrig="M 128 55.131097560975604 A 72.8689024390244 72.8689024390244 0 1 1 55.131097560975604 128">
+                                    </path>
+                                  </g>
+                                  <g id="SvgjsG1224" class="apexcharts-series apexcharts-radial-series"
+                                    seriesName="NonxProductive" rel="3" data:realIndex="2">
+                                    <path id="SvgjsPath1225"
+                                      d="M 128 75.93475609756098 A 52.06524390243902 52.06524390243902 0 0 1 128 75.93475609756098"
+                                      fill="none" fill-opacity="0.85" stroke="rgba(239,88,93,0.85)" stroke-opacity="1"
+                                      stroke-linecap="round" stroke-width="8.803658536585367" stroke-dasharray="0"
+                                      class="apexcharts-radialbar-area apexcharts-radialbar-slice-2" data:angle="0"
+                                      data:value="0" index="0" j="2"
+                                      data:pathOrig="M 128 75.93475609756098 A 52.06524390243902 52.06524390243902 0 0 1 128 75.93475609756098">
+                                    </path>
+                                  </g>
+                                  <circle id="SvgjsCircle1219" r="42.79546951219512" cx="128" cy="128"
+                                    class="apexcharts-radialbar-hollow" fill="transparent"></circle>
+                                </g>
+                              </g>
+                            </g>
+                            <line id="SvgjsLine1226" x1="0" y1="0" x2="256" y2="0" stroke="#b6b6b6" stroke-dasharray="0"
+                              stroke-width="1" stroke-linecap="butt" class="apexcharts-ycrosshairs"></line>
+                            <line id="SvgjsLine1227" x1="0" y1="0" x2="256" y2="0" stroke-dasharray="0" stroke-width="0"
+                              stroke-linecap="butt" class="apexcharts-ycrosshairs-hidden"></line>
+                          </g>
+                          <g id="SvgjsG1206" class="apexcharts-annotations"></g>
+                        </svg>
+                        <div class="apexcharts-legend"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+         </div>
+>>>>>>> Stashed changes
       </div>
 
       <div class="col-md-4  rounded p-3 dash-report bg-white">
@@ -236,6 +614,10 @@
         <p>Unfortunately, there are no screenshots to show.</p>
       </div>
     </div>
+<<<<<<< Updated upstream
   </div>
   
 </div>
+=======
+  </div>
+>>>>>>> Stashed changes
