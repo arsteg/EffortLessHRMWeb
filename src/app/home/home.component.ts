@@ -58,17 +58,19 @@ export class HomeComponent implements OnInit {
       return this.currentProfile;
     })
   }
-
+  
   switchView(view: string) {
     this.adminView = view;
     localStorage.setItem('adminView', view);
     if (view == 'user') {
       this.menuList = SideBarUserMenu;
+      this.router.navigate(['userDashboard'])
     }
     else if (view == 'admin') {
       this.menuList = SideBarAdminMenu;
+      this.router.navigate(['dashboard'])
     }
-    this.router.navigate(['dashboard'])
+    // this.router.navigate(['dashboard'])
   }
 
   onLogout() {

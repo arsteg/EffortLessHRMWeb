@@ -140,9 +140,6 @@ export class TimelineComponent implements OnInit {
           this.startTime = new Date(logs[0].startTime);
         }
       });
-      
-      
-      console.log("Time Line :",this.timeline)
     }
     )
   }
@@ -198,37 +195,7 @@ export class TimelineComponent implements OnInit {
     const percentage = Math.round((totalTime / totalMinutes) * 100);
   
     return percentage;
-  }
-  
-  // isUserWorking(logs: any[], hour: number, minute: number): boolean {
-  //   const start = new Date(logs[0].startTime);
-  //   const end = new Date(logs[logs.length - 1].endTime);
-  
-  //   // Check if the specified hour and minute is within the start and end times
-  //   if (hour < start.getHours() || hour > end.getHours()) {
-  //     return false;
-  //   } else if (hour === start.getHours() && minute < start.getMinutes()) {
-  //     return false;
-  //   } else if (hour === end.getHours() && minute > end.getMinutes()) {
-  //     return false;
-  //   }
-  
-  //   // Check if there is a log entry for the specified hour and minute
-  //   const log = logs.find(l => {
-  //     const logStart = new Date(l.startTime);
-  //     return logStart.getHours() === hour && logStart.getMinutes() === minute;
-  //   });
-  
-  //   if (log) {
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // }
-  
-  
-  
-  
+  }  
   getTitle(logs: any[]) {
     if (!logs || logs.length === 0) {
       return "";
@@ -238,8 +205,71 @@ export class TimelineComponent implements OnInit {
     return `${startTime} - ${endTime}`;
   }
   
+// ---------------
+getUserActivePercentage(logs: any[], hour: number): number {
+  const startTimeHour = this.startTime.getHours();
+  const startTimeMinute = this.startTime.getMinutes();
 
-  
+  // Calculate the total minutes from the start time to the given hour
+  const totalMinutes = (hour - startTimeHour) * 60 + (startTimeMinute % 60);
+
+  // Calculate the user's active minutes within the given hour
+  let activeMinutes = 0;
+  for (const log of logs) {
+    const logStartTime = new Date(log.startTime);
+    const logEndTime = new Date(log.endTime);
+
+    // Check if the log falls within the given hour
+    if (logStartTime.getHours() === hour && logEndTime.getHours() === hour) {
+      activeMinutes += (logEndTime.getMinutes() - logStartTime.getMinutes());
+    } else if (logStartTime.getHours() === hour) {
+      activeMinutes += (60 - logStartTime.getMinutes());
+    } else if (logEndTime.getHours() === hour) {
+      activeMinutes += logEndTime.getMinutes();
+    }
+  }
+
+  // Calculate the percentage of user's activity within the given hour
+  const percentage = (activeMinutes / totalMinutes) * 100;
+  return percentage > 100 ? 100 : percentage;
+}
+
+getStartTimeMargin(logs: any[], hour: number): number {
+  const startTimeHour = this.startTime.getHours();
+  const startTimeMinute = this.startTime.getMinutes();
+
+  if (hour === startTimeHour) {
+    // Calculate the minutes from the start time to the given hour
+    const totalMinutes = (hour - startTimeHour) * 60 + (startTimeMinute % 60);
+
+    // Calculate the user's active minutes within the given hour
+    let activeMinutes = 0;
+    for (const log of logs) {
+      const logStartTime = new Date(log.startTime);
+      const logEndTime = new Date(log.endTime);
+
+      // Check if the log falls within the given hour
+      if (logStartTime.getHours() === hour && logEndTime.getHours() === hour) {
+        activeMinutes += (logEndTime.getMinutes() - logStartTime.getMinutes());
+      } else if (logStartTime.getHours() === hour) {
+        activeMinutes += (60 - logStartTime.getMinutes());
+      } else if (logEndTime.getHours() === hour) {
+        activeMinutes += logEndTime.getMinutes();
+      }
+    }
+
+    // Calculate the percentage of user's activity within the given hour
+    const percentage = (activeMinutes / totalMinutes) * 100;
+    return percentage > 50 ? 50 : percentage;
+  }
+
+  return 0;
+}
+
+
+
+
+
   
   formatTime(time: string) {
     const date = new Date(time);
