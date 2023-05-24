@@ -50,6 +50,7 @@ import { AdminTimesheetComponent } from './timesheets/admin-timesheet/admin-time
 import { GenericSettingsComponent } from './settings/generic-settings/generic-settings.component';
 import { ViewLiveScreenComponent } from './viewLiveScreen/view-live-screen/view-live-screen.component';
 import { UserDashboardComponent } from './dashboard/user-dashboard/user-dashboard.component';
+import { EmailTemplateComponent } from './email-template/email-template.component';
 
 const routes: Routes = [
   // {path:'',component:LayoutComponentComponent, canActivate: [AuthGuard]},
@@ -105,7 +106,8 @@ const routes: Routes = [
       { path: 'edit-task/:id', component: EditTaskComponent },
       {path: 'comments', component: TaskCommentComponent},
       { path: 'genericSettings', component: GenericSettingsComponent },
-      { path: 'viewLiveScreen', component: ViewLiveScreenComponent }
+      { path: 'viewLiveScreen', component: ViewLiveScreenComponent },
+      { path: 'emailtemplate', component: EmailTemplateComponent}
     ]
   }
 ]

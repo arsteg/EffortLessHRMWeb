@@ -183,6 +183,11 @@ export const SideBarAdminMenu = [
         id: '57',
         title: 'Tags',
         url: 'tags'
+      },
+      {
+        id: '58',
+        title: 'Email Template',
+        url: '/emailtemplate'
       }
     ]
   },
