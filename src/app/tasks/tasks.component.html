@@ -284,7 +284,7 @@
                             <div class="col-12 col-lg-3 mt-3 pr-lg-0">
                                 <div class="card border-none">
                                     <div class="card-header d-flex justify-content-between align-items-center">
-                                        <h4 class="card-title">TODO</h4>
+                                        <h4 class="card-title mb-0">TODO</h4>
                                         <div class="dropdown">
                                             <span>{{ calculateTasksLength('ToDo') }} Tasks</span>
 
@@ -365,7 +365,7 @@
                             <div class="col-12 col-lg-3 mt-3 pr-lg-0">
                                 <div class="card">
                                     <div class="card-header d-flex justify-content-between align-items-center">
-                                        <h4 class="card-title">IN PROGRESS</h4>
+                                        <h4 class="card-title mb-0">IN PROGRESS</h4>
                                         <span>{{ calculateTasksLength('In Progress') }} Tasks</span>
 
 
@@ -447,7 +447,7 @@
                             <div class="col-12 col-lg-3 mt-3 pr-lg-0">
                                 <div class="card">
                                     <div class="card-header d-flex justify-content-between align-items-center">
-                                        <h4 class="card-title">DONE</h4>
+                                        <h4 class="card-title mb-0">DONE</h4>
 
                                         <span>{{ calculateTasksLength('Done') }} Tasks</span>
 
@@ -538,7 +538,7 @@
                             <div class="col-12 col-lg-3 mt-3 pr-lg-0">
                                 <div class="card">
                                     <div class="card-header d-flex justify-content-between align-items-center">
-                                        <h4 class="card-title">CLOSED</h4>
+                                        <h4 class="card-title mb-0">CLOSED</h4>
 
                                         <span>{{ calculateTasksLength('Closed') }} Tasks </span>
 
@@ -593,7 +593,17 @@
                                                     placeholder="Please type task name..."
                                                     [(ngModel)]="newTask.taskName">
                                                 </div>
+                                               <div>
 
+                                                <label for="project" class="pt-1 pe-3">Projects: </label>
+
+                                                <select id="project" name="project" class="form-control" class="form-select form-select-sm"
+                                                    aria-label=".form-select-sm example" [(ngModel)]="newTask.projectId"
+                                                    (change)="onProjectSelectionChange(projectId)">
+                                                    <option *ngFor="let project of projectList" [value]="project.id">
+                                                        {{project.projectName}}</option>
+                                                </select>
+                                                </div>
                                                 <div>
                                                     <div class="row mt-3">
                                                         <label for="priority" class="text-start">Priority</label>
@@ -853,7 +863,6 @@
                                             </li>
                                         </ul>
                                     </div>
-                                    <!-- <input type="file" (change)="onFileSelect($event)" multiple  formControlName="taskAttachments">           -->
 
                                 </div>
                                 <div class="row mt-3">
@@ -894,170 +903,6 @@
     </div>
 </div>
 
-<!-- Update -->
-<!-- <div class="modal" id="updateModal">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-body">
-                <div class="d-flex justify-content-between">
-                    <div class="">
-                        <h4 class="modal-title text-start">Update Task</h4>
-                    </div>
-                    <div class="">
-                        <button type="button" class="btn-close text-end" data-bs-dismiss="modal"></button>
-                    </div>
-                </div>
-                <div class="row" *ngIf="selectedTask">
-                    <form class="row" [formGroup]="updateForm" (ngSubmit)="updateTask(updateForm?.value)">
-                        <div class="row d-flex justify-content-center">
-                            <div class="col-md-8">
-                                <div class="row mt-3">
-                                    <label for="project" class="text-start">Project</label>
-                                </div>
-
-                                <select class="custom-select mb-3 p-2" id="project" formControlName="project"
-                                    [(ngModel)]="selectedTask.project" required>
-                                    <option *ngFor="let project of projectList" [value]="project?.id"
-                                        [selected]="project.id === selectedTask.project?.id">
-                                        {{project?.projectName}}</option>
-                                </select>
-                                <div *ngIf="updateForm.controls['project'].invalid && updateForm.controls['project'].touched"
-                                    class="alert alert-danger error">
-                                    <div *ngIf="updateForm.controls['project'].errors['required']">
-                                        Please Select Project Name!
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <label for="taskName" class="text-start">Title</label>
-                                </div>
-                                <input type="text" id="title" name="title" class="form-control input pt-0"
-                                    formControlName="title" [(ngModel)]="selectedTask.title" required>
-                                <div *ngIf="updateForm.controls['title'].invalid && updateForm.controls['title'].touched"
-                                    class="alert alert-danger error">
-                                    <div *ngIf="updateForm.controls['title'].errors['required']">
-                                        Title is required!
-                                    </div>
-                                </div>
-
-                                <div class="row mt-3">
-                                    <label for="description" class="text-start">Description</label>
-                                </div>
-                                <input type="text" name="description" id="description" class="form-control input pt-0"
-                                    formControlName="description" [(ngModel)]="selectedTask.description" required>
-                                <div *ngIf="updateForm.controls['description'].invalid && updateForm.controls['description'].touched"
-                                    class="alert alert-danger error">
-                                    <div *ngIf="updateForm.controls['description'].errors['required']">
-                                        Description is required!
-                                    </div>
-                                </div>
-
-                                <div class="row mt-3">
-                                    <label for="endDate" class="text-start">Due Date</label>
-                                </div>
-                                <div class="row">
-                                    <div class="col-12 form-group mb-3">
-                                        <input placeholder="YYYY-MM-DD" class="form-control"
-                                            #datepickerYMD="bsDatepicker" bsDatepicker
-                                            [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="endDate"
-                                            [(ngModel)]="selectedTask.endDate" required>
-                                    </div>
-                                </div>
-                                <div *ngIf="updateForm.controls['endDate'].invalid && updateForm.controls['endDate'].touched"
-                                    class="alert alert-danger error">
-                                    <div *ngIf="updateForm.controls['endDate'].errors['required']">
-                                        Due Date is required.
-                                    </div>
-                                </div>
-
-                                <div class="row mt-3">
-                                    <label for="estimate" class="text-start">Estimate (Hours)</label>
-                                </div>
-                                <input type="number" name="estimate" id="estimate" class="form-control input  pt-0"
-                                    formControlName="estimate">
-
-                                <div class="row mt-3">
-                                    <label for="timeTaken" class="text-start">Time Taken (Hours)</label>
-                                </div>
-                                <input type="number" name="timeTaken" id="timeTaken" class="form-control input  pt-0"
-                                    formControlName="timeTaken">
-
-                                <div class="row mt-3">
-                                    <label for="priority" class="text-start">Priority</label>
-                                </div>
-                                <select class="custom-select mb-3 p-2" id="priority" formControlName="priority"
-                                    [(ngModel)]="selectedTask.priority" required>
-                                    <option value="">Select Priority</option>
-                                    <option value="Low" [selected]="selectedTask?.priority === 'low'">Low</option>
-                                    <option value="Normal" [selected]="selectedTask?.priority === 'Normal'">Normal
-                                    </option>
-                                    <option value="High" [selected]="selectedTask?.priority === 'High'">High</option>
-                                    <option value="Highest" [selected]="selectedTask?.priority === 'Highest'">Highest
-                                    </option>
-                                </select>
-                                <div *ngIf="updateForm.controls['priority'].invalid && updateForm.controls['priority'].touched"
-                                    class="alert alert-danger error">
-                                    <div *ngIf="updateForm.controls['priority'].errors['required']">
-                                        Priority Name is required!
-                                    </div>
-                                </div>
-
-
-                                <div class="row mt-3">
-                                    <label for="priority" class="text-start">Status</label>
-                                </div>
-                                <select class="custom-select mb-3 p-2" id="status" formControlName="status"
-                                    [(ngModel)]="selectedTask.status" required>
-                                    <option value="">Select Status</option>
-                                    <option value="open" [selected]="selectedTask?.status === 'open'">Open</option>
-                                    <option value="inprogress" [selected]="selectedTask?.status === 'inprogress'">In
-                                        Progress
-                                    </option>
-                                    <option value="done" [selected]="selectedTask?.status === 'done'">Done</option>
-                                    <option value="completed" [selected]="selectedTask?.status === 'completed'">
-                                        Completed
-                                    </option>
-                                </select>
-                                <div *ngIf="updateForm.controls['status'].invalid && updateForm.controls['status'].touched"
-                                    class="alert alert-danger error">
-                                    <div *ngIf="updateForm.controls['status'].errors['required']">
-                                        Status is required!
-                                    </div>
-                                </div>
-
-
-                                <div class="row mt-3">
-                                    <label for="comment" class="text-start">Comments</label>
-                                </div>
-                                <input type="text" name="comment" class="form-control input  pt-0"
-                                    formControlName="comment" [(ngModel)]="selectedTask.comment" required>
-                                <div *ngIf="updateForm.controls['comment'].invalid && updateForm.controls['comment'].touched"
-                                    class="alert alert-danger error">
-                                    <div *ngIf="updateForm.controls['comment'].errors['required']">
-                                        Comment is required!
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-between m-3">
-
-                            <div>
-                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
-                                    type="button">Cancel</button>
-                            </div>
-                            <div>
-                                <button mat-raised-button color="primary" data-bs-dismiss="modal"
-                                    type="submit">Update</button>
-                            </div>
-
-                        </div>
-                    </form>
-                </div>
-
-            </div>
-        </div>
-    </div>
-</div> -->
 
 <!-- Delete -->
 <div class="modal" id="deleteModal">
