@@ -38,7 +38,6 @@ export class DashboardComponent implements OnInit {
   ) {
 
   }
-
   ngOnInit(): void {
     this.populateTeamOfUsers();
     this.firstLetter = this.commonService.firstletter;
@@ -50,7 +49,7 @@ export class DashboardComponent implements OnInit {
     });
     console.log(this.role)
 
-  const currentDate = "2023-05-12";
+    const currentDate = new Date();
   
   this.dashboardService.HoursWorked(this.currentUser.id,currentDate).subscribe(response=>{
       this.hoursWorked = response.data;
@@ -58,10 +57,13 @@ export class DashboardComponent implements OnInit {
       if(this.hoursWorked.increased){
         const change = this.hoursWorked.today-this.hoursWorked.previousDay;
         this.hoursWorked.change = change*100/ this.hoursWorked.previousDay;
+        this.hoursWorked.changeDisplay = `+${this.hoursWorked.change.toFixed(2)}`;
+        this.hoursWorked.changeColor = '#08ad08';
       }
       else{
         const change = this.hoursWorked.previousDay - this.hoursWorked.today;
         this.hoursWorked.change = change * 100/ this.hoursWorked.previousDay;
+        this.hoursWorked.changeDisplay = `-${this.hoursWorked.change.toFixed(2)}`;
       }
   },
   err => {
@@ -74,10 +76,13 @@ export class DashboardComponent implements OnInit {
       if(this.weeklySummary.increased){
         const change = this.weeklySummary.currentWeek-this.weeklySummary.previousWeek;
         this.weeklySummary.change = change*100/ this.weeklySummary.previousWeek;
+        this.weeklySummary.changeDisplay = `+${this.weeklySummary.change.toFixed(2)}`;
+        this.weeklySummary.changeColor = '#08ad08';
       }
       else{
         const change = this.weeklySummary.previousWeek - this.weeklySummary.currentWeek;
         this.weeklySummary.change = change * 100/ this.weeklySummary.previousWeek;
+        this.weeklySummary.changeDisplay = `-${this.weeklySummary.change.toFixed(2)}`;
       }
 
   },
@@ -91,10 +96,13 @@ export class DashboardComponent implements OnInit {
       if(this.monthlySummary.increased){
         const change = this.monthlySummary.currentMonth-this.monthlySummary.previousMonth;
         this.monthlySummary.change = change*100/ this.monthlySummary.previousMonth;
+        this.monthlySummary.changeDisplay = `+${this.monthlySummary.change.toFixed(2)}`;
+        this.monthlySummary.changeColor = '#08ad08';
       }
       else{
         const change = this.monthlySummary.previousMonth - this.monthlySummary.currentMonth;
         this.monthlySummary.change = change * 100/ this.monthlySummary.previousMonth;
+        this.monthlySummary.changeDisplay = `-${this.monthlySummary.change.toFixed(2)}`;
       }
   },
   err => {
@@ -156,4 +164,23 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  convertMinutesToHoursAndMinutes(minutes: number): string {
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
+    const formattedMinutes = remainingMinutes.toFixed(0).padStart(2, '0'); // Limit to 2 digits and pad with leading zero if necessary
+    return `${hours}h ${formattedMinutes}m`;
+  }
+  formatMillisecondsToTime(milliseconds: number): string {
+    const totalSeconds = Math.floor(milliseconds / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    
+    return `${hours}h ${minutes}m`;
+  }
+  formatHoursAndMinutes(hours: number): string {
+    const roundedHours = Math.floor(hours);
+    const minutes = Math.round((hours - roundedHours) * 60);
+    
+    return `${roundedHours}h ${minutes}m`;
+  }
 }

@@ -473,3 +473,10 @@ select {
 .taskDetail-heading{
   color: #3f51b5;
 }
+
+.dash-boxes{
+  width: 410px !important;
+}
+.time{
+  font-weight: 500 !important;
+}
