@@ -1,20 +1,28 @@
 export interface HoursWorked {
   today: number;
   previousDay: number;
-  change:number
-  increased:boolean
+  change:number;
+  changeDisplay: string;
+  increased:boolean;
+  changeColor: string;
+
 }
 export interface WeeklySummary {
   currentWeek: number;
   previousWeek: number;
   change:number;
-  increased:boolean
+  increased:boolean;
+  changeDisplay: string;
+  changeColor: string;
+
 }
 export interface MonthlySummary {
   currentMonth: number;
   previousMonth: number;
   change:number;
-  increased:boolean
+  changeDisplay: string;
+  increased:boolean;
+  changeColor: string;
 }
 export interface ProjectTask {
   projectName: string;
