@@ -1,6 +1,6 @@
 export class manualTimeRequest{
   id:string;
-  user:string;
+  user:any;
   date:string;
   project:string;
   manager:string;

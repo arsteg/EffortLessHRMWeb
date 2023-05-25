@@ -18,6 +18,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class RequestApprovalComponent implements OnInit {
   manualTimeRequests: manualTimeRequest[] = [];
+  manualTimeRequestFiltered: manualTimeRequest[] = [];
   searchText: string = "";
   p: number = 1;
   selectedRequest: any;
@@ -47,12 +48,13 @@ export class RequestApprovalComponent implements OnInit {
   }
 
   fetchManualTimeRequests() {
-    this.manualTimeRequestService.getManualTimeRequestsForApprovalByUser(this.member?.id).pipe(first())
+    this.manualTimeRequestService.getManualTimeRequestsForApprovalByUser(this.id).pipe(first())
       .subscribe((res: any) => {
         this.manualTimeRequests.length = 0;
         res.data.forEach(r => {
           this.manualTimeRequests.push(r);
         });
+        this.manualTimeRequestFiltered = this.manualTimeRequests;
       },
         err => {
         });
@@ -82,7 +84,7 @@ export class RequestApprovalComponent implements OnInit {
   }
   onMemberSelectionChange(member: any) {
     this.member = JSON.parse(member.value);
-    this.fetchManualTimeRequests();
+    this.manualTimeRequestFiltered = this.manualTimeRequests.filter(req=>{ return req.user.email==this.member.email})
   }
 
   populateMembers() {

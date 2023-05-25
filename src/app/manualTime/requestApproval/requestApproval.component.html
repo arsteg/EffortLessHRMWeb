@@ -3,7 +3,7 @@
         <div class="d-flex justify-content-between">
             <h1 class="pt-4 mb-0" style="font-size: 19px;">Approval/Rejection : {{manualTimeRequests?.length}}</h1>
             <div class="me-2" style="margin-left: 73%;">
-      
+
                 <button mat-raised-button id="btnRefresh" (click)="fetchManualTimeRequests()"
                   class="bi bi-arrow-repeat header-icons text-primary" style="margin-top: 13px;"
                   ></button>
@@ -26,7 +26,7 @@
         </select>
     </span>
         </div>
-        
+
         <hr class="mt-0">
         <div class="container-fluid">
             <table class="table  mt-4">
@@ -65,7 +65,7 @@
                 </thead>
                 <tbody>
                     <tr
-                        *ngFor="let record of manualTimeRequests | search: searchText |  paginate: { itemsPerPage: 20, currentPage: p }">
+                        *ngFor="let record of manualTimeRequestFiltered | search: searchText |  paginate: { itemsPerPage: 20, currentPage: p }">
                         <td>
                             <div>{{record.date | date: 'MM/dd/yyyy'}}</div>
                         </td>
