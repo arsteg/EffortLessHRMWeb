@@ -71,6 +71,7 @@ import { ViewLiveScreenComponent } from './viewLiveScreen/view-live-screen/view-
 import { DashboardModule } from './dashboard/dashboard.module';
 import { EmailTemplateComponent } from './email-template/email-template.component';
 
+
 @NgModule({
   declarations: [
     AppComponent,

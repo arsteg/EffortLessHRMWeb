@@ -1,32 +1,35 @@
 <div class="main-content pt-0">
     <div class="container-fluid">
         <div class="d-flex justify-content-between">
-            <h1 class="pt-4 mb-0" style="font-size: 19px;">Approval/Rejection : {{manualTimeRequests?.length}}</h1>
+            <h1 class="pt-4 mb-0" style="font-size: 19px; margin-left: 22px;">Approval/Rejection : {{manualTimeRequests?.length}}</h1>
+            
             <div class="me-2" style="margin-left: 73%;">
-      
+
                 <button mat-raised-button id="btnRefresh" (click)="fetchManualTimeRequests()"
-                  class="bi bi-arrow-repeat header-icons text-primary" style="margin-top: 13px;"
-                  ></button>
-              </div>
+                    class="bi bi-arrow-repeat header-icons text-primary" style="margin-top: 13px;"></button>
+            </div>
             <div class="d-flex h-25" style="margin-top: 13px;">
                 <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
                     name="searchText" aria-label="default input example"
                     style="border-bottom: 1px solid grey; border-radius: 0;">
             </div>
         </div>
-        <div>
-            <span class="pt-3 text-muted me-3">Filter&nbsp;by: </span>
+        <div style="margin-left: 182px;
+        margin-top: -36px;">
+
             <span>
-        <label for="member" class="pt-2 pe-3">Member :</label>
-        <select style="margin-left: 140px;
-        margin-top: -26px; margin-bottom: 11px;" id="member" name="member" class="form-control" class="form-select w-50 form-select-sm"
-          aria-label=".form-select-sm example" #member (change)="onMemberSelectionChange(member)">
-          <option>Select User</option>
-          <option *ngFor="let m of members" value="{{m|json}}">{{m.name | titlecase}}</option>
-        </select>
-    </span>
+                <label for="member" class="pt-2 pe-3" style="margin-left: 53px;
+                font-size: 19px;">Member :</label>
+                <select style="margin-left: 140px;
+        margin-top: -26px; margin-bottom: 11px;" id="member" name="member" class="form-control"
+                    class="form-select w-50 form-select-sm" aria-label=".form-select-sm example" #member
+                    (change)="onMemberSelectionChange(member)">
+                    <option>Select User</option>
+                    <option *ngFor="let m of members" value="{{m|json}}">{{m.name | titlecase}}</option>
+                </select>
+            </span>
         </div>
-        
+
         <hr class="mt-0">
         <div class="container-fluid">
             <table class="table  mt-4">
@@ -35,17 +38,17 @@
                         <th [appSort]="manualTimeRequests" data-order="{{ sortOrder }}" data-name="date"
                             (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Date&nbsp;
                             <i
-                            [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                         </th>
                         <th [appSort]="manualTimeRequests" data-order="{{ sortOrder }}" data-name="user"
                             (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Requested by&nbsp;
                             <i
-                            [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                         </th>
                         <th [appSort]="manualTimeRequests" data-order="{{ sortOrder }}" data-name="project?.projectName"
                             (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Project&nbsp;
                             <i
-                            [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                         </th>
                         <th [appSort]="manualTimeRequests" data-order="{{ sortOrder }}" data-name="fromDate"
                             (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">From Date&nbsp;

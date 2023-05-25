@@ -1,48 +1,139 @@
-<div class="emailContainer col-8">
-    <h2>Email List</h2>
-   
-   <table class="table">
-     <thead>
-       <tr>
-         <th scope="col">
-           <label>
-           <input type="text" placeholder="Search Email..."  class="form-control">
-         </label>
-         </th>
-         <th scope="col"></th>
-         <th scope="col"></th>
-       </tr>
-     </thead>
-     <tbody>
-       <tr >
-         <td class="col-10">kalpana@arsteg.com</td>
-         <td class="col-1"><button  class="btn btn-primary btn-sm mr-2" style="min-width: 100px;">Edit</button></td>
-         <td class="col-1"><button  class="btn btn-danger btn-sm" style="min-width: 100px;">Delete</button></td>
-       </tr>
-     </tbody>
-   </table>
-   <div class="d-flex justify-content-center">
-     <pagination-controls ></pagination-controls>
-   </div>
-   
-   <h2>Add/Edit Email</h2>
-   
-   <form  class="mt-4 p-3 bg-light border rounded">
-   
-     <div class="form-group row">
-       <div class="col-sm-0">
-         Name:
-       </div>
-       <div class="col-sm-6">
-           <input type="text" formControlName="title" class="form-control"  >
-       </div>
-       <div class="col-sm-1">
-         <button type="submit" class="btn btn-primary ml-5"  style="min-width: 100px;">Add</button>
-       </div>
-       <div class="col-sm-1">
-         <!-- <button type="button"  class="btn btn-secondary" style="min-width: 100px;">Cancel</button> -->
-       </div>
-     </div>
-   </form>
-   </div>
-   
+<div class="main-content">
+  <div class="emailContainer col-8">
+    <h2>Email Template</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">
+            <label>
+              <input type="text" placeholder="Search Email..." class="form-control" style="width: 377%;"
+                [(ngModel)]="searchText" name="searchText">
+            </label>
+          </th>
+          <th scope="col"></th>
+          <th scope="col"></th>
+          <th scope="col"></th>
+          <th scope="col"></th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of emailList  | search: searchText">
+          <td class="col-1">{{data?.templateType}}</td>
+          <td class="col-3">{{data?.Name}}</td>
+          <td class="col-4">{{data?.contentData}}</td>
+          <td class="col-4">{{data?.subject}}</td>
+          <td class="col-1"><button class="btn btn-primary btn-sm mr-2" style="min-width: 100px;" data-bs-toggle="modal"
+              data-bs-target="#updateModal" (click)="selectedEmail=data">Edit</button></td>
+          <td class="col-1"><button class="btn btn-danger btn-sm" style="min-width: 100px;"
+              (click)="deleteEmail(data._id)">Delete</button></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="d-flex justify-content-center">
+      <pagination-controls></pagination-controls>
+    </div>
+    <div class="col-sm-1" style="margin-top: 12px;">
+      <button type="submit" class="btn btn-primary ml-5" style=" min-width: 185px;;" (click)="addemail()">Add Email
+        Template</button>
+    </div>
+    <div *ngIf="emailmodel" style="margin-top: 14px;">
+      <div>
+        <span>Add Email Template</span>
+      </div>
+      <form class="mt-4 p-3 bg-light border rounded" [formGroup]="form" (ngSubmit)="addEmail(form.value)">
+        <div class="form-group row">
+          <div class="col-sm-0">
+            Name:
+          </div>
+          <div class="col-sm-6">
+            <input type="text" formControlName="Name" class="form-control">
+          </div> <br>
+          <div class="col-sm-0" style="margin-top: 12px;">
+            Subject:
+          </div>
+          <div class="col-sm-6">
+            <input type="text" formControlName="subject" class="form-control">
+          </div><br>
+          <div class="col-sm-0" style="margin-top: 12px;">
+            Id:
+          </div>
+          <div class="col-sm-6">
+            <input type="text" formControlName="templateType" class="form-control">
+          </div><br>
+          <div class="col-sm-0" style="margin-top: 12px;">
+            Content Data:
+          </div>
+          <div class="col-sm-6">
+            <input type="text" formControlName="contentData" class="form-control">
+          </div><br>
+        </div><br>
+        <div class="col-sm-1" style="margin-top: 12px;">
+          <button type="submit" class="btn btn-primary ml-5" style="min-width: 100px;">Add</button>
+        </div>
+      </form>
+    </div>
+    <div class="modal" id="updateModal">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-body">
+            <div class="d-flex justify-content-between">
+              <div class="">
+                <h4 class="modal-title text-start">Update Email Template<b style="color: #556def"></b></h4>
+              </div>
+              <div class="">
+                <button type="button" class="btn-close text-end" data-bs-dismiss="modal"></button>
+              </div>
+            </div>
+            <div class="row" *ngIf="selectedEmail">
+              <form class="row" [formGroup]="updateForm" (ngSubmit)="updateEmail(updateForm.value)">
+                <div class="row d-flex justify-content-center">
+                  <div class="col-md-8">
+                    <div class="row">
+                      <label for="Name" class="text-start"> Name</label>
+                    </div>
+                    <input type="text" name="Name" id="Name" class="form-control input pt-0"
+                      [(ngModel)]="selectedEmail.Name" formControlName="Name" required>
+                    <div class="row" style="margin-top: 12px;">
+                      <label for="Subject" class="text-start">Subject:</label>
+                    </div>
+                    <div class="row">
+                      <div class="col-12 form-group mb-3">
+                        <input type="text" formControlName="subject" class="form-control"
+                          [(ngModel)]="selectedEmail.subject">
+                      </div>
+                    </div>
+                    <div class="row">
+                      <label for="Id:" class="text-start">Id:</label>
+                    </div>
+                    <div class="row">
+                      <div class="col-12 form-group mb-3">
+                        <input type="text" formControlName="templateType" class="form-control"
+                          [(ngModel)]="selectedEmail.templateType">
+                      </div>
+                    </div>
+                    <div class="row">
+                      <label for="Email" class="text-start"><span>
+                          Content Data: </span></label>
+                    </div>
+                    <input type="text" formControlName="contentData" class="form-control"
+                      [(ngModel)]="selectedEmail.contentData">
+                  </div>
+                </div>
+                <div class="d-flex justify-content-between m-3">
+                  <div class="">
+                    <button mat-raised-button class="mx-2" data-bs-dismiss="modal" type="button">Cancel</button>
+                  </div>
+                  <div>
+                    <button mat-raised-button color="primary" class="" data-bs-dismiss="modal"
+                      type="submit">Update</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
