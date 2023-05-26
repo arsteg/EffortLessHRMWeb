@@ -11,6 +11,7 @@ export class timeLog{
   clicks: number;
   url: string;
   _id: string;
+  isManualTime: boolean;
 }
 
 export class screenshotRow {
@@ -34,6 +35,7 @@ export class screenShotCell{
     public scrolls: number,
     public url:string,
     public _id:string,
+    public isManualTime: boolean,
     public isSelected: boolean,
     public hasValue:boolean){}
     public get GetActivityLevel() {

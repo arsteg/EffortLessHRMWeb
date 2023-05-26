@@ -135,7 +135,7 @@
             Time &nbsp;
             <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
           </th>
-          <th *ngFor="let hour of hours" scope="col">
+          <th *ngFor="let hour of hours" scope="col" width="60">
             {{ startTime.getHours() + hour }}:00
           </th>
 
@@ -154,22 +154,25 @@
             {{ minutesToTime(data?.logs.length * 10) }}
           </td>
 
-          <!-- <td *ngFor="let hour of hours" [style.padding]="0">
-            <div [style.height.px]="40" [style.width.%]="isUserActiveInHour(data.logs, startTime.getHours() + hour)"
-              [style.background-color]="isUserActiveInHour(data.logs, startTime.getHours() + hour) ? '#2ECD6F' : 'rgb(46 205 111)'"
-              [title]="getTitle(data.logs)">
-            </div>
-          </td> -->
           <td *ngFor="let hour of hours" [style.padding]="0">
-            <div [style.height.px]="40" [style.width.%]="getUserActivePercentage(data.logs, startTime.getHours() + hour)"
-                 [style.background-color]="isUserActiveInHour(data.logs, startTime.getHours() + hour) ? '#2ECD6F' : 'rgb(46 205 111)'"
-                 [style.margin-left.%]="getStartTimeMargin(data.logs, startTime.getHours() + hour)"
-                 [title]="getTitle(data.logs)">
-            </div>
+            <ng-container *ngIf="data?.logs[i]?.isManualTime ==  false">
+              <div [style.height.px]="40" [style.width.%]="isUserActiveInHour(data.logs, startTime.getHours() + hour)"
+                [style.background-color]="isUserActiveInHour(data.logs, startTime.getHours() + hour) ? '#2ECD6F' : 'rgb(46 205 111)'"
+                [tooltip]="getTitleForHour(data.logs, startTime.getHours() + hour)">
+              </div>
+            </ng-container>
+            <ng-container *ngIf="data?.logs[i]?.isManualTime == true">
+              <div [style.height.px]="40" [style.width.%]="isUserActiveInHour(data.logs, startTime.getHours() + hour)"
+                style="background-color: orange" [tooltip]="getTitleForHour(data.logs, startTime.getHours() + hour)">
+              </div>
+            </ng-container>
           </td>
-        
-          
-          
+          <!-- <td><pre>{{data?.logs[i]?.isManualTime| json}}</pre></td> -->
+
+         
+
+
+
         </tr>
       </tbody>
     </table>

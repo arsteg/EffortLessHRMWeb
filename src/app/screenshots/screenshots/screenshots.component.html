@@ -1,202 +1,256 @@
 <div class="main-content">
-<div class="container-fluid selectdate">
-  <div class=" d-flex justify-content-between mt-5">
-    <div class="">
-      <div class="input-group date-style">
-        <span (click)="SetPreviousDay()" class="fa fa-angle-left fa-lg p-3"></span>
-        <input type="date" name="date" id="date" class="form-control calendar" [(ngModel)]="selectedDate"
-          (change)="showScreenShots()" />
-        <span (click)="SetNextDay()" class="fa fa-angle-right fa-lg p-3"></span>
+  <div class="container-fluid selectdate">
+    <div class=" d-flex justify-content-between mt-5">
+      <div class="">
+        <div class="input-group date-style">
+          <span (click)="SetPreviousDay()" class="fa fa-angle-left fa-lg p-3"></span>
+          <input type="date" name="date" id="date" class="form-control calendar" [(ngModel)]="selectedDate"
+            (change)="showScreenShots()" />
+          <span (click)="SetNextDay()" class="fa fa-angle-right fa-lg p-3"></span>
+        </div>
+      </div>
+      <div class=" pt-1 d-flex text-center mx-4">
+        <label for="member" class="pt-2 pe-3">Member </label>
+        <select id="member" name="member" class="form-control" class="form-select form-select-sm"
+          aria-label=".form-select-sm example" #member (change)="onMemberSelectionChange(member)">
+          <option *ngFor="let m of members" value="{{m|json}}">{{m.name | titlecase}}</option>
+        </select>
+      </div>
+
+      <div class="text-center pt-1 me-2">
+        <label>Total time: {{padValue(totalHours)}} h {{padValue(totalMinutes)}}&nbsp;m</label>
+      </div>
+      <div class="pt-1">
+        <label>This week: {{padValue(currentWeekTotalHours)}} h {{padValue(currentWeekTotalMinutes)}}&nbsp;m</label>
+      </div>
+      <div class="pt-1 me-2">
+        <label>This month: {{padValue(currentMonthTotalHours)}} h {{padValue(currentMonthTotalMinutes)}}&nbsp;m</label>
+      </div>
+      <div class="me-2">
+        <button mat-raised-button id="btnRefresh" (click)="showScreenShots()"
+          class="bi bi-arrow-repeat header-icons text-primary"></button>
+      </div>
+      <div class="me-2">
+        <button mat-raised-button class="bi bi-trash header-icons text-danger" (click)="deleteScreenShot()"></button>
       </div>
     </div>
-    <div class=" pt-1 d-flex text-center mx-4">
-      <label for="member" class="pt-2 pe-3">Member </label>
-      <select id="member" name="member" class="form-control" class="form-select form-select-sm"
-        aria-label=".form-select-sm example" #member (change)="onMemberSelectionChange(member)">
-        <option *ngFor="let m of members" value="{{m|json}}">{{m.name | titlecase}}</option>
-      </select>
-    </div>
+    <hr>
 
-    <div class="text-center pt-1 me-2">
-      <label>Total time: {{padValue(totalHours)}} h {{padValue(totalMinutes)}}&nbsp;m</label>
-    </div>
-    <div class="pt-1">
-      <label>This week: {{padValue(currentWeekTotalHours)}} h {{padValue(currentWeekTotalMinutes)}}&nbsp;m</label>
-    </div>
-    <div class="pt-1 me-2">
-      <label>This month: {{padValue(currentMonthTotalHours)}} h {{padValue(currentMonthTotalMinutes)}}&nbsp;m</label>
-    </div>
-    <div class="me-2">
-      <button mat-raised-button id="btnRefresh" (click)="showScreenShots()"
-        class="bi bi-arrow-repeat header-icons text-primary"></button>
-    </div>
-    <div class="me-2">
-      <button mat-raised-button class="bi bi-trash header-icons text-danger" (click)="deleteScreenShot()"></button>
+    <div *ngFor="let timeLog of screenshotRows; let index = index " class="row my-2">
+      <div class="form-check row-check d-flex ps-2">
+        <label class="form-check-label">
+          {{timeLog.col1.timeLabel}}
+        </label>
+        <input class="form-check-input ms-1" type="checkbox" value="" (change)="selectAll($event, index)"
+          [(ngModel)]="timeLog['isRowSelected']">
+
+      </div>
+
+      <div class="col-sm-2" *ngIf="timeLog?.col1?.url">
+        <figure>
+          <div class="form-check check">
+            <input class="form-check-input" type="checkbox" value="" [(ngModel)]="timeLog.col1['isSelected']"
+              (change)="isRowSelected($event, timeLog.col1._id, index)">
+            <label class="form-check-label" for="flexCheckDefault">
+            </label>
+          </div>
+          <img src="{{timeLog.col1.url}}" data-bs-toggle="modal" data-bs-target="#bigImageModal"
+            (click)="setSelectedScreenshot($event)" />
+          <figcaption class="figure-caption text-center"
+            [tooltip]="'Clicks: ' + (timeLog.col1.clicks || 0) + ', Keyboard: '+ (timeLog.col1.keysPressed || 0) + ', Scroll: '+ (timeLog.col1.scrolls || 0)"
+            [style.background-color]="getActivityColor(timeLog.col1.GetActivityLevel)">{{timeLog.col1.timeLabel}}
+          </figcaption>
+        </figure>
+      </div>
+      <div class="col-sm-2" *ngIf="!timeLog?.col1?.url && !timeLog?.col1?.isManualTime">
+        <figure>
+          <img *ngIf="!timeLog?.col1?.url" src="{{imageBasepath+defaultScreenshot}}" />
+          <figcaption class="figure-caption text-center"
+            [style.background-color]="getActivityColor(timeLog.col1.GetActivityLevel)">{{timeLog.col1.timeLabel}}
+          </figcaption>
+        </figure>
+      </div>
+      <div class="col-sm-2" *ngIf="timeLog?.col1?.isManualTime == true">
+        <figure>
+          <img *ngIf="timeLog?.col1?.isManualTime" src="{{imageBasepath + manualTimeImg}}" />
+          <figcaption class="figure-caption text-center"
+            [style.background-color]="getActivityColor(timeLog?.col1?.GetActivityLevel)? '#f16516': ''">
+            {{timeLog.col1.timeLabel}}
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="col-sm-2" *ngIf="timeLog?.col2?.url">
+        <figure>
+          <div class="form-check check">
+            <input class="form-check-input" type="checkbox" value="" [(ngModel)]="timeLog.col2['isSelected']"
+              (change)="isRowSelected($event, timeLog.col2._id, index)">
+            <label class="form-check-label" for="flexCheckDefault">
+            </label>
+          </div>
+          <img src="{{timeLog.col2.url}}" data-bs-toggle="modal" data-bs-target="#bigImageModal"
+            (click)="setSelectedScreenshot($event)" />
+          <figcaption class="figure-caption text-center"
+            [tooltip]="'Clicks: ' + (timeLog.col2.clicks || 0) + ', Keyboard: '+ (timeLog.col2.keysPressed || 0) + ', Scroll: '+ (timeLog.col2.scrolls || 0)"
+            [style.background-color]="getActivityColor(timeLog?.col2?.GetActivityLevel)">{{timeLog.col2.timeLabel}}
+          </figcaption>
+        </figure>
+      </div>
+      <div class="col-sm-2" *ngIf="!timeLog?.col2?.url && !timeLog?.col2?.isManualTime">
+        <figure>
+          <img src="{{imageBasepath+defaultScreenshot}}" />
+          <figcaption class="figure-caption text-center"
+            [style.background-color]="getActivityColor(timeLog?.col2?.GetActivityLevel)">{{timeLog.col2.timeLabel}}
+          </figcaption>
+        </figure>
+      </div>
+      <div class="col-sm-2" *ngIf="timeLog?.col2?.isManualTime == true">
+        <figure>
+          <img *ngIf="timeLog?.col2?.isManualTime" src="{{imageBasepath + manualTimeImg}}" />
+          <figcaption class="figure-caption text-center"
+            [style.background-color]="getActivityColor(timeLog?.col2?.GetActivityLevel)? '#f16516': ''">
+            {{timeLog.col2.timeLabel}}
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="col-sm-2" *ngIf="timeLog?.col3?.url">
+        <figure>
+          <div class="form-check check">
+            <input class="form-check-input" type="checkbox" value="" [(ngModel)]="timeLog.col3['isSelected']"
+              (change)="isRowSelected($event, timeLog.col3._id, index)">
+            <label class="form-check-label" for="flexCheckDefault">
+            </label>
+          </div>
+          <img src="{{timeLog.col3.url}}" data-bs-toggle="modal" data-bs-target="#bigImageModal"
+            (click)="setSelectedScreenshot($event)" />
+          <figcaption class="figure-caption text-center"
+            [tooltip]="'Clicks: ' + (timeLog.col3.clicks || 0) + ', Keyboard: '+ (timeLog.col3.keysPressed || 0) + ', Scroll: '+ (timeLog.col3.scrolls || 0)"
+            [style.background-color]="getActivityColor(timeLog?.col3?.GetActivityLevel)">{{timeLog?.col3?.timeLabel}}
+          </figcaption>
+        </figure>
+      </div>
+      <div class="col-sm-2" *ngIf="!timeLog?.col3?.url && !timeLog?.col3?.isManualTime">
+        <figure>
+          <img src="{{imageBasepath+defaultScreenshot}}" />
+          <figcaption class="figure-caption text-center"
+            [style.background-color]="getActivityColor(timeLog?.col3?.GetActivityLevel)">{{timeLog?.col3?.timeLabel}}
+          </figcaption>
+        </figure>
+      </div>
+      <div class="col-sm-2" *ngIf="timeLog?.col3?.isManualTime == true">
+        <figure>
+          <img *ngIf="timeLog?.col3?.isManualTime" src="{{imageBasepath + manualTimeImg}}" />
+          <figcaption class="figure-caption text-center"
+            [style.background-color]="getActivityColor(timeLog?.col3?.GetActivityLevel)? '#f16516': ''">
+            {{timeLog.col3.timeLabel}}
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="col-sm-2" *ngIf="timeLog?.col4?.url">
+        <figure>
+          <div class="form-check check">
+            <input class="form-check-input" type="checkbox" value="" [(ngModel)]="timeLog.col4['isSelected']"
+              (change)="isRowSelected($event, timeLog.col4._id, index)">
+            <label class="form-check-label" for="flexCheckDefault">
+            </label>
+          </div>
+          <img src="{{timeLog.col4.url}}" data-bs-toggle="modal" data-bs-target="#bigImageModal"
+            (click)="setSelectedScreenshot($event)" />
+          <figcaption class="figure-caption text-center"
+            [tooltip]="'Clicks: ' + (timeLog.col4.clicks || 0) + ', Keyboard: '+ (timeLog.col4.keysPressed || 0) + ', Scroll: '+ (timeLog.col4.scrolls || 0)"
+            [style.background-color]="getActivityColor(timeLog?.col4?.GetActivityLevel)">{{timeLog?.col4?.timeLabel}}
+          </figcaption>
+        </figure>
+      </div>
+      <div class="col-sm-2" *ngIf="!timeLog?.col4?.url && !timeLog?.col4?.isManualTime">
+        <figure>
+          <img src="{{imageBasepath+defaultScreenshot}}" />
+          <figcaption class="figure-caption text-center"
+            [style.background-color]="getActivityColor(timeLog?.col4?.GetActivityLevel)">{{timeLog?.col4?.timeLabel}}
+          </figcaption>
+        </figure>
+      </div>
+      <div class="col-sm-2" *ngIf="timeLog?.col4?.isManualTime == true">
+        <figure>
+          <img *ngIf="timeLog?.col4?.isManualTime" src="{{imageBasepath + manualTimeImg}}" />
+          <figcaption class="figure-caption text-center"
+            [style.background-color]="getActivityColor(timeLog?.col4?.GetActivityLevel)? '#f16516': ''">
+            {{timeLog.col4.timeLabel}}
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="col-sm-2" *ngIf="timeLog?.col5?.url">
+        <figure>
+          <div class="form-check check">
+            <input class="form-check-input" type="checkbox" value="" [(ngModel)]="timeLog.col5['isSelected']"
+              (change)="isRowSelected($event, timeLog.col5._id, index)">
+            <label class="form-check-label" for="flexCheckDefault">
+            </label>
+          </div>
+          <img src="{{timeLog.col5.url}}" data-bs-toggle="modal" data-bs-target="#bigImageModal"
+            (click)="setSelectedScreenshot($event)" />
+          <figcaption class="figure-caption text-center"
+            [tooltip]="'Clicks: ' + (timeLog.col5.clicks || 0) + ', Keyboard: '+ (timeLog.col5.keysPressed || 0) + ', Scroll: '+ (timeLog.col5.scrolls || 0)"
+            [style.background-color]="getActivityColor(timeLog?.col5?.GetActivityLevel)">{{timeLog.col5.timeLabel}}
+          </figcaption>
+        </figure>
+      </div>
+      <div class="col-sm-2" *ngIf="!timeLog?.col5?.url && !timeLog?.col5?.isManualTime">
+        <figure>
+          <img src="{{imageBasepath+defaultScreenshot}}" />
+          <figcaption class="figure-caption text-center"
+            [style.background-color]="getActivityColor(timeLog?.col5?.GetActivityLevel)">{{timeLog.col5.timeLabel}}
+          </figcaption>
+        </figure>
+      </div>
+      <div class="col-sm-2" *ngIf="timeLog?.col5?.isManualTime == true">
+        <figure>
+          <img *ngIf="timeLog?.col5?.isManualTime" src="{{imageBasepath + manualTimeImg}}" />
+          <figcaption class="figure-caption text-center"
+            [style.background-color]="getActivityColor(timeLog?.col5?.GetActivityLevel)? '#f16516': ''">
+            {{timeLog.col5.timeLabel}}
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="col-sm-2" *ngIf="timeLog?.col6?.url">
+        <figure>
+          <div class="form-check check">
+            <input class="form-check-input" type="checkbox" value="" [(ngModel)]="timeLog.col6['isSelected']"
+              (change)="isRowSelected($event, timeLog.col6._id, index)">
+            <label class="form-check-label" for="flexCheckDefault">
+            </label>
+          </div>
+          <img src="{{timeLog.col6.url}}" data-bs-toggle="modal" data-bs-target="#bigImageModal"
+            (click)="setSelectedScreenshot($event)" />
+          <figcaption class="figure-caption text-center"
+            [tooltip]="'Clicks: ' + (timeLog.col6.clicks || 0) + ', Keyboard: '+ (timeLog.col6.keysPressed || 0) + ', Scroll: '+ (timeLog.col6.scrolls || 0)"
+            [style.background-color]="getActivityColor(timeLog?.col6?.GetActivityLevel)">{{timeLog.col6.timeLabel}}
+          </figcaption>
+        </figure>
+      </div>
+      <div class="col-sm-2" *ngIf="!timeLog?.col6?.url && !timeLog?.col6?.isManualTime">
+        <figure>
+          <img src="{{imageBasepath+defaultScreenshot}}" />
+          <figcaption class="figure-caption text-center"
+            [style.background-color]="getActivityColor(timeLog?.col6?.GetActivityLevel)">{{timeLog.col6.timeLabel}}
+          </figcaption>
+        </figure>
+      </div>
+      <div class="col-sm-2" *ngIf="timeLog?.col6?.isManualTime == true">
+        <figure>
+          <img *ngIf="timeLog?.col6?.isManualTime" src="{{imageBasepath + manualTimeImg}}" />
+          <figcaption class="figure-caption text-center"
+            [style.background-color]="getActivityColor(timeLog?.col6?.GetActivityLevel)? '#f16516': ''">
+            {{timeLog.col6.timeLabel}}
+          </figcaption>
+        </figure>
+      </div>
     </div>
   </div>
-  <hr>
-
-  <div *ngFor="let timeLog of screenshotRows; let index = index " class="row my-2">
-    <div class="form-check row-check d-flex ps-2">
-      <label class="form-check-label">
-        {{timeLog.col1.timeLabel}}
-      </label>
-      <input class="form-check-input ms-1" type="checkbox" value=""
-       (change)="selectAll($event, index)" [(ngModel)]="timeLog['isRowSelected']">
-    
-    </div>
-
-    <div class="col-sm-2" *ngIf="timeLog?.col1?.url">
-      <figure>
-        <div class="form-check check">
-          <input class="form-check-input" type="checkbox" value="" [(ngModel)]="timeLog.col1['isSelected']"
-          (change)="isRowSelected($event, timeLog.col1._id, index)" >
-          <label class="form-check-label" for="flexCheckDefault">
-          </label>
-        </div>
-        <img src="{{timeLog.col1.url}}" data-bs-toggle="modal" data-bs-target="#bigImageModal"
-          (click)="setSelectedScreenshot($event)"/>
-        <figcaption class="figure-caption text-center"
-          [tooltip]="'Clicks: ' + (timeLog.col1.clicks || 0) + ', Keyboard: '+ (timeLog.col1.keysPressed || 0) + ', Scroll: '+ (timeLog.col1.scrolls || 0)"
-          [style.background-color]="getActivityColor(timeLog.col1.GetActivityLevel)">{{timeLog.col1.timeLabel}}
-        </figcaption>
-      </figure>
-    </div>
-    <div class="col-sm-2" *ngIf="!timeLog?.col1?.url">
-      <figure>
-        <img *ngIf="!timeLog?.col1?.url" src="{{imageBasepath+defaultScreenshot}}" />
-        <figcaption class="figure-caption text-center"
-          [style.background-color]="getActivityColor(timeLog.col1.GetActivityLevel)">{{timeLog.col1.timeLabel}}
-        </figcaption>
-      </figure>
-    </div>
-
-    <div class="col-sm-2" *ngIf="timeLog?.col2?.url">
-      <figure>
-        <div class="form-check check">
-          <input class="form-check-input" type="checkbox" value="" [(ngModel)]="timeLog.col2['isSelected']"
-           (change)="isRowSelected($event, timeLog.col2._id, index)">
-          <label class="form-check-label" for="flexCheckDefault">
-          </label>
-        </div>
-        <img src="{{timeLog.col2.url}}" data-bs-toggle="modal" data-bs-target="#bigImageModal"
-          (click)="setSelectedScreenshot($event)" />
-        <figcaption class="figure-caption text-center"
-          [tooltip]="'Clicks: ' + (timeLog.col2.clicks || 0) + ', Keyboard: '+ (timeLog.col2.keysPressed || 0) + ', Scroll: '+ (timeLog.col2.scrolls || 0)"
-          [style.background-color]="getActivityColor(timeLog?.col2?.GetActivityLevel)">{{timeLog.col2.timeLabel}}
-        </figcaption>
-      </figure>
-    </div>
-    <div class="col-sm-2" *ngIf="!timeLog?.col2?.url">
-      <figure>
-        <img src="{{imageBasepath+defaultScreenshot}}" />
-        <figcaption class="figure-caption text-center"
-          [style.background-color]="getActivityColor(timeLog?.col2?.GetActivityLevel)">{{timeLog.col2.timeLabel}}
-        </figcaption>
-      </figure>
-    </div>
-
-    <div class="col-sm-2" *ngIf="timeLog?.col3?.url">
-      <figure>
-        <div class="form-check check">
-          <input class="form-check-input" type="checkbox" value="" [(ngModel)]="timeLog.col3['isSelected']"
-           (change)="isRowSelected($event, timeLog.col3._id, index)" >
-          <label class="form-check-label" for="flexCheckDefault">
-          </label>
-        </div>
-        <img src="{{timeLog.col3.url}}" data-bs-toggle="modal" data-bs-target="#bigImageModal"
-          (click)="setSelectedScreenshot($event)" />
-        <figcaption class="figure-caption text-center"
-          [tooltip]="'Clicks: ' + (timeLog.col3.clicks || 0) + ', Keyboard: '+ (timeLog.col3.keysPressed || 0) + ', Scroll: '+ (timeLog.col3.scrolls || 0)"
-          [style.background-color]="getActivityColor(timeLog?.col3?.GetActivityLevel)">{{timeLog?.col3?.timeLabel}}
-        </figcaption>
-      </figure>
-    </div>
-    <div class="col-sm-2" *ngIf="!timeLog?.col3?.url">
-      <figure>
-        <img src="{{imageBasepath+defaultScreenshot}}" />
-        <figcaption class="figure-caption text-center"
-          [style.background-color]="getActivityColor(timeLog?.col3?.GetActivityLevel)">{{timeLog?.col3?.timeLabel}}
-        </figcaption>
-      </figure>
-    </div>
-
-    <div class="col-sm-2" *ngIf="timeLog?.col4?.url">
-      <figure>
-        <div class="form-check check">
-          <input class="form-check-input" type="checkbox" value="" [(ngModel)]="timeLog.col4['isSelected']"
-           (change)="isRowSelected($event, timeLog.col4._id, index)">
-          <label class="form-check-label" for="flexCheckDefault">
-          </label>
-        </div>
-        <img src="{{timeLog.col4.url}}" data-bs-toggle="modal" data-bs-target="#bigImageModal"
-          (click)="setSelectedScreenshot($event)" />
-        <figcaption class="figure-caption text-center"
-          [tooltip]="'Clicks: ' + (timeLog.col4.clicks || 0) + ', Keyboard: '+ (timeLog.col4.keysPressed || 0) + ', Scroll: '+ (timeLog.col4.scrolls || 0)"
-          [style.background-color]="getActivityColor(timeLog?.col4?.GetActivityLevel)">{{timeLog?.col4?.timeLabel}}
-        </figcaption>
-      </figure>
-    </div>
-    <div class="col-sm-2" *ngIf="!timeLog?.col4?.url">
-      <figure>
-        <img src="{{imageBasepath+defaultScreenshot}}" />
-        <figcaption class="figure-caption text-center"
-          [style.background-color]="getActivityColor(timeLog?.col4?.GetActivityLevel)">{{timeLog?.col4?.timeLabel}}
-        </figcaption>
-      </figure>
-    </div>
-
-    <div class="col-sm-2" *ngIf="timeLog?.col5?.url">
-      <figure>
-        <div class="form-check check">
-          <input class="form-check-input" type="checkbox" value="" [(ngModel)]="timeLog.col5['isSelected']"
-           (change)="isRowSelected($event, timeLog.col5._id, index)" >
-          <label class="form-check-label" for="flexCheckDefault">
-          </label>
-        </div>
-        <img src="{{timeLog.col5.url}}" data-bs-toggle="modal" data-bs-target="#bigImageModal"
-          (click)="setSelectedScreenshot($event)" />
-        <figcaption class="figure-caption text-center"
-          [tooltip]="'Clicks: ' + (timeLog.col5.clicks || 0) + ', Keyboard: '+ (timeLog.col5.keysPressed || 0) + ', Scroll: '+ (timeLog.col5.scrolls || 0)"
-          [style.background-color]="getActivityColor(timeLog?.col5?.GetActivityLevel)">{{timeLog.col5.timeLabel}}
-        </figcaption>
-      </figure>
-    </div>
-    <div class="col-sm-2" *ngIf="!timeLog?.col5?.url">
-      <figure>
-        <img src="{{imageBasepath+defaultScreenshot}}" />
-        <figcaption class="figure-caption text-center"
-          [style.background-color]="getActivityColor(timeLog?.col5?.GetActivityLevel)">{{timeLog.col5.timeLabel}}
-        </figcaption>
-      </figure>
-    </div>
-
-    <div class="col-sm-2" *ngIf="timeLog?.col6?.url">
-      <figure>
-        <div class="form-check check">
-          <input class="form-check-input" type="checkbox" value="" [(ngModel)]="timeLog.col6['isSelected']"
-           (change)="isRowSelected($event, timeLog.col6._id, index)">
-          <label class="form-check-label" for="flexCheckDefault">
-          </label>
-        </div>
-        <img src="{{timeLog.col6.url}}" data-bs-toggle="modal" data-bs-target="#bigImageModal"
-          (click)="setSelectedScreenshot($event)" />
-        <figcaption class="figure-caption text-center"
-          [tooltip]="'Clicks: ' + (timeLog.col6.clicks || 0) + ', Keyboard: '+ (timeLog.col6.keysPressed || 0) + ', Scroll: '+ (timeLog.col6.scrolls || 0)"
-          [style.background-color]="getActivityColor(timeLog?.col6?.GetActivityLevel)">{{timeLog.col6.timeLabel}}
-        </figcaption>
-      </figure>
-    </div>
-    <div class="col-sm-2" *ngIf="!timeLog?.col6?.url">
-      <figure>
-        <img src="{{imageBasepath+defaultScreenshot}}" />
-        <figcaption class="figure-caption text-center"
-          [style.background-color]="getActivityColor(timeLog?.col6?.GetActivityLevel)">{{timeLog.col6.timeLabel}}
-        </figcaption>
-      </figure>
-    </div>
-  </div>
-</div>
 </div>
 <div class="modal fade" role="dialog" id="bigImageModal" tabindex="0" aria-labelledby="bigImageModalLabel"
   aria-hidden="true">
@@ -208,7 +262,7 @@
             <div class="row">
               <div class="col-sm-12">
                 <div class="carousel-item active">
-                  <img class="modal-image" src="{{selectedScreenShot}}"/>
+                  <img class="modal-image" src="{{selectedScreenShot}}" />
                 </div>
                 <a class="carousel-control-prev" data-bs-slide="prev">
                   <span class="carousel-control-prev-icon" (click)=SetPreviousScreen()></span>

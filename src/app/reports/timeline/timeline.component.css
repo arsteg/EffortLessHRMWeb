@@ -77,3 +77,8 @@ table{
 .low:after{
     background-color: red;
 }
+.gap {
+    height: 40px;
+    background-color: #C8CCDE;
+  }
+  

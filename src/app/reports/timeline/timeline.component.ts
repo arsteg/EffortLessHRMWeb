@@ -127,7 +127,7 @@ export class TimelineComponent implements OnInit {
     timeline.users = (this.roleId == "639acb77b5e1ffe22eaa4a39" || this.roleId == "63b56b9ca3396271e4a54b96") ? this.selectedUser : [this.currentUser.id];
     this.reportService.getTimeline(timeline).subscribe(result => {
       this.timeline = result.data;
-      this.timeline.forEach((data) => {
+     this.timeline.forEach((data) => {
         const logs = data.logs;
         const hoursDiff = this.getEarliestAndLatestLogTime(logs);
         for (let i = 0; i < hoursDiff; i++) {
@@ -196,16 +196,9 @@ export class TimelineComponent implements OnInit {
   
     return percentage;
   }  
-  getTitle(logs: any[]) {
-    if (!logs || logs.length === 0) {
-      return "";
-    }
-    const startTime = this.formatTime(logs[0].startTime);
-    const endTime = this.formatTime(logs[logs.length - 1].endTime);
-    return `${startTime} - ${endTime}`;
-  }
   
-// ---------------
+  
+
 getUserActivePercentage(logs: any[], hour: number): number {
   const startTimeHour = this.startTime.getHours();
   const startTimeMinute = this.startTime.getMinutes();
@@ -264,6 +257,70 @@ getStartTimeMargin(logs: any[], hour: number): number {
   }
 
   return 0;
+}
+// Title Implementation for Logs
+getTitleForHour(logs: any[], hour: number): string {
+  if (!logs || logs.length === 0) {
+    return "";
+  }
+
+  const filteredLogs = logs.filter((log) => {
+    const logHour = new Date(log.startTime).getHours();
+    return logHour === hour;
+  });
+
+  if (filteredLogs.length === 0) {
+    return "";
+  }
+
+  const startTime = this.formatTime(filteredLogs[0].startTime);
+  const endTime = this.formatTime(filteredLogs[filteredLogs.length - 1].endTime);
+  const clicks = filteredLogs.reduce((total, log) => total + log.clicks, 0);
+  const keysPressed = filteredLogs.reduce((total, log) => total + log.keysPressed, 0);
+  const scroll = filteredLogs.reduce((total, log) => total + log.scrolls, 0);
+
+  return `${startTime} - ${endTime} | Clicks: ${clicks} | Keys Pressed: ${keysPressed} | Scroll: ${scroll}`;
+}
+getClicksForHour(logs: any[], hour: number): number {
+  if (!logs || logs.length === 0) {
+    return 0;
+  }
+
+  const filteredLogs = logs.filter((log) => {
+    const logHour = new Date(log.startTime).getHours();
+    return logHour === hour;
+  });
+
+  const totalClicks = filteredLogs.reduce((total, log) => total + log.clicks, 0);
+  return totalClicks;
+}
+
+getKeysPressedForHour(logs: any[], hour: number): number {
+  if (!logs || logs.length === 0) {
+    return 0;
+  }
+
+  const filteredLogs = logs.filter((log) => {
+    const logHour = new Date(log.startTime).getHours();
+    return logHour === hour;
+  });
+
+  const totalKeysPressed = filteredLogs.reduce((total, log) => total + log.keysPressed, 0);
+  return totalKeysPressed;
+}
+
+getScrollForHour(logs: any[], hour: number): number {
+  if (!logs || logs.length === 0) {
+    return 0;
+  }
+
+  const filteredLogs = logs.filter((log) => {
+    const logHour = new Date(log.startTime).getHours();
+    return logHour === hour;
+  });
+
+  const totalScroll = filteredLogs.reduce((total, log) => total + log.scrolls, 0);
+  return totalScroll;
 }
 
 

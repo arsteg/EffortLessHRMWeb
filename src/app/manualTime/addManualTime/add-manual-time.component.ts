@@ -113,7 +113,7 @@ export class AddManualTimeComponent implements OnInit {
         });
   }
   onSubmit(){
-    this.timeLogService.addManualTime(this.userEmail,this.selectedTask,this.selectedProject, this.utilsService.convertToUTC( this.startDate), this.utilsService.convertToUTC(this.endDate),this.utilsService.convertToUTC(new Date())).pipe(first())
+    this.timeLogService.addManualTime(this.id,this.selectedTask,this.selectedProject, this.utilsService.convertToUTC( this.startDate), this.utilsService.convertToUTC(this.endDate),this.utilsService.convertToUTC(new Date())).pipe(first())
     .subscribe((res:any) => {
       this.notifyService.showSuccess("Manual time added successfully", "success");
     },
