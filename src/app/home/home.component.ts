@@ -17,7 +17,11 @@ export class HomeComponent implements OnInit {
   portalType: string = 'user';
   adminView: string = 'admin';
   currentProfile: any;
-
+  dropdownOpen: boolean = false;
+  selectedOption: string;
+  options: string[] = ['You spent the 7 connects on the availability', 
+                       'The work week has ended, and your weekly summary is available for summary', 
+                        'Your Proposal to job'];
   constructor(private router: Router, private auth: AuthenticationService) { }
 
   ngOnInit(): void {
@@ -59,6 +63,13 @@ export class HomeComponent implements OnInit {
     })
   }
   
+ 
+
+  toggleDropdown() {
+    // this.dropdownOpen = !this.dropdownOpen;
+    this.dropdownOpen=this.dropdownOpen==false ? true:false
+    
+  }
   switchView(view: string) {
     this.adminView = view;
     localStorage.setItem('adminView', view);
