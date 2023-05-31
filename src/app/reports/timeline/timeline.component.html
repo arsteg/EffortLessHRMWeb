@@ -155,21 +155,36 @@
           </td>
 
           <td *ngFor="let hour of hours" [style.padding]="0">
-            <ng-container *ngIf="data?.logs[i]?.isManualTime ==  false">
-              <div [style.height.px]="40" [style.width.%]="isUserActiveInHour(data.logs, startTime.getHours() + hour)"
-                [style.background-color]="isUserActiveInHour(data.logs, startTime.getHours() + hour) ? '#2ECD6F' : 'rgb(46 205 111)'"
+            <ng-container>
+              <div *ngIf="!hasManualTimeLogs(data.logs)" [style.height.px]="40"
+                [style.width.%]="getUserActivePercentage(data.logs, startTime.getHours() + hour)"
+                [style.background-color]="getUserActiveColor(data.logs, startTime.getHours() + hour)"
+                [tooltip]="getTitleForHour(data.logs, startTime.getHours() + hour)"
+                [style.margin-left.%]="getStartTimeMargin(data.logs, startTime.getHours() + hour)">
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="hasManualTimeLogs(data.logs)">
+              <div [style.height.px]="40" [style.width.%]="getUserLogWidth(data.logs, startTime.getHours() + hour)"
+                [style.background-color]="'#ff7309'" *ngIf="getUserLogWidth(data.logs, startTime.getHours() + hour) > 0"
+                [tooltip]="getTitleForHour(data.logs, startTime.getHours() + hour)"
+                [style.width.%]="getUserActivePercentage(data.logs, startTime.getHours() + hour)"
+                [style.margin-left.%]="getStartTimeMargin(data.logs, startTime.getHours() + hour)">
+              </div>
+              <div [style.height.px]="40"
+                [style.width.%]="getUserActivePercentage(data.logs, startTime.getHours() + hour)"
+                [style.margin-left.%]="getStartTimeMargin(data.logs, startTime.getHours() + hour)"
+                [style.background-color]="getUserActiveColor(data.logs, startTime.getHours() + hour)"
+                *ngIf="getUserLogWidth(data.logs, startTime.getHours() + hour) === 0"
                 [tooltip]="getTitleForHour(data.logs, startTime.getHours() + hour)">
               </div>
             </ng-container>
-            <ng-container *ngIf="data?.logs[i]?.isManualTime == true">
-              <div [style.height.px]="40" [style.width.%]="isUserActiveInHour(data.logs, startTime.getHours() + hour)"
-                style="background-color: orange" [tooltip]="getTitleForHour(data.logs, startTime.getHours() + hour)">
-              </div>
-            </ng-container>
           </td>
-          <!-- <td><pre>{{data?.logs[i]?.isManualTime| json}}</pre></td> -->
 
-         
+
+
+
+
 
 
 

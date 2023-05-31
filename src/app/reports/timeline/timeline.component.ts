@@ -41,7 +41,7 @@ export class TimelineComponent implements OnInit {
   hours: number[] = [];
   startTime: Date;
   count: number = 0;
-
+  userLog: any;
   constructor(
     private projectService: ProjectService,
     private timeLogService: TimeLogService,
@@ -49,7 +49,7 @@ export class TimelineComponent implements OnInit {
     private reportService: ReportsService,
     public datepipe: DatePipe,
     public commonservice: CommonService
-  ) { 
+  ) {
     this.fromDate = this.datepipe.transform(new Date(this.currentDate), 'yyyy-MM-dd');
     this.toDate = this.datepipe.transform(new Date(this.currentDate), 'yyyy-MM-dd');
   }
@@ -119,6 +119,46 @@ export class TimelineComponent implements OnInit {
     this.getTimeLine();
   }
 
+
+  getUserLogWidth(logs: any[], hour: number): number {
+    const userLog = logs.find(log => log.isManualTime === true && hour >= new Date(log.startTime).getHours() && hour <= new Date(log.endTime).getHours());
+    if (userLog) {
+      const logStart = new Date(userLog.startTime);
+      const logEnd = new Date(userLog.endTime);
+
+      const logDuration = (logEnd.getTime() - logStart.getTime()) / (1000 * 60); // Duration in minutes
+      const totalMinutes = 60;
+
+      return (logDuration / totalMinutes) * 100; // Calculate the width percentage
+    }
+
+    return 0; // User log not found, return 0 width
+  }
+
+  hasManualTimeLogs(logs: any[]): boolean {
+    return logs.some(log => log.isManualTime === true);
+  }
+
+  getUserActiveColor(logs: any[], hour: number): string {
+    const totalClicks = this.getTotalClicks(logs, hour);
+
+    if (totalClicks <= 80) {
+      return '#ff0000';
+    } else if (totalClicks <= 150) {
+      return '#FFC107';
+
+    } else {
+      return this.isUserActiveInHour(logs, hour) ? '#2ECD6F' : 'rgb(46 205 111)';
+    }
+  }
+
+
+  getTotalClicks(logs: any[], hour: number): number {
+    const userLogs = logs.filter(log => hour >= new Date(log.startTime).getHours() && hour <= new Date(log.endTime).getHours());
+    return userLogs.reduce((total, log) => total + log.clicks, 0);
+  }
+
+
   getTimeLine() {
     let timeline = new TimeLine();
     timeline.fromdate = new Date(this.selectedDate);
@@ -127,7 +167,7 @@ export class TimelineComponent implements OnInit {
     timeline.users = (this.roleId == "639acb77b5e1ffe22eaa4a39" || this.roleId == "63b56b9ca3396271e4a54b96") ? this.selectedUser : [this.currentUser.id];
     this.reportService.getTimeline(timeline).subscribe(result => {
       this.timeline = result.data;
-     this.timeline.forEach((data) => {
+      this.timeline.forEach((data) => {
         const logs = data.logs;
         const hoursDiff = this.getEarliestAndLatestLogTime(logs);
         for (let i = 0; i < hoursDiff; i++) {
@@ -155,26 +195,27 @@ export class TimelineComponent implements OnInit {
     return hoursDiff;
   }
   isUserActiveInHour(logs: any[], hour: number): number {
+
     const start = new Date(logs[0].startTime);
     const end = new Date(logs[logs.length - 1].endTime);
-  
+
     // Check if the specified hour is within the start and end times
     if (hour < start.getHours() || hour > end.getHours()) {
       return 0;
     }
-  
+
     // Calculate the total time in minutes that the user is active
     let totalTime = 0;
     for (let i = 0; i < logs.length; i++) {
       const logStart = new Date(logs[i].startTime);
       const logEnd = new Date(logs[i].endTime);
-  
+
       // Calculate the start and end times for the current log entry
       const logStartHour = logStart.getHours();
       const logStartMinute = logStart.getMinutes();
       const logEndHour = logEnd.getHours();
       const logEndMinute = logEnd.getMinutes();
-  
+
       // Calculate the minutes that the user is active in the current hour
       let activeMinutes = 0;
       if (hour === logStartHour && hour === logEndHour) {
@@ -186,53 +227,30 @@ export class TimelineComponent implements OnInit {
       } else if (hour > logStartHour && hour < logEndHour) {
         activeMinutes = 60;
       }
-  
+
       totalTime += activeMinutes;
     }
-  
+
     // Calculate the percentage of the hour that the user is active
     const totalMinutes = 60;
     const percentage = Math.round((totalTime / totalMinutes) * 100);
-  
+
     return percentage;
-  }  
-  
-  
 
-getUserActivePercentage(logs: any[], hour: number): number {
-  const startTimeHour = this.startTime.getHours();
-  const startTimeMinute = this.startTime.getMinutes();
-
-  // Calculate the total minutes from the start time to the given hour
-  const totalMinutes = (hour - startTimeHour) * 60 + (startTimeMinute % 60);
-
-  // Calculate the user's active minutes within the given hour
-  let activeMinutes = 0;
-  for (const log of logs) {
-    const logStartTime = new Date(log.startTime);
-    const logEndTime = new Date(log.endTime);
-
-    // Check if the log falls within the given hour
-    if (logStartTime.getHours() === hour && logEndTime.getHours() === hour) {
-      activeMinutes += (logEndTime.getMinutes() - logStartTime.getMinutes());
-    } else if (logStartTime.getHours() === hour) {
-      activeMinutes += (60 - logStartTime.getMinutes());
-    } else if (logEndTime.getHours() === hour) {
-      activeMinutes += logEndTime.getMinutes();
-    }
   }
 
-  // Calculate the percentage of user's activity within the given hour
-  const percentage = (activeMinutes / totalMinutes) * 100;
-  return percentage > 100 ? 100 : percentage;
-}
 
-getStartTimeMargin(logs: any[], hour: number): number {
-  const startTimeHour = this.startTime.getHours();
-  const startTimeMinute = this.startTime.getMinutes();
 
-  if (hour === startTimeHour) {
-    // Calculate the minutes from the start time to the given hour
+
+
+
+
+
+  getUserActivePercentage(logs: any[], hour: number): number {
+    const startTimeHour = this.startTime.getHours();
+    const startTimeMinute = this.startTime.getMinutes();
+
+    // Calculate the total minutes from the start time to the given hour
     const totalMinutes = (hour - startTimeHour) * 60 + (startTimeMinute % 60);
 
     // Calculate the user's active minutes within the given hour
@@ -253,88 +271,121 @@ getStartTimeMargin(logs: any[], hour: number): number {
 
     // Calculate the percentage of user's activity within the given hour
     const percentage = (activeMinutes / totalMinutes) * 100;
-    return percentage > 50 ? 50 : percentage;
+    return percentage > 100 ? 100 : percentage;
+
+
   }
 
-  return 0;
-}
-// Title Implementation for Logs
-getTitleForHour(logs: any[], hour: number): string {
-  if (!logs || logs.length === 0) {
-    return "";
-  }
 
-  const filteredLogs = logs.filter((log) => {
-    const logHour = new Date(log.startTime).getHours();
-    return logHour === hour;
-  });
 
-  if (filteredLogs.length === 0) {
-    return "";
-  }
+  getStartTimeMargin(logs: any[], hour: number): number {
+    const startTimeHour = this.startTime.getHours();
+    const startTimeMinute = this.startTime.getMinutes();
 
-  const startTime = this.formatTime(filteredLogs[0].startTime);
-  const endTime = this.formatTime(filteredLogs[filteredLogs.length - 1].endTime);
-  const clicks = filteredLogs.reduce((total, log) => total + log.clicks, 0);
-  const keysPressed = filteredLogs.reduce((total, log) => total + log.keysPressed, 0);
-  const scroll = filteredLogs.reduce((total, log) => total + log.scrolls, 0);
+    if (hour === startTimeHour) {
+      // Calculate the minutes from the start time to the given hour
+      const totalMinutes = (hour - startTimeHour) * 60 + (startTimeMinute % 60);
 
-  return `${startTime} - ${endTime} | Clicks: ${clicks} | Keys Pressed: ${keysPressed} | Scroll: ${scroll}`;
-}
-getClicksForHour(logs: any[], hour: number): number {
-  if (!logs || logs.length === 0) {
+      // Calculate the user's active minutes within the given hour
+      let activeMinutes = 0;
+      for (const log of logs) {
+        const logStartTime = new Date(log.startTime);
+        const logEndTime = new Date(log.endTime);
+
+        // Check if the log falls within the given hour
+        if (logStartTime.getHours() === hour && logEndTime.getHours() === hour) {
+          activeMinutes += (logEndTime.getMinutes() - logStartTime.getMinutes());
+        } else if (logStartTime.getHours() === hour) {
+          activeMinutes += (60 - logStartTime.getMinutes());
+        } else if (logEndTime.getHours() === hour) {
+          activeMinutes += logEndTime.getMinutes();
+        }
+      }
+
+      // Calculate the percentage of user's activity within the given hour
+      const percentage = (activeMinutes / totalMinutes) * 100;
+      return percentage > 50 ? 50 : percentage;
+    }
+
     return 0;
   }
+  // Title Implementation for Logs
+  getTitleForHour(logs: any[], hour: number): string {
+    if (!logs || logs.length === 0) {
+      return "";
+    }
 
-  const filteredLogs = logs.filter((log) => {
-    const logHour = new Date(log.startTime).getHours();
-    return logHour === hour;
-  });
+    const filteredLogs = logs.filter((log) => {
+      const logHour = new Date(log.startTime).getHours();
+      return logHour === hour;
+    });
 
-  const totalClicks = filteredLogs.reduce((total, log) => total + log.clicks, 0);
-  return totalClicks;
-}
+    if (filteredLogs.length === 0) {
+      return "";
+    }
 
-getKeysPressedForHour(logs: any[], hour: number): number {
-  if (!logs || logs.length === 0) {
-    return 0;
+    const startTime = this.formatTime(filteredLogs[0].startTime);
+    const endTime = this.formatTime(filteredLogs[filteredLogs.length - 1].endTime);
+    const clicks = filteredLogs.reduce((total, log) => total + log.clicks, 0);
+    const keysPressed = filteredLogs.reduce((total, log) => total + log.keysPressed, 0);
+    const scroll = filteredLogs.reduce((total, log) => total + log.scrolls, 0);
+
+    return `${startTime} - ${endTime} | Clicks: ${clicks} | Keys Pressed: ${keysPressed} | Scroll: ${scroll}`;
+  }
+  getClicksForHour(logs: any[], hour: number): number {
+    if (!logs || logs.length === 0) {
+      return 0;
+    }
+
+    const filteredLogs = logs.filter((log) => {
+      const logHour = new Date(log.startTime).getHours();
+      return logHour === hour;
+    });
+
+    const totalClicks = filteredLogs.reduce((total, log) => total + log.clicks, 0);
+    return totalClicks;
   }
 
-  const filteredLogs = logs.filter((log) => {
-    const logHour = new Date(log.startTime).getHours();
-    return logHour === hour;
-  });
+  getKeysPressedForHour(logs: any[], hour: number): number {
+    if (!logs || logs.length === 0) {
+      return 0;
+    }
 
-  const totalKeysPressed = filteredLogs.reduce((total, log) => total + log.keysPressed, 0);
-  return totalKeysPressed;
-}
+    const filteredLogs = logs.filter((log) => {
+      const logHour = new Date(log.startTime).getHours();
+      return logHour === hour;
+    });
 
-getScrollForHour(logs: any[], hour: number): number {
-  if (!logs || logs.length === 0) {
-    return 0;
+    const totalKeysPressed = filteredLogs.reduce((total, log) => total + log.keysPressed, 0);
+    return totalKeysPressed;
   }
 
-  const filteredLogs = logs.filter((log) => {
-    const logHour = new Date(log.startTime).getHours();
-    return logHour === hour;
-  });
+  getScrollForHour(logs: any[], hour: number): number {
+    if (!logs || logs.length === 0) {
+      return 0;
+    }
 
-  const totalScroll = filteredLogs.reduce((total, log) => total + log.scrolls, 0);
-  return totalScroll;
-}
+    const filteredLogs = logs.filter((log) => {
+      const logHour = new Date(log.startTime).getHours();
+      return logHour === hour;
+    });
+
+    const totalScroll = filteredLogs.reduce((total, log) => total + log.scrolls, 0);
+    return totalScroll;
+  }
 
 
 
 
 
-  
+
   formatTime(time: string) {
     const date = new Date(time);
     const hours = date.getHours();
     const minutes = date.getMinutes();
     return `${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}`;
   }
-  
+
   addDays(date: Date, days: number): Date {
     let m = moment(this.selectedDate);
     date = m.add(days, 'days').toDate();
@@ -373,7 +424,7 @@ getScrollForHour(logs: any[], hour: number): number {
       const logEnd = new Date(l.endTime);
       return logStart.getHours() <= hour && logEnd.getHours() >= hour && logStart.getMinutes() <= minute && logEnd.getMinutes() >= minute;
     });
-    
+
     if (log) {
       const logStart = new Date(log.startTime);
       const logEnd = new Date(log.endTime);
@@ -382,27 +433,27 @@ getScrollForHour(logs: any[], hour: number): number {
       return 'No logs available for this hour.';
     }
   }
-  
+
 
   isUserWorking(logs: any[], hour: number, minute: number): boolean {
     const currentTime = new Date();
     const startTime = new Date(currentTime.getFullYear(), currentTime.getMonth(), currentTime.getDate(), hour, minute);
     const endTime = new Date(currentTime.getFullYear(), currentTime.getMonth(), currentTime.getDate(), hour + 1, minute);
-    
+
     for (let i = 0; i < logs.length; i++) {
       const logStart = new Date(logs[i].startTime);
       const logEnd = new Date(logs[i].endTime);
-  
+
       if (startTime >= logStart && endTime <= logEnd) {
         return true;
       }
     }
-  
+
     return false;
   }
-  
-  
-  
-  
-  
+
+
+
+
+
 }
