@@ -99,7 +99,56 @@ export class ScreenshotsComponent implements OnInit {
       }
     });
   }
+  // showScreenShots() {
+   
+  //   let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  //   let formattedDate = this.formatDate(this.selectedDate);
+  //   var result = this.timeLogService.getLogsWithImages(this.member.id, formattedDate);
+  //   result.subscribe({
+  //     next: data => {
+  //       this.screenshotRows = [];
+  //       this.selectedTimelog = [];
+  //       this.populateScreenShots(data.data);
+  //     },
+  //     error: error => {
+  //       console.log('There was an error!', error);
+  //     }
+  //   })
+  //   const startDate = this.getMonday(new Date());
+  //   const endDate = new Date();
+
+
+  //   this.timeLogService.getCurrentWeekTotalTime(this.member.id, this.formatDate(startDate), this.formatDate(endDate)).subscribe({
+  //     next: data => {
+  //       let totalMinutes = data.data.length * 10;
+  //       this.currentWeekTotalHours = Math.floor(totalMinutes / 60);
+  //       this.currentWeekTotalMinutes = totalMinutes % 60;
+
+  //     },
+  //     error: error => {
+  //       console.log('There was an error!', error);
+  //     }
+  //   });
+
+  //   const date = new Date();
+  //   const firstday = new Date(date.getFullYear(), date.getMonth(), 1);
+  //   const lastday = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
+  //   this.timeLogService.getCurrentWeekTotalTime(this.member.id, this.formatDate1(firstday), this.formatDate1(lastday)).subscribe({
+  //     next: data => {
+  //       let totalMinutes = data.data.length * 10;
+
+  //       this.currentMonthTotalHours = Math.floor(totalMinutes / 60);
+  //       this.currentMonthTotalMinutes = (totalMinutes % 60);
+  //     },
+  //     error: error => {
+  //       console.log('There was an error!', error);
+  //     }
+  //   });
+
+  // }
   showScreenShots() {
+    debugger;
     let currentUser = JSON.parse(localStorage.getItem('currentUser'));
     let formattedDate = this.formatDate(this.selectedDate);
     var result = this.timeLogService.getLogsWithImages(this.member.id, formattedDate);
@@ -112,31 +161,30 @@ export class ScreenshotsComponent implements OnInit {
       error: error => {
         console.log('There was an error!', error);
       }
-    })
+    });
+  
     const startDate = this.getMonday(new Date());
     const endDate = new Date();
-
-
+  
     this.timeLogService.getCurrentWeekTotalTime(this.member.id, this.formatDate(startDate), this.formatDate(endDate)).subscribe({
       next: data => {
         let totalMinutes = data.data.length * 10;
         this.currentWeekTotalHours = Math.floor(totalMinutes / 60);
         this.currentWeekTotalMinutes = totalMinutes % 60;
-
       },
       error: error => {
         console.log('There was an error!', error);
       }
     });
-
+  
     const date = new Date();
     const firstday = new Date(date.getFullYear(), date.getMonth(), 1);
     const lastday = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-
+  
     this.timeLogService.getCurrentWeekTotalTime(this.member.id, this.formatDate1(firstday), this.formatDate1(lastday)).subscribe({
       next: data => {
         let totalMinutes = data.data.length * 10;
-
+  
         this.currentMonthTotalHours = Math.floor(totalMinutes / 60);
         this.currentMonthTotalMinutes = (totalMinutes % 60);
       },
@@ -144,8 +192,13 @@ export class ScreenshotsComponent implements OnInit {
         console.log('There was an error!', error);
       }
     });
-
+  
+   
+    setTimeout(() => {
+      this.showScreenShots();
+    }, 60000);
   }
+  
 
   deleteScreenShot() {
     let logs = { logs: this.selectedTimelog.map((id) => { return { logId: id } }) };
