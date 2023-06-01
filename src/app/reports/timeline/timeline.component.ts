@@ -240,25 +240,19 @@ export class TimelineComponent implements OnInit {
   }
 
 
-
-
-
-
-
-
-  getUserActivePercentage(logs: any[], hour: number): number {
+  getUserActiveMinutes(logs: any[], hour: number): number {
     const startTimeHour = this.startTime.getHours();
     const startTimeMinute = this.startTime.getMinutes();
-
+  
     // Calculate the total minutes from the start time to the given hour
     const totalMinutes = (hour - startTimeHour) * 60 + (startTimeMinute % 60);
-
+  
     // Calculate the user's active minutes within the given hour
     let activeMinutes = 0;
     for (const log of logs) {
       const logStartTime = new Date(log.startTime);
       const logEndTime = new Date(log.endTime);
-
+  
       // Check if the log falls within the given hour
       if (logStartTime.getHours() === hour && logEndTime.getHours() === hour) {
         activeMinutes += (logEndTime.getMinutes() - logStartTime.getMinutes());
@@ -268,23 +262,20 @@ export class TimelineComponent implements OnInit {
         activeMinutes += logEndTime.getMinutes();
       }
     }
-
-    // Calculate the percentage of user's activity within the given hour
-    const percentage = (activeMinutes / totalMinutes) * 100;
-    return percentage > 100 ? 100 : percentage;
-
-
+  
+    return activeMinutes;
   }
+  
 
-
-
-  getStartTimeMargin(logs: any[], hour: number): number {
+  
+  getStartTimeMargin(logs: any[], hour: number, minutes: number): number {
     const startTimeHour = this.startTime.getHours();
     const startTimeMinute = this.startTime.getMinutes();
 
     if (hour === startTimeHour) {
       // Calculate the minutes from the start time to the given hour
-      const totalMinutes = (hour - startTimeHour) * 60 + (startTimeMinute % 60);
+      const totalMinutes = (hour - startTimeHour) * 60 + minutes - startTimeMinute;
+
 
       // Calculate the user's active minutes within the given hour
       let activeMinutes = 0;
@@ -293,11 +284,14 @@ export class TimelineComponent implements OnInit {
         const logEndTime = new Date(log.endTime);
 
         // Check if the log falls within the given hour
-        if (logStartTime.getHours() === hour && logEndTime.getHours() === hour) {
-          activeMinutes += (logEndTime.getMinutes() - logStartTime.getMinutes());
-        } else if (logStartTime.getHours() === hour) {
-          activeMinutes += (60 - logStartTime.getMinutes());
-        } else if (logEndTime.getHours() === hour) {
+        if (
+          logStartTime.getHours() === hour && logEndTime.getHours() === hour &&
+          logStartTime.getMinutes() >= startTimeMinute && logEndTime.getMinutes() <= minutes
+        ) {
+          activeMinutes += (logEndTime.getTime() - logStartTime.getTime()) / (1000 * 60);
+        } else if (logStartTime.getHours() === hour && logStartTime.getMinutes() >= startTimeMinute) {
+          activeMinutes += (minutes - logStartTime.getMinutes());
+        } else if (logEndTime.getHours() === hour && logEndTime.getMinutes() <= minutes) {
           activeMinutes += logEndTime.getMinutes();
         }
       }
@@ -309,7 +303,13 @@ export class TimelineComponent implements OnInit {
 
     return 0;
   }
-  // Title Implementation for Logs
+
+
+  
+
+
+
+  
   getTitleForHour(logs: any[], hour: number): string {
     if (!logs || logs.length === 0) {
       return "";

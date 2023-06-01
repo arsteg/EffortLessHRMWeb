@@ -156,24 +156,24 @@
 
           <td *ngFor="let hour of hours" [style.padding]="0">
             <ng-container>
+              
               <div *ngIf="!hasManualTimeLogs(data.logs)" [style.height.px]="40"
-                [style.width.%]="getUserActivePercentage(data.logs, startTime.getHours() + hour)"
+                [style.width.px]="getUserActiveMinutes(data.logs, startTime.getHours() + hour)"
                 [style.background-color]="getUserActiveColor(data.logs, startTime.getHours() + hour)"
                 [tooltip]="getTitleForHour(data.logs, startTime.getHours() + hour)"
-                [style.margin-left.%]="getStartTimeMargin(data.logs, startTime.getHours() + hour)">
+                [style.margin-left.%]="getStartTimeMargin(data.logs, startTime.getHours() + hour, startTime.getMinutes() + hour)">
               </div>
             </ng-container>
-
             <ng-container *ngIf="hasManualTimeLogs(data.logs)">
               <div [style.height.px]="40" [style.width.%]="getUserLogWidth(data.logs, startTime.getHours() + hour)"
                 [style.background-color]="'#ff7309'" *ngIf="getUserLogWidth(data.logs, startTime.getHours() + hour) > 0"
                 [tooltip]="getTitleForHour(data.logs, startTime.getHours() + hour)"
-                [style.width.%]="getUserActivePercentage(data.logs, startTime.getHours() + hour)"
-                [style.margin-left.%]="getStartTimeMargin(data.logs, startTime.getHours() + hour)">
+                [style.width.%]="getUserActiveMinutes(data.logs, startTime.getHours() + hour)"
+                [style.margin-left.%]="getStartTimeMargin(data.logs, startTime.getHours() + hour, startTime.getMinutes() + hour)">
               </div>
               <div [style.height.px]="40"
-                [style.width.%]="getUserActivePercentage(data.logs, startTime.getHours() + hour)"
-                [style.margin-left.%]="getStartTimeMargin(data.logs, startTime.getHours() + hour)"
+                [style.width.px]="getUserActiveMinutes(data.logs, startTime.getHours() + hour)"
+                [style.margin-left.%]="getStartTimeMargin(data.logs, startTime.getHours() + hour, startTime.getMinutes() + hour)"
                 [style.background-color]="getUserActiveColor(data.logs, startTime.getHours() + hour)"
                 *ngIf="getUserLogWidth(data.logs, startTime.getHours() + hour) === 0"
                 [tooltip]="getTitleForHour(data.logs, startTime.getHours() + hour)">
