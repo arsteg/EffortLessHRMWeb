@@ -81,8 +81,14 @@ table{
     height: 40px;
     background-color: #C8CCDE;
   }
-  
+  .hour{
+    max-width:60px
+  }
 
+  .hour-container{
+    display: inline-flex;
+    position: absolute;
+  }
 
   
   

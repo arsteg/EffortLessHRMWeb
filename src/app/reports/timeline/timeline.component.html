@@ -34,7 +34,7 @@
       <div class="input-group date-style w-25">
         <span (click)="SetPreviousDay()" class="fa fa-angle-left fa-lg p-3"></span>
         <input type="date" name="fromDate" id="fromDate" (change)="filterData()" [(ngModel)]="selectedDate"
-          class="form-control w-25 calendar mb-4 mx-1 rounded" />
+          class="form-control w-25 calendar mb-4 mx-1 " />
         <span (click)="SetNextDay()" class="fa fa-angle-right fa-lg p-3"></span>
       </div>
       <div class="align-items-start flex-wrap gap-3 ms-auto">
@@ -135,7 +135,7 @@
             Time &nbsp;
             <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
           </th>
-          <th *ngFor="let hour of hours" scope="col" width="60">
+          <th *ngFor="let hour of hours" scope="col" width="60" class="hour">
             {{ startTime.getHours() + hour }}:00
           </th>
 
@@ -154,37 +154,14 @@
             {{ minutesToTime(data?.logs.length * 10) }}
           </td>
 
-          <td *ngFor="let hour of hours" [style.padding]="0">
-            <ng-container>
-              
-              <div *ngIf="!hasManualTimeLogs(data.logs)" [style.height.px]="40"
-                [style.width.px]="getUserActiveMinutes(data.logs, startTime.getHours() + hour)"
-                [style.background-color]="getUserActiveColor(data.logs, startTime.getHours() + hour)"
-                [tooltip]="getTitleForHour(data.logs, startTime.getHours() + hour)"
-                [style.margin-left.%]="getStartTimeMargin(data.logs, startTime.getHours() + hour, startTime.getMinutes() + hour)">
-              </div>
-            </ng-container>
-            <ng-container *ngIf="hasManualTimeLogs(data.logs)">
-              <div [style.height.px]="40" [style.width.%]="getUserLogWidth(data.logs, startTime.getHours() + hour)"
-                [style.background-color]="'#ff7309'" *ngIf="getUserLogWidth(data.logs, startTime.getHours() + hour) > 0"
-                [tooltip]="getTitleForHour(data.logs, startTime.getHours() + hour)"
-                [style.width.%]="getUserActiveMinutes(data.logs, startTime.getHours() + hour)"
-                [style.margin-left.%]="getStartTimeMargin(data.logs, startTime.getHours() + hour, startTime.getMinutes() + hour)">
-              </div>
-              <div [style.height.px]="40"
-                [style.width.px]="getUserActiveMinutes(data.logs, startTime.getHours() + hour)"
-                [style.margin-left.%]="getStartTimeMargin(data.logs, startTime.getHours() + hour, startTime.getMinutes() + hour)"
-                [style.background-color]="getUserActiveColor(data.logs, startTime.getHours() + hour)"
-                *ngIf="getUserLogWidth(data.logs, startTime.getHours() + hour) === 0"
-                [tooltip]="getTitleForHour(data.logs, startTime.getHours() + hour)">
+          <td *ngFor="let hour of hours" [style.padding]="0" class="hour">
+            <ng-container *ngFor="let log of data.logs">
+              <div class="hour-container" *ngIf="isLogInHour(log, startTime.getHours() + hour)" [style.height.px]="40"
+                [style.width.px]="getLogWidth(log)" [style.background-color]="getLogColor(log)"
+                [tooltip]="getLogTitle(log)" [style.margin-left.px]="getLogMarginLeft(log)">
               </div>
             </ng-container>
           </td>
-
-
-
-
-
 
 
 
