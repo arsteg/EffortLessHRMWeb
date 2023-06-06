@@ -42,6 +42,10 @@ export class TimelineComponent implements OnInit {
   startTime: Date;
   count: number = 0;
   userLog: any;
+  trackedChecked = true;
+  manualChecked =true;
+  mediumChecked =true;
+  lowChecked =true;
   constructor(
     private projectService: ProjectService,
     private timeLogService: TimeLogService,
@@ -157,7 +161,7 @@ export class TimelineComponent implements OnInit {
   
   getTitleForHour(logs: any[], hour: number): string {
     if (!logs || logs.length === 0) {
-      return "";
+      return ""; 
     }
     const filteredLogs = logs.filter((log) => {
       const logHour = new Date(log.startTime).getHours();
@@ -168,7 +172,7 @@ export class TimelineComponent implements OnInit {
       return "";
     }
 
-    const startTime = this.formatTime(filteredLogs[0].startTime);
+    const startTime = this.formatTime(filteredLogs[0].startTime);   
     const endTime = this.formatTime(filteredLogs[filteredLogs.length - 1].endTime);
     const clicks = filteredLogs.reduce((total, log) => total + log.clicks, 0);
     const keysPressed = filteredLogs.reduce((total, log) => total + log.keysPressed, 0);
@@ -261,11 +265,11 @@ export class TimelineComponent implements OnInit {
     return logStartTime.getMinutes();
     const startTimeHour = this.startTime.getHours();
 
-    // Calculate the difference in minutes between the start time of the log and the start time of the hour
+    
     const marginMinutes = (logStartTime.getHours() - startTimeHour) * 60 + logStartTime.getMinutes();
 
-    // You can adjust the margin calculation based on your requirements
-    return marginMinutes * 1; // Example: Each minute corresponds to 2 pixels
+   
+    return marginMinutes * 1;
   }
 
   formatTime(time: string) {
@@ -322,5 +326,29 @@ export class TimelineComponent implements OnInit {
       return 'No logs available for this hour.';
     }
   }
+
+  toggleLogsVisibility(checkboxValue: string) {
+    
+    switch (checkboxValue) {
+
+      case 'tracked':
+        this.trackedChecked = !this.trackedChecked;
+        break;
+      case 'manual':
+        this.manualChecked = !this.manualChecked;
+        break;
+      case 'medium':
+        this.mediumChecked = !this.mediumChecked;
+        break;
+        case 'low':
+          this.lowChecked = !this.lowChecked;
+          break;
+      default:
+        break;
+    }
+  }
+  
+  
+  
 
 }
