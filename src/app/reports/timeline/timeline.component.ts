@@ -220,9 +220,7 @@ export class TimelineComponent implements OnInit {
 
 
 
-  hasManualTimeLogs(logs: any[]): boolean {
-    return logs.some(log => log.isManualTime === true);
-  }
+  
 
   isLogInHour(log: any, hour: number): boolean {
     const logStartTime = new Date(log.startTime);
@@ -237,23 +235,21 @@ export class TimelineComponent implements OnInit {
   getLogColor(log: any): string {
    
     let activity = log.clicks + log.keysPressed + log.scrolls
-    if (activity <= 30) {
-      return 'red';
+    if (log.isManualTime == true) {
+      return '#f87a3b';
+    }
+    else if (activity <= 30) 
+    {  return 'red';
     }
     else if (activity <= 100) {
       return '#FFC107'
     }
-    else if
-      (this.hasManualTimeLogs(this.timeline)) {
-        return '#f87a3b';
-      }
-    
     else
       return '#2ECD6F'
   }
 
   getLogTitle(log: any): string {
-    return log.clicks
+    return `Clicks: ${log.clicks}, Scrolls: ${log.scrolls}, \n  Keys Pressed: ${log.keysPressed}`
   }
 
   getLogMarginLeft(log: any): number {
