@@ -234,7 +234,7 @@ export class ScreenshotsComponent implements OnInit {
             totalTime += 10; // Add 10 minutes for each manual time
           }
           else {
-            totalTime += 10; // Add 1 minute for each regular time
+            totalTime += 10; // Add 10 minute for each regular time
           }
           countRowstoPop = 0;
           startRowFlag = true;

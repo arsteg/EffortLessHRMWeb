@@ -162,9 +162,26 @@
               </div>
             </ng-container>
           </td>
-
-
-
+          <!-- <td *ngFor="let hour of hours" [style.padding]="0" class="hour">
+            <ng-container *ngFor="let log of data.logs; let i = index">
+              <div class="hour-container"
+                *ngIf="isLogInHour(log, startTime.getHours() + hour)"
+                [style.height.px]="40"
+                [style.width.px]="getLogWidth(log)"
+                [style.background-color]="getLogColor(log)"
+                [tooltip]="getLogTitle(log)"
+                [style.margin-left.px]="getLogMarginLeft(log)">
+              </div>
+            </ng-container>
+          </td> -->
+          
+          
+          
+          
+          
+          
+          
+          
         </tr>
       </tbody>
     </table>
