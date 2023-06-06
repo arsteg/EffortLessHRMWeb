@@ -306,23 +306,6 @@ export class TimelineComponent implements OnInit {
     this.exportService.exportToPdf('TimeSheets', this.content.nativeElement)
   }
 
-
-  getLogDetails(logs: any[], hour: number, minute: number): string {
-    const log = logs.find(l => {
-      const logStart = new Date(l.startTime);
-      const logEnd = new Date(l.endTime);
-      return logStart.getHours() <= hour && logEnd.getHours() >= hour && logStart.getMinutes() <= minute && logEnd.getMinutes() >= minute;
-    });
-
-    if (log) {
-      const logStart = new Date(log.startTime);
-      const logEnd = new Date(log.endTime);
-      return `Project: ${log.project.projectName}\nStart Time: ${this.formatTime(log.startTime)}\nEnd Time: ${this.formatTime(log.endTime)}`;
-    } else {
-      return 'No logs available for this hour.';
-    }
-  }
-
   toggleLogsVisibility(checkboxValue: string) {
     
     switch (checkboxValue) {
