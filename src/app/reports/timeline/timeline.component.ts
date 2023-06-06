@@ -154,54 +154,118 @@ export class TimelineComponent implements OnInit {
     const hoursDiff = Math.ceil(timeDiff / (1000 * 60 * 60));
     return hoursDiff;
   }
+  
+  getTitleForHour(logs: any[], hour: number): string {
+    if (!logs || logs.length === 0) {
+      return "";
+    }
+    const filteredLogs = logs.filter((log) => {
+      const logHour = new Date(log.startTime).getHours();
+      return logHour === hour;
+    });
 
+    if (filteredLogs.length === 0) {
+      return "";
+    }
+
+    const startTime = this.formatTime(filteredLogs[0].startTime);
+    const endTime = this.formatTime(filteredLogs[filteredLogs.length - 1].endTime);
+    const clicks = filteredLogs.reduce((total, log) => total + log.clicks, 0);
+    const keysPressed = filteredLogs.reduce((total, log) => total + log.keysPressed, 0);
+    const scroll = filteredLogs.reduce((total, log) => total + log.scrolls, 0);
+
+    return `${startTime} - ${endTime} | Clicks: ${clicks} | Keys Pressed: ${keysPressed} | Scroll: ${scroll}`;
+  }
+  getClicksForHour(logs: any[], hour: number): number {
+    if (!logs || logs.length === 0) {
+      return 0;
+    }
+
+    const filteredLogs = logs.filter((log) => {
+      const logHour = new Date(log.startTime).getHours();
+      return logHour === hour;
+    });
+
+    const totalActivity = filteredLogs.reduce((total, log) => total + log.clicks, 0);
+    return totalActivity;
+  }
+
+  getKeysPressedForHour(logs: any[], hour: number): number {
+    if (!logs || logs.length === 0) {
+      return 0;
+    }
+
+    const filteredLogs = logs.filter((log) => {
+      const logHour = new Date(log.startTime).getHours();
+      return logHour === hour;
+    });
+
+    const totalKeysPressed = filteredLogs.reduce((total, log) => total + log.keysPressed, 0);
+    return totalKeysPressed;
+  }
+
+  getScrollForHour(logs: any[], hour: number): number {
+    if (!logs || logs.length === 0) {
+      return 0;
+    }
+
+    const filteredLogs = logs.filter((log) => {
+      const logHour = new Date(log.startTime).getHours();
+      return logHour === hour;
+    });
+
+    const totalScroll = filteredLogs.reduce((total, log) => total + log.scrolls, 0);
+    return totalScroll;
+  }
+
+
+
+  hasManualTimeLogs(logs: any[]): boolean {
+    return logs.some(log => log.isManualTime === true);
+  }
 
   isLogInHour(log: any, hour: number): boolean {
     const logStartTime = new Date(log.startTime);
     return logStartTime.getHours() === hour;
   }
 
-
   getLogWidth(log: any): number {
     const logStartTime = new Date(log.startTime);
     const logEndTime = new Date(log.endTime);
     return (logEndTime.getTime() - logStartTime.getTime()) / (1000 * 60);
   }
-
   getLogColor(log: any): string {
+   
     let activity = log.clicks + log.keysPressed + log.scrolls
-    if (log.isManualTime == true) {
-      return '#f87a3b';
-    }
-    else if (activity <= 30) {
+    if (activity <= 30) {
       return 'red';
     }
     else if (activity <= 100) {
       return '#FFC107'
     }
+    else if
+      (this.hasManualTimeLogs(this.timeline)) {
+        return '#f87a3b';
+      }
+    
     else
       return '#2ECD6F'
+  }
+
+  getLogTitle(log: any): string {
+    return log.clicks
   }
 
   getLogMarginLeft(log: any): number {
     const logStartTime = new Date(log.startTime);
     return logStartTime.getMinutes();
     const startTimeHour = this.startTime.getHours();
+
+    // Calculate the difference in minutes between the start time of the log and the start time of the hour
     const marginMinutes = (logStartTime.getHours() - startTimeHour) * 60 + logStartTime.getMinutes();
-    return marginMinutes * 1;
-  }
- 
-  
-  
 
-
-
-
-
-
-
-  getLogTitle(log: any): string {
-    return `Clicks: ${log.clicks}, Scrolls: ${log.scrolls}, \n  Keys Pressed: ${log.keysPressed}`
+    // You can adjust the margin calculation based on your requirements
+    return marginMinutes * 1; // Example: Each minute corresponds to 2 pixels
   }
 
   formatTime(time: string) {
@@ -240,6 +304,23 @@ export class TimelineComponent implements OnInit {
   @ViewChild('timeSheet') content!: ElementRef
   exportToPdf() {
     this.exportService.exportToPdf('TimeSheets', this.content.nativeElement)
+  }
+
+
+  getLogDetails(logs: any[], hour: number, minute: number): string {
+    const log = logs.find(l => {
+      const logStart = new Date(l.startTime);
+      const logEnd = new Date(l.endTime);
+      return logStart.getHours() <= hour && logEnd.getHours() >= hour && logStart.getMinutes() <= minute && logEnd.getMinutes() >= minute;
+    });
+
+    if (log) {
+      const logStart = new Date(log.startTime);
+      const logEnd = new Date(log.endTime);
+      return `Project: ${log.project.projectName}\nStart Time: ${this.formatTime(log.startTime)}\nEnd Time: ${this.formatTime(log.endTime)}`;
+    } else {
+      return 'No logs available for this hour.';
+    }
   }
 
 }
