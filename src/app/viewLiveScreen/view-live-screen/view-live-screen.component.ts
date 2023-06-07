@@ -21,7 +21,42 @@ export class ViewLiveScreenComponent implements OnInit {
   users = [
     {
       id: '62dfa8d13babb9ac2072863c',
-      name: 'Sandeep Kumar',
+      name: 'Sandeep',
+      isLivePreviewStarted: false
+    },
+    {
+      id: '6390cbc4869680bf0202f212',
+      name: 'Rukhsana',
+      isLivePreviewStarted: false
+    },
+    {
+      id: '62e361b69a34b798d5e9f7fe',
+      name: 'Harsha',
+      isLivePreviewStarted: false
+    },
+    {
+      id: '631b0654bb2085e03db1bfe2',
+      name: 'Ashish',
+      isLivePreviewStarted: false
+    },
+    {
+      id: '632be45f36ad0a43f45dcda9',
+      name: 'Asad',
+      isLivePreviewStarted: false
+    },
+    {
+      id: '63689d7b25fb213660992f67',
+      name: 'Anuj',
+      isLivePreviewStarted: false
+    },
+    {
+      id: '6391710c2434763ef9fef3ac',
+      name: 'Sapana',
+      isLivePreviewStarted: false
+    },
+    {
+      id: '646311c378764ee7df205c06',
+      name: 'Kalpana',
       isLivePreviewStarted: false
     },
     {
@@ -57,7 +92,7 @@ export class ViewLiveScreenComponent implements OnInit {
       }),
       withCredentials: true
     };
-    return this.http.post<any>(`${environment.apiUrlDotNet}/timelogs/getLiveImage`, selectedUser, httpOptions)
+    return this.http.get<any>(`${environment.apiUrlDotNet}/liveTracking/getByUserId/${selectedUser.userIds[0]}`, httpOptions)
     .pipe(
       catchError(error => {
         console.error(error);
@@ -97,11 +132,13 @@ export class ViewLiveScreenComponent implements OnInit {
     console.log("item.userId = " + this.userIds);
     this.getLiveImages(selectedUser).subscribe(result => {
       console.log("called");
-      if(result.status == 'success')
-        result.data.forEach(item => {
-          console.log("item.userId = " + item.userId);
-          this.imageVideo[item.userId] = this._sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + item.base64string);
-        });
+      this.imageVideo[selectedUser.userIds[0]] = this._sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + result[0].fileString);
+      // if(result.status == 'success'){
+      //   result.data.forEach(item => {
+      //     console.log("item.userId = " + item.userId);
+      //     this.imageVideo[item.userId] = this._sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + item.base64string);
+      //   });
+      // }
     },
     error => {
       console.error(error);      
@@ -140,7 +177,7 @@ export class ViewLiveScreenComponent implements OnInit {
       }),
       withCredentials: true
     };
-    return this.http.post<any>(`${environment.apiUrlDotNet}/timelogs/startStopLivePreview`, startStopRequest, httpOptions);
+    return this.http.post<any>(`${environment.apiUrlDotNet}/liveTracking/startstoplivepreview`, startStopRequest, httpOptions);
   }
 
   closeWebSocketConnection(): Observable<any> {
@@ -153,7 +190,7 @@ export class ViewLiveScreenComponent implements OnInit {
       }),
       withCredentials: true
     };
-    return this.http.get<any>(`${environment.apiUrlDotNet}/timelogs/closeWebSocket`, httpOptions);
+    return this.http.get<any>(`${environment.apiUrlDotNet}/liveTracking/closeWebSocket`, httpOptions);
   }
 }
 
