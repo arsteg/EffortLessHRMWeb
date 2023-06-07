@@ -129,10 +129,10 @@ export class ViewLiveScreenComponent implements OnInit {
   backgroundTask() {
     let selectedUser = new SelectedUser();
     selectedUser.userIds = this.userIds;
-    console.log("item.userId = " + this.userIds);
+    //console.log("item.userId = " + this.userIds);
     this.getLiveImages(selectedUser).subscribe(result => {
       console.log("called");
-      this.imageVideo[selectedUser.userIds[0]] = this._sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + result[0].fileString);
+      this.imageVideo[selectedUser.userIds[0]] = this._sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + result);
       // if(result.status == 'success'){
       //   result.data.forEach(item => {
       //     console.log("item.userId = " + item.userId);
