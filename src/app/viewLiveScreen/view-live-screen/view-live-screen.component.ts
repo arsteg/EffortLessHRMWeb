@@ -92,7 +92,7 @@ export class ViewLiveScreenComponent implements OnInit {
       }),
       withCredentials: true
     };
-    return this.http.get<any>(`${environment.apiUrlDotNet}/liveTracking/getByUserId/${selectedUser.userIds[0]}`, httpOptions)
+    return this.http.post<any>(`${environment.apiUrlDotNet}/liveTracking/getByUsers`, selectedUser, httpOptions)
     .pipe(
       catchError(error => {
         console.error(error);
@@ -128,17 +128,18 @@ export class ViewLiveScreenComponent implements OnInit {
 
   backgroundTask() {
     let selectedUser = new SelectedUser();
-    selectedUser.userIds = this.userIds;
-    //console.log("item.userId = " + this.userIds);
+    selectedUser.users = this.userIds;
     this.getLiveImages(selectedUser).subscribe(result => {
       console.log("called");
-      this.imageVideo[selectedUser.userIds[0]] = this._sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + result);
-      // if(result.status == 'success'){
-      //   result.data.forEach(item => {
-      //     console.log("item.userId = " + item.userId);
-      //     this.imageVideo[item.userId] = this._sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + item.base64string);
-      //   });
-      // }
+      //this.imageVideo[selectedUser.userIds[0]] = this._sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + result);
+      if(result.status == 'success'){
+        result.data.forEach(data => {
+          data.forEach(item => {
+            console.log("item.user = " + item.user.id);
+            this.imageVideo[item.user.id] = this._sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + item.fileString);
+          });
+        });
+      }
     },
     error => {
       console.error(error);      
@@ -200,7 +201,7 @@ export class StartStopRequest{
 }
 
 export class SelectedUser{
-  userIds: string[];
+  users: string[];
 }
 
 export class UserDetail{
