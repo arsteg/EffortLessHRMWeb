@@ -4,6 +4,7 @@ export class manualTimeRequest{
   date:string;
   project:string;
   manager:string;
+  task:string;
   fromDate:string;
   toDate:string;
   reason:string;

@@ -10,6 +10,7 @@ import { NotificationService } from 'src/app/_services/notification.service';
 import { ManualTimeRequestService } from 'src/app/_services/manualTimeRequest.Service';
 import { UtilsService } from 'src/app/_services/utils.service';
 import { CommonService } from 'src/app/common/common.service';
+import { TasksService } from 'src/app/_services/tasks.service';
 @Component({
   selector: 'app-request-manual-time',
   templateUrl: './request-manual-time.component.html',
@@ -21,6 +22,7 @@ export class RequestManualTimeComponent implements OnInit {
   reason:string='';
   managers: {id:string, name:string }[]=[];
   projects:{id:string,projectName:string}[]=[];
+  tasks:{id:string,taskName:string}[]=[];
   id:string;
   projectId:string;
   closeResult: string = '';
@@ -32,6 +34,7 @@ export class RequestManualTimeComponent implements OnInit {
   selectedRequest:any;
   selectedProject:string='undefined';
   selectedManager:string='undefined';
+  selectedTask:string='undefined';
   public sortOrder: string = ''; // 'asc' or 'desc'
   firstLetter: string;
   color: string;
@@ -42,11 +45,13 @@ export class RequestManualTimeComponent implements OnInit {
     private notifyService: NotificationService,
     private manualTimeRequestService:ManualTimeRequestService,
     private utilsService: UtilsService,
-    public commonservice: CommonService) {
+    public commonservice: CommonService,
+    public taskService: TasksService) {
 
       this.addRequestForm = this.formBuilder.group({
       manager: ['', Validators.required],
       project: ['', Validators.required],
+      task: ['', Validators.required],
       startDate: ['', [Validators.required,this.validateStartDate]],
       endDate: ['', [Validators.required,this.validateEndDate]],
       reason: ['', Validators.required]
@@ -79,11 +84,24 @@ export class RequestManualTimeComponent implements OnInit {
         this.authenticationService.getUserProjects(this.id).pipe(first())
     .subscribe((res:any) => {
       res.data.forEach(p => {
-        this.projects.push({id:p.id,projectName:p.projectName});
+        if(p){
+        this.projects.push({id:p?.id,projectName:p?.projectName});
+      }
       });
         },
         err => {
         });
+
+        this.taskService.getTaskByUser(this.id).pipe(first())
+    .subscribe((res:any) => {
+      res.data.taskList.forEach(task => {
+        if(task)
+        {this.tasks.push({id:task?.id,taskName:task?.taskName});}
+      });
+        },
+        err => {
+        });
+
         this.fetchManualTimeRequests();
       }
       onChange(newId: number) {
@@ -134,6 +152,7 @@ export class RequestManualTimeComponent implements OnInit {
     request.date =  new Date().toString().slice(0, 15);;
     request.manager =  this.addRequestForm.value.manager;
     request.project =  this.addRequestForm.value.project;
+    request.task =  this.addRequestForm.value.task;
     request.reason =  this.addRequestForm.value.reason;
     var currentUser = JSON.parse(localStorage.getItem('currentUser'));
     request.user =  currentUser?.id;

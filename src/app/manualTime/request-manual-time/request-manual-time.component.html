@@ -26,6 +26,10 @@
               (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Manager&nbsp;
               <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
             </th>
+            <th [appSort]="manualTimeRequests" data-order="{{ sortOrder }}" data-name="task?.title"
+              (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Task&nbsp;
+              <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+            </th>
             <th [appSort]="manualTimeRequests" data-order="{{ sortOrder }}" data-name="fromdate"
               (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">From Date&nbsp;
               <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
@@ -47,10 +51,13 @@
               <div>{{record.date | date: 'MM/dd/yyyy'}}</div>
             </td>
             <td><span>{{record.project.projectName | uppercase}}</span> </td>
-            
+
             <td><span class="letter ms-2" [tooltip]="(record.manager.firstName) + (' ') + (record.manager.lastName)"
             [style.background-color]="commonservice.getRandomColor(record.manager.firstName)">{{record.manager.firstName.slice(0,1)
             | uppercase}}{{record.manager.lastName.slice(0,1) | uppercase}}</span></td>
+
+            <td><span>{{record.task?.taskName}}</span></td>
+
             <td>{{ record.fromDate | date: 'MM/dd/yyyy'}} {{ record.fromDate | date: 'shortTime'}}</td>
             <td>{{ record.toDate | date: 'MM/dd/yyyy'}} {{ record.toDate | date: 'shortTime'}}</td>
             <td>{{ record.reason}}</td>
@@ -122,6 +129,22 @@
               class="alert alert-danger error">
               <div *ngIf="addRequestForm.controls['manager'].errors['required']">
                 Manager is required.
+              </div>
+            </div>
+
+            <div class="row mt-3">
+              <label for="task" class="text-start">Task</label>
+            </div>
+            <select class="custom-select mb-3 p-2" formControlName="task" [(ngModel)]="selectedTask">
+              <option disabled selected value="undefined">Choose Any Task</option>
+              <option *ngFor="let task of tasks" [value]="task?.id">
+                {{task.taskName}}
+              </option>
+            </select>
+            <div *ngIf="addRequestForm.controls['task'].invalid && addRequestForm.controls['task'].touched"
+              class="alert alert-danger error">
+              <div *ngIf="addRequestForm.controls['task'].errors['required']">
+                Task is required.
               </div>
             </div>
 
