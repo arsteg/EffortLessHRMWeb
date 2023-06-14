@@ -44,10 +44,10 @@ export class TasksComponent implements OnInit {
   { name: 'Normal', url: "assets/images/icon-normal.svg" }];
 
   statusList: status[] = [
-    { name: 'ToDo', faclass: "", disabled: false },
-    { name: 'In Progress', faclass: "", disabled: false },
-    { name: 'Done', faclass: "", disabled: false },
-    { name: 'Closed', faclass: "", disabled: false }
+    { name: 'ToDo', faclass: "" },
+    { name: 'In Progress', faclass: "" },
+    { name: 'Done', faclass: "" },
+    { name: 'Closed', faclass: "" }
   ];
 
   unKnownImage = "assets/images/icon-unknown.svg";
@@ -159,6 +159,7 @@ export class TasksComponent implements OnInit {
 
     this.tasksService.addTask(newTask).subscribe(response => {
       this.task = response;
+      this.ngOnInit();
       const newTask = this.task.data.newTask;
 
       if (taskAttachments) {
@@ -204,10 +205,15 @@ export class TasksComponent implements OnInit {
         }
 
       }
+      this.toast.success('New Task Successfully Created!')
       err => {
         console.log("Error creating task!");
       }
-    });
+    },
+    err => {
+      this.toast.error('Task Can not be Created', 'Error!');
+    }
+    );
 
   }
 
@@ -233,9 +239,8 @@ export class TasksComponent implements OnInit {
 
   deleteTask() {
     this.tasksService.deleteTask(this.selectedTask.id).subscribe(response => {
-
-      this.ngOnInit();
-      this.toast.success('Successfully Deleted!')
+    this.toast.success('Successfully Deleted!')
+    this.ngOnInit();
     },
       err => {
         this.toast.error('Task Can not be Deleted', 'Error!');
@@ -290,12 +295,26 @@ export class TasksComponent implements OnInit {
     }
   }
 
+  // getTasksByProject() {
+  //   this.tasksService.getTasksByProjectId(this.projectId).subscribe(response => {
+  //     this.tasks = response && response.data && response.data['taskList'];
+  //   });
+  // }
   getTasksByProject() {
-    this.tasksService.getTasksByProjectId(this.projectId).subscribe(response => {
-
-      //this.tasks = response && response.da && response.data['taskList'];
-    });
+    this.tasksService.getTasksByProjectId(this.projectId).subscribe(
+      (response: any) => {
+        if (response && response.data && Array.isArray(response.data.taskList)) {
+          this.tasks = response.data.taskList;
+        } else {
+          // Handle the case when the response or its properties are not as expected
+        }
+      },
+      (error: any) => {
+        console.log("Error!!!")
+      }
+    );
   }
+  
   onProjectSelectionChange(project) {
     this.getTasksByProject();
   }
@@ -461,6 +480,5 @@ interface priority {
 }
 interface status {
   name: string,
-  faclass: string,
-  disabled: boolean
+  faclass: string
 }
