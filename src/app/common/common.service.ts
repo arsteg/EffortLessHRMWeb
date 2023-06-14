@@ -25,7 +25,7 @@ export class CommonService {
     );
   }
   getProjectList(): Observable<any> {
-    return this.projectService.getprojects('', '').pipe(
+    return this.projectService.getprojects('0', '5').pipe(
       map((response: any) => {
       this.projectList = response && response.data && response.data['projectList'];
         return response;
