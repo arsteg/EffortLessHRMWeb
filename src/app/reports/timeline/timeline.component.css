@@ -77,18 +77,19 @@ table{
 .low:after{
     background-color: red;
 }
-.gap {
-    height: 40px;
-    background-color: #C8CCDE;
-  }
+
   .hour{
-    max-width:60px
+    max-width:60px;
+    height: 40px;
+    /* background-color: #C8CCDE; */
   }
 
   .hour-container{
     display: inline-flex;
     position: absolute;
   }
-
+  .gap {
+    position: absolute;
+  }
   
-  
+ 

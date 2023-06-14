@@ -5,9 +5,9 @@
                 <div class="">
                     <div class="d-flex py-2">
                         <h1 class="">Tasks: {{tasks?.length}}</h1>
-                        <div class="mx-1"><button class="btn border my-tasks" (click)="getCurrentUserTasks()"
-                                [(ngModel)]="currentUser.id"><i class="fa fa-user-o "></i> My Tasks</button></div>
-                        <div class="dropdown">
+                        <div *ngIf="view === 'admin'" class="mx-1"><button class="btn border my-tasks" (click)="getCurrentUserTasks()"
+                                [(ngModel)]="currentUser.id"><i class="fa fa-user-o"></i> My Tasks</button></div>
+                        <div class="dropdown mx-2">
                             <button class="btn border my-tasks dropdown-toggle" type="button" id="dropdownMenuButton1"
                                 data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fa fa-eye"></i> Show
@@ -52,12 +52,12 @@
                             <select id="project" name="project" class="form-control" class="form-select form-select-sm"
                                 aria-label=".form-select-sm example" [(ngModel)]="projectId"
                                 (change)="onProjectSelectionChange(projectId)">
-                                <option *ngFor="let project of projectList" [value]="project.id">
+                                <option *ngFor="let project of projectList;" [value]="project?.id || null">
                                     {{project.projectName}}</option>
                             </select>
 
                         </div>
-                        <div class=" pt-1 d-flex text-center mx-4 h-25">
+                        <div class=" pt-1 d-flex text-center mx-4 h-25" *ngIf="view === 'admin'">
                             <label for="project" class="pt-1 pe-3">Members: </label>
 
                             <select id="project" name="project" class="form-control" class="form-select form-select-sm"
@@ -130,14 +130,14 @@
                                             [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                                     </th>
                                     <th scope="col" [appSort]="tasks" data-order="desc" data-name="TaskUser"
-                                        *ngIf="!userId || !currentUser">Members &nbsp;
+                                    *ngIf="view === 'admin'">Members &nbsp;
                                         <i class="bi bi-arrow-up sort "></i>
                                     </th>
                                     <th scope="col">Action</th>
 
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody *ngIf="tasks!= null">
                                 <tr
                                     *ngFor="let task of tasks | search: searchText |  paginate: { itemsPerPage: 10, currentPage: p };let i = index">
                                     <td class="highlight">
@@ -184,7 +184,7 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="status"
+                                    <td class="status" 
                                         (click)="selectedTaskStatusIndex === i?selectedTaskStatusIndex=-1:selectedTaskStatusIndex=i">
                                         <div class="dropdown show">
                                             <span data-toggle="dropdown" aria-haspopup="true"
@@ -234,7 +234,7 @@
                                             </div>
                                         </ng-template>
                                     </td>
-                                    <td *ngIf="!userId || !currentUser">
+                                    <td *ngIf="view === 'admin'">
                                         <div class="d-flex flex-nowrap users">
                                             <i class="fa fa-user-plus addUser me-3 mt-1" data-bs-toggle="modal"
                                                 data-bs-target="#addUserModal" (click)="selectedTask=task"
@@ -293,7 +293,7 @@
                                     <div class="card-body  taskBoard">
                                         <ul class="tasks chat-menu ui-sortable ps-0" id="task-list-1" type="none">
                                             <ng-container *ngFor="let task of tasks">
-                                                <li *ngIf="task.status == 'ToDo'" 
+                                                <li *ngIf="task.status == 'ToDo' || ''" 
                                                     class="taskToDo task-card border-bottom py-3 px-2 border-left  ui-sortable-handle">
                                                     <div class="d-flex">
                                                         <b  (click)="navigateToEditPage(task)">{{task?.taskName}}</b>

@@ -30,7 +30,10 @@ export class ProjectService  {
     var response = this.http.get<any>(`${environment.apiUrlDotNet}/project/projectlist`, this.httpOptions);
     return response;
   }
-
+  getprojects(skip: string, next: string) : Observable<any>{
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/project/projectlist`, {skip, next},this.httpOptions);
+    return response;
+  }
   addproject(project: project): Observable<project> {
   var response =  this.http.post<project>(`${environment.apiUrlDotNet}/project/newproject`, project,  this.httpOptions);
     return response;

@@ -588,6 +588,14 @@ export const SideBarUserMenu = [
     url: '/realtime'
     
   },
+  
+    {
+      id: '17',
+      title: 'Tasks',
+      icon: 'fa fa-list',
+      url: 'tasks'
+    },
+  
   {
     id: '4',
     title: 'Alerts',

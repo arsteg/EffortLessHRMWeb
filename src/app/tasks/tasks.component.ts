@@ -43,10 +43,12 @@ export class TasksComponent implements OnInit {
   { name: 'High', url: "assets/images/icon-high.svg" },
   { name: 'Normal', url: "assets/images/icon-normal.svg" }];
 
-  statusList: status[] = [{ name: 'ToDo', faclass: "" },
-  { name: 'In Progress', faclass: "" },
-  { name: 'Done', faclass: "" },
-  { name: 'Closed', faclass: "" }]
+  statusList: status[] = [
+    { name: 'ToDo', faclass: "", disabled: false },
+    { name: 'In Progress', faclass: "", disabled: false },
+    { name: 'Done', faclass: "", disabled: false },
+    { name: 'Closed', faclass: "", disabled: false }
+  ];
 
   unKnownImage = "assets/images/icon-unknown.svg";
 
@@ -66,6 +68,8 @@ export class TasksComponent implements OnInit {
   showDoneTask: boolean = false;
   showClosedTask: boolean = false;
   newTask: any = {};
+  view : string;
+  admin: string = 'admin';
 
   constructor(
     private tasksService: TasksService,
@@ -111,14 +115,13 @@ export class TasksComponent implements OnInit {
 
   ngOnInit(): void {
     this.isChecked = true;
-    this.listAllTasks();
-    this.commonservice.getProjectList().subscribe(response => {
-      this.projectList = response && response.data && response.data['projectList'];
-    });
+   
     this.commonservice.populateUsers().subscribe(result => {
       this.allAssignee = result && result.data && result.data.data;
     });
     this.firstLetter = this.commonservice.firstletter;
+    this.getTasks();
+    this.getprojects();
   }
   navigateToEditPage(task: any) {
     // navigate to the edit page with the task ID as a route parameter
@@ -308,8 +311,12 @@ export class TasksComponent implements OnInit {
   getCurrentUserTasks() {
     this.tasksService.getTaskByUser(this.currentUser.id).subscribe(response => {
       this.tasks = response && response.data && response.data['taskList'];
+      this.tasks = this.tasks.filter(task => task !== null);
+      console.log(this.tasks)
     })
   }
+  
+  
 
   getTaskPriorityUrl(currentPriority) {
     const priority = this.priorityList.find(x => x.name.toLowerCase() === currentPriority?.toLowerCase());
@@ -421,6 +428,30 @@ export class TasksComponent implements OnInit {
   removePriority() {
     this.newTask.priority = null;
   }
+
+  getTasks() {
+   this.view = localStorage.getItem('adminView');
+    if (this.view === 'admin') {
+      this.listAllTasks();
+    } else {
+      this.getCurrentUserTasks() 
+      
+    }
+  }
+
+  getprojects(){
+    this.view = localStorage.getItem('adminView');
+    if (this.view === 'admin') {
+      this.commonservice.getProjectList().subscribe(response => {
+        this.projectList = response && response.data && response.data['projectList'];
+      });
+    } else {
+      this.projectService.getProjectByUserId(this.currentUser.id).subscribe(response => {
+        this.projectList = response && response.data && response.data['projectList'];
+        this.projectList = this.projectList.filter(project => project !== null);
+      });
+    }
+  }
 }
 
 
@@ -430,5 +461,6 @@ interface priority {
 }
 interface status {
   name: string,
-  faclass: string
+  faclass: string,
+  disabled: boolean
 }

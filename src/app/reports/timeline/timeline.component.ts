@@ -40,12 +40,19 @@ export class TimelineComponent implements OnInit {
   selectedDate: any = this.datepipe.transform(new Date(), "yyyy-MM-dd");
   hours: number[] = [];
   startTime: Date;
+  endTime: Date;
   count: number = 0;
   userLog: any;
   trackedChecked = true;
-  manualChecked =true;
-  mediumChecked =true;
-  lowChecked =true;
+  manualChecked = true;
+  mediumChecked = true;
+  lowChecked = true;
+  timeDiffMinutes: number;
+  logs: any = [];
+  logStartTime: Date | null = null;
+  logEndTime: Date | null = null;
+
+
   constructor(
     private projectService: ProjectService,
     private timeLogService: TimeLogService,
@@ -83,7 +90,7 @@ export class TimelineComponent implements OnInit {
   getProjectList() {
     //Admin and Manager can see the list of all projects
     if (this.roleId == "639acb77b5e1ffe22eaa4a39" || this.roleId == "63b56b9ca3396271e4a54b96") {
-      this.projectService.getprojectlist().subscribe((response: any) => {
+      this.projectService.getprojects('', '').subscribe((response: any) => {
         this.projectList = response && response.data && response.data['projectList'];
       });
     }
@@ -122,31 +129,106 @@ export class TimelineComponent implements OnInit {
   filterData() {
     this.getTimeLine();
   }
+  // getTimeLine() {
+  //   let timeline = new TimeLine();
+  //   timeline.fromdate = new Date(this.selectedDate);
+  //   timeline.todate = new Date(this.selectedDate);
+  //   timeline.projects = this.selectedProject;
+  //   timeline.users = (this.roleId == "639acb77b5e1ffe22eaa4a39" || this.roleId == "63b56b9ca3396271e4a54b96") ? this.selectedUser : [this.currentUser.id];
+  //   this.reportService.getTimeline(timeline).subscribe(result => {
+  //     this.timeline = result.data;
+  //     const newHours = [];
+  //     this.timeline.forEach((data) => {
+  //       this.logs = data.logs;
+  //       const hoursDiff = this.getEarliestAndLatestLogTime(this.logs);
+  //       for (let i = 0; i < hoursDiff; i++) {
+  //         if (!newHours.includes(i)) {
+  //           newHours.push(i);
+  //         }
+  //       }
+  //       if (this.logs.length > 0 && (!this.startTime || new Date(this.logs[0].startTime) < this.startTime)) {
+  //         this.startTime = new Date(this.logs[0].startTime);
+  //       }
+  //     });
 
+  //     this.hours = newHours;
+
+  //     this.timeline.forEach((data) => {
+  //       data.logs.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+  //     });
+  //     this.timeline.forEach((data) => {
+  //       const logs = data.logs;
+  //       for (let i = 0; i < logs.length - 1; i++) {
+  //         const currentLog = logs[i];
+  //         const nextLog = logs[i + 1];
+  //         const currentLogEndTime = new Date(currentLog.endTime);
+  //         const nextLogStartTime = new Date(nextLog.startTime);
+  //         this.timeDiffMinutes = Math.abs(nextLogStartTime.getTime() - currentLogEndTime.getTime()) / (1000 * 60);
+
+  //         if (this.timeDiffMinutes <= 10) {
+  //           currentLog.endTime = nextLog.startTime;
+  //         }
+  //       }
+  //     });
+  //   });
+  // }
   getTimeLine() {
     let timeline = new TimeLine();
     timeline.fromdate = new Date(this.selectedDate);
     timeline.todate = new Date(this.selectedDate);
     timeline.projects = this.selectedProject;
     timeline.users = (this.roleId == "639acb77b5e1ffe22eaa4a39" || this.roleId == "63b56b9ca3396271e4a54b96") ? this.selectedUser : [this.currentUser.id];
+
     this.reportService.getTimeline(timeline).subscribe(result => {
       this.timeline = result.data;
+      const newHours = [];
       this.timeline.forEach((data) => {
-        const logs = data.logs;
-        const hoursDiff = this.getEarliestAndLatestLogTime(logs);
+        this.logs = data.logs;
+        const hoursDiff = this.getEarliestAndLatestLogTime(this.logs);
         for (let i = 0; i < hoursDiff; i++) {
-          if (!this.hours.includes(i)) {
-            this.hours.push(i);
+          if (!newHours.includes(i)) {
+            newHours.push(i);
           }
         }
-        // Retrieve the start time of the first user
-        if (logs.length > 0 && (!this.startTime || new Date(logs[0].startTime) < this.startTime)) {
-          this.startTime = new Date(logs[0].startTime);
+        if (this.logs.length > 0 && (!this.startTime || new Date(this.logs[0].startTime) < this.startTime)) {
+          this.startTime = new Date(this.logs[0].startTime);
+        }
+        if (this.logs.length > 0 && (!this.endTime || new Date(this.logs[this.logs.length - 1].endTime) > this.endTime)) {
+          this.endTime = new Date(this.logs[this.logs.length - 1].endTime);
+        }
+
+        console.log(`User: ${this.logs[0].user.firstName}`);
+        this.logStartTime = new Date(this.logs[0].startTime);
+        console.log(this.logStartTime);
+        this.logEndTime = new Date(this.logs[this.logs.length - 1].endTime);
+        console.log(this.logEndTime);
+        
+      });
+
+      this.hours = newHours;
+
+      this.timeline.forEach((data) => {
+        data.logs.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+      });
+      this.timeline.forEach((data) => {
+        const logs = data.logs;
+        for (let i = 0; i < logs.length - 1; i++) {
+          const currentLog = logs[i];
+          const nextLog = logs[i + 1];
+          const currentLogEndTime = new Date(currentLog.endTime);
+          const nextLogStartTime = new Date(nextLog.startTime);
+          this.timeDiffMinutes = Math.abs(nextLogStartTime.getTime() - currentLogEndTime.getTime()) / (1000 * 60);
+
+          if (this.timeDiffMinutes <= 10) {
+            currentLog.endTime = nextLog.startTime;
+          }
         }
       });
-    }
-    )
+    });
   }
+
+
+
   getEarliestAndLatestLogTime(logs: any[]) {
     const earliestLog = logs.reduce((earliest, current) => {
       return (new Date(current.startTime) < new Date(earliest.startTime)) ? current : earliest;
@@ -158,73 +240,6 @@ export class TimelineComponent implements OnInit {
     const hoursDiff = Math.ceil(timeDiff / (1000 * 60 * 60));
     return hoursDiff;
   }
-  
-  getTitleForHour(logs: any[], hour: number): string {
-    if (!logs || logs.length === 0) {
-      return ""; 
-    }
-    const filteredLogs = logs.filter((log) => {
-      const logHour = new Date(log.startTime).getHours();
-      return logHour === hour;
-    });
-
-    if (filteredLogs.length === 0) {
-      return "";
-    }
-
-    const startTime = this.formatTime(filteredLogs[0].startTime);   
-    const endTime = this.formatTime(filteredLogs[filteredLogs.length - 1].endTime);
-    const clicks = filteredLogs.reduce((total, log) => total + log.clicks, 0);
-    const keysPressed = filteredLogs.reduce((total, log) => total + log.keysPressed, 0);
-    const scroll = filteredLogs.reduce((total, log) => total + log.scrolls, 0);
-
-    return `${startTime} - ${endTime} | Clicks: ${clicks} | Keys Pressed: ${keysPressed} | Scroll: ${scroll}`;
-  }
-  getClicksForHour(logs: any[], hour: number): number {
-    if (!logs || logs.length === 0) {
-      return 0;
-    }
-
-    const filteredLogs = logs.filter((log) => {
-      const logHour = new Date(log.startTime).getHours();
-      return logHour === hour;
-    });
-
-    const totalActivity = filteredLogs.reduce((total, log) => total + log.clicks, 0);
-    return totalActivity;
-  }
-
-  getKeysPressedForHour(logs: any[], hour: number): number {
-    if (!logs || logs.length === 0) {
-      return 0;
-    }
-
-    const filteredLogs = logs.filter((log) => {
-      const logHour = new Date(log.startTime).getHours();
-      return logHour === hour;
-    });
-
-    const totalKeysPressed = filteredLogs.reduce((total, log) => total + log.keysPressed, 0);
-    return totalKeysPressed;
-  }
-
-  getScrollForHour(logs: any[], hour: number): number {
-    if (!logs || logs.length === 0) {
-      return 0;
-    }
-
-    const filteredLogs = logs.filter((log) => {
-      const logHour = new Date(log.startTime).getHours();
-      return logHour === hour;
-    });
-
-    const totalScroll = filteredLogs.reduce((total, log) => total + log.scrolls, 0);
-    return totalScroll;
-  }
-
-
-
-  
 
   isLogInHour(log: any, hour: number): boolean {
     const logStartTime = new Date(log.startTime);
@@ -236,36 +251,40 @@ export class TimelineComponent implements OnInit {
     const logEndTime = new Date(log.endTime);
     return (logEndTime.getTime() - logStartTime.getTime()) / (1000 * 60);
   }
+
+
+
+
+
+
+
   getLogColor(log: any): string {
-   
+
     let activity = log.clicks + log.keysPressed + log.scrolls
+
     if (log.isManualTime == true) {
       return '#f87a3b';
     }
-    else if (activity <= 30) 
-    {  return 'red';
+    else if (activity <= 30) {
+      return '#ff0000';
     }
     else if (activity <= 100) {
       return '#FFC107'
     }
-    else
+    else if (log) { 
       return '#2ECD6F'
+     }
+    else (this.getTimeLine())
+     {return '#cccccc'}
   }
 
   getLogTitle(log: any): string {
-    return `Clicks: ${log.clicks}, Scrolls: ${log.scrolls}, \n  Keys Pressed: ${log.keysPressed}`
+    return `Clicks: ${log.clicks}, Scrolls: ${log.scrolls}, Keys Pressed: ${log.keysPressed}`
   }
 
   getLogMarginLeft(log: any): number {
     const logStartTime = new Date(log.startTime);
     return logStartTime.getMinutes();
-    const startTimeHour = this.startTime.getHours();
-
-    
-    const marginMinutes = (logStartTime.getHours() - startTimeHour) * 60 + logStartTime.getMinutes();
-
-   
-    return marginMinutes * 1;
   }
 
   formatTime(time: string) {
@@ -305,9 +324,38 @@ export class TimelineComponent implements OnInit {
   exportToPdf() {
     this.exportService.exportToPdf('TimeSheets', this.content.nativeElement)
   }
+  hasLogsInHour(hour: number): boolean {
+    return this.timeline.some(log => this.isLogInHour(log, this.startTime.getHours() + hour));
+  }
+
+  calculateGapWidth(logs: any[], currentIndex: number): number {
+    if (currentIndex === 0) {
+      return 0; // No gap before the first log
+    }
+
+    const previousLog = logs[currentIndex - 1];
+    const currentLog = logs[currentIndex];
+
+    const previousEndTime = new Date(previousLog.endTime);
+    const currentStartTime = new Date(currentLog.startTime);
+
+    const gapDuration = currentStartTime.getTime() - previousEndTime.getTime();
+    const gapWidth = gapDuration / (1000 * 60); // Convert gap duration to minutes
+
+    if (gapWidth < 10) {
+      return 0; // No gap if the duration is less than 10 minutes
+    }
+
+    return gapWidth;
+  }
+
+
+
+
+
 
   toggleLogsVisibility(checkboxValue: string) {
-    
+
     switch (checkboxValue) {
 
       case 'tracked':
@@ -319,15 +367,15 @@ export class TimelineComponent implements OnInit {
       case 'medium':
         this.mediumChecked = !this.mediumChecked;
         break;
-        case 'low':
-          this.lowChecked = !this.lowChecked;
-          break;
+      case 'low':
+        this.lowChecked = !this.lowChecked;
+        break;
       default:
         break;
     }
   }
-  
-  
-  
+
+
+
 
 }
