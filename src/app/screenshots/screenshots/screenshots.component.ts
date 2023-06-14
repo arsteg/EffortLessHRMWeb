@@ -47,6 +47,10 @@ export class ScreenshotsComponent implements OnInit {
   logs = [];
   selectAllChecked: false;
 
+  intervalId: any;
+  intervalDuration = 300000; // 5 minute in milliseconds
+
+
   constructor(
     private timeLogService: TimeLogService,
     private route: ActivatedRoute,
@@ -63,10 +67,15 @@ export class ScreenshotsComponent implements OnInit {
     this.populateMembers();
     this.showScreenShots();
     this.subscription = this.timeLogService.currentMessage.subscribe((message: any) => this.message = message);
+
+    this.intervalId = setInterval(() => {
+      this.showScreenShots();
+    }, this.intervalDuration);
   }
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+    clearInterval(this.intervalId);
   }
 
   onMemberSelectionChange(member: any) {
@@ -99,9 +108,9 @@ export class ScreenshotsComponent implements OnInit {
       }
     });
   }
- 
+
   showScreenShots() {
-    
+
     let currentUser = JSON.parse(localStorage.getItem('currentUser'));
     let formattedDate = this.formatDate(this.selectedDate);
     var result = this.timeLogService.getLogsWithImages(this.member.id, formattedDate);
@@ -115,10 +124,10 @@ export class ScreenshotsComponent implements OnInit {
         console.log('There was an error!', error);
       }
     });
-  
+
     const startDate = this.getMonday(new Date());
     const endDate = new Date();
-  
+
     this.timeLogService.getCurrentWeekTotalTime(this.member.id, this.formatDate(startDate), this.formatDate(endDate)).subscribe({
       next: data => {
         let totalMinutes = data.data.length * 10;
@@ -129,15 +138,15 @@ export class ScreenshotsComponent implements OnInit {
         console.log('There was an error!', error);
       }
     });
-  
+
     const date = new Date();
     const firstday = new Date(date.getFullYear(), date.getMonth(), 1);
     const lastday = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-  
+
     this.timeLogService.getCurrentWeekTotalTime(this.member.id, this.formatDate1(firstday), this.formatDate1(lastday)).subscribe({
       next: data => {
         let totalMinutes = data.data.length * 10;
-  
+
         this.currentMonthTotalHours = Math.floor(totalMinutes / 60);
         this.currentMonthTotalMinutes = (totalMinutes % 60);
       },
@@ -145,13 +154,8 @@ export class ScreenshotsComponent implements OnInit {
         console.log('There was an error!', error);
       }
     });
-  
-   
-    setTimeout(() => {
-      this.showScreenShots();
-    }, 60000);
   }
-  
+
 
   deleteScreenShot() {
     let logs = { logs: this.selectedTimelog.map((id) => { return { logId: id } }) };
