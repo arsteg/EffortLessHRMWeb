@@ -158,7 +158,7 @@ export class TasksComponent implements OnInit {
       isSubTask: false,
       priority: this.addForm.value.priority,
       taskUsers: this.view === 'admin' ? [] : [id],
-      status: "Open",
+      status: "ToDo",
       project: this.addForm.value.project,
       taskAttachments: []
     };
