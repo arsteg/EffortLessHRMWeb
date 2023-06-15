@@ -10,7 +10,7 @@ export class Task {
     comment: string;
     isSubTask: boolean;
     priority: string;
-    TaskUser: User;
+    taskUsers: string[];
     status: string;
     project: project[];
     taskAttachments: TaskAttachment[];
@@ -18,6 +18,7 @@ export class Task {
 export class User {
     firstName: string;
     lastName: string;
+    id: string
 }
 
 export interface TaskAttachment {

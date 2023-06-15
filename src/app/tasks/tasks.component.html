@@ -5,47 +5,35 @@
                 <div class="">
                     <div class="d-flex py-2">
                         <h1 class="">Tasks: {{tasks?.length}}</h1>
-                        <div *ngIf="view === 'admin'" class="mx-1"><button class="btn border my-tasks" (click)="getCurrentUserTasks()"
-                                [(ngModel)]="currentUser.id"><i class="fa fa-user-o"></i> My Tasks</button></div>
+                        <div *ngIf="view === 'admin'" class="mx-1"><button class="btn border my-tasks"
+                                (click)="getCurrentUserTasks()" [(ngModel)]="currentUser.id"><i
+                                    class="fa fa-user-o"></i> My Tasks</button></div>
+
+
                         <div class="dropdown mx-2">
                             <button class="btn border my-tasks dropdown-toggle" type="button" id="dropdownMenuButton1"
                                 data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fa fa-eye"></i> Show
                             </button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                 <div tabindex="-1" role="menu" aria-hidden="false" class="dropdown-menu show"
                                     data-popper-placement="bottom-start"
                                     style="position: absolute; inset: 0px auto auto 0px;">
-
-                                    <span tabindex="-1" class="dropdown-item-text status-filter">
-                                        <div class="form-check form-switch switch-left "><label
-                                                class="form-check-label">
-                                                In Progress<input class="form-check-input" type="checkbox" role="switch"
-                                                    checked=""></label></div>
+    
+                                    <span tabindex="-1" class="dropdown-item-text status-filter"
+                                        *ngFor="let statusItem of statusList">
+                                        <div class="form-check form-switch switch-left">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="checkbox" role="switch"
+                                                    [(ngModel)]="statusItem.isChecked">
+                                                {{statusItem.name}}
+                                            </label>
+                                        </div>
                                     </span>
-                                    <span tabindex="-1" class="dropdown-item-text status-filter">
-                                        <div class="form-check form-switch switch-left "><label
-                                                class="form-check-label">
-                                                Open<input class="form-check-input" type="checkbox" role="switch"
-                                                    checked=""></label></div>
-                                    </span>
-                                    <span tabindex="-1" class="dropdown-item-text status-filter">
-                                        <div class="form-check form-switch switch-left "><label
-                                                class="form-check-label">
-                                                Done<input class="form-check-input" type="checkbox" role="switch"
-                                                    checked=""></label></div>
-                                    </span>
-                                    <span tabindex="-1" class="dropdown-item-text status-filter">
-                                        <div class="form-check form-switch switch-left "><label
-                                                class="form-check-label">
-                                                Complete<input class="form-check-input" type="checkbox" role="switch"
-                                                    checked=""></label></div>
-                                    </span>
-
+    
                                 </div>
-
-                            </ul>
-                        </div>
+                            </div>
+                           </div> 
                         <div class=" pt-1 d-flex text-center mx-4 h-25">
                             <label for="project" class="pt-1 pe-3">Projects: </label>
 
@@ -71,18 +59,18 @@
                         <div>
                             <button (click)="toggleViewMode()" class="btn btn-outline-primary">
                                 <ng-container *ngIf="isListView; else boardIcon">
-                                  
+
                                     <i class="fa fa-trello text-primary bg-light"></i>
                                     <span> Board View </span>
-                                  
+
                                 </ng-container>
                                 <ng-template #boardIcon>
                                     <i class="fa fa-align-left "></i>
                                     <span> List View </span>
 
                                 </ng-template>
-                              </button>
-                              
+                            </button>
+
                         </div>
 
                         <div class="d-flex h-25 ms-auto">
@@ -130,16 +118,16 @@
                                             [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                                     </th>
                                     <th scope="col" [appSort]="tasks" data-order="desc" data-name="TaskUser"
-                                    *ngIf="view === 'admin'">Members &nbsp;
+                                        *ngIf="view === 'admin'">Members &nbsp;
                                         <i class="bi bi-arrow-up sort "></i>
                                     </th>
-                                    <th scope="col">Action</th>
+                                    <th scope="col" class="text-center">Action</th>
 
                                 </tr>
                             </thead>
                             <tbody *ngIf="tasks!= null">
-                                <tr
-                                    *ngFor="let task of tasks | search: searchText |  paginate: { itemsPerPage: 10, currentPage: p };let i = index">
+                                <tr *ngFor="let task of tasks | search: searchText |  paginate: { itemsPerPage: 10, currentPage: p };let i = index"
+                                    [ngClass]="{ 'd-none': !isStatusChecked(task.status) }">
                                     <td class="highlight">
                                         <div></div>
                                     </td>
@@ -184,7 +172,7 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="status" 
+                                    <td class="status"
                                         (click)="selectedTaskStatusIndex === i?selectedTaskStatusIndex=-1:selectedTaskStatusIndex=i">
                                         <div class="dropdown show">
                                             <span data-toggle="dropdown" aria-haspopup="true"
@@ -194,7 +182,7 @@
                                                     </div>
                                                     <div
                                                         class="align-self-left text-left align-items-left pointer d-flex position-relative">
-                                                        <i class="fa fa-tasks"></i>
+                                                        <i class="fa fa-tasks pt-1"></i>
                                                         <span>&nbsp;{{task.status}}</span>
                                                     </div>
                                                 </div>
@@ -218,7 +206,7 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         <span *ngIf="task?.comment?.length==0 else addComment">
                                             <div style="position:relative">
                                                 <img src="assets/images/icon-comment-add.svg" class="me-3" height="24"
@@ -246,7 +234,7 @@
                                             </span>
                                         </div>
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         <div class="dropdown-center">
                                             <i class="bi bi-three-dots actions" data-bs-toggle="dropdown"
                                                 aria-expanded="false"></i>
@@ -293,10 +281,10 @@
                                     <div class="card-body  taskBoard">
                                         <ul class="tasks chat-menu ui-sortable ps-0" id="task-list-1" type="none">
                                             <ng-container *ngFor="let task of tasks">
-                                                <li *ngIf="task.status == 'ToDo' || ''" 
+                                                <li *ngIf="task.status == 'ToDo' || ''"
                                                     class="taskToDo task-card border-bottom py-3 px-2 border-left  ui-sortable-handle">
                                                     <div class="d-flex">
-                                                        <b  (click)="navigateToEditPage(task)">{{task?.taskName}}</b>
+                                                        <b (click)="navigateToEditPage(task)">{{task?.taskName}}</b>
 
 
                                                         <span class="ms-auto boardAction d-flex">
@@ -331,7 +319,7 @@
                                                 </li>
                                             </ng-container>
                                             <div *ngIf="showToDoTask" class="add-task-container mt-4">
-                                                
+
 
                                                 <div class="d-flex">
                                                     <span class="bi bi-x-lg me-2" (click)="toggleToDoTask()"></span>
@@ -376,7 +364,7 @@
                                                 <li *ngIf="task.status == 'In Progress' || 'Active'"
                                                     class="taskInProgress task-card border-bottom py-3 px-2 border-left  ui-sortable-handle">
                                                     <div class="d-flex">
-                                                        <b  (click)="navigateToEditPage(task)">{{task?.taskName}}</b>
+                                                        <b (click)="navigateToEditPage(task)">{{task?.taskName}}</b>
 
 
                                                         <span class="ms-auto boardAction d-flex">
@@ -413,11 +401,12 @@
                                             </ng-container>
                                             <div *ngIf="showInProgressTask" class="add-task-container mt-4">
                                                 <div class="d-flex">
-                                                <span class="bi bi-x-lg me-2" (click)="toggleInProgressTask()"></span>
-                                                <input type="text" class="w-100 newTaskBoard border-bottom"
-                                                placeholder="Please type task name..."
-                                                [(ngModel)]="newTask.taskName">
-                                              </div>
+                                                    <span class="bi bi-x-lg me-2"
+                                                        (click)="toggleInProgressTask()"></span>
+                                                    <input type="text" class="w-100 newTaskBoard border-bottom"
+                                                        placeholder="Please type task name..."
+                                                        [(ngModel)]="newTask.taskName">
+                                                </div>
                                                 <div>
                                                     <div class="row mt-3">
                                                         <label for="priority" class="text-start">Priority</label>
@@ -459,7 +448,7 @@
                                                 <li *ngIf="task.status == 'Done'"
                                                     class="taskDone task-card border-bottom py-3 px-2 border-left  ui-sortable-handle">
                                                     <div class="d-flex">
-                                                        <b  (click)="navigateToEditPage(task)">{{task?.taskName}}</b>
+                                                        <b (click)="navigateToEditPage(task)">{{task?.taskName}}</b>
 
 
                                                         <span class="ms-auto boardAction d-flex">
@@ -503,12 +492,12 @@
                                                 </li>
                                             </ng-container>
                                             <div *ngIf="showDoneTask" class="add-task-container mt-4">
-                                               
+
                                                 <div class=" d-flex">
-                                                     <span class="bi bi-x-lg me-2" (click)="toggleDoneTask()"></span>
+                                                    <span class="bi bi-x-lg me-2" (click)="toggleDoneTask()"></span>
                                                     <input type="text" class="w-100 newTaskBoard border-bottom"
-                                                    placeholder="Please type task name..."
-                                                    [(ngModel)]="newTask.taskName">
+                                                        placeholder="Please type task name..."
+                                                        [(ngModel)]="newTask.taskName">
                                                 </div>
                                                 <div>
                                                     <div class="row mt-3">
@@ -586,23 +575,26 @@
                                                 </li>
                                             </ng-container>
                                             <div *ngIf="showClosedTask" class="add-task-container mt-4">
-                                               
+
                                                 <div class="d-flex">
-                                                   <span class="bi bi-x-lg me-2" (click)="toggleClosedTask()"></span>
+                                                    <span class="bi bi-x-lg me-2" (click)="toggleClosedTask()"></span>
                                                     <input type="text" class="w-100 newTaskBoard border-bottom"
-                                                    placeholder="Please type task name..."
-                                                    [(ngModel)]="newTask.taskName">
+                                                        placeholder="Please type task name..."
+                                                        [(ngModel)]="newTask.taskName">
                                                 </div>
-                                               <div>
+                                                <div>
 
-                                                <label for="project" class="pt-1 pe-3">Projects: </label>
+                                                    <label for="project" class="pt-1 pe-3">Projects: </label>
 
-                                                <select id="project" name="project" class="form-control" class="form-select form-select-sm"
-                                                    aria-label=".form-select-sm example" [(ngModel)]="newTask.projectId"
-                                                    (change)="onProjectSelectionChange(projectId)">
-                                                    <option *ngFor="let project of projectList" [value]="project.id">
-                                                        {{project.projectName}}</option>
-                                                </select>
+                                                    <select id="project" name="project" class="form-control"
+                                                        class="form-select form-select-sm"
+                                                        aria-label=".form-select-sm example"
+                                                        [(ngModel)]="newTask.projectId"
+                                                        (change)="onProjectSelectionChange(projectId)">
+                                                        <option *ngFor="let project of projectList"
+                                                            [value]="project.id">
+                                                            {{project.projectName}}</option>
+                                                    </select>
                                                 </div>
                                                 <div>
                                                     <div class="row mt-3">

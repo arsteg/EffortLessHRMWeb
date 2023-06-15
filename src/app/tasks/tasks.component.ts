@@ -44,10 +44,10 @@ export class TasksComponent implements OnInit {
   { name: 'Normal', url: "assets/images/icon-normal.svg" }];
 
   statusList: status[] = [
-    { name: 'ToDo', faclass: "" },
-    { name: 'In Progress', faclass: "" },
-    { name: 'Done', faclass: "" },
-    { name: 'Closed', faclass: "" }
+    { name: 'ToDo', faclass: "", isChecked: true },
+    { name: 'In Progress', faclass: "", isChecked: true },
+    { name: 'Done', faclass: "", isChecked: true },
+    { name: 'Closed', faclass: "",isChecked: true  }
   ];
 
   unKnownImage = "assets/images/icon-unknown.svg";
@@ -68,8 +68,9 @@ export class TasksComponent implements OnInit {
   showDoneTask: boolean = false;
   showClosedTask: boolean = false;
   newTask: any = {};
-  view : string;
+  view = localStorage.getItem('adminView');
   admin: string = 'admin';
+  comments: any[];
 
   constructor(
     private tasksService: TasksService,
@@ -89,7 +90,7 @@ export class TasksComponent implements OnInit {
       estimate: [0],
       comment: ['', Validators.required],
       priority: ['', Validators.required],
-      TaskUser: ['', Validators.required],
+      TaskUser: ['' , Validators.required],
       project: ['', Validators.required],
       taskAttachments: [[]]
     });
@@ -115,28 +116,36 @@ export class TasksComponent implements OnInit {
 
   ngOnInit(): void {
     this.isChecked = true;
-   
+
     this.commonservice.populateUsers().subscribe(result => {
       this.allAssignee = result && result.data && result.data.data;
     });
     this.firstLetter = this.commonservice.firstletter;
     this.getTasks();
     this.getprojects();
+    
   }
   navigateToEditPage(task: any) {
     // navigate to the edit page with the task ID as a route parameter
     this.router.navigate(['/edit-task', task.id]);
     localStorage.setItem('activeTaskId', task.id.toString());
-  }
 
+  }
+  isStatusChecked(status: string): boolean {
+    const statusItem = this.statusList.find(item => item.name === status);
+    return statusItem ? statusItem.isChecked : false;
+  }
+  
   listAllTasks() {
     this.tasksService.getAllTasks().subscribe((response: any) => {
       this.tasks = response && response.data && response.data['taskList'];
+
     })
   }
 
   onSubmit() {
     // Create new task object
+    const id:'' = this.currentUser.id
     const newTask: Task = {
       _id: '',
       taskName: this.addForm.value.title,
@@ -148,11 +157,12 @@ export class TasksComponent implements OnInit {
       comment: this.addForm.value.comment,
       isSubTask: false,
       priority: this.addForm.value.priority,
-      TaskUser: this.addForm.value.TaskUser,
+      taskUsers: this.view === 'admin' ? [] : [id],
       status: "Open",
       project: this.addForm.value.project,
       taskAttachments: []
     };
+    
     // Create an array of task attachments with the new task ID
     const taskAttachments: TaskAttachment[] = [];
     newTask.taskAttachments = taskAttachments;
@@ -210,9 +220,9 @@ export class TasksComponent implements OnInit {
         console.log("Error creating task!");
       }
     },
-    err => {
-      this.toast.error('Task Can not be Created', 'Error!');
-    }
+      err => {
+        this.toast.error('Task Can not be Created', 'Error!');
+      }
     );
 
   }
@@ -239,8 +249,8 @@ export class TasksComponent implements OnInit {
 
   deleteTask() {
     this.tasksService.deleteTask(this.selectedTask.id).subscribe(response => {
-    this.toast.success('Successfully Deleted!')
-    this.ngOnInit();
+      this.toast.success('Successfully Deleted!')
+      this.ngOnInit();
     },
       err => {
         this.toast.error('Task Can not be Deleted', 'Error!');
@@ -295,18 +305,12 @@ export class TasksComponent implements OnInit {
     }
   }
 
-  // getTasksByProject() {
-  //   this.tasksService.getTasksByProjectId(this.projectId).subscribe(response => {
-  //     this.tasks = response && response.data && response.data['taskList'];
-  //   });
-  // }
   getTasksByProject() {
     this.tasksService.getTasksByProjectId(this.projectId).subscribe(
       (response: any) => {
         if (response && response.data && Array.isArray(response.data.taskList)) {
           this.tasks = response.data.taskList;
         } else {
-          // Handle the case when the response or its properties are not as expected
         }
       },
       (error: any) => {
@@ -314,7 +318,7 @@ export class TasksComponent implements OnInit {
       }
     );
   }
-  
+
   onProjectSelectionChange(project) {
     this.getTasksByProject();
   }
@@ -331,11 +335,11 @@ export class TasksComponent implements OnInit {
     this.tasksService.getTaskByUser(this.currentUser.id).subscribe(response => {
       this.tasks = response && response.data && response.data['taskList'];
       this.tasks = this.tasks.filter(task => task !== null);
-      console.log(this.tasks)
+      
     })
   }
-  
-  
+
+
 
   getTaskPriorityUrl(currentPriority) {
     const priority = this.priorityList.find(x => x.name.toLowerCase() === currentPriority?.toLowerCase());
@@ -370,7 +374,7 @@ export class TasksComponent implements OnInit {
   }
 
   toggleViewMode() {
-    this.isListView = !this.isListView; 
+    this.isListView = !this.isListView;
   }
 
   calculateTasksLength(status: string): number {
@@ -380,7 +384,7 @@ export class TasksComponent implements OnInit {
 
   toggleToDoTask() {
     this.showToDoTask = !this.showToDoTask;
-    this.newTask = {}; 
+    this.newTask = {};
   }
   toggleInProgressTask() {
     this.showInProgressTask = !this.showInProgressTask;
@@ -388,7 +392,7 @@ export class TasksComponent implements OnInit {
   }
   toggleDoneTask() {
     this.showDoneTask = !this.showDoneTask;
-    this.newTask = {}; 
+    this.newTask = {};
   }
   toggleClosedTask() {
     this.showClosedTask = !this.showClosedTask;
@@ -449,17 +453,17 @@ export class TasksComponent implements OnInit {
   }
 
   getTasks() {
-   this.view = localStorage.getItem('adminView');
+    this.view = localStorage.getItem('adminView');
     if (this.view === 'admin') {
       this.listAllTasks();
     } else {
-      this.getCurrentUserTasks() 
-      
+      this.getCurrentUserTasks()
+
     }
   }
 
-  getprojects(){
-    this.view = localStorage.getItem('adminView');
+  getprojects() {
+    // this.view = localStorage.getItem('adminView');
     if (this.view === 'admin') {
       this.commonservice.getProjectList().subscribe(response => {
         this.projectList = response && response.data && response.data['projectList'];
@@ -471,6 +475,9 @@ export class TasksComponent implements OnInit {
       });
     }
   }
+
+  
+
 }
 
 
@@ -480,5 +487,6 @@ interface priority {
 }
 interface status {
   name: string,
-  faclass: string
+  faclass: string,
+  isChecked: boolean
 }
