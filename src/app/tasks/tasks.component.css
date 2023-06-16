@@ -92,3 +92,9 @@
   background: white !important;
   border-radius: 5px;
 }
+.dropdown-item:hover{
+  background: none;
+}
+.dropdown-menu li{
+  cursor: pointer;
+}

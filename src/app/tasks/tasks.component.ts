@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Task, TaskAttachment, attachments, taskAttachments } from './task';
+import { Task, TaskAttachment, TaskBoard, attachments, taskAttachments } from './task';
 import { TasksService } from '../_services/tasks.service';
 import { Validators, FormGroup, FormBuilder } from '@angular/forms';
 import { response } from '../models/response';
@@ -25,6 +25,7 @@ export class TasksComponent implements OnInit {
   tasks: any;
   date = new Date();
   addForm: FormGroup;
+  createTask_Board: FormGroup;
   updateForm: FormGroup;
   selectedTask: any;
   allAssignee: any;
@@ -48,7 +49,7 @@ export class TasksComponent implements OnInit {
     { name: 'ToDo', faclass: "", isChecked: true },
     { name: 'In Progress', faclass: "", isChecked: true },
     { name: 'Done', faclass: "", isChecked: true },
-    { name: 'Closed', faclass: "",isChecked: true  }
+    { name: 'Closed', faclass: "", isChecked: true }
   ];
 
   unKnownImage = "assets/images/icon-unknown.svg";
@@ -92,9 +93,19 @@ export class TasksComponent implements OnInit {
       estimate: [0],
       comment: ['', Validators.required],
       priority: ['', Validators.required],
-      TaskUser: ['' , Validators.required],
+      TaskUser: ['', Validators.required],
       project: ['', Validators.required],
       taskAttachments: [[]]
+    });
+    this.createTask_Board = this.fb.group({
+      taskName: [''],
+      title: [''],
+      description: [''],
+      estimate: [0],
+      comment: [''],
+      priority: ['', Validators.required],
+      TaskUser: [''],
+      project: ['', Validators.required]
     });
     this.updateForm = this.fb.group({
       title: ['', Validators.required],
@@ -125,7 +136,7 @@ export class TasksComponent implements OnInit {
     this.firstLetter = this.commonservice.firstletter;
     this.getTasks();
     this.getprojects();
-    
+
   }
   navigateToEditPage(task: any) {
     // navigate to the edit page with the task ID as a route parameter
@@ -137,7 +148,7 @@ export class TasksComponent implements OnInit {
     const statusItem = this.statusList.find(item => item.name === status);
     return statusItem ? statusItem.isChecked : false;
   }
-  
+
   listAllTasks() {
     this.tasksService.getAllTasks().subscribe((response: any) => {
       this.tasks = response && response.data && response.data['taskList'];
@@ -147,7 +158,7 @@ export class TasksComponent implements OnInit {
 
   onSubmit() {
     // Create new task object
-    const id:'' = this.currentUser.id
+    const id: '' = this.currentUser.id
     const newTask: Task = {
       _id: '',
       taskName: this.addForm.value.title,
@@ -164,7 +175,7 @@ export class TasksComponent implements OnInit {
       project: this.addForm.value.project,
       taskAttachments: []
     };
-    
+
     // Create an array of task attachments with the new task ID
     const taskAttachments: TaskAttachment[] = [];
     newTask.taskAttachments = taskAttachments;
@@ -308,24 +319,24 @@ export class TasksComponent implements OnInit {
   }
 
   getTasksByProject() {
-    if(this.view==='admin'){
-    this.tasksService.getTasksByProjectId(this.projectId).subscribe(
-      (response: any) => {
-        if (response && response.data && Array.isArray(response.data.taskList)) {
-          this.tasks = response.data.taskList;
-        } else {
+    if (this.view === 'admin') {
+      this.tasksService.getTasksByProjectId(this.projectId).subscribe(
+        (response: any) => {
+          if (response && response.data && Array.isArray(response.data.taskList)) {
+            this.tasks = response.data.taskList;
+          } else {
+          }
+        },
+        (error: any) => {
+          console.log("Error!!!")
         }
-      },
-      (error: any) => {
-        console.log("Error!!!")
-      }
-    );
-  }
-  else{
-    this.authService.getUserTaskListByProject(this.currentUser.id, this.projectId).subscribe(response =>{
-      this.tasks = response && response.data
-    })
-  }
+      );
+    }
+    else {
+      this.authService.getUserTaskListByProject(this.currentUser.id, this.projectId).subscribe(response => {
+        this.tasks = response && response.data
+      })
+    }
   }
 
 
@@ -336,6 +347,7 @@ export class TasksComponent implements OnInit {
   getTaskByUsers() {
     this.tasksService.getTaskByUser(this.userId).subscribe(response => {
       this.tasks = response && response.data && response.data['taskList'];
+      this.tasks = this.tasks.filter(task => task !== null);
     });
   }
   onMemberSelectionChange(project) {
@@ -345,7 +357,7 @@ export class TasksComponent implements OnInit {
     this.tasksService.getTaskByUser(this.currentUser.id).subscribe(response => {
       this.tasks = response && response.data && response.data['taskList'];
       this.tasks = this.tasks.filter(task => task !== null);
-      
+
     })
   }
 
@@ -409,51 +421,90 @@ export class TasksComponent implements OnInit {
     this.newTask = {};
   }
   addTaskToDo() {
-    this.newTask.status = 'ToDo'
-    this.newTask.title = this.newTask.taskName
-    this.tasksService.addTask(this.newTask).subscribe(response => {
-      this.task = response;
-      this.tasks.push(this.newTask);
-      this.newTask = ''
-      this.toggleToDoTask();
+    const id: '' = this.currentUser.id
+    const taskFromBoard: TaskBoard = {
+      taskName: this.createTask_Board.value.taskName,
+      title: this.createTask_Board.value.taskName,
+      description: '',
+      comment: '',
+      priority: this.createTask_Board.value.priority,
+      taskUsers: this.view === 'admin' ? [] : [id],
+      status: 'ToDo',
+      project: this.createTask_Board.value.project
     }
-    )
+    this.tasksService.addTask(taskFromBoard).subscribe(response => {
+      this.task = response;
+      this.tasks.push(taskFromBoard);
+      
+      this.ngOnInit();
+      this.createTask_Board.reset(); 
+      this.toggleToDoTask();
+    })
   }
 
   addTaskInProgress() {
-    this.newTask.status = 'In Progress'
-    this.newTask.title = this.newTask.taskName
-    this.tasksService.addTask(this.newTask).subscribe(response => {
-      this.task = response;
-      this.tasks.push(this.newTask);
-      this.newTask = ''
-      this.toggleInProgressTask();
+    const id: '' = this.currentUser.id
+    const taskFromBoard: TaskBoard = {
+      taskName: this.createTask_Board.value.taskName,
+      title: this.createTask_Board.value.taskName,
+      description: '',
+      comment: '',
+      priority: this.createTask_Board.value.priority,
+      taskUsers: this.view === 'admin' ? [] : [id],
+      status: 'In Progress',
+      project: this.createTask_Board.value.project
     }
-    )
+    this.tasksService.addTask(taskFromBoard).subscribe(response => {
+      this.task = response;
+      this.tasks.push(taskFromBoard);
+     
+      this.ngOnInit();
+      this.createTask_Board.reset(); 
+      this.toggleInProgressTask();
+    })
   }
 
   addTaskDone() {
-    this.newTask.status = 'Done'
-    this.newTask.title = this.newTask.taskName
-    this.tasksService.addTask(this.newTask).subscribe(response => {
-      this.task = response;
-      this.tasks.push(this.newTask);
-      this.newTask = ''
-      this.toggleDoneTask();
+    const id: '' = this.currentUser.id
+    const taskFromBoard: TaskBoard = {
+      taskName: this.createTask_Board.value.taskName,
+      title: this.createTask_Board.value.taskName,
+      description: '',
+      comment: '',
+      priority: this.createTask_Board.value.priority,
+      taskUsers: this.view === 'admin' ? [] : [id],
+      status: 'Done',
+      project: this.createTask_Board.value.project
     }
-    )
+    this.tasksService.addTask(taskFromBoard).subscribe(response => {
+      this.task = response;
+      this.tasks.push(taskFromBoard);
+    
+      this.ngOnInit();
+      this.createTask_Board.reset(); 
+      this.toggleDoneTask();
+    })
   }
   addTaskClosed() {
-    this.newTask.status = 'Closed'
-    this.newTask.title = this.newTask.taskName
-    this.newTask.project = this.newTask.project
-    this.tasksService.addTask(this.newTask).subscribe(response => {
-      this.task = response;
-      this.tasks.push(this.newTask);
-      this.newTask = ''
-      this.toggleClosedTask();
+    const id: '' = this.currentUser.id
+    const taskFromBoard: TaskBoard = {
+      taskName: this.createTask_Board.value.taskName,
+      title: this.createTask_Board.value.taskName,
+      description: '',
+      comment: '',
+      priority: this.createTask_Board.value.priority,
+      taskUsers: this.view === 'admin' ? [] : [id],
+      status: 'Closed',
+      project: this.createTask_Board.value.project
     }
-    )
+    this.tasksService.addTask(taskFromBoard).subscribe(response => {
+      this.task = response;
+      this.tasks.push(taskFromBoard);
+      
+      this.ngOnInit();
+      this.createTask_Board.reset(); 
+      this.toggleClosedTask();
+    })
   }
   setPriority(priority: any) {
     this.newTask.priority = priority;
@@ -472,7 +523,7 @@ export class TasksComponent implements OnInit {
 
     }
   }
-
+ dszadsfc 
   getprojects() {
     if (this.view === 'admin') {
       this.commonservice.getProjectList().subscribe(response => {
@@ -485,8 +536,6 @@ export class TasksComponent implements OnInit {
       });
     }
   }
-
-  
 
 }
 

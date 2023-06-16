@@ -33,7 +33,7 @@ export class TasksService {
     return this.http.get<Task[]>(`${this.apiUrl}/task/tasklist`, this.httpOptions);
   }
 
-  addTask(task: Task): Observable<Task> {
+  addTask(task): Observable<Task> {
     return this.http.post<Task>(`${this.apiUrl}/task/newtask`, task, this.httpOptions);
   }
 
