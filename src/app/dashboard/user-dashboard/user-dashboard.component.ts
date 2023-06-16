@@ -35,10 +35,8 @@ export class UserDashboardComponent implements OnInit {
   projectTasks: ProjectTask[];
 
   productivityData = [];
-  showLegend = true;
-  showLabels = true;
-  isDoughnut = false;
-  explodeSlices = false;
+  taskSummary = [];
+
 
   constructor(
     private timelog: TimeLogService,
@@ -213,6 +211,13 @@ export class UserDashboardComponent implements OnInit {
         err => {
           this.toastr.error(err, 'ERROR!')
         });
+
+        this.dashboardService.getTaskStatusCounts(this.currentUser.id).subscribe(response => {
+          this.taskSummary= response.data;
+        },
+          err => {
+            this.toastr.error(err, 'ERROR!')
+          });
 
   }
 }

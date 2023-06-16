@@ -52,5 +52,8 @@ export class DashboardService {
     var response  = this.http.get<response<any>>(`${environment.apiUrlDotNet}/dashboard/getApplicationTimeSummary?userId=${userId}&date=${date}`, this.httpOptions);
    return response;
   }
-
+  getTaskStatusCounts(userId): Observable<response<any>> {
+    var response  = this.http.get<response<any>>(`${environment.apiUrlDotNet}/dashboard/getTaskStatusCounts?userId=${userId}`, this.httpOptions);
+   return response;
+  }
 }
