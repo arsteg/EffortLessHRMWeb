@@ -22,6 +22,7 @@
     "@angular/router": "^14.1.0",
     "@ng-bootstrap/ng-bootstrap": "^12.1.2",
     "@popperjs/core": "^2.11.5",
+    "@swimlane/ngx-charts": "^20.4.1",
     "ag-grid-angular": "^27.3.0",
     "ag-grid-community": "^27.3.0",
     "aos": "^2.3.4",
