@@ -22,7 +22,14 @@ export class AuthenticationService {
     const httpOptions = { headers, withCredentials: true };
     return httpOptions;
   }
-
+  private defaultHttpOptions() {  
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*'
+    });
+    const httpOptions = { headers, withCredentials: true };
+    return httpOptions;
+  }
   isLoggedIn(): boolean {
     return !!localStorage.getItem('jwtToken');
   }
@@ -51,7 +58,7 @@ export class AuthenticationService {
     return this.http.patch<any>(`${environment.apiUrlDotNet}/users/resetPassword/${token}`, { password: password, passwordConfirm: confirm_password }, { headers: queryHeaders });
   }
   login(user) {
-    const httpOptions = this.getHttpOptions();
+    const httpOptions = this.defaultHttpOptions();
     return this.http.post<any>(`${environment.apiUrlDotNet}/users/login`, { email: user.email, password: user.password }, httpOptions)
       .pipe(map(user => {
         this.currentUserSubject.next(user);

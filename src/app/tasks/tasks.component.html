@@ -327,6 +327,20 @@
                                                         placeholder="Please type task name..."
                                                         [(ngModel)]="newTask.taskName">
                                                 </div>
+                                                  <div>
+
+                                                    <label for="project" class="pt-1 pe-3">Projects: </label>
+
+                                                    <select id="project" name="project" class="form-control"
+                                                        class="form-select form-select-sm"
+                                                        aria-label=".form-select-sm example"
+                                                        [(ngModel)]="newTask.projectId"
+                                                        (change)="onProjectSelectionChange(projectId)">
+                                                        <option *ngFor="let project of projectList"
+                                                            [value]="project.id">
+                                                            {{project.projectName}}</option>
+                                                    </select>
+                                                </div>
                                                 <div>
                                                     <div class="row mt-3">
                                                         <label for="priority" class="text-start">Priority</label>
@@ -361,7 +375,7 @@
                                     <div class="card-body  taskBoard">
                                         <ul class="tasks chat-menu ui-sortable  ps-0" id="task-list-2" type="none">
                                             <ng-container *ngFor="let task of tasks">
-                                                <li *ngIf="task.status == 'In Progress' || 'Active'"
+                                                <li *ngIf="task.status == 'In Progress'"
                                                     class="taskInProgress task-card border-bottom py-3 px-2 border-left  ui-sortable-handle">
                                                     <div class="d-flex">
                                                         <b (click)="navigateToEditPage(task)">{{task?.taskName}}</b>
@@ -406,6 +420,20 @@
                                                     <input type="text" class="w-100 newTaskBoard border-bottom"
                                                         placeholder="Please type task name..."
                                                         [(ngModel)]="newTask.taskName">
+                                                </div>
+                                                <div>
+
+                                                    <label for="project" class="pt-1 pe-3">Projects: </label>
+
+                                                    <select id="project" name="project" class="form-control"
+                                                        class="form-select form-select-sm"
+                                                        aria-label=".form-select-sm example"
+                                                        [(ngModel)]="newTask.projectId"
+                                                        (change)="onProjectSelectionChange(projectId)">
+                                                        <option *ngFor="let project of projectList"
+                                                            [value]="project.id">
+                                                            {{project.projectName}}</option>
+                                                    </select>
                                                 </div>
                                                 <div>
                                                     <div class="row mt-3">
@@ -500,6 +528,20 @@
                                                         [(ngModel)]="newTask.taskName">
                                                 </div>
                                                 <div>
+
+                                                    <label for="project" class="pt-1 pe-3">Projects: </label>
+
+                                                    <select id="project" name="project" class="form-control"
+                                                        class="form-select form-select-sm"
+                                                        aria-label=".form-select-sm example"
+                                                        [(ngModel)]="newTask.projectId"
+                                                        (change)="onProjectSelectionChange(projectId)">
+                                                        <option *ngFor="let project of projectList"
+                                                            [value]="project.id">
+                                                            {{project.projectName}}</option>
+                                                    </select>
+                                                </div>
+                                                <div>
                                                     <div class="row mt-3">
                                                         <label for="priority" class="text-start">Priority</label>
                                                     </div>
@@ -582,20 +624,15 @@
                                                         placeholder="Please type task name..."
                                                         [(ngModel)]="newTask.taskName">
                                                 </div>
-                                                <div>
-
-                                                    <label for="project" class="pt-1 pe-3">Projects: </label>
-
-                                                    <select id="project" name="project" class="form-control"
-                                                        class="form-select form-select-sm"
-                                                        aria-label=".form-select-sm example"
-                                                        [(ngModel)]="newTask.projectId"
-                                                        (change)="onProjectSelectionChange(projectId)">
-                                                        <option *ngFor="let project of projectList"
-                                                            [value]="project.id">
-                                                            {{project.projectName}}</option>
-                                                    </select>
+                                                <div class="row mt-3">
+                                                    <label for="project" class="text-start">Project</label>
                                                 </div>
+                
+                                                <select class="custom-select mb-3 p-2" [(ngModel)]="newTask.project">
+                                                    <option [value]="project.id" *ngFor="let project of projectList"
+                                                    >
+                                                     {{project.projectName}}   </option>
+                                                </select>
                                                 <div>
                                                     <div class="row mt-3">
                                                         <label for="priority" class="text-start">Priority</label>

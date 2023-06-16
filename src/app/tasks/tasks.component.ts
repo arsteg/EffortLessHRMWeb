@@ -10,6 +10,7 @@ import { UserService } from '../_services/users.service';
 import { User } from '../models/user';
 import { CommonService } from '../common/common.service';
 import { Router } from '@angular/router';
+import { AuthenticationService } from '../_services/authentication.service';
 @Component({
   selector: 'app-tasks',
   templateUrl: './tasks.component.html',
@@ -79,7 +80,8 @@ export class TasksComponent implements OnInit {
     private projectService: ProjectService,
     private tost: ToastrService,
     public commonservice: CommonService,
-    private router: Router
+    private router: Router,
+    private authService: AuthenticationService
   ) {
     this.addForm = this.fb.group({
       taskName: [''],
@@ -306,6 +308,7 @@ export class TasksComponent implements OnInit {
   }
 
   getTasksByProject() {
+    if(this.view==='admin'){
     this.tasksService.getTasksByProjectId(this.projectId).subscribe(
       (response: any) => {
         if (response && response.data && Array.isArray(response.data.taskList)) {
@@ -318,6 +321,13 @@ export class TasksComponent implements OnInit {
       }
     );
   }
+  else{
+    this.authService.getUserTaskListByProject(this.currentUser.id, this.projectId).subscribe(response =>{
+      this.tasks = response && response.data
+    })
+  }
+  }
+
 
   onProjectSelectionChange(project) {
     this.getTasksByProject();
@@ -436,6 +446,7 @@ export class TasksComponent implements OnInit {
   addTaskClosed() {
     this.newTask.status = 'Closed'
     this.newTask.title = this.newTask.taskName
+    this.newTask.project = this.newTask.project
     this.tasksService.addTask(this.newTask).subscribe(response => {
       this.task = response;
       this.tasks.push(this.newTask);
@@ -463,7 +474,6 @@ export class TasksComponent implements OnInit {
   }
 
   getprojects() {
-    // this.view = localStorage.getItem('adminView');
     if (this.view === 'admin') {
       this.commonservice.getProjectList().subscribe(response => {
         this.projectList = response && response.data && response.data['projectList'];
