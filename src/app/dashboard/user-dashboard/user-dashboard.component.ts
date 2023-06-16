@@ -8,6 +8,8 @@ import { ManageTeamService } from 'src/app/_services/manage-team.service';
 import { TimeLogService } from 'src/app/_services/timeLogService';
 import { CommonService } from 'src/app/common/common.service';
 import { HoursWorked, MonthlySummary, WeeklySummary, ProjectTask } from 'src/app/models/dashboard/userdashboardModel';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+
 
 @Component({
   selector: 'app-user-dashboard',
@@ -27,10 +29,16 @@ export class UserDashboardComponent implements OnInit {
   serializedDate = new FormControl(new Date().toISOString());
   currentProfile: any;
   role = localStorage.getItem('roleName');
-  hoursWorked: HoursWorked
-  weeklySummary: WeeklySummary
-  monthlySummary: MonthlySummary
-  projectTasks: ProjectTask[]
+  hoursWorked: HoursWorked;
+  weeklySummary: WeeklySummary;
+  monthlySummary: MonthlySummary;
+  projectTasks: ProjectTask[];
+
+  productivityData = [];
+  showLegend = true;
+  showLabels = true;
+  isDoughnut = false;
+  explodeSlices = false;
 
   constructor(
     private timelog: TimeLogService,
@@ -198,6 +206,13 @@ export class UserDashboardComponent implements OnInit {
       err => {
         this.toastr.error(err, 'ERROR!')
       });
+
+      this.dashboardService.getApplicationTimeSummary(this.currentUser.id,selectedDate).subscribe(response => {
+        this.productivityData= response.data;
+      },
+        err => {
+          this.toastr.error(err, 'ERROR!')
+        });
 
   }
 }

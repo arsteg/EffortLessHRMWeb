@@ -8,6 +8,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule, MatRippleModule } from '@angular/material/core';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import { MatNativeDateModule, MatRippleModule } from '@angular/material/core';
       MatInputModule,
       MatRippleModule,
       MatNativeDateModule,
-      MatRippleModule
+      MatRippleModule,
+      NgxChartsModule
     ],
     schemas: [
       CUSTOM_ELEMENTS_SCHEMA,

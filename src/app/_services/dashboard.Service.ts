@@ -48,4 +48,9 @@ export class DashboardService {
     var response  = this.http.get<response<any>>(`${environment.apiUrlDotNet}/dashboard/taskwiseStatus?userId=${userId}`, this.httpOptions);
    return response;
   }
+  getApplicationTimeSummary(userId,date): Observable<response<any>> {
+    var response  = this.http.get<response<any>>(`${environment.apiUrlDotNet}/dashboard/getApplicationTimeSummary?userId=${userId}&date=${date}`, this.httpOptions);
+   return response;
+  }
+
 }
