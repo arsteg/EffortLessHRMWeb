@@ -16,10 +16,10 @@ export class EmailtemplateService {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Method': 'GET',
-      'Authorization': `Bearer ${this.token}`
+      'Authorization': `Bearer ${this.token}`,
+      'SameSite': 'None'
     }),
-    withCredentials: true,
-    samesite: 'none'
+    withCredentials: true
   };
   constructor(private http: HttpClient) { }
 
