@@ -17,7 +17,7 @@ export class EmailtemplateService {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Method': 'GET',
       'Authorization': `Bearer ${this.token}`,
-      'SameSite': 'None'
+      'SameSite': ''
     }),
     withCredentials: true
   };
