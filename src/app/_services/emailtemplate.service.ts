@@ -25,7 +25,7 @@ export class EmailtemplateService {
     return localStorage.getItem('jwtToken');
   }
   getAllEmails(): Observable<Email[]> {
-    return this.http.get<Email[]>(`${this.apiUrl}/common/AllEmailTemplates`, this.httpOptions);
+    return this.http.get<Email[]>(`${this.apiUrl}/common/emailTemplates`, this.httpOptions);
   }
   addEmail(email: Email): Observable<Email> {
     return this.http.post<Email>(`${this.apiUrl}/common/emailTemplate`, email, this.httpOptions);
