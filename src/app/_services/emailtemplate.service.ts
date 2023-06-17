@@ -14,7 +14,8 @@ export class EmailtemplateService {
   private readonly httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': 'https://effortlesshrmapi.azurewebsites.net/api/v1',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Method': 'GET',
       'Authorization': `Bearer ${this.token}`
     }),
     withCredentials: true
