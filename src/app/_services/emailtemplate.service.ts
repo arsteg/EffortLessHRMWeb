@@ -18,7 +18,8 @@ export class EmailtemplateService {
       'Access-Control-Allow-Method': 'GET',
       'Authorization': `Bearer ${this.token}`
     }),
-    withCredentials: true
+    withCredentials: true,
+    samesite: 'none'
   };
   constructor(private http: HttpClient) { }
 
