@@ -16,8 +16,7 @@ export class EmailtemplateService {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Method': 'GET',
-      'Authorization': `Bearer ${this.token}`,
-      'SameSite': ''
+      'Authorization': `Bearer ${this.token}`
     }),
     withCredentials: true
   };
