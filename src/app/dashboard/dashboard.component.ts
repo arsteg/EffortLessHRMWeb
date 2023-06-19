@@ -4,9 +4,11 @@ import { ManageTeamService } from '../_services/manage-team.service';
 import { TimeLogService } from '../_services/timeLogService';
 import { FormControl } from '@angular/forms';
 import { AuthenticationService } from '../_services/authentication.service';
-import { HoursWorked, MonthlySummary, WeeklySummary } from '../models/dashboard/userdashboardModel';
+import { HoursWorked, MonthlySummary, ProjectTask, WeeklySummary } from '../models/dashboard/userdashboardModel';
 import { DashboardService } from '../_services/dashboard.Service';
 import { ToastrService } from 'ngx-toastr';
+import { teamMember } from '../models/teamMember';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -27,6 +29,12 @@ export class DashboardComponent implements OnInit {
   hoursWorked:HoursWorked;
   weeklySummary:WeeklySummary;
   monthlySummary:MonthlySummary;
+  projectTasks: ProjectTask[];
+  productivityData = [];
+  taskSummary = [];
+  members: teamMember[];
+  member: teamMember;
+  selectedDate:Date;
 
   constructor(
     private timelog: TimeLogService,
@@ -47,10 +55,9 @@ export class DashboardComponent implements OnInit {
       this.currentProfile = response && response.data.users;
       return this.currentProfile;
     });
-    console.log(this.role)
-
+    this.populateMembers();
     const currentDate = new Date();
-  
+
   this.dashboardService.HoursWorked(this.currentUser.id,currentDate).subscribe(response=>{
       this.hoursWorked = response.data;
       this.hoursWorked.increased = this.hoursWorked.today> this.hoursWorked.previousDay;
@@ -122,6 +129,7 @@ export class DashboardComponent implements OnInit {
   err => {
     this.toastr.error(err, 'ERROR!')
   });
+  this.populateTaskwiseHours(this.currentUser.id);
 
   }
 
@@ -174,13 +182,84 @@ export class DashboardComponent implements OnInit {
     const totalSeconds = Math.floor(milliseconds / 1000);
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
-    
+
     return `${hours}h ${minutes}m`;
   }
   formatHoursAndMinutes(hours: number): string {
     const roundedHours = Math.floor(hours);
     const minutes = Math.round((hours - roundedHours) * 60);
-    
+
     return `${roundedHours}h ${minutes}m`;
+  }
+
+  populateTaskwiseHours(selectedUser){
+    this.dashboardService.taskwiseHours(selectedUser).subscribe(response => {
+      this.projectTasks = response.data;
+    },
+      err => {
+        this.toastr.error(err, 'ERROR!')
+      });
+  }
+
+  onTaskTimeMemberSelectionChange(member: any){
+    this.member = JSON.parse(member.value);
+    this.populateTaskwiseHours(this.member.id);
+  }
+  onProductivityMemberSelectionChange(member: any) {
+    this.member = JSON.parse(member.value);
+    this.getApplicationTimeSummary(this.member.id);
+  }
+
+  onTaskSummaryMemberSelectionChange(member: any) {
+    this.member = JSON.parse(member.value);
+    this.getTaskStatusCounts(this.member.id);
+  }
+
+  populateMembers() {
+    this.members = [];
+    let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    this.members.push({ id: currentUser.id, name: "Me", email: currentUser.email });
+    this.member = currentUser;
+    this.timelog.getTeamMembers(this.member.id).subscribe({
+      next: response => {
+        this.timelog.getusers(response.data).subscribe({
+          next: result => {
+            result.data.forEach(user => {
+              if (user.id != currentUser.id) {
+                this.members.push({ id: user.id, name: `${user.firstName} ${user.lastName}`, email: user.email });
+              }
+            })
+          },
+          error: error => {
+            console.log('There was an error!', error);
+          }
+        });
+      },
+      error: error => {
+        console.log('There was an error!', error);
+      }
+    });
+  }
+  onDateChange(event: MatDatepickerInputEvent<Date>) {
+    const selectedDate: Date = event.value;
+    //this.populateDashboard(selectedDate);
+  }
+
+  getApplicationTimeSummary(selectedtUser){
+    this.dashboardService.getApplicationTimeSummary(selectedtUser,this.date.value).subscribe(response => {
+      this.productivityData= response.data;
+    },
+      err => {
+        this.toastr.error(err, 'ERROR!')
+      });
+  }
+
+  getTaskStatusCounts(selectedtUser:string){
+    this.dashboardService.getTaskStatusCounts(selectedtUser).subscribe(response => {
+      this.taskSummary= response.data;
+    },
+      err => {
+        this.toastr.error(err, 'ERROR!')
+      });
   }
 }

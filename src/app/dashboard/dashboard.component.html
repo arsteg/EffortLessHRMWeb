@@ -59,19 +59,19 @@
                 </p>
                 <div class="hours"><span class="p-2 py-3 text-light">{{formatMillisecondsToTime(hoursWorked?.previousDay)
                     }}</span></div>
-    
+
                     <span class="ms-auto">
                       <img *ngIf="hoursWorked?.increased==true" src="../assets/images/graph-up-green.svg" height="80" width="100"
                         alt="Profile Picture">
                       <img *ngIf="hoursWorked?.increased==false" src="../assets/images/graph-down-red.svg" height="80" width="100"
                         alt="Profile Picture">
                     </span>
-    
+
               </div>
-             
+
             </div>
           </div>
-    
+
           <div class="col-md-4  rounded dash-boxes p-3 bg-white">
             <div class="about__top ">
               <div class="about__title">
@@ -91,11 +91,11 @@
                         alt="Profile Picture">
                     </div>
               </div>
-              
+
             </div>
           </div>
-    
-    
+
+
           <div class="col-md-4  rounded dash-boxes p-3 bg-white">
             <div class="about__top">
               <div class="about__title">
@@ -114,12 +114,12 @@
                     alt="Profile Picture">
                 </div>
               </div>
-              
+
             </div>
           </div>
         </div>
 
-        <div class="row justify-content-evenly">
+        <!-- <div class="row justify-content-evenly">
             <div class="col-md-4  rounded p-3 dash-report bg-white">
                 <div class="d-flex justify-content-between">
                     <h3>Today's Activity</h3>
@@ -192,43 +192,74 @@
                     <a class="text-secondary" [routerLink]="['/productivity']">Set up Productivity</a>
                 </div>
             </div>
-        </div>
+        </div> -->
 
-        <div class="row justify-content-evenly my-3">
-            <div class="col-md-4  rounded p-3 dash-report bg-white">
-
-
+        <div class="row justify-content-evenly">
+          <div class="col-md-4  rounded p-3 dash-report bg-white">
+            <div class="d-flex justify-content-between">
+              <h3>Project-wise time spent on each task</h3>
+          </div>
+            <div class="d-flex justify-content-between">
+                <label for="member" class="pt-2 pe-3">Member</label>
+                <select id="member" name="member" class="form-control" class="form-select form-select-sm"
+                  aria-label=".form-select-sm example" #member (change)="onTaskTimeMemberSelectionChange(member)">
+                  <option *ngFor="let m of members" value="{{m|json}}">{{m.name | titlecase}}</option>
+                </select>
             </div>
-            <div class="col-md-4  rounded p-3 dash-report bg-white">
-                <div class="d-flex justify-content-between">
-                    <h3>Attendance</h3>
-                    <select class="form-select w-25 dash-select mb-1" aria-label="Default select example">
-                        <option selected>Today</option>
-                        <option value="1">Week</option>
-                    </select>
+            <table class="table">
+              <tbody>
+                <th>Project</th>
+                <th>Task</th>
+                <th>Time</th>
+                <ng-container *ngFor="let projectTask of projectTasks">
+                  <tr *ngFor="let task of projectTask.tasks;let i = index ">
+                    <td>
+                      {{i==0?projectTask?.projectName:''}}
+                    </td>
+                    <td>{{task?.taskName}}</td>
+                    <td>
+                      <span class="dash-percent"> {{ task?.totalTime | milliSecondsToTime }} </span>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
 
-                </div>
-                <div class="text-center mt-5 pt-5">
-                    <span class=" bi bi-person-check productive p-2 rounded"></span><br>
-                    <p class="text-muted pt-3">Set up your workspace's Attendance settings.</p>
-                    <a class="text-secondary" [routerLink]="['/dashboard']">Schedule Attendance</a>
-                </div>
+          <div class="col-md-4  rounded p-3 dash-report bg-white">
+            <div class="d-flex justify-content-between">
+              <h3>Productivity</h3>
+          </div>
+            <div class="d-flex justify-content-between">
+                <label for="member" class="pt-2 pe-3">Member</label>
+                <select id="member" name="member" class="form-control" class="form-select form-select-sm"
+                  aria-label=".form-select-sm example" #member (change)="onProductivityMemberSelectionChange(member)">
+                  <option *ngFor="let m of members" value="{{m|json}}">{{m.name | titlecase}}</option>
+                </select>
             </div>
-
-            <div class="col-md-4  rounded p-3 dash-report bg-white">
-                <div class="d-flex justify-content-between">
-                    <h3>Activity</h3>
-
-                    <select class="form-select w-25 dash-select mb-1" aria-label="Default select example">
-                        <option selected>Today</option>
-                        <option value="1">Week</option>
-                    </select>
-                </div>
-                <div class="text-center mt-5 pt-5">
-                    <span class=" bi bi-activity activity p-2 rounded"></span><br>
-                    <p class="text-muted pt-3">We can't show you anything here.</p>
-                </div>
+            <div>
+              <ngx-charts-pie-chart  [results]="productivityData">
+              </ngx-charts-pie-chart>
             </div>
+          </div>
+
+          <div class="col-md-4  rounded p-3 dash-report bg-white">
+            <div class="d-flex justify-content-between">
+              <h3>Task Summary</h3>
+          </div>
+            <div class="d-flex justify-content-between">
+                <label for="member" class="pt-2 pe-3">Member</label>
+                <select id="member" name="member" class="form-control" class="form-select form-select-sm"
+                  aria-label=".form-select-sm example" #member (change)="onTaskSummaryMemberSelectionChange(member)">
+                  <option *ngFor="let m of members" value="{{m|json}}">{{m.name | titlecase}}</option>
+                </select>
+            </div>
+            <div>
+              <ngx-charts-pie-chart  [results]="taskSummary">
+              </ngx-charts-pie-chart>
+            </div>
+          </div>
+
         </div>
         <div class="row mx-2">
             <div class="col-12 dash-screenshot text-light text-center py-5" style="background: #3f51b5;">
@@ -237,6 +268,5 @@
             </div>
         </div>
     </div>
-   
   </div>
-  
+

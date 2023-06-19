@@ -10,13 +10,8 @@ import { DatePipe } from '@angular/common';
 import * as moment from 'moment'; // import moment.
 import { AnimationDurations } from '@angular/material/core';
 import { Observable, Subscription } from 'rxjs';
+import { teamMember } from 'src/app/models/teamMember';
 // import { threadId } from 'worker_threads';
-
-interface teamMember {
-  id: string;
-  name: string;
-  email: string
-}
 
 @Component({
   selector: 'app-screenshots',
