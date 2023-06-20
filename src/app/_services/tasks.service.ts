@@ -29,8 +29,8 @@ export class TasksService {
     return localStorage.getItem('jwtToken');
   }
 
-  getAllTasks(): Observable<Task[]> {
-    return this.http.get<Task[]>(`${this.apiUrl}/task/tasklist`, this.httpOptions);
+  getAllTasks(skip:string, next: string): Observable<Task[]> {
+    return this.http.post<Task[]>(`${this.apiUrl}/task/tasklist`,{skip, next}, this.httpOptions);
   }
 
   addTask(task): Observable<Task> {
@@ -41,7 +41,7 @@ export class TasksService {
     return this.http.delete<void>(`${this.apiUrl}/task/${id}`, this.httpOptions);
   }
 
-  updateTask(id: string, task: Task): Observable<Task> {
+  updateTask(id: string, task: any): Observable<Task> {
     return this.http.put<Task>(`${this.apiUrl}/task/update/${id}`, task, this.httpOptions);
   }
 
@@ -113,5 +113,9 @@ export class TasksService {
   }
   deleteTaskAttachment(attachmentId: string):Observable<any>{
     return this.http.delete<any>(`${environment.apiUrlDotNet}/task/taskattachment/${attachmentId}`, this.httpOptions);
+  }
+  
+  getSubTask(taskId: string):Observable<any>{
+    return this.http.get<any>(`${environment.apiUrlDotNet}/task/tasklistbyparenttask/${taskId}`, this.httpOptions);
   }
 }

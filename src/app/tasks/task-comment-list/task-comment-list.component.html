@@ -152,8 +152,8 @@
           <span class="fa fa-paperclip text-primary"> Attach a file </span>
         </div>
       </label>
-      <ul type="none">
-        <li class="text-primary" *ngFor="let files of selectedFiles; let i = index" (click)="removeFile(i)">
+      <ul type="none" class="d-flex">
+        <li class="text-primary me-2" *ngFor="let files of selectedFiles; let i = index" (click)="removeFile(i)">
           {{files.name}} <i class="bi bi-x-circle-fill text-danger deleteCommentAttachment"></i>
         </li>
       </ul>

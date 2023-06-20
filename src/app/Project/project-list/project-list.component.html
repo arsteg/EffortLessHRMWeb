@@ -104,7 +104,7 @@
                                         class="badge rounded-pill table-button  bg-success text-light px-4 py-2"
                                         *ngIf="data?.status=='Active'">{{data?.status}}</span> </td>
 
-                                <td class="d-flex flex-nowrap" *ngIf="!userId && data !==null">
+                                <!-- <td class="d-flex flex-nowrap" *ngIf="!userId && data !==null">
                                     <i class="fa fa-user-plus addUser me-3 mt-1" data-bs-toggle="modal"
                                         data-bs-target="#addUserModal" (click)="getProjectUser(data.id)"
                                         (click)="selectedProject=data"></i>
@@ -113,7 +113,19 @@
                                         [style.background-color]="commonservice.getRandomColor(users?.user?.firstName)">
                                         {{users?.user?.firstName.charAt(0) | uppercase}}
                                     </span>
-                                </td>
+                                </td> -->
+                                <td class="d-flex flex-nowrap" *ngIf="!userId && data !== null">
+                                    <i class="fa fa-user-plus addUser me-3 mt-1" data-bs-toggle="modal" data-bs-target="#addUserModal"
+                                      (click)="getProjectUser(data.id)" (click)="selectedProject=data"></i>
+                                    <ng-container *ngFor="let users of data.ProjectUser">
+                                      <span *ngIf="users?.user" class="letter text-light"
+                                        [tooltip]="(users?.user?.firstName | titlecase) + (' ') + (users?.user?.lastName | titlecase)"
+                                        [style.background-color]="commonservice.getRandomColor(users?.user?.firstName)">
+                                        {{ users?.user?.firstName.charAt(0) | uppercase }}
+                                      </span>
+                                    </ng-container>
+                                  </td>
+                                  
 
                                 <td class="action" *ngIf="data !== null">
                                     <div class="dropdown-center">

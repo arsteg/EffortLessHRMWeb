@@ -4,6 +4,7 @@ import { taskComment } from 'src/app/models/task/taskComment';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { CommonService } from 'src/app/common/common.service';
 import { attachments, commentAttachment, taskAttachments } from '../task';
+import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-task-comment-list',
   templateUrl: './task-comment-list.component.html',
@@ -16,35 +17,48 @@ export class TaskCommentListComponent implements OnInit {
   @Output() commentDeleted = new EventEmitter<number>();
   @Input() authorfirstName: string;
   @Input() authorlastName: string;
+  @Input() subtaskId: string;
+  @Input() taskId: string;
 
   newComment: '';
   commentsArray: taskComment[] = [];
   author = JSON.parse(localStorage.getItem('currentUser'));
-  task = localStorage.getItem('activeTaskId');
   firstName = localStorage.getItem('firstName');
   lastName = localStorage.getItem('lastName');
   fileProperties: any = {};
   taskAttachment: any = [];
   public selectedAttachment: any;
   selectedFiles: File[] = [];
-  activeTaskId = localStorage.getItem('activeTaskId');
   comment: any = [];
   commentAttachment: any = [];
   newCommentId: string = '';
-
+tasks:any=[]; 
+id: string;
 
   constructor(private taskService: TasksService,
     private authentication: AuthenticationService,
-    public commonService: CommonService) {
+    public commonService: CommonService,
+    private route: ActivatedRoute
+   ) {
   }
 
   ngOnInit() {
+    this.id = this.route.snapshot.paramMap.get('id');
+    console.log(this.id)
+    if (this.id) {
+      this.taskService.getTaskById(this.id).subscribe(result => {
+        this.tasks = result.data;
+       
+      })    
+    }
     this.commentsArray = [...this.comments];
-    const taskId = this.task;
-    this.taskService.getComments(taskId).subscribe((response) => {
+    const taskId = this.id;
+    this.taskService.getComments(this.id).subscribe((response) => {
       this.comments = response.data;
     });
     this.getTaskAttachments();
+    
+    
   }
 
   updateComment(index: number, text: any) {
@@ -68,13 +82,14 @@ export class TaskCommentListComponent implements OnInit {
       id: '',
       content: this.newComment,
       author: this.author.id,
-      task: this.task,
+      task: this.tasks?.task?.id,
       commentedAt: new Date,
       status: '',
       authorfirstName: this.firstName,
       authorlastName: this.lastName,
       taskAttachments: []
     };
+   
     const taskAttachments: attachments[] = [];
     comment.taskAttachments = taskAttachments;
 
@@ -111,7 +126,7 @@ export class TaskCommentListComponent implements OnInit {
 
             if (i === this.selectedFiles.length - 1) {
               const commentAttachment: commentAttachment = {
-                taskId: this.activeTaskId,
+                taskId: this.tasks?.task?.id,
                 comment: this.newCommentId,
                 taskAttachments: attachments
               };
@@ -150,7 +165,7 @@ export class TaskCommentListComponent implements OnInit {
   }
 
   getTaskAttachments(): void {
-    this.taskService.getTaskAttachment(this.activeTaskId).subscribe(result => {
+    this.taskService.getTaskAttachment(this.id).subscribe(result => {
       this.commentAttachment = result.data.newTaskAttachmentList;
     });
   }

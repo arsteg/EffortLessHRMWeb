@@ -12,10 +12,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { ConfirmationDialogComponent } from "./confirmation-dialog/confirmation-dialog.component";
 import { EditTaskComponent } from "./edit-task/edit-task.component";
+import { SubtaskComponent } from "./subtask/subtask.component";
 
 @NgModule({
-    declarations:[TasksComponent,TagComponent,TaskCommentComponent,TaskCommentListComponent, ConfirmationDialogComponent, EditTaskComponent],
-    exports:[TasksComponent,TagComponent,TaskCommentComponent,TaskCommentListComponent ],
+    declarations:[TasksComponent,TagComponent,TaskCommentComponent,TaskCommentListComponent, ConfirmationDialogComponent, EditTaskComponent, SubtaskComponent],
+    exports:[TasksComponent,TagComponent,TaskCommentComponent,TaskCommentListComponent, SubtaskComponent ],
     imports:[SharedModule,ReactiveFormsModule, RouterModule, TooltipModule, MatDialogModule, MatButtonModule, CommonModule],
     schemas: [
       CUSTOM_ELEMENTS_SCHEMA,

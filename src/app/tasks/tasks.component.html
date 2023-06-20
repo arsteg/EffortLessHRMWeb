@@ -83,6 +83,11 @@
                         </div>
                     </div>
                     <hr>
+                    <div class="d-flex justify-content-end align-items-center" style="margin-bottom: -30px;">
+                        <span (click)="previousPagination()" class="bi bi-arrow-bar-left btn-lg btn-outline-primary" title="Previous Page"></span>
+                        <span class="text-muted">Page</span>
+                        <span (click)="nextPagination()" class="bi bi-arrow-bar-right btn-lg btn-outline-primary" title="Next Page"></span>
+                    </div>
                     <div *ngIf="isListView">
                         <table class="table  mt-4">
                             <thead>
@@ -127,7 +132,7 @@
                             </thead>
                             <tbody *ngIf="tasks!= null">
                                 <tr
-                                    *ngFor="let task of tasks | search: searchText |  paginate: { itemsPerPage: 10, currentPage: p };let i = index" [ngClass]="{ 'd-none': !isStatusChecked(task.status) }">
+                                    *ngFor="let task of tasks | search: searchText ;let i = index" [ngClass]="{ 'd-none': !isStatusChecked(task.status) }">
                                     <td class="highlight">
                                         <div></div>
                                     </td>
@@ -260,8 +265,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <pagination-controls (pageChange)="p = $event"
-                            class="pagination d-flex justify-content-end"></pagination-controls>
+                        
                     </div>
 
 
@@ -281,7 +285,7 @@
                                     <div class="card-body  taskBoard">
                                         <ul class="tasks chat-menu ui-sortable ps-0" id="task-list-1" type="none">
                                             <ng-container *ngFor="let task of tasks">
-                                                <li *ngIf="task.status == 'ToDo' || ''"
+                                                <li *ngIf="task.status == 'ToDo' || ' '"
                                                     class="taskToDo task-card border-bottom py-3 px-2 border-left  ui-sortable-handle">
                                                     <div class="d-flex">
                                                         <b (click)="navigateToEditPage(task)">{{task?.taskName}}</b>

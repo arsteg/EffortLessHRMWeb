@@ -15,7 +15,35 @@ export class Task {
   project: project[];
   taskAttachments: TaskAttachment[];
 }
-export class TaskBoard {
+export class SubTask {
+  _id: string;
+  parentTask: string;
+  taskName: string;
+  title: string;
+  estimate: string;
+  startDate: string;
+  endDate: string;
+  description: string;
+  comment: string;
+  isSubTask: boolean;
+  priority: string;
+  taskUsers: string[];
+  status: string;
+  project: string;
+  taskAttachments: TaskAttachment[];
+}
+
+export class updateSubTask{
+  taskName: string;
+  
+  description: string;
+  priority: string;
+  project: string;
+  title: string;
+  parentTask: string;
+  status: string
+}
+  export class TaskBoard {
   taskName: string;
   title: string;
   description: string;
@@ -56,7 +84,7 @@ export interface attachments {
 
 export interface taskAttachments {
   taskId: string;
-  comment: null;
+  // comment: null;
   taskAttachments: attachments[]
 }
 export interface commentAttachment {

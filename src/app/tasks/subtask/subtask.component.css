@@ -1,0 +1,8 @@
+.subTask-details:hover {
+    box-shadow: none;
+}
+
+.dates {
+    color: #605e5e !important;
+    font-size: 13.5px;
+}

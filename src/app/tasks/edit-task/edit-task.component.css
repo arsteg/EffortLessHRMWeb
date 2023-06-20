@@ -23,7 +23,7 @@
     padding-left: 0;
     max-height: 41.2rem;
     position: relative;
-    overflow-y: scroll;
+    overflow-y: hidden;
     overflow-x: hidden;
 }
 .active-task {
@@ -40,6 +40,7 @@
     overflow: hidden !important;
     text-overflow: ellipsis;
     cursor: pointer;
+    line-height: 2.5;
   }
   .tasks-creation-row input.new-task-title-input {
     border: none;
@@ -157,5 +158,12 @@ cursor: pointer
     box-shadow: -5px 10px 29px -22px rgba(0, 0, 0, 0.55) !important;
     background: white !important;
     border-radius: 5px;
+}
+.sub_btn{
+    line-height: 0.7
+}
+.subtask-list:hover{
+background:#f5f7fb;
+cursor: pointer
 }
 

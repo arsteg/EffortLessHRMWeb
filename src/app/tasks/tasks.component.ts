@@ -73,6 +73,9 @@ export class TasksComponent implements OnInit {
   view = localStorage.getItem('adminView');
   admin: string = 'admin';
   comments: any[];
+  skip = '0';
+  next = '10';
+  
 
   constructor(
     private tasksService: TasksService,
@@ -150,11 +153,21 @@ export class TasksComponent implements OnInit {
   }
 
   listAllTasks() {
-    this.tasksService.getAllTasks().subscribe((response: any) => {
+    this.tasksService.getAllTasks(this.skip, this.next).subscribe((response: any) => {
       this.tasks = response && response.data && response.data['taskList'];
-
-    })
+    });
   }
+  nextPagination() {
+    const newSkip = (parseInt(this.skip) + parseInt(this.next)).toString();
+    this.skip = newSkip;
+    this.listAllTasks();
+  }
+  previousPagination() {
+    const newSkip = (parseInt(this.next) - parseInt(this.skip)).toString();
+    this.skip = newSkip;
+    this.listAllTasks();
+  }
+    
 
   onSubmit() {
     // Create new task object
@@ -211,7 +224,7 @@ export class TasksComponent implements OnInit {
               // This is the last file, so create the task attachment
               const taskAttachment: taskAttachments = {
                 taskId: newTask._id,
-                comment: null,
+                // comment: null,
                 taskAttachments: attachments
               };
 
@@ -523,7 +536,7 @@ export class TasksComponent implements OnInit {
 
     }
   }
- dszadsfc 
+
   getprojects() {
     if (this.view === 'admin') {
       this.commonservice.getProjectList().subscribe(response => {

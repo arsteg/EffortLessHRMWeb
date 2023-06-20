@@ -160,13 +160,17 @@ export class ProjectListComponent implements OnInit {
   getProjectUser(id) {
     this.projectService.getprojectUser(id).subscribe(response => {
       this.projectUserList = response && response.data && response.data['projectUserList'];
-      this.selectedUser = this.projectUserList.map(user => user.user.id);
+      if (this.projectUserList) {
+        this.projectUserList = this.projectUserList.filter(user => user.user != null);
+        this.selectedUser = this.projectUserList.map(user => user.user.id);
+      }
     });
   }
-
+  
 
   onModelChange(projectUserList) {
     let index = this.projectUserList.findIndex(user => user.id === projectUserList.id);
+    console.log(projectUserList.id)
     this.projectService.deleteprojectUser(projectUserList.id).subscribe(response => {
       this.projectUserList.splice(index, 1);
       this.ngOnInit();
