@@ -5,6 +5,7 @@ import { TasksService } from 'src/app/_services/tasks.service';
 import { TimeLogService } from 'src/app/_services/timeLogService';
 import { CommonService } from 'src/app/common/common.service';
 import { Validators, FormGroup, FormBuilder } from '@angular/forms';
+import { attachments, taskAttachments } from '../task';
 
 @Component({
   selector: 'app-subtask',
@@ -35,6 +36,11 @@ export class SubtaskComponent implements OnInit {
   selectedUser: any = [];
   selectedTask: any;
   @Output() subtaskIdChanged = new EventEmitter<string>();
+  id: string;
+  taskAttachment: any = [];
+  public selectedAttachment: any;
+  selectedFiles: File[] = [];
+
 
   constructor(
     private route: ActivatedRoute,
@@ -53,10 +59,10 @@ export class SubtaskComponent implements OnInit {
    }
 
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
+    this.id = this.route.snapshot.paramMap.get('id');
+    if (this.id) {
 
-      this.tasksService.getTaskById(id).subscribe(task => {
+      this.tasksService.getTaskById(this.id).subscribe(task => {
         this.subtask = task.data;
       })
     }
@@ -65,6 +71,7 @@ export class SubtaskComponent implements OnInit {
     });
     
     this.firstLetter = this.commonservice.firstletter;
+    this.getTaskAttachments();
   }
  
   updatesubTaskPriority(selectedTask: any, priority: string) {
@@ -118,6 +125,83 @@ export class SubtaskComponent implements OnInit {
   gotoParentTask(taskId: string){
     this.router.navigate(['/edit-task', taskId]);
   }
+  onFileSelect(event) {
+    const files: FileList = event.target.files;
+    if (files) {
+      for (let i = 0; i < files.length; i++) {
+        const file: File = files.item(i);
+        if (file) {
+          this.selectedFiles.push(file);
+
+        }
+      }
+    }
+    const attachments: attachments[] = [];
+
+    for (let i = 0; i < this.selectedFiles.length; i++) {
+      const file: File = this.selectedFiles[i];
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const base64String = reader.result.toString().split(',')[1];
+        const fileSize = file.size; 
+        const fileType = file.type; 
+        const fileNameParts = file.name.split('.');
+        const extension = fileNameParts[fileNameParts.length - 1];
+
+        attachments.push({
+          attachmentName: file.name,
+          attachmentType: fileType,
+          attachmentSize: fileSize,
+          extension: extension,
+          file: base64String
+        });
+        if (i === this.selectedFiles.length - 1) {
+          const taskAttachment: taskAttachments = {
+            taskId: this.id,
+            taskAttachments: attachments
+          };
+
+          this.tasksService.addTaskAttachment(taskAttachment).subscribe(
+            (response) => {
+              this.selectedFiles = [];
+              this.ngOnInit();
+            },
+            (error) => {
+              console.error('Error creating task attachment:', error);
+            }
+          );
+        }
+      };
+    }
+
+  }
+  getTaskAttachments(): void {
+    this.tasksService.getTaskAttachment(this.id).subscribe(result => {
+      this.taskAttachment = result.data.newTaskAttachmentList;
+      console.log(this.taskAttachment)
+    });
+  }
+
+  public openTaskAttachmentModal(attachment: any): void {
+    this.selectedAttachment = attachment;
+  }
+
+  deleteTaskAttachment(taskAttachmentId: string): void {
+    this.tasksService.deleteTaskAttachment(taskAttachmentId).subscribe(
+      (response) => {
+        this.taskAttachment = this.taskAttachment.filter(attachment => attachment.id !== taskAttachmentId);
+      },
+      (error) => {
+        console.error('Error deleting task attachment:', error);
+      }
+    );
+  }
+  convertBytesToKB(bytes: number): string {
+    const kilobytes = bytes / 1024;
+    return kilobytes.toFixed(2) + ' KB';
+  }
+
 }
 interface priority {
   name: string,

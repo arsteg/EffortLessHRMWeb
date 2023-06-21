@@ -20,17 +20,19 @@
                             (click)="onTaskChange(task?.id)">
                             {{task?.taskName| titlecase}}
                         </li>
-                        <li class="d-flex justify-content-evenly align-items-center border-top">
-                        <span (click)="previousPagination()" class="bi bi-arrow-bar-left btn-lg btn-outline-primary" title="Previous Page"></span>
-                        <span class="text-muted">Page</span>
-                        <span (click)="nextPagination()" class="bi bi-arrow-bar-right btn-lg btn-outline-primary" title="Next Page"></span>
-                    </li>
+                        <li class="d-flex justify-content-evenly align-items-center border-top" *ngIf="view == 'admin'">
+                            <span (click)="previousPagination()" class="bi bi-arrow-bar-left btn-lg btn-outline-primary"
+                                title="Previous Page"></span>
+                            <span class="text-muted">Page</span>
+                            <span (click)="nextPagination()" class="bi bi-arrow-bar-right btn-lg btn-outline-primary"
+                                title="Next Page"></span>
+                        </li>
                     </ul>
 
 
                 </div>
                 <div class="col-md-10">
-                    <form class="row taskDetails" [formGroup]="updateForm" (ngSubmit)="updateTask(updateForm.value)">
+                    <form class="row taskDetails" [formGroup]="updateForm" (ngSubmit)="updateTask()">
 
                         <div class="row mb-3">
                             <div class="col-12  align-self-center">
@@ -194,7 +196,7 @@
 
                                     <div class="d-flex row">
                                         <ng-container *ngFor="let attachment of taskAttachment ; let i = index">
-                                            <div  class="col-md-2 mb-5">
+                                            <div class="col-md-2 mb-5">
 
 
                                                 <div class="card cardAttachment"
@@ -379,28 +381,48 @@
 
                                             </div>
                                             <div class="d-flex border-bottom pt-1 align-items-center">
+                                                <!-- <form action="" [formGroup]="updateSubTasks"
+                                                    (ngSubmit)="updateSubTask(updateSubTasks.value)">
+                                                    <p class=" ps-4" *ngIf="!isEditMode"
+                                                        (click)="subTaskDetail(subTask)">
+                                                        {{subTask.taskName}}
+                                                    </p>
+                                                    <input type="text" class="form-control input pt-0"
+                                                        *ngIf="isEditMode" [(ngModel)]="updateSubTasks.value.taskName">
 
-                                                <p class=" ps-4" *ngIf="!isEditMode" (click)="subTaskDetail(subTask)">
-                                                    {{subTask.taskName}}
-                                                </p>
-                                                <input type="text" class="form-control input pt-0" *ngIf="isEditMode"
-                                                    [(ngModel)]="updateSubTasks.value.taskName">
+                                                    <div class="ms-auto d-flex">
+                                                        <button class="comment-btn sub_btn fa fa-pencil"
+                                                            *ngIf="!isEditMode" type="button"
+                                                            (click)="toggleEditMode()"></button>
 
-                                                <div class="ms-auto d-flex">
-                                                    <button class="comment-btn sub_btn fa fa-pencil" *ngIf="!isEditMode"
-                                                        type="button" (click)="toggleEditMode()"></button>
+                                                        <button type="submit"
+                                                            (click)="updateSubTask(subTask.id)"
+                                                            *ngIf="isEditMode"
+                                                            class="add-task-action-circle action-circle-check d-flex justify-content-center align-items-center pointer border-none">
+                                                            <span class="subtask-icon text-success fa fa-check"></span>
+                                                        </button>
 
-                                                    <button type="submit"
-                                                        (click)="updateSubTask(subTask.id, updateSubTasks)"
-                                                        *ngIf="isEditMode"
-                                                        class="add-task-action-circle action-circle-check d-flex justify-content-center align-items-center pointer border-none">
+                                                    </div>
+                                                </form> -->
+                                                <form action="" [formGroup]="updateSubTasks">
+                                                    <p class="ps-4" *ngIf="!isEditMode" (click)="subTaskDetail(subTask)">
+                                                      {{subTask.taskName}}
+                                                    </p>
+                                                    <input type="text" class="form-control input pt-0" *ngIf="isEditMode" [(ngModel)]="updateSubTasks.value.taskName">
+                                                    <div class="ms-auto d-flex">
+                                                      <button class="comment-btn sub_btn fa fa-pencil" *ngIf="!isEditMode" type="button" (click)="toggleEditMode()"></button>
+                                                      <button type="submit" *ngIf="isEditMode"
+                                                        class="add-task-action-circle action-circle-check d-flex justify-content-center align-items-center pointer border-none"
+                                                        (click)="updateSubTask(subTask, updateSubTasks)">
                                                         <span class="subtask-icon text-success fa fa-check"></span>
-                                                    </button>
-                                                    <div class="dropdown">
-                                                        <button class="btn dropdown-toggle sub_btn  status"
-                                                            type="button" id="dropdownMenuButton"
-                                                            data-bs-toggle="dropdown" aria-haspopup="true"
-                                                            aria-expanded="false" [ngClass]="{
+                                                      </button>
+                                                    </div>
+                                                  </form>
+                                                  
+                                                <div class="dropdown">
+                                                    <button class="btn dropdown-toggle sub_btn  status" type="button"
+                                                        id="dropdownMenuButton" data-bs-toggle="dropdown"
+                                                        aria-haspopup="true" aria-expanded="false" [ngClass]="{
                                                             'bg-warning text-white!important': (selectedStatus || subTask?.status) === 'In Progress',
                                                             'bg-success text-white!important': (selectedStatus || subTask?.status) === 'Done',
                                                             'bg-danger text-white!important': (selectedStatus || subTask?.status) === 'ToDo',
@@ -408,188 +430,179 @@
                                                             'bg-primary text-white!important': (selectedStatus || subTask?.status) === 'Active'
                                                             
                                                         }">
-                                                            <i class="fa fa-tasks"></i> {{ selectedStatus ||
-                                                            subTask?.status
-                                                            }}
+                                                        <i class="fa fa-tasks"></i> {{ selectedStatus ||
+                                                        subTask?.status
+                                                        }}
+                                                    </button>
+                                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                        <button *ngFor="let s of statusList" type="button" tabindex="0"
+                                                            role="menuitem" class="sub_btn dropdown-item"
+                                                            (click)="updatesubTaskStatus(subTask,s.name)">
+                                                            <span class="d-flex align-items-center">
+                                                                <span>{{s?.name}}</span>
+                                                            </span>
                                                         </button>
-                                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                            <button *ngFor="let s of statusList" type="button"
-                                                                tabindex="0" role="menuitem"
-                                                                class="sub_btn dropdown-item"
-                                                                (click)="updatesubTaskStatus(subTask,s.name)">
-                                                                <span class="d-flex align-items-center">
-                                                                    <span>{{s?.name}}</span>
-                                                                </span>
-                                                            </button>
-                                                            <button type="button" tabindex="0" role="menuitem"
-                                                                class="dropdown-item sub_btn "
-                                                                (click)="updatesubTaskStatus(subTask,'')">
-                                                                <span class="d-flex align-items-center"><span>Remove
-                                                                        Status</span></span>
-                                                            </button>
-                                                        </div>
-                                                    </div>
-
-
-
-                                                    <div class="dropdown mx-2">
-                                                        <button class="btn sub_btn dropdown-toggle" type="button"
-                                                            id="dropdownMenuButton" data-bs-toggle="dropdown"
-                                                            aria-haspopup="true" aria-expanded="false">
-                                                            <img class="align-self-center"
-                                                                [src]="selectedPriority ? selectedPriority.url : getTaskPriorityUrl(subTask?.priority)"
-                                                                [title]="selectedPriority ? selectedPriority.name : getTaskPriorityUrl(subTask?.priority)"
-                                                                height="24" width="24">
+                                                        <button type="button" tabindex="0" role="menuitem"
+                                                            class="dropdown-item sub_btn "
+                                                            (click)="updatesubTaskStatus(subTask,'')">
+                                                            <span class="d-flex align-items-center"><span>Remove
+                                                                    Status</span></span>
                                                         </button>
-                                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                            <button *ngFor="let priority of priorityList" type="button"
-                                                                tabindex="0" role="menuitem"
-                                                                class="sub_btn dropdown-item"
-                                                                (click)="updatesubTaskPriority(subTask,priority.name)">
-                                                                <span class="d-flex align-items-center">
-                                                                    <img [src]="priority?.url" class="me-3" height="18"
-                                                                        width="18">
-                                                                    <span>{{priority?.name}}</span>
-                                                                </span>
-                                                            </button>
-                                                            <button type="button" tabindex="0" role="menuitem"
-                                                                class="dropdown-item sub_btn"
-                                                                (click)="updatesubTaskPriority(subTask,'')">
-                                                                <span class="d-flex align-items-center"><span>Remove
-                                                                        Priority</span></span>
-                                                            </button>
-                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="subtask-creating-row-wrapper bg-white rounded p-4">
-                                    <form action="" [formGroup]="addForm" (ngSubmit)="onSubmit()">
-                                        <div
-                                            class="d-flex tasks-creation-row justify-content-between subtask-creating-row">
-                                            <input class="new-task-title-input" placeholder="+ Add subtask..." value=""
-                                                formControlName="taskName">
-
-                                            <div class="d-flex align-items-center">
-
-                                                <label for="fileUpload7"
-                                                    class="file-upload btn btn-outline-primary btn-block rounded-pill shadow my-3">
-                                                    <i class="fa fa-paperclip me-2"></i> <input id="fileUpload7" formControlName="taskAttachments"
-                                                        type="file"  multiple
-                                                        style="display: none;">
-                                                </label>
-                                                <ul type="none">
-                                                    <li class="text-primary" *ngFor="let files of selectedFiles">
-                                                        {{files.name}}
-                                                    </li>
-                                                </ul>
 
 
 
-
-                                                <div
-                                                    class="position-relative me-0 justify-content-center text-center align-items-center pointer d-flex deadline-box add-task-action-box deadline-box">
-                                                    <span class="subtask-icon fa fa-calendar-o" title="Due Date"></span>
-                                                </div>
-                                                <div class="dropdown">
-                                                    <button class="btn dropdown-toggle" type="button"
+                                                <div class="dropdown mx-2">
+                                                    <button class="btn sub_btn dropdown-toggle" type="button"
                                                         id="dropdownMenuButton" data-bs-toggle="dropdown"
                                                         aria-haspopup="true" aria-expanded="false">
                                                         <img class="align-self-center"
-                                                            [src]="selectedPriority ? selectedPriority.url : getTaskPriorityUrl(subTask.priority)"
-                                                            [title]="selectedPriority ? selectedPriority.name : getTaskPriorityUrl(subTask.priority)"
+                                                            [src]="selectedPriority ? selectedPriority.url : getTaskPriorityUrl(subTask?.priority)"
+                                                            [title]="selectedPriority ? selectedPriority.name : getTaskPriorityUrl(subTask?.priority)"
                                                             height="24" width="24">
                                                     </button>
                                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                                         <button *ngFor="let priority of priorityList" type="button"
-                                                            tabindex="0" role="menuitem" class="dropdown-item"
-                                                            (click)="selectedPriority = priority">
-                                                            <span class="d-flex align-items-center"
-                                                                formControlName="priority">
-                                                                <img [src]="priority.url" class="me-3" height="18"
+                                                            tabindex="0" role="menuitem" class="sub_btn dropdown-item"
+                                                            (click)="updatesubTaskPriority(subTask,priority.name)">
+                                                            <span class="d-flex align-items-center">
+                                                                <img [src]="priority?.url" class="me-3" height="18"
                                                                     width="18">
                                                                 <span>{{priority?.name}}</span>
                                                             </span>
                                                         </button>
                                                         <button type="button" tabindex="0" role="menuitem"
-                                                            class="dropdown-item" (click)="selectedPriority = null">
+                                                            class="dropdown-item sub_btn"
+                                                            (click)="updatesubTaskPriority(subTask,'')">
                                                             <span class="d-flex align-items-center"><span>Remove
                                                                     Priority</span></span>
                                                         </button>
                                                     </div>
                                                 </div>
-                                                <div class="">
-                                                    <div
-                                                        class="d-flex justify-content-center align-items-center position-relative">
-                                                        <div class="pointer" aria-label="Assign">
-                                                            <div class="add-new-assignee radius-20">
-                                                                <span
-                                                                    class="subtask-icon fa fa-user-plus rounded add-user"
-                                                                    title="Asssign"></span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div><button type="submit"
-                                                    class="add-task-action-circle action-circle-check d-flex justify-content-center align-items-center pointer border-none">
-                                                    <span class="subtask-icon fa fa-check"></span>
-                                                </button>
-                                                <div
-                                                    class="add-task-action-circle action-circle-close d-flex justify-content-center align-items-center pointer ">
-                                                    <span class="subtask-icon fa fa-close "></span>
-                                                </div>
                                             </div>
                                         </div>
-
-                                        <!-- <ul type="none">
-                                            <li class="text-primary" *ngFor="let files of selectedFiles">
-                                                {{files.name}}
-                                            </li>
-                                        </ul> -->
-
-                                    </form>
-
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <div class="col-12  align-self-center">
-                                <div class="sub-header mt-3 py-3 px-3 align-self-center w-100 rounded">
-                                    <div class="w-sm-100 pt-2 mr-auto border-bottom">
-                                        <h3 class="mb-0">Comments</h3>
                                     </div>
-                                    <app-task-comment-list [comments]="comments"
-                                        (commentAdded)="onCommentAdd($event)"></app-task-comment-list>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="d-flex justify-content-between my-4">
+                            <div class="subtask-creating-row-wrapper bg-white rounded p-4">
+                                <form action="" [formGroup]="addForm" (ngSubmit)="onSub()">
+                                    <div class="d-flex tasks-creation-row justify-content-between subtask-creating-row">
+                                        <input class="new-task-title-input" placeholder="+ Add subtask..." value=""
+                                            formControlName="taskName">
 
-                            <div>
-                                <button mat-raised-button class="mx-2" (click)="onCancel()"
-                                    type="button">Cancel</button>
+                                        <div class="d-flex align-items-center">
+
+                                            <label for="fileUpload7"
+                                                class="file-upload btn btn-outline-primary btn-block rounded-pill shadow my-3">
+                                                <i class="fa fa-paperclip me-2"></i> <input id="fileUpload7"
+                                                    formControlName="taskAttachments" type="file" multiple
+                                                    (change)="onFileSelects($event)" style="display: none;">
+                                            </label>
+
+
+
+
+
+                                            <div
+                                                class="position-relative me-0 justify-content-center text-center align-items-center pointer d-flex deadline-box add-task-action-box deadline-box">
+                                                <span class="subtask-icon fa fa-calendar-o" title="Due Date"></span>
+                                            </div>
+                                            <div class="dropdown">
+                                                <button class="btn dropdown-toggle" type="button"
+                                                    id="dropdownMenuButton" data-bs-toggle="dropdown"
+                                                    aria-haspopup="true" aria-expanded="false">
+                                                    <img class="align-self-center"
+                                                        [src]="selectedPriority ? selectedPriority.url : getTaskPriorityUrl(subTask.priority)"
+                                                        [title]="selectedPriority ? selectedPriority.name : getTaskPriorityUrl(subTask.priority)"
+                                                        height="24" width="24">
+                                                </button>
+                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                    <button *ngFor="let priority of priorityList" type="button"
+                                                        tabindex="0" role="menuitem" class="dropdown-item"
+                                                        (click)="selectedPriority = priority">
+                                                        <span class="d-flex align-items-center"
+                                                            formControlName="priority">
+                                                            <img [src]="priority.url" class="me-3" height="18"
+                                                                width="18">
+                                                            <span>{{priority?.name}}</span>
+                                                        </span>
+                                                    </button>
+                                                    <button type="button" tabindex="0" role="menuitem"
+                                                        class="dropdown-item" (click)="selectedPriority = null">
+                                                        <span class="d-flex align-items-center"><span>Remove
+                                                                Priority</span></span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="">
+                                                <div
+                                                    class="d-flex justify-content-center align-items-center position-relative">
+                                                    <div class="pointer" aria-label="Assign">
+                                                        <div class="add-new-assignee radius-20">
+                                                            <span class="subtask-icon fa fa-user-plus rounded add-user"
+                                                                title="Asssign"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div><button type="submit"
+                                                class="add-task-action-circle action-circle-check d-flex justify-content-center align-items-center pointer border-none">
+                                                <span class="subtask-icon fa fa-check"></span>
+                                            </button>
+                                            <div
+                                                class="add-task-action-circle action-circle-close d-flex justify-content-center align-items-center pointer ">
+                                                <span class="subtask-icon fa fa-close "></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <ul type="none">
+                                        <li class="text-primary" *ngFor="let files of selectedFile">
+                                            {{files.name}}
+                                        </li>
+                                    </ul>
+
+                                </form>
+
                             </div>
-                            <div>
-                                <button mat-raised-button color="primary" type="submit">Update</button>
-                            </div>
-
                         </div>
-                    </form>
+                <!-- </div> -->
+
+                <div class="row mb-3">
+                    <div class="col-12  align-self-center">
+                        <div class="sub-header mt-3 py-3 px-3 align-self-center w-100 rounded">
+                            <div class="w-sm-100 pt-2 mr-auto border-bottom">
+                                <h3 class="mb-0">Comments</h3>
+                            </div>
+                            <app-task-comment-list [comments]="comments"
+                                (commentAdded)="onCommentAdd($event)"></app-task-comment-list>
+                        </div>
+                    </div>
                 </div>
+
+                <div class="d-flex justify-content-between my-4">
+
+                    <div>
+                        <button mat-raised-button class="mx-2" (click)="onCancel()" type="button">Cancel</button>
+                    </div>
+                    <div>
+                        <button mat-raised-button color="primary" type="submit">Update</button>
+                    </div>
+
+                </div>
+                </form>
             </div>
         </div>
+    </div>
 
-        <div *ngIf="tasks?.data?.task == null">
-            <a href="" [routerLink]="['/tasks']"> <button class="btn"><span class="back-btn bi bi-arrow-left ">
-                        Back</span></button></a>
-            <h2>This Task No Longer To show !!!</h2>
-        </div>
+    <div *ngIf="tasks?.data?.task == null">
+        <a href="" [routerLink]="['/tasks']"> <button class="btn"><span class="back-btn bi bi-arrow-left ">
+                    Back</span></button></a>
+        <h2>This Task No Longer To show !!!</h2>
     </div>
 </div>
+<!-- </div> -->
 
 <!-- Delete -->
 <div class="modal" id="deleteModal">
@@ -650,3 +663,4 @@
             </div>
         </div>
     </div>
+</div>

@@ -11,7 +11,7 @@
 
   </div>
   <div class="d-flex ms-5 mb-3">
-    <button mat-raised-button color="primary" (click)="updateComment()">Save</button>
+    <button mat-raised-button color="primary" type="submit" (click)="updateComment()">Save</button>
     <button mat-raised-button class="mx-2" type="button" (click)="toggleEditMode()">Cancel</button>
   </div>
 </div>
@@ -35,7 +35,7 @@
   <div class="d-flex ms-3 my-2">
 
     <button class="comment-btn" (click)="toggleEditMode()">Edit .</button>
-    <button class="comment-btn" (click)="openDialog(comment)">Delete .</button>
+    <button class="comment-btn" (click)="openDialog(comment)" type="button">Delete .</button>
 
   </div>
 </div>

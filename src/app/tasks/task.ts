@@ -30,12 +30,18 @@ export class SubTask {
   taskUsers: string[];
   status: string;
   project: string;
-  taskAttachments: TaskAttachment[];
+  taskAttachments: taskAttachments[];
 }
-
+export class updateTask{
+  taskName: string;
+  description: string;
+  priority: string;
+  project: string;
+  title: string;
+  status: string
+}
 export class updateSubTask{
   taskName: string;
-  
   description: string;
   priority: string;
   project: string;
@@ -84,7 +90,6 @@ export interface attachments {
 
 export interface taskAttachments {
   taskId: string;
-  // comment: null;
   taskAttachments: attachments[]
 }
 export interface commentAttachment {

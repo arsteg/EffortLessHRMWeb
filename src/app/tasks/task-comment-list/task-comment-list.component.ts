@@ -44,7 +44,6 @@ id: string;
 
   ngOnInit() {
     this.id = this.route.snapshot.paramMap.get('id');
-    console.log(this.id)
     if (this.id) {
       this.taskService.getTaskById(this.id).subscribe(result => {
         this.tasks = result.data;
