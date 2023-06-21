@@ -59,7 +59,7 @@ export class EditTaskComponent implements OnInit {
   taskId: string;
   skip = '0';
   next = '10';
-  newTask: string= '';
+  newTask: string = '';
   id: string;
   selectedSubtask: any;
 
@@ -94,14 +94,7 @@ export class EditTaskComponent implements OnInit {
       project: ['', Validators.required],
       taskAttachments: [[]]
     });
-    this.updateSubTasks = this.fb.group({
-      taskName: [this.selectedSubtask?.taskName],
-      title: [this.selectedSubtask?.title],
-      priority: [this.selectedSubtask?.priority],
-      status: [this.selectedSubtask?.status],
-      description: [this.selectedSubtask?.description],
-      project: [this.currentTaskProject.project.id]
-    })
+   
   }
 
   ngOnInit(): void {
@@ -124,10 +117,10 @@ export class EditTaskComponent implements OnInit {
 
     this.tasksService.getSubTask(this.id).subscribe((response: any) => {
       this.subTask = response && response.data && response.data['taskList']
-   
     })
     this.getTasks();
   }
+  
   getCurrentUserTasks() {
     this.tasksService.getTaskByUser(this.currentUser.id).subscribe(response => {
       this.taskList = response && response.data && response.data['taskList'];
@@ -152,13 +145,13 @@ export class EditTaskComponent implements OnInit {
     this.comments = this.comments.filter(comment => comment.id !== commentId);
   }
 
- 
 
-listAllTasks() {
-  this.tasksService.getAllTasks(this.skip, this.next).subscribe((response: any) => {
-    this.taskList = response && response.data && response.data['taskList'];
-  });
-}
+
+  listAllTasks() {
+    this.tasksService.getAllTasks(this.skip, this.next).subscribe((response: any) => {
+      this.taskList = response && response.data && response.data['taskList'];
+    });
+  }
   nextPagination() {
     const newSkip = (parseInt(this.skip) + parseInt(this.next)).toString();
     this.skip = newSkip;
@@ -177,17 +170,18 @@ listAllTasks() {
       this.activeTaskId = taskId;
       this.getTaskAttachments();
       localStorage.setItem('activeTaskId', taskId.toString());
+      this.ngOnInit();
     });
   }
 
   updateTask() {
-    const updateTask: updateTask ={
+    const updateTask: updateTask = {
       taskName: this.updateForm.value.taskName,
-      description: this.updateForm.value.description, 
+      description: this.updateForm.value.description,
       priority: this.currentTaskProject.priority,
       project: this.currentTaskProject.project.id,
-      title: this.updateForm.value.taskName,      
-      status:  this.currentTaskProject.status
+      title: this.updateForm.value.taskName,
+      status: this.currentTaskProject.status
     }
     this.tasksService.updateTask(this.tasks.data.task.id, updateTask).subscribe(response => {
       console.log(response)
@@ -344,8 +338,8 @@ listAllTasks() {
   toggleEditMode() {
     this.isEditMode = !this.isEditMode;
   }
- 
-  onSub(){
+
+  onSub() {
     const id: '' = this.currentUser.id
     const newTask: SubTask = {
       _id: '',
@@ -415,8 +409,8 @@ listAllTasks() {
       err => {
         console.log("Error creating task!");
       }
-  
-})
+
+    })
   }
   onFileSelects(event) {
     const files: FileList = event.target.files;
@@ -431,7 +425,7 @@ listAllTasks() {
   }
 
 
- 
+
 
   deleteSubTask(taskId: string) {
     this.tasksService.deleteTask(taskId).subscribe(
@@ -444,54 +438,8 @@ listAllTasks() {
       }
     );
   }
-  // updateSubTask(selectedSubTask, updateForm) {
-  //   // let selectedSubTask: any;
-  //   console.log(selectedSubTask.id)
-  //   console.log(this.subTask.id)
-  //   // const updateForm: updateSubTask = {
-  //   //   taskName: this.updateSubTasks.value.taskName,
-  //   //   title: this.updateSubTasks.value.taskName,
-  //   //   priority: this.updateSubTasks.value.priority,
-  //   //   status: this.updateSubTasks.value.status,
-  //   //   parentTask: this.activeTaskId,
-  //   //   description: this.updateSubTasks.value.description,
-  //   //    project: this.currentTaskProject.project.id
-  //   // }
-  //   this.tasksService.updateTask(selectedSubTask.id, updateForm).subscribe(response => {
-  //     console.log(response)
-  //     this.ngOnInit();
-  //     this.toast.success('Existing Task Updated', 'Successfully Updated!')
-  //   },
-  //     err => {
-  //       this.toast.error('Task could not be updated', 'ERROR!')
-  //     })
-  // }
-
-  updateSubTask(selectedTask: any, updateFormData) {
-    // const updateForm : updateTask = {
-    //   taskName: this.updateSubTasks.value.taskName,
-    //   description: this.updateSubTasks.value.description,
-    //   priority: this.updateSubTasks.value.priority,
-    //   status: this.updateSubTasks.value.status,
-    //   project: this.currentTaskProject.project.id,
-    //   title: this.updateSubTasks.value.taskName
-    // }
-
-    // Perform the logic for updating the subtask
-    console.log(this.updateSubTasks);
-    console.log(selectedTask.id)
-    this.tasksService.updateTask(selectedTask.id, updateFormData).subscribe(
-      (response) => {
-        console.log(response);
-        this.ngOnInit();
-        this.toast.success('Existing Task Updated', 'Successfully Updated!');
-      },
-      (err) => {
-        this.toast.error('Task could not be updated', 'ERROR!');
-      }
-    );
-  }
   
+
   subTaskDetail(subTask) {
     this.router.navigate(['/SubTask', subTask.id]);
 

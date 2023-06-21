@@ -57,7 +57,7 @@
                                     <div class="d-flex">
 
                                         <div class="dropdown">
-                                            <button class="btn dropdown-toggle status" type="button"
+                                            <button class="btn dropdown-toggle status" type="button" 
                                                 id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true"
                                                 aria-expanded="false" [ngClass]="{
                                                     'bg-warning text-white!important': (selectedStatus || tasks?.data?.task?.status) === 'In Progress',
@@ -88,7 +88,7 @@
 
 
                                         <div class="dropdown mx-2">
-                                            <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton"
+                                            <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" 
                                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                 <img class="align-self-center"
                                                     [src]="selectedPriority ? selectedPriority.url : getTaskPriorityUrl(currentTaskProject?.priority)"
@@ -366,9 +366,9 @@
                         <div class="row mb-3">
                             <div class="col-12  align-self-center">
                                 <div class="sub-header mt-3 py-3 px-3 align-self-center d-sm-flex w-100 rounded">
-                                    <div class="w-100 pt-2 mr-auto border-bottom">
+                                    <div class="w-100 pt-2 mr-auto border-bottom d-flex">
                                         <h3 class="mb-0">Subtasks</h3>
-
+                                        <h3 class="ms-auto pe-3" *ngIf="subTask">Total Sub Task: {{subTask?.length}}</h3>
                                     </div>
 
 
@@ -377,50 +377,16 @@
                                 <div class="rounded shadow my-2 bg-white">
                                     <div *ngFor="let subTask of subTask; let i = index">
                                         <div class="subtask-list">
-                                            <div class="d-flex">
-
-                                            </div>
-                                            <div class="d-flex border-bottom pt-1 align-items-center">
-                                                <!-- <form action="" [formGroup]="updateSubTasks"
-                                                    (ngSubmit)="updateSubTask(updateSubTasks.value)">
-                                                    <p class=" ps-4" *ngIf="!isEditMode"
-                                                        (click)="subTaskDetail(subTask)">
-                                                        {{subTask.taskName}}
+                                           
+                                            <div class="d-flex  border-bottom pt-1 align-items-center px-3" >
+                                              <span class="text-muted mx-1">I-{{i+1}}</span>  <p class=" ps-4" *ngIf="!isEditMode"
+                                              (click)="subTaskDetail(subTask)">
+                                                       <b>{{subTask.taskName}}</b> 
                                                     </p>
-                                                    <input type="text" class="form-control input pt-0"
-                                                        *ngIf="isEditMode" [(ngModel)]="updateSubTasks.value.taskName">
+                                                   
 
-                                                    <div class="ms-auto d-flex">
-                                                        <button class="comment-btn sub_btn fa fa-pencil"
-                                                            *ngIf="!isEditMode" type="button"
-                                                            (click)="toggleEditMode()"></button>
-
-                                                        <button type="submit"
-                                                            (click)="updateSubTask(subTask.id)"
-                                                            *ngIf="isEditMode"
-                                                            class="add-task-action-circle action-circle-check d-flex justify-content-center align-items-center pointer border-none">
-                                                            <span class="subtask-icon text-success fa fa-check"></span>
-                                                        </button>
-
-                                                    </div>
-                                                </form> -->
-                                                <form action="" [formGroup]="updateSubTasks">
-                                                    <p class="ps-4" *ngIf="!isEditMode" (click)="subTaskDetail(subTask)">
-                                                      {{subTask.taskName}}
-                                                    </p>
-                                                    <input type="text" class="form-control input pt-0" *ngIf="isEditMode" [(ngModel)]="updateSubTasks.value.taskName">
-                                                    <div class="ms-auto d-flex">
-                                                      <button class="comment-btn sub_btn fa fa-pencil" *ngIf="!isEditMode" type="button" (click)="toggleEditMode()"></button>
-                                                      <button type="submit" *ngIf="isEditMode"
-                                                        class="add-task-action-circle action-circle-check d-flex justify-content-center align-items-center pointer border-none"
-                                                        (click)="updateSubTask(subTask, updateSubTasks)">
-                                                        <span class="subtask-icon text-success fa fa-check"></span>
-                                                      </button>
-                                                    </div>
-                                                  </form>
-                                                  
-                                                <div class="dropdown">
-                                                    <button class="btn dropdown-toggle sub_btn  status" type="button"
+                                                <div class="dropdown ms-auto">
+                                                    <button class="btn dropdown-toggle sub_btn  status" type="button" 
                                                         id="dropdownMenuButton" data-bs-toggle="dropdown"
                                                         aria-haspopup="true" aria-expanded="false" [ngClass]="{
                                                             'bg-warning text-white!important': (selectedStatus || subTask?.status) === 'In Progress',
@@ -454,7 +420,7 @@
 
 
                                                 <div class="dropdown mx-2">
-                                                    <button class="btn sub_btn dropdown-toggle" type="button"
+                                                    <button class="btn sub_btn dropdown-toggle" type="button" 
                                                         id="dropdownMenuButton" data-bs-toggle="dropdown"
                                                         aria-haspopup="true" aria-expanded="false">
                                                         <img class="align-self-center"
@@ -522,8 +488,7 @@
                                                     <button *ngFor="let priority of priorityList" type="button"
                                                         tabindex="0" role="menuitem" class="dropdown-item"
                                                         (click)="selectedPriority = priority">
-                                                        <span class="d-flex align-items-center"
-                                                            formControlName="priority">
+                                                        <span class="d-flex align-items-center">
                                                             <img [src]="priority.url" class="me-3" height="18"
                                                                 width="18">
                                                             <span>{{priority?.name}}</span>
