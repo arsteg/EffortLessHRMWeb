@@ -34,7 +34,7 @@ export class EditTaskComponent implements OnInit {
   { name: 'In Progress', faclass: "" },
   { name: 'Done', faclass: "" },
   { name: 'Closed', faclass: "" },
-  { name: 'ACtive', faclass: "" }];
+  ];
 
   selectedStatus: string = '';
   selectedPriority: any;
@@ -111,8 +111,6 @@ export class EditTaskComponent implements OnInit {
     }
     this.firstLetter = this.commonService.firstletter;
 
-    const storedActiveTaskId = localStorage.getItem('activeTaskId');
-    this.activeTaskId = storedActiveTaskId;
     this.getTaskAttachments();
 
     this.tasksService.getSubTask(this.id).subscribe((response: any) => {
@@ -167,7 +165,7 @@ export class EditTaskComponent implements OnInit {
     this.tasksService.getTaskById(taskId).subscribe((task: any) => {
       this.router.navigate(['/edit-task', taskId]);
       this.tasks = task;
-      this.activeTaskId = taskId;
+      this.activeTaskId = this.id;
       this.getTaskAttachments();
       localStorage.setItem('activeTaskId', taskId.toString());
       this.ngOnInit();
@@ -230,7 +228,7 @@ export class EditTaskComponent implements OnInit {
       })
   }
   deleteTask() {
-    this.tasksService.deleteTask(this.activeTaskId).subscribe(response => {
+    this.tasksService.deleteTask(this.id).subscribe(response => {
       this.ngOnInit();
       this.toast.success('Successfully Deleted!')
     },
@@ -274,8 +272,7 @@ export class EditTaskComponent implements OnInit {
         if (i === this.selectedFiles.length - 1) {
           // This is the last file, so create the task attachment
           const taskAttachment: taskAttachments = {
-            taskId: this.activeTaskId,
-            // comment: null,
+            taskId: this.id,
             taskAttachments: attachments
           };
 
@@ -309,7 +306,7 @@ export class EditTaskComponent implements OnInit {
 
   getTaskAttachments(): void {
 
-    this.tasksService.getTaskAttachment(this.activeTaskId).subscribe(result => {
+    this.tasksService.getTaskAttachment(this.id).subscribe(result => {
       this.taskAttachment = result.data.newTaskAttachmentList;
     });
   }
@@ -344,7 +341,7 @@ export class EditTaskComponent implements OnInit {
     const id: '' = this.currentUser.id
     const newTask: SubTask = {
       _id: '',
-      parentTask: this.activeTaskId,
+      parentTask: this.id,
       taskName: this.addForm.value.taskName,
       title: this.addForm.value.taskName,
       estimate: this.addForm.value.estimate,
@@ -356,7 +353,7 @@ export class EditTaskComponent implements OnInit {
       priority: this.addForm.value.priority,
       taskUsers: this.view === 'admin' ? [] : [id],
       status: "ToDo",
-      project: this.currentTaskProject.project.id,
+      project: this.currentTaskProject?.project?.id,
       taskAttachments: []
     };
     const taskAttachments: taskAttachments[] = [];
