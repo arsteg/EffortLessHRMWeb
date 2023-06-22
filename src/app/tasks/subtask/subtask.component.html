@@ -1,5 +1,5 @@
 <div class="main-content">
-    <div class="container">
+    <div class="container bg-white p-3">
         <div class="row" *ngIf="subTaskDetail != null">
             <span (click)="gotoParentTask(this.subtask?.task?.parentTask)" class="text-end"> <button
                     class="btn btn-outline-primary rounded-pill"><span class="bi bi-arrow-left ">
@@ -7,15 +7,15 @@
             <div class="child-issue col-md-9 border-end">
                 <form [formGroup]="updateForm" (ngSubmit)="updateTask()">
                     <div class="d-flex border-end">
-                        <button mat-raised-button color="primary" class="me-3" type="submit"> Save </button>
-                        <button class="btn btn-outline-primary rounded btn-sm" type="button"> Cancel </button>
+                        <button mat-raised-button color="primary" class="me-3" type="submit" *ngIf="formDirty"> Save </button>
+                        <button class="btn btn-outline-primary rounded btn-sm" type="button" *ngIf="formDirty"> Cancel </button>
                         <button mat-raised-button color="primary" class="ms-auto" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal"> Delete </button>
                     </div>
 
                     <div class="issue-header mt-3">
-                        <div class="issue-type">Sub Task</div>
+                        <div class="issue-type my-3"><span (click)="gotoParentTask(this.subtask?.task?.parentTask)" class="parent rounded px-2 py-1">{{parentTask?.taskName}}</span> / {{subtask?.task?.taskName}}</div>
                         <div class="issue-key">
-                            <input type="text" name="taskName" id="project" class="form-control input pt-0"
+                            <input type="text" name="taskName" id="project" class="form-control form-feild taskName  px-0 input pt-0"
                                 *ngIf="subtask?.task?.id" formControlName="taskName"
                                 [(ngModel)]="subtask?.task.taskName" required>
 
@@ -32,7 +32,7 @@
                         <h3>Description</h3>
 
 
-                        <textarea class="form-control" rows="4" id="description" name="description"
+                        <textarea class="form-control  px-0 form-feild" rows="4" id="description" name="description"
                             formControlName="description" [(ngModel)]="subtask?.task.description">
                                     {{subtask?.task?.description}}
                                     </textarea>

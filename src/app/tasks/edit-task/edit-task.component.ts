@@ -348,7 +348,7 @@ export class EditTaskComponent implements OnInit {
       startDate: this.addForm.value.startDate,
       endDate: this.addForm.value.endDate,
       description: this.addForm.value.description,
-      comment: this.addForm.value.comment,
+      comment: 'Child Task',
       isSubTask: false,
       priority: this.addForm.value.priority,
       taskUsers: this.view === 'admin' ? [] : [id],
@@ -422,7 +422,9 @@ export class EditTaskComponent implements OnInit {
       }
     }
   }
-
+onresetForm(){
+  this.addForm.reset();
+}
 
 
 

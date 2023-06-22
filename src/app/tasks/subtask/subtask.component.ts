@@ -43,6 +43,8 @@ export class SubtaskComponent implements OnInit {
   updateForm: FormGroup;
   subTaskDetail: any;
   subTask: any;
+  parentTask: any;
+  formDirty = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -77,9 +79,20 @@ export class SubtaskComponent implements OnInit {
         this.subTask = result
         this.subtask = result.data;
         this.subTaskDetail = result.data.task;
-        console.log(this.subTaskDetail)
+
+        this.tasksService.getTaskById(this.subTaskDetail.parentTask).subscribe((result: any)=> {
+          this.parentTask = result.data.task;
+          console.log(this.parentTask)
+        })
       })
+      this.updateForm.valueChanges.subscribe(() => {
+        this.formDirty = this.updateForm.dirty;
+      });
+
     }
+
+  
+
     this.commonservice.populateUsers().subscribe(result => {
       this.allAssignee = result && result.data && result.data.data;
     });
@@ -124,9 +137,7 @@ export class SubtaskComponent implements OnInit {
       status: this.subTaskDetail.status,
       comment: this.updateForm.value.comment
     }
-    console.log("update", this.id)
     this.tasksService.updateTask(this.id, updateTask).subscribe(response => {
-      console.log(response)
       this.ngOnInit();
       this.toastmsg.success('Existing Task Updated', 'Successfully Updated!')
     },
@@ -170,57 +181,7 @@ export class SubtaskComponent implements OnInit {
   gotoParentTask(taskId: string){
     this.router.navigate(['/edit-task', taskId]);
   }
-  // onFileSelect(event) {
-  //   const files: FileList = event.target.files;
-  //   if (files) {
-  //     for (let i = 0; i < files.length; i++) {
-  //       const file: File = files.item(i);
-  //       if (file) {
-  //         this.selectedFiles.push(file);
-
-  //       }
-  //     }
-  //   }
-  //   const attachments: attachments[] = [];
-
-  //   for (let i = 0; i < this.selectedFiles.length; i++) {
-  //     const file: File = this.selectedFiles[i];
-  //     const reader = new FileReader();
-  //     reader.readAsDataURL(file);
-  //     reader.onload = () => {
-  //       const base64String = reader.result.toString().split(',')[1];
-  //       const fileSize = file.size; 
-  //       const fileType = file.type; 
-  //       const fileNameParts = file.name.split('.');
-  //       const extension = fileNameParts[fileNameParts.length - 1];
-
-  //       attachments.push({
-  //         attachmentName: file.name,
-  //         attachmentType: fileType,
-  //         attachmentSize: fileSize,
-  //         extension: extension,
-  //         file: base64String
-  //       });
-  //       if (i === this.selectedFiles.length - 1) {
-  //         const taskAttachment: taskAttachments = {
-  //           taskId: this.id,
-  //           taskAttachments: attachments
-  //         };
-
-  //         this.tasksService.addTaskAttachment(taskAttachment).subscribe(
-  //           (response) => {
-  //             this.selectedFiles = [];
-  //             this.ngOnInit();
-  //           },
-  //           (error) => {
-  //             console.error('Error creating task attachment:', error);
-  //           }
-  //         );
-  //       }
-  //     };
-  //   }
-
-  // }
+  
   onFileSelect(event) {
     const files: FileList = event.target.files;
     if (files) {
