@@ -360,7 +360,7 @@ export class EditTaskComponent implements OnInit {
     newTask.taskAttachments = taskAttachments;
     this.tasksService.addTask(newTask).subscribe((response: any) => {
       this.task = response;
-      
+      this.addForm.reset();
       this.ngOnInit();
       if (taskAttachments) {
         const attachments: attachments[] = [];

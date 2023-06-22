@@ -287,7 +287,7 @@
                                     <div class="card-body  taskBoard">
                                         <ul class="tasks chat-menu ui-sortable ps-0" id="task-list-1" type="none">
                                             <ng-container *ngFor="let task of tasks">
-                                                <li *ngIf="task.status == 'ToDo' || ' '"
+                                                <li *ngIf="task.status == 'ToDo'"
                                                     class="taskToDo task-card border-bottom py-3 px-2 border-left  ui-sortable-handle">
                                                     <div class="d-flex">
                                                         <b (click)="navigateToEditPage(task)">{{task?.taskName}}</b>
