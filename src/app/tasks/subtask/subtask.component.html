@@ -4,27 +4,46 @@
             <span (click)="gotoParentTask(this.subtask?.task?.parentTask)" class="text-end"> <button
                     class="btn btn-outline-primary rounded-pill"><span class="bi bi-arrow-left ">
                         Back</span></button></span>
-
-            <div class="col-md-9 border-end">
-                <button class="btn btn-primary rounded btn-sm me-3" type="submit"> Save </button>
-                <button class="btn btn-outline-primary rounded btn-sm" type="button"> Cancel </button>
-            </div>
             <div class="child-issue col-md-9 border-end">
-                <div class="issue-header mt-3">
-                    <div class="issue-type">Sub Task</div>
-                    <div class="issue-key">
-                        <h1>{{subtask?.task?.taskName}}</h1>
+                <form [formGroup]="updateForm" (ngSubmit)="updateTask()">
+                    <div class="col-md-9 border-end">
+                        <button class="btn btn-primary rounded btn-sm me-3" type="submit"> Save </button>
+                        <button class="btn btn-outline-primary rounded btn-sm" type="button"> Cancel </button>
                     </div>
-                </div>
 
-                <div class="issue-description">
-                    <h3>Description</h3>
-                    <textarea class="form-control" rows="4" name="description" formControlName="description"
-                        [(ngModel)]="subtask?.task.description">
-                            {{subtask?.task?.description}}
-                    </textarea>
+                    <div class="issue-header mt-3">
+                        <div class="issue-type">Sub Task</div>
+                        <div class="issue-key">
+                            <input type="text" name="taskName" id="project" class="form-control input pt-0"
+                                *ngIf="subtask?.task?.id" formControlName="taskName"
+                                [(ngModel)]="subtask?.task.taskName" required>
 
-                </div>
+                            <div *ngIf="updateForm.controls['taskName'].invalid && updateForm.controls['taskName'].touched"
+                                class="alert alert-danger error">
+                                <div *ngIf="updateForm.controls['taskName'].errors['required']">
+                                    Please Select Task Name!
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="issue-description">
+                        <h3>Description</h3>
+
+
+                        <textarea class="form-control" rows="4" id="description" name="description"
+                            formControlName="description" [(ngModel)]="subtask?.task.description">
+                                    {{subtask?.task?.description}}
+                                    </textarea>
+                        <div *ngIf="updateForm.controls['description'].invalid && updateForm.controls['description'].touched"
+                            class="alert alert-danger error">
+                            <div *ngIf="updateForm.controls['description'].errors['required']">
+                                Description is required!
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
                 <label for="fileUpload6" class="file-upload btn btn-outline-primary btn-block rounded-pill shadow my-3">
                     <i class="fa fa-paperclip me-2"></i> Add attachment<input id="fileUpload6" type="file"
                         (change)="onFileSelect($event)" multiple style="display: none;">
@@ -184,10 +203,11 @@
 
                 <!-- Ends Comment -->
             </div>
+
             <div class="col-md-3">
                 <div class="issue-details d-flex">
                     <div class="dropdown">
-                        <button class="btn dropdown-toggle status" type="button" id="dropdownMenuButton"
+                        <button class="btn dropdown-toggle text-white status" type="button" id="dropdownMenuButton"
                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" [ngClass]="{
                 'bg-warning text-white!important': (selectedStatus || subtask?.task?.status) === 'In Progress',
                 'bg-success text-white!important': (selectedStatus || subtask?.task?.status) === 'Done',

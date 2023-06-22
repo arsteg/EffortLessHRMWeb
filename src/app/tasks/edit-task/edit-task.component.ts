@@ -362,7 +362,7 @@ export class EditTaskComponent implements OnInit {
     newTask.taskAttachments = taskAttachments;
     this.tasksService.addTask(newTask).subscribe((response: any) => {
       this.task = response;
-      this.newTask = '';
+      
       this.ngOnInit();
       if (taskAttachments) {
         const attachments: attachments[] = [];
@@ -412,6 +412,7 @@ export class EditTaskComponent implements OnInit {
 
     })
   }
+  
   onFileSelects(event) {
     const files: FileList = event.target.files;
     if (files) {

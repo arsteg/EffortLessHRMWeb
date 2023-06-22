@@ -5,7 +5,7 @@ import { TasksService } from 'src/app/_services/tasks.service';
 import { TimeLogService } from 'src/app/_services/timeLogService';
 import { CommonService } from 'src/app/common/common.service';
 import { Validators, FormGroup, FormBuilder } from '@angular/forms';
-import { attachments, taskAttachments } from '../task';
+import { attachments, taskAttachments, updateTask } from '../task';
 
 @Component({
   selector: 'app-subtask',
@@ -40,7 +40,7 @@ export class SubtaskComponent implements OnInit {
   taskAttachment: any = [];
   public selectedAttachment: any;
   selectedFiles: File[] = [];
-
+  updateForm: FormGroup;
 
   constructor(
     private route: ActivatedRoute,
@@ -56,14 +56,22 @@ export class SubtaskComponent implements OnInit {
         lastName: ['', Validators.required]
       }
     });
+    this.updateForm = this.fb.group({
+      taskName: [this.subtask?.task?.taskName, Validators.required],
+      description: [this.subtask?.task?.description, Validators.required],
+      comment: ['Child Issue', Validators.required],
+      priority: [this.subtask?.task?.priority, Validators.required],
+      project: [this.subtask?.task?.project?.id, Validators.required],
+      status: [this.subtask?.task?.status, Validators.required]
+    });
    }
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id');
     if (this.id) {
 
-      this.tasksService.getTaskById(this.id).subscribe(task => {
-        this.subtask = task.data;
+      this.tasksService.getTaskById(this.id).subscribe((result: any)=> {
+        this.subtask = result.data;
       })
     }
     this.commonservice.populateUsers().subscribe(result => {
@@ -98,11 +106,30 @@ export class SubtaskComponent implements OnInit {
     const priority = this.priorityList.find(x => x.name.toLowerCase() === currentPriority?.toLowerCase());
     return priority?.url ? priority?.url : this.unKnownImage;
   }
+  updateTask() {
+    const updateTask: updateTask = {
+      taskName: this.updateForm.value.taskName,
+      description: this.updateForm.value.description,
+      priority: this.updateForm.value.priority,
+      project: this.updateForm.value.project?.id,
+      title: this.updateForm.value.taskName,
+      status: this.updateForm.value.status
+    }
+    console.log("update", this.id)
+    this.tasksService.updateTask(this.id, updateTask).subscribe(response => {
+      console.log(response)
+      this.ngOnInit();
+      this.toastmsg.success('Existing Task Updated', 'Successfully Updated!')
+    },
+      err => {
+        this.toastmsg.error('Task could not be updated', 'ERROR!')
+      })
+  }
 
   getTaskUser(id) {
     this.tasksService.getTaskUsers(id).subscribe(response => {
       this.taskUserList = response && response.data && response.data['taskUserList'];
-      // this.selectedUser = this.taskUserList.map(user => user.user.id);
+      this.selectedUser = this.taskUserList.map(user => user.user.id);
     });
   }
   addUserToTask(addUserForm) {
@@ -110,7 +137,8 @@ export class SubtaskComponent implements OnInit {
     let newUsers = selectedUsers.filter(id => !this.taskUserList.find(user => user.user.id === id));
     let task_Users = newUsers.map((id) => { return { user: id } });
     if (task_Users.length > 0) {
-      this.tasksService.addUserToTask(this.selectedTask.id, task_Users).subscribe(result => {
+      this.tasksService.addUserToTask(this.id, task_Users).subscribe(result => {
+        const res = result;
         this.ngOnInit();
         this.toastmsg.success('New Member Added', 'Successfully Added!')
       },
@@ -179,7 +207,6 @@ export class SubtaskComponent implements OnInit {
   getTaskAttachments(): void {
     this.tasksService.getTaskAttachment(this.id).subscribe(result => {
       this.taskAttachment = result.data.newTaskAttachmentList;
-      console.log(this.taskAttachment)
     });
   }
 

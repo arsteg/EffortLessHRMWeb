@@ -57,7 +57,7 @@
                                     <div class="d-flex">
 
                                         <div class="dropdown">
-                                            <button class="btn dropdown-toggle status" type="button" 
+                                            <button class="btn dropdown-toggle status" type="button"
                                                 id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true"
                                                 aria-expanded="false" [ngClass]="{
                                                     'bg-warning text-white!important': (selectedStatus || tasks?.data?.task?.status) === 'In Progress',
@@ -88,7 +88,7 @@
 
 
                                         <div class="dropdown mx-2">
-                                            <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" 
+                                            <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton"
                                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                 <img class="align-self-center"
                                                     [src]="selectedPriority ? selectedPriority.url : getTaskPriorityUrl(currentTaskProject?.priority)"
@@ -368,7 +368,8 @@
                                 <div class="sub-header mt-3 py-3 px-3 align-self-center d-sm-flex w-100 rounded">
                                     <div class="w-100 pt-2 mr-auto border-bottom d-flex">
                                         <h3 class="mb-0">Subtasks</h3>
-                                        <h3 class="ms-auto pe-3" *ngIf="subTask">Total Sub Task: {{subTask?.length}}</h3>
+                                        <h3 class="ms-auto pe-3" *ngIf="subTask">Total Sub Task: {{subTask?.length}}
+                                        </h3>
                                     </div>
 
 
@@ -377,16 +378,16 @@
                                 <div class="rounded shadow my-2 bg-white">
                                     <div *ngFor="let subTask of subTask; let i = index">
                                         <div class="subtask-list">
-                                           
-                                            <div class="d-flex  border-bottom pt-1 align-items-center px-3" >
-                                              <span class="text-muted mx-1">I-{{i+1}}</span>  <p class=" ps-4" *ngIf="!isEditMode"
-                                              (click)="subTaskDetail(subTask)">
-                                                       <b>{{subTask.taskName}}</b> 
-                                                    </p>
-                                                   
+
+                                            <div class="d-flex  border-bottom pt-1 align-items-center px-3">
+                                                <span class="text-muted mx-1">I-{{i+1}}</span>
+                                                <p class=" ps-4" *ngIf="!isEditMode" (click)="subTaskDetail(subTask)">
+                                                    <b>{{subTask.taskName}}</b>
+                                                </p>
+
 
                                                 <div class="dropdown ms-auto">
-                                                    <button class="btn dropdown-toggle sub_btn  status" type="button" 
+                                                    <button class="btn dropdown-toggle sub_btn  status" type="button"
                                                         id="dropdownMenuButton" data-bs-toggle="dropdown"
                                                         aria-haspopup="true" aria-expanded="false" [ngClass]="{
                                                             'bg-warning text-white!important': (selectedStatus || subTask?.status) === 'In Progress',
@@ -420,7 +421,7 @@
 
 
                                                 <div class="dropdown mx-2">
-                                                    <button class="btn sub_btn dropdown-toggle" type="button" 
+                                                    <button class="btn sub_btn dropdown-toggle" type="button"
                                                         id="dropdownMenuButton" data-bs-toggle="dropdown"
                                                         aria-haspopup="true" aria-expanded="false">
                                                         <img class="align-self-center"
@@ -467,14 +468,6 @@
                                                     (change)="onFileSelects($event)" style="display: none;">
                                             </label>
 
-
-
-
-
-                                            <div
-                                                class="position-relative me-0 justify-content-center text-center align-items-center pointer d-flex deadline-box add-task-action-box deadline-box">
-                                                <span class="subtask-icon fa fa-calendar-o" title="Due Date"></span>
-                                            </div>
                                             <div class="dropdown">
                                                 <button class="btn dropdown-toggle" type="button"
                                                     id="dropdownMenuButton" data-bs-toggle="dropdown"
@@ -501,17 +494,7 @@
                                                     </button>
                                                 </div>
                                             </div>
-                                            <div class="">
-                                                <div
-                                                    class="d-flex justify-content-center align-items-center position-relative">
-                                                    <div class="pointer" aria-label="Assign">
-                                                        <div class="add-new-assignee radius-20">
-                                                            <span class="subtask-icon fa fa-user-plus rounded add-user"
-                                                                title="Asssign"></span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div><button type="submit"
+                                            <button type="submit"
                                                 class="add-task-action-circle action-circle-check d-flex justify-content-center align-items-center pointer border-none">
                                                 <span class="subtask-icon fa fa-check"></span>
                                             </button>
@@ -532,93 +515,95 @@
 
                             </div>
                         </div>
-                <!-- </div> -->
+                        <!-- </div> -->
 
-                <div class="row mb-3">
-                    <div class="col-12  align-self-center">
-                        <div class="sub-header mt-3 py-3 px-3 align-self-center w-100 rounded">
-                            <div class="w-sm-100 pt-2 mr-auto border-bottom">
-                                <h3 class="mb-0">Comments</h3>
+                        <div class="row mb-3">
+                            <div class="col-12  align-self-center">
+                                <div class="sub-header mt-3 py-3 px-3 align-self-center w-100 rounded">
+                                    <div class="w-sm-100 pt-2 mr-auto border-bottom">
+                                        <h3 class="mb-0">Comments</h3>
+                                    </div>
+                                    <app-task-comment-list [comments]="comments"
+                                        (commentAdded)="onCommentAdd($event)"></app-task-comment-list>
+                                </div>
                             </div>
-                            <app-task-comment-list [comments]="comments"
-                                (commentAdded)="onCommentAdd($event)"></app-task-comment-list>
+                        </div>
+
+                        <div class="d-flex justify-content-between my-4">
+
+                            <div>
+                                <button mat-raised-button class="mx-2" (click)="onCancel()"
+                                    type="button">Cancel</button>
+                            </div>
+                            <div>
+                                <button mat-raised-button color="primary" type="submit">Update</button>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="tasks?.data?.task == null">
+            <a href="" [routerLink]="['/tasks']"> <button class="btn"><span class="back-btn bi bi-arrow-left ">
+                        Back</span></button></a>
+            <h2>This Task No Longer To show !!!</h2>
+        </div>
+    </div>
+    <!-- </div> -->
+
+    <!-- Delete -->
+    <div class="modal" id="deleteModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="d-flex justify-content-between">
+                        <div class="">
+                            <h3 class="modal-title text-start">Delete Task</h3>
+                        </div>
+                        <div class="">
+                            <button type="button" class="btn-close text-end" data-bs-dismiss="modal"></button>
+                        </div>
+                    </div>
+                    <hr class="mt-0">
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <h3>Do you really want to Delete?</h3>
+                        </div>
+
+                    </div>
+                    <div class="d-flex justify-content-between m-3">
+                        <div>
+
+                            <button mat-raised-button class="mx-2" data-bs-dismiss="modal" type="button">Cancel</button>
+                        </div>
+                        <div>
+                            <button mat-raised-button color="primary" class="" (click)="deleteTask()"
+                                data-bs-dismiss="modal" type="submit">Delete</button>
                         </div>
                     </div>
                 </div>
-
-                <div class="d-flex justify-content-between my-4">
-
-                    <div>
-                        <button mat-raised-button class="mx-2" (click)="onCancel()" type="button">Cancel</button>
-                    </div>
-                    <div>
-                        <button mat-raised-button color="primary" type="submit">Update</button>
-                    </div>
-
-                </div>
-                </form>
             </div>
         </div>
     </div>
 
-    <div *ngIf="tasks?.data?.task == null">
-        <a href="" [routerLink]="['/tasks']"> <button class="btn"><span class="back-btn bi bi-arrow-left ">
-                    Back</span></button></a>
-        <h2>This Task No Longer To show !!!</h2>
-    </div>
-</div>
-<!-- </div> -->
-
-<!-- Delete -->
-<div class="modal" id="deleteModal">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-body">
-                <div class="d-flex justify-content-between">
-                    <div class="">
-                        <h3 class="modal-title text-start">Delete Task</h3>
-                    </div>
-                    <div class="">
-                        <button type="button" class="btn-close text-end" data-bs-dismiss="modal"></button>
-                    </div>
-                </div>
-                <hr class="mt-0">
-                <div class="row">
-                    <div class="col-md-12 text-center">
-                        <h3>Do you really want to Delete?</h3>
-                    </div>
-
-                </div>
-                <div class="d-flex justify-content-between m-3">
-                    <div>
-
-                        <button mat-raised-button class="mx-2" data-bs-dismiss="modal" type="button">Cancel</button>
-                    </div>
-                    <div>
-                        <button mat-raised-button color="primary" class="" (click)="deleteTask()"
-                            data-bs-dismiss="modal" type="submit">Delete</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" role="dialog" id="bigAttachmentModal" tabindex="0" aria-labelledby="bigAttachmentModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <button type="button" class="btn-close m-3" data-bs-dismiss="modal" aria-label="Close"></button><br>
-            <div class="d-flex"> <span class="bi bi-image text-warning px-3" style="font-size: 40px;"></span>
-                <small>{{selectedAttachment?.attachmentName }}<br>image - {{
-                    convertBytesToKB(selectedAttachment?.attachmentSize) }}</small>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <div class="carousel-item active text-center">
-                                        <img class="modal-image big-img" [src]="selectedAttachment?.url" />
+    <div class="modal fade" role="dialog" id="bigAttachmentModal" tabindex="0" aria-labelledby="bigAttachmentModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <button type="button" class="btn-close m-3" data-bs-dismiss="modal" aria-label="Close"></button><br>
+                <div class="d-flex"> <span class="bi bi-image text-warning px-3" style="font-size: 40px;"></span>
+                    <small>{{selectedAttachment?.attachmentName }}<br>image - {{
+                        convertBytesToKB(selectedAttachment?.attachmentSize) }}</small>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="carousel-item active text-center">
+                                            <img class="modal-image big-img" [src]="selectedAttachment?.url" />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -628,4 +613,3 @@
             </div>
         </div>
     </div>
-</div>
