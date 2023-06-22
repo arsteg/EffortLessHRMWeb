@@ -196,7 +196,7 @@
 
                                     <div class="d-flex row">
                                         <ng-container *ngFor="let attachment of taskAttachment ; let i = index">
-                                            <div class="col-md-2 mb-5">
+                                            <div class="col-md-2 mb-5" *ngIf="!attachment?.comment">
 
 
                                                 <div class="card cardAttachment"
@@ -453,7 +453,7 @@
                                 </div>
                             </div>
 
-                            <div class="subtask-creating-row-wrapper bg-white rounded p-4">
+                            <div class="subtask-creating-row-wrapper bg-white rounded">
                                 <form action="" [formGroup]="addForm" (ngSubmit)="onSub()">
                                     <div class="d-flex tasks-creation-row justify-content-between subtask-creating-row">
                                         <input class="new-task-title-input" placeholder="+ Add subtask..." value=""

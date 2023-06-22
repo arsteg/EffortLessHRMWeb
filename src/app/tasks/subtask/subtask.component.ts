@@ -41,6 +41,8 @@ export class SubtaskComponent implements OnInit {
   public selectedAttachment: any;
   selectedFiles: File[] = [];
   updateForm: FormGroup;
+  subTaskDetail: any;
+  subTask: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -60,9 +62,9 @@ export class SubtaskComponent implements OnInit {
       taskName: [this.subtask?.task?.taskName, Validators.required],
       description: [this.subtask?.task?.description, Validators.required],
       comment: ['Child Issue', Validators.required],
-      priority: [this.subtask?.task?.priority, Validators.required],
+      priority: [this.subTask?.data?.task?.priority, Validators.required],
       project: [this.subtask?.task?.project?.id, Validators.required],
-      status: [this.subtask?.task?.status, Validators.required]
+      status: [this.subTask?.data?.task?.status, Validators.required]
     });
    }
 
@@ -71,7 +73,11 @@ export class SubtaskComponent implements OnInit {
     if (this.id) {
 
       this.tasksService.getTaskById(this.id).subscribe((result: any)=> {
+       
+        this.subTask = result
         this.subtask = result.data;
+        this.subTaskDetail = result.data.task;
+        console.log(this.subTaskDetail)
       })
     }
     this.commonservice.populateUsers().subscribe(result => {
@@ -86,6 +92,7 @@ export class SubtaskComponent implements OnInit {
     const payload = { "priority": priority }
     this.subtask.priority = priority;
     this.tasksService.updatetaskFlex(this.subtask.task.id, payload).subscribe(response => {
+      this.ngOnInit();
       this.toastmsg.success('Task priority updated successfully', 'Success')
     },
       err => {
@@ -96,6 +103,7 @@ export class SubtaskComponent implements OnInit {
     const payload = { "status": status }
     this.subtask.status = status;
     this.tasksService.updatetaskFlex(this.subtask.task.id, payload).subscribe(response => {
+      this.ngOnInit();
       this.toastmsg.success('Task status updated successfully', 'Success')
     },
       err => {
@@ -110,10 +118,11 @@ export class SubtaskComponent implements OnInit {
     const updateTask: updateTask = {
       taskName: this.updateForm.value.taskName,
       description: this.updateForm.value.description,
-      priority: this.updateForm.value.priority,
+      priority: this.subTaskDetail.priority,
       project: this.updateForm.value.project?.id,
       title: this.updateForm.value.taskName,
-      status: this.updateForm.value.status
+      status: this.subTaskDetail.status,
+      comment: this.updateForm.value.comment
     }
     console.log("update", this.id)
     this.tasksService.updateTask(this.id, updateTask).subscribe(response => {
@@ -125,7 +134,15 @@ export class SubtaskComponent implements OnInit {
         this.toastmsg.error('Task could not be updated', 'ERROR!')
       })
   }
-
+  deleteTask() {
+    this.tasksService.deleteTask(this.id).subscribe(response => {
+      this.ngOnInit();
+      this.toastmsg.success('Successfully Deleted!')
+    },
+      err => {
+        this.toastmsg.error('Task Can not be Deleted', 'Error!');
+      })
+  }
   getTaskUser(id) {
     this.tasksService.getTaskUsers(id).subscribe(response => {
       this.taskUserList = response && response.data && response.data['taskUserList'];
@@ -153,6 +170,57 @@ export class SubtaskComponent implements OnInit {
   gotoParentTask(taskId: string){
     this.router.navigate(['/edit-task', taskId]);
   }
+  // onFileSelect(event) {
+  //   const files: FileList = event.target.files;
+  //   if (files) {
+  //     for (let i = 0; i < files.length; i++) {
+  //       const file: File = files.item(i);
+  //       if (file) {
+  //         this.selectedFiles.push(file);
+
+  //       }
+  //     }
+  //   }
+  //   const attachments: attachments[] = [];
+
+  //   for (let i = 0; i < this.selectedFiles.length; i++) {
+  //     const file: File = this.selectedFiles[i];
+  //     const reader = new FileReader();
+  //     reader.readAsDataURL(file);
+  //     reader.onload = () => {
+  //       const base64String = reader.result.toString().split(',')[1];
+  //       const fileSize = file.size; 
+  //       const fileType = file.type; 
+  //       const fileNameParts = file.name.split('.');
+  //       const extension = fileNameParts[fileNameParts.length - 1];
+
+  //       attachments.push({
+  //         attachmentName: file.name,
+  //         attachmentType: fileType,
+  //         attachmentSize: fileSize,
+  //         extension: extension,
+  //         file: base64String
+  //       });
+  //       if (i === this.selectedFiles.length - 1) {
+  //         const taskAttachment: taskAttachments = {
+  //           taskId: this.id,
+  //           taskAttachments: attachments
+  //         };
+
+  //         this.tasksService.addTaskAttachment(taskAttachment).subscribe(
+  //           (response) => {
+  //             this.selectedFiles = [];
+  //             this.ngOnInit();
+  //           },
+  //           (error) => {
+  //             console.error('Error creating task attachment:', error);
+  //           }
+  //         );
+  //       }
+  //     };
+  //   }
+
+  // }
   onFileSelect(event) {
     const files: FileList = event.target.files;
     if (files) {
@@ -164,6 +232,7 @@ export class SubtaskComponent implements OnInit {
         }
       }
     }
+    // --------------------------
     const attachments: attachments[] = [];
 
     for (let i = 0; i < this.selectedFiles.length; i++) {
@@ -172,8 +241,8 @@ export class SubtaskComponent implements OnInit {
       reader.readAsDataURL(file);
       reader.onload = () => {
         const base64String = reader.result.toString().split(',')[1];
-        const fileSize = file.size; 
-        const fileType = file.type; 
+        const fileSize = file.size; // size of the file in bytes
+        const fileType = file.type; // type of the file (e.g. image/png)
         const fileNameParts = file.name.split('.');
         const extension = fileNameParts[fileNameParts.length - 1];
 
@@ -185,6 +254,7 @@ export class SubtaskComponent implements OnInit {
           file: base64String
         });
         if (i === this.selectedFiles.length - 1) {
+          // This is the last file, so create the task attachment
           const taskAttachment: taskAttachments = {
             taskId: this.id,
             taskAttachments: attachments

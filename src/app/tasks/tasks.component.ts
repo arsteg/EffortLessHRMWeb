@@ -94,7 +94,7 @@ export class TasksComponent implements OnInit {
       endDate: ['', Validators.required],
       description: ['', Validators.required],
       estimate: [0],
-      comment: ['', Validators.required],
+      comment: ['Task Created', Validators.required],
       priority: ['', Validators.required],
       TaskUser: ['', Validators.required],
       project: ['', Validators.required],

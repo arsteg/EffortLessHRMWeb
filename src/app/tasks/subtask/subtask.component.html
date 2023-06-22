@@ -1,14 +1,15 @@
 <div class="main-content">
     <div class="container">
-        <div class="row">
+        <div class="row" *ngIf="subTaskDetail != null">
             <span (click)="gotoParentTask(this.subtask?.task?.parentTask)" class="text-end"> <button
                     class="btn btn-outline-primary rounded-pill"><span class="bi bi-arrow-left ">
                         Back</span></button></span>
             <div class="child-issue col-md-9 border-end">
                 <form [formGroup]="updateForm" (ngSubmit)="updateTask()">
-                    <div class="col-md-9 border-end">
-                        <button class="btn btn-primary rounded btn-sm me-3" type="submit"> Save </button>
+                    <div class="d-flex border-end">
+                        <button mat-raised-button color="primary" class="me-3" type="submit"> Save </button>
                         <button class="btn btn-outline-primary rounded btn-sm" type="button"> Cancel </button>
+                        <button mat-raised-button color="primary" class="ms-auto" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal"> Delete </button>
                     </div>
 
                     <div class="issue-header mt-3">
@@ -56,9 +57,9 @@
 
 
 
-                <div class="d-flex row">
+                <div class="d-flex row" *ngIf="subTaskDetail != null">
                     <ng-container *ngFor="let attachment of taskAttachment ; let i = index">
-                        <div class="col-md-2 mb-5">
+                        <div class="col-md-2 mb-5" *ngIf="!attachment?.comment">
 
 
                             <div class="card cardAttachment" *ngIf="attachment?.attachmentType == 'image/png'">
@@ -197,10 +198,7 @@
                 </div>
 
                 <!-- Starts Comments -->
-                <app-task-comment-list></app-task-comment-list>
-
-
-
+                <app-task-comment-list *ngIf="subTaskDetail != null"></app-task-comment-list>
                 <!-- Ends Comment -->
             </div>
 
@@ -312,7 +310,14 @@
                 <p class="dates">Updated On: {{subtask?.task.updatedOn | date: 'mediumDate'}} </p>
             </div>
         </div>
+
+        <div *ngIf="subTaskDetail === null" class="text-center mt-5">
+            <a href="" [routerLink]="['/tasks']"> <button class="btn btn-outline-primary shadow"><span class="back-btn bi bi-arrow-left ">
+                        Back</span></button></a>
+            <h2 class="mt-2">Sub Task Does Not Exist!!!</h2>
+        </div>
     </div>
+    
 </div>
 
 
@@ -362,6 +367,41 @@
 
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+ <!-- Delete -->
+ <div class="modal" id="deleteModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="d-flex justify-content-between">
+                    <div class="">
+                        <h3 class="modal-title text-start">Delete Task</h3>
+                    </div>
+                    <div class="">
+                        <button type="button" class="btn-close text-end" data-bs-dismiss="modal"></button>
+                    </div>
+                </div>
+                <hr class="mt-0">
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <h3>Do you really want to Delete?</h3>
+                    </div>
+
+                </div>
+                <div class="d-flex justify-content-between m-3">
+                    <div>
+
+                        <button mat-raised-button class="mx-2" data-bs-dismiss="modal" type="button">Cancel</button>
+                    </div>
+                    <div>
+                        <button mat-raised-button color="primary" class="" (click)="deleteTask()"
+                            data-bs-dismiss="modal" type="submit">Delete</button>
+                    </div>
                 </div>
             </div>
         </div>

@@ -38,7 +38,8 @@ export class updateTask{
   priority: string;
   project: string;
   title: string;
-  status: string
+  status: string;
+  comment: string
 }
 export class updateSubTask{
   taskName: string;

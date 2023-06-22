@@ -132,6 +132,7 @@ id: string;
 
               this.taskService.addTaskAttachment(commentAttachment).subscribe((response) => {
                 this.commentAttachment = response.data['taskAttachmentList']
+                this.selectedFiles = []
                 this.ngOnInit();
               },
                 (error) => {
@@ -166,6 +167,7 @@ id: string;
   getTaskAttachments(): void {
     this.taskService.getTaskAttachment(this.id).subscribe(result => {
       this.commentAttachment = result.data.newTaskAttachmentList;
+      console.log(this.commentAttachment)
     });
   }
 

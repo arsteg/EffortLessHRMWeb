@@ -88,7 +88,7 @@ export class EditTaskComponent implements OnInit {
       endDate: ['', Validators.required],
       description: ['', Validators.required],
       estimate: [0],
-      comment: ['', Validators.required],
+      comment: ['Child Task', Validators.required],
       priority: ['', Validators.required],
       TaskUser: ['', Validators.required],
       project: ['', Validators.required],
@@ -181,7 +181,8 @@ export class EditTaskComponent implements OnInit {
       priority: this.currentTaskProject.priority,
       project: this.currentTaskProject.project.id,
       title: this.updateForm.value.taskName,
-      status: this.currentTaskProject.status
+      status: this.currentTaskProject.status,
+      comment: this.updateForm.value.comment
     }
     this.tasksService.updateTask(this.tasks.data.task.id, updateTask).subscribe(response => {
       console.log(response)
