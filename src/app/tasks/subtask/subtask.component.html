@@ -7,17 +7,29 @@
             <div class="child-issue col-md-9 border-end">
                 <form [formGroup]="updateForm" (ngSubmit)="updateTask()">
                     <div class="d-flex border-end">
-                        <button mat-raised-button color="primary" class="me-3" type="submit" *ngIf="formDirty"> Save </button>
-                        <button class="btn btn-outline-primary rounded btn-sm" type="button" *ngIf="formDirty"> Cancel </button>
-                        <button mat-raised-button color="primary" class="ms-auto" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal"> Delete </button>
+                        <button mat-raised-button color="primary" class="me-3" type="submit" *ngIf="formDirty"> Save
+                        </button>
+                        <button class="btn btn-outline-primary rounded btn-sm" type="button" *ngIf="formDirty"> Cancel
+                        </button>
+                        <button mat-raised-button color="primary" class="ms-auto" type="button" data-bs-toggle="modal"
+                            data-bs-target="#deleteModal"> Delete </button>
                     </div>
 
                     <div class="issue-header mt-3">
-                        <div class="issue-type my-3"><span (click)="gotoParentTask(parentTask)" class="parent rounded px-2 py-1">{{ getProjectNameInitials(parentTask?.project?.projectName) }}-{{parentTask?.taskNumber}}</span> / {{ getProjectNameInitials(subtask?.task?.project?.projectName) }}-{{subtask?.task?.taskNumber}}</div>
+                        <div class="issue-type my-3"><i class="bi bi-list-task btn-primary px-1 rounded"></i><span
+                                (click)="gotoParentTask(parentTask)" class="parent rounded px-2 py-1 "
+                                [tooltip]="(parentTask?.taskNumber || '') + ': ' + (parentTask?.taskName || '')">{{
+                                getProjectNameInitials(parentTask?.project?.projectName)
+                                }}-{{parentTask?.taskNumber}}</span> /
+                            <i class="bi bi-diagram-3 btn-primary px-1 rounded mx-2"></i><span 
+                                [tooltip]="(subtask?.task?.taskNumber || '') + ': ' + (subtask?.task?.taskName || '')">{{
+                                getProjectNameInitials(subtask?.task?.project?.projectName)
+                                }}-{{subtask?.task?.taskNumber}}</span>
+                        </div>
                         <div class="issue-key">
-                            <input type="text" name="taskName" id="project" class="form-control form-feild taskName  px-0 input pt-0"
-                                *ngIf="subtask?.task?.id" formControlName="taskName"
-                                [(ngModel)]="subtask?.task.taskName" required>
+                            <input type="text" name="taskName" id="project"
+                                class="form-control form-feild taskName  px-0 input pt-0" *ngIf="subtask?.task?.id"
+                                formControlName="taskName" [(ngModel)]="subtask?.task.taskName" required>
 
                             <div *ngIf="updateForm.controls['taskName'].invalid && updateForm.controls['taskName'].touched"
                                 class="alert alert-danger error">
@@ -306,18 +318,19 @@
 
 
                 </div>
-                <p class="dates mb-0 mt-2">Created On: {{subtask?.task.createdOn | date: 'mediumDate'}} </p>
-                <p class="dates">Updated On: {{subtask?.task.updatedOn | date: 'mediumDate'}} </p>
+                <p class="dates mb-0 mt-2">Created On: {{subtask?.task.createdOn | date: 'MMMM d, y, h:mm:ss a'}} </p>
+                <p class="dates">Updated On: {{subtask?.task.updatedOn | date: 'MMMM d, y, h:mm:ss a'}} </p>
             </div>
         </div>
 
         <div *ngIf="subTaskDetail === null" class="text-center mt-5">
-            <a href="" [routerLink]="['/tasks']"> <button class="btn btn-outline-primary shadow"><span class="back-btn bi bi-arrow-left ">
+            <a href="" [routerLink]="['/tasks']"> <button class="btn btn-outline-primary shadow"><span
+                        class="back-btn bi bi-arrow-left ">
                         Back</span></button></a>
             <h2 class="mt-2">Sub Task Does Not Exist!!!</h2>
         </div>
     </div>
-    
+
 </div>
 
 
@@ -373,8 +386,8 @@
     </div>
 </div>
 
- <!-- Delete -->
- <div class="modal" id="deleteModal">
+<!-- Delete -->
+<div class="modal" id="deleteModal">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-body">

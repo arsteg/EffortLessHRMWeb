@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Task, TaskAttachment, TaskBoard, attachments, taskAttachments } from './task';
 import { TasksService } from '../_services/tasks.service';
 import { Validators, FormGroup, FormBuilder } from '@angular/forms';
@@ -12,6 +12,7 @@ import { CommonService } from '../common/common.service';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../_services/authentication.service';
 import { NavigationExtras } from '@angular/router';
+import { GetTaskService } from '../_services/get-task.service';
 @Component({
   selector: 'app-tasks',
   templateUrl: './tasks.component.html',
@@ -76,7 +77,7 @@ export class TasksComponent implements OnInit {
   comments: any[];
   skip = '0';
   next = '10';
-
+  @Output() editTask: EventEmitter<string> = new EventEmitter<string>();
 
   constructor(
     private tasksService: TasksService,
@@ -86,7 +87,8 @@ export class TasksComponent implements OnInit {
     private tost: ToastrService,
     public commonservice: CommonService,
     private router: Router,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private getTaskId: GetTaskService
   ) {
     this.addForm = this.fb.group({
       taskName: [''],
@@ -142,25 +144,18 @@ export class TasksComponent implements OnInit {
     this.getprojects();
 
   }
+
   navigateToEditPage(task: any) {
     const taskId = task.id.toString();
-  
-    const navigationExtras: NavigationExtras = {
-      state: {
-        taskId: taskId
-      }
-    };
-  
+    this.getTaskId.setTaskId(taskId)
     if (task.parentTask) {
-      this.router.navigate(['/SubTask', task.taskNumber], navigationExtras);
-      localStorage.setItem('subTaskId', taskId.toString());
-
+      this.router.navigate(['/SubTask', task.taskNumber]);
     } else {
-      this.router.navigate(['/edit-task', task.taskNumber], navigationExtras);
-      localStorage.setItem('activeTaskId', taskId.toString());
+      this.router.navigate(['/edit-task', task.taskNumber]);
     }
+
   }
-  
+
   isStatusChecked(status: string): boolean {
     const statusItem = this.statusList.find(item => item.name === status);
     return statusItem ? statusItem.isChecked : false;
@@ -176,12 +171,18 @@ export class TasksComponent implements OnInit {
     this.skip = newSkip;
     this.listAllTasks();
   }
+  // previousPagination() {
+  //   const newSkip = (parseInt(this.next) - parseInt(this.skip)).toString();
+  //   this.skip = newSkip;
+  //   this.listAllTasks();
+  // }
   previousPagination() {
-    const newSkip = (parseInt(this.next) - parseInt(this.skip)).toString();
+    const newSkip = (parseInt(this.skip) >= parseInt(this.next)) ? (parseInt(this.skip) - parseInt(this.next)).toString() : '0';
     this.skip = newSkip;
     this.listAllTasks();
   }
-
+  
+  
 
   onSubmit() {
     // Create new task object
@@ -221,8 +222,8 @@ export class TasksComponent implements OnInit {
           reader.readAsDataURL(file);
           reader.onload = () => {
             const base64String = reader.result.toString().split(',')[1];
-            const fileSize = file.size; 
-            const fileType = file.type; 
+            const fileSize = file.size;
+            const fileType = file.type;
             const fileNameParts = file.name.split('.');
             const extension = fileNameParts[fileNameParts.length - 1];
 
@@ -298,7 +299,7 @@ export class TasksComponent implements OnInit {
   selectTask(selectedTask) {
     this.selectedTask = selectedTask
   }
- 
+
 
   addUserToTask(addUserForm) {
     let selectedUsers = this.addUserForm.get('userName').value;
@@ -316,7 +317,7 @@ export class TasksComponent implements OnInit {
         });
     }
 
-   
+
   }
 
   getTaskUser(id) {
@@ -343,18 +344,18 @@ export class TasksComponent implements OnInit {
         })
     }
   }
-deleteuser(taskUserList){
-  let index = this.taskUserList.findIndex(user => user.id === taskUserList.id);
-  this.tasksService.deleteTaskUser(taskUserList.id).subscribe(response => {
-    this.taskUserList.splice(index, 1);
-    console.log(taskUserList.id)
-    this.ngOnInit();
-    this.tost.success(taskUserList.user.firstName.toUpperCase(), 'Successfully Removed!')
-  },
-    err => {
-      this.tost.error(taskUserList.user.firstName.toUpperCase(), 'ERROR! Can not be Removed')
-    })
-}
+  deleteuser(taskUserList) {
+    let index = this.taskUserList.findIndex(user => user.id === taskUserList.id);
+    this.tasksService.deleteTaskUser(taskUserList.id).subscribe(response => {
+      this.taskUserList.splice(index, 1);
+      console.log(taskUserList.id)
+      this.ngOnInit();
+      this.tost.success(taskUserList.user.firstName.toUpperCase(), 'Successfully Removed!')
+    },
+      err => {
+        this.tost.error(taskUserList.user.firstName.toUpperCase(), 'ERROR! Can not be Removed')
+      })
+  }
 
   getTasksByProject() {
     if (this.view === 'admin') {

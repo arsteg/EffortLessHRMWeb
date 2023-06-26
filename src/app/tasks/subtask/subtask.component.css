@@ -6,17 +6,25 @@
     color: #605e5e !important;
     font-size: 13.5px;
 }
-.parent{
-    background: #e1e1e1;
+
+.parent {
+    /* text-decoration:underline; */
     cursor: pointer;
 }
-.form-feild{
+
+.parent:hover {
+    text-decoration: underline;
+}
+
+.form-feild {
     border: none !important;
 
 }
-.form-feild:hover{
-background-color: #f1f0f0;
+
+.form-feild:hover {
+    background-color: #f1f0f0;
 }
-.taskName{
+
+.taskName {
     font-size: x-large;
 }

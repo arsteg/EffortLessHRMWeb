@@ -16,7 +16,7 @@
                             </div>
                         </div>
                         <li *ngFor="let task of taskList | search: searchText" class="tasks"
-                            [class.active-task]="task?.id === activeTaskId|| (!activeTaskId && task?.id === taskList[0]?.id)"
+                            [class.active-task]="task?.id === taskId"
                             (click)="onTaskChange(task?.id)">
                             {{task?.taskName| titlecase}}
                         </li>
@@ -380,7 +380,7 @@
                                         <div class="subtask-list">
 
                                             <div class="d-flex  border-bottom pt-1 align-items-center px-3">
-                                                <span class="text-muted mx-1">I-{{i+1}}</span>
+                                                <span class="text-muted mx-1">{{subTask.taskNumber}}</span>
                                                 <p class=" ps-4" *ngIf="!isEditMode" (click)="subTaskDetail(subTask)">
                                                     <b>{{subTask.taskName}}</b>
                                                 </p>

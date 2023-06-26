@@ -5,6 +5,7 @@ import { AuthenticationService } from 'src/app/_services/authentication.service'
 import { CommonService } from 'src/app/common/common.service';
 import { attachments, commentAttachment, taskAttachments } from '../task';
 import { ActivatedRoute } from '@angular/router';
+import { GetTaskService } from 'src/app/_services/get-task.service';
 @Component({
   selector: 'app-task-comment-list',
   templateUrl: './task-comment-list.component.html',
@@ -17,8 +18,7 @@ export class TaskCommentListComponent implements OnInit {
   @Output() commentDeleted = new EventEmitter<number>();
   @Input() authorfirstName: string;
   @Input() authorlastName: string;
-  @Input() subtaskId: string;
-  @Input() taskId: string;
+   taskId: string;
 
   newComment: '';
   commentsArray: taskComment[] = [];
@@ -38,20 +38,22 @@ export class TaskCommentListComponent implements OnInit {
   constructor(private taskService: TasksService,
     private authentication: AuthenticationService,
     public commonService: CommonService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private taskIdService: GetTaskService
   ) {
   }
 
   ngOnInit() {
-    this.id = history.state.taskId;
-    if (this.id) {
-      this.taskService.getTaskById(this.id).subscribe(result => {
+
+    this.taskId = this.taskIdService.getTaskId();
+    if (this.taskId) {
+      this.taskService.getTaskById(this.taskId).subscribe(result => {
         this.tasks = result.data;
       });
     }
+
     this.commentsArray = [...this.comments];
-    const taskId = this.id;
-    this.taskService.getComments(this.id).subscribe((response) => {
+    this.taskService.getComments(this.taskId).subscribe((response) => {
       this.comments = response.data;
     });
     this.getTaskAttachments();
@@ -162,7 +164,7 @@ export class TaskCommentListComponent implements OnInit {
   }
 
   getTaskAttachments(): void {
-    this.taskService.getTaskAttachment(this.id).subscribe(result => {
+    this.taskService.getTaskAttachment(this.taskId).subscribe(result => {
       this.commentAttachment = result.data.newTaskAttachmentList;
     });
   }

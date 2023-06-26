@@ -6,6 +6,7 @@ import { TimeLogService } from 'src/app/_services/timeLogService';
 import { CommonService } from 'src/app/common/common.service';
 import { Validators, FormGroup, FormBuilder } from '@angular/forms';
 import { attachments, taskAttachments, updateTask } from '../task';
+import { GetTaskService } from 'src/app/_services/get-task.service';
 
 @Component({
   selector: 'app-subtask',
@@ -35,7 +36,6 @@ export class SubtaskComponent implements OnInit {
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   selectedUser: any = [];
   selectedTask: any;
-  @Output() subtaskIdChanged = new EventEmitter<string>();
   id: any;
   taskAttachment: any = [];
   public selectedAttachment: any;
@@ -52,7 +52,8 @@ export class SubtaskComponent implements OnInit {
     private toastmsg: ToastrService,
     public commonservice: CommonService,
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private taskIdService: GetTaskService
   ) {
     this.addUserForm = this.fb.group({
       userName: {
@@ -71,7 +72,7 @@ export class SubtaskComponent implements OnInit {
    }
 
   ngOnInit(): void {
-    this.id = localStorage.getItem('subTaskId');
+    this.id = this.taskIdService.getTaskId();
     if (this.id) {
 
       this.tasksService.getTaskById(this.id).subscribe((result: any)=> {
@@ -185,24 +186,14 @@ export class SubtaskComponent implements OnInit {
       this.toastmsg.error('All selected users already exist', 'ERROR!')
     }
   }
-  // gotoParentTask(taskId: string){
-  //   this.router.navigate(['/edit-task', taskId]);
-  // }
+ 
   
   gotoParentTask(task: any) {
     const taskId = task.id.toString();
   
-    const navigationExtras: NavigationExtras = {
-      state: {
-        taskId: taskId
-      }
-    };
-  
-   
-      this.router.navigate(['/edit-task', task.taskNumber], navigationExtras);
-      localStorage.setItem('activeTaskId', taskId.toString());
+    this.taskIdService.setTaskId(taskId)
 
-    
+   this.router.navigate(['/edit-task', task.taskNumber]);
   }
   onFileSelect(event) {
     const files: FileList = event.target.files;

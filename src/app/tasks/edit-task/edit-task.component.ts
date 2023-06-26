@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { TasksService } from '../../_services/tasks.service';
 import { Toast, ToastrService } from 'ngx-toastr';
@@ -10,6 +10,7 @@ import { taskComment } from 'src/app/models/task/taskComment';
 import { taskAttachments, TaskAttachment, attachments, Task, SubTask, updateSubTask, updateTask } from '../task';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { NavigationExtras } from '@angular/router';
+import { GetTaskService } from 'src/app/_services/get-task.service';
 
 
 @Component({
@@ -57,19 +58,22 @@ export class EditTaskComponent implements OnInit {
   view = localStorage.getItem('adminView');
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   currentTaskProject: any;
-  taskId: string;
   skip = '0';
   next = '10';
   newTask: string = '';
-  id: any;
+  id: string;
   selectedSubtask: any;
+  currentSubtaskId: string;
+taskId: string
 
   constructor(private fb: FormBuilder,
     private tasksService: TasksService,
     private toast: ToastrService,
     private route: ActivatedRoute,
     private router: Router,
-    public commonService: CommonService) {
+    public commonService: CommonService,
+    private taskIdService: GetTaskService) {
+
     this.updateForm = this.fb.group({
       taskName: ['', Validators.required],
       startDate: [this.tasks?.data?.task?.startDate, Validators.required],
@@ -97,27 +101,28 @@ export class EditTaskComponent implements OnInit {
     });
 
   }
+  
   ngOnInit(): void {
     this.getprojects();
-    this.id = localStorage.getItem('activeTaskId')
-    if (this.id) {
-      this.tasksService.getTaskById(this.id).subscribe(task => {
+   
+    this.taskId = this.taskIdService.getTaskId();
+    if (this.taskId) {
+      this.tasksService.getTaskById(this.taskId).subscribe(task => {
         this.tasks = task;
         this.task = task.data.newTaskUserList;
         this.currentTaskProject = this.tasks.data.task;
       });
     }
+   
 
     this.firstLetter = this.commonService.firstletter;
-
     this.getTaskAttachments();
-
-    this.tasksService.getSubTask(this.id).subscribe((response: any) => {
-      this.subTask = response && response.data && response.data['taskList']
+    this.tasksService.getSubTask(this.taskId).subscribe((response: any) => {
+    this.subTask = response && response.data && response.data['taskList']
     })
     this.getTasks();
   }
-
+  
   getCurrentUserTasks() {
     this.tasksService.getTaskByUser(this.currentUser.id).subscribe(response => {
       this.taskList = response && response.data && response.data['taskList'];
@@ -164,7 +169,6 @@ export class EditTaskComponent implements OnInit {
     this.tasksService.getTaskById(taskId).subscribe((task: any) => {
       this.router.navigate(['/edit-task', taskId]);
       this.tasks = task;
-      this.activeTaskId = this.id;
       this.getTaskAttachments();
       localStorage.setItem('activeTaskId', taskId.toString());
       this.ngOnInit();
@@ -227,7 +231,7 @@ export class EditTaskComponent implements OnInit {
       })
   }
   deleteTask() {
-    this.tasksService.deleteTask(this.id).subscribe(response => {
+    this.tasksService.deleteTask(this.taskId).subscribe(response => {
       this.ngOnInit();
       this.toast.success('Successfully Deleted!')
     },
@@ -271,7 +275,7 @@ export class EditTaskComponent implements OnInit {
         if (i === this.selectedFiles.length - 1) {
           // This is the last file, so create the task attachment
           const taskAttachment: taskAttachments = {
-            taskId: this.id,
+            taskId: this.taskId,
             taskAttachments: attachments
           };
 
@@ -305,7 +309,7 @@ export class EditTaskComponent implements OnInit {
 
   getTaskAttachments(): void {
 
-    this.tasksService.getTaskAttachment(this.id).subscribe(result => {
+    this.tasksService.getTaskAttachment(this.taskId).subscribe(result => {
       this.taskAttachment = result.data.newTaskAttachmentList;
     });
   }
@@ -340,7 +344,7 @@ export class EditTaskComponent implements OnInit {
     const id: '' = this.currentUser.id
     const newTask: SubTask = {
       _id: '',
-      parentTask: this.id,
+      parentTask: this.taskId,
       taskName: this.addForm.value.taskName,
       title: this.addForm.value.taskName,
       estimate: this.addForm.value.estimate,
@@ -391,7 +395,6 @@ export class EditTaskComponent implements OnInit {
 
               this.tasksService.addTaskAttachment(taskAttachment).subscribe((response) => {
                 this.taskAttachment = response.data['taskAttachmentList']
-                console.log(this.taskAttachment)
                 this.ngOnInit();
               },
                 (error) => {
@@ -444,18 +447,12 @@ export class EditTaskComponent implements OnInit {
   subTaskDetail(subTask: any) {
     const taskId = subTask.id.toString();
 
-    const navigationExtras: NavigationExtras = {
-      state: {
-        taskId: taskId
-      }
-    };
-    this.router.navigate(['/SubTask', subTask.taskNumber], navigationExtras);
-    localStorage.setItem('subTaskId', taskId.toString());
+    this.taskIdService.setTaskId(taskId)
+    this.router.navigate(['/SubTask', subTask.taskNumber]);
 
   }
 
 
-  currentSubtaskId: string;
 
   onSubtaskIdChanged(subtaskId: string) {
     this.currentSubtaskId = subtaskId;
