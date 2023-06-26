@@ -1,7 +1,7 @@
 <div class="main-content">
     <div class="container bg-white p-3">
         <div class="row" *ngIf="subTaskDetail != null">
-            <span (click)="gotoParentTask(this.subtask?.task?.parentTask)" class="text-end"> <button
+            <span (click)="gotoParentTask(parentTask)" class="text-end"> <button
                     class="btn btn-outline-primary rounded-pill"><span class="bi bi-arrow-left ">
                         Back</span></button></span>
             <div class="child-issue col-md-9 border-end">
@@ -13,7 +13,7 @@
                     </div>
 
                     <div class="issue-header mt-3">
-                        <div class="issue-type my-3"><span (click)="gotoParentTask(this.subtask?.task?.parentTask)" class="parent rounded px-2 py-1">{{parentTask?.taskName}}</span> / {{subtask?.task?.taskName}}</div>
+                        <div class="issue-type my-3"><span (click)="gotoParentTask(parentTask)" class="parent rounded px-2 py-1">{{ getProjectNameInitials(parentTask?.project?.projectName) }}-{{parentTask?.taskNumber}}</span> / {{ getProjectNameInitials(subtask?.task?.project?.projectName) }}-{{subtask?.task?.taskNumber}}</div>
                         <div class="issue-key">
                             <input type="text" name="taskName" id="project" class="form-control form-feild taskName  px-0 input pt-0"
                                 *ngIf="subtask?.task?.id" formControlName="taskName"

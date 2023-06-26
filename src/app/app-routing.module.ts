@@ -104,12 +104,12 @@ const routes: Routes = [
       { path: 'features', component: FeaturesSettingsComponent },
       { path: 'attendancesettings', component: AttendanceSettingsComponent },
       { path: 'leavesettings', component: LeaveSettingsComponent },
-      { path: 'edit-task/:id', component: EditTaskComponent },
+      { path: 'edit-task/:taskNumber', component: EditTaskComponent },
       {path: 'comments', component: TaskCommentComponent},
       { path: 'genericSettings', component: GenericSettingsComponent },
       { path: 'viewLiveScreen', component: ViewLiveScreenComponent },
       { path: 'emailtemplate', component: EmailTemplateComponent},
-      { path: 'SubTask/:id', component: SubtaskComponent }
+      { path: 'SubTask/:taskNumber', component: SubtaskComponent }
     ]
   }
 ]

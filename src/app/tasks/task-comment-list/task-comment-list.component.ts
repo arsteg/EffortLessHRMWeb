@@ -32,23 +32,22 @@ export class TaskCommentListComponent implements OnInit {
   comment: any = [];
   commentAttachment: any = [];
   newCommentId: string = '';
-tasks:any=[]; 
-id: string;
+  tasks: any = [];
+  id: any;
 
   constructor(private taskService: TasksService,
     private authentication: AuthenticationService,
     public commonService: CommonService,
     private route: ActivatedRoute
-   ) {
+  ) {
   }
 
   ngOnInit() {
-    this.id = this.route.snapshot.paramMap.get('id');
+    this.id = history.state.taskId;
     if (this.id) {
       this.taskService.getTaskById(this.id).subscribe(result => {
         this.tasks = result.data;
-       
-      })    
+      });
     }
     this.commentsArray = [...this.comments];
     const taskId = this.id;
@@ -56,8 +55,6 @@ id: string;
       this.comments = response.data;
     });
     this.getTaskAttachments();
-    
-    
   }
 
   updateComment(index: number, text: any) {
@@ -88,7 +85,7 @@ id: string;
       authorlastName: this.lastName,
       taskAttachments: []
     };
-   
+
     const taskAttachments: attachments[] = [];
     comment.taskAttachments = taskAttachments;
 
@@ -167,7 +164,6 @@ id: string;
   getTaskAttachments(): void {
     this.taskService.getTaskAttachment(this.id).subscribe(result => {
       this.commentAttachment = result.data.newTaskAttachmentList;
-      console.log(this.commentAttachment)
     });
   }
 
@@ -191,8 +187,8 @@ id: string;
     );
   }
 
-convertBytesToKB(bytes: number): string {
-  const kilobytes = bytes / 1024;
-  return kilobytes.toFixed(2) + ' KB';
-}
+  convertBytesToKB(bytes: number): string {
+    const kilobytes = bytes / 1024;
+    return kilobytes.toFixed(2) + ' KB';
+  }
 }

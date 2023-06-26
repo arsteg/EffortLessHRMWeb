@@ -9,6 +9,7 @@ import { DatePipe } from '@angular/common';
 import { taskComment } from 'src/app/models/task/taskComment';
 import { taskAttachments, TaskAttachment, attachments, Task, SubTask, updateSubTask, updateTask } from '../task';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
+import { NavigationExtras } from '@angular/router';
 
 
 @Component({
@@ -60,7 +61,7 @@ export class EditTaskComponent implements OnInit {
   skip = '0';
   next = '10';
   newTask: string = '';
-  id: string;
+  id: any;
   selectedSubtask: any;
 
   constructor(private fb: FormBuilder,
@@ -94,21 +95,19 @@ export class EditTaskComponent implements OnInit {
       project: ['', Validators.required],
       taskAttachments: [[]]
     });
-   
+
   }
-
   ngOnInit(): void {
-
     this.getprojects();
-    this.id = this.route.snapshot.paramMap.get('id');
+    this.id = localStorage.getItem('activeTaskId')
     if (this.id) {
       this.tasksService.getTaskById(this.id).subscribe(task => {
         this.tasks = task;
         this.task = task.data.newTaskUserList;
         this.currentTaskProject = this.tasks.data.task;
       });
-
     }
+
     this.firstLetter = this.commonService.firstletter;
 
     this.getTaskAttachments();
@@ -118,7 +117,7 @@ export class EditTaskComponent implements OnInit {
     })
     this.getTasks();
   }
-  
+
   getCurrentUserTasks() {
     this.tasksService.getTaskByUser(this.currentUser.id).subscribe(response => {
       this.taskList = response && response.data && response.data['taskList'];
@@ -410,7 +409,7 @@ export class EditTaskComponent implements OnInit {
 
     })
   }
-  
+
   onFileSelects(event) {
     const files: FileList = event.target.files;
     if (files) {
@@ -422,9 +421,9 @@ export class EditTaskComponent implements OnInit {
       }
     }
   }
-onresetForm(){
-  this.addForm.reset();
-}
+  onresetForm() {
+    this.addForm.reset();
+  }
 
 
 
@@ -439,12 +438,23 @@ onresetForm(){
       }
     );
   }
-  
 
-  subTaskDetail(subTask) {
-    this.router.navigate(['/SubTask', subTask.id]);
+
+ 
+  subTaskDetail(subTask: any) {
+    const taskId = subTask.id.toString();
+
+    const navigationExtras: NavigationExtras = {
+      state: {
+        taskId: taskId
+      }
+    };
+    this.router.navigate(['/SubTask', subTask.taskNumber], navigationExtras);
+    localStorage.setItem('subTaskId', taskId.toString());
 
   }
+
+
   currentSubtaskId: string;
 
   onSubtaskIdChanged(subtaskId: string) {

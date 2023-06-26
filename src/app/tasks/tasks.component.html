@@ -138,10 +138,8 @@
                                     <td class="highlight">
                                         <div></div>
                                     </td>
-                                    <td class="action text-start" *ngIf="task !== null">
-                                        <span class="bi bi-grip-horizontal text-secondary data mt-2 me-3"></span>
-                                    </td>
-                                    <td>{{task?.taskName| titlecase}}</td>
+                                    <td>I-{{task?.taskNumber}} </td>
+                                    <td  (click)="navigateToEditPage(task)" style="cursor: pointer;">{{task?.taskName| titlecase}}</td>
                                     <td>{{task?.endDate | date:'mediumDate'}}</td>
                                     <td (click)="selectedTaskIndex === i?selectedTaskIndex=-1:selectedTaskIndex=i">
                                         <div class="dropdown show">
@@ -698,13 +696,20 @@
                 <div class="row" *ngIf="selectedTask">
                     <form class="row" [formGroup]="addUserForm" (ngSubmit)="addUserToTask(addUserForm.value)">
                         <div class="row d-flex justify-content-center">
-                            <div class="col-md-8">
-
+                            <div class="">
+                                <ul type="none" class="d-flex ps-0">
+                                <li *ngFor="let members of taskUserList; let i = index" type="none" class="bg-light  ps-3 py-1 me-2  rounded-pill">
+                                    <label *ngIf="members.user!=null"  (click)="deleteuser(members)">
+                                        <span>{{members?.user?.firstName | titlecase}}</span>
+                                             <b class="bi bi-x bg-danger text-white ms-2 me-2" style="border-radius: 100%;"></b>
+                                    </label>
+                                </li>
+                            </ul>
                                 <div class="mt-3">
                                     <mat-form-field appearance="outline" class="w-100">
                                         <mat-label>Select User</mat-label>
                                         <mat-select multiple formControlName="userName" [(ngModel)]="selectedUser">
-                                            <mat-option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                                            <mat-option *ngFor="let assignee of allAssignee"  [value]="assignee.id">
                                                 {{assignee.firstName | titlecase}} {{assignee.lastName |
                                                 titlecase}}</mat-option>
                                         </mat-select>

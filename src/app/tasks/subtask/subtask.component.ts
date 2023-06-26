@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { TasksService } from 'src/app/_services/tasks.service';
 import { TimeLogService } from 'src/app/_services/timeLogService';
@@ -36,7 +36,7 @@ export class SubtaskComponent implements OnInit {
   selectedUser: any = [];
   selectedTask: any;
   @Output() subtaskIdChanged = new EventEmitter<string>();
-  id: string;
+  id: any;
   taskAttachment: any = [];
   public selectedAttachment: any;
   selectedFiles: File[] = [];
@@ -71,7 +71,7 @@ export class SubtaskComponent implements OnInit {
    }
 
   ngOnInit(): void {
-    this.id = this.route.snapshot.paramMap.get('id');
+    this.id = localStorage.getItem('subTaskId');
     if (this.id) {
 
       this.tasksService.getTaskById(this.id).subscribe((result: any)=> {
@@ -82,7 +82,6 @@ export class SubtaskComponent implements OnInit {
 
         this.tasksService.getTaskById(this.subTaskDetail.parentTask).subscribe((result: any)=> {
           this.parentTask = result.data.task;
-          console.log(this.parentTask)
         })
       })
       this.updateForm.valueChanges.subscribe(() => {
@@ -100,7 +99,15 @@ export class SubtaskComponent implements OnInit {
     this.firstLetter = this.commonservice.firstletter;
     this.getTaskAttachments();
   }
- 
+  getProjectNameInitials(projectName: string): string {
+    if (projectName) {
+      const words = projectName.split(' ');
+      return words.map(word => word.charAt(0).toUpperCase()).join('');
+    }
+    return '';
+  }
+
+  
   updatesubTaskPriority(selectedTask: any, priority: string) {
     const payload = { "priority": priority }
     this.subtask.priority = priority;
@@ -178,10 +185,25 @@ export class SubtaskComponent implements OnInit {
       this.toastmsg.error('All selected users already exist', 'ERROR!')
     }
   }
-  gotoParentTask(taskId: string){
-    this.router.navigate(['/edit-task', taskId]);
-  }
+  // gotoParentTask(taskId: string){
+  //   this.router.navigate(['/edit-task', taskId]);
+  // }
   
+  gotoParentTask(task: any) {
+    const taskId = task.id.toString();
+  
+    const navigationExtras: NavigationExtras = {
+      state: {
+        taskId: taskId
+      }
+    };
+  
+   
+      this.router.navigate(['/edit-task', task.taskNumber], navigationExtras);
+      localStorage.setItem('activeTaskId', taskId.toString());
+
+    
+  }
   onFileSelect(event) {
     const files: FileList = event.target.files;
     if (files) {

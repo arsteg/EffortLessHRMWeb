@@ -87,7 +87,7 @@ export class ActivityLevelComponent implements OnInit {
   getProjectList() {
     //Admin and Manager can see the list of all projects
     if (this.roleName.toLocaleLowerCase() == "admin" || this.roleName.toLocaleLowerCase() == "manager") {
-      this.projectService.getprojectlist().subscribe((response: any) => {
+      this.projectService.getprojects('', '').subscribe((response: any) => {
         this.projectList = response && response.data && response.data['projectList'];
       });
     }

@@ -83,18 +83,18 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let users of activity">
+                <tr *ngFor="let users of activity; let i = index">
                     <td *ngIf="showMembersColumn"> 
                         <span class="letter ms-2"
                                 [style.background-color]="commonservice.getRandomColor(users.lastName)">{{users.firstName.slice(0,1)
                                 | uppercase}}{{users.lastName.slice(0,1) | uppercase}}</span> 
                         {{users?.firstName | titlecase}} {{users?.lastName | titlecase}}</td>
-                    <td *ngIf="showProjectsColumn">{{users?.project}}</td>
+                    <td *ngIf="showProjectsColumn">{{users?.logs[i]?.project}}</td>
                    
                     <td *ngFor="let day of daysOfWeek">
                         <ng-container >
-                            <ng-container *ngIf="datepipe.transform(users?.date, 'yyyy-MM-dd') === day">
-                                {{ minutesToTime(users?.time) }}
+                            <ng-container *ngIf="datepipe.transform(users?.logs?.date, 'yyyy-MM-dd') === day">
+                                {{ minutesToTime(users?.logs[i]?.time) }}
                             </ng-container>
                         </ng-container>
                     </td>

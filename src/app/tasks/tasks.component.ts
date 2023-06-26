@@ -11,6 +11,7 @@ import { User } from '../models/user';
 import { CommonService } from '../common/common.service';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../_services/authentication.service';
+import { NavigationExtras } from '@angular/router';
 @Component({
   selector: 'app-tasks',
   templateUrl: './tasks.component.html',
@@ -75,7 +76,7 @@ export class TasksComponent implements OnInit {
   comments: any[];
   skip = '0';
   next = '10';
-  
+
 
   constructor(
     private tasksService: TasksService,
@@ -142,11 +143,24 @@ export class TasksComponent implements OnInit {
 
   }
   navigateToEditPage(task: any) {
-    // navigate to the edit page with the task ID as a route parameter
-    this.router.navigate(['/edit-task', task.id]);
-    localStorage.setItem('activeTaskId', task.id.toString());
+    const taskId = task.id.toString();
+  
+    const navigationExtras: NavigationExtras = {
+      state: {
+        taskId: taskId
+      }
+    };
+  
+    if (task.parentTask) {
+      this.router.navigate(['/SubTask', task.taskNumber], navigationExtras);
+      localStorage.setItem('subTaskId', taskId.toString());
 
+    } else {
+      this.router.navigate(['/edit-task', task.taskNumber], navigationExtras);
+      localStorage.setItem('activeTaskId', taskId.toString());
+    }
   }
+  
   isStatusChecked(status: string): boolean {
     const statusItem = this.statusList.find(item => item.name === status);
     return statusItem ? statusItem.isChecked : false;
@@ -167,7 +181,7 @@ export class TasksComponent implements OnInit {
     this.skip = newSkip;
     this.listAllTasks();
   }
-    
+
 
   onSubmit() {
     // Create new task object
@@ -207,8 +221,8 @@ export class TasksComponent implements OnInit {
           reader.readAsDataURL(file);
           reader.onload = () => {
             const base64String = reader.result.toString().split(',')[1];
-            const fileSize = file.size; // size of the file in bytes
-            const fileType = file.type; // type of the file (e.g. image/png)
+            const fileSize = file.size; 
+            const fileType = file.type; 
             const fileNameParts = file.name.split('.');
             const extension = fileNameParts[fileNameParts.length - 1];
 
@@ -221,10 +235,8 @@ export class TasksComponent implements OnInit {
             });
 
             if (i === this.selectedFiles.length - 1) {
-              // This is the last file, so create the task attachment
               const taskAttachment: taskAttachments = {
                 taskId: newTask._id,
-                // comment: null,
                 taskAttachments: attachments
               };
 
@@ -286,22 +298,25 @@ export class TasksComponent implements OnInit {
   selectTask(selectedTask) {
     this.selectedTask = selectedTask
   }
+ 
+
   addUserToTask(addUserForm) {
     let selectedUsers = this.addUserForm.get('userName').value;
     let newUsers = selectedUsers.filter(id => !this.taskUserList.find(user => user.user.id === id));
-    let task_Users = newUsers.map((id) => { return { user: id } });
+    let task_Users = newUsers.map(id => { return { user: id } });
+
     if (task_Users.length > 0) {
       this.tasksService.addUserToTask(this.selectedTask.id, task_Users).subscribe(result => {
+        this.taskUserList.push(...task_Users);
         this.ngOnInit();
-        this.tost.success('New Member Added', 'Successfully Added!')
+        this.tost.success('New Member Added', 'Successfully Added!');
       },
         err => {
-          this.tost.error('Member Already Exist', 'ERROR!')
-        })
+          this.tost.error('Member Already Exists', 'ERROR!');
+        });
     }
-    else {
-      this.tost.error('All selected users already exist', 'ERROR!')
-    }
+
+   
   }
 
   getTaskUser(id) {
@@ -311,7 +326,6 @@ export class TasksComponent implements OnInit {
     });
   }
 
-  //  Method to Delete assigned User to project
   onModelChange(isChecked, taskUserList) {
     if (isChecked) {
       this.getTaskUser(taskUserList);
@@ -320,9 +334,8 @@ export class TasksComponent implements OnInit {
       let index = this.taskUserList.findIndex(user => user.id === taskUserList.id);
       this.tasksService.deleteTaskUser(taskUserList.id).subscribe(response => {
         this.taskUserList.splice(index, 1);
-
+        console.log(taskUserList.id)
         this.ngOnInit();
-        this.isChecked = true;
         this.tost.success(taskUserList.user.firstName.toUpperCase(), 'Successfully Removed!')
       },
         err => {
@@ -330,6 +343,18 @@ export class TasksComponent implements OnInit {
         })
     }
   }
+deleteuser(taskUserList){
+  let index = this.taskUserList.findIndex(user => user.id === taskUserList.id);
+  this.tasksService.deleteTaskUser(taskUserList.id).subscribe(response => {
+    this.taskUserList.splice(index, 1);
+    console.log(taskUserList.id)
+    this.ngOnInit();
+    this.tost.success(taskUserList.user.firstName.toUpperCase(), 'Successfully Removed!')
+  },
+    err => {
+      this.tost.error(taskUserList.user.firstName.toUpperCase(), 'ERROR! Can not be Removed')
+    })
+}
 
   getTasksByProject() {
     if (this.view === 'admin') {
@@ -448,9 +473,9 @@ export class TasksComponent implements OnInit {
     this.tasksService.addTask(taskFromBoard).subscribe(response => {
       this.task = response;
       this.tasks.push(taskFromBoard);
-      
+
       this.ngOnInit();
-      this.createTask_Board.reset(); 
+      this.createTask_Board.reset();
       this.toggleToDoTask();
     })
   }
@@ -470,9 +495,9 @@ export class TasksComponent implements OnInit {
     this.tasksService.addTask(taskFromBoard).subscribe(response => {
       this.task = response;
       this.tasks.push(taskFromBoard);
-     
+
       this.ngOnInit();
-      this.createTask_Board.reset(); 
+      this.createTask_Board.reset();
       this.toggleInProgressTask();
     })
   }
@@ -492,9 +517,9 @@ export class TasksComponent implements OnInit {
     this.tasksService.addTask(taskFromBoard).subscribe(response => {
       this.task = response;
       this.tasks.push(taskFromBoard);
-    
+
       this.ngOnInit();
-      this.createTask_Board.reset(); 
+      this.createTask_Board.reset();
       this.toggleDoneTask();
     })
   }
@@ -513,9 +538,9 @@ export class TasksComponent implements OnInit {
     this.tasksService.addTask(taskFromBoard).subscribe(response => {
       this.task = response;
       this.tasks.push(taskFromBoard);
-      
+
       this.ngOnInit();
-      this.createTask_Board.reset(); 
+      this.createTask_Board.reset();
       this.toggleClosedTask();
     })
   }
