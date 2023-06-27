@@ -9,7 +9,7 @@
           <span (click)="SetNextDay()" class="fa fa-angle-right fa-lg p-3"></span>
         </div>
       </div>
-      <div class=" pt-1 d-flex text-center mx-4" *ngIf="roleName==='admin'">
+      <div class=" pt-1 d-flex text-center mx-4">
         <label for="member" class="pt-2 pe-3">Member </label>
         <select id="member" name="member" class="form-control" class="form-select form-select-sm"
           aria-label=".form-select-sm example" #member (change)="onMemberSelectionChange(member)">
