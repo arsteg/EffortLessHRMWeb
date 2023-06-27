@@ -32,7 +32,7 @@ export class TimelineComponent implements OnInit {
   selectedUser: any = [];
   selectedProject: any = [];
   selectedTask: any = [];
-  roleId = localStorage.getItem('roleId');
+  roleName = localStorage.getItem('adminView');
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   public sortOrder: string = ''; // 'asc' or 'desc'
   daysOfWeek: any = [];
@@ -89,14 +89,16 @@ export class TimelineComponent implements OnInit {
 
   getProjectList() {
     //Admin and Manager can see the list of all projects
-    if (this.roleId == "639acb77b5e1ffe22eaa4a39" || this.roleId == "63b56b9ca3396271e4a54b96") {
+    if (this.roleName.toLocaleLowerCase() === "admin") {
       this.projectService.getprojects('', '').subscribe((response: any) => {
         this.projectList = response && response.data && response.data['projectList'];
+        this.projectList = this.projectList.filter(project => project !== null);
       });
     }
     else {
       this.projectService.getProjectByUserId(this.currentUser.id).subscribe((response: any) => {
         this.projectList = response && response.data && response.data['projectList'];
+        this.projectList = this.projectList.filter(project => project !== null);
       });
     }
   }
@@ -177,7 +179,7 @@ export class TimelineComponent implements OnInit {
     timeline.fromdate = new Date(this.selectedDate);
     timeline.todate = new Date(this.selectedDate);
     timeline.projects = this.selectedProject;
-    timeline.users = (this.roleId == "639acb77b5e1ffe22eaa4a39" || this.roleId == "63b56b9ca3396271e4a54b96") ? this.selectedUser : [this.currentUser.id];
+    timeline.users = (this.roleName.toLocaleLowerCase() === "admin") ? this.selectedUser : [this.currentUser.id];
 
     this.reportService.getTimeline(timeline).subscribe(result => {
       this.timeline = result.data;
@@ -196,13 +198,8 @@ export class TimelineComponent implements OnInit {
         if (this.logs.length > 0 && (!this.endTime || new Date(this.logs[this.logs.length - 1].endTime) > this.endTime)) {
           this.endTime = new Date(this.logs[this.logs.length - 1].endTime);
         }
-
-        console.log(`User: ${this.logs[0].user.firstName}`);
         this.logStartTime = new Date(this.logs[0].startTime);
-        console.log(this.logStartTime);
         this.logEndTime = new Date(this.logs[this.logs.length - 1].endTime);
-        console.log(this.logEndTime);
-        
       });
 
       this.hours = newHours;

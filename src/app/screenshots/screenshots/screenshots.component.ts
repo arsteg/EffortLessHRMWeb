@@ -41,7 +41,7 @@ export class ScreenshotsComponent implements OnInit {
   selectedTimelog: any = [];
   logs = [];
   selectAllChecked: false;
-
+roleName = localStorage.getItem('adminView')
   intervalId: any;
   intervalDuration = 300000; // 5 minute in milliseconds
 

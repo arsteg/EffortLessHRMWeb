@@ -16,9 +16,9 @@
                 <mat-form-field appearance="outline" class="w-100 mx-1">
                     <mat-label>Select Project</mat-label>
                     <mat-select multiple [(ngModel)]="selectedProject">
-                        <mat-option *ngFor="let project of projectList" [value]="project.id" (click)="filterData()"
+                        <mat-option *ngFor="let project of projectList" [value]="project?.id" (click)="filterData()"
                             [selected]="selectedProject?.includes(project?.id)">
-                            {{project.projectName | titlecase}}
+                            {{project?.projectName | titlecase}}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>

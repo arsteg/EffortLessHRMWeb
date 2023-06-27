@@ -28,7 +28,7 @@ export class LeaveReportComponent implements OnInit {
   leaveList: any = [];
   p: number = 1;
   selectedUser: any = [];
-  roleName = localStorage.getItem('roleName');
+  roleName = localStorage.getItem('adminView');
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   totalHours: number = 0;
 

@@ -43,8 +43,8 @@
                                 </div>
                                 <div>
                                     <span class="letter ms-2"
-                                        [style.background-color]="commonservice.getRandomColor(productivity.lastName)">{{productivity.firstName.slice(0,1)
-                                        | uppercase}}{{productivity.lastName.slice(0,1) | uppercase}}</span>
+                                        [style.background-color]="commonservice.getRandomColor(productivity?.lastName)">{{productivity?.firstName?.slice(0,1)
+                                        | uppercase}}{{productivity?.lastName?.slice(0,1) | uppercase}}</span>
                                 </div>
                                 <div class="flex-grow-1 ms-3">
                                     <h5 class="mb-1">{{ productivity[0]?.firstName | titlecase}}

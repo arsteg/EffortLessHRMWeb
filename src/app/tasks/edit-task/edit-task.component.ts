@@ -64,7 +64,7 @@ export class EditTaskComponent implements OnInit {
   id: string;
   selectedSubtask: any;
   currentSubtaskId: string;
-taskId: string
+  taskId: string
 
   constructor(private fb: FormBuilder,
     private tasksService: TasksService,
@@ -101,10 +101,10 @@ taskId: string
     });
 
   }
-  
+
   ngOnInit(): void {
     this.getprojects();
-   
+
     this.taskId = this.taskIdService.getTaskId();
     if (this.taskId) {
       this.tasksService.getTaskById(this.taskId).subscribe(task => {
@@ -113,16 +113,16 @@ taskId: string
         this.currentTaskProject = this.tasks.data.task;
       });
     }
-   
+
 
     this.firstLetter = this.commonService.firstletter;
     this.getTaskAttachments();
     this.tasksService.getSubTask(this.taskId).subscribe((response: any) => {
-    this.subTask = response && response.data && response.data['taskList']
+      this.subTask = response && response.data && response.data['taskList']
     })
     this.getTasks();
   }
-  
+
   getCurrentUserTasks() {
     this.tasksService.getTaskByUser(this.currentUser.id).subscribe(response => {
       this.taskList = response && response.data && response.data['taskList'];
@@ -443,7 +443,7 @@ taskId: string
   }
 
 
- 
+
   subTaskDetail(subTask: any) {
     const taskId = subTask.id.toString();
 

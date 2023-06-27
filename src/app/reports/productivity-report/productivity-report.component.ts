@@ -25,7 +25,7 @@ export class ProductivityReportComponent implements OnInit {
   diff: any = this.currentDate.getDate() - this.currentDate.getDay() + (this.currentDate.getDay() === 0 ? -6 : 1);
   lastday: any = this.currentDate.getDate() - (this.currentDate.getDay() - 1) + 6;
   selectedUser: any = [];
-  roleName = localStorage.getItem('roleName');
+  roleName = localStorage.getItem('adminView');
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   firstLetter: string;
   totalActiveTime: Number;

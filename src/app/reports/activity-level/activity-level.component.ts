@@ -23,7 +23,7 @@ export class ActivityLevelComponent implements OnInit {
   color: string;
   selectedProject: any = [];
   selectedTask: any = [];
-  roleName = localStorage.getItem('roleName');
+  roleName = localStorage.getItem('adminView');
   taskList: any = [];
   projectList: any;
   searchText = '';
@@ -89,11 +89,15 @@ export class ActivityLevelComponent implements OnInit {
     if (this.roleName.toLocaleLowerCase() == "admin" || this.roleName.toLocaleLowerCase() == "manager") {
       this.projectService.getprojects('', '').subscribe((response: any) => {
         this.projectList = response && response.data && response.data['projectList'];
+        this.projectList = this.projectList.filter(project => project !== null);
+
       });
     }
     else {
       this.projectService.getProjectByUserId(this.currentUser.id).subscribe((response: any) => {
         this.projectList = response && response.data && response.data['projectList'];
+        this.projectList = this.projectList.filter(project => project !== null);
+
       });
     }
   }

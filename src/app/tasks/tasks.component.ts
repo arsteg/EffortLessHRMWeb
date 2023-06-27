@@ -171,11 +171,7 @@ export class TasksComponent implements OnInit {
     this.skip = newSkip;
     this.listAllTasks();
   }
-  // previousPagination() {
-  //   const newSkip = (parseInt(this.next) - parseInt(this.skip)).toString();
-  //   this.skip = newSkip;
-  //   this.listAllTasks();
-  // }
+ 
   previousPagination() {
     const newSkip = (parseInt(this.skip) >= parseInt(this.next)) ? (parseInt(this.skip) - parseInt(this.next)).toString() : '0';
     this.skip = newSkip;

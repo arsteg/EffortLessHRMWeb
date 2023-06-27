@@ -29,7 +29,7 @@ export class RealtimeComponent implements OnInit {
   searchText = '';
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   realtime: any;
-  roleName = localStorage.getItem('roleName');
+  roleName = localStorage.getItem('adminView');
   members: any;
   member: any;
   p: number = 1;
@@ -55,13 +55,15 @@ export class RealtimeComponent implements OnInit {
   getProjectList() {
     //Admin and Manager can see the list of all projects
     if (this.roleName.toLocaleLowerCase() == "admin" || this.roleName.toLocaleLowerCase() == "manager") {
-      this.projectService.getprojectlist().subscribe((response: any) => {
+      this.projectService.getprojects('', '').subscribe((response: any) => {
         this.projectList = response && response.data && response.data['projectList'];
+        this.projectList = this.projectList.filter(project => project !== null);
       });
     }
     else {
       this.projectService.getProjectByUserId(this.currentUser.id).subscribe((response: any) => {
         this.projectList = response && response.data && response.data['projectList'];
+        this.projectList = this.projectList.filter(project => project !== null);
       });
     }
   }

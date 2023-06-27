@@ -30,7 +30,7 @@ export class AppAndWebsiteUsageComponent implements OnInit {
   p: number = 1;
   selectedUser: any = [];
   selectedProject: any = [];
-  roleName = localStorage.getItem('roleName');
+  roleName = localStorage.getItem('adminView');
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
   constructor(

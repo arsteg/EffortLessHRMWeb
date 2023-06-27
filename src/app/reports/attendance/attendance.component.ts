@@ -34,7 +34,7 @@ export class AttendanceComponent implements OnInit {
   selectedUser: any = [];
   selectedProject: any = [];
   selectedTask: any = [];
-  roleName = localStorage.getItem('roleName');
+  roleName = localStorage.getItem('adminView');
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   public sortOrder: string = ''; // 'asc' or 'desc'
   daysOfWeek: any = [];
