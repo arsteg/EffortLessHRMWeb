@@ -7,11 +7,10 @@ import { ToastrService } from 'ngx-toastr';
 import { project } from '../Project/model/project';
 import { ProjectService } from '../_services/project.service';
 import { UserService } from '../_services/users.service';
-import { User } from '../models/user';
 import { CommonService } from '../common/common.service';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../_services/authentication.service';
-import { NavigationExtras } from '@angular/router';
+import { TimeLogService } from '../_services/timeLogService';
 import { GetTaskService } from '../_services/get-task.service';
 @Component({
   selector: 'app-tasks',
@@ -38,7 +37,7 @@ export class TasksComponent implements OnInit {
   taskUserList: any;
   isChecked = true;
   userId: string;
-  selectedUser: any;
+  selectedUser: any = [];
   selectedUsers = [];
   public sortOrder: string = ''; // 'asc' or 'desc'
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -78,6 +77,8 @@ export class TasksComponent implements OnInit {
   skip = '0';
   next = '10';
   @Output() editTask: EventEmitter<string> = new EventEmitter<string>();
+  members: any;
+  member: any;
 
   constructor(
     private tasksService: TasksService,
@@ -88,7 +89,8 @@ export class TasksComponent implements OnInit {
     public commonservice: CommonService,
     private router: Router,
     private authService: AuthenticationService,
-    private getTaskId: GetTaskService
+    private getTaskId: GetTaskService,
+    private timelog: TimeLogService
   ) {
     this.addForm = this.fb.group({
       taskName: [''],
@@ -142,9 +144,32 @@ export class TasksComponent implements OnInit {
     this.firstLetter = this.commonservice.firstletter;
     this.getTasks();
     this.getprojects();
-
+ this.populateUsers();
   }
-
+  populateUsers() {
+    this.members = [];
+    this.members.push({ id: this.currentUser.id, name: "Me", email: this.currentUser.email });
+    this.member = this.currentUser;
+    this.timelog.getTeamMembers(this.member.id).subscribe({
+      next: (response: { data: any; }) => {
+        this.timelog.getusers(response.data).subscribe({
+          next: result => {
+            result.data.forEach(user => {
+              if (user.email != this.currentUser.email) {
+                this.members.push({ id: user.id, name: `${user.firstName} ${user.lastName}`, email: user.email });
+              }
+            })
+          },
+          error: error => {
+            console.log('There was an error!', error);
+          }
+        });
+      },
+      error: error => {
+        console.log('There was an error!', error);
+      }
+    });
+  }
   navigateToEditPage(task: any) {
     const taskId = task.id.toString();
     this.getTaskId.setTaskId(taskId)
@@ -385,7 +410,7 @@ export class TasksComponent implements OnInit {
       this.tasks = this.tasks.filter(task => task !== null);
     });
   }
-  onMemberSelectionChange(project) {
+  onMemberSelectionChange(user) {
     this.getTaskByUsers();
   }
   getCurrentUserTasks() {
