@@ -12,7 +12,7 @@
     <div class="d-flex mt-4">
 
       <span class="pt-3 text-muted me-3">Filter&nbsp;by: </span>
-      <mat-form-field appearance="outline" class="w-25 mx-1">
+      <mat-form-field appearance="outline" class="w-25 mx-1" *ngIf="roleName=== 'admin'">
         <mat-label>Select User</mat-label>
         <mat-select multiple [(ngModel)]="selectedUser">
           <mat-option *ngFor="let member of members" [value]="member.id" (click)="filterData()"

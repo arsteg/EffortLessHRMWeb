@@ -4,7 +4,7 @@
             <h1 class="pt-4">Realtime Monitoring</h1>
         </div>
         <hr class="mt-0">
-        <div class="row" >
+        <div class="row" *ngIf="roleName === 'admin'">
             <div class="col-4 ">
                 <div class="d-flex  justify-content-between p-4 bg-white common">
                     <div>
@@ -39,7 +39,7 @@
         <div class="d-flex mt-4 px-2" style="height: 50px;">
 
             <span class="pt-3 text-muted me-3">Filter&nbsp;by: </span>
-            <ng-container >
+            <ng-container *ngIf="roleName === 'admin'">
                 <mat-form-field appearance="outline" class="w-25 mx-1">
                     <mat-label>Select User</mat-label>
                     <mat-select multiple [(ngModel)]="selectedUser">

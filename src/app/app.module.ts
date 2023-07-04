@@ -70,8 +70,8 @@ import { GenericSettingsComponent } from './settings/generic-settings/generic-se
 import { ViewLiveScreenComponent } from './viewLiveScreen/view-live-screen/view-live-screen.component';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { EmailTemplateComponent } from './email-template/email-template.component';
-import {RichTextEditorAllModule }  from '@syncfusion/ej2-angular-richtexteditor';
-import { NgxEditorModule } from 'ngx-editor';
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -143,9 +143,7 @@ import { NgxEditorModule } from 'ngx-editor';
     MatSlideToggleModule,
     MatDialogModule,
     timesheetModule,
-    DashboardModule,
-    RichTextEditorAllModule,
-    NgxEditorModule
+    DashboardModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

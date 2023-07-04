@@ -17,7 +17,7 @@
                         </div>
                         <li *ngFor="let task of taskList | search: searchText" class="tasks"
                             [class.active-task]="task?.id === taskId"
-                            (click)="onTaskChange(task)">
+                            (click)="onTaskChange(task?.id)">
                             {{task?.taskName| titlecase}}
                         </li>
                         <li class="d-flex justify-content-evenly align-items-center border-top" *ngIf="view == 'admin'">
