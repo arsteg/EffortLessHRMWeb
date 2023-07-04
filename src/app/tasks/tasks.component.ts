@@ -7,12 +7,11 @@ import { ToastrService } from 'ngx-toastr';
 import { project } from '../Project/model/project';
 import { ProjectService } from '../_services/project.service';
 import { UserService } from '../_services/users.service';
-import { User } from '../models/user';
 import { CommonService } from '../common/common.service';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../_services/authentication.service';
-import { NavigationExtras } from '@angular/router';
 import { GetTaskService } from '../_services/get-task.service';
+import { TimeLogService } from '../_services/timeLogService';
 @Component({
   selector: 'app-tasks',
   templateUrl: './tasks.component.html',
@@ -38,7 +37,7 @@ export class TasksComponent implements OnInit {
   taskUserList: any;
   isChecked = true;
   userId: string;
-  selectedUser: any;
+  selectedUser: any = [];
   selectedUsers = [];
   public sortOrder: string = ''; // 'asc' or 'desc'
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -78,8 +77,11 @@ export class TasksComponent implements OnInit {
   skip = '0';
   next = '10';
   @Output() editTask: EventEmitter<string> = new EventEmitter<string>();
+  members: any;
+  member: any;
 
   constructor(
+    private timelog: TimeLogService,
     private tasksService: TasksService,
     private fb: FormBuilder,
     private toast: ToastrService,
@@ -142,7 +144,7 @@ export class TasksComponent implements OnInit {
     this.firstLetter = this.commonservice.firstletter;
     this.getTasks();
     this.getprojects();
-
+    this.populateUsers();
   }
 
   navigateToEditPage(task: any) {
@@ -155,7 +157,30 @@ export class TasksComponent implements OnInit {
     }
 
   }
-
+  populateUsers() {
+    this.members = [];
+    this.members.push({ id: this.currentUser.id, name: "Me", email: this.currentUser.email });
+    this.member = this.currentUser;
+    this.timelog.getTeamMembers(this.member.id).subscribe({
+      next: (response: { data: any; }) => {
+        this.timelog.getusers(response.data).subscribe({
+          next: result => {
+            result.data.forEach(user => {
+              if (user.email != this.currentUser.email) {
+                this.members.push({ id: user.id, name: `${user.firstName} ${user.lastName}`, email: user.email });
+              }
+            })
+          },
+          error: error => {
+            console.log('There was an error!', error);
+          }
+        });
+      },
+      error: error => {
+        console.log('There was an error!', error);
+      }
+    });
+  }
   isStatusChecked(status: string): boolean {
     const statusItem = this.statusList.find(item => item.name === status);
     return statusItem ? statusItem.isChecked : false;
@@ -171,14 +196,14 @@ export class TasksComponent implements OnInit {
     this.skip = newSkip;
     this.listAllTasks();
   }
- 
+
   previousPagination() {
     const newSkip = (parseInt(this.skip) >= parseInt(this.next)) ? (parseInt(this.skip) - parseInt(this.next)).toString() : '0';
     this.skip = newSkip;
     this.listAllTasks();
   }
-  
-  
+
+
 
   onSubmit() {
     // Create new task object
@@ -385,18 +410,15 @@ export class TasksComponent implements OnInit {
       this.tasks = this.tasks.filter(task => task !== null);
     });
   }
-  onMemberSelectionChange(project) {
+  onMemberSelectionChange(user) {
     this.getTaskByUsers();
   }
   getCurrentUserTasks() {
     this.tasksService.getTaskByUser(this.currentUser.id).subscribe(response => {
       this.tasks = response && response.data && response.data['taskList'];
       this.tasks = this.tasks.filter(task => task !== null);
-
     })
   }
-
-
 
   getTaskPriorityUrl(currentPriority) {
     const priority = this.priorityList.find(x => x.name.toLowerCase() === currentPriority?.toLowerCase());

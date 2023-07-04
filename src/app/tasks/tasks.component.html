@@ -45,17 +45,16 @@
                             </select>
 
                         </div>
-                        <div class=" pt-1 d-flex text-center mx-4 h-25" *ngIf="view === 'admin'">
-                            <label for="project" class="pt-1 pe-3">Members: </label>
-
-                            <select id="project" name="project" class="form-control" class="form-select form-select-sm"
-                                aria-label=".form-select-sm example" [(ngModel)]="userId"
-                                (change)="onMemberSelectionChange(userId)">
-                                <option *ngFor="let user of allAssignee" [value]="user.id">
-                                    {{user.firstName | titlecase}} {{user.lastName | titlecase}}</option>
-                            </select>
-
-                        </div>
+                       
+                        <mat-form-field appearance="outline" class="w-25 mx-1">
+                            <mat-label>Select User</mat-label>
+                            <mat-select  [(ngModel)]="userId" >
+                                <mat-option *ngFor="let member of members" [value]="member.id" (click)="onMemberSelectionChange(userId)"
+                                    [selected]="selectedUser?.includes(member?.id)">
+                                    {{member.name | titlecase}} 
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
                         <div>
                             <button (click)="toggleViewMode()" class="btn btn-outline-primary">
                                 <ng-container *ngIf="isListView; else boardIcon">
@@ -125,7 +124,7 @@
                                             [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                                     </th>
                                     <th scope="col" [appSort]="tasks" data-order="desc" data-name="TaskUser"
-                                        *ngIf="view === 'admin'">Members &nbsp;
+                                       >Members &nbsp;
                                         <i class="bi bi-arrow-up sort "></i>
                                     </th>
                                     <th scope="col" class="text-center">Action</th>
@@ -227,7 +226,7 @@
                                             </div>
                                         </ng-template>
                                     </td>
-                                    <td *ngIf="view === 'admin'">
+                                    <td>
                                         <div class="d-flex flex-nowrap users">
                                             <i class="fa fa-user-plus addUser me-3 mt-1" data-bs-toggle="modal"
                                                 data-bs-target="#addUserModal" (click)="selectedTask=task"

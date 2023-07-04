@@ -72,7 +72,7 @@ export class EditTaskComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     public commonService: CommonService,
-    private taskIdService: GetTaskService) {
+    private taskIdService: GetTaskService, private getTaskId: GetTaskService) {
 
     this.updateForm = this.fb.group({
       taskName: ['', Validators.required],
@@ -165,14 +165,22 @@ export class EditTaskComponent implements OnInit {
     this.listAllTasks();
   }
 
-  onTaskChange(taskId: string) {
-    this.tasksService.getTaskById(taskId).subscribe((task: any) => {
-      this.router.navigate(['/edit-task', taskId]);
-      this.tasks = task;
-      this.getTaskAttachments();
-      localStorage.setItem('activeTaskId', taskId.toString());
-      this.ngOnInit();
-    });
+  
+  onTaskChange(task: any) {
+    const taskId = task.id.toString();
+    this.tasksService.getTaskById(taskId).subscribe((res: any) => {
+    this.getTaskId.setTaskId(taskId)
+   
+    if (task.parentTask) {
+      this.router.navigate(['/SubTask', task.taskNumber]);
+    } else {
+      this.router.navigate(['/edit-task', task.taskNumber]);
+    }
+    this.tasks = res.data.task;
+        this.getTaskAttachments();
+        // localStorage.setItem('activeTaskId', taskId.toString());
+        this.ngOnInit();
+  });
   }
 
   updateTask() {

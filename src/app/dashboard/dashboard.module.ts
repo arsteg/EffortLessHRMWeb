@@ -9,7 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule, MatRippleModule } from '@angular/material/core';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
-
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
     declarations:[UserDashboardComponent,DashboardComponent],
@@ -23,7 +23,8 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
       MatRippleModule,
       MatNativeDateModule,
       MatRippleModule,
-      NgxChartsModule
+      NgxChartsModule,
+      FormsModule
     ],
     schemas: [
       CUSTOM_ELEMENTS_SCHEMA,

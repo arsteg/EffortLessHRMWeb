@@ -52,7 +52,7 @@ export class UserDashboardComponent implements OnInit {
   ngOnInit(): void {
     this.populateDashboard(new Date());
   }
-
+ 
   populateTeamOfUsers() {
     this.manageTeamService.getAllUsers().subscribe({
       next: result => {
@@ -205,13 +205,15 @@ export class UserDashboardComponent implements OnInit {
         this.toastr.error(err, 'ERROR!')
       });
 
-      this.dashboardService.getApplicationTimeSummary(this.currentUser.id,selectedDate).subscribe(response => {
-        this.productivityData= response.data;
-      },
+      this.dashboardService.getApplicationTimeSummary(this.currentUser.id, selectedDate).subscribe(
+        response => {
+          this.productivityData = response.data.map(item => ({ name: item.name, value: item.value }));
+          console.log(this.productivityData[1].value);
+        },
         err => {
-          this.toastr.error(err, 'ERROR!')
-        });
-
+          this.toastr.error(err, 'ERROR!');
+        }
+      );
         this.dashboardService.getTaskStatusCounts(this.currentUser.id).subscribe(response => {
           this.taskSummary= response.data;
         },
@@ -220,4 +222,8 @@ export class UserDashboardComponent implements OnInit {
           });
 
   }
+  labelFormatter(label: any): string {
+    return label.value.toString();
+  }
+  
 }

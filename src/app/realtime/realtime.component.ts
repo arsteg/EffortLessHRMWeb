@@ -29,7 +29,7 @@ export class RealtimeComponent implements OnInit {
   searchText = '';
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   realtime: any;
-  roleName = localStorage.getItem('adminView');
+  roleName = localStorage.getItem('roleName');
   members: any;
   member: any;
   p: number = 1;

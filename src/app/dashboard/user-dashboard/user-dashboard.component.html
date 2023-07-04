@@ -111,8 +111,21 @@
         <div class="d-flex justify-content-between">
           <h3>Productivity</h3>
         </div>
+        
         <div>
-          <ngx-charts-pie-chart  [results]="productivityData">
+          <ul type="square">
+            <li *ngFor="let productivity of productivityData" [ngClass]="{
+              'prod': productivity.name === 'Productive',
+              'non-prod': productivity.name == 'Non-Productive',
+              'neutral': productivity.name === 'Neutral'
+            }">{{productivity.name}}</li>
+          </ul>
+          <ngx-charts-pie-chart [results]="productivityData" [labelFormatting]="labelFormatter">
+            <ng-template let-entry="data">
+              <text class="pie-label" dy=".35em" text-anchor="middle">
+                {{ entry.value }}
+              </text>
+            </ng-template>
           </ngx-charts-pie-chart>
         </div>
       </div>

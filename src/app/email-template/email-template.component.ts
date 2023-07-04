@@ -1,12 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { EmailtemplateService } from '../_services/emailtemplate.service';
 import { Validators, FormGroup, FormBuilder, FormControl, AbstractControl } from '@angular/forms';
-
+import { ToolbarService, LinkService, ImageService, HtmlEditorService, EmojiPickerService } from '@syncfusion/ej2-angular-richtexteditor';
+import { RichTextEditorComponent, TableService, FileManagerService } from '@syncfusion/ej2-angular-richtexteditor';
+import { FileManagerSettingsModel, QuickToolbarSettingsModel } from '@syncfusion/ej2-angular-richtexteditor';
+import { createElement, addClass, removeClass, Browser } from '@syncfusion/ej2-base';
+import { Editor } from 'ngx-editor';
+import { NgxEditorComponent } from 'ngx-editor';
 @Component({
   selector: 'app-email-template',
   templateUrl: './email-template.component.html',
-  styleUrls: ['./email-template.component.css']
+  styleUrls: ['./email-template.component.css'],
+  providers: [ToolbarService, LinkService, ImageService, HtmlEditorService, TableService, FileManagerService, EmojiPickerService]
 })
 export class EmailTemplateComponent implements OnInit {
   emailList: any = [];
@@ -16,6 +22,20 @@ export class EmailTemplateComponent implements OnInit {
   emailupdatemodel: boolean = false;
   selectedEmail: any = [];
   searchText: string = "";
+  editor: Editor;
+  html: string;
+  selectedOption: string[] = [];
+  originalContent: string = '';
+  editorContent: string = '';
+
+  dropdownOptions = [
+    { label: 'Tasks', value: 'option1' },
+    { label: 'Assignee', value: 'option2' },
+    { label: 'Start Date', value: 'option3' },
+    { label: 'End Date', value: 'option4' }
+  ];
+  @ViewChild(NgxEditorComponent) edit: NgxEditorComponent;
+  typedContent: string;
 
   constructor(private emailservice: EmailtemplateService, private fb: FormBuilder,
     private toast: ToastrService) {
@@ -36,8 +56,11 @@ export class EmailTemplateComponent implements OnInit {
   ngOnInit(): void {
 
     this.getEmailList();
+    this.editor = new Editor();
   }
-
+  ngOnDestroy(): void {
+    this.editor.destroy();
+  }
   getEmailList() {
     this.emailList = [
     ];
@@ -46,6 +69,22 @@ export class EmailTemplateComponent implements OnInit {
       console.log(this.emailList)
     })
   }
+  onDropdownChange(event: any) {
+    this.selectedOption = Array.from(event.target.selectedOptions, (option: HTMLOptionElement) => option.value);
+    this.updateEditorContent();
+  }
+
+  public updateEditorContent() {
+    const selectedText = this.selectedOption.join(', ');
+    // const currentContent = this.editorContent || 'TEXT'; // Use existing content or an empty string if it's undefined
+    this.editorContent = `${this.originalContent} { ${selectedText} }`;
+    //    const selectedText = this.selectedOption.join(', ');
+    // this.editorContent = `${this.editorContent} { ${selectedText} }`;
+  }
+  onEditorContentChange(content: string) {
+    this.originalContent = content;
+  }
+
   closemodel() {
     this.emailmodel = false;
   }
@@ -54,6 +93,7 @@ export class EmailTemplateComponent implements OnInit {
       if (response != null && response != 0) {
         this.toast.success('Email Template added successfully!');
         this.ngOnInit();
+        this.form.reset();
         this.emailmodel = false;
       }
       else {

@@ -64,7 +64,19 @@
           <div class="col-sm-0" style="margin-top: 12px;">
             Content Data:
           </div>
-          <div class="col-sm-6">
+
+          <div class="NgxEditor__Wrapper">
+            <select (change)="onDropdownChange($event)" multiple class="my-2 w-50">
+              <option *ngFor="let option of dropdownOptions" [value]="option.label">{{ option.label }}</option>
+            </select>
+            <ngx-editor-menu [editor]="editor"></ngx-editor-menu>
+            <ngx-editor formControlName="contentData" [editor]="editor" [ngModel]="editorContent" [placeholder]="'Type here...'"></ngx-editor>
+          </div>
+         
+
+
+
+          <div class="col-sm-6 d-none">
             <input type="text" formControlName="contentData" class="form-control">
           </div><br>
         </div><br>
