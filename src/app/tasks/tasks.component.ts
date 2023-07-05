@@ -80,6 +80,7 @@ export class TasksComponent implements OnInit {
   members: any;
   member: any;
 
+
   constructor(
     private tasksService: TasksService,
     private fb: FormBuilder,
@@ -144,7 +145,7 @@ export class TasksComponent implements OnInit {
     this.firstLetter = this.commonservice.firstletter;
     this.getTasks();
     this.getprojects();
- this.populateUsers();
+    this.populateUsers();
   }
   populateUsers() {
     this.members = [];
@@ -196,14 +197,14 @@ export class TasksComponent implements OnInit {
     this.skip = newSkip;
     this.listAllTasks();
   }
- 
+
   previousPagination() {
     const newSkip = (parseInt(this.skip) >= parseInt(this.next)) ? (parseInt(this.skip) - parseInt(this.next)).toString() : '0';
     this.skip = newSkip;
     this.listAllTasks();
   }
-  
-  
+
+
 
   onSubmit() {
     // Create new task object
@@ -301,7 +302,6 @@ export class TasksComponent implements OnInit {
   }
   removeFile(index: number) {
     if (index !== -1) {
-      // Remove file from selectedFiles array
       this.selectedFiles.splice(index, 1);
     }
   }
@@ -393,21 +393,31 @@ export class TasksComponent implements OnInit {
       );
     }
     else {
-      this.authService.getUserTaskListByProject(this.currentUser.id, this.projectId).subscribe(response => {
+      const selectedUserId = this.userId || this.currentUser.id;
+      this.authService.getUserTaskListByProject(selectedUserId, this.projectId).subscribe(response => {
         this.tasks = response && response.data
       })
     }
   }
 
 
-  onProjectSelectionChange(project) {
-    this.getTasksByProject();
+  onProjectSelectionChange() {
+    if (this.projectId !== 'ALL') {
+      this.getTasksByProject();
+    }
+    else { this.getTaskByUsers(); }
   }
 
   getTaskByUsers() {
+    console.log('method call')
     this.tasksService.getTaskByUser(this.userId).subscribe(response => {
       this.tasks = response && response.data && response.data['taskList'];
       this.tasks = this.tasks.filter(task => task !== null);
+
+    });
+    this.projectService.getProjectByUserId(this.userId).subscribe(response => {
+      this.projectList = response && response.data && response.data['projectList'];
+      this.projectList = this.projectList.filter(project => project !== null);
     });
   }
   onMemberSelectionChange(user) {

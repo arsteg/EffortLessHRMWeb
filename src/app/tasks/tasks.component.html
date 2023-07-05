@@ -39,7 +39,8 @@
 
                             <select id="project" name="project" class="form-control" class="form-select form-select-sm"
                                 aria-label=".form-select-sm example" [(ngModel)]="projectId"
-                                (change)="onProjectSelectionChange(projectId)">
+                                (change)="onProjectSelectionChange()">
+                                <option (click)="getTaskByUsers(); projectId = ''">ALL</option>
                                 <option *ngFor="let project of projectList;" [value]="project?.id || null">
                                     {{project.projectName}}</option>
                             </select>
