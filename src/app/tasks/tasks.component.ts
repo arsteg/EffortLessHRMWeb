@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 import { AuthenticationService } from '../_services/authentication.service';
 import { TimeLogService } from '../_services/timeLogService';
 import { GetTaskService } from '../_services/get-task.service';
+
 @Component({
   selector: 'app-tasks',
   templateUrl: './tasks.component.html',
@@ -309,13 +310,17 @@ export class TasksComponent implements OnInit {
 
   deleteTask() {
     this.tasksService.deleteTask(this.selectedTask.id).subscribe(response => {
-      this.toast.success('Successfully Deleted!')
-      this.ngOnInit();
+      this.toast.success('Successfully Deleted!');
+      const index = this.tasks.findIndex(task => task.id === this.selectedTask.id);
+      if (index !== -1) {
+        this.tasks.splice(index, 1);
+      }
     },
       err => {
-        this.toast.error('Task Can not be Deleted', 'Error!');
-      })
+        this.toast.error('Task Cannot be Deleted', 'Error!');
+      });
   }
+
 
   selectTask(selectedTask) {
     this.selectedTask = selectedTask
@@ -356,7 +361,6 @@ export class TasksComponent implements OnInit {
       let index = this.taskUserList.findIndex(user => user.id === taskUserList.id);
       this.tasksService.deleteTaskUser(taskUserList.id).subscribe(response => {
         this.taskUserList.splice(index, 1);
-        console.log(taskUserList.id)
         this.ngOnInit();
         this.tost.success(taskUserList.user.firstName.toUpperCase(), 'Successfully Removed!')
       },
@@ -369,7 +373,6 @@ export class TasksComponent implements OnInit {
     let index = this.taskUserList.findIndex(user => user.id === taskUserList.id);
     this.tasksService.deleteTaskUser(taskUserList.id).subscribe(response => {
       this.taskUserList.splice(index, 1);
-      console.log(taskUserList.id)
       this.ngOnInit();
       this.tost.success(taskUserList.user.firstName.toUpperCase(), 'Successfully Removed!')
     },
@@ -379,12 +382,12 @@ export class TasksComponent implements OnInit {
   }
 
   getTasksByProject() {
-    if (this.view === 'admin') {
+    const selectedUserId = this.userId && this.currentUser.id;
+    if (!selectedUserId) {
       this.tasksService.getTasksByProjectId(this.projectId).subscribe(
         (response: any) => {
           if (response && response.data && Array.isArray(response.data.taskList)) {
             this.tasks = response.data.taskList;
-          } else {
           }
         },
         (error: any) => {
@@ -393,8 +396,7 @@ export class TasksComponent implements OnInit {
       );
     }
     else {
-      const selectedUserId = this.userId || this.currentUser.id;
-      this.authService.getUserTaskListByProject(selectedUserId, this.projectId).subscribe(response => {
+      this.authService.getUserTaskListByProject(this.userId, this.projectId).subscribe(response => {
         this.tasks = response && response.data
       })
     }
@@ -402,14 +404,32 @@ export class TasksComponent implements OnInit {
 
 
   onProjectSelectionChange() {
-    if (this.projectId !== 'ALL') {
+    if (this.view === 'admin' && !this.userId && !this.currentUser.id && this.projectId === 'ALL') {
+      this.getTasks();
+    } else if (this.projectId !== 'ALL') {
       this.getTasksByProject();
     }
-    else { this.getTaskByUsers(); }
+    else if (this.userId) {
+      this.getTaskByIds();
+    }
+    else {
+      if (this.view !== 'admin') {
+        this.projectService.getProjectByUserId(this.currentUser.id).subscribe(response => {
+          this.projectList = response && response.data && response.data['projectList'];
+          this.projectList = this.projectList.filter(project => project !== null);
+        });
+        this.tasksService.getTaskByUser(this.currentUser.id).subscribe(response => {
+          this.tasks = response && response.data && response.data['taskList'];
+          this.tasks = this.tasks.filter(task => task !== null);
+
+        });
+      }
+else this.listAllTasks();
+    }
   }
 
-  getTaskByUsers() {
-    console.log('method call')
+
+  getTaskByIds() {
     this.tasksService.getTaskByUser(this.userId).subscribe(response => {
       this.tasks = response && response.data && response.data['taskList'];
       this.tasks = this.tasks.filter(task => task !== null);
@@ -421,7 +441,7 @@ export class TasksComponent implements OnInit {
     });
   }
   onMemberSelectionChange(user) {
-    this.getTaskByUsers();
+    this.getTaskByIds();
   }
   getCurrentUserTasks() {
     this.tasksService.getTaskByUser(this.currentUser.id).subscribe(response => {
@@ -576,6 +596,14 @@ export class TasksComponent implements OnInit {
       this.toggleClosedTask();
     })
   }
+  getProjectNameInitials(taskName: string): string {
+    if (taskName) {
+      const words = taskName.split(' ');
+      return words.map(word => word.charAt(0).toUpperCase()).join('');
+    }
+    return '';
+  }
+
   setPriority(priority: any) {
     this.newTask.priority = priority;
   }

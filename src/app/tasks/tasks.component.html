@@ -3,17 +3,40 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="">
-                    <div class="d-flex py-2">
-                        <h1 class="">Tasks: {{tasks?.length}}</h1>
-                        <div *ngIf="view === 'admin'" class="mx-1"><button class="btn border my-tasks"
-                                (click)="getCurrentUserTasks()" [(ngModel)]="currentUser.id"><i
-                                    class="fa fa-user-o"></i> My Tasks</button></div>
+                    <div class="d-flex py-2 align-items-baseline">
+                        <h1 class="me-2">Tasks: {{tasks?.length}}</h1>
+                      
 
 
+
+
+
+                        <mat-form-field appearance="outline" class="w-25 mx-1" style="height: 20px">
+                            <mat-label>Select Project</mat-label>
+                            <mat-select [(ngModel)]="projectId" (ngModelChange)="onProjectSelectionChange()">
+                                <mat-option (click)="getTaskByIds(); projectId = ''">ALL</mat-option>
+                                <mat-option *ngFor="let project of projectList" [value]="project?.id || null">
+                                    {{project.projectName}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+
+
+                        <mat-form-field appearance="outline" class="w-25 mx-1" style="height: 20px">
+                            <mat-label>Select User</mat-label>
+                            <mat-select [(ngModel)]="userId">
+                                <mat-option *ngFor="let member of members" [value]="member.id"
+                                    (click)="onMemberSelectionChange(userId)"
+                                    [selected]="selectedUser?.includes(member?.id)">
+                                    {{member.name | titlecase}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
                         <div class="dropdown mx-2">
-                            <button class="btn border my-tasks dropdown-toggle" type="button" id="dropdownMenuButton1"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fa fa-eye"></i> Show
+                            <button class="mt-2 dropdown-toggle" type="button" id="dropdownMenuButton1"
+                                data-bs-toggle="dropdown" aria-expanded="false" mat-raised-button>
+                                <i class="fa fa-eye"></i> Status
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                 <div tabindex="-1" role="menu" aria-hidden="false" class="dropdown-menu show"
@@ -34,37 +57,16 @@
                                 </div>
                             </div>
                         </div>
-                        <div class=" pt-1 d-flex text-center mx-4 h-25">
-                            <label for="project" class="pt-1 pe-3">Projects: </label>
-
-                            <select id="project" name="project" class="form-control" class="form-select form-select-sm"
-                                aria-label=".form-select-sm example" [(ngModel)]="projectId"
-                                (change)="onProjectSelectionChange()">
-                                <option (click)="getTaskByUsers(); projectId = ''">ALL</option>
-                                <option *ngFor="let project of projectList;" [value]="project?.id || null">
-                                    {{project.projectName}}</option>
-                            </select>
-
-                        </div>
-                        <mat-form-field appearance="outline" class="w-25 mx-1">
-                            <mat-label>Select User</mat-label>
-                            <mat-select  [(ngModel)]="userId" >
-                                <mat-option *ngFor="let member of members" [value]="member.id" (click)="onMemberSelectionChange(userId)"
-                                    [selected]="selectedUser?.includes(member?.id)">
-                                    {{member.name | titlecase}} 
-                                </mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                        <div>
-                            <button (click)="toggleViewMode()" class="btn btn-outline-primary">
+                        <div class="me-2">
+                            <button (click)="toggleViewMode()" class="mt-2" mat-raised-button>
                                 <ng-container *ngIf="isListView; else boardIcon">
 
-                                    <i class="fa fa-trello text-primary bg-light"></i>
+                                    <mat-icon>leaderboard</mat-icon>
                                     <span> Board View </span>
 
                                 </ng-container>
                                 <ng-template #boardIcon>
-                                    <i class="fa fa-align-left "></i>
+                                    <mat-icon>list</mat-icon>
                                     <span> List View </span>
 
                                 </ng-template>
@@ -73,9 +75,9 @@
                         </div>
 
                         <div class="d-flex h-25 ms-auto">
-                            <input class="form-control search" type="text" placeholder="search..."
-                                [(ngModel)]="searchText" name="searchText" aria-label="default input example"
-                                style="border-bottom: 1px solid grey; border-radius: 0;">
+                            <input class="form-control search" type="text" placeholder="Search..."
+                                [(ngModel)]="searchText" name="searchText" aria-label="default input example" style="border: 1px solid #d7d9dc;
+                                border-radius: 5px;">
                             <button mat-raised-button color="primary" class="ms-5" style="
                           padding: 5px 35px 0 20px;" data-bs-toggle="modal" data-bs-target="#addModal">Add
                                 New</button>
@@ -83,17 +85,25 @@
                     </div>
                     <hr>
                     <ng-container *ngIf="view === 'admin'">
-                    <div class="d-flex justify-content-end align-items-center" style="margin-bottom: -30px;" >
-                        <span (click)="previousPagination()" class="bi bi-arrow-bar-left btn-lg btn-outline-primary" title="Previous Page"></span>
-                        <span class="text-muted">Page</span>
-                        <span (click)="nextPagination()" class="bi bi-arrow-bar-right btn-lg btn-outline-primary" title="Next Page"></span>
-                    </div>
+                        <div class="d-flex justify-content-end align-items-center" style="margin-bottom: -30px;">
+                            <span (click)="previousPagination()" class="bi bi-arrow-bar-left btn-lg btn-outline-primary"
+                                title="Previous Page"></span>
+                            <span class="text-muted">Page</span>
+                            <span (click)="nextPagination()" class="bi bi-arrow-bar-right btn-lg btn-outline-primary"
+                                title="Next Page"></span>
+                        </div>
                     </ng-container>
                     <div *ngIf="isListView">
                         <table class="table  mt-4">
                             <thead>
                                 <tr>
-                                    <th scope="col"></th>
+
+                                    <th scope="col" [appSort]="tasks" data-name="taskNumber"
+                                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                                        Key &nbsp;
+                                        <i
+                                            [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                                    </th>
 
                                     <th scope="col" [appSort]="tasks" data-name="taskName"
                                         (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
@@ -123,8 +133,8 @@
                                         <i
                                             [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                                     </th>
-                                    <th scope="col" [appSort]="tasks" data-order="desc" data-name="TaskUser"
-                                        >Members &nbsp;
+                                    <th scope="col" [appSort]="tasks" data-order="desc" data-name="TaskUser">Members
+                                        &nbsp;
                                         <i class="bi bi-arrow-up sort "></i>
                                     </th>
                                     <th scope="col" class="text-center">Action</th>
@@ -132,13 +142,15 @@
                                 </tr>
                             </thead>
                             <tbody *ngIf="tasks!= null">
-                                <tr
-                                    *ngFor="let task of tasks | search: searchText ;let i = index" [ngClass]="{ 'd-none': !isStatusChecked(task.status) }">
-                                    <td class="highlight">
-                                        <div></div>
+                                <tr *ngFor="let task of tasks | search: searchText ;let i = index"
+                                    [ngClass]="{ 'd-none': !isStatusChecked(task.status) }">
+
+                                    <td *ngIf="task.project != null">
+                                        {{getProjectNameInitials(task.project.projectName)}} - {{task?.taskNumber}}
                                     </td>
-                                    <td>I-{{task?.taskNumber}} </td>
-                                    <td  (click)="navigateToEditPage(task)" style="cursor: pointer;">{{task?.taskName| titlecase}}</td>
+                                    <td (click)="navigateToEditPage(task)" style="cursor: pointer; color: blue">
+                                        {{task?.taskName|
+                                        titlecase}}</td>
                                     <td>{{task?.endDate | date:'mediumDate'}}</td>
                                     <td (click)="selectedTaskIndex === i?selectedTaskIndex=-1:selectedTaskIndex=i">
                                         <div class="dropdown show">
@@ -251,7 +263,7 @@
                                                 <hr class="mx-2 my-0">
 
 
-                                                <li class="d-flex" (click)="navigateToEditPage(task)" >
+                                                <li class="d-flex" (click)="navigateToEditPage(task)">
                                                     <i class="bi bi-pencil text-success  dropdown-item w-25"></i><span
                                                         class="pt-1 text-muted">Edit</span>
                                                 </li>
@@ -264,7 +276,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                        
+
                     </div>
 
 
@@ -324,40 +336,38 @@
                                             <div *ngIf="showToDoTask" class="add-task-container mt-4">
 
                                                 <form action="" [formGroup]="createTask_Board"
-                                                (ngSubmit)="addTaskToDo()">
-                                                <div class="d-flex">
-                                                    <span class="bi bi-x-lg me-2"
-                                                        (click)="toggleToDoTask()"></span>
-                                                    <input type="text" class="w-100 newTaskBoard border-bottom"
-                                                        placeholder="Please type task name..."
-                                                        formControlName="taskName">
-                                                </div>
-                                                <div class="row mt-3">
-                                                    <label for="project" class="text-start">Project</label>
-                                                </div>
-
-                                                <select class="custom-select mb-3 p-2"
-                                                    formControlName="project">
-                                                    <option [value]="project.id"
-                                                        *ngFor="let project of projectList">
-                                                        {{project.projectName}}
-                                                    </option>
-                                                </select>
-                                                <div>
-                                                    <div class="row mt-3">
-                                                        <label for="priority" class="text-start">Priority</label>
+                                                    (ngSubmit)="addTaskToDo()">
+                                                    <div class="d-flex">
+                                                        <span class="bi bi-x-lg me-2" (click)="toggleToDoTask()"></span>
+                                                        <input type="text" class="w-100 newTaskBoard border-bottom"
+                                                            placeholder="Please type task name..."
+                                                            formControlName="taskName">
                                                     </div>
-                                                    <select class="custom-select mb-3 p-2"
-                                                        formControlName="priority">
-                                                        <option value="">Select Priority</option>
-                                                        <option value="Low">Urgent</option>
-                                                        <option value="Normal">Normal</option>
-                                                        <option value="High">High</option>
+                                                    <div class="row mt-3">
+                                                        <label for="project" class="text-start">Project</label>
+                                                    </div>
+
+                                                    <select class="custom-select mb-3 p-2" formControlName="project">
+                                                        <option [value]="project.id"
+                                                            *ngFor="let project of projectList">
+                                                            {{project.projectName}}
+                                                        </option>
                                                     </select>
-                                                </div>
-                                                <button mat-raised-button color="primary"
-                                                    type="submit">Submit</button>
-                                            </form>
+                                                    <div>
+                                                        <div class="row mt-3">
+                                                            <label for="priority" class="text-start">Priority</label>
+                                                        </div>
+                                                        <select class="custom-select mb-3 p-2"
+                                                            formControlName="priority">
+                                                            <option value="">Select Priority</option>
+                                                            <option value="Low">Urgent</option>
+                                                            <option value="Normal">Normal</option>
+                                                            <option value="High">High</option>
+                                                        </select>
+                                                    </div>
+                                                    <button mat-raised-button color="primary"
+                                                        type="submit">Submit</button>
+                                                </form>
                                             </div>
 
                                         </ul>
@@ -418,40 +428,39 @@
                                             </ng-container>
                                             <div *ngIf="showInProgressTask" class="add-task-container mt-4">
                                                 <form action="" [formGroup]="createTask_Board"
-                                                (ngSubmit)="addTaskInProgress()">
-                                                <div class="d-flex">
-                                                    <span class="bi bi-x-lg me-2"
-                                                        (click)="toggleInProgressTask()"></span>
-                                                    <input type="text" class="w-100 newTaskBoard border-bottom"
-                                                        placeholder="Please type task name..."
-                                                        formControlName="taskName">
-                                                </div>
-                                                <div class="row mt-3">
-                                                    <label for="project" class="text-start">Project</label>
-                                                </div>
-
-                                                <select class="custom-select mb-3 p-2"
-                                                    formControlName="project">
-                                                    <option [value]="project.id"
-                                                        *ngFor="let project of projectList">
-                                                        {{project.projectName}}
-                                                    </option>
-                                                </select>
-                                                <div>
-                                                    <div class="row mt-3">
-                                                        <label for="priority" class="text-start">Priority</label>
+                                                    (ngSubmit)="addTaskInProgress()">
+                                                    <div class="d-flex">
+                                                        <span class="bi bi-x-lg me-2"
+                                                            (click)="toggleInProgressTask()"></span>
+                                                        <input type="text" class="w-100 newTaskBoard border-bottom"
+                                                            placeholder="Please type task name..."
+                                                            formControlName="taskName">
                                                     </div>
-                                                    <select class="custom-select mb-3 p-2"
-                                                        formControlName="priority">
-                                                        <option value="">Select Priority</option>
-                                                        <option value="Low">Urgent</option>
-                                                        <option value="Normal">Normal</option>
-                                                        <option value="High">High</option>
+                                                    <div class="row mt-3">
+                                                        <label for="project" class="text-start">Project</label>
+                                                    </div>
+
+                                                    <select class="custom-select mb-3 p-2" formControlName="project">
+                                                        <option [value]="project.id"
+                                                            *ngFor="let project of projectList">
+                                                            {{project.projectName}}
+                                                        </option>
                                                     </select>
-                                                </div>
-                                                <button mat-raised-button color="primary"
-                                                    type="submit">Submit</button>
-                                            </form>
+                                                    <div>
+                                                        <div class="row mt-3">
+                                                            <label for="priority" class="text-start">Priority</label>
+                                                        </div>
+                                                        <select class="custom-select mb-3 p-2"
+                                                            formControlName="priority">
+                                                            <option value="">Select Priority</option>
+                                                            <option value="Low">Urgent</option>
+                                                            <option value="Normal">Normal</option>
+                                                            <option value="High">High</option>
+                                                        </select>
+                                                    </div>
+                                                    <button mat-raised-button color="primary"
+                                                        type="submit">Submit</button>
+                                                </form>
                                             </div>
 
                                         </ul>
@@ -524,40 +533,39 @@
                                             </ng-container>
                                             <div *ngIf="showDoneTask" class="add-task-container mt-4">
                                                 <form action="" [formGroup]="createTask_Board"
-                                                (ngSubmit)="addTaskDone()">
-                                                <div class="d-flex">
-                                                    <span class="bi bi-x-lg me-2"
-                                                        (click)="toggleDoneTask()"></span>
-                                                    <input type="text" class="w-100 newTaskBoard border-bottom"
-                                                        placeholder="Please type task name..."
-                                                        formControlName="taskName">
-                                                </div>
-                                                <div class="row mt-3">
-                                                    <label for="project" class="text-start">Project</label>
-                                                </div>
-
-                                                <select class="custom-select mb-3 p-2"
-                                                    formControlName="project">
-                                                    <option [value]="project.id"
-                                                        *ngFor="let project of projectList">
-                                                        {{project.projectName}}
-                                                    </option>
-                                                </select>
-                                                <div>
-                                                    <div class="row mt-3">
-                                                        <label for="priority" class="text-start">Priority</label>
+                                                    (ngSubmit)="addTaskDone()">
+                                                    <div class="d-flex">
+                                                        <span class="bi bi-x-lg me-2" (click)="toggleDoneTask()"></span>
+                                                        <input type="text" class="w-100 newTaskBoard border-bottom"
+                                                            placeholder="Please type task name..."
+                                                            formControlName="taskName">
                                                     </div>
-                                                    <select class="custom-select mb-3 p-2"
-                                                        formControlName="priority">
-                                                        <option value="">Select Priority</option>
-                                                        <option value="Low">Urgent</option>
-                                                        <option value="Normal">Normal</option>
-                                                        <option value="High">High</option>
+                                                    <div class="row mt-3">
+                                                        <label for="project" class="text-start">Project</label>
+                                                    </div>
+
+                                                    <select class="custom-select mb-3 p-2" formControlName="project">
+                                                        <option [value]="project.id"
+                                                            *ngFor="let project of projectList">
+                                                            {{project.projectName}}
+                                                        </option>
                                                     </select>
-                                                </div>
-                                                <button mat-raised-button color="primary"
-                                                    type="submit">Submit</button>
-                                            </form>                                            </div>
+                                                    <div>
+                                                        <div class="row mt-3">
+                                                            <label for="priority" class="text-start">Priority</label>
+                                                        </div>
+                                                        <select class="custom-select mb-3 p-2"
+                                                            formControlName="priority">
+                                                            <option value="">Select Priority</option>
+                                                            <option value="Low">Urgent</option>
+                                                            <option value="Normal">Normal</option>
+                                                            <option value="High">High</option>
+                                                        </select>
+                                                    </div>
+                                                    <button mat-raised-button color="primary"
+                                                        type="submit">Submit</button>
+                                                </form>
+                                            </div>
 
                                         </ul>
                                         <button class="btn btn-outline-primary  mt-2" (click)="toggleDoneTask()">Add
@@ -632,8 +640,7 @@
                                                         <label for="project" class="text-start">Project</label>
                                                     </div>
 
-                                                    <select class="custom-select mb-3 p-2"
-                                                        formControlName="project">
+                                                    <select class="custom-select mb-3 p-2" formControlName="project">
                                                         <option [value]="project.id"
                                                             *ngFor="let project of projectList">
                                                             {{project.projectName}}
@@ -697,18 +704,20 @@
                         <div class="row d-flex justify-content-center">
                             <div class="">
                                 <ul type="none" class="d-flex ps-0">
-                                <li *ngFor="let members of taskUserList; let i = index" type="none" class="bg-light  ps-3 py-1 me-2  rounded-pill">
-                                    <label *ngIf="members.user!=null"  (click)="deleteuser(members)">
-                                        <span>{{members?.user?.firstName | titlecase}}</span>
-                                             <b class="bi bi-x bg-danger text-white ms-2 me-2" style="border-radius: 100%;"></b>
-                                    </label>
-                                </li>
-                            </ul>
+                                    <li *ngFor="let members of taskUserList; let i = index" type="none"
+                                        class="bg-light  ps-3 py-1 me-2  rounded-pill">
+                                        <label *ngIf="members.user!=null" (click)="deleteuser(members)">
+                                            <span>{{members?.user?.firstName | titlecase}}</span>
+                                            <b class="bi bi-x bg-danger text-white ms-2 me-2"
+                                                style="border-radius: 100%;"></b>
+                                        </label>
+                                    </li>
+                                </ul>
                                 <div class="mt-3">
                                     <mat-form-field appearance="outline" class="w-100">
                                         <mat-label>Select User</mat-label>
                                         <mat-select multiple formControlName="userName" [(ngModel)]="selectedUser">
-                                            <mat-option *ngFor="let assignee of allAssignee"  [value]="assignee.id">
+                                            <mat-option *ngFor="let assignee of allAssignee" [value]="assignee.id">
                                                 {{assignee.firstName | titlecase}} {{assignee.lastName |
                                                 titlecase}}</mat-option>
                                         </mat-select>
