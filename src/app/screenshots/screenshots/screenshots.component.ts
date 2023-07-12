@@ -121,7 +121,8 @@ roleName = localStorage.getItem('adminView')
     });
 
     const startDate = this.getMonday(new Date());
-    const endDate = new Date();
+    const  endDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + 6); // Add 6 days to get the following Sunday
+
 
     this.timeLogService.getCurrentWeekTotalTime(this.member.id, this.formatDate(startDate), this.formatDate(endDate)).subscribe({
       next: data => {

@@ -17,7 +17,7 @@ import { UtilsService } from 'src/app/_services/utils.service';
 export class AddManualTimeComponent implements OnInit {
   managers: {id:string, name:string }[]=[];
   projects:{id:string,projectName:string}[]=[];
-  tasks:{id:string,name:string}[]=[];
+  tasks:any=[];
   selectedProject:string;
   selectedTask:string;
   selectedManager:string;
@@ -100,17 +100,25 @@ export class AddManualTimeComponent implements OnInit {
     this.getUserTaskListByProject(projectId);
     this.getManualTimeApprovedRequests();
 }
+  // getUserTaskListByProject(projectId){
+   
+
+  //   this.tasks.length=0;
+  //   this.id=this.authenticationService.currentUserValue.id;
+  //   this.authenticationService.getUserTaskListByProject(this.id,projectId).pipe(first())
+  //   .subscribe((res:any) => {
+  //     res.data.forEach(t => {
+  //       this.tasks.push({id:t.id,name:t.name});
+  //     });
+  //       },
+  //       err => {
+  //       });
+  // }
   getUserTaskListByProject(projectId){
-    this.tasks.length=0;
-    this.id=this.authenticationService.currentUserValue.id;
-    this.authenticationService.getUserTaskListByProject(this.id,projectId).pipe(first())
-    .subscribe((res:any) => {
-      res.data.forEach(t => {
-        this.tasks.push({id:t.id,name:t.name});
-      });
-        },
-        err => {
-        });
+    this.authenticationService.getUserTaskListByProject(this.id, projectId).subscribe(response => {
+      this.tasks = response && response.data;
+      console.log(this.tasks)
+    });
   }
   onSubmit(){
     this.timeLogService.addManualTime(this.id,this.selectedTask,this.selectedProject, this.utilsService.convertToUTC( this.startDate), this.utilsService.convertToUTC(this.endDate),this.utilsService.convertToUTC(new Date())).pipe(first())
