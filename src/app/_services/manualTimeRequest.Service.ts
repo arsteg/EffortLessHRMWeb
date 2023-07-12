@@ -19,7 +19,8 @@ export class ManualTimeRequestService extends baseService{
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
       'Authorization': `Bearer ${this.getToken()}`
-    })
+    }),
+    withCredentials: true
   };
   
   public getManualTimeRequestsByUser(userId:string): any {
