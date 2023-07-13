@@ -41,4 +41,12 @@ export class AppWebsiteService {
     const httpOptions = this.getHttpOptions();
     return this.http.post<any>(`${environment.apiUrlDotNet}/settings/productivity/update/${id}`, appWebsite, httpOptions);
   }
+  getProductivityApps(userId): Observable<any> {
+    const httpOptions = this.getHttpOptions();
+    return this.http.get<any>(`${environment.apiUrlDotNet}/appWebsite/productivity/apps/${userId}`, httpOptions);
+  }
+  updateProductivityApps(userId,status:any): Observable<any> {
+    const httpOptions = this.getHttpOptions();
+    return this.http.put<any>(`${environment.apiUrlDotNet}/appWebsite/productivity/${userId}`,status, httpOptions);
+  }
 }

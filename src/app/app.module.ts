@@ -70,7 +70,7 @@ import { GenericSettingsComponent } from './settings/generic-settings/generic-se
 import { ViewLiveScreenComponent } from './viewLiveScreen/view-live-screen/view-live-screen.component';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { EmailTemplateComponent } from './email-template/email-template.component';
-
+import { ApprovalsModule } from './approvals/approvals.module';
 
 @NgModule({
   declarations: [
@@ -143,7 +143,8 @@ import { EmailTemplateComponent } from './email-template/email-template.componen
     MatSlideToggleModule,
     MatDialogModule,
     timesheetModule,
-    DashboardModule
+    DashboardModule,
+    ApprovalsModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

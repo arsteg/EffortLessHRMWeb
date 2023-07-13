@@ -19,8 +19,8 @@ export class HomeComponent implements OnInit {
   currentProfile: any;
   dropdownOpen: boolean = false;
   selectedOption: string;
-  options: string[] = ['You spent the 7 connects on the availability', 
-                       'The work week has ended, and your weekly summary is available for summary', 
+  options: string[] = ['You spent the 7 connects on the availability',
+                       'The work week has ended, and your weekly summary is available for summary',
                         'Your Proposal to job'];
   constructor(private router: Router, private auth: AuthenticationService) { }
 
@@ -62,13 +62,13 @@ export class HomeComponent implements OnInit {
       return this.currentProfile;
     })
   }
-  
- 
+
+
 
   toggleDropdown() {
     // this.dropdownOpen = !this.dropdownOpen;
     this.dropdownOpen=this.dropdownOpen==false ? true:false
-    
+
   }
   switchView(view: string) {
     this.adminView = view;
@@ -557,6 +557,18 @@ export const SideBarAdminMenu = [
     icon: 'fa  fa-id-badge',
     title: 'Role Permission',
     url: '/rolePermission'
+  },
+  {
+    id: '19',
+    icon: 'fa  fa-id-badge',
+    title: 'Approvals',
+    subMenu: [
+      {
+        id: '171',
+        title: 'Productivity Apps',
+        url: 'productivityAppsApproval'
+      }
+    ]
   }
 ];
 
@@ -586,16 +598,16 @@ export const SideBarUserMenu = [
     title: 'RealTime',
     icon: 'fa fa-clock',
     url: '/realtime'
-    
+
   },
-  
+
     {
       id: '17',
       title: 'Tasks',
       icon: 'fa fa-list',
       url: 'tasks'
     },
-  
+
   {
     id: '4',
     title: 'Alerts',

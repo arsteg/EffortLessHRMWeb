@@ -52,6 +52,7 @@ import { ViewLiveScreenComponent } from './viewLiveScreen/view-live-screen/view-
 import { UserDashboardComponent } from './dashboard/user-dashboard/user-dashboard.component';
 import { EmailTemplateComponent } from './email-template/email-template.component';
 import { SubtaskComponent } from './tasks/subtask/subtask.component';
+import { productivityAppsApprovalComponent } from './approvals/productivityAppsApproval/productivityAppsApproval.component';
 
 const routes: Routes = [
   // {path:'',component:LayoutComponentComponent, canActivate: [AuthGuard]},
@@ -109,7 +110,8 @@ const routes: Routes = [
       { path: 'genericSettings', component: GenericSettingsComponent },
       { path: 'viewLiveScreen', component: ViewLiveScreenComponent },
       { path: 'emailtemplate', component: EmailTemplateComponent},
-      { path: 'SubTask/:taskNumber', component: SubtaskComponent }
+      { path: 'SubTask/:taskNumber', component: SubtaskComponent },
+      { path: 'productivityAppsApproval', component: productivityAppsApprovalComponent },
     ]
   }
 ]
