@@ -45,8 +45,8 @@ export class TasksService {
     return this.http.put<Task>(`${this.apiUrl}/task/update/${id}`, task, this.httpOptions);
   }
 
-  addUserToTask(taskId: string, taskUsers: any): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/task/newtaskuser`, { taskId, taskUsers }, this.httpOptions);
+  addUserToTask(taskId: string, user: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/task/newtaskuser`, { taskId, user }, this.httpOptions);
   }
 
   getTasksByProjectId(projectId: string): Observable<any[]> {

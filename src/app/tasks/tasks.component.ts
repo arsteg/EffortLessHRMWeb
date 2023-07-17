@@ -80,7 +80,7 @@ export class TasksComponent implements OnInit {
   @Output() editTask: EventEmitter<string> = new EventEmitter<string>();
   members: any;
   member: any;
-
+  assignedUser: any;
 
   constructor(
     private tasksService: TasksService,
@@ -92,7 +92,8 @@ export class TasksComponent implements OnInit {
     private router: Router,
     private authService: AuthenticationService,
     private getTaskId: GetTaskService,
-    private timelog: TimeLogService
+    private timelog: TimeLogService,
+    private auth: AuthenticationService
   ) {
     this.addForm = this.fb.group({
       taskName: [''],
@@ -174,6 +175,7 @@ export class TasksComponent implements OnInit {
   }
   navigateToEditPage(task: any) {
     const taskId = task.id.toString();
+    console.log(taskId);
     this.getTaskId.setTaskId(taskId)
     if (task.parentTask) {
       this.router.navigate(['/SubTask', task.taskNumber]);
@@ -329,21 +331,23 @@ export class TasksComponent implements OnInit {
 
   addUserToTask(addUserForm) {
     let selectedUsers = this.addUserForm.get('userName').value;
-    let newUsers = selectedUsers.filter(id => !this.taskUserList.find(user => user.user.id === id));
-    let task_Users = newUsers.map(id => { return { user: id } });
+    let newUsers = selectedUsers.filter(
+      id => !this.taskUserList.find(user => user.user.id === id)
+    );
+    let task_Users = newUsers.map(id => id).join(',');
 
     if (task_Users.length > 0) {
-      this.tasksService.addUserToTask(this.selectedTask.id, task_Users).subscribe(result => {
-        this.taskUserList.push(...task_Users);
-        this.ngOnInit();
-        this.tost.success('New Member Added', 'Successfully Added!');
-      },
+      this.tasksService.addUserToTask(this.selectedTask.id, task_Users).subscribe(
+        result => {
+          this.taskUserList.push(...newUsers);
+          console.log(newUsers);
+          this.tost.success('New Member Added', 'Successfully Added!');
+        },
         err => {
           this.tost.error('Member Already Exists', 'ERROR!');
-        });
+        }
+      );
     }
-
-
   }
 
   getTaskUser(id) {
@@ -396,10 +400,17 @@ export class TasksComponent implements OnInit {
       );
     }
     else {
-      this.authService.getUserTaskListByProject(this.userId, this.projectId).subscribe(response => {
-        this.tasks = response && response.data
-      })
+      this.authService.getUserTaskListByProject(this.userId, this.projectId).subscribe(
+        (response: any) => {
+          this.tasks = response && response.data;
+
+        });
     }
+
+    (error: any) => {
+      console.log("Error!!!");
+    }
+
   }
 
 
@@ -424,7 +435,7 @@ export class TasksComponent implements OnInit {
 
         });
       }
-else this.listAllTasks();
+      else this.listAllTasks();
     }
   }
 
@@ -440,7 +451,9 @@ else this.listAllTasks();
       this.projectList = this.projectList.filter(project => project !== null);
     });
   }
+
   onMemberSelectionChange(user) {
+    this.projectId = null;
     this.getTaskByIds();
   }
   getCurrentUserTasks() {
@@ -632,6 +645,17 @@ else this.listAllTasks();
         this.projectList = response && response.data && response.data['projectList'];
         this.projectList = this.projectList.filter(project => project !== null);
       });
+    }
+  }
+  getColor(status: string): string {
+    if (status === 'In Progress') {
+      return 'blue';
+    } else if (status === 'ToDo') {
+      return '#b038fa';
+    } else if (status === 'Done') {
+      return 'green';
+    } else {
+      return 'grey';
     }
   }
 

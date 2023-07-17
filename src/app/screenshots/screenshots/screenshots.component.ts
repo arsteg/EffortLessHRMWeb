@@ -103,21 +103,20 @@ roleName = localStorage.getItem('adminView')
       }
     });
   }
-
+data:any = [];
   showScreenShots() {
-
     let currentUser = JSON.parse(localStorage.getItem('currentUser'));
     let formattedDate = this.formatDate(this.selectedDate);
     var result = this.timeLogService.getLogsWithImages(this.member.id, formattedDate);
-    result.subscribe({
-      next: data => {
+    result.subscribe(res =>{
+      this.data= res.data;
         this.screenshotRows = [];
         this.selectedTimelog = [];
-        this.populateScreenShots(data.data);
-      },
-      error: error => {
-        console.log('There was an error!', error);
-      }
+        this.populateScreenShots(this.data);
+      // ,
+      // error: error => {
+      //   console.log('There was an error!', error);
+      // }
     });
 
     const startDate = this.getMonday(new Date());
@@ -166,8 +165,8 @@ roleName = localStorage.getItem('adminView')
     this.screenshotRows[index]['isRowSelected'] =
       (this.screenshotRows[index].col1['isSelected'] || (!this.screenshotRows[index].col1['isSelected'] && !this.screenshotRows[index].col1.url)) &&
       (this.screenshotRows[index].col2['isSelected'] || (!this.screenshotRows[index].col2['isSelected'] && !this.screenshotRows[index].col2.url)) &&
-      (this.screenshotRows[index].col3['isSelected'] || (!this.screenshotRows[index].col3['isSelected'] && !this.screenshotRows[index].col3.url)) &&
-      (this.screenshotRows[index].col4['isSelected'] || (!this.screenshotRows[index].col4['isSelected'] && !this.screenshotRows[index].col4.url)) &&
+      (this.screenshotRows[index].col3['isSelected'] || (!this.screenshotRows[index].col3['isSelected'] && !this.screenshotRows[index].col3.url))  &&
+      (this.screenshotRows[index].col4['isSelected'] || (!this.screenshotRows[index].col4['isSelected'] && !this.screenshotRows[index].col4.url))  &&
       (this.screenshotRows[index].col5['isSelected'] || (!this.screenshotRows[index].col5['isSelected'] && !this.screenshotRows[index].col5.url)) &&
       (this.screenshotRows[index].col6['isSelected'] || (!this.screenshotRows[index].col6['isSelected'] && !this.screenshotRows[index].col6.url));
     if (event.target.checked) {
@@ -188,22 +187,22 @@ roleName = localStorage.getItem('adminView')
     this.screenshotRows[index].col5['isSelected'] = this.screenshotRows[index]['isRowSelected'];
     this.screenshotRows[index].col6['isSelected'] = this.screenshotRows[index]['isRowSelected'];
     if (this.screenshotRows[index]['isRowSelected']) {
-      if (this.screenshotRows[index].col1.url) {
+      if (this.screenshotRows[index].col1.url || this.screenshotRows[index].col1.isManualTime) {
         this.selectedTimelog.push(this.screenshotRows[index].col1._id);
       }
-      if (this.screenshotRows[index].col2.url) {
+      if (this.screenshotRows[index].col2.url  || this.screenshotRows[index].col2.isManualTime) {
         this.selectedTimelog.push(this.screenshotRows[index].col2._id);
       }
-      if (this.screenshotRows[index].col3.url) {
+      if (this.screenshotRows[index].col3.url  || this.screenshotRows[index].col3.isManualTime) {
         this.selectedTimelog.push(this.screenshotRows[index].col3._id);
       }
-      if (this.screenshotRows[index].col4.url) {
+      if (this.screenshotRows[index].col4.url  || this.screenshotRows[index].col4.isManualTime) {
         this.selectedTimelog.push(this.screenshotRows[index].col4._id);
       }
-      if (this.screenshotRows[index].col5.url) {
+      if (this.screenshotRows[index].col5.url  || this.screenshotRows[index].col5.isManualTime) {
         this.selectedTimelog.push(this.screenshotRows[index].col5._id);
       }
-      if (this.screenshotRows[index].col6.url) {
+      if (this.screenshotRows[index].col6.url  || this.screenshotRows[index].col6.isManualTime) {
         this.selectedTimelog.push(this.screenshotRows[index].col6._id);
       }
     }
@@ -360,7 +359,7 @@ roleName = localStorage.getItem('adminView')
         if (hh == r && mm <= (c * 10 + 9) && mm >= (c * 10)) {
           mm = this.padValue(mm - (mm % 10));
           if (timeLogs[i].isManualTime) {
-            result = new screenShotCell(`${hh}:${mm}`, '', 0, 0, 0, '', '', true, false, true);
+            result = new screenShotCell(`${hh}:${mm}`, '', 0, 0, 0, '', timeLogs[i]._id, true, false, true);
             console.log(result);
           } else {
             result = new screenShotCell(`${hh}:${mm}`, timeLogs[i].fileString, timeLogs[i].clicks, timeLogs[i].keysPressed, timeLogs[i].scrolls, timeLogs[i].url, timeLogs[i]._id, false, false, true);

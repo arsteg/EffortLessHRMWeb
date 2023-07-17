@@ -5,23 +5,8 @@
                 <div class="">
                     <div class="d-flex py-2 align-items-baseline">
                         <h1 class="me-2">Tasks: {{tasks?.length}}</h1>
-                      
 
-
-
-
-
-                        <mat-form-field appearance="outline" class="w-25 mx-1" style="height: 20px">
-                            <mat-label>Select Project</mat-label>
-                            <mat-select [(ngModel)]="projectId" (ngModelChange)="onProjectSelectionChange()">
-                                <mat-option (click)="getTaskByIds(); projectId = ''">ALL</mat-option>
-                                <mat-option *ngFor="let project of projectList" [value]="project?.id || null">
-                                    {{project.projectName}}
-                                </mat-option>
-                            </mat-select>
-                        </mat-form-field>
-
-
+                       
 
                         <mat-form-field appearance="outline" class="w-25 mx-1" style="height: 20px">
                             <mat-label>Select User</mat-label>
@@ -33,8 +18,19 @@
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="w-25 mx-1" style="height: 20px">
+                            <mat-label>Select Project</mat-label>
+                            <mat-select [(ngModel)]="projectId" (ngModelChange)="onProjectSelectionChange()">
+                                <mat-option (click)="getTaskByIds(); projectId = ''">ALL</mat-option>
+                                <mat-option *ngFor="let project of projectList" [value]="project?.id || null">
+                                    {{project.projectName}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        
                         <div class="dropdown mx-2">
-                            <button class="mt-2 dropdown-toggle" type="button" id="dropdownMenuButton1"
+                            <button class="mt-2 dropdown-toggle " type="button" id="dropdownMenuButton1"
                                 data-bs-toggle="dropdown" aria-expanded="false" mat-raised-button>
                                 <i class="fa fa-eye"></i> Status
                             </button>
@@ -42,8 +38,7 @@
                                 <div tabindex="-1" role="menu" aria-hidden="false" class="dropdown-menu show"
                                     data-popper-placement="bottom-start"
                                     style="position: absolute; inset: 0px auto auto 0px;">
-
-                                    <span tabindex="-1" class="dropdown-item-text status-filter"
+                                    <span tabindex="-1" class="dropdown-item-text status-filter border-left"
                                         *ngFor="let statusItem of statusList">
                                         <div class="form-check form-switch switch-left">
                                             <label class="form-check-label">
@@ -53,7 +48,6 @@
                                             </label>
                                         </div>
                                     </span>
-
                                 </div>
                             </div>
                         </div>
@@ -133,9 +127,14 @@
                                         <i
                                             [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                                     </th>
-                                    <th scope="col" [appSort]="tasks" data-order="desc" data-name="TaskUser">Members
+                                    <th scope="col" [appSort]="tasks" data-order="desc" data-name="TaskUser">Assignee
                                         &nbsp;
-                                        <i class="bi bi-arrow-up sort "></i>
+                                        <i class="bi bi-arrow-up sort"></i>
+                                    </th>
+                                    <th scope="col" [appSort]="tasks" data-order="desc" data-name="createdBy.firstName">
+                                        Reporter
+                                        &nbsp;
+                                        <i class="bi bi-arrow-up sort"></i>
                                     </th>
                                     <th scope="col" class="text-center">Action</th>
 
@@ -199,7 +198,7 @@
                                                     <div
                                                         class="align-self-left text-left align-items-left pointer d-flex position-relative">
                                                         <i class="fa fa-tasks pt-1"></i>
-                                                        <span>&nbsp;{{task.status}}</span>
+                                                        <span [ngStyle]="{'color': getColor(task.status)}">&nbsp;{{task.status}}</span>
                                                     </div>
                                                 </div>
                                             </span>
@@ -208,7 +207,7 @@
                                                 data-popper-placement="bottom-start"
                                                 style="position: absolute; inset: 0px auto auto 0px; transform: translate(0px, 28px);">
                                                 <button *ngFor="let s of statusList" type="button" tabindex="0"
-                                                    role="menuitem" class="dropdown-item"
+                                                    role="menuitem" class="dropdown-item border-left" 
                                                     (click)="updateTaskStatus(task,s.name)">
                                                     <span class="d-flex align-items-center">
                                                         <span>{{s.name}}</span>
@@ -240,15 +239,30 @@
                                     </td>
                                     <td>
                                         <div class="d-flex flex-nowrap users">
-                                            <i class="fa fa-user-plus addUser me-3 mt-1" data-bs-toggle="modal"
+                                            <!-- <i class="fa fa-user-plus addUser me-3 mt-1" data-bs-toggle="modal"
                                                 data-bs-target="#addUserModal" (click)="selectedTask=task"
-                                                (click)="getTaskUser(task.id)"></i>
+                                                (click)="getTaskUser(task.id)"></i> -->
                                             <span *ngFor="let users of task?.TaskUsers" class="letter text-light"
                                                 [tooltip]="(users?.user?.firstName| titlecase) + (' ') +( users?.user?.lastName | titlecase)"
                                                 [style.background-color]="commonservice.getRandomColor(users?.user?.firstName)">
                                                 {{users?.user?.firstName.charAt(0) | uppercase}}
                                             </span>
+                                            <p *ngIf="!tasks.TaskUsers">
+                                            <span *ngFor="let user of assignedUser" class="letter text-light"
+                                            [tooltip]="(user?.firstName| titlecase) + (' ') +( user?.lastName | titlecase)"
+                                            [style.background-color]="commonservice.getRandomColor(user?.firstName)">
+                                            {{user?.firstName.charAt(0) | uppercase}}
+                                        </span>
+                                        </p>
                                         </div>
+                                    </td>
+
+                                    <td>
+                                        <span class="letter text-light"
+                                            [tooltip]="(task?.createdBy?.firstName| titlecase) + (' ') +( task?.createdBy?.lastName | titlecase)"
+                                            [style.background-color]="commonservice.getRandomColor(task?.createdBy?.firstName)">
+                                            {{task?.createdBy?.firstName.charAt(0) | uppercase}}
+                                        </span>
                                     </td>
                                     <td class="text-center">
                                         <div class="dropdown-center">
@@ -716,7 +730,7 @@
                                 <div class="mt-3">
                                     <mat-form-field appearance="outline" class="w-100">
                                         <mat-label>Select User</mat-label>
-                                        <mat-select multiple formControlName="userName" [(ngModel)]="selectedUser">
+                                        <mat-select formControlName="userName" multiple [(ngModel)]="selectedUser">
                                             <mat-option *ngFor="let assignee of allAssignee" [value]="assignee.id">
                                                 {{assignee.firstName | titlecase}} {{assignee.lastName |
                                                 titlecase}}</mat-option>
@@ -724,12 +738,9 @@
 
                                     </mat-form-field>
                                 </div>
-
-
                             </div>
-                        </div>
+                        </div> 
                         <div class="d-flex justify-content-between m-3">
-
                             <div>
                                 <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
                                     type="button">Cancel</button>

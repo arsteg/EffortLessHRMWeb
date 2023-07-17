@@ -72,6 +72,8 @@
       </div>
       <div class="col-sm-2" *ngIf="timeLog?.col1?.isManualTime == true">
         <figure>
+          <input class="form-check-input" type="checkbox" value="" [(ngModel)]="timeLog.col1['isSelected']"
+          (change)="isRowSelected($event, timeLog.col1._id, index)">
           <img *ngIf="timeLog?.col1?.isManualTime" src="{{imageBasepath + manualTimeImg}}" />
           <figcaption class="figure-caption text-center"
             [style.background-color]="getActivityColor(timeLog?.col1?.GetActivityLevel)? '#f16516': ''">
@@ -106,6 +108,8 @@
       </div>
       <div class="col-sm-2" *ngIf="timeLog?.col2?.isManualTime == true">
         <figure>
+          <input class="form-check-input" type="checkbox" value="" [(ngModel)]="timeLog.col2['isSelected']"
+          (change)="isRowSelected($event, timeLog.col2._id, index)">
           <img *ngIf="timeLog?.col2?.isManualTime" src="{{imageBasepath + manualTimeImg}}" />
           <figcaption class="figure-caption text-center"
             [style.background-color]="getActivityColor(timeLog?.col2?.GetActivityLevel)? '#f16516': ''">
@@ -140,6 +144,8 @@
       </div>
       <div class="col-sm-2" *ngIf="timeLog?.col3?.isManualTime == true">
         <figure>
+          <input class="form-check-input" type="checkbox" value="" [(ngModel)]="timeLog.col3['isSelected']"
+              (change)="isRowSelected($event, timeLog.col3._id, index)">
           <img *ngIf="timeLog?.col3?.isManualTime" src="{{imageBasepath + manualTimeImg}}" />
           <figcaption class="figure-caption text-center"
             [style.background-color]="getActivityColor(timeLog?.col3?.GetActivityLevel)? '#f16516': ''">
@@ -174,6 +180,8 @@
       </div>
       <div class="col-sm-2" *ngIf="timeLog?.col4?.isManualTime == true">
         <figure>
+          <input class="form-check-input" type="checkbox" value="" [(ngModel)]="timeLog.col4['isSelected']"
+              (change)="isRowSelected($event, timeLog.col4._id, index)">
           <img *ngIf="timeLog?.col4?.isManualTime" src="{{imageBasepath + manualTimeImg}}" />
           <figcaption class="figure-caption text-center"
             [style.background-color]="getActivityColor(timeLog?.col4?.GetActivityLevel)? '#f16516': ''">
@@ -208,6 +216,8 @@
       </div>
       <div class="col-sm-2" *ngIf="timeLog?.col5?.isManualTime == true">
         <figure>
+          <input class="form-check-input" type="checkbox" value="" [(ngModel)]="timeLog.col5['isSelected']"
+              (change)="isRowSelected($event, timeLog.col5._id, index)">
           <img *ngIf="timeLog?.col5?.isManualTime" src="{{imageBasepath + manualTimeImg}}" />
           <figcaption class="figure-caption text-center"
             [style.background-color]="getActivityColor(timeLog?.col5?.GetActivityLevel)? '#f16516': ''">
@@ -242,6 +252,8 @@
       </div>
       <div class="col-sm-2" *ngIf="timeLog?.col6?.isManualTime == true">
         <figure>
+          <input class="form-check-input" type="checkbox" value="" [(ngModel)]="timeLog.col6['isSelected']"
+              (change)="isRowSelected($event, timeLog.col6._id, index)">
           <img *ngIf="timeLog?.col6?.isManualTime" src="{{imageBasepath + manualTimeImg}}" />
           <figcaption class="figure-caption text-center"
             [style.background-color]="getActivityColor(timeLog?.col6?.GetActivityLevel)? '#f16516': ''">

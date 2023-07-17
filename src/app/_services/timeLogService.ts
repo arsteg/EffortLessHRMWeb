@@ -81,7 +81,7 @@ export class TimeLogService{
   }
 
   deletetimelog(logs:any):Observable<timeLog>{
-    return this.http.delete<timeLog>(`${environment.apiUrlDotNet}/timelogs`, { headers: this.getAuthorizationHeader(), body: logs });
+    return this.http.delete<timeLog>(`${environment.apiUrlDotNet}/timelogs/deleteTimeLog`, { headers: this.getAuthorizationHeader(), body: logs });
   }
 
   addManualTime(user:string,task:string,projectId:string, startTime:string, endTime:string,date:string): any {

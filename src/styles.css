@@ -1,5 +1,6 @@
 @import "ag-grid-community/dist/styles/ag-grid.css";
 @import "ag-grid-community/dist/styles/ag-theme-alpine.css";
+@import '~quill/dist/quill.snow.css';
 
 
 .main-content {
@@ -479,4 +480,15 @@ select {
 }
 .time{
   font-weight: 500 !important;
+}
+.border-left{
+  border-left: 3px solid white;
+}
+.border-left:hover{
+  border-left: 3px solid blue;
+  cursor: pointer;
+  background: aliceblue;
+}
+.btn:focus {
+  box-shadow: none;
 }

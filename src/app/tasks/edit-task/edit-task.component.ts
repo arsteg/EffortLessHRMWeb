@@ -11,6 +11,7 @@ import { taskAttachments, TaskAttachment, attachments, Task, SubTask, updateSubT
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { NavigationExtras } from '@angular/router';
 import { GetTaskService } from 'src/app/_services/get-task.service';
+import { ProjectService } from 'src/app/_services/project.service';
 
 
 @Component({
@@ -64,7 +65,9 @@ export class EditTaskComponent implements OnInit {
   id: string;
   selectedSubtask: any;
   currentSubtaskId: string;
-  taskId: string
+  taskId: string;
+  projectUser: any;
+
 
   constructor(private fb: FormBuilder,
     private tasksService: TasksService,
@@ -73,7 +76,8 @@ export class EditTaskComponent implements OnInit {
     private router: Router,
     public commonService: CommonService,
     private taskIdService: GetTaskService,
-    private getTaskId: GetTaskService) {
+    private getTaskId: GetTaskService,
+    private projectService: ProjectService) {
 
     this.updateForm = this.fb.group({
       taskName: ['', Validators.required],
@@ -102,20 +106,9 @@ export class EditTaskComponent implements OnInit {
     });
 
   }
-
   ngOnInit(): void {
     this.getprojects();
-
-    this.taskId = this.taskIdService.getTaskId();
-    if (this.taskId) {
-      this.tasksService.getTaskById(this.taskId).subscribe(task => {
-        this.tasks = task;
-        this.task = task.data.newTaskUserList;
-        this.currentTaskProject = this.tasks.data.task;
-      });
-    }
-
-
+    this.getTask();
     this.firstLetter = this.commonService.firstletter;
     this.getTaskAttachments();
     this.tasksService.getSubTask(this.taskId).subscribe((response: any) => {
@@ -123,7 +116,28 @@ export class EditTaskComponent implements OnInit {
     })
     this.getTasks();
   }
-
+  getTask(){
+    this.taskId = this.taskIdService.getTaskId();
+    if (this.taskId) {
+      this.tasksService.getTaskById(this.taskId).subscribe(task => {
+        this.tasks = task;
+        this.task = task.data.newTaskUserList;
+        
+        this.currentTaskProject = this.tasks.data.task;
+        this.projectService.getprojectUser(this.currentTaskProject.project.id).subscribe((res: any) => {
+        this.projectUser = res && res.data && res.data['projectUserList']
+        });
+      });
+      
+    }
+  }
+  getProjectNameInitials(proejctName: string): string {
+    if (proejctName) {
+      const words = proejctName.split(' ');
+      return words.map(word => word.charAt(0).toUpperCase()).join('');
+    }
+    return '';
+  }
   getCurrentUserTasks() {
     this.tasksService.getTaskByUser(this.currentUser.id).subscribe(response => {
       this.taskList = response && response.data && response.data['taskList'];
@@ -148,8 +162,6 @@ export class EditTaskComponent implements OnInit {
     this.comments = this.comments.filter(comment => comment.id !== commentId);
   }
 
-
-
   listAllTasks() {
     this.tasksService.getAllTasks(this.skip, this.next).subscribe((response: any) => {
       this.taskList = response && response.data && response.data['taskList'];
@@ -166,22 +178,23 @@ export class EditTaskComponent implements OnInit {
     this.listAllTasks();
   }
 
-  onTaskChange(task: any) {
-    const taskId = task.id.toString();
+  onTaskChange(taskId: any) { 
     this.tasksService.getTaskById(taskId).subscribe((res: any) => {
-    this.getTaskId.setTaskId(taskId)
-   
-    if (task.parentTask) {
-      this.router.navigate(['/SubTask', task.taskNumber]);
-    } else {
-      this.router.navigate(['/edit-task', task.taskNumber]);
-    }
-    this.tasks = res.data.task;
-        this.getTaskAttachments();
-        this.ngOnInit();
-  });
-}
-
+      const task = res.data.task; 
+      this.getTaskId.setTaskId(task.id);
+  
+      if (task.parentTask) {
+        this.router.navigate(['/SubTask', task.taskNumber]);
+      } else {
+        this.router.navigate(['/edit-task', task.taskNumber]);
+      }
+  
+      this.tasks = task;
+      this.getTaskAttachments();
+      this.getTask();
+    });
+  }
+  
   updateTask() {
     const updateTask: updateTask = {
       taskName: this.updateForm.value.taskName,

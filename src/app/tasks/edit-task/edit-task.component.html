@@ -6,19 +6,29 @@
 
             <div class="row">
                 <div class="col-md-2">
-
-                    <ul type="none" class="taskList">
-                        <div class="topbar-search-container">
-                            <div class="position-relative w-100 ">
-                                <span class="fa fa-search search-task"></span>
-                                <input [(ngModel)]="searchText" class="task-page-search-bar  form-control"
-                                    placeholder="search for tasks" value="">
-                            </div>
+                    <div class="topbar-search-container">
+                        <div class="position-relative w-100 ">
+                            <span class="fa fa-search search-task"></span>
+                            <input [(ngModel)]="searchText" class="task-page-search-bar  form-control"
+                                placeholder="search for tasks" value="">
                         </div>
+                    </div>
+                    <ul type="none" class="taskList">
+
                         <li *ngFor="let task of taskList | search: searchText" class="tasks"
-                            [class.active-task]="task?.id === taskId"
-                            (click)="onTaskChange(task?.id)">
+                            [class.active-task]="task?.id === taskId" (click)="onTaskChange(task?.id)">
                             {{task?.taskName| titlecase}}
+                            <div class="d-flex" style="font-size: 12px; margin-top: -10px">
+                            <span *ngIf="task.project != null"> {{getProjectNameInitials(task.project.projectName)}} - </span> {{task.taskNumber}}
+                           <div class="ms-auto pe-2">
+                            <span *ngFor="let assignee of task.TaskUsers" class="letter text-light" style="font-size: 12px"
+                                [tooltip]="(assignee?.user?.firstName | titlecase) + ' ' + (assignee?.user?.lastName | titlecase)"
+                                [style.background-color]="commonService.getRandomColor(assignee?.user?.firstName?.charAt(0) | uppercase)">
+                                {{ assignee?.user?.firstName?.charAt(0) | uppercase }}
+                                {{ assignee?.user?.lastName?.charAt(0) | uppercase }}
+                            </span>
+                        </div>
+                    </div>
                         </li>
                         <li class="d-flex justify-content-evenly align-items-center border-top" *ngIf="view == 'admin'">
                             <span (click)="previousPagination()" class="bi bi-arrow-bar-left btn-lg btn-outline-primary"
@@ -112,12 +122,41 @@
                                             </div>
                                         </div>
                                         <div class="ms-2 mt-2">
-                                            <span class="letter text-light " *ngFor="let users of task;"
-                                                [tooltip]="(users?.user?.firstName | titlecase) + (' ') +(users?.user?.lastName | titlecase)"
-                                                [style.background-color]="commonService.getRandomColor(users?.user?.firstName?.charAt(0) | uppercase)">
-                                                {{users?.user?.firstName?.charAt(0) | uppercase}}
-                                                {{users?.user?.lastName?.charAt(0) | uppercase}}
-                                            </span>
+
+                                            <div class="user-container btn-group" *ngFor="let user of task;">
+                                                <span class="letter text-light"
+                                                    [tooltip]="(user?.user?.firstName | titlecase) + ' ' + (user?.user?.lastName | titlecase)"
+                                                    [style.background-color]="commonService.getRandomColor(user?.user?.firstName?.charAt(0) | uppercase)">
+                                                    {{ user?.user?.firstName?.charAt(0) | uppercase }}
+                                                    {{ user?.user?.lastName?.charAt(0) | uppercase }}
+                                                </span>
+                                                <button type="button"
+                                                    class="btn dropdown-toggle dropdown-toggle-no-caret"
+                                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <span class="text-muted ps-1">
+                                                        {{ user?.user?.firstName }} {{ user?.user?.lastName }}
+                                                    </span>
+                                                </button>
+
+
+                                                <ul class="dropdown-menu"
+                                                    style="width: 225px; transform: translate3d(-29px, 40px, 0px) !important;">
+                                                    <li *ngFor="let assignee of projectUser" class="border-left "
+                                                        [value]="assignee?.user?.id">
+                                                        <p *ngIf="assignee.user != null" class="ps-4 py-2">
+                                                            <span class="letter text-light"
+                                                                [tooltip]="(assignee?.user?.firstName | titlecase) + ' ' + (assignee?.user?.lastName | titlecase)"
+                                                                [style.background-color]="commonService.getRandomColor(assignee?.user?.firstName?.charAt(0) | uppercase)">
+                                                                {{ assignee?.user?.firstName?.charAt(0) | uppercase }}
+                                                                {{ assignee?.user?.lastName?.charAt(0) | uppercase }}
+                                                            </span> &nbsp;{{assignee?.user?.firstName | titlecase}}
+                                                            {{assignee?.user?.lastName | titlecase}}
+                                                        </p>
+                                                    </li>
+                                                </ul>
+
+                                            </div>
+
                                         </div>
                                         <div class="ms-3 mt-2">
                                             <i class="bi bi-three-dots-vertical actions" data-bs-toggle="dropdown"
@@ -472,7 +511,7 @@
                                                 class="add-task-action-circle action-circle-check d-flex justify-content-center align-items-center pointer border-none">
                                                 <span class="subtask-icon fa fa-check btn-outline-success "></span>
                                             </button>
-                                            <div  (click)="onresetForm()"
+                                            <div (click)="onresetForm()"
                                                 class="add-task-action-circle action-circle-close d-flex justify-content-center align-items-center pointer ">
                                                 <span class="subtask-icon fa fa-close btn-outline-danger "></span>
                                             </div>
@@ -519,7 +558,8 @@
         </div>
 
         <div *ngIf="tasks?.data?.task == null" class="text-center mt-5">
-            <a href="" [routerLink]="['/tasks']"> <button class="btn btn-outline-primary shadow"><span class=" bi bi-arrow-left ">
+            <a href="" [routerLink]="['/tasks']"> <button class="btn btn-outline-primary shadow"><span
+                        class=" bi bi-arrow-left ">
                         Back</span></button></a>
             <h2 class="mt-2">This Task No Longer To show !!!</h2>
         </div>

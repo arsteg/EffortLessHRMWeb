@@ -71,6 +71,7 @@ import { ViewLiveScreenComponent } from './viewLiveScreen/view-live-screen/view-
 import { DashboardModule } from './dashboard/dashboard.module';
 import { EmailTemplateComponent } from './email-template/email-template.component';
 import { ApprovalsModule } from './approvals/approvals.module';
+import { QuillModule } from 'ngx-quill';
 
 @NgModule({
   declarations: [
@@ -144,7 +145,8 @@ import { ApprovalsModule } from './approvals/approvals.module';
     MatDialogModule,
     timesheetModule,
     DashboardModule,
-    ApprovalsModule
+    ApprovalsModule,
+    QuillModule.forRoot()
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,
