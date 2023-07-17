@@ -529,18 +529,6 @@ export const SideBarAdminMenu = [
   },
   {
     id: '17',
-    title: 'Manual Time',
-    icon: 'bi bi-clock-history',
-    subMenu: [
-      {
-        id: '171',
-        title: 'Approve/Reject',
-        url: 'ManualTimeRequestApproval'
-      },
-    ]
-  },
-  {
-    id: '17',
     icon: 'fa fa-lock',
     title: 'Permissions',
     url: '/permissions'
@@ -564,9 +552,13 @@ export const SideBarAdminMenu = [
     title: 'Approvals',
     subMenu: [
       {
-        id: '171',
+        id: '191',
         title: 'Productivity Apps',
         url: 'productivityAppsApproval'
+      },
+      {id: '192',
+        title: 'Manual Time',
+        url: 'ManualTimeRequestApproval'
       }
     ]
   }
