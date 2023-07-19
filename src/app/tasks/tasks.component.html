@@ -5,19 +5,18 @@
                 <div class="">
                     <div class="d-flex py-2 align-items-baseline">
                         <h1 class="me-2">Tasks: {{tasks?.length}}</h1>
-
-                       
-
+    
                         <mat-form-field appearance="outline" class="w-25 mx-1" style="height: 20px">
                             <mat-label>Select User</mat-label>
                             <mat-select [(ngModel)]="userId">
-                                <mat-option *ngFor="let member of members" [value]="member.id"
-                                    (click)="onMemberSelectionChange(userId)"
-                                    [selected]="selectedUser?.includes(member?.id)">
-                                    {{member.name | titlecase}}
-                                </mat-option>
+                              <mat-option *ngFor="let member of members" [value]="member.id" class="border-left user-filter"
+                                          (click)="onMemberSelectionChange(userId)"
+                                          [selected]="selectedUser?.includes(member?.id)">
+                                {{ member.name | titlecase }}
+                              </mat-option>
                             </mat-select>
-                        </mat-form-field>
+                          </mat-form-field>
+                          
 
                         <mat-form-field appearance="outline" class="w-25 mx-1" style="height: 20px">
                             <mat-label>Select Project</mat-label>
@@ -28,7 +27,7 @@
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>
-                        
+
                         <div class="dropdown mx-2">
                             <button class="mt-2 dropdown-toggle " type="button" id="dropdownMenuButton1"
                                 data-bs-toggle="dropdown" aria-expanded="false" mat-raised-button>
@@ -78,15 +77,30 @@
                         </div>
                     </div>
                     <hr>
-                    <ng-container *ngIf="view === 'admin'">
+                    
+                    <ng-container>
                         <div class="d-flex justify-content-end align-items-center" style="margin-bottom: -30px;">
-                            <span (click)="previousPagination()" class="bi bi-arrow-bar-left btn-lg btn-outline-primary"
-                                title="Previous Page"></span>
-                            <span class="text-muted">Page</span>
-                            <span (click)="nextPagination()" class="bi bi-arrow-bar-right btn-lg btn-outline-primary"
-                                title="Next Page"></span>
+                           Items per page
+                            <select style="width: 80px;" class="form-select form-select-sm mx-2" [(ngModel)]="recordsPerPage" (ngModelChange)="updateRecordsPerPage()">
+                                <option *ngFor="let option of recordsPerPageOptions" [value]="option">{{ option }}</option>
+                              </select>
+                          
+                            <span class="ml-2">{{ currentPage }} - {{ getTotalPages() }} of {{ totalRecords?.taskCount }}</span>
+                           <!-- previous page -->
+                           <span (click)="firstPagePagination()" class="bi bi-chevron-bar-left btn-lg btn-outline-primary"
+                            title="Previous Page" [class.disabled]="skip === '0' || currentPage === 1"></span>
+                            
+                            <span (click)="previousPagination()" class="bi bi-chevron-left btn-lg btn-outline-primary"
+                            title="Previous Page" [class.disabled]="skip === '0' || currentPage === 1"></span>
+                            <!-- next page -->
+                            <span (click)="nextPagination()" class="bi bi-chevron-right btn-lg btn-outline-primary"
+                            title="Next Page" [class.disabled]="currentPage === getTotalPages()"></span>
+                           
+                            <span (click)="lastPagePagination()" class="bi bi-chevron-bar-right btn-lg btn-outline-primary"
+                            title="Next Page" [class.disabled]="currentPage === getTotalPages()"></span>
                         </div>
-                    </ng-container>
+                      </ng-container>
+                      
                     <div *ngIf="isListView">
                         <table class="table  mt-4">
                             <thead>
@@ -198,7 +212,8 @@
                                                     <div
                                                         class="align-self-left text-left align-items-left pointer d-flex position-relative">
                                                         <i class="fa fa-tasks pt-1"></i>
-                                                        <span [ngStyle]="{'color': getColor(task.status)}">&nbsp;{{task.status}}</span>
+                                                        <span
+                                                            [ngStyle]="{'color': getColor(task.status)}">&nbsp;{{task.status}}</span>
                                                     </div>
                                                 </div>
                                             </span>
@@ -207,7 +222,7 @@
                                                 data-popper-placement="bottom-start"
                                                 style="position: absolute; inset: 0px auto auto 0px; transform: translate(0px, 28px);">
                                                 <button *ngFor="let s of statusList" type="button" tabindex="0"
-                                                    role="menuitem" class="dropdown-item border-left" 
+                                                    role="menuitem" class="dropdown-item border-left"
                                                     (click)="updateTaskStatus(task,s.name)">
                                                     <span class="d-flex align-items-center">
                                                         <span>{{s.name}}</span>
@@ -239,21 +254,21 @@
                                     </td>
                                     <td>
                                         <div class="d-flex flex-nowrap users">
-                                            <!-- <i class="fa fa-user-plus addUser me-3 mt-1" data-bs-toggle="modal"
-                                                data-bs-target="#addUserModal" (click)="selectedTask=task"
-                                                (click)="getTaskUser(task.id)"></i> -->
-                                            <span *ngFor="let users of task?.TaskUsers" class="letter text-light"
+                                            <p *ngFor="let users of task?.TaskUsers">
+                                            <span  class="letter text-light"
                                                 [tooltip]="(users?.user?.firstName| titlecase) + (' ') +( users?.user?.lastName | titlecase)"
                                                 [style.background-color]="commonservice.getRandomColor(users?.user?.firstName)">
                                                 {{users?.user?.firstName.charAt(0) | uppercase}}
                                             </span>
-                                            <p *ngIf="!tasks.TaskUsers">
-                                            <span *ngFor="let user of assignedUser" class="letter text-light"
-                                            [tooltip]="(user?.firstName| titlecase) + (' ') +( user?.lastName | titlecase)"
-                                            [style.background-color]="commonservice.getRandomColor(user?.firstName)">
-                                            {{user?.firstName.charAt(0) | uppercase}}
-                                        </span>
+                                            <span class="ms-2">{{users?.user?.firstName | titlecase}} {{users?.user?.lastName | titlecase}}</span>
                                         </p>
+                                            <!-- <p *ngIf="!tasks.TaskUsers">
+                                                <span *ngFor="let user of assignedUser" class="letter text-light"
+                                                    [tooltip]="(user?.firstName| titlecase) + (' ') +( user?.lastName | titlecase)"
+                                                    [style.background-color]="commonservice.getRandomColor(user?.firstName)">
+                                                    {{user?.firstName.charAt(0) | uppercase}}
+                                                </span>
+                                            </p> -->
                                         </div>
                                     </td>
 
@@ -263,6 +278,7 @@
                                             [style.background-color]="commonservice.getRandomColor(task?.createdBy?.firstName)">
                                             {{task?.createdBy?.firstName.charAt(0) | uppercase}}
                                         </span>
+                                        <span class="ms-2">{{task?.createdBy?.firstName| titlecase}} {{task?.createdBy?.lastName| titlecase}}</span>
                                     </td>
                                     <td class="text-center">
                                         <div class="dropdown-center">
@@ -739,7 +755,7 @@
                                     </mat-form-field>
                                 </div>
                             </div>
-                        </div> 
+                        </div>
                         <div class="d-flex justify-content-between m-3">
                             <div>
                                 <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
@@ -817,7 +833,8 @@
                                     <label for="project" class="text-start">Project</label>
                                 </div>
 
-                                <select class="custom-select mb-3 p-2" formControlName="project">
+                                <select class="custom-select mb-3 p-2" formControlName="project" (change)="getUsersByProject()">
+                                    <option selected>-- ALL --</option>
                                     <option [value]="project.id" *ngFor="let project of projectList">
                                         {{project?.projectName}}</option>
                                 </select>
@@ -851,45 +868,53 @@
                                         Description is required!
                                     </div>
                                 </div>
-
-                                <div class="row mt-3">
-                                    <label for="startDate" class="text-start">Start Date</label>
-                                </div>
                                 <div class="row">
-                                    <div class="col-12 form-group mb-3">
-                                        <input placeholder="YYYY-MM-DD" class="form-control"
-                                            #datepickerYMD="bsDatepicker" bsDatepicker
-                                            [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="startDate"
-                                            ngModel required>
+                                    <div class="col-6">
+                                        <div class="row mt-3">
+                                            <label for="startDate" class="text-start">Start Date</label>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12 form-group mb-3">
+                                                <input placeholder="YYYY-MM-DD" class="form-control"
+                                                    #datepickerYMD="bsDatepicker" bsDatepicker
+                                                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
+                                                    formControlName="startDate" required>
+                                            </div>
+                                        </div>
+                                        <div *ngIf="addForm.controls['startDate'].invalid && addForm.controls['startDate'].touched"
+                                            class="alert alert-danger error">
+                                            <div *ngIf="addForm.controls['startDate'].errors['required']">
+                                                Start Date is required.
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div *ngIf="addForm.controls['startDate'].invalid && addForm.controls['startDate'].touched"
-                                    class="alert alert-danger error">
-                                    <div *ngIf="addForm.controls['startDate'].errors['required']">
-                                        Start Date is required.
+
+                                    <div class="col-6">
+                                        <div class="row mt-3">
+                                            <label for="endDate" class="text-start">End Date</label>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12 form-group mb-3">
+                                                <input placeholder="YYYY-MM-DD" class="form-control"
+                                                    #datepickerYMD="bsDatepicker" bsDatepicker
+                                                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
+                                                    formControlName="endDate" required>
+                                            </div>
+                                        </div>
+                                        <div *ngIf="addForm.controls['endDate'].invalid && addForm.controls['endDate'].touched"
+                                            class="alert alert-danger error">
+                                            <div *ngIf="addForm.controls['endDate'].errors['required']">
+                                                End Date is required.
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="row mt-3">
-                                    <label for="endDate" class="text-start">End Date</label>
-                                </div>
-                                <div class="row">
-                                    <div class="col-12 form-group mb-3">
-                                        <input placeholder="YYYY-MM-DD" class="form-control"
-                                            #datepickerYMD="bsDatepicker" bsDatepicker
-                                            [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="endDate"
-                                            required>
-                                    </div>
-                                </div>
-                                <div *ngIf="addForm.controls['endDate'].invalid && addForm.controls['endDate'].touched"
-                                    class="alert alert-danger error">
-                                    <div *ngIf="addForm.controls['endDate'].errors['required']">
-                                        End Date is required.
-                                    </div>
-                                </div>
 
-                                <div class="d-flex justify-content-between">
-                                    <div>
+
+
+                                <div class="d-flex row">
+                                    <div class="col-6">
                                         <div class="row mt-3">
                                             <label for="priority" class="text-start">Priority</label>
                                         </div>
@@ -909,7 +934,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="attachment mt-4 d-flex flex-wrap"><label
+                                    <div class="attachment mt-4 d-flex flex-wrap col-6"><label
                                             class="sc-bczRLJ kEeNDb  "><input style="display: none;"
                                                 accept=".jpeg,.mp4,.glb,.svg,.blend,.jpg,.png,.gif,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.odt,.fodt,.ods,.fods,.odp,.fodp,.odg,.fodg,.odf,.csv,.html,.css,.txt,.zip"
                                                 type="file" multiple (change)="onFileSelect($event)">
@@ -928,12 +953,32 @@
                                     </div>
 
                                 </div>
-                                <div class="row mt-3">
-                                    <label for="estimate" class="text-start">Estimate (Hours)</label>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="row mt-3">
+                                            <label for="estimate" class="text-start">Estimate (Hours)</label>
+                                        </div>
+                                        <input type="number" name="estimate" id="estimate" class="form-control input  pt-0"
+                                            formControlName="estimate">
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="row mt-3">
+                                            <label for="project" class="text-start">Add User</label>
+                                        </div>
+        
+                                        <select class="custom-select mb-3 p-2" formControlName="TaskUser">
+                                            <option [value]="user?.user?.id" *ngFor="let user of usersByProject">
+                                                {{user?.user?.firstName | titlecase}}  {{user?.user?.lastName | titlecase}}</option>
+                                        </select>
+                                        <div *ngIf="addForm.controls['TaskUser'].invalid && addForm.controls['TaskUser'].touched"
+                                            class="alert alert-danger error">
+                                            <div *ngIf="addForm.controls['TaskUser'].errors['required']">
+                                                Please Select User!
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <input type="number" name="estimate" id="estimate" class="form-control input  pt-0"
-                                    formControlName="estimate">
-
+                               
                                 <div class="row mt-3">
                                     <label for="comment" class="text-start">Comments</label>
                                 </div>

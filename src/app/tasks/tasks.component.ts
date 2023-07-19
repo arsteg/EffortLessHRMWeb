@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 import { AuthenticationService } from '../_services/authentication.service';
 import { TimeLogService } from '../_services/timeLogService';
 import { GetTaskService } from '../_services/get-task.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-tasks',
@@ -22,7 +23,7 @@ import { GetTaskService } from '../_services/get-task.service';
 export class TasksComponent implements OnInit {
   searchText = '';
   p: number = 1;
-  projectList: project[] = [];
+  projectList: any;
   taskList: any;
   tasks: any;
   date = new Date();
@@ -75,13 +76,18 @@ export class TasksComponent implements OnInit {
   view = localStorage.getItem('adminView');
   admin: string = 'admin';
   comments: any[];
-  skip = '0';
+  skip : string= '0';
   next = '10';
   @Output() editTask: EventEmitter<string> = new EventEmitter<string>();
   members: any;
   member: any;
   assignedUser: any;
-
+  usersByProject: any;
+  recordsPerPageOptions: number[] = [5, 10, 25, 50, 100]; // Add the available options for records per page
+  recordsPerPage: number = 10; // Default records per page
+  totalRecords: any; // Total number of records
+  currentPage: number = 1;
+  index: number;
   constructor(
     private tasksService: TasksService,
     private fb: FormBuilder,
@@ -98,8 +104,8 @@ export class TasksComponent implements OnInit {
     this.addForm = this.fb.group({
       taskName: [''],
       title: [''],
-      startDate: ['', Validators.required],
-      endDate: ['', Validators.required],
+      startDate: [moment().format('YYYY-MM-DD'), Validators.required],
+      endDate: [moment().format('YYYY-MM-DD'), Validators.required],
       description: ['', Validators.required],
       estimate: [0],
       comment: ['Task Created', Validators.required],
@@ -148,10 +154,13 @@ export class TasksComponent implements OnInit {
     this.getTasks();
     this.getprojects();
     this.populateUsers();
+    this.userId = '';
+    this.listAllTasks();
   }
   populateUsers() {
     this.members = [];
-    this.members.push({ id: this.currentUser.id, name: "Me", email: this.currentUser.email });
+    this.members.push({ id: '', name: 'ALL Users', email: '' },
+      { id: this.currentUser.id, name: "Me", email: this.currentUser.email });
     this.member = this.currentUser;
     this.timelog.getTeamMembers(this.member.id).subscribe({
       next: (response: { data: any; }) => {
@@ -173,6 +182,8 @@ export class TasksComponent implements OnInit {
       }
     });
   }
+
+
   navigateToEditPage(task: any) {
     const taskId = task.id.toString();
     console.log(taskId);
@@ -192,26 +203,119 @@ export class TasksComponent implements OnInit {
 
   listAllTasks() {
     this.tasksService.getAllTasks(this.skip, this.next).subscribe((response: any) => {
+      this.totalRecords = response && response.data
       this.tasks = response && response.data && response.data['taskList'];
+      this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
+      console.log(this.currentPage)
     });
+
+  }
+
+  paginateTasks() {
+    if ((!this.userId || !this.currentUser.id) && !this.projectId) {
+     
+      this.listAllTasks();
+    }
+
+    if (this.userId) {
+      
+      this.getTaskByIds();
+    }
+
+    if (this.projectId) {
+      
+      this.getTasksByProject();
+    }
+
   }
   nextPagination() {
+    if (!this.isNextButtonDisabled()) {
     const newSkip = (parseInt(this.skip) + parseInt(this.next)).toString();
     this.skip = newSkip;
-    this.listAllTasks();
+    this.paginateTasks();
+    }
   }
 
   previousPagination() {
+    if (!this.isPreviousButtonDisabled()) {
     const newSkip = (parseInt(this.skip) >= parseInt(this.next)) ? (parseInt(this.skip) - parseInt(this.next)).toString() : '0';
     this.skip = newSkip;
-    this.listAllTasks();
+    this.paginateTasks();
+    }
+  }
+  firstPagePagination(){
+    
+  }
+  lastPagePagination(){
+
+  }
+  isNextButtonDisabled(): boolean {
+    return this.currentPage === this.getTotalPages();
+  }
+  
+  isPreviousButtonDisabled(): boolean {
+    return this.skip === '0' || this.currentPage === 1;
+  }
+  updateRecordsPerPage() {
+    this.currentPage = 1;
+    this.skip = '0';
+    this.next = this.recordsPerPage.toString();
+    this.paginateTasks();
+  }
+  getTotalPages(): number {
+    if (this.totalRecords && this.totalRecords.taskCount) {
+      const totalCount = this.totalRecords.taskCount;
+      return Math.ceil(totalCount / this.recordsPerPage);
+    }
+    return 0;
+  }
+
+  getTasksByProject() {
+    const selectedUserId = this.userId && this.currentUser.id;
+    if (!selectedUserId) {
+      this.tasksService.getTasksByProjectId(this.projectId, this.skip, this.next).subscribe(
+        (response: any) => {
+          if (response && response.data && Array.isArray(response.data.taskList)) {
+            this.totalRecords = response && response.data
+            this.tasks = response.data.taskList;
+          }
+          this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
+          console.log(this.currentPage)
+        },
+        (error: any) => {
+          console.log("Error!!!")
+        }
+      );
+    }
+    else {
+      this.authService.getUserTaskListByProject(this.userId, this.projectId).subscribe(
+        (response: any) => {
+          this.tasks = response && response.data;
+
+        });
+    }
+
+    (error: any) => {
+      console.log("Error!!!");
+    }
+
+  }
+
+  getUsersByProject() {
+    const selectedProject = this.addForm.value.project;
+
+    this.projectService.getprojectUser(selectedProject).subscribe((res: any) => {
+      this.usersByProject = res && res.data && res.data['projectUserList'];
+      console.log(this.usersByProject)
+
+      this.usersByProject = this.usersByProject['index']?.filter(user => user !== null);
+      console.log(this.usersByProject)
+    });
+    // const user = this.addForm.value.TaskUser;
   }
 
 
-
   onSubmit() {
-    // Create new task object
-    const id: '' = this.currentUser.id
     const newTask: Task = {
       _id: '',
       taskName: this.addForm.value.title,
@@ -223,7 +327,7 @@ export class TasksComponent implements OnInit {
       comment: this.addForm.value.comment,
       isSubTask: false,
       priority: this.addForm.value.priority,
-      taskUsers: this.view === 'admin' ? [] : [id],
+      user: this.addForm.value.TaskUser,
       status: "ToDo",
       project: this.addForm.value.project,
       taskAttachments: []
@@ -235,9 +339,19 @@ export class TasksComponent implements OnInit {
 
     this.tasksService.addTask(newTask).subscribe(response => {
       this.task = response;
-      this.ngOnInit();
-      const newTask = this.task.data.newTask;
 
+      const newTask = this.task.data.newTaskUserList;
+      this.tasks.push(newTask);
+      if (this.userId && this.projectId) {
+        this.getTasksByProject()
+      }
+      else {
+        this.getTaskByIds();
+      }
+      this.addForm.reset({
+        startDate: moment().format('YYYY-MM-DD'),
+        endDate: moment().format('YYYY-MM-DD')
+      });
       if (taskAttachments) {
         const attachments: attachments[] = [];
 
@@ -268,7 +382,7 @@ export class TasksComponent implements OnInit {
 
               this.tasksService.addTaskAttachment(taskAttachment).subscribe(
                 (response) => {
-                  this.ngOnInit();
+                  newTask.taskAttachments = attachments;
                 },
                 (error) => {
                   console.error('Error creating task attachment:', error);
@@ -385,33 +499,7 @@ export class TasksComponent implements OnInit {
       })
   }
 
-  getTasksByProject() {
-    const selectedUserId = this.userId && this.currentUser.id;
-    if (!selectedUserId) {
-      this.tasksService.getTasksByProjectId(this.projectId).subscribe(
-        (response: any) => {
-          if (response && response.data && Array.isArray(response.data.taskList)) {
-            this.tasks = response.data.taskList;
-          }
-        },
-        (error: any) => {
-          console.log("Error!!!")
-        }
-      );
-    }
-    else {
-      this.authService.getUserTaskListByProject(this.userId, this.projectId).subscribe(
-        (response: any) => {
-          this.tasks = response && response.data;
 
-        });
-    }
-
-    (error: any) => {
-      console.log("Error!!!");
-    }
-
-  }
 
 
   onProjectSelectionChange() {
@@ -429,20 +517,24 @@ export class TasksComponent implements OnInit {
           this.projectList = response && response.data && response.data['projectList'];
           this.projectList = this.projectList.filter(project => project !== null);
         });
-        this.tasksService.getTaskByUser(this.currentUser.id).subscribe(response => {
+        this.tasksService.getTaskByUser(this.currentUser.id, this.skip, this.next).subscribe(response => {
           this.tasks = response && response.data && response.data['taskList'];
+          this.totalRecords = response && response.data
+          this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
           this.tasks = this.tasks.filter(task => task !== null);
 
         });
       }
-      else this.listAllTasks();
+      else this.getTasks();
     }
   }
 
 
   getTaskByIds() {
-    this.tasksService.getTaskByUser(this.userId).subscribe(response => {
+    this.tasksService.getTaskByUser(this.userId, this.skip, this.next).subscribe(response => {
       this.tasks = response && response.data && response.data['taskList'];
+      this.totalRecords = response && response.data
+      this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
       this.tasks = this.tasks.filter(task => task !== null);
 
     });
@@ -454,18 +546,16 @@ export class TasksComponent implements OnInit {
 
   onMemberSelectionChange(user) {
     this.projectId = null;
-    this.getTaskByIds();
+    this.userId = user;
+    if (!this.userId || this.userId === '') {
+      console.log(this.userId, 'User Id')
+      this.listAllTasks();
+    }
+    else {
+      this.getTaskByIds();
+    }
+
   }
-  getCurrentUserTasks() {
-    this.tasksService.getTaskByUser(this.currentUser.id).subscribe(response => {
-      this.tasks = response && response.data && response.data['taskList'];
-      this.tasks = this.tasks.filter(task => task !== null);
-
-    })
-  }
-
-
-
   getTaskPriorityUrl(currentPriority) {
     const priority = this.priorityList.find(x => x.name.toLowerCase() === currentPriority?.toLowerCase());
     return priority?.url ? priority?.url : this.unKnownImage;
@@ -626,12 +716,8 @@ export class TasksComponent implements OnInit {
   }
 
   getTasks() {
-    this.view = localStorage.getItem('adminView');
-    if (this.view === 'admin') {
+    if (!this.userId && !this.currentUser.id) {
       this.listAllTasks();
-    } else {
-      this.getCurrentUserTasks()
-
     }
   }
 

@@ -57,8 +57,6 @@ export class HomeComponent implements OnInit {
     let currentUser = JSON.parse(localStorage.getItem('currentUser'))
     this.auth.GetMe(currentUser.id).subscribe((response: any) => {
       this.currentProfile = response && response.data.users;
-      localStorage.setItem('firstName', this.currentProfile.firstName);
-      localStorage.setItem('lastName', this.currentProfile.lastName)
       return this.currentProfile;
     })
   }
@@ -87,7 +85,11 @@ export class HomeComponent implements OnInit {
   onLogout() {
     localStorage.removeItem('roleName');
     localStorage.removeItem('jwtToken');
-    localStorage.removeItem('user.email')
+    localStorage.removeItem('user.email');
+    localStorage.removeItem('adminView');
+    localStorage.removeItem('roleId');
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('rememberMe')
     this.router.navigateByUrl('/main')
   }
 

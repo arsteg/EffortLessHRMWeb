@@ -23,7 +23,6 @@ export class RealtimeComponent implements OnInit {
   color: string;
   selectedProject: any = [];
   selectedTask: any = [];
-  roleId = localStorage.getItem('roleId');
   taskList: any = [];
   projectList: any;
   searchText = '';

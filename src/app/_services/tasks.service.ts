@@ -49,8 +49,8 @@ export class TasksService {
     return this.http.post<any>(`${this.apiUrl}/task/newtaskuser`, { taskId, user }, this.httpOptions);
   }
 
-  getTasksByProjectId(projectId: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/task/tasklistbyproject/${projectId}`, this.httpOptions);
+  getTasksByProjectId(projectId: string, skip:string, next: string): Observable<any[]> {
+    return this.http.post<any[]>(`${this.apiUrl}/task/tasklistbyproject/${projectId}`, {skip, next}, this.httpOptions);
   }
 
   deleteTaskUser(id: string): Observable<void> {
@@ -76,8 +76,8 @@ export class TasksService {
     return this.http.put<Task>(`${environment.apiUrlDotNet}/task/update/${id}`, task, this.httpOptions);
   }
 
-  getTaskByUser(userId): Observable<any> {
-    return this.http.post<any>(`${environment.apiUrlDotNet}/task/tasklistbyuser`, { userId }, this.httpOptions);
+  getTaskByUser(userId: string, skip: string, next: string): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrlDotNet}/task/tasklistbyuser`, { userId , skip, next},  this.httpOptions);
   }
   updateTag(tag: Tag): Observable<Tag> {
     return this.http.post<Tag>(`${environment.apiUrlDotNet}/task/tag/update`, tag, this.httpOptions);

@@ -92,7 +92,7 @@ export class RequestManualTimeComponent implements OnInit {
         err => {
         });
 
-        this.taskService.getTaskByUser(this.id).pipe(first())
+        this.taskService.getTaskByUser(this.id, '', '').pipe(first())
     .subscribe((res:any) => {
       res.data.taskList.forEach(task => {
         if(task)

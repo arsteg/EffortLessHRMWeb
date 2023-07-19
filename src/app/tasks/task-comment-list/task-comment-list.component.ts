@@ -23,8 +23,7 @@ export class TaskCommentListComponent implements OnInit {
   newComment: '';
   commentsArray: taskComment[] = [];
   author = JSON.parse(localStorage.getItem('currentUser'));
-  firstName = localStorage.getItem('firstName');
-  lastName = localStorage.getItem('lastName');
+ 
   fileProperties: any = {};
   taskAttachment: any = [];
   public selectedAttachment: any;
@@ -34,6 +33,7 @@ export class TaskCommentListComponent implements OnInit {
   newCommentId: string = '';
   tasks: any = [];
   id: any;
+userName: any;
 
   constructor(private taskService: TasksService,
     private authentication: AuthenticationService,
@@ -58,7 +58,13 @@ export class TaskCommentListComponent implements OnInit {
     });
     this.getTaskAttachments();
   }
-
+  getMe(){
+  let currentUser = JSON.parse(localStorage.getItem('currentUser'))
+  this.authentication.GetMe(currentUser.id).subscribe((response: any) => {
+    this.userName = response && response.data.users;
+    return this.userName;
+  })
+}
   updateComment(index: number, text: any) {
     const comment = this.comments[index];
     comment.content = text;
@@ -83,8 +89,8 @@ export class TaskCommentListComponent implements OnInit {
       task: this.tasks?.task?.id,
       commentedAt: new Date,
       status: '',
-      authorfirstName: this.firstName,
-      authorlastName: this.lastName,
+      authorfirstName: this.userName.firstName,
+      authorlastName: this.userName.lastName,
       taskAttachments: []
     };
 

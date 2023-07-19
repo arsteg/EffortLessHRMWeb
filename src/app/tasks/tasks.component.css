@@ -98,3 +98,10 @@
 .dropdown-menu li{
   cursor: pointer;
 }
+
+
+@media (min-width: 576px){
+.modal-dialog {
+    max-width: 764px !important;
+}
+}

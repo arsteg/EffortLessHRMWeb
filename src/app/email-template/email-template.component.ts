@@ -8,6 +8,8 @@ import { Validators, FormGroup, FormBuilder, FormControl, AbstractControl } from
 // import { createElement, addClass, removeClass, Browser } from '@syncfusion/ej2-base';
 // import { Editor } from 'ngx-editor';
 // import { NgxEditorComponent } from 'ngx-editor';
+// import { QuillEditorComponent } from 'ngx-quill';
+// import Quill from 'quill';
 @Component({
   selector: 'app-email-template',
   templateUrl: './email-template.component.html',
@@ -23,7 +25,7 @@ export class EmailTemplateComponent implements OnInit {
   searchText: string = "";
   // editor: Editor;
   html: string;
-  selectedOption: string[] = [];
+  selectedOption: string;
   originalContent: string = '';
   editorContent: string = '';
 
@@ -33,9 +35,22 @@ export class EmailTemplateComponent implements OnInit {
     { label: 'Start Date', value: 'option3' },
     { label: 'End Date', value: 'option4' }
   ];
-  // @ViewChild(NgxEditorComponent) edit: NgxEditorComponent;
-  typedContent: string;
-
+  color = [
+    { value: 'transparent' },
+    { value: 'black' },
+    { value: 'White' },
+    { value: 'Grey' },
+    { value: 'Pink' },
+    { value: 'Red' },
+    { value: 'Blue' },
+    { value: 'Green' },
+    { value: 'Purple' },
+    { value: 'yellow' }
+  ]
+  content = '';
+  forms: any;
+  showEditor = false;
+  isFormLoaded = false;
   constructor(private emailservice: EmailtemplateService, private fb: FormBuilder,
     private toast: ToastrService) {
     this.form = this.fb.group({
@@ -53,27 +68,26 @@ export class EmailTemplateComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
+    this.isFormLoaded = true;
     this.getEmailList();
-    // this.editor = new Editor();
+   
+    this.form = this.fb.group({
+      editor: this.content,
+    });
+    
+    this.dropdownOptions;
+    setTimeout(() => {
+      this.isFormLoaded = true;
+      console.log(this.isFormLoaded)
+    }, 1);
+
   }
   ngOnDestroy(): void {
-    // this.editor.destroy();
   }
+  
   onDropdownChange(event: any) {
-    this.selectedOption = Array.from(event.target.selectedOptions, (option: HTMLOptionElement) => option.value);
-    this.updateEditorContent();
-  }
-
-  public updateEditorContent() {
-    const selectedText = this.selectedOption.join(', ');
-    // const currentContent = this.editorContent || 'TEXT'; // Use existing content or an empty string if it's undefined
-    this.editorContent = `${this.originalContent} { ${selectedText} }`;
-    //    const selectedText = this.selectedOption.join(', ');
-    // this.editorContent = `${this.editorContent} { ${selectedText} }`;
-  }
-  onEditorContentChange(content: string) {
-    this.originalContent = content;
+    this.selectedOption = event.target.value
+    console.log(this.selectedOption)
   }
 
   getEmailList() {
@@ -88,7 +102,10 @@ export class EmailTemplateComponent implements OnInit {
     this.emailmodel = false;
   }
   addEmail(form) {
-    this.emailservice.addEmail(form).subscribe((response: any) => {
+    console.log(form)
+    // form = this.form.value;
+    // console.log(form)
+    this.emailservice.addEmail(form.value).subscribe((response: any) => {
       if (response != null && response != 0) {
         this.toast.success('Email Template added successfully!');
         this.ngOnInit();
@@ -101,7 +118,8 @@ export class EmailTemplateComponent implements OnInit {
     })
   }
   addemail() {
-    this.emailmodel = this.emailmodel == false ? true : false;
+    // this.showEditor = true;
+    // this.emailmodel = this.emailmodel == false ? true : false;
   }
   deleteEmail(id: any) {
     this.emailservice.deleteEmail(id).subscribe((response: any) => {

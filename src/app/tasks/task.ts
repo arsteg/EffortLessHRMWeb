@@ -10,7 +10,7 @@ export class Task {
   comment: string;
   isSubTask: boolean;
   priority: string;
-  taskUsers: string[];
+  user: string;
   status: string;
   project: project[];
   taskAttachments: TaskAttachment[];

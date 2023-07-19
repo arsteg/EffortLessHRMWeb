@@ -1,6 +1,11 @@
 <div class="main-content">
   <div class="emailContainer col-8">
-    <h2>Email Template</h2>
+
+    <div class="d-flex">
+      <h2>Email Template</h2>
+      <button type="button" class="btn btn-primary ml-5 ms-auto" style=" min-width: 185px;">Add Email
+        Template</button>
+    </div>
     <table class="table">
       <thead>
         <tr>
@@ -33,15 +38,13 @@
     <div class="d-flex justify-content-center">
       <pagination-controls></pagination-controls>
     </div>
-    <div class="col-sm-1" style="margin-top: 12px;">
-      <button type="submit" class="btn btn-primary ml-5" style=" min-width: 185px;;" (click)="addemail()">Add Email
-        Template</button>
-    </div>
-    <div *ngIf="emailmodel" style="margin-top: 14px;">
+
+
+    <div style="margin-top: 14px;">
       <div>
         <span>Add Email Template</span>
       </div>
-      <form class="mt-4 p-3 bg-light border rounded" [formGroup]="form" (ngSubmit)="addEmail(form.value)">
+      <form class="mt-4 p-3 bg-light border rounded" [formGroup]="form" (ngSubmit)="addEmail(form)">
         <div class="form-group row">
           <div class="col-sm-0">
             Name:
@@ -64,26 +67,25 @@
           <div class="col-sm-0" style="margin-top: 12px;">
             Content Data:
           </div>
-          <div class="NgxEditor__Wrapper">
-            <select (change)="onDropdownChange($event)" multiple class="my-2 w-50">
-              <option *ngFor="let option of dropdownOptions" [value]="option.label">{{ option.label }}</option>
-            </select>
-            <!-- <ngx-editor-menu [editor]="editor"></ngx-editor-menu>
-            <ngx-editor formControlName="contentData" [editor]="editor" [ngModel]="editorContent" [placeholder]="'Type here...'"></ngx-editor> -->
+          <ng-container *ngIf="isFormLoaded">
+            <select (change)="onDropdownChange($event)" class="my-2 w-50">
+            <option *ngFor="let option of dropdownOptions" [value]="option.label">{{ option.label }}</option>
+          </select>
+          <p>{{selectedOption}}</p>
+            <quill-editor  #editor [styles]="{height: '100px'}" formControlName="contentData"></quill-editor>
+          </ng-container>
+
+          <br>
+          <div class="col-sm-1" style="margin-top: 12px;">
+            <button type="submit" class="btn btn-primary ml-5" style="min-width: 100px;">Add</button>
           </div>
-         
-
-
-
-          <div class="col-sm-6 d-none">
-            <input type="text" formControlName="contentData" class="form-control">
-          </div><br>
-        </div><br>
-        <div class="col-sm-1" style="margin-top: 12px;">
-          <button type="submit" class="btn btn-primary ml-5" style="min-width: 100px;">Add</button>
         </div>
       </form>
     </div>
+
+
+
+
     <div class="modal" id="updateModal">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">

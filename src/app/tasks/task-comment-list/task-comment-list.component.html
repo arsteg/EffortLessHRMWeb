@@ -133,9 +133,9 @@
   </ng-container>
   <div class="row comment-form">
     <div class="d-flex ps-4">
-      <span class="letter text-light comment-user-letter addComment-User" [title]="(firstName | titlecase)"
-        [style.background-color]="commonService.getRandomColor(firstName?.charAt(0) | uppercase)">
-        {{firstName?.charAt(0) | uppercase}}
+      <span class="letter text-light comment-user-letter addComment-User" [title]="(userName?.firstName | titlecase)"
+        [style.background-color]="commonService.getRandomColor(userName?.firstName?.charAt(0) | uppercase)">
+        {{userName?.firstName?.charAt(0) | uppercase}}
       </span>
       <div class="m-3 w-100 rounded"><textarea name="" id="" cols="" rows="2" class="w-100 mb-5 form-control"
           [(ngModel)]="newComment">
