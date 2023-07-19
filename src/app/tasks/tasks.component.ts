@@ -244,10 +244,24 @@ export class TasksComponent implements OnInit {
     }
   }
   firstPagePagination(){
-    
+    if (this.currentPage !== 1) {
+      this.currentPage = 1;
+      this.skip = '0';
+      this.next = this.recordsPerPage.toString();
+      this.paginateTasks();
+    }
   }
   lastPagePagination(){
-
+    const totalPages = this.getTotalPages();
+  if (this.currentPage !== totalPages) {
+    this.currentPage = totalPages;
+    this.updateSkip();
+      this.paginateTasks();
+    }
+  }
+  updateSkip() {
+    const newSkip = (this.currentPage - 1) * this.recordsPerPage;
+    this.skip = newSkip.toString();
   }
   isNextButtonDisabled(): boolean {
     return this.currentPage === this.getTotalPages();
@@ -303,15 +317,9 @@ export class TasksComponent implements OnInit {
 
   getUsersByProject() {
     const selectedProject = this.addForm.value.project;
-
     this.projectService.getprojectUser(selectedProject).subscribe((res: any) => {
       this.usersByProject = res && res.data && res.data['projectUserList'];
-      console.log(this.usersByProject)
-
-      this.usersByProject = this.usersByProject['index']?.filter(user => user !== null);
-      console.log(this.usersByProject)
     });
-    // const user = this.addForm.value.TaskUser;
   }
 
 
