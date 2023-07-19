@@ -14,7 +14,20 @@
                         </div>
                     </div>
                     <ul type="none" class="taskList">
-
+                        <ng-container>
+                            <div class="align-items-center" >
+                                <p class="ml-2">Page {{ currentPage }} of {{ getTotalPages() }} Total Records: {{ totalRecords?.taskCount }}</p>
+                               <div class="d-flex justify-content-center "> <span (click)="previousPagination()" class="bi bi-caret-left btn-lg btn-outline-primary ps-0"
+                                title="Previous Page"></span>
+                                <select style="width: 70px;" class="form-select form-select-sm pagination-option" [(ngModel)]="recordsPerPage" (ngModelChange)="updateRecordsPerPage()">
+                                    <option *ngFor="let option of recordsPerPageOptions" [value]="option">{{ option }}</option>
+                                  </select>
+                              <span (click)="nextPagination()" class="bi bi-caret-right btn-lg btn-outline-primary"
+                                title="Next Page"></span>
+                            </div>
+                            </div>
+                          </ng-container>
+<hr>
                         <li *ngFor="let task of taskList | search: searchText" class="tasks"
                             [class.active-task]="task?.id === taskId" (click)="onTaskChange(task?.id)">
                             {{task?.taskName| titlecase}}
@@ -30,13 +43,7 @@
                         </div>
                     </div>
                         </li>
-                        <li class="d-flex justify-content-evenly align-items-center border-top" *ngIf="view == 'admin'">
-                            <span (click)="previousPagination()" class="bi bi-arrow-bar-left btn-lg btn-outline-primary"
-                                title="Previous Page"></span>
-                            <span class="text-muted">Page</span>
-                            <span (click)="nextPagination()" class="bi bi-arrow-bar-right btn-lg btn-outline-primary"
-                                title="Next Page"></span>
-                        </li>
+                        
                     </ul>
 
 
@@ -64,7 +71,7 @@
                         <div class="row mb-3">
                             <div class="col-12  align-self-center">
                                 <div class="sub-header mt-3 py-3 px-3 align-self-center w-100 rounded">
-                                    <div class="d-flex">
+                                    <div class="d-flex  align-items-center">
 
                                         <div class="dropdown">
                                             <button class="btn dropdown-toggle status" type="button"
@@ -133,18 +140,19 @@
                                                 <button type="button"
                                                     class="btn dropdown-toggle dropdown-toggle-no-caret"
                                                     data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <span class="text-muted ps-1">
+                                                    <span class="text-muted">
                                                         {{ user?.user?.firstName }} {{ user?.user?.lastName }}
                                                     </span>
                                                 </button>
 
 
                                                 <ul class="dropdown-menu"
-                                                    style="width: 225px; transform: translate3d(-29px, 40px, 0px) !important;">
+                                                    style="width: 225px; transform: translate3d(-29px, 40px, 0px) !important; height: 200px;
+                                                    overflow-y: scroll;">
                                                     <li *ngFor="let assignee of projectUser" class="border-left "
                                                         [value]="assignee?.user?.id">
-                                                        <p *ngIf="assignee.user != null" class="ps-4 py-2">
-                                                            <span class="letter text-light"
+                                                        <p *ngIf="assignee.user != null" class="ps-4 py-2 mb-1"  style="font-size: 13px;" (click)="addUserToTask(taskId, assignee.user.id)">
+                                                            <span class="letter text-light" style="font-size: 12px;"
                                                                 [tooltip]="(assignee?.user?.firstName | titlecase) + ' ' + (assignee?.user?.lastName | titlecase)"
                                                                 [style.background-color]="commonService.getRandomColor(assignee?.user?.firstName?.charAt(0) | uppercase)">
                                                                 {{ assignee?.user?.firstName?.charAt(0) | uppercase }}

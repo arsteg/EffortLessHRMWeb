@@ -67,7 +67,10 @@ export class EditTaskComponent implements OnInit {
   currentSubtaskId: string;
   taskId: string;
   projectUser: any;
-
+  recordsPerPageOptions: number[] = [5, 10, 25, 50, 100]; // Add the available options for records per page
+  recordsPerPage: number = 10; // Default records per page
+  totalRecords: any; // Total number of records
+  currentPage: number = 1;
 
   constructor(private fb: FormBuilder,
     private tasksService: TasksService,
@@ -139,11 +142,38 @@ export class EditTaskComponent implements OnInit {
     return '';
   }
   getCurrentUserTasks() {
-    this.tasksService.getTaskByUser(this.currentUser.id).subscribe(response => {
+    this.tasksService.getTaskByUser(this.currentUser.id, this.skip, this.next).subscribe(response => {
       this.taskList = response && response.data && response.data['taskList'];
+      this.totalRecords = response && response.data;
+      this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
       this.taskList = this.taskList.filter(taskList => taskList !== null);
     })
   }
+  nextPagination() {
+    const newSkip = (parseInt(this.skip) + parseInt(this.next)).toString();
+    this.skip = newSkip;
+    this.getCurrentUserTasks();
+  }
+
+  previousPagination() {
+    const newSkip = (parseInt(this.skip) >= parseInt(this.next)) ? (parseInt(this.skip) - parseInt(this.next)).toString() : '0';
+    this.skip = newSkip;
+    this.getCurrentUserTasks();
+  }
+  updateRecordsPerPage() {
+    this.currentPage = 1;
+    this.skip = '0';
+    this.next = this.recordsPerPage.toString();
+    this.getCurrentUserTasks();
+  }
+  getTotalPages(): number {
+    if (this.totalRecords && this.totalRecords.taskCount) {
+      const totalCount = this.totalRecords.taskCount;
+      return Math.ceil(totalCount / this.recordsPerPage);
+    }
+    return 0;
+  }
+
   getTasks() {
     this.view = localStorage.getItem('adminView');
     if (this.view === 'admin') {
@@ -167,17 +197,7 @@ export class EditTaskComponent implements OnInit {
       this.taskList = response && response.data && response.data['taskList'];
     });
   }
-  nextPagination() {
-    const newSkip = (parseInt(this.skip) + parseInt(this.next)).toString();
-    this.skip = newSkip;
-    this.listAllTasks();
-  }
-  previousPagination() {
-    const newSkip = (parseInt(this.next) - parseInt(this.skip)).toString();
-    this.skip = newSkip;
-    this.listAllTasks();
-  }
-
+ 
   onTaskChange(taskId: any) { 
     this.tasksService.getTaskById(taskId).subscribe((res: any) => {
       const task = res.data.task; 
@@ -497,6 +517,18 @@ export class EditTaskComponent implements OnInit {
         this.toast.error('Task could not be updated', 'ERROR!')
       })
   }
+  addUserToTask(taskId: string, user: string): void {
+    this.tasksService.addUserToTask(taskId, user).subscribe((response: any) => {
+      this.task = response && response.data && response.data['TaskUserList'];
+      console.log(this.task,'new user added')
+       this.toast.success('Task status updated successfully', 'Success')
+      },
+      err => {
+        this.toast.error('Task could not be updated', 'ERROR!')
+      }
+    );
+  }
+  
 }
 
 interface priority {
