@@ -35,6 +35,7 @@ export class DashboardComponent implements OnInit {
   members: teamMember[];
   member: teamMember;
   selectedDate:Date;
+  dayWorkStatusByUser:any[];
 
   constructor(
     private timelog: TimeLogService,
@@ -129,7 +130,10 @@ export class DashboardComponent implements OnInit {
   err => {
     this.toastr.error(err, 'ERROR!')
   });
+
   this.populateTaskwiseHours(this.currentUser.id);
+
+  this.getDayWorkStatusByUser(this.currentUser.id);
 
   }
 
@@ -214,6 +218,11 @@ export class DashboardComponent implements OnInit {
     this.member = JSON.parse(member.value);
     this.getTaskStatusCounts(this.member.id);
   }
+  onDailyUpdateMemberSelectionChange(member: any){
+    this.member = JSON.parse(member.value);
+    this.getDayWorkStatusByUser(this.member.id);
+  }
+
 
   populateMembers() {
     this.members = [];
@@ -257,6 +266,14 @@ export class DashboardComponent implements OnInit {
   getTaskStatusCounts(selectedtUser:string){
     this.dashboardService.getTaskStatusCounts(selectedtUser).subscribe(response => {
       this.taskSummary= response.data;
+    },
+      err => {
+        this.toastr.error(err, 'ERROR!')
+      });
+  }
+  getDayWorkStatusByUser(selectedtUser:string){
+    this.dashboardService.getDayWorkStatusByUser(selectedtUser, this.date.value ).subscribe(response => {
+      this.dayWorkStatusByUser= response.data;
     },
       err => {
         this.toastr.error(err, 'ERROR!')

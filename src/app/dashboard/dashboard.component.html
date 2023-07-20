@@ -233,7 +233,7 @@
             <div class="d-flex justify-content-between">
                 <label for="member" class="pt-2 pe-3">Member</label>
                 <select id="member" name="member" class="form-control" class="form-select form-select-sm"
-                  aria-label=".form-select-sm example" #member (change)="onProductivityMemberSelectionChange(member)">
+                  aria-label=".form-select-sm example" #productivityMember (change)="onProductivityMemberSelectionChange(productivityMember)">
                   <option *ngFor="let m of members" value="{{m|json}}">{{m.name | titlecase}}</option>
                 </select>
             </div>
@@ -250,7 +250,7 @@
             <div class="d-flex justify-content-between">
                 <label for="member" class="pt-2 pe-3">Member</label>
                 <select id="member" name="member" class="form-control" class="form-select form-select-sm"
-                  aria-label=".form-select-sm example" #member (change)="onTaskSummaryMemberSelectionChange(member)">
+                  aria-label=".form-select-sm example" #taskMember (change)="onTaskSummaryMemberSelectionChange(taskMember)">
                   <option *ngFor="let m of members" value="{{m|json}}">{{m.name | titlecase}}</option>
                 </select>
             </div>
@@ -261,12 +261,51 @@
           </div>
 
         </div>
-        <div class="row mx-2">
-            <div class="col-12 dash-screenshot text-light text-center py-5" style="background: #3f51b5;">
-                <h1><i class="bi bi-clock-history" style="font-size: 44px;"></i></h1>
-                <p>Unfortunately, there are no screenshots to show.</p>
+
+        <!-- =================== -->
+
+        <div class="row justify-content-evenly">
+          <div class="col-md-4  rounded p-3 dash-report bg-white">
+            <div class="d-flex justify-content-between">
+              <h3>Project wise time on each task</h3>
+          </div>
+            <div class="d-flex justify-content-between">
+                <label for="member" class="pt-2 pe-3">Member</label>
+                <select id="member" name="member" class="form-control" class="form-select form-select-sm"
+                  aria-label=".form-select-sm example" #dailyUpdateMember (change)="onDailyUpdateMemberSelectionChange(dailyUpdateMember)">
+                  <option *ngFor="let m of members" value="{{m|json}}">{{m.name | titlecase}}</option>
+                </select>
             </div>
+            <table class="table">
+              <tbody>
+                <th>Project</th>
+                <th>Task</th>
+                <th>Time</th>
+                <ng-container *ngFor="let projectTask of dayWorkStatusByUser">
+                  <tr *ngFor="let task of projectTask.tasks;let i = index ">
+                    <td>
+                      {{i==0?projectTask?.projectName:''}}
+                    </td>
+                    <td>{{task?.taskName}}</td>
+                    <td>
+                      <span class="dash-percent"> {{ task?.count*10*60*1000 | milliSecondsToTime }} </span>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="col-md-4  rounded p-3 dash-report bg-white">
+
+          </div>
+
+          <div class="col-md-4  rounded p-3 dash-report bg-white">
+
+          </div>
+
         </div>
+
     </div>
   </div>
 
