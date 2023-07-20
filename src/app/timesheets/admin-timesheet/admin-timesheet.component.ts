@@ -144,7 +144,7 @@ this.exportService.exportToExcel('Admin Timesheet', 'adminTimeSheets', this.time
 
   getAllProjects() {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    this.projectService.getprojectlist().subscribe(response => {
+    this.projectService.getprojects('', '').subscribe(response => {
       this.projectList = response && response.data && response.data['projectList'];
     });
   }
