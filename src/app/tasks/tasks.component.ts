@@ -32,7 +32,6 @@ export class TasksComponent implements OnInit {
   updateForm: FormGroup;
   selectedTask: any;
   allAssignee: any;
-  addUserForm: FormGroup;
   firstLetter: string;
   color: string;
   projectId: string;
@@ -76,7 +75,7 @@ export class TasksComponent implements OnInit {
   view = localStorage.getItem('adminView');
   admin: string = 'admin';
   comments: any[];
-  skip : string= '0';
+  skip: string = '0';
   next = '10';
   @Output() editTask: EventEmitter<string> = new EventEmitter<string>();
   members: any;
@@ -110,7 +109,7 @@ export class TasksComponent implements OnInit {
       estimate: [0],
       comment: ['Task Created', Validators.required],
       priority: ['', Validators.required],
-      TaskUser: ['', Validators.required],
+      TaskUser: [''],
       project: ['', Validators.required],
       taskAttachments: [[]]
     });
@@ -136,17 +135,11 @@ export class TasksComponent implements OnInit {
       estimate: [0],
       timeTaken: [0],
     });
-    this.addUserForm = this.fb.group({
-      userName: {
-        firstName: ['', Validators.required],
-        lastName: ['', Validators.required]
-      }
-    });
+    
   }
 
   ngOnInit(): void {
     this.isChecked = true;
-
     this.commonservice.populateUsers().subscribe(result => {
       this.allAssignee = result && result.data && result.data.data;
     });
@@ -201,49 +194,46 @@ export class TasksComponent implements OnInit {
     return statusItem ? statusItem.isChecked : false;
   }
 
-  listAllTasks() {
+  async listAllTasks() {
     this.tasksService.getAllTasks(this.skip, this.next).subscribe((response: any) => {
       this.totalRecords = response && response.data
       this.tasks = response && response.data && response.data['taskList'];
       this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
-      console.log(this.currentPage)
     });
 
   }
 
-  paginateTasks() {
+  async paginateTasks() {
+    this.currentPage = 1;
+
     if ((!this.userId || !this.currentUser.id) && !this.projectId) {
-     
       this.listAllTasks();
     }
-
-    if (this.userId) {
-      
+    else if (this.userId) {
       this.getTaskByIds();
     }
-
-    if (this.projectId) {
-      
+    else if (this.projectId) {
       this.getTasksByProject();
     }
 
   }
+
   nextPagination() {
     if (!this.isNextButtonDisabled()) {
-    const newSkip = (parseInt(this.skip) + parseInt(this.next)).toString();
-    this.skip = newSkip;
-    this.paginateTasks();
+      const newSkip = (parseInt(this.skip) + parseInt(this.next)).toString();
+      this.skip = newSkip;
+      this.paginateTasks();
     }
   }
 
   previousPagination() {
     if (!this.isPreviousButtonDisabled()) {
-    const newSkip = (parseInt(this.skip) >= parseInt(this.next)) ? (parseInt(this.skip) - parseInt(this.next)).toString() : '0';
-    this.skip = newSkip;
-    this.paginateTasks();
+      const newSkip = (parseInt(this.skip) >= parseInt(this.next)) ? (parseInt(this.skip) - parseInt(this.next)).toString() : '0';
+      this.skip = newSkip;
+      this.paginateTasks();
     }
   }
-  firstPagePagination(){
+  firstPagePagination() {
     if (this.currentPage !== 1) {
       this.currentPage = 1;
       this.skip = '0';
@@ -251,11 +241,11 @@ export class TasksComponent implements OnInit {
       this.paginateTasks();
     }
   }
-  lastPagePagination(){
+  lastPagePagination() {
     const totalPages = this.getTotalPages();
-  if (this.currentPage !== totalPages) {
-    this.currentPage = totalPages;
-    this.updateSkip();
+    if (this.currentPage !== totalPages) {
+      this.currentPage = totalPages;
+      this.updateSkip();
       this.paginateTasks();
     }
   }
@@ -263,10 +253,11 @@ export class TasksComponent implements OnInit {
     const newSkip = (this.currentPage - 1) * this.recordsPerPage;
     this.skip = newSkip.toString();
   }
+
   isNextButtonDisabled(): boolean {
     return this.currentPage === this.getTotalPages();
   }
-  
+
   isPreviousButtonDisabled(): boolean {
     return this.skip === '0' || this.currentPage === 1;
   }
@@ -284,7 +275,7 @@ export class TasksComponent implements OnInit {
     return 0;
   }
 
-  getTasksByProject() {
+  async getTasksByProject() {
     const selectedUserId = this.userId && this.currentUser.id;
     if (!selectedUserId) {
       this.tasksService.getTasksByProjectId(this.projectId, this.skip, this.next).subscribe(
@@ -312,7 +303,6 @@ export class TasksComponent implements OnInit {
     (error: any) => {
       console.log("Error!!!");
     }
-
   }
 
   getUsersByProject() {
@@ -335,7 +325,7 @@ export class TasksComponent implements OnInit {
       comment: this.addForm.value.comment,
       isSubTask: false,
       priority: this.addForm.value.priority,
-      user: this.addForm.value.TaskUser,
+      user: this.addForm.value.TaskUser || null,
       status: "ToDo",
       project: this.addForm.value.project,
       taskAttachments: []
@@ -451,72 +441,17 @@ export class TasksComponent implements OnInit {
   }
 
 
-  addUserToTask(addUserForm) {
-    let selectedUsers = this.addUserForm.get('userName').value;
-    let newUsers = selectedUsers.filter(
-      id => !this.taskUserList.find(user => user.user.id === id)
-    );
-    let task_Users = newUsers.map(id => id).join(',');
+ 
 
-    if (task_Users.length > 0) {
-      this.tasksService.addUserToTask(this.selectedTask.id, task_Users).subscribe(
-        result => {
-          this.taskUserList.push(...newUsers);
-          console.log(newUsers);
-          this.tost.success('New Member Added', 'Successfully Added!');
-        },
-        err => {
-          this.tost.error('Member Already Exists', 'ERROR!');
-        }
-      );
-    }
-  }
-
-  getTaskUser(id) {
-    this.tasksService.getTaskUsers(id).subscribe(response => {
-      this.taskUserList = response && response.data && response.data['taskUserList'];
-      this.selectedUser = this.taskUserList.map(user => user.user.id);
-    });
-  }
-
-  onModelChange(isChecked, taskUserList) {
-    if (isChecked) {
-      this.getTaskUser(taskUserList);
-    }
-    else {
-      let index = this.taskUserList.findIndex(user => user.id === taskUserList.id);
-      this.tasksService.deleteTaskUser(taskUserList.id).subscribe(response => {
-        this.taskUserList.splice(index, 1);
-        this.ngOnInit();
-        this.tost.success(taskUserList.user.firstName.toUpperCase(), 'Successfully Removed!')
-      },
-        err => {
-          this.tost.error(taskUserList.user.firstName.toUpperCase(), 'ERROR! Can not be Removed')
-        })
-    }
-  }
-  deleteuser(taskUserList) {
-    let index = this.taskUserList.findIndex(user => user.id === taskUserList.id);
-    this.tasksService.deleteTaskUser(taskUserList.id).subscribe(response => {
-      this.taskUserList.splice(index, 1);
-      this.ngOnInit();
-      this.tost.success(taskUserList.user.firstName.toUpperCase(), 'Successfully Removed!')
-    },
-      err => {
-        this.tost.error(taskUserList.user.firstName.toUpperCase(), 'ERROR! Can not be Removed')
-      })
-  }
-
-
-
-
-  onProjectSelectionChange() {
+   onProjectSelectionChange() {
     if (this.view === 'admin' && !this.userId && !this.currentUser.id && this.projectId === 'ALL') {
       this.getTasks();
     } else if (this.projectId !== 'ALL') {
+      this.skip = '0';
       this.getTasksByProject();
     }
     else if (this.userId) {
+      this.skip = '0';
       this.getTaskByIds();
     }
     else {
@@ -538,13 +473,14 @@ export class TasksComponent implements OnInit {
   }
 
 
-  getTaskByIds() {
+  async getTaskByIds() {
+
     this.tasksService.getTaskByUser(this.userId, this.skip, this.next).subscribe(response => {
       this.tasks = response && response.data && response.data['taskList'];
       this.totalRecords = response && response.data
       this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
+      console.log(this.currentPage)
       this.tasks = this.tasks.filter(task => task !== null);
-
     });
     this.projectService.getProjectByUserId(this.userId).subscribe(response => {
       this.projectList = response && response.data && response.data['projectList'];
@@ -556,10 +492,11 @@ export class TasksComponent implements OnInit {
     this.projectId = null;
     this.userId = user;
     if (!this.userId || this.userId === '') {
-      console.log(this.userId, 'User Id')
+      this.skip = '0';
       this.listAllTasks();
     }
     else {
+      this.skip = '0';
       this.getTaskByIds();
     }
 

@@ -15,35 +15,41 @@
                     </div>
                     <ul type="none" class="taskList">
                         <ng-container>
-                            <div class="align-items-center" >
-                                <p class="ml-2">Page {{ currentPage }} of {{ getTotalPages() }} Total Records: {{ totalRecords?.taskCount }}</p>
-                               <div class="d-flex justify-content-center "> <span (click)="previousPagination()" class="bi bi-caret-left btn-lg btn-outline-primary ps-0"
-                                title="Previous Page"></span>
-                                <select style="width: 70px;" class="form-select form-select-sm pagination-option" [(ngModel)]="recordsPerPage" (ngModelChange)="updateRecordsPerPage()">
-                                    <option *ngFor="let option of recordsPerPageOptions" [value]="option">{{ option }}</option>
-                                  </select>
-                              <span (click)="nextPagination()" class="bi bi-caret-right btn-lg btn-outline-primary"
-                                title="Next Page"></span>
+                            <div class="align-items-center">
+                                <p class="ml-2">Page {{ currentPage }} of {{ getTotalPages() }} Total Records: {{
+                                    totalRecords?.taskCount }}</p>
+                                <div class="d-flex justify-content-center "> <span (click)="previousPagination()"
+                                        class="bi bi-caret-left btn-lg btn-outline-primary ps-0"
+                                        title="Previous Page"></span>
+                                    <select style="width: 70px;" class="form-select form-select-sm pagination-option"
+                                        [(ngModel)]="recordsPerPage" (ngModelChange)="updateRecordsPerPage()">
+                                        <option *ngFor="let option of recordsPerPageOptions" [value]="option">{{ option
+                                            }}</option>
+                                    </select>
+                                    <span (click)="nextPagination()"
+                                        class="bi bi-caret-right btn-lg btn-outline-primary" title="Next Page"></span>
+                                </div>
                             </div>
-                            </div>
-                          </ng-container>
-<hr>
+                        </ng-container>
+                        <hr>
                         <li *ngFor="let task of taskList | search: searchText" class="tasks"
                             [class.active-task]="task?.id === taskId" (click)="onTaskChange(task?.id)">
                             {{task?.taskName| titlecase}}
                             <div class="d-flex" style="font-size: 12px; margin-top: -10px">
-                            <span *ngIf="task.project != null"> {{getProjectNameInitials(task.project.projectName)}} - </span> {{task.taskNumber}}
-                           <div class="ms-auto pe-2">
-                            <span *ngFor="let assignee of task.TaskUsers" class="letter text-light" style="font-size: 12px"
-                                [tooltip]="(assignee?.user?.firstName | titlecase) + ' ' + (assignee?.user?.lastName | titlecase)"
-                                [style.background-color]="commonService.getRandomColor(assignee?.user?.firstName?.charAt(0) | uppercase)">
-                                {{ assignee?.user?.firstName?.charAt(0) | uppercase }}
-                                {{ assignee?.user?.lastName?.charAt(0) | uppercase }}
-                            </span>
-                        </div>
-                    </div>
+                                <span *ngIf="task.project != null"> {{getProjectNameInitials(task.project.projectName)}}
+                                    - </span> {{task.taskNumber}}
+                                <div class="ms-auto pe-2">
+                                    <span *ngFor="let assignee of task.TaskUsers" class="letter text-light"
+                                        style="font-size: 12px"
+                                        [tooltip]="(assignee?.user?.firstName | titlecase) + ' ' + (assignee?.user?.lastName | titlecase)"
+                                        [style.background-color]="commonService.getRandomColor(assignee?.user?.firstName?.charAt(0) | uppercase)">
+                                        {{ assignee?.user?.firstName?.charAt(0) | uppercase }}
+                                        {{ assignee?.user?.lastName?.charAt(0) | uppercase }}
+                                    </span>
+                                </div>
+                            </div>
                         </li>
-                        
+
                     </ul>
 
 
@@ -129,29 +135,57 @@
                                             </div>
                                         </div>
                                         <div class="ms-2 mt-2">
-
+                                            <ng-container *ngIf="this.task && this.task.length === 0;">
+                                                <div> 
+                                                    <span  type="button" class="btn dropdown-toggle dropdown-toggle-no-caret"
+                                                        data-bs-toggle="dropdown" aria-expanded="false">Add User</span>
+                                                    <ul class="dropdown-menu" style="width: 225px; transform: translate3d(-29px, 40px, 0px) !important; height: 200px;
+     overflow-y: scroll;">
+                                                        <li *ngFor="let assignee of projectUser" class="border-left "
+                                                            [value]="assignee?.user?.id">
+                                                            <p *ngIf="assignee.user != null" class="ps-4 py-2 mb-1"
+                                                                style="font-size: 13px;"
+                                                                (click)="addUserToTask(taskId, assignee.user.id)">
+                                                                <span class="letter text-light" style="font-size: 12px;"
+                                                                    [tooltip]="(assignee?.user?.firstName | titlecase) + ' ' + (assignee?.user?.lastName | titlecase)"
+                                                                    [style.background-color]="commonService.getRandomColor(assignee?.user?.firstName?.charAt(0) | uppercase)">
+                                                                    {{ assignee?.user?.firstName?.charAt(0) | uppercase }}
+                                                                    {{ assignee?.user?.lastName?.charAt(0) | uppercase }}
+                                                                </span> &nbsp;{{assignee?.user?.firstName | titlecase}}
+                                                                {{assignee?.user?.lastName | titlecase}}
+                                                            </p>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+    
+                                              </ng-container>
+                                          
                                             <div class="user-container btn-group" *ngFor="let user of task;">
+
                                                 <span class="letter text-light"
                                                     [tooltip]="(user?.user?.firstName | titlecase) + ' ' + (user?.user?.lastName | titlecase)"
                                                     [style.background-color]="commonService.getRandomColor(user?.user?.firstName?.charAt(0) | uppercase)">
                                                     {{ user?.user?.firstName?.charAt(0) | uppercase }}
                                                     {{ user?.user?.lastName?.charAt(0) | uppercase }}
                                                 </span>
+
                                                 <button type="button"
                                                     class="btn dropdown-toggle dropdown-toggle-no-caret"
                                                     data-bs-toggle="dropdown" aria-expanded="false">
+
                                                     <span class="text-muted">
                                                         {{ user?.user?.firstName }} {{ user?.user?.lastName }}
                                                     </span>
                                                 </button>
 
 
-                                                <ul class="dropdown-menu"
-                                                    style="width: 225px; transform: translate3d(-29px, 40px, 0px) !important; height: 200px;
+                                                <ul class="dropdown-menu" style="width: 225px; transform: translate3d(-29px, 40px, 0px) !important; height: 200px;
                                                     overflow-y: scroll;">
                                                     <li *ngFor="let assignee of projectUser" class="border-left "
                                                         [value]="assignee?.user?.id">
-                                                        <p *ngIf="assignee.user != null" class="ps-4 py-2 mb-1"  style="font-size: 13px;" (click)="addUserToTask(taskId, assignee.user.id)">
+                                                        <p *ngIf="assignee.user != null" class="ps-4 py-2 mb-1"
+                                                            style="font-size: 13px;"
+                                                            (click)="addUserToTask(taskId, assignee.user.id)">
                                                             <span class="letter text-light" style="font-size: 12px;"
                                                                 [tooltip]="(assignee?.user?.firstName | titlecase) + ' ' + (assignee?.user?.lastName | titlecase)"
                                                                 [style.background-color]="commonService.getRandomColor(assignee?.user?.firstName?.charAt(0) | uppercase)">

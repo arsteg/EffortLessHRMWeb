@@ -71,6 +71,7 @@ export class EditTaskComponent implements OnInit {
   recordsPerPage: number = 10; // Default records per page
   totalRecords: any; // Total number of records
   currentPage: number = 1;
+  noUser: [] = [];
 
   constructor(private fb: FormBuilder,
     private tasksService: TasksService,
@@ -119,19 +120,19 @@ export class EditTaskComponent implements OnInit {
     })
     this.getTasks();
   }
-  getTask(){
+  getTask() {
     this.taskId = this.taskIdService.getTaskId();
     if (this.taskId) {
       this.tasksService.getTaskById(this.taskId).subscribe(task => {
         this.tasks = task;
         this.task = task.data.newTaskUserList;
-        
+       
         this.currentTaskProject = this.tasks.data.task;
         this.projectService.getprojectUser(this.currentTaskProject.project.id).subscribe((res: any) => {
-        this.projectUser = res && res.data && res.data['projectUserList']
+          this.projectUser = res && res.data && res.data['projectUserList']
         });
       });
-      
+
     }
   }
   getProjectNameInitials(proejctName: string): string {
@@ -197,24 +198,24 @@ export class EditTaskComponent implements OnInit {
       this.taskList = response && response.data && response.data['taskList'];
     });
   }
- 
-  onTaskChange(taskId: any) { 
+
+  onTaskChange(taskId: any) {
     this.tasksService.getTaskById(taskId).subscribe((res: any) => {
-      const task = res.data.task; 
+      const task = res.data.task;
       this.getTaskId.setTaskId(task.id);
-  
+
       if (task.parentTask) {
         this.router.navigate(['/SubTask', task.taskNumber]);
       } else {
         this.router.navigate(['/edit-task', task.taskNumber]);
       }
-  
+
       this.tasks = task;
       this.getTaskAttachments();
       this.getTask();
     });
   }
-  
+
   updateTask() {
     const updateTask: updateTask = {
       taskName: this.updateForm.value.taskName,
@@ -520,15 +521,15 @@ export class EditTaskComponent implements OnInit {
   addUserToTask(taskId: string, user: string): void {
     this.tasksService.addUserToTask(taskId, user).subscribe((response: any) => {
       this.task = response && response.data && response.data['TaskUserList'];
-      console.log(this.task,'new user added')
-       this.toast.success('Task status updated successfully', 'Success')
-      },
+      console.log(this.task, 'new user added')
+      this.toast.success('Task status updated successfully', 'Success')
+    },
       err => {
         this.toast.error('Task could not be updated', 'ERROR!')
       }
     );
   }
-  
+
 }
 
 interface priority {

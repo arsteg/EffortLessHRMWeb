@@ -5,18 +5,18 @@
                 <div class="">
                     <div class="d-flex py-2 align-items-baseline">
                         <h1 class="me-2">Tasks: {{tasks?.length}}</h1>
-    
+
                         <mat-form-field appearance="outline" class="w-25 mx-1" style="height: 20px">
                             <mat-label>Select User</mat-label>
                             <mat-select [(ngModel)]="userId">
-                              <mat-option *ngFor="let member of members" [value]="member.id" class="border-left user-filter"
-                                          (click)="onMemberSelectionChange(userId)"
-                                          [selected]="selectedUser?.includes(member?.id)">
-                                {{ member.name | titlecase }}
-                              </mat-option>
+                                <mat-option *ngFor="let member of members" [value]="member.id"
+                                    class="border-left user-filter" (click)="onMemberSelectionChange(userId)"
+                                    [selected]="selectedUser?.includes(member?.id)">
+                                    {{ member.name | titlecase }}
+                                </mat-option>
                             </mat-select>
-                          </mat-form-field>
-                          
+                        </mat-form-field>
+
 
                         <mat-form-field appearance="outline" class="w-25 mx-1" style="height: 20px">
                             <mat-label>Select Project</mat-label>
@@ -77,30 +77,35 @@
                         </div>
                     </div>
                     <hr>
-                    
+
                     <ng-container>
                         <div class="d-flex justify-content-end align-items-center" style="margin-bottom: -30px;">
-                           Items per page
-                            <select style="width: 80px;" class="form-select form-select-sm mx-2" [(ngModel)]="recordsPerPage" (ngModelChange)="updateRecordsPerPage()">
-                                <option *ngFor="let option of recordsPerPageOptions" [value]="option">{{ option }}</option>
-                              </select>
-                          
-                            <span class="ml-2">{{ currentPage }} - {{ getTotalPages() }} of {{ totalRecords?.taskCount }}</span>
-                           <!-- previous page -->
-                           <span (click)="firstPagePagination()" class="bi bi-chevron-bar-left btn-lg btn-outline-primary"
-                            title="Previous Page" [class.disabled]="skip === '0' || currentPage === 1"></span>
-                            
+                            Items per page
+                            <select style="width: 80px;" class="form-select form-select-sm mx-2"
+                                [(ngModel)]="recordsPerPage" (ngModelChange)="updateRecordsPerPage()">
+                                <option *ngFor="let option of recordsPerPageOptions" [value]="option">{{ option }}
+                                </option>
+                            </select>
+
+                            <span class="ml-2">{{ currentPage }} - {{ getTotalPages() }} of {{ totalRecords?.taskCount
+                                }}</span>
+                            <!-- previous page -->
+                            <span (click)="firstPagePagination()"
+                                class="bi bi-chevron-bar-left btn-lg btn-outline-primary" title="Previous Page"
+                                [class.disabled]="skip === '0' || currentPage === 1"></span>
+
                             <span (click)="previousPagination()" class="bi bi-chevron-left btn-lg btn-outline-primary"
-                            title="Previous Page" [class.disabled]="skip === '0' || currentPage === 1"></span>
+                                title="Previous Page" [class.disabled]="skip === '0' || currentPage === 1"></span>
                             <!-- next page -->
                             <span (click)="nextPagination()" class="bi bi-chevron-right btn-lg btn-outline-primary"
-                            title="Next Page" [class.disabled]="currentPage === getTotalPages()"></span>
-                           
-                            <span (click)="lastPagePagination()" class="bi bi-chevron-bar-right btn-lg btn-outline-primary"
-                            title="Next Page" [class.disabled]="currentPage === getTotalPages()"></span>
+                                title="Next Page" [class.disabled]="currentPage === getTotalPages()"></span>
+
+                            <span (click)="lastPagePagination()"
+                                class="bi bi-chevron-bar-right btn-lg btn-outline-primary" title="Next Page"
+                                [class.disabled]="currentPage === getTotalPages()"></span>
                         </div>
-                      </ng-container>
-                      
+                    </ng-container>
+
                     <div *ngIf="isListView">
                         <table class="table  mt-4">
                             <thead>
@@ -255,13 +260,14 @@
                                     <td>
                                         <div class="d-flex flex-nowrap users">
                                             <p *ngFor="let users of task?.TaskUsers">
-                                            <span  class="letter text-light"
-                                                [tooltip]="(users?.user?.firstName| titlecase) + (' ') +( users?.user?.lastName | titlecase)"
-                                                [style.background-color]="commonservice.getRandomColor(users?.user?.firstName)">
-                                                {{users?.user?.firstName.charAt(0) | uppercase}}
-                                            </span>
-                                            <span class="ms-2">{{users?.user?.firstName | titlecase}} {{users?.user?.lastName | titlecase}}</span>
-                                        </p>
+                                                <span class="letter text-light"
+                                                    [tooltip]="(users?.user?.firstName| titlecase) + (' ') +( users?.user?.lastName | titlecase)"
+                                                    [style.background-color]="commonservice.getRandomColor(users?.user?.firstName)">
+                                                    {{users?.user?.firstName.charAt(0) | uppercase}}
+                                                </span>
+                                                <span class="ms-2">{{users?.user?.firstName | titlecase}}
+                                                    {{users?.user?.lastName | titlecase}}</span>
+                                            </p>
                                             <!-- <p *ngIf="!tasks.TaskUsers">
                                                 <span *ngFor="let user of assignedUser" class="letter text-light"
                                                     [tooltip]="(user?.firstName| titlecase) + (' ') +( user?.lastName | titlecase)"
@@ -278,7 +284,8 @@
                                             [style.background-color]="commonservice.getRandomColor(task?.createdBy?.firstName)">
                                             {{task?.createdBy?.firstName.charAt(0) | uppercase}}
                                         </span>
-                                        <span class="ms-2">{{task?.createdBy?.firstName| titlecase}} {{task?.createdBy?.lastName| titlecase}}</span>
+                                        <span class="ms-2">{{task?.createdBy?.firstName| titlecase}}
+                                            {{task?.createdBy?.lastName| titlecase}}</span>
                                     </td>
                                     <td class="text-center">
                                         <div class="dropdown-center">
@@ -716,101 +723,6 @@
         </div>
     </div>
 </div>
-<!-- Add User -->
-<div class="modal" id="addUserModal">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-body">
-                <div class=" d-flex justify-content-between">
-                    <div class="">
-                        <h4 class="modal-title text-start">Add New Member</h4>
-                    </div>
-                    <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
-                    </div>
-                </div>
-                <hr class="mt-0">
-                <div class="row" *ngIf="selectedTask">
-                    <form class="row" [formGroup]="addUserForm" (ngSubmit)="addUserToTask(addUserForm.value)">
-                        <div class="row d-flex justify-content-center">
-                            <div class="">
-                                <ul type="none" class="d-flex ps-0">
-                                    <li *ngFor="let members of taskUserList; let i = index" type="none"
-                                        class="bg-light  ps-3 py-1 me-2  rounded-pill">
-                                        <label *ngIf="members.user!=null" (click)="deleteuser(members)">
-                                            <span>{{members?.user?.firstName | titlecase}}</span>
-                                            <b class="bi bi-x bg-danger text-white ms-2 me-2"
-                                                style="border-radius: 100%;"></b>
-                                        </label>
-                                    </li>
-                                </ul>
-                                <div class="mt-3">
-                                    <mat-form-field appearance="outline" class="w-100">
-                                        <mat-label>Select User</mat-label>
-                                        <mat-select formControlName="userName" multiple [(ngModel)]="selectedUser">
-                                            <mat-option *ngFor="let assignee of allAssignee" [value]="assignee.id">
-                                                {{assignee.firstName | titlecase}} {{assignee.lastName |
-                                                titlecase}}</mat-option>
-                                        </mat-select>
-
-                                    </mat-form-field>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-between m-3">
-                            <div>
-                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
-                                    type="button">Cancel</button>
-                            </div>
-                            <div>
-                                <button mat-raised-button color="primary" data-bs-dismiss="modal"
-                                    type="submit">Add</button>
-                            </div>
-
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<!-- Get Users List -->
-<div class="modal" id="getUsers">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-body">
-                <div class=" d-flex justify-content-between">
-                    <div class="">
-                        <h4 class="modal-title text-start">Users Assigned to the <b
-                                style="color: #556def">{{selectedTask?.taskName | titlecase}}</b></h4>
-                    </div>
-                    <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
-                    </div>
-                </div>
-                <hr class="mt-0">
-                <div class="row" *ngIf="selectedTask">
-                    <form class="row" (ngSubmit)="getTaskUser(tasks._id)">
-                        <div class="row d-flex justify-content-center">
-                            <div class="col-md-8">
-                                <li *ngFor="let members of taskUserList; let i = index" type="none">
-                                    <label *ngIf="members.user!=null">
-                                        <mat-checkbox color="primary" name="firstName" [checked]="isChecked"
-                                            (ngModelChange)="onModelChange($event, members)"
-                                            [(ngModel)]="isChecked">{{members?.user?.firstName |
-                                            titlecase}}</mat-checkbox>
-                                    </label>
-
-                                </li>
-
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 <!-- Add -->
 <div class="modal" id="addModal">
@@ -833,7 +745,8 @@
                                     <label for="project" class="text-start">Project</label>
                                 </div>
 
-                                <select class="custom-select mb-3 p-2" formControlName="project" (change)="getUsersByProject()">
+                                <select class="custom-select mb-3 p-2" formControlName="project"
+                                    (change)="getUsersByProject()">
                                     <option selected>-- ALL --</option>
                                     <option [value]="project.id" *ngFor="let project of projectList">
                                         {{project?.projectName}}</option>
@@ -958,27 +871,23 @@
                                         <div class="row mt-3">
                                             <label for="estimate" class="text-start">Estimate (Hours)</label>
                                         </div>
-                                        <input type="number" name="estimate" id="estimate" class="form-control input  pt-0"
-                                            formControlName="estimate">
+                                        <input type="number" name="estimate" id="estimate"
+                                            class="form-control input  pt-0" formControlName="estimate">
                                     </div>
                                     <div class="col-6">
                                         <div class="row mt-3">
                                             <label for="project" class="text-start">Add User</label>
                                         </div>
-        
+
                                         <select class="custom-select mb-3 p-2" formControlName="TaskUser">
                                             <option [value]="user?.user?.id" *ngFor="let user of usersByProject">
-                                                {{user?.user?.firstName | titlecase}}  {{user?.user?.lastName | titlecase}}</option>
+                                                {{user?.user?.firstName | titlecase}} {{user?.user?.lastName |
+                                                titlecase}}</option>
                                         </select>
-                                        <div *ngIf="addForm.controls['TaskUser'].invalid && addForm.controls['TaskUser'].touched"
-                                            class="alert alert-danger error">
-                                            <div *ngIf="addForm.controls['TaskUser'].errors['required']">
-                                                Please Select User!
-                                            </div>
-                                        </div>
+
                                     </div>
                                 </div>
-                               
+
                                 <div class="row mt-3">
                                     <label for="comment" class="text-start">Comments</label>
                                 </div>
@@ -996,7 +905,7 @@
 
                             <div>
                                 <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
-                                    type="button">Cancel</button>
+                                    type="reset">Cancel</button>
                             </div>
                             <div>
                                 <button mat-raised-button color="primary" data-bs-dismiss="modal"
