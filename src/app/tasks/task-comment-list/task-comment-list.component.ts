@@ -16,9 +16,10 @@ export class TaskCommentListComponent implements OnInit {
   @Output() commentAdded = new EventEmitter<taskComment>();
   @Output() commentUpdated = new EventEmitter<{ index: number, text: taskComment }>();
   @Output() commentDeleted = new EventEmitter<number>();
-  @Input() authorfirstName: string;
+  @Input() currentProfile: any;
   @Input() authorlastName: string;
    taskId: string;
+  // currentProfile : any;
 
   newComment: '';
   commentsArray: taskComment[] = [];
@@ -49,6 +50,10 @@ userName: any;
     if (this.taskId) {
       this.taskService.getTaskById(this.taskId).subscribe(result => {
         this.tasks = result.data;
+      });
+
+      this.commonService.getCurrentUser().subscribe((profile: any) => {
+        this.currentProfile = profile;
       });
     }
 
@@ -89,8 +94,8 @@ userName: any;
       task: this.tasks?.task?.id,
       commentedAt: new Date,
       status: '',
-      authorfirstName: this.userName.firstName,
-      authorlastName: this.userName.lastName,
+      authorfirstName: this.currentProfile.firstName,
+      authorlastName: this.currentProfile.lastName,
       taskAttachments: []
     };
 

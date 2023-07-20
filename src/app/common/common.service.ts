@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { BehaviorSubject, map, Observable } from 'rxjs';
 import { User } from '../models/user';
 import { ProjectService } from '../_services/project.service';
 import { UserService } from '../_services/users.service';
@@ -11,6 +11,7 @@ export class CommonService {
   allAssignee: any[];
   projectList: any[];
   firstletter: string;
+  private currentProfileSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
   constructor(private userService: UserService,
     private projectService: ProjectService) { }
@@ -64,5 +65,13 @@ export class CommonService {
     };
     this.firstletter = firstName?.charAt(0).toUpperCase();
     return colorMap[this.firstletter] || '#000000';
+  }
+
+  setCurrentUser(profile: any): void {
+    this.currentProfileSubject.next(profile);
+  }
+
+  getCurrentUser(): BehaviorSubject<any> {
+    return this.currentProfileSubject;
   }
 }

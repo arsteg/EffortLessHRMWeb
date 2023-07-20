@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Spinkit } from 'ng-http-loader';
 import { AuthenticationService } from '../_services/authentication.service';
+import { CommonService } from '../common/common.service';
 
 
 @Component({
@@ -22,7 +23,7 @@ export class HomeComponent implements OnInit {
   options: string[] = ['You spent the 7 connects on the availability',
                        'The work week has ended, and your weekly summary is available for summary',
                         'Your Proposal to job'];
-  constructor(private router: Router, private auth: AuthenticationService) { }
+  constructor(private router: Router, private auth: AuthenticationService, private commonService: CommonService) { }
 
   ngOnInit(): void {
     localStorage.setItem('roleName', 'user');
@@ -57,6 +58,8 @@ export class HomeComponent implements OnInit {
     let currentUser = JSON.parse(localStorage.getItem('currentUser'))
     this.auth.GetMe(currentUser.id).subscribe((response: any) => {
       this.currentProfile = response && response.data.users;
+      this.commonService.setCurrentUser(this.currentProfile);
+
       return this.currentProfile;
     })
   }

@@ -1,8 +1,8 @@
 <div class="comment-list">
-  <ng-container *ngFor="let comment of comments; let i = index">
+   <ng-container *ngFor="let comment of comments; let i = index">
     <app-task-comment [comment]="comment" (commentAdded)="addComment()" (commentDeleted)="onDeleteComment(comment)"
-      (commentUpdated)="updateComment(i, $event.text)" [authorfirstName]="comment?.author?.firstName"
-      [authorlastName]="comment?.author?.lastName" [attachments]="comment.attachments">
+      (commentUpdated)="updateComment(i, $event.text)" [authorfirstName]="currentProfile?.firstName"
+      [authorlastName]="currentProfile?.lastName" [attachments]="comment.attachments">
     </app-task-comment>
     <div class="d-flex row mb-3">
       <ng-container *ngFor="let attachment of commentAttachment">
@@ -133,9 +133,9 @@
   </ng-container>
   <div class="row comment-form">
     <div class="d-flex ps-4">
-      <span class="letter text-light comment-user-letter addComment-User" [title]="(userName?.firstName | titlecase)"
-        [style.background-color]="commonService.getRandomColor(userName?.firstName?.charAt(0) | uppercase)">
-        {{userName?.firstName?.charAt(0) | uppercase}}
+      <span class="letter text-light comment-user-letter addComment-User" [title]="(currentProfile?.firstName | titlecase)"
+        [style.background-color]="commonService.getRandomColor(currentProfile?.firstName?.charAt(0) | uppercase)">
+        {{currentProfile?.firstName?.charAt(0) | uppercase}}
       </span>
       <div class="m-3 w-100 rounded"><textarea name="" id="" cols="" rows="2" class="w-100 mb-5 form-control"
           [(ngModel)]="newComment">

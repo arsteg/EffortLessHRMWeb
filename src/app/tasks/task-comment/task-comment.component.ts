@@ -17,10 +17,10 @@ export class TaskCommentComponent implements OnInit {
   @Input() comment: taskComment;
   @Output() commentUpdated = new EventEmitter<{text: string }>();
   @Output() commentDeleted = new EventEmitter<taskComment>();
-  @Input() authorfirstName: string;
-  @Input() authorlastName: string;
+  // @Input() currentProfile: any;
+  // @Input() authorlastName: string;
   @Input() attachments: TaskAttachment[]; 
-
+  currentProfile : any;
   isEditMode: boolean = false;
   editedComment: taskComment;
   index: number;
@@ -41,6 +41,9 @@ export class TaskCommentComponent implements OnInit {
     this.editedComment = this.comment;
     this.editedComment = { ...this.comment };
     this.firstLetter = this.commonService.firstletter;
+    this.commonService.getCurrentUser().subscribe((profile: any) => {
+      this.currentProfile = profile;
+    });
   }
 
     updateComment() {
