@@ -33,10 +33,9 @@ export class UserDashboardComponent implements OnInit {
   weeklySummary: WeeklySummary;
   monthlySummary: MonthlySummary;
   projectTasks: ProjectTask[];
-
   productivityData = [];
   taskSummary = [];
-
+  dayWorkStatusByUser:any[];
 
   constructor(
     private timelog: TimeLogService,
@@ -51,6 +50,7 @@ export class UserDashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.populateDashboard(new Date());
+    this.getDayWorkStatusByUser(this.currentUser.id);
   }
 
   populateTeamOfUsers() {
@@ -223,5 +223,14 @@ export class UserDashboardComponent implements OnInit {
   }
   labelFormatter(label: any): string {
     return label.value.toString();
+  }
+
+  getDayWorkStatusByUser(selectedtUser:string){
+    this.dashboardService.getDayWorkStatusByUser(selectedtUser, this.date.value ).subscribe(response => {
+      this.dayWorkStatusByUser= response.data;
+    },
+      err => {
+        this.toastr.error(err, 'ERROR!')
+      });
   }
 }
