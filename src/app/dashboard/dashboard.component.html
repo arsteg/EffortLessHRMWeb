@@ -288,7 +288,7 @@
                     </td>
                     <td>{{task?.taskName}}</td>
                     <td>
-                      <span class="dash-percent"> {{ task?.count*10*60*1000 | milliSecondsToTime }} </span>
+                      <span class="dash-percent"> {{ ((task?.count*10)*60*1000) | milliSecondsToTime }} </span>
                     </td>
                   </tr>
                 </ng-container>
