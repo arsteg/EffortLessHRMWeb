@@ -17,12 +17,12 @@ export class TaskCommentComponent implements OnInit {
   @Input() comment: taskComment;
   @Output() commentUpdated = new EventEmitter<{text: string }>();
   @Output() commentDeleted = new EventEmitter<taskComment>();
-  // @Input() currentProfile: any;
+  @Input() currentProfile: any;
   // @Input() authorlastName: string;
   @Input() attachments: TaskAttachment[]; 
-  currentProfile : any;
+  // currentProfile : any;
   isEditMode: boolean = false;
-  editedComment: taskComment;
+  editedComment: any;
   index: number;
   tempComment: taskComment;
   firstLetter: string;

@@ -16,10 +16,10 @@ export class TaskCommentListComponent implements OnInit {
   @Output() commentAdded = new EventEmitter<taskComment>();
   @Output() commentUpdated = new EventEmitter<{ index: number, text: taskComment }>();
   @Output() commentDeleted = new EventEmitter<number>();
-  @Input() currentProfile: any;
-  @Input() authorlastName: string;
+  // @Input() currentProfile: any;
+  // @Input() authorlastName: string;
    taskId: string;
-  // currentProfile : any;
+  currentProfile : any= [];
 
   newComment: '';
   commentsArray: taskComment[] = [];
@@ -60,6 +60,7 @@ userName: any;
     this.commentsArray = [...this.comments];
     this.taskService.getComments(this.taskId).subscribe((response) => {
       this.comments = response.data;
+      console.log(this.comments)
     });
     this.getTaskAttachments();
   }

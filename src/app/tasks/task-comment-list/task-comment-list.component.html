@@ -1,8 +1,8 @@
 <div class="comment-list">
    <ng-container *ngFor="let comment of comments; let i = index">
     <app-task-comment [comment]="comment" (commentAdded)="addComment()" (commentDeleted)="onDeleteComment(comment)"
-      (commentUpdated)="updateComment(i, $event.text)" [authorfirstName]="currentProfile?.firstName"
-      [authorlastName]="currentProfile?.lastName" [attachments]="comment.attachments">
+      (commentUpdated)="updateComment(i, $event.text)" [currentProfile]="comment?.author?.firstName"
+      [currentProfile]="comment?.author?.lastName" [attachments]="comment.attachments">
     </app-task-comment>
     <div class="d-flex row mb-3">
       <ng-container *ngFor="let attachment of commentAttachment">
