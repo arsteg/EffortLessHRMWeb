@@ -4,8 +4,6 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { signup, User, changeUserPassword } from '../models/user';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
-
 
 @Injectable({ providedIn: 'root' })
 
@@ -35,30 +33,11 @@ export class AuthenticationService {
   isLoggedIn(): boolean {
     return !!localStorage.getItem('jwtToken');
   }
-  constructor(private http: HttpClient, private router: Router) {
+  constructor(private http: HttpClient) {
     this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
     this.currentUser = this.currentUserSubject.asObservable();
   }
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree {
-    const companyIdCookie = this.getCookie('companyId');
-    const userIdCookie = this.getCookie('userId');
-
-    if (companyIdCookie && userIdCookie) {
-      return true;
-    } else {
-      // If cookies are not present, redirect to the login page
-      return this.router.parseUrl('/login');
-    }
-  }
-
-  private getCookie(name: string): string {
-    const value = "; " + document.cookie;
-    const parts = value.split("; " + name + "=");
-    if (parts.length == 2) return parts.pop()?.split(";").shift() || "";
-    return "";
-  }
-  
   public get currentUserValue(): User {
     return this.currentUserSubject.value;
   }
