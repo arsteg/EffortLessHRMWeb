@@ -126,6 +126,27 @@
               </div>
             </a>
           </div>
+
+          <div class="card cardAttachment" *ngIf="attachment?.attachmentType == 'application/vnd.ms-excel'">
+            <button type="button" class="bi bi-trash btn text-danger text-end deleteAttachment"
+              (click)="deleteCommentAttachment(attachment.id)"></button>
+            <a href="{{attachment.url}}" target="_blank" class="card-img-top">
+              <i class="bi bi-filetype-xls file"></i>
+              <div class="card-body py-0  border-top">
+                <small class="card-text"> {{attachment?.attachmentName}}</small>
+              </div>
+            </a>
+          </div>
+          <div class="card cardAttachment" *ngIf="attachment?.attachmentType == 'application/vnd.oasis.opendocument.spreadsheet'">
+            <button type="button" class="bi bi-trash btn text-danger text-end deleteAttachment"
+              (click)="deleteCommentAttachment(attachment.id)"></button>
+            <a href="{{attachment.url}}" target="_blank" class="card-img-top">
+              <i class="bi bi-file-earmark-spreadsheet-fill file"></i>
+              <div class="card-body py-0  border-top">
+                <small class="card-text"> {{attachment?.attachmentName}}</small>
+              </div>
+            </a>
+          </div>
         </div>
       </ng-container>
     </div>

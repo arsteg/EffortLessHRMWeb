@@ -16,15 +16,11 @@ export class TaskCommentListComponent implements OnInit {
   @Output() commentAdded = new EventEmitter<taskComment>();
   @Output() commentUpdated = new EventEmitter<{ index: number, text: taskComment }>();
   @Output() commentDeleted = new EventEmitter<number>();
-  // @Input() currentProfile: any;
-  // @Input() authorlastName: string;
-   taskId: string;
+  taskId: string;
   currentProfile : any= [];
-
   newComment: '';
   commentsArray: taskComment[] = [];
   author = JSON.parse(localStorage.getItem('currentUser'));
- 
   fileProperties: any = {};
   taskAttachment: any = [];
   public selectedAttachment: any;
@@ -34,7 +30,7 @@ export class TaskCommentListComponent implements OnInit {
   newCommentId: string = '';
   tasks: any = [];
   id: any;
-userName: any;
+  userName: any;
 
   constructor(private taskService: TasksService,
     private authentication: AuthenticationService,

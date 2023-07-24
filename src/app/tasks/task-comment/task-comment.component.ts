@@ -18,9 +18,7 @@ export class TaskCommentComponent implements OnInit {
   @Output() commentUpdated = new EventEmitter<{text: string }>();
   @Output() commentDeleted = new EventEmitter<taskComment>();
   @Input() currentProfile: any;
-  // @Input() authorlastName: string;
   @Input() attachments: TaskAttachment[]; 
-  // currentProfile : any;
   isEditMode: boolean = false;
   editedComment: any;
   index: number;

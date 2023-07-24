@@ -115,7 +115,7 @@ export class AddManualTimeComponent implements OnInit {
   //       });
   // }
   getUserTaskListByProject(projectId){
-    this.authenticationService.getUserTaskListByProject(this.id, projectId).subscribe(response => {
+    this.authenticationService.getUserTaskListByProject(this.id, projectId, '', '').subscribe(response => {
       this.tasks = response && response.data;
       console.log(this.tasks)
     });

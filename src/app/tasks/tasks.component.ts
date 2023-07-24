@@ -205,17 +205,15 @@ export class TasksComponent implements OnInit {
 
   async paginateTasks() {
     this.currentPage = 1;
-
     if ((!this.userId || !this.currentUser.id) && !this.projectId) {
-      this.listAllTasks();
+    await  this.listAllTasks();
     }
     else if (this.userId) {
-      this.getTaskByIds();
+      await this.getTaskByIds();
     }
     else if (this.projectId) {
-      this.getTasksByProject();
+      await this.getTasksByProject();
     }
-
   }
 
   nextPagination() {
@@ -293,10 +291,11 @@ export class TasksComponent implements OnInit {
       );
     }
     else {
-      this.authService.getUserTaskListByProject(this.userId, this.projectId).subscribe(
+      this.authService.getUserTaskListByProject(this.userId, this.projectId, this.skip, this.next).subscribe(
         (response: any) => {
-          this.tasks = response && response.data;
-
+          this.totalRecords = response;  
+          this.tasks = response.taskList;
+          this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
         });
     }
 
@@ -304,7 +303,15 @@ export class TasksComponent implements OnInit {
       console.log("Error!!!");
     }
   }
-
+ 
+  
+// getUsersAndProject(){
+//   this.authService.getUserTaskListByProject(this.userId, this.projectId, this.skip, this.next).subscribe(
+//     (response: any) => {
+//       this.tasks = response && response.data;
+//       this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
+//     });
+// }
   getUsersByProject() {
     const selectedProject = this.addForm.value.project;
     this.projectService.getprojectUser(selectedProject).subscribe((res: any) => {
