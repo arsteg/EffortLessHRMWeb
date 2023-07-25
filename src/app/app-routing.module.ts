@@ -67,7 +67,7 @@ const routes: Routes = [
   { path: 'resetPassword/:token', component: ResetPasswordComponent },
 
   {
-    path: '', component: HomeComponent, canActivate: [AuthGuard],
+    path: '', component: HomeComponent,
     children: [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'userDashboard', component: UserDashboardComponent },
