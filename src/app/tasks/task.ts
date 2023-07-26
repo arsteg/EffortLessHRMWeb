@@ -13,7 +13,7 @@ export class Task {
   user: string;
   status: string;
   project: project[];
-  taskAttachments: TaskAttachment[];
+  taskAttachments: attachments[];
 }
 export class SubTask {
   _id: string;

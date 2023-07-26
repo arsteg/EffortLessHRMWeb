@@ -42,31 +42,28 @@ export class TaskCommentListComponent implements OnInit {
 
   ngOnInit() {
 
-    this.taskId = this.taskIdService.getTaskId();
+    this.route.queryParams.subscribe(params => {
+      this.taskId = params['taskId'];
     if (this.taskId) {
       this.taskService.getTaskById(this.taskId).subscribe(result => {
         this.tasks = result.data;
       });
-
+      
       this.commonService.getCurrentUser().subscribe((profile: any) => {
         this.currentProfile = profile;
+       
       });
+      
     }
+  })
 
     this.commentsArray = [...this.comments];
     this.taskService.getComments(this.taskId).subscribe((response) => {
       this.comments = response.data;
-      console.log(this.comments)
     });
     this.getTaskAttachments();
   }
-  getMe(){
-  let currentUser = JSON.parse(localStorage.getItem('currentUser'))
-  this.authentication.GetMe(currentUser.id).subscribe((response: any) => {
-    this.userName = response && response.data.users;
-    return this.userName;
-  })
-}
+
   updateComment(index: number, text: any) {
     const comment = this.comments[index];
     comment.content = text;

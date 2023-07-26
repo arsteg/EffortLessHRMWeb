@@ -39,8 +39,11 @@ export class TaskCommentComponent implements OnInit {
     this.editedComment = this.comment;
     this.editedComment = { ...this.comment };
     this.firstLetter = this.commonService.firstletter;
+    console.log(this.currentProfile,"user")
     this.commonService.getCurrentUser().subscribe((profile: any) => {
       this.currentProfile = profile;
+    console.log(this.currentProfile,"user")
+
     });
   }
 

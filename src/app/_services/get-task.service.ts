@@ -9,13 +9,13 @@ export class GetTaskService {
 
   setTaskId(taskId: string): void {
     this.taskId = taskId;
-    localStorage.setItem('taskId', this.taskId)
+    // localStorage.setItem('taskId', this.taskId)
   }
 
   getTaskId(): string {
-    if (!this.taskId) {
-      this.taskId = localStorage.getItem('taskId')
-    }
+    // if (!this.taskId) {
+    //   this.taskId = localStorage.getItem('taskId')
+    // }
     return this.taskId;
   }
 }

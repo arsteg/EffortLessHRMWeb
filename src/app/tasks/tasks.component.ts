@@ -8,11 +8,12 @@ import { project } from '../Project/model/project';
 import { ProjectService } from '../_services/project.service';
 import { UserService } from '../_services/users.service';
 import { CommonService } from '../common/common.service';
-import { Router } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
 import { AuthenticationService } from '../_services/authentication.service';
 import { TimeLogService } from '../_services/timeLogService';
 import { GetTaskService } from '../_services/get-task.service';
 import * as moment from 'moment';
+import { Observable, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-tasks',
@@ -41,7 +42,6 @@ export class TasksComponent implements OnInit {
   selectedUser: any = [];
   selectedUsers = [];
   public sortOrder: string = ''; // 'asc' or 'desc'
-  currentUser = JSON.parse(localStorage.getItem('currentUser'));
   public allOption: string = "ALL";
   priorityList: priority[] = [{ name: 'Urgent', url: "assets/images/icon-urgent.svg" },
   { name: 'High', url: "assets/images/icon-high.svg" },
@@ -59,7 +59,7 @@ export class TasksComponent implements OnInit {
   showPriorityDropdown = false;
   selectedTaskIndex = -1;
   selectedTaskStatusIndex = -1;
-  attachments: TaskAttachment[] = [];
+  attachments: attachments[] = [];
   task: any;
   selectedFiles: any = [];
   fileProperties: any = {};
@@ -87,6 +87,7 @@ export class TasksComponent implements OnInit {
   totalRecords: any; // Total number of records
   currentPage: number = 1;
   index: number;
+  currentProfile: any;
   constructor(
     private tasksService: TasksService,
     private fb: FormBuilder,
@@ -111,7 +112,7 @@ export class TasksComponent implements OnInit {
       priority: ['', Validators.required],
       TaskUser: [''],
       project: ['', Validators.required],
-      taskAttachments: [[]]
+      taskAttachments: [this.attachments]
     });
     this.createTask_Board = this.fb.group({
       taskName: [''],
@@ -135,7 +136,7 @@ export class TasksComponent implements OnInit {
       estimate: [0],
       timeTaken: [0],
     });
-    
+
   }
 
   ngOnInit(): void {
@@ -144,23 +145,37 @@ export class TasksComponent implements OnInit {
       this.allAssignee = result && result.data && result.data.data;
     });
     this.firstLetter = this.commonservice.firstletter;
-    this.getTasks();
-    this.getprojects();
-    this.populateUsers();
-    this.userId = '';
-    this.listAllTasks();
+    this.getCurrentUser().subscribe(() => {
+      this.getTasks();
+      this.getprojects();
+      this.populateUsers();
+      this.userId = '';
+      this.listAllTasks();
+    });
   }
+  getCurrentUser() {
+    return this.commonservice.getCurrentUser().pipe(
+      switchMap((profile: any) => {
+        this.currentProfile = profile;
+        return new Observable((observer) => {
+          observer.next();
+          observer.complete();
+        });
+      })
+    );
+  }
+
   populateUsers() {
     this.members = [];
     this.members.push({ id: '', name: 'ALL Users', email: '' },
-      { id: this.currentUser.id, name: "Me", email: this.currentUser.email });
-    this.member = this.currentUser;
+      { id: this.currentProfile.id, name: "Me", email: this.currentProfile.email });
+    this.member = this.currentProfile;
     this.timelog.getTeamMembers(this.member.id).subscribe({
       next: (response: { data: any; }) => {
         this.timelog.getusers(response.data).subscribe({
           next: result => {
             result.data.forEach(user => {
-              if (user.email != this.currentUser.email) {
+              if (user.email != this.currentProfile.email) {
                 this.members.push({ id: user.id, name: `${user.firstName} ${user.lastName}`, email: user.email });
               }
             })
@@ -175,18 +190,18 @@ export class TasksComponent implements OnInit {
       }
     });
   }
-
-
   navigateToEditPage(task: any) {
     const taskId = task.id.toString();
-    console.log(taskId);
-    this.getTaskId.setTaskId(taskId)
+
     if (task.parentTask) {
       this.router.navigate(['/SubTask', task.taskNumber]);
     } else {
-      this.router.navigate(['/edit-task', task.taskNumber]);
+      // Pass the taskId as a parameter using NavigationExtras
+      const navigationExtras: NavigationExtras = {
+        queryParams: { taskId: taskId }
+      };
+      this.router.navigate(['/edit-task', task.taskNumber], navigationExtras);
     }
-
   }
 
   isStatusChecked(status: string): boolean {
@@ -205,8 +220,8 @@ export class TasksComponent implements OnInit {
 
   async paginateTasks() {
     this.currentPage = 1;
-    if ((!this.userId || !this.currentUser.id) && !this.projectId) {
-    await  this.listAllTasks();
+    if ((!this.userId || !this.currentProfile.id) && !this.projectId) {
+      await this.listAllTasks();
     }
     else if (this.userId) {
       await this.getTaskByIds();
@@ -274,7 +289,7 @@ export class TasksComponent implements OnInit {
   }
 
   async getTasksByProject() {
-    const selectedUserId = this.userId && this.currentUser.id;
+    const selectedUserId = this.userId && this.currentProfile.id;
     if (!selectedUserId) {
       this.tasksService.getTasksByProjectId(this.projectId, this.skip, this.next).subscribe(
         (response: any) => {
@@ -293,7 +308,7 @@ export class TasksComponent implements OnInit {
     else {
       this.authService.getUserTaskListByProject(this.userId, this.projectId, this.skip, this.next).subscribe(
         (response: any) => {
-          this.totalRecords = response;  
+          this.totalRecords = response;
           this.tasks = response.taskList;
           this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
         });
@@ -303,15 +318,15 @@ export class TasksComponent implements OnInit {
       console.log("Error!!!");
     }
   }
- 
-  
-// getUsersAndProject(){
-//   this.authService.getUserTaskListByProject(this.userId, this.projectId, this.skip, this.next).subscribe(
-//     (response: any) => {
-//       this.tasks = response && response.data;
-//       this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
-//     });
-// }
+
+
+  // getUsersAndProject(){
+  //   this.authService.getUserTaskListByProject(this.userId, this.projectId, this.skip, this.next).subscribe(
+  //     (response: any) => {
+  //       this.tasks = response && response.data;
+  //       this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
+  //     });
+  // }
   getUsersByProject() {
     const selectedProject = this.addForm.value.project;
     this.projectService.getprojectUser(selectedProject).subscribe((res: any) => {
@@ -320,6 +335,75 @@ export class TasksComponent implements OnInit {
   }
 
 
+  // async onSubmit() {
+  //   const newTask: Task = {
+  //     _id: '',
+  //     taskName: this.addForm.value.title,
+  //     title: this.addForm.value.title,
+  //     estimate: this.addForm.value.estimate,
+  //     startDate: this.addForm.value.startDate,
+  //     endDate: this.addForm.value.endDate,
+  //     description: this.addForm.value.description,
+  //     comment: this.addForm.value.comment,
+  //     isSubTask: false,
+  //     priority: this.addForm.value.priority,
+  //     user: this.addForm.value.TaskUser || null,
+  //     status: "ToDo",
+  //     project: this.addForm.value.project,
+  //     taskAttachments: []
+  //   };
+
+  //   // Create an array of task attachments with the new task ID
+  //   const taskAttachments: attachments[] = [];
+  //   newTask.taskAttachments = taskAttachments;
+
+  //   this.tasksService.addTask(newTask).subscribe(response => {
+  //     this.task = response;
+
+  //     const newTask = this.task.data;
+  //     this.tasks.push(newTask);
+  //     console.log("New Task:",newTask)
+  //     // if (this.userId && this.projectId) {
+  //     //   this.getTasksByProject()
+  //     // }
+  //     // else {
+  //     //   this.getTaskByIds();
+  //     // }
+  //     this.addForm.reset({
+  //       startDate: moment().format('YYYY-MM-DD'),
+  //       endDate: moment().format('YYYY-MM-DD')
+  //     });
+  //     if (taskAttachments) {
+  //       const attachments: attachments[] = [];
+
+  //       for (let i = 0; i < this.selectedFiles.length; i++) {
+  //         const file: File = this.selectedFiles[i];
+  //         const reader = new FileReader();
+  //         reader.readAsDataURL(file);
+  //         reader.onload = () => {
+  //           const base64String = reader.result.toString().split(',')[1];
+  //           const fileSize = file.size;
+  //           const fileType = file.type;
+  //           const fileNameParts = file.name.split('.');
+  //           const extension = fileNameParts[fileNameParts.length - 1];
+
+  //           attachments.push({
+  //             attachmentName: file.name,
+  //             attachmentType: fileType,
+  //             attachmentSize: fileSize,
+  //             extension: extension,
+  //             file: base64String
+  //           });
+
+  //           if (i === this.selectedFiles.length - 1) {
+  //             newTask.taskAttachments = attachments;
+  //             this.tasks.push(newTask);
+  //           };
+  //         }
+  //       }
+  //     }
+  //   })
+  // }
   onSubmit() {
     const newTask: Task = {
       _id: '',
@@ -335,79 +419,85 @@ export class TasksComponent implements OnInit {
       user: this.addForm.value.TaskUser || null,
       status: "ToDo",
       project: this.addForm.value.project,
-      taskAttachments: []
+      taskAttachments: [] // Initialize an empty array of attachments
     };
 
-    // Create an array of task attachments with the new task ID
-    const taskAttachments: TaskAttachment[] = [];
-    newTask.taskAttachments = taskAttachments;
+    if (this.selectedFiles.length > 0) {
+      const attachments: attachments[] = [];
 
-    this.tasksService.addTask(newTask).subscribe(response => {
-      this.task = response;
+      for (let i = 0; i < this.selectedFiles.length; i++) {
+        const file: File = this.selectedFiles[i];
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+          const base64String = reader.result.toString().split(',')[1];
+          const fileSize = file.size;
+          const fileType = file.type;
+          const fileNameParts = file.name.split('.');
+          const extension = fileNameParts[fileNameParts.length - 1];
 
-      const newTask = this.task.data.newTaskUserList;
-      this.tasks.push(newTask);
-      if (this.userId && this.projectId) {
-        this.getTasksByProject()
-      }
-      else {
-        this.getTaskByIds();
-      }
-      this.addForm.reset({
-        startDate: moment().format('YYYY-MM-DD'),
-        endDate: moment().format('YYYY-MM-DD')
-      });
-      if (taskAttachments) {
-        const attachments: attachments[] = [];
+          attachments.push({
+            attachmentName: file.name,
+            attachmentType: fileType,
+            attachmentSize: fileSize,
+            extension: extension,
+            file: base64String
+          });
 
-        for (let i = 0; i < this.selectedFiles.length; i++) {
-          const file: File = this.selectedFiles[i];
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onload = () => {
-            const base64String = reader.result.toString().split(',')[1];
-            const fileSize = file.size;
-            const fileType = file.type;
-            const fileNameParts = file.name.split('.');
-            const extension = fileNameParts[fileNameParts.length - 1];
+          if (i === this.selectedFiles.length - 1) {
+            newTask.taskAttachments = attachments;
 
-            attachments.push({
-              attachmentName: file.name,
-              attachmentType: fileType,
-              attachmentSize: fileSize,
-              extension: extension,
-              file: base64String
-            });
-
-            if (i === this.selectedFiles.length - 1) {
-              const taskAttachment: taskAttachments = {
-                taskId: newTask._id,
-                taskAttachments: attachments
-              };
-
-              this.tasksService.addTaskAttachment(taskAttachment).subscribe(
-                (response) => {
-                  newTask.taskAttachments = attachments;
-                },
-                (error) => {
-                  console.error('Error creating task attachment:', error);
+            // Make the API call inside the asynchronous block
+            this.tasksService.addTask(newTask).subscribe(
+              (response) => {
+                this.task = response;
+                const newTask = this.task.data;
+                this.tasks.push(newTask);
+                console.log("New Task:", newTask);
+                if (this.userId && this.projectId) {
+                  this.getTasksByProject()
                 }
-              );
-            }
-          };
+                else {
+                  this.getTaskByIds();
+                }
+                this.addForm.reset({
+                  startDate: moment().format('YYYY-MM-DD'),
+                  endDate: moment().format('YYYY-MM-DD')
+                });
+                this.toast.success('New Task Successfully Created!');
+              },
+              (err) => {
+                this.toast.error('Task Can not be Created', 'Error!');
+              }
+            );
+          }
+        };
+      }
+    } else {
+      // If no files are selected, directly make the API call without attachments
+      this.tasksService.addTask(newTask).subscribe(
+        (response) => {
+          this.task = response;
+          const newTask = this.task.data;
+          this.tasks.push(newTask);
+          console.log("New Task:", newTask);
+          if (this.userId && this.projectId) {
+            this.getTasksByProject()
+          }
+          else {
+            this.getTaskByIds();
+          }
+          this.addForm.reset({
+            startDate: moment().format('YYYY-MM-DD'),
+            endDate: moment().format('YYYY-MM-DD')
+          });
+          this.toast.success('New Task Successfully Created!');
+        },
+        (err) => {
+          this.toast.error('Task Can not be Created', 'Error!');
         }
-
-      }
-      this.toast.success('New Task Successfully Created!')
-      err => {
-        console.log("Error creating task!");
-      }
-    },
-      err => {
-        this.toast.error('Task Can not be Created', 'Error!');
-      }
-    );
-
+      );
+    }
   }
 
 
@@ -448,10 +538,10 @@ export class TasksComponent implements OnInit {
   }
 
 
- 
 
-   onProjectSelectionChange() {
-    if (this.view === 'admin' && !this.userId && !this.currentUser.id && this.projectId === 'ALL') {
+
+  onProjectSelectionChange() {
+    if (this.view === 'admin' && !this.userId && !this.currentProfile.id && this.projectId === 'ALL') {
       this.getTasks();
     } else if (this.projectId !== 'ALL') {
       this.skip = '0';
@@ -463,11 +553,11 @@ export class TasksComponent implements OnInit {
     }
     else {
       if (this.view !== 'admin') {
-        this.projectService.getProjectByUserId(this.currentUser.id).subscribe(response => {
+        this.projectService.getProjectByUserId(this.currentProfile.id).subscribe(response => {
           this.projectList = response && response.data && response.data['projectList'];
           this.projectList = this.projectList.filter(project => project !== null);
         });
-        this.tasksService.getTaskByUser(this.currentUser.id, this.skip, this.next).subscribe(response => {
+        this.tasksService.getTaskByUser(this.currentProfile.id, this.skip, this.next).subscribe(response => {
           this.tasks = response && response.data && response.data['taskList'];
           this.totalRecords = response && response.data
           this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
@@ -566,7 +656,7 @@ export class TasksComponent implements OnInit {
     this.newTask = {};
   }
   addTaskToDo() {
-    const id: '' = this.currentUser.id
+    const id: '' = this.currentProfile.id
     const taskFromBoard: TaskBoard = {
       taskName: this.createTask_Board.value.taskName,
       title: this.createTask_Board.value.taskName,
@@ -588,7 +678,7 @@ export class TasksComponent implements OnInit {
   }
 
   addTaskInProgress() {
-    const id: '' = this.currentUser.id
+    const id: '' = this.currentProfile.id
     const taskFromBoard: TaskBoard = {
       taskName: this.createTask_Board.value.taskName,
       title: this.createTask_Board.value.taskName,
@@ -610,7 +700,7 @@ export class TasksComponent implements OnInit {
   }
 
   addTaskDone() {
-    const id: '' = this.currentUser.id
+    const id: '' = this.currentProfile.id
     const taskFromBoard: TaskBoard = {
       taskName: this.createTask_Board.value.taskName,
       title: this.createTask_Board.value.taskName,
@@ -631,7 +721,7 @@ export class TasksComponent implements OnInit {
     })
   }
   addTaskClosed() {
-    const id: '' = this.currentUser.id
+    const id: '' = this.currentProfile.id
     const taskFromBoard: TaskBoard = {
       taskName: this.createTask_Board.value.taskName,
       title: this.createTask_Board.value.taskName,
@@ -668,7 +758,7 @@ export class TasksComponent implements OnInit {
   }
 
   getTasks() {
-    if (!this.userId && !this.currentUser.id) {
+    if (!this.userId && !this.currentProfile.id) {
       this.listAllTasks();
     }
   }
@@ -679,7 +769,7 @@ export class TasksComponent implements OnInit {
         this.projectList = response && response.data && response.data['projectList'];
       });
     } else {
-      this.projectService.getProjectByUserId(this.currentUser.id).subscribe(response => {
+      this.projectService.getProjectByUserId(this.currentProfile.id).subscribe(response => {
         this.projectList = response && response.data && response.data['projectList'];
         this.projectList = this.projectList.filter(project => project !== null);
       });

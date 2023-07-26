@@ -374,7 +374,9 @@
                                                         </div>
                                                     </a>
                                                 </div>
-
+                                               
+                                                
+                                                
 
 
                                                 <div class="card cardAttachment"
@@ -395,7 +397,7 @@
                                                     <button type="button"
                                                         class="bi bi-trash btn text-danger text-right deleteAttachment"
                                                         (click)="deleteTaskAttachment(attachment.id)"></button>
-                                                    <a href="{{attachment.url}}" class="card-img-top">
+                                                    <a href="{{attachment.url}}" target="_blank" download="{{attachment.attachmentName}}" class="card-img-top">
                                                         <i class="bi bi-filetype-txt file"></i>
                                                         <div class="card-body py-0  border-top">
                                                             <small class="card-text">

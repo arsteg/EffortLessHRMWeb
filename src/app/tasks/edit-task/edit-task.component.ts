@@ -112,18 +112,22 @@ export class EditTaskComponent implements OnInit {
   }
   ngOnInit(): void {
     this.getprojects();
-    this.getTask();
+    
     this.firstLetter = this.commonService.firstletter;
-    this.getTaskAttachments();
-    this.tasksService.getSubTask(this.taskId).subscribe((response: any) => {
-      this.subTask = response && response.data && response.data['taskList']
+    this.route.queryParams.subscribe(params => {
+      this.taskId = params['taskId'];
+      console.log(this.taskId)
+      this.getTask(this.taskId);
+      this.tasksService.getSubTask(this.taskId).subscribe((response: any) => {
+        this.subTask = response && response.data && response.data['taskList']
+      })
+      this.getTaskAttachments();
     })
     this.getTasks();
   }
-  getTask() {
-    this.taskId = this.taskIdService.getTaskId();
-    if (this.taskId) {
-      this.tasksService.getTaskById(this.taskId).subscribe(task => {
+  getTask(taskId: string) {
+    if (taskId) {
+      this.tasksService.getTaskById(taskId).subscribe(task => {
         this.tasks = task;
         this.task = task.data.newTaskUserList;
        
@@ -212,7 +216,7 @@ export class EditTaskComponent implements OnInit {
 
       this.tasks = task;
       this.getTaskAttachments();
-      this.getTask();
+      this.getTask(taskId);
     });
   }
 
@@ -483,15 +487,23 @@ export class EditTaskComponent implements OnInit {
     );
   }
 
-
-
   subTaskDetail(subTask: any) {
     const taskId = subTask.id.toString();
-
-    this.taskIdService.setTaskId(taskId)
-    this.router.navigate(['/SubTask', subTask.taskNumber]);
-
+    
+   
+      const navigationExtras: NavigationExtras = {
+        queryParams: { taskId: taskId }
+      };
+      this.router.navigate(['/SubTask', subTask.taskNumber], navigationExtras);
   }
+
+  // subTaskDetail(subTask: any) {
+  //   const taskId = subTask.id.toString();
+
+  //   this.taskIdService.setTaskId(taskId)
+  //   this.router.navigate(['/SubTask', subTask.taskNumber]);
+
+  // }
 
 
 
@@ -528,6 +540,14 @@ export class EditTaskComponent implements OnInit {
         this.toast.error('Task could not be updated', 'ERROR!')
       }
     );
+  }
+
+  downloadAttachment(url: string, attachmentName: string) {
+    const link = document.createElement('a');
+    link.href = url;
+    link.target = '_blank';
+    link.download = attachmentName;
+    link.click();
   }
 
 }
