@@ -31,7 +31,19 @@ export class AuthenticationService {
     return httpOptions;
   }
   isLoggedIn(): boolean {
-    return !!localStorage.getItem('jwtToken');
+    // return !!localStorage.getItem('jwtToken');
+    const authToken = this.getCookie('companyId')
+    return !!authToken
+  }
+  getCookie(name: string): string | null {
+    const value = "; " + document.cookie;
+    const parts = value.split("; " + name + "=");
+  
+    if (parts.length === 2) {
+      return parts.pop()?.split(";").shift() || null;
+    }
+  
+    return null;
   }
   constructor(private http: HttpClient) {
     this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
