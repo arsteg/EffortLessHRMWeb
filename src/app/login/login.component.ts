@@ -37,72 +37,87 @@ export class LoginComponent implements OnInit {
       this.router.navigateByUrl('login');
     }
     this.rememberMe = localStorage.getItem('rememberMe') == 'true';
+    const loginTime = localStorage.getItem('loginTime');
+    if (!loginTime) {
+      this.router.navigate(['/login']);
+      console.log('succesfully navigated', !loginTime)
+      return;
+    }
+  
+    const currentTime = new Date().getTime();
+    const elapsedTime = currentTime - parseInt(loginTime, 10);
+  
+    if (elapsedTime > 86400000) {
+      this.router.navigate(['/login']);
+    } else {
+      console.log('User session is still valid.');
+    }
   }
 
-  // onSubmit() {
-  //   {
-  //     // debugger;
-  //     this.submitted = true;
-  //     this.loading = true;
-  //     this.user.email = this.loginForm.value.username;
-  //     this.user.password = this.loginForm.value.password;
-  //     this.authenticationService.login(this.user)
-  //       .pipe(first())
-  //       .subscribe(
-  //         data => {
-  //           this.loading = false;
-  //           this.user.id = data.data.user.id;
-  //           localStorage.setItem('jwtToken', data.token);
-  //           localStorage.setItem('currentUser', JSON.stringify(this.user));
-  //           localStorage.setItem('rememberMe', JSON.stringify(this.rememberMe));
-  //           localStorage.setItem('roleId', data.data.user?.role?.id);
-  //           console.log(data.data.user?.role?.id)
-  //           if (data.data.user?.role?.id === '639acb77b5e1ffe22eaa4a39') {
-  //             this.router.navigate(['/dashboard']);
-  //             console.log('Logged In')
-  //           } else {
-  //             this.router.navigate(['/userDashboard']);
-  //           }
+  onSubmit() {
+    {
+      // debugger;
+      this.submitted = true;
+      this.loading = true;
+      this.user.email = this.loginForm.value.username;
+      this.user.password = this.loginForm.value.password;
+      this.authenticationService.login(this.user)
+        .pipe(first())
+        .subscribe(
+          data => {
+            console.log(data)
+            this.loading = false;
+            this.user.id = data.data.user.id;
+            localStorage.setItem('jwtToken', data.token);
+            localStorage.setItem('currentUser', JSON.stringify(this.user));
+            localStorage.setItem('rememberMe', JSON.stringify(this.rememberMe));
+            localStorage.setItem('roleId', data.data.user?.role?.id);
+            console.log(data.data.user?.role?.id)
+            const loginTime = new Date().getTime();
+            localStorage.setItem('loginTime', loginTime.toString());
+  
+            // Redirect to the dashboard or login page based on role
+            if (data.data.user?.role?.id === '639acb77b5e1ffe22eaa4a39') {
+              this.router.navigate(['/dashboard']);
+              console.log('Logged In')
+            } else {
+              this.router.navigate(['/userDashboard']);
+            }
 
-  //         },
-  //         err => {
-  //           this.notifyService.showError(err.message, "Error")
-  //           this.loading = false;
-  //         }
-  //       );
+          },
+          err => {
+            this.notifyService.showError(err.message, "Error")
+            this.loading = false;
+          }
+        );
+    }
+  }
+  // redirectToDashboardOrLoginPage() {
+  //   // Get the login timestamp from local storage
+  //   const loginTime = localStorage.getItem('loginTime');
+  //   if (!loginTime) {
+  //     // If loginTime is not set, the user hasn't logged in yet or the session has expired, navigate to login
+  //     this.router.navigate(['/login']);
+  //     return;
+  //   }
+
+  //   // Calculate the time difference between current time and login time (in milliseconds)
+  //   const currentTime = new Date().getTime();
+  //   const elapsedTime = currentTime - parseInt(loginTime, 10);
+
+  //   // Check if the elapsed time is greater than 24 hours (86400000 milliseconds)
+  //   if (elapsedTime > 86400000) {
+  //     // The session has expired, clear authentication data and navigate to login
+  //     // this.authenticationService.clearAuthenticationData();
+  //     this.router.navigate(['/login']);
+  //   } else {
+  //     // The session is still valid, redirect to the dashboard or user dashboard based on role
+  //     const roleId = localStorage.getItem('roleId');
+  //     if (roleId === '639acb77b5e1ffe22eaa4a39') {
+  //       this.router.navigate(['/dashboard']);
+  //     } else {
+  //       this.router.navigate(['/userDashboard']);
+  //     }
   //   }
   // }
-  onSubmit() {
-    this.submitted = true;
-    this.loading = true;
-    this.user.email = this.loginForm.value.username;
-    this.user.password = this.loginForm.value.password;
-    this.authenticationService.login(this.user)
-      .pipe(first())
-      .subscribe(
-        data => {
-          this.loading = false;
-          this.user.id = data.data.user.id;
-          localStorage.setItem('jwtToken', data.token);
-          localStorage.setItem('currentUser', JSON.stringify(this.user));
-          localStorage.setItem('rememberMe', JSON.stringify(this.rememberMe));
-          localStorage.setItem('roleId', data.data.user?.role?.id);
-          console.log(data.data.user?.role?.id)
-          if (data.data.user?.role?.id === '639acb77b5e1ffe22eaa4a39') {
-            this.router.navigate(['/dashboard']);
-            console.log('Logged In')
-          } else {
-            this.router.navigate(['/userDashboard']);
-          }
-        },
-        err => {
-          this.notifyService.showError(err.message, "Error");
-          this.loading = false;
-          if (err.message === 'Session expired. Please log in again.') {
-            this.router.navigate(['/login']);
-          }
-        }
-      );
-  }
-  
 }

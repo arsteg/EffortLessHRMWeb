@@ -77,32 +77,16 @@ export class AuthenticationService {
     queryHeaders.append('Access-Control-Allow-Origin', '*');
     return this.http.patch<any>(`${environment.apiUrlDotNet}/users/resetPassword/${token}`, { password: password, passwordConfirm: confirm_password }, { headers: queryHeaders });
   }
-  // login(user) {
-  //   const httpOptions = this.defaultHttpOptions();
-  //   return this.http.post<any>(`${environment.apiUrlDotNet}/users/login`, { email: user.email, password: user.password }, httpOptions)
-  //     .pipe(map(user => {
-  //       this.currentUserSubject.next(user);
-  //       this.loggedIn.next(true);
-  //       return user;
-  //     }));
-  // }
   login(user) {
     const httpOptions = this.defaultHttpOptions();
     return this.http.post<any>(`${environment.apiUrlDotNet}/users/login`, { email: user.email, password: user.password }, httpOptions)
-      .pipe(
-        tap(data => {
-          const authToken = this.getCookie('companyId');
-          if (!authToken) {
-            this.clearAuthenticationData();
-            throw new Error('Session expired. Please log in again.');
-          }
-  
-          this.currentUserSubject.next(data);
-          this.loggedIn.next(true);
-          return data;
-        })
-      );
+      .pipe(map(user => {
+        this.currentUserSubject.next(user);
+        this.loggedIn.next(true);
+        return user;
+      }));
   }
+ 
   logout() {
     // remove user from local storage and set current user to null
     localStorage.removeItem('currentUser');
