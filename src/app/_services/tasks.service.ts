@@ -32,6 +32,9 @@ export class TasksService {
   getAllTasks(skip:string, next: string): Observable<Task[]> {
     return this.http.post<Task[]>(`${this.apiUrl}/task/tasklist`,{skip, next}, this.httpOptions);
   }
+  getTasklistbyTeam(skip:string, next: string): Observable<Task[]> {
+    return this.http.post<Task[]>(`${this.apiUrl}/task/tasklistbyteam`,{skip, next}, this.httpOptions);
+  }
 
   addTask(task): Observable<Task> {
     return this.http.post<Task>(`${this.apiUrl}/task/newtask`, task, this.httpOptions);

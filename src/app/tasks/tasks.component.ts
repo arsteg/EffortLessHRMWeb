@@ -150,7 +150,11 @@ export class TasksComponent implements OnInit {
       this.getprojects();
       this.populateUsers();
       this.userId = '';
-      this.listAllTasks();
+      if (this.view === 'admin') {
+        this.listAllTasks();
+      }
+      else
+        this.getTasksbyTeam();
     });
   }
   getCurrentUser() {
@@ -217,17 +221,26 @@ export class TasksComponent implements OnInit {
     });
 
   }
+  getTasksbyTeam() {
+    this.tasksService.getTasklistbyTeam(this.skip, this.next).subscribe((response: any) => {
+      this.totalRecords = response && response.data
+      this.tasks = response && response.data && response.data['taskList'];
+      console.log(this.tasks[1].TaskUsers[0].user?.firstName)
+      this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
+    });
+  }
 
   async paginateTasks() {
     this.currentPage = 1;
     if ((!this.userId || !this.currentProfile.id) && !this.projectId) {
-      await this.listAllTasks();
+      if (this.view === 'admin') { this.listAllTasks(); }
+      else { this.getTasksbyTeam(); }
     }
     else if (this.userId) {
-      await this.getTaskByIds();
+      this.getTaskByIds();
     }
     else if (this.projectId) {
-      await this.getTasksByProject();
+      this.getTasksByProject();
     }
   }
 
@@ -501,7 +514,6 @@ export class TasksComponent implements OnInit {
 
 
   async getTaskByIds() {
-
     this.tasksService.getTaskByUser(this.userId, this.skip, this.next).subscribe(response => {
       this.tasks = response && response.data && response.data['taskList'];
       this.totalRecords = response && response.data
@@ -517,9 +529,15 @@ export class TasksComponent implements OnInit {
   onMemberSelectionChange(user) {
     this.projectId = null;
     this.userId = user;
+
     if (!this.userId || this.userId === '') {
       this.skip = '0';
-      this.listAllTasks();
+      if (this.view === 'admin') {
+        this.listAllTasks();
+      }
+      else {
+        this.getTasksbyTeam();
+      }
     }
     else {
       this.skip = '0';
@@ -527,6 +545,7 @@ export class TasksComponent implements OnInit {
     }
 
   }
+
   getTaskPriorityUrl(currentPriority) {
     const priority = this.priorityList.find(x => x.name.toLowerCase() === currentPriority?.toLowerCase());
     return priority?.url ? priority?.url : this.unKnownImage;

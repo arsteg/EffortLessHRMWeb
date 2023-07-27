@@ -35,23 +35,7 @@ export class AuthenticationService {
     const jwtToken = localStorage.getItem('jwtToken');
     return !!jwtToken; // Check token existence
   }
-  getCookie(name: string): string | null {
-    const value = "; " + document.cookie;
-    const parts = value.split("; " + name + "=");
   
-    if (parts.length === 2) {
-      return parts.pop()?.split(";").shift() || null;
-    }
-  
-    return null;
-  }
-  clearAuthenticationData() {
-    const expirationDate = new Date();
-    expirationDate.setTime(expirationDate.getTime() + (24 * 60 * 60 * 1000)); // 24 hours in milliseconds
-    const expires = "expires=" + expirationDate.toUTCString();
-    document.cookie = 'companyId=; ' + expires + '; path=/;';
-    console.log(document.cookie)
-  }
   
   constructor(private http: HttpClient, private router: Router) {
     this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));

@@ -92,32 +92,5 @@ export class LoginComponent implements OnInit {
         );
     }
   }
-  // redirectToDashboardOrLoginPage() {
-  //   // Get the login timestamp from local storage
-  //   const loginTime = localStorage.getItem('loginTime');
-  //   if (!loginTime) {
-  //     // If loginTime is not set, the user hasn't logged in yet or the session has expired, navigate to login
-  //     this.router.navigate(['/login']);
-  //     return;
-  //   }
-
-  //   // Calculate the time difference between current time and login time (in milliseconds)
-  //   const currentTime = new Date().getTime();
-  //   const elapsedTime = currentTime - parseInt(loginTime, 10);
-
-  //   // Check if the elapsed time is greater than 24 hours (86400000 milliseconds)
-  //   if (elapsedTime > 86400000) {
-  //     // The session has expired, clear authentication data and navigate to login
-  //     // this.authenticationService.clearAuthenticationData();
-  //     this.router.navigate(['/login']);
-  //   } else {
-  //     // The session is still valid, redirect to the dashboard or user dashboard based on role
-  //     const roleId = localStorage.getItem('roleId');
-  //     if (roleId === '639acb77b5e1ffe22eaa4a39') {
-  //       this.router.navigate(['/dashboard']);
-  //     } else {
-  //       this.router.navigate(['/userDashboard']);
-  //     }
-  //   }
-  // }
+  
 }
