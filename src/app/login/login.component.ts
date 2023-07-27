@@ -56,8 +56,10 @@ export class LoginComponent implements OnInit {
             localStorage.setItem('currentUser', JSON.stringify(this.user));
             localStorage.setItem('rememberMe', JSON.stringify(this.rememberMe));
             localStorage.setItem('roleId', data.data.user?.role?.id);
+            console.log(data.data.user?.role?.id)
             if (data.data.user?.role?.id === '639acb77b5e1ffe22eaa4a39') {
               this.router.navigate(['/dashboard']);
+              console.log('Logged In')
             } else {
               this.router.navigate(['/userDashboard']);
             }
