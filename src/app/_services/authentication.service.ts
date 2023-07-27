@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { signup, User, changeUserPassword } from '../models/user';
+import { Router } from '@angular/router';
 
 @Injectable({ providedIn: 'root' })
 
@@ -31,9 +32,8 @@ export class AuthenticationService {
     return httpOptions;
   }
   isLoggedIn(): boolean {
-    // return !!localStorage.getItem('jwtToken');
-    const authToken = this.getCookie('companyId')
-    return !!authToken
+    const jwtToken = localStorage.getItem('jwtToken');
+    return !!jwtToken; // Check token existence
   }
   getCookie(name: string): string | null {
     const value = "; " + document.cookie;
@@ -45,7 +45,15 @@ export class AuthenticationService {
   
     return null;
   }
-  constructor(private http: HttpClient) {
+  clearAuthenticationData() {
+    const expirationDate = new Date();
+    expirationDate.setTime(expirationDate.getTime() + (24 * 60 * 60 * 1000)); // 24 hours in milliseconds
+    const expires = "expires=" + expirationDate.toUTCString();
+    document.cookie = 'companyId=; ' + expires + '; path=/;';
+    console.log(document.cookie)
+  }
+  
+  constructor(private http: HttpClient, private router: Router) {
     this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
     this.currentUser = this.currentUserSubject.asObservable();
   }
@@ -73,6 +81,14 @@ export class AuthenticationService {
     const httpOptions = this.defaultHttpOptions();
     return this.http.post<any>(`${environment.apiUrlDotNet}/users/login`, { email: user.email, password: user.password }, httpOptions)
       .pipe(map(user => {
+         // Check if the 'companyId' cookie is present
+      const authToken = this.getCookie('companyId');
+      if (!authToken) {
+        // 'companyId' cookie is not present, perform logout
+        this.router.navigate(['/']);
+        this.clearAuthenticationData();
+        throw new Error('Session expired. Please log in again.');
+      }
         this.currentUserSubject.next(user);
         this.loggedIn.next(true);
         return user;

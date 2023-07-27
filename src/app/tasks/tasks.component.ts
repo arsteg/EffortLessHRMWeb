@@ -334,76 +334,6 @@ export class TasksComponent implements OnInit {
     });
   }
 
-
-  // async onSubmit() {
-  //   const newTask: Task = {
-  //     _id: '',
-  //     taskName: this.addForm.value.title,
-  //     title: this.addForm.value.title,
-  //     estimate: this.addForm.value.estimate,
-  //     startDate: this.addForm.value.startDate,
-  //     endDate: this.addForm.value.endDate,
-  //     description: this.addForm.value.description,
-  //     comment: this.addForm.value.comment,
-  //     isSubTask: false,
-  //     priority: this.addForm.value.priority,
-  //     user: this.addForm.value.TaskUser || null,
-  //     status: "ToDo",
-  //     project: this.addForm.value.project,
-  //     taskAttachments: []
-  //   };
-
-  //   // Create an array of task attachments with the new task ID
-  //   const taskAttachments: attachments[] = [];
-  //   newTask.taskAttachments = taskAttachments;
-
-  //   this.tasksService.addTask(newTask).subscribe(response => {
-  //     this.task = response;
-
-  //     const newTask = this.task.data;
-  //     this.tasks.push(newTask);
-  //     console.log("New Task:",newTask)
-  //     // if (this.userId && this.projectId) {
-  //     //   this.getTasksByProject()
-  //     // }
-  //     // else {
-  //     //   this.getTaskByIds();
-  //     // }
-  //     this.addForm.reset({
-  //       startDate: moment().format('YYYY-MM-DD'),
-  //       endDate: moment().format('YYYY-MM-DD')
-  //     });
-  //     if (taskAttachments) {
-  //       const attachments: attachments[] = [];
-
-  //       for (let i = 0; i < this.selectedFiles.length; i++) {
-  //         const file: File = this.selectedFiles[i];
-  //         const reader = new FileReader();
-  //         reader.readAsDataURL(file);
-  //         reader.onload = () => {
-  //           const base64String = reader.result.toString().split(',')[1];
-  //           const fileSize = file.size;
-  //           const fileType = file.type;
-  //           const fileNameParts = file.name.split('.');
-  //           const extension = fileNameParts[fileNameParts.length - 1];
-
-  //           attachments.push({
-  //             attachmentName: file.name,
-  //             attachmentType: fileType,
-  //             attachmentSize: fileSize,
-  //             extension: extension,
-  //             file: base64String
-  //           });
-
-  //           if (i === this.selectedFiles.length - 1) {
-  //             newTask.taskAttachments = attachments;
-  //             this.tasks.push(newTask);
-  //           };
-  //         }
-  //       }
-  //     }
-  //   })
-  // }
   onSubmit() {
     const newTask: Task = {
       _id: '',
@@ -576,7 +506,6 @@ export class TasksComponent implements OnInit {
       this.tasks = response && response.data && response.data['taskList'];
       this.totalRecords = response && response.data
       this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
-      console.log(this.currentPage)
       this.tasks = this.tasks.filter(task => task !== null);
     });
     this.projectService.getProjectByUserId(this.userId).subscribe(response => {

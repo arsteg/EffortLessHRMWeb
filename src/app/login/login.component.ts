@@ -66,6 +66,12 @@ export class LoginComponent implements OnInit {
           err => {
             this.notifyService.showError(err.message, "Error")
             this.loading = false;
+            if (err.status === 401) { // Unauthorized - Invalid credentials or expired cookies
+              this.authenticationService.clearAuthenticationData();
+              // Optionally, you may also want to display a message to the user
+              // indicating that their session has expired and they need to log in again.
+              this.router.navigate(['/login']);
+            }
           }
         );
     }
