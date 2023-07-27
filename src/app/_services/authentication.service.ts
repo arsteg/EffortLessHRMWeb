@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { signup, User, changeUserPassword } from '../models/user';
 import { Router } from '@angular/router';
@@ -77,24 +77,32 @@ export class AuthenticationService {
     queryHeaders.append('Access-Control-Allow-Origin', '*');
     return this.http.patch<any>(`${environment.apiUrlDotNet}/users/resetPassword/${token}`, { password: password, passwordConfirm: confirm_password }, { headers: queryHeaders });
   }
+  // login(user) {
+  //   const httpOptions = this.defaultHttpOptions();
+  //   return this.http.post<any>(`${environment.apiUrlDotNet}/users/login`, { email: user.email, password: user.password }, httpOptions)
+  //     .pipe(map(user => {
+  //       this.currentUserSubject.next(user);
+  //       this.loggedIn.next(true);
+  //       return user;
+  //     }));
+  // }
   login(user) {
     const httpOptions = this.defaultHttpOptions();
     return this.http.post<any>(`${environment.apiUrlDotNet}/users/login`, { email: user.email, password: user.password }, httpOptions)
-      .pipe(map(user => {
-         // Check if the 'companyId' cookie is present
-      const authToken = this.getCookie('companyId');
-      if (!authToken) {
-        // 'companyId' cookie is not present, perform logout
-        this.router.navigate(['/']);
-        this.clearAuthenticationData();
-        throw new Error('Session expired. Please log in again.');
-      }
-        this.currentUserSubject.next(user);
-        this.loggedIn.next(true);
-        return user;
-      }));
+      .pipe(
+        tap(data => {
+          const authToken = this.getCookie('companyId');
+          if (!authToken) {
+            this.clearAuthenticationData();
+            throw new Error('Session expired. Please log in again.');
+          }
+  
+          this.currentUserSubject.next(data);
+          this.loggedIn.next(true);
+          return data;
+        })
+      );
   }
-
   logout() {
     // remove user from local storage and set current user to null
     localStorage.removeItem('currentUser');

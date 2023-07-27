@@ -39,43 +39,70 @@ export class LoginComponent implements OnInit {
     this.rememberMe = localStorage.getItem('rememberMe') == 'true';
   }
 
-  onSubmit() {
-    {
-      // debugger;
-      this.submitted = true;
-      this.loading = true;
-      this.user.email = this.loginForm.value.username;
-      this.user.password = this.loginForm.value.password;
-      this.authenticationService.login(this.user)
-        .pipe(first())
-        .subscribe(
-          data => {
-            this.loading = false;
-            this.user.id = data.data.user.id;
-            localStorage.setItem('jwtToken', data.token);
-            localStorage.setItem('currentUser', JSON.stringify(this.user));
-            localStorage.setItem('rememberMe', JSON.stringify(this.rememberMe));
-            localStorage.setItem('roleId', data.data.user?.role?.id);
-            console.log(data.data.user?.role?.id)
-            if (data.data.user?.role?.id === '639acb77b5e1ffe22eaa4a39') {
-              this.router.navigate(['/dashboard']);
-              console.log('Logged In')
-            } else {
-              this.router.navigate(['/userDashboard']);
-            }
+  // onSubmit() {
+  //   {
+  //     // debugger;
+  //     this.submitted = true;
+  //     this.loading = true;
+  //     this.user.email = this.loginForm.value.username;
+  //     this.user.password = this.loginForm.value.password;
+  //     this.authenticationService.login(this.user)
+  //       .pipe(first())
+  //       .subscribe(
+  //         data => {
+  //           this.loading = false;
+  //           this.user.id = data.data.user.id;
+  //           localStorage.setItem('jwtToken', data.token);
+  //           localStorage.setItem('currentUser', JSON.stringify(this.user));
+  //           localStorage.setItem('rememberMe', JSON.stringify(this.rememberMe));
+  //           localStorage.setItem('roleId', data.data.user?.role?.id);
+  //           console.log(data.data.user?.role?.id)
+  //           if (data.data.user?.role?.id === '639acb77b5e1ffe22eaa4a39') {
+  //             this.router.navigate(['/dashboard']);
+  //             console.log('Logged In')
+  //           } else {
+  //             this.router.navigate(['/userDashboard']);
+  //           }
 
-          },
-          err => {
-            this.notifyService.showError(err.message, "Error")
-            this.loading = false;
-            if (err.status === 401) { // Unauthorized - Invalid credentials or expired cookies
-              this.authenticationService.clearAuthenticationData();
-              // Optionally, you may also want to display a message to the user
-              // indicating that their session has expired and they need to log in again.
-              this.router.navigate(['/login']);
-            }
+  //         },
+  //         err => {
+  //           this.notifyService.showError(err.message, "Error")
+  //           this.loading = false;
+  //         }
+  //       );
+  //   }
+  // }
+  onSubmit() {
+    this.submitted = true;
+    this.loading = true;
+    this.user.email = this.loginForm.value.username;
+    this.user.password = this.loginForm.value.password;
+    this.authenticationService.login(this.user)
+      .pipe(first())
+      .subscribe(
+        data => {
+          this.loading = false;
+          this.user.id = data.data.user.id;
+          localStorage.setItem('jwtToken', data.token);
+          localStorage.setItem('currentUser', JSON.stringify(this.user));
+          localStorage.setItem('rememberMe', JSON.stringify(this.rememberMe));
+          localStorage.setItem('roleId', data.data.user?.role?.id);
+          console.log(data.data.user?.role?.id)
+          if (data.data.user?.role?.id === '639acb77b5e1ffe22eaa4a39') {
+            this.router.navigate(['/dashboard']);
+            console.log('Logged In')
+          } else {
+            this.router.navigate(['/userDashboard']);
           }
-        );
-    }
+        },
+        err => {
+          this.notifyService.showError(err.message, "Error");
+          this.loading = false;
+          if (err.message === 'Session expired. Please log in again.') {
+            this.router.navigate(['/login']);
+          }
+        }
+      );
   }
+  
 }
