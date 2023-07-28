@@ -2,14 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { EmailtemplateService } from '../_services/emailtemplate.service';
 import { Validators, FormGroup, FormBuilder, FormControl, AbstractControl } from '@angular/forms';
-// import { ToolbarService, LinkService, ImageService, HtmlEditorService, EmojiPickerService } from '@syncfusion/ej2-angular-richtexteditor';
-// import { RichTextEditorComponent, TableService, FileManagerService } from '@syncfusion/ej2-angular-richtexteditor';
-// import { FileManagerSettingsModel, QuickToolbarSettingsModel } from '@syncfusion/ej2-angular-richtexteditor';
-// import { createElement, addClass, removeClass, Browser } from '@syncfusion/ej2-base';
-// import { Editor } from 'ngx-editor';
-// import { NgxEditorComponent } from 'ngx-editor';
-// import { QuillEditorComponent } from 'ngx-quill';
-// import Quill from 'quill';
+
 @Component({
   selector: 'app-email-template',
   templateUrl: './email-template.component.html',
@@ -23,10 +16,7 @@ export class EmailTemplateComponent implements OnInit {
   emailupdatemodel: boolean = false;
   selectedEmail: any = [];
   searchText: string = "";
-  // editor: Editor;
-  html: string;
   selectedOption: string;
-  originalContent: string = '';
   editorContent: string = '';
 
   dropdownOptions = [
@@ -35,19 +25,7 @@ export class EmailTemplateComponent implements OnInit {
     { label: 'Start Date', value: 'option3' },
     { label: 'End Date', value: 'option4' }
   ];
-  color = [
-    { value: 'transparent' },
-    { value: 'black' },
-    { value: 'White' },
-    { value: 'Grey' },
-    { value: 'Pink' },
-    { value: 'Red' },
-    { value: 'Blue' },
-    { value: 'Green' },
-    { value: 'Purple' },
-    { value: 'yellow' }
-  ]
-  content = '';
+ 
   forms: any;
   showEditor = false;
   isFormLoaded = false;
@@ -69,16 +47,10 @@ export class EmailTemplateComponent implements OnInit {
 
   ngOnInit(): void {
     this.isFormLoaded = true;
-    this.getEmailList();
-   
-    this.form = this.fb.group({
-      editor: this.content,
-    });
-    
+    this.getEmailList();    
     this.dropdownOptions;
     setTimeout(() => {
       this.isFormLoaded = true;
-      console.log(this.isFormLoaded)
     }, 1);
 
   }
@@ -86,41 +58,38 @@ export class EmailTemplateComponent implements OnInit {
   }
   
   onDropdownChange(event: any) {
-    this.selectedOption = event.target.value
-    console.log(this.selectedOption)
+    this.selectedOption = event.target.value; 
+    this.updateEditorContent(); 
   }
 
+  updateEditorContent() {
+    this.editorContent = this.editorContent + ' {' + this.selectedOption + '}';
+  }
   getEmailList() {
     this.emailList = [
     ];
     this.emailservice.getAllEmails().subscribe((response: any) => {
       this.emailList = response;
-      console.log(this.emailList)
     })
   }
   closemodel() {
     this.emailmodel = false;
   }
   addEmail(form) {
-    console.log(form)
-    // form = this.form.value;
-    // console.log(form)
-    this.emailservice.addEmail(form.value).subscribe((response: any) => {
+    console.log(form.Name)
+    
+    this.emailservice.addEmail(form).subscribe((response: any) => {
       if (response != null && response != 0) {
         this.toast.success('Email Template added successfully!');
         this.ngOnInit();
         this.form.reset();
-        this.emailmodel = false;
       }
       else {
         this.toast.error('Error adding Email Template', 'Error!');
       }
     })
   }
-  addemail() {
-    // this.showEditor = true;
-    // this.emailmodel = this.emailmodel == false ? true : false;
-  }
+  
   deleteEmail(id: any) {
     this.emailservice.deleteEmail(id).subscribe((response: any) => {
       this.ngOnInit();

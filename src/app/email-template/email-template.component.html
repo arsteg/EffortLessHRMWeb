@@ -44,7 +44,7 @@
       <div>
         <span>Add Email Template</span>
       </div>
-      <form class="mt-4 p-3 bg-light border rounded" [formGroup]="form" (ngSubmit)="addEmail(form)">
+      <form class="mt-4 p-3 bg-light border rounded" [formGroup]="form" (ngSubmit)="addEmail(form.value)">
         <div class="form-group row">
           <div class="col-sm-0">
             Name:
@@ -67,13 +67,12 @@
           <div class="col-sm-0" style="margin-top: 12px;">
             Content Data:
           </div>
-          <ng-container *ngIf="isFormLoaded">
-            <select (change)="onDropdownChange($event)" class="my-2 w-50">
+            <select (change)="onDropdownChange($event)" class="my-2 w-50"  >
+              <option selected>- Select -</option>
             <option *ngFor="let option of dropdownOptions" [value]="option.label">{{ option.label }}</option>
           </select>
-          <p>{{selectedOption}}</p>
-            <quill-editor  #editor [styles]="{height: '100px'}" formControlName="contentData"></quill-editor>
-          </ng-container>
+         
+            <quill-editor  #editor [styles]="{height: '100px'}" formControlName="contentData"  [(ngModel)]="editorContent"></quill-editor>
 
           <br>
           <div class="col-sm-1" style="margin-top: 12px;">
