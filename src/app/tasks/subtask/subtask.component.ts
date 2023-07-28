@@ -72,24 +72,31 @@ export class SubtaskComponent implements OnInit {
    }
 
   ngOnInit(): void {
-    this.id = this.taskIdService.getTaskId();
-    if (this.id) {
+    this.route.queryParams.subscribe(params => {
+      this.id = params['taskId'];
+      if (this.id) {
 
-      this.tasksService.getTaskById(this.id).subscribe((result: any)=> {
-       
-        this.subTask = result
-        this.subtask = result.data;
-        this.subTaskDetail = result.data.task;
-
-        this.tasksService.getTaskById(this.subTaskDetail.parentTask).subscribe((result: any)=> {
-          this.parentTask = result.data.task;
+        this.tasksService.getTaskById(this.id).subscribe((result: any)=> {
+         
+          this.subTask = result
+          this.subtask = result.data;
+          this.subTaskDetail = result.data.task;
+  
+          this.tasksService.getTaskById(this.subTaskDetail.parentTask).subscribe((result: any)=> {
+            this.parentTask = result.data.task;
+          })
         })
-      })
-      this.updateForm.valueChanges.subscribe(() => {
+
+           this.updateForm.valueChanges.subscribe(() => {
         this.formDirty = this.updateForm.dirty;
       });
+      }
+      this.getTaskAttachments();
+    })
 
-    }
+
+
+   
 
   
 
