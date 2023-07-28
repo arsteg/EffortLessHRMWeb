@@ -31,12 +31,29 @@ export class AuthenticationService {
     const httpOptions = { headers, withCredentials: true };
     return httpOptions;
   }
-  isLoggedIn(): boolean {
-    const jwtToken = localStorage.getItem('jwtToken');
-    return !!jwtToken; // Check token existence
-  }
-  
-  
+  private loginTime: number | null = null;
+
+
+isLoggedIn(): Promise<boolean> {
+  return new Promise<boolean>((resolve) => {
+    const loginTime = localStorage.getItem('loginTime');
+    if (loginTime) {
+      const currentTime = new Date().getTime();
+      const twentyFourHours = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+      const lastLoginTime = parseInt(loginTime, 10);
+      const timeElapsed = currentTime - lastLoginTime;
+
+      if (timeElapsed >= twentyFourHours) {
+        // Auto logout after 24 hours
+        this.logout().then(() => resolve(false));
+      } else {
+        resolve(true);
+      }
+    } else {
+      resolve(false);
+    }
+  });
+}
   constructor(private http: HttpClient, private router: Router) {
     this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
     this.currentUser = this.currentUserSubject.asObservable();
@@ -63,21 +80,38 @@ export class AuthenticationService {
   }
   login(user) {
     const httpOptions = this.defaultHttpOptions();
+    const loginTime = new Date().getTime();
+    localStorage.setItem('loginTime', loginTime.toString());
     return this.http.post<any>(`${environment.apiUrlDotNet}/users/login`, { email: user.email, password: user.password }, httpOptions)
       .pipe(map(user => {
+       
         this.currentUserSubject.next(user);
         this.loggedIn.next(true);
         return user;
       }));
   }
  
-  logout() {
-    // remove user from local storage and set current user to null
-    localStorage.removeItem('currentUser');
-    this.currentUserSubject.next(null);
-    this.loggedIn.next(false);
+  logout(): Promise<void> {
+    return new Promise<void>((resolve) => {
+      localStorage.removeItem('jwtToken');
+      localStorage.removeItem('currentUser');
+      localStorage.removeItem('rememberMe');
+      localStorage.removeItem('roleId');
+      localStorage.removeItem('loginTime');
+    
+      // Perform any other necessary logout logic
+  
+      this.loginTime = null; // Reset the loginTime in memory
+      this.currentUserSubject.next(null);
+      this.loggedIn.next(false);
+      this.router.navigate(['/login']);
+      resolve();
+    });
   }
-
+  
+  redirectToLogin() {
+    this.router.navigate(['/login']);
+  }
   signup(signup: signup): Observable<User> {
     return this.http.post<any>(`${environment.apiUrlDotNet}/users/signup`, signup, {
       headers: new HttpHeaders({

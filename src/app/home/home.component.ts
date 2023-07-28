@@ -92,7 +92,8 @@ export class HomeComponent implements OnInit {
     localStorage.removeItem('adminView');
     localStorage.removeItem('roleId');
     localStorage.removeItem('currentUser');
-    localStorage.removeItem('rememberMe')
+    localStorage.removeItem('rememberMe');
+    localStorage.removeItem('loginTime');
     this.router.navigateByUrl('/main')
   }
 
