@@ -128,8 +128,15 @@
                       <label for="Email" class="text-start"><span>
                           Content Data: </span></label>
                     </div>
-                    <input type="text" formControlName="contentData" class="form-control"
-                      [(ngModel)]="selectedEmail.contentData">
+                    <select (change)="onUpdate($event)" class="my-2 w-50"  >
+                      <option selected>- Select -</option>
+                    <option *ngFor="let option of dropdownOptions" [value]="option.label">{{ option.label }}</option>
+                  </select>
+                 
+                    <quill-editor  #editor [styles]="{height: '100px'}" formControlName="contentData"  [(ngModel)]="selectedEmail.contentData"></quill-editor>
+        
+                    <!-- <input type="text" formControlName="contentData" class="form-control"
+                      [(ngModel)]="selectedEmail.contentData"> -->
                   </div>
                 </div>
                 <div class="d-flex justify-content-between m-3">

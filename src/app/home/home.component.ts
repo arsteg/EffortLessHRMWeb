@@ -26,6 +26,7 @@ export class HomeComponent implements OnInit {
   constructor(private router: Router, private auth: AuthenticationService, private commonService: CommonService) { }
 
   ngOnInit(): void {
+    localStorage.setItem('adminView', this.adminView);
     localStorage.setItem('roleName', 'user');
     let roleId = localStorage.getItem('roleId');
     this.adminView = localStorage.getItem('adminView');

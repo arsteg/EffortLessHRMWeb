@@ -100,6 +100,17 @@ export class EmailTemplateComponent implements OnInit {
       }
     )
   }
+  onUpdate(event: any) {
+    this.selectedOption = event.target.value;
+
+    // Here, you can use the selectedOption to populate the text editor if needed.
+    // Since you are using ngModel with two-way binding, the text editor will be auto-filled.
+    this.updateEditor();
+  }
+
+  updateEditor() {
+    this.selectedEmail.contentData = this.selectedEmail.contentData + ' {' + this.selectedOption + '}';
+  }
   updateEmails() {
     this.emailupdatemodel = true;
   }

@@ -488,22 +488,16 @@ export class EditTaskComponent implements OnInit {
   }
 
   subTaskDetail(subTask: any) {
-    const taskId = subTask.id.toString();
+    const p_Id = subTask.id.toString();
     
    
       const navigationExtras: NavigationExtras = {
-        queryParams: { taskId: taskId }
+        queryParams: { p_Id: p_Id }
       };
       this.router.navigate(['/SubTask', subTask.taskNumber], navigationExtras);
   }
 
-  // subTaskDetail(subTask: any) {
-  //   const taskId = subTask.id.toString();
-
-  //   this.taskIdService.setTaskId(taskId)
-  //   this.router.navigate(['/SubTask', subTask.taskNumber]);
-
-  // }
+ 
 
 
 
