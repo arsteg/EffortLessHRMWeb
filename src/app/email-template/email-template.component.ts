@@ -25,7 +25,7 @@ export class EmailTemplateComponent implements OnInit {
     { label: 'Start Date', value: 'option3' },
     { label: 'End Date', value: 'option4' }
   ];
- 
+
   forms: any;
   showEditor = false;
   isFormLoaded = false;
@@ -47,7 +47,7 @@ export class EmailTemplateComponent implements OnInit {
 
   ngOnInit(): void {
     this.isFormLoaded = true;
-    this.getEmailList();    
+    this.getEmailList();
     this.dropdownOptions;
     setTimeout(() => {
       this.isFormLoaded = true;
@@ -56,15 +56,21 @@ export class EmailTemplateComponent implements OnInit {
   }
   ngOnDestroy(): void {
   }
-  
-  onDropdownChange(event: any) {
-    this.selectedOption = event.target.value; 
-    this.updateEditorContent(); 
-  }
 
-  updateEditorContent() {
-    this.editorContent = this.editorContent + ' {' + this.selectedOption + '}';
+  onDropdownChange(event: any) {
+    this.selectedOption = event.target.value;
+    this.updateEditorContent();
   }
+  @ViewChild('editor') editor: any;
+  updateEditorContent() {
+    const quillEditor = this.editor.quillEditor;
+    const range = quillEditor.getSelection();
+    const position = range ? range.index : this.editorContent.length;
+    const selectedText = '{' + this.selectedOption + '}';
+
+    quillEditor.insertText(position, selectedText);
+  }
+ 
   getEmailList() {
     this.emailList = [
     ];
@@ -77,7 +83,7 @@ export class EmailTemplateComponent implements OnInit {
   }
   addEmail(form) {
     console.log(form.Name)
-    
+
     this.emailservice.addEmail(form).subscribe((response: any) => {
       if (response != null && response != 0) {
         this.toast.success('Email Template added successfully!');
@@ -89,7 +95,7 @@ export class EmailTemplateComponent implements OnInit {
       }
     })
   }
-  
+
   deleteEmail(id: any) {
     this.emailservice.deleteEmail(id).subscribe((response: any) => {
       this.ngOnInit();
@@ -102,9 +108,6 @@ export class EmailTemplateComponent implements OnInit {
   }
   onUpdate(event: any) {
     this.selectedOption = event.target.value;
-
-    // Here, you can use the selectedOption to populate the text editor if needed.
-    // Since you are using ngModel with two-way binding, the text editor will be auto-filled.
     this.updateEditor();
   }
 
