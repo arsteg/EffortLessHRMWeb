@@ -116,13 +116,12 @@ export class EditTaskComponent implements OnInit {
     this.firstLetter = this.commonService.firstletter;
     this.route.queryParams.subscribe(params => {
       this.taskId = params['taskId'];
-      console.log(this.taskId)
+      this.getTaskAttachments();
       this.getTask(this.taskId);
       this.tasksService.getSubTask(this.taskId).subscribe((response: any) => {
         this.subTask = response && response.data && response.data['taskList']
       })
-      this.getTaskAttachments();
-    })
+    });
     this.getTasks();
   }
   getTask(taskId: string) {

@@ -12,6 +12,7 @@ export class CommonService {
   projectList: any[];
   firstletter: string;
   private currentProfileSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  private currentProfileRoleSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
   constructor(private userService: UserService,
     private projectService: ProjectService) { }
@@ -73,5 +74,13 @@ export class CommonService {
 
   getCurrentUser(): BehaviorSubject<any> {
     return this.currentProfileSubject;
+  }
+
+  setCurrentUserRole(role: any): void{
+    this.currentProfileRoleSubject.next(role);
+  }
+
+  getCurrentUserRole(): BehaviorSubject<any> {
+    return this.currentProfileRoleSubject;
   }
 }

@@ -17,6 +17,7 @@ export class TaskCommentListComponent implements OnInit {
   @Output() commentUpdated = new EventEmitter<{ index: number, text: taskComment }>();
   @Output() commentDeleted = new EventEmitter<number>();
   taskId: string;
+  subtaskId: string;
   currentProfile : any= [];
   newComment: '';
   commentsArray: taskComment[] = [];
@@ -41,27 +42,36 @@ export class TaskCommentListComponent implements OnInit {
   }
 
   ngOnInit() {
-
     this.route.queryParams.subscribe(params => {
       this.taskId = params['taskId'];
     if (this.taskId) {
       this.taskService.getTaskById(this.taskId).subscribe(result => {
         this.tasks = result.data;
       });
-      
       this.commonService.getCurrentUser().subscribe((profile: any) => {
         this.currentProfile = profile;
-       
       });
-      
     }
-  })
+    this.getTaskAttachments();
+  });
+  this.route.queryParams.subscribe(params => {
+    this.subtaskId = params['p_Id'];
+  if (this.subtaskId) {
+    this.taskService.getTaskById(this.subtaskId).subscribe(result => {
+      this.tasks = result.data;
+    });
+    this.commonService.getCurrentUser().subscribe((profile: any) => {
+      this.currentProfile = profile;
+    });
+    this.getsubTaskAttachments();
+  }
+});
 
     this.commentsArray = [...this.comments];
     this.taskService.getComments(this.taskId).subscribe((response) => {
       this.comments = response.data;
     });
-    this.getTaskAttachments();
+   
   }
 
   updateComment(index: number, text: any) {
@@ -170,6 +180,11 @@ export class TaskCommentListComponent implements OnInit {
 
   getTaskAttachments(): void {
     this.taskService.getTaskAttachment(this.taskId).subscribe(result => {
+      this.commentAttachment = result.data.newTaskAttachmentList;
+    });
+  }
+  getsubTaskAttachments(): void {
+    this.taskService.getTaskAttachment(this.subtaskId).subscribe(result => {
       this.commentAttachment = result.data.newTaskAttachmentList;
     });
   }

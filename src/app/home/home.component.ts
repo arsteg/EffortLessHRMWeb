@@ -26,13 +26,14 @@ export class HomeComponent implements OnInit {
   constructor(private router: Router, private auth: AuthenticationService, private commonService: CommonService) { }
 
   ngOnInit(): void {
-    localStorage.setItem('adminView', this.adminView);
-    localStorage.setItem('roleName', 'user');
+    // localStorage.setItem('roleName', 'user');
     let roleId = localStorage.getItem('roleId');
     this.adminView = localStorage.getItem('adminView');
     this.auth.getRole(roleId).subscribe((response: any) => {
       let role = response && response.data && response.data[0].Name;
-      localStorage.setItem('roleName', role.toLowerCase());
+      // localStorage.setItem('adminView', role);
+
+      this.commonService.setCurrentUserRole(role);
       if (this.adminView) {
         if (this.adminView.toLowerCase() == 'admin') {
           this.menuList = SideBarAdminMenu;

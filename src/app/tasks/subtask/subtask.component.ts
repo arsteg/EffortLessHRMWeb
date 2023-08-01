@@ -7,6 +7,7 @@ import { CommonService } from 'src/app/common/common.service';
 import { Validators, FormGroup, FormBuilder } from '@angular/forms';
 import { attachments, taskAttachments, updateTask } from '../task';
 import { GetTaskService } from 'src/app/_services/get-task.service';
+import { ProjectService } from 'src/app/_services/project.service';
 
 @Component({
   selector: 'app-subtask',
@@ -45,6 +46,7 @@ export class SubtaskComponent implements OnInit {
   subTask: any;
   parentTask: any;
   formDirty = false;
+  projectUser: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -53,7 +55,8 @@ export class SubtaskComponent implements OnInit {
     public commonservice: CommonService,
     private fb: FormBuilder,
     private router: Router,
-    private taskIdService: GetTaskService
+    private taskIdService: GetTaskService,
+    private projectService: ProjectService
   ) {
     this.addUserForm = this.fb.group({
       userName: {
@@ -69,43 +72,64 @@ export class SubtaskComponent implements OnInit {
       project: [this.subtask?.task?.project?.id, Validators.required],
       status: [this.subTask?.data?.task?.status, Validators.required]
     });
-   }
+  }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
-      this.id = params['taskId'];
+      this.id = params['p_Id'];
       if (this.id) {
 
-        this.tasksService.getTaskById(this.id).subscribe((result: any)=> {
-         
-          this.subTask = result
+        this.tasksService.getTaskById(this.id).subscribe((result: any) => {
+
           this.subtask = result.data;
           this.subTaskDetail = result.data.task;
-  
-          this.tasksService.getTaskById(this.subTaskDetail.parentTask).subscribe((result: any)=> {
+
+          this.tasksService.getTaskById(this.subTaskDetail.parentTask).subscribe((result: any) => {
             this.parentTask = result.data.task;
-          })
+            const currentTaskProject = this.parentTask;
+
+            this.projectService.getprojectUser(currentTaskProject.project.id).subscribe((res: any) => {
+              this.projectUser = res && res.data && res.data['projectUserList'];
+            });
+          });
+
         })
 
-           this.updateForm.valueChanges.subscribe(() => {
-        this.formDirty = this.updateForm.dirty;
-      });
+        this.updateForm.valueChanges.subscribe(() => {
+          this.formDirty = this.updateForm.dirty;
+        });
       }
       this.getTaskAttachments();
     })
 
-
-
-   
-
-  
-
     this.commonservice.populateUsers().subscribe(result => {
       this.allAssignee = result && result.data && result.data.data;
     });
-    
+
     this.firstLetter = this.commonservice.firstletter;
     this.getTaskAttachments();
+  }
+  addUserToTask(taskId: string, user: string): void {
+    this.tasksService.addUserToTask(taskId, user).subscribe((response: any) => {
+      this.subtask = response && response.data && response.data['TaskUserList'];      
+      console.log(this.subtask)
+      this.toastmsg.success('Task status updated successfully', 'Success')
+    },
+      err => {
+        this.toastmsg.error('Task could not be updated', 'ERROR!')
+      }
+    );
+  }
+  removeAssignee() {
+    const unassigned = this.subtask.newTaskUserList[0].id;
+    // console.log("Assignee",this.subtask.newTaskUserList[0].id);
+    this.tasksService.deleteTaskUser(unassigned).subscribe((res: any)=>{
+      console.log(res)
+      this.toastmsg.success('UnAssigned successfully', 'Success')
+    },
+      err => {
+        this.toastmsg.error('Task could not be Unassigned', 'ERROR!')
+      });
   }
   getProjectNameInitials(projectName: string): string {
     if (projectName) {
@@ -115,7 +139,7 @@ export class SubtaskComponent implements OnInit {
     return '';
   }
 
-  
+
   updatesubTaskPriority(selectedTask: any, priority: string) {
     const payload = { "priority": priority }
     this.subtask.priority = priority;
@@ -175,32 +199,33 @@ export class SubtaskComponent implements OnInit {
       this.selectedUser = this.taskUserList.map(user => user.user.id);
     });
   }
-  addUserToTask(addUserForm) {
-    let selectedUsers = this.addUserForm.get('userName').value;
-    let newUsers = selectedUsers.filter(id => !this.taskUserList.find(user => user.user.id === id));
-    let task_Users = newUsers.map((id) => { return { user: id } });
-    if (task_Users.length > 0) {
-      this.tasksService.addUserToTask(this.id, task_Users).subscribe(result => {
-        const res = result;
-        this.ngOnInit();
-        this.toastmsg.success('New Member Added', 'Successfully Added!')
-      },
-        err => {
-          this.toastmsg.error('Member Already Exist', 'ERROR!')
-        })
-    }
-    else {
-      this.toastmsg.error('All selected users already exist', 'ERROR!')
-    }
-  }
- 
-  
+  // addUserToTask(addUserForm) {
+  //   let selectedUsers = this.addUserForm.get('userName').value;
+  //   let newUsers = selectedUsers.filter(id => !this.taskUserList.find(user => user.user.id === id));
+  //   let task_Users = newUsers.map((id) => { return { user: id } });
+  //   if (task_Users.length > 0) {
+  //     this.tasksService.addUserToTask(this.id, task_Users).subscribe(result => {
+  //       const res = result;
+  //       this.ngOnInit();
+  //       this.toastmsg.success('New Member Added', 'Successfully Added!')
+  //     },
+  //       err => {
+  //         this.toastmsg.error('Member Already Exist', 'ERROR!')
+  //       })
+  //   }
+  //   else {
+  //     this.toastmsg.error('All selected users already exist', 'ERROR!')
+  //   }
+  // }
+
+
   gotoParentTask(task: any) {
     const taskId = task.id.toString();
-  
-    this.taskIdService.setTaskId(taskId)
-
-   this.router.navigate(['/edit-task', task.taskNumber]);
+    const navigationExtras: NavigationExtras = {
+      queryParams: { taskId: taskId }
+    };
+    console.log(taskId)
+    this.router.navigate(['/edit-task', task.taskNumber], navigationExtras);
   }
   onFileSelect(event) {
     const files: FileList = event.target.files;

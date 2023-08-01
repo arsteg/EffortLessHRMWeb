@@ -21,7 +21,7 @@
                                 [tooltip]="(parentTask?.taskNumber || '') + ': ' + (parentTask?.taskName || '')">{{
                                 getProjectNameInitials(parentTask?.project?.projectName)
                                 }}-{{parentTask?.taskNumber}}</span> /
-                            <i class="bi bi-diagram-3 btn-primary px-1 rounded mx-2"></i><span 
+                            <i class="bi bi-diagram-3 btn-primary px-1 rounded mx-2"></i><span
                                 [tooltip]="(subtask?.task?.taskNumber || '') + ': ' + (subtask?.task?.taskName || '')">{{
                                 getProjectNameInitials(subtask?.task?.project?.projectName)
                                 }}-{{subtask?.task?.taskNumber}}</span>
@@ -294,16 +294,91 @@
                                                 <td class="pt-0">Assignee:</td>
                                                 <td class="pt-0">
 
-                                                    <div class="d-flex flex-nowrap users">
-                                                        <i class="fa fa-user-plus addUser me-3 mt-1"
-                                                            data-bs-toggle="modal" data-bs-target="#addUserModal"
-                                                            (click)="getTaskUser(subtask?.task?.id)"></i>
-                                                        <span *ngFor="let users of subtask?.newTaskUserList"
-                                                            class="letter text-light"
-                                                            [tooltip]="(users?.user?.firstName| titlecase) + (' ') +( users?.user?.lastName | titlecase)"
-                                                            [style.background-color]="commonservice?.getRandomColor(users?.user?.firstName)">
-                                                            {{users?.user?.firstName.charAt(0) | uppercase}}
-                                                        </span>
+                                                  
+                                                    <div class="ms-2 mt-2">
+                                                        <ng-container *ngIf="subtask.newTaskUserList.length === 0">
+                                                            <div>
+                                                                <span  type="button"
+                                                                    class="btn dropdown-toggle dropdown-toggle-no-caret"
+                                                                    data-bs-toggle="dropdown" aria-expanded="false">Add
+                                                                    User</span>
+                                                                <ul class="dropdown-menu" style="width: 225px; transform: translate3d(-29px, 40px, 0px) !important; height: 200px;
+                 overflow-y: scroll;">
+                                                                    <li *ngFor="let assignee of projectUser"
+                                                                        class="border-left "
+                                                                        [value]="assignee?.user?.id">
+                                                                        <p *ngIf="assignee.user != null"
+                                                                            class="ps-4 py-2 mb-1"
+                                                                            style="font-size: 13px;"
+                                                                            (click)="addUserToTask(id, assignee.user.id)">
+                                                                            <span class="letter text-light"
+                                                                                style="font-size: 12px;"
+                                                                                [tooltip]="(assignee?.user?.firstName | titlecase) + ' ' + (assignee?.user?.lastName | titlecase)"
+                                                                                [style.background-color]="commonservice.getRandomColor(assignee?.user?.firstName?.charAt(0) | uppercase)">
+                                                                                {{ assignee?.user?.firstName?.charAt(0)
+                                                                                | uppercase }}
+                                                                                {{ assignee?.user?.lastName?.charAt(0) |
+                                                                                uppercase }}
+                                                                            </span> &nbsp;{{assignee?.user?.firstName |
+                                                                            titlecase}}
+                                                                            {{assignee?.user?.lastName | titlecase}}
+                                                                        </p>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+
+                                                        </ng-container>
+
+                                                        <div class="user-container btn-group"
+                                                            *ngFor="let user of (subtask.newTaskUserList || subTask)">
+
+                                                            <span class="letter text-light"
+                                                                [tooltip]="(user?.user?.firstName | titlecase) + ' ' + (user?.user?.lastName | titlecase)"
+                                                                [style.background-color]="commonservice.getRandomColor(user?.user?.firstName?.charAt(0) | uppercase)">
+                                                                {{ user?.user?.firstName?.charAt(0) | uppercase }}
+                                                                {{ user?.user?.lastName?.charAt(0) | uppercase }}
+                                                            </span>
+
+                                                            <button type="button"
+                                                                class="btn dropdown-toggle dropdown-toggle-no-caret"
+                                                                data-bs-toggle="dropdown" aria-expanded="false">
+
+                                                                <span class="text-muted">
+                                                                    {{ user?.user?.firstName }} {{ user?.user?.lastName
+                                                                    }}
+                                                                </span>
+                                                            </button>
+
+
+                                                            <ul class="dropdown-menu" style="width: 225px; transform: translate3d(-29px, 40px, 0px) !important; max-height: 200px;
+                                                                overflow-y: scroll;">
+                                                                <li  class="border-left py-1">
+                                                                    <span (click)="removeAssignee()" class="ps-4 py-2 mb-1" style="font-size: 13px;"><i
+                                                                            class="bi bi-person-circle me-3 text-secondary"></i> Unassigned</span>
+                                                                </li>
+                                                                <li *ngFor="let assignee of projectUser"
+                                                                    class="border-left " [value]="assignee?.user?.id">
+                                                                    <p *ngIf="assignee.user != null"
+                                                                        class="ps-4 py-2 mb-1" style="font-size: 13px;"
+                                                                        (click)="addUserToTask(id, assignee.user.id)">
+
+                                                                        <span class="letter text-light"
+                                                                            style="font-size: 12px;"
+                                                                            [tooltip]="(assignee?.user?.firstName | titlecase) + ' ' + (assignee?.user?.lastName | titlecase)"
+                                                                            [style.background-color]="commonservice.getRandomColor(assignee?.user?.firstName?.charAt(0) | uppercase)">
+                                                                            {{ assignee?.user?.firstName?.charAt(0) |
+                                                                            uppercase }}
+                                                                            {{ assignee?.user?.lastName?.charAt(0) |
+                                                                            uppercase }}
+                                                                        </span> &nbsp;{{assignee?.user?.firstName |
+                                                                        titlecase}}
+                                                                        {{assignee?.user?.lastName | titlecase}}
+                                                                    </p>
+                                                                </li>
+                                                            </ul>
+
+                                                        </div>
+
                                                     </div>
 
                                                 </td>
@@ -348,7 +423,7 @@
                 </div>
                 <hr class="mt-0">
                 <div class="row">
-                    <form class="row" [formGroup]="addUserForm" (ngSubmit)="addUserToTask(addUserForm.value)">
+                    <!-- <form class="row" [formGroup]="addUserForm" (ngSubmit)="addUserToTask(taskId, assignee.user.id)">
                         <div class="row d-flex justify-content-center">
                             <div class="col-md-8">
 
@@ -379,7 +454,7 @@
                             </div>
 
                         </div>
-                    </form>
+                    </form> -->
                 </div>
             </div>
         </div>
