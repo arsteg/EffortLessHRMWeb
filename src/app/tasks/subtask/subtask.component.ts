@@ -47,7 +47,7 @@ export class SubtaskComponent implements OnInit {
   parentTask: any;
   formDirty = false;
   projectUser: any;
-
+  showEditor: boolean = false;
   constructor(
     private route: ActivatedRoute,
     private tasksService: TasksService,
@@ -303,6 +303,9 @@ export class SubtaskComponent implements OnInit {
   convertBytesToKB(bytes: number): string {
     const kilobytes = bytes / 1024;
     return kilobytes.toFixed(2) + ' KB';
+  }
+  onInputClick() {
+    this.showEditor = true;
   }
 
 }

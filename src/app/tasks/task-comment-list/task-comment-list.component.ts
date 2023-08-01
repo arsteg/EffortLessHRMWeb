@@ -32,6 +32,7 @@ export class TaskCommentListComponent implements OnInit {
   tasks: any = [];
   id: any;
   userName: any;
+  showEditor: boolean = false;
 
   constructor(private taskService: TasksService,
     private authentication: AuthenticationService,
@@ -212,5 +213,10 @@ export class TaskCommentListComponent implements OnInit {
   convertBytesToKB(bytes: number): string {
     const kilobytes = bytes / 1024;
     return kilobytes.toFixed(2) + ' KB';
+  }
+  onParagraphClick() {
+    console.log(this.showEditor)
+    this.showEditor = true;
+    console.log(this.showEditor)
   }
 }

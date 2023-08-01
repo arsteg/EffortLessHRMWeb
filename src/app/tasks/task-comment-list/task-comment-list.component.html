@@ -158,10 +158,12 @@
         [style.background-color]="commonService.getRandomColor(currentProfile?.firstName?.charAt(0) | uppercase)">
         {{currentProfile?.firstName?.charAt(0) | uppercase}}
       </span>
-      <div class="m-3 w-100 rounded"><textarea name="" id="" cols="" rows="2" class="w-100 mb-5 form-control"
+      <div class="m-3 w-100 rounded">
+        <textarea name="" id="" cols="" rows="2" class="w-100 mb-5 form-control"
           [(ngModel)]="newComment">
       </textarea>
       </div>
+     
     </div>
 
 

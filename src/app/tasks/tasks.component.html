@@ -767,8 +767,16 @@
                                 <div class="row mt-3">
                                     <label for="description" class="text-start">Description</label>
                                 </div>
-                                <input type="text" name="description" id="description" class="form-control input pt-0"
-                                    formControlName="description" ngModel required>
+                               <div *ngIf="!showEditor">
+                                     <input type="text" name="description" id="description" class="form-control input pt-0"
+                                     formControlName="description" [(ngModel)]="tasks?.data?.task.description" required
+                                     (click)="onInputClick()">
+                                    </div>
+                              <div *ngIf="showEditor">
+                                <quill-editor [styles]="{ height: '100px' }" formControlName="description"
+                                              [(ngModel)]="tasks?.data?.task.description"></quill-editor>
+                              </div>
+                              
                                 <div *ngIf="addForm.controls['description'].invalid && addForm.controls['description'].touched"
                                     class="alert alert-danger error">
                                     <div *ngIf="addForm.controls['description'].errors['required']">

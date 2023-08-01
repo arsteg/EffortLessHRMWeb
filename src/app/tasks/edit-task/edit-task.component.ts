@@ -72,6 +72,8 @@ export class EditTaskComponent implements OnInit {
   totalRecords: any; // Total number of records
   currentPage: number = 1;
   noUser: [] = [];
+  showEditor: boolean = false;
+
 
   constructor(private fb: FormBuilder,
     private tasksService: TasksService,
@@ -124,6 +126,10 @@ export class EditTaskComponent implements OnInit {
     });
     this.getTasks();
   }
+  onParagraphClick() {
+    this.showEditor = true;
+  }
+  
   getTask(taskId: string) {
     if (taskId) {
       this.tasksService.getTaskById(taskId).subscribe(task => {

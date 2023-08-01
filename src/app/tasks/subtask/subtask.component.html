@@ -43,11 +43,17 @@
                     <div class="issue-description">
                         <h3>Description</h3>
 
-
-                        <textarea class="form-control  px-0 form-feild" rows="1" id="description" name="description"
-                            formControlName="description" [(ngModel)]="subtask?.task.description">
+                        <div *ngIf="!showEditor">
+                            <textarea (click)="onInputClick()" class="form-control  px-0 form-feild" rows="1"
+                                id="description" name="description" formControlName="description"
+                                [(ngModel)]="subtask?.task.description">
                                     {{subtask?.task?.description}}
                                     </textarea>
+                        </div>
+                        <div *ngIf="showEditor">
+                            <quill-editor [styles]="{ height: '100px' }" formControlName="description"
+                                [(ngModel)]="subtask?.task.description"></quill-editor>
+                        </div>
                         <div *ngIf="updateForm.controls['description'].invalid && updateForm.controls['description'].touched"
                             class="alert alert-danger error">
                             <div *ngIf="updateForm.controls['description'].errors['required']">
@@ -294,11 +300,11 @@
                                                 <td class="pt-0">Assignee:</td>
                                                 <td class="pt-0">
 
-                                                  
+
                                                     <div class="ms-2 mt-2">
                                                         <ng-container *ngIf="subtask.newTaskUserList.length === 0">
                                                             <div>
-                                                                <span  type="button"
+                                                                <span type="button"
                                                                     class="btn dropdown-toggle dropdown-toggle-no-caret"
                                                                     data-bs-toggle="dropdown" aria-expanded="false">Add
                                                                     User</span>
@@ -352,9 +358,12 @@
 
                                                             <ul class="dropdown-menu" style="width: 225px; transform: translate3d(-29px, 40px, 0px) !important; max-height: 200px;
                                                                 overflow-y: scroll;">
-                                                                <li  class="border-left py-1">
-                                                                    <span (click)="removeAssignee()" class="ps-4 py-2 mb-1" style="font-size: 13px;"><i
-                                                                            class="bi bi-person-circle me-3 text-secondary"></i> Unassigned</span>
+                                                                <li class="border-left py-1">
+                                                                    <span (click)="removeAssignee()"
+                                                                        class="ps-4 py-2 mb-1"
+                                                                        style="font-size: 13px;"><i
+                                                                            class="bi bi-person-circle me-3 text-secondary"></i>
+                                                                        Unassigned</span>
                                                                 </li>
                                                                 <li *ngFor="let assignee of projectUser"
                                                                     class="border-left " [value]="assignee?.user?.id">

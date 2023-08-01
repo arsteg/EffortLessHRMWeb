@@ -247,12 +247,25 @@
                                         </div>
                                     </div>
                                     <div class="row mt-3">
-                                        <label for="description" class="text-start">Description</label>
+                                        <b class="text-start">Description</b>
                                     </div>
-                                    <textarea class="form-control" rows="4" id="description" name="description"
-                                        formControlName="description" [(ngModel)]="tasks?.data?.task.description">
-                                    {{tasks?.data?.task?.description}}
-                                    </textarea>
+                                    <!-- <p id="description" name="description" [(ngModel)]="tasks?.data?.task.description">
+                                        {{tasks?.data?.task?.description}}
+                                    </p>
+                                  
+                                    <quill-editor #editor [styles]="{height: '100px'}"  formControlName="description" 
+                                    [(ngModel)]="tasks?.data?.task.description"></quill-editor> -->
+                                    <div *ngIf="!showEditor" (click)="onParagraphClick()">
+                                        <p id="description" name="description" class="border">
+                                          {{tasks?.data?.task?.description}}
+                                        </p>
+                                      </div>
+                                      
+                                      <div *ngIf="showEditor">
+                                        <quill-editor [styles]="{height: '100px'}" formControlName="description"
+                                                      [(ngModel)]="tasks?.data?.task.description"></quill-editor>
+                                      </div>
+                                      
                                     <div *ngIf="updateForm.controls['description'].invalid && updateForm.controls['description'].touched"
                                         class="alert alert-danger error">
                                         <div *ngIf="updateForm.controls['description'].errors['required']">

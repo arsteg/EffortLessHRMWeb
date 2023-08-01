@@ -89,6 +89,7 @@ export class TasksComponent implements OnInit {
   index: number;
   currentProfile: any;
   role: any;
+  showEditor: boolean = false;
 
   constructor(
     private tasksService: TasksService,
@@ -818,6 +819,10 @@ export class TasksComponent implements OnInit {
     }
   }
 
+  onInputClick() {
+    this.showEditor = true;
+  }
+  
 }
 
 
