@@ -24,6 +24,7 @@ export class TaskCommentComponent implements OnInit {
   index: number;
   tempComment: taskComment;
   firstLetter: string;
+  showEditor: boolean = false;
 
   constructor(
     private taskService: TasksService,
@@ -39,16 +40,14 @@ export class TaskCommentComponent implements OnInit {
     this.editedComment = this.comment;
     this.editedComment = { ...this.comment };
     this.firstLetter = this.commonService.firstletter;
-    console.log(this.currentProfile,"user")
     this.commonService.getCurrentUser().subscribe((profile: any) => {
       this.currentProfile = profile;
-    console.log(this.currentProfile,"user")
-
     });
   }
 
     updateComment() {
     this.commentUpdated.emit( {text: this.editedComment.content} );
+    this.showEditor = false;
     this.isEditMode = false;
   }
 
@@ -73,10 +72,19 @@ export class TaskCommentComponent implements OnInit {
   }
   toggleEditMode() {
     if (this.isEditMode) {
+      this.showEditor = true;
       this.editedComment = this.tempComment;
+     
     } else {
+      this.showEditor = false;
       this.tempComment = {...this.editedComment};
     }
+    this.showEditor = true;
     this.isEditMode = !this.isEditMode;
+  }
+  cancelEditMode() {
+    this.isEditMode = false;
+    this.showEditor = false;
+    this.tempComment = { ...this.editedComment };
   }
 }

@@ -135,10 +135,11 @@
                                             </div>
                                         </div>
                                         <div class="ms-2 mt-2">
-                                            <ng-container *ngIf="this.task && this.task.length === 0;">
-                                                <div> 
-                                                    <span  type="button" class="btn dropdown-toggle dropdown-toggle-no-caret"
-                                                        data-bs-toggle="dropdown" aria-expanded="false">Add User</span>
+                                            <ng-container *ngIf="assignee && assignee.length === 0;">
+                                                <div>
+                                                    <span type="button"
+                                                        class="btn btn-sm rounded-pill btn-primary px-2 dropdown-toggle dropdown-toggle-no-caret"
+                                                        data-bs-toggle="dropdown" aria-expanded="false">Add User <i class="bi bi-chevron-down"></i></span>
                                                     <ul class="dropdown-menu" style="width: 225px; transform: translate3d(-29px, 40px, 0px) !important; height: 200px;
      overflow-y: scroll;">
                                                         <li *ngFor="let assignee of projectUser" class="border-left "
@@ -146,58 +147,80 @@
                                                             <p *ngIf="assignee.user != null" class="ps-4 py-2 mb-1"
                                                                 style="font-size: 13px;"
                                                                 (click)="addUserToTask(taskId, assignee.user.id)">
-                                                                <span class="letter text-light" style="font-size: 12px;"
+                                                                <span class="letter p-1 rounded text-light" style="font-size: 12px;"
                                                                     [tooltip]="(assignee?.user?.firstName | titlecase) + ' ' + (assignee?.user?.lastName | titlecase)"
                                                                     [style.background-color]="commonService.getRandomColor(assignee?.user?.firstName?.charAt(0) | uppercase)">
-                                                                    {{ assignee?.user?.firstName?.charAt(0) | uppercase }}
-                                                                    {{ assignee?.user?.lastName?.charAt(0) | uppercase }}
+                                                                    {{ assignee?.user?.firstName?.charAt(0) | uppercase
+                                                                    }}
+                                                                    {{ assignee?.user?.lastName?.charAt(0) | uppercase
+                                                                    }}
                                                                 </span> &nbsp;{{assignee?.user?.firstName | titlecase}}
                                                                 {{assignee?.user?.lastName | titlecase}}
                                                             </p>
                                                         </li>
                                                     </ul>
                                                 </div>
-    
-                                              </ng-container>
-                                          
-                                            <div class="user-container btn-group" *ngFor="let user of task;">
 
-                                                <span class="letter text-light"
-                                                    [tooltip]="(user?.user?.firstName | titlecase) + ' ' + (user?.user?.lastName | titlecase)"
-                                                    [style.background-color]="commonService.getRandomColor(user?.user?.firstName?.charAt(0) | uppercase)">
-                                                    {{ user?.user?.firstName?.charAt(0) | uppercase }}
-                                                    {{ user?.user?.lastName?.charAt(0) | uppercase }}
+                                            </ng-container>
+
+                                            <div class="user-container btn-group align-items-center"
+                                            *ngFor="let user of assignee;">
+
+                                            <span class="letters  p-1 rounded text-light"
+                                                [tooltip]="(user?.user?.firstName | titlecase) + ' ' + (user?.user?.lastName | titlecase)"
+                                                [style.background-color]="commonService.getRandomColor(user?.user?.firstName?.charAt(0) | uppercase)">
+                                                {{ user?.user?.firstName?.charAt(0) | uppercase }}
+                                                {{ user?.user?.lastName?.charAt(0) | uppercase }}
+                                            </span>
+
+                                            <button type="button"
+                                                class="btn dropdown-toggle dropdown-toggle-no-caret"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+
+                                                <span class="text-muted">
+                                                    {{ user?.user?.firstName }} {{ user?.user?.lastName
+                                                    }}
                                                 </span>
-
-                                                <button type="button"
-                                                    class="btn dropdown-toggle dropdown-toggle-no-caret"
-                                                    data-bs-toggle="dropdown" aria-expanded="false">
-
-                                                    <span class="text-muted">
-                                                        {{ user?.user?.firstName }} {{ user?.user?.lastName }}
-                                                    </span>
-                                                </button>
+                                            </button>
 
 
-                                                <ul class="dropdown-menu" style="width: 225px; transform: translate3d(-29px, 40px, 0px) !important; max-height: 200px;
-                                                    overflow-y: scroll;">
-                                                    <li *ngFor="let assignee of projectUser" class="border-left "
-                                                        [value]="assignee?.user?.id">
-                                                        <p *ngIf="assignee.user != null" class="ps-4 py-2 mb-1"
-                                                            style="font-size: 13px;"
-                                                            (click)="addUserToTask(taskId, assignee.user.id)">
-                                                            <span class="letter text-light" style="font-size: 12px;"
-                                                                [tooltip]="(assignee?.user?.firstName | titlecase) + ' ' + (assignee?.user?.lastName | titlecase)"
-                                                                [style.background-color]="commonService.getRandomColor(assignee?.user?.firstName?.charAt(0) | uppercase)">
-                                                                {{ assignee?.user?.firstName?.charAt(0) | uppercase }}
-                                                                {{ assignee?.user?.lastName?.charAt(0) | uppercase }}
-                                                            </span> &nbsp;{{assignee?.user?.firstName | titlecase}}
-                                                            {{assignee?.user?.lastName | titlecase}}
-                                                        </p>
-                                                    </li>
-                                                </ul>
+                                            <ul class="dropdown-menu" style="width: 225px; transform: translate3d(-29px, 40px, 0px) !important; max-height: 200px;
+                                                overflow-y: scroll;">
+                                                 <li class="border-left py-1"
+                                                 *ngIf="assignee.length === 1 && assignee[0]?.id">
+                                                 <span (click)="removeAssignee()"
+                                                     class="ps-2 py-2 mb-1"
+                                                     style="font-size: 13px;"><i
+                                                         class="bi bi-person-circle me-3 text-secondary" style="font-size: 20px"></i>
+                                                     Unassigned</span>
+                                             </li>
+                                                <li *ngFor="let assignee of projectUser"
+                                                    class="border-left " [value]="assignee?.user?.id">
+                                                    <p *ngIf="assignee.user != null"
+                                                        class="ps-2 py-2 mb-1" style="font-size: 13px;"
+                                                        (click)="addUserToTask(id, assignee.user.id)">
 
-                                            </div>
+                                                        <span class="letters p-1 rounded text-light"
+                                                            style="font-size: 12px;"
+                                                            [tooltip]="(assignee?.user?.firstName | titlecase) + ' ' + (assignee?.user?.lastName | titlecase)"
+                                                            [style.background-color]="commonService.getRandomColor(assignee?.user?.firstName?.charAt(0) | uppercase)">
+                                                            {{ assignee?.user?.firstName?.charAt(0) |
+                                                            uppercase }}
+                                                            {{ assignee?.user?.lastName?.charAt(0) |
+                                                            uppercase }}
+                                                        </span> &nbsp;{{assignee?.user?.firstName |
+                                                        titlecase}}
+                                                        {{assignee?.user?.lastName | titlecase}}
+                                                    </p>
+                                                </li>
+                                            </ul>
+
+                                        </div>
+
+
+
+
+
 
                                         </div>
                                         <div class="ms-3 mt-2">
@@ -249,23 +272,18 @@
                                     <div class="row mt-3">
                                         <b class="text-start">Description</b>
                                     </div>
-                                    <!-- <p id="description" name="description" [(ngModel)]="tasks?.data?.task.description">
-                                        {{tasks?.data?.task?.description}}
-                                    </p>
-                                  
-                                    <quill-editor #editor [styles]="{height: '100px'}"  formControlName="description" 
-                                    [(ngModel)]="tasks?.data?.task.description"></quill-editor> -->
+
                                     <div *ngIf="!showEditor" (click)="onParagraphClick()">
-                                        <p id="description" name="description" class="border">
-                                          {{tasks?.data?.task?.description}}
-                                        </p>
-                                      </div>
-                                      
-                                      <div *ngIf="showEditor">
-                                        <quill-editor [styles]="{height: '100px'}" formControlName="description"
-                                                      [(ngModel)]="tasks?.data?.task.description"></quill-editor>
-                                      </div>
-                                      
+                                        <div id="description" name="description" class="w-100"
+                                            [innerHTML]="tasks?.data?.task?.description">
+                                        </div>
+                                    </div>
+
+                                    <div *ngIf="showEditor">
+                                        <quill-editor #editor [styles]="{height: 'auto'}" formControlName="description"
+                                            [(ngModel)]="tasks?.data?.task.description"></quill-editor>
+                                    </div>
+
                                     <div *ngIf="updateForm.controls['description'].invalid && updateForm.controls['description'].touched"
                                         class="alert alert-danger error">
                                         <div *ngIf="updateForm.controls['description'].errors['required']">
@@ -387,9 +405,9 @@
                                                         </div>
                                                     </a>
                                                 </div>
-                                               
-                                                
-                                                
+
+
+
 
 
                                                 <div class="card cardAttachment"
@@ -410,7 +428,8 @@
                                                     <button type="button"
                                                         class="bi bi-trash btn text-danger text-right deleteAttachment"
                                                         (click)="deleteTaskAttachment(attachment.id)"></button>
-                                                    <a href="{{attachment.url}}" target="_blank" download="{{attachment.attachmentName}}" class="card-img-top">
+                                                    <a href="{{attachment.url}}" target="_blank"
+                                                        download="{{attachment.attachmentName}}" class="card-img-top">
                                                         <i class="bi bi-filetype-txt file"></i>
                                                         <div class="card-body py-0  border-top">
                                                             <small class="card-text">
@@ -552,7 +571,7 @@
                             <div class="subtask-creating-row-wrapper bg-white rounded">
                                 <form action="" [formGroup]="addForm" (ngSubmit)="onSub()">
                                     <div class="d-flex tasks-creation-row justify-content-between subtask-creating-row">
-                                        <input class="new-task-title-input" placeholder="+ Add subtask..." value=""
+                                        <input class="new-task-title-input" placeholder="Add subtask..." value=""
                                             formControlName="taskName">
 
                                         <div class="d-flex align-items-center">

@@ -26,7 +26,7 @@
           <tr *ngFor="let data of emailList  | search: searchText">
             <td class="col-1">{{data?.templateType}}</td>
             <td class="col-3">{{data?.Name}}</td>
-            <td class="col-4">{{data?.contentData}}</td>
+            <td class="col-4" [innerHTML]="data?.contentData"></td>
             <td class="col-4">{{data?.subject}}</td>
             <td class="col-1"><button class="btn btn-primary btn-sm mr-2" style="min-width: 100px;"
                 data-bs-toggle="modal" data-bs-target="#updateModal" (click)="selectedEmail=data">Edit</button></td>
@@ -72,7 +72,7 @@
               <option *ngFor="let option of dropdownOptions" [value]="option.label">{{ option.label }}</option>
             </select>
 
-            <quill-editor #editor [styles]="{height: '100px'}" formControlName="contentData"
+            <quill-editor #editor [styles]="{height: 'auto'}" formControlName="contentData"
               [(ngModel)]="editorContent"></quill-editor>
 
             <br>

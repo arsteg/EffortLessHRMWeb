@@ -50,22 +50,20 @@
                                 </div>
                             </div>
                         </div>
+                      
                         <div class="me-2">
                             <button (click)="toggleViewMode()" class="mt-2" mat-raised-button>
-                                <ng-container *ngIf="isListView; else boardIcon">
-
-                                    <mat-icon>leaderboard</mat-icon>
-                                    <span> Board View </span>
-
-                                </ng-container>
-                                <ng-template #boardIcon>
-                                    <mat-icon>list</mat-icon>
-                                    <span> List View </span>
-
-                                </ng-template>
+                              <ng-container *ngIf="isListView; else boardIcon">
+                                <mat-icon>leaderboard</mat-icon>
+                                <span> Board View </span>
+                              </ng-container>
+                              <ng-template #boardIcon>
+                                <mat-icon>list</mat-icon>
+                                <span> List View </span>
+                              </ng-template>
                             </button>
-
-                        </div>
+                          </div>
+                          
 
                         <div class="d-flex h-25 ms-auto">
                             <input class="form-control search" type="text" placeholder="Search..."
@@ -326,7 +324,7 @@
                                     </div>
                                     <div class="card-body  taskBoard">
                                         <ul class="tasks chat-menu ui-sortable ps-0" id="task-list-1" type="none">
-                                            <ng-container *ngFor="let task of tasks">
+                                            <ng-container *ngFor="let task of tasks; let i = index">
                                                 <li *ngIf="task.status == 'ToDo'"
                                                     class="taskToDo task-card border-bottom py-3 px-2 border-left  ui-sortable-handle">
                                                     <div class="d-flex">
@@ -341,22 +339,80 @@
                                                                 data-bs-toggle="modal" data-bs-target="#deleteModal"
                                                                 (click)="selectedTask = task"></i></span>
                                                     </div>
-                                                    <div class="d-flex">
-                                                        <span class="text-muted">Created by:
+                                                    <div class="d-flex  align-items-center">
+                                                        <span class="text-muted"  style="font-size: smaller;">Created by:
                                                             {{task?.createdBy?.firstName |
                                                             titlecase}}
                                                             {{task?.createdBy?.lastName | titlecase}}</span>
-                                                        <span class="ms-auto">
+                                                      
 
-                                                            <img class="align-self-center" [title]="task?.priority"
-                                                                [src]="getTaskPriorityUrl(task?.priority)" height="24"
-                                                                width="24">
-                                                        </span>
+                                                           
+
+                                                                <div class="dropdown  ms-auto">
+                                                                    <button class="btn sub_btn dropdown-toggle" type="button"
+                                                                        id="dropdownMenuButton" data-bs-toggle="dropdown"
+                                                                        aria-haspopup="true" aria-expanded="false">
+                                                                        <img class="align-self-center"
+                                                                            [src]="selectedPriority ? selectedPriority.url : getTaskPriorityUrl(task?.priority)"
+                                                                            [title]="selectedPriority ? selectedPriority.name : getTaskPriorityUrl(task?.priority)"
+                                                                            height="24" width="24">
+                                                                    </button>
+                                                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                                        <button *ngFor="let priority of priorityList" type="button"
+                                                                            tabindex="0" role="menuitem" class="sub_btn dropdown-item"
+                                                                            (click)="updateTaskPriority(task,priority.name)">
+                                                                            <span class="d-flex align-items-center">
+                                                                                <img [src]="priority?.url" class="me-3" height="18"
+                                                                                    width="18">
+                                                                                <span>{{priority?.name}}</span>
+                                                                            </span>
+                                                                        </button>
+                                                                        <button type="button" tabindex="0" role="menuitem"
+                                                                            class="dropdown-item sub_btn"
+                                                                            (click)="updateTaskPriority(task,'')">
+                                                                            <span class="d-flex align-items-center"><span>Remove
+                                                                                    Priority</span></span>
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="dropdown">
+                                                                    <button class="btn dropdown-toggle sub_btn  status btn-sm mt-1 p-1 text-light" type="button"
+                                                                        id="dropdownMenuButton" data-bs-toggle="dropdown"
+                                                                        aria-haspopup="true" aria-expanded="false" [ngClass]="{
+                                                                            'bg-warning text-white!important': (selectedStatus || task?.status) === 'In Progress',
+                                                                            'bg-success text-white!important': (selectedStatus || task?.status) === 'Done',
+                                                                            'bg-danger text-white!important': (selectedStatus || task?.status) === 'ToDo',
+                                                                            'bg-secondary text-white!important': (selectedStatus || task?.status) === 'Closed',
+                                                                            'bg-primary text-white!important': (selectedStatus || task?.status) === 'Active'
+                                                                            
+                                                                        }">
+                                                                        <i class="fa fa-tasks"></i> {{ selectedStatus ||
+                                                                            task?.status
+                                                                        }}
+                                                                    </button>
+                                                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                                        <button *ngFor="let s of statusList" type="button" tabindex="0"
+                                                                            role="menuitem" class="sub_btn dropdown-item"
+                                                                            (click)="updateTaskStatus(task,s.name)">
+                                                                            <span class="d-flex align-items-center">
+                                                                                <span>{{s?.name}}</span>
+                                                                            </span>
+                                                                        </button>
+                                                                        <button type="button" tabindex="0" role="menuitem"
+                                                                            class="dropdown-item sub_btn "
+                                                                            (click)="updateTaskStatus(task,'')">
+                                                                            <span class="d-flex align-items-center"><span>Remove
+                                                                                    Status</span></span>
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                       
                                                     </div>
 
                                                     <div class="ms-3">
                                                         <span *ngFor="let users of task?.TaskUsers"
-                                                            class="letter text-light"
+                                                            class="letter text-light" style="font-size: smaller;"
                                                             [tooltip]="(users?.user?.firstName| titlecase) + (' ') +( users?.user?.lastName | titlecase)"
                                                             [style.background-color]="commonservice.getRandomColor(users?.user?.firstName)">
                                                             {{users?.user?.firstName.charAt(0) | uppercase}}
@@ -433,22 +489,76 @@
                                                                 data-bs-toggle="modal" data-bs-target="#deleteModal"
                                                                 (click)="selectedTask = task"></i></span>
                                                     </div>
-                                                    <div class="d-flex">
-                                                        <span class="text-muted">Created by:
+                                                    <div class="d-flex  align-items-center">
+                                                        <span class="text-muted  align-items-center"  style="font-size: smaller;">Created by:
                                                             {{task?.createdBy?.firstName |
                                                             titlecase}}
                                                             {{task?.createdBy?.lastName | titlecase}}</span>
-                                                        <span class="ms-auto">
-                                                            <img class="align-self-center" [title]="task.priority"
-                                                                [src]="getTaskPriorityUrl(task.priority)" height="24"
-                                                                width="24">
-                                                        </span>
+                                                            <div class="dropdown  ms-auto">
+                                                                <button class="btn sub_btn dropdown-toggle" type="button"
+                                                                    id="dropdownMenuButton" data-bs-toggle="dropdown"
+                                                                    aria-haspopup="true" aria-expanded="false">
+                                                                    <img class="align-self-center"
+                                                                        [src]="selectedPriority ? selectedPriority.url : getTaskPriorityUrl(task?.priority)"
+                                                                        [title]="selectedPriority ? selectedPriority.name : getTaskPriorityUrl(task?.priority)"
+                                                                        height="24" width="24">
+                                                                </button>
+                                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                                    <button *ngFor="let priority of priorityList" type="button"
+                                                                        tabindex="0" role="menuitem" class="sub_btn dropdown-item"
+                                                                        (click)="updateTaskPriority(task,priority.name)">
+                                                                        <span class="d-flex align-items-center">
+                                                                            <img [src]="priority?.url" class="me-3" height="18"
+                                                                                width="18">
+                                                                            <span>{{priority?.name}}</span>
+                                                                        </span>
+                                                                    </button>
+                                                                    <button type="button" tabindex="0" role="menuitem"
+                                                                        class="dropdown-item sub_btn"
+                                                                        (click)="updateTaskPriority(task,'')">
+                                                                        <span class="d-flex align-items-center"><span>Remove
+                                                                                Priority</span></span>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="dropdown">
+                                                                <button class="btn dropdown-toggle sub_btn  status btn-sm mt-1 p-1 text-light" type="button"
+                                                                    id="dropdownMenuButton" data-bs-toggle="dropdown"
+                                                                    aria-haspopup="true" aria-expanded="false" [ngClass]="{
+                                                                        'bg-warning text-white!important': (selectedStatus || task?.status) === 'In Progress',
+                                                                        'bg-success text-white!important': (selectedStatus || task?.status) === 'Done',
+                                                                        'bg-danger text-white!important': (selectedStatus || task?.status) === 'ToDo',
+                                                                        'bg-secondary text-white!important': (selectedStatus || task?.status) === 'Closed',
+                                                                        'bg-primary text-white!important': (selectedStatus || task?.status) === 'Active'
+                                                                        
+                                                                    }">
+                                                                    <i class="fa fa-tasks"></i> {{ selectedStatus ||
+                                                                        task?.status
+                                                                    }}
+                                                                </button>
+                                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                                    <button *ngFor="let s of statusList" type="button" tabindex="0"
+                                                                        role="menuitem" class="sub_btn dropdown-item"
+                                                                        (click)="updateTaskStatus(task,s.name)">
+                                                                        <span class="d-flex align-items-center">
+                                                                            <span>{{s?.name}}</span>
+                                                                        </span>
+                                                                    </button>
+                                                                    <button type="button" tabindex="0" role="menuitem"
+                                                                        class="dropdown-item sub_btn "
+                                                                        (click)="updateTaskStatus(task,'')">
+                                                                        <span class="d-flex align-items-center"><span>Remove
+                                                                                Status</span></span>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
                                                     </div>
 
 
                                                     <div class="ms-3">
                                                         <span *ngFor="let users of task?.TaskUsers"
-                                                            class="letter text-light"
+                                                            class="letter text-light" style="font-size: smaller;"
                                                             [tooltip]="(users?.user?.firstName| titlecase) + (' ') +( users?.user?.lastName | titlecase)"
                                                             [style.background-color]="commonservice.getRandomColor(users?.user?.firstName)">
                                                             {{users?.user?.firstName.charAt(0) | uppercase}}
@@ -530,30 +640,75 @@
                                                                 data-bs-toggle="modal" data-bs-target="#deleteModal"
                                                                 (click)="selectedTask = task"></i></span>
                                                     </div>
-                                                    <div class="d-flex">
-                                                        <span class="text-muted">Created by:
+                                                    <div class="d-flex  align-items-center">
+                                                        <span class="text-muted"  style="font-size: smaller;">Created by:
                                                             {{task?.createdBy?.firstName |
                                                             titlecase}}
                                                             {{task?.createdBy?.lastName | titlecase}}</span>
-                                                        <span class="ms-auto">
+                                                        
+                                                            <div class="dropdown  ms-auto">
+                                                                <button class="btn sub_btn dropdown-toggle" type="button"
+                                                                    id="dropdownMenuButton" data-bs-toggle="dropdown"
+                                                                    aria-haspopup="true" aria-expanded="false">
+                                                                    <img class="align-self-center"
+                                                                        [src]="selectedPriority ? selectedPriority.url : getTaskPriorityUrl(task?.priority)"
+                                                                        [title]="selectedPriority ? selectedPriority.name : getTaskPriorityUrl(task?.priority)"
+                                                                        height="24" width="24">
+                                                                </button>
+                                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                                    <button *ngFor="let priority of priorityList" type="button"
+                                                                        tabindex="0" role="menuitem" class="sub_btn dropdown-item"
+                                                                        (click)="updateTaskPriority(task,priority.name)">
+                                                                        <span class="d-flex align-items-center">
+                                                                            <img [src]="priority?.url" class="me-3" height="18"
+                                                                                width="18">
+                                                                            <span>{{priority?.name}}</span>
+                                                                        </span>
+                                                                    </button>
+                                                                    <button type="button" tabindex="0" role="menuitem"
+                                                                        class="dropdown-item sub_btn"
+                                                                        (click)="updateTaskPriority(task,'')">
+                                                                        <span class="d-flex align-items-center"><span>Remove
+                                                                                Priority</span></span>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
 
-                                                            <span *ngFor="let users of task?.TaskUsers"
-                                                                class="letter text-light"
-                                                                [tooltip]="(users?.user?.firstName| titlecase) + (' ') +( users?.user?.lastName | titlecase)"
-                                                                [style.background-color]="commonservice.getRandomColor(users?.user?.firstName)">
-                                                                {{users?.user?.firstName.charAt(0) | uppercase}}
-                                                            </span>
-
-                                                            <img class="align-self-center" [title]="task.priority"
-                                                                [src]="getTaskPriorityUrl(task.priority)" height="24"
-                                                                width="24">
-                                                        </span>
+                                                            <div class="dropdown">
+                                                                <button class="btn dropdown-toggle sub_btn  status btn-sm mt-1 p-1 text-light" type="button"
+                                                                    id="dropdownMenuButton" data-bs-toggle="dropdown"
+                                                                    aria-haspopup="true" aria-expanded="false" [ngClass]="{
+                                                                        'bg-warning text-white!important': (selectedStatus || task?.status) === 'In Progress',
+                                                                        'bg-success text-white!important': (selectedStatus || task?.status) === 'Done',
+                                                                        'bg-danger text-white!important': (selectedStatus || task?.status) === 'ToDo',
+                                                                        'bg-secondary text-white!important': (selectedStatus || task?.status) === 'Closed',
+                                                                        'bg-primary text-white!important': (selectedStatus || task?.status) === 'Active'
+                                                                        
+                                                                    }">
+                                                                    <i class="fa fa-tasks"></i> {{ selectedStatus ||
+                                                                        task?.status
+                                                                    }}
+                                                                </button>
+                                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                                    <button *ngFor="let s of statusList" type="button" tabindex="0"
+                                                                        role="menuitem" class="sub_btn dropdown-item"
+                                                                        (click)="updateTaskStatus(task,s.name)">
+                                                                        <span class="d-flex align-items-center">
+                                                                            <span>{{s?.name}}</span>
+                                                                        </span>
+                                                                    </button>
+                                                                    <button type="button" tabindex="0" role="menuitem"
+                                                                        class="dropdown-item sub_btn "
+                                                                        (click)="updateTaskStatus(task,'')">
+                                                                        <span class="d-flex align-items-center"><span>Remove
+                                                                                Status</span></span>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
                                                     </div>
-
-
                                                     <div class="ms-3">
                                                         <span *ngFor="let users of task?.TaskUsers"
-                                                            class="letter text-light"
+                                                            class="letter text-light" style="font-size: smaller;"
                                                             [tooltip]="(users?.user?.firstName| titlecase) + (' ') +( users?.user?.lastName | titlecase)"
                                                             [style.background-color]="commonservice.getRandomColor(users?.user?.firstName)">
                                                             {{users?.user?.firstName.charAt(0) | uppercase}}
@@ -633,23 +788,75 @@
                                                                 data-bs-toggle="modal" data-bs-target="#deleteModal"
                                                                 (click)="selectedTask = task"></i></span>
                                                     </div>
-                                                    <div class="d-flex">
-                                                        <span class="text-muted">Created by:
+                                                    <div class="d-flex align-items-center">
+                                                        <span class="text-muted"  style="font-size: smaller;">Created by:
                                                             {{task?.createdBy?.firstName |
                                                             titlecase}}
                                                             {{task?.createdBy?.lastName | titlecase}}</span>
-                                                        <span class="ms-auto">
+                                                            <div class="dropdown  ms-auto">
+                                                                <button class="btn sub_btn dropdown-toggle" type="button"
+                                                                    id="dropdownMenuButton" data-bs-toggle="dropdown"
+                                                                    aria-haspopup="true" aria-expanded="false">
+                                                                    <img class="align-self-center"
+                                                                        [src]="selectedPriority ? selectedPriority.url : getTaskPriorityUrl(task?.priority)"
+                                                                        [title]="selectedPriority ? selectedPriority.name : getTaskPriorityUrl(task?.priority)"
+                                                                        height="24" width="24">
+                                                                </button>
+                                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                                    <button *ngFor="let priority of priorityList" type="button"
+                                                                        tabindex="0" role="menuitem" class="sub_btn dropdown-item"
+                                                                        (click)="updateTaskPriority(task,priority.name)">
+                                                                        <span class="d-flex align-items-center">
+                                                                            <img [src]="priority?.url" class="me-3" height="18"
+                                                                                width="18">
+                                                                            <span>{{priority?.name}}</span>
+                                                                        </span>
+                                                                    </button>
+                                                                    <button type="button" tabindex="0" role="menuitem"
+                                                                        class="dropdown-item sub_btn"
+                                                                        (click)="updateTaskPriority(task,'')">
+                                                                        <span class="d-flex align-items-center"><span>Remove
+                                                                                Priority</span></span>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
 
-
-                                                            <img class="align-self-center" [title]="task.priority"
-                                                                [src]="getTaskPriorityUrl(task.priority)" height="24"
-                                                                width="24">
-                                                        </span>
+                                                            <div class="dropdown">
+                                                                <button class="btn dropdown-toggle sub_btn  status btn-sm mt-1 p-1 text-light" type="button"
+                                                                    id="dropdownMenuButton" data-bs-toggle="dropdown"
+                                                                    aria-haspopup="true" aria-expanded="false" [ngClass]="{
+                                                                        'bg-warning text-white!important': (selectedStatus || task?.status) === 'In Progress',
+                                                                        'bg-success text-white!important': (selectedStatus || task?.status) === 'Done',
+                                                                        'bg-danger text-white!important': (selectedStatus || task?.status) === 'ToDo',
+                                                                        'bg-secondary text-white!important': (selectedStatus || task?.status) === 'Closed',
+                                                                        'bg-primary text-white!important': (selectedStatus || task?.status) === 'Active'
+                                                                        
+                                                                    }">
+                                                                    <i class="fa fa-tasks"></i> {{ selectedStatus ||
+                                                                        task?.status
+                                                                    }}
+                                                                </button>
+                                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                                    <button *ngFor="let s of statusList" type="button" tabindex="0"
+                                                                        role="menuitem" class="sub_btn dropdown-item"
+                                                                        (click)="updateTaskStatus(task,s.name)">
+                                                                        <span class="d-flex align-items-center">
+                                                                            <span>{{s?.name}}</span>
+                                                                        </span>
+                                                                    </button>
+                                                                    <button type="button" tabindex="0" role="menuitem"
+                                                                        class="dropdown-item sub_btn "
+                                                                        (click)="updateTaskStatus(task,'')">
+                                                                        <span class="d-flex align-items-center"><span>Remove
+                                                                                Status</span></span>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
                                                     </div>
 
                                                     <div class="ms-3">
                                                         <span *ngFor="let users of task?.TaskUsers"
-                                                            class="letter text-light"
+                                                            class="letter text-light" style="font-size: smaller;"
                                                             [tooltip]="(users?.user?.firstName| titlecase) + (' ') +( users?.user?.lastName | titlecase)"
                                                             [style.background-color]="commonservice.getRandomColor(users?.user?.firstName)">
                                                             {{users?.user?.firstName.charAt(0) | uppercase}}

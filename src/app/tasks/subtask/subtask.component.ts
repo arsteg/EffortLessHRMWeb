@@ -73,17 +73,16 @@ export class SubtaskComponent implements OnInit {
       status: [this.subTask?.data?.task?.status, Validators.required]
     });
   }
-
+assignee: any;
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
-      this.id = params['p_Id'];
+      this.id = params['taskId'];
       if (this.id) {
 
         this.tasksService.getTaskById(this.id).subscribe((result: any) => {
-
           this.subtask = result.data;
+          this.assignee = this.subtask.newTaskUserList;
           this.subTaskDetail = result.data.task;
-
           this.tasksService.getTaskById(this.subTaskDetail.parentTask).subscribe((result: any) => {
             this.parentTask = result.data.task;
             const currentTaskProject = this.parentTask;
@@ -111,8 +110,7 @@ export class SubtaskComponent implements OnInit {
   }
   addUserToTask(taskId: string, user: string): void {
     this.tasksService.addUserToTask(taskId, user).subscribe((response: any) => {
-      this.subtask = response && response.data && response.data['TaskUserList'];      
-      console.log(this.subtask)
+      this.assignee = response && response.data && response.data['TaskUserList'];      
       this.toastmsg.success('Task status updated successfully', 'Success')
     },
       err => {
@@ -120,17 +118,24 @@ export class SubtaskComponent implements OnInit {
       }
     );
   }
+  
   removeAssignee() {
-    const unassigned = this.subtask.newTaskUserList[0].id;
-    // console.log("Assignee",this.subtask.newTaskUserList[0].id);
-    this.tasksService.deleteTaskUser(unassigned).subscribe((res: any)=>{
-      console.log(res)
-      this.toastmsg.success('UnAssigned successfully', 'Success')
-    },
-      err => {
-        this.toastmsg.error('Task could not be Unassigned', 'ERROR!')
-      });
+    const unassignedUserId = this.assignee[0]?.id;
+    if (unassignedUserId) {
+      this.tasksService.deleteTaskUser(unassignedUserId).subscribe(
+        (res: any) => {
+          this.subtask.newTaskUserList = [];
+          this.assignee = []
+          this.toastmsg.success('Unassigned successfully', 'Success');
+          this.subtask.newTaskUserList = [];
+        },
+        (err) => {
+          this.toastmsg.error('Task could not be Unassigned', 'ERROR!');
+        }
+      );
+    }
   }
+  
   getProjectNameInitials(projectName: string): string {
     if (projectName) {
       const words = projectName.split(' ');
@@ -177,7 +182,7 @@ export class SubtaskComponent implements OnInit {
       comment: this.updateForm.value.comment
     }
     this.tasksService.updateTask(this.id, updateTask).subscribe(response => {
-      this.ngOnInit();
+      this.showEditor = false;
       this.toastmsg.success('Existing Task Updated', 'Successfully Updated!')
     },
       err => {
@@ -199,25 +204,6 @@ export class SubtaskComponent implements OnInit {
       this.selectedUser = this.taskUserList.map(user => user.user.id);
     });
   }
-  // addUserToTask(addUserForm) {
-  //   let selectedUsers = this.addUserForm.get('userName').value;
-  //   let newUsers = selectedUsers.filter(id => !this.taskUserList.find(user => user.user.id === id));
-  //   let task_Users = newUsers.map((id) => { return { user: id } });
-  //   if (task_Users.length > 0) {
-  //     this.tasksService.addUserToTask(this.id, task_Users).subscribe(result => {
-  //       const res = result;
-  //       this.ngOnInit();
-  //       this.toastmsg.success('New Member Added', 'Successfully Added!')
-  //     },
-  //       err => {
-  //         this.toastmsg.error('Member Already Exist', 'ERROR!')
-  //       })
-  //   }
-  //   else {
-  //     this.toastmsg.error('All selected users already exist', 'ERROR!')
-  //   }
-  // }
-
 
   gotoParentTask(task: any) {
     const taskId = task.id.toString();

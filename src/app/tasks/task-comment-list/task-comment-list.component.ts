@@ -3,9 +3,8 @@ import { TasksService } from '../../_services/tasks.service';
 import { taskComment } from 'src/app/models/task/taskComment';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { CommonService } from 'src/app/common/common.service';
-import { attachments, commentAttachment, taskAttachments } from '../task';
+import { attachments, commentAttachment } from '../task';
 import { ActivatedRoute } from '@angular/router';
-import { GetTaskService } from 'src/app/_services/get-task.service';
 @Component({
   selector: 'app-task-comment-list',
   templateUrl: './task-comment-list.component.html',
@@ -38,7 +37,6 @@ export class TaskCommentListComponent implements OnInit {
     private authentication: AuthenticationService,
     public commonService: CommonService,
     private route: ActivatedRoute,
-    private taskIdService: GetTaskService
   ) {
   }
 
@@ -69,7 +67,7 @@ export class TaskCommentListComponent implements OnInit {
 });
 
     this.commentsArray = [...this.comments];
-    this.taskService.getComments(this.taskId).subscribe((response) => {
+    this.taskService.getComments(this.taskId || this.subtaskId).subscribe((response) => {
       this.comments = response.data;
     });
    
@@ -180,7 +178,7 @@ export class TaskCommentListComponent implements OnInit {
   }
 
   getTaskAttachments(): void {
-    this.taskService.getTaskAttachment(this.taskId).subscribe(result => {
+    this.taskService.getTaskAttachment(this.taskId || this.subtaskId).subscribe(result => {
       this.commentAttachment = result.data.newTaskAttachmentList;
     });
   }
@@ -214,9 +212,11 @@ export class TaskCommentListComponent implements OnInit {
     const kilobytes = bytes / 1024;
     return kilobytes.toFixed(2) + ' KB';
   }
-  onParagraphClick() {
-    console.log(this.showEditor)
-    this.showEditor = true;
-    console.log(this.showEditor)
+  onInputClick() {
+    this.showEditor = true; 
+  }
+  cancelEditMode(){
+    this.newComment = '';
+    this.showEditor = false;
   }
 }

@@ -14,6 +14,9 @@ import { TimeLogService } from '../_services/timeLogService';
 import { GetTaskService } from '../_services/get-task.service';
 import * as moment from 'moment';
 import { Observable, switchMap } from 'rxjs';
+import {  ActivatedRoute, ParamMap } from '@angular/router';
+// import { switchMap } from 'rxjs/operators';
+// import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-tasks',
@@ -90,6 +93,8 @@ export class TasksComponent implements OnInit {
   currentProfile: any;
   role: any;
   showEditor: boolean = false;
+  selectedPriority: any;
+  selectedStatus: string = '';
 
   constructor(
     private tasksService: TasksService,
@@ -102,7 +107,8 @@ export class TasksComponent implements OnInit {
     private authService: AuthenticationService,
     private getTaskId: GetTaskService,
     private timelog: TimeLogService,
-    private auth: AuthenticationService
+    private auth: AuthenticationService,
+    private route: ActivatedRoute
   ) {
     this.addForm = this.fb.group({
       taskName: [''],
@@ -153,16 +159,16 @@ export class TasksComponent implements OnInit {
     this.getCurrentUser().subscribe(() => {
       // console.log(this.currentProfile.id)
       this.getTasks();
+      console.log('from ngOninit')
       this.getprojects();
       this.populateUsers();
       this.userId = '';
 
-      // if (this.role.toLowerCase() === 'admin' || this.role == null || this.view === 'admin') {
-      //   console.log(this.role)
-      //   this.listAllTasks();
-      // }
-      // else (this.role.toLowerCase() !== 'admin')
-      // this.getTasksbyTeam();
+      
+    });
+    this.setDefaultViewMode()
+    this.route.queryParamMap.subscribe((params: ParamMap) => {
+      this.isListView = params.get('view') === 'list';
     });
 
   }
@@ -189,32 +195,7 @@ export class TasksComponent implements OnInit {
     );
   }
 
-  // populateUsers() {
-  //   this.members = [];
-  //   this.members.push({ id: '', name: 'ALL Users', email: '' },
-  //     { id: this.currentProfile.id, name: "Me", email: this.currentProfile.email });
-  //   this.member = this.currentProfile;
-  //   console.log(this.member)
-  //   this.timelog.getTeamMembers(this.member.id).subscribe({
-  //     next: (response: { data: any; }) => {
-  //       this.timelog.getusers(response.data).subscribe({
-  //         next: result => {
-  //           result.data.forEach(user => {
-  //             if (user.email != this.currentProfile.email) {
-  //               this.members.push({ id: user.id, name: `${user.firstName} ${user.lastName}`, email: user.email });
-  //             }
-  //           })
-  //         },
-  //         error: error => {
-  //           console.log('There was an error!', error);
-  //         }
-  //       });
-  //     },
-  //     error: error => {
-  //       console.log('There was an error!', error);
-  //     }
-  //   });
-  // }
+ 
   populateUsers() {
     this.members = [];
     this.member = this.currentProfile;
@@ -254,11 +235,9 @@ export class TasksComponent implements OnInit {
     const taskId = task.id.toString();
     const p_Id = task.parentTask;
     if (p_Id) {
-      console.log(task.parentTask, p_Id)
       const navigationExtras: NavigationExtras = {
-        queryParams: { p_Id: p_Id }
+        queryParams: { taskId: taskId }
       };
-      console.log(p_Id)
       this.router.navigate(['/SubTask', task.taskNumber], navigationExtras);
     } else {
       const navigationExtras: NavigationExtras = {
@@ -273,7 +252,7 @@ export class TasksComponent implements OnInit {
     return statusItem ? statusItem.isChecked : false;
   }
 
-  listAllTasks() {
+  async listAllTasks() {
     this.tasksService.getAllTasks(this.skip, this.next).subscribe((response: any) => {
       this.totalRecords = response && response.data
       this.tasks = response && response.data && response.data['taskList'];
@@ -281,7 +260,7 @@ export class TasksComponent implements OnInit {
     });
 
   }
-  getTasksbyTeam() {
+  async getTasksbyTeam() {
     this.tasksService.getTasklistbyTeam(this.skip, this.next).subscribe((response: any) => {
       this.totalRecords = response && response.data
       this.tasks = response && response.data && response.data['taskList'];
@@ -296,11 +275,11 @@ export class TasksComponent implements OnInit {
         this.listAllTasks();
       }
       else {
-        console.log("from pagination")
         this.getTasksbyTeam();
       }
     }
     else if (this.projectId && this.userId) {
+      console.log(this.projectId, this.userId)
       this.authService.getUserTaskListByProject(this.userId, this.projectId, this.skip, this.next).subscribe(
         (response: any) => {
           this.totalRecords = response;
@@ -556,8 +535,9 @@ export class TasksComponent implements OnInit {
 
 
   onProjectSelectionChange() {
-    if (this.view === 'admin' || this.role.toLowerCase === 'admin' && !this.userId && !this.currentProfile.id && this.projectId === 'ALL') {
+    if ((this.view === 'admin' || this.role.toLowerCase() === 'admin') && (!this.userId && !this.currentProfile.id) && this.projectId === 'ALL') {
       this.getTasks();
+      console.log("from project select")
     } else if (this.projectId !== 'ALL') {
       this.skip = '0';
       this.getTasksByProject();
@@ -581,6 +561,8 @@ export class TasksComponent implements OnInit {
         });
       }
       else this.getTasks();
+      console.log("from project select")
+
     }
   }
 
@@ -649,9 +631,22 @@ export class TasksComponent implements OnInit {
       this.tasks = task;
     });
   }
-
+  setDefaultViewMode() {
+    const queryParams = this.route.snapshot.queryParamMap;
+    this.isListView = queryParams.get('view') !== 'board';
+    this.updateViewModeQueryParam(this.isListView);
+  }
   toggleViewMode() {
     this.isListView = !this.isListView;
+ this.updateViewModeQueryParam(this.isListView);
+  }
+
+  updateViewModeQueryParam(isListView: boolean) {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { view: isListView ? 'list' : 'board' },
+      queryParamsHandling: 'merge'
+    });
   }
 
   calculateTasksLength(status: string): number {

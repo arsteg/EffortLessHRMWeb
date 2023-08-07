@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { TasksService } from '../../_services/tasks.service';
 import { Toast, ToastrService } from 'ngx-toastr';
@@ -73,6 +73,7 @@ export class EditTaskComponent implements OnInit {
   currentPage: number = 1;
   noUser: [] = [];
   showEditor: boolean = false;
+  @ViewChild('editor') editor: any;
 
 
   constructor(private fb: FormBuilder,
@@ -132,16 +133,30 @@ export class EditTaskComponent implements OnInit {
   
   getTask(taskId: string) {
     if (taskId) {
-      this.tasksService.getTaskById(taskId).subscribe(task => {
-        this.tasks = task;
-        this.task = task.data.newTaskUserList;
-       
+      this.tasksService.getTaskById(taskId).subscribe(res => {
+        this.tasks = res;
+        this.assignee = this.tasks.data.newTaskUserList;
+        console.log(this.assignee)
         this.currentTaskProject = this.tasks.data.task;
         this.projectService.getprojectUser(this.currentTaskProject.project.id).subscribe((res: any) => {
           this.projectUser = res && res.data && res.data['projectUserList']
         });
       });
 
+    }
+  }
+  removeAssignee() {
+    const unassignedUserId = this.assignee[0]?.id;
+    if (unassignedUserId) {
+      this.tasksService.deleteTaskUser(unassignedUserId).subscribe(
+        (res: any) => {
+          this.assignee = []
+          this.toast.success('Unassigned successfully', 'Success');
+        },
+        (err) => {
+          this.toast.error('Task could not be Unassigned', 'ERROR!');
+        }
+      );
     }
   }
   getProjectNameInitials(proejctName: string): string {
@@ -493,18 +508,12 @@ export class EditTaskComponent implements OnInit {
   }
 
   subTaskDetail(subTask: any) {
-    const p_Id = subTask.id.toString();
-    
-   
+    const taskId = subTask.id.toString();
       const navigationExtras: NavigationExtras = {
-        queryParams: { p_Id: p_Id }
+        queryParams: { taskId: taskId }
       };
       this.router.navigate(['/SubTask', subTask.taskNumber], navigationExtras);
   }
-
- 
-
-
 
   onSubtaskIdChanged(subtaskId: string) {
     this.currentSubtaskId = subtaskId;
@@ -529,10 +538,10 @@ export class EditTaskComponent implements OnInit {
         this.toast.error('Task could not be updated', 'ERROR!')
       })
   }
+  assignee: any;
   addUserToTask(taskId: string, user: string): void {
     this.tasksService.addUserToTask(taskId, user).subscribe((response: any) => {
-      this.task = response && response.data && response.data['TaskUserList'];
-      console.log(this.task, 'new user added')
+      this.assignee = response && response.data && response.data['TaskUserList'];
       this.toast.success('Task status updated successfully', 'Success')
     },
       err => {
