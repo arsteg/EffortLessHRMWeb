@@ -23,8 +23,7 @@
     padding-left: 0;
     max-height: 41.2rem;
     position: relative;
-    /* overflow-y: hidden; */
-    overflow-x: hidden;
+    overflow-y: auto;
 }
 .active-task {
     background-color: white;

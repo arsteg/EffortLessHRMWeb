@@ -14,7 +14,7 @@ import { TimeLogService } from '../_services/timeLogService';
 import { GetTaskService } from '../_services/get-task.service';
 import * as moment from 'moment';
 import { Observable, switchMap } from 'rxjs';
-import {  ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute, ParamMap } from '@angular/router';
 // import { switchMap } from 'rxjs/operators';
 // import { Observable } from 'rxjs';
 
@@ -157,14 +157,12 @@ export class TasksComponent implements OnInit {
     });
     this.firstLetter = this.commonservice.firstletter;
     this.getCurrentUser().subscribe(() => {
-      // console.log(this.currentProfile.id)
       this.getTasks();
-      console.log('from ngOninit')
       this.getprojects();
       this.populateUsers();
       this.userId = '';
 
-      
+
     });
     this.setDefaultViewMode()
     this.route.queryParamMap.subscribe((params: ParamMap) => {
@@ -195,7 +193,7 @@ export class TasksComponent implements OnInit {
     );
   }
 
- 
+
   populateUsers() {
     this.members = [];
     this.member = this.currentProfile;
@@ -234,15 +232,14 @@ export class TasksComponent implements OnInit {
   navigateToEditPage(task: any) {
     const taskId = task.id.toString();
     const p_Id = task.parentTask;
+
+    const navigationExtras: NavigationExtras = {
+      queryParams: { taskId: taskId }
+    };
     if (p_Id) {
-      const navigationExtras: NavigationExtras = {
-        queryParams: { taskId: taskId }
-      };
       this.router.navigate(['/SubTask', task.taskNumber], navigationExtras);
-    } else {
-      const navigationExtras: NavigationExtras = {
-        queryParams: { taskId: taskId }
-      };
+    }
+    else {
       this.router.navigate(['/edit-task', task.taskNumber], navigationExtras);
     }
   }
@@ -474,9 +471,12 @@ export class TasksComponent implements OnInit {
           this.task = response;
           const newTask = this.task.data;
           this.tasks.push(newTask);
-          console.log("New Task:", newTask);
           if (this.userId && this.projectId) {
             this.getTasksByProject()
+          }
+          else if
+            (!this.userId && !this.projectId) {
+            this.listAllTasks();
           }
           else {
             this.getTaskByIds();
@@ -638,7 +638,7 @@ export class TasksComponent implements OnInit {
   }
   toggleViewMode() {
     this.isListView = !this.isListView;
- this.updateViewModeQueryParam(this.isListView);
+    this.updateViewModeQueryParam(this.isListView);
   }
 
   updateViewModeQueryParam(isListView: boolean) {
@@ -784,7 +784,6 @@ export class TasksComponent implements OnInit {
     // }
     // else 
     if ((this.view === 'admin') && (this.role.toLowerCase() === 'admin' || this.role == null) || (this.role.toLowerCase() === 'admin' && this.view == null)) {
-      console.log('task list of all users', this.view, this.role)
       this.listAllTasks();
     }
 

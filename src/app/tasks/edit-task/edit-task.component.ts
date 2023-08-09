@@ -13,7 +13,6 @@ import { NavigationExtras } from '@angular/router';
 import { GetTaskService } from 'src/app/_services/get-task.service';
 import { ProjectService } from 'src/app/_services/project.service';
 
-
 @Component({
   providers: [DatePipe],
   selector: 'app-edit-task',
@@ -74,6 +73,7 @@ export class EditTaskComponent implements OnInit {
   noUser: [] = [];
   showEditor: boolean = false;
   @ViewChild('editor') editor: any;
+  assignee: any;
 
 
   constructor(private fb: FormBuilder,
@@ -111,11 +111,10 @@ export class EditTaskComponent implements OnInit {
       project: ['', Validators.required],
       taskAttachments: [[]]
     });
-
+   
   }
   ngOnInit(): void {
     this.getprojects();
-    
     this.firstLetter = this.commonService.firstletter;
     this.route.queryParams.subscribe(params => {
       this.taskId = params['taskId'];
@@ -127,6 +126,8 @@ export class EditTaskComponent implements OnInit {
     });
     this.getTasks();
   }
+
+  
   onParagraphClick() {
     this.showEditor = true;
   }
@@ -136,7 +137,6 @@ export class EditTaskComponent implements OnInit {
       this.tasksService.getTaskById(taskId).subscribe(res => {
         this.tasks = res;
         this.assignee = this.tasks.data.newTaskUserList;
-        console.log(this.assignee)
         this.currentTaskProject = this.tasks.data.task;
         this.projectService.getprojectUser(this.currentTaskProject.project.id).subscribe((res: any) => {
           this.projectUser = res && res.data && res.data['projectUserList']
@@ -226,14 +226,16 @@ export class EditTaskComponent implements OnInit {
   onTaskChange(taskId: any) {
     this.tasksService.getTaskById(taskId).subscribe((res: any) => {
       const task = res.data.task;
-      this.getTaskId.setTaskId(task.id);
-
-      if (task.parentTask) {
-        this.router.navigate(['/SubTask', task.taskNumber]);
-      } else {
-        this.router.navigate(['/edit-task', task.taskNumber]);
+      const p_Id = task.parentTask;
+      const navigationExtras: NavigationExtras = {
+        queryParams: { taskId: taskId }
+      };
+      if (p_Id) {
+        this.router.navigate(['/SubTask', task.taskNumber], navigationExtras);
       }
-
+      else {
+        this.router.navigate(['/edit-task', task.taskNumber], navigationExtras);
+      }
       this.tasks = task;
       this.getTaskAttachments();
       this.getTask(taskId);
@@ -251,8 +253,7 @@ export class EditTaskComponent implements OnInit {
       comment: this.updateForm.value.comment
     }
     this.tasksService.updateTask(this.tasks.data.task.id, updateTask).subscribe(response => {
-      console.log(response)
-      this.ngOnInit();
+     this.showEditor = false;
       this.toast.success('Existing Task Updated', 'Successfully Updated!')
     },
       err => {
@@ -261,7 +262,7 @@ export class EditTaskComponent implements OnInit {
   }
 
   onCancel(): void {
-    this.router.navigate(['/tasks']);
+    this.getTask(this.taskId);
   }
 
   getprojects() {
@@ -538,7 +539,6 @@ export class EditTaskComponent implements OnInit {
         this.toast.error('Task could not be updated', 'ERROR!')
       })
   }
-  assignee: any;
   addUserToTask(taskId: string, user: string): void {
     this.tasksService.addUserToTask(taskId, user).subscribe((response: any) => {
       this.assignee = response && response.data && response.data['TaskUserList'];

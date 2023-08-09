@@ -111,8 +111,8 @@ export class TaskCommentListComponent implements OnInit {
       this.commentsArray = [...this.comments];
       this.commentAdded.emit(response);
       this.newComment = '';
+      this.showEditor = false;
       this.ngOnInit();
-
 
       if (taskAttachments) {
         const attachments: attachments[] = [];
@@ -146,6 +146,7 @@ export class TaskCommentListComponent implements OnInit {
               this.taskService.addTaskAttachment(commentAttachment).subscribe((response) => {
                 this.commentAttachment = response.data['taskAttachmentList']
                 this.selectedFiles = []
+                this.showEditor = false;
                 this.ngOnInit();
               },
                 (error) => {
@@ -162,8 +163,6 @@ export class TaskCommentListComponent implements OnInit {
       }
     });
   }
-
-
 
   onFileSelect(event) {
     const files: FileList = event.target.files;

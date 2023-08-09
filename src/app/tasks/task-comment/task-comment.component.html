@@ -7,7 +7,7 @@
         {{currentProfile?.firstName?.charAt(0) | uppercase}} {{currentProfile?.lastName?.charAt(0) | uppercase}}
       </span>
       <div *ngIf="showEditor" class="w-100">
-        <quill-editor [styles]="{ height: '100px' }" 
+        <quill-editor [styles]="{ height: 'auto' }" 
           [(ngModel)]="editedComment.content"></quill-editor>
       </div>
     </div>

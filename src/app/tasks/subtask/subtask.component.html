@@ -42,15 +42,15 @@
 
                     <div class="issue-description">
                         <h3>Description</h3>
-<div *ngIf="!subtask?.task?.description && !showEditor">
-  <div (click)="onInputClick()" class="form-control  px-0 form-feild" style="height:50px"></div>
-</div>
+                        <div *ngIf="!subtask?.task?.description && !showEditor">
+                            <div (click)="onInputClick()" class="form-control  px-0 form-feild" style="height:50px">
+                            </div>
+                        </div>
                         <div *ngIf="!showEditor && subtask?.task?.description">
                             <div (click)="onInputClick()" class="form-control  px-0 form-feild" rows="1"
                                 id="description" name="description" formControlName="description"
                                 [innerHTML]="subtask?.task.description">
                             </div>
-
                         </div>
                         <div *ngIf="showEditor">
                             <quill-editor [styles]="{ height: '100px' }" formControlName="description"
