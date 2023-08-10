@@ -111,7 +111,7 @@ export class EditTaskComponent implements OnInit {
       project: ['', Validators.required],
       taskAttachments: [[]]
     });
-   
+
   }
   ngOnInit(): void {
     this.getprojects();
@@ -127,11 +127,11 @@ export class EditTaskComponent implements OnInit {
     this.getTasks();
   }
 
-  
+
   onParagraphClick() {
     this.showEditor = true;
   }
-  
+
   getTask(taskId: string) {
     if (taskId) {
       this.tasksService.getTaskById(taskId).subscribe(res => {
@@ -245,7 +245,7 @@ export class EditTaskComponent implements OnInit {
   updateTask() {
     const updateTask: updateTask = {
       taskName: this.updateForm.value.taskName,
-      description: this.updateForm.value.description,
+      description: this.updateForm.value?.description,
       priority: this.currentTaskProject.priority,
       project: this.currentTaskProject.project.id,
       title: this.updateForm.value.taskName,
@@ -272,7 +272,7 @@ export class EditTaskComponent implements OnInit {
   }
 
   getTaskPriorityUrl(currentPriority) {
-    const priority = this.priorityList.find(x => x.name.toLowerCase() === currentPriority?.toLowerCase());
+    const priority = this.priorityList.find(x => x.name?.toLowerCase() === currentPriority?.toLowerCase());
     return priority?.url ? priority?.url : this.unKnownImage;
   }
 
@@ -416,7 +416,7 @@ export class EditTaskComponent implements OnInit {
       estimate: this.addForm.value.estimate,
       startDate: this.addForm.value.startDate,
       endDate: this.addForm.value.endDate,
-      description: this.addForm.value.description,
+      description: this.addForm.value?.description,
       comment: 'Child Task',
       isSubTask: false,
       priority: this.addForm.value.priority,

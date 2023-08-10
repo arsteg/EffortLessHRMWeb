@@ -154,8 +154,8 @@ this.exportService.exportToExcel('Admin Timesheet', 'adminTimeSheets', this.time
   }
   getUserName(id: string) {
     const user = this.members.find((p) => p.id === id);
-    return user ? user.name.replace(/\b\w+/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()) : '';
-  
+    return user ? user.name.replace(/\b\w+/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1)?.toLowerCase()) : '';
+
   }
   getFirstDayOfWeek(){
     const today = new Date();
@@ -240,6 +240,6 @@ this.exportService.exportToExcel('Admin Timesheet', 'adminTimeSheets', this.time
     this.selectAll = !this.selectAll;
     this.filterData();
   }
-  
-  
+
+
 }

@@ -28,7 +28,7 @@ export class GenericSettingsComponent implements OnInit {
 
   OnCategoryChange(event: MatTabChangeEvent){
     this.selectedCategory = this.categoriesData[event.index];
-    this.settingsByCategory = this.jsonData.Category.filter(cat=> cat.CategoryName.toLowerCase() == this.selectedCategory.toLowerCase())
+    this.settingsByCategory = this.jsonData.Category.filter(cat=> cat.CategoryName?.toLowerCase() == this.selectedCategory?.toLowerCase())
   }
 
   saveForm() {
@@ -37,9 +37,9 @@ export class GenericSettingsComponent implements OnInit {
 
   updateValue(eventtype: any, key: string, fieldname: string, categoryName: string) {
     const checked = eventtype.target.checked;
-    
+
     this.settingsByCategory = this.settingsByCategory.map(cat => {
-      if (cat.FieldName.toLowerCase() === fieldname.toLowerCase()) {
+      if (cat.FieldName?.toLowerCase() === fieldname?.toLowerCase()) {
         if (checked) {
           cat.Value.push(key);
         }

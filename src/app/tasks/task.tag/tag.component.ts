@@ -93,8 +93,8 @@ export class TagComponent implements OnInit {
   }
 
   filteredTags(searchControl) {
-    const searchQuery = searchControl.value.toLowerCase();
-    this.filteredList = this.tagList.filter(tag => tag.title.toLowerCase().includes(searchQuery));
+    const searchQuery = searchControl.value?.toLowerCase();
+    this.filteredList = this.tagList.filter(tag => tag.title?.toLowerCase().includes(searchQuery));
   }
 
   onTagEdittFocus(event: FocusEvent) {

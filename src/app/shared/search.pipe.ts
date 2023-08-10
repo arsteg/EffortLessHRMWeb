@@ -10,9 +10,9 @@ export class SearchPipe implements PipeTransform {
      return null;
   if(!args) return value;
 
-  args = args.toLowerCase();
+  args = args?.toLowerCase();
   return value.filter((item) => {
-    return JSON.stringify(item).toLowerCase().includes(args);
+    return JSON.stringify(item)?.toLowerCase().includes(args);
   } )
   }
 

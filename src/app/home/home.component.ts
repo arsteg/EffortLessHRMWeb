@@ -35,25 +35,25 @@ export class HomeComponent implements OnInit {
 
       this.commonService.setCurrentUserRole(role);
       if (this.adminView) {
-        if (this.adminView.toLowerCase() == 'admin') {
+        if (this.adminView?.toLowerCase() == 'admin') {
           this.menuList = SideBarAdminMenu;
-          this.portalType = this.adminView.toLowerCase();
+          this.portalType = this.adminView?.toLowerCase();
         }
-        if (this.adminView.toLowerCase() == 'user') {
+        if (this.adminView?.toLowerCase() == 'user') {
           this.menuList = SideBarUserMenu;
         }
       }
       else {
-        if (role && role.toLowerCase() == 'admin') {
+        if (role && role?.toLowerCase() == 'admin') {
           this.menuList = SideBarAdminMenu;
-          this.portalType = role.toLowerCase()
+          this.portalType = role?.toLowerCase()
         }
-        if (role && role.toLowerCase() == 'user') {
+        if (role && role?.toLowerCase() == 'user') {
           this.menuList = SideBarUserMenu;
         }
-        this.adminView = role.toLowerCase();
+        this.adminView = role?.toLowerCase();
       }
-      this.portalType = role && role.toLowerCase();
+      this.portalType = role && role?.toLowerCase();
     });
 
 

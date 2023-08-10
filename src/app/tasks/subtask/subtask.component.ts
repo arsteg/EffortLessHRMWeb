@@ -110,7 +110,7 @@ assignee: any;
   }
   addUserToTask(taskId: string, user: string): void {
     this.tasksService.addUserToTask(taskId, user).subscribe((response: any) => {
-      this.assignee = response && response.data && response.data['TaskUserList'];      
+      this.assignee = response && response.data && response.data['TaskUserList'];
       this.toastmsg.success('Task status updated successfully', 'Success')
     },
       err => {
@@ -118,7 +118,7 @@ assignee: any;
       }
     );
   }
-  
+
   removeAssignee() {
     const unassignedUserId = this.assignee[0]?.id;
     if (unassignedUserId) {
@@ -135,7 +135,7 @@ assignee: any;
       );
     }
   }
-  
+
   getProjectNameInitials(projectName: string): string {
     if (projectName) {
       const words = projectName.split(' ');
@@ -168,13 +168,13 @@ assignee: any;
       })
   }
   getTaskPriorityUrl(currentPriority) {
-    const priority = this.priorityList.find(x => x.name.toLowerCase() === currentPriority?.toLowerCase());
+    const priority = this.priorityList.find(x => x.name?.toLowerCase() === currentPriority?.toLowerCase());
     return priority?.url ? priority?.url : this.unKnownImage;
   }
   updateTask() {
     const updateTask: updateTask = {
       taskName: this.updateForm.value.taskName,
-      description: this.updateForm.value.description,
+      description: this.updateForm.value?.description,
       priority: this.subTaskDetail.priority,
       project: this.updateForm.value.project?.id,
       title: this.updateForm.value.taskName,

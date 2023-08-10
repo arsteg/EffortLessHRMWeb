@@ -268,7 +268,7 @@ export class TasksComponent implements OnInit {
   async paginateTasks() {
     this.currentPage = 1;
     if ((!this.userId || !this.currentProfile.id) && !this.projectId) {
-      if ((this.view === 'admin') && (this.role.toLowerCase() === 'admin' || this.role == null) || (this.role.toLowerCase() === 'admin' && this.view == null)) {
+      if ((this.view === 'admin') && (this.role?.toLowerCase() === 'admin' || this.role == null) || (this.role?.toLowerCase() === 'admin' && this.view == null)) {
         this.listAllTasks();
       }
       else {
@@ -403,7 +403,7 @@ export class TasksComponent implements OnInit {
       estimate: this.addForm.value.estimate,
       startDate: this.addForm.value.startDate,
       endDate: this.addForm.value.endDate,
-      description: this.addForm.value.description,
+      description: this.addForm.value?.description,
       comment: this.addForm.value.comment,
       isSubTask: false,
       priority: this.addForm.value.priority,
@@ -535,7 +535,7 @@ export class TasksComponent implements OnInit {
 
 
   onProjectSelectionChange() {
-    if ((this.view === 'admin' || this.role.toLowerCase() === 'admin') && (!this.userId && !this.currentProfile.id) && this.projectId === 'ALL') {
+    if ((this.view === 'admin' || this.role?.toLowerCase() === 'admin') && (!this.userId && !this.currentProfile.id) && this.projectId === 'ALL') {
       this.getTasks();
       console.log("from project select")
     } else if (this.projectId !== 'ALL') {
@@ -586,7 +586,7 @@ export class TasksComponent implements OnInit {
 
     if (!this.userId || this.userId === '') {
       this.skip = '0';
-      if (this.view === 'admin' || this.role.toLowerCase() === 'admin') {
+      if (this.view === 'admin' || this.role?.toLowerCase() === 'admin') {
         this.listAllTasks();
       }
       else {
@@ -601,7 +601,7 @@ export class TasksComponent implements OnInit {
   }
 
   getTaskPriorityUrl(currentPriority) {
-    const priority = this.priorityList.find(x => x.name.toLowerCase() === currentPriority?.toLowerCase());
+    const priority = this.priorityList.find(x => x.name?.toLowerCase() === currentPriority?.toLowerCase());
     return priority?.url ? priority?.url : this.unKnownImage;
   }
 
@@ -782,8 +782,8 @@ export class TasksComponent implements OnInit {
     //     this.tasks = this.tasks.filter(task => task !== null);
     //   });
     // }
-    // else 
-    if ((this.view === 'admin') && (this.role.toLowerCase() === 'admin' || this.role == null) || (this.role.toLowerCase() === 'admin' && this.view == null)) {
+    // else
+    if ((this.view === 'admin') && (this.role?.toLowerCase() === 'admin' || this.role == null) || (this.role?.toLowerCase() === 'admin' && this.view == null)) {
       this.listAllTasks();
     }
 
@@ -791,7 +791,7 @@ export class TasksComponent implements OnInit {
       console.log("getTask: ", this.role, this.view);
       this.getTasksbyTeam();
     }
-    if (this.currentProfile.id && this.role.toLowerCase() !== 'admin') {
+    if (this.currentProfile.id && this.role?.toLowerCase() !== 'admin') {
       this.getCurrentUsersTasks();
     }
   }
