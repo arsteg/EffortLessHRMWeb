@@ -54,6 +54,7 @@ import { EmailTemplateComponent } from './email-template/email-template.componen
 import { SubtaskComponent } from './tasks/subtask/subtask.component';
 import { productivityAppsApprovalComponent } from './approvals/productivityAppsApproval/productivityAppsApproval.component';
 import { BrowserHistoryComponent } from './browserHistory/browserHistory.component';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 const routes: Routes = [
   // {path:'',component:LayoutComponentComponent, canActivate: [AuthGuard]},
@@ -122,6 +123,7 @@ const routes: Routes = [
   imports: [
     CommonModule,
     RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy', useHash: true }),
+    ScrollingModule
   ],
   exports: [RouterModule]
 })

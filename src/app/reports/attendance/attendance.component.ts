@@ -46,6 +46,7 @@ export class AttendanceComponent implements OnInit {
   portalType: string;
   localTime: string;
   filterOption: string = 'All'
+  role: any;
   constructor(
     public commonservice: CommonService,
     public datepipe: DatePipe
@@ -58,8 +59,11 @@ export class AttendanceComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.commonservice.getCurrentUserRole().subscribe((role: any) => {
+      this.role = role;
+      this.getAttendance();
+    })
     this.populateUsers();
-    this.getAttendance();
     this.firstLetter = this.commonservice.firstletter;
   }
 
@@ -92,14 +96,14 @@ export class AttendanceComponent implements OnInit {
   filterData() {
     this.getAttendance();
   }
-
   getAttendance() {
     let attendance = new Attendance();
     attendance.fromdate = new Date(this.selectedDate);
     attendance.todate = new Date(this.selectedDate);
-    attendance.users = (this.roleName.toLocaleLowerCase() === "admin") ? this.selectedUser : [this.currentUser.id];
+    attendance.users = (this.role.toLowerCase() === "admin") ? this.selectedUser : [this.currentUser.id];
     this.reportService.getAttendance(attendance).subscribe(result => {
       this.attendance = result.data;
+      console.log(this.attendance)
     });
   }
   minutesToTime(minutes: number): string {

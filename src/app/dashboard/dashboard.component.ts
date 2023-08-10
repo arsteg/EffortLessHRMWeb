@@ -47,6 +47,7 @@ export class DashboardComponent implements OnInit {
   ) {
 
   }
+  // selectedUser: any;
   ngOnInit(): void {
     this.populateTeamOfUsers();
     this.firstLetter = this.commonService.firstletter;
@@ -125,7 +126,6 @@ export class DashboardComponent implements OnInit {
   });
 
   this.dashboardService.taskwiseStatus(this.currentUser.id).subscribe(response=>{
-    console.log(response);
   },
   err => {
     this.toastr.error(err, 'ERROR!')
@@ -134,6 +134,15 @@ export class DashboardComponent implements OnInit {
   this.populateTaskwiseHours(this.currentUser.id);
 
   this.getDayWorkStatusByUser(this.currentUser.id);
+
+ 
+    this.dashboardService.getApplicationTimeSummary(this.currentUser.id,this.date.value).subscribe(response => {
+      this.productivityData= response.data;
+    },
+      err => {
+        this.toastr.error(err, 'ERROR!')
+      });
+  // }
 
   }
 

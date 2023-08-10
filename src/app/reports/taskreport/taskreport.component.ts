@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { TimeLogService } from 'src/app/_services/timeLogService';
 import { ExportService } from 'src/app/_services/export.service';
 import { SearchTaskRequest } from '../model/productivityModel';
+import { CommonService } from 'src/app/common/common.service';
 
 @Component({
   selector: 'app-taskreport',
@@ -33,6 +34,7 @@ export class TaskreportComponent implements OnInit {
   selectedTask: any = [];
   roleName = localStorage.getItem('roleName');
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  role: any;
 
   constructor(
     private projectService: ProjectService
@@ -40,7 +42,8 @@ export class TaskreportComponent implements OnInit {
     , private http: HttpClient
     , private timeLogService: TimeLogService
     , private exportService: ExportService
-    , private reportService: ReportsService
+    , private reportService: ReportsService,
+    private commonservice: CommonService
     )
   {
     this.fromDate= this.datepipe.transform(new Date(this.currentDate.setDate(this.diff)),'yyyy-MM-dd');  
@@ -48,15 +51,19 @@ export class TaskreportComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getProjectList();
     this.populateUsers();
-    this.getTaskData();
+    
+    this.commonservice.getCurrentUserRole().subscribe((role: any) => {
+      this.role = role;
+      this.getTaskData();
+      this.getProjectList();
+    })
   }
 
   getProjectList() {
     //Admin and Manager can see the list of all projects
-    if(this.roleName.toLocaleLowerCase() === "admin"){
-        this.projectService.getprojectlist().subscribe((response: any) => {
+    if(this.role.toLowerCase() === "admin" || null){
+        this.projectService.getprojects('', '').subscribe((response: any) => {
         this.projectList = response && response.data && response.data['projectList'];
       });
     }
@@ -102,7 +109,7 @@ export class TaskreportComponent implements OnInit {
     searchTaskRequest.todate = new Date(this.toDate);
     searchTaskRequest.projects = this.selectedProject;
     searchTaskRequest.tasks = this.selectedTask;
-    searchTaskRequest.users = (this.roleName.toLocaleLowerCase() === "admin") ? this.selectedUser : [this.currentUser.id];
+    searchTaskRequest.users = (this.role.toLowerCase() === "admin" || null) ? this.selectedUser : [this.currentUser.id];
     this.reportService.getTaskReport(searchTaskRequest).subscribe(result => {
       this.taskList = result.data;
       this.totalHours = result.data.reduce((sum, elem) => parseInt(sum) + parseInt(elem.time), 0);

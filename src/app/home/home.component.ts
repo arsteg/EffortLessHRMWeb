@@ -84,7 +84,6 @@ export class HomeComponent implements OnInit {
       this.menuList = SideBarAdminMenu;
       this.router.navigate(['dashboard'])
     }
-    // this.router.navigate(['dashboard'])
   }
 
   onLogout() {
@@ -96,7 +95,8 @@ export class HomeComponent implements OnInit {
     localStorage.removeItem('currentUser');
     localStorage.removeItem('rememberMe');
     localStorage.removeItem('loginTime');
-    this.router.navigateByUrl('/main')
+    window.location.reload();
+    this.router.navigateByUrl('/login')
   }
 
   clickMenu(id: string) {

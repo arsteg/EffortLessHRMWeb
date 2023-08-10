@@ -29,6 +29,7 @@ export class EmailTemplateComponent implements OnInit {
   forms: any;
   showEditor = false;
   isFormLoaded = false;
+  
   constructor(private emailservice: EmailtemplateService, private fb: FormBuilder,
     private toast: ToastrService) {
     this.form = this.fb.group({
@@ -38,7 +39,7 @@ export class EmailTemplateComponent implements OnInit {
       contentData: ['', Validators.required]
     });
     this.updateForm = this.fb.group({
-      Name: [''],
+      Name: [{value:'', disabled: true}],
       subject: [''],
       templateType: [''],
       contentData: ['']

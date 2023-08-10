@@ -51,7 +51,7 @@ export class TimelineComponent implements OnInit {
   logs: any = [];
   logStartTime: Date | null = null;
   logEndTime: Date | null = null;
-
+  role: any;
 
   constructor(
     private projectService: ProjectService,
@@ -66,9 +66,14 @@ export class TimelineComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getProjectList();
+   
     this.populateUsers();
-    this.getTimeLine();
+    this.commonservice.getCurrentUserRole().subscribe((role: any) => {
+      this.role = role;
+      this.getTimeLine();
+      this.getProjectList();
+    })
+
   }
   getCurrentWeekDates() {
     let currentDate = new Date();
@@ -89,7 +94,7 @@ export class TimelineComponent implements OnInit {
 
   getProjectList() {
     //Admin and Manager can see the list of all projects
-    if (this.roleName.toLocaleLowerCase() === "admin") {
+    if (this.role.toLowerCase() === "admin") {
       this.projectService.getprojects('', '').subscribe((response: any) => {
         this.projectList = response && response.data && response.data['projectList'];
         this.projectList = this.projectList.filter(project => project !== null);
@@ -131,55 +136,13 @@ export class TimelineComponent implements OnInit {
   filterData() {
     this.getTimeLine();
   }
-  // getTimeLine() {
-  //   let timeline = new TimeLine();
-  //   timeline.fromdate = new Date(this.selectedDate);
-  //   timeline.todate = new Date(this.selectedDate);
-  //   timeline.projects = this.selectedProject;
-  //   timeline.users = (this.roleId == "639acb77b5e1ffe22eaa4a39" || this.roleId == "63b56b9ca3396271e4a54b96") ? this.selectedUser : [this.currentUser.id];
-  //   this.reportService.getTimeline(timeline).subscribe(result => {
-  //     this.timeline = result.data;
-  //     const newHours = [];
-  //     this.timeline.forEach((data) => {
-  //       this.logs = data.logs;
-  //       const hoursDiff = this.getEarliestAndLatestLogTime(this.logs);
-  //       for (let i = 0; i < hoursDiff; i++) {
-  //         if (!newHours.includes(i)) {
-  //           newHours.push(i);
-  //         }
-  //       }
-  //       if (this.logs.length > 0 && (!this.startTime || new Date(this.logs[0].startTime) < this.startTime)) {
-  //         this.startTime = new Date(this.logs[0].startTime);
-  //       }
-  //     });
 
-  //     this.hours = newHours;
-
-  //     this.timeline.forEach((data) => {
-  //       data.logs.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
-  //     });
-  //     this.timeline.forEach((data) => {
-  //       const logs = data.logs;
-  //       for (let i = 0; i < logs.length - 1; i++) {
-  //         const currentLog = logs[i];
-  //         const nextLog = logs[i + 1];
-  //         const currentLogEndTime = new Date(currentLog.endTime);
-  //         const nextLogStartTime = new Date(nextLog.startTime);
-  //         this.timeDiffMinutes = Math.abs(nextLogStartTime.getTime() - currentLogEndTime.getTime()) / (1000 * 60);
-
-  //         if (this.timeDiffMinutes <= 10) {
-  //           currentLog.endTime = nextLog.startTime;
-  //         }
-  //       }
-  //     });
-  //   });
-  // }
   getTimeLine() {
     let timeline = new TimeLine();
     timeline.fromdate = new Date(this.selectedDate);
     timeline.todate = new Date(this.selectedDate);
     timeline.projects = this.selectedProject;
-    timeline.users = (this.roleName.toLocaleLowerCase() === "admin") ? this.selectedUser : [this.currentUser.id];
+    timeline.users = (this.role.toLowerCase() === "admin"|| null) ? this.selectedUser : [this.currentUser.id];
 
     this.reportService.getTimeline(timeline).subscribe(result => {
       this.timeline = result.data;
@@ -268,11 +231,11 @@ export class TimelineComponent implements OnInit {
     else if (activity <= 100) {
       return '#FFC107'
     }
-    else if (log) { 
+    else if (log) {
       return '#2ECD6F'
-     }
+    }
     else (this.getTimeLine())
-     {return '#cccccc'}
+    { return '#cccccc' }
   }
 
   getLogTitle(log: any): string {

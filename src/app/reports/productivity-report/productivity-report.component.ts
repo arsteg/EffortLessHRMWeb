@@ -34,7 +34,7 @@ export class ProductivityReportComponent implements OnInit {
   showAllMembers: boolean = true;
   public sortOrder: string = ''; // 'asc' or 'desc'
   activeButton: string = 'Members';
-  
+  role: any;
 
 
   constructor(
@@ -50,8 +50,11 @@ export class ProductivityReportComponent implements OnInit {
 
   ngOnInit(): void {
     this.populateUsers();
-    this.getProductivity();
     this.toggleSingleMember();
+    this.commonservice.getCurrentUserRole().subscribe((role: any) => {
+      this.role = role;
+      this.getProductivity();
+    })
   }
 
   toggleSingleMember() {
@@ -118,7 +121,7 @@ export class ProductivityReportComponent implements OnInit {
     let searchPrudctivity = new Productivity();
     searchPrudctivity.fromdate = new Date(this.fromDate);
     searchPrudctivity.todate = new Date(this.toDate);
-    searchPrudctivity.users = (this.roleName.toLocaleLowerCase() === "admin") ? this.selectedUser : [this.currentUser.id];
+    searchPrudctivity.users = (this.role.toLowerCase() === "admin") ? this.selectedUser : [this.currentUser.id];
     this.reportService.getProductivity(searchPrudctivity).subscribe(result => {
       this.productivity = result.data;
     }

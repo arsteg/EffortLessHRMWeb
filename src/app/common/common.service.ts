@@ -3,6 +3,7 @@ import { BehaviorSubject, map, Observable } from 'rxjs';
 import { User } from '../models/user';
 import { ProjectService } from '../_services/project.service';
 import { UserService } from '../_services/users.service';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -13,9 +14,11 @@ export class CommonService {
   firstletter: string;
   private currentProfileSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   private currentProfileRoleSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  private jwtToken: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
   constructor(private userService: UserService,
-    private projectService: ProjectService) { }
+    private projectService: ProjectService,
+    private http: HttpClient) { }
 
   
   populateUsers(): Observable<any> {
@@ -83,4 +86,16 @@ export class CommonService {
   getCurrentUserRole(): BehaviorSubject<any> {
     return this.currentProfileRoleSubject;
   }
+
+  setJwt(token: any): void{
+    this.jwtToken.next(token);
+  }
+
+  getJwt(): BehaviorSubject<any> {
+    return this.jwtToken;
+  }
+
+  // getAuthTokenAndInfo(): Observable<any> {
+  //   return this.http.get<any>(`${yourApiUrl}`, { withCredentials: true });
+  // }
 }

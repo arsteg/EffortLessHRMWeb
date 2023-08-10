@@ -42,6 +42,7 @@ export class ActivityLevelComponent implements OnInit {
   showMembersColumn = true;
   selectedUser: any = [];
   activeButton: string = 'Contract';
+  role: any;
 
   constructor(private timelog: TimeLogService,
     private manageTeamService: ManageTeamService,
@@ -67,10 +68,15 @@ export class ActivityLevelComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getProjectList();
+   
     this.populateUsers();
     this.firstLetter = this.commonservice.firstletter;
-    this.getActivity();
+    
+    this.commonservice.getCurrentUserRole().subscribe((role: any) => {
+      this.role = role;
+      this.getActivity();
+      this.getProjectList();
+    })
   }
   toggleMembersColumn() {
     this.showProjectsColumn = false;
@@ -86,7 +92,7 @@ export class ActivityLevelComponent implements OnInit {
   
   getProjectList() {
     //Admin and Manager can see the list of all projects
-    if (this.roleName.toLocaleLowerCase() == "admin" || this.roleName.toLocaleLowerCase() == "manager") {
+    if (this.role.toLowerCase() == "admin" || null) {
       this.projectService.getprojects('', '').subscribe((response: any) => {
         this.projectList = response && response.data && response.data['projectList'];
         this.projectList = this.projectList.filter(project => project !== null);
@@ -156,7 +162,7 @@ export class ActivityLevelComponent implements OnInit {
     searchActivity.tasks = [];
     searchActivity.fromdate = new Date(this.fromDate);
     searchActivity.todate = new Date(this.toDate);
-    searchActivity.users = (this.roleName.toLocaleLowerCase() === "admin") ? this.selectedUser : [this.currentUser.id];
+    searchActivity.users = (this.role.toLowerCase() === "admin" || null) ? this.selectedUser : [this.currentUser.id];
     this.reportService.getActivity(searchActivity).subscribe(result => {
       this.activity = result.data;
       this.totalHours = result.data.reduce((sum, elem) => parseInt(sum) + parseInt(elem.time), 0);
