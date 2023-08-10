@@ -62,7 +62,7 @@ import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { DatePipe } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 // import { EditTaskComponent } from './tasks/edit-task/edit-task.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import { timesheetModule } from './timesheets/timesheet.Module';
@@ -72,6 +72,9 @@ import { DashboardModule } from './dashboard/dashboard.module';
 import { EmailTemplateComponent } from './email-template/email-template.component';
 import { ApprovalsModule } from './approvals/approvals.module';
 import { QuillModule } from 'ngx-quill';
+import { BrowserHistoryModule } from './browserHistory/browserHistory.module';
+import { CommonComponentsModule } from './common/commonComponents.module';
+
 
 @NgModule({
   declarations: [
@@ -146,6 +149,8 @@ import { QuillModule } from 'ngx-quill';
     timesheetModule,
     DashboardModule,
     ApprovalsModule,
+    BrowserHistoryModule,
+    CommonComponentsModule,
     QuillModule.forRoot()
   ],
   schemas: [

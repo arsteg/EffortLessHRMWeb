@@ -1,0 +1,50 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <h2>Browser History</h2>
+    <div class="row mt-3">
+     <div class="col-md-3">
+      <subordinateSelection (selectedUsersChange)="selectedUsersChanged($event)"></subordinateSelection>
+    </div>
+    <div class="col-md-3">
+      <label for="v">From</label>
+      <input type="date" id="startDate" class="form-control"  [(ngModel)]="startDate" (ngModelChange)="onStartDateChange($event)"/>
+    </div>
+    <div class="col-md-3">
+      <label for="endDate">To</label>
+      <input type="date" id="endDate" class="form-control " [(ngModel)]="endDate" (ngModelChange)="onEndDateChange($event)"/>
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col  table-container">
+      <table class="table">
+        <thead>
+          <tr>
+            <th style="width: 5%;">Browser</th>
+            <th style="width: 30%;">Title</th>
+            <th style="width: 45%;">URL</th>
+            <th style="width: 10%;">Visit Time</th>
+            <th style="width: 10%;text-align: right;">Visit Count</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Your table rows here -->
+          <tr *ngFor="let history of browserHistory">
+            <td style="width: 5%;">
+              <i *ngIf="history.browser==1" class="fas fa fa-brands fa-edge" title="Edge"></i>
+              <i *ngIf="history.browser==2" class="fas fa fa-brands fa-firefox" title="Firefox"></i>
+              <i *ngIf="history.browser==4" class="fas fa fa-brands fa-chrome" title="Chrome"></i>
+              <i *ngIf="history.browser==8" class="fas fa fa-brands fa-safari" title="Safari"></i>
+            </td>
+            <td style="width: 30%;" [title]="history.title">{{truncateString(history.title,50)}}</td>
+            <td style="width: 45%;" [title]="history.uri">{{truncateString(history.uri,75)}}</td>
+            <td style="width: 10%;">{{history.lastVisitTime}}</td>
+            <td style="width: 10%;text-align: right;">{{history.visitCount}}</td>
+          </tr>
+          <!-- ... -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</div>

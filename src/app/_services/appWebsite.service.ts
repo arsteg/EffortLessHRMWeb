@@ -49,4 +49,8 @@ export class AppWebsiteService {
     const httpOptions = this.getHttpOptions();
     return this.http.put<any>(`${environment.apiUrlDotNet}/appWebsite/productivity/${userId}`,status, httpOptions);
   }
+  getBrowserHistory(startDate:any, endDate:any,userId:string,): Observable<any> {
+    const httpOptions = this.getHttpOptions();
+    return this.http.get<any>(`${environment.apiUrlDotNet}/appWebsite/browser-history?startDate=${startDate}&endDate=${endDate}&userId=${userId}`,httpOptions);
+  }
 }

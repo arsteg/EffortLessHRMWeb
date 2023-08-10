@@ -442,11 +442,11 @@ export const SideBarAdminMenu = [
       //   id: '147',
       //   title: 'Statistics',
       // },
-      // {
-      //   id: '148',
-      //   title: 'Activity Description',
-      //   url: '/activityDescription',
-      // },
+      {
+        id: '148',
+        title: 'Browser History',
+        url: '/browserHistory',
+      },
       {
         id: '149',
         title: 'Apps and Websites',
@@ -774,6 +774,11 @@ export const SideBarUserMenu = [
       {
         id: '147',
         title: 'Statistics',
+      },
+      {
+        id: '148',
+        title: 'Browser History',
+        url: '/browserHistory',
       },
       // {
       //   id: '148',

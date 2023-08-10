@@ -53,6 +53,7 @@ import { UserDashboardComponent } from './dashboard/user-dashboard/user-dashboar
 import { EmailTemplateComponent } from './email-template/email-template.component';
 import { SubtaskComponent } from './tasks/subtask/subtask.component';
 import { productivityAppsApprovalComponent } from './approvals/productivityAppsApproval/productivityAppsApproval.component';
+import { BrowserHistoryComponent } from './browserHistory/browserHistory.component';
 
 const routes: Routes = [
   // {path:'',component:LayoutComponentComponent, canActivate: [AuthGuard]},
@@ -112,6 +113,7 @@ const routes: Routes = [
       { path: 'emailtemplate', component: EmailTemplateComponent},
       { path: 'SubTask/:taskNumber', component: SubtaskComponent },
       { path: 'productivityAppsApproval', component: productivityAppsApprovalComponent },
+      { path: 'browserHistory', component: BrowserHistoryComponent },
     ]
   }
 ]

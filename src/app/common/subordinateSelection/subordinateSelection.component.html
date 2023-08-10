@@ -1,0 +1,7 @@
+<div>
+  <label for="member" class="pt-2 pe-3">Member </label>
+  <select id="member" name="member" class="form-control" class="form-select form-select-sm"
+    aria-label=".form-select-sm example" #member (change)="emitSelectedUsers(member.value)">
+    <option *ngFor="let m of members;let i = index" value="{{m|json}}" [selected]="i === 0">{{m.name | titlecase}}</option>
+  </select>
+</div>

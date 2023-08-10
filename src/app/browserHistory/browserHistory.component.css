@@ -1,0 +1,52 @@
+/* Add Bootstrap classes and custom styling here */
+.container {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Add more custom styling as needed */
+
+
+.table-container {
+  overflow-x: auto; /* Enable horizontal scrolling if content exceeds container width */
+}
+
+/* Set a maximum width for the table */
+.table {
+  max-width: 100%;
+  table-layout: fixed; /* Fix table layout */
+}
+
+/* Apply fixed column widths */
+.table th,
+.table td {
+  white-space: nowrap; /* Prevent text wrapping */
+}
+
+/* Define percentage widths for each column */
+.table th:nth-child(1),
+.table td:nth-child(1) {
+  width: 15%;
+}
+
+.table th:nth-child(2),
+.table td:nth-child(2) {
+  width: 20%;
+}
+
+.table th:nth-child(3),
+.table td:nth-child(3) {
+  width: 25%;
+}
+
+.table th:nth-child(4),
+.table td:nth-child(4) {
+  width: 20%;
+}
+
+.table th:nth-child(5),
+.table td:nth-child(5) {
+  width: 20%;
+}
