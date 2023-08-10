@@ -4,8 +4,8 @@ import { first } from 'rxjs';
 
 @Component({
   selector: 'browser-history',
-  templateUrl: 'browserhistory.component.html',
-  styleUrls: ['browserhistory.component.css']
+  templateUrl: './browserHistory.component.html',
+  styleUrls: ['./browserHistory.component.css']
 })
 export class BrowserHistoryComponent implements OnInit {
   startDate: string = new Date().toISOString().slice(0, 10);
