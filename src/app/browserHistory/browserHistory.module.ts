@@ -9,7 +9,6 @@ import { MatNativeDateModule, MatRippleModule } from '@angular/material/core';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { FormsModule } from '@angular/forms';
 import { BrowserHistoryComponent } from "./browserHistory.component";
-import { SubordinateSelectionComponent } from "../common/subordinateSelection/subordinateSelection.component";
 import { CommonComponentsModule } from "../common/commonComponents.module";
 
 @NgModule({
