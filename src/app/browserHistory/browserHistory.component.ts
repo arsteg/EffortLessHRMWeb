@@ -47,6 +47,10 @@ export class BrowserHistoryComponent implements OnInit {
     return input?.length <= maxLength ? input : input?.slice(0, maxLength) + '...';
   }
 
+  truncateDate(input: string, maxLength: number): string {
+    return input?.length <= maxLength ? input : input?.slice(0, maxLength);
+  }
+
   private convertToDateWithStartTime(dateString: string): Date {
     const date = new Date(dateString);
     date.setHours(0, 0, 0, 0);

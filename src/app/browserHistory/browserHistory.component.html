@@ -38,7 +38,7 @@
             </td>
             <td style="width: 30%;" [title]="history.title">{{truncateString(history.title,50)}}</td>
             <td style="width: 45%;" [title]="history.uri">{{truncateString(history.uri,75)}}</td>
-            <td style="width: 10%;">{{history.lastVisitTime}}</td>
+            <td style="width: 10%;">{{truncateDate(history.lastVisitTime,10)}}</td>
             <td style="width: 10%;text-align: right;">{{history.visitCount}}</td>
           </tr>
           <!-- ... -->
