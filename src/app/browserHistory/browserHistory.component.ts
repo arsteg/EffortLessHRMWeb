@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AppWebsiteService } from '../_services/appWebsite.service';
 import { first } from 'rxjs';
+import { UtilsService } from '../_services/utils.service';
 
 @Component({
   selector: 'browser-history',
@@ -13,13 +14,13 @@ export class BrowserHistoryComponent implements OnInit {
   browserHistory: any[] = [];
   userId: string;
 
-  constructor(private appWebsiteService: AppWebsiteService) { }
+  constructor(private appWebsiteService: AppWebsiteService, private utilsService:UtilsService) { }
 
   ngOnInit(): void { }
 
   getBrowserHistory(): void {
-    const fromDate = this.convertToDateWithStartTime(this.startDate);
-    const toDate = this.convertToDateWithEndTime(this.endDate);
+    const fromDate = this.utilsService.convertToUTC(this.convertToDateWithStartTime(this.startDate));
+    const toDate = this.utilsService.convertToLocal(this.convertToDateWithEndTime(this.endDate));
 
     this.appWebsiteService.getBrowserHistory(fromDate, toDate, this.userId)
       .pipe(first())
