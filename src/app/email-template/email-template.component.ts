@@ -20,10 +20,17 @@ export class EmailTemplateComponent implements OnInit {
   editorContent: string = '';
 
   dropdownOptions = [
-    { label: 'Tasks', value: 'option1' },
-    { label: 'Assignee', value: 'option2' },
-    { label: 'Start Date', value: 'option3' },
-    { label: 'End Date', value: 'option4' }
+    { label: 'firstName', value: 'option1' },
+    { label: 'lastName', value: 'option2' },
+    { label: 'date', value: 'option3' },
+    { label: 'task', value: 'option4' },
+    { label: 'project', value: 'option4' },
+    { label: 'company', value: 'option4' },
+    { label: 'taskStartDate', value: 'option4' },
+    { label: 'taskEndDate', value: 'option4' },
+    { label: 'url', value: 'option4' },
+    { label: 'taskPriority', value: 'option4' },
+    { label: 'description', value: 'option4' }
   ];
 
   forms: any;

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AppWebsiteService } from '../_services/appWebsite.service';
-import { first } from 'rxjs';
+import { first, Subscription } from 'rxjs';
 import { UtilsService } from '../_services/utils.service';
 
 @Component({
@@ -13,10 +13,19 @@ export class BrowserHistoryComponent implements OnInit {
   endDate: string = new Date().toISOString().slice(0, 10);
   browserHistory: any[] = [];
   userId: string;
+  p: number = 1;
+  intervalId: any;
+  intervalDuration = 300000; 
+  subscription: Subscription;
 
   constructor(private appWebsiteService: AppWebsiteService, private utilsService:UtilsService) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.intervalId = setInterval(() => {
+      this.getBrowserHistory();
+    }, this.intervalDuration);
+   }
+  
 
   getBrowserHistory(): void {
     const fromDate = this.utilsService.convertToUTC(this.convertToDateWithStartTime(this.startDate));

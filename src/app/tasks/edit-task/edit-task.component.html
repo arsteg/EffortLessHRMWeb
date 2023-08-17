@@ -29,17 +29,16 @@
                                 <div class="">{{ currentPage }} - {{ getTotalPages() }} of {{
                                     totalRecords?.taskCount }} </div>
                                 <span (click)="previousPagination()"
-                                    class="bi bi-chevron-left btn-sm btn-outline-primary"
-                                    title="Previous Page"></span>
+                                    class="bi bi-chevron-left btn-sm btn-outline-primary" title="Previous Page"></span>
 
-                                <span (click)="nextPagination()"
-                                    class="bi bi-chevron-right btn-sm btn-outline-primary" title="Next Page"></span>
+                                <span (click)="nextPagination()" class="bi bi-chevron-right btn-sm btn-outline-primary"
+                                    title="Next Page"></span>
                             </div>
                         </div>
                     </ng-container>
 
                     <ul type="none" class="taskList">
-                       
+
                         <li *ngFor="let task of taskList | search: searchText" class="tasks"
                             [class.active-task]="task?.id === taskId" (click)="onTaskChange(task?.id)">
                             {{task?.taskName| titlecase}}
@@ -146,7 +145,7 @@
                                                 <div>
                                                     <span type="button"
                                                         class="btn btn-sm rounded-pill btn-primary px-2 dropdown-toggle dropdown-toggle-no-caret"
-                                                        data-bs-toggle="dropdown" aria-expanded="false">Add User <i
+                                                        data-bs-toggle="dropdown" aria-expanded="false">Assignee <i
                                                             class="bi bi-chevron-down"></i></span>
                                                     <ul class="dropdown-menu" style="width: 225px; transform: translate3d(-29px, 40px, 0px) !important; height: 200px;
      overflow-y: scroll;">
@@ -699,20 +698,21 @@
                 <div class="d-flex"> <span class="bi bi-image text-warning px-3" style="font-size: 40px;"></span>
                     <small>{{selectedAttachment?.attachmentName }}<br>image - {{
                         convertBytesToKB(selectedAttachment?.attachmentSize) }}</small>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        <div class="carousel-item active text-center">
-                                            <img class="modal-image big-img w-75" [src]="selectedAttachment?.url" />
-                                        </div>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="carousel-item active text-center">
+                                        <img class="modal-image big-img w-75" [src]="selectedAttachment?.url" />
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>

@@ -78,14 +78,4 @@
       .apexcharts-inactive-legend {
         opacity: 0.45;
       }
-      .prod {
-        color: rgb(168, 56, 93);
-      }
-
-      .non-prod {
-        color: rgb(162, 126, 168);
-      }
-
-      .neutral {
-        color: rgb(122, 163, 229);
-      }
+     

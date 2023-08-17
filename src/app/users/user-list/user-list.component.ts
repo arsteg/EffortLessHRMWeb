@@ -49,7 +49,12 @@ export class UserListComponent implements OnInit {
     this.updateForm = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
-      email: ['', Validators.required],
+      jobTitle: [''],
+      pincode: ['',  Validators.pattern('^[0-9]{6}$')],
+      state: ['',Validators.pattern('[A-Za-z]+')],
+      city: ['', Validators.pattern('[A-Za-z]+')],
+      phone: ['', Validators.pattern('[0-9]{10}')],
+      address: ['']
     });
   }
 

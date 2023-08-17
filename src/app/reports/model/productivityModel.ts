@@ -17,9 +17,9 @@ export class applicationUsages{
 }
 
 export class SearchTaskRequest {
-  users: [];
-  projects: [];
-  tasks: [];     
+  users: string;
+  projects: string;
+  // tasks: [];     
   fromdate:Date = new Date();      
   todate: Date= new Date();
 }

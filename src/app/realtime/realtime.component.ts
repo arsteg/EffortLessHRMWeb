@@ -8,6 +8,7 @@ import { ReportsService } from '../_services/reports.service';
 import { ProjectService } from '../_services/project.service';
 import { ExportService } from '../_services/export.service';
 import { RealTime } from '../models/timeLog';
+import { Observable, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-realtime',
@@ -26,14 +27,14 @@ export class RealtimeComponent implements OnInit {
   taskList: any = [];
   projectList: any;
   searchText = '';
-  currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  currentUser: any;
   realtime: any;
-  roleName = localStorage.getItem('roleName');
   members: any;
   member: any;
   p: number = 1;
   onlineUserData:any;
   user:any;
+  role: any;
   constructor(private timelog: TimeLogService,
     private manageTeamService: ManageTeamService,
     public commonService: CommonService,
@@ -45,15 +46,32 @@ export class RealtimeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.populateUsers();
-    this.getProjectList();
+   
     this.firstLetter = this.commonService.firstletter;
-    this.getRealtime();
+   
+    this.commonService.getCurrentUserRole().subscribe((role: any) => {
+      this.role = role;
+    })
+    this.getCurrentUser().subscribe(() => {
+      this.populateUsers();
+      this.getProjectList();
+      this.getRealtime();
+    })
   }
-
+  getCurrentUser() {
+    return this.commonService.getCurrentUser().pipe(
+      switchMap((profile: any) => {
+        this.currentUser = profile;
+        return new Observable((observer) => {
+          observer.next();
+          observer.complete();
+        });
+      })
+    );
+  }
   getProjectList() {
     //Admin and Manager can see the list of all projects
-    if (this.roleName.toLocaleLowerCase() == "admin" || this.roleName.toLocaleLowerCase() == "manager") {
+    if (this.role.toLowerCase() == "admin" || null) {
       this.projectService.getprojects('', '').subscribe((response: any) => {
         this.projectList = response && response.data && response.data['projectList'];
         this.projectList = this.projectList.filter(project => project !== null);
@@ -116,7 +134,7 @@ export class RealtimeComponent implements OnInit {
     let realtime = new RealTime();
     realtime.projects = this.selectedProject ;
     realtime.tasks = this.selectedTask;
-    realtime.users = (this.roleName.toLocaleLowerCase() === "admin") ? this.selectedUser : [this.currentUser.id];
+    realtime.users = (this.role.toLowerCase() === "admin") ? this.selectedUser : [this.currentUser.id];
     this.timelog.realTime(realtime).subscribe(result => {
       this.realtime = result.data[0];
          

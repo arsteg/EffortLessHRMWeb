@@ -27,7 +27,6 @@ import { RequestApprovalComponent } from './manualTime/requestApproval/requestAp
 import { AddManualTimeComponent } from './manualTime/addManualTime/add-manual-time.component';
 import { ActivityDescriptionComponent } from './reports/activity-description/activity-description.component';
 import { AppAndWebsiteUsageComponent } from './reports/app-and-website-usage/app-and-website-usage.component';
-import { TaskreportComponent } from './reports/taskreport/taskreport.component';
 import { LeaveReportComponent } from './reports/leave-report/leave-report.component';
 import { ProductivityReportComponent } from './reports/productivity-report/productivity-report.component';
 import { AppWebsiteSettingsComponent } from './settings/app-website-settings/app-website-settings.component';
@@ -36,7 +35,6 @@ import { PermissionsComponent } from './permissions/permissions.component';
 import { RolePermissionComponent } from './role-permission/role-permission.component';
 import { ResetPasswordComponent } from './login/reset-password/reset-password.component';
 import { TimesheetsComponent } from './timesheets/timesheets.component';
-import { ActivityLevelComponent } from './reports/activity-level/activity-level.component';
 import { ProfileSettingsComponent } from './settings/profile-settings/profile-settings.component';
 import { WorkspaceSettingsComponent } from './settings/workspace-settings/workspace-settings.component';
 import { FeaturesSettingsComponent } from './settings/features-settings/features-settings.component';
@@ -92,7 +90,6 @@ const routes: Routes = [
       { path: 'AddManualTime', component: AddManualTimeComponent },
       { path: 'activityDescription', component: ActivityDescriptionComponent },
       { path: 'applicationusages', component: AppAndWebsiteUsageComponent },
-      { path: 'task', component: TaskreportComponent },
       { path: 'leave', component: LeaveReportComponent },
       { path: 'productivity', component: ProductivityReportComponent },
       { path: 'appwebsitesettings', component: AppWebsiteSettingsComponent },
@@ -101,7 +98,6 @@ const routes: Routes = [
       { path: 'timesheets', component: TimesheetsComponent },
       { path: 'adminTimesheets', component: AdminTimesheetComponent},
       { path: 'userTimesheet', component: UserTimesheetComponent },
-      { path: 'activityLevel', component: ActivityLevelComponent },
       { path: 'profileSettings', component: ProfileSettingsComponent },
       { path: 'workspace', component: WorkspaceSettingsComponent },
       { path: 'features', component: FeaturesSettingsComponent },

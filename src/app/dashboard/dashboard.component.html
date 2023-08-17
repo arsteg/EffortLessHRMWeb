@@ -4,122 +4,130 @@
       <mat-form-field appearance="outline" class="" style="border-radius: 5px;
             height: 49px;
             margin: -20px 0 11px 0;">
-                <mat-label class="">Select Date</mat-label>
-                <div  class="w-100 d-flex" style="margin: -15px 0;">
-                <input matInput [matDatepicker]="picker1" [formControl]="date" (dateChange)="onDateChange($event)">
-                <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
-                <mat-datepicker #picker1></mat-datepicker>
-            </div>
-              </mat-form-field>
-        </div>
-        <div class="row d-flex justify-content-evenly container-fluid ">
-            <div class="border py-4 rounded bg-white">
-                <div class="d-flex justify-content-evenly">
-                    <div class="mt-2 border-end pe-5">
-                        <h1 class="letter ms-2 header-letter"
-                        [style.background-color]="commonService?.getRandomColor(currentProfile?.lastName)">
-                        {{currentProfile?.firstName.slice(0,1) | uppercase}}{{currentProfile?.lastName.slice(0,1) |
-                        uppercase}}</h1>
-                        <h4 class="content-info mb-0">{{currentProfile?.firstName}} {{currentProfile?.lastName}}</h4>
-                        <p>{{role | titlecase}}</p>
-                    </div>
-                    <div class="mt-2 border-end pe-5">
-                      <p class="">Members</p>
-                      <h1 class="">1</h1>
-                      </div>
-                      <div class="mt-2 border-end pe-5">
-                        <p class="">Next payment on</p>
-                        <h1 class="">09 Jun, 2023</h1>
-                      </div>
-                        <div class="mt-2 border-end pe-5">
-                          <p class="">Latest Invoice</p>
-                          <h1 class="">$2.99</h1>
-                          <a class="" href="">My Invoices</a>
-                        </div>
-                        <div class="mt-2 border-end pe-5">
-                          <p class="">Balance</p>
-                          <h1 class="">$0</h1>
-                          <div class="fill-balance"><a href="">Make Payment</a>
-                          </div>
-                        </div>
-                </div>
-            </div>
+        <mat-label class="">Select Date</mat-label>
+        <div class="w-100 d-flex" style="margin: -15px 0;">
+          <input matInput [matDatepicker]="picker1" [(ngModel)]="selectedDate" (dateChange)="onDateChange($event)">
+          <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+          <mat-datepicker #picker1></mat-datepicker>
 
         </div>
-        <div class="row my-3 justify-content-evenly">
-          <div class="col-md-4  rounded dash-boxes p-3 bg-white">
-            <div class="about__top ">
-              <div class="about__title">
-                <h1 class="content__title me-3">Today</h1>
-                <h1 class="title-hidden time mb-0">{{ formatMillisecondsToTime(hoursWorked?.today)}}</h1>
-              </div>
-              <div class="top-text d-flex">
-                <p class="text mb-0 me-2">
-                  <span style="color: rgb(255, 190, 91)" [style.color]="hoursWorked?.changeColor">{{ hoursWorked?.changeDisplay}}% </span><span class="text-dark"> Yesterday </span>
-                </p>
-                <div class="hours"><span class="p-2 py-3 text-light">{{formatMillisecondsToTime(hoursWorked?.previousDay)
-                    }}</span></div>
-
-                    <span class="ms-auto">
-                      <img *ngIf="hoursWorked?.increased==true" src="../assets/images/graph-up-green.svg" height="80" width="100"
-                        alt="Profile Picture">
-                      <img *ngIf="hoursWorked?.increased==false" src="../assets/images/graph-down-red.svg" height="80" width="100"
-                        alt="Profile Picture">
-                    </span>
-
-              </div>
-
-            </div>
+      </mat-form-field>
+    </div>
+    <div class="row d-flex justify-content-evenly container-fluid ">
+      <div class="border py-4 rounded bg-white">
+        <div class="d-flex justify-content-evenly">
+          <div class="mt-2 border-end pe-5">
+            <h1 class="letter ms-2 header-letter"
+              [style.background-color]="commonService?.getRandomColor(currentProfile?.lastName)">
+              {{currentProfile?.firstName.slice(0,1) | uppercase}}{{currentProfile?.lastName.slice(0,1) |
+              uppercase}}</h1>
+            <h4 class="content-info mb-0">{{currentProfile?.firstName}} {{currentProfile?.lastName}}</h4>
+            <p>{{role | titlecase}}</p>
           </div>
-
-          <div class="col-md-4  rounded dash-boxes p-3 bg-white">
-            <div class="about__top ">
-              <div class="about__title">
-                <h1 class="content__title me-3">This week</h1>
-                <h1 class="title-hidden time mb-0">{{formatHoursAndMinutes(weeklySummary?.currentWeek) }}</h1>
-              </div>
-              <div class="top-text">
-                <p class="text mb-0 me-2">
-                  <span style="color: rgb(255, 190, 91)" [style.color]="weeklySummary?.changeColor">{{weeklySummary?.changeDisplay}}% </span><span class="text-dark"> last week </span>
-                </p>
-                <div class="hours"><span class="p-2 py-3 text-light">{{formatHoursAndMinutes(weeklySummary?.previousWeek)
-                    }}</span></div>
-                    <div class="d-flex justify-content-between ms-auto">
-                      <img *ngIf="weeklySummary?.increased==true" src="../assets/images/graph-up-green.svg" height="80" width="100"
-                        alt="Profile Picture">
-                      <img *ngIf="weeklySummary?.increased==false" src="../assets/images/graph-down-red.svg" height="80" width="100"
-                        alt="Profile Picture">
-                    </div>
-              </div>
-
-            </div>
+          <div class="mt-2 border-end pe-5">
+            <p class="">Members</p>
+            <h1 class="">1</h1>
           </div>
-
-
-          <div class="col-md-4  rounded dash-boxes p-3 bg-white">
-            <div class="about__top">
-              <div class="about__title">
-                <h1 class="content__title me-3">This Month</h1>
-                <h1 class="title-hidden time  mb-0">{{convertMinutesToHoursAndMinutes(monthlySummary?.currentMonth)}}</h1>
-              </div>
-              <div class="top-text d-flex">
-                <p class="text mb-0 me-2">
-                  <span style="color: rgb(255, 190, 91)" [style.color]="monthlySummary?.changeColor">{{monthlySummary?.changeDisplay}}% </span><span class="text-dark"> a week before </span>
-                </p>
-                <div class="hours"><span class="p-2 py-3 text-light">{{convertMinutesToHoursAndMinutes(monthlySummary?.previousMonth)}}</span></div>
-                <div class="d-flex justify-content-between  ms-auto">
-                  <img *ngIf="monthlySummary?.increased ==true" src="../assets/images/graph-up-green.svg" height="80"
-                    alt="Profile Picture">
-                  <img *ngIf="monthlySummary?.increased ==false" src="../assets/images/graph-down-red.svg" height="80"
-                    alt="Profile Picture">
-                </div>
-              </div>
-
+          <div class="mt-2 border-end pe-5">
+            <p class="">Next payment on</p>
+            <h1 class="">09 Jun, 2023</h1>
+          </div>
+          <div class="mt-2 border-end pe-5">
+            <p class="">Latest Invoice</p>
+            <h1 class="">$2.99</h1>
+            <a class="" href="">My Invoices</a>
+          </div>
+          <div class="mt-2 border-end pe-5">
+            <p class="">Balance</p>
+            <h1 class="">$0</h1>
+            <div class="fill-balance"><a href="">Make Payment</a>
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- <div class="row justify-content-evenly">
+    </div>
+    <div class="row my-3 justify-content-evenly">
+      <div class="col-md-4  rounded dash-boxes p-3 bg-white">
+        <div class="about__top ">
+          <div class="about__title">
+            <h1 class="content__title me-3">Today</h1>
+            <h1 class="title-hidden time mb-0">{{ formatMillisecondsToTime(hoursWorked?.today)}}</h1>
+          </div>
+          <div class="top-text d-flex">
+            <p class="text mb-0 me-2">
+              <span style="color: rgb(255, 190, 91)" [style.color]="hoursWorked?.changeColor">{{
+                hoursWorked?.changeDisplay}}% </span><span class="text-dark"> Yesterday </span>
+            </p>
+            <div class="hours"><span class="p-2 py-3 text-light">{{formatMillisecondsToTime(hoursWorked?.previousDay)
+                }}</span></div>
+
+            <span class="ms-auto">
+              <img *ngIf="hoursWorked?.increased==true" src="../assets/images/graph-up-green.svg" height="80"
+                width="100" alt="Profile Picture">
+              <img *ngIf="hoursWorked?.increased==false" src="../assets/images/graph-down-red.svg" height="80"
+                width="100" alt="Profile Picture">
+            </span>
+
+          </div>
+
+        </div>
+      </div>
+
+      <div class="col-md-4  rounded dash-boxes p-3 bg-white">
+        <div class="about__top ">
+          <div class="about__title">
+            <h1 class="content__title me-3">This week</h1>
+            <h1 class="title-hidden time mb-0">{{formatHoursAndMinutes(weeklySummary?.currentWeek) }}</h1>
+          </div>
+          <div class="top-text">
+            <p class="text mb-0 me-2">
+              <span style="color: rgb(255, 190, 91)"
+                [style.color]="weeklySummary?.changeColor">{{weeklySummary?.changeDisplay}}% </span><span
+                class="text-dark"> last week </span>
+            </p>
+            <div class="hours"><span class="p-2 py-3 text-light">{{formatHoursAndMinutes(weeklySummary?.previousWeek)
+                }}</span></div>
+            <div class="d-flex justify-content-between ms-auto">
+              <img *ngIf="weeklySummary?.increased==true" src="../assets/images/graph-up-green.svg" height="80"
+                width="100" alt="Profile Picture">
+              <img *ngIf="weeklySummary?.increased==false" src="../assets/images/graph-down-red.svg" height="80"
+                width="100" alt="Profile Picture">
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+
+      <div class="col-md-4  rounded dash-boxes p-3 bg-white">
+        <div class="about__top">
+          <div class="about__title">
+            <h1 class="content__title me-3">This Month</h1>
+            <h1 class="title-hidden time  mb-0">{{convertMinutesToHoursAndMinutes(monthlySummary?.currentMonth)}}</h1>
+          </div>
+          <div class="top-text d-flex">
+            <p class="text mb-0 me-2">
+              <span style="color: rgb(255, 190, 91)"
+                [style.color]="monthlySummary?.changeColor">{{monthlySummary?.changeDisplay}}% </span><span
+                class="text-dark"> a week before </span>
+            </p>
+            <div class="hours"><span
+                class="p-2 py-3 text-light">{{convertMinutesToHoursAndMinutes(monthlySummary?.previousMonth)}}</span>
+            </div>
+            <div class="d-flex justify-content-between  ms-auto">
+              <img *ngIf="monthlySummary?.increased ==true" src="../assets/images/graph-up-green.svg" height="80"
+                alt="Profile Picture">
+              <img *ngIf="monthlySummary?.increased ==false" src="../assets/images/graph-down-red.svg" height="80"
+                alt="Profile Picture">
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- <div class="row justify-content-evenly">
             <div class="col-md-4  rounded p-3 dash-report bg-white">
                 <div class="d-flex justify-content-between">
                     <h3>Today's Activity</h3>
@@ -194,118 +202,126 @@
             </div>
         </div> -->
 
-        <div class="row justify-content-evenly">
-          <div class="col-md-4  rounded p-3 dash-report bg-white">
-            <div class="d-flex justify-content-between">
-              <h3>Project-wise time spent on each task</h3>
-          </div>
-            <div class="d-flex justify-content-between">
-                <label for="member" class="pt-2 pe-3">Member</label>
-                <select id="member" name="member" class="form-control" class="form-select form-select-sm"
-                  aria-label=".form-select-sm example" #member (change)="onTaskTimeMemberSelectionChange(member)">
-                  <option *ngFor="let m of members" value="{{m|json}}">{{m.name | titlecase}}</option>
-                </select>
-            </div>
-            <table class="table">
-              <tbody>
-                <th>Project</th>
-                <th>Task</th>
-                <th>Time</th>
-                <ng-container *ngFor="let projectTask of projectTasks">
-                  <tr *ngFor="let task of projectTask.tasks;let i = index ">
-                    <td>
-                      {{i==0?projectTask?.projectName:''}}
-                    </td>
-                    <td>{{task?.taskName}}</td>
-                    <td>
-                      <span class="dash-percent"> {{ task?.totalTime | milliSecondsToTime }} </span>
-                    </td>
-                  </tr>
-                </ng-container>
-              </tbody>
-            </table>
-          </div>
-
-          <div class="col-md-4  rounded p-3 dash-report bg-white">
-            <div class="d-flex justify-content-between">
-              <h3>Productivity</h3>
-          </div>
-            <div class="d-flex justify-content-between">
-                <label for="member" class="pt-2 pe-3">Member</label>
-                <select id="member" name="member" class="form-control" class="form-select form-select-sm"
-                  aria-label=".form-select-sm example" #productivityMember (change)="onProductivityMemberSelectionChange(productivityMember)">
-                  <option *ngFor="let m of members" value="{{m|json}}">{{m.name | titlecase}}</option>
-                </select>
-            </div>
-            <div>
-              <ngx-charts-pie-chart  [results]="productivityData">
-              </ngx-charts-pie-chart>
-            </div>
-          </div>
-
-          <div class="col-md-4  rounded p-3 dash-report bg-white">
-            <div class="d-flex justify-content-between">
-              <h3>Task Summary</h3>
-          </div>
-            <div class="d-flex justify-content-between">
-                <label for="member" class="pt-2 pe-3">Member</label>
-                <select id="member" name="member" class="form-control" class="form-select form-select-sm"
-                  aria-label=".form-select-sm example" #taskMember (change)="onTaskSummaryMemberSelectionChange(taskMember)">
-                  <option *ngFor="let m of members" value="{{m|json}}">{{m.name | titlecase}}</option>
-                </select>
-            </div>
-            <div>
-              <ngx-charts-pie-chart  [results]="taskSummary">
-              </ngx-charts-pie-chart>
-            </div>
-          </div>
-
+    <div class="row justify-content-evenly mb-4">
+      <div class="col-md-4  rounded p-3 dash-report bg-white taskReport">
+        <div class="d-flex justify-content-between">
+          <h3>Project-wise time spent on each task</h3>
         </div>
-
-        <!-- =================== -->
-
-        <div class="row justify-content-evenly">
-          <div class="col-md-4  rounded p-3 dash-report bg-white">
-            <div class="d-flex justify-content-between">
-              <h3>Project wise time on each task</h3>
-          </div>
-            <div class="d-flex justify-content-between">
-                <label for="member" class="pt-2 pe-3">Member</label>
-                <select id="member" name="member" class="form-control" class="form-select form-select-sm"
-                  aria-label=".form-select-sm example" #dailyUpdateMember (change)="onDailyUpdateMemberSelectionChange(dailyUpdateMember)">
-                  <option *ngFor="let m of members" value="{{m|json}}">{{m.name | titlecase}}</option>
-                </select>
-            </div>
-            <table class="table">
-              <tbody>
-                <th>Project</th>
-                <th>Task</th>
-                <th>Time</th>
-                <ng-container *ngFor="let projectTask of dayWorkStatusByUser">
-                  <tr *ngFor="let task of projectTask.tasks;let i = index ">
-                    <td>
-                      {{i==0?projectTask?.projectName:''}}
-                    </td>
-                    <td>{{task?.taskName}}</td>
-                    <td>
-                      <span class="dash-percent"> {{ ((task?.count*10)*60*1000) | milliSecondsToTime }} </span>
-                    </td>
-                  </tr>
-                </ng-container>
-              </tbody>
-            </table>
-          </div>
-
-          <div class="col-md-4  rounded p-3 dash-report bg-white">
-
-          </div>
-
-          <div class="col-md-4  rounded p-3 dash-report bg-white">
-
-          </div>
-
+        <div class="d-flex justify-content-between">
+          <label for="member" class="pt-2 pe-3">Member</label>
+          <select id="member" name="member" class="form-control" class="form-select form-select-sm"
+            aria-label=".form-select-sm example" #member (change)="onTaskTimeMemberSelectionChange(member)">
+            <option *ngFor="let m of members" value="{{m|json}}">{{m.name | titlecase}}</option>
+          </select>
         </div>
+        <table class="table">
+          <tbody>
+            <th>Project</th>
+            <th>Task</th>
+            <th>Time</th>
+            <ng-container *ngFor="let projectTask of projectTasks">
+              <tr *ngFor="let task of projectTask.tasks;let i = index ">
+                <td>
+                  {{i==0?projectTask?.projectName:''}}
+                </td>
+                <td>{{task?.taskName}}</td>
+                <td>
+                  <span class="dash-percent"> {{ task?.totalTime | milliSecondsToTime }} </span>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="col-md-4  rounded p-3 dash-report bg-white">
+        <div class="d-flex justify-content-between">
+          <h3>Productivity</h3>
+        </div>
+        <div class="d-flex justify-content-between">
+          <label for="member" class="pt-2 pe-3">Member</label>
+          <select id="member" name="member" class="form-control" class="form-select form-select-sm"
+            aria-label=".form-select-sm example" #productivityMember
+            (change)="onProductivityMemberSelectionChange(productivityMember)">
+            <option *ngFor="let m of members" value="{{m|json}}">{{m.name | titlecase}}</option>
+          </select>
+        </div>
+        <div>
+          <ul type="square">
+            <li *ngFor="let productivity of productivityData" [ngClass]="{
+                  'prod': productivity.name === 'Productive',
+                  'non-prod': productivity.name == 'Non-Productive',
+                  'neutral': productivity.name === 'Neutral'
+                }">{{productivity.name}}</li>
+          </ul>
+          <ngx-charts-pie-chart [results]="productivityData">
+          </ngx-charts-pie-chart>
+        </div>
+      </div>
+
+      <div class="col-md-4  rounded p-3 dash-report bg-white">
+        <div class="d-flex justify-content-between">
+          <h3>Task Summary</h3>
+        </div>
+        <div class="d-flex justify-content-between">
+          <label for="member" class="pt-2 pe-3">Member</label>
+          <select id="member" name="member" class="form-control" class="form-select form-select-sm"
+            aria-label=".form-select-sm example" #taskMember (change)="onTaskSummaryMemberSelectionChange(taskMember)">
+            <option *ngFor="let m of members" value="{{m|json}}">{{m.name | titlecase}}</option>
+          </select>
+        </div>
+        <div>
+          <ngx-charts-pie-chart [results]="taskSummary">
+          </ngx-charts-pie-chart>
+        </div>
+      </div>
 
     </div>
-  </div>
 
+    <!-- =================== -->
+
+    <div class="row justify-content-evenly">
+      <div class="col-md-4  rounded p-3 dash-report bg-white">
+        <div class="d-flex justify-content-between">
+          <h3>Project wise time on each task</h3>
+        </div>
+        <div class="d-flex justify-content-between">
+          <label for="member" class="pt-2 pe-3">Member</label>
+          <select id="member" name="member" class="form-control" class="form-select form-select-sm"
+            aria-label=".form-select-sm example" #dailyUpdateMember
+            (change)="onDailyUpdateMemberSelectionChange(dailyUpdateMember)">
+            <option *ngFor="let m of members" value="{{m|json}}">{{m.name | titlecase}}</option>
+          </select>
+        </div>
+        <table class="table">
+          <tbody>
+            <th>Project</th>
+            <th>Task</th>
+            <th>Time</th>
+            <ng-container *ngFor="let projectTask of dayWorkStatusByUser">
+              <tr *ngFor="let task of projectTask.tasks;let i = index ">
+                <td>
+                  {{i==0?projectTask?.projectName:''}}
+                </td>
+                <td>{{task?.taskName}}</td>
+                <td>
+                  <span class="dash-percent"> {{ ((task?.count*10)*60*1000) | milliSecondsToTime }} </span>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="col-md-4  rounded p-3 dash-report bg-white">
+
+      </div>
+
+      <div class="col-md-4  rounded p-3 dash-report bg-white">
+
+      </div>
+
+    </div>
+
+  </div>
+</div>

@@ -103,7 +103,6 @@ export class AttendanceComponent implements OnInit {
     attendance.users = (this.role.toLowerCase() === "admin") ? this.selectedUser : [this.currentUser.id];
     this.reportService.getAttendance(attendance).subscribe(result => {
       this.attendance = result.data;
-      console.log(this.attendance)
     });
   }
   minutesToTime(minutes: number): string {

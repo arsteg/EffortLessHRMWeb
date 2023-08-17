@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { Observable } from 'rxjs';
+import { Observable, switchMap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { TimeLogService } from 'src/app/_services/timeLogService';
 import { Productivity } from '../model/productivityModel';
@@ -15,7 +15,7 @@ import { CommonService } from 'src/app/common/common.service';
 export class ProductivityReportComponent implements OnInit {
 
   private _jsonURL = '.../../../assets/reportproductivity.json';
-  userId: string;
+  userId = [];
   projectId: string;
   members: any;
   member: any;
@@ -26,7 +26,7 @@ export class ProductivityReportComponent implements OnInit {
   lastday: any = this.currentDate.getDate() - (this.currentDate.getDay() - 1) + 6;
   selectedUser: any = [];
   roleName = localStorage.getItem('adminView');
-  currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  currentProfile: any;
   firstLetter: string;
   totalActiveTime: Number;
   productivity: any = [];
@@ -49,14 +49,20 @@ export class ProductivityReportComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.populateUsers();
     this.toggleSingleMember();
     this.commonservice.getCurrentUserRole().subscribe((role: any) => {
       this.role = role;
-      this.getProductivity();
     })
+    this.getCurrentUser().subscribe(() => {
+      this.initializeDefaultUser();
+      this.populateUsers();
+      if (this.showSingleMember && !this.showAllMembers) {
+        this.getProductivityPerMem();
+      }
+      else this.getProductivityAllMem();
+    });
   }
-
+ 
   toggleSingleMember() {
     this.showSingleMember = true;
     this.showAllMembers = false;
@@ -67,17 +73,24 @@ export class ProductivityReportComponent implements OnInit {
     this.showAllMembers = true;
     this.activeButton = 'Members';
   }
+  initializeDefaultUser() {
+    if ((this.role.toLowerCase() === "admin" || null) || this.members.some(member => member.id === this.currentProfile.id)) {
+      this.selectedUser = this.currentProfile.id;
+    } else if (!this.selectedUser && this.members.length > 0) {
+      this.selectedUser = this.members[0].id;
+    }
+  }
 
   populateUsers() {
     this.members = [];
-    this.members.push({ id: this.currentUser.id, name: "Me", email: this.currentUser.email });
-    this.member = this.currentUser;
+    this.members.push({ id: this.currentProfile.id, name: "Me", email: this.currentProfile.email });
+    this.member = this.currentProfile;
     this.timeLogService.getTeamMembers(this.member.id).subscribe({
-      next: response => {
+      next: (response: { data: any; }) => {
         this.timeLogService.getusers(response.data).subscribe({
           next: result => {
             result.data.forEach(user => {
-              if (user.id != this.currentUser.id) {
+              if (user.email != this.currentProfile.email) {
                 this.members.push({ id: user.id, name: `${user.firstName} ${user.lastName}`, email: user.email });
               }
             })
@@ -94,7 +107,7 @@ export class ProductivityReportComponent implements OnInit {
   }
 
   filterData() {
-    this.getProductivity();
+    this.getProductivityPerMem();
   }
 
   minutesToTime(minutes) {
@@ -117,14 +130,39 @@ export class ProductivityReportComponent implements OnInit {
     return hours + ' hr ' + minutes + ' m';
   }
 
-  getProductivity() {
-    let searchPrudctivity = new Productivity();
-    searchPrudctivity.fromdate = new Date(this.fromDate);
-    searchPrudctivity.todate = new Date(this.toDate);
-    searchPrudctivity.users = (this.role.toLowerCase() === "admin") ? this.selectedUser : [this.currentUser.id];
-    this.reportService.getProductivity(searchPrudctivity).subscribe(result => {
+
+  getProductivityPerMem() {
+    let searchProductivity = new Productivity();
+    searchProductivity.fromdate = new Date(this.fromDate);
+    searchProductivity.todate = new Date(this.toDate);
+    searchProductivity.users = (this.role.toLowerCase() === "admin" || null) ? this.selectedUser : [];
+    this.reportService.getProductivity(searchProductivity).subscribe(result => {
       this.productivity = result.data;
-    }
-    )
+    });
+  }
+
+  getProductivityAllMem() {
+    let searchProductivity = new Productivity();
+    searchProductivity.fromdate = new Date(this.fromDate);
+    searchProductivity.todate = new Date(this.toDate);
+    searchProductivity.users = this.currentProfile.id
+    searchProductivity.fromdate = new Date(this.fromDate);
+    searchProductivity.todate = new Date(this.toDate);
+    searchProductivity.users = [];
+    this.reportService.getProductivity(searchProductivity).subscribe(result => {
+      this.productivity = result.data;
+    });
+  }
+
+  getCurrentUser() {
+    return this.commonservice.getCurrentUser().pipe(
+      switchMap((profile: any) => {
+        this.currentProfile = profile;
+        return new Observable((observer) => {
+          observer.next();
+          observer.complete();
+        });
+      })
+    );
   }
 }

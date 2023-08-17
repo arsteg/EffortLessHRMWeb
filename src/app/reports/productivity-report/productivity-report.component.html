@@ -3,22 +3,37 @@
         <div class="d-flex justify-content-between">
             <h1 class="pt-0 pb-3 mb-0">Productivity</h1>
             <div class="pt-2">
-                <button class="buttons" (click)="toggleSingleMember()"
+                <button class="buttons" (click)="toggleSingleMember()" (click)="getProductivityPerMem()"
                     [ngClass]="{'active': activeButton === 'Single'}">Per Member</button>
-                <button class="buttons mx-3" (click)="toggleAllMembers()"
+                <button class="buttons mx-3" (click)="toggleAllMembers()" (click)="getProductivityAllMem()"
                     [ngClass]="{'active': activeButton === 'Members'}">All Members</button>
             </div>
             <div class=" pt-1 d-flex text-center mx-1 h-0">
-                <mat-form-field appearance="outline" class="w-100 mx-1">
-                    <mat-label>Select User</mat-label>
-                    <mat-select multiple [(ngModel)]="selectedUser">
-                        <mat-option *ngFor="let member of members" [value]="member.id" (click)="filterData()"
-                            [selected]="selectedUser?.includes(member?.id)">
-                            {{member.name | titlecase}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
 
+                <ng-container *ngIf="showSingleMember">
+                    <mat-form-field appearance="outline" class="w-25 mx-1">
+                        <mat-label>Select User</mat-label>
+                        <mat-select [(ngModel)]="selectedUser">
+                            <mat-option *ngFor="let member of members" [value]="member.id" (click)="filterData()"
+                                [selected]="selectedUser?.includes(member?.id)">
+                                {{member.name | titlecase}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </ng-container>
+
+                <!-- will display when all member will active -->
+                <ng-container *ngIf="showAllMembers">
+                    <mat-form-field appearance="outline" class="w-100 mx-1">
+                        <mat-label>Select User</mat-label>
+                        <mat-select multiple [(ngModel)]="selectedUser">
+                            <mat-option *ngFor="let member of members" [value]="member.id" (click)="filterData()"
+                                [selected]="selectedUser?.includes(member?.id)">
+                                {{member.name | titlecase}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </ng-container>
 
                 <div class="mx-1 pt-3">
                     <i class="fa fa-calendar text-primary"></i>
@@ -43,13 +58,14 @@
                                 </div>
                                 <div>
                                     <span class="letter ms-2"
-                                        [style.background-color]="commonservice.getRandomColor(productivity?.lastName)">{{productivity?.firstName?.slice(0,1)
-                                        | uppercase}}{{productivity?.lastName?.slice(0,1) | uppercase}}</span>
+                                        [style.background-color]="commonservice.getRandomColor(productivity[0]?.lastName)">{{productivity[0]?.firstName?.slice(0,1)
+                                        | uppercase}}{{productivity[0]?.lastName?.slice(0,1) | uppercase}}</span>
                                 </div>
                                 <div class="flex-grow-1 ms-3">
                                     <h5 class="mb-1">{{ productivity[0]?.firstName | titlecase}}
                                         {{productivity[0]?.lastName | titlecase}}</h5>
-                                    <h5 class="mb-1">Member since: {{ productivity[0]?.dateOfJoining | date:'MMM dd, yyyy' }}
+                                    <h5 class="mb-1">Member since: {{ productivity[0]?.dateOfJoining | date:'MMM dd,
+                                        yyyy' }}
                                     </h5>
                                 </div>
                             </div>

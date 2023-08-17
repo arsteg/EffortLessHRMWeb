@@ -40,7 +40,6 @@ import { RequestManualTimeComponent } from './manualTime/request-manual-time/req
 import { RequestApprovalComponent } from './manualTime/requestApproval/requestApproval.component';
 import { ActivityDescriptionComponent } from './reports/activity-description/activity-description.component';
 import { AppAndWebsiteUsageComponent } from './reports/app-and-website-usage/app-and-website-usage.component';
-import { TaskreportComponent } from './reports/taskreport/taskreport.component';
 import { LeaveReportComponent } from './reports/leave-report/leave-report.component';
 import { ProductivityReportComponent } from './reports/productivity-report/productivity-report.component';
 import { AppWebsiteSettingsComponent } from './settings/app-website-settings/app-website-settings.component';
@@ -49,7 +48,6 @@ import { ManageModule } from './manage/manage.module';
 import { PermissionsComponent } from './permissions/permissions.component';
 import { RolePermissionComponent } from './role-permission/role-permission.component';
 import { AuthGuard } from './auth.guard';
-import { ActivityLevelComponent } from './reports/activity-level/activity-level.component';
 import { ProfileSettingsComponent } from './settings/profile-settings/profile-settings.component';
 import { WorkspaceSettingsComponent } from './settings/workspace-settings/workspace-settings.component';
 import { FeaturesSettingsComponent } from './settings/features-settings/features-settings.component';
@@ -106,14 +104,12 @@ import { CommonComponentsModule } from './common/commonComponents.module';
           RequestApprovalComponent,
           ActivityDescriptionComponent,
           AppAndWebsiteUsageComponent,
-          TaskreportComponent,
           LeaveReportComponent,
           ProductivityReportComponent,
           AppWebsiteSettingsComponent,
           AddManualTimeComponent,
           PermissionsComponent,
           RolePermissionComponent,
-          ActivityLevelComponent,
           ProfileSettingsComponent,
           WorkspaceSettingsComponent,
           FeaturesSettingsComponent,

@@ -26,12 +26,10 @@ export class HomeComponent implements OnInit {
   constructor(private router: Router, private auth: AuthenticationService, private commonService: CommonService) { }
 
   ngOnInit(): void {
-    // localStorage.setItem('roleName', 'user');
     let roleId = localStorage.getItem('roleId');
     this.adminView = localStorage.getItem('adminView');
     this.auth.getRole(roleId).subscribe((response: any) => {
       let role = response && response.data && response.data[0].Name;
-      // localStorage.setItem('adminView', role);
 
       this.commonService.setCurrentUserRole(role);
       if (this.adminView) {
@@ -69,7 +67,6 @@ export class HomeComponent implements OnInit {
 
 
   toggleDropdown() {
-    // this.dropdownOpen = !this.dropdownOpen;
     this.dropdownOpen=this.dropdownOpen==false ? true:false
 
   }
@@ -419,11 +416,11 @@ export const SideBarAdminMenu = [
       //   id: '142',
       //   title: 'My Reports',
       // },
-      {
-        id: '143',
-        title: 'Timesheet',
-      url: '/timesheets'
-      },
+      // {
+      //   id: '143',
+      //   title: 'Timesheet',
+      // url: '/timesheets'
+      // },
       {
         id: '144',
         title: 'Timeline',
@@ -452,11 +449,11 @@ export const SideBarAdminMenu = [
         title: 'Apps and Websites',
         url: '/applicationusages'
       },
-      {
-        id: '1410',
-        title: 'Tasks',
-        url: '/task',
-      },
+      // {
+      //   id: '1410',
+      //   title: 'Tasks',
+      //   url: '/task',
+      // },
       {
         id: '1411',
         title: 'Productivity',
@@ -467,11 +464,11 @@ export const SideBarAdminMenu = [
         title: 'Leave',
         url: '/leave'
       },
-      {
-        id: '1413',
-        title: 'Activity Level',
-        url: '/activityLevel'
-      }
+      // {
+      //   id: '1413',
+      //   title: 'Activity Level',
+      //   url: '/activityLevel'
+      // }
     ],
   },
   {
@@ -752,10 +749,10 @@ export const SideBarUserMenu = [
         id: '142',
         title: 'My Reports',
       },
-      {
-        id: '143',
-        title: 'Timesheet',
-      },
+      // {
+      //   id: '143',
+      //   title: 'Timesheet',
+      // },
       {
         id: '144',
         title: 'Timeline',
@@ -766,11 +763,11 @@ export const SideBarUserMenu = [
         title: 'Attendance',
         url: '/attendance',
       },
-      {
-        id: '146',
-        title: 'Activity Level',
-        url: '/activityLevel'
-      },
+      // {
+      //   id: '146',
+      //   title: 'Activity Level',
+      //   url: '/activityLevel'
+      // },
       {
         id: '147',
         title: 'Statistics',
@@ -790,11 +787,11 @@ export const SideBarUserMenu = [
         title: 'Apps and Websites',
         url: '/applicationusages'
       },
-      {
-        id: '1410',
-        title: 'Tasks',
-        url: '/task',
-      },
+      // {
+      //   id: '1410',
+      //   title: 'Tasks',
+      //   url: '/task',
+      // },
       {
         id: '1411',
         title: 'Productivity',

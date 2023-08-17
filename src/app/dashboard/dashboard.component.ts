@@ -34,9 +34,9 @@ export class DashboardComponent implements OnInit {
   taskSummary = [];
   members: teamMember[];
   member: teamMember;
-  selectedDate:Date;
+  selectedDate:Date= new Date;
   dayWorkStatusByUser:any[];
-
+  
   constructor(
     private timelog: TimeLogService,
     private manageTeamService: ManageTeamService,
@@ -58,7 +58,7 @@ export class DashboardComponent implements OnInit {
       return this.currentProfile;
     });
     this.populateMembers();
-    const currentDate = new Date();
+    const currentDate = this.selectedDate;
 
   this.dashboardService.HoursWorked(this.currentUser.id,currentDate).subscribe(response=>{
       this.hoursWorked = response.data;
@@ -134,9 +134,9 @@ export class DashboardComponent implements OnInit {
   this.populateTaskwiseHours(this.currentUser.id);
 
   this.getDayWorkStatusByUser(this.currentUser.id);
-
+  this.getTaskStatusCounts(this.currentUser.id)
  
-    this.dashboardService.getApplicationTimeSummary(this.currentUser.id,this.date.value).subscribe(response => {
+    this.dashboardService.getApplicationTimeSummary(this.currentUser.id,this.selectedDate).subscribe(response => {
       this.productivityData= response.data;
     },
       err => {
@@ -145,7 +145,9 @@ export class DashboardComponent implements OnInit {
   // }
 
   }
-
+filterDate(){
+  this.ngOnInit();
+}
   populateTeamOfUsers() {
     this.manageTeamService.getAllUsers().subscribe({
       next: result => {
@@ -259,12 +261,13 @@ export class DashboardComponent implements OnInit {
     });
   }
   onDateChange(event: MatDatepickerInputEvent<Date>) {
-    const selectedDate: Date = event.value;
-    //this.populateDashboard(selectedDate);
+    this.selectedDate = event.value;
+    this.ngOnInit();
+   
   }
 
   getApplicationTimeSummary(selectedtUser){
-    this.dashboardService.getApplicationTimeSummary(selectedtUser,this.date.value).subscribe(response => {
+    this.dashboardService.getApplicationTimeSummary(selectedtUser,this.selectedDate).subscribe(response => {
       this.productivityData= response.data;
     },
       err => {
@@ -281,7 +284,7 @@ export class DashboardComponent implements OnInit {
       });
   }
   getDayWorkStatusByUser(selectedtUser:string){
-    this.dashboardService.getDayWorkStatusByUser(selectedtUser, this.date.value ).subscribe(response => {
+    this.dashboardService.getDayWorkStatusByUser(selectedtUser, this.selectedDate ).subscribe(response => {
       this.dayWorkStatusByUser= response.data;
     },
       err => {
