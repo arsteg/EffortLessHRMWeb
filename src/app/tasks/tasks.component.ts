@@ -115,10 +115,10 @@ export class TasksComponent implements OnInit {
       title: [''],
       startDate: [moment().format('YYYY-MM-DD'), Validators.required],
       endDate: [moment().format('YYYY-MM-DD'), Validators.required],
-      description: ['', Validators.required],
+      description: [''],
       estimate: [0],
-      comment: ['Task Created', Validators.required],
-      priority: ['', Validators.required],
+      comment: ['Task Created'],
+      priority: [''],
       TaskUser: [''],
       project: ['', Validators.required],
       taskAttachments: [this.attachments]

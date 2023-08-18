@@ -36,6 +36,7 @@ export class UserDashboardComponent implements OnInit {
   productivityData = [];
   taskSummary = [];
   dayWorkStatusByUser:any[];
+  selectedDate:Date= new Date;
 
   constructor(
     private timelog: TimeLogService,
@@ -49,7 +50,7 @@ export class UserDashboardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.populateDashboard(new Date());
+    this.populateDashboard(this.selectedDate);
     this.getDayWorkStatusByUser(this.currentUser.id);
   }
 
@@ -115,8 +116,9 @@ export class UserDashboardComponent implements OnInit {
   }
 
   onDateChange(event: MatDatepickerInputEvent<Date>) {
-    const selectedDate: Date = event.value;
-    this.populateDashboard(selectedDate);
+    this.selectedDate = event.value;
+    console.log(this.selectedDate)
+    this.ngOnInit();
   }
 
   populateDashboard(selectedDate:Date){
@@ -226,7 +228,7 @@ export class UserDashboardComponent implements OnInit {
   }
 
   getDayWorkStatusByUser(selectedtUser:string){
-    this.dashboardService.getDayWorkStatusByUser(selectedtUser, this.date.value ).subscribe(response => {
+    this.dashboardService.getDayWorkStatusByUser(selectedtUser, this.selectedDate ).subscribe(response => {
       this.dayWorkStatusByUser= response.data;
     },
       err => {

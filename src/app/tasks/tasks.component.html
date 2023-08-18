@@ -969,7 +969,7 @@
                                 </div>
                                <div *ngIf="!showEditor">
                                      <input type="text" name="description" id="description" class="form-control input pt-0"
-                                     formControlName="description" [(ngModel)]="tasks?.data?.task.description" required
+                                     formControlName="description" [(ngModel)]="tasks?.data?.task.description" 
                                      (click)="onInputClick()">
                                     </div>
                               <div *ngIf="showEditor">
@@ -977,12 +977,7 @@
                                               [(ngModel)]="tasks?.data?.task.description"></quill-editor>
                               </div>
                               
-                                <div *ngIf="addForm.controls['description'].invalid && addForm.controls['description'].touched"
-                                    class="alert alert-danger error">
-                                    <div *ngIf="addForm.controls['description'].errors['required']">
-                                        Description is required!
-                                    </div>
-                                </div>
+                               
                                 <div class="row">
                                     <div class="col-6">
                                         <div class="row mt-3">
@@ -1035,19 +1030,14 @@
                                         </div>
 
                                         <select class="custom-select mb-3 p-2" formControlName="priority" ngModel
-                                            required>
+                                            >
                                             <option value="">Select Priority</option>
                                             <option value="Low">Low</option>
                                             <option value="Normal">Normal</option>
                                             <option value="High">High</option>
                                             <option value="Highest">Highest</option>
                                         </select>
-                                        <div *ngIf="addForm.controls['priority'].invalid && addForm.controls['priority'].touched"
-                                            class="alert alert-danger error">
-                                            <div *ngIf="addForm.controls['priority'].errors['required']">
-                                                Priority Name is required!
-                                            </div>
-                                        </div>
+                                        
                                     </div>
                                     <div class="attachment mt-4 d-flex flex-wrap col-6"><label
                                             class="sc-bczRLJ kEeNDb  "><input style="display: none;" formControlName="taskAttachments"
@@ -1094,13 +1084,8 @@
                                     <label for="comment" class="text-start">Comments</label>
                                 </div>
                                 <input type="text" name="comment" id="comment" class="form-control input  pt-0"
-                                    formControlName="comment" ngModel required>
-                                <div *ngIf="addForm.controls['comment'].invalid && addForm.controls['comment'].touched"
-                                    class="alert alert-danger error">
-                                    <div *ngIf="addForm.controls['comment'].errors['required']">
-                                        Comment is required!
-                                    </div>
-                                </div>
+                                    formControlName="comment" ngModel >
+                               
                             </div>
                         </div>
                         <div class="d-flex justify-content-between m-3">
@@ -1110,7 +1095,7 @@
                                     type="reset">Cancel</button>
                             </div>
                             <div>
-                                <button mat-raised-button color="primary" 
+                                <button mat-raised-button color="primary" [disabled]="!addForm.valid"
                                     type="submit">Add</button>
                             </div>
 

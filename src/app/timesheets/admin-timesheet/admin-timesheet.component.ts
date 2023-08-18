@@ -7,6 +7,7 @@ import { TimeLogService } from 'src/app/_services/timeLogService';
 import { MatrixData } from '../model/timesheet';
 import { Attendance } from 'src/app/reports/model/productivityModel';
 import { ExportService } from 'src/app/_services/export.service';
+import { milliseconds } from 'date-fns';
 
 @Component({
   selector: 'app-admin-timesheet',
@@ -50,49 +51,99 @@ export class AdminTimesheetComponent implements OnInit {
   ngOnInit(): void {
   this.getAllProjects();
   this.populateUsers();
-  this.getFirstDayOfWeek();
+  this.getFirstDayOfMonth();
   }
 
   onSubmit() {
   }
 
-  populateTimesheet(){
-    this.timesheetTotals=[];
-    this.timesheetAllTotals={};
+  // populateTimesheet(){
+  //   this.timesheetTotals=[];
+  //   this.timesheetAllTotals={};
+  //   const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  //   const fromDt= this.formatDate(this.fromDate);
+  //   const toDt= this.formatDate(this.toDate);
+  //   if (this.selectedUser.length === 0) {
+  //       this.timesheetTotals=[];
+  //       this.timesheetAllTotals={};
+  //       return;
+  //   }
+  //   this.timeLogService.geAdminTimeSheet(`${this.selectedUser.join()}`, fromDt,toDt ).toPromise()
+  //   .then(response => {
+  //     this.timeLogs = response.data;
+  //     if(this.timeLogs.columns.length>0){
+  //       this.timesheetTotals[this.timeLogs.columns.length-2]=0;
+  //     }
+
+  //     this.selectedUser.forEach(user=>{
+  //       const logs = this.timeLogs?.matrix[user];
+  //       this.timesheetTotals=[];
+  //       this.timesheetTotals[this.timeLogs.columns.length-2]=0;
+  //       for(let r=0 ;r< logs.length;r++){
+  //         let rowTotal=0;
+  //         for(let c=1;c<logs[r].length;c++){
+  //           this.timesheetTotals[c-1] = (this.timesheetTotals[c-1] || 0 )  + (logs[r][c] || 0 );
+  //           rowTotal= (+rowTotal)+ (logs[r][c] || 0 );
+  //         }
+  //         this.timesheetTotals[this.timesheetTotals.length-1]=rowTotal;
+  //       }
+  //       this.timesheetAllTotals[user]=this.timesheetTotals;
+  //       console.log(this.timesheetAllTotals[user])
+  //     });
+      
+    
+    
+    
+    
+    
+    
+    
+  //   })
+  //   .catch(error => {
+  //     this.toast.error('Something went wrong, Please try again.', 'Error!');
+  //   });
+  // }
+  populateTimesheet() {
+    this.timesheetAllTotals = {};
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    const fromDt= this.formatDate(this.fromDate);
-    const toDt= this.formatDate(this.toDate);
+    const fromDt = this.formatDate(this.fromDate);
+    const toDt = this.formatDate(this.toDate);
+    
     if (this.selectedUser.length === 0) {
-        this.timesheetTotals=[];
-        this.timesheetAllTotals={};
+        this.timesheetAllTotals = {};
         return;
     }
-    this.timeLogService.geAdminTimeSheet(`${this.selectedUser.join()}`, fromDt,toDt ).toPromise()
+    
+    this.timeLogService.geAdminTimeSheet(this.selectedUser.join(), fromDt, toDt)
+    .toPromise()
     .then(response => {
-      this.timeLogs = response.data;
-      if(this.timeLogs.columns.length>0){
-        this.timesheetTotals[this.timeLogs.columns.length-2]=0;
-      }
+        this.timeLogs = response.data;
 
-      this.selectedUser.forEach(user=>{
-        const logs = this.timeLogs?.matrix[user];
-        this.timesheetTotals=[];
-        this.timesheetTotals[this.timeLogs.columns.length-2]=0;
-        for(let r=0 ;r< logs.length;r++){
-          let rowTotal=0;
-          for(let c=1;c<logs[r].length;c++){
-            this.timesheetTotals[c-1] = (this.timesheetTotals[c-1] || 0 )  + (logs[r][c] || 0 );
-            rowTotal= (+rowTotal)+ (logs[r][c] || 0 );
-          }
-          this.timesheetTotals[this.timesheetTotals.length-1]=rowTotal;
-        }
-        this.timesheetAllTotals[user]=this.timesheetTotals;
-      });
+        this.selectedUser.forEach(user => {
+            const logs = this.timeLogs?.matrix[user];
+            const userTotals = new Array(this.timeLogs.columns.length-1).fill(0); // Initialize with zeros
+
+            for (let r = 0; r < logs.length; r++) {
+                let rowTotal = 0;
+                for (let c = 1; c < logs[r].length; c++) {
+                    const cellValue = parseFloat(logs[r][c]) || 0;
+                    userTotals[c - 1] += cellValue; // Accumulate column sums
+                    rowTotal += cellValue;
+                }
+                userTotals[userTotals.length - 1] += rowTotal; // Accumulate row totals
+            }
+
+            this.timesheetAllTotals[user] = userTotals;
+            console.log(this.timesheetAllTotals[user]);
+        });
     })
-    .catch(error => {
-      this.toast.error('Something went wrong, Please try again.', 'Error!');
-    });
-  }
+   
+
+        .catch(error => {
+            this.toast.error('Something went wrong, Please try again.', 'Error!');
+        });
+}
+
 
   filterData(){
     // Remove 'all' from selectedUser array, if present
@@ -157,13 +208,12 @@ this.exportService.exportToExcel('Admin Timesheet', 'adminTimeSheets', this.time
     return user ? user.name.replace(/\b\w+/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1)?.toLowerCase()) : '';
 
   }
-  getFirstDayOfWeek(){
+  getFirstDayOfMonth() {
     const today = new Date();
-    const dayOfWeek = today.getDay();
-    const diff = today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1); // adjust when day is Sunday
-    const firstDayOfWeek = new Date(today.setDate(diff));
-    this.fromDate = this.datePipe.transform(firstDayOfWeek, 'yyyy-MM-dd');
-  }
+    const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    this.fromDate = this.datePipe.transform(firstDayOfMonth, 'yyyy-MM-dd');
+}
+
 
   dateValidator(control: AbstractControl): { [key: string]: boolean } | null {
     const value = control.value;
