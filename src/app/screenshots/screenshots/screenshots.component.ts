@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, NgForm, Validators, FormArray } from '@angular/forms';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 
@@ -514,8 +514,12 @@ data:any = [];
       }
     }
   }
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.key === 'ArrowLeft') {
+      this.SetPreviousScreen();
+    } else if (event.key === 'ArrowRight') {
+      this.SetNextScreen();
+    }
+  }
 }
-
-
-
-

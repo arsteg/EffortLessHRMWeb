@@ -247,7 +247,7 @@ export class EditTaskComponent implements OnInit {
       taskName: this.updateForm.value.taskName,
       description: this.updateForm.value?.description,
       priority: this.currentTaskProject.priority,
-      project: this.currentTaskProject.project.id,
+      project: this.updateForm.value.project,
       title: this.updateForm.value.taskName,
       status: this.currentTaskProject.status,
       comment: this.updateForm.value.comment

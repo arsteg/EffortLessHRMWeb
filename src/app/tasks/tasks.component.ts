@@ -15,8 +15,6 @@ import { GetTaskService } from '../_services/get-task.service';
 import * as moment from 'moment';
 import { Observable, switchMap } from 'rxjs';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-// import { switchMap } from 'rxjs/operators';
-// import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-tasks',
@@ -161,8 +159,6 @@ export class TasksComponent implements OnInit {
       this.getprojects();
       this.populateUsers();
       this.userId = '';
-
-
     });
     this.setDefaultViewMode()
     this.route.queryParamMap.subscribe((params: ParamMap) => {
@@ -199,7 +195,7 @@ export class TasksComponent implements OnInit {
     this.member = this.currentProfile;
 
     // Add "Me" by default
-    this.members.push({ id: this.member.id, name: "Me", email: this.member.email });
+    this.members.push({ id: this.member?.id, name: "Me", email: this.member?.email });
 
     this.timelog.getTeamMembers(this.member.id).subscribe({
       next: (response: { data: any; }) => {
@@ -788,10 +784,9 @@ export class TasksComponent implements OnInit {
     }
 
     else {
-      console.log("getTask: ", this.role, this.view);
       this.getTasksbyTeam();
     }
-    if (this.currentProfile.id && this.role?.toLowerCase() !== 'admin') {
+    if (this.currentProfile?.id && this.role?.toLowerCase() !== 'admin') {
       this.getCurrentUsersTasks();
     }
   }
