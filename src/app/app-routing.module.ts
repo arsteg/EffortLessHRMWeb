@@ -53,6 +53,7 @@ import { SubtaskComponent } from './tasks/subtask/subtask.component';
 import { productivityAppsApprovalComponent } from './approvals/productivityAppsApproval/productivityAppsApproval.component';
 import { BrowserHistoryComponent } from './browserHistory/browserHistory.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { UserPreferencesComponent } from './settings/userPreferences/userPreferences.Component';
 
 const routes: Routes = [
   // {path:'',component:LayoutComponentComponent, canActivate: [AuthGuard]},
@@ -111,6 +112,7 @@ const routes: Routes = [
       { path: 'SubTask/:taskNumber', component: SubtaskComponent },
       { path: 'productivityAppsApproval', component: productivityAppsApprovalComponent },
       { path: 'browserHistory', component: BrowserHistoryComponent },
+      { path: 'userPreferences', component: UserPreferencesComponent },
     ]
   }
 ]

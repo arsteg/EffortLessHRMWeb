@@ -1,0 +1,78 @@
+<div class="main-content">
+  <div class="container-fluid">
+      <h1 class="pt-0 pb-3 mb-0">User Preferences</h1>
+      <hr/>
+      <div class="row" >
+          <div class="form-group d-flex p-2 justify-content-between">
+              <mat-tab-group (selectedTabChange)="OnCategoryChange($event)">
+                  <mat-tab *ngFor="let category of preferenceCategories" [label]="category.name" [title]="category.description">
+                  </mat-tab>
+                </mat-tab-group>
+          </div>
+      </div>
+
+      <form class="border p-4 rounded bg-light" (ngSubmit)="onSubmit()">
+      <div>
+        <div class="row">
+          <ng-container *ngFor="let option of userPreferences; let i = index">
+            <div class="col-md-3">
+              <div class="form-group">
+                <input *ngIf="option.dataType === 'string' || option.dataType === 'number'"
+                [type]="option.dataType"
+                class="form-control"
+                [id]="option.name"
+                [placeholder]="option.label"
+                [name]="option.name"
+                [(ngModel)]="option.preferenceValue"
+                required
+                (change)="updateFormValidity()"
+                [ngClass]="{ 'is-invalid': !validateOption(option) }"/>
+              <div *ngIf="!validateOption(option)" class="invalid-feedback">
+                Invalid {{ option.label }}!
+              </div>
+                <input *ngIf="option.dataType === 'date'"
+                 [type]="option.dataType"
+                 class="form-control"
+                 [id]="option.name"
+                 [name]="option.name"
+                 [(ngModel)]="option.preferenceValue"
+                 [ngClass]="{ 'is-invalid': !validateOption(option) }"/>
+                 <div *ngIf="!validateOption(option)" class="invalid-feedback">
+                  Invalid {{ option.label }}!
+                </div>
+                <input *ngIf="option.dataType === 'time'" type="time" class="form-control" [id]="option.name" [name]="option.name"/>
+
+                <div *ngIf="option.dataType === 'boolean'" class="form-check">
+                  <input type="checkbox"
+                  class="form-check-input"
+                  [id]="option.name"
+                  [name]="option.name"
+                  (change)="updateFormValidity()"
+                  [(ngModel)]="option.preferenceValue"
+                  [ngClass]="{ 'is-invalid': !validateOption(option) }"/>
+                  <div *ngIf="!validateOption(option)" class="invalid-feedback">
+                    Invalid {{ option.label }}!
+                  </div>
+                  <label class="form-check-label" [for]="option.name" [title]="option.description">{{option.label}}</label>
+                </div>
+
+
+                <select *ngIf="option.dataType === 'list'" class="form-control" [id]="option.name" [name]="option.name">
+                  <!-- <option *ngFor="let item of [1,2,3,5]]" [value]="item.value">{{ item.label }}</option> -->
+                </select>
+              </div>
+            </div>
+            <!-- Add a new row after every 4 columns -->
+            <div *ngIf="(i + 1) % 4 === 0" class="w-100"></div>
+          </ng-container>
+        </div>
+      </div>
+      <div class="w-100"></div>
+      <div class="d-flex  justify-content-end mt-3">
+          <div>
+            <button mat-raised-button color="primary" data-bs-dismiss="modal" type="submit" [disabled]="!formValid">Save</button>
+          </div>
+      </div>
+    </form>
+  </div>
+</div>

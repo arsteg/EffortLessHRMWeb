@@ -504,12 +504,12 @@ export const SideBarAdminMenu = [
         id: '162',
         title: 'Generic Settings',
         url: '/genericSettings'
-      }
-      // {
-      //   id: '162',
-      //   title: 'Profile Settings',
-      //   url: '/profileSettings'
-      // },
+      },
+      {
+        id: '163',
+        title: 'User Preferences',
+        url: '/userPreferences'
+      },
       // {
       //   id: '163',
       //   title: 'Workspace',
@@ -827,6 +827,13 @@ export const SideBarUserMenu = [
     id: '16',
     title: 'Settings',
     icon: 'fa fa-wrench',
+    subMenu:[
+      {
+        id: '161',
+        title: 'User Preferences',
+        url: '/userPreferences'
+      },
+    ]
   }
 
 ];
