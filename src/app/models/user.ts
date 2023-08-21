@@ -53,7 +53,7 @@ export class signup{
   phone: Number;
   extraDetails: String;
   isSuperAdmin: Boolean;
-  status: String;zation
+  status: String;
   photo: String;
   active: Boolean;
   createdBy: String;
@@ -66,4 +66,13 @@ export class changeUserPassword{
   password: string;
   passwordConfirm: string;
   id:string;
+}
+
+export class webSignup{
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  passwordConfirm: string;
+  companyName: string
 }

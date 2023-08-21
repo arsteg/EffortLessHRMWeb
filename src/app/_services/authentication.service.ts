@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { signup, User, changeUserPassword } from '../models/user';
+import { signup, User, changeUserPassword, webSignup } from '../models/user';
 import { Router } from '@angular/router';
 
 @Injectable({ providedIn: 'root' })
@@ -114,6 +114,14 @@ isLoggedIn(): Promise<boolean> {
   }
   signup(signup: signup): Observable<User> {
     return this.http.post<any>(`${environment.apiUrlDotNet}/users/signup`, signup, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    });
+
+  }
+  webSignup(webSignup: webSignup): Observable<User> {
+    return this.http.post<any>(`${environment.apiUrlDotNet}/users/websignup`, webSignup, {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
       })

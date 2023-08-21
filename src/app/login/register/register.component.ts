@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
-import {signup} from  '../../models/user'
+import { signup, webSignup } from '../../models/user'
 import { NotificationService } from '../../_services/notification.service'
-import { Router,ActivatedRoute  } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -12,32 +12,30 @@ import { Router,ActivatedRoute  } from '@angular/router';
 })
 
 export class RegisterComponent implements OnInit {
-loading=false;
-user:signup= new signup();
-@ViewChild('f') registerForm: NgForm;
-constructor( private authenticationService: AuthenticationService,private router: Router,
-    private notifyService : NotificationService) { }
+  loading = false;
+  user: webSignup = new webSignup();
+  @ViewChild('f') registerForm: NgForm;
+  constructor(private authenticationService: AuthenticationService, private router: Router,
+    private notifyService: NotificationService) { }
 
   ngOnInit(): void {
   }
 
-  onSubmit(){
+  onSubmit() {
     this.loading = true;
-    this.user.firstName=this.registerForm.value.firstName;
-    this.user.lastName=this.registerForm.value.lastName;
-    this.user.email=this.registerForm.value.email;
-    this.user.password=this.registerForm.value.password;
-    this.user.passwordConfirm=this.registerForm.value.passwordConfirm;
-    this.user.companyId="6281e9be9ba15a372c35b434";
-    this.user.role="627e16f8722cd08ad4875526";
-    if(this.user.password!==this.user.passwordConfirm)
-    {
-      this.notifyService.showWarning("Passwords don't match","warning");
+    this.user.firstName = this.registerForm.value.firstName;
+    this.user.lastName = this.registerForm.value.lastName;
+    this.user.email = this.registerForm.value.email;
+    this.user.password = this.registerForm.value.password;
+    this.user.passwordConfirm = this.registerForm.value.passwordConfirm;
+    this.user.companyName = this.registerForm.value.companyName;
+    if (this.user.password !== this.user.passwordConfirm) {
+      this.notifyService.showWarning("Passwords don't match", "warning");
       return;
     }
-    this.authenticationService.signup(this.user).subscribe(
+    this.authenticationService.webSignup(this.user).subscribe(
       data => {
-         setTimeout(() => {
+        setTimeout(() => {
           this.notifyService.showSuccess("User Created Successfully", "Success")
           this.router.navigate(['/login']);
           this.loading = false;
