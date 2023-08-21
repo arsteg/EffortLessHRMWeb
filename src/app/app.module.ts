@@ -72,6 +72,7 @@ import { ApprovalsModule } from './approvals/approvals.module';
 import { QuillModule } from 'ngx-quill';
 import { BrowserHistoryModule } from './browserHistory/browserHistory.module';
 import { CommonComponentsModule } from './common/commonComponents.module';
+import { SettingsModule } from './settings/settings.Module';
 
 
 @NgModule({
@@ -147,6 +148,7 @@ import { CommonComponentsModule } from './common/commonComponents.module';
     ApprovalsModule,
     BrowserHistoryModule,
     CommonComponentsModule,
+    SettingsModule,
     QuillModule.forRoot()
   ],
   schemas: [
