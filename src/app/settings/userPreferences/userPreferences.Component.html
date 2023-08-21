@@ -27,7 +27,7 @@
                 required
                 (change)="updateFormValidity()"
                 [ngClass]="{ 'is-invalid': !validateOption(option) }"/>
-              <div *ngIf="!validateOption(option)" class="invalid-feedback">
+              <div *ngIf="!validateOption(option) && (option.dataType === 'string' || option.dataType === 'number')" class="invalid-feedback">
                 Invalid {{ option.label }}!
               </div>
                 <input *ngIf="option.dataType === 'date'"
@@ -37,7 +37,7 @@
                  [name]="option.name"
                  [(ngModel)]="option.preferenceValue"
                  [ngClass]="{ 'is-invalid': !validateOption(option) }"/>
-                 <div *ngIf="!validateOption(option)" class="invalid-feedback">
+                 <div *ngIf="!validateOption(option) && option.dataType === 'date'" class="invalid-feedback">
                   Invalid {{ option.label }}!
                 </div>
                 <input *ngIf="option.dataType === 'time'" type="time" class="form-control" [id]="option.name" [name]="option.name"/>
@@ -47,15 +47,11 @@
                   class="form-check-input"
                   [id]="option.name"
                   [name]="option.name"
-                  (change)="updateFormValidity()"
-                  [(ngModel)]="option.preferenceValue"
+                  [checked]="option.preferenceValue === 'true'"
+                  (change)="updateFormValidityBool($event)"
                   [ngClass]="{ 'is-invalid': !validateOption(option) }"/>
-                  <div *ngIf="!validateOption(option)" class="invalid-feedback">
-                    Invalid {{ option.label }}!
-                  </div>
                   <label class="form-check-label" [for]="option.name" [title]="option.description">{{option.label}}</label>
                 </div>
-
 
                 <select *ngIf="option.dataType === 'list'" class="form-control" [id]="option.name" [name]="option.name">
                   <!-- <option *ngFor="let item of [1,2,3,5]]" [value]="item.value">{{ item.label }}</option> -->

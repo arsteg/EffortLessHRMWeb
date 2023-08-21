@@ -73,8 +73,20 @@ err => {
     const checked = eventtype.target.checked;
   }
 
+  updateFormValidityBool(event: any){
+    this.userPreferences?.forEach(option =>
+      {
+        if(option.name == event.target.name){
+          option.preferenceValue = event.target.checked ? 'true' : 'false';
+        }
+      }
+    );
+
+    this.formValid = this.userPreferences?.every(option =>
+      this.validateOption(option)
+    );
+  }
   updateFormValidity() {
-    // Check the form's validity
     this.formValid = this.userPreferences?.every(option =>
       this.validateOption(option)
     );
