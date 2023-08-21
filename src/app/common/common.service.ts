@@ -15,6 +15,7 @@ export class CommonService {
   private currentProfileSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   private currentProfileRoleSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   private jwtToken: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  private filterParams: any = {};
 
   constructor(private userService: UserService,
     private projectService: ProjectService,
@@ -95,7 +96,11 @@ export class CommonService {
     return this.jwtToken;
   }
 
-  // getAuthTokenAndInfo(): Observable<any> {
-  //   return this.http.get<any>(`${yourApiUrl}`, { withCredentials: true });
-  // }
+  setFilters(params: any) {
+    this.filterParams = params;
+  }
+
+  getFilters() {
+    return this.filterParams;
+  }
 }

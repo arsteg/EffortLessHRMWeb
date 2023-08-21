@@ -93,7 +93,7 @@ export class TasksComponent implements OnInit {
   showEditor: boolean = false;
   selectedPriority: any;
   selectedStatus: string = '';
-
+  storedFilters: any;
   constructor(
     private tasksService: TasksService,
     private fb: FormBuilder,
@@ -154,12 +154,38 @@ export class TasksComponent implements OnInit {
       this.allAssignee = result && result.data && result.data.data;
     });
     this.firstLetter = this.commonservice.firstletter;
+    this.storedFilters = this.commonservice.getFilters();
+    if (this.storedFilters) {
+      this.userId = this.storedFilters.userId;
+      this.projectId = this.storedFilters.projectId
+    }
+
     this.getCurrentUser().subscribe(() => {
-      this.getTasks();
-      this.getprojects();
-      this.populateUsers();
-      this.userId = '';
+      if (this.storedFilters) {
+        this.getTasks();
+        this.getprojects();
+        this.populateUsers();
+        this.userId = this.storedFilters.userId;
+        this.projectId = this.storedFilters.projectId;
+
+        if (this.userId) {
+          this.getTaskByIds();
+        }
+        if (this.projectId) {
+          this.getTasksByProject();
+        }
+        if (this.projectId && this.userId) {
+          this.authService.getUserTaskListByProject(this.userId, this.projectId, this.skip, this.next).subscribe(
+            (response: any) => {
+              this.totalRecords = response;
+              this.tasks = response.taskList;
+              this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
+            });
+
+        }
+      }
     });
+
     this.setDefaultViewMode()
     this.route.queryParamMap.subscribe((params: ParamMap) => {
       this.isListView = params.get('view') === 'list';
@@ -228,6 +254,13 @@ export class TasksComponent implements OnInit {
   navigateToEditPage(task: any) {
     const taskId = task.id.toString();
     const p_Id = task.parentTask;
+
+    const currentFilters = {
+      userId: this.userId,
+      projectId: this.projectId
+    };
+    console.log(currentFilters)
+    this.commonservice.setFilters(currentFilters);
 
     const navigationExtras: NavigationExtras = {
       queryParams: { taskId: taskId }
@@ -355,7 +388,6 @@ export class TasksComponent implements OnInit {
             this.tasks = response.data.taskList;
           }
           this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
-          console.log(this.currentPage)
         },
         (error: any) => {
           console.log("Error!!!")
@@ -531,6 +563,7 @@ export class TasksComponent implements OnInit {
 
 
   onProjectSelectionChange() {
+
     if ((this.view === 'admin' || this.role?.toLowerCase() === 'admin') && (!this.userId && !this.currentProfile.id) && this.projectId === 'ALL') {
       this.getTasks();
       console.log("from project select")
@@ -557,7 +590,7 @@ export class TasksComponent implements OnInit {
         });
       }
       else this.getTasks();
-      console.log("from project select")
+
 
     }
   }

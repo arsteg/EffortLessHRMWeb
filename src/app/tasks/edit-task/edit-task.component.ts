@@ -114,12 +114,14 @@ export class EditTaskComponent implements OnInit {
 
   }
   ngOnInit(): void {
+    this.commonService.getFilters();
     this.getprojects();
     this.firstLetter = this.commonService.firstletter;
     this.route.queryParams.subscribe(params => {
       this.taskId = params['taskId'];
       this.getTaskAttachments();
       this.getTask(this.taskId);
+     
       this.tasksService.getSubTask(this.taskId).subscribe((response: any) => {
         this.subTask = response && response.data && response.data['taskList']
       })
