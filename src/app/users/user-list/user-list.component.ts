@@ -54,7 +54,8 @@ export class UserListComponent implements OnInit {
       state: ['',Validators.pattern('[A-Za-z]+')],
       city: ['', Validators.pattern('[A-Za-z]+')],
       phone: ['', Validators.pattern('[0-9]{10}')],
-      address: ['']
+      address: [''],
+      role: ['']
     });
   }
 
