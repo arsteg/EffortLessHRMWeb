@@ -194,7 +194,6 @@ export class TasksComponent implements OnInit {
   }
   getCurrentUsersTasks() {
     if (this.currentProfile.id) {
-      console.log(this.currentProfile.id)
       this.tasksService.getTaskByUser(this.currentProfile.id, this.skip, this.next).subscribe(response => {
         this.tasks = response && response.data && response.data['taskList'];
         this.totalRecords = response && response.data;
@@ -228,8 +227,9 @@ export class TasksComponent implements OnInit {
         const hasSubordinates = response.data && response.data.length > 0;
 
         if (hasSubordinates) {
-          // Add "ALL Users" only if there are subordinates
+          // Add "ALL Users" and set userId to an empty string
           this.members.unshift({ id: '', name: 'ALL Users', email: '' });
+          this.userId = ''; // Set userId to empty string for "ALL Users"
         }
 
         this.timelog.getusers(response.data).subscribe({
@@ -251,6 +251,7 @@ export class TasksComponent implements OnInit {
     });
   }
 
+
   navigateToEditPage(task: any) {
     const taskId = task.id.toString();
     const p_Id = task.parentTask;
@@ -259,7 +260,6 @@ export class TasksComponent implements OnInit {
       userId: this.userId,
       projectId: this.projectId
     };
-    console.log(currentFilters)
     this.commonservice.setFilters(currentFilters);
 
     const navigationExtras: NavigationExtras = {
@@ -286,7 +286,7 @@ export class TasksComponent implements OnInit {
     });
 
   }
-  async getTasksbyTeam() {
+  getTasksbyTeam() {
     this.tasksService.getTasklistbyTeam(this.skip, this.next).subscribe((response: any) => {
       this.totalRecords = response && response.data
       this.tasks = response && response.data && response.data['taskList'];
@@ -305,7 +305,6 @@ export class TasksComponent implements OnInit {
       }
     }
     else if (this.projectId && this.userId) {
-      console.log(this.projectId, this.userId)
       this.authService.getUserTaskListByProject(this.userId, this.projectId, this.skip, this.next).subscribe(
         (response: any) => {
           this.totalRecords = response;
@@ -407,15 +406,6 @@ export class TasksComponent implements OnInit {
       console.log("Error!!!");
     }
   }
-
-
-  // getUsersAndProject(){
-  //   this.authService.getUserTaskListByProject(this.userId, this.projectId, this.skip, this.next).subscribe(
-  //     (response: any) => {
-  //       this.tasks = response && response.data;
-  //       this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
-  //     });
-  // }
   getUsersByProject() {
     const selectedProject = this.addForm.value.project;
     this.projectService.getprojectUser(selectedProject).subscribe((res: any) => {
@@ -471,9 +461,7 @@ export class TasksComponent implements OnInit {
               (response) => {
                 this.task = response;
                 const newTask = this.task.data;
-                console.log(this.task.data.newTask.taskNumber)
                 this.tasks.push(newTask);
-                console.log("New Task:", newTask);
                 if (this.userId && this.projectId) {
                   this.getTasksByProject()
                 }
@@ -505,6 +493,7 @@ export class TasksComponent implements OnInit {
           }
           else if
             (!this.userId && !this.projectId) {
+
             this.listAllTasks();
           }
           else {
@@ -567,7 +556,6 @@ export class TasksComponent implements OnInit {
 
     if ((this.view === 'admin' || this.role?.toLowerCase() === 'admin') && (!this.userId && !this.currentProfile.id) && this.projectId === 'ALL') {
       this.getTasks();
-      console.log("from project select")
     } else if (this.projectId !== 'ALL') {
       this.skip = '0';
       this.getTasksByProject();
@@ -616,12 +604,13 @@ export class TasksComponent implements OnInit {
 
     if (!this.userId || this.userId === '') {
       this.skip = '0';
-      if (this.view === 'admin' || this.role?.toLowerCase() === 'admin') {
-        this.listAllTasks();
-      }
-      else {
+      if (this.view === 'user') {
         this.getTasksbyTeam();
       }
+      else if (this.view === 'admin' || this.role?.toLowerCase() === 'admin') {
+        this.listAllTasks();
+      }
+
     }
     else {
       this.skip = '0';
@@ -803,21 +792,11 @@ export class TasksComponent implements OnInit {
   }
 
   getTasks() {
-    // if(this.currentProfile.id){
-    //   console.log(this.currentProfile.id)
-    //   this.tasksService.getTaskByUser(this.currentProfile.id, this.skip, this.next).subscribe(response => {
-    //     this.tasks = response && response.data && response.data['taskList'];
-    //     this.totalRecords = response && response.data;
-    //     this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
-    //     this.tasks = this.tasks.filter(task => task !== null);
-    //   });
-    // }
-    // else
     if ((this.view === 'admin') && (this.role?.toLowerCase() === 'admin' || this.role == null) || (this.role?.toLowerCase() === 'admin' && this.view == null)) {
       this.listAllTasks();
     }
 
-    else {
+    if (this.view === 'user' || this.role?.toLowerCase() === 'user') {
       this.getTasksbyTeam();
     }
     if (this.currentProfile?.id && this.role?.toLowerCase() !== 'admin') {

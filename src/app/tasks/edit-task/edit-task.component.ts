@@ -128,8 +128,7 @@ export class EditTaskComponent implements OnInit {
       })
     });
     this.getTasks();
-    // this.loading = true;
-    // this.loadTask();
+    
   }
 
 

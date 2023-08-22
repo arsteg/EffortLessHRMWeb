@@ -658,86 +658,87 @@
                 </div>
             </div>
         </div>
-
-
-        <div *ngIf="loading" class="text-center mt-5">
-            <a [routerLink]="['/tasks']">
-                <button class="btn btn-outline-primary shadow">
-                    <span class="bi bi-arrow-left">Back</span>
-                </button>
-            </a>
-            <h2 class="mt-2">Task is being loaded...</h2>
-        </div>
-        <div *ngIf="currentTaskProject === null " class="text-center mt-5">
-            <a [routerLink]="['/tasks']">
-                <button class="btn btn-outline-primary shadow">
-                    <span class="bi bi-arrow-left">Back</span>
-                </button>
-            </a>
-            <h2 class="mt-2">This task no longer exists.</h2>
-        </div>
-
     </div>
-    <!-- </div> -->
 
-    <!-- Delete -->
-    <div class="modal" id="deleteModal">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div class="d-flex justify-content-between">
-                        <div class="">
-                            <h3 class="modal-title text-start">Delete Task</h3>
-                        </div>
-                        <div class="">
-                            <button type="button" class="btn-close text-end" data-bs-dismiss="modal"></button>
-                        </div>
+
+<div *ngIf="loading && !currentTaskProject" class="text-center mt-5">
+    <a [routerLink]="['/tasks']">
+        <button class="btn btn-outline-primary shadow">
+            <span class="bi bi-arrow-left">Back</span>
+        </button>
+    </a>
+    <h2 class="mt-2">Task is being loaded...</h2>
+</div>
+<div *ngIf="currentTaskProject === null " class="text-center mt-5">
+    <a [routerLink]="['/tasks']">
+        <button class="btn btn-outline-primary shadow">
+            <span class="bi bi-arrow-left">Back</span>
+        </button>
+    </a>
+    <h2 class="mt-2">This task no longer exists.</h2>
+</div>
+</div>
+
+
+
+<!-- Delete -->
+<div class="modal" id="deleteModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="d-flex justify-content-between">
+                    <div class="">
+                        <h3 class="modal-title text-start">Delete Task</h3>
                     </div>
-                    <hr class="mt-0">
-                    <div class="row">
-                        <div class="col-md-12 text-center">
-                            <h3>Do you really want to Delete?</h3>
-                        </div>
-
+                    <div class="">
+                        <button type="button" class="btn-close text-end" data-bs-dismiss="modal"></button>
                     </div>
-                    <div class="d-flex justify-content-between m-3">
-                        <div>
+                </div>
+                <hr class="mt-0">
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <h3>Do you really want to Delete?</h3>
+                    </div>
 
-                            <button mat-raised-button class="mx-2" data-bs-dismiss="modal" type="button">Cancel</button>
-                        </div>
-                        <div>
-                            <button mat-raised-button color="primary" class="" (click)="deleteTask()"
-                                data-bs-dismiss="modal" type="submit">Delete</button>
-                        </div>
+                </div>
+                <div class="d-flex justify-content-between m-3">
+                    <div>
+
+                        <button mat-raised-button class="mx-2" data-bs-dismiss="modal" type="button">Cancel</button>
+                    </div>
+                    <div>
+                        <button mat-raised-button color="primary" class="" (click)="deleteTask()"
+                            data-bs-dismiss="modal" type="submit">Delete</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="modal fade" role="dialog" id="bigAttachmentModal" tabindex="0" aria-labelledby="bigAttachmentModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <button type="button" class="btn-close m-3" data-bs-dismiss="modal" aria-label="Close"></button><br>
-                <div class="d-flex"> <span class="bi bi-image text-warning px-3" style="font-size: 40px;"></span>
-                    <small>{{selectedAttachment?.attachmentName }}<br>image - {{
-                        convertBytesToKB(selectedAttachment?.attachmentSize) }}</small>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <div class="carousel-item active text-center">
-                                        <img class="modal-image big-img w-75" [src]="selectedAttachment?.url" />
-                                    </div>
+<div class="modal fade" role="dialog" id="bigAttachmentModal" tabindex="0" aria-labelledby="bigAttachmentModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <button type="button" class="btn-close m-3" data-bs-dismiss="modal" aria-label="Close"></button><br>
+            <div class="d-flex"> <span class="bi bi-image text-warning px-3" style="font-size: 40px;"></span>
+                <small>{{selectedAttachment?.attachmentName }}<br>image - {{
+                    convertBytesToKB(selectedAttachment?.attachmentSize) }}</small>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="carousel-item active text-center">
+                                    <img class="modal-image big-img w-75" [src]="selectedAttachment?.url" />
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
+
         </div>
     </div>
+</div>
