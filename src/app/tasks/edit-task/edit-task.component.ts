@@ -74,7 +74,8 @@ export class EditTaskComponent implements OnInit {
   showEditor: boolean = false;
   @ViewChild('editor') editor: any;
   assignee: any;
-
+  loading: boolean = true; // Initialize loading state
+  taskDeleted: boolean = false;
 
   constructor(private fb: FormBuilder,
     private tasksService: TasksService,
@@ -121,12 +122,14 @@ export class EditTaskComponent implements OnInit {
       this.taskId = params['taskId'];
       this.getTaskAttachments();
       this.getTask(this.taskId);
-     
+
       this.tasksService.getSubTask(this.taskId).subscribe((response: any) => {
         this.subTask = response && response.data && response.data['taskList']
       })
     });
     this.getTasks();
+    // this.loading = true;
+    // this.loadTask();
   }
 
 
@@ -140,6 +143,9 @@ export class EditTaskComponent implements OnInit {
         this.tasks = res;
         this.assignee = this.tasks.data.newTaskUserList;
         this.currentTaskProject = this.tasks.data.task;
+        if (this.currentTaskProject === null) {
+          this.loading = false;
+        }
         this.projectService.getprojectUser(this.currentTaskProject.project.id).subscribe((res: any) => {
           this.projectUser = res && res.data && res.data['projectUserList']
         });
@@ -169,12 +175,12 @@ export class EditTaskComponent implements OnInit {
     return '';
   }
   getCurrentUserTasks() {
-    this.tasksService.getTaskByUser(this.currentUser.id, this.skip, this.next).subscribe(response => {
-      this.taskList = response && response.data && response.data['taskList'];
-      this.totalRecords = response && response.data;
-      this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
-      this.taskList = this.taskList.filter(taskList => taskList !== null);
-    })
+      this.tasksService.getTaskByUser(this.currentUser.id, this.skip, this.next).subscribe(response => {
+        this.taskList = response && response.data && response.data['taskList'];
+        this.totalRecords = response && response.data;
+        this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
+        this.taskList = this.taskList.filter(taskList => taskList !== null);
+      })
   }
   nextPagination() {
     const newSkip = (parseInt(this.skip) + parseInt(this.next)).toString();
@@ -255,8 +261,8 @@ export class EditTaskComponent implements OnInit {
       comment: this.updateForm.value.comment
     }
     this.tasksService.updateTask(this.tasks.data.task.id, updateTask).subscribe(response => {
-     this.showEditor = false;
-      this.toast.success('Existing Task Updated', 'Successfully Updated!')
+      this.showEditor = false;
+      this.toast.success('Successfully Updated!', `Task Number: ${this.tasks.data.task.taskNumber}`)
     },
       err => {
         this.toast.error('Task could not be updated', 'ERROR!')
@@ -298,15 +304,24 @@ export class EditTaskComponent implements OnInit {
         this.toast.error('Task could not be updated', 'ERROR!')
       })
   }
+  
+
   deleteTask() {
-    this.tasksService.deleteTask(this.taskId).subscribe(response => {
-      this.ngOnInit();
-      this.toast.success('Successfully Deleted!')
-    },
+    this.loading = true; // Set loading to true
+
+    this.tasksService.deleteTask(this.taskId).subscribe(
+      response => {
+        this.ngOnInit();
+        this.toast.success('Successfully Deleted!');
+      
+      },
       err => {
-        this.toast.error('Task Can not be Deleted', 'Error!');
-      })
+        this.toast.error('Task Cannot Be Deleted', 'Error!');
+        this.loading = false; // Set loading back to false after failed deletion
+      }
+    );
   }
+
 
   onFileSelect(event) {
     const files: FileList = event.target.files;
@@ -512,10 +527,10 @@ export class EditTaskComponent implements OnInit {
 
   subTaskDetail(subTask: any) {
     const taskId = subTask.id.toString();
-      const navigationExtras: NavigationExtras = {
-        queryParams: { taskId: taskId }
-      };
-      this.router.navigate(['/SubTask', subTask.taskNumber], navigationExtras);
+    const navigationExtras: NavigationExtras = {
+      queryParams: { taskId: taskId }
+    };
+    this.router.navigate(['/SubTask', subTask.taskNumber], navigationExtras);
   }
 
   onSubtaskIdChanged(subtaskId: string) {

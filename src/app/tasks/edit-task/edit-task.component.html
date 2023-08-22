@@ -235,13 +235,14 @@
                                         <!-- Update project -->
                                         <div class="mt-3">
                                             <span for="project" class="text-start">Project</span>
-                                        <select class="custom-select mb-3 p-2" formControlName="project"  [(ngModel)]="currentTaskProject?.project.id">
-                                            <option [value]="project.id" *ngFor="let project of projectList">
-                                                {{project?.projectName}}
-                                            </option>
-                                        </select>
+                                            <select class="custom-select mb-3 p-2" formControlName="project"
+                                                [(ngModel)]="currentTaskProject?.project.id">
+                                                <option [value]="project.id" *ngFor="let project of projectList">
+                                                    {{project?.projectName}}
+                                                </option>
+                                            </select>
                                         </div>
-                                       
+
 
                                         <div class="ms-3 mt-2">
                                             <i class="bi bi-three-dots-vertical actions" data-bs-toggle="dropdown"
@@ -658,12 +659,24 @@
             </div>
         </div>
 
-        <div *ngIf="tasks?.data?.task == null" class="text-center mt-5">
-            <a href="" [routerLink]="['/tasks']"> <button class="btn btn-outline-primary shadow"><span
-                        class=" bi bi-arrow-left ">
-                        Back</span></button></a>
-            <h2 class="mt-2">This Task No Longer To show !!!</h2>
+
+        <div *ngIf="loading" class="text-center mt-5">
+            <a [routerLink]="['/tasks']">
+                <button class="btn btn-outline-primary shadow">
+                    <span class="bi bi-arrow-left">Back</span>
+                </button>
+            </a>
+            <h2 class="mt-2">Task is being loaded...</h2>
         </div>
+        <div *ngIf="currentTaskProject === null " class="text-center mt-5">
+            <a [routerLink]="['/tasks']">
+                <button class="btn btn-outline-primary shadow">
+                    <span class="bi bi-arrow-left">Back</span>
+                </button>
+            </a>
+            <h2 class="mt-2">This task no longer exists.</h2>
+        </div>
+
     </div>
     <!-- </div> -->
 

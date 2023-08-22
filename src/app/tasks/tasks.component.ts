@@ -471,6 +471,7 @@ export class TasksComponent implements OnInit {
               (response) => {
                 this.task = response;
                 const newTask = this.task.data;
+                console.log(this.task.data.newTask.taskNumber)
                 this.tasks.push(newTask);
                 console.log("New Task:", newTask);
                 if (this.userId && this.projectId) {
@@ -483,7 +484,7 @@ export class TasksComponent implements OnInit {
                   startDate: moment().format('YYYY-MM-DD'),
                   endDate: moment().format('YYYY-MM-DD')
                 });
-                this.toast.success('New Task Successfully Created!');
+                this.toast.success('New Task Successfully Created!', `Task Number: ${newTask.newTask.taskNumber}`);
               },
               (err) => {
                 this.toast.error('Task Can not be Created', 'Error!');
@@ -513,7 +514,7 @@ export class TasksComponent implements OnInit {
             startDate: moment().format('YYYY-MM-DD'),
             endDate: moment().format('YYYY-MM-DD')
           });
-          this.toast.success('New Task Successfully Created!');
+          this.toast.success('New Task Successfully Created!', `Task Number: ${newTask.newTask.taskNumber}`);
         },
         (err) => {
           this.toast.error('Task Can not be Created', 'Error!');
