@@ -3,24 +3,16 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="">
-                    <div class="d-flex py-2 align-items-baseline">
+                    <div class="d-flex py-2 align-items-baseline border-bottom mb-1">
                         <h1 class="me-2">Tasks: {{tasks?.length}}</h1>
 
-                        <!-- <mat-form-field appearance="outline" class="w-25 mx-1" style="height: 20px">
-                            <mat-label>Select User</mat-label>
-                            <mat-select [(ngModel)]="userId">
-                                <mat-option *ngFor="let member of members" [value]="member.id"
-                                    class="border-left user-filter" (click)="onMemberSelectionChange(userId)"
-                                    [selected]="selectedUser?.includes(member?.id)">
-                                    {{ member.name | titlecase }}
-                                </mat-option>
-                            </mat-select>
-                        </mat-form-field> -->
                         <mat-form-field appearance="outline" class="w-25 mx-1" style="height: 20px">
                             <mat-label>Select User</mat-label>
                             <mat-select [(ngModel)]="userId">
                               <mat-option *ngFor="let member of members" [value]="member.id"
-                                          class="border-left user-filter" (click)="onMemberSelectionChange(userId)">
+                                          class="border-left user-filter"
+                                          [selected]="selectedUser?.includes(member?.id)"
+                                           (click)="onMemberSelectionChange(userId)">
                                 {{ member.name | titlecase }}
                               </mat-option>
                             </mat-select>
@@ -78,38 +70,38 @@
                         <div class="d-flex h-25 ms-auto">
                             <input class="form-control search" type="text" placeholder="Search..."
                                 [(ngModel)]="searchText" name="searchText" aria-label="default input example" style="border: 1px solid #d7d9dc;
-                                border-radius: 5px;">
+                                border-radius: 5px;
+                                box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12)">
                             <button mat-raised-button color="primary" class="ms-5" style="
                           padding: 5px 35px 0 20px;" data-bs-toggle="modal" data-bs-target="#addModal">Add
                                 New</button>
                         </div>
                     </div>
-                    <hr>
 
                     <ng-container>
                         <div class="d-flex justify-content-end align-items-center" style="margin-bottom: -30px;">
                             Items per page
-                            <select style="width: 80px;" class="form-select form-select-sm mx-2"
+                            <select style="width: 80px;" class="page form-select form-select-sm mx-2"
                                 [(ngModel)]="recordsPerPage" (ngModelChange)="updateRecordsPerPage()">
-                                <option *ngFor="let option of recordsPerPageOptions" [value]="option">{{ option }}
+                                <option class="page" *ngFor="let option of recordsPerPageOptions" [value]="option">{{ option }}
                                 </option>
                             </select>
 
-                            <span class="ml-2">{{ currentPage }} - {{ getTotalPages() }} of {{ totalRecords?.taskCount
+                            <span class="ml-2 page">{{ currentPage }} - {{ getTotalPages() }} of {{ totalRecords?.taskCount
                                 }}</span>
                             <!-- previous page -->
                             <span (click)="firstPagePagination()"
-                                class="bi bi-chevron-bar-left btn-lg btn-outline-primary" title="First Page"
+                                class="page bi bi-chevron-bar-left btn-lg btn-outline-primary" title="First Page"
                                 [class.disabled]="skip === '0' || currentPage === 1"></span>
 
-                            <span (click)="previousPagination()" class="bi bi-chevron-left btn-lg btn-outline-primary"
+                            <span (click)="previousPagination()" class="page bi bi-chevron-left btn-lg btn-outline-primary"
                                 title="Previous Page" [class.disabled]="skip === '0' || currentPage === 1"></span>
                             <!-- next page -->
-                            <span (click)="nextPagination()" class="bi bi-chevron-right btn-lg btn-outline-primary"
+                            <span (click)="nextPagination()" class="page bi bi-chevron-right btn-lg btn-outline-primary"
                                 title="Next Page" [class.disabled]="currentPage === getTotalPages()"></span>
 
                             <span (click)="lastPagePagination()"
-                                class="bi bi-chevron-bar-right btn-lg btn-outline-primary" title="Last Page"
+                                class="page bi bi-chevron-bar-right btn-lg btn-outline-primary" title="Last Page"
                                 [class.disabled]="currentPage === getTotalPages()"></span>
                         </div>
                     </ng-container>

@@ -527,3 +527,6 @@ select {
 .neutral {
   color: rgb(122, 163, 229);
 }
+.page{
+  cursor: pointer;
+}

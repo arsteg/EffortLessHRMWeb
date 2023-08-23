@@ -161,20 +161,23 @@ export class TasksComponent implements OnInit {
     }
 
     this.getCurrentUser().subscribe(() => {
-      if (this.storedFilters) {
-        this.getTasks();
+    
+        
         this.getprojects();
         this.populateUsers();
+     
         this.userId = this.storedFilters.userId;
         this.projectId = this.storedFilters.projectId;
-
-        if (this.userId) {
+        if (this.storedFilters) {
+        if (this.storedFilters.userId) {
           this.getTaskByIds();
         }
-        if (this.projectId) {
+        if (this.storedFilters.projectId) {
+          console.log(this.projectId)
           this.getTasksByProject();
         }
-        if (this.projectId && this.userId) {
+        if (this.storedFilters.projectId && this.storedFilters.userId) {
+          console.log(this.storedFilters.projectId , this.storedFilters.userId)
           this.authService.getUserTaskListByProject(this.userId, this.projectId, this.skip, this.next).subscribe(
             (response: any) => {
               this.totalRecords = response;
@@ -182,6 +185,9 @@ export class TasksComponent implements OnInit {
               this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
             });
 
+        }
+        else{
+          this.getTasks();
         }
       }
     });
@@ -227,9 +233,9 @@ export class TasksComponent implements OnInit {
         const hasSubordinates = response.data && response.data.length > 0;
 
         if (hasSubordinates) {
-          // Add "ALL Users" and set userId to an empty string
+          // Add "ALL Users" only if there are subordinates
           this.members.unshift({ id: '', name: 'ALL Users', email: '' });
-          this.userId = ''; // Set userId to empty string for "ALL Users"
+          // this.userId= ''
         }
 
         this.timelog.getusers(response.data).subscribe({
@@ -250,7 +256,6 @@ export class TasksComponent implements OnInit {
       }
     });
   }
-
 
   navigateToEditPage(task: any) {
     const taskId = task.id.toString();
@@ -298,6 +303,7 @@ export class TasksComponent implements OnInit {
     this.currentPage = 1;
     if ((!this.userId || !this.currentProfile.id) && !this.projectId) {
       if ((this.view === 'admin') && (this.role?.toLowerCase() === 'admin' || this.role == null) || (this.role?.toLowerCase() === 'admin' && this.view == null)) {
+        console.log('all task 2')
         this.listAllTasks();
       }
       else {
@@ -313,6 +319,8 @@ export class TasksComponent implements OnInit {
         });
     }
     else if (this.userId) {
+      console.log('5')
+
       this.getTaskByIds();
     }
     else if (this.projectId) {
@@ -466,7 +474,8 @@ export class TasksComponent implements OnInit {
                   this.getTasksByProject()
                 }
                 else {
-                  this.getTaskByIds();
+      console.log('4')
+      this.getTaskByIds();
                 }
                 this.addForm.reset({
                   startDate: moment().format('YYYY-MM-DD'),
@@ -493,10 +502,13 @@ export class TasksComponent implements OnInit {
           }
           else if
             (!this.userId && !this.projectId) {
+              console.log('all task 3')
 
             this.listAllTasks();
           }
           else {
+      console.log('3')
+
             this.getTaskByIds();
           }
           this.addForm.reset({
@@ -562,6 +574,7 @@ export class TasksComponent implements OnInit {
     }
     else if (this.userId) {
       this.skip = '0';
+      console.log('2')
       this.getTaskByIds();
     }
     else {
@@ -608,6 +621,8 @@ export class TasksComponent implements OnInit {
         this.getTasksbyTeam();
       }
       else if (this.view === 'admin' || this.role?.toLowerCase() === 'admin') {
+      console.log('all task 4')
+
         this.listAllTasks();
       }
 
@@ -792,7 +807,8 @@ export class TasksComponent implements OnInit {
   }
 
   getTasks() {
-    if ((this.view === 'admin') && (this.role?.toLowerCase() === 'admin' || this.role == null) || (this.role?.toLowerCase() === 'admin' && this.view == null)) {
+    if ((!this.storedFilters.userId && !this.storedFilters.projectId) && (this.view === 'admin') && (this.role?.toLowerCase() === 'admin' || this.role == null) || (this.role?.toLowerCase() === 'admin' && this.view == null)) {
+      console.log('all task 1')
       this.listAllTasks();
     }
 

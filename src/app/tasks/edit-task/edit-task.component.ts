@@ -158,7 +158,7 @@ export class EditTaskComponent implements OnInit {
       this.tasksService.deleteTaskUser(unassignedUserId).subscribe(
         (res: any) => {
           this.assignee = []
-          this.toast.success('Unassigned successfully', 'Success');
+          this.toast.success('Unassigned successfully', `Task Number: ${this.tasks.data.task.taskNumber}`);
         },
         (err) => {
           this.toast.error('Task could not be Unassigned', 'ERROR!');
@@ -287,7 +287,7 @@ export class EditTaskComponent implements OnInit {
     const payload = { "priority": priority }
     this.tasks.data.task.priority = priority;
     this.tasksService.updatetaskFlex(this.tasks.data.task.id, payload).subscribe(response => {
-      this.toast.success('Task priority updated successfully', 'Success')
+      this.toast.success('Task priority updated successfully',  `Task Number: ${this.tasks.data.task.taskNumber}`)
     },
       err => {
         this.toast.error('Task could not be updated', 'ERROR!')
@@ -297,7 +297,7 @@ export class EditTaskComponent implements OnInit {
     const payload = { "status": status }
     this.tasks.data.task.status = status;
     this.tasksService.updatetaskFlex(this.tasks.data.task.id, payload).subscribe(response => {
-      this.toast.success('Task status updated successfully', 'Success')
+      this.toast.success('Task status updated successfully',  `Task Number: ${this.tasks.data.task.taskNumber}`)
     },
       err => {
         this.toast.error('Task could not be updated', 'ERROR!')
@@ -556,9 +556,10 @@ export class EditTaskComponent implements OnInit {
       })
   }
   addUserToTask(taskId: string, user: string): void {
+    console.log(taskId, user)
     this.tasksService.addUserToTask(taskId, user).subscribe((response: any) => {
       this.assignee = response && response.data && response.data['TaskUserList'];
-      this.toast.success('Task status updated successfully', 'Success')
+      this.toast.success('Task User updated successfully',  `Task Number: ${this.tasks.data.task.taskNumber}`)
     },
       err => {
         this.toast.error('Task could not be updated', 'ERROR!')
