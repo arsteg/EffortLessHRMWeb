@@ -73,6 +73,7 @@ import { QuillModule } from 'ngx-quill';
 import { BrowserHistoryModule } from './browserHistory/browserHistory.module';
 import { CommonComponentsModule } from './common/commonComponents.module';
 import { SettingsModule } from './settings/settings.Module';
+import { AssetsModule } from './AssetsManagement/assetManagement.module';
 
 
 @NgModule({
@@ -149,6 +150,7 @@ import { SettingsModule } from './settings/settings.Module';
     BrowserHistoryModule,
     CommonComponentsModule,
     SettingsModule,
+    AssetsModule,
     QuillModule.forRoot()
   ],
   schemas: [

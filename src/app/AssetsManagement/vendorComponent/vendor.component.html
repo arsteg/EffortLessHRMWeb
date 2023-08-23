@@ -1,0 +1,63 @@
+<div class="assetContainer col-8" style="background-color: white;">
+  <h2 style="color: blue;">Vendor List</h2>
+
+  <input type="text" placeholder="Search vendors..." (input)="filterVendors($event)" class="form-control mb-3">
+
+  <table class="table table-bordered">
+      <thead class="thead-dark">
+          <tr>
+              <th>Vendor ID</th>
+              <th>Vendor Name</th>
+              <th>Email</th>
+              <th>Address</th>
+              <th>Phone</th>
+              <th>Action</th>
+          </tr>
+      </thead>
+      <tbody>
+          <tr *ngFor="let vendor of filteredVendors | paginate: { itemsPerPage: 10, currentPage: p }">
+              <td>{{ vendor.vendorId }}</td>
+              <td>{{ vendor.vendorName }}</td>
+              <td>{{ vendor.email }}</td>
+              <td>{{ vendor.address }}</td>
+              <td>{{ vendor.phone }}</td>
+              <td>
+                  <button (click)="editVendor(vendor)" class="btn btn-primary btn-sm mr-2">Edit</button>
+                  <button (click)="deleteVendor(vendor)" class="btn btn-danger btn-sm">Delete</button>
+              </td>
+          </tr>
+      </tbody>
+  </table>
+
+  <div class="d-flex justify-content-center mt-3">
+      <pagination-controls (pageChange)="p = $event"></pagination-controls>
+  </div>
+
+  <h2 class="mt-4" style="color: blue;">Add/Edit Vendor</h2>
+  <form [formGroup]="vendorForm" (ngSubmit)="isEdit ? updateVendor() : addVendor()" class="mt-4 p-3 bg-light border rounded" style="background-color: gray;">
+      <div class="form-group">
+          <label for="vendorId">Vendor ID</label>
+          <input type="text" id="vendorId" class="form-control" formControlName="vendorId" required>
+      </div>
+      <div class="form-group">
+          <label for="vendorName">Vendor Name</label>
+          <input type="text" id="vendorName" class="form-control" formControlName="vendorName" required>
+      </div>
+      <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" class="form-control" formControlName="email" required>
+      </div>
+      <div class="form-group">
+          <label for="address">Address</label>
+          <input type="text" id="address" class="form-control" formControlName="address">
+      </div>
+      <div class="form-group">
+          <label for="phone">Phone</label>
+          <input type="tel" id="phone" class="form-control" formControlName="phone">
+      </div>
+      <div class="form-group">
+          <button type="submit" class="btn btn-primary" [disabled]="vendorForm.invalid">{{ isEdit ? 'Update' : 'Add' }}</button>
+          <button type="button" *ngIf="isEdit" (click)="isEdit = false" class="btn btn-secondary ml-2">Cancel</button>
+      </div>
+  </form>
+</div>

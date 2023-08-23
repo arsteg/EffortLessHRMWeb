@@ -54,6 +54,7 @@ import { productivityAppsApprovalComponent } from './approvals/productivityAppsA
 import { BrowserHistoryComponent } from './browserHistory/browserHistory.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { UserPreferencesComponent } from './settings/userPreferences/userPreferences.Component';
+import { AssetComponent } from './AssetsManagement/assetComponent/asset.component';
 
 const routes: Routes = [
   // {path:'',component:LayoutComponentComponent, canActivate: [AuthGuard]},
@@ -113,6 +114,7 @@ const routes: Routes = [
       { path: 'productivityAppsApproval', component: productivityAppsApprovalComponent },
       { path: 'browserHistory', component: BrowserHistoryComponent },
       { path: 'userPreferences', component: UserPreferencesComponent },
+      { path: 'assetsManagement', component: AssetComponent},
     ]
   }
 ]
