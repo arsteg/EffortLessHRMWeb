@@ -204,6 +204,11 @@ export const SideBarAdminMenu = [
         id: '58',
         title: 'Email Template',
         url: '/emailtemplate'
+      },
+      {
+        id: '59',
+        title: 'Assets Management',
+        url: '/assetsManagement'
       }
     ]
   },
