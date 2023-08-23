@@ -129,8 +129,8 @@ input:focus-visible {
     cursor: pointer;
 }
 .big-img{
-    height: 600px;
-    width: 800px;
+    height: 480px;
+    width: auto!important;
 }
 .deleteAttachment{
     position: absolute;

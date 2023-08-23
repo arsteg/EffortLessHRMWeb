@@ -36,72 +36,95 @@
   padding: 8px;
   border: 1px dashed darkgrey;
   border-radius: 2px;
+  text-align: center;
 }
 
 .deleteTaskAttachment {
   font-size: smaller;
 }
 
-.chkbox input{
+.chkbox input {
   height: 25px;
-    width: 25px;
-    border: 2px solid var(--primarycolor);
-    border-radius: 5px;
+  width: 25px;
+  border: 2px solid var(--primarycolor);
+  border-radius: 5px;
 }
-.task-card{
+
+.task-card {
   cursor: pointer;
 }
-.task-card:hover{
- background:  #f1effd
+
+.task-card:hover {
+  background: #f1effd
 }
-.taskToDo{
+
+.taskToDo {
   border-left: 3px solid #3f51b5;
 }
-.taskInProgress{
+
+.taskInProgress {
   border-left: 3px solid #ffd900;
 }
-.taskDone{
+
+.taskDone {
   border-left: 3px solid #09e909
 }
-.taskClosed{
+
+.taskClosed {
   border-left: 3px solid grey
 }
-.edit-taskBoard{
+
+.edit-taskBoard {
   background: #b4e9b4;
   padding: 7px 8px;
   border-radius: 100%;
 }
-.delete-taskBoard{
+
+.delete-taskBoard {
   padding: 7px 8px;
   border-radius: 100%;
   background: rgb(248, 171, 171)
 }
-.boardAction{
-  height:30px;
+
+.boardAction {
+  height: 30px;
 }
-.taskBoard{
+
+.taskBoard {
   max-height: 27em;
   overflow-y: auto;
 }
-.newTaskBoard, .newTaskBoard:focus-visible{
+
+.newTaskBoard,
+.newTaskBoard:focus-visible {
   border: none;
   outline: none;
 }
-.card{
+
+.card {
   box-shadow: -5px 10px 29px -22px rgba(0, 0, 0, 0.55) !important;
   background: white !important;
   border-radius: 5px;
 }
-.dropdown-item:hover{
+
+.dropdown-item:hover {
   background: none;
 }
-.dropdown-menu li{
+
+.dropdown-menu li {
   cursor: pointer;
 }
 
 
-@media (min-width: 576px){
-.modal-dialog {
+@media (min-width: 576px) {
+  .modal-dialog {
     max-width: 764px !important;
+  }
 }
+
+.addTask {
+  height: 50vh;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
+

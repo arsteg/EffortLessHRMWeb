@@ -1,17 +1,23 @@
 <div class="main-content">
   <div class="container-fluid">
-      <h1 class="pt-0 pb-3 mb-0">User Preferences</h1>
-      <hr/>
+      <h1 class="pt-0 pb-3 mb-0 border-bottom">User Preferences</h1>
       <div class="row" >
           <div class="form-group d-flex p-2 justify-content-between">
-              <mat-tab-group (selectedTabChange)="OnCategoryChange($event)">
-                  <mat-tab *ngFor="let category of preferenceCategories" [label]="category.name" [title]="category.description">
+              <mat-tab-group (selectedTabChange)="OnCategoryChange($event)" >
+                  <mat-tab *ngFor="let category of preferenceCategories" [title]="category.description">
+                    <ng-template mat-tab-label>
+                      <div class="tab-label">
+                      <mat-icon *ngIf="category.name === 'TimeTracker'"  class="tab-icon" color="primary">schedule</mat-icon>
+                      <mat-icon *ngIf="category.name === 'Dashboard'"   class="tab-icon" color="primary">dashboard</mat-icon>
+                      <span  class="tab-text">&nbsp;{{ category.name }}</span>
+                    </div>
+                    </ng-template>
                   </mat-tab>
                 </mat-tab-group>
           </div>
       </div>
 
-      <form class="border p-4 rounded bg-light" (ngSubmit)="onSubmit()">
+      <form class="border p-4 rounded bg-white" (ngSubmit)="onSubmit()">
       <div>
         <div class="row">
           <ng-container *ngFor="let option of userPreferences; let i = index">
