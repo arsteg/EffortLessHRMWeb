@@ -886,7 +886,7 @@ export class TasksComponent implements OnInit {
       document.execCommand('copy');
       document.body.removeChild(tempInput);
       }
-    this.snackBar.open('Task ID copied to clipboard', 'Dismiss', { duration: 4000 });
+    this.snackBar.open('Task is copied to clipboard', 'Dismiss', { duration: 4000 });
   }
 
 }
