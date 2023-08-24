@@ -411,7 +411,7 @@
         </div>
 
         <div *ngIf="subTaskDetail === null" class="text-center mt-5">
-            <a href="" [routerLink]="['/tasks']"> <button class="btn btn-outline-primary shadow"><span
+            <a (click)="gotoParentTask(parentTask)"> <button class="btn btn-outline-primary shadow"><span
                         class="back-btn bi bi-arrow-left ">
                         Back</span></button></a>
             <h2 class="mt-2">Sub Task Does Not Exist!!!</h2>

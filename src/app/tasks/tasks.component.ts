@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, HostListener } from '@angular/core';
 import { Task, TaskAttachment, TaskBoard, attachments, taskAttachments } from './task';
 import { TasksService } from '../_services/tasks.service';
 import { Validators, FormGroup, FormBuilder } from '@angular/forms';
@@ -15,6 +15,8 @@ import { GetTaskService } from '../_services/get-task.service';
 import * as moment from 'moment';
 import { Observable, switchMap } from 'rxjs';
 import { ActivatedRoute, ParamMap } from '@angular/router';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-tasks',
@@ -106,7 +108,9 @@ export class TasksComponent implements OnInit {
     private getTaskId: GetTaskService,
     private timelog: TimeLogService,
     private auth: AuthenticationService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private snackBar: MatSnackBar,
+    private location : Location
   ) {
     this.addForm = this.fb.group({
       taskName: [''],
@@ -545,11 +549,11 @@ export class TasksComponent implements OnInit {
 
   deleteTask() {
     this.tasksService.deleteTask(this.selectedTask.id).subscribe(response => {
-      this.toast.success('Successfully Deleted!');
       const index = this.tasks.findIndex(task => task.id === this.selectedTask.id);
       if (index !== -1) {
         this.tasks.splice(index, 1);
       }
+      this.toast.success('New Task Successfully Created!', `Task Number: ${this.selectedTask.taskNumber}`);
     },
       err => {
         this.toast.error('Task Cannot be Deleted', 'Error!');
@@ -639,22 +643,22 @@ export class TasksComponent implements OnInit {
     return priority?.url ? priority?.url : this.unKnownImage;
   }
 
-  updateTaskPriority(selectedTask: Task, priority: string) {
+  updateTaskPriority(selectedTask, priority: string) {
     const payload = { "priority": priority }
     selectedTask.priority = priority;
     this.tasksService.updatetaskFlex(selectedTask._id, payload).subscribe(response => {
-      this.toast.success('Task priority updated successfully', 'Success')
+      this.toast.success('Task priority updated successfully', `Task Number: ${selectedTask.taskNumber}`)
     },
       err => {
         this.toast.error('Task could not be updated', 'ERROR!')
       })
   }
 
-  updateTaskStatus(selectedTask: Task, status: string) {
+  updateTaskStatus(selectedTask, status: string) {
     const payload = { "status": status }
     selectedTask.status = status;
     this.tasksService.updatetaskFlex(selectedTask._id, payload).subscribe(response => {
-      this.toast.success('Task status updated successfully', 'Success')
+      this.toast.success('Task status updated successfully', `Task Number: ${selectedTask.taskNumber}`)
     },
       err => {
         this.toast.error('Task could not be updated', 'ERROR!')
@@ -847,6 +851,42 @@ export class TasksComponent implements OnInit {
 
   onInputClick() {
     this.showEditor = true;
+  }
+  domain: string;
+
+  @HostListener('window:load', ['$event'])
+  onLoad(event: Event): void {
+    const hostname = window.location.hostname;
+    const port = window.location.port;
+    
+    if (hostname === 'localhost') {
+      this.domain = `${hostname}:${port}`;
+    } else {
+      this.domain = hostname;
+    }
+  
+  }
+  
+  copyTask(task) {
+    const taskID = task.id; 
+    const p_Id = task.parentTask;
+    const tempInput = document.createElement('input');
+   
+     if(p_Id && taskID){
+      tempInput.value = `http://${this.domain}/#/SubTask/${task.taskNumber}?taskId=${taskID}`;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempInput);
+    }
+    if(taskID && !p_Id){
+      tempInput.value = `http://${this.domain}/#/edit-task/${task.taskNumber}?taskId=${taskID}`;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempInput);
+      }
+    this.snackBar.open('Task ID copied to clipboard', 'Dismiss', { duration: 4000 });
   }
 
 }

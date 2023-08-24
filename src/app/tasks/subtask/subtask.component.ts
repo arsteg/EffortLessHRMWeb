@@ -111,7 +111,7 @@ assignee: any;
   addUserToTask(taskId: string, user: string): void {
     this.tasksService.addUserToTask(taskId, user).subscribe((response: any) => {
       this.assignee = response && response.data && response.data['TaskUserList'];
-      this.toastmsg.success('Task status updated successfully', 'Success')
+      this.toastmsg.success('Task status updated successfully', `Task Number: ${this.subTaskDetail.taskNumber}`)
     },
       err => {
         this.toastmsg.error('Task could not be updated', 'ERROR!')
@@ -126,7 +126,7 @@ assignee: any;
         (res: any) => {
           this.subtask.newTaskUserList = [];
           this.assignee = []
-          this.toastmsg.success('Unassigned successfully', 'Success');
+          this.toastmsg.success('Unassigned successfully', `Task Number: ${this.subTaskDetail.taskNumber}`);
           this.subtask.newTaskUserList = [];
         },
         (err) => {
@@ -150,7 +150,7 @@ assignee: any;
     this.subtask.priority = priority;
     this.tasksService.updatetaskFlex(this.subtask.task.id, payload).subscribe(response => {
       this.ngOnInit();
-      this.toastmsg.success('Task priority updated successfully', 'Success')
+      this.toastmsg.success('Task priority updated successfully', `Task Number: ${this.subTaskDetail.taskNumber}`)
     },
       err => {
         this.toastmsg.error('Task could not be updated', 'ERROR!')
@@ -161,7 +161,7 @@ assignee: any;
     this.subtask.status = status;
     this.tasksService.updatetaskFlex(this.subtask.task.id, payload).subscribe(response => {
       this.ngOnInit();
-      this.toastmsg.success('Task status updated successfully', 'Success')
+      this.toastmsg.success('Task status updated successfully', `Task Number: ${this.subTaskDetail.taskNumber}`)
     },
       err => {
         this.toastmsg.error('Task could not be updated', 'ERROR!')
@@ -183,7 +183,7 @@ assignee: any;
     }
     this.tasksService.updateTask(this.id, updateTask).subscribe(response => {
       this.showEditor = false;
-      this.toastmsg.success('Existing Task Updated', 'Successfully Updated!')
+      this.toastmsg.success('Existing Task Updated', `Task Number: ${this.subTaskDetail.taskNumber}`)
     },
       err => {
         this.toastmsg.error('Task could not be updated', 'ERROR!')
@@ -192,7 +192,7 @@ assignee: any;
   deleteTask() {
     this.tasksService.deleteTask(this.id).subscribe(response => {
       this.ngOnInit();
-      this.toastmsg.success('Successfully Deleted!')
+      this.toastmsg.success('Successfully Deleted!', `Task Number: ${this.subTaskDetail.taskNumber}`)
     },
       err => {
         this.toastmsg.error('Task Can not be Deleted', 'Error!');

@@ -14,11 +14,11 @@ import { ConfirmationDialogComponent } from "./confirmation-dialog/confirmation-
 import { EditTaskComponent } from "./edit-task/edit-task.component";
 import { SubtaskComponent } from "./subtask/subtask.component";
 import { QuillModule } from "ngx-quill";
-
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 @NgModule({
     declarations:[TasksComponent,TagComponent,TaskCommentComponent,TaskCommentListComponent, ConfirmationDialogComponent, EditTaskComponent, SubtaskComponent],
     exports:[TasksComponent,TagComponent,TaskCommentComponent,TaskCommentListComponent, SubtaskComponent ],
-    imports:[SharedModule,ReactiveFormsModule, RouterModule, TooltipModule, MatDialogModule, MatButtonModule, CommonModule, QuillModule.forRoot()],
+    imports:[SharedModule,ReactiveFormsModule, RouterModule, TooltipModule, MatDialogModule, MatButtonModule, CommonModule, QuillModule.forRoot(),MatSnackBarModule],
     schemas: [
       CUSTOM_ELEMENTS_SCHEMA,
       NO_ERRORS_SCHEMA
