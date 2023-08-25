@@ -223,7 +223,8 @@
             <th>Project</th>
             <th>Task</th>
             <th>Time</th>
-            <ng-container *ngFor="let projectTask of dayWorkStatusByUser">
+            <ng-container *ngFor="let projectTask of dayWorkStatusByUser" >
+              <div *ngIf="projectTask.project!= null">
               <tr *ngFor="let task of projectTask.tasks;let i = index ">
                 <td>
                   {{i==0?projectTask?.projectName:''}}
@@ -233,6 +234,7 @@
                   <span class="dash-percent"> {{ ((task?.count*10)*60*1000) | milliSecondsToTime }} </span>
                 </td>
               </tr>
+            </div>
             </ng-container>
           </tbody>
         </table>

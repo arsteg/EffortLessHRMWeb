@@ -286,6 +286,7 @@ filterDate(){
   getDayWorkStatusByUser(selectedtUser:string){
     this.dashboardService.getDayWorkStatusByUser(selectedtUser, this.selectedDate ).subscribe(response => {
       this.dayWorkStatusByUser= response.data;
+      console.log('project Resolve')
     },
       err => {
         this.toastr.error(err, 'ERROR!')
