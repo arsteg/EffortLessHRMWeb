@@ -128,7 +128,7 @@ export class AssetManagementService {
 
   getAllAssetTypes(): Observable<any> {
     return this.http.get<any>(
-      `${environment.apiUrlDotNet}/assetsManagement/assetTypes`,
+      `${environment.apiUrlDotNet}/assetsManagement/allAssetTypes`,
       this.httpOptions
     );
   }
