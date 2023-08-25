@@ -135,13 +135,14 @@ export class EditTaskComponent implements OnInit {
   onParagraphClick() {
     this.showEditor = true;
   }
-
+projectisNull;
   getTask(taskId: string) {
     if (taskId) {
       this.tasksService.getTaskById(taskId).subscribe(res => {
         this.tasks = res;
         this.assignee = this.tasks.data.newTaskUserList;
         this.currentTaskProject = this.tasks.data.task;
+        this.projectisNull= (this.currentTaskProject.project==null)
         if (this.currentTaskProject === null) {
           this.loading = false;
         }

@@ -55,6 +55,8 @@ import { BrowserHistoryComponent } from './browserHistory/browserHistory.compone
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { UserPreferencesComponent } from './settings/userPreferences/userPreferences.Component';
 import { AssetComponent } from './AssetsManagement/assetComponent/asset.component';
+import { AdminCalendarComponent } from './calendar/admin-calendar/admin-calendar.component';
+import { UserCalendarComponent } from './calendar/user-calendar/user-calendar.component';
 
 const routes: Routes = [
   // {path:'',component:LayoutComponentComponent, canActivate: [AuthGuard]},
@@ -98,7 +100,7 @@ const routes: Routes = [
       { path: 'permissions', component: PermissionsComponent },
       { path: 'rolePermission', component: RolePermissionComponent },
       { path: 'timesheets', component: TimesheetsComponent },
-      { path: 'adminTimesheets', component: AdminTimesheetComponent},
+      { path: 'adminTimesheets', component: AdminTimesheetComponent },
       { path: 'userTimesheet', component: UserTimesheetComponent },
       { path: 'profileSettings', component: ProfileSettingsComponent },
       { path: 'workspace', component: WorkspaceSettingsComponent },
@@ -106,15 +108,17 @@ const routes: Routes = [
       { path: 'attendancesettings', component: AttendanceSettingsComponent },
       { path: 'leavesettings', component: LeaveSettingsComponent },
       { path: 'edit-task/:taskNumber', component: EditTaskComponent },
-      {path: 'comments', component: TaskCommentComponent},
+      { path: 'comments', component: TaskCommentComponent },
       { path: 'genericSettings', component: GenericSettingsComponent },
       { path: 'viewLiveScreen', component: ViewLiveScreenComponent },
-      { path: 'emailtemplate', component: EmailTemplateComponent},
+      { path: 'emailtemplate', component: EmailTemplateComponent },
       { path: 'SubTask/:taskNumber', component: SubtaskComponent },
       { path: 'productivityAppsApproval', component: productivityAppsApprovalComponent },
       { path: 'browserHistory', component: BrowserHistoryComponent },
       { path: 'userPreferences', component: UserPreferencesComponent },
-      { path: 'assetsManagement', component: AssetComponent},
+      { path: 'assetsManagement', component: AssetComponent },
+      { path: 'Calendar', component: AdminCalendarComponent },
+      { path: 'calendar', component: UserCalendarComponent }
     ]
   }
 ]
