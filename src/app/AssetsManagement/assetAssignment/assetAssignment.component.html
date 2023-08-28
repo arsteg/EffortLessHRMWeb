@@ -1,0 +1,34 @@
+<div class="main-content">
+<div class="row mt-4">
+  <h1>Asset Assignment</h1>
+  <!-- Employee Dropdown in the first column -->
+  <div class="col-md-4">
+    <subordinateSelection (selectedUsersChange)="selectedUsersChanged($event)"></subordinateSelection>
+  </div>
+
+  <!-- Unassigned and Assigned Assets in the second column -->
+  <div class="col-md-8">
+      <!-- Unassigned Assets (Top Section) -->
+      <div class="mb-3">
+          <h5>Unassigned Assets</h5>
+          <ul class="list-group">
+              <li *ngFor="let asset of unAssignedAssets" class="list-group-item d-flex justify-content-between align-items-center">
+                  {{ asset.assetName }}
+                  <button class="btn btn-success" (click)="assignAsset(asset)">Assign</button>
+              </li>
+          </ul>
+      </div>
+
+      <!-- Assigned Assets (Bottom Section) -->
+      <div>
+          <h5>Assigned Assets</h5>
+          <ul class="list-group">
+              <li *ngFor="let asset of assignedAssets" class="list-group-item d-flex justify-content-between align-items-center">
+                  {{ asset.Asset.assetName }}
+                  <button class="btn btn-danger" (click)="unassignAsset(asset)">Unassign</button>
+              </li>
+          </ul>
+      </div>
+  </div>
+</div>
+</div>

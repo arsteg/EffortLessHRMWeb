@@ -1,0 +1,20 @@
+.asset-assignment-container {
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  max-width: 400px;
+  margin: 20px auto;
+}
+
+.vendor-selection, .assets-list, .assign-button {
+  margin-bottom: 20px;
+}
+
+.assets-list ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.assets-list li {
+  margin-bottom: 10px;
+}

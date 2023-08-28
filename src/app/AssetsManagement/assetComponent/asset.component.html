@@ -4,6 +4,8 @@
   <button (click)="selectTab(2)" [class.active]="selectedTab === 2">Asset Status</button>
   <button (click)="selectTab(3)" [class.active]="selectedTab === 3">Vendor</button>
   <button (click)="selectTab(4)" [class.active]="selectedTab === 4">Asset Type</button>
+  <button (click)="selectTab(5)" [class.active]="selectedTab === 4">Asset Assignment</button>
+  <button (click)="selectTab(6)" [class.active]="selectedTab === 4">Vendor Assets</button>
 </div>
 
 <div *ngIf="selectedTab === 1" class="tab-content">
@@ -132,3 +134,10 @@
 <div *ngIf="selectedTab === 4" class="tab-content">
   <app-asset-type></app-asset-type>
 </div>
+<div *ngIf="selectedTab === 5" class="tab-content">
+  <app-assign-assets></app-assign-assets>
+</div>
+<div *ngIf="selectedTab === 6" class="tab-content">
+  <app-vendor-assets></app-vendor-assets>
+</div>
+

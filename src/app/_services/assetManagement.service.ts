@@ -169,5 +169,34 @@ export class AssetManagementService {
     );
   }
 
+  //asset assignments
+  getEmployeeAssets(emploieeId:string): Observable<any> {
+    return this.http.get<any>(
+      `${environment.apiUrlDotNet}/assetsManagement/employeeAssets/${emploieeId}`,
+      this.httpOptions
+    );
+  }
 
+  //asset assignments
+  getEmployeeUnAssignedAssets(emploieeId:string): Observable<any> {
+    return this.http.get<any>(
+      `${environment.apiUrlDotNet}/assetsManagement/unassignedAssets/${emploieeId}`,
+      this.httpOptions
+    );
+  }
+  assignAsset(employeeId:string,assetId:String): Observable<any> {
+    return this.http.post<any>(
+      `${environment.apiUrlDotNet}/assetsManagement/employeeAssets`,{
+        "Employee": employeeId,
+        "Asset": assetId
+      },
+      this.httpOptions
+    );
+  }
+  unAssignAsset(employeeId:string,assetId:String): Observable<any> {
+    return this.http.delete<any>(
+      `${environment.apiUrlDotNet}/assetsManagement/employeeAssets/${employeeId}/${assetId}`,
+      this.httpOptions
+    );
+  }
 }
