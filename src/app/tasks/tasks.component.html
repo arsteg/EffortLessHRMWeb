@@ -165,9 +165,11 @@
                                 <tr *ngFor="let task of tasks | search: searchText ;let i = index"
                                     [ngClass]="{ 'd-none': !isStatusChecked(task.status) }">
 
-                                    <td *ngIf="task.project != null">
-                                        {{getProjectNameInitials(task.project.projectName)}} - {{task?.taskNumber}}
+                                    <td>
+                                    <span  *ngIf="task.project != null">    {{getProjectNameInitials(task.project.projectName)}} - {{task?.taskNumber}}</span>
+                                    <span  *ngIf="task.project == null">{{task?.taskNumber}}</span>
                                     </td>
+                                    
                                     <td (click)="navigateToEditPage(task)"
                                         style="cursor: pointer; color: blue; width:300px">
                                         {{task?.taskName|

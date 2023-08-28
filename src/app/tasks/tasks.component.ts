@@ -861,7 +861,6 @@ export class TasksComponent implements OnInit {
     
     if (hostname === 'localhost') {
       this.domain = `${hostname}:${port}`;
-      console.log(this.domain)
     } else {
       this.domain = hostname;
       console.log(this.domain)
