@@ -74,8 +74,10 @@ import { BrowserHistoryModule } from './browserHistory/browserHistory.module';
 import { CommonComponentsModule } from './common/commonComponents.module';
 import { SettingsModule } from './settings/settings.Module';
 import { AssetsModule } from './AssetsManagement/assetManagement.module';
-
-
+import { UserCalendarComponent } from './calendar/user-calendar/user-calendar.component';
+import { AdminCalendarComponent } from './calendar/admin-calendar/admin-calendar.component';
+import { FullCalendarModule } from '@fullcalendar/angular';
+import dayGridPlugin from '@fullcalendar/daygrid';
 @NgModule({
   declarations: [
     AppComponent,
@@ -120,7 +122,8 @@ import { AssetsModule } from './AssetsManagement/assetManagement.module';
           // EditTaskComponent,
           GenericSettingsComponent,
           ViewLiveScreenComponent,
-          EmailTemplateComponent
+          EmailTemplateComponent,
+          UserCalendarComponent, AdminCalendarComponent
   ],
   imports: [
     BrowserModule,
@@ -151,7 +154,8 @@ import { AssetsModule } from './AssetsManagement/assetManagement.module';
     CommonComponentsModule,
     SettingsModule,
     AssetsModule,
-    QuillModule.forRoot()
+    QuillModule.forRoot(),
+    FullCalendarModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,
