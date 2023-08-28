@@ -51,48 +51,77 @@
 
   <div>
   <h2 class="mt-4">Add/Edit Vendor</h2>
-  <form [formGroup]="assetTypeForm" (ngSubmit)="isEdit ? updateAssetType() : addassetType()" class="mt-4 p-3 bg-light border rounded" style="background-color: gray;">
-    <!-- <div class="form-group">
-      <label for="typeName">Type Name</label>
-      <input type="text" class="form-control" id="typeName" formControlName="typeName" required>
+
+  <form [formGroup]="assetTypeForm" (ngSubmit)="isEdit ? updateAssetType() : addassetType()" class="mt-4 p-3 bg-light border rounded">
+
+    <!-- AssetType Form fields -->
+    <div class="form-group">
+      <label for="typeName">Type Name:</label>
+      <input type="text" class="form-control" id="typeName" formControlName="typeName">
+      <div *ngIf="typeName.errors && typeName.touched" class="text-danger">
+        <div *ngIf="typeName.errors.required">Type Name is required.</div>
+      </div>
     </div>
 
     <div class="form-group">
-      <label for="description">Description</label>
-      <input type="text" class="form-control" id="description" formControlName="description" required>
-    </div> -->
+      <label for="description">Description:</label>
+      <input type="text" class="form-control" id="description" formControlName="description">
+    </div>
 
-    <h4>Custom Attributes</h4>
-    <table class="table">
-      <thead>
+    <!-- CustomAttributes Array fields -->
+    <div formArrayName="customAttributes">
+      <table class="table table-bordered">
+        <thead>
           <tr>
-              <th>Name</th>
-              <th>Description</th>
-              <th>Data Type</th>
-              <th>Is Required</th>
-              <th>Action</th>
+            <th>Attribute Name</th>
+            <th>Description</th>
+            <th>Data Type</th>
+            <th>Is Required</th>
+            <th>Action</th>
           </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let attribute of customAttributes.controls; let i = index" [formGroupName]="i">
-          <!-- <td><input type="text" class="form-control" placeholder="Attribute Name" formControlName="attributeName" required></td> -->
-          <!-- <td><input type="text" class="form-control" placeholder="Description" formControlName="description" required></td>
-          <td><input type="text" class="form-control" placeholder="Data Type" formControlName="dataType" required></td>
-          <td><input type="checkbox" formControlName="isRequired"> Required</td>
-          <td><button (click)="deleteCustomeAttribute(i)" class="btn btn-danger btn-sm">Delete</button></td> -->
-      </tr>
-      </tbody>
-  </table>
-
-    <button class="btn btn-primary mt-3" (click)="addCustomAttribute()">Add Custom Attribute</button>
-
-    <div class="mt-4">
-      <div class="form-group">
-        <button type="submit" class="btn btn-primary"  [disabled]="assetTypeForm.invalid">{{ isEdit ? 'Update' : 'Add' }}</button>
-        <button type="button" *ngIf="isEdit" (click)="isEdit = false" class="btn btn-secondary ml-2">Cancel</button>
+        </thead>
+        <tbody>
+          <tr *ngFor="let customAttribute of customAttributes.controls; let i = index" [formGroupName]="i">
+            <td>
+              <input type="text" class="form-control" formControlName="attributeName">
+              <div *ngIf="customAttribute.get('attributeName').errors && customAttribute.get('attributeName').touched" class="text-danger">
+                <div *ngIf="customAttribute.get('attributeName').errors.required">Attribute Name is required.</div>
+              </div>
+            </td>
+            <td>
+              <input type="text" class="form-control" formControlName="description">
+            </td>
+            <td>
+              <select class="form-control" formControlName="dataType">
+                <option value="string">String</option>
+                <option value="number">Number</option>
+                <option value="date">Date</option>
+                <option value="boolean">Boolean</option>
+            </select>
+            <div *ngIf="customAttribute.get('dataType').errors && customAttribute.get('dataType').touched" class="text-danger">
+                <div *ngIf="customAttribute.get('dataType').errors.required">Data Type is required.</div>
+            </div>
+            </td>
+            <td>
+              <input type="checkbox" class="form-check-input" formControlName="isRequired">
+            </td>
+            <td>
+              <!-- Remove CustomAttribute -->
+              <button type="button" class="btn btn-danger" (click)="removeCustomAttribute(i)">Remove</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <!-- Add New CustomAttribute -->
+      <button class="btn btn-primary mt-3" type="button" (click)="addNewCustomAttribute()">Add New Custom Attribute</button>
     </div>
-    </div>
-  </form>
+
+    <!-- Submit Button -->
+    <button class="btn btn-primary mt-3" type="submit" [disabled]="!assetTypeForm.valid">Submit</button>
+</form>
+
+
+
 
 </div>
 </div>
