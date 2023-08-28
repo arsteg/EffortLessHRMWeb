@@ -92,10 +92,15 @@
               <input type="text" class="form-control" formControlName="description">
             </td>
             <td>
-              <input type="text" class="form-control" formControlName="dataType">
-              <div *ngIf="customAttribute.get('dataType').errors && customAttribute.get('dataType').touched" class="text-danger">
+              <select class="form-control" formControlName="dataType">
+                <option value="string">String</option>
+                <option value="number">Number</option>
+                <option value="date">Date</option>
+                <option value="boolean">Boolean</option>
+            </select>
+            <div *ngIf="customAttribute.get('dataType').errors && customAttribute.get('dataType').touched" class="text-danger">
                 <div *ngIf="customAttribute.get('dataType').errors.required">Data Type is required.</div>
-              </div>
+            </div>
             </td>
             <td>
               <input type="checkbox" class="form-check-input" formControlName="isRequired">
