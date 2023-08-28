@@ -26,17 +26,17 @@ export interface Vendor {
 }
 
 // src/app/models/Type.ts
-export interface CustomAttribute {
-  attributeName: string;
-  description: string;
-  dataType: string;
-  isRequired: boolean;
-}
-
 export interface AssetType {
   _id:string;
   typeName: string;
   description: string;
   customAttributes: CustomAttribute[];
+}
+
+export interface CustomAttribute {
+  attributeName: string;
+  description: string;
+  dataType: string;
+  isRequired: boolean;
 }
 

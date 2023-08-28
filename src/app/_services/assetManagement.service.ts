@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { project } from '../Project/model/project';
 import { baseService } from './base';
-import { Asset, AssetStatus, Vendor } from '../models/AssetsManagement/Asset';
+import { Asset, AssetStatus, AssetType, CustomAttribute, Vendor } from '../models/AssetsManagement/Asset';
 
 @Injectable({ providedIn: 'root' })
 export class AssetManagementService {
@@ -133,17 +133,17 @@ export class AssetManagementService {
     );
   }
 
-  addAssetType(vendor:Vendor): Observable<Vendor> {
-    return this.http.post<Vendor>(
+  addAssetType(assetType:AssetType): Observable<any> {
+    return this.http.post<any>(
       `${environment.apiUrlDotNet}/assetsManagement/assetTypes`,
-      vendor,
+      assetType,
       this.httpOptions
     );
   }
-  updateAssetType(id, vendor:Vendor): Observable<any> {
+  updateAssetType(id, assetType:any): Observable<any> {
     return this.http.put(
       `${environment.apiUrlDotNet}/assetsManagement/assetTypes/${id}`,
-      vendor,
+      assetType,
       this.httpOptions
     );
   }
@@ -153,4 +153,21 @@ export class AssetManagementService {
       this.httpOptions
     );
   }
+  //custome Attributes
+  addCustomAttributes(assetTypeId:string,customAttributes:CustomAttribute[]): Observable<CustomAttribute> {
+    return this.http.post<CustomAttribute>(
+      `${environment.apiUrlDotNet}/assetsManagement/assetTypes/${assetTypeId}/customAttributes`,
+      customAttributes,
+      this.httpOptions
+    );
+  }
+  //custome Attributes
+  deleteCustomAttributes(assetTypeId:string): Observable<any> {
+    return this.http.delete<string>(
+      `${environment.apiUrlDotNet}/assetsManagement/customAttributes/${assetTypeId}/`,
+      this.httpOptions
+    );
+  }
+
+
 }

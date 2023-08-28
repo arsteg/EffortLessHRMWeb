@@ -25,13 +25,39 @@ export class AssetTypeComponent implements OnInit {
     }
 
     initTypeForm() {
-        this.assetTypeForm = this.fb.group({
-          typeName: ['', Validators.required],
-          description: ['', Validators.required],
-          customAttributes: this.fb.array([])  // Ensure this line is there.
+      this.assetTypeForm = this.fb.group({
+        _id: [null],
+        typeName: ['', Validators.required],
+        description: [''],
+        customAttributes: this.fb.array([])
       });
-
     }
+
+     // Getters for form controls
+  get typeName() {
+    return this.assetTypeForm.get('typeName');
+  }
+
+  get customAttributes() {
+    return this.assetTypeForm.get('customAttributes') as FormArray;
+  }
+
+  // Add new CustomAttribute to the form
+  addNewCustomAttribute() {
+    const customAttributeGroup = this.fb.group({
+      attributeName: ['', Validators.required],
+      description: [''],
+      dataType: ['', Validators.required],
+      isRequired: [false]
+    });
+    this.customAttributes.push(customAttributeGroup);
+  }
+
+  // Remove CustomAttribute from the form
+  removeCustomAttribute(index: number) {
+    this.customAttributes.removeAt(index);
+  }
+
 
     getAllAssetTypes() {
       this.assetManagementService.getAllAssetTypes().subscribe(response => {
@@ -46,6 +72,8 @@ export class AssetTypeComponent implements OnInit {
 
     addassetType() {
       this.assetManagementService.addAssetType(this.assetTypeForm.value).subscribe(response => {
+        this.assetManagementService.addCustomAttributes(response.data._id,this.assetTypeForm.value.customAttributes).subscribe(response => {
+      });
         this.toast.success('Asset Type added successfully!');
         this.getAllAssetTypes();
         this.assetTypeForm.reset();
@@ -83,11 +111,15 @@ export class AssetTypeComponent implements OnInit {
     }
 
     updateAssetType() {
-      this.assetManagementService.updateVendor(this.selectedAssetType._id, this.assetTypeForm.value).subscribe(response => {
-        this.toast.success('Vendor updated successfully!');
-        this.getAllAssetTypes();
-        this.isEdit = false;
-        this.assetTypeForm.reset();
+      this.assetManagementService.updateAssetType(this.selectedAssetType._id, {typeName:this.assetTypeForm.value.typeName,description:this.assetTypeForm.value.description}).subscribe(response => {
+        this.assetManagementService.deleteCustomAttributes(this.selectedAssetType._id).subscribe(response => {
+          this.assetManagementService.addCustomAttributes(this.selectedAssetType._id,this.assetTypeForm.value.customAttributes).subscribe(response => {
+            this.toast.success('Asset Type updated successfully!');
+            this.getAllAssetTypes();
+            this.isEdit = false;
+            this.assetTypeForm.reset();
+          });
+        });
     });
     }
 
@@ -104,11 +136,6 @@ export class AssetTypeComponent implements OnInit {
     deleteCustomeAttribute(index: number) {
       this.customAttributes.removeAt(index);
     }
-
-    // FormArray for customAttributes
-  get customAttributes(): FormArray {
-    return this.assetTypeForm.get('customAttributes') as FormArray;
-  }
 
     addCustomAttribute(): void {
       const attribute = this.fb.group({
