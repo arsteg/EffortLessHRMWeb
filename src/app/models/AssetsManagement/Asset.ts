@@ -1,4 +1,5 @@
 export interface Asset {
+  _id:string;
   assetId: string;
   assetType: string; // Using string as ObjectId is typically represented as a string in TypeScript
   company: string;   // Similarly, using string for ObjectId
