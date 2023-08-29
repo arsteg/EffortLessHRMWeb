@@ -9,7 +9,7 @@ import { Asset } from 'src/app/models/AssetsManagement/Asset';
   templateUrl: './asset.component.html',
   styleUrls: ['./asset.component.css']
 })
-export class AssetComponent implements OnInit {
+export class AssetManagerComponent implements OnInit {
   assets: Asset[] = [];
   filteredAssets: Asset[] = [];
   assetForm: FormGroup;

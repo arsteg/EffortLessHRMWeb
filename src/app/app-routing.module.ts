@@ -54,9 +54,9 @@ import { productivityAppsApprovalComponent } from './approvals/productivityAppsA
 import { BrowserHistoryComponent } from './browserHistory/browserHistory.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { UserPreferencesComponent } from './settings/userPreferences/userPreferences.Component';
-import { AssetComponent } from './AssetsManagement/assetComponent/asset.component';
 import { AdminCalendarComponent } from './calendar/admin-calendar/admin-calendar.component';
 import { UserCalendarComponent } from './calendar/user-calendar/user-calendar.component';
+import { AssetManagerComponent } from './AssetsManagement/assetAssetManager/asset.component';
 
 const routes: Routes = [
   // {path:'',component:LayoutComponentComponent, canActivate: [AuthGuard]},
@@ -116,7 +116,7 @@ const routes: Routes = [
       { path: 'productivityAppsApproval', component: productivityAppsApprovalComponent },
       { path: 'browserHistory', component: BrowserHistoryComponent },
       { path: 'userPreferences', component: UserPreferencesComponent },
-      { path: 'assetsManagement', component: AssetComponent },
+      { path: 'assetsManagement', component: AssetManagerComponent },
       { path: 'Calendar', component: AdminCalendarComponent },
       { path: 'calendar', component: UserCalendarComponent }
     ]
