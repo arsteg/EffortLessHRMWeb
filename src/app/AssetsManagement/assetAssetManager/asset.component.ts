@@ -5,7 +5,7 @@ import { AssetManagementService } from 'src/app/_services/assetManagement.servic
 import { Asset } from 'src/app/models/AssetsManagement/Asset';
 
 @Component({
-  selector: 'app-asset',
+  selector: 'app-asset-manager',
   templateUrl: './asset.component.html',
   styleUrls: ['./asset.component.css']
 })
