@@ -2,11 +2,11 @@
     <div class="container-fluid">
 <h1>Calendar</h1>
 
-<full-calendar
-[plugins]="calendarPlugins"
-[weekends]="true"
-[events]=""
-class="full-calendar p-2"
-></full-calendar>
+<full-calendar [plugins]="calendarPlugins" [weekends]="true" [events]="calendarEvents" id="calendar"
+class="full-calendar p-2" [headerToolbar]="{
+left: 'prev',
+center: 'title',
+right: 'today next'
+}"></full-calendar>
     </div>
 </div>

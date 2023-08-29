@@ -208,7 +208,7 @@ export const SideBarAdminMenu = [
     id: '6',
     title: 'Calendar',
     icon: 'fa fa-calendar-alt',
-    url: '/Calendar'
+    url: '/AdminCalendar'
   },
   {
     id: '7',
@@ -631,7 +631,7 @@ export const SideBarUserMenu = [
     id: '6',
     title: 'Calendar',
     icon: 'fa fa-calendar-alt',
-    url: '/calendar'
+    url: '/UserCalendar'
   },
   {
     id: '7',

@@ -117,8 +117,8 @@ const routes: Routes = [
       { path: 'browserHistory', component: BrowserHistoryComponent },
       { path: 'userPreferences', component: UserPreferencesComponent },
       { path: 'assetsManagement', component: AssetManagerComponent },
-      { path: 'Calendar', component: AdminCalendarComponent },
-      { path: 'calendar', component: UserCalendarComponent }
+      { path: 'AdminCalendar', component: AdminCalendarComponent },
+      { path: 'UserCalendar', component: UserCalendarComponent }
     ]
   }
 ]
