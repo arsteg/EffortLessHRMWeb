@@ -112,8 +112,8 @@
             Time &nbsp;
             <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
           </th>
-          <th *ngFor="let hour of hours" scope="col" width="60">
-            {{ startTime.getHours() + hour }}
+          <th *ngFor="let hour of hours" scope="col" width="60" class="px-0">
+            {{ startTime.getHours() + hour }} - {{ startTime.getHours() + hour +1 }}
           </th>
 
         </tr>
