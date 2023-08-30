@@ -165,7 +165,8 @@ export class TimelineComponent implements OnInit {
         this.logEndTime = new Date(this.logs[this.logs.length - 1].endTime);
       });
 
-      this.hours = newHours;
+      // this.hours = newHours;
+      this.hours = Array.from({ length: this.endTime.getHours() - this.startTime.getHours() + 1 }, (_, i) => i);
 
       this.timeline.forEach((data) => {
         data.logs.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
@@ -186,8 +187,12 @@ export class TimelineComponent implements OnInit {
       });
     });
   }
-
-
+ 
+  formattedStartTimeHour(hour: number): string {
+    const calculatedHour = this.startTime.getHours() + hour;
+    return calculatedHour.toString().padStart(2, '0') + ':00';
+  }
+  
 
   getEarliestAndLatestLogTime(logs: any[]) {
     const earliestLog = logs.reduce((earliest, current) => {

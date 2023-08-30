@@ -12,7 +12,7 @@
     <div class="d-flex mt-4">
 
       <span class="pt-3 text-muted me-3">Filter&nbsp;by: </span>
-      <mat-form-field appearance="outline" class="w-25 mx-1" >
+      <mat-form-field appearance="outline" class="w-25 mx-1">
         <mat-label>Select User</mat-label>
         <mat-select multiple [(ngModel)]="selectedUser">
           <mat-option *ngFor="let member of members" [value]="member.id" (click)="filterData()"
@@ -37,7 +37,7 @@
           class="form-control w-25 calendar mb-4 mx-1 " />
         <span (click)="SetNextDay()" class="fa fa-angle-right fa-lg p-3"></span>
       </div>
-      <div class="align-items-start flex-wrap gap-3 ms-auto d-none" >
+      <div class="align-items-start flex-wrap gap-3 ms-auto d-none">
         <div class="dropdown order-first order-sm-last d-flex">
           <button class="export-btn dropdown-toggle formrow-inputState form-select select-styled active" type="button"
             id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -81,13 +81,7 @@
             <span class="type-tracked__label text-dark">Low Activity </span>
           </label>
         </div>
-        <div class="mb-3 d-flex align-items-center gap-1">
-          <label class="type-tracked">
-            <input type="checkbox" checked="" value="idle">
-            <span class="type-tracked__control idle"></span>
-            <span class="type-tracked__label text-dark">Idle</span>
-          </label>
-        </div>
+        
       </div>
 
     </div>
@@ -113,7 +107,7 @@
             <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
           </th>
           <th *ngFor="let hour of hours" scope="col" width="60" class="px-0">
-            {{ startTime.getHours() + hour }} - {{ startTime.getHours() + hour +1 }}
+            {{ formattedStartTimeHour(hour) }}
           </th>
 
         </tr>
@@ -133,19 +127,17 @@
 
           <td *ngFor="let hour of hours" [style.padding]="0" class="hour">
             <ng-container *ngFor="let log of data.logs">
-              <div class="hour-container"
-                *ngIf="isLogInHour(log, startTime.getHours() + hour) &&
+              <div class="hour-container" *ngIf="isLogInHour(log, startTime.getHours() + hour) &&
                   ((trackedChecked && getLogColor(log) === '#2ECD6F') ||
                     (mediumChecked && getLogColor(log) === '#FFC107') ||
                     (lowChecked && getLogColor(log) === '#ff0000') ||
-                    (manualChecked && getLogColor(log) === '#f87a3b'))"
-                [style.height.px]="40" [style.width.px]="getLogWidth(log)" [style.background-color]="getLogColor(log)"
+                    (manualChecked && getLogColor(log) === '#f87a3b'))" [style.height.px]="40"
+                [style.width.px]="getLogWidth(log)" [style.background-color]="getLogColor(log)"
                 [tooltip]="getLogTitle(log)" [style.margin-left.px]="getLogMarginLeft(log)"
                 [style.background-color]="getLogColor(log)">
               </div>
             </ng-container>
           </td>
-          
         </tr>
       </tbody>
     </table>
