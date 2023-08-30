@@ -553,7 +553,7 @@ export class TasksComponent implements OnInit {
       if (index !== -1) {
         this.tasks.splice(index, 1);
       }
-      this.toast.success('New Task Successfully Created!', `Task Number: ${this.selectedTask.taskNumber}`);
+      this.toast.success('New Task Successfully Deleted!', `Task Number: ${this.selectedTask.taskNumber}`);
     },
       err => {
         this.toast.error('Task Cannot be Deleted', 'Error!');
