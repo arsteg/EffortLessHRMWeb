@@ -425,8 +425,8 @@ select {
 }
 
 .buttons.active {
-  color: #107dfb;
-  background: #eeecec;
+  color: #3f51b5;
+  background: white;
   padding: 5px 10px;
   border-radius: 20px;
 }

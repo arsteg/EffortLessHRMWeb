@@ -52,6 +52,10 @@ export class TimelineComponent implements OnInit {
   logStartTime: Date | null = null;
   logEndTime: Date | null = null;
   role: any;
+  intervalId: any;
+  intervalDuration = 300000;
+  showProjectsColumn: boolean = true;
+  showMembersColumn: boolean = true;
 
   constructor(
     private projectService: ProjectService,
@@ -66,14 +70,16 @@ export class TimelineComponent implements OnInit {
   }
 
   ngOnInit(): void {
-   
+
     this.populateUsers();
     this.commonservice.getCurrentUserRole().subscribe((role: any) => {
       this.role = role;
       this.getTimeLine();
       this.getProjectList();
     })
-
+    this.intervalId = setInterval(() => {
+      this.getTimeLine();
+    }, this.intervalDuration);
   }
   getCurrentWeekDates() {
     let currentDate = new Date();
@@ -92,6 +98,8 @@ export class TimelineComponent implements OnInit {
 
 
 
+
+
   getProjectList() {
     //Admin and Manager can see the list of all projects
     if (this.role.toLowerCase() === "admin") {
@@ -106,6 +114,7 @@ export class TimelineComponent implements OnInit {
         this.projectList = this.projectList.filter(project => project !== null);
       });
     }
+
   }
 
   populateUsers() {
@@ -142,7 +151,7 @@ export class TimelineComponent implements OnInit {
     timeline.fromdate = new Date(this.selectedDate);
     timeline.todate = new Date(this.selectedDate);
     timeline.projects = this.selectedProject;
-    timeline.users = (this.role.toLowerCase() === "admin"|| null) ? this.selectedUser : [this.currentUser.id];
+    timeline.users = (this.role.toLowerCase() === "admin" || null) ? this.selectedUser : [this.currentUser.id];
 
     this.reportService.getTimeline(timeline).subscribe(result => {
       this.timeline = result.data;
@@ -165,7 +174,6 @@ export class TimelineComponent implements OnInit {
         this.logEndTime = new Date(this.logs[this.logs.length - 1].endTime);
       });
 
-      // this.hours = newHours;
       this.hours = Array.from({ length: this.endTime.getHours() - this.startTime.getHours() + 1 }, (_, i) => i);
 
       this.timeline.forEach((data) => {
@@ -186,13 +194,16 @@ export class TimelineComponent implements OnInit {
         }
       });
     });
+    this.showMembersColumn = true;
+    this.showProjectsColumn = true;
+    
   }
- 
+
   formattedStartTimeHour(hour: number): string {
     const calculatedHour = this.startTime.getHours() + hour;
     return calculatedHour.toString().padStart(2, '0') + ':00';
   }
-  
+
 
   getEarliestAndLatestLogTime(logs: any[]) {
     const earliestLog = logs.reduce((earliest, current) => {
@@ -342,5 +353,17 @@ export class TimelineComponent implements OnInit {
 
 
 
+  toggleColumns(column: string) {
+    if (column === 'projects') {
+      this.showProjectsColumn = this.showProjectsColumn;
+      this.showMembersColumn = false;
+      this.showProjectsColumn = true
+    } else if (column === 'members') {
+      this.showMembersColumn = this.showMembersColumn;
+      this.showProjectsColumn = false;
+      this.showMembersColumn = true
+    }
+  }
+  
 
 }
