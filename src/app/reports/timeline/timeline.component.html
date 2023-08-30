@@ -113,7 +113,7 @@
             <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
           </th>
           <th *ngFor="let hour of hours" scope="col" width="60">
-            {{ startTime.getHours() + hour }}:00
+            {{ startTime.getHours() + hour }}
           </th>
 
         </tr>
@@ -122,11 +122,11 @@
         <tr *ngFor="let data of timeline;  let i = index;">
           <td>
             <span class="letter ms-2"
-              [style.background-color]="commonservice.getRandomColor(data?.logs[i]?.user?.lastName)">{{data?.logs[i]?.user?.firstName.slice(0,1)
-              | uppercase}}{{data?.logs[i]?.user?.lastName.slice(0,1) | uppercase}}</span>
-            {{data?.logs[i]?.user?.firstName | titlecase}} {{data?.logs[i]?.user?.lastName | titlecase}}
+              [style.background-color]="commonservice.getRandomColor(data?.logs[0]?.user?.lastName)">{{data?.logs[0]?.user?.firstName.slice(0,1)
+              | uppercase}}{{data?.logs[0]?.user?.lastName.slice(0,1) | uppercase}}</span>
+            {{data?.logs[0]?.user?.firstName | titlecase}} {{data?.logs[0]?.user?.lastName | titlecase}}
           </td>
-          <td>{{data?.logs[i]?.project?.projectName}}</td>
+          <td>{{data?.logs[0]?.project?.projectName}}</td>
           <td>
             {{ minutesToTime(data?.logs.length * 10) }}
           </td>
@@ -145,28 +145,6 @@
               </div>
             </ng-container>
           </td>
-          
-          <!-- <td *ngFor="let hour of hours" [style.padding]="0" class="hour">
-            <ng-container *ngFor="let log of data.logs">
-              <div class="hour-container"
-                   *ngIf="isLogInHour(log, startTime.getHours() + hour) &&
-                          ((trackedChecked && getLogColor(log) === '#2ECD6F') ||
-                          (mediumChecked && getLogColor(log) === '#FFC107') ||
-                          (lowChecked && getLogColor(log) === '#ff0000') || 
-                          (manualChecked && getLogColor(log) === '#f87a3b'))"
-                   [style.height.px]="40"
-                   [style.width.px]="getLogWidth(log)"
-                   [style.background-color]="getLogColor(log)"
-                   [tooltip]="getLogTitle(log)"
-                   [style.margin-left.px]="getLogMarginLeft(log)"
-                   [style.background-color]="isUserTimeInRange(log) ? 'grey' : getLogColor(log)">
-              </div>
-            </ng-container>
-          </td> -->
-          
-          
-          
-          
           
         </tr>
       </tbody>
