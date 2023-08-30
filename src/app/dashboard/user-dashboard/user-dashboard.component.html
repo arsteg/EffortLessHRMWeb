@@ -135,6 +135,14 @@
           <h3>Tasks summary</h3>
         </div>
         <div>
+          <ul type="square">
+            <li *ngFor="let task of taskSummary" [ngClass]="{
+                  'todo': task.name === 'To Do',
+                  'inProgress': task.name == 'In Progress',
+                  'done': task.name === 'Done',
+                  'closed': task.name=== 'Closed'
+                }">{{task.name}}</li>
+          </ul>
           <ngx-charts-pie-chart  [results]="taskSummary">
           </ngx-charts-pie-chart>
         </div>

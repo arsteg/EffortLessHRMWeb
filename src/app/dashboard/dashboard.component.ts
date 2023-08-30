@@ -134,7 +134,7 @@ export class DashboardComponent implements OnInit {
   this.populateTaskwiseHours(this.currentUser.id);
 
   this.getDayWorkStatusByUser(this.currentUser.id);
-  this.getTaskStatusCounts(this.currentUser.id)
+  this.getTaskStatusCounts(this.currentUser.id);
  
     this.dashboardService.getApplicationTimeSummary(this.currentUser.id,this.selectedDate).subscribe(response => {
       this.productivityData= response.data;

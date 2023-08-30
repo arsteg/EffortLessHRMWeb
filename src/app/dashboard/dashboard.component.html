@@ -196,6 +196,14 @@
           </select>
         </div>
         <div>
+          <ul type="square">
+            <li *ngFor="let task of taskSummary" [ngClass]="{
+                  'todo': task.name === 'To Do',
+                  'inProgress': task.name == 'In Progress',
+                  'done': task.name === 'Done',
+                  'closed': task.name=== 'Closed'
+                }">{{task.name}}</li>
+          </ul>
           <ngx-charts-pie-chart [results]="taskSummary">
           </ngx-charts-pie-chart>
         </div>
@@ -223,8 +231,8 @@
             <th>Project</th>
             <th>Task</th>
             <th>Time</th>
-            <ng-container *ngFor="let projectTask of dayWorkStatusByUser" >
-           
+            <ng-container *ngFor="let projectTask of dayWorkStatusByUser">
+
               <tr *ngFor="let task of projectTask.tasks;let i = index ">
                 <td>
                   {{i==0?projectTask?.projectName:''}}
@@ -234,7 +242,7 @@
                   <span class="dash-percent"> {{ ((task?.count*10)*60*1000) | milliSecondsToTime }} </span>
                 </td>
               </tr>
-           
+
             </ng-container>
           </tbody>
         </table>

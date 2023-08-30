@@ -529,6 +529,22 @@ select {
   color: rgb(122, 163, 229);
 }
 
+.todo {
+ color: #a8385d;
+}
+
+.inProgress {
+  color: #7aa3e5;
+}
+
+.done {
+  color: #a27ea8;
+}
+
+.closed {
+ color: #aae3f5;
+}
+
 .page {
   cursor: pointer;
 }
