@@ -77,15 +77,15 @@
                         <div class="col-md-12 col-xl-12 card-body p-4">
                             <div class="d-flex text-black">
                                 <div class="flex-shrink-0">
-                                    <div><b>Tracked: {{minutesToTime(productivity[0]?.total) }}</b></div>
-                                    <div>Idle: {{ minutesToTime(productivity[0]?.inactive) }}</div>
+                                    <div><b>Tracked: {{millisecondsToTime(productivity[0]?.total) }}</b></div>
+                                    <div>Idle: {{ millisecondsToTime(productivity[0]?.inactive) }}</div>
                                 </div>
                                 <div class="flex-grow-1 ms-5">
-                                    <h5 class="mb-1">AVG mouse/minute: {{ productivity[0]?.mouseClicks}}</h5>
-                                    <h5 class="mb-1">AVG keyboard/minute: {{ productivity[0]?.keyboardStrokes}}</h5>
+                                    <h5 class="mb-1">AVG mouse/minute: {{ averageCount(millisecondsToMinutes(productivity[0]?.total), productivity[0]?.mouseClicks)}}</h5>
+                                    <h5 class="mb-1">AVG keyboard/minute: {{ averageCount(millisecondsToMinutes(productivity[0]?.total), productivity[0]?.keyboardStrokes)}}</h5>
                                 </div>
                                 <div class="flex-grow-1 ms-5">
-                                    <h5 class="mb-1">AVG scroll/minute: {{ productivity[0]?.scrollingNumber }}</h5>
+                                    <h5 class="mb-1">AVG scroll/minute: {{ averageCount(millisecondsToMinutes(productivity[0]?.total), productivity[0]?.scrollingNumber) }}</h5>
                                 </div>
                             </div>
                         </div>
@@ -130,9 +130,9 @@
                 </div>
                 <div class="d-flex justify-content-between pt-4">
 
-                    <div>{{minutesToTime(productivity[0]?.total) }}<br />Tracked</div>
-                    <div>{{minutesToTime(productivity[0]?.TimeSpent) }}<br />Active</div>
-                    <div>{{ minutesToTime(productivity[0]?.inactive) }}<br />Inactive</div>
+                    <div>{{millisecondsToTime(productivity[0]?.total) }}<br />Tracked</div>
+                    <div>{{millisecondsToTime(productivity[0]?.TimeSpent) }}<br />Active</div>
+                    <div>{{ millisecondsToTime(productivity[0]?.inactive) }}<br />Inactive</div>
                 </div>
                 <div class="d-flex justify-content-center pt-4">
                     Team AVG active minutes: 80%

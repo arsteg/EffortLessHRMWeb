@@ -50,16 +50,23 @@ export class ProductivityReportComponent implements OnInit {
 
   ngOnInit(): void {
     this.toggleSingleMember();
-    this.commonservice.getCurrentUserRole().subscribe((role: any) => {
-      this.role = role;
-    })
+
+//================= added temporary=======
+    //this.commonservice.getCurrentUserRole().subscribe((role: any) => {   // comment temporary
+      this.role = "admin"; // added temporary
+    //})
+//=========================
+
+
     this.getCurrentUser().subscribe(() => {
       this.initializeDefaultUser();
       this.populateUsers();
       if (this.showSingleMember && !this.showAllMembers) {
         this.getProductivityPerMem();
       }
-      else this.getProductivityAllMem();
+      else{
+        this.getProductivityAllMem();
+      }
     });
   }
  
@@ -130,6 +137,9 @@ export class ProductivityReportComponent implements OnInit {
     return hours + ' hr ' + minutes + ' m';
   }
 
+  millisecondsToMinutes(milliseconds: number): number {
+    return milliseconds / 60000;
+  }
 
   getProductivityPerMem() {
     let searchProductivity = new Productivity();
