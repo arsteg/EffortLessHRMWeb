@@ -1,15 +1,13 @@
 export interface Asset {
   _id:string;
-  assetId: string;
   assetType: string; // Using string as ObjectId is typically represented as a string in TypeScript
   company: string;   // Similarly, using string for ObjectId
   assetName: string;
   purchaseDate: Date;
   warrantyExpiry: Date;
   status: string;    // Using string for ObjectId
-  serialNumber: string;
-  cost: number;
   image?: string;    // Making it optional since it doesn't have a required flag in the Mongoose schema
+  customAttributes:CustomAttribute[];
 }
 
 export interface AssetStatus {
@@ -33,11 +31,16 @@ export interface AssetType {
   description: string;
   customAttributes: CustomAttribute[];
 }
+export interface AssetStatus {
+  _id:string;
+  statusName: string;
+}
 
 export interface CustomAttribute {
   attributeName: string;
   description: string;
   dataType: string;
   isRequired: boolean;
+  value:number;
 }
 

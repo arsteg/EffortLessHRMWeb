@@ -41,6 +41,14 @@ export class AssetManagementService {
     return response;
   }
 
+  getAllAssetsByType(id:string): Observable<any> {
+    var response = this.http.get<Asset[]>(
+      `${environment.apiUrlDotNet}/assetsManagement/assetsByType/${id}`,
+      this.httpOptions
+    );
+    return response;
+  }
+
   getAsset(id: string): Observable<Asset> {
     var response = this.http.get<Asset>(
       `${environment.apiUrlDotNet}/assetsManagement/assets/${id}`,
@@ -84,6 +92,12 @@ export class AssetManagementService {
     return this.http.put(
       `${environment.apiUrlDotNet}/assetsManagement/assetStatus/${id}`,
       status,
+      this.httpOptions
+    );
+  }
+  getStatusList(): Observable<any> {
+    return this.http.get(
+      `${environment.apiUrlDotNet}/assetsManagement/assetStatus`,
       this.httpOptions
     );
   }

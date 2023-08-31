@@ -73,7 +73,7 @@ selectTab(tabIndex: number) {
   }
 
   updateAsset() {
-    this.assetService.updateAsset(this.selectedAsset.assetId, this.assetForm.value).subscribe(
+    this.assetService.updateAsset(this.selectedAsset._id, this.assetForm.value).subscribe(
       response => {
         this.toast.success('Asset updated successfully!');
         this.getAssets();
@@ -88,7 +88,7 @@ selectTab(tabIndex: number) {
   deleteAsset(asset: Asset) {
     const result = window.confirm('Are you sure you want to delete this asset?');
     if (result) {
-      this.assetService.deleteAsset(asset.assetId).subscribe(
+      this.assetService.deleteAsset(asset._id).subscribe(
         response => {
           this.toast.success('Asset deleted successfully!');
           this.getAssets();

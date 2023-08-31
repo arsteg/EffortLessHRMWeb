@@ -5,35 +5,34 @@
     <thead>
       <tr>
         <th scope="col">
+          <label for="vendorDropdown">Select Vendor:</label>
+          <select id="vendorDropdown" [(ngModel)]="selectedAssetType" (change)="onAssetTypeChange()">
+              <option *ngFor="let asset of assetTypes" [ngValue]="asset._id">{{ asset.typeName }}</option>
+          </select>
+        </th>
+        <th scope="col">
           <input type="text" placeholder="Search assets..." (input)="filterAssets($event)" class="form-control">
         </th>
-        <th scope="col"></th>
         <th scope="col"></th>
       </tr>
       <tr>
         <th>Asset Name</th>
-        <th>Asset Type</th>
-        <th>Company</th>
         <th>Purchase Date</th>
         <th>Warranty Expiry</th>
         <th>Status</th>
-        <th>Serial Number</th>
-        <th>Cost</th>
         <th>Image</th>
+        <th *ngFor="let heading of gridHeadings">{{heading}}</th>
         <th>Action</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let asset of filteredAssets | paginate: { itemsPerPage: 10, currentPage: p }">
         <td>{{ asset.assetName }}</td>
-        <td>{{ asset.assetType }}</td>
-        <td>{{ asset.company }}</td>
         <td>{{ asset.purchaseDate | date }}</td>
         <td>{{ asset.warrantyExpiry | date }}</td>
-        <td>{{ asset.status }}</td>
-        <td>{{ asset.serialNumber }}</td>
-        <td>{{ asset.cost }}</td>
-        <td><img [src]="asset.image" alt="{{ asset.assetName }}" width="50"></td>
+        <td>{{ getStatusName(asset.status)}}</td>
+        <td><img *ngIf="asset.image" [src]="asset.image" alt="{{ asset.assetName }}" width="50"></td>
+        <td *ngFor="let item of asset.customAttributes"> {{item.value}} </td>
         <td>
           <button (click)="editAsset(asset)" class="btn btn-primary btn-sm mr-2">Edit</button>
           <button (click)="deleteAsset(asset)" class="btn btn-danger btn-sm">Delete</button>
@@ -47,68 +46,33 @@
   </div>
 
   <h2 style="color: blue;">Add/Edit Asset</h2>
-
   <form [formGroup]="assetForm" (ngSubmit)="isEdit ? updateAsset() : addAsset()" class="mt-4 p-3 bg-light border rounded" style="background-color: gray;">
 
-    <div class="row">
-      <div class="col-md-3 form-group">
-          <label for="assetName">Asset Name</label>
-          <input type="text" id="assetName" class="form-control" formControlName="assetName" required>
+      <!-- Basic Fields -->
+      <div class="form-group">
+        <label>Asset Type</label>
+        <input type="text" formControlName="assetType" class="form-control">
+      </div>
+      <!-- ... add other fields similarly -->
+
+      <!-- Dynamic CustomAttributes -->
+      <div formArrayName="customAttributes">
+        <div *ngFor="let customAttribute of selectedAsset?.customAttributes; let i=index" [formGroupName]="i">
+          <div class="form-group">
+            <label>Attribute Name</label>
+            <input type="text" formControlName="attributeName" class="form-control">
+          </div>
+        </div>
       </div>
 
-      <div class="col-md-3 form-group">
-          <label for="assetType">Asset Type</label>
-          <input type="text" id="assetType" class="form-control" formControlName="assetType" required>
+      <div class="form-group row">
+        <div class="col-sm-1">
+          <button type="submit" class="btn btn-primary ml-5" [disabled]="assetForm.invalid">{{ isEdit ? 'Update' : 'Add' }}</button>
+        </div>
+        <div class="col-sm-1">
+          <button type="button" *ngIf="isEdit" (click)="isEdit = false" class="btn btn-secondary">Cancel</button>
+        </div>
       </div>
 
-      <div class="col-md-3 form-group">
-          <label for="company">Company</label>
-          <input type="text" id="company" class="form-control" formControlName="company" required>
-      </div>
-
-      <div class="col-md-3 form-group">
-          <label for="purchaseDate">Purchase Date</label>
-          <input type="date" id="purchaseDate" class="form-control" formControlName="purchaseDate" required>
-      </div>
-  </div>
-
-  <div class="row">
-      <div class="col-md-3 form-group">
-          <label for="warrantyExpiry">Warranty Expiry</label>
-          <input type="date" id="warrantyExpiry" class="form-control" formControlName="warrantyExpiry" required>
-      </div>
-
-      <div class="col-md-3 form-group">
-          <label for="status">Status</label>
-          <input type="text" id="status" class="form-control" formControlName="status" required>
-      </div>
-
-      <div class="col-md-3 form-group">
-          <label for="serialNumber">Serial Number</label>
-          <input type="text" id="serialNumber" class="form-control" formControlName="serialNumber" required>
-      </div>
-
-      <div class="col-md-3 form-group">
-          <label for="cost">Cost</label>
-          <input type="number" id="cost" class="form-control" formControlName="cost" required>
-      </div>
-  </div>
-
-  <div class="row">
-      <div class="col-md-3 form-group">
-          <label for="image">Image URL</label>
-          <input type="text" id="image" class="form-control" formControlName="image">
-      </div>
-  </div>
-
-
-    <div class="form-group row">
-      <div class="col-sm-1">
-        <button type="submit" class="btn btn-primary ml-5" [disabled]="assetForm.invalid">{{ isEdit ? 'Update' : 'Add' }}</button>
-      </div>
-      <div class="col-sm-1">
-        <button type="button" *ngIf="isEdit" (click)="isEdit = false" class="btn btn-secondary">Cancel</button>
-      </div>
-    </div>
   </form>
 </div>
