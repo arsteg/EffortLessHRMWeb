@@ -421,10 +421,11 @@ export class TasksComponent implements OnInit {
   getUsersByProject() {
     const selectedProject = this.addForm.value.project;
     this.projectService.getprojectUser(selectedProject).subscribe((res: any) => {
-      this.usersByProject = res && res.data && res.data['projectUserList'];
+      this.usersByProject = res?.data?.projectUserList;
+      this.usersByProject = this.usersByProject.filter(user => user !== null);
     });
   }
-
+  
   onSubmit() {
     const newTask: Task = {
       _id: '',
@@ -548,6 +549,10 @@ export class TasksComponent implements OnInit {
 
 
   deleteTask() {
+    if (!this.selectedTask.project) {
+      this.toast.error('Task Cannot be Deleted: Please update Project', 'Error!');
+      return;
+    }
     this.tasksService.deleteTask(this.selectedTask.id).subscribe(response => {
       const index = this.tasks.findIndex(task => task.id === this.selectedTask.id);
       if (index !== -1) {
@@ -861,6 +866,7 @@ export class TasksComponent implements OnInit {
     
     if (hostname === 'localhost') {
       this.domain = `${hostname}:${port}`;
+      // console.log(this.domain)
     } else {
       this.domain = hostname;
       console.log(this.domain)
@@ -886,6 +892,7 @@ export class TasksComponent implements OnInit {
       tempInput.select();
       document.execCommand('copy');
       document.body.removeChild(tempInput);
+      console.log(tempInput.value)
       }
     this.snackBar.open('Task is copied to clipboard', 'Dismiss', { duration: 4000 });
   }

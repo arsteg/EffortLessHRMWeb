@@ -1115,8 +1115,11 @@
 
                                         <select class="custom-select mb-3 p-2" formControlName="TaskUser">
                                             <option [value]="user?.user?.id" *ngFor="let user of usersByProject">
+                                               
                                                 {{user?.user?.firstName | titlecase}} {{user?.user?.lastName |
-                                                titlecase}}</option>
+                                                titlecase}}
+                                           
+                                            </option>
                                         </select>
 
                                     </div>

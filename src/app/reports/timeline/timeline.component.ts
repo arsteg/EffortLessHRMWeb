@@ -145,6 +145,13 @@ export class TimelineComponent implements OnInit {
   filterData() {
     this.getTimeLine();
   }
+  refresh() {
+    this.selectedDate= new Date(this.selectedDate)
+    this.selectedUser = [];
+    // this.selectedDate = this.currentDate;
+    this.selectedProject = [];
+     this.getTimeLine();
+  }
 
   getTimeLine() {
     let timeline = new TimeLine();
@@ -196,7 +203,7 @@ export class TimelineComponent implements OnInit {
     });
     this.showMembersColumn = true;
     this.showProjectsColumn = true;
-    
+
   }
 
   formattedStartTimeHour(hour: number): string {
@@ -364,6 +371,6 @@ export class TimelineComponent implements OnInit {
       this.showMembersColumn = true
     }
   }
-  
+
 
 }

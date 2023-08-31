@@ -88,7 +88,7 @@
                         Total &nbsp;
                         <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                     </th>
-                    <th scope="col" [appSort]="attendance" data-order="{{ sortOrder }}" data-name=""
+                    <th scope="col" [appSort]="attendance" data-order="{{ sortOrder }}" data-name="percetage"
                         (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
                         Activity &nbsp;
                         <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
@@ -109,7 +109,7 @@
                         <td>{{minutesToTime(data?.time)}}</td>
                         <td>{{minutesToTime(data?.manual)}}</td>
                         <td>{{minutesToTime(data?.total)}}</td>
-                        <td>{{data?.activity || 'N/A'}}</td>
+                        <td>{{data?.percetage}}%</td>
                     </ng-container>
                 </tr>
                 <ng-container *ngIf="attendance.length === 0">
