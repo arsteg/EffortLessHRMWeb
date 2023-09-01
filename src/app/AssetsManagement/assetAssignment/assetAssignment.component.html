@@ -11,15 +11,37 @@
             <!-- Unassigned Assets (Top Section) -->
             <div class="mb-3">
                 <h5 class="mb-1">Unassigned Assets</h5>
-                <ul class="list-group">
+                <!-- <ul class="list-group">
                     <li *ngFor="let asset of unAssignedAssets"
                         class="list-group-item d-flex justify-content-between align-items-center">
                         {{ asset.assetName }}
                         <button class="btn btn-success" (click)="assignAsset(asset)">Assign</button>
                     </li>
-                </ul>
+                </ul> -->
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Asset</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngFor="let asset of unAssignedAssets;">
+                            <tr>
+                                <td>{{ asset?.assetName }}</td>
+                                <td>{{ getAssetTypeName(asset?.assetType) }}</td>
+                                <td>{{ getStatusName(asset?.status) }}</td>
+                                <td>
+                                    <button class="btn btn-danger" (click)="assignAsset(asset)">Assign</button>
+                                </td>
+                            </tr>
+                        </ng-container>
+                    </tbody>
+                </table>
             </div>
-
+<hr>
             <!-- Assigned Assets (Bottom Section) -->
             <div class="bg-white p-2">
                 <h5>Assigned Assets</h5>

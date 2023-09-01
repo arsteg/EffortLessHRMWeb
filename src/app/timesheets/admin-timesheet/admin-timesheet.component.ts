@@ -57,52 +57,7 @@ export class AdminTimesheetComponent implements OnInit {
   onSubmit() {
   }
 
-  // populateTimesheet(){
-  //   this.timesheetTotals=[];
-  //   this.timesheetAllTotals={};
-  //   const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-  //   const fromDt= this.formatDate(this.fromDate);
-  //   const toDt= this.formatDate(this.toDate);
-  //   if (this.selectedUser.length === 0) {
-  //       this.timesheetTotals=[];
-  //       this.timesheetAllTotals={};
-  //       return;
-  //   }
-  //   this.timeLogService.geAdminTimeSheet(`${this.selectedUser.join()}`, fromDt,toDt ).toPromise()
-  //   .then(response => {
-  //     this.timeLogs = response.data;
-  //     if(this.timeLogs.columns.length>0){
-  //       this.timesheetTotals[this.timeLogs.columns.length-2]=0;
-  //     }
-
-  //     this.selectedUser.forEach(user=>{
-  //       const logs = this.timeLogs?.matrix[user];
-  //       this.timesheetTotals=[];
-  //       this.timesheetTotals[this.timeLogs.columns.length-2]=0;
-  //       for(let r=0 ;r< logs.length;r++){
-  //         let rowTotal=0;
-  //         for(let c=1;c<logs[r].length;c++){
-  //           this.timesheetTotals[c-1] = (this.timesheetTotals[c-1] || 0 )  + (logs[r][c] || 0 );
-  //           rowTotal= (+rowTotal)+ (logs[r][c] || 0 );
-  //         }
-  //         this.timesheetTotals[this.timesheetTotals.length-1]=rowTotal;
-  //       }
-  //       this.timesheetAllTotals[user]=this.timesheetTotals;
-  //       console.log(this.timesheetAllTotals[user])
-  //     });
-      
-    
-    
-    
-    
-    
-    
-    
-  //   })
-  //   .catch(error => {
-  //     this.toast.error('Something went wrong, Please try again.', 'Error!');
-  //   });
-  // }
+ 
   populateTimesheet() {
     this.timesheetAllTotals = {};
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -134,13 +89,12 @@ export class AdminTimesheetComponent implements OnInit {
             }
 
             this.timesheetAllTotals[user] = userTotals;
-            console.log(this.timesheetAllTotals[user]);
         });
     })
    
 
         .catch(error => {
-            this.toast.error('Something went wrong, Please try again.', 'Error!');
+           console.log('Something went wrong, Please try again.', 'Error!');
         });
 }
 
