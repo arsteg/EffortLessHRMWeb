@@ -1,41 +1,49 @@
-<div class="assetContainer col-8" style="background-color: white;">
-  <h2 style="color: blue;">Asset Status</h2>
+<div class="assetContainer  bg-white">
+  <div class="row">
+    <div class="col-8 border-end">
+      <h2 style="color: blue;" class="ps-2 pt-2">Asset Status</h2>
 
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Status</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let status of assetStatuses">
-        <td>{{ status.statusName }}</td>
-        <td>
-          <button (click)="editAssetStatus(status)" class="btn btn-primary btn-sm mr-2">Edit</button>
-          <button (click)="deleteAssetStatus(status)" class="btn btn-danger btn-sm">Delete</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-
-  <h2 style="color: blue;">Add/Edit Asset</h2>
-
-  <form [formGroup]="assetStatusForm" (ngSubmit)="isEdit ? updateAssetStatus() : addAssetStatus()" class="mt-4 p-3 bg-light border rounded" style="background-color: gray;">
-
-    <div class="row">
-      <div class="col-md-3 form-group">
-          <label for="assetStatusName">Status</label>
-          <input type="text" id="assetStatusName" class="form-control" formControlName="statusName" required>
-      </div>
-  </div>
-    <div class="form-group row">
-      <div class="col-sm-1">
-        <button type="submit" class="btn btn-primary ml-5" [disabled]="assetStatusForm.invalid">{{ isEdit ? 'Update' : 'Add' }}</button>
-      </div>
-      <div class="col-sm-1">
-        <button type="button" *ngIf="isEdit" (click)="isEdit = false" class="btn btn-secondary">Cancel</button>
-      </div>
+      <table class="table px-2">
+        <thead>
+          <tr>
+            <th>Status</th>
+            <th class="text-center">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let status of assetStatuses">
+            <td>{{ status.statusName }}</td>
+            <td class="text-center">
+              <button (click)="editAssetStatus(status)" class="btn btn-primary shadow btn-sm me-2">Edit</button>
+              <button  (click)="openDialog(status)" class="btn btn-danger shadow btn-sm">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-  </form>
+
+    <div class="col-4">
+      <h2 style="color: blue;" class="ps-2 pt-2">Add/Edit Asset</h2>
+
+      <form [formGroup]="assetStatusForm" (ngSubmit)="isEdit ? updateAssetStatus() : addAssetStatus()"
+        class="mt-4 p-3 me-4 bg-light border rounded" style="background-color: gray;">
+
+        <div class="row">
+          <div class="form-group">
+            <label for="assetStatusName">Status</label>
+            <input type="text" id="assetStatusName" class="form-control" formControlName="statusName" required>
+          </div>
+        </div>
+        <div class="form-group d-flex justify-content-between mt-2">
+          <div class="">
+            <button type="submit" mat-raised-button color="primary" class="ml-5" [disabled]="assetStatusForm.invalid">{{
+              isEdit ? 'Update' : 'Add' }}</button>
+          </div>
+          <div class="">
+            <button type="button" *ngIf="isEdit" mat-raised-button (click)="isEdit = false">Cancel</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>

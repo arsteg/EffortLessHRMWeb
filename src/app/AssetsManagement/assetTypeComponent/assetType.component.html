@@ -1,127 +1,138 @@
-<div class="assetContainer col-8" style="background-color: white;">
-  <h2 style="color: blue;">Asset Types</h2>
+<div class="assetContainer " style="background-color: white;">
+  <div class="row">
+    <div class="col-6 border-end">
+     <div class="d-flex justify-content-between"> 
+      <h2 style="color: blue;" class="pt-2 ps-2">Asset Types</h2>
 
-  <input type="text" placeholder="Search vendors..." (input)="filterAssetTypes($event)" class="form-control mb-3">
-
-  <table class="table table-bordered">
-      <thead class="thead-dark">
+      <input type="text" placeholder="Search vendors..." (input)="filterAssetTypes($event)"
+        class="form-control w-25 ms-2 mt-2 mb-3">
+      </div>
+      <table class="table  ps-2">
+        <thead class="thead-dark">
           <tr>
-              <th>name</th>
-              <th>Description</th>
-              <th>Action</th>
-          </tr>
-      </thead>
-      <tbody>
-          <tr *ngFor="let assetType of filteredAssetTypes | paginate: { itemsPerPage: 10, currentPage: p }">
-              <td (click)="viewAssetType(assetType)">{{ assetType.typeName }}</td>
-              <td (click)="viewAssetType(assetType)">{{ assetType.description }}</td>
-              <td>
-                  <button (click)="editAssetType(assetType)" class="btn btn-primary btn-sm mr-2">Edit</button>
-                  <button (click)="deleteAssetType(assetType)" class="btn btn-danger btn-sm">Delete</button>
-              </td>
-          </tr>
-      </tbody>
-  </table>
-
-  <div class="d-flex justify-content-center mt-3">
-      <pagination-controls (pageChange)="p = $event"></pagination-controls>
-  </div>
-
-  <div class="bordered-div">
-  <h1>Attributes</h1>
-    <table class="table">
-    <thead>
-        <tr>
             <th>Name</th>
             <th>Description</th>
-            <th>Data Type</th>
-            <th>Is Required</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let customAttribute of selectedAssetType?.customAttributes">
-            <td>{{ customAttribute.attributeName }}</td>
-            <td>{{ customAttribute.description }}</td>
-            <td>{{customAttribute.dataType}}</td>
-            <td>{{customAttribute.isRequired?'Yes':'No'}}</td>
-        </tr>
-    </tbody>
-</table>
-</div>
-
-  <div>
-  <h2 class="mt-4">Add/Edit Vendor</h2>
-
-  <form [formGroup]="assetTypeForm" (ngSubmit)="isEdit ? updateAssetType() : addassetType()" class="mt-4 p-3 bg-light border rounded">
-
-    <!-- AssetType Form fields -->
-    <div class="form-group">
-      <label for="typeName">Type Name:</label>
-      <input type="text" class="form-control" id="typeName" formControlName="typeName">
-      <div *ngIf="typeName.errors && typeName.touched" class="text-danger">
-        <div *ngIf="typeName.errors.required">Type Name is required.</div>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="description">Description:</label>
-      <input type="text" class="form-control" id="description" formControlName="description">
-    </div>
-
-    <!-- CustomAttributes Array fields -->
-    <div formArrayName="customAttributes">
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>Attribute Name</th>
-            <th>Description</th>
-            <th>Data Type</th>
-            <th>Is Required</th>
-            <th>Action</th>
+            <th  class="text-center">Action</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let customAttribute of customAttributes.controls; let i = index" [formGroupName]="i">
-            <td>
-              <input type="text" class="form-control" formControlName="attributeName">
-              <div *ngIf="customAttribute.get('attributeName').errors && customAttribute.get('attributeName').touched" class="text-danger">
-                <div *ngIf="customAttribute.get('attributeName').errors.required">Attribute Name is required.</div>
-              </div>
-            </td>
-            <td>
-              <input type="text" class="form-control" formControlName="description">
-            </td>
-            <td>
-              <select class="form-control" formControlName="dataType">
-                <option value="string">String</option>
-                <option value="number">Number</option>
-                <option value="date">Date</option>
-                <option value="boolean">Boolean</option>
-            </select>
-            <div *ngIf="customAttribute.get('dataType').errors && customAttribute.get('dataType').touched" class="text-danger">
-                <div *ngIf="customAttribute.get('dataType').errors.required">Data Type is required.</div>
-            </div>
-            </td>
-            <td>
-              <input type="checkbox" class="form-check-input" formControlName="isRequired">
-            </td>
-            <td>
-              <!-- Remove CustomAttribute -->
-              <button type="button" class="btn btn-danger" (click)="removeCustomAttribute(i)">Remove</button>
+          <tr *ngFor="let assetType of filteredAssetTypes | paginate: { itemsPerPage: 10, currentPage: p }">
+            <td (click)="viewAssetType(assetType)">{{ assetType.typeName }}</td>
+            <td (click)="viewAssetType(assetType)">{{ assetType.description }}</td>
+            <td class="text-center">
+              <button (click)="editAssetType(assetType)" class="btn btn-primary btn-sm me-2">Edit</button>
+              <button (click)="openDialog(assetType)" class="btn btn-danger btn-sm">Delete</button>
             </td>
           </tr>
         </tbody>
       </table>
-      <!-- Add New CustomAttribute -->
-      <button class="btn btn-primary mt-3" type="button" (click)="addNewCustomAttribute()">Add New Custom Attribute</button>
+
+      <div class="d-flex justify-content-center mt-3">
+        <pagination-controls (pageChange)="p = $event"></pagination-controls>
+      </div>
+
+      <div class="mt-2 border-top pt-2 ps-2">
+        <h1>Attributes</h1>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Data Type</th>
+              <th>Is Required</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let customAttribute of selectedAssetType?.customAttributes">
+              <td>{{ customAttribute.attributeName }}</td>
+              <td>{{ customAttribute.description }}</td>
+              <td>{{customAttribute.dataType}}</td>
+              <td>{{customAttribute.isRequired?'Yes':'No'}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
-    <!-- Submit Button -->
-    <button class="btn btn-primary mt-3" type="submit" [disabled]="!assetTypeForm.valid">Submit</button>
-</form>
+    <div class="col-6">
+      <h2 class="mt-4">Add/Edit Vendor</h2>
+
+      <form [formGroup]="assetTypeForm" (ngSubmit)="isEdit ? updateAssetType() : addassetType()"
+        class="mt-4 p-3 me-2 bg-light border rounded">
+
+        <!-- AssetType Form fields -->
+        <div class="form-group">
+          <label for="typeName">Type Name:</label>
+          <input type="text" class="form-control" id="typeName" formControlName="typeName">
+          <div *ngIf="typeName.errors && typeName.touched" class="text-danger">
+            <div *ngIf="typeName.errors.required">Type Name is required.</div>
+          </div>
+        </div>
+
+        <div class="form-group mt-1">
+          <label for="description">Description:</label>
+          <input type="text" class="form-control" id="description" formControlName="description">
+        </div>
+
+        <!-- CustomAttributes Array fields -->
+        <div formArrayName="customAttributes">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Attribute Name</th>
+                <th>Description</th>
+                <th>Data Type</th>
+                <th>Is Required</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let customAttribute of customAttributes.controls; let i = index" [formGroupName]="i">
+                <td>
+                  <input type="text" class="form-control" formControlName="attributeName">
+                  <div
+                    *ngIf="customAttribute.get('attributeName').errors && customAttribute.get('attributeName').touched"
+                    class="text-danger">
+                    <div *ngIf="customAttribute.get('attributeName').errors.required">Attribute Name is required.</div>
+                  </div>
+                </td>
+                <td>
+                  <input type="text" class="form-control" formControlName="description">
+                </td>
+                <td>
+                  <select class="form-control" formControlName="dataType">
+                    <option value="string">String</option>
+                    <option value="number">Number</option>
+                    <option value="date">Date</option>
+                    <option value="boolean">Boolean</option>
+                  </select>
+                  <div *ngIf="customAttribute.get('dataType').errors && customAttribute.get('dataType').touched"
+                    class="text-danger">
+                    <div *ngIf="customAttribute.get('dataType').errors.required">Data Type is required.</div>
+                  </div>
+                </td>
+                <td>
+                  <input type="checkbox" class="form-check-input" formControlName="isRequired">
+                </td>
+                <td>
+                  <!-- Remove CustomAttribute -->
+                  <button type="button" class="btn btn-danger" (click)="removeCustomAttribute(i)">Remove</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <!-- Add New CustomAttribute -->
+          <button class="btn btn-primary mt-3" type="button" (click)="addNewCustomAttribute()">Add New Custom
+            Attribute</button>
+        </div>
+
+        <!-- Submit Button -->
+        <button class="btn btn-primary mt-3" type="submit" [disabled]="!assetTypeForm.valid">Submit</button>
+      </form>
 
 
 
 
-</div>
+    </div>
+  </div>
 </div>

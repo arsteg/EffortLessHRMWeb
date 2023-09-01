@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { AssetManagementService } from 'src/app/_services/assetManagement.service';
 import { AssetType } from 'src/app/models/AssetsManagement/Asset';
+import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-asset-type',
@@ -17,7 +19,11 @@ export class AssetTypeComponent implements OnInit {
     selectedAssetType: AssetType;
     p = 1;
 
-    constructor(private fb: FormBuilder, private toast: ToastrService,private assetManagementService: AssetManagementService) { }
+    constructor(private fb: FormBuilder,
+       private toast: ToastrService,
+       private assetManagementService: AssetManagementService,
+       private dialog: MatDialog
+       ) { }
 
     ngOnInit(): void {
         this.initTypeForm();
@@ -124,13 +130,10 @@ export class AssetTypeComponent implements OnInit {
     }
 
     deleteAssetType(assetType: AssetType) {
-      const result = window.confirm('Are you sure you want to delete this Asset Type?');
-      if (result) {
           this.assetManagementService.deleteAssetType(assetType._id).subscribe(response => {
               this.toast.success('Asset Type deleted successfully!');
               this.getAllAssetTypes();
           });
-      }
     }
 
     deleteCustomeAttribute(index: number) {
@@ -145,5 +148,19 @@ export class AssetTypeComponent implements OnInit {
           isRequired: [false]
       });
       this.customAttributes.push(attribute);
+  }
+  openDialog(assetType): void {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '400px',
+      data: assetType
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'delete') {
+        this.deleteAssetType(assetType);
+      }
+      err => {
+        this.toast.error('Can not be Deleted', 'Error!')
+      }
+    });
   }
 }

@@ -3,10 +3,3 @@
   opacity: 0.6;          /* Makes the div look faded */
 }
 
-.bordered-div {
-  border: 1px solid #d1d1d1; /* Light grey border */
-  padding: 15px; /* Inner spacing */
-  margin-bottom: 15px; /* Spacing between each row */
-  border-radius: 5px; /* Rounded corners */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional shadow for a slightly elevated effect */
-}

@@ -1,78 +1,79 @@
-<div class="assetContainer col-8" style="background-color: white;">
-  <h2 style="color: blue;">Asset List</h2>
-
-  <table class="table">
-    <thead>
-      <tr>
-        <th scope="col">
-          <label for="vendorDropdown">Select Vendor:</label>
+<div class="assetContainer" style="background-color: white;">
+  <div class="row">
+    <div class="col-md-8 border-end">
+      <h2 style="color: blue;" class="pt-2 ps-2">Asset List</h2>
+      <div class="d-flex justify-content-between">
+        <div class="w-50 ps-2 d-flex"> <label for="vendorDropdown" class="pt-2 pe-1">Select&nbsp;Vendor:</label>
           <select id="vendorDropdown" [(ngModel)]="selectedAssetType" (change)="onAssetTypeChange()">
-              <option *ngFor="let asset of assetTypes" [ngValue]="asset._id">{{ asset.typeName }}</option>
+            <option *ngFor="let asset of assetTypes" [ngValue]="asset._id">{{ asset.typeName }}</option>
           </select>
-        </th>
-        <th scope="col">
-          <input type="text" placeholder="Search assets..." (input)="filterAssets($event)" class="form-control">
-        </th>
-        <th scope="col"></th>
-      </tr>
-      <tr>
-        <th>Asset Name</th>
-        <th>Purchase Date</th>
-        <th>Warranty Expiry</th>
-        <th>Status</th>
-        <th>Image</th>
-        <th *ngFor="let heading of gridHeadings">{{heading}}</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let asset of filteredAssets | paginate: { itemsPerPage: 10, currentPage: p }">
-        <td>{{ asset.assetName }}</td>
-        <td>{{ asset.purchaseDate | date }}</td>
-        <td>{{ asset.warrantyExpiry | date }}</td>
-        <td>{{ getStatusName(asset.status)}}</td>
-        <td><img *ngIf="asset.image" [src]="asset.image" alt="{{ asset.assetName }}" width="50"></td>
-        <td *ngFor="let item of asset.customAttributes"> {{item.value}} </td>
-        <td>
-          <button (click)="editAsset(asset)" class="btn btn-primary btn-sm mr-2">Edit</button>
-          <button (click)="deleteAsset(asset)" class="btn btn-danger btn-sm">Delete</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-
-  <div class="d-flex justify-content-center">
-    <pagination-controls (pageChange)="p = $event"></pagination-controls>
-  </div>
-
-  <h2 style="color: blue;">Add/Edit Asset</h2>
-  <form [formGroup]="assetForm" (ngSubmit)="isEdit ? updateAsset() : addAsset()" class="mt-4 p-3 bg-light border rounded" style="background-color: gray;">
-
-      <!-- Basic Fields -->
-      <div class="form-group">
-        <label>Asset Type</label>
-        <input type="text" formControlName="assetType" class="form-control">
+        </div>
+        <input type="text" placeholder="Search assets..." (input)="filterAssets($event)" class="ms-3 w-25 form-control">
       </div>
-      <!-- ... add other fields similarly -->
+      <table class="table ps-2">
+        <thead>
+          <tr>
+            <th>Asset Name</th>
+            <th>Purchase Date</th>
+            <th>Warranty Expiry</th>
+            <th>Status</th>
+            <th>Image</th>
+            <th *ngFor="let heading of gridHeadings">{{heading}}</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let asset of filteredAssets | paginate: { itemsPerPage: 10, currentPage: p }">
+            <td>{{ asset.assetName }}</td>
+            <td>{{ asset.purchaseDate | date }}</td>
+            <td>{{ asset.warrantyExpiry | date }}</td>
+            <td>{{ getStatusName(asset.status)}}</td>
+            <td><img *ngIf="asset.image" [src]="asset.image" alt="{{ asset.assetName }}" width="50"></td>
+            <td *ngFor="let item of asset.customAttributes"> {{item.value}} </td>
+            <td>
+              <button (click)="editAsset(asset)" class="btn btn-primary btn-sm me-2">Edit</button>
+              <button (click)="deleteAsset(asset)" class="btn btn-danger btn-sm">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="d-flex justify-content-center">
+        <pagination-controls (pageChange)="p = $event"></pagination-controls>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <h2 style="color: blue;" class="pt-2 ps-2">Add/Edit Asset</h2>
+      <form [formGroup]="assetForm" (ngSubmit)="isEdit ? updateAsset() : addAsset()"
+        class="mt-4 me-3 p-3 bg-light border rounded" style="background-color: gray;">
 
-      <!-- Dynamic CustomAttributes -->
-      <div formArrayName="customAttributes">
-        <div *ngFor="let customAttribute of selectedAsset?.customAttributes; let i=index" [formGroupName]="i">
-          <div class="form-group">
-            <label>Attribute Name</label>
-            <input type="text" formControlName="attributeName" class="form-control">
+        <!-- Basic Fields -->
+        <div class="form-group">
+          <label>Asset Type</label>
+          <input type="text" formControlName="assetType" [value]="selectedAssetTypeName" class="form-control">
+        </div>
+        <!-- ... add other fields similarly -->
+
+        <!-- Dynamic CustomAttributes -->
+        <div formArrayName="customAttributes">
+          <div *ngFor="let customAttribute of selectedAsset?.customAttributes; let i=index" [formGroupName]="i">
+            <div class="form-group">
+              <label>Attribute Name</label>
+              <input type="text" formControlName="attributeName" class="form-control">
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="form-group row">
-        <div class="col-sm-1">
-          <button type="submit" class="btn btn-primary ml-5" [disabled]="assetForm.invalid">{{ isEdit ? 'Update' : 'Add' }}</button>
+        <div class="form-group d-flex justify-content-between mt-2">
+          <div class="">
+            <button type="submit" class="btn btn-primary ml-5" [disabled]="assetForm.invalid">{{ isEdit ? 'Update' :
+              'Add'
+              }}</button>
+          </div>
+          <div class="">
+            <button type="button" *ngIf="isEdit" (click)="isEdit = false" class="btn btn-secondary">Cancel</button>
+          </div>
         </div>
-        <div class="col-sm-1">
-          <button type="button" *ngIf="isEdit" (click)="isEdit = false" class="btn btn-secondary">Cancel</button>
-        </div>
-      </div>
-
-  </form>
+      </form>
+    </div>
+  </div>
 </div>

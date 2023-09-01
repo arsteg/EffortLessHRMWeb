@@ -1,13 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { AssetManagementService } from 'src/app/_services/assetManagement.service';
 import { Vendor } from 'src/app/models/AssetsManagement/Asset';
+import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
-  selector: 'app-vendor',
-  templateUrl: './vendor.component.html',
-  styleUrls: ['./vendor.component.css']
+    selector: 'app-vendor',
+    templateUrl: './vendor.component.html',
+    styleUrls: ['./vendor.component.css']
 })
 export class VendorComponent implements OnInit {
     vendors: Vendor[] = [];
@@ -17,7 +19,12 @@ export class VendorComponent implements OnInit {
     selectedVendor: Vendor;
     p = 1;
 
-    constructor(private fb: FormBuilder, private toast: ToastrService, private assetManagementService: AssetManagementService) { }
+    constructor(
+        private fb: FormBuilder,
+        private toast: ToastrService,
+        private assetManagementService: AssetManagementService,
+        private dialog: MatDialog
+        ) { }
 
     ngOnInit(): void {
         this.initVendorForm();
@@ -69,12 +76,27 @@ export class VendorComponent implements OnInit {
     }
 
     deleteVendor(vendor: Vendor) {
-        const result = window.confirm('Are you sure you want to delete this vendor?');
-        if (result) {
-            this.assetManagementService.deleteVendor(vendor._id).subscribe(response => {
-                this.toast.success('Vendor deleted successfully!');
-                this.getVendors();
-            });
-        }
+
+        this.assetManagementService.deleteVendor(vendor._id).subscribe(response => {
+            this.toast.success('Vendor deleted successfully!');
+            this.getVendors();
+        });
+
+    }
+
+    openDialog(vendor): void {
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+            width: '400px',
+            data: vendor
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result === 'delete') {
+                this.deleteVendor(vendor);
+            }
+            err => {
+                this.toast.error('Can not be Deleted', 'Error!')
+            }
+        });
     }
 }

@@ -12,8 +12,8 @@ import { Asset } from 'src/app/models/AssetsManagement/Asset';
 })
 export class VendorAssetsComponent implements OnInit {
 
-  vendors: { id: number, name: string }[] = [];  // Sample structure. Adjust as per your model.
-  assets: { id: number, name: string, isSelected: boolean }[] = [];  // Sample structure. Adjust as per your model.
+  vendors: any;  // Sample structure. Adjust as per your model.
+  assets: any;  // Sample structure. Adjust as per your model.
   userId:string;
   selectedVendor: number;  // To hold the selected vendor's ID.
 
@@ -22,8 +22,11 @@ export class VendorAssetsComponent implements OnInit {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.userId= currentUser.id;
 
-    this.loadVendors();
-    this.loadAssets();
+    // this.loadVendors();
+    // this.loadAssets();
+
+    this.getAllVendors();
+    this.getAllAssets();
   }
 
   // Sample function to load vendors. You might replace this with an API call.
@@ -37,14 +40,7 @@ export class VendorAssetsComponent implements OnInit {
   }
 
   // Sample function to load assets. You might replace this with an API call.
-  loadAssets(): void {
-    // Dummy data. Replace this with actual data fetch.
-    this.assets = [
-      { id: 1, name: 'Asset 1', isSelected: false },
-      { id: 2, name: 'Asset 2', isSelected: false },
-      // ... add more assets as needed
-    ];
-  }
+ 
 
   assignAssetsToVendor(): void {
     // Gather all selected assets.
@@ -61,12 +57,19 @@ export class VendorAssetsComponent implements OnInit {
   }
 
   constructor(private assetManagementService:AssetManagementService, private toast:ToastrService ) { }
+getAllVendors(){
+  this.assetManagementService.getAllVendors().subscribe((res: any)=>{
+    this.vendors = res.data;
 
+  })
+}
 
-
-
-
-
+  getAllAssets(){
+    this.assetManagementService.getAllAssets().subscribe((res: any)=>{
+      this.assets = res.data;
+  
+    })
+  }
 
 
 

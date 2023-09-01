@@ -1,12 +1,12 @@
 <div class="main-content">
   <div class="container-fluid">
 <div class="tabs">
-  <button (click)="selectTab(1)" [class.active]="selectedTab === 1">Assets</button>
-  <button (click)="selectTab(2)" [class.active]="selectedTab === 2">Asset Status</button>
-  <button (click)="selectTab(3)" [class.active]="selectedTab === 3">Vendor</button>
-  <button (click)="selectTab(4)" [class.active]="selectedTab === 4">Asset Type</button>
-  <button (click)="selectTab(5)" [class.active]="selectedTab === 5">Asset Assignment</button>
-  <button (click)="selectTab(6)" [class.active]="selectedTab === 6">Vendor Assets</button>
+  <button mat-raised-button (click)="selectTab(1)" [class.active]="selectedTab === 1">Assets</button>
+  <button mat-raised-button (click)="selectTab(2)" [class.active]="selectedTab === 2">Asset Status</button>
+  <button mat-raised-button (click)="selectTab(3)" [class.active]="selectedTab === 3">Vendor</button>
+  <button mat-raised-button (click)="selectTab(4)" [class.active]="selectedTab === 4">Asset Type</button>
+  <button mat-raised-button (click)="selectTab(5)" [class.active]="selectedTab === 5">Asset Assignment</button>
+  <button mat-raised-button (click)="selectTab(6)" [class.active]="selectedTab === 6">Vendor Assets</button>
 </div>
 
 <div *ngIf="selectedTab === 1" class="tab-content">

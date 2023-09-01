@@ -3,7 +3,7 @@
   <div class="vendor-selection">
       <label for="vendorDropdown">Select Vendor:</label>
       <select id="vendorDropdown" [(ngModel)]="selectedVendor">
-          <option *ngFor="let vendor of vendors" [ngValue]="vendor.id">{{ vendor.name }}</option>
+          <option *ngFor="let vendor of vendors" [ngValue]="vendor.id">{{ vendor.vendorName }}</option>
       </select>
   </div>
 
@@ -12,8 +12,8 @@
       <h5>Assets:</h5>
       <ul>
           <li *ngFor="let asset of assets">
-              <input type="checkbox" [(ngModel)]="asset.isSelected" id="asset_{{asset.id}}">
-              <label for="asset_{{asset.id}}">{{ asset.name }}</label>
+              <input type="checkbox" [(ngModel)]="asset.isSelected" id="{{asset._id}}">
+              <label for="asset_{{asset.id}}">{{ asset?.assetName }}</label>
           </li>
       </ul>
   </div>

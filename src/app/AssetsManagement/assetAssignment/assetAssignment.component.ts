@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { AssetManagementService } from 'src/app/_services/assetManagement.service';
-import { Asset } from 'src/app/models/AssetsManagement/Asset';
+import { Asset, AssetStatus, AssetType } from 'src/app/models/AssetsManagement/Asset';
 
 @Component({
   selector: 'app-assign-assets',
@@ -11,7 +11,10 @@ import { Asset } from 'src/app/models/AssetsManagement/Asset';
 export class AssignAssetsComponent implements OnInit {
   userId:string;
   unAssignedAssets: any[] = [];
-  assignedAssets: any[] = [];
+  assignedAssets: any;
+  assetTypes: AssetType[] = [];
+  filteredAssetTypes: any;
+  assetStatuses: AssetStatus[]=[];
 
   constructor(private assetManagementService:AssetManagementService, private toast:ToastrService ) { }
 
@@ -21,6 +24,8 @@ export class AssignAssetsComponent implements OnInit {
     this.userId= currentUser.id;
     this.loadAssignedAssets();
     this.loadUnAssignedAssets();
+    this.getAllAssetTypes();
+    this.getAssetStatusList()
   }
 
   loadUnAssignedAssets() {
@@ -31,7 +36,6 @@ export class AssignAssetsComponent implements OnInit {
 
   loadAssignedAssets() {
     this.assetManagementService.getEmployeeAssets(this.userId).subscribe(response => {
-      console.log('Assigned Assets Response:', response.data); // <-- Add this line
       this.assignedAssets = response.data;
   });
   }
@@ -57,4 +61,26 @@ export class AssignAssetsComponent implements OnInit {
     this.loadAssignedAssets();
     this.loadUnAssignedAssets();
   }
+  getAllAssetTypes() {
+    this.assetManagementService.getAllAssetTypes().subscribe(response => {
+      this.assetTypes = response.data;
+      this.filteredAssetTypes = this.assetTypes;
+  });
+  }
+
+  
+  getAssetTypeName(assetTypeId: string): string {
+    const assetType = this.filteredAssetTypes.find((type) => type._id === assetTypeId);
+    return assetType ? assetType.typeName : 'Unknown'; // Return typeName or 'Unknown' if not found
+  }
+  getStatusName(id:string){
+    const statusName = this.assetStatuses.find((status) => status._id === id);
+    return statusName? statusName.statusName: '';
+  }
+  getAssetStatusList() {
+    this.assetManagementService.getStatusList().subscribe((response: any) => {
+      this.assetStatuses = response.data;
+    });
+  }  
+  
 }

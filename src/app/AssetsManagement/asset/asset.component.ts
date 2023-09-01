@@ -73,11 +73,12 @@ export class AssetComponent implements OnInit {
       }
     );
   }
-
+  selectedAssetTypeName: string 
   editAsset(asset: Asset) {
     this.isEdit = true;
     this.selectedAsset = asset;
     this.assetForm.patchValue(asset);
+    this.selectedAssetTypeName = this.getAssetTypeName(asset.assetType);
   }
 
   updateAsset() {
@@ -104,7 +105,10 @@ export class AssetComponent implements OnInit {
       }
     );
   }
-
+  getAssetTypeName(assetTypeId: string): string {
+    const assetType = this.assetTypes.find((type) => type._id === assetTypeId);
+    return assetType ? assetType.typeName : 'Unknown'; // Return typeName or 'Unknown' if not found
+  }
   deleteAsset(asset: Asset) {
     const result = window.confirm('Are you sure you want to delete this asset?');
     if (result) {

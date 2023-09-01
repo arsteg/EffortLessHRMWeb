@@ -146,9 +146,7 @@ export class TimelineComponent implements OnInit {
     this.getTimeLine();
   }
   refresh() {
-    this.selectedDate= new Date(this.selectedDate)
     this.selectedUser = [];
-    // this.selectedDate = this.currentDate;
     this.selectedProject = [];
      this.getTimeLine();
   }
