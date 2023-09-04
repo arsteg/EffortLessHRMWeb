@@ -48,4 +48,44 @@ export class ExportService {
       pdf.save(fileName + ".pdf");
     });
   }
+ 
+export(fileName: string, tableId: string, format: 'csv' | 'xls') {
+  // Get the table element by ID
+  const table = document.getElementById(tableId);
+
+  if (!table) {
+    console.error(`Table with ID '${tableId}' not found.`);
+    return;
+  }
+
+  const dataToExport = [];
+  const rows = table.querySelectorAll('tbody tr');
+
+  // Iterate through table rows
+  rows.forEach((row) => {
+    const rowData = [];
+    const cells = row.querySelectorAll('td');
+
+    // Iterate through row cells
+    cells.forEach((cell) => {
+      rowData.push(cell.textContent.trim());
+    });
+
+    dataToExport.push(rowData);
+  });
+
+  // Generate the worksheet and workbook
+  const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(dataToExport);
+  const wb: XLSX.WorkBook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+  // Save to file based on the selected format
+  if (format === 'csv') {
+    XLSX.writeFile(wb, fileName + '.csv');
+  } else if (format === 'xls') {
+    XLSX.writeFile(wb, fileName + '.xls');
+  }
+}
+
+  
 }

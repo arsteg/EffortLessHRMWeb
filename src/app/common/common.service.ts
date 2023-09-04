@@ -103,4 +103,8 @@ export class CommonService {
   getFilters() {
     return this.filterParams;
   }
+  get isCollapsedMenu(): boolean {
+    const storedValue = localStorage.getItem('sidebar');
+    return storedValue === 'true'; 
+  }
 }

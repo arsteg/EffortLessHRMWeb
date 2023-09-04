@@ -8,6 +8,7 @@ import { MatrixData } from '../model/timesheet';
 import { Attendance } from 'src/app/reports/model/productivityModel';
 import { ExportService } from 'src/app/_services/export.service';
 import { milliseconds } from 'date-fns';
+import { CommonService } from 'src/app/common/common.service';
 
 @Component({
   selector: 'app-admin-timesheet',
@@ -16,19 +17,19 @@ import { milliseconds } from 'date-fns';
 })
 export class AdminTimesheetComponent implements OnInit {
   timesheetForm: FormGroup;
-  fromDate:string;
-  toDate:string= this.datePipe.transform(new Date(),'yyyy-MM-dd');
+  fromDate: string;
+  toDate: string = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   startDate: string;
   endDate: string;
   timeLogs: MatrixData;
   dateRange: Date[];
-  timesheetTotals:any[]=[];
-  timesheetAllTotals:any=[];
-  projectList:any[]=[];
+  timesheetTotals: any[] = [];
+  timesheetAllTotals: any = [];
+  projectList: any[] = [];
   selectedUser: string[] = [];
   members: any;
-  member:any;
+  member: any;
   @ViewChild('toDateRef') toDateRef: ElementRef;
   adminTimeSheets: any = [];
   selectAll: boolean = false;
@@ -44,78 +45,101 @@ export class AdminTimesheetComponent implements OnInit {
   ]);
 
 
-  constructor(private datePipe:DatePipe,private timeLogService:TimeLogService, private toast:ToastrService,
-    private projectService:ProjectService, private fb: FormBuilder, private exportService: ExportService) { }
-
+  constructor(private datePipe: DatePipe, private timeLogService: TimeLogService, private toast: ToastrService,
+    private projectService: ProjectService, private fb: FormBuilder, private exportService: ExportService, public commonService: CommonService) { }
 
   ngOnInit(): void {
-  this.getAllProjects();
-  this.populateUsers();
-  this.getFirstDayOfMonth();
+
+    this.getAllProjects();
+    this.populateUsers();
+    this.getFirstDayOfMonth();
+
   }
 
-  onSubmit() {
-  }
-
- 
   populateTimesheet() {
     this.timesheetAllTotals = {};
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     const fromDt = this.formatDate(this.fromDate);
     const toDt = this.formatDate(this.toDate);
-    
+
     if (this.selectedUser.length === 0) {
-        this.timesheetAllTotals = {};
-        return;
+      this.timesheetAllTotals = {};
+      return;
     }
-    
+
     this.timeLogService.geAdminTimeSheet(this.selectedUser.join(), fromDt, toDt)
-    .toPromise()
-    .then(response => {
+      .toPromise()
+      .then(response => {
         this.timeLogs = response.data;
 
         this.selectedUser.forEach(user => {
-            const logs = this.timeLogs?.matrix[user];
-            const userTotals = new Array(this.timeLogs.columns.length-1).fill(0); // Initialize with zeros
+          const logs = this.timeLogs?.matrix[user];
+          const userTotals = new Array(this.timeLogs.columns.length - 1).fill(0); // Initialize with zeros
 
-            for (let r = 0; r < logs.length; r++) {
-                let rowTotal = 0;
-                for (let c = 1; c < logs[r].length; c++) {
-                    const cellValue = parseFloat(logs[r][c]) || 0;
-                    userTotals[c - 1] += cellValue; // Accumulate column sums
-                    rowTotal += cellValue;
-                }
-                userTotals[userTotals.length - 1] += rowTotal; // Accumulate row totals
+          for (let r = 0; r < logs.length; r++) {
+            let rowTotal = 0;
+            for (let c = 1; c < logs[r].length; c++) {
+              const cellValue = parseFloat(logs[r][c]) || 0;
+              userTotals[c - 1] += cellValue; // Accumulate column sums
+              rowTotal += cellValue;
             }
+            userTotals[userTotals.length - 1] += rowTotal; // Accumulate row totals
+          }
 
-            this.timesheetAllTotals[user] = userTotals;
+          this.timesheetAllTotals[user] = userTotals;
         });
-    })
-   
-
-        .catch(error => {
-           console.log('Something went wrong, Please try again.', 'Error!');
-        });
-}
+      })
 
 
-  filterData(){
-    // Remove 'all' from selectedUser array, if present
-  if (this.selectedUser.includes('all')) {
-    this.selectedUser.splice(this.selectedUser.indexOf('all'), 1);
+      .catch(error => {
+        console.log('Something went wrong, Please try again.', 'Error!');
+      });
   }
+
+
+  filterData() {
+    // Remove 'all' from selectedUser array, if present
+    if (this.selectedUser.includes('all')) {
+      this.selectedUser.splice(this.selectedUser.indexOf('all'), 1);
+    }
     this.populateTimesheet();
   }
   exportToExcel() {
-    console.log(this.timesheetAllTotals)
-this.exportService.exportToExcel('Admin Timesheet', 'adminTimeSheets', this.timesheetAllTotals);
-}
-  exportToCsv() {
-    console.log(this.timesheetAllTotals)
-    this.exportService.exportToCSV('Admin Timesheet', 'adminTimeSheets', this.timesheetAllTotals);
+    const tableId = 'adminTimeSheet';
+    const table = document.getElementById(tableId);
+  
+    if (!table) {
+      console.error(`Table with ID '${tableId}' not found.`);
+      return;
+    }
+  
+    console.log('Table found:', table);
+  
+    try {
+      this.exportService.export('Admin Timesheet', tableId, 'xls');
+    } catch (error) {
+      console.error('Error exporting to xls:', error);
+    }
   }
+  exportToCsv() {
+    const tableId = 'adminTimeSheet'; 
+    const table = document.getElementById(tableId);
+  
+    if (!table) {
+      console.error(`Table with ID '${tableId}' not found.`);
+      return;
+    }
+  
+    console.log('Table found:', table);
+  
+    try {
+      this.exportService.export('Admin Timesheet', tableId, 'csv');
+    } catch (error) {
+      console.error('Error exporting to CSV:', error);
+    }
+   }
 
-  @ViewChild('adminTimeSheets') content!: ElementRef
+  @ViewChild('adminTimeSheet') content!: ElementRef
   exportToPdf() {
     this.exportService.exportToPdf('Admin Timesheet', this.content.nativeElement)
   }
@@ -143,7 +167,7 @@ this.exportService.exportToExcel('Admin Timesheet', 'adminTimeSheets', this.time
     const seconds = totalSeconds % 60;
     return `${hours}h ${minutes}m ${seconds}s`;
   }
-  getTotalHours(hours){
+  getTotalHours(hours) {
     return hours.reduce((acc, val) => (+acc) + (+val), 0);
   }
 
@@ -154,8 +178,8 @@ this.exportService.exportToExcel('Admin Timesheet', 'adminTimeSheets', this.time
     });
   }
 
-  getProjectName(id:string){
-    return this.projectList.find(p=>p.id==id)?.projectName;
+  getProjectName(id: string) {
+    return this.projectList.find(p => p.id == id)?.projectName;
   }
   getUserName(id: string) {
     const user = this.members.find((p) => p.id === id);
@@ -166,7 +190,7 @@ this.exportService.exportToExcel('Admin Timesheet', 'adminTimeSheets', this.time
     const today = new Date();
     const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
     this.fromDate = this.datePipe.transform(firstDayOfMonth, 'yyyy-MM-dd');
-}
+  }
 
 
   dateValidator(control: AbstractControl): { [key: string]: boolean } | null {

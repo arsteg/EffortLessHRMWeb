@@ -106,6 +106,7 @@ export class HomeComponent implements OnInit {
   }
   clickEvent() {
     this.isCollapsedMenu = !this.isCollapsedMenu;
+   localStorage.setItem('sidebar',JSON.stringify(this.isCollapsedMenu))
   }
 }
 
