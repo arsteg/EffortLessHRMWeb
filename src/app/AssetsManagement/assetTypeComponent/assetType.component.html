@@ -43,7 +43,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let customAttribute of selectedAssetType?.customAttributes">
+            <tr *ngFor="let customAttribute of selectedAssetType?.customAttributes || newCustomAttribute">
               <td>{{ customAttribute.attributeName }}</td>
               <td>{{ customAttribute.description }}</td>
               <td>{{customAttribute.dataType}}</td>
@@ -57,7 +57,7 @@
     <div class="col-6">
       <h2 class="mt-4">Add/Edit Vendor</h2>
 
-      <form [formGroup]="assetTypeForm" (ngSubmit)="isEdit ? updateAssetType() : addassetType()"
+      <form [formGroup]="assetTypeForm" (ngSubmit)="addCustomAttributes()"
         class="mt-4 p-3 me-2 bg-light border rounded">
 
         <!-- AssetType Form fields -->
@@ -111,12 +111,25 @@
                     <div *ngIf="customAttribute.get('dataType').errors.required">Data Type is required.</div>
                   </div>
                 </td>
-                <td>
+                <td style="vertical-align:middle;">
                   <input type="checkbox" class="form-check-input" formControlName="isRequired">
                 </td>
                 <td>
                   <!-- Remove CustomAttribute -->
-                  <button type="button" class="btn btn-danger" (click)="removeCustomAttribute(i)">Remove</button>
+                  <div class="d-flex">
+
+                    <button mat-icon-button type="button"
+                    [disabled]="!customAttribute.dirty" (click)="updateCustomAttribute(i)"
+                    aria-label="Update the custom Attribute">
+                    <mat-icon class="action-button">edit</mat-icon>
+                    </button>
+                    <button mat-icon-button type="button" 
+                    (click)="deleteCustomAttribute(i)"
+                    aria-label="Delete the custom Attribute">
+                      <mat-icon class="action-button" color="accent">delete</mat-icon>
+                    </button>
+
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -127,7 +140,12 @@
         </div>
 
         <!-- Submit Button -->
-        <button class="btn btn-primary mt-3" type="submit" [disabled]="!assetTypeForm.valid">Submit</button>
+        <div class="d-flex justify-content-between">
+        <button mat-raised-button color="primary" class="mt-3" type="submit" [disabled]="!assetTypeForm.get('typeName').valid || !assetTypeForm.get('description').valid">Add</button>
+
+       
+          <button type="button" *ngIf="isEdit" (click)="isEdit = false" class="btn btn-secondary">Cancel</button>
+        </div>
       </form>
 
 

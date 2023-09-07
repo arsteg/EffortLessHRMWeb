@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { project } from '../Project/model/project';
 import { baseService } from './base';
-import { Asset, AssetStatus, AssetType, CustomAttribute, Vendor } from '../models/AssetsManagement/Asset';
+import { Asset, AssetStatus, AssetType, CustomAttribute, UpdateCustomAttribute, Vendor } from '../models/AssetsManagement/Asset';
 
 @Injectable({ providedIn: 'root' })
 export class AssetManagementService {
@@ -167,7 +167,7 @@ export class AssetManagementService {
       this.httpOptions
     );
   }
-  //custome Attributes
+  //Add custom Attributes
   addCustomAttributes(assetTypeId:string,customAttributes:CustomAttribute[]): Observable<CustomAttribute> {
     return this.http.post<CustomAttribute>(
       `${environment.apiUrlDotNet}/assetsManagement/assetTypes/${assetTypeId}/customAttributes`,
@@ -175,10 +175,18 @@ export class AssetManagementService {
       this.httpOptions
     );
   }
-  //custome Attributes
-  deleteCustomAttributes(assetTypeId:string): Observable<any> {
+  //Delete custom Attributes
+  deleteCustomAttributes(customAttributeId:string): Observable<any> {
     return this.http.delete<string>(
-      `${environment.apiUrlDotNet}/assetsManagement/customAttributes/${assetTypeId}/`,
+      `${environment.apiUrlDotNet}/assetsManagement/customAttribute/${customAttributeId}`,
+      this.httpOptions
+    );
+  }
+
+  // Update Custom Attributes
+  updateCustomAttribute(customAttributeId:string, customAttributes:UpdateCustomAttribute ): Observable<any> {
+    return this.http.put<string>(
+      `${environment.apiUrlDotNet}/assetsManagement/customAttributes/${customAttributeId}`, customAttributes,
       this.httpOptions
     );
   }

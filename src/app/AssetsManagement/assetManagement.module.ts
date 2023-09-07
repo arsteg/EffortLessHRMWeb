@@ -8,14 +8,14 @@ import { CommonComponentsModule } from "../common/commonComponents.module";
 import { VendorAssetsComponent } from "./vendorAssets/vendorAssets..component";
 import { AssetComponent } from "./asset/asset.component";
 import { AssetManagerComponent } from "./assetAssetManager/asset.component";
-
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
     declarations: [AssetComponent, AssetStatusComponent, VendorComponent, AssetTypeComponent, AssignAssetsComponent,
     VendorAssetsComponent,AssetManagerComponent],
     exports: [AssetComponent, AssetStatusComponent, VendorComponent, AssetTypeComponent, AssignAssetsComponent,
       VendorAssetsComponent,AssetManagerComponent],
-    imports: [SharedModule, CommonComponentsModule]
+    imports: [SharedModule, CommonComponentsModule, FormsModule]
 })
 export class AssetsModule{
 

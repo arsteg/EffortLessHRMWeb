@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { AssetManagementService } from 'src/app/_services/assetManagement.service';
-import { Asset, AssetStatus, AssetType } from 'src/app/models/AssetsManagement/Asset';
+import { Asset, AssetStatus, AssetType, CustomAttribute } from 'src/app/models/AssetsManagement/Asset';
 
 @Component({
   selector: 'app-asset',
@@ -11,15 +11,16 @@ import { Asset, AssetStatus, AssetType } from 'src/app/models/AssetsManagement/A
 })
 export class AssetComponent implements OnInit {
   assetTypes: AssetType[] = [];
-  assetStatuses: AssetStatus[]=[];
-  gridHeadings:string[];
-  selectedAssetType:AssetType;
+  assetStatuses: AssetStatus[] = [];
+  gridHeadings: string[];
+  selectedAssetType: AssetType;
   assets: Asset[] = [];
   filteredAssets: Asset[] = [];
   assetForm: FormGroup;
   isEdit = false;
   selectedAsset: Asset;
   p = 1;
+  customAttributeGroup: FormGroup;
 
   constructor(private fb: FormBuilder, private assetService: AssetManagementService, private toast: ToastrService) { }
 
@@ -30,7 +31,10 @@ export class AssetComponent implements OnInit {
     this.getAssets();
 
   }
-
+  editable: boolean= false;
+  toggle(){
+    this.editable = !this.editable;
+  }
   initAssetForm() {
     this.assetForm = this.fb.group({
       assetName: ['', Validators.required],
@@ -41,9 +45,10 @@ export class AssetComponent implements OnInit {
       status: ['', Validators.required],
       serialNumber: ['', Validators.required],
       cost: ['', [Validators.required, Validators.min(0)]],  // Assuming cost can't be negative
-      image: ['']
+      image: [''],
+      customAttributes: this.fb.array([])
     });
-}
+  }
 
   getAssets() {
     this.assetService.getAllAssets().subscribe((response: any) => {
@@ -73,14 +78,31 @@ export class AssetComponent implements OnInit {
       }
     );
   }
-  selectedAssetTypeName: string 
+  selectedAssetTypeName: string;
+  customAttribute: string;
   editAsset(asset: Asset) {
     this.isEdit = true;
     this.selectedAsset = asset;
     this.assetForm.patchValue(asset);
     this.selectedAssetTypeName = this.getAssetTypeName(asset.assetType);
-  }
+    this.selectedAsset.status = this.getStatusName(asset.status);
+    const customAttributesArray = this.assetForm.get('customAttributes') as FormArray;
+    customAttributesArray.clear(); // Clear existing custom attributes
+  
+    if (asset.customAttributes && asset.customAttributes.length > 0) {
+      asset.customAttributes.forEach((attribute) => {
+        this.customAttributeGroup = this.fb.group({
+          attributeName: [attribute.attributeName]
+        });
+        console.log(attribute.attributeName)
 
+        customAttributesArray.push(this.customAttributeGroup);
+      });
+    }
+  }
+  trackByIndex(index: number, customAttribute: CustomAttribute): any {
+    return index;
+  }
   updateAsset() {
     this.assetService.updateAsset(this.selectedAsset._id, this.assetForm.value).subscribe(
       response => {
@@ -98,7 +120,6 @@ export class AssetComponent implements OnInit {
     this.assetService.getAllAssetTypes().subscribe(
       response => {
         this.assetTypes = response.data;
-        console.log(this.assetTypes);
       },
       error => {
         console.log(error);
@@ -126,35 +147,35 @@ export class AssetComponent implements OnInit {
 
   onAssetTypeChange() {
     this.loadAssets(this.selectedAssetType);
-}
-
-loadAssets(assetTypeId){
-  this.assetService.getAllAssetsByType(assetTypeId).subscribe(
-    response => {
-      this.assets = response.data;
-      this.filteredAssets = this.assets;
-      if(response.data && response.data.length>0){
-      this.populatingHeadings(response.data[0].customAttributes)
-      }
-    },
-    error => {
-      console.log(error);
-    }
-  );
-}
-
-populatingHeadings(customeAttributes){
-  if(customeAttributes && customeAttributes.length>0){
-    this.gridHeadings=[];
-    customeAttributes.forEach(element => {
-      this.gridHeadings.push(element.attributeName);
-    });
   }
-}
 
-getStatusName(id:string){
-  const statusName = this.assetStatuses.find(status => status._id === id);
-  return statusName.statusName;
-}
+  loadAssets(assetTypeId) {
+    this.assetService.getAllAssetsByType(assetTypeId).subscribe(
+      response => {
+        this.assets = response.data;
+        this.filteredAssets = this.assets;
+        if (response.data && response.data.length > 0) {
+          this.populatingHeadings(response.data[0].customAttributes)
+        }
+      },
+      error => {
+        console.log(error);
+      }
+    );
+  }
+
+  populatingHeadings(customeAttributes) {
+    if (customeAttributes && customeAttributes.length > 0) {
+      this.gridHeadings = [];
+      customeAttributes.forEach(element => {
+        this.gridHeadings.push(element.attributeName);
+      });
+    }
+  }
+
+  getStatusName(id: string) {
+    const statusName = this.assetStatuses.find(status => status._id === id);
+    return statusName?.statusName;
+  }
 
 }

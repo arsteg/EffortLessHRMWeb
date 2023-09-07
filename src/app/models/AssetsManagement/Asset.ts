@@ -42,5 +42,14 @@ export interface CustomAttribute {
   dataType: string;
   isRequired: boolean;
   value:number;
+  _id: string;
+}
+export interface UpdateCustomAttribute {
+  attributeName: string;
+  description: string;
+  dataType: string;
+  isRequired: boolean;
+  // company: boolean;
+  // assetType:string;
 }
 

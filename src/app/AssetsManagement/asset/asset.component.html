@@ -27,9 +27,9 @@
             <td>{{ asset.assetName }}</td>
             <td>{{ asset.purchaseDate | date }}</td>
             <td>{{ asset.warrantyExpiry | date }}</td>
-            <td>{{ getStatusName(asset.status)}}</td>
+            <td>{{ getStatusName(asset?.status)}}</td>
             <td><img *ngIf="asset.image" [src]="asset.image" alt="{{ asset.assetName }}" width="50"></td>
-            <td *ngFor="let item of asset.customAttributes"> {{item.value}} </td>
+            <td *ngFor="let item of asset.customAttributes"> {{item.description}} </td>
             <td>
               <button (click)="editAsset(asset)" class="btn btn-primary btn-sm me-2">Edit</button>
               <button (click)="deleteAsset(asset)" class="btn btn-danger btn-sm">Delete</button>
@@ -51,17 +51,49 @@
           <label>Asset Type</label>
           <input type="text" formControlName="assetType" [value]="selectedAssetTypeName" class="form-control">
         </div>
-        <!-- ... add other fields similarly -->
+        <div class="form-group mt-1">
+          <label>Asset Name</label>
+          <input type="text" formControlName="assetName" [value]="selectedAsset?.assetName" class="form-control">
+        </div>
+        <div class="form-group mt-1">
+          <label>Purchase Date</label>
+          <input type="text" formControlName="purchaseDate" [value]="selectedAsset?.purchaseDate | date" class="form-control">
+        </div>
+        <div class="form-group mt-1">
+          <label>Warranty Expiry</label>
+          <input type="text" formControlName="warrantyExpiry" [value]="selectedAsset?.warrantyExpiry | date" class="form-control">
+        </div>
+        <div class="form-group mt-1">
+          <label>Status</label>
+          <input type="text" formControlName="status" [value]="selectedAsset?.status" class="form-control">
+        </div>
 
+        <!-- ... add other fields similarly -->
         <!-- Dynamic CustomAttributes -->
-        <div formArrayName="customAttributes">
+        <!-- <div formArrayName="customAttributes">
           <div *ngFor="let customAttribute of selectedAsset?.customAttributes; let i=index" [formGroupName]="i">
-            <div class="form-group">
+            <div class="form-group mt-1">
               <label>Attribute Name</label>
-              <input type="text" formControlName="attributeName" class="form-control">
+              <input type="text" formControlName="attributeName"  [value]="customAttribute?.attributeName" class="form-control">
             </div>
           </div>
-        </div>
+        </div> -->
+     <!-- Dynamic CustomAttributes -->
+<div formArrayName="customAttributes">
+  <div *ngFor="let customAttribute of selectedAsset?.customAttributes; let i=index;" [formGroupName]="i">
+    <div class="form-group mt-1">
+      <label>Attribute Name</label>
+      <div *ngIf="!editable">
+        <p class=" form-control" (click)="toggle()">{{ customAttribute?.attributeName }}</p>
+      </div>
+      <div *ngIf="editable">
+        <input type="text" [formControlName]="customAttribute?.attributeName" [value]="customAttribute?.attributeName" class="form-control">
+      </div></div>
+  </div>
+</div>
+
+
+
 
         <div class="form-group d-flex justify-content-between mt-2">
           <div class="">
