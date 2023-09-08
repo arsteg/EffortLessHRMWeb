@@ -19,7 +19,8 @@ export class AssetTypeComponent implements OnInit {
   selectedAssetType: any;
   p = 1;
   newCustomAttribute: any;
-
+  addAssetType: FormGroup;
+  searchQuery: string = '';
 
   constructor(private fb: FormBuilder,
     private toast: ToastrService,
@@ -29,6 +30,11 @@ export class AssetTypeComponent implements OnInit {
     this.selectedAssetType = {
       customAttributes: []
     };
+
+    this.addAssetType = this.fb.group({
+      typeName: ['', Validators.required],
+      description: ['']
+    })
   }
 
   ngOnInit(): void {
@@ -38,7 +44,6 @@ export class AssetTypeComponent implements OnInit {
 
   initTypeForm() {
     this.assetTypeForm = this.fb.group({
-      _id: [null],
       typeName: ['', Validators.required],
       description: [''],
       customAttributes: this.fb.array([])
@@ -108,21 +113,29 @@ export class AssetTypeComponent implements OnInit {
     });
   }
 
-  filterAssetTypes(query: any) {
-    this.filteredAssetTypes = this.assetTypes.filter(v => v.description.toLowerCase().includes(query.target.value.toLowerCase()));
+  filterAssetTypes(): void {
+    this.assetTypes = this.assetTypes.filter(assetType =>
+      assetType.description.toLowerCase().includes(this.searchQuery.toLowerCase())
+    );
   }
 
-  
-  addCustomAttributes() {
 
-    const assetType = this.assetTypeForm.value;
+  addAsset() {
+    const assetType = this.addAssetType.value;
     this.assetManagementService.addAssetType(assetType).subscribe((res: any) => {
       console.log('New Asset Type Created', res)
       this.getAllAssetTypes();
       this.toast.success('Asset Type added successfully!');
       assetType.reset();
     });
-    
+  }
+  resetAsset() {
+    this.addAssetType.reset();
+  }
+
+  addCustomAttributes() {
+    this.selectedAssetType
+
     if (this.selectedAssetType && this.selectedAssetType.customAttributes) {
       const existingCustomAttributes = this.selectedAssetType.customAttributes;
 
@@ -162,6 +175,8 @@ export class AssetTypeComponent implements OnInit {
       typeName: assetType.typeName,
       description: assetType.description
     });
+    this.assetTypeForm.get('typeName')?.disable();
+    this.assetTypeForm.get('description')?.disable();
     this.customAttributes.clear();
     // Populate customAttributes FormArray without clearing it
     assetType.customAttributes.forEach(attr => {
@@ -216,7 +231,17 @@ export class AssetTypeComponent implements OnInit {
       }
     );
   }
+  // updateAssetType() {
+  //   this.assetManagementService.updateAssetType(this.selectedAssetType._id, {typeName:this.assetTypeForm.value.typeName,description:this.assetTypeForm.value.description}).subscribe(response => {
+  //     // this.assetManagementService.deleteCustomAttributes(this.selectedAssetType._id).subscribe(response => {
+  //       // this.assetManagementService.addCustomAttributes(this.selectedAssetType._id,this.assetTypeForm.value.customAttributes).subscribe(response => {
+  //         this.toast.success('Asset Type updated successfully!');
+  //         this.getAllAssetTypes();
+  //         this.isEdit = false;
+  //         // this.assetTypeForm.reset();
+  //       });
 
+  //   }
 
   deleteAssetType(assetType) {
     this.assetManagementService.deleteAssetType(assetType._id).subscribe(response => {
@@ -224,8 +249,8 @@ export class AssetTypeComponent implements OnInit {
       this.getAllAssetTypes();
 
     });
-    (error)=>{
-    this.toast.error('Asset Type Cannot be Deleted!');
+    (error) => {
+      this.toast.error('Asset Type Cannot be Deleted!');
     }
   }
 

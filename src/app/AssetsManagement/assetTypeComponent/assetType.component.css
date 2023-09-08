@@ -8,3 +8,6 @@
 .mat-icon-button{
   width: 25px !important
 }
+.offcanvas-end{
+  width: auto !important;
+}
