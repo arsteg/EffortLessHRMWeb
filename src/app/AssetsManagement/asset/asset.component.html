@@ -3,7 +3,8 @@
     <div class="col-md-8 border-end">
       <h2 style="color: blue;" class="pt-2 ps-2">Asset List</h2>
       <div class="d-flex justify-content-between">
-        <div class="w-50 ps-2 d-flex"> <label for="vendorDropdown" class="pt-2 pe-1">Select&nbsp;Asset&nbsp;Type:</label>
+        <div class="w-50 ps-2 d-flex"> <label for="vendorDropdown"
+            class="pt-2 pe-1">Select&nbsp;Asset&nbsp;Type:</label>
           <select id="vendorDropdown" [(ngModel)]="selectedAssetType" (change)="onAssetTypeChange()">
             <option *ngFor="let asset of assetTypes" [ngValue]="asset._id">{{ asset.typeName }}</option>
           </select>
@@ -48,51 +49,52 @@
 
         <!-- Basic Fields -->
         <div class="form-group">
-          <label>Asset Type</label>
-          <input type="text" formControlName="assetType" [value]="selectedAssetTypeName" class="form-control">
+          <label for="assetType">Select Asset Type:</label>
+          <select id="assetType" class="p-1" formControlName="assetType">
+            <option *ngFor="let asset of assetTypes" [ngValue]="asset._id">{{ asset.typeName }}</option>
+          </select>
+
+
         </div>
         <div class="form-group mt-1">
           <label>Asset Name</label>
           <input type="text" formControlName="assetName" [value]="selectedAsset?.assetName" class="form-control">
         </div>
+
         <div class="form-group mt-1">
           <label>Purchase Date</label>
-          <input type="text" formControlName="purchaseDate" [value]="selectedAsset?.purchaseDate | date" class="form-control">
+          <input placeholder="YYYY-MM-DD" class="form-control" #datepickerYMD="bsDatepicker" bsDatepicker
+            [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" [value]="selectedAsset?.purchaseDate | date"
+            formControlName="purchaseDate" required>
         </div>
         <div class="form-group mt-1">
           <label>Warranty Expiry</label>
-          <input type="text" formControlName="warrantyExpiry" [value]="selectedAsset?.warrantyExpiry | date" class="form-control">
+          <input placeholder="YYYY-MM-DD" class="form-control" #datepickerYMD="bsDatepicker" bsDatepicker
+            [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" [value]="selectedAsset?.warrantyExpiry | date"
+            formControlName="warrantyExpiry" required>
         </div>
         <div class="form-group mt-1">
-          <label>Status</label>
-          <input type="text" formControlName="status" [value]="selectedAsset?.status" class="form-control">
+          <label for="assetStatus">Select Asset Status:</label>
+          <select id="assetStatus" formControlName="status" class="p-1">
+            <option *ngFor="let status of assetStatuses" [ngValue]="status._id">{{ status.statusName }}</option>
+          </select>
         </div>
 
-        <!-- ... add other fields similarly -->
-        <!-- Dynamic CustomAttributes -->
-        <!-- <div formArrayName="customAttributes">
-          <div *ngFor="let customAttribute of selectedAsset?.customAttributes; let i=index" [formGroupName]="i">
+
+        <div formArrayName="customAttributes">
+          <div *ngFor="let customAttribute of selectedAsset?.customAttributes; let i=index;" [formGroupName]="i">
             <div class="form-group mt-1">
               <label>Attribute Name</label>
-              <input type="text" formControlName="attributeName"  [value]="customAttribute?.attributeName" class="form-control">
+              <div *ngIf="!editable">
+                <p class=" form-control" (click)="toggle()">{{ customAttribute?.attributeName }}</p>
+              </div>
+              <div *ngIf="editable">
+                <input type="text" [formControlName]="customAttribute?.attributeName"
+                  [value]="customAttribute?.attributeName" class="form-control">
+              </div>
             </div>
           </div>
-        </div> -->
-     <!-- Dynamic CustomAttributes -->
-<div formArrayName="customAttributes">
-  <div *ngFor="let customAttribute of selectedAsset?.customAttributes; let i=index;" [formGroupName]="i">
-    <div class="form-group mt-1">
-      <label>Attribute Name</label>
-      <div *ngIf="!editable">
-        <p class=" form-control" (click)="toggle()">{{ customAttribute?.attributeName }}</p>
-      </div>
-      <div *ngIf="editable">
-        <input type="text" [formControlName]="customAttribute?.attributeName" [value]="customAttribute?.attributeName" class="form-control">
-      </div></div>
-  </div>
-</div>
-
-
+        </div>
 
 
         <div class="form-group d-flex justify-content-between mt-2">

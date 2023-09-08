@@ -13,7 +13,7 @@ export class AssetComponent implements OnInit {
   assetTypes: AssetType[] = [];
   assetStatuses: AssetStatus[] = [];
   gridHeadings: string[];
-  selectedAssetType: AssetType;
+  selectedAssetType: AssetType[]=[];
   assets: Asset[] = [];
   filteredAssets: Asset[] = [];
   assetForm: FormGroup;
@@ -39,12 +39,12 @@ export class AssetComponent implements OnInit {
     this.assetForm = this.fb.group({
       assetName: ['', Validators.required],
       assetType: ['', Validators.required],
-      company: ['', Validators.required],
+      company: [''],
       purchaseDate: ['', Validators.required],
       warrantyExpiry: ['', Validators.required],
       status: ['', Validators.required],
-      serialNumber: ['', Validators.required],
-      cost: ['', [Validators.required, Validators.min(0)]],  // Assuming cost can't be negative
+      serialNumber: [''],
+      cost: ['', [Validators.min(0)]],  // Assuming cost can't be negative
       image: [''],
       customAttributes: this.fb.array([])
     });
@@ -70,6 +70,7 @@ export class AssetComponent implements OnInit {
   addAsset() {
     this.assetService.addAsset(this.assetForm.value).subscribe(
       response => {
+        this.assetForm.reset();
         this.toast.success('Asset added successfully!');
         this.getAssets();
       },
@@ -109,6 +110,12 @@ export class AssetComponent implements OnInit {
         this.toast.success('Asset updated successfully!');
         this.getAssets();
         this.isEdit = false;
+        this.assetForm.reset();
+        this.assetTypes = [];
+        this.assetStatuses = [];
+        this.selectedAssetType = [];
+        // this.filteredAssets = [];
+        this.ngOnInit();
       },
       error => {
         this.toast.error('Error updating asset', 'Error!');
