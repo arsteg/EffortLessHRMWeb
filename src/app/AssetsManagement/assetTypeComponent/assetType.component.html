@@ -28,7 +28,7 @@
       </table>
     </div>
     <div class="col-md-4">
-      <h2>Add New asset</h2>
+      <h2>Add New Asset Type</h2>
       <form [formGroup]="addAssetType" (ngSubmit)="addAsset()">
         <div class="form-group">
           <label for="typeName">Type Name:</label>
@@ -50,7 +50,7 @@
 
 <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
   <div class="offcanvas-header">
-    <h3 id="offcanvasRightLabel">{{ isEdit ? 'Edit Asset Type' : 'Add New Asset Type' }}</h3>
+    <h3 id="offcanvasRightLabel">Edit Asset Type</h3>
     <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
   </div>
   <div class="offcanvas-body">
@@ -113,6 +113,7 @@
         <button type="button" (click)="addNewCustomAttribute()" class="btn btn-primary">Add Custom Attribute</button>
 
         <button mat-raised-button type="submit" [disabled]="!assetTypeForm.valid">Add</button>
+        <button mat-raised-button type="button"  *ngIf="isEdit" (click)="isEdit = false">Cancel</button>
       </div>
     </form>
   </div>
