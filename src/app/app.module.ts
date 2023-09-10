@@ -78,6 +78,8 @@ import { UserCalendarComponent } from './calendar/user-calendar/user-calendar.co
 import { AdminCalendarComponent } from './calendar/admin-calendar/admin-calendar.component';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import dayGridPlugin from '@fullcalendar/daygrid';
+// import { MAT_COLOR_FORMATS, NgxMatColorPickerModule, NGX_MAT_COLOR_FORMATS } from '@angular/material/color-picker';
+import { ColorPickerModule } from 'ngx-color-picker';
 @NgModule({
   declarations: [
     AppComponent,
@@ -155,7 +157,8 @@ import dayGridPlugin from '@fullcalendar/daygrid';
     SettingsModule,
     AssetsModule,
     QuillModule.forRoot(),
-    FullCalendarModule
+    FullCalendarModule,
+    ColorPickerModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

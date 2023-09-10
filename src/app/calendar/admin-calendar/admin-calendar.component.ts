@@ -9,7 +9,9 @@ import { Calendar } from '@fullcalendar/core';
 })
 export class AdminCalendarComponent{
   calendarPlugins = [dayGridPlugin];
- 
+  searchText: string = '';
+  showAddMilestone: boolean = false;
+
   constructor(private elementRef: ElementRef, private renderer: Renderer2) { }
 
   // ngOnInit(): void {
@@ -39,5 +41,9 @@ export class AdminCalendarComponent{
     });
 
     calendar.render();
+  }
+
+  toggleMilestoneView() {
+    this.showAddMilestone = !this.showAddMilestone;
   }
 }
