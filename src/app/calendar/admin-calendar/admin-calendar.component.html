@@ -9,42 +9,159 @@
                     right: 'today next'
                   }"></full-calendar>
             </mat-tab>
-            <mat-tab label="Milestone">
-                <div class="d-flex justify-content-between mt-2 align-items-baseline">
-                    <h3>Calendar Setting</h3>
-                    <button mat-raised-button color="primary"><span class="bi bi-plus border rounded"></span> Milestone</button>
-                </div>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Name of Milestone</th>
-                            <th>Who Can View It</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <td></td>
-                        <td></td>
-                        <td>
-                            <div class="dropdown-center">
-                                <i class="bi bi-three-dots actions" data-bs-toggle="dropdown"
-                                    aria-expanded="false"></i>
-                                <ul class="dropdown-menu shadow">
-                                    <li class="d-flex">
-                                        <i class="bi bi-trash3 text-danger dropdown-item w-25"></i><span
-                                            class="pt-1 text-muted">Delete</span>
-                                    </li>
-                                    <hr class="mx-2 my-0">
-                                    <li class="d-flex">
-                                        <i class="bi bi-pencil text-success  dropdown-item w-25"></i><span
-                                            class="pt-1 text-muted">Edit</span>
-                                    </li>
+            <mat-tab label="Milestones">
+                <div class="milestones" [ngClass]="{'d-none': showAddMilestone}">
+                    <div class="d-flex justify-content-between mt-2 align-items-baseline">
+                        <h3>Calendar Settings</h3>
+                        <button mat-raised-button color="primary" (click)="toggleMilestoneView()"><span
+                                class="bi bi-plus border rounded"></span>
+                            Milestone</button>
+                    </div>
+                    <input class="form-control search" type="text" placeholder="Search..."
+                        name="searchText" aria-label="default input example"
+                        style="border: 1px solid #d7d9dc;
+                                border-radius: 5px;
+                                box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12)">
 
-                                </ul>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Name of Milestone</th>
+                                <th>Who Can View It</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <td>Birthday</td>
+                            <td>All</td>
+                            <td>
+                                <div class="dropdown-center">
+                                    <i class="bi bi-three-dots actions" data-bs-toggle="dropdown"
+                                        aria-expanded="false"></i>
+                                    <ul class="dropdown-menu shadow">
+                                        <li class="d-flex">
+                                            <i class="bi bi-trash3 text-danger dropdown-item w-25"></i><span
+                                                class="pt-1 text-muted">Delete</span>
+                                        </li>
+                                        <hr class="mx-2 my-0">
+                                        <li class="d-flex">
+                                            <i class="bi bi-pencil text-success  dropdown-item w-25"></i><span
+                                                class="pt-1 text-muted">Edit</span>
+                                        </li>
+
+                                    </ul>
+                                </div>
+                            </td>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="add-milestone mt-2 bg-white py-3 px-3" [ngClass]="{'d-none': !showAddMilestone}">
+                    <form action="" style="overflow-x: hidden">
+                        <div class="d-flex justify-content-between border-bottom">
+                            <div class="d-flex align-items-center">
+                                <button mat-raised-button (click)="toggleMilestoneView()"
+                                    style="height: 25px; min-width: 0px !important; line-height: 0px;">
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                <div class="ms-3">
+                                    <h3 class="mb-0">Add New Calendar Settings</h3>
+                                    <h5 class="text-muted">You can now store calendar setting information for your
+                                        Company's
+                                        Employees
+                                    </h5>
+                                </div>
                             </div>
-                        </td>
-                    </tbody>
-                </table>
+                            <div class="">
+                                <button mat-raised-button (click)="toggleMilestoneView()">Cancel</button>
+                                <button mat-raised-button color="primary" class="ms-3">Save</button>
+                            </div>
+                        </div>
+                        <div class="row my-3 pt-3">
+                            <div class="col-md-6">
+                                <div class="form-group d-flex justify-content-between">
+                                    <label for="">Select&nbsp;Milestone<span class="text-danger">*</span></label>
+                                    <select name="" id="" class="w-50 py-2">
+                                        <option value=""></option>
+                                        <option value="">Other Event</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group d-flex  justify-content-between">
+                                    <label for="">Milestone&nbsp;Name<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control w-50" placeholder="Milestone Name">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label for="" class="col-6"> Milestone&nbsp;Color&nbsp;Code</label>
+                                    <input type="color" id="colorpicker" value="#f2f2f2" class="col-1 p-0">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group d-flex justify-content-between">
+                                    <span for="">Map Employees to Milestone
+                                    </span>
+                                    <div class="d-flex">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="flexRadioDefault"
+                                                id="flexRadioDefault1">
+                                            <label class="form-check-label" for="flexRadioDefault1">
+                                                All Employees
+                                            </label>
+                                        </div>
+                                        <div class="form-check ms-3">
+                                            <input class="form-check-input" type="radio" name="flexRadioDefault"
+                                                id="flexRadioDefault1">
+                                            <label class="form-check-label" for="flexRadioDefault1">
+                                                Specific Employees
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row my-3">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label for="" class="col-6">Is this Recurring Event<span
+                                            class="text-danger">*</span></label>
+                                    <div class="d-flex col-6 px-0">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="flexRadioDefault"
+                                                id="flexRadioDefault1">
+                                            <label class="form-check-label" for="flexRadioDefault1">
+                                                Yes
+                                            </label>
+                                        </div>
+                                        <div class="form-check ms-3">
+                                            <input class="form-check-input" type="radio" name="flexRadioDefault"
+                                                id="flexRadioDefault1">
+                                            <label class="form-check-label" for="flexRadioDefault1">
+                                                No
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group d-flex justify-content-between">
+                                    <label for="">Select&nbsp;Date<span class="text-danger">*</span></label>
+                                    <input placeholder="YYYY-MM-DD" class="w-50 form-control"
+                                        #datepickerYMD="bsDatepicker" bsDatepicker
+                                        [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" required>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </mat-tab>
         </mat-tab-group>
 
