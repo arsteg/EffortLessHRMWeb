@@ -58,10 +58,10 @@
                         Choose Any Project
                       </option>
                       <option
-                        *ngFor="let project of projects"
+                        *ngFor="let project of projectName; let i = index"
                         [value]="project.id"
                       >
-                        {{ project.projectName }}
+                        {{ project?.projectName }}
                       </option>
                     </select>
                     <div
