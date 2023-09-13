@@ -29,11 +29,13 @@
             <td>{{ asset.purchaseDate | date }}</td>
             <td>{{ asset.warrantyExpiry | date }}</td>
             <td>{{ getStatusName(asset?.status)}}</td>
-            <td><img *ngIf="asset.image" [src]="asset.image" alt="{{ asset.assetName }}" width="50"></td>
+            <td>
+              <img *ngIf="asset.image" [src]="asset.image" alt="{{ asset.assetName }}" width="50">
+            </td>
             <td *ngFor="let item of asset.customAttributes"> {{item.description}} </td>
             <td>
               <button (click)="editAsset(asset)" class="btn btn-primary btn-sm me-2">Edit</button>
-              <button (click)="deleteAsset(asset)" class="btn btn-danger btn-sm">Delete</button>
+              <button (click)="openDialog(asset)" class="btn btn-danger btn-sm">Delete</button>
             </td>
           </tr>
         </tbody>

@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { AssetManagementService } from 'src/app/_services/assetManagement.service';
 import { Asset, AssetStatus, AssetType, CustomAttribute } from 'src/app/models/AssetsManagement/Asset';
+import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-asset',
@@ -22,7 +24,10 @@ export class AssetComponent implements OnInit {
   p = 1;
   customAttributeGroup: FormGroup;
 
-  constructor(private fb: FormBuilder, private assetService: AssetManagementService, private toast: ToastrService) { }
+  constructor(private fb: FormBuilder,
+     private assetService: AssetManagementService,
+      private toast: ToastrService,
+      private dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.loadAssetTypes();
@@ -68,11 +73,12 @@ export class AssetComponent implements OnInit {
   }
 
   addAsset() {
-    this.assetService.addAsset(this.assetForm.value).subscribe(
-      response => {
+    this.assetService.addAsset(this.assetForm.value).subscribe( (response: any) => {
+     this.filteredAssets = response.data;
+     this.loadAssets(this.selectedAsset.assetType);
+        this.getAssets();
         this.assetForm.reset();
         this.toast.success('Asset added successfully!');
-        this.getAssets();
       },
       error => {
         this.toast.error('Error adding asset', 'Error!');
@@ -95,7 +101,6 @@ export class AssetComponent implements OnInit {
         this.customAttributeGroup = this.fb.group({
           attributeName: [attribute.attributeName]
         });
-        console.log(attribute.attributeName)
 
         customAttributesArray.push(this.customAttributeGroup);
       });
@@ -105,16 +110,18 @@ export class AssetComponent implements OnInit {
     return index;
   }
   updateAsset() {
-    this.assetService.updateAsset(this.selectedAsset._id, this.assetForm.value).subscribe(
-      response => {
+   
+    this.assetService.updateAsset(this.selectedAsset._id, this.assetForm.value).subscribe((response: any) => {
+      this.filteredAssets = response.data;
+      this.loadAssets(this.selectedAsset.assetType);
+      this.assetForm.reset();
         this.toast.success('Asset updated successfully!');
-        this.getAssets();
         this.isEdit = false;
+        this.editable = false; 
         this.assetForm.reset();
         this.assetTypes = [];
         this.assetStatuses = [];
         this.selectedAssetType = [];
-        // this.filteredAssets = [];
         this.ngOnInit();
       },
       error => {
@@ -137,19 +144,28 @@ export class AssetComponent implements OnInit {
     const assetType = this.assetTypes.find((type) => type._id === assetTypeId);
     return assetType ? assetType.typeName : 'Unknown'; // Return typeName or 'Unknown' if not found
   }
+
+  openDialog(asset: Asset): void {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '400px',
+      data: asset
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'delete') {
+        this.deleteAsset(asset);
+      }
+      err => {
+        this.toast.error('Can not be Deleted', 'Error!')
+      }
+    });
+  }
   deleteAsset(asset: Asset) {
-    const result = window.confirm('Are you sure you want to delete this asset?');
-    if (result) {
+   
       this.assetService.deleteAsset(asset._id).subscribe(
         response => {
-          this.toast.success('Asset deleted successfully!');
-          this.getAssets();
-        },
-        error => {
-          this.toast.error('Error deleting asset', 'Error!');
-        }
-      );
-    }
+          this.loadAssets(asset.assetType);
+        });
   }
 
   onAssetTypeChange() {
