@@ -44,6 +44,7 @@
             <th>Action</th>
           </tr>
         </thead>
+        
         <tbody>
           <tr
             *ngFor="let record of manualTimeRequests | search: searchText |  paginate: { itemsPerPage: 20, currentPage: p }">

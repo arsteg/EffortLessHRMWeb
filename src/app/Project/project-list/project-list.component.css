@@ -1,0 +1,6 @@
+.dropdown-item:focus, .dropdown-item:hover {
+    background-color: transparent !important;
+}
+.action-list:hover{
+    background: #ececec !important;
+}
