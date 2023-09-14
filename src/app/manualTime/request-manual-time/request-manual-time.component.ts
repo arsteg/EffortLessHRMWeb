@@ -38,6 +38,7 @@ export class RequestManualTimeComponent implements OnInit {
   public sortOrder: string = ''; // 'asc' or 'desc'
   firstLetter: string;
   color: string;
+  dateMismatchError: boolean = false;
 
   constructor(private modalService: NgbModal, private formBuilder: FormBuilder,
     private authenticationService:AuthenticationService,
@@ -160,6 +161,24 @@ export class RequestManualTimeComponent implements OnInit {
 
     request.fromDate =  this.utilsService.convertToUTC(this.addRequestForm.value.startDate);
     request.toDate =  this.utilsService.convertToUTC(this.addRequestForm.value.endDate);
+
+  // if (this.addRequestForm.value.startDate !== this.addRequestForm.value.endDate) {
+  //   this.dateMismatchError = true;
+  //   return; // Stop form submission
+  // } else {
+  //   this.dateMismatchError = false; // Reset the error state
+  // }
+  // Extract the date part (dd-mm-yyyy) from startDate and endDate
+  const startDate = new Date(this.addRequestForm.value.startDate).toLocaleDateString('en-GB');
+  const endDate = new Date(this.addRequestForm.value.endDate).toLocaleDateString('en-GB');
+
+  // Compare only the date parts for equality
+  if (startDate !== endDate) {
+    this.dateMismatchError = true;
+    return; // Stop form submission
+  } else {
+    this.dateMismatchError = false; // Reset the error state
+  }
 
     if(this.changeMode=='Add'){
     this.manualTimeRequestService.addManualTimeRequest(request).subscribe((res:any) => {

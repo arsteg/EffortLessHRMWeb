@@ -162,7 +162,7 @@
                 Start Date is required.
               </div>
               <div *ngIf="addRequestForm.get('startDate').hasError('endDateBeforeStartDate')">
-                End date must be after start date.
+                End Date must be after Start Date.
               </div>
             </div>
             <div class="row mt-3">
@@ -179,7 +179,7 @@
                 End Date is required.
               </div>
               <div *ngIf="addRequestForm.get('endDate').hasError('endDateBeforeStartDate')">
-                End date must be after start date.
+                The end date cannot be earlier than the start date.
               </div>
             </div>
             <div class="row">
@@ -196,6 +196,9 @@
           </div>
         </div>
       </div>
+    </div>
+    <div *ngIf="dateMismatchError" class="alert alert-danger error text-end pe-4">
+      Start Date and End Date should be Similar!
     </div>
     <div class="modal-footer">
       <button mat-raised-button color="primary" data-bs-dismiss="modal" type="submit"

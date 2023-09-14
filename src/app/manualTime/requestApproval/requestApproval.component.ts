@@ -40,6 +40,7 @@ export class RequestApprovalComponent implements OnInit {
 
   ngOnInit(): void {
     this.id = this.authenticationService.currentUserValue.id;
+    console.log(this.id)
     this.fetchManualTimeRequests();
     this.populateMembers();
   }

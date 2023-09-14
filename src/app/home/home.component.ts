@@ -814,12 +814,12 @@ export const SideBarUserMenu = [
         id: '151',
         title: 'Request',
         url: '/requestManualTime',
-      },
-      {
-        id: '152',
-        title: 'Add Manual Time',
-        url: 'AddManualTime'
       }
+      // {
+      //   id: '152',
+      //   title: 'Add Manual Time',
+      //   url: 'AddManualTime'
+      // }
     ]
 
   },
