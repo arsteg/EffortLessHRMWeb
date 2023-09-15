@@ -1,0 +1,143 @@
+<div class="main-content">
+  <div class="row px-2">
+    <div class="col-md-7">
+      <div class="d-flex">
+        <h2>Document Templates
+          <label>
+            <input type="text" placeholder="Search ..." class="form-control" style="width: 377%;"
+              [(ngModel)]="searchText" name="searchText">
+          </label>
+        </h2>
+      </div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Contents</th>
+            <th scope="col">Is Active</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of templatesList  | search: searchText">
+            <td class="col-2">{{data?.name}}</td>
+            <td class="col-6" [innerHTML]="data?.content"></td>
+            <td class="col-1">{{data?.active}}</td>
+            <td class="col-3">
+              <button class="btn btn-primary" style="min-width: 80px;"
+                data-bs-toggle="modal" data-bs-target="#updateModal" (click)="selectedTemplate=data">Edit</button>
+              <button class="btn btn-danger" style="min-width: 80px;"
+                (click)="deleteTemplate(data._id)">Delete</button>
+              </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="d-flex justify-content-center">
+        <pagination-controls></pagination-controls>
+      </div>
+    </div>
+    <div class="col-md-5">
+      <div style="margin-top: 14px;">
+        <div>
+          <span>Add Document Template</span>
+        </div>
+        <form class="mt-4 p-3 bg-light border rounded" [formGroup]="addDocumentTemplateForm" (ngSubmit)="addDocumentTemplate(addDocumentTemplateForm.value)">
+          <div class="form-group row">
+            <div class="col-sm-0">
+              Name:
+            </div>
+            <div class="col-sm-6">
+              <input type="text" formControlName="name" class="form-control">
+            </div> <br>
+            <div class="col-sm-0" style="margin-top: 12px;">
+              Is Active
+            </div>
+            <div class="col-sm-6">
+              <input type="checkbox" formControlName="isActive">
+            </div><br>
+            <div class="col-sm-0" style="margin-top: 12px;">
+              Content Data:
+            </div>
+            <select (change)="onDropdownChange($event)" class="my-2 w-50">
+              <option selected>- Select -</option>
+              <option *ngFor="let option of dropdownOptions" [value]="option.label">{{ option.label }}</option>
+            </select>
+
+            <div class="col-sm-0" style="margin-top: 12px;">
+              Template:
+            </div>
+            <div class="col-sm-12">
+              <textarea [style.width]="'100%'" name="content" formControlName="content"></textarea>
+            </div><br>
+            <br>
+            <div class="col-sm-1" style="margin-top: 12px;">
+              <button type="submit" class="btn btn-primary ml-5" style="min-width: 100px;">Add</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="modal" id="updateModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body">
+          <div class="d-flex justify-content-between">
+            <div class="">
+              <h4 class="modal-title text-start">Update Document Template<b style="color: #556def"></b></h4>
+            </div>
+            <div class="">
+              <button type="button" class="btn-close text-end" data-bs-dismiss="modal"></button>
+            </div>
+          </div>
+          <div class="row" *ngIf="selectedTemplate">
+            <form class="row" [formGroup]="updateForm" (ngSubmit)="updateEmail(updateForm.value)">
+              <div class="row d-flex justify-content-center">
+                <div class="form-group row">
+            <div class="col-sm-0">
+              Name:
+            </div>
+            <div class="col-sm-6">
+              <input type="text" formControlName="name" class="form-control">
+            </div> <br>
+            <div class="col-sm-0" style="margin-top: 12px;">
+              Is Active
+            </div>
+            <div class="col-sm-6">
+              <input type="checkbox" formControlName="isActive">
+            </div><br>
+            <div class="col-sm-0" style="margin-top: 12px;">
+              Content Data:
+            </div>
+            <select (change)="onDropdownChange($event)" class="my-2 w-50">
+              <option selected>- Select -</option>
+              <option *ngFor="let option of dropdownOptions" [value]="option.label">{{ option.label }}</option>
+            </select>
+
+            <div class="col-sm-0" style="margin-top: 12px;">
+              Template:
+            </div>
+            <div class="col-sm-12">
+              <textarea [style.width]="'100%'" name="content" formControlName="content"></textarea>
+            </div><br>
+          </div>
+              </div>
+              <div class="d-flex justify-content-between m-3">
+                <div class="">
+                  <button mat-raised-button class="mx-2" data-bs-dismiss="modal" type="button">Cancel</button>
+                </div>
+                <div>
+                  <button mat-raised-button color="primary" class="" data-bs-dismiss="modal"
+                    type="submit">Update</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

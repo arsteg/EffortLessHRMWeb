@@ -1,0 +1,11 @@
+.category-container {
+  background-color: white;
+  margin: 20px auto;
+  border: 1px solid gray;
+  padding: 20px;
+  box-shadow: 2px 2px 5px gray;
+}
+
+.text-gray {
+  color: gray;
+}

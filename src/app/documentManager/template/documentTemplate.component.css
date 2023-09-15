@@ -1,0 +1,26 @@
+.emailContainer {
+  margin-left: 2rem;
+}
+
+.ql-fields {
+  border: none;
+  background: pink;
+  display: none
+}
+
+.ql-snow.ql-toolbar .ql-fields {
+  display: block;
+  background: none;
+  border: none;
+}
+
+.ql-snow.ql-toolbar .Editor {
+  display: none;
+}
+.ql-snow .ql-picker.feature .ql-picker-label::before{
+content: '- Select -'
+}
+
+.ql-snow .ql-picker.feature .ql-picker-label::before {
+  content: 'Select' !important;
+}

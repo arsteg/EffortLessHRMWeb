@@ -57,6 +57,7 @@ import { UserPreferencesComponent } from './settings/userPreferences/userPrefere
 import { AdminCalendarComponent } from './calendar/admin-calendar/admin-calendar.component';
 import { UserCalendarComponent } from './calendar/user-calendar/user-calendar.component';
 import { AssetManagerComponent } from './AssetsManagement/assetAssetManager/asset.component';
+import { DocumentManagerComponent } from './documentManager/documentManager.component';
 
 const routes: Routes = [
   // {path:'',component:LayoutComponentComponent, canActivate: [AuthGuard]},
@@ -118,7 +119,9 @@ const routes: Routes = [
       { path: 'userPreferences', component: UserPreferencesComponent },
       { path: 'assetsManagement', component: AssetManagerComponent },
       { path: 'AdminCalendar', component: AdminCalendarComponent },
-      { path: 'UserCalendar', component: UserCalendarComponent }
+      { path: 'UserCalendar', component: UserCalendarComponent },
+      { path: 'documentManager', component: DocumentManagerComponent }
+
     ]
   }
 ]

@@ -155,6 +155,7 @@ export const SideBarAdminMenu = [
       {
         id: '44',
         title: 'Documents',
+        url:'/documentManager'
       },
       {
         id: '45',
