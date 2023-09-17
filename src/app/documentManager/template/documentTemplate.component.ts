@@ -7,8 +7,8 @@ import { DocumentsService } from 'src/app/_services/documents.service';
 
 @Component({
   selector: 'app-document-template',
-  templateUrl: './documenttemplate.component.html',
-  styleUrls: ['./documenttemplate.component.css']
+  templateUrl: './documentTemplate.component.html',
+  styleUrls: ['./documentTemplate.component.css']
 })
 export class DocumentTemplateComponent implements OnInit {
   templatesList: template[] = [];
