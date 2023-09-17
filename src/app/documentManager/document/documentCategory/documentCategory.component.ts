@@ -5,8 +5,8 @@ import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-document-category',
-  templateUrl: './documentcategory.component.html',
-  styleUrls: ['./documentcategory.component.css']
+  templateUrl: './documentCategory.component.html',
+  styleUrls: ['./documentCategory.component.css']
 })
 export class DocumentCategoryComponent implements OnInit {
   categories = [];
