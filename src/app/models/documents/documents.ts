@@ -4,3 +4,7 @@ export interface template {
   content?: string;
   active?: boolean;
 }
+export interface DocumentCategory{
+  name: string;
+  company: string
+}

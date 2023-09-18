@@ -5,7 +5,7 @@ import { environment } from 'src/environments/environment';
 import { Subordinate } from '../models/subordinate.Model';
 import { Observable } from 'rxjs';
 import { response } from '../models/response';
-import { template } from '../models/documents/documents';
+import { DocumentCategory, template } from '../models/documents/documents';
 
 @Injectable({
   providedIn: 'root'
@@ -45,8 +45,23 @@ export class DocumentsService {
    return response;
   }
   updateTemplate(id:string, templateToSave:template): Observable<response<any>> {
-    var response  = this.http.post<response<any>>(`${environment.apiUrlDotNet}/documents/template/${id}`, templateToSave ,this.httpOptions);
+    var response  = this.http.put<response<any>>(`${environment.apiUrlDotNet}/documents/template/${id}`, templateToSave ,this.httpOptions);
    return response;
   }
-
+  getDocumentCategories(): Observable<response<any>> {
+    var response  = this.http.get<response<any>>(`${environment.apiUrlDotNet}/documents/document-categories`, this.httpOptions);
+   return response;
+  }
+  addDocumentCategories(documentcategory: DocumentCategory): Observable<response<any>> {
+    var response  = this.http.post<response<any>>(`${environment.apiUrlDotNet}/documents/document-categories`, documentcategory, this.httpOptions);
+   return response;
+  }
+  updateDocumentCategories(id: string,documentcategory: DocumentCategory): Observable<response<any>> {
+    var response  = this.http.put<response<any>>(`${environment.apiUrlDotNet}/documents/document-categories/${id}`, documentcategory, this.httpOptions);
+   return response;
+  }
+  deleteCategory(id: string): Observable<response<any>> {
+    var response  = this.http.delete<response<any>>(`${environment.apiUrlDotNet}/documents/document-categories/${id}`, this.httpOptions);
+   return response;
+  }
 }

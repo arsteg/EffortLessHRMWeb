@@ -626,6 +626,11 @@ export const SideBarUserMenu = [
       {
         id: '53',
         title: 'Employee Tree',
+      },
+      {
+        id: '54',
+        title: 'Assets',
+        url: '/Assets'
       }
     ]
   },

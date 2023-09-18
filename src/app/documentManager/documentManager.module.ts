@@ -14,6 +14,7 @@ import { DocumentCategoryComponent } from "./document/documentCategory/documentC
 import { DocumentComponent } from "./document/document.component";
 import { UserDocumentComponent } from "./document/userDocument/userDocument.component";
 import { DocumentTemplateComponent } from "./template/documentTemplate.component";
+import { QuillModule } from 'ngx-quill';
 
 @NgModule({
     declarations:[DocumentManagerComponent, CompanyPolicyDocumentComponent,
@@ -32,7 +33,8 @@ import { DocumentTemplateComponent } from "./template/documentTemplate.component
       MatNativeDateModule,
       MatRippleModule,
       NgxChartsModule,
-      FormsModule
+      FormsModule,
+      QuillModule.forRoot()
     ],
     schemas: [
       CUSTOM_ELEMENTS_SCHEMA,

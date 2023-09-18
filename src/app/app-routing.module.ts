@@ -58,6 +58,7 @@ import { AdminCalendarComponent } from './calendar/admin-calendar/admin-calendar
 import { UserCalendarComponent } from './calendar/user-calendar/user-calendar.component';
 import { AssetManagerComponent } from './AssetsManagement/assetAssetManager/asset.component';
 import { DocumentManagerComponent } from './documentManager/documentManager.component';
+import { UserAssetAssignmentComponent } from './AssetsManagement/user-asset-assignment/user-asset-assignment.component';
 
 const routes: Routes = [
   // {path:'',component:LayoutComponentComponent, canActivate: [AuthGuard]},
@@ -120,7 +121,8 @@ const routes: Routes = [
       { path: 'assetsManagement', component: AssetManagerComponent },
       { path: 'AdminCalendar', component: AdminCalendarComponent },
       { path: 'UserCalendar', component: UserCalendarComponent },
-      { path: 'documentManager', component: DocumentManagerComponent }
+      { path: 'documentManager', component: DocumentManagerComponent },
+      { path: 'Assets', component: UserAssetAssignmentComponent}
 
     ]
   }

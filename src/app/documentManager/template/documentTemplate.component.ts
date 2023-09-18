@@ -1,9 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-import { Validators, FormGroup, FormBuilder, FormsModule ,ReactiveFormsModule, FormControl, AbstractControl } from '@angular/forms';
+import { Validators, FormGroup, FormBuilder, FormsModule, ReactiveFormsModule, FormControl, AbstractControl } from '@angular/forms';
 import { EmailtemplateService } from 'src/app/_services/emailtemplate.service';
 import { template } from 'src/app/models/documents/documents';
 import { DocumentsService } from 'src/app/_services/documents.service';
+import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+
 
 @Component({
   selector: 'app-document-template',
@@ -20,6 +23,8 @@ export class DocumentTemplateComponent implements OnInit {
   searchText: string = "";
   selectedOption: string;
   editorContent: string = '';
+  @ViewChild('editor') editor: any;
+  isEditMode = false;
 
   dropdownOptions = [
     { label: 'firstName', value: 'option1' },
@@ -40,17 +45,17 @@ export class DocumentTemplateComponent implements OnInit {
   isFormLoaded = false;
 
   constructor(private documentsService: DocumentsService, private fb: FormBuilder,
-    private toast: ToastrService) {
+    private toast: ToastrService,  private dialog: MatDialog) {
     this.addDocumentTemplateForm = this.fb.group({
       name: ['', Validators.required],
-      content:['', Validators.required],
-      isActive: ['', Validators.required]
+      content: [''],
+      active: [false]
     });
 
     this.updateForm = this.fb.group({
       name: ['', Validators.required],
-      content:['', Validators.required],
-      isActive: [true, Validators.required]
+      content: [''],
+      active: ['']
     });
   }
 
@@ -66,19 +71,33 @@ export class DocumentTemplateComponent implements OnInit {
   ngOnDestroy(): void {
   }
 
+  editTemplate(data: any) {
+    this.isEditMode = true;
+    if (data && data._id) {
+      this.selectedTemplate = data;
+      this.addDocumentTemplateForm.patchValue({
+        name: data.name,
+        isActive: data.active,
+        content: data.content
+      });
+    }
+  }
+  onCancel() {
+    this.isEditMode = false;
+    this.addDocumentTemplateForm.reset();
+  }
   onDropdownChange(event: any) {
     this.selectedOption = event.target.value;
     this.updateEditorContent();
   }
-  @ViewChild('editor') editor: any;
 
   updateEditorContent() {
-    // const quillEditor = this.editor.quillEditor;
-    // const range = quillEditor.getSelection();
-    // const position = range ? range.index : this.editorContent.length;
-    // const selectedText = '{' + this.selectedOption + '}';
+    const quillEditor = this.editor.quillEditor;
+    const range = quillEditor.getSelection();
+    const position = range ? range.index : this.editorContent.length;
+    const selectedText = '{' + this.selectedOption + '}';
 
-    // quillEditor.insertText(position, selectedText);
+    quillEditor.insertText(position, selectedText);
   }
 
   getTemplates() {
@@ -95,8 +114,10 @@ export class DocumentTemplateComponent implements OnInit {
   addDocumentTemplate(form) {
     this.documentsService.addTemplate(form).subscribe((response: any) => {
       if (response != null && response != 0) {
+        this.templatesList = response.data;
         this.toast.success('Document Template added successfully!');
-        this.ngOnInit();
+        this.getTemplates();
+
         this.addDocumentTemplateForm.reset();
       }
       else {
@@ -106,17 +127,28 @@ export class DocumentTemplateComponent implements OnInit {
   }
 
   deleteTemplate(id: any) {
-    const result = window.confirm('Are you sure you want to delete this document template?');
-    if (result) {
+   
       this.documentsService.deleteTemplate(id).subscribe((response: any) => {
-        this.ngOnInit();
+        this.getTemplates();
         this.toast.success('Document template deleted successfully!');
       },
         err => {
           this.toast.error('Error deleting document template', 'Error!');
-        }
-      )
-    }
+        });
+  }
+  openDialog(id: any): void {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '400px',
+     
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'delete') {
+        this.deleteTemplate(id);
+      }
+      err => {
+        this.toast.error('Can not be Deleted', 'Error!')
+      }
+    });
   }
   onUpdate(event: any) {
     this.selectedOption = event.target.value;
@@ -131,13 +163,16 @@ export class DocumentTemplateComponent implements OnInit {
     this.emailupdatemodel = true;
   }
 
-  updateEmail(updateForm) {
-    const updatedData = this.updateForm.value;
+  updateTemplate(updateForm) {
+    const updatedData = this.addDocumentTemplateForm.value;
     this.documentsService.updateTemplate(this.selectedTemplate._id, updateForm)
       .subscribe(
         response => {
-          console.log('Data updated successfully:', response);
-          this.ngOnInit();
+          this.templatesList = response.data;
+          this.getTemplates();
+          this.addDocumentTemplateForm.reset();
+
+          this.isEditMode = false;
         },
         error => {
 
