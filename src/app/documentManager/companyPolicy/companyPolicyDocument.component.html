@@ -1,55 +1,65 @@
-<div class="document-container col-8 bg-white">
-  <h2 class="text-primary">Company Policy Documents</h2>
-
-  <!-- Table for listing documents -->
-  <table class="table">
-    <thead class="bg-light">
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-        <th>URL</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let doc of documents">
-        <td>{{ doc.name }}</td>
-        <td>{{ doc.description }}</td>
-        <td><a href="{{ doc.url }}" target="_blank">{{ doc.url }}</a></td>
-        <td>
-          <button (click)="editDocument(doc)" class="btn btn-primary btn-sm mr-2">Edit</button>
-          <button (click)="deleteDocument(doc)" class="btn btn-danger btn-sm">Delete</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-
-  <!-- Pagination can be added here -->
-
-  <h2 class="text-primary mt-5">Add/Edit Document</h2>
-
-  <form [formGroup]="documentForm" (ngSubmit)="isEdit ? updateDocument() : addDocument()" class="mt-4 p-3 bg-light border rounded">
-    <div class="row">
-      <div class="col-md-4 form-group">
-          <label for="documentName" class="text-gray">Name</label>
-          <input type="text" id="documentName" class="form-control" formControlName="name" required>
+<div class="documentContainer bg-white">
+  <div class="row bg-white p-3">
+    <div class="col-md-8 border-end">
+      <div class="d-flex justify-content-between">
+        <h2 class="text-primary">Company&nbsp;Policy&nbsp;Documents:&nbsp;{{companyPolicyDocument?.length}}</h2>
+        <input type="text" placeholder="Search ..." class="w-25 form-control" [(ngModel)]="searchText"
+          name="searchText">
       </div>
-      <div class="col-md-4 form-group">
-          <label for="documentDescription" class="text-gray">Description</label>
-          <input type="text" id="documentDescription" class="form-control" formControlName="description" required>
-      </div>
-      <div class="col-md-4 form-group">
-          <label for="documentUrl" class="text-gray">URL</label>
-          <input type="text" id="documentUrl" class="form-control" formControlName="url" required>
-      </div>
+      <!-- Table for listing documents -->
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>URL</th>
+            <th class="text-center">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let doc of companyPolicyDocument">
+            <td>{{ doc.name }}</td>
+            <td>{{ doc.description }}</td>
+            <td><a href="{{ doc.url }}" target="_blank">{{ doc.url }}</a></td>
+            <td class="text-center">
+              <button (click)="editDocument(doc)" class="btn btn-primary bi bi-pencil btn-sm me-2">&nbsp;Edit</button>
+              <button (click)="deleteDocument(doc)" class="btn btn-danger bi bi-trash btn-sm">&nbsp;Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <div class="form-group row">
-      <div class="col-sm-1">
-        <button type="submit" class="btn btn-primary ml-5" [disabled]="documentForm.invalid">{{ isEdit ? 'Update' : 'Add' }}</button>
-      </div>
-      <div class="col-sm-1">
-        <button type="button" *ngIf="isEdit" (click)="isEdit = false" class="btn btn-secondary">Cancel</button>
-      </div>
+    <div class="col-md-4">
+      <!-- Pagination can be added here -->
+
+      <h2 class="text-primary">Add/Edit Document</h2>
+
+      <form [formGroup]="documentForm" (ngSubmit)="isEdit ? updateDocument() : addDocument()"
+        class="mt-4 p-3 bg-light border rounded">
+        <div class="row">
+          <div class="col-md-4 form-group">
+            <label for="documentName" class="text-gray">Name</label>
+            <input type="text" id="documentName" class="form-control" formControlName="name" required>
+          </div>
+          <div class="col-md-4 form-group">
+            <label for="documentDescription" class="text-gray">Description</label>
+            <input type="text" id="documentDescription" class="form-control" formControlName="description" required>
+          </div>
+          <div class="col-md-4 form-group">
+            <label for="documentUrl" class="text-gray">URL</label>
+            <input type="text" id="documentUrl" class="form-control" formControlName="url" required>
+          </div>
+        </div>
+        <div class="form-group d-flex mt-3 justify-content-between">
+          <div class="">
+            <button type="submit" color="primary" mat-raised-button [disabled]="documentForm.invalid">{{ isEdit ? 'Update' :
+              'Add' }}</button>
+          </div>
+          <div class="">
+            <button type="button" mat-raised-button (click)="onCancel()" >Cancel</button>
+          </div>
+        </div>
+      </form>
     </div>
-  </form>
+  </div>
 </div>

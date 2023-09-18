@@ -8,3 +8,14 @@ export interface DocumentCategory{
   name: string;
   company: string
 }
+
+export interface Document{
+  category: string;
+  description: string;
+}
+
+export interface CompanyPolicyDocument{
+  name: string;
+  description: string;
+  url: string;
+}

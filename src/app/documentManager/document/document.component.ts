@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
+import { DocumentsService } from 'src/app/_services/documents.service';
+import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 
 
 @Component({
@@ -16,13 +19,17 @@ export class DocumentComponent implements OnInit {
     selectedDocument: any;
 
     // Sample categories. Ideally, fetch this from your backend.
-    categories = ['Category1', 'Category2', 'Category3'];
+    categories: any;
 
-    constructor(private fb: FormBuilder, private toast: ToastrService) { }
+    constructor(private fb: FormBuilder,
+         private toast: ToastrService,
+         private documentService: DocumentsService,
+         private dialog: MatDialog) { }
 
     ngOnInit(): void {
         this.initForm();
         this.getAllDocuments();
+        this.getAllCategories();
     }
 
     initForm() {
@@ -33,12 +40,21 @@ export class DocumentComponent implements OnInit {
     }
 
     getAllDocuments() {
-        // this.documentManagementService.getAllDocuments().subscribe(response => {
-        //     this.documents = response.data;
-        //     this.filteredDocuments = [...this.documents];
-        // });
+        this.documentService.getDocument().subscribe(response => {  
+            this.documents = response.data;
+        });
     }
 
+    getCategoryName(id: string){
+        const categoryName = this.categories?.find((category: any) => category?._id === id);
+        return categoryName?.name;
+    }
+    
+    getAllCategories() {
+        this.documentService.getDocumentCategories().subscribe((res: any) => {
+            this.categories = res.data;
+        });
+    }
     searchDocuments(query: any) {
         if (query) {
             this.filteredDocuments = this.documents.filter(doc =>
@@ -50,13 +66,17 @@ export class DocumentComponent implements OnInit {
     }
 
     addDocument() {
-        // this.documentManagementService.addDocument(this.documentForm.value).subscribe(response => {
-        //     this.toast.success('Document added successfully!');
-        //     this.getAllDocuments();
-        //     this.documentForm.reset();
-        // });
+        console.log(this.documentForm.value)
+        this.documentService.addDocument(this.documentForm.value).subscribe(response => {
+            this.toast.success('Document added successfully!');
+            this.getAllDocuments();
+            this.documentForm.reset();
+        });
     }
-
+    onCancel(){
+        this.isEdit = false;
+        this.documentForm.reset();
+    }
     editDocument(doc) {
         this.isEdit = true;
         this.selectedDocument = doc;
@@ -64,21 +84,34 @@ export class DocumentComponent implements OnInit {
     }
 
     updateDocument() {
-        // this.documentManagementService.updateDocument(this.selectedDocument._id, this.documentForm.value).subscribe(response => {
-        //     this.toast.success('Document updated successfully!');
-        //     this.getAllDocuments();
-        //     this.isEdit = false;
-        //     this.documentForm.reset();
-        // });
+        this.documentService.updateDocument(this.selectedDocument._id, this.documentForm.value).subscribe(response => {
+            this.toast.success('Document updated successfully!');
+            this.getAllDocuments();
+            this.isEdit = false;
+            this.documentForm.reset();
+        });
     }
 
-    deleteDocument(doc) {
-        const result = window.confirm('Are you sure you want to delete this document?');
-        if (result) {
-            // this.documentManagementService.deleteDocument(doc._id).subscribe(response => {
-            //     this.toast.success('Document deleted successfully!');
-            //     this.getAllDocuments();
-            // });
-        }
+    deleteDocument(id: string) {
+       
+            this.documentService.deleteDocument(id).subscribe(response => {
+                this.toast.success('Document deleted successfully!');
+                this.getAllDocuments();
+            });
+        
     }
+    openDialog(id: string): void {
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+          width: '400px',
+         
+        });
+        dialogRef.afterClosed().subscribe(result => {
+          if (result === 'delete') {
+            this.deleteDocument(id);
+          }
+          err => {
+            this.toast.error('Can not be Deleted', 'Error!')
+          }
+        });
+      }
 }

@@ -5,7 +5,7 @@ import { environment } from 'src/environments/environment';
 import { Subordinate } from '../models/subordinate.Model';
 import { Observable } from 'rxjs';
 import { response } from '../models/response';
-import { DocumentCategory, template } from '../models/documents/documents';
+import { CompanyPolicyDocument, Document, DocumentCategory, template } from '../models/documents/documents';
 
 @Injectable({
   providedIn: 'root'
@@ -62,6 +62,38 @@ export class DocumentsService {
   }
   deleteCategory(id: string): Observable<response<any>> {
     var response  = this.http.delete<response<any>>(`${environment.apiUrlDotNet}/documents/document-categories/${id}`, this.httpOptions);
+   return response;
+  }
+  getDocument(): Observable<response<any>> {
+    var response  = this.http.get<response<any>>(`${environment.apiUrlDotNet}/documents`, this.httpOptions);
+   return response;
+  }
+  addDocument(document: Document): Observable<response<any>> {
+    var response  = this.http.post<response<any>>(`${environment.apiUrlDotNet}/documents`, document, this.httpOptions);
+   return response;
+  }
+  updateDocument(id: string, document: Document): Observable<response<any>> {
+    var response  = this.http.put<response<any>>(`${environment.apiUrlDotNet}/documents/${id}`, document, this.httpOptions);
+   return response;
+  }
+  deleteDocument(id: string): Observable<response<any>> {
+    var response  = this.http.delete<response<any>>(`${environment.apiUrlDotNet}/documents/${id}`, this.httpOptions);
+   return response;
+  }
+  getCompanyPolicyDocument(): Observable<response<any>> {
+    var response  = this.http.get<response<any>>(`${environment.apiUrlDotNet}/documents/companyPolicyDocument`, this.httpOptions);
+   return response;
+  }
+  addCompanyPolicyDocument(companyPolicyDocument: CompanyPolicyDocument): Observable<response<any>> {
+    var response  = this.http.post<response<any>>(`${environment.apiUrlDotNet}/documents/companyPolicyDocument`, companyPolicyDocument, this.httpOptions);
+   return response;
+  }
+  updateCompanyPolicyDocument(id: string, companyPolicyDocument: CompanyPolicyDocument): Observable<response<any>> {
+    var response  = this.http.put<response<any>>(`${environment.apiUrlDotNet}/documents/companyPolicyDocument/${id}`, companyPolicyDocument, this.httpOptions);
+   return response;
+  }
+  deleteCompanyPolicyDocument(id: string): Observable<response<any>> {
+    var response  = this.http.delete<response<any>>(`${environment.apiUrlDotNet}/documents/companyPolicyDocument/${id}`, this.httpOptions);
    return response;
   }
 }

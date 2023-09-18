@@ -1,38 +1,41 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { DocumentsService } from 'src/app/_services/documents.service';
 // You might need to import and inject a service that interacts with your backend API, similar to AssetManagementService
 
 @Component({
-  selector: 'app-company-policy-document',
-  templateUrl: './companyPolicyDocument.component.html',
-  styleUrls: ['./companyPolicyDocument.component.css']
+    selector: 'app-company-policy-document',
+    templateUrl: './companyPolicyDocument.component.html',
+    styleUrls: ['./companyPolicyDocument.component.css']
 })
 export class CompanyPolicyDocumentComponent implements OnInit {
-    documents = [];
+    companyPolicyDocument: any;
     documentForm: FormGroup;
     isEdit = false;
     selectedDocument: any;
-
-    constructor(private fb: FormBuilder, private toast: ToastrService /* , private yourService: YourService */) { }
+    searchText: string = '';
+    constructor(private fb: FormBuilder,
+        private toast: ToastrService,
+        private documentService: DocumentsService) { }
 
     ngOnInit(): void {
         this.initForm();
-        this.getAllDocuments();
+        this.getCompanyPolicyDocument();
     }
 
     initForm() {
         this.documentForm = this.fb.group({
-          name: ['', Validators.required],
-          description: ['', Validators.required],
-          url: ['', [Validators.required, Validators.pattern('https?://.+')]] // Basic URL validation
+            name: ['', Validators.required],
+            description: ['', Validators.required],
+            url: ['', [Validators.required, Validators.pattern('https?://.+')]] // Basic URL validation
         });
     }
 
-    getAllDocuments() {
-        // this.yourService.getAllDocuments().subscribe(response => {
-        //     this.documents = response.data
-        // });
+    getCompanyPolicyDocument() {
+        this.documentService.getCompanyPolicyDocument().subscribe((res: any) => {
+            this.companyPolicyDocument = res.data;
+        })
     }
 
     addDocument() {
@@ -54,5 +57,9 @@ export class CompanyPolicyDocumentComponent implements OnInit {
         if (result) {
             // Implement deleting a document
         }
+    }
+    onCancel() {
+        this.isEdit = false;
+        this.documentForm.reset();
     }
 }

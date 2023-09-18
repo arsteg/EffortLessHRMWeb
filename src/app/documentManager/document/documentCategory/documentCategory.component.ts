@@ -6,9 +6,9 @@ import { DocumentsService } from 'src/app/_services/documents.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
-    selector: 'app-document-category',
-    templateUrl: './documentcategory.component.html',
-    styleUrls: ['./documentcategory.component.css']
+    selector: 'app-document-Category',
+    templateUrl: './documentCategory.component.html',
+    styleUrls: ['./documentCategory.component.css']
 })
 export class DocumentCategoryComponent implements OnInit {
     categories: any;

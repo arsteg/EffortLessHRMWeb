@@ -1,49 +1,59 @@
-<div class="category-container col-8 bg-white">
-  <h2 class="text-primary">Document Categories</h2>
+<div class="container">
+  <div class="row bg-white py-3">
+    <div class="col-md-8 border-end">
+      <div class="d-flex justify-content-between">
+      <h2 class="text-primary">Document Categories</h2>
 
-  <!-- Search bar -->
-  <input type="text" class="form-control mb-3" placeholder="Search categories..." (keyup)="searchCategories($event)">
-
-  <!-- Table for listing categories -->
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let category of categories">
-        <td>{{ category?.name }}</td>
-        <td>
-          <button (click)="editCategory(category)" class="btn btn-primary bi bi-pencil btn-sm me-2"> &nbsp;Edit</button>
-          <button (click)="openDialog(category._id)" class="btn btn-danger bi bi-trash btn-sm"> &nbsp;Delete</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-
-  <!-- Pagination can be added here -->
-
-  <h2 class="text-primary mt-5">Add/Edit Category</h2>
-
-  <form [formGroup]="categoryForm"
-    (ngSubmit)="isEdit ? updateCategory(categoryForm.value): addCategory(categoryForm.value)"
-    class="mt-4 p-3 bg-light border rounded">
-    <div class="row">
-      <div class="col-md-6 form-group">
-        <label for="categoryName" class="text-gray">Name</label>
-        <input type="text" id="categoryName" class="form-control" formControlName="name" required>
+      <!-- Search bar -->
+      <input type="text" class="form-control w-25" placeholder="Search categories..."
+        (keyup)="searchCategories($event)">
       </div>
+      <!-- Table for listing categories -->
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let category of categories">
+            <td>{{ category?.name }}</td>
+            <td>
+              <button (click)="editCategory(category)" class="btn btn-primary bi bi-pencil btn-sm me-2">
+                &nbsp;Edit</button>
+              <button (click)="openDialog(category._id)" class="btn btn-danger bi bi-trash btn-sm">
+                &nbsp;Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <div class="form-group row mt-3">
-<div class="col-4">
-      <button type="submit" mat-raised-button color="primary" [disabled]="categoryForm.invalid">{{ isEdit ? 'Update' :
-        'Add' }}</button>
-      </div>
-      <div class="col-3">
-      <button type="button" mat-raised-button (click)="onCancel()" >Cancel</button>
+    <div class="col-md-4">
+      <!-- Pagination can be added here -->
+
+      <h2 class="text-primary">Add/Edit Category</h2>
+
+      <form [formGroup]="categoryForm"
+        (ngSubmit)="isEdit ? updateCategory(categoryForm.value): addCategory(categoryForm.value)"
+        class="mt-4 p-3 bg-light border rounded">
+        <div class="row">
+          <div class="form-group">
+            <label for="categoryName" class="text-gray">Name</label>
+            <input type="text" id="categoryName" class="form-control" formControlName="name" required>
+          </div>
+        </div>
+        <div class="form-group row mt-3">
+          <div class="col-4">
+            <button type="submit" mat-raised-button color="primary" [disabled]="categoryForm.invalid">{{ isEdit ?
+              'Update' :
+              'Add' }}</button>
+          </div>
+          <div class="col-3">
+            <button type="button" mat-raised-button (click)="onCancel()">Cancel</button>
+          </div>
+        </div>
+      </form>
     </div>
-    </div>
-  </form>
+  </div>
 </div>
