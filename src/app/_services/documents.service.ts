@@ -96,4 +96,8 @@ export class DocumentsService {
     var response  = this.http.delete<response<any>>(`${environment.apiUrlDotNet}/documents/companyPolicyDocument/${id}`, this.httpOptions);
    return response;
   }
+  getDocumentUser(): Observable<response<any>> {
+    var response  = this.http.get<response<any>>(`${environment.apiUrlDotNet}/documents/documentUsers`, this.httpOptions);
+   return response;
+  }
 }

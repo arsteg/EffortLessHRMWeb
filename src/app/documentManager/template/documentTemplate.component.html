@@ -1,10 +1,10 @@
-<div class="main-content">
-  <div class="row px-2">
+<div class="documentContainer">
+  <div class="row p-3 bg-white">
     <div class="col-md-7 border-end">
       <div class="d-flex justify-content-between">
 
         <h2 class="text-primary">Document&nbsp;Templates:&nbsp;{{templatesList?.length}}</h2>
-        <input type="text" placeholder="Search ..." class="w-50 form-control" [(ngModel)]="searchText" name="searchText">
+        <input type="text" placeholder="Search ..." class="w-25 form-control" [(ngModel)]="searchText" name="searchText">
 
       </div>
       <table class="table">
@@ -21,9 +21,8 @@
             <td class="col-2">{{data?.name}}</td>
             <td class="col-6" [innerHTML]="data?.content"></td>
             <td class="col-1">{{data?.active}}</td>
-            <td class="col-3 text-center">
+            <td class="col-3 d-flex">
               <button class="btn btn-primary btn-sm bi bi-pencil" style="min-width: 80px;" (click)="editTemplate(data)" >&nbsp;Edit</button>
-                <!--data-bs-toggle="modal" data-bs-target="#updateModal" (click)="selectedTemplate=data" -->
               <button class="btn btn-danger btn-sm bi bi-trash ms-1" style="min-width: 80px;" (click)="openDialog(data._id)">&nbsp;Delete</button>
             </td>
           </tr>
@@ -34,9 +33,9 @@
       </div>
     </div>
     <div class="col-md-5">
-      <div style="margin-top: 14px;">
+      <div>
         <div>
-          <span>{{ isEditMode ? 'Update Document Template' : 'Add Document Template' }}</span>
+          <h2 class="text-primary">{{ isEditMode ? 'Update Document Template' : 'Add Document Template' }}</h2>
         </div>
         <form class="mt-4 p-3 bg-light border rounded" [formGroup]="addDocumentTemplateForm"
         (ngSubmit)="isEditMode ? updateTemplate(addDocumentTemplateForm.value) : addDocumentTemplate(addDocumentTemplateForm.value)">

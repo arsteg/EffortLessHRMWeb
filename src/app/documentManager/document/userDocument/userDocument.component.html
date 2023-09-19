@@ -1,83 +1,88 @@
-<div class="documentContainer col-8" style="background-color: white;">
-  <h2 style="color: blue;">User Documents</h2>
+<div class="documentContainer">
+    <div class="row p-3 bg-white">
+        <div class="col-md-8 border-end">
+            <div class="d-flex justify-content-between">
+                <h2 class="text-primary">User Documents</h2>
+                <input type="text" class="form-control w-25" placeholder="Search by name" (input)="searchDocuments($event)">
+            </div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Document</th>
+                        <th>Date</th>
+                        <th>URL</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let doc of userDocuments">
+                        <td>{{ getUserName(doc?.user) }}</td>
+                        <td>{{ getDocName(doc?.document) }}</td>
+                        <td></td>
+                        <td><a href="" target="_blank">Open</a></td>
+                        <td>
+                            <button (click)="editDocument(doc)" class="btn btn-primary btn-sm mr-2">Edit</button>
+                            <button (click)="deleteDocument(doc)" class="btn btn-danger btn-sm">Delete</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
 
-  <!-- Search functionality -->
-  <div class="mb-3">
-      <input type="text" class="form-control" placeholder="Search by name" (input)="searchDocuments($event)">
-  </div>
+            <!-- Pagination logic -->
+            <nav>
+                <ul class="pagination">
+                    <li class="page-item" [class.disabled]="currentPage === 1">
+                        <a class="page-link" href="#" (click)="changePage(-1)">Previous</a>
+                    </li>
+                    <li class="page-item" [class.active]="i === currentPage" *ngFor="let i of totalPageArray">
+                        <a class="page-link" href="#" (click)="changePageTo(i)">{{ i }}</a>
+                    </li>
+                    <li class="page-item" [class.disabled]="currentPage === totalPages">
+                        <a class="page-link" href="#" (click)="changePage(1)">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div class="col-md-4">
+            <h2 style="color: blue;">Add/Edit Document</h2>
 
-  <table class="table">
-      <thead>
-          <tr>
-              <th>User</th>
-              <th>Name</th>
-              <th>Date</th>
-              <th>URL</th>
-              <th>Action</th>
-          </tr>
-      </thead>
-      <tbody>
-          <tr *ngFor="let doc of userDocuments">
-              <td>{{ doc.user }}</td>
-              <td>{{ doc.name }}</td>
-              <td>{{ doc.date | date }}</td>
-              <td><a href="{{ doc.URL }}" target="_blank">Open</a></td>
-              <td>
-                  <button (click)="editDocument(doc)" class="btn btn-primary btn-sm mr-2">Edit</button>
-                  <button (click)="deleteDocument(doc)" class="btn btn-danger btn-sm">Delete</button>
-              </td>
-          </tr>
-      </tbody>
-  </table>
+            <form [formGroup]="userDocumentForm" (ngSubmit)="isEdit ? updateDocument() : addDocument()"
+                class="mt-4 p-3 bg-light border rounded">
 
-  <!-- Pagination logic -->
-  <nav>
-      <ul class="pagination">
-          <li class="page-item" [class.disabled]="currentPage === 1">
-              <a class="page-link" href="#" (click)="changePage(-1)">Previous</a>
-          </li>
-          <li class="page-item" [class.active]="i === currentPage" *ngFor="let i of totalPageArray">
-              <a class="page-link" href="#" (click)="changePageTo(i)">{{ i }}</a>
-          </li>
-          <li class="page-item" [class.disabled]="currentPage === totalPages">
-              <a class="page-link" href="#" (click)="changePage(1)">Next</a>
-          </li>
-      </ul>
-  </nav>
+                <div class="form-group">
+                    <label for="user">User</label>
+                    <select id="user" class="form-control" formControlName="user" required>
+                        <option *ngFor="let user of usersList" [value]="user">{{ user }}</option>
+                    </select>
+                </div>
 
-  <h2 style="color: blue;">Add/Edit Document</h2>
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" class="form-control" formControlName="name" required>
+                </div>
 
-  <form [formGroup]="userDocumentForm" (ngSubmit)="isEdit ? updateDocument() : addDocument()" class="mt-4 p-3 bg-light border rounded">
+                <div class="form-group">
+                    <label for="date">Date</label>
+                    <input type="date" id="date" class="form-control" formControlName="date">
+                </div>
 
-      <div class="form-group">
-          <label for="user">User</label>
-          <select id="user" class="form-control" formControlName="user" required>
-              <option *ngFor="let user of usersList" [value]="user">{{ user }}</option>
-          </select>
-      </div>
+                <div class="form-group">
+                    <label for="URL">URL</label>
+                    <input type="text" id="URL" class="form-control" formControlName="URL">
+                </div>
 
-      <div class="form-group">
-          <label for="name">Name</label>
-          <input type="text" id="name" class="form-control" formControlName="name" required>
-      </div>
-
-      <div class="form-group">
-          <label for="date">Date</label>
-          <input type="date" id="date" class="form-control" formControlName="date">
-      </div>
-
-      <div class="form-group">
-          <label for="URL">URL</label>
-          <input type="text" id="URL" class="form-control" formControlName="URL">
-      </div>
-
-      <div class="form-group row">
-          <div class="col-sm-2">
-              <button type="submit" class="btn btn-primary" [disabled]="userDocumentForm.invalid">{{ isEdit ? 'Update' : 'Add' }}</button>
-          </div>
-          <div class="col-sm-2">
-              <button type="button" *ngIf="isEdit" (click)="isEdit = false" class="btn btn-secondary">Cancel</button>
-          </div>
-      </div>
-  </form>
+                <div class="form-group row">
+                    <div class="col-sm-2">
+                        <button type="submit" class="btn btn-primary" [disabled]="userDocumentForm.invalid">{{ isEdit ?
+                            'Update' : 'Add' }}</button>
+                    </div>
+                    <div class="col-sm-2">
+                        <button type="button" *ngIf="isEdit" (click)="isEdit = false"
+                            class="btn btn-secondary">Cancel</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>

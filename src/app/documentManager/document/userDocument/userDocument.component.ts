@@ -1,30 +1,36 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { DocumentsService } from 'src/app/_services/documents.service';
+import { UserService } from 'src/app/_services/users.service';
 
 @Component({
-  selector: 'app-user-document',
-  templateUrl: './userDocument.component.html'
+    selector: 'app-user-document',
+    templateUrl: './userDocument.component.html'
 })
 export class UserDocumentComponent implements OnInit {
-    userDocuments: any[];
+    userDocuments: any;
     userDocumentForm: FormGroup;
     isEdit = false;
     selectedDocument: any;
-    usersList: string[] = []; // This should be fetched from a service
-
+    usersList; // This should be fetched from a service
+    allDocuments: any;
     // Pagination variables
     currentPage = 1;
     itemsPerPage = 10;
     totalPages = 0;
     totalPageArray: number[] = [];
 
-    constructor(private fb: FormBuilder, private toast: ToastrService) {}
+    constructor(private fb: FormBuilder,
+        private toast: ToastrService,
+        private documentService: DocumentsService,
+        private userService: UserService) { }
 
     ngOnInit(): void {
         this.initForm();
         this.getUserDocuments();
-        this.getUsers(); // Fetch list of users
+        this.getUsers();
+        this.getDocument();
     }
 
     initForm() {
@@ -37,22 +43,30 @@ export class UserDocumentComponent implements OnInit {
     }
 
     getUserDocuments() {
-        // Fetch documents and handle pagination logic here
-        // For simplicity, we'll assume the service provides paginated results
-        // this.documentManagementService.getAllDocuments(this.currentPage, this.itemsPerPage).subscribe(response => {
-        //     this.userDocuments = response.data;
-        //     this.totalPages = response.totalPages;
-        //     this.totalPageArray = Array.from({length: this.totalPages}, (_, i) => i + 1);
-        // });
+        this.documentService.getDocumentUser().subscribe((res: any) => {
+            this.userDocuments = res.data;
+        })
     }
-
+    getUserName(id: string) {
+        const users = this.usersList?.find((name: any) => name?._id === id)
+        return `${users?.firstName}  ${users?.lastName}`
+    }
     getUsers() {
-        // Fetch list of users
-        // this.userService.getAllUsers().subscribe(users => {
-        //     this.usersList = users;
-        // });
+        this.userService.getUserList().subscribe(users => {
+            this.usersList = users?.data?.data;
+        });
     }
 
+    getDocument() {
+        this.documentService.getDocument().subscribe((res: any) => {
+            this.allDocuments = res.data;
+        })
+    }
+
+    getDocName(id: string){
+        const documentName = this.allDocuments?.find((name:any)=> name?._id === id )
+        return documentName?.description;
+    }
     addDocument() {
         // Add logic here
     }

@@ -19,3 +19,8 @@ export interface CompanyPolicyDocument{
   description: string;
   url: string;
 }
+
+export interface UserDocument{
+  document: string;
+  user: string;
+}
