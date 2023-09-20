@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, ElementRef, ViewChild, Renderer2 } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, NgForm, Validators, FormArray } from '@angular/forms';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 
@@ -51,7 +51,7 @@ roleName = localStorage.getItem('adminView')
     private route: ActivatedRoute,
     private router: Router,
     private datePipe: DatePipe,
-    private fb: FormBuilder) {
+    private fb: FormBuilder, private renderer: Renderer2) {
     this.route.params.subscribe(params => {
       this.resetToken = params['token'];
     });
@@ -522,4 +522,14 @@ data:any = [];
       this.SetNextScreen();
     }
   }
+  
+  isMaximized: boolean = false; // Track the image size state
+ 
+  getModalClass() {
+    return this.isMaximized ? 'maximized-modal' : 'normal-modal';
+  }
+  toggleImageSize() {
+    this.isMaximized = !this.isMaximized;
+  }
+
 }

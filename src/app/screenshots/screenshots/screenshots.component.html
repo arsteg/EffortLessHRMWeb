@@ -264,17 +264,26 @@
     </div>
   </div>
 </div>
+
 <div class="modal fade" role="dialog" id="bigImageModal" tabindex="0" aria-labelledby="bigImageModalLabel"
   aria-hidden="true">
-  <div class="modal-dialog modal-xl">
+  <div class="modal-dialog modal-xl" [ngClass]="getModalClass()">
+  
     <div class="modal-content">
+      <div class="modal-header py-1">
+      <button type="button" class="btn btn-primary btn-sm" (click)="toggleImageSize()">
+        {{ isMaximized ? 'Restore' : 'Maximize' }}
+      </button>
+      <button type="button" class="btn btn-secondary btn-sm btn-close" data-bs-dismiss="modal"></button>
+    
+      </div>
       <div class="modal-body">
         <div class="row">
           <div class="col-sm-12">
             <div class="row">
               <div class="col-sm-12">
                 <div class="carousel-item active">
-                  <img class="modal-image" src="{{selectedScreenShot}}" />
+                  <img class="modal-image" src="{{selectedScreenShot}}" #modalImage />
                 </div>
                 <a class="carousel-control-prev" data-bs-slide="prev">
                   <span class="carousel-control-prev-icon" (click)=SetPreviousScreen()></span>

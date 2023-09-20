@@ -147,3 +147,13 @@ figure img {
 .header-icons {
   font-size: large;
 }
+.maximized-modal{
+  max-width: inherit !important;
+  margin: 0px;
+}
+.sizeImage{
+  position: absolute;
+    margin: 10px;
+    opacity: 0.8;
+    background: #08c9ff;
+}
