@@ -13,16 +13,19 @@
                 <div class="milestones" [ngClass]="{'d-none': showAddMilestone}">
                     <div class="d-flex justify-content-between mt-2 align-items-baseline">
                         <h3>Calendar Settings</h3>
-                        <button mat-raised-button color="primary" (click)="toggleMilestoneView()"><span
-                                class="bi bi-plus border rounded"></span>
-                            Milestone</button>
-                    </div>
-                    <input class="form-control search" type="text" placeholder="Search..."
+                        <div class="d-flex justify-content-between">
+                        <input class="form-control search" type="text" placeholder="Search..."
                         name="searchText" aria-label="default input example"
                         style="border: 1px solid #d7d9dc;
                                 border-radius: 5px;
                                 box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12)">
 
+                        <button mat-raised-button color="primary" class=" ms-3" (click)="toggleMilestoneView()"><span
+                                class="bi bi-plus border rounded"></span>
+                            Milestone</button>
+                        </div>
+                    </div>
+                    
                     <table class="table">
                         <thead>
                             <tr>
@@ -39,16 +42,17 @@
                                     <i class="bi bi-three-dots actions" data-bs-toggle="dropdown"
                                         aria-expanded="false"></i>
                                     <ul class="dropdown-menu shadow">
-                                        <li class="d-flex">
-                                            <i class="bi bi-trash3 text-danger dropdown-item w-25"></i><span
-                                                class="pt-1 text-muted">Delete</span>
-                                        </li>
-                                        <hr class="mx-2 my-0">
+                                      
                                         <li class="d-flex">
                                             <i class="bi bi-pencil text-success  dropdown-item w-25"></i><span
-                                                class="pt-1 text-muted">Edit</span>
+                                                class="pt-1 text-muted" (click)="editEvent($event)">Edit</span>
                                         </li>
-
+                                        <hr class="mx-2 my-0">
+                                       
+                                        <li class="d-flex">
+                                            <i class="bi bi-trash3 text-danger dropdown-item w-25"></i><span
+                                                class="pt-1 text-muted" (click)="openDialog($event)">Delete</span>
+                                        </li>
                                     </ul>
                                 </div>
                             </td>
@@ -57,7 +61,9 @@
                 </div>
 
                 <div class="add-milestone mt-2 bg-white py-3 px-3" [ngClass]="{'d-none': !showAddMilestone}">
-                    <form action="" style="overflow-x: hidden">
+                    <form action="" style="overflow-x: hidden"
+                     [formGroup]="calendarEventForm"
+                     (ngSubmit)="isEdit ? 'updateEvent(calendarEventForm.value)': 'addEvent(calendarEventForm)'">
                         <div class="d-flex justify-content-between border-bottom">
                             <div class="d-flex align-items-center">
                                 <button mat-raised-button (click)="toggleMilestoneView()"
@@ -73,8 +79,9 @@
                                 </div>
                             </div>
                             <div class="">
-                                <button mat-raised-button (click)="toggleMilestoneView()">Cancel</button>
-                                <button mat-raised-button color="primary" class="ms-3">Save</button>
+                                <button mat-raised-button (click)="toggleMilestoneView()" type="button">Cancel</button>
+                                <button mat-raised-button color="primary" type="submit" class="ms-3">
+                                    {{ isEdit ? 'Update' :'Add' }}</button>
                             </div>
                         </div>
                         <div class="row my-3 pt-3">
@@ -82,7 +89,7 @@
                                 <div class="form-group d-flex justify-content-between">
                                     <label for="">Select&nbsp;Milestone<span class="text-danger">*</span></label>
                                     <select name="" id="" class="w-50 py-2">
-                                        <option value=""></option>
+                                        <option value="" formControlName="title"></option>
                                         <option value="">Other Event</option>
                                     </select>
                                 </div>
@@ -90,7 +97,7 @@
                             <div class="col-md-6">
                                 <div class="form-group d-flex  justify-content-between">
                                     <label for="">Milestone&nbsp;Name<span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control w-50" placeholder="Milestone Name">
+                                    <input type="text" class="form-control w-50" placeholder="Milestone Name" formControlName="milestone">
                                 </div>
                             </div>
                         </div>
@@ -110,7 +117,7 @@
                                     <div class="d-flex col-6">
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" name="flexRadioDefault"
-                                                id="flexRadioDefault1">
+                                                id="flexRadioDefault1" formControlName="user">
                                             <label class="form-check-label" for="flexRadioDefault1">
                                                 All Employees
                                             </label>
@@ -135,14 +142,14 @@
                                     <div class="d-flex col-6 px-0">
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" name="flexRadioDefault"
-                                                id="flexRadioDefault1">
+                                                id="flexRadioDefault1" formControlName="recurringEvent">
                                             <label class="form-check-label" for="flexRadioDefault1">
                                                 Yes
                                             </label>
                                         </div>
                                         <div class="form-check ms-3">
                                             <input class="form-check-input" type="radio" name="flexRadioDefault"
-                                                id="flexRadioDefault1">
+                                                id="flexRadioDefault1" formControlName="recurringEvent">
                                             <label class="form-check-label" for="flexRadioDefault1">
                                                 No
                                             </label>
@@ -156,7 +163,8 @@
                                     <label for="">Select&nbsp;Date<span class="text-danger">*</span></label>
                                     <input placeholder="YYYY-MM-DD" class="w-50 form-control"
                                         #datepickerYMD="bsDatepicker" bsDatepicker
-                                        [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" required>
+                                        [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
+                                        formControlName="startDate" required>
                                 </div>
                             </div>
                         </div>
