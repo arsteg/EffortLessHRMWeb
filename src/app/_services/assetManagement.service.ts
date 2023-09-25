@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { project } from '../Project/model/project';
 import { baseService } from './base';
-import { Asset, AssetStatus, AssetType, CustomAttribute, UpdateCustomAttribute, Vendor } from '../models/AssetsManagement/Asset';
+import { Asset, AssetAttributeValue, AssetStatus, AssetType, CustomAttribute, UpdateCustomAttribute, Vendor } from '../models/AssetsManagement/Asset';
 
 @Injectable({ providedIn: 'root' })
 export class AssetManagementService {
@@ -69,6 +69,14 @@ export class AssetManagementService {
   deleteAsset(id: string): Observable<Asset> {
     var response = this.http.delete<Asset>(
       `${environment.apiUrlDotNet}/assetsManagement/assets/${id}`,
+      this.httpOptions
+    );
+    return response;
+  }
+
+  deleteAssetAttributes(assetId: string): Observable<Asset> {
+    var response = this.http.delete<Asset>(
+      `${environment.apiUrlDotNet}/assetsManagement/assetAttributeValues/asset/${assetId}`,
       this.httpOptions
     );
     return response;
@@ -191,6 +199,21 @@ export class AssetManagementService {
     );
   }
 
+  // Update Custom Attributes
+  upsertCustomAttribute(assetAttributeValue:AssetAttributeValue ): Observable<any> {
+    return this.http.post<any>(
+      `${environment.apiUrlDotNet}/assetsManagement/assetAttributeValues`, assetAttributeValue,
+      this.httpOptions
+    );
+  }
+
+  // Update Custom Attributes
+  getAssetTypeCustomAttributes(assetTypeId:string): Observable<any> {
+    return this.http.get<string>(
+      `${environment.apiUrlDotNet}/assetsManagement/assetTypes/${assetTypeId}/customAttributes`, this.httpOptions
+    );
+  }
+
   //asset assignments
   getEmployeeAssets(emploieeId:string): Observable<any> {
     return this.http.get<any>(
@@ -221,4 +244,6 @@ export class AssetManagementService {
       this.httpOptions
     );
   }
+
+
 }

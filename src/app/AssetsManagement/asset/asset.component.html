@@ -9,7 +9,7 @@
             <option *ngFor="let asset of assetTypes" [ngValue]="asset._id">{{ asset.typeName }}</option>
           </select>
         </div>
-        <input type="text" placeholder="Search assets..." (input)="filterAssets($event)" class="ms-3 w-25 form-control">
+        <input type="text" placeholder="Search assets..." [(ngModel)]="searchText"  (input)="filterAssets()" class="ms-3 w-25 form-control">
       </div>
       <table class="table ps-2">
         <thead>
@@ -32,7 +32,7 @@
             <td>
               <img *ngIf="asset.image" [src]="asset.image" alt="{{ asset.assetName }}" width="50">
             </td>
-            <td *ngFor="let item of asset.customAttributes"> {{item.description}} </td>
+            <td *ngFor="let item of asset.customAttributes"> {{item.value}} </td>
             <td>
               <button (click)="editAsset(asset)" class="btn btn-primary btn-sm me-2">Edit</button>
               <button (click)="openDialog(asset)" class="btn btn-danger btn-sm">Delete</button>
@@ -52,10 +52,7 @@
         <!-- Basic Fields -->
         <div class="form-group">
           <label for="assetType">Select Asset Type:</label>
-          <select id="assetType" class="p-1" formControlName="assetType">
-            <option *ngFor="let asset of assetTypes" [ngValue]="asset._id">{{ asset.typeName }}</option>
-          </select>
-
+          <input type="text" name="assetType" [value]="selectedAssetTypeName" class="form-control">
 
         </div>
         <div class="form-group mt-1">
@@ -82,22 +79,26 @@
           </select>
         </div>
 
-
         <div formArrayName="customAttributes">
-          <div *ngFor="let customAttribute of selectedAsset?.customAttributes; let i=index;" [formGroupName]="i">
-            <div class="form-group mt-1">
-              <label>Attribute Name</label>
-              <div *ngIf="!editable">
-                <p class=" form-control" (click)="toggle()">{{ customAttribute?.attributeName }}</p>
-              </div>
-              <div *ngIf="editable">
-                <input type="text" [formControlName]="customAttribute?.attributeName"
-                  [value]="customAttribute?.attributeName" class="form-control">
-              </div>
+          <ng-container class="form-group" *ngFor="let customAttribute of assetForm.get('customAttributes')['controls']; let i=index;" [formGroupName]="i">
+            <div *ngIf="customAttribute.get('dataType').value=='string'" class="form-group mt-1">
+              <label>{{ customAttribute.get('attributeName').value }}</label>
+              <input type="text" formControlName="value" class="form-control">
             </div>
-          </div>
+            <div *ngIf="customAttribute.get('dataType').value=='number'" class="form-group mt-1">
+              <label>{{ customAttribute.get('attributeName').value }}</label>
+              <input type="number" formControlName="value" class="form-control">
+            </div>
+            <div *ngIf="customAttribute.get('dataType').value=='boolean'" class="form-group mt-1">
+              <label class="checkbox-label-space" >{{ customAttribute.get('attributeName').value }}</label>
+              <input type="checkbox" class="form-check-input" formControlName="value"/>
+            </div>
+            <div *ngIf="customAttribute.get('dataType').value=='date'" class="form-group mt-1">
+              <label>{{ customAttribute.get('attributeName').value}}</label>
+              <input type="date" class="form-control"  formControlName="value"/>
+            </div>
+          </ng-container>
         </div>
-
 
         <div class="form-group d-flex justify-content-between mt-2">
           <div class="">

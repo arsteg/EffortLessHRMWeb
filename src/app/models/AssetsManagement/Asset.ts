@@ -52,4 +52,11 @@ export interface UpdateCustomAttribute {
   // company: boolean;
   // assetType:string;
 }
+export interface AssetAttributeValue{
+  _id?:string;
+  assetId:string;
+  attributeId:string;
+  value:string;
+}
+
 
