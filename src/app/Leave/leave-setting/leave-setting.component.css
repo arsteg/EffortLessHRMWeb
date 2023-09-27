@@ -1,0 +1,14 @@
+label {
+    font-size: small
+}
+
+select:disabled , input:disabled{
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border: transparent;
+    background: transparent;
+}
+input:disabled::placeholder {
+    color: transparent; /* Make the placeholder text color transparent */
+  }

@@ -59,6 +59,7 @@ import { UserCalendarComponent } from './calendar/user-calendar/user-calendar.co
 import { AssetManagerComponent } from './AssetsManagement/assetAssetManager/asset.component';
 import { DocumentManagerComponent } from './documentManager/documentManager.component';
 import { UserAssetAssignmentComponent } from './AssetsManagement/user-asset-assignment/user-asset-assignment.component';
+import { LeaveManagementComponent } from './Leave/leave-management/leave-management.component';
 
 const routes: Routes = [
   // {path:'',component:LayoutComponentComponent, canActivate: [AuthGuard]},
@@ -96,7 +97,7 @@ const routes: Routes = [
       { path: 'AddManualTime', component: AddManualTimeComponent },
       { path: 'activityDescription', component: ActivityDescriptionComponent },
       { path: 'applicationusages', component: AppAndWebsiteUsageComponent },
-      { path: 'leave', component: LeaveReportComponent },
+      { path: 'leaveReport', component: LeaveReportComponent },
       { path: 'productivity', component: ProductivityReportComponent },
       { path: 'appwebsitesettings', component: AppWebsiteSettingsComponent },
       { path: 'permissions', component: PermissionsComponent },
@@ -122,7 +123,8 @@ const routes: Routes = [
       { path: 'AdminCalendar', component: AdminCalendarComponent },
       { path: 'UserCalendar', component: UserCalendarComponent },
       { path: 'documentManager', component: DocumentManagerComponent },
-      { path: 'Assets', component: UserAssetAssignmentComponent}
+      { path: 'Assets', component: UserAssetAssignmentComponent },
+      { path: 'leave', component: LeaveManagementComponent }
 
     ]
   }

@@ -56,13 +56,13 @@ import { Ng5SliderModule } from 'ng5-slider';
 import { LeaveSettingsComponent } from './settings/leave-settings/leave-settings.component';
 import { taskModule } from './tasks/task.Module';
 import { SharedModule } from './shared/shared.Module';
-import {MatPaginatorModule} from '@angular/material/paginator';
-import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { CommonModule, DatePipe } from '@angular/common';
 // import { EditTaskComponent } from './tasks/edit-task/edit-task.component';
-import {MatDialogModule} from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { timesheetModule } from './timesheets/timesheet.Module';
 import { GenericSettingsComponent } from './settings/generic-settings/generic-settings.component';
 import { ViewLiveScreenComponent } from './viewLiveScreen/view-live-screen/view-live-screen.component';
@@ -79,6 +79,7 @@ import { AdminCalendarComponent } from './calendar/admin-calendar/admin-calendar
 import { FullCalendarModule } from '@fullcalendar/angular';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import { DocumentManagementModule } from './documentManager/documentManager.module';
+import { LeaveModule } from './Leave/leave.module';
 @NgModule({
   declarations: [
     AppComponent,
@@ -89,42 +90,44 @@ import { DocumentManagementModule } from './documentManager/documentManager.modu
     ResetPasswordComponent,
     ProjectListComponent,
     AddProjectComponent,
-          ChangePasswordComponent,
-          UserListComponent,
-          UserProfileComponent,
-          UserFormCOntrolComponent,
-          FormControlsComponent,
-          ScreenshotsComponent,
-          TeammembersComponent,
-          HomeComponent,
-          RolesComponent,
-          PermissionModelComponent,
-          ProfileComponent,
-          ReportsComponent,
-          TimelineComponent,
-          AttendanceComponent,
-          RealtimeComponent,
-          MainComponent,
-          RequestManualTimeComponent,
-          RequestApprovalComponent,
-          ActivityDescriptionComponent,
-          AppAndWebsiteUsageComponent,
-          LeaveReportComponent,
-          ProductivityReportComponent,
-          AppWebsiteSettingsComponent,
-          AddManualTimeComponent,
-          PermissionsComponent,
-          RolePermissionComponent,
-          ProfileSettingsComponent,
-          WorkspaceSettingsComponent,
-          FeaturesSettingsComponent,
-          AttendanceSettingsComponent,
-          LeaveSettingsComponent,
-          // EditTaskComponent,
-          GenericSettingsComponent,
-          ViewLiveScreenComponent,
-          EmailTemplateComponent,
-          UserCalendarComponent, AdminCalendarComponent
+    ChangePasswordComponent,
+    UserListComponent,
+    UserProfileComponent,
+    UserFormCOntrolComponent,
+    FormControlsComponent,
+    ScreenshotsComponent,
+    TeammembersComponent,
+    HomeComponent,
+    RolesComponent,
+    PermissionModelComponent,
+    ProfileComponent,
+    ReportsComponent,
+    TimelineComponent,
+    AttendanceComponent,
+    RealtimeComponent,
+    MainComponent,
+    RequestManualTimeComponent,
+    RequestApprovalComponent,
+    ActivityDescriptionComponent,
+    AppAndWebsiteUsageComponent,
+    LeaveReportComponent,
+    ProductivityReportComponent,
+    AppWebsiteSettingsComponent,
+    AddManualTimeComponent,
+    PermissionsComponent,
+    RolePermissionComponent,
+    ProfileSettingsComponent,
+    WorkspaceSettingsComponent,
+    FeaturesSettingsComponent,
+    AttendanceSettingsComponent,
+    LeaveSettingsComponent,
+    // EditTaskComponent,
+    GenericSettingsComponent,
+    ViewLiveScreenComponent,
+    EmailTemplateComponent,
+    UserCalendarComponent,
+    AdminCalendarComponent,
+   
   ],
   imports: [
     BrowserModule,
@@ -157,7 +160,8 @@ import { DocumentManagementModule } from './documentManager/documentManager.modu
     AssetsModule,
     QuillModule.forRoot(),
     FullCalendarModule,
-    DocumentManagementModule
+    DocumentManagementModule,
+    LeaveModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

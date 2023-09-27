@@ -1,0 +1,158 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between">
+            <input class="form-control search" type="text" placeholder="search..." [(ngModel)]="searchText"
+                name="searchText" aria-label="default input example"
+                style="border-bottom: 1px solid grey; border-radius: 0;">
+            <button mat-raised-button color="primary" data-bs-toggle="modal" data-bs-target="#addModal">Add</button>
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Leave Label</th>
+                    <th>Leave Type</th>
+                    <th>Frequency of Accrual</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><button mat-raised-button color="primary">Edit</button> </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<div class="modal" id="addModal" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="max-height: 82vh;">
+            <div class="modal-body">
+                <div class=" d-flex justify-content-between">
+                    <div class="">
+                        <h4 class="modal-title text-start">Add New Leave Category</h4>
+                    </div>
+                    <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
+                    </div>
+                </div>
+                <hr class="mt-0">
+                <div class="">
+                    <form class="">
+                        <div class="row d-flex">
+                            <div class="col-md-12">
+                                <div class="row categoryForm">
+                                    <div class="col-md-12 my-2">
+                                        <label for="" class="">Please choose the type of leave&nbsp;<span class="text-danger">*</span></label>
+                                        <select name="" id="" class="form-control">
+                                            <option value="">General Leave</option>
+                                            <option value="">Annual Non-Accrual Leave</option>
+                                        </select>
+                                    </div>
+
+                                    <div class=" my-2">
+                                        <label for="" class="">Please provide a label for this leave&nbsp;<span class="text-danger">*</span></label><br>
+                                        <input type="text" placeholder="Cutom Label" class="form-control">
+                                    </div>
+
+
+                                    <div class="col-md-12 my-2">
+                                        <label for="" class="">Please provide an abbreviation for this leave&nbsp;<span class="text-danger">*</span></label>
+                                        <input type="text" placeholder="Abbreviation Label" class="form-control">
+
+                                    </div>
+
+                                    <div class="col-md-12 my-2">
+                                        <label for="" class="">Can employee apply a leave for this category?&nbsp;<span class="text-danger">*</span></label><br>
+
+                                        <div class="d-flex">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="flexRadioDefault"
+                                                    id="flexRadioDefault1">
+                                                <label class="form-check-label" for="flexRadioDefault1">
+                                                    Yes
+                                                </label>
+                                            </div>
+                                            <div class="form-check ms-2">
+                                                <input class="form-check-input" type="radio" name="flexRadioDefault"
+                                                    id="flexRadioDefault2" checked>
+                                                <label class="form-check-label" for="flexRadioDefault2">
+                                                    No
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12 my-2">
+                                        <label for="" class="">Do you want to provide a half-day option for this type of leave?</label>
+                                        <div class="d-flex">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="flexRadioDefault"
+                                                    id="flexRadioDefault1">
+                                                <label class="form-check-label" for="flexRadioDefault1">
+                                                    Yes
+                                                </label>
+                                            </div>
+                                            <div class="form-check ms-2">
+                                                <input class="form-check-input" type="radio" name="flexRadioDefault"
+                                                    id="flexRadioDefault2" checked>
+                                                <label class="form-check-label" for="flexRadioDefault2">
+                                                    No
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-md-12 my-2">
+                                        <label for="" class="">Number of days before which the leave application must be submitted (leave blank for no limit)</label><br>
+                                        <input type="text" placeholder="Days" class="form-control">
+
+                                      
+                                    </div>
+                                    <div class="col-md-12 my-2">
+                                        <label for="" class="">Would you like to display used leave balance in the employee's payslips?
+                                            </label>
+                                        <div class="d-flex">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="flexRadioDefault"
+                                                    id="flexRadioDefault1">
+                                                <label class="form-check-label" for="flexRadioDefault1">
+                                                    Yes
+                                                </label>
+                                            </div>
+                                            <div class="form-check ms-2">
+                                                <input class="form-check-input" type="radio" name="flexRadioDefault"
+                                                    id="flexRadioDefault2" checked>
+                                                <label class="form-check-label" for="flexRadioDefault2">
+                                                    No
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <div class="modal-footer d-flex justify-content-between mt-3">
+
+                                <div>
+                                    <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
+                                        type="reset">Cancel</button>
+                                </div>
+                                <div>
+                                    <button mat-raised-button color="primary" type="submit">Add</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
