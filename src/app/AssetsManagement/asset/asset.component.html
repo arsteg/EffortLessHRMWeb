@@ -51,39 +51,59 @@
 
         <!-- Basic Fields -->
         <div class="form-group">
-          <label for="assetType">Select Asset Type:</label>
-          <input type="text" name="assetType" [value]="selectedAssetTypeName" class="form-control">
+          <label for="assetType">Selected Asset Type:</label>
+          <input type="text" name="assetType" [value]="selectedAssetTypeName" class="form-control" disabled>
 
         </div>
         <div class="form-group mt-1">
           <label>Asset Name</label>
-          <input type="text" formControlName="assetName" [value]="selectedAsset?.assetName" class="form-control">
+          <input type="text" formControlName="assetName" [value]="selectedAsset?.assetName" class="form-control"
+          [ngClass]="{ 'is-invalid': !validateOption('string',assetForm.value.assetName) && (assetForm.get('assetName').touched || assetForm.get('assetName').dirty)}">
+          <div *ngIf="!validateOption('string',assetForm.value.assetName) && (assetForm.get('assetName').touched || assetForm.get('assetName').dirty)"  class="invalid-feedback">
+            Invalid Asset Name!
+          </div>
         </div>
 
         <div class="form-group mt-1">
           <label>Purchase Date</label>
           <input placeholder="YYYY-MM-DD" class="form-control" #datepickerYMD="bsDatepicker" bsDatepicker
             [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" [value]="selectedAsset?.purchaseDate | date"
-            formControlName="purchaseDate" required>
-        </div>
+            formControlName="purchaseDate" required
+            [ngClass]="{ 'is-invalid': !validateOption('date',assetForm.value.purchaseDate) && (assetForm.get('purchaseDate').touched || assetForm.get('purchaseDate').dirty)}">
+            <div *ngIf="!validateOption('date',assetForm.value.purchaseDate) && (assetForm.get('purchaseDate').touched || assetForm.get('purchaseDate').dirty)"  class="invalid-feedback">
+              Invalid purchase date!
+            </div>
+          </div>
         <div class="form-group mt-1">
           <label>Warranty Expiry</label>
           <input placeholder="YYYY-MM-DD" class="form-control" #datepickerYMD="bsDatepicker" bsDatepicker
             [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" [value]="selectedAsset?.warrantyExpiry | date"
-            formControlName="warrantyExpiry" required>
+            formControlName="warrantyExpiry" required
+            [ngClass]="{ 'is-invalid': !validateOption('date',assetForm.value.warrantyExpiry) && (assetForm.get('warrantyExpiry').touched || assetForm.get('warrantyExpiry').dirty)}">
+            <div *ngIf="!validateOption('date',assetForm.value.warrantyExpiry) && (assetForm.get('warrantyExpiry').touched || assetForm.get('warrantyExpiry').dirty)"  class="invalid-feedback">
+              Invalid warranty expiry!
+            </div>
         </div>
         <div class="form-group mt-1">
           <label for="assetStatus">Select Asset Status:</label>
-          <select id="assetStatus" formControlName="status" class="p-1">
+          <select id="assetStatus" formControlName="status" class="p-1"
+            [ngClass]="{ 'is-invalid': assetForm.get('status').hasError('required') && (assetForm.get('status').touched || assetForm.get('status').dirty) }">
             <option *ngFor="let status of assetStatuses" [ngValue]="status._id">{{ status.statusName }}</option>
           </select>
+          <div *ngIf="assetForm.get('status').hasError('required') && (assetForm.get('status').touched || assetForm.get('status').dirty)" class="invalid-feedback">
+            Please select an Asset Status!
+          </div>
         </div>
 
         <div formArrayName="customAttributes">
           <ng-container class="form-group" *ngFor="let customAttribute of assetForm.get('customAttributes')['controls']; let i=index;" [formGroupName]="i">
             <div *ngIf="customAttribute.get('dataType').value=='string'" class="form-group mt-1">
               <label>{{ customAttribute.get('attributeName').value }}</label>
-              <input type="text" formControlName="value" class="form-control">
+              <input type="text" formControlName="value" class="form-control"
+              [ngClass]="{ 'is-invalid': !validateOption(customAttribute.dataType,customAttribute.value) && (assetForm.get('customAttributes')['controls'][i].touched || assetForm.get('customAttributes')['controls'][i].dirty)}">
+              <div *ngIf="assetForm.get('customAttributes')['controls'][i].status=='INVALID'" class="invalid-feedback">
+                Invalid {{customAttribute.attributeName}}
+              </div>
             </div>
             <div *ngIf="customAttribute.get('dataType').value=='number'" class="form-group mt-1">
               <label>{{ customAttribute.get('attributeName').value }}</label>

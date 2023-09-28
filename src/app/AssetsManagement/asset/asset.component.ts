@@ -50,6 +50,9 @@ export class AssetComponent implements OnInit {
     this.loadAssetTypes();
     this.initAssetForm();
     this.getAssetStatusList();
+    this.assetForm.statusChanges.subscribe((f)=>{
+      console.log(this.assetForm);
+    });
   }
   editable: boolean = false;
   toggle() {
@@ -282,7 +285,7 @@ export class AssetComponent implements OnInit {
           description: new FormControl(attribute.description),
           isRequired : new FormControl(attribute.isRequired),
           dataType : new FormControl(attribute.dataType),
-          value: new FormControl(attribute.value),
+          value: new FormControl(attribute.value, Validators.required),
         });
         (<FormArray>this.assetForm.get('customAttributes')).push(attributeFormGroup);
       });
@@ -322,5 +325,32 @@ export class AssetComponent implements OnInit {
         .upsertCustomAttribute(assetAttributeValue)
         .subscribe((response: any) => {});
     });
+  }
+
+  validateOption(dataType:string, fieldValue:string ): boolean {
+    if (dataType?.toLowerCase() === 'string' || dataType?.toLowerCase() === 'number') {
+      // Implement your validation logic here
+      // Example: Return false if the value is empty
+      return fieldValue !== '';
+    } else if (dataType?.toLowerCase() === 'boolean') {
+      // No specific validation needed for boolean options
+      return true;
+    } else if (dataType?.toLowerCase() === 'date') {
+      // Implement your validation logic for date
+      // Example: Return false if the date is not valid
+      return this.isValidDate(fieldValue);
+    }
+    // ... Implement similar logic for other data types ...
+    return true;
+  }
+
+  isValidDate(date: any): boolean {
+    if (typeof date === 'string') {
+      const parsedDate = new Date(date);
+      return !isNaN(parsedDate.getTime());
+    } else if (date instanceof Date) {
+      return !isNaN(date.getTime());
+    }
+    return false;
   }
 }
