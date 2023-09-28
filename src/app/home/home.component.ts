@@ -292,6 +292,7 @@ export const SideBarAdminMenu = [
       {
         id: '91',
         title: 'Settings',
+        url: 'leave'
       },
       {
         id: '92',
@@ -364,7 +365,7 @@ export const SideBarAdminMenu = [
       },
       {
         id: '124',
-        title: 'Run Pyroll',
+        title: 'Run Payroll',
       },
       {
         id: '125',
@@ -806,7 +807,7 @@ export const SideBarUserMenu = [
       {
         id: '1412',
         title: 'Leave',
-        url: 'leave'
+        url: 'leaveReport'
       }
     ],
   },

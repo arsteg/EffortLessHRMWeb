@@ -1,0 +1,28 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="tabs">
+            <button mat-raised-button (click)="selectTab(1)" [class.active]="selectedTab === 1">General
+                Settings</button>
+            <button mat-raised-button (click)="selectTab(2)" [class.active]="selectedTab === 2">Leave
+                Categories</button>
+            <button mat-raised-button (click)="selectTab(3)" [class.active]="selectedTab === 3">Leave Templates</button>
+            <button mat-raised-button (click)="selectTab(4)" [class.active]="selectedTab === 4">Leave
+                Assignment</button>
+
+        </div>
+
+        <div *ngIf="selectedTab === 1" class="tab-content">
+            <app-leave-Setting></app-leave-Setting>
+        </div>
+        <div *ngIf="selectedTab === 2" class="tab-content">
+            <app-leave-Category></app-leave-Category>
+        </div>
+        <div *ngIf="selectedTab === 3" class="tab-content">
+            <app-leave-Template></app-leave-Template>
+        </div>
+        <div *ngIf="selectedTab === 4" class="tab-content">
+            <app-leave-Assignment></app-leave-Assignment>
+        </div>
+
+    </div>
+</div>

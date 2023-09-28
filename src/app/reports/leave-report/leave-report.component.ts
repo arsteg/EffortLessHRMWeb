@@ -97,15 +97,15 @@ export class LeaveReportComponent implements OnInit {
   }
 
   getLeaveReport() {
-    let searchLeave = new Leave();
-    searchLeave.fromdate = new Date(this.fromDate);
-    searchLeave.todate = new Date(this.toDate);
+    // let searchLeave = new Leave();
+    // searchLeave.fromdate = new Date(this.fromDate);
+    // searchLeave.todate = new Date(this.toDate);
 
-    searchLeave.users = (this.roleName.toLocaleLowerCase() === "admin") ? this.selectedUser : [this.currentUser.id];
-    this.reportService.getLeave(searchLeave).subscribe(result => {
-      this.leaveList = result.data;
-    }
-    )
+    // searchLeave.users = (this.roleName.toLocaleLowerCase() === "admin") ? this.selectedUser : [this.currentUser.id];
+    // this.reportService.getLeave(searchLeave).subscribe(result => {
+    //   this.leaveList = result.data;
+    // }
+    // )
   }
 
 }
