@@ -223,8 +223,10 @@ export class AssetComponent implements OnInit {
     this.assetService.deleteAsset(asset._id).subscribe((response) => {
       this.assetService.deleteAssetAttributes(asset._id).subscribe((response) => {
         this.loadAssets(asset.assetType);
-        this.toast.success('Asset added successfully!');
+        this.toast.success('Asset deleted successfully!');
       });
+    },(err)=>{
+      this.toast.error(err.error.data);
     });
   }
 
@@ -257,7 +259,7 @@ export class AssetComponent implements OnInit {
           });
       },
       (error) => {
-        console.log(error);
+        console.log(error.data);
       }
     );
   }

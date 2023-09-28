@@ -66,7 +66,7 @@ export class AssetManagementService {
     return response;
   }
 
-  deleteAsset(id: string): Observable<Asset> {
+  deleteAsset(id: string): Observable<any> {
     var response = this.http.delete<Asset>(
       `${environment.apiUrlDotNet}/assetsManagement/assets/${id}`,
       this.httpOptions
