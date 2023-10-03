@@ -5,6 +5,7 @@ import {
   Validators,
   FormArray,
   FormControl,
+  AbstractControl,
 } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
@@ -38,6 +39,7 @@ export class AssetComponent implements OnInit {
   selectedCustomAttributes: CustomAttribute[] = [];
   p = 1;
   searchText: string = '';
+  customAttribute: string;
 
   constructor(
     private fb: FormBuilder,
@@ -60,11 +62,11 @@ export class AssetComponent implements OnInit {
   }
   initAssetForm() {
     this.assetForm = this.fb.group({
-      assetName: ['', Validators.required],
-      assetType: ['', Validators.required],
-      purchaseDate: ['', Validators.required],
-      warrantyExpiry: ['', Validators.required],
-      status: ['', Validators.required],
+      assetName: [''],
+      assetType: [''],
+      purchaseDate: [''],
+      warrantyExpiry: [''],
+      status: [''],
       image: [''],
       customAttributes: new FormArray([]),
     });
@@ -78,7 +80,15 @@ export class AssetComponent implements OnInit {
       value: [''],
     });
   }
-
+  validateDate(control: AbstractControl) {
+    const enteredDate = new Date(control.value);
+    if (isNaN(enteredDate.getTime())) {
+      control.setErrors({ invalidDate: true });
+    } else {
+      control.setErrors(null);
+    }
+  }
+  
   addCustomAttribute(): void {
     const customAttribute = this.fb.group({
       attributeName: ['', Validators.required],
@@ -115,7 +125,7 @@ export class AssetComponent implements OnInit {
       }
     );
   }
-  customAttribute: string;
+ 
 
   editAsset(asset: Asset) {
     this.isEdit = true;
@@ -123,7 +133,7 @@ export class AssetComponent implements OnInit {
     this.selectedCustomAttributes = this.selectedAsset.customAttributes;
     this.assetForm.patchValue(asset);
     this.selectedAssetTypeName = this.getAssetTypeName(asset.assetType);
-
+  
     if (asset.customAttributes && asset.customAttributes.length > 0) {
       (<FormArray>this.assetForm.get('customAttributes')).clear();
       asset.customAttributes.forEach((attribute) => {
@@ -133,14 +143,14 @@ export class AssetComponent implements OnInit {
           description: new FormControl(attribute.description),
           isRequired: new FormControl(attribute.isRequired),
           dataType: new FormControl(attribute.dataType),
-          value: new FormControl(attribute.value, Validators.required),
+          value: new FormControl(attribute.value),
         });
-        (<FormArray>this.assetForm.get('customAttributes')).push(
-          attributeFormGroup
-        );
+        (<FormArray>this.assetForm.get('customAttributes')).push(attributeFormGroup);
       });
     }
   }
+  
+
   trackByIndex(index: number, customAttribute: CustomAttribute): any {
     return index;
   }
