@@ -11,16 +11,16 @@ import { ResetPasswordComponent } from './login/reset-password/reset-password.co
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { LayoutModule } from '@angular/cdk/layout';
-import { ProjectListComponent } from './Project/project-list/project-list.component';
+// import { ProjectListComponent } from './Project/project-list/project-list.component';
 import { AddProjectComponent } from './Project/add-project/add-project.component';
 import { ChangePasswordComponent } from './login/change-password/change-password.component';
-import { UserListComponent } from './users/user-list/user-list.component';
+// import { UserListComponent } from './users/user-list/user-list.component';
 import { UserFormCOntrolComponent } from './users/user-profile/user-form-control/user-form-control.component';
 import { UserProfileComponent } from './users/user-profile/user-profile.component';
 import { FormControlsComponent } from './common/form-controls/form-controls.component';
 import { ScreenshotsComponent } from './screenshots/screenshots/screenshots.component';
 import { NgHttpLoaderModule } from 'ng-http-loader';
-import { TeammembersComponent } from './manage/teammembers/teammembers.component';
+// import { TeammembersComponent } from './manage/teammembers/teammembers.component';
 import { HomeComponent } from './home/home.component';
 import { RolesComponent } from './manage/roles/roles/roles.component';
 import { PermissionModelComponent } from './manage/permissonModel/permission-model/permission-model.component';
@@ -36,7 +36,7 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CommonService } from './common/common.service';
 import { UserService } from './_services/users.service';
-import { RequestManualTimeComponent } from './manualTime/request-manual-time/request-manual-time.component';
+// import { RequestManualTimeComponent } from './manualTime/request-manual-time/request-manual-time.component';
 import { RequestApprovalComponent } from './manualTime/requestApproval/requestApproval.component';
 import { ActivityDescriptionComponent } from './reports/activity-description/activity-description.component';
 import { AppAndWebsiteUsageComponent } from './reports/app-and-website-usage/app-and-website-usage.component';
@@ -88,15 +88,15 @@ import { LeaveModule } from './Leave/leave.module';
     ForgotPasswordComponent,
     SidebarDirective,
     ResetPasswordComponent,
-    ProjectListComponent,
+    // ProjectListComponent,
     AddProjectComponent,
     ChangePasswordComponent,
-    UserListComponent,
+    // UserListComponent,
     UserProfileComponent,
     UserFormCOntrolComponent,
     FormControlsComponent,
     ScreenshotsComponent,
-    TeammembersComponent,
+    // TeammembersComponent,
     HomeComponent,
     RolesComponent,
     PermissionModelComponent,
@@ -106,7 +106,7 @@ import { LeaveModule } from './Leave/leave.module';
     AttendanceComponent,
     RealtimeComponent,
     MainComponent,
-    RequestManualTimeComponent,
+    // RequestManualTimeComponent,
     RequestApprovalComponent,
     ActivityDescriptionComponent,
     AppAndWebsiteUsageComponent,
@@ -124,7 +124,7 @@ import { LeaveModule } from './Leave/leave.module';
     // EditTaskComponent,
     GenericSettingsComponent,
     ViewLiveScreenComponent,
-    EmailTemplateComponent,
+    // EmailTemplateComponent,
     UserCalendarComponent,
     AdminCalendarComponent,
    

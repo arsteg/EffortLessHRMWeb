@@ -4,15 +4,30 @@ import { TimeLogService } from '../_services/timeLogService';
 // import { TeammembersComponent } from './teammembers/teammembers.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';
+import { ManageComponent } from './manage/manage.component';
+import { UserListComponent } from '../users/user-list/user-list.component';
+import { CommonComponentsModule } from '../common/commonComponents.module';
+import { SharedModule } from '../shared/shared.Module';
+import { ProjectListComponent } from '../Project/project-list/project-list.component';
+import { TasksComponent } from '../tasks/tasks.component';
+import { RequestManualTimeComponent } from '../manualTime/request-manual-time/request-manual-time.component';
+import { TeammembersComponent } from './teammembers/teammembers.component';
+import { EmailTemplateComponent } from '../email-template/email-template.component';
+import { taskModule } from '../tasks/task.Module';
 
 
 @NgModule({
-  declarations: [],
+  declarations: [
+    ManageComponent, UserListComponent, ProjectListComponent, RequestManualTimeComponent,
+    TeammembersComponent, EmailTemplateComponent
+  ],
   imports: [
     CommonModule,
     MatRadioModule,
-    MatCheckboxModule
+    MatCheckboxModule, CommonComponentsModule, SharedModule, taskModule
   ],
+  exports: [UserListComponent, ProjectListComponent,  RequestManualTimeComponent,
+    TeammembersComponent, EmailTemplateComponent],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,
     NO_ERRORS_SCHEMA

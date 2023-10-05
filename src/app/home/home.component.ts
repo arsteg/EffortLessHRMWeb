@@ -20,6 +20,7 @@ export class HomeComponent implements OnInit {
   currentProfile: any;
   dropdownOpen: boolean = false;
   selectedOption: string;
+  searchText: string =''
   options: string[] = ['You spent the 7 connects on the availability',
                        'The work week has ended, and your weekly summary is available for summary',
                         'Your Proposal to job'];
@@ -168,43 +169,44 @@ export const SideBarAdminMenu = [
     id: '5',
     title: 'Manage',
     icon: 'fa fa-database',
-    subMenu: [
-      {
-        id: '51',
-        title: 'Employees',
-        url: 'employees'
-      },
-      {
-        id: '53',
-        title: 'Projects',
-        url: 'project',
-      },
-      {
-        id: '54',
-        title: 'Tasks',
-        url: 'tasks'
-      },
-      {
-        id: '55',
-        title: 'Manual Time',
-        url: '/requestManualTime'
-      },
-      {
-        id: '56',
-        title: 'Team Members',
-        url: 'teamMembers'
-      },
-      {
-        id: '57',
-        title: 'Tags',
-        url: 'tags'
-      },
-      {
-        id: '58',
-        title: 'Email Template',
-        url: '/emailtemplate'
-      }
-    ]
+    url: '/manage'
+    // subMenu: [
+    //   {
+    //     id: '51',
+    //     title: 'Employees',
+    //     url: 'employees'
+    //   },
+    //   {
+    //     id: '53',
+    //     title: 'Projects',
+    //     url: 'project',
+    //   },
+    //   {
+    //     id: '54',
+    //     title: 'Tasks',
+    //     url: 'tasks'
+    //   },
+    //   {
+    //     id: '55',
+    //     title: 'Manual Time',
+    //     url: '/requestManualTime'
+    //   },
+    //   {
+    //     id: '56',
+    //     title: 'Team Members',
+    //     url: 'teamMembers'
+    //   },
+    //   {
+    //     id: '57',
+    //     title: 'Tags',
+    //     url: 'tags'
+    //   },
+    //   {
+    //     id: '58',
+    //     title: 'Email Template',
+    //     url: '/emailtemplate'
+    //   }
+    // ]
   },
   {
     id: '6',

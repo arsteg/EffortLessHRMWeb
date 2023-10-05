@@ -1,0 +1,42 @@
+<div class="main-content contentData py-0">
+    <div class="container-fluid px-0">
+        <div class=" d-flex bg-white subMenu">
+            <button class="btn rounded-pill submenuTab" (click)="selectTab(1)"
+                [class.active]="selectedTab === 1">Employees</button>
+            <button class="btn rounded-pill submenuTab" (click)="selectTab(2)"
+                [class.active]="selectedTab === 2">Projects</button>
+            <button class="btn rounded-pill submenuTab" (click)="selectTab(3)"
+                [class.active]="selectedTab === 3">Tasks</button>
+            <button class="btn rounded-pill submenuTab" (click)="selectTab(4)" [class.active]="selectedTab === 4">Manual
+                Time</button>
+            <button class="btn rounded-pill submenuTab" (click)="selectTab(5)" [class.active]="selectedTab === 5">Team
+                Members</button>
+            <button class="btn rounded-pill submenuTab" (click)="selectTab(6)"
+                [class.active]="selectedTab === 6">Tags</button>
+            <button class="btn rounded-pill submenuTab" (click)="selectTab(7)" [class.active]="selectedTab === 7">E-Mail
+                Template</button>
+        </div>
+
+        <div *ngIf="selectedTab === 1" class="tab-content">
+            <app-user-list></app-user-list>
+        </div>
+        <div *ngIf="selectedTab === 2" class="tab-content">
+            <app-project-list></app-project-list>
+        </div>
+        <div *ngIf="selectedTab === 3" class="tab-content">
+            <app-tasks></app-tasks>
+        </div>
+        <div *ngIf="selectedTab === 4" class="tab-content">
+            <app-request-manual-time></app-request-manual-time>
+        </div>
+        <div *ngIf="selectedTab === 5" class="tab-content">
+            <app-teammembers></app-teammembers>
+        </div>
+        <div *ngIf="selectedTab === 6" class="tab-content">
+            <task-tag></task-tag>
+        </div>
+        <div *ngIf="selectedTab === 7" class="tab-content">
+            <app-email-template></app-email-template>
+        </div>
+    </div>
+</div>

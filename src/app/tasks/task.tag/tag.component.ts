@@ -19,8 +19,9 @@ export class TagComponent implements OnInit {
   selectedTag: Tag;
   p = 1;
   comments: taskComment[];
-
-  constructor(private fb: FormBuilder,private taskService: TasksService,private toast: ToastrService) { }
+  searchText: string = '';
+  
+  constructor(private fb: FormBuilder, private taskService: TasksService, private toast: ToastrService) { }
 
   ngOnInit(): void {
     this.initTagForm();
@@ -38,7 +39,7 @@ export class TagComponent implements OnInit {
     ];
     this.taskService.getAllTags().subscribe((response: any) => {
       this.tagList = response && response.data;
-      this.filteredList= this.tagList;
+      this.filteredList = this.tagList;
     })
   }
 
@@ -62,7 +63,7 @@ export class TagComponent implements OnInit {
     });
   }
 
-  async  updateTag() {
+  async updateTag() {
     try {
       const updatedTag = this.tagList.find(tag => tag._id === this.selectedTag._id);
       updatedTag.title = this.tagForm.value.title;
@@ -79,17 +80,18 @@ export class TagComponent implements OnInit {
   }
 
   deleteTag(tag: Tag) {
-    try{
-    const result = this.confirmAction();
-    if(result){
-    this.taskService.deleteTag(tag._id).subscribe((response: any) => {
-      this.toast.success('Tag has been deleted successfully!')
-      this.getTagList();
-    })}
-  }
-  catch(err){
-    this.toast.error('Error deleting tag', 'Error!');
-  }
+    try {
+      const result = this.confirmAction();
+      if (result) {
+        this.taskService.deleteTag(tag._id).subscribe((response: any) => {
+          this.toast.success('Tag has been deleted successfully!')
+          this.getTagList();
+        })
+      }
+    }
+    catch (err) {
+      this.toast.error('Error deleting tag', 'Error!');
+    }
   }
 
   filteredTags(searchControl) {
@@ -102,14 +104,14 @@ export class TagComponent implements OnInit {
     input.select();
   }
 
-  getComments(taskId){
+  getComments(taskId) {
     this.taskService.getComments(taskId).toPromise()
-    .then(response => {
-      this.comments = response.data;
-      this.comments.forEach(e=>{console.log(e.content)});
-    })
-    .catch(error => {
-      this.toast.error('Something went wrong, Please try again.', 'Error!');
-    });
+      .then(response => {
+        this.comments = response.data;
+        this.comments.forEach(e => { console.log(e.content) });
+      })
+      .catch(error => {
+        this.toast.error('Something went wrong, Please try again.', 'Error!');
+      });
   }
 }

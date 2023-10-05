@@ -16,6 +16,8 @@ export class CommonService {
   private currentProfileRoleSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   private jwtToken: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   private filterParams: any = {};
+  private selectedTabSubject = new BehaviorSubject<number>(1); // Default selected tab is 1
+  selectedTab$ = this.selectedTabSubject.asObservable();
 
   constructor(private userService: UserService,
     private projectService: ProjectService,
@@ -106,5 +108,9 @@ export class CommonService {
   get isCollapsedMenu(): boolean {
     const storedValue = localStorage.getItem('sidebar');
     return storedValue === 'true'; 
+  }
+  setSelectedTab(tab: number) {
+    this.selectedTabSubject.next(tab);
+    console.log(tab)
   }
 }

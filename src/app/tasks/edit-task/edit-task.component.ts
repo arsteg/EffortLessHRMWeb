@@ -131,7 +131,12 @@ export class EditTaskComponent implements OnInit {
     
   }
 
+  navigateToManage() {
+    // Use router.navigate with a relative path to go back three steps
+    this.router.navigate(['../../../manage'], { relativeTo: this.route });
+    console.log(this.route)
 
+}
   onParagraphClick() {
     this.showEditor = true;
   }

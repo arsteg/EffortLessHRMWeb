@@ -1,20 +1,20 @@
-<div class="main-content pt-3">
+<div class="main-content  py-5 mt-5">
   <div class="container-fluid">
-    <div class="d-flex justify-content-between">
-      <h1 class="pt-4 mb-0">Requests: {{manualTimeRequests.length}}</h1>
-      <div class="d-flex h-25">
-        <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
-          name="searchText" aria-label="default input example" style="border-bottom: 1px solid grey; border-radius: 0;">
-        <button mat-raised-button color="primary" class="ms-5" style="padding: 0px 10px 0 10px;"
-          (click)="clearselectedRequest();changeMode='Add';open(requestModal)">New Request</button>
+    <div class="container-fluid mt-3 py-2 px-0 bg-white tableContainer">
+      <div class="d-flex justify-content-between align-items-center mb-2 px-3">
+        <p class="mb-0">({{manualTimeRequests.length}}) Records Found</p>
+        <div class="d-flex">
+          <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
+            name="searchText" aria-label="default input example"
+            style="border-bottom: 1px solid grey; border-radius: 0;">
+          <button mat-raised-button class="addBtn rounded-pill ms-3"
+            (click)="clearselectedRequest();changeMode='Add';open(requestModal)">New Request</button>
+        </div>
       </div>
-    </div>
-    <hr class="mt-0">
-    <div class="container-fluid">
-      <table class="table  mt-4">
+      <table class="px-4">
         <thead>
           <tr>
-            <th [appSort]="manualTimeRequests" data-order="{{ sortOrder }}" data-name="date"
+            <th class="ps-3" [appSort]="manualTimeRequests" data-order="{{ sortOrder }}" data-name="date"
               (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Date&nbsp;
               <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
             </th>
@@ -39,23 +39,23 @@
               <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
             </th>
 
-            <th>Reason</th>
+            <th style="width: 200px;">Reason</th>
             <th>Status</th>
             <th>Action</th>
           </tr>
         </thead>
-        
+
         <tbody>
           <tr
             *ngFor="let record of manualTimeRequests | search: searchText |  paginate: { itemsPerPage: 20, currentPage: p }">
-            <td>
+            <td class="ps-3">
               <div>{{record.date | date: 'MM/dd/yyyy'}}</div>
             </td>
             <td><span>{{record.project.projectName | uppercase}}</span> </td>
 
             <td><span class="letter ms-2" [tooltip]="(record.manager.firstName) + (' ') + (record.manager.lastName)"
-            [style.background-color]="commonservice.getRandomColor(record.manager.firstName)">{{record.manager.firstName.slice(0,1)
-            | uppercase}}{{record.manager.lastName.slice(0,1) | uppercase}}</span></td>
+                [style.background-color]="commonservice.getRandomColor(record.manager.firstName)">{{record.manager.firstName.slice(0,1)
+                | uppercase}}{{record.manager.lastName.slice(0,1) | uppercase}}</span></td>
 
             <td><span>{{record.task?.taskName}}</span></td>
 
@@ -71,14 +71,18 @@
                   [title]="record.status"></i>
               </span></td>
             <td>
-              <i class="bi bi-trash3 text-danger" data-bs-toggle="modal" data-bs-target="#deleteModal"
-                (click)="selectedRequest = record"></i> &nbsp;
-              <i *ngIf="record.status=='pending'" class="bi bi-pencil text-success"
-                (click)="setUpdateMode(record);selectedRequest=record;changeMode='Update';open(requestModal)"></i>
+              <button class="actions" *ngIf="record.status=='pending'" mat-mini-fab title="Update"
+                (click)="setUpdateMode(record);selectedRequest=record;changeMode='Update';open(requestModal)"
+                aria-label="Example icon button with a menu icon">
+                <i class="bi bi-pencil-fill"></i>
+              </button>
+              <button class="actions ms-2" title="Delete" mat-mini-fab data-bs-toggle="modal"
+                data-bs-target="#deleteModal" (click)="selectedRequest = record"
+                aria-label="Example icon button with a menu icon">
+                <i class="bi bi-trash"></i>
+              </button>
             </td>
-            <td class="highlight">
-              <div></div>
-            </td>
+
           </tr>
         </tbody>
       </table>
@@ -105,7 +109,8 @@
             <div class="row mt-3">
               <label for="project" class="text-start">Project</label>
             </div>
-            <select class="custom-select mb-3 p-2" formControlName="project" [(ngModel)]="selectedProject" (change)="onProjectChange($event.target)">
+            <select class="custom-select mb-3 p-2" formControlName="project" [(ngModel)]="selectedProject"
+              (change)="onProjectChange($event.target)">
               <option disabled selected value="undefined">Choose Any Project</option>
               <option *ngFor="let project of projects" [value]="project.id">
                 {{project.projectName}}

@@ -1,326 +1,338 @@
-<div class="main-content">
+<div class="main-content py-5 mt-5">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
                 <div class="">
-                    <div class="d-flex py-2 align-items-baseline border-bottom mb-1">
-                        <h1 class="me-2">Tasks: {{tasks?.length}}</h1>
 
-                        <mat-form-field appearance="outline" class="w-25 mx-1" style="height: 20px">
-                            <mat-label>Select User</mat-label>
-                            <mat-select [(ngModel)]="userId">
-                                <mat-option *ngFor="let member of members" [value]="member.id"
-                                    class="border-left user-filter" [selected]="selectedUser?.includes(member?.id)"
-                                    (click)="onMemberSelectionChange(userId)">
-                                    {{ member.name | titlecase }}
-                                </mat-option>
-                            </mat-select>
-                        </mat-form-field>
+                    <div class="bg-white p-2">
+                        <div class="d-flex justify-content-between  mb-2 px-3">
+                            <p class="pt-3">({{tasks?.length}})&nbsp;Records&nbsp;Found</p>
+
+                            <mat-form-field appearance="outline" class="w-25 mx-1" style="height: 20px">
+                                <mat-label>Select User</mat-label>
+                                <mat-select [(ngModel)]="userId">
+                                    <mat-option *ngFor="let member of members" [value]="member.id"
+                                        class="border-left user-filter" [selected]="selectedUser?.includes(member?.id)"
+                                        (click)="onMemberSelectionChange(userId)">
+                                        {{ member.name | titlecase }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
 
 
 
-                        <mat-form-field appearance="outline" class="w-25 mx-1" style="height: 20px">
-                            <mat-label>Select Project</mat-label>
-                            <mat-select [(ngModel)]="projectId" (ngModelChange)="onProjectSelectionChange()">
-                                <mat-option (click)="getTaskByIds(); projectId = ''">ALL</mat-option>
-                                <mat-option *ngFor="let project of projectList" [value]="project?.id || null">
-                                    {{project.projectName}}
-                                </mat-option>
-                            </mat-select>
-                        </mat-form-field>
+                            <mat-form-field appearance="outline" class="w-25 mx-1" style="height: 20px">
+                                <mat-label>Select Project</mat-label>
+                                <mat-select [(ngModel)]="projectId" (ngModelChange)="onProjectSelectionChange()">
+                                    <mat-option (click)="getTaskByIds(); projectId = ''">ALL</mat-option>
+                                    <mat-option *ngFor="let project of projectList" [value]="project?.id || null">
+                                        {{project.projectName}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
 
-                        <div class="dropdown mx-2">
-                            <button class="mt-2 dropdown-toggle " type="button" id="dropdownMenuButton1"
-                                data-bs-toggle="dropdown" aria-expanded="false" mat-raised-button>
-                                <i class="fa fa-eye"></i> Status
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                <div tabindex="-1" role="menu" aria-hidden="false" class="dropdown-menu show"
-                                    data-popper-placement="bottom-start"
-                                    style="position: absolute; inset: 0px auto auto 0px;">
-                                    <span tabindex="-1" class="dropdown-item-text status-filter border-left"
-                                        *ngFor="let statusItem of statusList">
-                                        <div class="form-check form-switch switch-left">
-                                            <label class="form-check-label">
-                                                <input class="form-check-input" type="checkbox" role="switch"
-                                                    [(ngModel)]="statusItem.isChecked">
-                                                {{statusItem.name}}
-                                            </label>
-                                        </div>
-                                    </span>
+                            <div class="dropdown mx-2">
+                                <button class="mt-2 dropdown-toggle " type="button" id="dropdownMenuButton1"
+                                    data-bs-toggle="dropdown" aria-expanded="false" mat-raised-button>
+                                    <i class="fa fa-eye"></i> Status
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                    <div tabindex="-1" role="menu" aria-hidden="false" class="dropdown-menu show"
+                                        data-popper-placement="bottom-start"
+                                        style="position: absolute; inset: 0px auto auto 0px;">
+                                        <span tabindex="-1" class="dropdown-item-text status-filter border-left"
+                                            *ngFor="let statusItem of statusList">
+                                            <div class="form-check form-switch switch-left">
+                                                <label class="form-check-label">
+                                                    <input class="form-check-input" type="checkbox" role="switch"
+                                                        [(ngModel)]="statusItem.isChecked">
+                                                    {{statusItem.name}}
+                                                </label>
+                                            </div>
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="me-2">
-                            <button (click)="toggleViewMode()" class="mt-2" mat-raised-button>
-                                <ng-container *ngIf="isListView; else boardIcon">
-                                    <mat-icon>leaderboard</mat-icon>
-                                    <span> Board View </span>
-                                </ng-container>
-                                <ng-template #boardIcon>
-                                    <mat-icon>list</mat-icon>
-                                    <span> List View </span>
-                                </ng-template>
-                            </button>
-                        </div>
+                            <div class="me-2">
+                                <button (click)="toggleViewMode()" class="mt-2" mat-raised-button>
+                                    <ng-container *ngIf="isListView; else boardIcon">
+                                        <mat-icon>leaderboard</mat-icon>
+                                        <span> Board View </span>
+                                    </ng-container>
+                                    <ng-template #boardIcon>
+                                        <mat-icon>list</mat-icon>
+                                        <span> List View </span>
+                                    </ng-template>
+                                </button>
+                            </div>
 
-
-                        <div class="d-flex h-25 ms-auto">
-                            <input class="form-control search" type="text" placeholder="Search..."
-                                [(ngModel)]="searchText" name="searchText" aria-label="default input example"
-                                style="border: 1px solid #d7d9dc;
-                                border-radius: 5px;
-                                box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12)">
-                            <button mat-raised-button color="primary" class="ms-3" data-bs-toggle="modal"
-                                data-bs-target="#addModal">Create</button>
+                                <input class="form-control search" type="text" placeholder="Search..."
+                                    [(ngModel)]="searchText" name="searchText" aria-label="default input example"
+                                    style="border-bottom: 1px solid grey; border-radius: 0;">
+                               <div>
+                                    <button mat-raised-button class="addBtn rounded-pill ms-3 mt-2" data-bs-toggle="modal"
+                                    data-bs-target="#addModal">Create</button>
+                                </div>
                         </div>
                     </div>
 
-                    <ng-container>
-                        <div class="d-flex justify-content-end align-items-center" style="margin-bottom: -30px;">
-                            Items per page
-                            <select style="width: 80px;" class="page form-select form-select-sm mx-2"
-                                [(ngModel)]="recordsPerPage" (ngModelChange)="updateRecordsPerPage()">
-                                <option class="page" *ngFor="let option of recordsPerPageOptions" [value]="option">{{
-                                    option }}
-                                </option>
-                            </select>
-
-                            <span class="ml-2 page">{{ currentPage }} - {{ getTotalPages() }} of {{
-                                totalRecords?.taskCount
-                                }}</span>
-                            <!-- previous page -->
-                            <span (click)="firstPagePagination()"
-                                class="page bi bi-chevron-bar-left btn-lg btn-outline-primary" title="First Page"
-                                [class.disabled]="skip === '0' || currentPage === 1"></span>
-
-                            <span (click)="previousPagination()"
-                                class="page bi bi-chevron-left btn-lg btn-outline-primary" title="Previous Page"
-                                [class.disabled]="skip === '0' || currentPage === 1"></span>
-                            <!-- next page -->
-                            <span (click)="nextPagination()" class="page bi bi-chevron-right btn-lg btn-outline-primary"
-                                title="Next Page" [class.disabled]="currentPage === getTotalPages()"></span>
-
-                            <span (click)="lastPagePagination()"
-                                class="page bi bi-chevron-bar-right btn-lg btn-outline-primary" title="Last Page"
-                                [class.disabled]="currentPage === getTotalPages()"></span>
-                        </div>
-                    </ng-container>
-
                     <div *ngIf="isListView">
-                        <table class="table  mt-4">
-                            <thead>
-                                <tr>
+                        <div class="container-fluid mt-3 py-2 px-0 bg-white tableContainer">
 
-                                    <th scope="col" [appSort]="tasks" data-name="taskNumber"
-                                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-                                        Key &nbsp;
-                                        <i
-                                            [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                                    </th>
+                            <table class="px-4">
+                                <thead>
+                                    <tr>
 
-                                    <th scope="col" [appSort]="tasks" data-name="taskName"
-                                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-                                        Task Name &nbsp;
-                                        <i
-                                            [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                                    </th>
+                                        <th class="ps-3" scope="col" [appSort]="tasks" data-name="taskNumber"
+                                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                                            Key &nbsp;
+                                            <i
+                                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                                        </th>
 
-                                    <th scope="col" [appSort]="tasks" data-name="endDate"
-                                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-                                        Due Date &nbsp;
-                                        <i
-                                            [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                                    </th>
+                                        <th scope="col" [appSort]="tasks" data-name="taskName"
+                                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                                            Task Name &nbsp;
+                                            <i
+                                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                                        </th>
 
-                                    <th scope="col" [appSort]="tasks" data-name="priority"
-                                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-                                        Priority &nbsp;
-                                        <i
-                                            [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                                    </th>
-                                    <th scope="col" [appSort]="tasks" data-order="desc" data-name="status">Status &nbsp;
-                                    </th>
-                                    <th scope="col" [appSort]="tasks" data-name="comment"
-                                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-                                        Comments &nbsp;
-                                        <i
-                                            [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                                    </th>
-                                    <th scope="col" [appSort]="tasks" data-order="desc" data-name="TaskUser">Assignee
-                                        &nbsp;
-                                        <i class="bi bi-arrow-up sort"></i>
-                                    </th>
-                                    <th scope="col" [appSort]="tasks" data-order="desc" data-name="createdBy.firstName">
-                                        Reporter
-                                        &nbsp;
-                                        <i class="bi bi-arrow-up sort"></i>
-                                    </th>
-                                    <th scope="col" class="text-center">Action</th>
+                                        <th scope="col" [appSort]="tasks" data-name="endDate"
+                                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                                            Due Date &nbsp;
+                                            <i
+                                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                                        </th>
 
-                                </tr>
-                            </thead>
-                            <tbody *ngIf="tasks!= null">
-                                <tr *ngFor="let task of tasks | search: searchText ;let i = index"
-                                    [ngClass]="{ 'd-none': !isStatusChecked(task.status) }">
+                                        <th scope="col" [appSort]="tasks" data-name="priority"
+                                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                                            Priority &nbsp;
+                                            <i
+                                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                                        </th>
+                                        <th scope="col" [appSort]="tasks" data-order="desc" data-name="status">Status
+                                            &nbsp;
+                                        </th>
+                                        <th scope="col" [appSort]="tasks" data-name="comment"
+                                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                                            Comments &nbsp;
+                                            <i
+                                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                                        </th>
+                                        <th scope="col" [appSort]="tasks" data-order="desc" data-name="TaskUser">
+                                            Assignee
+                                            &nbsp;
+                                            <i class="bi bi-arrow-up sort"></i>
+                                        </th>
+                                        <th scope="col" [appSort]="tasks" data-order="desc"
+                                            data-name="createdBy.firstName">
+                                            Reporter
+                                            &nbsp;
+                                            <i class="bi bi-arrow-up sort"></i>
+                                        </th>
+                                        <th scope="col" class="text-center">Action</th>
 
-                                    <td>
-                                    <span  *ngIf="task.project != null">    {{getProjectNameInitials(task.project.projectName)}} - {{task?.taskNumber}}</span>
-                                    <span  *ngIf="task.project == null">{{task?.taskNumber}}</span>
-                                    </td>
-                                    
-                                    <td (click)="navigateToEditPage(task)"
-                                        style="cursor: pointer; color: blue; width:300px">
-                                        {{task?.taskName|
-                                        titlecase}}</td>
-                                    <td>{{task?.endDate | date:'mediumDate'}}</td>
-                                    <td (click)="selectedTaskIndex === i?selectedTaskIndex=-1:selectedTaskIndex=i">
-                                        <div class="dropdown show">
-                                            <span data-toggle="dropdown" aria-haspopup="true"
-                                                class="align-items-left d-flex justify-content-left status-picker-image-span"
-                                                aria-expanded="true">
-                                                <div aria-label="Normal priority" class="">
-                                                    <div class="d-none">
+                                    </tr>
+                                </thead>
+                                <tbody *ngIf="tasks!= null">
+                                    <tr *ngFor="let task of tasks | search: searchText ;let i = index"
+                                        [ngClass]="{ 'd-none': !isStatusChecked(task.status) }">
+
+                                        <td class="ps-3">
+                                            <span *ngIf="task.project != null">
+                                                {{getProjectNameInitials(task.project.projectName)}} -
+                                                {{task?.taskNumber}}</span>
+                                            <span *ngIf="task.project == null">{{task?.taskNumber}}</span>
+                                        </td>
+
+                                        <td (click)="navigateToEditPage(task)"
+                                            style="cursor: pointer; color: blue; width:300px">
+                                            {{task?.taskName|
+                                            titlecase}}</td>
+                                        <td>{{task?.endDate | date:'mediumDate'}}</td>
+                                        <td (click)="selectedTaskIndex === i?selectedTaskIndex=-1:selectedTaskIndex=i">
+                                            <div class="dropdown show">
+                                                <span data-toggle="dropdown" aria-haspopup="true"
+                                                    class="align-items-left d-flex justify-content-left status-picker-image-span"
+                                                    aria-expanded="true">
+                                                    <div aria-label="Normal priority" class="">
+                                                        <div class="d-none">
+                                                        </div>
+                                                        <div
+                                                            class="align-self-left text-left align-items-left pointer d-flex position-relative">
+                                                            <img class="align-self-center"
+                                                                [src]="getTaskPriorityUrl(task.priority)" height="24"
+                                                                width="24">
+                                                        </div>
                                                     </div>
-                                                    <div
-                                                        class="align-self-left text-left align-items-left pointer d-flex position-relative">
-                                                        <img class="align-self-center"
-                                                            [src]="getTaskPriorityUrl(task.priority)" height="24"
-                                                            width="24">
-                                                    </div>
-                                                </div>
-                                            </span>
-                                            <div tabindex="-1" *ngIf="selectedTaskIndex===i" role="menu"
-                                                aria-hidden="false" class="dropdown-menu show"
-                                                data-popper-placement="bottom-start"
-                                                style="position: absolute; inset: 0px auto auto 0px; transform: translate(0px, 28px);">
-                                                <button *ngFor="let priority of priorityList" type="button" tabindex="0"
-                                                    role="menuitem" class="dropdown-item"
-                                                    (click)="updateTaskPriority(task,priority.name)">
-                                                    <span class="d-flex align-items-center">
-                                                        <img [src]="priority.url" class="me-3" height="18" width="18">
-                                                        <span>{{priority.name}}</span>
-                                                    </span>
-                                                </button>
-                                                <button type="button" tabindex="0" role="menuitem" class="dropdown-item"
-                                                    (click)="updateTaskPriority(task,'')">
-                                                    <span class="d-flex align-items-center"><span>Remove
-                                                            Priority</span></span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="status"
-                                        (click)="selectedTaskStatusIndex === i?selectedTaskStatusIndex=-1:selectedTaskStatusIndex=i">
-                                        <div class="dropdown show">
-                                            <span data-toggle="dropdown" aria-haspopup="true"
-                                                class="align-items-left d-flex" aria-expanded="true">
-                                                <div aria-label="Normal priority">
-                                                    <div class="d-none">
-                                                    </div>
-                                                    <div
-                                                        class="align-self-left text-left align-items-left pointer d-flex position-relative">
-                                                        <i class="fa fa-tasks pt-1"></i>
-                                                        <span
-                                                            [ngStyle]="{'color': getColor(task.status)}">&nbsp;{{task.status}}</span>
-                                                    </div>
-                                                </div>
-                                            </span>
-                                            <div tabindex="-1" *ngIf="selectedTaskStatusIndex===i" role="menu"
-                                                aria-hidden="false" class="dropdown-menu show"
-                                                data-popper-placement="bottom-start"
-                                                style="position: absolute; inset: 0px auto auto 0px; transform: translate(0px, 28px);">
-                                                <button *ngFor="let s of statusList" type="button" tabindex="0"
-                                                    role="menuitem" class="dropdown-item border-left"
-                                                    (click)="updateTaskStatus(task,s.name)">
-                                                    <span class="d-flex align-items-center">
-                                                        <span>{{s.name}}</span>
-                                                    </span>
-                                                </button>
-                                                <button type="button" tabindex="0" role="menuitem" class="dropdown-item"
-                                                    (click)="updateTaskStatus(task,'')">
-                                                    <span class="d-flex align-items-center"><span>Remove
-                                                            Status</span></span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        <span *ngIf="task?.comment?.length==0 else addComment">
-                                            <div style="position:relative">
-                                                <img src="assets/images/icon-comment-add.svg" class="me-3" height="24"
-                                                    width="24">
-                                            </div>
-                                        </span>
-                                        <ng-template #addComment>
-                                            <div style="position:relative;max-width:60px;">
-                                                <img src="https://www.webwork-tracker.com/images/tasks/icons/icon-comment.svg"
-                                                    height="24" width="=24">
-                                                <span class="position-absolute comments-count"
-                                                    style="margin-left:12em;">1</span>
-                                            </div>
-                                        </ng-template>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex flex-nowrap users">
-                                            <p *ngFor="let users of task?.TaskUsers">
-                                                <span class="letter text-light"
-                                                    [tooltip]="(users?.user?.firstName| titlecase) + (' ') +( users?.user?.lastName | titlecase)"
-                                                    [style.background-color]="commonservice.getRandomColor(users?.user?.firstName)">
-                                                    {{users?.user?.firstName.charAt(0) | uppercase}}
                                                 </span>
-                                                <span class="ms-2">{{users?.user?.firstName | titlecase}}
-                                                    {{users?.user?.lastName | titlecase}}</span>
-                                            </p>
+                                                <div tabindex="-1" *ngIf="selectedTaskIndex===i" role="menu"
+                                                    aria-hidden="false" class="dropdown-menu show"
+                                                    data-popper-placement="bottom-start"
+                                                    style="position: absolute; inset: 0px auto auto 0px; transform: translate(0px, 28px);">
+                                                    <button *ngFor="let priority of priorityList" type="button"
+                                                        tabindex="0" role="menuitem" class="dropdown-item"
+                                                        (click)="updateTaskPriority(task,priority.name)">
+                                                        <span class="d-flex align-items-center">
+                                                            <img [src]="priority.url" class="me-3" height="18"
+                                                                width="18">
+                                                            <span>{{priority.name}}</span>
+                                                        </span>
+                                                    </button>
+                                                    <button type="button" tabindex="0" role="menuitem"
+                                                        class="dropdown-item" (click)="updateTaskPriority(task,'')">
+                                                        <span class="d-flex align-items-center"><span>Remove
+                                                                Priority</span></span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="status"
+                                            (click)="selectedTaskStatusIndex === i?selectedTaskStatusIndex=-1:selectedTaskStatusIndex=i">
+                                            <div class="dropdown show">
+                                                <span data-toggle="dropdown" aria-haspopup="true"
+                                                    class="align-items-left d-flex" aria-expanded="true">
+                                                    <div aria-label="Normal priority">
+                                                        <div class="d-none">
+                                                        </div>
+                                                        <div
+                                                            class="align-self-left text-left align-items-left pointer d-flex position-relative">
+                                                            <i class="fa fa-tasks pt-1"></i>
+                                                            <span
+                                                                [ngStyle]="{'color': getColor(task.status)}">&nbsp;{{task.status}}</span>
+                                                        </div>
+                                                    </div>
+                                                </span>
+                                                <div tabindex="-1" *ngIf="selectedTaskStatusIndex===i" role="menu"
+                                                    aria-hidden="false" class="dropdown-menu show"
+                                                    data-popper-placement="bottom-start"
+                                                    style="position: absolute; inset: 0px auto auto 0px; transform: translate(0px, 28px);">
+                                                    <button *ngFor="let s of statusList" type="button" tabindex="0"
+                                                        role="menuitem" class="dropdown-item border-left"
+                                                        (click)="updateTaskStatus(task,s.name)">
+                                                        <span class="d-flex align-items-center">
+                                                            <span>{{s.name}}</span>
+                                                        </span>
+                                                    </button>
+                                                    <button type="button" tabindex="0" role="menuitem"
+                                                        class="dropdown-item" (click)="updateTaskStatus(task,'')">
+                                                        <span class="d-flex align-items-center"><span>Remove
+                                                                Status</span></span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <span *ngIf="task?.comment?.length==0 else addComment">
+                                                <div style="position:relative">
+                                                    <img src="assets/images/icon-comment-add.svg" class="me-3"
+                                                        height="24" width="24">
+                                                </div>
+                                            </span>
+                                            <ng-template #addComment>
+                                                <div style="position:relative;max-width:60px;">
+                                                    <img src="https://www.webwork-tracker.com/images/tasks/icons/icon-comment.svg"
+                                                        height="24" width="=24">
+                                                    <span class="position-absolute comments-count"
+                                                        style="margin-left:12em;">1</span>
+                                                </div>
+                                            </ng-template>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex flex-nowrap users">
+                                                <p *ngFor="let users of task?.TaskUsers">
+                                                    <span class="letter text-light"
+                                                        [tooltip]="(users?.user?.firstName| titlecase) + (' ') +( users?.user?.lastName | titlecase)"
+                                                        [style.background-color]="commonservice.getRandomColor(users?.user?.firstName)">
+                                                        {{users?.user?.firstName.charAt(0) | uppercase}}
+                                                    </span>
+                                                    <span class="ms-2">{{users?.user?.firstName | titlecase}}
+                                                        {{users?.user?.lastName | titlecase}}</span>
+                                                </p>
 
-                                        </div>
-                                    </td>
+                                            </div>
+                                        </td>
 
-                                    <td>
-                                        <span class="letter text-light"
-                                            [tooltip]="(task?.createdBy?.firstName| titlecase) + (' ') +( task?.createdBy?.lastName | titlecase)"
-                                            [style.background-color]="commonservice.getRandomColor(task?.createdBy?.firstName)">
-                                            {{task?.createdBy?.firstName.charAt(0) | uppercase}}
-                                        </span>
-                                        <span class="ms-2">{{task?.createdBy?.firstName| titlecase}}
-                                            {{task?.createdBy?.lastName| titlecase}}</span>
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="dropdown-center">
-                                            <i class="bi bi-three-dots actions" data-bs-toggle="dropdown"
-                                                aria-expanded="false"></i>
-                                            <ul class="dropdown-menu">
+                                        <td>
+                                            <span class="letter text-light"
+                                                [tooltip]="(task?.createdBy?.firstName| titlecase) + (' ') +( task?.createdBy?.lastName | titlecase)"
+                                                [style.background-color]="commonservice.getRandomColor(task?.createdBy?.firstName)">
+                                                {{task?.createdBy?.firstName.charAt(0) | uppercase}}
+                                            </span>
+                                            <span class="ms-2">{{task?.createdBy?.firstName| titlecase}}
+                                                {{task?.createdBy?.lastName| titlecase}}</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="dropdown-center">
+                                             
+                                                    <button class="actions ms-2" mat-mini-fab data-bs-toggle="dropdown"
+                                                    aria-expanded="false" aria-label="Example icon button with a menu icon">
+                                                    <i class="bi bi-send"></i>
+                                                </button>
+                                                <ul class="dropdown-menu">
 
-                                                <li class="d-flex" (click)="copyTask(task)">
-                                                    <i class="bi bi-files text-info  dropdown-item w-25"></i><span
-                                                        class="pt-1 text-muted">Copy</span>
-                                                </li>
+                                                    <li class="d-flex" (click)="copyTask(task)">
+                                                        <i class="bi bi-files text-info  dropdown-item w-25"></i><span
+                                                            class="pt-1 text-muted">Copy</span>
+                                                    </li>
 
-                                                <hr class="mx-2 my-0">
+                                                    <hr class="mx-2 my-0">
 
-                                                <li class="d-flex" (click)="navigateToEditPage(task)">
-                                                    <i class="bi bi-pencil text-success  dropdown-item w-25"></i><span
-                                                        class="pt-1 text-muted">Edit</span>
-                                                </li>
+                                                    <li class="d-flex" (click)="navigateToEditPage(task)">
+                                                        <i
+                                                            class="bi bi-pencil text-success  dropdown-item w-25"></i><span
+                                                            class="pt-1 text-muted">Edit</span>
+                                                    </li>
 
-                                                <hr class="mx-2 my-0">
+                                                    <hr class="mx-2 my-0">
 
-                                                <li class="d-flex" data-bs-toggle="modal" data-bs-target="#deleteModal"
-                                                    (click)="selectedTask = task">
-                                                    <i class="bi bi-trash3 text-danger dropdown-item w-25"></i><span
-                                                        class="pt-1 text-muted">Delete</span>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </td>
-                                    <td class="highlight">
-                                        <div></div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                                    <li class="d-flex" data-bs-toggle="modal"
+                                                        data-bs-target="#deleteModal" (click)="selectedTask = task">
+                                                        <i class="bi bi-trash3 text-danger dropdown-item w-25"></i><span
+                                                            class="pt-1 text-muted">Delete</span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                       
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
 
+                        <ng-container>
+                            <div class="d-flex justify-content-end align-items-center" style="margin-bottom: -30px;">
+                                Items per page
+                                <select style="width: 80px;" class="page form-select form-select-sm mx-2"
+                                    [(ngModel)]="recordsPerPage" (ngModelChange)="updateRecordsPerPage()">
+                                    <option class="page" *ngFor="let option of recordsPerPageOptions" [value]="option">
+                                        {{
+                                        option }}
+                                    </option>
+                                </select>
+
+                                <span class="ml-2 page">{{ currentPage }} - {{ getTotalPages() }} of {{
+                                    totalRecords?.taskCount
+                                    }}</span>
+                                <!-- previous page -->
+                                <span (click)="firstPagePagination()"
+                                    class="page bi bi-chevron-bar-left btn-lg btn-outline-primary" title="First Page"
+                                    [class.disabled]="skip === '0' || currentPage === 1"></span>
+
+                                <span (click)="previousPagination()"
+                                    class="page bi bi-chevron-left btn-lg btn-outline-primary" title="Previous Page"
+                                    [class.disabled]="skip === '0' || currentPage === 1"></span>
+                                <!-- next page -->
+                                <span (click)="nextPagination()"
+                                    class="page bi bi-chevron-right btn-lg btn-outline-primary" title="Next Page"
+                                    [class.disabled]="currentPage === getTotalPages()"></span>
+
+                                <span (click)="lastPagePagination()"
+                                    class="page bi bi-chevron-bar-right btn-lg btn-outline-primary" title="Last Page"
+                                    [class.disabled]="currentPage === getTotalPages()"></span>
+                            </div>
+                        </ng-container>
                     </div>
 
 
@@ -1115,10 +1127,10 @@
 
                                         <select class="custom-select mb-3 p-2" formControlName="TaskUser">
                                             <option [value]="user?.user?.id" *ngFor="let user of usersByProject">
-                                               
+
                                                 {{user?.user?.firstName | titlecase}} {{user?.user?.lastName |
                                                 titlecase}}
-                                           
+
                                             </option>
                                         </select>
 

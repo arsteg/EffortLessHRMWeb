@@ -16,7 +16,7 @@ import { RolesComponent } from './manage/roles/roles/roles.component';
 import { PermissionModelComponent } from './manage/permissonModel/permission-model/permission-model.component';
 import { ProfileComponent } from './profile/profile.component';
 import { TimelineComponent } from './reports/timeline/timeline.component';
-import { UserListComponent } from './users/user-list/user-list.component';
+// import { UserListComponent } from './users/user-list/user-list.component';
 import { AttendanceComponent } from './reports/attendance/attendance.component';
 import { RealtimeComponent } from './realtime/realtime.component';
 import { MainComponent } from './main/main.component';
@@ -60,6 +60,7 @@ import { AssetManagerComponent } from './AssetsManagement/assetAssetManager/asse
 import { DocumentManagerComponent } from './documentManager/documentManager.component';
 import { UserAssetAssignmentComponent } from './AssetsManagement/user-asset-assignment/user-asset-assignment.component';
 import { LeaveManagementComponent } from './Leave/leave-management/leave-management.component';
+import { ManageComponent } from './manage/manage/manage.component';
 
 const routes: Routes = [
   // {path:'',component:LayoutComponentComponent, canActivate: [AuthGuard]},
@@ -87,7 +88,7 @@ const routes: Routes = [
       { path: 'Profile', component: ProfileComponent },
       { path: 'timeline', component: TimelineComponent },
       { path: 'project', component: ProjectListComponent },
-      { path: 'employees', component: UserListComponent },
+      // { path: 'employees', component: UserListComponent },
       { path: 'attendance', component: AttendanceComponent },
       { path: 'realtime', component: RealtimeComponent },
       { path: 'tasks', component: TasksComponent },
@@ -124,7 +125,16 @@ const routes: Routes = [
       { path: 'UserCalendar', component: UserCalendarComponent },
       { path: 'documentManager', component: DocumentManagerComponent },
       { path: 'Assets', component: UserAssetAssignmentComponent },
-      { path: 'leave', component: LeaveManagementComponent }
+      { path: 'leave', component: LeaveManagementComponent },
+      {
+        path: 'manage', component: ManageComponent
+
+      },
+      
+      {
+        path: 'manage/:index', // Define a route parameter ":index"
+        component: ManageComponent,
+      },
 
     ]
   }
