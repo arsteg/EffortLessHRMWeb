@@ -20,10 +20,10 @@ export class HomeComponent implements OnInit {
   currentProfile: any;
   dropdownOpen: boolean = false;
   selectedOption: string;
-  searchText: string =''
+  searchText: string = ''
   options: string[] = ['You spent the 7 connects on the availability',
-                       'The work week has ended, and your weekly summary is available for summary',
-                        'Your Proposal to job'];
+    'The work week has ended, and your weekly summary is available for summary',
+    'Your Proposal to job'];
   constructor(private router: Router, private auth: AuthenticationService, private commonService: CommonService) { }
 
   ngOnInit(): void {
@@ -68,7 +68,7 @@ export class HomeComponent implements OnInit {
 
 
   toggleDropdown() {
-    this.dropdownOpen=this.dropdownOpen==false ? true:false
+    this.dropdownOpen = this.dropdownOpen == false ? true : false
 
   }
   switchView(view: string) {
@@ -107,7 +107,7 @@ export class HomeComponent implements OnInit {
   }
   clickEvent() {
     this.isCollapsedMenu = !this.isCollapsedMenu;
-   localStorage.setItem('sidebar',JSON.stringify(this.isCollapsedMenu))
+    localStorage.setItem('sidebar', JSON.stringify(this.isCollapsedMenu))
   }
 }
 
@@ -140,30 +140,31 @@ export const SideBarAdminMenu = [
     id: '4',
     title: 'Organization',
     icon: 'fa fa-building',
-    subMenu: [
-      {
-        id: '41',
-        title: 'Organization Setup',
-      },
-      {
-        id: '42',
-        title: 'Employee Fields',
-      },
-      {
-        id: '43',
-        title: 'Employee Tree',
-      },
-      {
-        id: '44',
-        title: 'Documents',
-        url:'/documentManager'
-      },
-      {
-        id: '45',
-        title: 'Assets Management',
-        url: '/assetsManagement'
-      }
-    ],
+    url: '/organization'
+    // subMenu: [
+    //   {
+    //     id: '41',
+    //     title: 'Organization Setup',
+    //   },
+    //   {
+    //     id: '42',
+    //     title: 'Employee Fields',
+    //   },
+    //   {
+    //     id: '43',
+    //     title: 'Employee Tree',
+    //   },
+    //   {
+    //     id: '44',
+    //     title: 'Documents',
+    //     url:'/documentManager'
+    //   },
+    //   {
+    //     id: '45',
+    //     title: 'Assets Management',
+    //     url: '/assetsManagement'
+    //   }
+    // ],
   },
   {
     id: '5',
@@ -218,193 +219,46 @@ export const SideBarAdminMenu = [
     id: '7',
     title: 'Attendance',
     icon: 'fa fa-check-square',
-    subMenu: [
-      {
-        id: '81',
-        title: 'Settings',
-      },
-      {
-        id: '82',
-        title: 'Attendance Records',
-        url: '/attendance'
-      },
-      {
-        id: '83',
-        title: 'Roaster Records',
-      },
-      {
-        id: '84',
-        title: 'Regularization Requests',
-      },
-      {
-        id: '84',
-        title: 'OnDuty Requests',
-      },
-      {
-        id: '84',
-        title: 'Attendance Audit',
-      },
-      {
-        id: '84',
-        title: 'Attendance Process',
-      },
-      {
-        id: '84',
-        title: 'Attendance Reconciliation',
-      },
-      {
-        id: '84',
-        title: 'Biometric Logs',
-      },
-      {
-        id: '84',
-        title: 'Biometric Reconciliation',
-      }
-    ]
+    url: 'attendance'
+
   },
   {
     id: '8',
     title: 'Timesheets',
     icon: 'fa fa-clock',
-    subMenu: [
-      {
-        id: '81',
-        title: 'Settings',
-      },
-      {
-        id: '82',
-        title: 'Projects',
-      },
-      {
-        id: '83',
-        title: 'Time Approvals',
-      },
-      {
-        id: '84',
-        title: 'Timesheets',
-        url:'/adminTimesheets'
-      }
-    ]
+    url: 'timesheet'
+
   },
   {
     id: '9',
     title: 'Leave',
     icon: 'fas fa-walking',
-    subMenu: [
-      {
-        id: '91',
-        title: 'Settings',
-        url: 'leave'
-      },
-      {
-        id: '92',
-        title: 'Leave Grant',
-      },
-      {
-        id: '93',
-        title: 'Leave Balance',
-      },
-      {
-        id: '94',
-        title: 'Leave Application',
-      },
-      {
-        id: '95',
-        title: 'Short Leave',
-      }
-    ]
+    url: 'Leave'
+
   },
   {
     id: '10',
     title: 'Expenses',
     icon: 'fa fa-money-bill',
-    subMenu: [
-      {
-        id: '101',
-        title: 'Settings',
-      },
-      {
-        id: '102',
-        title: 'Expense Reports',
-      },
-      {
-        id: '103',
-        title: 'Advanced Reports',
-      }
-    ]
+    url: 'expenses'
   },
   {
     id: '11',
     title: 'Alerts',
     icon: 'fa fa-bell',
-    subMenu: [
-      {
-        id: '111',
-        title: 'Setup Issues',
-      },
-      {
-        id: '112',
-        title: 'Pending Reports',
-      }
-    ]
+    url: 'alerts'
   },
   {
     id: '12',
     title: 'Payroll',
     icon: 'fa fa-id-card',
-    subMenu: [
-      {
-        id: '121',
-        title: 'Settings',
-      },
-      {
-        id: '122',
-        title: 'CTC Template',
-      },
-      {
-        id: '123',
-        title: 'LOP Reversal',
-      },
-      {
-        id: '124',
-        title: 'Run Payroll',
-      },
-      {
-        id: '125',
-        title: 'Full and Final',
-      },
-      {
-        id: '126',
-        title: 'Payslips',
-      }
-    ]
+    url: 'payroll'
   },
   {
     id: '13',
     title: 'Taxation',
     icon: 'fa fa-dollar-sign',
-    subMenu: [
-      {
-        id: '131',
-        title: 'Settings',
-      },
-      {
-        id: '132',
-        title: 'Tax Exemptions',
-      },
-      {
-        id: '133',
-        title: 'Tax Declarations',
-      },
-      {
-        id: '134',
-        title: 'Tax Overrides',
-      },
-      {
-        id: '135',
-        title: 'eTDS',
-      }
-    ]
+    url: 'taxation'
   },
   {
     id: '14',
@@ -464,8 +318,7 @@ export const SideBarAdminMenu = [
       },
       {
         id: '1412',
-        title: 'Leave',
-        url: '/leave'
+        title: 'Leave'
       },
       // {
       //   id: '1413',
@@ -478,62 +331,13 @@ export const SideBarAdminMenu = [
     id: '15',
     title: 'Separation',
     icon: 'fas fa-divide',
-    subMenu: [
-      {
-        id: '151',
-        title: 'Settings',
-      },
-      {
-        id: '152',
-        title: 'All Separations Requests',
-      },
-      {
-        id: '153',
-        title: 'Asset Deallocations Request',
-      }
-    ]
+    url: 'separation'
   },
   {
     id: '16',
     title: 'Settings',
     icon: 'fa fa-wrench',
-    subMenu: [
-      {
-        id: '161',
-        title: 'App/Website',
-        url: '/appwebsitesettings'
-      },
-      {
-        id: '162',
-        title: 'Generic Settings',
-        url: '/genericSettings'
-      },
-      {
-        id: '163',
-        title: 'User Preferences',
-        url: '/userPreferences'
-      },
-      // {
-      //   id: '163',
-      //   title: 'Workspace',
-      //   url: '/workspace'
-      // },
-      // {
-      //   id: '164',
-      //   title: 'Features',
-      //   url: '/features'
-      // },
-      // {
-      //   id: '164',
-      //   title: 'Attendance',
-      //   url: '/attendancesettings'
-      // },
-      // {
-      //   id: '164',
-      //   title: 'Leave',
-      //   url: '/leavesettings'
-      // },
-    ]
+    url: 'settings'
   },
   {
     id: '17',
@@ -564,7 +368,8 @@ export const SideBarAdminMenu = [
         title: 'Productivity Apps',
         url: 'productivityAppsApproval'
       },
-      {id: '192',
+      {
+        id: '192',
         title: 'Manual Time',
         url: 'ManualTimeRequestApproval'
       }
@@ -601,12 +406,12 @@ export const SideBarUserMenu = [
 
   },
 
-    {
-      id: '17',
-      title: 'Tasks',
-      icon: 'fa fa-list',
-      url: 'tasks'
-    },
+  {
+    id: '17',
+    title: 'Tasks',
+    icon: 'fa fa-list',
+    url: 'tasks'
+  },
 
   {
     id: '4',
@@ -695,7 +500,7 @@ export const SideBarUserMenu = [
       {
         id: '91',
         title: 'Timesheets',
-        url:'userTimesheet'
+        url: 'userTimesheet'
       }
     ]
   },
@@ -836,7 +641,7 @@ export const SideBarUserMenu = [
     id: '16',
     title: 'Settings',
     icon: 'fa fa-wrench',
-    subMenu:[
+    subMenu: [
       {
         id: '161',
         title: 'User Preferences',

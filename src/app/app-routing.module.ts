@@ -17,7 +17,7 @@ import { PermissionModelComponent } from './manage/permissonModel/permission-mod
 import { ProfileComponent } from './profile/profile.component';
 import { TimelineComponent } from './reports/timeline/timeline.component';
 // import { UserListComponent } from './users/user-list/user-list.component';
-import { AttendanceComponent } from './reports/attendance/attendance.component';
+// import { AttendanceComponent } from './reports/attendance/attendance.component';
 import { RealtimeComponent } from './realtime/realtime.component';
 import { MainComponent } from './main/main.component';
 import { changeUserPassword } from './models/user';
@@ -34,7 +34,7 @@ import { AppWebsiteSettingsComponent } from './settings/app-website-settings/app
 import { PermissionsComponent } from './permissions/permissions.component';
 import { RolePermissionComponent } from './role-permission/role-permission.component';
 import { ResetPasswordComponent } from './login/reset-password/reset-password.component';
-import { TimesheetsComponent } from './timesheets/timesheets.component';
+// import { TimesheetsComponent } from './timesheets/timesheets.component';
 import { ProfileSettingsComponent } from './settings/profile-settings/profile-settings.component';
 import { WorkspaceSettingsComponent } from './settings/workspace-settings/workspace-settings.component';
 import { FeaturesSettingsComponent } from './settings/features-settings/features-settings.component';
@@ -61,6 +61,16 @@ import { DocumentManagerComponent } from './documentManager/documentManager.comp
 import { UserAssetAssignmentComponent } from './AssetsManagement/user-asset-assignment/user-asset-assignment.component';
 import { LeaveManagementComponent } from './Leave/leave-management/leave-management.component';
 import { ManageComponent } from './manage/manage/manage.component';
+import { OrganizationComponent } from './organization/organization/organization.component';
+import { AttendanceManagementComponent } from './attendance/attendance-management/attendance-management.component';
+import { TimesheetsComponent } from './timesheets/timesheets.component';
+import { LeaveComponent } from './Leave/leave/leave.component';
+import { ExpensesComponent } from './Expenses/expenses.component';
+import { AlertsComponent } from './Alerts/alerts.component';
+import { PayrollComponent } from './Payroll/payroll.component';
+import { TaxationComponent } from './Taxation/taxation.component';
+import { SeparationComponent } from './Separation/separation.component';
+import { SettingsComponent } from './settings/settings.component';
 
 const routes: Routes = [
   // {path:'',component:LayoutComponentComponent, canActivate: [AuthGuard]},
@@ -89,7 +99,7 @@ const routes: Routes = [
       { path: 'timeline', component: TimelineComponent },
       { path: 'project', component: ProjectListComponent },
       // { path: 'employees', component: UserListComponent },
-      { path: 'attendance', component: AttendanceComponent },
+      // { path: 'attendance', component: AttendanceComponent },
       { path: 'realtime', component: RealtimeComponent },
       { path: 'tasks', component: TasksComponent },
       { path: 'tags', component: TagComponent },
@@ -103,7 +113,7 @@ const routes: Routes = [
       { path: 'appwebsitesettings', component: AppWebsiteSettingsComponent },
       { path: 'permissions', component: PermissionsComponent },
       { path: 'rolePermission', component: RolePermissionComponent },
-      { path: 'timesheets', component: TimesheetsComponent },
+      // { path: 'timesheets', component: TimesheetsComponent },
       { path: 'adminTimesheets', component: AdminTimesheetComponent },
       { path: 'userTimesheet', component: UserTimesheetComponent },
       { path: 'profileSettings', component: ProfileSettingsComponent },
@@ -126,16 +136,17 @@ const routes: Routes = [
       { path: 'documentManager', component: DocumentManagerComponent },
       { path: 'Assets', component: UserAssetAssignmentComponent },
       { path: 'leave', component: LeaveManagementComponent },
-      {
-        path: 'manage', component: ManageComponent
-
-      },
-      
-      {
-        path: 'manage/:index', // Define a route parameter ":index"
-        component: ManageComponent,
-      },
-
+      { path: 'manage', component: ManageComponent },
+      { path: 'organization', component: OrganizationComponent },
+      { path: 'attendance', component: AttendanceManagementComponent },
+      { path: 'timesheet', component: TimesheetsComponent },
+      { path: 'Leave', component: LeaveComponent },
+      { path: 'expenses', component: ExpensesComponent },
+      { path: 'alerts', component: AlertsComponent },
+      { path: 'payroll', component: PayrollComponent },
+      { path: 'taxation', component: TaxationComponent},
+      { path: 'separation', component: SeparationComponent },
+      { path: 'settings', component: SettingsComponent}
     ]
   }
 ]

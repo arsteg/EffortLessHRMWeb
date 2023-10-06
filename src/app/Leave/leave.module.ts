@@ -15,6 +15,7 @@ import { LeaveAssignmentComponent } from './leave-assignment/leave-assignment.co
 import { LeaveCategoryComponent } from './leave-category/leave-category.component';
 import { LeaveTemplateComponent } from './leave-template/leave-template.component';
 import { LeaveManagementComponent } from './leave-management/leave-management.component';
+import { LeaveComponent } from './leave/leave.component';
 
 
 
@@ -24,7 +25,8 @@ import { LeaveManagementComponent } from './leave-management/leave-management.co
     LeaveAssignmentComponent,
     LeaveCategoryComponent,
     LeaveTemplateComponent,
-    LeaveManagementComponent],
+    LeaveManagementComponent,
+    LeaveComponent],
   imports: [
     CommonModule,
     SharedModule,

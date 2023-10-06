@@ -28,7 +28,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ReportsComponent } from './reports/reports.component';
 import { TimelineComponent } from './reports/timeline/timeline.component';
-import { AttendanceComponent } from './reports/attendance/attendance.component';
+// import { AttendanceComponent } from './reports/attendance/attendance.component';
 import { RealtimeComponent } from './realtime/realtime.component';
 import { MainComponent } from './main/main.component';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
@@ -80,6 +80,15 @@ import { FullCalendarModule } from '@fullcalendar/angular';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import { DocumentManagementModule } from './documentManager/documentManager.module';
 import { LeaveModule } from './Leave/leave.module';
+import { OragnizationModule } from './organization/organization.module';
+// import { AttendancesComponent } from './attendance/attendances.component';
+import { AttendanceModule } from './attendance/attendance.module';
+import { ExpensesModule } from './Expenses/expenses.module';
+import { AlertsModule } from './Alerts/alerts.module';
+import { PayrollModule } from './Payroll/payroll.module';
+import { TaxationModule } from './Taxation/taxation.module';
+import { SeparationModule } from './Separation/separation.module';
+import { SettingsComponent } from './settings/settings.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -103,7 +112,7 @@ import { LeaveModule } from './Leave/leave.module';
     ProfileComponent,
     ReportsComponent,
     TimelineComponent,
-    AttendanceComponent,
+    // AttendanceComponent,
     RealtimeComponent,
     MainComponent,
     // RequestManualTimeComponent,
@@ -127,6 +136,7 @@ import { LeaveModule } from './Leave/leave.module';
     // EmailTemplateComponent,
     UserCalendarComponent,
     AdminCalendarComponent,
+    SettingsComponent,
    
   ],
   imports: [
@@ -161,7 +171,15 @@ import { LeaveModule } from './Leave/leave.module';
     QuillModule.forRoot(),
     FullCalendarModule,
     DocumentManagementModule,
-    LeaveModule
+    LeaveModule,
+    OragnizationModule,
+    AttendanceModule,
+    ExpensesModule,
+    AlertsModule,
+    PayrollModule,
+    TaxationModule,
+    SeparationModule,
+    SettingsModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

@@ -1,5 +1,4 @@
-<div class="main-content p-2">
-  <h3 class="mb-sm-0 font-size-18 text-capitalize">Timesheet</h3>
+<div class="main-content pt-5 mt-5">
   <div class="row">
     <form  #timesheetForm="ngForm">
       <div class="d-flex mt-2">
@@ -58,10 +57,10 @@
       </div>
     </form>
     <div class="table-container" [style.max-width]="commonService.isCollapsedMenu ? '90vw' : '100vw'">
-      <table class="table" id="adminTimeSheet" #adminTimeSheet>
+      <table class="" id="adminTimeSheet" #adminTimeSheet>
         <thead>
           <tr>
-            <th>User</th>
+            <th class="ps-2">User</th>
             <th>Project</th>
             <th *ngFor="let date of timeLogs?.columns|slice:2">{{ date | date: 'dd-MMM' }}</th>
             <th>Total</th>
@@ -70,7 +69,7 @@
         <tbody>
           <ng-container *ngFor="let user of selectedUser">
             <tr *ngFor="let row of timeLogs?.matrix[user];index as i">
-              <td> {{ i==0?getUserName(user):""}}</td>
+              <td  class="ps-2"> {{ i==0?getUserName(user):""}}</td>
               <td> {{ getProjectName(row[0]) }}</td>
               <td *ngFor="let cell of row|slice:1">{{+cell | milliSecondsToTime}}</td>
               <td>{{getTotalHours(row.slice(1)) | milliSecondsToTime}}</td>

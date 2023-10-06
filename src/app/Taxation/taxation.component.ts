@@ -1,13 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 
-
 @Component({
-  selector: 'app-timesheets',
-  templateUrl: './timesheets.component.html',
-  styleUrls: ['./timesheets.component.css']
+  selector: 'app-taxation',
+  templateUrl: './taxation.component.html',
+  styleUrls: ['./taxation.component.css']
 })
-
-export class TimesheetsComponent implements OnInit {
+export class TaxationComponent implements OnInit {
   selectedTab: number = 1;
   constructor(
     ) { }
@@ -17,4 +15,5 @@ export class TimesheetsComponent implements OnInit {
   selectTab(tabIndex: number) {
     this.selectedTab = tabIndex;
   }
+
 }

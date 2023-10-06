@@ -603,7 +603,6 @@ select {
 .subMenu {
   padding: 8px 48px;
   top: 55px;
-  width: 100%;
   position: fixed;
   z-index: 991;
 }
@@ -660,3 +659,28 @@ tr {
   box-shadow:none !important
 
 }
+.tabs {
+  display: flex;
+  gap: 10px;
+  padding-left: 20px;
+}
+
+button {
+  padding: 1px 20px;
+  cursor: pointer;
+  border: none;
+  background-color: #e3e3e3;
+}
+
+button.active {
+ color: #ff7b1d;
+    border: 1px solid;
+    background: white;
+}
+
+.tab-content {
+  padding: 20px;
+  /* border: 1px solid #ccc; */
+  margin-top: 10px;
+}
+

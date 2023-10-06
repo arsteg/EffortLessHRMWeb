@@ -53,7 +53,6 @@ export class AssetComponent implements OnInit {
     this.initAssetForm();
     this.getAssetStatusList();
     this.assetForm.statusChanges.subscribe((f)=>{
-      console.log(this.assetForm);
     });
   }
   editable: boolean = false;
