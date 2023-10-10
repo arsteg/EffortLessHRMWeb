@@ -16,7 +16,7 @@ import { DocumentManagerComponent } from '../documentManager/documentManager.com
   ],
   exports: [AssetManagerComponent, DocumentManagerComponent],
   imports: [
-    CommonModule, SharedModule, CommonComponentsModule, AssetsModule, DocumentManagementModule, DocumentManagementModule
+    CommonModule, SharedModule, CommonComponentsModule, AssetsModule, DocumentManagementModule
 
   ]
 })

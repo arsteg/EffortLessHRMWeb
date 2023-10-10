@@ -264,68 +264,7 @@ export const SideBarAdminMenu = [
     id: '14',
     title: 'Reports',
     icon: 'fa fa-chart-line',
-    subMenu: [
-      // {
-      //   id: '141',
-      //   title: 'General Reports',
-      // },
-      // {
-      //   id: '142',
-      //   title: 'My Reports',
-      // },
-      // {
-      //   id: '143',
-      //   title: 'Timesheet',
-      // url: '/timesheets'
-      // },
-      {
-        id: '144',
-        title: 'Timeline',
-        url: '/timeline',
-      },
-      // {
-      //   id: '145',
-      //   title: 'Attendance',
-      //   url: '/attendance',
-      // },
-      // {
-      //   id: '146',
-      //   title: 'Activity Level',
-      // },
-      // {
-      //   id: '147',
-      //   title: 'Statistics',
-      // },
-      {
-        id: '148',
-        title: 'Browser History',
-        url: '/browserHistory',
-      },
-      {
-        id: '149',
-        title: 'Apps and Websites',
-        url: '/applicationusages'
-      },
-      // {
-      //   id: '1410',
-      //   title: 'Tasks',
-      //   url: '/task',
-      // },
-      {
-        id: '1411',
-        title: 'Productivity',
-        url: '/productivity'
-      },
-      {
-        id: '1412',
-        title: 'Leave'
-      },
-      // {
-      //   id: '1413',
-      //   title: 'Activity Level',
-      //   url: '/activityLevel'
-      // }
-    ],
+    url: 'reports'
   },
   {
     id: '15',
@@ -362,18 +301,7 @@ export const SideBarAdminMenu = [
     id: '19',
     icon: 'fa  fa-id-badge',
     title: 'Approvals',
-    subMenu: [
-      {
-        id: '191',
-        title: 'Productivity Apps',
-        url: 'productivityAppsApproval'
-      },
-      {
-        id: '192',
-        title: 'Manual Time',
-        url: 'ManualTimeRequestApproval'
-      }
-    ]
+    url: 'Approvals'
   }
 ];
 

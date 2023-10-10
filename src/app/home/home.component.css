@@ -3,7 +3,7 @@
 }
 
 .nav {
-    background: white
+    /* background: white */
 }
 
 .menuitem,
@@ -365,7 +365,7 @@ input:focus-visible {
 }
 
 .expandedMenu:hover {
-    height: 95vh;
+    height: 85vh;
     overflow-y: scroll;
 }
 
@@ -375,4 +375,9 @@ input:focus-visible {
 
 .collapsedContent {
     padding-left: 5.2rem;
+}
+::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background: #f6f5fb;
+    margin-bottom: 37px;
 }

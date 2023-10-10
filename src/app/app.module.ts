@@ -37,7 +37,6 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CommonService } from './common/common.service';
 import { UserService } from './_services/users.service';
 // import { RequestManualTimeComponent } from './manualTime/request-manual-time/request-manual-time.component';
-import { RequestApprovalComponent } from './manualTime/requestApproval/requestApproval.component';
 import { ActivityDescriptionComponent } from './reports/activity-description/activity-description.component';
 import { AppAndWebsiteUsageComponent } from './reports/app-and-website-usage/app-and-website-usage.component';
 import { LeaveReportComponent } from './reports/leave-report/leave-report.component';
@@ -89,6 +88,7 @@ import { PayrollModule } from './Payroll/payroll.module';
 import { TaxationModule } from './Taxation/taxation.module';
 import { SeparationModule } from './Separation/separation.module';
 import { SettingsComponent } from './settings/settings.component';
+import { ReportsModule } from './reports/reports.module';
 @NgModule({
   declarations: [
     AppComponent,
@@ -116,7 +116,6 @@ import { SettingsComponent } from './settings/settings.component';
     RealtimeComponent,
     MainComponent,
     // RequestManualTimeComponent,
-    RequestApprovalComponent,
     ActivityDescriptionComponent,
     AppAndWebsiteUsageComponent,
     LeaveReportComponent,
@@ -179,7 +178,8 @@ import { SettingsComponent } from './settings/settings.component';
     PayrollModule,
     TaxationModule,
     SeparationModule,
-    SettingsModule
+    SettingsModule,
+    ReportsModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

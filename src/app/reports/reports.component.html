@@ -1,1 +1,32 @@
-<p>reports works!</p>
+<div class="main-content contentData">
+    <div class="container-fluid px-0">
+        <div class=" d-flex bg-white subMenu w-100">
+            <button class="btn rounded-pill submenuTab" (click)="selectTab(1)"
+                [class.active]="selectedTab === 1">Timeline</button>
+            <button class="btn rounded-pill submenuTab" (click)="selectTab(2)" [class.active]="selectedTab === 2">
+                Browser History</button>
+            <button class="btn rounded-pill submenuTab" (click)="selectTab(3)" [class.active]="selectedTab === 3">
+                Apps and Websites</button>
+            <button class="btn rounded-pill submenuTab" (click)="selectTab(4)"
+                [class.active]="selectedTab === 4">Productivity</button>
+            <button class="btn rounded-pill submenuTab" (click)="selectTab(5)" [class.active]="selectedTab === 5">
+                Leave</button>
+        </div>
+
+        <div *ngIf="selectedTab === 1" class="tab-content">
+            <app-timeline></app-timeline>
+        </div>
+        <div *ngIf="selectedTab === 2" class="tab-content">
+            <app-browser-history></app-browser-history>
+        </div>
+        <div *ngIf="selectedTab === 3" class="tab-content">
+            <app-app-and-website-usage></app-app-and-website-usage>
+        </div>
+        <div *ngIf="selectedTab === 4" class="tab-content">
+            <app-productivity-report></app-productivity-report>
+        </div>
+        <div *ngIf="selectedTab === 5" class="tab-content">
+            <app-leave-report></app-leave-report>
+        </div>
+    </div>
+</div>

@@ -71,6 +71,8 @@ import { PayrollComponent } from './Payroll/payroll.component';
 import { TaxationComponent } from './Taxation/taxation.component';
 import { SeparationComponent } from './Separation/separation.component';
 import { SettingsComponent } from './settings/settings.component';
+import { ReportsComponent } from './reports/reports.component';
+import { ApprovalsComponent } from './approvals/approvals.component';
 
 const routes: Routes = [
   // {path:'',component:LayoutComponentComponent, canActivate: [AuthGuard]},
@@ -146,7 +148,9 @@ const routes: Routes = [
       { path: 'payroll', component: PayrollComponent },
       { path: 'taxation', component: TaxationComponent},
       { path: 'separation', component: SeparationComponent },
-      { path: 'settings', component: SettingsComponent}
+      { path: 'settings', component: SettingsComponent },
+      { path: 'reports', component: ReportsComponent},
+      { path: 'Approvals', component: ApprovalsComponent}
     ]
   }
 ]

@@ -1,86 +1,84 @@
-<div class="main-content pt-0">
-  <div class="container-fluid">
-      <div class="d-flex justify-content-between">
-          <h1 class="pt-4 mb-0" style="font-size: 19px; margin-left: 22px;">Approval/Rejection : {{productivityApps?.length}}</h1>
+<div class="main-content pt-5">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="pt-4 mb-0" style="font-size: 19px; margin-left: 22px;">Approval/Rejection :
+                {{productivityApps?.length}}</h1>
 
-          <div class="me-2" style="margin-left: 73%;">
+            <div>
+                <span class="d-flex">
+                    <label for="member" class="pt-2 pe-3">Member:</label>
+                    <select id="member" name="member" class="form-control" aria-label=".form-select-sm example" #member
+                        (change)="onMemberSelectionChange(member)">
+                        <option>Select User</option>
+                        <option *ngFor="let m of members" value="{{m|json}}">{{m.name | titlecase}}</option>
+                    </select>
+                </span>
+            </div>
 
-              <button mat-raised-button id="btnRefresh" (click)="fetchManualTimeRequests()"
-                  class="bi bi-arrow-repeat header-icons text-primary" style="margin-top: 13px;"></button>
-          </div>
-          <div class="d-flex h-25" style="margin-top: 13px;">
-              <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
-                  name="searchText" aria-label="default input example"
-                  style="border-bottom: 1px solid grey; border-radius: 0;">
-          </div>
-      </div>
-      <div style="margin-left: 182px;
-      margin-top: -36px;">
+            <div class="me-2">
 
-          <span>
-              <label for="member" class="pt-2 pe-3" style="margin-left: 53px;
-              font-size: 19px;">Member :</label>
-              <select style="margin-left: 140px;
-      margin-top: -26px; margin-bottom: 11px;" id="member" name="member" class="form-control"
-                  class="form-select w-50 form-select-sm" aria-label=".form-select-sm example" #member
-                  (change)="onMemberSelectionChange(member)">
-                  <option>Select User</option>
-                  <option *ngFor="let m of members" value="{{m|json}}">{{m.name | titlecase}}</option>
-              </select>
-          </span>
-      </div>
+                <button mat-raised-button id="btnRefresh" (click)="fetchManualTimeRequests()"
+                    class="bi bi-arrow-repeat header-icons text-primary" style="margin-top: 13px;"></button>
+            </div>
+            <div class="d-flex h-25">
+                <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
+                    name="searchText" aria-label="default input example"
+                    style="border-bottom: 1px solid grey; border-radius: 0;">
+            </div>
+        </div>
 
-      <hr class="mt-0">
-      <div class="container-fluid">
-          <table class=" mt-4">
-              <thead>
-                  <tr>
-                      <th [appSort]="productivityApps" data-order="{{ sortOrder }}" data-name="project?.projectName"
-                          (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Key&nbsp;
-                          <i
-                              [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                      </th>
-                      <th [appSort]="productivityApps" data-order="{{ sortOrder }}" data-name="fromDate"
-                          (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Name&nbsp;
-                          <i
-                              [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                      </th>
-                      <th [appSort]="productivityApps" data-order="{{ sortOrder }}" data-name="toDate"
-                          (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Is Approved&nbsp;
-                          <i
-                              [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                      </th>
-                      <th>Action</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  <tr
-                      *ngFor="let record of productivityAppsFiltered | search: searchText |  paginate: { itemsPerPage: 20, currentPage: p }">
 
-                      <td><span>{{record?.key }}</span> </td>
-                      <td><span>{{record.name}}</span> </td>
+        <hr class="mt-0">
+        <div class="container-fluid">
+            <table class=" mt-4">
+                <thead>
+                    <tr>
+                        <th [appSort]="productivityApps" data-order="{{ sortOrder }}" data-name="project?.projectName"
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Key&nbsp;
+                            <i
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                        </th>
+                        <th [appSort]="productivityApps" data-order="{{ sortOrder }}" data-name="fromDate"
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Name&nbsp;
+                            <i
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                        </th>
+                        <th [appSort]="productivityApps" data-order="{{ sortOrder }}" data-name="toDate"
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Is Approved&nbsp;
+                            <i
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                        </th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        *ngFor="let record of productivityAppsFiltered | search: searchText |  paginate: { itemsPerPage: 20, currentPage: p }">
 
-                      <td> <span>
-                        <i *ngIf="record.status=='approved'" class="fa fa-thumbs-up" style="color:green"
-                            [title]="record.status"></i>
-                        <i *ngIf="record.status=='rejected'" class="fa fa-thumbs-down" style="color:red"
-                            [title]="record.status"></i>
-                        <i *ngIf="record.status=='pending'" class="fa fa-clock-o" style="color:blue"
-                            [title]="record.status"></i>
-                    </span></td>
-                <td>
-                    <label title="Approve"><i *ngIf="record.status=='pending'" class="fas fa-thumbs-up"
-                            style="color:green;margin:5px;"
-                            (click)="selectedRequest = record;approveRequest()"></i></label>
-                    <span title="Reject"><i *ngIf="record.status=='pending'" class="fas fa-thumbs-down"
-                            style="color:red;margin:5px"
-                            (click)="selectedRequest = record;rejectRequest()"></i></span>
-                </td>
-                  </tr>
-              </tbody>
-          </table>
-          <pagination-controls (pageChange)="p = $event"
-              class="pagination d-flex justify-content-end"></pagination-controls>
-      </div>
-  </div>
+                        <td><span>{{record?.key }}</span> </td>
+                        <td><span>{{record.name}}</span> </td>
+
+                        <td> <span>
+                                <i *ngIf="record.status=='approved'" class="fa fa-thumbs-up" style="color:green"
+                                    [title]="record.status"></i>
+                                <i *ngIf="record.status=='rejected'" class="fa fa-thumbs-down" style="color:red"
+                                    [title]="record.status"></i>
+                                <i *ngIf="record.status=='pending'" class="fa fa-clock-o" style="color:blue"
+                                    [title]="record.status"></i>
+                            </span></td>
+                        <td>
+                            <label title="Approve"><i *ngIf="record.status=='pending'" class="fas fa-thumbs-up"
+                                    style="color:green;margin:5px;"
+                                    (click)="selectedRequest = record;approveRequest()"></i></label>
+                            <span title="Reject"><i *ngIf="record.status=='pending'" class="fas fa-thumbs-down"
+                                    style="color:red;margin:5px"
+                                    (click)="selectedRequest = record;rejectRequest()"></i></span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <pagination-controls (pageChange)="p = $event"
+                class="pagination d-flex justify-content-end"></pagination-controls>
+        </div>
+    </div>
 </div>

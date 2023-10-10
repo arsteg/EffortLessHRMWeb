@@ -278,7 +278,6 @@ getTimeLine() {
 
     formattedStartTimeHour(hour: number): string {
       const calculatedHour = this.startTime.getHours() + hour;
-      console.log(calculatedHour,this.selectedDate)
       return calculatedHour.toString().padStart(2, '0') + ':00';
     }
 

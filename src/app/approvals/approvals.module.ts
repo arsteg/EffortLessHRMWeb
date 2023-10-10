@@ -9,10 +9,12 @@ import { MatNativeDateModule, MatRippleModule } from '@angular/material/core';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { FormsModule } from '@angular/forms';
 import { productivityAppsApprovalComponent } from './productivityAppsApproval/productivityAppsApproval.component';
+import { ApprovalsComponent } from './approvals.component';
+import { RequestApprovalComponent } from "../manualTime/requestApproval/requestApproval.component";
 
 @NgModule({
-    declarations:[productivityAppsApprovalComponent],
-    exports:[productivityAppsApprovalComponent],
+    declarations:[productivityAppsApprovalComponent, ApprovalsComponent, RequestApprovalComponent],
+    exports:[productivityAppsApprovalComponent, RequestApprovalComponent],
     imports:[SharedModule,
       RouterModule,
       MatFormFieldModule,

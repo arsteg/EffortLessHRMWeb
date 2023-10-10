@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-reports',
-  templateUrl: './reports.component.html',
-  styleUrls: ['./reports.component.css']
+  selector: 'app-approvals',
+  templateUrl: './approvals.component.html',
+  styleUrls: ['./approvals.component.css']
 })
-export class ReportsComponent implements OnInit {
+export class ApprovalsComponent implements OnInit {
   selectedTab: number = 1;
   constructor(
     ) { }
@@ -15,5 +15,6 @@ export class ReportsComponent implements OnInit {
   selectTab(tabIndex: number) {
     this.selectedTab = tabIndex;
   }
+
 
 }
