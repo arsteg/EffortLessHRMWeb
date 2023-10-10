@@ -76,7 +76,6 @@ export class EditTaskComponent implements OnInit {
   assignee: any;
   loading: boolean = true; // Initialize loading state
   taskDeleted: boolean = false;
-
   constructor(private fb: FormBuilder,
     private tasksService: TasksService,
     private toast: ToastrService,
@@ -128,7 +127,7 @@ export class EditTaskComponent implements OnInit {
       })
     });
     this.getTasks();
-    
+   
   }
 
   navigateToManage() {

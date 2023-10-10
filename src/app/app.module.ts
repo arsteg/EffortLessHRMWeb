@@ -89,6 +89,7 @@ import { TaxationModule } from './Taxation/taxation.module';
 import { SeparationModule } from './Separation/separation.module';
 import { SettingsComponent } from './settings/settings.component';
 import { ReportsModule } from './reports/reports.module';
+import { UserTaxDeclarationComponent } from './Taxation/user-tax-declaration/user-tax-declaration.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -129,13 +130,12 @@ import { ReportsModule } from './reports/reports.module';
     FeaturesSettingsComponent,
     AttendanceSettingsComponent,
     LeaveSettingsComponent,
-    // EditTaskComponent,
     GenericSettingsComponent,
     ViewLiveScreenComponent,
-    // EmailTemplateComponent,
     UserCalendarComponent,
     AdminCalendarComponent,
     SettingsComponent,
+    UserTaxDeclarationComponent
    
   ],
   imports: [

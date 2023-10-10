@@ -1,6 +1,8 @@
 <div class="main-content contentData">
     <div class="container-fluid px-0">
-        <div class=" d-flex bg-white subMenu w-100">
+        <ng-container>
+            <div *ngIf="view=== 'admin' ">
+                 <div class=" d-flex bg-white subMenu w-100">
             <button class="btn rounded-pill submenuTab" (click)="selectTab(1)"
                 [class.active]="selectedTab === 1">Settings</button>
             <button class="btn rounded-pill submenuTab" (click)="selectTab(2)" [class.active]="selectedTab === 2">
@@ -18,5 +20,18 @@
         </div>
         <div *ngIf="selectedTab === 3" class="tab-content">
         </div>
+    </div>
+<div *ngIf="view=== 'user'">
+    <div class="mt-5">
+        <nav aria-label="breadcrumb" class="bg-white subMenu w-100">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a>Separation</a></li>
+              <li class="breadcrumb-item active" aria-current="page"><u>Initiate/Check Status</u></li>
+            </ol>
+          </nav>
+</div>
+</div>    
+</ng-container>
+       
     </div>
 </div>

@@ -53,6 +53,7 @@ export class HomeComponent implements OnInit {
         this.adminView = role?.toLowerCase();
       }
       this.portalType = role && role?.toLowerCase();
+    
     });
 
 
@@ -60,7 +61,6 @@ export class HomeComponent implements OnInit {
     this.auth.GetMe(currentUser.id).subscribe((response: any) => {
       this.currentProfile = response && response.data.users;
       this.commonService.setCurrentUser(this.currentProfile);
-
       return this.currentProfile;
     })
   }
@@ -350,25 +350,26 @@ export const SideBarUserMenu = [
     id: '5',
     title: 'Organization',
     icon: 'fa fa-building',
-    subMenu: [
-      {
-        id: '51',
-        title: 'Company Policies',
-      },
-      {
-        id: '52',
-        title: 'Organization Tree',
-      },
-      {
-        id: '53',
-        title: 'Employee Tree',
-      },
-      {
-        id: '54',
-        title: 'Assets',
-        url: '/Assets'
-      }
-    ]
+    url: 'organization'
+    // subMenu: [
+    //   {
+    //     id: '51',
+    //     title: 'Company Policies',
+    //   },
+    //   {
+    //     id: '52',
+    //     title: 'Organization Tree',
+    //   },
+    //   {
+    //     id: '53',
+    //     title: 'Employee Tree',
+    //   },
+    //   {
+    //     id: '54',
+    //     title: 'Assets',
+    //     url: '/Assets'
+    //   }
+    // ]
   },
   {
     id: '6',
@@ -380,87 +381,32 @@ export const SideBarUserMenu = [
     id: '7',
     title: 'Leave',
     icon: 'fas fa-walking',
-    subMenu: [
-
-      {
-        id: '71',
-        title: 'My Application',
-      },
-      {
-        id: '72',
-        title: 'My Leave Grant',
-      },
-      {
-        id: '73',
-        title: 'General Information',
-      }
-    ]
+    url: 'Leave'
   },
   {
     id: '8',
     title: 'Attendance',
     icon: 'fa fa-check-square',
-    subMenu: [
-      {
-        id: '81',
-        title: 'My Attendance Records',
-        url: '/attendance'
-      },
-      {
-        id: '82',
-        title: 'My Regularization Requests',
-      },
-      {
-        id: '83',
-        title: 'OnDuty Requests',
-      },
-      {
-        id: '84',
-        title: 'My Roaster Records',
-      }
-    ]
+    url: 'attendance'
   },
   {
     id: '9',
     title: 'Timesheets',
     icon: 'fa fa-clock',
-    subMenu: [
-      {
-        id: '91',
-        title: 'Timesheets',
-        url: 'userTimesheet'
-      }
-    ]
+    url: 'userTimesheet'
   },
   {
     id: '10',
     title: 'Taxation',
     icon: 'fa fa-dollar-sign',
-    subMenu: [
-      {
-        id: '101',
-        title: 'My Tax Declarations',
-      }
-    ]
+    url: 'taxDeclaration'
+    
   },
   {
     id: '11',
     title: 'Expenses',
     icon: 'fa fa-money-bill',
-    subMenu: [
-      {
-        id: '111',
-        title: 'My Expenses',
-      },
-      {
-        id: '112',
-        title: 'My Advances',
-      },
-      {
-        id: '113',
-        title: 'General Information',
-      }
-    ]
+    url: 'expenses'
   },
   {
     id: '12',
@@ -471,111 +417,27 @@ export const SideBarUserMenu = [
     id: '13',
     title: 'Separation',
     icon: 'fas fa-divide',
-    subMenu: [
-      {
-        id: '131',
-        title: 'Initiate/Check Status',
-      }
-    ]
+    url: 'separation'
+    
   },
   {
     id: '14',
     title: 'Reports',
     icon: 'fa fa-chart-line',
-    subMenu: [
-      {
-        id: '141',
-        title: 'General Reports',
-      },
-      {
-        id: '142',
-        title: 'My Reports',
-      },
-      // {
-      //   id: '143',
-      //   title: 'Timesheet',
-      // },
-      {
-        id: '144',
-        title: 'Timeline',
-        url: '/timeline',
-      },
-      {
-        id: '145',
-        title: 'Attendance',
-        url: '/attendance',
-      },
-      // {
-      //   id: '146',
-      //   title: 'Activity Level',
-      //   url: '/activityLevel'
-      // },
-      {
-        id: '147',
-        title: 'Statistics',
-      },
-      {
-        id: '148',
-        title: 'Browser History',
-        url: '/browserHistory',
-      },
-      // {
-      //   id: '148',
-      //   title: 'Activity Description',
-      //   url: '/activityDescription',
-      // },
-      {
-        id: '149',
-        title: 'Apps and Websites',
-        url: '/applicationusages'
-      },
-      // {
-      //   id: '1410',
-      //   title: 'Tasks',
-      //   url: '/task',
-      // },
-      {
-        id: '1411',
-        title: 'Productivity',
-        url: '/productivity'
-      },
-      {
-        id: '1412',
-        title: 'Leave',
-        url: 'leaveReport'
-      }
-    ],
+    url: 'reports'
   },
   {
     id: '15',
     title: 'Manual Time',
     icon: 'bi bi-clock-history',
-
-    subMenu: [
-      {
-        id: '151',
-        title: 'Request',
-        url: '/requestManualTime',
-      }
-      // {
-      //   id: '152',
-      //   title: 'Add Manual Time',
-      //   url: 'AddManualTime'
-      // }
-    ]
-
+    url: 'requestManualTime'
   },
   {
     id: '16',
     title: 'Settings',
     icon: 'fa fa-wrench',
-    subMenu: [
-      {
-        id: '161',
-        title: 'User Preferences',
-        url: '/userPreferences'
-      },
-    ]
+    url: '/userPreferences'
+    
   }
 
 ];

@@ -683,4 +683,7 @@ button.active {
   /* border: 1px solid #ccc; */
   margin-top: 10px;
 }
+.breadcrumb-item.active {
+  color: #ff7b1d !important;
+}
 

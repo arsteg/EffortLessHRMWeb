@@ -6,7 +6,7 @@ import { TaxationComponent } from './taxation.component';
 
 @NgModule({
   declarations: [
-    TaxationComponent
+    TaxationComponent,
   ],
   imports: [
     CommonModule

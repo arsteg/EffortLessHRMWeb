@@ -7,10 +7,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SeparationComponent implements OnInit {
   selectedTab: number = 1;
-  constructor(
-    ) { }
+  view = localStorage.getItem('adminView');
 
-  ngOnInit(): void {  
+  constructor(
+  ) { }
+
+  ngOnInit(): void {
   }
   selectTab(tabIndex: number) {
     this.selectedTab = tabIndex;

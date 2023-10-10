@@ -78,9 +78,9 @@
                     </div>
 
                     <div *ngIf="isListView">
-                        <div class="container-fluid mt-3 py-2 px-0 bg-white tableContainer">
+                        <div class="container-fluid mt-3 py-3 px-2 bg-white tableContainer">
 
-                            <table class="px-4">
+                            <table class="px-4 rounded">
                                 <thead>
                                     <tr>
 
@@ -241,7 +241,7 @@
                                         </td>
                                         <td>
                                             <div class="d-flex flex-nowrap users">
-                                                <p *ngFor="let users of task?.TaskUsers">
+                                                <span *ngFor="let users of task?.TaskUsers">
                                                     <span class="letter text-light"
                                                         [tooltip]="(users?.user?.firstName| titlecase) + (' ') +( users?.user?.lastName | titlecase)"
                                                         [style.background-color]="commonservice.getRandomColor(users?.user?.firstName)">
@@ -249,7 +249,7 @@
                                                     </span>
                                                     <span class="ms-2">{{users?.user?.firstName | titlecase}}
                                                         {{users?.user?.lastName | titlecase}}</span>
-                                                </p>
+                                                </span>
 
                                             </div>
                                         </td>

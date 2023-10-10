@@ -71,10 +71,16 @@
                                 </div>
 
                                 <ol class="breadcrumb bg-transparent align-self-center ms-auto m-0 p-0">
-                                    <a href="" [routerLink]="['/manage']"> <button
-                                            class="btn btn-outline-primary rounded-pill"><span
-                                                class="bi bi-arrow-left ">
-                                                Back</span></button></a>
+                                    <ng-container>
+                                        <a *ngIf="view==='admin'" href="" [routerLink]="['/manage']"> <button
+                                                class="btn btn-outline-primary rounded-pill"><span
+                                                    class="bi bi-arrow-left ">
+                                                    Back</span></button></a>
+                                        <a href="" *ngIf="view==='user'" [routerLink]="['/tasks']"> <button
+                                                class="btn btn-outline-primary rounded-pill"><span
+                                                    class="bi bi-arrow-left ">
+                                                    Back</span></button></a>
+                                    </ng-container>
                                 </ol>
                             </div>
                         </div>
@@ -647,7 +653,7 @@
                             </div>
                         </div>
 
-                       
+
                     </form>
                 </div>
             </div>
@@ -655,22 +661,27 @@
     </div>
 
 
-<div *ngIf="loading && !currentTaskProject" class="text-center mt-5">
-    <a [routerLink]="['/tasks']">
-        <button class="btn btn-outline-primary shadow">
-            <span class="bi bi-arrow-left">Back</span>
-        </button>
-    </a>
-    <h2 class="mt-2">Task is being loaded...</h2>
-</div>
-<div *ngIf="currentTaskProject === null " class="text-center mt-5">
-    <a [routerLink]="['/tasks']">
-        <button class="btn btn-outline-primary shadow">
-            <span class="bi bi-arrow-left">Back</span>
-        </button>
-    </a>
-    <h2 class="mt-2">This task no longer exists.</h2>
-</div>
+    <div *ngIf="loading && !currentTaskProject" class="text-center mt-5">
+        <a [routerLink]="['/tasks']">
+            <button class="btn btn-outline-primary shadow">
+                <span class="bi bi-arrow-left">Back</span>
+            </button>
+        </a>
+        <h2 class="mt-2">Task is being loaded...</h2>
+    </div>
+    <div *ngIf="currentTaskProject === null " class="text-center mt-5">
+        <ng-container>
+        <a *ngIf="view==='admin'" href="" [routerLink]="['/manage']"> <button
+            class="btn btn-outline-primary rounded-pill"><span
+                class="bi bi-arrow-left ">
+                Back</span></button></a>
+    <a href="" *ngIf="view==='user'" [routerLink]="['/tasks']"> <button
+            class="btn btn-outline-primary rounded-pill"><span
+                class="bi bi-arrow-left ">
+                Back</span></button></a>
+            </ng-container>
+        <h2 class="mt-2">This task no longer exists.</h2>
+    </div>
 </div>
 
 

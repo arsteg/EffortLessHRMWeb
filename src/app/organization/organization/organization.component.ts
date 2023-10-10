@@ -7,6 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class OrganizationComponent implements OnInit {
   selectedTab : number = 1;
+  view= localStorage.getItem('adminView');
   constructor() { }
 
   ngOnInit(): void {

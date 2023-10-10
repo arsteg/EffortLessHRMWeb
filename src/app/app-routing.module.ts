@@ -73,6 +73,7 @@ import { SeparationComponent } from './Separation/separation.component';
 import { SettingsComponent } from './settings/settings.component';
 import { ReportsComponent } from './reports/reports.component';
 import { ApprovalsComponent } from './approvals/approvals.component';
+import { UserTaxDeclarationComponent } from './Taxation/user-tax-declaration/user-tax-declaration.component';
 
 const routes: Routes = [
   // {path:'',component:LayoutComponentComponent, canActivate: [AuthGuard]},
@@ -150,7 +151,8 @@ const routes: Routes = [
       { path: 'separation', component: SeparationComponent },
       { path: 'settings', component: SettingsComponent },
       { path: 'reports', component: ReportsComponent},
-      { path: 'Approvals', component: ApprovalsComponent}
+      { path: 'Approvals', component: ApprovalsComponent},
+      { path: 'taxDeclaration', component: UserTaxDeclarationComponent }
     ]
   }
 ]
