@@ -14,7 +14,7 @@
       </mat-form-field>
     </div>
     <div class="row d-flex justify-content-evenly container-fluid ">
-      <div class="border py-4 rounded bg-white">
+      <div class="py-4  bg-white" style="border-radius: 1.2rem">
         <div class="d-flex justify-content-evenly">
           <div class="mt-2 border-end pe-5">
             <h1 class="letter ms-2 header-letter"
@@ -25,7 +25,7 @@
             <p>{{role | titlecase}}</p>
           </div>
           <div class="mt-2 border-end pe-5">
-            <p class="">Members</p>
+            <p class="content__title"><i class="bi bi-people-fill me-2"></i>Members</p>
             <h1 class="">1</h1>
           </div>
           <div class="mt-2 border-end pe-5">
@@ -48,10 +48,10 @@
 
     </div>
     <div class="row my-3 justify-content-evenly">
-      <div class="col-md-4  rounded dash-boxes p-3 bg-white">
+      <div class="col-md-4  dash-boxes p-3 bg-white">
         <div class="about__top ">
           <div class="about__title">
-            <h1 class="content__title me-3">Today</h1>
+            <p class="content__title me-3">Today</p>
             <h1 class="title-hidden time mb-0">{{ formatMillisecondsToTime(hoursWorked?.today)}}</h1>
           </div>
           <div class="top-text d-flex">
@@ -74,10 +74,10 @@
         </div>
       </div>
 
-      <div class="col-md-4  rounded dash-boxes p-3 bg-white">
+      <div class="col-md-4  dash-boxes p-3 bg-white">
         <div class="about__top ">
           <div class="about__title">
-            <h1 class="content__title me-3">This week</h1>
+            <p class="content__title me-3">This week</p>
             <h1 class="title-hidden time mb-0">{{formatHoursAndMinutes(weeklySummary?.currentWeek) }}</h1>
           </div>
           <div class="top-text">
@@ -100,10 +100,10 @@
       </div>
 
 
-      <div class="col-md-4  rounded dash-boxes p-3 bg-white">
+      <div class="col-md-4  dash-boxes p-3 bg-white">
         <div class="about__top">
           <div class="about__title">
-            <h1 class="content__title me-3">This Month</h1>
+            <p class="content__title me-3">This Month</p>
             <h1 class="title-hidden time  mb-0">{{convertMinutesToHoursAndMinutes(monthlySummary?.currentMonth)}}</h1>
           </div>
           <div class="top-text d-flex">
@@ -128,9 +128,9 @@
     </div>
 
     <div class="row justify-content-evenly mb-4">
-      <div class="col-md-4  rounded p-3 dash-report bg-white taskReport tableContainer">
+      <div class="col-md-4   p-3 dash-report bg-white taskReport tableContainer">
         <div class="d-flex justify-content-between">
-          <h3>Project-wise time spent on each task</h3>
+          <p class="content__title"><i class="bi bi-clock-fill me-2"></i>Project-wise time spent on each task</p>
         </div>
         <div class="d-flex justify-content-between">
           <label for="member" class="pt-2 pe-3">Member</label>
@@ -159,9 +159,9 @@
         </table>
       </div>
 
-      <div class="col-md-4  rounded p-3 dash-report bg-white">
+      <div class="col-md-4   p-3 dash-report bg-white">
         <div class="d-flex justify-content-between">
-          <h3>Productivity</h3>
+          <p class="content__title"> <i class="bi bi-pie-chart-fill me-2"></i> Productivity</p>
         </div>
         <div class="d-flex justify-content-between">
           <label for="member" class="pt-2 pe-3">Member</label>
@@ -184,9 +184,9 @@
         </div>
       </div>
 
-      <div class="col-md-4  rounded p-3 dash-report bg-white">
+      <div class="col-md-4   p-3 dash-report bg-white">
         <div class="d-flex justify-content-between">
-          <h3>Task Summary</h3>
+          <p class="content__title"><i class="bi bi-clipboard-data-fill me-2"></i>Task Summary</p>
         </div>
         <div class="d-flex justify-content-between">
           <label for="member" class="pt-2 pe-3">Member</label>
@@ -214,9 +214,9 @@
     <!-- =================== -->
 
     <div class="row justify-content-evenly">
-      <div class="col-md-4  rounded p-3 dash-report bg-white tableContainer">
+      <div class="col-md-4   p-3 dash-report bg-white tableContainer">
         <div class="d-flex justify-content-between">
-          <h3>Project wise time on each task</h3>
+          <p class="content__title"> <i class="bi bi-clock-history me-2"></i>Project wise time on each task</p>
         </div>
         <div class="d-flex justify-content-between">
           <label for="member" class="pt-2 pe-3">Member</label>
@@ -248,11 +248,11 @@
         </table>
       </div>
 
-      <div class="col-md-4  rounded p-3 dash-report bg-white">
+      <div class="col-md-4   p-3 dash-report bg-white">
 
       </div>
 
-      <div class="col-md-4  rounded p-3 dash-report bg-white">
+      <div class="col-md-4   p-3 dash-report bg-white">
 
       </div>
 

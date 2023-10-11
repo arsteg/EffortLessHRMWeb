@@ -271,12 +271,12 @@
   
     <div class="modal-content">
       <div class="modal-header d-flex justify-content-end py-1">
-      <div class="" (click)="toggleImageSize()">
+      <div class="screenshotImg btn btn-sm" (click)="toggleImageSize()">
         <span *ngIf="isMaximized" class="bi bi-files"></span>
-        <span *ngIf="!isMaximized" class="fa fa-square-o"></span>
+        <span *ngIf="!isMaximized" class="bi bi-square"></span>
 
       </div>
-      <span class="btn btn-secondary btn-sm btn-close ms-1" data-bs-dismiss="modal"></span>
+      <span class="btn  btn-sm ms-1 bi bi-x-lg screenshotImg" data-bs-dismiss="modal"></span>
     
       </div>
       <div class="modal-body">

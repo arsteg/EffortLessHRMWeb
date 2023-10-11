@@ -381,3 +381,18 @@ input:focus-visible {
     background: #f6f5fb;
     margin-bottom: 37px;
 }
+.profile{
+    border-radius: 100px;
+    min-width: 35px;
+    cursor: pointer;
+    background-color: #ffffff26;
+}
+.sidebar-links.active .item{
+    display: none;
+}
+.item1{
+    display: none;
+}
+.sidebar-links.active .item1{
+display: initial
+}

@@ -143,191 +143,154 @@ export const SideBarAdminMenu = [
   {
     id: '1',
     title: 'Dashboard',
-    icon: 'fa fa-chart-bar',
+    icon: 'assets/Sidenav-Icons/dashboard.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/dashboard.png',
     url: '/dashboard',
   },
   {
     id: '2',
     title: 'Screenshots',
-    icon: 'fa fa-camera',
+    icon: 'assets/Sidenav-Icons/screenshots.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/screenshots.png',
     url: '/screenshots',
   },
   {
     id: '19',
-    icon: 'fa fa-video',
+    icon: 'assets/Sidenav-Icons/livescreen.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/liveScreen.png',
     title: 'View Live Screen',
     url: '/viewLiveScreen'
   },
   {
     id: '3',
     title: 'RealTime',
-    icon: 'fa fa-clock',
+    icon: 'assets/Sidenav-Icons/realtime.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/realtime.png',
     url: '/realtime'
   },
   {
     id: '4',
     title: 'Organization',
-    icon: 'fa fa-building',
+    icon: 'assets/Sidenav-Icons/organization.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/organization.png',
     url: '/organization'
-    // subMenu: [
-    //   {
-    //     id: '41',
-    //     title: 'Organization Setup',
-    //   },
-    //   {
-    //     id: '42',
-    //     title: 'Employee Fields',
-    //   },
-    //   {
-    //     id: '43',
-    //     title: 'Employee Tree',
-    //   },
-    //   {
-    //     id: '44',
-    //     title: 'Documents',
-    //     url:'/documentManager'
-    //   },
-    //   {
-    //     id: '45',
-    //     title: 'Assets Management',
-    //     url: '/assetsManagement'
-    //   }
-    // ],
+   
+  
   },
   {
     id: '5',
     title: 'Manage',
-    icon: 'fa fa-database',
+    icon: 'assets/Sidenav-Icons/manage.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/manage.png',
     url: '/manage'
-    // subMenu: [
-    //   {
-    //     id: '51',
-    //     title: 'Employees',
-    //     url: 'employees'
-    //   },
-    //   {
-    //     id: '53',
-    //     title: 'Projects',
-    //     url: 'project',
-    //   },
-    //   {
-    //     id: '54',
-    //     title: 'Tasks',
-    //     url: 'tasks'
-    //   },
-    //   {
-    //     id: '55',
-    //     title: 'Manual Time',
-    //     url: '/requestManualTime'
-    //   },
-    //   {
-    //     id: '56',
-    //     title: 'Team Members',
-    //     url: 'teamMembers'
-    //   },
-    //   {
-    //     id: '57',
-    //     title: 'Tags',
-    //     url: 'tags'
-    //   },
-    //   {
-    //     id: '58',
-    //     title: 'Email Template',
-    //     url: '/emailtemplate'
-    //   }
-    // ]
+  
   },
   {
     id: '6',
     title: 'Calendar',
-    icon: 'fa fa-calendar-alt',
+    icon: 'assets/Sidenav-Icons/calendar.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/calendar.png',
     url: '/AdminCalendar'
   },
   {
     id: '7',
     title: 'Attendance',
-    icon: 'fa fa-check-square',
+    icon: 'assets/Sidenav-Icons/attendance.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/attendance.png',
     url: 'attendance'
 
   },
   {
     id: '8',
     title: 'Timesheets',
-    icon: 'fa fa-clock',
+    icon: 'assets/Sidenav-Icons/timesheet.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/timesheet.png',
     url: 'timesheet'
 
   },
   {
     id: '9',
     title: 'Leave',
-    icon: 'fas fa-walking',
+    icon: 'assets/Sidenav-Icons/leave.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/leave.png',
     url: 'Leave'
 
   },
   {
     id: '10',
     title: 'Expenses',
-    icon: 'fa fa-money-bill',
+    icon: 'assets/Sidenav-Icons/expenses.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/expenses.png',
     url: 'expenses'
   },
   {
     id: '11',
     title: 'Alerts',
-    icon: 'fa fa-bell',
+    icon: 'assets/Sidenav-Icons/alert.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/alerts.png',
     url: 'alerts'
   },
   {
     id: '12',
     title: 'Payroll',
-    icon: 'fa fa-id-card',
+    icon: 'assets/Sidenav-Icons/payroll.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/payroll.png',
     url: 'payroll'
   },
   {
     id: '13',
     title: 'Taxation',
-    icon: 'fa fa-dollar-sign',
+    icon: 'assets/Sidenav-Icons/taxation.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/taxation.png',
     url: 'taxation'
   },
   {
     id: '14',
     title: 'Reports',
-    icon: 'fa fa-chart-line',
+    icon: 'assets/Sidenav-Icons/reports.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/reports.png',
     url: 'reports'
   },
   {
     id: '15',
     title: 'Separation',
-    icon: 'fas fa-divide',
+    icon: 'assets/Sidenav-Icons/separation.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/separation.png',
     url: 'separation'
   },
   {
     id: '16',
     title: 'Settings',
-    icon: 'fa fa-wrench',
+    icon: 'assets/Sidenav-Icons/settings.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/settings.png',
     url: 'settings'
   },
   {
     id: '17',
-    icon: 'fa fa-lock',
+    icon: 'assets/Sidenav-Icons/permission.png',
     title: 'Permissions',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/permission.png',
     url: '/permissions'
 
   },
   {
     id: '17',
-    icon: 'fa fa-universal-access',
+    icon: 'assets/Sidenav-Icons/roles.png',
     title: 'Roles',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/roles.png',
     url: '/roles'
   },
   {
     id: '18',
-    icon: 'fa  fa-id-badge',
+    icon: 'assets/Sidenav-Icons/rolePermission.png',
     title: 'Role Permission',
+     lightIcon: 'assets/Sidenav-Icons/light-Icons/rolePermission.png',
     url: '/rolePermission'
   },
   {
     id: '19',
-    icon: 'fa  fa-id-badge',
+    icon: 'assets/Sidenav-Icons/approvals.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/approval.png',
     title: 'Approvals',
     url: 'Approvals'
   }

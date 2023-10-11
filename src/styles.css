@@ -243,7 +243,7 @@ select {
   font-weight: 500 !important;
   font-size: 14px !important;
   line-height: 24px;
-  color: #424253;
+  color: #64728c;
   margin-right: 20px;
 }
 
@@ -277,9 +277,6 @@ select {
   padding: 0 2px;
 }
 
-.dash-boxes {
-  width: 300px;
-}
 
 .dash-table-row {
   border-top: 1px solid #9699a8 !important;
@@ -287,6 +284,7 @@ select {
 
 .dash-report {
   width: 410px;
+  border-radius: 1.2rem
 }
 
 .dash-percent {
@@ -471,6 +469,7 @@ select {
 
 .dash-boxes {
   width: 410px !important;
+  border-radius: 1.2rem
 }
 
 .time {

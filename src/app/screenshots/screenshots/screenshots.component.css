@@ -157,3 +157,7 @@ figure img {
     opacity: 0.8;
     background: #08c9ff;
 }
+.screenshotImg:hover{
+  background-color: #f35c17;
+    color: white;
+}
