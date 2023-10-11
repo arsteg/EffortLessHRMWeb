@@ -1,10 +1,7 @@
 .bi{
     font-size:large;
 }
-table{
-    box-shadow: 5px 5px 5px 5px #e4dede;
-}
-/* for checkboxes */
+
 .type-tracked input {
     display: none;
 }
@@ -81,11 +78,11 @@ table{
   .hour{
     max-width:60px;
     height: 40px;
-    /* background-color: #C8CCDE; */
   }
 
   .hour-container{
     display: inline-flex;
+    margin-top: -20px;
     position: absolute;
   }
   .gap {

@@ -1,6 +1,6 @@
 <div class="documentContainer">
   <div class="row bg-white p-3">
-    <div class="col-md-8 border-end">
+    <div class="col-md-8 border-end tableContainer">
       <div class="d-flex justify-content-between">
       <h2 class="text-primary">Document&nbsp;Categories:&nbsp;{{categories?.length}}</h2>
 
@@ -9,7 +9,7 @@
         (keyup)="searchCategories($event)">
       </div>
       <!-- Table for listing categories -->
-      <table class="table">
+      <table  class="p-2 rounded mt-2">
         <thead>
           <tr>
             <th>Name</th>

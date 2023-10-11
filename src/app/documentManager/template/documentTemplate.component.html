@@ -1,13 +1,14 @@
 <div class="documentContainer">
   <div class="row p-3 bg-white">
-    <div class="col-md-7 border-end">
+    <div class="col-md-7 border-end tableContainer">
       <div class="d-flex justify-content-between">
 
         <h2 class="text-primary">Document&nbsp;Templates:&nbsp;{{templatesList?.length}}</h2>
-        <input type="text" placeholder="Search ..." class="w-25 form-control" [(ngModel)]="searchText" name="searchText">
+        <input type="text" placeholder="Search ..." class="w-25 form-control" [(ngModel)]="searchText"
+          name="searchText">
 
       </div>
-      <table class="table">
+      <table class="p-2 rounded mt-2">
         <thead>
           <tr>
             <th scope="col">Name</th>
@@ -21,9 +22,14 @@
             <td class="col-2">{{data?.name}}</td>
             <td class="col-6" [innerHTML]="data?.content"></td>
             <td class="col-1">{{data?.active}}</td>
-            <td class="col-3 d-flex">
-              <button class="btn btn-primary btn-sm bi bi-pencil" style="min-width: 80px;" (click)="editTemplate(data)" >&nbsp;Edit</button>
-              <button class="btn btn-danger btn-sm bi bi-trash ms-1" style="min-width: 80px;" (click)="openDialog(data._id)">&nbsp;Delete</button>
+            <td class="">
+              <div class="d-flex">
+                <button class="btn btn-primary btn-sm bi bi-pencil" style="min-width: 80px;"
+                  (click)="editTemplate(data)">&nbsp;Edit</button>
+                <button class="btn btn-danger btn-sm bi bi-trash ms-1" style="min-width: 80px;"
+                  (click)="openDialog(data._id)">&nbsp;Delete</button>
+
+              </div>
             </td>
           </tr>
         </tbody>
@@ -38,7 +44,7 @@
           <h2 class="text-primary">{{ isEditMode ? 'Update Document Template' : 'Add Document Template' }}</h2>
         </div>
         <form class="mt-4 p-3 bg-light border rounded" [formGroup]="addDocumentTemplateForm"
-        (ngSubmit)="isEditMode ? updateTemplate(addDocumentTemplateForm.value) : addDocumentTemplate(addDocumentTemplateForm.value)">
+          (ngSubmit)="isEditMode ? updateTemplate(addDocumentTemplateForm.value) : addDocumentTemplate(addDocumentTemplateForm.value)">
           <div class="form-group row">
             <div class="col-sm-2">
               Name:
@@ -47,20 +53,20 @@
               <input type="text" placeholder="Add template Name..." formControlName="name" class="form-control">
             </div> <br>
             <div class="col-sm-2 mt-3">
-              Is&nbsp;Active:  
+              Is&nbsp;Active:
             </div>
             <div class="col-sm-10  mt-3">
               <input type="checkbox" formControlName="isActive">
             </div><br>
-           
+
             <div class="col-sm-2 mt-3">
               Content&nbsp;Data:
             </div>
             <div class="col-sm-8">
-            <select  (change)="onDropdownChange($event)" class="mt-3 py-2 w-50">
-              <option selected>- Select -</option>
-              <option *ngFor="let option of dropdownOptions" [value]="option.label">{{ option.label }}</option>
-            </select>
+              <select (change)="onDropdownChange($event)" class="mt-3 py-2 w-50">
+                <option selected>- Select -</option>
+                <option *ngFor="let option of dropdownOptions" [value]="option.label">{{ option.label }}</option>
+              </select>
             </div>
 
             <div class="col-sm-0" style="margin-top: 12px;">
@@ -71,7 +77,8 @@
             </div><br>
             <br>
             <div class="d-flex justify-content-between" style="margin-top: 12px;">
-              <button  mat-raised-button color="primary" type="submit" class="ml-5" style="min-width: 100px;" [disabled]="!addDocumentTemplateForm.valid">{{ isEditMode ? 'Update' : 'Add' }}</button>
+              <button mat-raised-button color="primary" type="submit" class="ml-5" style="min-width: 100px;"
+                [disabled]="!addDocumentTemplateForm.valid">{{ isEditMode ? 'Update' : 'Add' }}</button>
               <button mat-raised-button (click)="onCancel()" type="button">Cancel</button>
 
             </div>

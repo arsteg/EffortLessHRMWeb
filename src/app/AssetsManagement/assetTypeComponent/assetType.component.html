@@ -1,12 +1,12 @@
 <div class="asset-container" style="background-color: white;">
   <div class="row p-2">
-    <div class="list-container col-md-8 border-end">
+    <div class="list-container col-md-8 border-end tableContainer">
       <div class="d-flex justify-content-between">
         <h2 class="blue-text">Asset Types: {{ assetTypes?.length }}</h2>
         <input type="text" placeholder="Search Asset Type..." [(ngModel)]="searchQuery" (input)="filterAssetTypes()"
           class="form-control w-25 mt-2 mb-3">
       </div>
-      <table class="table">
+      <table  class="p-2 rounded mt-2">
         <thead class="thead-dark">
           <tr>
             <th>Name</th>
@@ -64,7 +64,7 @@
         <input type="text" class="form-control " id="description" formControlName="description">
       </div>
       <div formArrayName="customAttributes">
-        <table class="table">
+        <table  class="p-2 rounded mt-2">
           <thead>
             <tr>
               <th>Attribute Name</th>

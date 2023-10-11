@@ -686,4 +686,7 @@ button.active {
 .breadcrumb-item.active {
   color: #ff7b1d !important;
 }
+td:first-child, th:first-child{
+  padding-left: 15px;
+}
 

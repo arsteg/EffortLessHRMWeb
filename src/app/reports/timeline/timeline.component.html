@@ -4,8 +4,8 @@
       <h1 class="">Timeline</h1>
       <div class="ms-5 ps-4 pt-2">
 
-        <button class="buttons mx-3"  [class.active]="showProjectsColumn" [class.shadow]="showProjectsColumn"  (click)="toggleColumns('projects')">Project</button>
-        <button class="buttons" [class.active]="showMembersColumn" [class.shadow]="showMembersColumn" (click)="toggleColumns('members')">Members</button>
+        <button class=" rounded-pill mx-3"  [class.active]="showProjectsColumn" [class.shadow]="showProjectsColumn"  (click)="toggleColumns('projects')">Project</button>
+        <button class=" rounded-pill " [class.active]="showMembersColumn" [class.shadow]="showMembersColumn" (click)="toggleColumns('members')">Members</button>
 
       </div>
     </div>
@@ -91,7 +91,8 @@
       </div>
 
     </div>
-    <table class=" mt-4" id="timeSheet" #timeSheet>
+    <div class="tableContainer">
+    <table class="p-2 rounded mt-4" id="timeSheet" #timeSheet>
       <thead>
         <tr>
           <th scope="col" *ngIf="showMembersColumn" [appSort]="timeline" data-order="{{ sortOrder }}"
@@ -147,5 +148,6 @@
         </tr>
       </tbody>
     </table>
+  </div>
   </div>
 </div>

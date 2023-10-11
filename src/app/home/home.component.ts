@@ -24,7 +24,11 @@ export class HomeComponent implements OnInit {
   options: string[] = ['You spent the 7 connects on the availability',
     'The work week has ended, and your weekly summary is available for summary',
     'Your Proposal to job'];
-  constructor(private router: Router, private auth: AuthenticationService, private commonService: CommonService) { }
+    sideBarMenu = SideBarAdminMenu;
+
+  constructor(private router: Router, private auth: AuthenticationService, private commonService: CommonService) 
+  {
+   }
 
   ngOnInit(): void {
     let roleId = localStorage.getItem('roleId');
@@ -109,6 +113,30 @@ export class HomeComponent implements OnInit {
     this.isCollapsedMenu = !this.isCollapsedMenu;
     localStorage.setItem('sidebar', JSON.stringify(this.isCollapsedMenu))
   }
+ 
+  filteredMenuItems() {
+    console.log('searchTerm:', this.searchText);
+    
+    const searchTerm = this.searchText.trim().toLowerCase(); // Trim and convert to lowercase
+    if (searchTerm === '') {
+      // If search term is empty, display all menu items
+      this.menuList = SideBarAdminMenu; // Reset to original unfiltered menuList
+    } else {
+      const filtered = SideBarAdminMenu.filter(item =>
+        item.title.toLowerCase().includes(searchTerm)
+      );
+      console.log('filteredMenuItems:', filtered);
+      this.menuList = filtered; // Update menuList with filtered items
+    }
+    
+    // Check if the search text was deleted completely, and if so, reset it to display all items
+    if (this.searchText === '') {
+      this.menuList = SideBarAdminMenu; // Reset to original unfiltered menuList
+    }
+  }
+  
+  
+
 }
 
 export const SideBarAdminMenu = [

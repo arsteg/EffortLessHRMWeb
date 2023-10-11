@@ -175,7 +175,8 @@
             data-v-bddebfba=""></path>
         </g>
       </svg>
-      <input type="text" placeholder="Search" class="search border-bottom" [(ngModel)]="searchText">
+      <input type="text" placeholder="Search" class="search border-bottom"
+      (input)="filteredMenuItems()" [(ngModel)]="searchText">
     </div>
     <!--Expanded Menu-->
     <div class="list-group list-group-flush" *ngIf="!isCollapsedMenu">

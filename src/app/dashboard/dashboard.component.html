@@ -1,4 +1,4 @@
-<div class="main-content">
+<div class="main-content mt-5">
   <div class="container-fluid">
     <div class="col-2 ms-auto">
       <mat-form-field appearance="outline" class="" style="border-radius: 5px;
@@ -128,7 +128,7 @@
     </div>
 
     <div class="row justify-content-evenly mb-4">
-      <div class="col-md-4  rounded p-3 dash-report bg-white taskReport">
+      <div class="col-md-4  rounded p-3 dash-report bg-white taskReport tableContainer">
         <div class="d-flex justify-content-between">
           <h3>Project-wise time spent on each task</h3>
         </div>
@@ -139,7 +139,7 @@
             <option *ngFor="let m of members" value="{{m|json}}">{{m.name | titlecase}}</option>
           </select>
         </div>
-        <table>
+        <table class="mt-2 p-2 rounded">
           <tbody>
             <th>Project</th>
             <th>Task</th>
@@ -149,7 +149,7 @@
                 <td>
                   {{i==0?projectTask?.projectName:''}}
                 </td>
-                <td>{{task?.taskName}}</td>
+                <td class="py-2">{{task?.taskName}}</td>
                 <td>
                   <span class="dash-percent"> {{ task?.totalTime | milliSecondsToTime }} </span>
                 </td>
@@ -214,7 +214,7 @@
     <!-- =================== -->
 
     <div class="row justify-content-evenly">
-      <div class="col-md-4  rounded p-3 dash-report bg-white">
+      <div class="col-md-4  rounded p-3 dash-report bg-white tableContainer">
         <div class="d-flex justify-content-between">
           <h3>Project wise time on each task</h3>
         </div>
@@ -226,7 +226,7 @@
             <option *ngFor="let m of members" value="{{m|json}}">{{m.name | titlecase}}</option>
           </select>
         </div>
-        <table class="table">
+        <table class="mt-2 p-2 rounded">
           <tbody>
             <th>Project</th>
             <th>Task</th>
@@ -237,7 +237,7 @@
                 <td>
                   {{i==0?projectTask?.projectName:''}}
                 </td>
-                <td>{{task?.taskName}}</td>
+                <td class="py-2">{{task?.taskName}}</td>
                 <td>
                   <span class="dash-percent"> {{ ((task?.count*10)*60*1000) | milliSecondsToTime }} </span>
                 </td>

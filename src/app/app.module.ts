@@ -90,6 +90,7 @@ import { SeparationModule } from './Separation/separation.module';
 import { SettingsComponent } from './settings/settings.component';
 import { ReportsModule } from './reports/reports.module';
 import { UserTaxDeclarationComponent } from './Taxation/user-tax-declaration/user-tax-declaration.component';
+import { FormsModule } from '@angular/forms';
 @NgModule({
   declarations: [
     AppComponent,
@@ -179,7 +180,8 @@ import { UserTaxDeclarationComponent } from './Taxation/user-tax-declaration/use
     TaxationModule,
     SeparationModule,
     SettingsModule,
-    ReportsModule
+    ReportsModule,
+    FormsModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,
