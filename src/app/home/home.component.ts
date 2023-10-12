@@ -300,27 +300,31 @@ export const SideBarUserMenu = [
   {
     id: '1',
     title: 'Dashboard',
-    icon: 'fa fa-chart-bar',
+    icon: 'assets/Sidenav-Icons/dashboard.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/dashboard.png',
     url: '/userDashboard',
 
   },
   {
     id: '2',
     title: 'Screenshots',
-    icon: 'fa fa-camera',
+    icon: 'assets/Sidenav-Icons/screenshots.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/screenshots.png',
     url: '/screenshots',
 
   },
   {
     id: '17',
     title: 'View Live Screen',
-    icon: 'fa fa-video',
+    icon: 'assets/Sidenav-Icons/livescreen.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/liveScreen.png',
     url: '/viewLiveScreen'
   },
   {
     id: '3',
     title: 'RealTime',
-    icon: 'fa fa-clock',
+    icon: 'assets/Sidenav-Icons/realtime.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/realtime.png',
     url: '/realtime'
 
   },
@@ -328,105 +332,101 @@ export const SideBarUserMenu = [
   {
     id: '17',
     title: 'Tasks',
-    icon: 'fa fa-list',
+    icon: 'assets/Sidenav-Icons/tasks.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/tasks.png',
     url: 'tasks'
   },
 
   {
     id: '4',
     title: 'Alerts',
-    icon: 'fa fa-bell'
+    icon: 'assets/Sidenav-Icons/alert.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/alerts.png',
   },
   {
     id: '5',
     title: 'Organization',
-    icon: 'fa fa-building',
+    icon: 'assets/Sidenav-Icons/organization.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/organization.png',
     url: 'organization'
-    // subMenu: [
-    //   {
-    //     id: '51',
-    //     title: 'Company Policies',
-    //   },
-    //   {
-    //     id: '52',
-    //     title: 'Organization Tree',
-    //   },
-    //   {
-    //     id: '53',
-    //     title: 'Employee Tree',
-    //   },
-    //   {
-    //     id: '54',
-    //     title: 'Assets',
-    //     url: '/Assets'
-    //   }
-    // ]
+   
   },
   {
     id: '6',
     title: 'Calendar',
-    icon: 'fa fa-calendar-alt',
+    icon: 'assets/Sidenav-Icons/calendar.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/calendar.png',
     url: '/UserCalendar'
   },
   {
     id: '7',
     title: 'Leave',
-    icon: 'fas fa-walking',
+    icon: 'assets/Sidenav-Icons/leave.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/leave.png',
     url: 'Leave'
   },
   {
     id: '8',
     title: 'Attendance',
-    icon: 'fa fa-check-square',
+    icon: 'assets/Sidenav-Icons/attendance.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/attendance.png',
     url: 'attendance'
   },
   {
     id: '9',
     title: 'Timesheets',
-    icon: 'fa fa-clock',
+    icon: 'assets/Sidenav-Icons/timesheet.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/timesheet.png',
     url: 'userTimesheet'
   },
   {
     id: '10',
     title: 'Taxation',
-    icon: 'fa fa-dollar-sign',
+    icon: 'assets/Sidenav-Icons/taxation.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/taxation.png',
     url: 'taxDeclaration'
     
   },
   {
     id: '11',
     title: 'Expenses',
-    icon: 'fa fa-money-bill',
+    icon: 'assets/Sidenav-Icons/expenses.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/expenses.png',
     url: 'expenses'
   },
   {
     id: '12',
     title: 'PaySlips',
-    icon: 'fa fa-envelope-open'
+    icon: 'assets/Sidenav-Icons/payslip.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/payslip.png',
   },
   {
     id: '13',
     title: 'Separation',
-    icon: 'fas fa-divide',
+    icon: 'assets/Sidenav-Icons/separation.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/separation.png',
     url: 'separation'
     
   },
   {
     id: '14',
     title: 'Reports',
-    icon: 'fa fa-chart-line',
+    icon: 'assets/Sidenav-Icons/reports.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/reports.png',
     url: 'reports'
   },
   {
     id: '15',
     title: 'Manual Time',
     icon: 'bi bi-clock-history',
+    lightIcon: 'bi bi-clock-history',
     url: 'requestManualTime'
   },
   {
     id: '16',
     title: 'Settings',
-    icon: 'fa fa-wrench',
+    icon: 'assets/Sidenav-Icons/settings.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/settings.png',
     url: '/userPreferences'
     
   }

@@ -10,7 +10,8 @@
 
             <div class="dropdown ">
               <div></div>
-              <span class="fa fa-bell-o fa-lg text-white" id="notificationDropdown" (click)="toggleDropdown()"></span>
+             
+              <img width="25" height="25" src="https://img.icons8.com/ios/50/FFFFFF/appointment-reminders--v1.png" alt="appointment-reminders--v1" id="notificationDropdown" (click)="toggleDropdown()"/>
 
               <ul class="dropdown-menu dropdown-menu-default drpLog" [class.show]="dropdownOpen"
                 aria-labelledby="notificationDropdown" style="margin-top: 14px; box-shadow: 0 0px 30px 0 #dedbdb;">
@@ -166,7 +167,7 @@
   <!-- Sidebar -->
   <div class="sidebar-title border-right" id="sidebar-wrapper" [ngClass]="isCollapsedMenu ? 'collapsed-menu' : 'show'">
     <div class="sidebar-heading py-4 px-2" *ngIf="!isCollapsedMenu"><img src="assets/logo.png" width="170" alt=""></div>
-    <div class="sidebar-heading py-4 ps-2" *ngIf="isCollapsedMenu"><img src="assets/CollapsedLogo.png" width="40"
+    <div class="sidebar-heading py-4 ps-3" *ngIf="isCollapsedMenu"><img src="assets/CollapsedLogo.png" width="40"
         alt=""></div>
 
     <div class="d-flex align-items-center justify-content-center" *ngIf="!isCollapsedMenu">
@@ -188,7 +189,7 @@
           <li class="nav-item has-submenu">
             <a class="nav-link sidebar-links ps-0" [ngClass]="{'active': menu.url== ''}" [routerLink]="menu.url"
               routerLinkActive="active" (click)="clickMenu(menu.id)">
-              <span class="mx-2 collapse-icons"></span>
+              <span  [ngClass]="menu.icon"  class="ms-3 collapse-icons"></span>
               <img [ngClass]="{'active': menu.url== ''}" class="item" [src]="menu.icon" height="25" alt="">
               <img [ngClass]="{'active': menu.url== ''}" class="item1" [src]="menu.lightIcon" height="25" alt="">
 
@@ -208,7 +209,7 @@
           <li class="nav-item has-submenu" dropdown container="body" placement="right">
             <a class="nav-link sidebar-links" dropdownToggle [ngClass]="{'active': menu.url== ''}"
               [routerLink]="menu.url" routerLinkActive="active" [tooltip]="menu.title">
-              <span [ngClass]="menu.icon" class="me-2 collapse-icons fa-lg"></span>
+              <span [ngClass]="menu.icon" class="ms-2 collapse-icons fa-lg"></span>
               <img [ngClass]="{'active': menu.url== ''}" class="item" [src]="menu.icon" height="25" alt="">
               <img [ngClass]="{'active': menu.url== ''}" class="item1" [src]="menu.lightIcon" height="25" alt="">
 
