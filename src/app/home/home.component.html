@@ -10,8 +10,9 @@
 
             <div class="dropdown ">
               <div></div>
-             
-              <img width="25" height="25" src="https://img.icons8.com/ios/50/FFFFFF/appointment-reminders--v1.png" alt="appointment-reminders--v1" id="notificationDropdown" (click)="toggleDropdown()"/>
+
+              <img width="25" height="25" src="https://img.icons8.com/ios/50/FFFFFF/appointment-reminders--v1.png"
+                alt="appointment-reminders--v1" id="notificationDropdown" (click)="toggleDropdown()" />
 
               <ul class="dropdown-menu dropdown-menu-default drpLog" [class.show]="dropdownOpen"
                 aria-labelledby="notificationDropdown" style="margin-top: 14px; box-shadow: 0 0px 30px 0 #dedbdb;">
@@ -190,7 +191,7 @@
           <li class="nav-item has-submenu">
             <a class="nav-link sidebar-links ps-0" [ngClass]="{'active': menu.url== ''}" [routerLink]="menu.url"
               routerLinkActive="active" (click)="clickMenu(menu.id)">
-              <span  [ngClass]="menu.icon"  class="ms-3 collapse-icons"></span>
+              <span [ngClass]="menu.icon" class="ms-3 collapse-icons"></span>
               <img [ngClass]="{'active': menu.url== ''}" class="item" [src]="menu.icon" height="25" alt="">
               <img [ngClass]="{'active': menu.url== ''}" class="item1" [src]="menu.lightIcon" height="25" alt="">
 
@@ -248,14 +249,11 @@
             <p class="email contentHeading">{{currentProfile?.email}}</p>
             <div class="my-4 d-flex justify-content-center">
               <div class="mx-4" *ngIf="portalType == 'admin'">
-                <button mat-raised-button class="contentHeading p-2" (click)="switchView('user')"
-                  *ngIf="adminView == 'admin'">
+                <button mat-raised-button class="addBtn" (click)="switchView('user')" *ngIf="adminView == 'admin'">
                   User Portal
                 </button>
-                <button mat-raised-button class="contentHeading p-2" (click)="switchView('admin')"
-                  *ngIf="adminView == 'user'">
+                <button mat-raised-button class="addBtn" (click)="switchView('admin')" *ngIf="adminView == 'user'">
                   Admin Portal
-
                 </button>
               </div>
               <div>
@@ -279,7 +277,9 @@
                 <br>
                 <h4>00:00:00</h4>
               </div>
-            </div>
+            </div> oiu7890i[==]-[
+            
+            ];
           </div>
           <div class="text-center">
             <img src="../assets/alarm.webp" class="alarm text-center" alt="">

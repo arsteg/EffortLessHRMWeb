@@ -78,4 +78,8 @@
       .apexcharts-inactive-legend {
         opacity: 0.45;
       }
+      input{
+        min-height: 0 !important;
+        border: 0 !important;
+    }
      

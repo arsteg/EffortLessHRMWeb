@@ -19,3 +19,7 @@
 .form-select{
     background-image: url(/assets/arrow-down.png) !important;
 }
+input{
+    min-height: 0 !important;
+    border: 0 !important;
+}
