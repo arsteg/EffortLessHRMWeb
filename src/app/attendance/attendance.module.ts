@@ -5,12 +5,17 @@ import { SharedModule } from '../shared/shared.Module';
 import { AttendanceManagementComponent } from './attendance-management/attendance-management.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';
+import { AttendanceComponent } from './attendance/attendance.component';
 
 
 @NgModule({
-  declarations: [AttendanceManagementComponent, ],
+  declarations: [AttendanceManagementComponent, AttendanceComponent ],
   imports: [ MatRadioModule,
     MatCheckboxModule, CommonModule, CommonComponentsModule, SharedModule ],
-  exports: [AttendanceManagementComponent, ]
+  exports: [AttendanceManagementComponent, AttendanceComponent],
+  schemas: [
+    CUSTOM_ELEMENTS_SCHEMA,
+    NO_ERRORS_SCHEMA
+  ]
 })
 export class AttendanceModule { }

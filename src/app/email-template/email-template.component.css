@@ -24,3 +24,8 @@ content: '- Select -'
 .ql-snow .ql-picker.feature .ql-picker-label::before {
   content: 'Select' !important;
 }
+:host ::ng-deep .pagination .ngx-pagination .current {
+  background: #76bc21 !important;
+  border: transparent !important;
+  border-radius: 20px !important;
+}

@@ -36,7 +36,6 @@
   border-radius: 5px;
 }
 
-.headings {
-  font-size: 18px;
-  color: #3f51b5;
+.mat-checkbox-checked:not(.mat-checkbox-disabled).mat-primary .mat-ripple-element {
+  background: #76bc21 !important;
 }

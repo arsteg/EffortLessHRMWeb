@@ -1,35 +1,31 @@
 <div class="main-content pt-5">
     <div class="container-fluid">
-        <div class="d-flex justify-content-between align-items-center">
-            <h1 class="pt-4 mb-0" style="font-size: 19px; margin-left: 22px;">
-                Approval/Rejection:&nbsp;{{manualTimeRequests?.length}}</h1>
-            <div>
+        <div class="tableContainer bg-white py-2">
+            <div class="d-flex justify-content-between align-items-center mb-2 px-3">
+                <p class="mb-0">({{manualTimeRequests?.length}}) Records Found</p>
+                <div>
+                    <span class="d-flex">
+                        <label for="member" class="pt-2 pe-3">Member:</label>
+                        <select id="member" name="member" class="form-control" aria-label=".form-select-sm example"
+                            #member (change)="onMemberSelectionChange(member)">
+                            <option>Select User</option>
+                            <option *ngFor="let m of members" value="{{m|json}}">{{m.name | titlecase}}</option>
+                        </select>
+                    </span>
+                </div>
+                <div class="me-2">
 
-                <span class="d-flex">
-                    <label for="member" class="pt-2 pe-3">Member:</label>
-                    <select id="member" name="member" class="form-control"
-                        aria-label=".form-select-sm example" #member (change)="onMemberSelectionChange(member)">
-                        <option>Select User</option>
-                        <option *ngFor="let m of members" value="{{m|json}}">{{m.name | titlecase}}</option>
-                    </select>
-                </span>
+                    <button mat-raised-button id="btnRefresh" (click)="fetchManualTimeRequests()"
+                        class="bi bi-arrow-repeat header-icons contentHeading"></button>
+                </div>
+                <div class="d-flex align-items-center h-25">
+                    <span class="bi bi-search searchIcon"></span>
+
+                    <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
+                        name="searchText" aria-label="default input example">
+                </div>
             </div>
-            <div class="me-2">
-
-                <button mat-raised-button id="btnRefresh" (click)="fetchManualTimeRequests()"
-                    class="bi bi-arrow-repeat header-icons text-primary"></button>
-            </div>
-            <div class="d-flex h-25">
-                <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
-                    name="searchText" aria-label="default input example"
-                    style="border-bottom: 1px solid grey; border-radius: 0;">
-            </div>
-        </div>
-
-
-        <hr class="mt-0">
-        <div class="container-fluid">
-            <table class=" mt-4">
+            <table class=" mt-2">
                 <thead>
                     <tr>
                         <th class="ps-2" [appSort]="manualTimeRequests" data-order="{{ sortOrder }}" data-name="date"

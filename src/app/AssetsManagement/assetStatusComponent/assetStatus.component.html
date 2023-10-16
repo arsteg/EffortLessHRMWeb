@@ -1,7 +1,7 @@
 <div class="assetContainer  bg-white">
   <div class="row">
     <div class="col-8 border-end tableContainer">
-      <h2 style="color: blue;" class="ps-2 pt-2">Asset Status</h2>
+      <h2 class="contentHeading p-2">Asset Status</h2>
 
       <table class="p-2 rounded">
         <thead>
@@ -14,8 +14,14 @@
           <tr *ngFor="let status of assetStatuses">
             <td>{{ status.statusName }}</td>
             <td class="text-center">
-              <button (click)="editAssetStatus(status)" class="btn btn-primary shadow btn-sm me-2">Edit</button>
-              <button  (click)="openDialog(status)" class="btn btn-danger shadow btn-sm">Delete</button>
+             <button class="actions" mat-mini-fab title="Update User" (click)="editAssetStatus(status)"
+              aria-label="Example icon button with a menu icon">
+              <i class="bi bi-pencil-fill"></i>
+            </button>
+            <button class="actions ms-2" mat-mini-fab title="Delete User" (click)="openDialog(status)"
+              aria-label="Example icon button with a menu icon">
+              <i class="bi bi-trash"></i>
+            </button>
             </td>
           </tr>
         </tbody>
@@ -23,7 +29,7 @@
     </div>
 
     <div class="col-4">
-      <h2 style="color: blue;" class="ps-2 pt-2">Add/Edit Asset</h2>
+      <h2 class="contentHeading p-2">Add/Edit Asset</h2>
 
       <form [formGroup]="assetStatusForm" (ngSubmit)="isEdit ? updateAssetStatus() : addAssetStatus()"
         class="mt-4 p-3 me-4 bg-light border rounded" style="background-color: gray;">

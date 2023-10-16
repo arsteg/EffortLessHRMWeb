@@ -1,62 +1,79 @@
 <div class="main-content mt-5 pt-5">
     <div class="container-fluid">
-        <div class="d-flex justify-content-between">
-            <h1 class="pt-0 pb-3 mb-0">Leave: {{leaveList.length}}</h1>
-            <div class=" pt-1 d-flex text-center mx-1 h-0">
-                <mat-form-field appearance="outline" class="w-100 mx-1">
-                    <mat-label>Select User</mat-label>
-                    <mat-select multiple [(ngModel)]="selectedUser">
-                        <mat-option *ngFor="let member of members" [value]="member.id" (click)="filterData()"
-                            [selected]="selectedUser?.includes(member?.id)">
-                            {{member.name | titlecase}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <div class="mx-1 pt-3">
-                    <i class="fa fa-calendar text-primary"></i>
-                </div>
-                <input type="date" name="fromDate" id="fromDate" (change)="filterData()" [(ngModel)]="fromDate" class="form-control calendar mb-4 mx-1" />
-                <div class="mx-1 pt-3">
-                    <i class="fa fa-long-arrow-right text-primary"></i>
-                </div>
-                <input type="date" name="toDate" id="toDate" (change)="filterData()" [(ngModel)]="toDate" class="form-control calendar mb-4 mx-1" />
-
-                <input class="form-control search mb-4 mx-1" type="text" placeholder="search..." [(ngModel)]="searchText"
-                    name="searchText" aria-label="default input example"
-                    style="border-bottom: 1px solid grey; border-radius: 0;">
-            </div>
-        </div>
-        <div class="d-flex justify-content-end">
-            <button (click)="exportToExcel()" class="btn btn-outline-primary m-1">Excel <i class="fa fa-download"></i></button>
-            <button (click)="exportToCsv()" class="btn btn-outline-primary m-1">Csv <i class="fa fa-download"></i></button>
-            <button (click)="exportToPdf()" class="btn btn-outline-primary m-1">Pdf <i class="fa fa-download"></i></button>
-        </div>
         <hr class="mt-0">
-        <div class="container-fluid">
-            <table class=" mt-4" id="leaveReport" #leaveReport>
+        <div class="tableContainer py-2 bg-white">
+            <div class="d-flex justify-content-between align-items-baseline px-1">
+                <div class="d-flex  align-items-baseline justify-content-between">
+                    <p class="mb-0">({{leaveList?.length}})&nbsp;Records&nbsp;Found</p>
+                    <div class=" pt-1 d-flex text-center align-items-baseline mx-1 h-0">
+                        <mat-form-field appearance="outline" class="w-100 mx-1">
+                            <mat-label>Select User</mat-label>
+                            <mat-select multiple [(ngModel)]="selectedUser">
+                                <mat-option *ngFor="let member of members" [value]="member.id" (click)="filterData()"
+                                    [selected]="selectedUser?.includes(member?.id)">
+                                    {{member.name | titlecase}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <div class="mx-1 pt-3">
+                            <i class="fa fa-calendar contentHeading"></i>
+                        </div>
+                        <input type="date" name="fromDate" id="fromDate" (change)="filterData()" [(ngModel)]="fromDate"
+                            class="form-control calendar mb-4 mx-1" />
+                        <div class="mx-1 pt-3">
+                            <i class="fa fa-long-arrow-right contentHeading"></i>
+                        </div>
+                        <input type="date" name="toDate" id="toDate" (change)="filterData()" [(ngModel)]="toDate"
+                            class="form-control calendar mb-4 mx-1" />
+                            <div class="d-flex align-items-center"> <span class="bi bi-search searchIcon"></span>
+                        <input class="form-control search" type="text" placeholder="search..."
+                            [(ngModel)]="searchText" name="searchText" aria-label="default input example"
+                           >
+                           </div>
+                    </div>
+                </div>
+                <div class="d-flex">
+
+
+                    <div class="dropdown ms-auto order-first order-sm-last d-flex">
+                        <button class="export-btn dropdown-toggle formrow-inputState form-select select-styled active"
+                            type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                            <p class="mb-0 text-muted"> Export </p>
+                        </button>
+                        <ul class="dropdown-menu p-0" aria-labelledby="dropdownMenuButton1" id="dropdown-export">
+                            <li><a class="export-button" (click)="exportToCsv()">CSV</a></li>
+                            <li><a class="export-button" (click)="exportToExcel()">XLS</a></li>
+                            <li><a class="export-button" (click)="exportToPdf()">PDF</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <table class="" id="leaveReport" #leaveReport>
                 <thead>
                     <tr>
                         <th scope="col" [appSort]="leaveList" data-order="desc" data-name="user">Member &nbsp;
-                            <i class="bi bi-arrow-up sort text-primary"></i>
+                            <i class="bi bi-arrow-up sort contentHeading"></i>
                         </th>
                         <th scope="col" [appSort]="leaveList" data-order="desc" data-name="name">Leave Type &nbsp;
-                            <i class="bi bi-arrow-up sort text-primary"></i>
+                            <i class="bi bi-arrow-up sort contentHeading"></i>
                         </th>
                         <th scope="col" [appSort]="leaveList" data-order="desc" data-name="count">Total
                             &nbsp;
-                            <i class="bi bi-arrow-up sort text-primary"></i>
+                            <i class="bi bi-arrow-up sort contentHeading"></i>
                         </th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let data of leaveList | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
+                    <tr
+                        *ngFor="let data of leaveList | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
                         <td> {{data?.firstName | titlecase}} {{data?.lastName | titlecase}}</td>
                         <td>{{ data.name }}</td>
                         <td>{{ data.count }} {{ data.count > 1 ? 'days' : 'day' }}</td>
                     </tr>
                 </tbody>
             </table>
-            <pagination-controls (pageChange)="p = $event" class="pagination d-flex justify-content-end"></pagination-controls>
+            <pagination-controls (pageChange)="p = $event"
+                class="pagination d-flex justify-content-end"></pagination-controls>
         </div>
     </div>
 </div>

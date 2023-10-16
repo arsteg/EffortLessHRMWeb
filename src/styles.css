@@ -35,10 +35,21 @@ body {
 }
 
 .search {
-  border: none;
+  border-radius: 2rem !important;
   box-shadow: none;
+  padding-left: 35px !important;
+  width: 200px;
 }
 
+.searchIcon {
+  background-color: rgba(100, 114, 140, .1);
+  min-width: 24px;
+  min-height: 20px;
+  padding: 0.2rem 0.38rem;
+  position: absolute;
+  margin: 5px;
+  border-radius: 100%;
+}
 
 .error {
   padding: 5px;
@@ -121,7 +132,7 @@ tbody {
   font-size: 13.5px;
 }
 
-*:host ::ng-deep .pagination .ngx-pagination .current {
+:host ::ng-deep .pagination .ngx-pagination .current {
   background: #76bc21 !important;
   border: transparent !important;
   border-radius: 20px !important;
@@ -385,9 +396,7 @@ select {
   width: 125px;
 }
 
-.search {
-  width: 200px;
-}
+
 
 .progress {
   height: 10px !important;
@@ -655,9 +664,9 @@ tr {
 .actions {
   color: #64728c !important;
   background-color: rgba(100, 114, 140, .1) !important;
-  box-shadow:none !important
-
+  box-shadow: none !important
 }
+
 .tabs {
   display: flex;
   gap: 10px;
@@ -672,20 +681,72 @@ button {
 }
 
 button.active {
- color: #ff7b1d;
-    border: 1px solid;
-    background: white;
+  color: #ff7b1d;
+  border: 1px solid;
+  background: white;
 }
 
 .tab-content {
   padding: 20px;
-  /* border: 1px solid #ccc; */
   margin-top: 10px;
 }
+
 .breadcrumb-item.active {
   color: #ff7b1d !important;
 }
-td:first-child, th:first-child{
+
+td:first-child,
+th:first-child {
   padding-left: 15px;
 }
 
+.form-select-sm,
+select,
+input {
+  min-height: 45px !important;
+  font-size: .75rem !important;
+  font-weight: 400 !important;
+  line-height: 1.5 !important;
+  border-radius: 0.65rem !important;
+  border: 1px solid #e8eaef !important;
+  padding: 0.675rem 0.5rem !important;
+  color: #64728c !important;
+  transition: none !important;
+}
+
+label {
+  font-size: .75rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  color: #64728c;
+  display: block;
+}
+
+@media (min-width: 576px) {
+  .modal-dialog {
+    max-width: 764px !important;
+  }
+}
+
+.contentHeading {
+  color: #ff7b1d
+}
+
+.btn-outline-primary {
+  color: #76bc21 !important;
+}
+
+.modal-content {
+  background-color: #fff;
+  border-radius: 1.2rem;
+  box-shadow: 0 25px 35px 0 rgba(0, 0, 0, .18);
+  padding: 1.2rem;
+  border-width: 0;
+}
+
+.modal-title {
+  font-weight: 500 !important;
+  font-size: 1rem !important;
+  letter-spacing: .15px !important;
+  color: #64728c !important;
+}

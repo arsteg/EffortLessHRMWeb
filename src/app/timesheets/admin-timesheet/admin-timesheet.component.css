@@ -28,3 +28,6 @@
 .calendar{
   height: 52px;
 }
+.mat-form-field-wrapper {
+  padding-bottom: 0 !important;
+}

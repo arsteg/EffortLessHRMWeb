@@ -79,7 +79,8 @@
         [ngClass]="isCollapsedMenu ? 'collapsed-menu' : 'show'">
         <!--Expanded Menu-->
         <div class="list-group list-group-flush">
-          <div class="d-flex"><input type="text" placeholder="Search">
+          <div class="d-flex">
+            <input type="text" placeholder="Search">
             <mat-icon *ngIf="!isCollapsedMenu" (click)="clickEvent()" (click)="drawer.toggle()"
               data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
               aria-expanded="false" aria-label="Toggle navigation">chevron_left</mat-icon>
@@ -179,8 +180,8 @@
             data-v-bddebfba=""></path>
         </g>
       </svg>
-      <input type="text" placeholder="Search" class="search border-bottom" (input)="filteredMenuItems()"
-        [(ngModel)]="searchText">
+      <input type="text" placeholder="Search" class=" border-bottom" (input)="filteredMenuItems()"
+        [(ngModel)]="searchText" style="border: none; border-radius: 0 !important;">
     </div>
     <!--Expanded Menu-->
     <div class="list-group list-group-flush" *ngIf="!isCollapsedMenu">
@@ -244,14 +245,14 @@
             <img src="../assets/profile-image.png" class="profile-img mb-5" alt="Profile Picture">
             <p class="employee-id">{{currentProfile?.firstName}} {{currentProfile?.lastName}} - 01</p>
             <p class="position">Position</p>
-            <p class="email text-primary">{{currentProfile?.email}}</p>
+            <p class="email contentHeading">{{currentProfile?.email}}</p>
             <div class="my-4 d-flex justify-content-center">
               <div class="mx-4" *ngIf="portalType == 'admin'">
-                <button mat-raised-button class="text-primary" (click)="switchView('user')"
+                <button mat-raised-button class="contentHeading p-2" (click)="switchView('user')"
                   *ngIf="adminView == 'admin'">
                   User Portal
                 </button>
-                <button mat-raised-button class="text-primary" (click)="switchView('admin')"
+                <button mat-raised-button class="contentHeading p-2" (click)="switchView('admin')"
                   *ngIf="adminView == 'user'">
                   Admin Portal
 

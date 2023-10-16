@@ -418,8 +418,8 @@ export const SideBarUserMenu = [
   {
     id: '15',
     title: 'Manual Time',
-    icon: 'bi bi-clock-history',
-    lightIcon: 'bi bi-clock-history',
+    icon: 'assets/Sidenav-Icons/manualTime.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/manualTime.png',
     url: 'requestManualTime'
   },
   {

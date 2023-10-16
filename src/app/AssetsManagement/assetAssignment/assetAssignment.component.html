@@ -1,12 +1,12 @@
 <div class="main-content pt-0">
     <div class="row">
-        <h1 class="border-bottom pb-2">Asset Assignment</h1>
+        <h1 class="contentHeading p-2">Asset Assignment</h1>
         <!-- Employee Dropdown in the first column -->
-        <div class="col-md-4">
+        <div class="col-md-4 border-end">
             <subordinateSelection (selectedUsersChange)="selectedUsersChanged($event)"></subordinateSelection>
         </div>
 
-        <div class="col-md-8 border-start tableContainer">
+        <div class="col-md-8 tableContainer">
             <div class="mb-3">
                 <h5 class="mb-1">Unassigned Assets</h5>
                
@@ -26,7 +26,7 @@
                                 <td>{{ getAssetTypeName(asset?.assetType) }}</td>
                                 <td>{{ getStatusName(asset?.status) }}</td>
                                 <td>
-                                    <button class="btn btn-danger" (click)="assignAsset(asset)">Assign</button>
+                                    <button class="btn addBtn" (click)="assignAsset(asset)">Assign</button>
                                 </td>
                             </tr>
                         </ng-container>
@@ -53,7 +53,7 @@
                                 <td>{{ getAssetTypeName(asset?.Asset?.assetType) }}</td>
                                 <td>{{ getStatusName(asset?.Asset?.status) }}</td>
                                 <td>
-                                    <button class="btn btn-danger" (click)="unassignAsset(asset)">Unassign</button>
+                                    <button class="btn addBtn" (click)="unassignAsset(asset)">Unassign</button>
                                 </td>
                             </tr>
                         </ng-container>

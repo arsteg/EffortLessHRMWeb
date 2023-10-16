@@ -181,11 +181,11 @@
           accept=".jpeg,.json,.mp4,.glb,.svg,.blend,.jpg,.png,.gif,.pdf,.webp,.avif,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.odt,.fodt,.ods,.fods,.odp,.fodp,.odg,.fodg,.odf,.csv,.html,.css,.txt,.zip"
           type="file" multiple (change)="onFileSelect($event)">
         <div class="details-attach-file d-flex align-items-center justify-content-center me-2 pointer">
-          <span class="fa fa-paperclip text-primary"> Attach a file </span>
+          <span class="fa fa-paperclip contentHeading"> Attach a file </span>
         </div>
       </label>
       <ul type="none" class="d-flex">
-        <li class="text-primary me-2" *ngFor="let files of selectedFiles; let i = index" (click)="removeFile(i)">
+        <li class="contentHeading me-2" *ngFor="let files of selectedFiles; let i = index" (click)="removeFile(i)">
           {{files.name}} <i class="bi bi-x-circle-fill text-danger deleteCommentAttachment"></i>
         </li>
       </ul>

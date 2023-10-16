@@ -1,12 +1,16 @@
 <div class="documentContainer" style="background-color: white;">
   <div class="row p-3">
-    <div class="col-md-8 border-end tableContainer">
+    <div class="col-md-8  tableContainer">
       <div class="d-flex justify-content-between">
-  <h2 class="text-primary">Document&nbsp;Management:&nbsp;{{documents?.length}} </h2>
+  <h2 class="contentHeading p-2">Document&nbsp;Management:&nbsp;{{documents?.length}} </h2>
 
       <!-- Search Bar -->
-      <input type="text" class="form-control w-25" placeholder="Search by description..."
+      <div class="d-flex align-items-center">
+      <span class="bi bi-search searchIcon"></span>
+
+      <input type="text" class="form-control search " placeholder="Search by description..."
         (keyup)="searchDocuments($event)">
+        </div>
       </div>
       <!-- Document Table -->
       <table class="p-2 rounded mt-2">
@@ -22,17 +26,23 @@
             <td>{{ getCategoryName(doc?.category) }}</td>
             <td>{{ doc?.description }}</td>
             <td class="text-center">
-              <button (click)="editDocument(doc)" class="btn btn-primary bi bi-pencil btn-sm me-2">&nbsp;Edit</button>
-              <button (click)="openDialog(doc._id)" class="btn btn-danger bi bi-trash btn-sm">&nbsp;Delete</button>
+             <button class="actions" mat-mini-fab title="Update User" (click)="editDocument(doc)"
+                aria-label="Example icon button with a menu icon">
+                <i class="bi bi-pencil-fill"></i>
+            </button>
+            <button class="actions ms-2" title="Delete User" mat-mini-fab (click)="openDialog(doc._id)"
+                aria-label="Example icon button with a menu icon">
+                <i class="bi bi-trash"></i>
+            </button>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-4 border-start">
       <!-- Pagination can be added here -->
 
-      <h2 class="text-primary">Add/Edit Document</h2>
+      <h2 class="contentHeading p-2">Add/Edit Document</h2>
       <form [formGroup]="documentForm" (ngSubmit)="isEdit ? updateDocument() : addDocument()"
         class="mt-4 p-3 bg-light border rounded" style="background-color: gray;">
           <div class="form-group">
@@ -47,7 +57,7 @@
           </div>
         <div class="form-group d-flex justify-content-between">
           <div class="">
-            <button type="submit" mat-raised-button color="primary" [disabled]="documentForm.invalid">{{ isEdit ? 'Update' : 'Add'
+            <button type="submit" mat-raised-button class="addBtn" [disabled]="documentForm.invalid">{{ isEdit ? 'Update' : 'Add'
               }}</button>
           </div>
           <div class="">

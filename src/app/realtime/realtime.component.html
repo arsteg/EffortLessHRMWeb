@@ -51,11 +51,14 @@
                 </mat-form-field>
             </ng-container>
 
-           
 
-            <input class="form-control  search pb-0 mx-1" type="text" placeholder="Search..." [(ngModel)]="searchText"
-                name="searchText" aria-label="default input example"
-                style="border-bottom: 1px solid grey; border-radius: 0; background: transparent;">
+            <div class="">
+                <span class="bi bi-search searchIcon"></span>
+                <input class="form-control  search" type="text" placeholder="Search..."
+                    [(ngModel)]="searchText" name="searchText" aria-label="default input example"
+                   >
+            </div>
+
 
             <div class="align-items-start flex-wrap gap-3 ms-auto">
                 <div class="dropdown order-first order-sm-last d-flex">
@@ -71,49 +74,50 @@
                 </div>
             </div>
         </div>
-       
-        <table class=" mt-4" id="realTime" #realTime>
-            <thead>
-                <tr>
-                    <th scope="col">
-                        Online User &nbsp;
-                        <i class="bi bi-arrow-up sort text-light"></i>
-                    </th>
-                    <th scope="col">Project
-                        &nbsp;
-                        <i class="bi bi-arrow-up sort text-light"></i>
-                    </th>
-                    <th scope="col">
-                        Task &nbsp;
-                        <i class="bi bi-arrow-up sort text-light"></i>
-                    </th>
-                    <th scope="col">Apps/Websites &nbsp;
-                        <i class="bi bi-arrow-up sort text-light"></i>
-                    </th>
+        <div class="tableContainer py-2 mt-3 bg-white">
+            <table class="mt-4" id="realTime" #realTime>
+                <thead>
+                    <tr>
+                        <th scope="col">
+                            Online User &nbsp;
+                            <i class="bi bi-arrow-up sort text-light"></i>
+                        </th>
+                        <th scope="col">Project
+                            &nbsp;
+                            <i class="bi bi-arrow-up sort text-light"></i>
+                        </th>
+                        <th scope="col">
+                            Task &nbsp;
+                            <i class="bi bi-arrow-up sort text-light"></i>
+                        </th>
+                        <th scope="col">Apps/Websites &nbsp;
+                            <i class="bi bi-arrow-up sort text-light"></i>
+                        </th>
 
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let data of realtime?.onlineUsers | search: searchText |  paginate: { itemsPerPage: 10, currentPage: p }">
-                    <td>
-                        <span class="letter ms-2"
-                            [style.background-color]="commonService.getRandomColor(data?.user?.lastName)">
-                            {{data.user.firstName.slice(0,1) |
-                            uppercase}}{{data.user.lastName.slice(0,1) | uppercase}}</span>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        *ngFor="let data of realtime?.onlineUsers | search: searchText |  paginate: { itemsPerPage: 10, currentPage: p }">
+                        <td>
+                            <span class="letter ms-2"
+                                [style.background-color]="commonService.getRandomColor(data?.user?.lastName)">
+                                {{data.user.firstName.slice(0,1) |
+                                uppercase}}{{data.user.lastName.slice(0,1) | uppercase}}</span>
                             {{data.user.firstName |titlecase}} {{data.user.lastName |titlecase}}
-                    </td>
-                    <td>{{data?.project}}</td>
-                    <td>{{data?.task}}</td>
-                    <td></td>
-                    <td>
-                        <button mat-raised-button color="primary">Live Screen</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <pagination-controls (pageChange)="p = $event"
-            class="pagination d-flex justify-content-end"></pagination-controls>
-
+                        </td>
+                        <td>{{data?.project}}</td>
+                        <td>{{data?.task}}</td>
+                        <td></td>
+                        <td>
+                            <button mat-raised-button class="rounded-pill addBtn">Live Screen</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <pagination-controls (pageChange)="p = $event"
+                class="pagination d-flex justify-content-end"></pagination-controls>
+        </div>
     </div>
 </div>

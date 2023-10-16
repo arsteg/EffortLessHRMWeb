@@ -34,6 +34,9 @@
 .filter{
     width: auto;
 }
-.search{
-    width: 200px;
-}
+
+:host ::ng-deep .pagination .ngx-pagination .current {
+    background: #76bc21 !important;
+      border: transparent !important;
+      border-radius: 20px !important;
+    }

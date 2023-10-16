@@ -1,5 +1,9 @@
 :host ::ng-deep .pagination .ngx-pagination .current {
-    background: #3f51b5 !important;
+  background: #76bc21 !important;
     border: transparent !important;
     border-radius: 20px !important;
+  }
+  .mat-form-field-wrapper{
+    padding-bottom:0 !important;
+
   }

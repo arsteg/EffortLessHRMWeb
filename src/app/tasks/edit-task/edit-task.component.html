@@ -72,12 +72,12 @@
 
                                 <ol class="breadcrumb bg-transparent align-self-center ms-auto m-0 p-0">
                                     <ng-container>
-                                        <a *ngIf="view==='admin'" href="" [routerLink]="['/manage']"> <button
-                                                class="btn btn-outline-primary rounded-pill"><span
+                                        <a *ngIf="view==='admin'" href="" [routerLink]="['/manage']" style="text-decoration: none;"> <button
+                                                class="btn  submenuTab active rounded-pill"><span
                                                     class="bi bi-arrow-left ">
                                                     Back</span></button></a>
-                                        <a href="" *ngIf="view==='user'" [routerLink]="['/tasks']"> <button
-                                                class="btn btn-outline-primary rounded-pill"><span
+                                        <a href="" *ngIf="view==='user'" [routerLink]="['/tasks']" style="text-decoration: none;"> <button
+                                                class="btn  submenuTab active rounded-pill"><span
                                                     class="bi bi-arrow-left ">
                                                     Back</span></button></a>
                                     </ng-container>
@@ -183,8 +183,7 @@
                                                 <span class="letters  p-1 rounded text-light"
                                                     [tooltip]="(user?.user?.firstName | titlecase) + ' ' + (user?.user?.lastName | titlecase)"
                                                     [style.background-color]="commonService.getRandomColor(user?.user?.firstName?.charAt(0) | uppercase)">
-                                                    {{ user?.user?.firstName?.charAt(0) | uppercase }}
-                                                    {{ user?.user?.lastName?.charAt(0) | uppercase }}
+                                                    {{ user?.user?.firstName?.charAt(0) | uppercase }}&nbsp;{{ user?.user?.lastName?.charAt(0) | uppercase }}
                                                 </span>
 
                                                 <button type="button"
@@ -218,13 +217,9 @@
                                                                 style="font-size: 12px;"
                                                                 [tooltip]="(assignee?.user?.firstName | titlecase) + ' ' + (assignee?.user?.lastName | titlecase)"
                                                                 [style.background-color]="commonService.getRandomColor(assignee?.user?.firstName?.charAt(0) | uppercase)">
-                                                                {{ assignee?.user?.firstName?.charAt(0) |
-                                                                uppercase }}
-                                                                {{ assignee?.user?.lastName?.charAt(0) |
-                                                                uppercase }}
-                                                            </span> &nbsp;{{assignee?.user?.firstName |
-                                                            titlecase}}
-                                                            {{assignee?.user?.lastName | titlecase}}
+                                                                {{ assignee?.user?.firstName?.charAt(0) |uppercase }}&nbsp;{{ assignee?.user?.lastName?.charAt(0) | uppercase }}
+                                                            </span>&nbsp;{{assignee?.user?.firstName |
+                                                            titlecase}}&nbsp;{{assignee?.user?.lastName | titlecase}}
                                                         </p>
                                                     </li>
                                                 </ul>
@@ -245,7 +240,7 @@
                                         </div>
 
 
-                                        <div class="ms-3 mt-2">
+                                        <div class="mx-3 mt-2">
                                             <i class="bi bi-three-dots-vertical actions" data-bs-toggle="dropdown"
                                                 aria-expanded="false"></i>
                                             <ul class="dropdown-menu">
@@ -284,7 +279,7 @@
                                                     type="button">Cancel</button>
                                             </div>
                                             <div>
-                                                <button mat-raised-button color="primary" type="submit">Update</button>
+                                                <button mat-raised-button class="addBtn" type="submit">Update</button>
                                             </div>
                                         </div>
                                     </div>
@@ -336,7 +331,7 @@
                                                 style="display: none;">
                                         </label>
                                         <ul type="none">
-                                            <li class="text-primary" *ngFor="let files of selectedFiles">
+                                            <li class="contentHeading p-2" *ngFor="let files of selectedFiles">
                                                 {{files.name}}
                                             </li>
                                         </ul>
@@ -631,7 +626,7 @@
                                     </div>
 
                                     <ul type="none">
-                                        <li class="text-primary" *ngFor="let files of selectedFile">
+                                        <li class="contentHeading p-2" *ngFor="let files of selectedFile">
                                             {{files.name}}
                                         </li>
                                     </ul>

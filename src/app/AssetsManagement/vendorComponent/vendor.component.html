@@ -1,10 +1,13 @@
 <div class="assetContainer" style="background-color: white;">
     <div class="row">
         <div class="col-8 border-end tableContainer">
-            <h2 style="color: blue;" class="ps-2 pt-2">Vendor List</h2>
-
-            <input type="text" placeholder="Search vendors..." (input)="filterVendors($event)" class="form-control w-25 ms-2 mb-3">
-          
+            <div class="d-flex justify-content-between">
+                <h2 class="contentHeading p-2">Vendor List</h2>
+                <div class="d-flex-align-items-center"> <span class="bi bi-search searchIcon"></span>
+                    <input type="text" placeholder="Search vendors..." (input)="filterVendors($event)"
+                        class="form-control search mb-3">
+                </div>
+            </div>
             <table class="mx-2">
                 <thead class="rounded p-2 mt-2">
                     <tr>
@@ -24,21 +27,29 @@
                         <td>{{ vendor.address }}</td>
                         <td>{{ vendor.phone }}</td>
                         <td>
-                            <button (click)="editVendor(vendor)" class="btn btn-primary shadow btn-sm me-2">Edit</button>
-                            <button (click)="openDialog(vendor)" class="btn btn-danger shadow btn-sm">Delete</button>
+                          <button class="actions" mat-mini-fab title="Update User" (click)="editVendor(vendor)"
+                            aria-label="Example icon button with a menu icon">
+                            <i class="bi bi-pencil-fill"></i>
+                          </button>
+                          <button class="actions ms-2" mat-mini-fab title="Delete User" (click)="openDialog(vendor)"
+                            aria-label="Example icon button with a menu icon">
+                            <i class="bi bi-trash"></i>
+                          </button>
                         </td>
                     </tr>
                 </tbody>
             </table>
-          
+
             <div class="d-flex justify-content-center mt-3">
-                <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                <pagination-controls (pageChange)="p = $event"
+                class="pagination d-flex justify-content-end"></pagination-controls>
             </div>
         </div>
 
         <div class="col-4">
-            <h2 class="mt-4" style="color: blue;">Add/Edit Vendor</h2>
-            <form [formGroup]="vendorForm" (ngSubmit)="isEdit ? updateVendor() : addVendor()" class="mt-4 p-3 me-3 bg-light border rounded" style="background-color: gray;">
+            <h2 class="contentHeading p-2">Add/Edit Vendor</h2>
+            <form [formGroup]="vendorForm" (ngSubmit)="isEdit ? updateVendor() : addVendor()"
+                class="mt-4 p-3 me-3 bg-light border rounded" style="background-color: gray;">
                 <div class="form-group">
                     <label for="vendorId">Vendor ID</label>
                     <input type="text" id="vendorId" class="form-control" formControlName="vendorId" required>
@@ -60,13 +71,15 @@
                     <input type="tel" id="phone" class="form-control" formControlName="phone">
                 </div>
                 <div class="form-group mt-2 d-flex justify-content-between">
-                    <button type="submit" mat-raised-button color="primary" [disabled]="vendorForm.invalid">{{ isEdit ? 'Update' : 'Add' }}</button>
-                    <button type="reset" *ngIf="isEdit" mat-raised-button (click)="isEdit = false" class="ms-2">Cancel</button>
+                    <button type="submit" mat-raised-button color="primary" [disabled]="vendorForm.invalid">{{ isEdit ?
+                        'Update' : 'Add' }}</button>
+                    <button type="reset" *ngIf="isEdit" mat-raised-button (click)="isEdit = false"
+                        class="ms-2">Cancel</button>
                 </div>
             </form>
         </div>
     </div>
- 
 
- 
+
+
 </div>

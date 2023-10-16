@@ -1,16 +1,18 @@
 <div class="assetContainer" style="background-color: white;">
   <div class="row">
-    <div class="col-md-8 border-end tableContainer">
-      <h2 style="color: blue;" class="pt-2 ps-2">Asset List</h2>
-      <div class="d-flex justify-content-between">
+    <div class="col-md-8 tableContainer">
+      <h2 class="contentHeading p-2">Asset List</h2>
+      <div class="d-flex justify-content-between mb-2">
         <div class="w-50 ps-2 d-flex"> <label for="vendorDropdown"
             class="pt-2 pe-1">Select&nbsp;Asset&nbsp;Type:</label>
           <select id="vendorDropdown" [(ngModel)]="selectedAssetType" (change)="onAssetTypeChange()">
             <option *ngFor="let asset of assetTypes" [ngValue]="asset._id">{{ asset.typeName }}</option>
           </select>
         </div>
-        <input type="text" placeholder="Search assets..." [(ngModel)]="searchText" (input)="filterAssets()"
-          class="ms-3 w-25 form-control">
+        <div class="d-flex-align-items-center"> <span class="bi bi-search searchIcon"></span>
+          <input type="text" placeholder="Search assets..." [(ngModel)]="searchText" (input)="filterAssets()"
+            class="search form-control">
+        </div>
       </div>
       <table class="ps-2">
         <thead>
@@ -35,18 +37,25 @@
             </td>
             <td *ngFor="let item of asset.customAttributes"> {{item.value}} </td>
             <td>
-              <button (click)="editAsset(asset)" class="btn btn-primary btn-sm me-2">Edit</button>
-              <button (click)="openDialog(asset)" class="btn btn-danger btn-sm">Delete</button>
+              <button class="actions" mat-mini-fab title="Update User" (click)="editAsset(asset)"
+                aria-label="Example icon button with a menu icon">
+                <i class="bi bi-pencil-fill"></i>
+              </button>
+              <button class="actions ms-2" mat-mini-fab title="Delete User" (click)="openDialog(asset)"
+                aria-label="Example icon button with a menu icon">
+                <i class="bi bi-trash"></i>
+              </button>
             </td>
           </tr>
         </tbody>
       </table>
       <div class="d-flex justify-content-center">
-        <pagination-controls (pageChange)="p = $event"></pagination-controls>
+        <pagination-controls (pageChange)="p = $event"
+            class="pagination d-flex justify-content-end"></pagination-controls>
       </div>
     </div>
-    <div class="col-md-4">
-      <h2 style="color: blue;" class="pt-2 ps-2">Add/Edit Asset</h2>
+    <div class="col-md-4 border-start">
+      <h2 class="contentHeading p-2">Add/Edit Asset</h2>
       <form [formGroup]="assetForm" (ngSubmit)="isEdit ? updateAsset() : addAsset()"
         class="mt-4 me-3 p-3 bg-light border rounded" style="background-color: gray;">
 
@@ -59,8 +68,10 @@
         <div class="form-group mt-1">
           <label>Asset Name</label>
           <input type="text" formControlName="assetName" [value]="selectedAsset?.assetName" class="form-control"
-          [ngClass]="{ 'is-invalid': !validateOption('string',assetForm.value.assetName) && (assetForm.get('assetName').touched || assetForm.get('assetName').dirty)}">
-          <div *ngIf="!validateOption('string',assetForm.value.assetName) && (assetForm.get('assetName').touched || assetForm.get('assetName').dirty)"  class="invalid-feedback">
+            [ngClass]="{ 'is-invalid': !validateOption('string',assetForm.value.assetName) && (assetForm.get('assetName').touched || assetForm.get('assetName').dirty)}">
+          <div
+            *ngIf="!validateOption('string',assetForm.value.assetName) && (assetForm.get('assetName').touched || assetForm.get('assetName').dirty)"
+            class="invalid-feedback">
             Invalid Asset Name!
           </div>
         </div>
@@ -83,7 +94,9 @@
             [ngClass]="{ 'is-invalid': assetForm.get('status').hasError('required') && (assetForm.get('status').touched || assetForm.get('status').dirty) }">
             <option *ngFor="let status of assetStatuses" [ngValue]="status._id">{{ status.statusName }}</option>
           </select>
-          <div *ngIf="assetForm.get('status').hasError('required') && (assetForm.get('status').touched || assetForm.get('status').dirty)" class="invalid-feedback">
+          <div
+            *ngIf="assetForm.get('status').hasError('required') && (assetForm.get('status').touched || assetForm.get('status').dirty)"
+            class="invalid-feedback">
             Please select an Asset Status!
           </div>
         </div>
@@ -94,8 +107,10 @@
             [formGroupName]="i">
             <div *ngIf="customAttribute.get('dataType').value=='string'" class="form-group mt-1">
               <label>{{ customAttribute.get('attributeName').value }}</label>
-              <input type="text" formControlName="value" class="form-control" [required]="customAttribute.get('isRequired').value">
-              <div *ngIf="customAttribute.get('isRequired').value && customAttribute.get('value').hasError('required') && customAttribute.get('value').touched"
+              <input type="text" formControlName="value" class="form-control"
+                [required]="customAttribute.get('isRequired').value">
+              <div
+                *ngIf="customAttribute.get('isRequired').value && customAttribute.get('value').hasError('required') && customAttribute.get('value').touched"
                 class="text-danger">
                 This field is required.
               </div>
@@ -111,12 +126,14 @@
               <input type="checkbox" class="form-check-input" formControlName="value" />
             </div>
 
-            
+
 
             <div *ngIf="customAttribute.get('dataType').value=='date'" class="form-group mt-1">
               <label>{{ customAttribute.get('attributeName').value }}</label>
-              <input type="date" formControlName="value" class="form-control" [required]="customAttribute.get('isRequired').value">
-              <div *ngIf="customAttribute.get('isRequired').value && customAttribute.get('value').hasError('required') && customAttribute.get('value').touched"
+              <input type="date" formControlName="value" class="form-control"
+                [required]="customAttribute.get('isRequired').value">
+              <div
+                *ngIf="customAttribute.get('isRequired').value && customAttribute.get('value').hasError('required') && customAttribute.get('value').touched"
                 class="text-danger">
                 Invalid date format. Please enter a valid date.
               </div>
@@ -127,12 +144,12 @@
 
         <div class="form-group d-flex justify-content-between mt-2">
           <div class="">
-            <button type="submit" class="btn btn-primary ml-5" [disabled]="assetForm.invalid">{{ isEdit ? 'Update' :
+            <button type="submit" class="btn addBtn ml-5" [disabled]="assetForm.invalid">{{ isEdit ? 'Update' :
               'Add'
               }}</button>
           </div>
           <div class="">
-            <button type="button" *ngIf="isEdit" (click)="isEdit = false" class="btn btn-secondary">Cancel</button>
+            <button type="button" *ngIf="isEdit" (click)="isEdit = false" mat-raised-button>Cancel</button>
           </div>
         </div>
       </form>

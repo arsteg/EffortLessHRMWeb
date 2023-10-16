@@ -1,12 +1,16 @@
 <div class="documentContainer">
   <div class="row bg-white p-3">
-    <div class="col-md-8 border-end tableContainer">
+    <div class="col-md-8 tableContainer">
       <div class="d-flex justify-content-between">
-      <h2 class="text-primary">Document&nbsp;Categories:&nbsp;{{categories?.length}}</h2>
+      <h2 class="contentHeading p-2">Document&nbsp;Categories:&nbsp;{{categories?.length}}</h2>
 
       <!-- Search bar -->
-      <input type="text" class="form-control w-25" placeholder="Search categories..."
+      <div class="d-flex align-items-center">
+      <span class="bi bi-search searchIcon"></span>
+
+      <input type="text" class="form-control search" placeholder="Search categories..."
         (keyup)="searchCategories($event)">
+        </div>
       </div>
       <!-- Table for listing categories -->
       <table  class="p-2 rounded mt-2">
@@ -20,19 +24,25 @@
           <tr *ngFor="let category of categories">
             <td>{{ category?.name }}</td>
             <td>
-              <button (click)="editCategory(category)" class="btn btn-primary bi bi-pencil btn-sm me-2">
-                &nbsp;Edit</button>
-              <button (click)="openDialog(category._id)" class="btn btn-danger bi bi-trash btn-sm">
-                &nbsp;Delete</button>
+             
+                <button class="actions" mat-mini-fab title="Update User" (click)="editCategory(category)"
+                aria-label="Example icon button with a menu icon">
+                <i class="bi bi-pencil-fill"></i>
+            </button>
+            <button class="actions ms-2" title="Delete User" mat-mini-fab data-bs-toggle="modal"
+                data-bs-target="#deleteModal" (click)="openDialog(category._id)"
+                aria-label="Example icon button with a menu icon">
+                <i class="bi bi-trash"></i>
+            </button>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-4 border-start">
       <!-- Pagination can be added here -->
 
-      <h2 class="text-primary">Add/Edit Category</h2>
+      <h2 class="contentHeading p-2">Add/Edit Category</h2>
 
       <form [formGroup]="categoryForm"
         (ngSubmit)="isEdit ? updateCategory(categoryForm.value): addCategory(categoryForm.value)"
@@ -45,7 +55,7 @@
         </div>
         <div class="form-group row mt-3">
           <div class="col-4">
-            <button type="submit" mat-raised-button color="primary" [disabled]="categoryForm.invalid">{{ isEdit ?
+            <button type="submit" mat-raised-button class="addBtn" [disabled]="categoryForm.invalid">{{ isEdit ?
               'Update' :
               'Add' }}</button>
           </div>

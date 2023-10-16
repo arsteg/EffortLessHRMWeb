@@ -21,11 +21,12 @@
                                 </select>
                             </div>
 
-                            <div class="d-flex h-25 ms-auto">
-                                <input class="form-control search" type="text" placeholder="search..."
-                                    [(ngModel)]="searchText" name="searchText" aria-label="default input example"
-                                    style="border-bottom: 1px solid grey; border-radius: 0;">
-                                <button mat-raised-button class="addBtn rounded-pill ms-3" data-bs-toggle="modal" data-bs-target="#addModal">Add
+                            <div class="d-flex align-items-center h-25 ms-auto">
+                                <span class="bi bi-search searchIcon"></span>
+                                <input class="form-control search" type="text" placeholder="Search..."
+                                    [(ngModel)]="searchText" name="searchText" aria-label="default input example">
+                                <button mat-raised-button class="addBtn rounded-pill ms-3" data-bs-toggle="modal"
+                                    data-bs-target="#addModal">Add
                                     New</button>
                             </div>
 
@@ -112,7 +113,7 @@
 
                                     <td class="action text-center" *ngIf="data !== null">
                                         <div class="dropdown-center">
-                                         
+
                                             <button class="actions ms-2" mat-mini-fab data-bs-toggle="dropdown"
                                                 aria-expanded="false" aria-label="Example icon button with a menu icon">
                                                 <i class="bi bi-send"></i>
@@ -122,7 +123,7 @@
                                                     data-bs-target="#addUserModal" (click)="getProjectUser(data.id)"
                                                     (click)="selectedProject=data">
                                                     <i
-                                                        class="bi bi-person-plus text-primary  dropdown-item w-25"></i><span
+                                                        class="bi bi-person-plus contentHeading  dropdown-item w-25"></i><span
                                                         class="pt-1 text-muted">Add
                                                         User</span>
                                                 </li>
@@ -152,7 +153,7 @@
                                             </ul>
                                         </div>
                                     </td>
-                                    
+
                                 </tr>
                             </tbody>
                         </table>
@@ -254,80 +255,94 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-body">
-                <div class=" d-flex justify-content-between">
+                <div class=" d-flex justify-content-between border-bottom">
                     <div class="">
                         <h4 class="modal-title text-start">Add New Project</h4>
                     </div>
                     <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
                     </div>
                 </div>
-                <hr class="mt-0">
                 <div class="row">
-                    <form class="row" [formGroup]="form" (ngSubmit)="addProject(form.value)">
+                    <form class="pt-2" [formGroup]="form" (ngSubmit)="addProject(form.value)">
                         <div class="row d-flex justify-content-center">
-                            <div class="col-md-8">
+                            <div class="col-md-12">
                                 <div class="row">
-                                    <label for="projectName" class="text-start">Project Name</label>
-                                </div>
-                                <input type="text" name="projectName" id="projectName" formControlName="projectName"
-                                    class="form-control input pt-0" ngModel required>
-                                <div *ngIf="form.controls['projectName'].invalid && form.controls['projectName'].touched"
-                                    class="alert alert-danger error">
-                                    <div *ngIf="form.controls['projectName'].errors['required']">
-                                        Project Name is required.
+                                    <div class="col-md-6">
+                                        <label for="projectName" class="text-start">Project Name</label>
+
+                                        <input type="text" name="projectName" id="projectName"
+                                            formControlName="projectName" class="form-control input pt-0" ngModel
+                                            required>
+                                        <div *ngIf="form.controls['projectName'].invalid && form.controls['projectName'].touched"
+                                            class="alert alert-danger error">
+                                            <div *ngIf="form.controls['projectName'].errors['required']">
+                                                Project Name is required.
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label for="estimatedTime"
+                                            class="text-start d-flex justify-content-between"><span>
+                                                Estimated Time </span><span class="text-muted"
+                                                style="font-size: 12px">(In
+                                                hours)</span></label>
+
+                                        <input type="text" name="estimatedTime" id="estimatedTime"
+                                            class="form-control input pt-0" formControlName="estimatedTime" ngModel
+                                            required>
+                                        <div *ngIf="form.controls['estimatedTime'].invalid && form.controls['estimatedTime'].touched"
+                                            class="alert alert-danger error">
+                                            <div *ngIf="form.controls['estimatedTime'].errors['required']">
+                                                Estimated Time is required.
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
+
 
                                 <div class="row mt-3">
-                                    <label for="startDate" class="text-start">Start Date</label>
-                                </div>
-                                <div class="row">
-                                    <div class="col-12 form-group mb-3">
-                                        <input placeholder="YYYY-MM-DD" class="form-control"
-                                            #datepickerYMD="bsDatepicker" bsDatepicker
-                                            [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="startDate"
-                                            ngModel required>
+                                    <div class="col-md-6">
+                                        <label for="startDate" class="text-start">Start Date</label>
+
+                                        <div class="row">
+                                            <div class="col-12 form-group mb-3">
+                                                <input placeholder="YYYY-MM-DD" class="form-control"
+                                                    #datepickerYMD="bsDatepicker" bsDatepicker
+                                                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
+                                                    formControlName="startDate" ngModel required>
+                                            </div>
+                                        </div>
+                                        <div *ngIf="form.controls['startDate'].invalid && form.controls['startDate'].touched"
+                                            class="alert alert-danger error">
+                                            <div *ngIf="form.controls['startDate'].errors['required']">
+                                                Start Date is required.
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div *ngIf="form.controls['startDate'].invalid && form.controls['startDate'].touched"
-                                    class="alert alert-danger error">
-                                    <div *ngIf="form.controls['startDate'].errors['required']">
-                                        Start Date is required.
+
+
+                                    <div class="col-md-6">
+                                        <label for="endDate" class="text-start">End Date</label>
+
+                                        <div class="row">
+                                            <div class="col-12 form-group mb-3">
+                                                <input placeholder="YYYY-MM-DD" class="form-control"
+                                                    #datepickerYMD="bsDatepicker" bsDatepicker
+                                                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
+                                                    formControlName="endDate" ngModel required>
+                                            </div>
+                                        </div>
+                                        <div *ngIf="form.controls['endDate'].invalid && form.controls['endDate'].touched"
+                                            class="alert alert-danger error">
+                                            <div *ngIf="form.controls['endDate'].errors['required']">
+                                                End Date is required.
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="row mt-3">
-                                    <label for="endDate" class="text-start">End Date</label>
-                                </div>
-                                <div class="row">
-                                    <div class="col-12 form-group mb-3">
-                                        <input placeholder="YYYY-MM-DD" class="form-control"
-                                            #datepickerYMD="bsDatepicker" bsDatepicker
-                                            [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="endDate"
-                                            ngModel required>
-                                    </div>
-                                </div>
-                                <div *ngIf="form.controls['endDate'].invalid && form.controls['endDate'].touched"
-                                    class="alert alert-danger error">
-                                    <div *ngIf="form.controls['endDate'].errors['required']">
-                                        End Date is required.
-                                    </div>
-                                </div>
 
-                                <div class="row mt-3">
-                                    <label for="estimatedTime" class="text-start d-flex justify-content-between"><span>
-                                            Estimated Time </span><span class="text-muted" style="font-size: 12px">(In
-                                            hours)</span></label>
-                                </div>
-                                <input type="text" name="estimatedTime" id="estimatedTime"
-                                    class="form-control input pt-0" formControlName="estimatedTime" ngModel required>
-                                <div *ngIf="form.controls['estimatedTime'].invalid && form.controls['estimatedTime'].touched"
-                                    class="alert alert-danger error">
-                                    <div *ngIf="form.controls['estimatedTime'].errors['required']">
-                                        Estimated Time is required.
-                                    </div>
-
-                                </div>
                                 <div class="row mt-3">
                                     <label for="notes" class="text-start">Notes</label>
                                 </div>
@@ -341,14 +356,14 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="d-flex justify-content-between m-3">
+                        <div class="d-flex justify-content-between my-3 border-top pt-3">
 
                             <div>
                                 <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
                                     type="button">Cancel</button>
                             </div>
                             <div>
-                                <button mat-raised-button color="primary" data-bs-dismiss="modal"
+                                <button mat-raised-button class="addBtn" data-bs-dismiss="modal"
                                     type="submit">Add</button>
                             </div>
 

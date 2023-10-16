@@ -51,7 +51,7 @@ import { UserDashboardComponent } from './dashboard/user-dashboard/user-dashboar
 import { EmailTemplateComponent } from './email-template/email-template.component';
 import { SubtaskComponent } from './tasks/subtask/subtask.component';
 import { productivityAppsApprovalComponent } from './approvals/productivityAppsApproval/productivityAppsApproval.component';
-import { BrowserHistoryComponent } from './browserHistory/browserHistory.component';
+// import { BrowserHistoryComponent } from './browserHistory/browserHistory.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { UserPreferencesComponent } from './settings/userPreferences/userPreferences.Component';
 import { AdminCalendarComponent } from './calendar/admin-calendar/admin-calendar.component';
@@ -131,7 +131,7 @@ const routes: Routes = [
       { path: 'emailtemplate', component: EmailTemplateComponent },
       { path: 'SubTask/:taskNumber', component: SubtaskComponent },
       { path: 'productivityAppsApproval', component: productivityAppsApprovalComponent },
-      { path: 'browserHistory', component: BrowserHistoryComponent },
+      // { path: 'browserHistory', component: BrowserHistoryComponent },
       { path: 'userPreferences', component: UserPreferencesComponent },
       { path: 'assetsManagement', component: AssetManagerComponent },
       { path: 'AdminCalendar', component: AdminCalendarComponent },

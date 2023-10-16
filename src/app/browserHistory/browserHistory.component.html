@@ -1,70 +1,68 @@
-<div class="main-content mt-5 pt-5">
-  <div class="container-fluid">
-    <h2>Browser History</h2>
-    <div class="d-flex">
+<div class="main-content pt-5">
 
-      <div class="">
-        <subordinateSelection (selectedUsersChange)="selectedUsersChanged($event)"></subordinateSelection>
-      </div>
+  <div class="row mt-2">
+    <div class="tableContainer py-2 px-0 bg-white">
+      <div class="d-flex  align-items-center px-1">
+        <p class="mb-0">({{browserHistory?.length}})&nbsp;Records&nbsp;Found</p>
 
-      <div class="ms-5 mx-1 mt-4">
-        <i class="fa fa-calendar mt-2  text-primary"></i>
-      </div>
-      <div class="ms-2 me-2 mt-4">
+        <div class="d-flex justify-content-between ms-auto align-items-center">
 
-        <input type="date" id="startDate" class="form-control" [(ngModel)]="startDate"
-          (ngModelChange)="onStartDateChange($event)" />
-      </div>
-      <div class="mx-1 mt-4">
-        <i class="fa fa-long-arrow-right mt-2 text-primary"></i>
-      </div>
-      <div class=" ms-2  mt-4">
+          <div class="">
+            <subordinateSelection (selectedUsersChange)="selectedUsersChanged($event)"></subordinateSelection>
+          </div>
 
-        <input type="date" id="endDate" class="form-control " [(ngModel)]="endDate"
-          (ngModelChange)="onEndDateChange($event)" />
-      </div>
-      <div class="ms-auto">
-        <button mat-raised-button id="btnRefresh" class="mt-4 bi bi-arrow-repeat header-icons text-primary" title="Refresh Browser History" (click)="getBrowserHistory()"></button>
-      </div>
-      <pagination-controls (pageChange)="p = $event"
-        class="pagination align-items-center mt-4"></pagination-controls>
+          <div class="ms-5 mx-1 mt-4">
+            <i class="fa fa-calendar mt-2  contentHeading"></i>
+          </div>
+          <div class="ms-2 me-2 mt-4">
 
+            <input type="date" id="startDate" class="form-control" [(ngModel)]="startDate"
+              (ngModelChange)="onStartDateChange($event)" />
+          </div>
+          <div class="mx-1 mt-4">
+            <i class="fa fa-long-arrow-right mt-2 contentHeading"></i>
+          </div>
+          <div class=" ms-2  mt-4">
+
+            <input type="date" id="endDate" class="form-control " [(ngModel)]="endDate"
+              (ngModelChange)="onEndDateChange($event)" />
+          </div>
+          <div class="ms-2">
+            <button mat-raised-button id="btnRefresh" class="mt-4 bi bi-arrow-repeat header-icons contentHeading"
+              title="Refresh Browser History" (click)="getBrowserHistory()"></button>
+          </div>
+        </div>
+      </div>
+      <table class="mt-2 px-2">
+        <thead>
+          <tr>
+            <th style="width: 5%;">Browser</th>
+            <th style="width: 30%;">Title</th>
+            <th style="width: 45%;">URL</th>
+            <th style="width: 10%;">Visit Time</th>
+            <th style="width: 10%;">Visit Count</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let history of browserHistory |  paginate: { itemsPerPage: 10, currentPage: p }">
+            <td style="width: 5%;">
+              <span *ngIf="history.browser==1" title="Edge"> <img src="assets/Browser/internet_explorer.png" alt=""
+                  height="25"></span>
+              <span *ngIf="history.browser==2" title="Firefox"> <img src="assets/Browser/firefox_browser.png" alt=""
+                  height="25"> </span>
+              <span *ngIf="history.browser==4" title="Chrome"> <img src="assets/Browser/google_chrome.png" alt=""
+                  height="25"></span>
+              <span *ngIf="history.browser==8" title="Safari"> <img src="assets/Browser/safari.png" alt=""
+                  height="25"></span>
+            </td>
+            <td style="width: 30%;" [title]="history.title">{{truncateString(history.title,50)}}</td>
+            <td style="width: 45%;" [title]="history.uri">{{truncateString(history.uri,75)}}</td>
+            <td style="width: 10%;">{{truncateDate(history.lastVisitTime,10)}}</td>
+            <td style="width: 10%;">{{history.visitCount}}</td>
+          </tr>
+        </tbody>
+      </table>
+        <pagination-controls (pageChange)="p = $event" class="pagination d-flex justify-content-end mt-2"></pagination-controls>
+      </div>
     </div>
-    <div class="row mt-2">
-      <div class="col  table-container">
-        <table  class="p-2 rounded mt-2">
-          <thead>
-            <tr>
-              <th style="width: 5%;">Browser</th>
-              <th style="width: 30%;">Title</th>
-              <th style="width: 45%;">URL</th>
-              <th style="width: 10%;">Visit Time</th>
-              <th style="width: 10%;text-align: right;">Visit Count</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Your table rows here -->
-            <tr *ngFor="let history of browserHistory |  paginate: { itemsPerPage: 10, currentPage: p }">
-              <td style="width: 5%;">
-                <span *ngIf="history.browser==1" title="Edge"> <img src="assets/Browser/internet_explorer.png" alt=""
-                    height="25"></span>
-                <span *ngIf="history.browser==2" title="Firefox"> <img src="assets/Browser/firefox_browser.png" alt=""
-                    height="25"> </span>
-                <span *ngIf="history.browser==4" title="Chrome"> <img src="assets/Browser/google_chrome.png" alt=""
-                    height="25"></span>
-                <span *ngIf="history.browser==8" title="Safari"> <img src="assets/Browser/safari.png" alt=""
-                    height="25"></span>
-              </td>
-              <td style="width: 30%;" [title]="history.title">{{truncateString(history.title,50)}}</td>
-              <td style="width: 45%;" [title]="history.uri">{{truncateString(history.uri,75)}}</td>
-              <td style="width: 10%;">{{truncateDate(history.lastVisitTime,10)}}</td>
-              <td style="width: 10%;text-align: right;">{{history.visitCount}}</td>
-            </tr>
-            <!-- ... -->
-          </tbody>
-        </table>
-
-      </div>
-    </div>
-  </div>
 </div>

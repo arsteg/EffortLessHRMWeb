@@ -69,7 +69,6 @@ import { DashboardModule } from './dashboard/dashboard.module';
 import { EmailTemplateComponent } from './email-template/email-template.component';
 import { ApprovalsModule } from './approvals/approvals.module';
 import { QuillModule } from 'ngx-quill';
-import { BrowserHistoryModule } from './browserHistory/browserHistory.module';
 import { CommonComponentsModule } from './common/commonComponents.module';
 import { SettingsModule } from './settings/settings.Module';
 import { AssetsModule } from './AssetsManagement/assetManagement.module';
@@ -80,7 +79,6 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import { DocumentManagementModule } from './documentManager/documentManager.module';
 import { LeaveModule } from './Leave/leave.module';
 import { OragnizationModule } from './organization/organization.module';
-// import { AttendancesComponent } from './attendance/attendances.component';
 import { AttendanceModule } from './attendance/attendance.module';
 import { ExpensesModule } from './Expenses/expenses.module';
 import { AlertsModule } from './Alerts/alerts.module';
@@ -91,6 +89,7 @@ import { SettingsComponent } from './settings/settings.component';
 import { ReportsModule } from './reports/reports.module';
 import { UserTaxDeclarationComponent } from './Taxation/user-tax-declaration/user-tax-declaration.component';
 import { FormsModule } from '@angular/forms';
+import { BrowserHistoryModule } from './browserHistory/browserHistory.module';
 @NgModule({
   declarations: [
     AppComponent,
@@ -114,10 +113,8 @@ import { FormsModule } from '@angular/forms';
     ProfileComponent,
     ReportsComponent,
     TimelineComponent,
-    // AttendanceComponent,
     RealtimeComponent,
     MainComponent,
-    // RequestManualTimeComponent,
     ActivityDescriptionComponent,
     AppAndWebsiteUsageComponent,
     LeaveReportComponent,
@@ -136,7 +133,8 @@ import { FormsModule } from '@angular/forms';
     UserCalendarComponent,
     AdminCalendarComponent,
     SettingsComponent,
-    UserTaxDeclarationComponent
+    UserTaxDeclarationComponent,
+    
    
   ],
   imports: [
@@ -164,7 +162,6 @@ import { FormsModule } from '@angular/forms';
     timesheetModule,
     DashboardModule,
     ApprovalsModule,
-    BrowserHistoryModule,
     CommonComponentsModule,
     SettingsModule,
     AssetsModule,
@@ -181,7 +178,8 @@ import { FormsModule } from '@angular/forms';
     SeparationModule,
     SettingsModule,
     ReportsModule,
-    FormsModule
+    FormsModule,
+    BrowserHistoryModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

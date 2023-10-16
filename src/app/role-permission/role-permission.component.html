@@ -1,18 +1,19 @@
-<div class="main-content mt-5 pt-5">
-    <div class="container-fluid">
-        <div class="d-flex justify-content-between">
-            <h1 class="pt-4">Roles : {{allRolePermission?.length}}</h1>
-            <div class="d-flex h-25">
+<div class="main-content mt-5 pt-5 px-3">
+    <div class="tableContainer bg-white py-2">
+        <div class="d-flex justify-content-between mb-2 px-3  align-items-center">
+            <p class="mb-0">({{allRolePermission?.length}}) Records Found</p>
+
+            <div class="d-flex h-25 align-items-center">
+                <span class="bi bi-search searchIcon mt-2"></span>
+
                 <input class="form-control search" type="text" placeholder="search..." [(ngModel)]="searchText"
                     name="searchText" aria-label="default input example"
-                    style="border-bottom: 1px solid grey; border-radius: 0;">
+                   >
 
-                <button mat-raised-button color="primary" class="ms-5" style="
-        padding: 5px 35px 0 20px; " data-bs-toggle="modal" data-bs-target="#addModal">Add New</button>
+                <button mat-raised-button class="ms-5 rounded-pill addBtn" data-bs-toggle="modal" data-bs-target="#addModal">Add New</button>
             </div>
         </div>
-        <hr class="mt-0">
-        <table class=" mt-4">
+        <table class=" mt-2">
             <thead>
                 <tr>
 
@@ -46,11 +47,17 @@
                     <td>{{rolePermisssion?.company?.companyName}}</td>
 
                     <td>
-                        <i class="bi bi-trash3 text-danger" data-bs-toggle="modal" data-bs-target="#deleteModal"
-                            (click)="selectedRolePermission(rolePermisssion)"></i>
-                        &nbsp;
-                        <i class="bi bi-pencil text-success" data-bs-toggle="modal" data-bs-target="#updateModal"
-                            (click)="selectedRolePermission(rolePermisssion)"></i>
+                     
+                            <button class="actions" mat-mini-fab title="Update User" data-bs-toggle="modal"
+                        data-bs-target="#updateModal"  (click)="selectedRolePermission(rolePermisssion)"
+                        aria-label="Example icon button with a menu icon">
+                        <i class="bi bi-pencil-fill"></i>
+                    </button>
+                    <button class="actions ms-2" title="Delete User" mat-mini-fab data-bs-toggle="modal"
+                        data-bs-target="#deleteModal"   (click)="selectedRolePermission(rolePermisssion)"
+                        aria-label="Example icon button with a menu icon">
+                        <i class="bi bi-trash"></i>
+                    </button>
                     </td>
                 </tr>
             </tbody>
@@ -65,16 +72,15 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-body">
-                <div class=" d-flex justify-content-between">
+                <div class=" d-flex justify-content-between border-bottom">
                     <div class="">
                         <h4 class="modal-title text-start">Add</h4>
                     </div>
                     <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
                     </div>
                 </div>
-                <hr class="mt-0">
                 <div class="row">
-                    <form class="row" [formGroup]="create_update_RolePermission"
+                    <form class="pt-2" [formGroup]="create_update_RolePermission"
                         (ngSubmit)="addRolePermission(create_update_RolePermission.value)">
                         <div class="row d-flex justify-content-center">
                             <div class="col-md-8">
@@ -109,14 +115,14 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="d-flex justify-content-between m-3">
+                        <div class="d-flex justify-content-between m-3 pt-2 border-top">
 
                             <div>
                                 <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
                                     type="button">Cancel</button>
                             </div>
                             <div>
-                                <button mat-raised-button color="primary" data-bs-dismiss="modal"
+                                <button mat-raised-button class="addBtn" data-bs-dismiss="modal"
                                     type="submit">Add</button>
                             </div>
 
@@ -178,13 +184,13 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="d-flex justify-content-between m-3">
+                        <div class="d-flex justify-content-between m-3 border-top pt-2">
                             <div>
                                 <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
                                     type="button">Cancel</button>
                             </div>
                             <div>
-                                <button mat-raised-button color="primary" data-bs-dismiss="modal"
+                                <button mat-raised-button  class="addBtn" data-bs-dismiss="modal"
                                     type="submit">Update</button>
                             </div>
                         </div>
