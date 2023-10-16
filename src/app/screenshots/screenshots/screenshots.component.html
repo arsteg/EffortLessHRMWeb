@@ -1,6 +1,6 @@
 <div class="main-content pt-5">
   <div class="container-fluid selectdate">
-    <div class=" d-flex justify-content-between mt-5">
+    <div class=" d-flex justify-content-between mt-5 border-bottom pb-2">
       <div class="">
         <div class="input-group date-style">
           <span (click)="SetPreviousDay()" class="fa fa-angle-left fa-lg p-3"></span>
@@ -34,7 +34,7 @@
         <button mat-raised-button class="bi bi-trash header-icons text-danger" (click)="deleteScreenShot()"></button>
       </div>
     </div>
-    <hr>
+   
 
     <div *ngFor="let timeLog of screenshotRows; let index = index " class="row my-2">
       <div class="form-check row-check d-flex ps-2">

@@ -161,3 +161,10 @@ figure img {
   background-color: #f35c17;
     color: white;
 }
+
+input{
+  border-radius: 2px !important;
+  padding: 5px !important;
+  min-height: 15px!important;
+  min-width: 15px !important;
+}

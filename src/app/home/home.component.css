@@ -396,3 +396,7 @@ input:focus-visible {
 .sidebar-links.active .item1{
 display: initial
 }
+input {
+    border: none !important;
+    border-bottom: 1px solid !important;
+}
