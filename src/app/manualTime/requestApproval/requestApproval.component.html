@@ -71,24 +71,24 @@
                         <td>{{ record.toDate | date: 'MM/dd/yyyy'}} {{ record.toDate | date: 'shortTime'}}</td>
                         <td>{{ record.reason}}</td>
                         <td> <span>
-                                <i *ngIf="record.status=='approved'" class="fa fa-thumbs-up" style="color:green"
-                                    [title]="record.status"></i>
-                                <i *ngIf="record.status=='rejected'" class="fa fa-thumbs-down" style="color:red"
-                                    [title]="record.status"></i>
+                                <i *ngIf="record.status=='approved'" class="bi bi-hand-thumbs-up-fill"
+                                    style="color:green" [title]="record.status"></i>
+                                <i *ngIf="record.status=='rejected'" class="bi bi-hand-thumbs-down-fill"
+                                    style="color:red" [title]="record.status"></i>
                                 <i *ngIf="record.status=='pending'" class="fa fa-clock-o" style="color:blue"
                                     [title]="record.status"></i>
                             </span></td>
                         <td>
-                            <label title="Approve"><i *ngIf="record.status=='pending'" class="fas fa-thumbs-up"
-                                    style="color:green;margin:5px;"
-                                    (click)="selectedRequest = record;approveRequest()"></i></label>
-                            <span title="Reject"><i *ngIf="record.status=='pending'" class="fas fa-thumbs-down"
-                                    style="color:red;margin:5px"
-                                    (click)="selectedRequest = record;rejectRequest()"></i></span>
+                            <div class="d-flex">
+                                <label title="Approve"><i *ngIf="record.status=='pending'"
+                                        class="bi bi-hand-thumbs-up-fill" style="color:green;margin:5px;"
+                                        (click)="selectedRequest = record;approveRequest()"></i></label>
+                                <span title="Reject"><i *ngIf="record.status=='pending'"
+                                        class="bi bi-hand-thumbs-down-fill" style="color:red;margin:5px"
+                                        (click)="selectedRequest = record;rejectRequest()"></i></span>
+                            </div>
                         </td>
-                        <td class="highlight">
-                            <div></div>
-                        </td>
+                        
                     </tr>
                 </tbody>
             </table>

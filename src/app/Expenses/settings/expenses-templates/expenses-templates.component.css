@@ -1,0 +1,22 @@
+:host ::ng-deep .pagination .ngx-pagination .current {
+    background: #76bc21 !important;
+    border: transparent !important;
+    border-radius: 20px !important;
+  }
+
+  .toggleBtn{
+    height: 1.3em;
+    width: 2.5em !important;
+  }
+  .form-check-input:checked {
+    background-color: #76bc21 !important;
+  }
+  .checks{
+    border-radius: 3px !important;
+    height: 1.2em;
+    width: 1.2em;
+}
+.formBody{
+  height: 500px;
+  overflow-y: scroll;
+}

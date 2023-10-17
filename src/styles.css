@@ -645,6 +645,7 @@ tr {
 
 .tableContainer table {
   background-color: #e8eaef;
+  border-radius: 15px !important;
 }
 
 .tableContainer p {
@@ -710,8 +711,8 @@ input {
 }
 
 label {
-  font-size: .75rem;
-  font-weight: 700;
+  font-size: .85rem;
+  font-weight: 500;
   margin-bottom: 0.4rem;
   color: #64728c;
   display: block;
@@ -744,4 +745,12 @@ label {
   font-size: 1rem !important;
   letter-spacing: .15px !important;
   color: #64728c !important;
+}
+.submenuBody{
+  border-radius:20px;
+}
+.form-check-input{
+  min-height: 0 !important;
+  padding: 0 !important;
+  /* width: 2.5em !important; */
 }

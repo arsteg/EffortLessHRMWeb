@@ -1,0 +1,23 @@
+<div class="main-content mt-5 pt-2">
+    <div class="container-fluid">
+        <div class="tabs">
+            <button mat-raised-button (click)="selectTab(1)" [class.active]="selectedTab === 1">Expense
+                Categories</button>
+            <button mat-raised-button (click)="selectTab(2)" [class.active]="selectedTab === 2">Expense
+                Templates</button>
+            <button mat-raised-button (click)="selectTab(3)" [class.active]="selectedTab === 3">Expense Template
+                Assignment</button>
+        </div>
+
+        <div *ngIf="selectedTab === 1" class="tab-content p-0">
+            <app-expenses-categories></app-expenses-categories>
+        </div>
+        <div *ngIf="selectedTab === 2" class="tab-content  p-0">
+            <app-expenses-templates></app-expenses-templates>
+        </div>
+        <div *ngIf="selectedTab === 3" class="tab-content  p-0">
+            <app-expenses-template-assignment></app-expenses-template-assignment>
+        </div>
+
+    </div>
+</div>
