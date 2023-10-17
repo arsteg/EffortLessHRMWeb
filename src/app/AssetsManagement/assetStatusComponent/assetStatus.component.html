@@ -1,9 +1,9 @@
 <div class="assetContainer  bg-white">
   <div class="row">
-    <div class="col-8 border-end tableContainer">
+    <div class="col-8 tableContainer">
       <h2 class="contentHeading p-2">Asset Status</h2>
 
-      <table class="p-2 rounded">
+      <table class="p-2">
         <thead>
           <tr>
             <th>Status</th>
@@ -28,7 +28,7 @@
       </table>
     </div>
 
-    <div class="col-4">
+    <div class="col-4 border-start">
       <h2 class="contentHeading p-2">Add/Edit Asset</h2>
 
       <form [formGroup]="assetStatusForm" (ngSubmit)="isEdit ? updateAssetStatus() : addAssetStatus()"

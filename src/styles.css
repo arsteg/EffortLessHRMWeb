@@ -556,23 +556,23 @@ select {
 }
 
 .fc .fc-button {
-  background: #3f51b5;
+  background: #76bc21;
 }
 
 .fc .fc-button-primary:disabled {
-  background: #3f51b5;
+  background: #bcf478;
 }
 
 .fc .fc-button-primary:not(:disabled).fc-button-active,
 .fc .fc-button-primary:hover,
 .fc .fc-button-primary:not(:disabled):active {
   background-color: white;
-  color: #3f51b5;
-  border: 1px solid #3f51b5
+  color: #76bc21;
+  border: 1px solid #76bc21
 }
 
 .fc .fc-button-primary {
-  border: 1px solid #3f51b5;
+  border: 1px solid #76bc21
 }
 
 .fc {
@@ -580,9 +580,6 @@ select {
   border-top-right-radius: 10px;
 }
 
-
-
-/* new design */
 .submenuTab.active,
 .submenuTab:hover {
   color: #ff7b1d;
@@ -617,7 +614,6 @@ select {
 
 table {
   border-collapse: separate;
-  /* Use separate border-collapse for spacing between rows */
   border-spacing: 0 10px;
   width: 100%;
 }
@@ -641,7 +637,6 @@ td:last-child {
 tr {
   margin-bottom: 10px;
   border-radius: 10px;
-  /* Set the border-radius to round the corners */
 }
 
 .tableContainer {
@@ -704,7 +699,7 @@ th:first-child {
 select,
 input {
   min-height: 45px !important;
-  font-size: .75rem !important;
+  /* font-size: .75rem !important; */
   font-weight: 400 !important;
   line-height: 1.5 !important;
   border-radius: 0.65rem !important;

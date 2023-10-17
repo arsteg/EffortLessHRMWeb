@@ -399,4 +399,5 @@ display: initial
 input {
     border: none !important;
     border-bottom: 1px solid !important;
+    padding: 0 !important;
 }

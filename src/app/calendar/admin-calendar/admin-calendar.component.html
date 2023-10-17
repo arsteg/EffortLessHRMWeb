@@ -1,15 +1,15 @@
 <div class="main-content mt-5 pt-5">
     <div class="container-fluid">
-        <mat-tab-group>
-            <mat-tab label="Calendar">
+        <!-- <mat-tab-group>
+            <mat-tab label="Calendar"> -->
 
-                <full-calendar  [plugins]="calendarPlugins" [events]="calendarEvents" [weekends]="true"  id="calendar"
+                <full-calendar [plugins]="calendarPlugins" [events]="calendarEvents" [weekends]="true" id="calendar"
                     class="full-calendar p-2" [headerToolbar]="{
                     left: 'prev',
                     center: 'title',
                     right: 'today next'
                   }"></full-calendar>
-            </mat-tab>
+            <!-- </mat-tab> -->
             <!-- <mat-tab label="Milestones">
                 <div class="milestones" [ngClass]="{'d-none': showAddMilestone}">
                     <div class="d-flex justify-content-between mt-2 align-items-baseline">
@@ -160,7 +160,7 @@
                     </form>
                 </div>
             </mat-tab> -->
-        </mat-tab-group>
+        <!-- </mat-tab-group> -->
 
 
     </div>

@@ -1,15 +1,15 @@
 <div class="assetContainer" style="background-color: white;">
     <div class="row">
-        <div class="col-8 border-end tableContainer">
+        <div class="col-8 tableContainer">
             <div class="d-flex justify-content-between">
                 <h2 class="contentHeading p-2">Vendor List</h2>
-                <div class="d-flex-align-items-center"> <span class="bi bi-search searchIcon"></span>
+                <div class="d-flex align-items-center"> <span class="mb-4 bi bi-search searchIcon"></span>
                     <input type="text" placeholder="Search vendors..." (input)="filterVendors($event)"
                         class="form-control search mb-3">
                 </div>
             </div>
-            <table class="mx-2">
-                <thead class="rounded p-2 mt-2">
+            <table class="p-2">
+                <thead class="p-2 mt-2">
                     <tr>
                         <th>Vendor ID</th>
                         <th>Vendor Name</th>
@@ -46,7 +46,7 @@
             </div>
         </div>
 
-        <div class="col-4">
+        <div class="col-4 border-start">
             <h2 class="contentHeading p-2">Add/Edit Vendor</h2>
             <form [formGroup]="vendorForm" (ngSubmit)="isEdit ? updateVendor() : addVendor()"
                 class="mt-4 p-3 me-3 bg-light border rounded" style="background-color: gray;">

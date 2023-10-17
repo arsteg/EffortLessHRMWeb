@@ -3,7 +3,7 @@
     <div class="list-container col-md-8 tableContainer">
       <div class="d-flex justify-content-between">
         <h2 class="contentHeading p-2">Asset Types: {{ assetTypes?.length }}</h2>
-        <div class="d-flex align-items-center"> <span class="bi bi-search searchIcon"></span>
+        <div class="d-flex align-items-center"> <span class="bi bi-search searchIcon mb-3"></span>
           <input type="text" placeholder="Search Asset Type..." [(ngModel)]="searchQuery" (input)="filterAssetTypes()"
             class="form-control search mt-2 mb-3">
         </div>
