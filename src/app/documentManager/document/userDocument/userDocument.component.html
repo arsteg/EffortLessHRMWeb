@@ -2,7 +2,7 @@
     <div class="row p-3 bg-white">
         <div class="col-md-8  tableContainer">
             <div class="d-flex justify-content-between">
-                <h2 class="contentHeading p-2">User Documents</h2>
+                <h2 class="contentHeading ps-2">User Documents</h2>
                 <div class="d-flex align-items-center">
                 <span class="bi bi-search searchIcon"></span>
 
@@ -55,10 +55,10 @@
             </nav>
         </div>
         <div class="col-md-4 border-start">
-            <h2 class="contentHeading">Add/Edit Document</h2>
+            <h2 class="contentHeading p-1">Add/Edit Document</h2>
 
             <form [formGroup]="userDocumentForm" (ngSubmit)="isEdit ? updateDocument() : addDocument()"
-                class="mt-4 p-3 bg-light border rounded">
+                class="p-3 bg-light border rounded">
 
                 <div class="form-group">
                     <label for="user">User</label>

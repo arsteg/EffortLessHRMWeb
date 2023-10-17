@@ -2,7 +2,7 @@
   <div class="row p-3">
     <div class="col-md-8  tableContainer">
       <div class="d-flex justify-content-between">
-  <h2 class="contentHeading p-2">Document&nbsp;Management:&nbsp;{{documents?.length}} </h2>
+  <h2 class="contentHeading ps-2">Document&nbsp;Management:&nbsp;{{documents?.length}} </h2>
 
       <!-- Search Bar -->
       <div class="d-flex align-items-center">
@@ -42,9 +42,9 @@
     <div class="col-md-4 border-start">
       <!-- Pagination can be added here -->
 
-      <h2 class="contentHeading p-2">Add/Edit Document</h2>
+      <h2 class="contentHeading p-1">Add/Edit Document</h2>
       <form [formGroup]="documentForm" (ngSubmit)="isEdit ? updateDocument() : addDocument()"
-        class="mt-4 p-3 bg-light border rounded" style="background-color: gray;">
+        class="p-3 bg-light border rounded" style="background-color: gray;">
           <div class="form-group">
             <label for="docCategory">Category</label>
             <select id="docCategory" class="form-control" formControlName="category" required>

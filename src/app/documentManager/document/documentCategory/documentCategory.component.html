@@ -2,7 +2,7 @@
   <div class="row bg-white p-3">
     <div class="col-md-8 tableContainer">
       <div class="d-flex justify-content-between">
-      <h2 class="contentHeading p-2">Document&nbsp;Categories:&nbsp;{{categories?.length}}</h2>
+      <h2 class="contentHeading ps-2">Document&nbsp;Categories:&nbsp;{{categories?.length}}</h2>
 
       <!-- Search bar -->
       <div class="d-flex align-items-center">
@@ -42,11 +42,11 @@
     <div class="col-md-4 border-start">
       <!-- Pagination can be added here -->
 
-      <h2 class="contentHeading p-2">Add/Edit Category</h2>
+      <h2 class="contentHeading p-1">Add/Edit Category</h2>
 
       <form [formGroup]="categoryForm"
         (ngSubmit)="isEdit ? updateCategory(categoryForm.value): addCategory(categoryForm.value)"
-        class="mt-4 p-3 bg-light border rounded">
+        class="p-3 bg-light border rounded">
         <div class="row">
           <div class="form-group">
             <label for="categoryName" class="text-gray">Name</label>

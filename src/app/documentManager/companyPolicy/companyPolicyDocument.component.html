@@ -2,7 +2,7 @@
   <div class="row bg-white p-3">
     <div class="col-md-8 tableContainer">
       <div class="d-flex justify-content-between">
-        <h2 class="contentHeading p-2">Company&nbsp;Policy&nbsp;Documents:&nbsp;{{companyPolicyDocument?.length}}</h2>
+        <h2 class="contentHeading ps-2">Company&nbsp;Policy&nbsp;Documents:&nbsp;{{companyPolicyDocument?.length}}</h2>
       <div class="d-flex align-items-center">  <span class="bi bi-search searchIcon"></span>
         <input type="text" placeholder="Search ..." class=" search form-control" [(ngModel)]="searchText"
           name="searchText">
@@ -41,10 +41,10 @@
     <div class="col-md-4 border-start">
       <!-- Pagination can be added here -->
 
-      <h2 class="contentHeading p-2">Add/Edit Document</h2>
+      <h2 class="contentHeading p-1">Add/Edit Document</h2>
 
       <form [formGroup]="documentForm" (ngSubmit)="isEdit ? updateDocument(documentForm.value) : addDocument(documentForm.value)"
-        class="mt-4 p-3 bg-light border rounded">
+        class="p-3 bg-light border rounded">
           <div class="form-group">
             <label for="documentName" class="text-gray">Name</label>
             <input type="text" id="documentName" class="form-control" formControlName="name" required>

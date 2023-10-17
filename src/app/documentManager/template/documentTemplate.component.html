@@ -3,7 +3,7 @@
     <div class="col-md-7 tableContainer">
       <div class="d-flex justify-content-between">
 
-        <h2 class="contentHeading p-2">Document&nbsp;Templates:&nbsp;{{templatesList?.length}}</h2>
+        <h2 class="contentHeading ps-2">Document&nbsp;Templates:&nbsp;{{templatesList?.length}}</h2>
         <div class="d-flex  align-items-center">
           <span class="bi bi-search searchIcon"></span>
 
@@ -48,9 +48,9 @@
     <div class="col-md-5 border-start">
       <div>
         <div>
-          <h2 class="contentHeading p-2">{{ isEditMode ? 'Update Document Template' : 'Add Document Template' }}</h2>
+          <h2 class="contentHeading p-1">{{ isEditMode ? 'Update Document Template' : 'Add Document Template' }}</h2>
         </div>
-        <form class="mt-4 p-3 bg-light border rounded" [formGroup]="addDocumentTemplateForm"
+        <form class="p-3 bg-light border rounded" [formGroup]="addDocumentTemplateForm"
           (ngSubmit)="isEditMode ? updateTemplate(addDocumentTemplateForm.value) : addDocumentTemplate(addDocumentTemplateForm.value)">
           <div class="form-group row">
             <div class="col-sm-2">
