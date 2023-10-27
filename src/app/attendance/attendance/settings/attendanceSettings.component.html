@@ -1,0 +1,39 @@
+
+<div class="container-fluid">
+  <div class="tabs">
+    <button mat-raised-button (click)="selectTab(1)" [class.active]="selectedTab === 1">General Settings</button>
+    <button mat-raised-button (click)="selectTab(2)" [class.active]="selectedTab === 2">Attendance Templates</button>
+    <button mat-raised-button (click)="selectTab(3)" [class.active]="selectedTab === 3">Attendance Templates</button>
+    <button mat-raised-button (click)="selectTab(4)" [class.active]="selectedTab === 4">Over Time</button>
+    <button mat-raised-button (click)="selectTab(5)" [class.active]="selectedTab === 5">On Duty Templates</button>
+    <button mat-raised-button (click)="selectTab(6)" [class.active]="selectedTab === 6">On Duty Templates Assignments</button>
+    <button mat-raised-button (click)="selectTab(6)" [class.active]="selectedTab === 7">Shifts</button>
+    <button mat-raised-button (click)="selectTab(6)" [class.active]="selectedTab === 8">Shift Assignments</button>
+  </div>
+
+  <div *ngIf="selectedTab === 1" class="tab-content">
+    <app-generalSettings></app-generalSettings>
+  </div>
+  <div *ngIf="selectedTab === 2" class="tab-content">
+
+  </div>
+  <div *ngIf="selectedTab === 3" class="tab-content">
+
+  </div>
+  <div *ngIf="selectedTab === 4" class="tab-content">
+
+  </div>
+  <div *ngIf="selectedTab === 5" class="tab-content">
+
+  </div>
+  <div *ngIf="selectedTab === 6" class="tab-content">
+
+  </div>
+  <div *ngIf="selectedTab === 7" class="tab-content">
+
+  </div>
+  <div *ngIf="selectedTab === 8" class="tab-content">
+
+  </div>
+  </div>
+

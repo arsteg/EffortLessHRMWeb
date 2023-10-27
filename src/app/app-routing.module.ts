@@ -38,7 +38,6 @@ import { ResetPasswordComponent } from './login/reset-password/reset-password.co
 import { ProfileSettingsComponent } from './settings/profile-settings/profile-settings.component';
 import { WorkspaceSettingsComponent } from './settings/workspace-settings/workspace-settings.component';
 import { FeaturesSettingsComponent } from './settings/features-settings/features-settings.component';
-import { AttendanceSettingsComponent } from './settings/attendance-settings/attendance-settings.component';
 import { LeaveSettingsComponent } from './settings/leave-settings/leave-settings.component';
 import { TagComponent } from './tasks/task.tag/tag.component';
 import { EditTaskComponent } from './tasks/edit-task/edit-task.component';
@@ -122,7 +121,6 @@ const routes: Routes = [
       { path: 'profileSettings', component: ProfileSettingsComponent },
       { path: 'workspace', component: WorkspaceSettingsComponent },
       { path: 'features', component: FeaturesSettingsComponent },
-      { path: 'attendancesettings', component: AttendanceSettingsComponent },
       { path: 'leavesettings', component: LeaveSettingsComponent },
       { path: 'edit-task/:taskNumber', component: EditTaskComponent },
       { path: 'comments', component: TaskCommentComponent },

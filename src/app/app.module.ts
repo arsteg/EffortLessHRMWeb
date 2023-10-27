@@ -50,7 +50,6 @@ import { AuthGuard } from './auth.guard';
 import { ProfileSettingsComponent } from './settings/profile-settings/profile-settings.component';
 import { WorkspaceSettingsComponent } from './settings/workspace-settings/workspace-settings.component';
 import { FeaturesSettingsComponent } from './settings/features-settings/features-settings.component';
-import { AttendanceSettingsComponent } from './settings/attendance-settings/attendance-settings.component';
 import { Ng5SliderModule } from 'ng5-slider';
 import { LeaveSettingsComponent } from './settings/leave-settings/leave-settings.component';
 import { taskModule } from './tasks/task.Module';
@@ -126,7 +125,6 @@ import { BrowserHistoryModule } from './browserHistory/browserHistory.module';
     ProfileSettingsComponent,
     WorkspaceSettingsComponent,
     FeaturesSettingsComponent,
-    AttendanceSettingsComponent,
     LeaveSettingsComponent,
     GenericSettingsComponent,
     ViewLiveScreenComponent,
@@ -134,8 +132,8 @@ import { BrowserHistoryModule } from './browserHistory/browserHistory.module';
     AdminCalendarComponent,
     SettingsComponent,
     UserTaxDeclarationComponent,
-    
-   
+
+
   ],
   imports: [
     BrowserModule,
