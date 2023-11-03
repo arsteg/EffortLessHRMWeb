@@ -27,3 +27,10 @@ export interface ApplicableCategories{
     expenseTemplate: string;
     expenseCategory: string;
 }
+
+export interface TemplateAssignment{
+    user: string;
+    approver: string;
+    expenseTemplate: string;
+    effectiveDate: Date;
+}

@@ -5,7 +5,7 @@ import { environment } from 'src/environments/environment';
 import { Subordinate } from '../models/subordinate.Model';
 import { Observable } from 'rxjs';
 import { response } from '../models/response';
-import { AddTemplate, ApplicableCategories, ExpenseApplicationField, ExpenseCategory, ExpenseCategoryField } from '../models/expenses';
+import { AddTemplate, ApplicableCategories, ExpenseApplicationField, ExpenseCategory, ExpenseCategoryField, TemplateAssignment } from '../models/expenses';
 
 @Injectable({
   providedIn: 'root'
@@ -104,6 +104,16 @@ getTemplateById(id: string): Observable<response<any>> {
 
 addTemplateApplicableCategories(templateAppCat: ApplicableCategories): Observable<response<any>> {
   var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/expense-template-applicable-categories`, templateAppCat, this.httpOptions);
+  return response;
+}
+
+addTemplateAssignment(templateAssignment: TemplateAssignment): Observable<response<any>> {
+  var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/employee-expense-assignments`, templateAssignment, this.httpOptions);
+  return response;
+}
+
+getTemplateAssignment(): Observable<response<any>> {
+  var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/employee-expense-assignments`, this.httpOptions);
   return response;
 }
 

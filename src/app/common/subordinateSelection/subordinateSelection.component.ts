@@ -9,22 +9,27 @@ import { teamMember } from 'src/app/models/teamMember';
 })
 export class SubordinateSelectionComponent implements OnInit {
   @Output() selectedUsersChange: EventEmitter<string> = new EventEmitter<string>();
+  @Output() selectedUserNameChange: EventEmitter<string> = new EventEmitter<string>();
   members: any;
   member: any;
-  user:any;
-  constructor(private timeLogService:TimeLogService) {}
+  user: any;
+  constructor(private timeLogService: TimeLogService) { }
 
   ngOnInit(): void {
     this.populateMembers();
     if (this.members && this.members.length > 0) {
       this.user = this.members[0]; // Set the default user to the first member
       this.selectedUsersChange.emit(this.user.id);
+      
     }
   }
 
   emitSelectedUsers(member): void {
     const user = JSON.parse(member)
     this.selectedUsersChange.emit(user.id);
+    this.selectedUserNameChange.emit(user?.name)
+
+
   }
   filterData() {
     //this.getAttendance();
