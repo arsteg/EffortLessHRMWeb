@@ -22,9 +22,7 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
   approverId: string
   templateAssignments: any;
   templateAssignmentForm: FormGroup;
-  templateName;
-
-
+  templateResponse;
 
   constructor(private modalService: NgbModal,
     private dialog: MatDialog,
@@ -97,20 +95,11 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
     this.approverId = $event;
 
   }
-  user;
-  // getAssignments() {
-  //   this.expenseService.getTemplateAssignment().subscribe((res: any) => {
-  //     this.templateAssignments = res.data;
-
-  
-  //   });
-  // }
-  templateResponse;
-  getAssignments() {
+ 
+   getAssignments() {
     this.expenseService.getTemplateAssignment().subscribe((res: any) => {
       this.templateAssignments = res.data;
   
-      // Use Promise.all to ensure all API requests are completed before rendering the data
       const userRequests = this.templateAssignments.map(assignment =>
         this.authService.GetMe(assignment.user).toPromise()
       );
@@ -138,65 +127,7 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
       });
     });
   }
-  
-  // getAssignments() {
-  //   this.expenseService.getTemplateAssignment().subscribe((res: any) => {
-  //     this.templateAssignments = res.data;
 
-  //     // Create an array to store user and template details for each assignment
-  //     const assignmentDetails = [];
-
-  //     for (let index = 0; index < this.templateAssignments.length; index++) {
-  //       const assignment = this.templateAssignments[index];
-
-  //       // Fetch user details
-  //       this.authService.GetMe(assignment.user).subscribe((userRes: any) => {
-  //         this.user = userRes.data.users;
-  //         console.log(this.user.firstName)
-  //         // Fetch template details
-  //         this.expenseService.getTemplateById(assignment.expenseTemplate).subscribe((templateRes: any) => {
-  //           if (templateRes.data != null) {
-  //             const templateName = templateRes.data.policyLabel;
-
-  //             // Add user and template details to the array
-  //             assignmentDetails.push({
-  //               user: this.user,
-  //               templateName: templateName
-  //             });
-  //             console.log(assignmentDetails);
-  //             // Check if all data has been fetched
-  //             if (assignmentDetails.length === this.templateAssignments.length) {
-  //               // All data has been fetched, update the UI
-  //               this.templateAssignments.forEach((assignment, i) => {
-  //                 assignment.user = assignmentDetails[i].user;
-  //                 assignment.templateName = assignmentDetails[i].templateName;
-  //               });
-  //               console.log(this.templateAssignments)
-  //             }
-  //           }
-  //         });
-  //       });
-  //     }
-  //   });
-  // }
-
-
-  getUserFullName(userId: string): string {
-    const user = this.templateAssignments.find(assignment => assignment.user === userId);
-    if (user) {
-      return `${user.user.firstName} ${user.user.lastName}`;
-    }
-    return '';
-  }
-  
-  getTemplateName(templateId: string): string {
-    const template = this.templateAssignments.find(assignment => assignment.expenseTemplate === templateId);
-    if (template) {
-      return template.templateName.policyLabel;
-    }
-    return '';
-  }
-  
   addAssignment() {
     let payload = {
       user: this.userId,
