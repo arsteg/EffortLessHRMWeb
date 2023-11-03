@@ -100,7 +100,7 @@
                                             *ngIf="data?.status=='Active'">{{data?.status}}</span> </td>
 
 
-                                    <td class="" *ngIf="!userId && data !== null">
+                                    <td class="ps-2" *ngIf="!userId && data !== null">
                                         <ng-container *ngFor="let users of data.ProjectUser">
                                             <span *ngIf="users?.user" class="letter text-light"
                                                 [tooltip]="(users?.user?.firstName | titlecase) + (' ') + (users?.user?.lastName | titlecase)"

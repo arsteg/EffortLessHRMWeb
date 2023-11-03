@@ -754,3 +754,6 @@ label {
   padding: 0 !important;
   /* width: 2.5em !important; */
 }
+.error{
+  font-size: smaller;
+}

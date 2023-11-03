@@ -7,6 +7,7 @@ import { ExpensesTemplatesComponent } from './settings/expenses-templates/expens
 import { ExpensesTemplateAssignmentComponent } from './settings/expenses-template-assignment/expenses-template-assignment.component';
 import { SharedModule } from '../shared/shared.Module';
 import { CommonComponentsModule } from '../common/commonComponents.module';
+import { FormsModule } from '@angular/forms';
 
 
 
@@ -15,7 +16,8 @@ import { CommonComponentsModule } from '../common/commonComponents.module';
   imports: [
     CommonModule,
     SharedModule,
-    CommonComponentsModule
+    CommonComponentsModule,
+    FormsModule
   ]
 })
 export class ExpensesModule { }
