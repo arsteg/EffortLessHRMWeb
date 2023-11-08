@@ -26,7 +26,7 @@ export class ExpensesService {
   public getToken() {
     return localStorage.getItem('jwtToken');
   }
-// Expense Category
+  // Expense Category
 
   getExpenseCatgories(): Observable<response<any>> {
     var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/expense-categories`, this.httpOptions);
@@ -74,47 +74,57 @@ export class ExpensesService {
     return response;
   }
 
-// Expense Template
+  // Expense Template
 
-addTemplate(template: AddTemplate): Observable<response<any>> {
-  var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/expense-templates`, template, this.httpOptions);
-  return response;
-}
+  addTemplate(template: AddTemplate): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/expense-templates`, template, this.httpOptions);
+    return response;
+  }
 
-deleteTemplate(id: string): Observable<response<any>> {
-  var response = this.http.delete<response<any>>(`${environment.apiUrlDotNet}/expense/expense-templates/${id}`, this.httpOptions);
-  return response;
-}
+  deleteTemplate(id: string): Observable<response<any>> {
+    var response = this.http.delete<response<any>>(`${environment.apiUrlDotNet}/expense/expense-templates/${id}`, this.httpOptions);
+    return response;
+  }
 
-updateTemplate(id: string, template: AddTemplate): Observable<response<any>> {
-  var response = this.http.put<response<any>>(`${environment.apiUrlDotNet}/expense/expense-templates/${id}`, template, this.httpOptions);
-  return response;
-}
+  updateTemplate(id: string, template: AddTemplate): Observable<response<any>> {
+    var response = this.http.put<response<any>>(`${environment.apiUrlDotNet}/expense/expense-templates/${id}`, template, this.httpOptions);
+    return response;
+  }
 
-getAllTemplates(): Observable<response<any>> {
-  var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/expense-templates`, this.httpOptions);
-  return response;
-}
+  getAllTemplates(): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/expense-templates`, this.httpOptions);
+    return response;
+  }
 
-getTemplateById(id: string): Observable<response<any>> {
-  var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/expense-templates/${id}`, this.httpOptions);
-  return response;
-}
+  getTemplateById(id: string): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/expense-templates/${id}`, this.httpOptions);
+    return response;
+  }
 
 
-addTemplateApplicableCategories(templateAppCat: ApplicableCategories): Observable<response<any>> {
-  var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/expense-template-applicable-categories`, templateAppCat, this.httpOptions);
-  return response;
-}
+  addTemplateApplicableCategories(templateAppCat: ApplicableCategories): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/expense-template-applicable-categories`, templateAppCat, this.httpOptions);
+    return response;
+  }
+//  expnse template assignment
+  addTemplateAssignment(templateAssignment: TemplateAssignment): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/employee-expense-assignments`, templateAssignment, this.httpOptions);
+    return response;
+  }
 
-addTemplateAssignment(templateAssignment: TemplateAssignment): Observable<response<any>> {
-  var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/employee-expense-assignments`, templateAssignment, this.httpOptions);
-  return response;
-}
+  updateTemplateAssignment(id: string, templateAssignment: TemplateAssignment): Observable<response<any>> {
+    var response = this.http.put<response<any>>(`${environment.apiUrlDotNet}/expense/employee-expense-assignments/${id}`, templateAssignment, this.httpOptions);
+    return response;
+  }
 
-getTemplateAssignment(): Observable<response<any>> {
-  var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/employee-expense-assignments`, this.httpOptions);
-  return response;
-}
+  getTemplateAssignmentById(id: string): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/employee-expense-assignments/${id}`, this.httpOptions);
+    return response;
+  }
+
+  getTemplateAssignment(): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/employee-expense-assignments`, this.httpOptions);
+    return response;
+  }
 
 }

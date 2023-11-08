@@ -23,6 +23,8 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
   templateAssignments: any;
   templateAssignmentForm: FormGroup;
   templateResponse;
+  selectedTemplateAssignmentId: any;
+
 
   constructor(private modalService: NgbModal,
     private dialog: MatDialog,
@@ -93,42 +95,50 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
 
   selectedApproverChanged($event: string): void {
     this.approverId = $event;
-
   }
- 
-   getAssignments() {
+
+
+  getAssignments() {
     this.expenseService.getTemplateAssignment().subscribe((res: any) => {
       this.templateAssignments = res.data;
-  
+
       const userRequests = this.templateAssignments.map(assignment =>
         this.authService.GetMe(assignment.user).toPromise()
       );
-  
+
+      const approverRequests = this.templateAssignments.map(assignment =>
+        this.authService.GetMe(assignment.approver).toPromise()
+      );
+
       const templateRequests = this.templateAssignments.map(assignment =>
         this.expenseService.getTemplateById(assignment.expenseTemplate).toPromise()
       );
-  
-      Promise.all([...userRequests, ...templateRequests]).then(results => {
+
+      Promise.all([...userRequests, ...templateRequests, ...approverRequests]).then(results => {
         for (let i = 0; i < this.templateAssignments.length; i++) {
           const userResponse = results[i];
           this.templateResponse = results[i + this.templateAssignments.length];
-  
+          const approverResponse = results[i + this.templateAssignments.length * 2];
+
           if (userResponse) {
             this.templateAssignments[i].user = userResponse.data.users;
-            this.templateAssignments[i].approver = userResponse.data.users;
-            console.log(this.templateAssignments[i].user)
           }
-  
+
+          if (approverResponse) {
+            this.templateAssignments[i].approver = approverResponse.data.users;
+          }
+
           if (this.templateResponse.data != null) {
             this.templateAssignments[i].expenseTemplate = this.templateResponse.data.policyLabel;
-            console.log(this.templateAssignments[i].expenseTemplate)
           }
         }
       });
     });
   }
 
-  addAssignment() {
+
+
+  addOrUpdateAssignment() {
     let payload = {
       user: this.userId,
       approver: this.approverId,
@@ -138,6 +148,35 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
     this.expenseService.addTemplateAssignment(payload).subscribe((res: any) => {
       this.templateAssignments = res.data;
     })
+
+    const id: string = ''
+    if (this.changeMode == 'Update') {
+      console.log(this.selectedTemplateAssignmentId, payload)
+      // this.expenseService.updateTemplateAssignment(selectedTemplateAssignmentId, payload).subscribe((res: any) => {
+
+      // })
+    }
   }
 
+  updateTemplateAssignment(templateId: any) {
+    this.selectedTemplateAssignmentId = templateId;
+    this.changeMode = 'Update';
+    this.expenseService.getTemplateAssignmentById(templateId).subscribe((res: any) => {
+      console.log(res.data)
+      this.setFormValues(res.data);
+    });
+  }
+
+  setFormValues(templateAssignment: any) {
+    this.templateAssignmentForm.patchValue({
+      user: templateAssignment.user,
+      approver: templateAssignment.approver,
+      expenseTemplate: templateAssignment.expenseTemplate,
+      effectiveDate: templateAssignment.effectiveDate
+    });
+    console.log(this.templateAssignmentForm)
+    this.expenseService.getTemplateAssignmentById(templateAssignment._id).subscribe((res: any) => {
+    });
+
+  }
 }
