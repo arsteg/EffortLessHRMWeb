@@ -28,7 +28,8 @@
 .taskName {
     font-size: x-large;
 }
-.letters{
+
+.letters {
     border-radius: 5px;
     padding: 5px 8px;
     color: white;
@@ -37,4 +38,9 @@
     font-family: 'Roboto';
     margin-left: -12px;
     transition: all .2s;
+}
+
+  .btn-act  {
+    background: #76bc21;
+    color: white;
 }

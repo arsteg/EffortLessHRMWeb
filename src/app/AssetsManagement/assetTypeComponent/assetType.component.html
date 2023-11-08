@@ -38,7 +38,7 @@
     </div>
     <div class="col-md-4 border-start">
       <h2 class="contentHeading p-2">Add New Asset Type</h2>
-      <form [formGroup]="addAssetType" (ngSubmit)="addAsset()">
+      <form [formGroup]="addAssetType" (ngSubmit)="addAsset()" class="me-3">
         <div class="form-group">
           <label for="typeName">Type Name:</label>
           <input type="text" class="form-control" id="typeName" formControlName="typeName">

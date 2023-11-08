@@ -757,3 +757,11 @@ label {
 .error{
   font-size: smaller;
 }
+.form-check-input:checked {
+  background-color: #76bc21 !important;
+}
+.footer{
+  position: absolute;
+  bottom: 10px;
+  left: 40%;
+}

@@ -12,7 +12,7 @@
                         (click)="changeMode='Add'; open(addModal)">Add New</button>
                 </div>
             </div>
-         
+
             <table class="px-4">
                 <thead>
                     <tr>
@@ -24,15 +24,16 @@
                     </tr>
                 </thead>
                 <tbody>
-                   
+
                     <tr *ngFor="let templateAssignment of templateAssignments;  let i = index">
                         <td class="ps-2">{{templateAssignments[i]?.user?.firstName}}</td>
                         <td *ngIf="templateResponse?.data != null">{{templateAssignments[i]?.expenseTemplate}}</td>
                         <td>{{templateAssignments[i]?.approver?.firstName}}</td>
                         <td>{{templateAssignment?.effectiveDate | date:'mediumDate'}}</td>
                         <td class="">
-                            <button class="actions" mat-mini-fab title="Update"
-                                (click)="changeMode='Update';open(addModal)"
+                            <button class="actions" mat-mini-fab title="Update" (click)="changeMode='Update';
+                                setFormValues(templateAssignment);
+                                open(addModal); selectedTemplateAssignmentId= templateAssignment._id"
                                 aria-label="Example icon button with a menu icon">
                                 <i class="bi bi-pencil-fill"></i>
                             </button>
@@ -60,23 +61,25 @@
         </div>
     </div>
 
-    <form [formGroup]="templateAssignmentForm" (ngSubmit)="addAssignment()">
+    <form [formGroup]="templateAssignmentForm" (ngSubmit)="addOrUpdateAssignment()">
         <div>
-            <subordinateSelection (selectedUsersChange)="selectedUsersChanged($event)" (selectedUserNameChange)="selectedUserNameChange($event)"></subordinateSelection>
+            <subordinateSelection (selectedUsersChange)="selectedUsersChanged($event)"
+                (selectedUserNameChange)="selectedUserNameChange($event)"></subordinateSelection>
         </div>
 
         <div class="mt-2">
             <label for="">Please Choose Expense Template</label>
-            <select name="" id="" class="" formControlName="expenseTemplate">
-                <option *ngFor="let template of templates" [value]="template?._id">{{template?.policyLabel}}
+
+            <select name="" id="" class="" formControlName="expenseTemplate" name="expenseType">
+                <option *ngFor="let template of templates" [ngValue]="template?._id">
+                    {{template?.policyLabel}}
                 </option>
             </select>
         </div>
 
         <div class="mt-2">
             <label for="">Please Choose Approver</label>
-            <subordinateSelection (selectedUsersChange)="selectedApproverChanged($event)"></subordinateSelection>
-
+            <subordinateSelection (selectedUsersChange)="($event)"></subordinateSelection>
         </div>
 
         <div class="mt-2">
@@ -90,5 +93,4 @@
             <button mat-raised-button class="addBtn">Update</button>
         </div>
     </form>
-
 </ng-template>

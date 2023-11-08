@@ -1,31 +1,37 @@
 <section class="h-100">
   <div class="container h-100">
-    <div class="row justify-content-sm-center h-100">
-      <div class="col-xxl-4 col-xl-5 col-lg-5 col-md-7 col-sm-9">
-        <div class="text-center my-5">
-          <!-- <img src="" alt="logo" width="100"> -->
-        </div>
+    <div class="row justify-content-sm-center align-items-end d-flex pt-5">
+      <div class="col-6 background" style="background-image: url('assets/images/login.png');
+      background-repeat: no-repeat;
+      background-size: cover;
+      height: 480px;">
+
+        <!-- <div> <img src="assets/images/login.png" alt="login"></div> -->
+      </div>
+      <div class="col-6">
         <div class="card shadow-lg">
           <div class="card-body p-5">
-            <h1 class="fs-4 card-title fw-bold mb-4">Login</h1>
-            <form (ngSubmit)=onSubmit()  #f="ngForm"  class="needs-validation" novalidate="" autocomplete="off">
+            <h1 class="fs-4 card-title fw-bold mb-4 text-white">Login</h1>
+            <form (ngSubmit)=onSubmit() #f="ngForm" class="needs-validation" novalidate="" autocomplete="off">
               <div class="mb-3">
-                <label class="mb-2 text-muted" for="email">E-Mail Address</label>
-                <input id="username" type="username" class="form-control" name="username" ngModel required username #username="ngModel">
-               <div *ngIf="!username.valid && username.touched" class="validationErroMessage">
+                <label class="mb-2 text-light" for="email">E-Mail Address</label>
+                <input id="username" type="username" class="form-control" name="username" ngModel required username
+                  #username="ngModel">
+                <div *ngIf="!username.valid && username.touched" class="validationErroMessage">
                   Email is required
                 </div>
               </div>
 
               <div class="mb-3">
-                <div class="mb-2 w-100">
-                  <label class="text-muted" for="password">Password</label>
-                  <a routerLink="/forgotPassword" class="float-end">
+                <div class=" d-flex justify-content-between">
+                  <label class="text-light" for="password">Password</label>
+                  <a routerLink="/forgotPassword" class="float-end text-white">
                     Forgot Password?
                   </a>
                 </div>
-                <input id="password" type="password" class="form-control" name="password" ngModel required #password="ngModel">
-                 <div *ngIf="!password.valid && password.touched" class="validationErroMessage">
+                <input id="password" type="password" class="form-control" name="password" ngModel required
+                  #password="ngModel">
+                <div *ngIf="!password.valid && password.touched" class="validationErroMessage">
                   Email is required
                 </div>
               </div>
@@ -34,31 +40,35 @@
                 <div class="mb-2 w-100">
 
                   <div class="form-check">
-                    <input type="checkbox" name="remember" id="remember" class="form-check-input check" [(ngModel)]="rememberMe">
+                    <input type="checkbox" name="remember" id="remember" class="form-check-input  check"
+                      [(ngModel)]="rememberMe">
                     <label for="remember" class="form-check-label">Remember Me</label>
                   </div>
-                  </div>
-                  </div>
+                </div>
+              </div>
               <div class="d-flex align-items-center">
 
                 <button type="submit" mat-raised-button class="addBtn ms-auto" [disabled]="!f.valid">
 
-            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
-            Login
-        </button>
+                  <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                  Login
+                </button>
               </div>
             </form>
           </div>
           <div class="card-footer py-3 border-0">
-            <div class="text-center">
-              Don't have an account? <a routerLink="/register" class="text-dark">Create One</a>
+            <div class="text-center text-white">
+              Don't have an account? <a routerLink="/register" class="text-light">Create One</a>
             </div>
           </div>
         </div>
-        <div class="text-center mt-5 text-muted">
-          Copyright &copy; 2015-2022 &mdash; ARSTEG Solutions Pvt Ltd.
-        </div>
       </div>
     </div>
+    <div class="text-center mt-5 text-muted footer">
+      <div>
+        Copyright &copy; 2015-2023 &mdash; ARSTEG Solutions Pvt Ltd.
+      </div>
+    </div>
+
   </div>
 </section>
