@@ -32,8 +32,8 @@ export class RealtimeComponent implements OnInit {
   members: any;
   member: any;
   p: number = 1;
-  onlineUserData:any;
-  user:any;
+  onlineUserData: any;
+  user: any;
   role: any;
   constructor(private timelog: TimeLogService,
     private manageTeamService: ManageTeamService,
@@ -46,9 +46,9 @@ export class RealtimeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-   
+
     this.firstLetter = this.commonService.firstletter;
-   
+
     this.commonService.getCurrentUserRole().subscribe((role: any) => {
       this.role = role;
     })
@@ -84,13 +84,15 @@ export class RealtimeComponent implements OnInit {
       });
     }
   }
-
+  teamUser;
   populateUsers() {
     this.members = [];
     this.members.push({ id: this.currentUser.id, name: "Me", email: this.currentUser.id });
     this.member = this.currentUser;
     this.timelog.getTeamMembers(this.member.id).subscribe({
-      next: (response: { data: any; }) => {
+      next: (response: { data: any[]; }) => {
+
+        this.teamUser = response.data;
         this.timelog.getusers(response.data).subscribe({
           next: result => {
             result.data.forEach(user => {
@@ -114,9 +116,9 @@ export class RealtimeComponent implements OnInit {
     this.getRealtime();
   }
 
-  
 
-  
+
+
   exportToExcel() {
     this.exportService.exportToExcel('RealTime', 'realTime', this.realtime);
   }
@@ -128,17 +130,23 @@ export class RealtimeComponent implements OnInit {
   exportToPdf() {
     this.exportService.exportToPdf('RealTime', this.content.nativeElement)
   }
- 
-  
+
+
   getRealtime() {
-    let realtime = new RealTime();
-    realtime.projects = this.selectedProject ;
-    realtime.tasks = this.selectedTask;
-    realtime.users = (this.role.toLowerCase() === "admin") ? this.selectedUser : [this.currentUser.id];
-    this.timelog.realTime(realtime).subscribe(result => {
-      this.realtime = result.data[0];
-         
-      
-    })
+    console.log(this.member.id)
+    this.timelog.getTeamMembers(this.member.id).subscribe((response: any) => {
+      this.teamUser = response.data;
+console.log(this.teamUser)
+
+      let realtime = new RealTime();
+      realtime.projects = this.selectedProject;
+      realtime.tasks = this.selectedTask;
+      realtime.users = (this.role.toLowerCase() === "admin") ? this.selectedUser : [...this.teamUser , this.currentUser.id];
+      console.log(realtime.users)
+
+      this.timelog.realTime(realtime).subscribe(result => {
+        this.realtime = result.data[0];
+      })
+    });
   }
 }
