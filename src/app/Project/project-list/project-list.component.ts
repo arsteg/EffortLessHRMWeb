@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { ColDef, ListOption } from 'ag-grid-community';
 import { Observable } from 'rxjs';
 import { ProjectService } from '../../_services/project.service';
 import { NotificationService } from '../../_services/notification.service';

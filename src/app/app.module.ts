@@ -50,7 +50,6 @@ import { AuthGuard } from './auth.guard';
 import { ProfileSettingsComponent } from './settings/profile-settings/profile-settings.component';
 import { WorkspaceSettingsComponent } from './settings/workspace-settings/workspace-settings.component';
 import { FeaturesSettingsComponent } from './settings/features-settings/features-settings.component';
-import { Ng5SliderModule } from 'ng5-slider';
 import { LeaveSettingsComponent } from './settings/leave-settings/leave-settings.component';
 import { taskModule } from './tasks/task.Module';
 import { SharedModule } from './shared/shared.Module';
@@ -149,7 +148,6 @@ import { BrowserHistoryModule } from './browserHistory/browserHistory.module';
     ModalModule,
     DragDropModule,
     ManageModule,
-    Ng5SliderModule,
     SharedModule,
     taskModule,
     MatDatepickerModule,

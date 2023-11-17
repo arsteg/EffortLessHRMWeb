@@ -22,7 +22,6 @@ import { MatNativeDateModule, MatRippleModule } from '@angular/material/core';
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AgGridModule } from 'ag-grid-angular';
 import { MatLegacyTooltipModule as MatTooltipModule } from "@angular/material/legacy-tooltip";
 import { MatSortModule } from '@angular/material/sort';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
@@ -47,7 +46,6 @@ import { MilliSecondsToTimePipe } from '../pipes/SecondsToTimePipe';
     ReactiveFormsModule,
     MatSelectModule,
     FormsModule,
-    AgGridModule.withComponents([]),
     BsDatepickerModule.forRoot(),
     MatTooltipModule,
     MatSortModule,
@@ -81,7 +79,6 @@ import { MilliSecondsToTimePipe } from '../pipes/SecondsToTimePipe';
     BsDatepickerModule,
     ReactiveFormsModule,
     FormsModule,
-    AgGridModule,
     BsDatepickerModule,
     MatSortModule,
     ToastrModule,

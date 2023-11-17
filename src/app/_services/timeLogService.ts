@@ -8,7 +8,6 @@ import { RealTime, timeLog } from '../models/timeLog';
 import {response} from '../models/response'
 import { baseService } from './base';
 import { User } from '../models/user';
-import { stringToArray } from 'ag-grid-community';
 
 @Injectable({
   providedIn: 'root'
