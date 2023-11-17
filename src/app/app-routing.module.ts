@@ -158,7 +158,7 @@ const routes: Routes = [
 @NgModule({
   imports: [
     CommonModule,
-    RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy', useHash: true }),
+    RouterModule.forRoot(routes, { useHash: true }),
     ScrollingModule
   ],
   exports: [RouterModule]
