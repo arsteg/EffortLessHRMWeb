@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { TaskAttachment, taskComment } from 'src/app/models/task/taskComment';
 import { TasksService } from '../../_services/tasks.service';
 import { UserService } from 'src/app/_services/users.service';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { ToastrService } from 'ngx-toastr';
 import { CommonService } from 'src/app/common/common.service';

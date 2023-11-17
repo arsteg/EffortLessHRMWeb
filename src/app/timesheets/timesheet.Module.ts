@@ -3,13 +3,13 @@ import { SharedModule } from "../shared/shared.Module";
 import { ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
+import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
+import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { CommonModule } from '@angular/common';
 import { TimesheetsComponent } from "./timesheets.component";
 import { UserTimesheetComponent } from "./user-timesheet/user-timesheet.component";
 import { AdminTimesheetComponent } from "./admin-timesheet/admin-timesheet.component";
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
 
 @NgModule({
   declarations: [TimesheetsComponent, UserTimesheetComponent, AdminTimesheetComponent],
