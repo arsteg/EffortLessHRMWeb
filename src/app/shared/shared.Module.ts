@@ -4,22 +4,22 @@ import { SortDirective } from "../directive/sort.directive";
 import { CdkTableModule } from '@angular/cdk/table';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { SearchPipe } from "./search.pipe";
-import {MatCheckboxModule} from '@angular/material/checkbox';
-import {MatRadioModule} from '@angular/material/radio';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatRadioModule } from '@angular/material/radio';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
-import {MatTableModule} from '@angular/material/table';
-import {MatFormFieldModule} from '@angular/material/form-field';
+import { MatTableModule } from '@angular/material/table';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from "@angular/material/input";
 import { CommonModule } from "@angular/common";
-import {MatSelectModule} from '@angular/material/select';
+import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
-import {MatDatepickerModule} from '@angular/material/datepicker';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule, MatRippleModule } from '@angular/material/core';
-import {MatPaginatorModule} from '@angular/material/paginator';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AgGridModule } from 'ag-grid-angular';
@@ -30,8 +30,8 @@ import { ToastrModule } from 'ngx-toastr';
 import { MilliSecondsToTimePipe } from '../pipes/SecondsToTimePipe';
 
 @NgModule({
-  declarations:[SortDirective,SearchPipe,MilliSecondsToTimePipe],
-  imports:[
+  declarations: [SortDirective, SearchPipe, MilliSecondsToTimePipe],
+  imports: [
     CommonModule,
     MatToolbarModule,
     MatButtonModule,
@@ -56,8 +56,8 @@ import { MilliSecondsToTimePipe } from '../pipes/SecondsToTimePipe';
     MatDatepickerModule,
     MatNativeDateModule,
     MatRippleModule
-    ],
-  exports:[
+  ],
+  exports: [
     SortDirective,
     CdkTableModule,
     NgxPaginationModule,
@@ -93,4 +93,4 @@ import { MilliSecondsToTimePipe } from '../pipes/SecondsToTimePipe';
     NO_ERRORS_SCHEMA
   ],
 })
-export class SharedModule {}
+export class SharedModule { }
