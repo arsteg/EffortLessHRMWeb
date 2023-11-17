@@ -7,6 +7,8 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 import * as moment from 'moment';
 import { UserService } from 'src/app/_services/users.service';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
+import { CommonService } from 'src/app/common/common.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-expenses-template-assignment',
@@ -24,24 +26,30 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
   templateAssignmentForm: FormGroup;
   templateResponse;
   selectedTemplateAssignmentId: any;
+  allAssignee: any[];
 
 
   constructor(private modalService: NgbModal,
     private dialog: MatDialog,
     private expenseService: ExpensesService,
     private fb: FormBuilder,
-    private authService: AuthenticationService) {
+    private authService: AuthenticationService,
+    private commonService: CommonService,
+    private toast: ToastrService) {
     this.templateAssignmentForm = this.fb.group({
       user: [''],
       approver: [''],
       expenseTemplate: [''],
-      effectiveDate: [moment().format('YYYY-MM-DD')]
+      effectiveDate: []
     })
   }
 
   ngOnInit(): void {
     this.getAllTemplates();
-    this.getAssignments()
+    this.getAssignments();
+    this.commonService.populateUsers().subscribe(result => {
+      this.allAssignee = result && result.data && result.data.data;
+    });
   }
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
@@ -59,20 +67,31 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
     });
   }
-  clearselectedRequest() {
-
+  clearSelection() {
+      this.templateAssignmentForm.reset();
   }
-  openDialog(): void {
+
+  deleteTemplateAssignment(_id: string) {
+    this.expenseService.deleteTemplateAssignment(_id).subscribe((res: any) => {
+      const index = this.templateAssignments.findIndex(temp => temp._id === _id);
+      if (index !== -1) {
+        this.templateAssignments.splice(index, 1);
+      }
+    })
+  }
+
+  openDialog(id: string): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-      width: '400px',
-      // data: asset,
+      width: '400px'
     });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result === 'delete') {
+        this.deleteTemplateAssignment(id);
+        this.toast.success('Deleted Successfully!');
       }
       (err) => {
-        // this.toast.error('Can not be Deleted', 'Error!');
+        this.toast.error('Can not be Deleted', 'Error!');
       };
     });
   }
@@ -81,20 +100,6 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
     this.expenseService.getAllTemplates().subscribe((res: any) => {
       this.templates = res.data;
     })
-  }
-  name: string
-  selectedUsersChanged($event: string): void {
-    this.userId = $event;
-
-  }
-  selectedUserNameChange($event: string): void {
-    this.name = $event;
-    console.log(this.name, this.userId)
-  }
-
-
-  selectedApproverChanged($event: string): void {
-    this.approverId = $event;
   }
 
 
@@ -129,7 +134,7 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
           }
 
           if (this.templateResponse.data != null) {
-            this.templateAssignments[i].expenseTemplate = this.templateResponse.data.policyLabel;
+            this.templateAssignments[i].expenseTemplate = this.templateResponse.data;
           }
         }
       });
@@ -137,24 +142,29 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
   }
 
 
-
   addOrUpdateAssignment() {
     let payload = {
-      user: this.userId,
-      approver: this.approverId,
+      user: this.templateAssignmentForm.value.user,
+      approver: this.templateAssignmentForm.value.approver,
       expenseTemplate: this.templateAssignmentForm.value.expenseTemplate,
       effectiveDate: this.templateAssignmentForm.value.effectiveDate
     }
-    this.expenseService.addTemplateAssignment(payload).subscribe((res: any) => {
-      this.templateAssignments = res.data;
-    })
-
-    const id: string = ''
-    if (this.changeMode == 'Update') {
+    if (this.changeMode == 'Add') {
+      this.expenseService.addTemplateAssignment(payload).subscribe((res: any) => {
+        const newTemplateAssignment = res.data;
+        this.templateAssignments.push(newTemplateAssignment);
+        this.templateAssignmentForm.reset();
+      });
+    }
+    else {
       console.log(this.selectedTemplateAssignmentId, payload)
-      // this.expenseService.updateTemplateAssignment(selectedTemplateAssignmentId, payload).subscribe((res: any) => {
-
-      // })
+      this.expenseService.updateTemplateAssignment(this.selectedTemplateAssignmentId, payload).subscribe((res: any) => {
+        const updatedTemplateAssign = res.data;
+        const index = this.templateAssignments.findIndex(templateAssign => templateAssign._id === updatedTemplateAssign._id);
+        if (index !== -1) {
+          this.templateAssignments[index] = updatedTemplateAssign;
+        }
+      })
     }
   }
 
@@ -169,14 +179,10 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
 
   setFormValues(templateAssignment: any) {
     this.templateAssignmentForm.patchValue({
-      user: templateAssignment.user,
-      approver: templateAssignment.approver,
-      expenseTemplate: templateAssignment.expenseTemplate,
+      user: templateAssignment.user._id,
+      approver: templateAssignment.approver._id,
+      expenseTemplate: templateAssignment.expenseTemplate._id,
       effectiveDate: templateAssignment.effectiveDate
     });
-    console.log(this.templateAssignmentForm)
-    this.expenseService.getTemplateAssignmentById(templateAssignment._id).subscribe((res: any) => {
-    });
-
   }
 }

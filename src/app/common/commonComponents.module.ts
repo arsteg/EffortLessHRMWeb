@@ -9,9 +9,10 @@ import { MatNativeDateModule, MatRippleModule } from '@angular/material/core';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { FormsModule } from '@angular/forms';
 import { SubordinateSelectionComponent } from "./subordinateSelection/subordinateSelection.component";
+import { CRUDComponent } from './crud/crud.component';
 
 @NgModule({
-    declarations:[SubordinateSelectionComponent],
+    declarations:[SubordinateSelectionComponent, CRUDComponent],
     exports:[SubordinateSelectionComponent],
     imports:[SharedModule,
       RouterModule,

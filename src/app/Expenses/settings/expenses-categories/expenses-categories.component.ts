@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, FormArray, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
+import { of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators'
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { ExpenseCategory, ExpenseCategoryField } from 'src/app/models/expenses';
@@ -34,7 +35,7 @@ export class ExpensesCategoriesComponent implements OnInit {
 
   selectedField: any;
   selectedCategory: any;
-  field: any = [];
+  field: any = []
   fname: string;
   ftype: string;
 
@@ -54,9 +55,6 @@ export class ExpensesCategoriesComponent implements OnInit {
       Type: [''],
       Value: ['']
     });
-
-
-
   }
 
   ngOnInit(): void {
@@ -200,45 +198,86 @@ export class ExpensesCategoriesComponent implements OnInit {
   }
 
 
-  updateExpenseCategory() {
-    let categoryPayload = {
-      type: this.addCategoryForm.value['type'],
-      label: this.addCategoryForm.value['label'],
-    }
-    this.expenses.updateCategory(this.selectedCategory?._id, categoryPayload).subscribe((res: any) => {
-      const categoryId = res.data._id;
-
-      // update application field
-      if (this.addCategoryForm.value['fields'].length > 0) {
-        let fieldsPayload = {
-          fields: this.addCategoryForm.value['fields'],
-          expenseCategory: categoryId
-        }
-        console.log('Fields: ',this.addCategoryForm.value)
-        // this.expenses.updateCategoryField(this.selectedField?._id, fieldsPayload).subscribe((res: any) => {
-        //   console.log(res)
-        // })
-       
-      }
-    });
-
-    this.addCategoryForm.reset();
-    this.isEdit = false;
-  }
 
 
   get isAddCategoryFormValid() {
     return this.addCategoryForm.valid;
   }
 
+  // updateExpenseCategory() {
+  //   let categoryPayload = {
+  //     type: this.addCategoryForm.value['type'],
+  //     label: this.addCategoryForm.value['label'],
+  //   }
+  //   this.expenses.updateCategory(this.selectedCategory?._id, categoryPayload).subscribe((res: any) => {
+  //     const categoryId = res.data._id;
+
+  //     // update application field
+  //     if (this.addCategoryForm.value['fields'].length > 0) {
+  //       let fieldsPayload = {
+  //         fields: this.addCategoryForm.value['fields'],
+  //         expenseCategory: categoryId
+  //       }
+  //       const fieldId = this.field[0]._id;
+  //       console.log(fieldId, this.addCategoryForm.value['fields'])
+  //       // this.expenses.updateCategoryField(fieldId, fieldsPayload).subscribe((res: any) => {
+  //       //   console.log(res)
+  //       // })
+
+  //     }
+  //   });
+
+  //   this.addCategoryForm.reset();
+  //   this.isEdit = false;
+  // }
+  // editCategory(category, index) {
+  //   this.isEdit = true;
+  //   this.selectedCategory = category;
+  //   this.expenses.getApplicationFieldbyCategory(this.selectedCategory._id).subscribe(
+  //     (res: any) => {
+  //       this.field = res.data;
+  //       let fieldData = this.field.map((field) => {
+  //         return {
+  //           fieldName: field.fieldName,
+  //           fieldType: field.fieldType,
+  //           isMandatory: field.isMandatory
+  //         }
+  //       })
+  //       if (fieldData && fieldData.length) {
+  //         fieldData.forEach((field) => {
+  //           this.fields.push(this.fb.group({
+  //             fieldName: field.fieldName,
+  //             fieldType: field.fieldType,
+  //             isMandatory: field.isMandatory
+  //           }));
+
+
+  //         })
+
+  //         this.selectedField = this.field.map((field) => {
+  //           return {
+  //             _id: field._id
+  //           }
+  //         })
+  //       }
+  //       this.addCategoryForm.patchValue({
+  //         type: category.type,
+  //         label: category.label,
+  //         fields: this.fields.value,
+  //         expenseCategory: this.selectedCategory._id,
+  //         expenseApplicationField: this.selectedField || null
+  //       });
+  //       console.log(this.addCategoryForm.value);
+  //     }
+  //   );
+
+  // } 
+
+
+
   editCategory(category, index) {
     this.isEdit = true;
     this.selectedCategory = category;
-    // Set other form values
-    this.addCategoryForm.patchValue({
-      type: category.type,
-      label: category.label,
-    });
     this.expenses.getApplicationFieldbyCategory(this.selectedCategory._id).subscribe(
       (res: any) => {
         this.field = res.data;
@@ -247,27 +286,70 @@ export class ExpensesCategoriesComponent implements OnInit {
             fieldName: field.fieldName,
             fieldType: field.fieldType,
             isMandatory: field.isMandatory
-          }
-        })
+          };
+        });
 
         if (fieldData && fieldData.length) {
-
           fieldData.forEach((field) => {
             this.fields.push(this.fb.group({
               fieldName: field.fieldName,
               fieldType: field.fieldType,
               isMandatory: field.isMandatory
             }));
+          });
 
-          })
-
-          // this.selectedField = this.field.map((field) => {
-          //   return {
-          //     _id: field._id
-          //   }
-          // })
+          this.selectedField = this.field.map((field) => {
+            return {
+              _id: field._id
+            };
+          });
         }
+
+        this.addCategoryForm.patchValue({
+          type: category.type,
+          label: category.label,
+          fields: this.fields.value,
+          expenseCategory: this.selectedCategory._id,
+          expenseApplicationField: this.selectedField || null
+        });
+        console.log(this.addCategoryForm.value);
       }
     );
   }
+
+  updateExpenseCategory() {
+    this.expenses.getApplicationFieldbyCategory(this.selectedCategory._id).pipe(
+      switchMap((res: any) => {
+        this.field = res.data;
+        console.log(this.fields.value);
+        if (this.addCategoryForm.value['fields'].length > 0) {
+          let fieldsPayload = {
+            fields: this.addCategoryForm.value['fields'],
+            expenseCategory: this.selectedCategory._id
+          };
+          const fieldId = this.field[0]._id;
+          console.log(fieldId, this.addCategoryForm.value);
+          return this.expenses.updateCategoryField(fieldId, fieldsPayload);
+        } else {
+          return of(null); // Return a dummy observable if no fields to update
+        }
+      })
+    ).subscribe((res: any) => {
+      console.log(res);
+    });
+
+    let categoryPayload = {
+      type: this.addCategoryForm.value['type'],
+      label: this.addCategoryForm.value['label'],
+    };
+
+    this.expenses.updateCategory(this.selectedCategory?._id, categoryPayload).subscribe((res: any) => {
+      const categoryId = res.data._id;
+    });
+
+    this.addCategoryForm.reset();
+    this.isEdit = false;
+  }
+
+
 }

@@ -74,7 +74,6 @@ export class ExpensesTemplatesComponent implements OnInit {
 
       this.formatValues = res.data.downloadableFormats;
       this.formatChecked = this.downloadableFormat?.map(format => this.formatValues?.includes(format));
-      console.log(this.formatChecked)
     });
 
   }
@@ -99,9 +98,7 @@ export class ExpensesTemplatesComponent implements OnInit {
         this.toast.success('Deleted Successfully!');
 
       }
-      (err) => {
-        this.toast.error('Can not be Deleted', 'Error!');
-      };
+
     });
   }
 
@@ -139,7 +136,6 @@ export class ExpensesTemplatesComponent implements OnInit {
       }
     }
   }
-
 
   addTemplate() {
     let payload = {

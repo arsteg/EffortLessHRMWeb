@@ -117,6 +117,11 @@ export class ExpensesService {
     return response;
   }
 
+  deleteTemplateAssignment(id: string): Observable<response<any>> {
+    var response = this.http.delete<response<any>>(`${environment.apiUrlDotNet}/expense/employee-expense-assignments/${id}`, this.httpOptions);
+    return response;
+  }
+
   getTemplateAssignmentById(id: string): Observable<response<any>> {
     var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/employee-expense-assignments/${id}`, this.httpOptions);
     return response;
