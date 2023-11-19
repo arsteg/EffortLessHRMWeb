@@ -22,7 +22,7 @@ import { MatNativeDateModule, MatRippleModule } from '@angular/material/core';
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyTooltipModule as MatTooltipModule } from "@angular/material/legacy-tooltip";
+import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatSortModule } from '@angular/material/sort';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';

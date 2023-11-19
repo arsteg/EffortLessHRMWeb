@@ -73,7 +73,6 @@ import { AssetsModule } from './AssetsManagement/assetManagement.module';
 import { UserCalendarComponent } from './calendar/user-calendar/user-calendar.component';
 import { AdminCalendarComponent } from './calendar/admin-calendar/admin-calendar.component';
 import { FullCalendarModule } from '@fullcalendar/angular';
-import dayGridPlugin from '@fullcalendar/daygrid';
 import { DocumentManagementModule } from './documentManager/documentManager.module';
 import { LeaveModule } from './Leave/leave.module';
 import { OragnizationModule } from './organization/organization.module';

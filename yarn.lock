@@ -190,7 +190,7 @@
   dependencies:
     tslib "^2.3.0"
 
-"@angular/core@^13.0.0", "@angular/core@^14.0.0", "@angular/core@^16.0.0 || ^17.0.0", "@angular/core@^17.0.0 || ^18.0.0", "@angular/core@^17.0.3", "@angular/core@>=12.0.0", "@angular/core@>=13.0.0", "@angular/core@>=16.0.0-0", "@angular/core@>=2.0.0", "@angular/core@12 - 16", "@angular/core@17.0.3":
+"@angular/core@^13.0.0", "@angular/core@^16.0.0 || ^17.0.0", "@angular/core@^17.0.0", "@angular/core@^17.0.0 || ^18.0.0", "@angular/core@^17.0.3", "@angular/core@>=12.0.0", "@angular/core@>=13.0.0", "@angular/core@>=16.0.0-0", "@angular/core@>=2.0.0", "@angular/core@12 - 16", "@angular/core@17.0.3":
   version "17.0.3"
   resolved "https://registry.npmjs.org/@angular/core/-/core-17.0.3.tgz"
   integrity sha512-zY4yhPiphuktrodaM+GiP8G07qnUlmwKElLjYazeIR8A+kF51RQRpSf/pWe5M0uJIn5Oja+RdO9kzhDI9QvOcA==
@@ -1295,17 +1295,17 @@
   resolved "https://registry.npmjs.org/@fastify/busboy/-/busboy-2.1.0.tgz"
   integrity sha512-+KpH+QxZU7O4675t3mnkQKcZZg56u+K/Ct2K+N2AZYNVK8kyeo/bI18tI8aPm3tvNNRyTWfj6s5tnGNlcbQRsA==
 
-"@fullcalendar/angular@^6.1.8":
-  version "6.1.8"
-  resolved "https://registry.npmjs.org/@fullcalendar/angular/-/angular-6.1.8.tgz"
-  integrity sha512-jOYy2fvYagJe9F4T4gJ6U8VpfZJdzHnuZipHj1bJPHuzw4/pRzenf8yeg4tmvDegbMn8rKyddIgy1B5h6umnWg==
+"@fullcalendar/angular@^6.1.9":
+  version "6.1.9"
+  resolved "https://registry.npmjs.org/@fullcalendar/angular/-/angular-6.1.9.tgz"
+  integrity sha512-cN91zGQEGM9s6VnD+2jNdHomAGHJIGSMBR0ts5gJC0FIRCuLtjDxiZN4kNfRWxx7NJiSLm+NCKijo6317pGhsw==
   dependencies:
     tslib "^2.3.0"
 
-"@fullcalendar/core@~6.1.8":
-  version "6.1.8"
-  resolved "https://registry.npmjs.org/@fullcalendar/core/-/core-6.1.8.tgz"
-  integrity sha512-i8JBIvZCWGO9dsMEDcx9bnsQZ9PtGSJdOXGgWbhLaGq2iq41OBdp9g9gM4b/Otv2oK8bL5Gl6CsMmb/HkDtA6Q==
+"@fullcalendar/core@~6.1.8", "@fullcalendar/core@~6.1.9":
+  version "6.1.9"
+  resolved "https://registry.npmjs.org/@fullcalendar/core/-/core-6.1.9.tgz"
+  integrity sha512-eeG+z9BWerdsU9Ac6j16rpYpPnE0wxtnEHiHrh/u/ADbGTR3hCOjCD9PxQOfhOTHbWOVs7JQunGcksSPu5WZBQ==
   dependencies:
     preact "~10.12.1"
 
@@ -5797,10 +5797,10 @@ neo-async@^2.6.2:
   resolved "https://registry.npmjs.org/neo-async/-/neo-async-2.6.2.tgz"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
-ng-http-loader@^12.0.0:
-  version "12.0.0"
-  resolved "https://registry.npmjs.org/ng-http-loader/-/ng-http-loader-12.0.0.tgz"
-  integrity sha512-SEwbqgFpgUsf4xqntnD4EXMsWQWeL6fwKplPxpxOU8EdvoNe/DNwY5AKus0fu4DnDEgxuoOl6A3wA/iKjA+urA==
+ng-http-loader@^15.0.0:
+  version "15.0.0"
+  resolved "https://registry.npmjs.org/ng-http-loader/-/ng-http-loader-15.0.0.tgz"
+  integrity sha512-9Xulfh41fe1C6Q+O3U/YcmjJjLs7s4GnIvttJQm+PiqNdaOd7fb/BX5ZecWzgxFNGEYcFVFWGoeIgj7ybMixyQ==
   dependencies:
     tslib "^2.3.0"
 
@@ -5825,10 +5825,10 @@ ngx-pagination@^6.0.3:
   dependencies:
     tslib "^2.3.0"
 
-ngx-quill@^17.0.0:
-  version "17.1.1"
-  resolved "https://registry.npmjs.org/ngx-quill/-/ngx-quill-17.1.1.tgz"
-  integrity sha512-Cab8ceRj+DvrqZYckRRf+zY6Xj9umrDZgoWCuoE1Ur68zu6Vz76sqPKfZR8XOxqMWFI0kOZV2Aayp8bZ08buXA==
+ngx-quill@^24.0.2:
+  version "24.0.2"
+  resolved "https://registry.npmjs.org/ngx-quill/-/ngx-quill-24.0.2.tgz"
+  integrity sha512-piV6n3cfsxl7wNbQ/fXXazJ23qzVISeG8EAvlKsXJNTu9kIue3vQeXTrhm7hVhlEvk+GILhp3Gv0zz64AGsB7g==
   dependencies:
     tslib "^2.3.0"
 
@@ -6706,7 +6706,7 @@ rx@4.1.0:
   resolved "https://registry.npmjs.org/rx/-/rx-4.1.0.tgz"
   integrity sha512-CiaiuN6gapkdl+cZUr67W6I8jquN4lkak3vtIsIWCl4XIPP8ffsoyN6/+PuGXnQy8Cu8W2y9Xxh31Rq4M6wUug==
 
-"rxjs@^6.5.3 || ^7.4.0", rxjs@^7.0.0, rxjs@^7.5.0, rxjs@~7.5.0:
+"rxjs@^6.5.3 || ^7.4.0", rxjs@^7.0.0, rxjs@^7.8.0, rxjs@~7.5.0:
   version "7.5.5"
   resolved "https://registry.npmjs.org/rxjs/-/rxjs-7.5.5.tgz"
   integrity sha512-sy+H0pQofO95VDmFLzyaw9xNJU4KTRSwQIGM6+iG3SypAtCiLDzpeG8sJrNCWn2Up9km+KhkvTdbkrdy+yzZdw==
