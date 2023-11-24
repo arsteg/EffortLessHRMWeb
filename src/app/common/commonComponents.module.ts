@@ -13,7 +13,7 @@ import { CRUDComponent } from './crud/crud.component';
 
 @NgModule({
     declarations:[SubordinateSelectionComponent, CRUDComponent],
-    exports:[SubordinateSelectionComponent],
+    exports:[SubordinateSelectionComponent, CRUDComponent],
     imports:[SharedModule,
       RouterModule,
       MatFormFieldModule,

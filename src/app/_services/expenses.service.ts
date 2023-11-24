@@ -102,8 +102,8 @@ export class ExpensesService {
   }
 
 
-  addTemplateApplicableCategories(templateAppCat: ApplicableCategories): Observable<response<any>> {
-    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/expense-template-applicable-categories`, templateAppCat, this.httpOptions);
+  addTemplateApplicableCategories(expenseTemplate: string, expenseCategories: string[]): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/expense-template-applicable-categories`, {expenseTemplate, expenseCategories}, this.httpOptions);
     return response;
   }
 //  expnse template assignment

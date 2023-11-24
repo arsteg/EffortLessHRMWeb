@@ -1,3 +1,5 @@
+<!-- <app-crud (onSubmit)="handleSubmit($event)" [readOnly]="false" [fields]="f"></app-crud> -->
+
 <div class="mainContent">
     <div class="container">
         <div class="py-2 px-0 bg-white tableContainer">
@@ -7,7 +9,7 @@
                     <span class="bi bi-search searchIcon"></span>
 
                     <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
-name="searchText" aria-label="default input example">
+                        name="searchText" aria-label="default input example">
                     <button mat-raised-button class="addBtn rounded-pill ms-3"
                         (click)="clearselectedRequest(); open(addModal)">Add New</button>
                 </div>
@@ -56,8 +58,7 @@ name="searchText" aria-label="default input example">
         </div>
     </div>
 
-    <form action="" [formGroup]="addCategoryForm"
-        (ngSubmit)="isEdit ? updateExpenseCategory() :  addExpenseCategory()">
+    <form action="" [formGroup]="addCategoryForm" (ngSubmit)="isEdit ? updateExpenseCategory() :  addExpenseCategory()">
         <div class="form-group">
             <label for="">Please choose the type of expense</label>
             <select formControlName="type" required name="expenseType" class="">
@@ -69,7 +70,7 @@ name="searchText" aria-label="default input example">
             </select>
             <div *ngIf="addCategoryForm.get('type').invalid && addCategoryForm.get('type').touched"
                 class="text-danger error">
-                Please Select a Type of Category! 
+                Please Select a Type of Category!
             </div>
         </div>
         <div class="mt-2 form-group">

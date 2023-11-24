@@ -6,9 +6,8 @@
                 <div class="d-flex align-items-center">
                     <span class="bi bi-search searchIcon"></span>
 
-                    <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText" 
-                    (input)="filteredTemplate()"
-                        name="searchText" aria-label="default input example">
+                    <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
+                        (input)="filteredTemplate()" name="searchText" aria-label="default input example">
                     <button mat-raised-button class="addBtn rounded-pill ms-3"
                         (click)="changeMode='Add'; open(addModal)">Add New</button>
                 </div>
@@ -68,7 +67,7 @@
                 </div>
             </div>
 
-            <div class="mt-2"  class="form-group">
+            <div class="mt-2" class="form-group">
                 <label for="">How many levels of approvals you want to add?<span class="text-danger">*</span></label>
                 <div class="d-flex">
 
@@ -88,19 +87,23 @@
                     </div>
                 </div>
                 <div *ngIf="addTemplateForm.get('approvalType').invalid && addTemplateForm.get('approvalType').touched"
-                class="text-danger error">
-                Please Select Approval Type!
-            </div>
+                    class="text-danger error">
+                    Please Select Approval Type!
+                </div>
             </div>
 
 
             <div class="mt-2">
-                <label for="">What expense categories are applicable in this expense template?<span
-                        class="text-danger">*</span></label>
-                <select name="" id="" class="">
-                    <option value="" *ngFor="let categories of expenseCategories">{{categories.label}}</option>
 
-                </select>
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>What expense categories are applicable in this expense template?<span
+                            class="text-danger">*</span></mat-label>
+                    <mat-select multiple formControlName="expenseCategory">
+                        <mat-option [value]="categories._id" *ngFor="let categories of expenseCategories">
+                            {{categories.label}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
             </div>
 
             <div class="mt-2">

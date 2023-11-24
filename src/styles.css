@@ -478,7 +478,11 @@ select {
   width: 410px !important;
   border-radius: 1.2rem
 }
-
+@media (min-width: 768px){
+  .dash-boxes, .dash-report{
+    width: 375px !important;
+  }
+}
 .time {
   font-weight: 500 !important;
 }
@@ -498,8 +502,9 @@ select {
 }
 
 .taskReport {
-  max-height: 650px;
+  max-height: 700px;
   overflow-y: scroll;
+  overflow-x: clip;
 }
 
 .prod {
@@ -553,13 +558,14 @@ select {
   text-decoration: none !important;
 }
 
-.fc .fc-button {
-  background: #76bc21;
+.fc .fc-button, .mat-calendar-body-selected {
+  background: #76bc21 !important;
 }
 
 .fc .fc-button-primary:disabled {
   background: #bcf478;
 }
+
 
 .fc .fc-button-primary:not(:disabled).fc-button-active,
 .fc .fc-button-primary:hover,

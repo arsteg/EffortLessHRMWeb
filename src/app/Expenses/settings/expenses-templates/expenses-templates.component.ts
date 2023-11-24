@@ -34,7 +34,9 @@ export class ExpensesTemplatesComponent implements OnInit {
       approvalType: ['', Validators.required],
       advanceAmount: [true],
       applyforSameCategorySamedate: [true],
-      downloadableFormats: this.fb.array([])
+      downloadableFormats: this.fb.array([]),
+      expenseTemplate: [''],
+      expenseCategory: ['']
     });
 
   }
@@ -119,6 +121,9 @@ export class ExpensesTemplatesComponent implements OnInit {
     return this.addTemplateForm.get('downloadableFormats') as FormArray;
   }
 
+  get categoriesArray(){
+    return this.addTemplateForm.get('selectedCategories') as FormArray;
+  }
   onCheckboxChange(event, format: string) {
     const downloadableFormatsArray = this.addTemplateForm.get('downloadableFormats') as FormArray;
 
@@ -136,22 +141,28 @@ export class ExpensesTemplatesComponent implements OnInit {
       }
     }
   }
-
   addTemplate() {
     let payload = {
       policyLabel: this.addTemplateForm.value.policyLabel,
       approvalType: this.addTemplateForm.value.approvalType,
       applyforSameCategorySamedate: this.addTemplateForm.value.applyforSameCategorySamedate,
       advanceAmount: this.addTemplateForm.value.advanceAmount,
-      downloadableFormats: ['']
-
+      downloadableFormats: [''],
+      expenseTemplate: this.addTemplateForm.value.expenseTemplate,
+      expenseCategory: this.addTemplateForm.value.expenseCategory,
+     
     }
-
+    console.log(payload)
     if (this.changeMode === 'Add') {
+      console.log(payload)
+
       payload.downloadableFormats = this.addTemplateForm.value.downloadableFormats;
       this.expenseService.addTemplate(payload).subscribe((res: any) => {
         const newTemplate = res.data;
         this.templates.push(newTemplate);
+        const templateId = newTemplate._id;
+        console.log(templateId, payload.expenseCategory)
+        this.addCategoriesToTemplate(templateId, payload.expenseCategory);
         this.toast.success('New Template Created Successfully!');
         this.formatChecked = [false];
         this.addTemplateForm.reset();
@@ -164,7 +175,6 @@ export class ExpensesTemplatesComponent implements OnInit {
       const updatedFormats = this.addTemplateForm.value.downloadableFormats;
 
       payload.downloadableFormats = this.combineFormats(existingFormats, updatedFormats);
-
       this.expenseService.updateTemplate(this.selectedTemplateId, payload).subscribe((res: any) => {
         const updatedTemplate = res.data;
         const index = this.templates.findIndex(template => template._id === updatedTemplate._id);
@@ -226,5 +236,15 @@ export class ExpensesTemplatesComponent implements OnInit {
     }
   }
 
-
+  addCategoriesToTemplate(templateId: string, categories: any[]) {
+   console.log(templateId, categories);
+    this.expenseService.addTemplateApplicableCategories(templateId, categories).subscribe(
+      (res: any) => {
+        console.log(res.data);
+      },
+      (err) => {
+        this.toast.error('Categories cannot be added to the template', 'ERROR!');
+      }
+    );
+  }
 }

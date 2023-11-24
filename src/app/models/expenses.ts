@@ -25,7 +25,7 @@ export interface AddTemplate{
 
 export interface ApplicableCategories{
     expenseTemplate: string;
-    expenseCategory: string;
+    expenseCategory: string[];
 }
 
 export interface TemplateAssignment{

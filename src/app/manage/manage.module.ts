@@ -24,7 +24,7 @@ import { taskModule } from '../tasks/task.Module';
   imports: [
     CommonModule,
     MatRadioModule,
-    MatCheckboxModule, CommonComponentsModule, SharedModule, taskModule
+    MatCheckboxModule, CommonComponentsModule, SharedModule, taskModule, CommonComponentsModule
   ],
   exports: [UserListComponent, ProjectListComponent,  RequestManualTimeComponent,
     TeammembersComponent, EmailTemplateComponent],

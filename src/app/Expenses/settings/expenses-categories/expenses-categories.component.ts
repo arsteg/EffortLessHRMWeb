@@ -32,12 +32,20 @@ export class ExpensesCategoriesComponent implements OnInit {
   newOption: string = '';
   isEdit = false;
   removedFieldId: string = '';
-
+  
   selectedField: any;
   selectedCategory: any;
   field: any = []
   fname: string;
   ftype: string;
+
+
+  f: any= [{
+    addName: 'user name:',
+    type: 'text',
+    value: 'First',
+    id: 'user'
+  }]
 
   constructor(private modalService: NgbModal,
     private dialog: MatDialog,
@@ -55,6 +63,10 @@ export class ExpensesCategoriesComponent implements OnInit {
       Type: [''],
       Value: ['']
     });
+  }
+
+  handleSubmit(event){
+    console.log(event)
   }
 
   ngOnInit(): void {

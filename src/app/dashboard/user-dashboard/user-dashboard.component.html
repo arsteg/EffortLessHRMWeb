@@ -1,17 +1,18 @@
 <div class="main-content mt-5">
   <div class="container-fluid">
     <div class="col-2 ms-auto">
-      <mat-form-field appearance="outline" class="" style="border-radius: 5px; height: 49px; margin: -20px 0 11px 0">
+      <mat-form-field appearance="outline" class="mt-1"
+        style="border-radius: 5px; height: 49px; margin: -20px 0 11px 0">
         <mat-label class="">Select Date</mat-label>
         <div class="w-100 d-flex" style="margin: -15px 0">
-          <input matInput [matDatepicker]="picker1" [(ngModel)]="selectedDate" (dateChange)="onDateChange($event)"/>
+          <input matInput [matDatepicker]="picker1" [(ngModel)]="selectedDate" (dateChange)="onDateChange($event)" />
           <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
           <mat-datepicker #picker1></mat-datepicker>
         </div>
       </mat-form-field>
     </div>
     <div class="row my-3 justify-content-evenly">
-      <div class="col-md-4  rounded dash-boxes p-3 bg-white">
+      <div class="col-md-4   dash-boxes p-3 bg-white">
         <div class="about__top ">
           <div class="about__title">
             <h1 class="content__title me-3">Today</h1>
@@ -19,24 +20,25 @@
           </div>
           <div class="top-text d-flex">
             <p class="text mb-0 me-2">
-              <span style="color: rgb(255, 190, 91)" [style.color]="hoursWorked?.changeColor">{{ hoursWorked?.changeDisplay}}% </span><span class="text-dark"> Yesterday </span>
+              <span style="color: rgb(255, 190, 91)" [style.color]="hoursWorked?.changeColor">{{
+                hoursWorked?.changeDisplay}}% </span><span class="text-dark"> Yesterday </span>
             </p>
             <div class="hours"><span class="p-2 py-3 text-light">{{formatMillisecondsToTime(hoursWorked?.previousDay)
                 }}</span></div>
 
-                <span class="ms-auto">
-                  <img *ngIf="hoursWorked?.increased==true" src="../assets/images/graph-up-green.svg" height="80" width="100"
-                    alt="Profile Picture">
-                  <img *ngIf="hoursWorked?.increased==false" src="../assets/images/graph-down-red.svg" height="80" width="100"
-                    alt="Profile Picture">
-                </span>
+            <span class="ms-auto">
+              <img *ngIf="hoursWorked?.increased==true" src="../assets/images/graph-up-green.svg" height="80"
+                width="100" alt="Profile Picture">
+              <img *ngIf="hoursWorked?.increased==false" src="../assets/images/graph-down-red.svg" height="80"
+                width="100" alt="Profile Picture">
+            </span>
 
           </div>
 
         </div>
       </div>
 
-      <div class="col-md-4  rounded dash-boxes p-3 bg-white">
+      <div class="col-md-4   dash-boxes p-3 bg-white">
         <div class="about__top ">
           <div class="about__title">
             <h1 class="content__title me-3">This week</h1>
@@ -44,23 +46,25 @@
           </div>
           <div class="top-text">
             <p class="text mb-0 me-2">
-              <span style="color: rgb(255, 190, 91)" [style.color]="weeklySummary?.changeColor">{{weeklySummary?.changeDisplay}}% </span><span class="text-dark"> last week </span>
+              <span style="color: rgb(255, 190, 91)"
+                [style.color]="weeklySummary?.changeColor">{{weeklySummary?.changeDisplay}}% </span><span
+                class="text-dark"> last week </span>
             </p>
             <div class="hours"><span class="p-2 py-3 text-light">{{formatHoursAndMinutes(weeklySummary?.previousWeek)
                 }}</span></div>
-                <div class="d-flex justify-content-between ms-auto">
-                  <img *ngIf="weeklySummary?.increased==true" src="../assets/images/graph-up-green.svg" height="80" width="100"
-                    alt="Profile Picture">
-                  <img *ngIf="weeklySummary?.increased==false" src="../assets/images/graph-down-red.svg" height="80" width="100"
-                    alt="Profile Picture">
-                </div>
+            <div class="d-flex justify-content-between ms-auto">
+              <img *ngIf="weeklySummary?.increased==true" src="../assets/images/graph-up-green.svg" height="80"
+                width="100" alt="Profile Picture">
+              <img *ngIf="weeklySummary?.increased==false" src="../assets/images/graph-down-red.svg" height="80"
+                width="100" alt="Profile Picture">
+            </div>
           </div>
 
         </div>
       </div>
 
 
-      <div class="col-md-4  rounded dash-boxes p-3 bg-white">
+      <div class="col-md-4   dash-boxes p-3 bg-white">
         <div class="about__top">
           <div class="about__title">
             <h1 class="content__title me-3">This Month</h1>
@@ -68,9 +72,13 @@
           </div>
           <div class="top-text d-flex">
             <p class="text mb-0 me-2">
-              <span style="color: rgb(255, 190, 91)" [style.color]="monthlySummary?.changeColor">{{monthlySummary?.changeDisplay}}% </span><span class="text-dark"> a week before </span>
+              <span style="color: rgb(255, 190, 91)"
+                [style.color]="monthlySummary?.changeColor">{{monthlySummary?.changeDisplay}}% </span><span
+                class="text-dark"> a week before </span>
             </p>
-            <div class="hours"><span class="p-2 py-3 text-light">{{convertMinutesToHoursAndMinutes(monthlySummary?.previousMonth)}}</span></div>
+            <div class="hours"><span
+                class="p-2 py-3 text-light">{{convertMinutesToHoursAndMinutes(monthlySummary?.previousMonth)}}</span>
+            </div>
             <div class="d-flex justify-content-between  ms-auto">
               <img *ngIf="monthlySummary?.increased ==true" src="../assets/images/graph-up-green.svg" height="80"
                 alt="Profile Picture">
@@ -84,11 +92,11 @@
     </div>
 
     <div class="row justify-content-evenly mb-4">
-      <div class="col-md-4  rounded p-3 dash-report bg-white taskReport tableContainer">
+      <div class="col-md-4   p-3 dash-report bg-white taskReport tableContainer">
         <div class="d-flex justify-content-between">
-          <h3>Project-wise Time Spent on Each Task</h3>
+          <p class="content__title"> <i class="bi bi-clock-fill me-2"></i>Project-wise Time Spent on Each Task</p>
         </div>
-        <table class="px-2 rounded">
+        <table class="px-2 ">
           <tbody>
             <th>Project</th>
             <th>Task</th>
@@ -107,9 +115,9 @@
           </tbody>
         </table>
       </div>
-      <div class="col-md-4  rounded p-3 dash-report bg-white">
+      <div class="col-md-4   p-3 dash-report bg-white">
         <div class="d-flex justify-content-between">
-          <h3>Productivity</h3>
+          <p class="content__title"> <i class="bi bi-pie-chart-fill me-2"></i>Productivity</p>
         </div>
         <div>
           <ul type="square">
@@ -130,9 +138,9 @@
       </div>
 
 
-      <div class="col-md-4  rounded p-3 dash-report bg-white">
+      <div class="col-md-4   p-3 dash-report bg-white">
         <div class="d-flex justify-content-between">
-          <h3>Tasks summary</h3>
+          <p class="content__title"><i class="bi bi-clipboard-data-fill me-2"></i>Task Summary</p>
         </div>
         <div>
           <ul type="square">
@@ -143,7 +151,7 @@
                   'closed': task.name=== 'Closed'
                 }">{{task.name}}</li>
           </ul>
-          <ngx-charts-pie-chart  [results]="taskSummary">
+          <ngx-charts-pie-chart [results]="taskSummary">
           </ngx-charts-pie-chart>
         </div>
       </div>
@@ -151,12 +159,12 @@
     </div>
 
     <div class="row justify-content-evenly">
-      <div class="col-md-4  rounded p-3 dash-report bg-white tableContainer">
+      <div class="col-md-4   p-3 dash-report bg-white tableContainer">
         <div class="d-flex justify-content-between">
-          <h3>Project wise time on each task</h3>
-      </div>
-        
-        <table class="px-2 rounded">
+          <p class="content__title"> <i class="bi bi-clock-history me-2"></i>Project wise time on each task</p>
+        </div>
+
+        <table class="px-2 ">
           <tbody>
             <th>Project</th>
             <th>Task</th>
@@ -176,9 +184,9 @@
         </table>
       </div>
 
-      <div class="col-md-4  rounded p-3 dash-report bg-white">
+      <div class="col-md-4   p-3 dash-report bg-white">
       </div>
-      <div class="col-md-4  rounded p-3 dash-report bg-white">
+      <div class="col-md-4   p-3 dash-report bg-white">
       </div>
     </div>
   </div>
