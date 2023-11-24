@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog'; // Update import statement
 import { ToastrService } from 'ngx-toastr';
 import { DocumentsService } from 'src/app/_services/documents.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
@@ -34,6 +34,7 @@ export class DocumentCategoryComponent implements OnInit {
     getAllCategories() {
         this.documentService.getDocumentCategories().subscribe((res: any) => {
             this.categories = res.data;
+            this.filteredCategories =this.categories;
         })
     }
 
@@ -66,14 +67,14 @@ export class DocumentCategoryComponent implements OnInit {
     openDialog(id: string): void {
         const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
           width: '400px',
-         
+
         });
         dialogRef.afterClosed().subscribe(result => {
           if (result === 'delete') {
             this.deleteCategory(id);
           }
           err => {
-            this.toast.error('Can not be Deleted', 'Error!')
+            this.toast.error('Deletion failed!', 'Error!')
           }
         });
       }
@@ -84,7 +85,7 @@ export class DocumentCategoryComponent implements OnInit {
     }
 
 
-    searchCategories(query: any) {
+    searchCategories(query: string) {
         if (query) {
             this.filteredCategories = this.categories.filter(category =>
                 category.name.toLowerCase().includes(query.toLowerCase())

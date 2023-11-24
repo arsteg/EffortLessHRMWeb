@@ -32,8 +32,13 @@ export class GeneralSettingsComponent implements OnInit {
   ngOnInit(): void {
 
   }
-  selectTab(tabIndex){
-    this.selectedTab= tabIndex;
-  }
 
+  activeTab: string = 'tabRegularizationReason';
+
+  selectTab(tabId: string) {
+    this.activeTab = tabId;
+  }
+  savegeneralSettings(){
+    
+  }
 }

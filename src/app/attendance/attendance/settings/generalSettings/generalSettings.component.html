@@ -1,6 +1,8 @@
 <div class="main-content">
-  <div class="row mt-3">
-    <div class="col-12 text-right">
+  <div class="row">
+    <div class="col-10">
+    </div>
+    <div class="col-2">
       <button class="btn btn-primary">Save General Settings</button>
     </div>
   </div>
@@ -9,7 +11,7 @@
       <label>Can Employee select Regularization Reason</label>
     </div>
     <div class="col-2">
-      <input type="radio">
+      <input type="checkbox">
     </div>
   </div>
   <div class="row mt-3">
@@ -17,7 +19,7 @@
       <label>Can Employee Select On Duty Reason</label>
     </div>
     <div class="col-2">
-      <input type="radio">
+      <input type="checkbox">
     </div>
   </div>
   <div class="row mt-3">
@@ -25,25 +27,25 @@
       <label>Should shift assignment be driven by roasters</label>
     </div>
     <div class="col-2">
-      <input type="radio">
+      <input type="checkbox">
     </div>
   </div>
   <div class="row mt-3">
     <div class="col-12">
       <ul class="nav nav-tabs">
         <li class="nav-item">
-          <a class="nav-link active" href="#tabRegularizationReason" data-toggle="tab">Regularization Reason</a>
+          <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabRegularizationReason'}" (click)="selectTab('tabRegularizationReason')">Regularization Reason</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#tabOnDutyReason" data-toggle="tab">On Duty Reason</a>
+          <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabOnDutyReason'}"  (click)="selectTab('tabOnDutyReason')">On Duty Reason</a>
         </li>
       </ul>
       <div class="tab-content">
-        <div class="tab-pane active" id="tabRegularizationReason">
-          <!-- Content for Regularization Reason tab -->
+        <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabRegularizationReason'}" id="tabRegularizationReason">
+          <h1>This is Tab 1</h1>
         </div>
-        <div class="tab-pane" id="tabOnDutyReason">
-          <!-- Content for On Duty Reason tab -->
+        <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabOnDutyReason'}" id="tabOnDutyReason">
+          <h1>This is Tab 2</h1>
         </div>
       </div>
     </div>

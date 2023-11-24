@@ -1,6 +1,6 @@
 <h2 mat-dialog-title><span class="fa fa-warning fa-lg text-danger"></span> Delete</h2>
-<mat-dialog-content>Are you sure you want to Delete?</mat-dialog-content>
+<mat-dialog-content>Are you sure to delete the selected item?</mat-dialog-content>
 <mat-dialog-actions>
-  <button mat-button (click)="onNoClick()">Cancel</button>
   <button mat-button color="primary" [mat-dialog-close]="'delete'">Delete</button>
+  <button mat-button (click)="onNoClick()">Cancel</button>
 </mat-dialog-actions>
