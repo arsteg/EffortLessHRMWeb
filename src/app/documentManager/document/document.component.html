@@ -2,14 +2,14 @@
   <div class="row p-3 bg-white submenuBody ">
     <div class="col-md-8  tableContainer">
       <div class="d-flex justify-content-between">
-  <h2 class="contentHeading ps-2">Document&nbsp;Management:&nbsp;{{documents?.length}} </h2>
+  <h2 class="contentHeading ps-2">Document&nbsp;Management:&nbsp;{{filteredDocuments?.length}} </h2>
 
       <!-- Search Bar -->
       <div class="d-flex align-items-center">
       <span class="bi bi-search searchIcon"></span>
 
       <input type="text" class="form-control search " placeholder="Search by description..."
-        (keyup)="searchDocuments($event)">
+        #searchText (keyup)="searchDocuments(searchText.value)">
         </div>
       </div>
       <!-- Document Table -->
@@ -18,14 +18,14 @@
           <tr>
             <th>Category</th>
             <th>Description</th>
-            <th class="text-center">Action</th>
+            <th class="text-right">Action</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let doc of documents">
+          <tr *ngFor="let doc of this.filteredDocuments">
             <td>{{ getCategoryName(doc?.category) }}</td>
             <td>{{ doc?.description }}</td>
-            <td class="text-center">
+            <td class="text-right">
              <button class="actions" mat-mini-fab title="Update User" (click)="editDocument(doc)"
                 aria-label="Example icon button with a menu icon">
                 <i class="bi bi-pencil-fill"></i>

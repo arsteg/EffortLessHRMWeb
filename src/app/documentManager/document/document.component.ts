@@ -40,8 +40,9 @@ export class DocumentComponent implements OnInit {
     }
 
     getAllDocuments() {
-        this.documentService.getDocument().subscribe(response => {  
+        this.documentService.getDocument().subscribe(response => {
             this.documents = response.data;
+            this.filteredDocuments = this.documents;
         });
     }
 
@@ -49,13 +50,13 @@ export class DocumentComponent implements OnInit {
         const categoryName = this.categories?.find((category: any) => category?._id === id);
         return categoryName?.name;
     }
-    
+
     getAllCategories() {
         this.documentService.getDocumentCategories().subscribe((res: any) => {
             this.categories = res.data;
         });
     }
-    searchDocuments(query: any) {
+    searchDocuments(query: string) {
         if (query) {
             this.filteredDocuments = this.documents.filter(doc =>
                 doc.description.toLowerCase().includes(query.toLowerCase())
@@ -93,17 +94,17 @@ export class DocumentComponent implements OnInit {
     }
 
     deleteDocument(id: string) {
-       
+
             this.documentService.deleteDocument(id).subscribe(response => {
                 this.toast.success('Document deleted successfully!');
                 this.getAllDocuments();
             });
-        
+
     }
     openDialog(id: string): void {
         const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
           width: '400px',
-         
+
         });
         dialogRef.afterClosed().subscribe(result => {
           if (result === 'delete') {
