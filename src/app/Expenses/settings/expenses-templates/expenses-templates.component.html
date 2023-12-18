@@ -21,9 +21,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let temp of filteredTemplates; let template of templates">
+                    <tr *ngFor="let temp of filteredTemplates; let template of templates; let i = index">
                         <td class="ps-2">{{template?.policyLabel}}</td>
-                        <td></td>
+                        <td>{{template?.matchingCategories?.length}}</td>
                         <td class="">
                             <button class="actions" mat-mini-fab title="Update" (click)="changeMode='Update';
                                 open(addModal);
@@ -98,12 +98,13 @@
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>What expense categories are applicable in this expense template?<span
                             class="text-danger">*</span></mat-label>
-                    <mat-select multiple formControlName="expenseCategory">
-                        <mat-option [value]="categories._id" *ngFor="let categories of expenseCategories">
+                    <mat-select multiple formControlName="expenseCategory" >
+                        <mat-option [value]="categories._id"
+                            *ngFor="let categories of expenseCategories; let i = index"  [selected]="isSelected(categories._id)">
                             {{categories.label}}
                         </mat-option>
                     </mat-select>
-                </mat-form-field>
+                </mat-form-field>  
             </div>
 
             <div class="mt-2">
@@ -142,7 +143,7 @@
             </div>
         </div>
 
-        <div class="d-flex border-top py-2 justify-content-between footer">
+        <div class="d-flex border-top py-2 justify-content-between">
             <button mat-raised-button type="reset">Cancel</button>
             <button mat-raised-button class="addBtn" type="submit"
                 [disabled]="!addTemplateForm.valid">{{changeMode}}</button>

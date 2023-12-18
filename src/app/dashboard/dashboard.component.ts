@@ -25,25 +25,25 @@ export class DashboardComponent implements OnInit {
   date = new FormControl(new Date());
   serializedDate = new FormControl(new Date().toISOString());
   currentProfile: any;
-  role=  localStorage.getItem('roleName');
-  hoursWorked:HoursWorked;
-  weeklySummary:WeeklySummary;
-  monthlySummary:MonthlySummary;
+  role = localStorage.getItem('roleName');
+  hoursWorked: HoursWorked;
+  weeklySummary: WeeklySummary;
+  monthlySummary: MonthlySummary;
   projectTasks: ProjectTask[];
   productivityData = [];
   taskSummary = [];
   members: teamMember[];
   member: teamMember;
-  selectedDate:Date= new Date;
-  dayWorkStatusByUser:any[];
-  
+  selectedDate: Date = new Date;
+  dayWorkStatusByUser: any[];
+
   constructor(
     private timelog: TimeLogService,
     private manageTeamService: ManageTeamService,
     public commonService: CommonService,
     private auth: AuthenticationService,
-    private dashboardService:DashboardService,
-    private toastr:ToastrService
+    private dashboardService: DashboardService,
+    private toastr: ToastrService
   ) {
 
   }
@@ -60,94 +60,94 @@ export class DashboardComponent implements OnInit {
     this.populateMembers();
     const currentDate = this.selectedDate;
 
-  this.dashboardService.HoursWorked(this.currentUser.id,currentDate).subscribe(response=>{
+    this.dashboardService.HoursWorked(this.currentUser.id, currentDate).subscribe(response => {
       this.hoursWorked = response.data;
-      this.hoursWorked.increased = this.hoursWorked.today> this.hoursWorked.previousDay;
-      if(this.hoursWorked.increased){
-        const change = this.hoursWorked.today-this.hoursWorked.previousDay;
-        this.hoursWorked.change = change*100/ this.hoursWorked.previousDay;
+      this.hoursWorked.increased = this.hoursWorked.today > this.hoursWorked.previousDay;
+      if (this.hoursWorked.increased) {
+        const change = this.hoursWorked.today - this.hoursWorked.previousDay;
+        this.hoursWorked.change = change * 100 / this.hoursWorked.previousDay;
         this.hoursWorked.changeDisplay = `+${this.hoursWorked.change.toFixed(2)}`;
         this.hoursWorked.changeColor = '#08ad08';
       }
-      else{
+      else {
         const change = this.hoursWorked.previousDay - this.hoursWorked.today;
-        this.hoursWorked.change = change * 100/ this.hoursWorked.previousDay;
+        this.hoursWorked.change = change * 100 / this.hoursWorked.previousDay;
         this.hoursWorked.changeDisplay = `-${this.hoursWorked.change.toFixed(2)}`;
       }
-  },
-  err => {
-    this.toastr.error('Can not be Updated', 'ERROR!')
-  });
+    },
+      err => {
+        this.toastr.error('Can not be Updated', 'ERROR!')
+      });
 
-  this.dashboardService.weeklySummary(this.currentUser.id ,currentDate).subscribe(response=>{
-    this.weeklySummary =  response.data;
-      this.weeklySummary.increased = this.weeklySummary.currentWeek> this.weeklySummary.previousWeek;
-      if(this.weeklySummary.increased){
-        const change = this.weeklySummary.currentWeek-this.weeklySummary.previousWeek;
-        this.weeklySummary.change = change*100/ this.weeklySummary.previousWeek;
+    this.dashboardService.weeklySummary(this.currentUser.id, currentDate).subscribe(response => {
+      this.weeklySummary = response.data;
+      this.weeklySummary.increased = this.weeklySummary.currentWeek > this.weeklySummary.previousWeek;
+      if (this.weeklySummary.increased) {
+        const change = this.weeklySummary.currentWeek - this.weeklySummary.previousWeek;
+        this.weeklySummary.change = change * 100 / this.weeklySummary.previousWeek;
         this.weeklySummary.changeDisplay = `+${this.weeklySummary.change.toFixed(2)}`;
         this.weeklySummary.changeColor = '#08ad08';
       }
-      else{
+      else {
         const change = this.weeklySummary.previousWeek - this.weeklySummary.currentWeek;
-        this.weeklySummary.change = change * 100/ this.weeklySummary.previousWeek;
+        this.weeklySummary.change = change * 100 / this.weeklySummary.previousWeek;
         this.weeklySummary.changeDisplay = `-${this.weeklySummary.change.toFixed(2)}`;
       }
 
-  },
-  err => {
-    this.toastr.error(err, 'ERROR!')
-  });
-
-  this.dashboardService.monthlySummary(this.currentUser.id ,currentDate).subscribe(response=>{
-    this.monthlySummary = response.data;
-    this.monthlySummary.increased = this.monthlySummary.currentMonth> this.monthlySummary.previousMonth;
-      if(this.monthlySummary.increased){
-        const change = this.monthlySummary.currentMonth-this.monthlySummary.previousMonth;
-        this.monthlySummary.change = change*100/ this.monthlySummary.previousMonth;
-        this.monthlySummary.changeDisplay = `+${this.monthlySummary.change.toFixed(2)}`;
-        this.monthlySummary.changeColor = '#08ad08';
-      }
-      else{
-        const change = this.monthlySummary.previousMonth - this.monthlySummary.currentMonth;
-        this.monthlySummary.change = change * 100/ this.monthlySummary.previousMonth;
-        this.monthlySummary.changeDisplay = `-${this.monthlySummary.change.toFixed(2)}`;
-      }
-  },
-  err => {
-    this.toastr.error(err, 'ERROR!')
-  });
-
-  this.dashboardService.taskwiseHours(this.currentUser.id).subscribe(response=>{
-    //this.projectTasks = response.data;
-  },
-  err => {
-    this.toastr.error(err, 'ERROR!')
-  });
-
-  this.dashboardService.taskwiseStatus(this.currentUser.id).subscribe(response=>{
-  },
-  err => {
-    this.toastr.error(err, 'ERROR!')
-  });
-
-  this.populateTaskwiseHours(this.currentUser.id);
-
-  this.getDayWorkStatusByUser(this.currentUser.id);
-  this.getTaskStatusCounts(this.currentUser.id);
- 
-    this.dashboardService.getApplicationTimeSummary(this.currentUser.id,this.selectedDate).subscribe(response => {
-      this.productivityData= response.data;
     },
       err => {
         this.toastr.error(err, 'ERROR!')
       });
-  // }
+
+    this.dashboardService.monthlySummary(this.currentUser.id, currentDate).subscribe(response => {
+      this.monthlySummary = response.data;
+      this.monthlySummary.increased = this.monthlySummary.currentMonth > this.monthlySummary.previousMonth;
+      if (this.monthlySummary.increased) {
+        const change = this.monthlySummary.currentMonth - this.monthlySummary.previousMonth;
+        this.monthlySummary.change = change * 100 / this.monthlySummary.previousMonth;
+        this.monthlySummary.changeDisplay = `+${this.monthlySummary.change.toFixed(2)}`;
+        this.monthlySummary.changeColor = '#08ad08';
+      }
+      else {
+        const change = this.monthlySummary.previousMonth - this.monthlySummary.currentMonth;
+        this.monthlySummary.change = change * 100 / this.monthlySummary.previousMonth;
+        this.monthlySummary.changeDisplay = `-${this.monthlySummary.change.toFixed(2)}`;
+      }
+    },
+      err => {
+        this.toastr.error(err, 'ERROR!')
+      });
+
+    this.dashboardService.taskwiseHours(this.currentUser.id).subscribe(response => {
+      //this.projectTasks = response.data;
+    },
+      err => {
+        this.toastr.error(err, 'ERROR!')
+      });
+
+    this.dashboardService.taskwiseStatus(this.currentUser.id).subscribe(response => {
+    },
+      err => {
+        this.toastr.error(err, 'ERROR!')
+      });
+
+    this.populateTaskwiseHours(this.currentUser.id);
+
+    this.getDayWorkStatusByUser(this.currentUser.id);
+    this.getTaskStatusCounts(this.currentUser.id);
+
+    this.dashboardService.getApplicationTimeSummary(this.currentUser.id, this.selectedDate).subscribe(response => {
+      this.productivityData = response.data;
+    },
+      err => {
+        this.toastr.error(err, 'ERROR!')
+      });
+    // }
 
   }
-filterDate(){
-  this.ngOnInit();
-}
+  filterDate() {
+    this.ngOnInit();
+  }
   populateTeamOfUsers() {
     this.manageTeamService.getAllUsers().subscribe({
       next: result => {
@@ -207,7 +207,7 @@ filterDate(){
     return `${roundedHours}h ${minutes}m`;
   }
 
-  populateTaskwiseHours(selectedUser){
+  populateTaskwiseHours(selectedUser) {
     this.dashboardService.taskwiseHours(selectedUser).subscribe(response => {
       this.projectTasks = response.data;
     },
@@ -216,7 +216,7 @@ filterDate(){
       });
   }
 
-  onTaskTimeMemberSelectionChange(member: any){
+  onTaskTimeMemberSelectionChange(member: any) {
     this.member = JSON.parse(member.value);
     this.populateTaskwiseHours(this.member.id);
   }
@@ -229,7 +229,7 @@ filterDate(){
     this.member = JSON.parse(member.value);
     this.getTaskStatusCounts(this.member.id);
   }
-  onDailyUpdateMemberSelectionChange(member: any){
+  onDailyUpdateMemberSelectionChange(member: any) {
     this.member = JSON.parse(member.value);
     this.getDayWorkStatusByUser(this.member.id);
   }
@@ -261,31 +261,35 @@ filterDate(){
     });
   }
   onDateChange(event: MatDatepickerInputEvent<Date>) {
-    this.selectedDate = event.value;
-    this.ngOnInit();
-   
+    if (event.value) {
+      this.selectedDate = event.value;
+      this.ngOnInit();
+    } else {
+      this.toastr.error('Select a valid date', 'Error')
+    }
+
   }
 
-  getApplicationTimeSummary(selectedtUser){
-    this.dashboardService.getApplicationTimeSummary(selectedtUser,this.selectedDate).subscribe(response => {
-      this.productivityData= response.data;
+  getApplicationTimeSummary(selectedtUser) {
+    this.dashboardService.getApplicationTimeSummary(selectedtUser, this.selectedDate).subscribe(response => {
+      this.productivityData = response.data;
     },
       err => {
         this.toastr.error(err, 'ERROR!')
       });
   }
 
-  getTaskStatusCounts(selectedtUser:string){
+  getTaskStatusCounts(selectedtUser: string) {
     this.dashboardService.getTaskStatusCounts(selectedtUser).subscribe(response => {
-      this.taskSummary= response.data;
+      this.taskSummary = response.data;
     },
       err => {
         this.toastr.error(err, 'ERROR!')
       });
   }
-  getDayWorkStatusByUser(selectedtUser:string){
-    this.dashboardService.getDayWorkStatusByUser(selectedtUser, this.selectedDate ).subscribe(response => {
-      this.dayWorkStatusByUser= response.data;
+  getDayWorkStatusByUser(selectedtUser: string) {
+    this.dashboardService.getDayWorkStatusByUser(selectedtUser, this.selectedDate).subscribe(response => {
+      this.dayWorkStatusByUser = response.data;
       console.log('project Resolve')
     },
       err => {

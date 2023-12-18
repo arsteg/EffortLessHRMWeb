@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-crud',
@@ -7,7 +7,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
   styleUrls: ['./crud.component.css']
 })
 export class CRUDComponent {
-  @Output() onSubmit:any = new EventEmitter();
+  @Output() onSubmit: any = new EventEmitter();
   @Input() readOnly: boolean = false;
   @Input() fields: any = [
     {
@@ -54,7 +54,6 @@ export class CRUDComponent {
         { id: 3, value: 'doc' },
         { id: 4, value: 'pdf' },
       ],
-      value: '1',
       id: 'check'
     },
     {
@@ -71,22 +70,46 @@ export class CRUDComponent {
   constructor(private fb: FormBuilder) { }
 
   ngOnInit() {
-    this.crudForm = this.fb.group({})
-    if(this.fields && this.fields.length > 0){
-      this.fields.forEach((field:any, index: any)=>{
-        if(field.id){
-          this.crudForm.addControl(field.id, new FormControl(field.value));
+    this.crudForm = this.fb.group({});
+
+    if (this.fields && this.fields.length > 0) {
+      this.fields.forEach((field: any) => {
+        if (field.id) {
+          if (field.type === 'check') {
+            const checkboxes = this.fb.array(
+              field.options.map(option => this.fb.control(false))
+            );
+            this.crudForm.addControl(field.id, checkboxes);
+          } else {
+            this.crudForm.addControl(field.id, new FormControl(field.value));
+          }
         }
-      })
+      });
     }
   }
 
-  submitted(event:any){
+  get check() {
+    return this.crudForm.get('check') as FormArray;
+  }
+
+
+
+  onCheckboxChange(event, i: number) {
+    this.check.at(i).setValue(event.target.checked);
+  }
+
+  submitted(event: any) {
+    const selectedCheckboxes = this.check.value
+      .map((checked, index) => checked ? this.fields[3].options[index].value : null)
+      .filter(value => value !== null);
+
+    this.crudForm.value['check'] = selectedCheckboxes;
     console.log(this.crudForm.value)
     this.onSubmit.emit(this.crudForm.value);
   }
 
-  onCancel(){
+
+  onCancel() {
     this.crudForm.reset();
   }
 }

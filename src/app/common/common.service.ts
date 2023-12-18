@@ -111,6 +111,5 @@ export class CommonService {
   }
   setSelectedTab(tab: number) {
     this.selectedTabSubject.next(tab);
-    console.log(tab)
   }
 }

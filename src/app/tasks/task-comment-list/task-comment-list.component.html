@@ -161,7 +161,7 @@
         {{currentProfile?.firstName?.charAt(0) | uppercase}}
       </span>
       <div class="m-3 mb-5 w-100 rounded">
-      
+
         <div *ngIf="!showEditor">
           <input type="text" (click)="onInputClick()" placeholder="Add comment..."
             class="form-control  px-2 form-feild">
@@ -176,8 +176,7 @@
 
 
 
-    <div class="attachment d-flex"><label class="ms-5 btn btn-outline-primary btn-block rounded-pill shadow"><input
-          style="display: none;"
+    <div class="attachment d-flex"><label class="ms-5 btn btn-block rounded-pill shadow"><input style="display: none;"
           accept=".jpeg,.json,.mp4,.glb,.svg,.blend,.jpg,.png,.gif,.pdf,.webp,.avif,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.odt,.fodt,.ods,.fods,.odp,.fodp,.odg,.fodg,.odf,.csv,.html,.css,.txt,.zip"
           type="file" multiple (change)="onFileSelect($event)">
         <div class="details-attach-file d-flex align-items-center justify-content-center me-2 pointer">
@@ -192,8 +191,8 @@
     </div>
 
     <div class="col-sm-12 d-flex">
-      <button mat-raised-button  type="addBtn" (click)="addComment()">Add Comment</button>
-      <div *ngIf="showEditor" class="ms-auto"> <button mat-raised-button class="mx-2" type="button" 
+      <button mat-raised-button type="addBtn" (click)="addComment()">Add Comment</button>
+      <div *ngIf="showEditor" class="ms-auto"> <button mat-raised-button class="mx-2" type="button"
           (click)="cancelEditMode()">Cancel</button></div>
 
     </div>

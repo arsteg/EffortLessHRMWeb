@@ -22,7 +22,9 @@ export class ExpensesTemplatesComponent implements OnInit {
   formatChecked: boolean[] = Array(this.downloadableFormat.length).fill(false);
   formatValues: string;
   filteredTemplates: any[] = [];
-
+  categoryList: any;
+  selectedCategory: any;
+  matchingCategories: any;
 
   constructor(private modalService: NgbModal,
     private dialog: MatDialog,
@@ -45,7 +47,7 @@ export class ExpensesTemplatesComponent implements OnInit {
     this.getAllTemplates();
     this.getAllExpensesCategories();
     this.filteredTemplate();
-
+    this.getAllCategoriesOfAllTemplate();
   }
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
@@ -77,7 +79,7 @@ export class ExpensesTemplatesComponent implements OnInit {
       this.formatValues = res.data.downloadableFormats;
       this.formatChecked = this.downloadableFormat?.map(format => this.formatValues?.includes(format));
     });
-
+    this.getCategoriesByTemplate(templateData._id)
   }
 
   deleteTemplate(_id: string) {
@@ -107,6 +109,7 @@ export class ExpensesTemplatesComponent implements OnInit {
   getAllTemplates() {
     this.expenseService.getAllTemplates().subscribe((res: any) => {
       this.templates = res.data;
+      this.getAllCategoriesOfAllTemplate()
     })
   }
 
@@ -121,7 +124,7 @@ export class ExpensesTemplatesComponent implements OnInit {
     return this.addTemplateForm.get('downloadableFormats') as FormArray;
   }
 
-  get categoriesArray(){
+  get categoriesArray() {
     return this.addTemplateForm.get('selectedCategories') as FormArray;
   }
   onCheckboxChange(event, format: string) {
@@ -150,19 +153,15 @@ export class ExpensesTemplatesComponent implements OnInit {
       downloadableFormats: [''],
       expenseTemplate: this.addTemplateForm.value.expenseTemplate,
       expenseCategory: this.addTemplateForm.value.expenseCategory,
-     
-    }
-    console.log(payload)
-    if (this.changeMode === 'Add') {
-      console.log(payload)
 
+    }
+    if (this.changeMode === 'Add') {
       payload.downloadableFormats = this.addTemplateForm.value.downloadableFormats;
       this.expenseService.addTemplate(payload).subscribe((res: any) => {
         const newTemplate = res.data;
         this.templates.push(newTemplate);
         const templateId = newTemplate._id;
-        console.log(templateId, payload.expenseCategory)
-        this.addCategoriesToTemplate(templateId, payload.expenseCategory);
+        this.categoriesAddOrUpdate(templateId, payload.expenseCategory);
         this.toast.success('New Template Created Successfully!');
         this.formatChecked = [false];
         this.addTemplateForm.reset();
@@ -181,7 +180,7 @@ export class ExpensesTemplatesComponent implements OnInit {
         if (index !== -1) {
           this.templates[index] = updatedTemplate;
         }
-
+        this.categoriesAddOrUpdate(this.selectedTemplateId, payload.expenseCategory);
         this.formatChecked = [false];
         this.addTemplateForm.reset();
         this.toast.success('Template Updated Successfully!');
@@ -214,16 +213,12 @@ export class ExpensesTemplatesComponent implements OnInit {
 
 
   isFormatSelected(format: string): boolean {
-
     const downloadableFormatsArray = this.addTemplateForm.get('downloadableFormats') as FormArray;
-
     if (downloadableFormatsArray) {
       return downloadableFormatsArray.value.includes(format);
     }
-
     return false;
   }
-
 
   filteredTemplate() {
     const searchTerm = this.searchText.trim().toLowerCase();
@@ -236,15 +231,67 @@ export class ExpensesTemplatesComponent implements OnInit {
     }
   }
 
-  addCategoriesToTemplate(templateId: string, categories: any[]) {
-   console.log(templateId, categories);
-    this.expenseService.addTemplateApplicableCategories(templateId, categories).subscribe(
-      (res: any) => {
-        console.log(res.data);
-      },
-      (err) => {
-        this.toast.error('Categories cannot be added to the template', 'ERROR!');
-      }
-    );
+  categoriesAddOrUpdate(templateId: string, categories: any[]) {
+    if (this.changeMode === 'Add') {
+      console.log('add')
+      this.addOrUpdateCategories(templateId, categories);
+    } else {
+      console.log('update')
+      this.addOrUpdateCategories(templateId, categories);
+    }
   }
+
+  addOrUpdateCategories(templateId: string, categories: any[]) {
+    if (this.changeMode == 'Add') {
+      console.log(templateId, categories)
+      this.expenseService.addTemplateApplicableCategories(templateId, categories).subscribe(
+        (res: any) => {
+          this.toast.success('Categories Added successfully!');
+        },
+        (err) => {
+          this.toast.error('Categories cannot be Added', 'ERROR!');
+        }
+      );
+    }
+    else {
+      if (categories.length === 0) {
+        console.log('if empty')
+        this.expenseService.addTemplateApplicableCategories(templateId, categories).subscribe(
+          (res: any) => {
+            this.toast.success('Categories updated successfully!');
+          },
+          (err) => {
+            this.toast.error('Categories cannot be updated', 'ERROR!');
+          }
+        );
+      }
+      else console.log('Handle Update case')
+    }
+  }
+
+
+  getCategoriesByTemplate(id: string) {
+    this.selectedTemplateId = id;
+    this.expenseService.getCategoriesByTemplate(id).subscribe((res: any) => {
+      this.categoryList = res.data;
+      const selectedCategories = this.categoryList.map(category => category.expenseCategory);
+      this.addTemplateForm.get('expenseCategory').setValue(selectedCategories);
+    })
+  }
+  isSelected(categoryId: string): boolean {
+    const selectedCategories = this.addTemplateForm.get('expenseCategory').value;
+    return selectedCategories.includes(categoryId);
+  }
+
+
+  getAllCategoriesOfAllTemplate() {
+    this.expenseService.getAllCategoriesOfAllTemplate().subscribe((res: any) => {
+      const categories = res.data;
+      this.templates.forEach(template => {
+        this.matchingCategories = categories.filter(category => category.expenseTemplate === template._id);
+        template.matchingCategories = this.matchingCategories;
+      });
+    });
+  }
+
 }

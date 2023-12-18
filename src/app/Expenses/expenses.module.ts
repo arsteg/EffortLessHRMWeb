@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ExpensesComponent } from './expenses.component';
 import { SettingsComponent } from './settings/settings.component';
@@ -18,6 +18,7 @@ import { FormsModule } from '@angular/forms';
     SharedModule,
     CommonComponentsModule,
     FormsModule
-  ]
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class ExpensesModule { }

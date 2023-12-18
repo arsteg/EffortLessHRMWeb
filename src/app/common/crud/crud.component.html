@@ -24,14 +24,15 @@
                 <!--Checkboxes-->
                 <ng-container *ngIf="field.type == 'check'">
                     <label>{{field.name}}</label>
-                    <div class="d-flex">
-                        <div class="form-check mx-2" *ngFor="let option of field.options;">
-                            <input class="form-check-input" type="checkbox" [value]="option.id" id="flexCheckDefault"
-                                [formControlName]="field.id">
-                            <label class="form-check-label" [for]="option.id">{{option.value}}</label>
-                        </div>
+                    <div class="d-flex" formArrayName="check">
+                      <div class="form-check mx-2" *ngFor="let check of check.controls; let i=index">
+                        <input class="form-check-input" type="checkbox" [formControlName]="i" 
+                               (change)="onCheckboxChange($event, i)">
+                        <label class="form-check-label">{{field?.options[i]?.value}}</label>
+                      </div>
                     </div>
-                </ng-container>
+                  </ng-container>
+                  
                 <!--TextArea-->
                 <!--Date-->
                 <ng-container *ngIf="field.type == 'date'">
@@ -55,6 +56,7 @@
             <button type="submit" mat-raised-button class="addBtn">Submit</button>
         </div>
     </form>
+
     <!--ReadOnly-->
     <ng-container *ngIf="readOnly">
         <ng-container *ngFor="let field of fields">

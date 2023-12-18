@@ -13,39 +13,40 @@
         </div>
       </mat-form-field>
     </div>
-    <div class="row d-flex justify-content-evenly container-fluid ">
-      <div class="py-4  bg-white" style="border-radius: 1.2rem">
-        <div class="d-flex justify-content-evenly">
-          <div class="mt-2 border-end pe-5">
-            <h1 class="letter ms-2 header-letter"
-              [style.background-color]="commonService?.getRandomColor(currentProfile?.lastName)">
-              {{currentProfile?.firstName.slice(0,1) | uppercase}}{{currentProfile?.lastName.slice(0,1) |
-              uppercase}}</h1>
-            <h4 class="content-info mb-0">{{currentProfile?.firstName}} {{currentProfile?.lastName}}</h4>
-            <p>{{role | titlecase}}</p>
-          </div>
-          <div class="mt-2 border-end pe-5">
-            <p class="content__title"><i class="bi bi-people-fill me-2"></i>Members</p>
-            <h1 class="">1</h1>
-          </div>
-          <div class="mt-2 border-end pe-5">
-            <p class="">Next payment on</p>
-            <h1 class="">09 Jun, 2023</h1>
-          </div>
-          <div class="mt-2 border-end pe-5">
-            <p class="">Latest Invoice</p>
-            <h1 class="">$2.99</h1>
-            <a class="" href="">My Invoices</a>
-          </div>
-          <div class="mt-2 border-end pe-5">
-            <p class="">Balance</p>
-            <h1 class="">$0</h1>
-            <div class="fill-balance"><a href="">Make Payment</a>
+    <div class="row d-flex justify-content-evenly container-fluid ms-2 pe-5">
+      <div class="col-12">
+        <div class="py-4  bg-white" style="border-radius: 1.2rem">
+          <div class="d-flex justify-content-evenly">
+            <div class="mt-2 border-end pe-5">
+              <h1 class="letter ms-2 header-letter"
+                [style.background-color]="commonService?.getRandomColor(currentProfile?.lastName)">
+                {{currentProfile?.firstName.slice(0,1) | uppercase}}{{currentProfile?.lastName.slice(0,1) |
+                uppercase}}</h1>
+              <h4 class="content-info mb-0">{{currentProfile?.firstName}} {{currentProfile?.lastName}}</h4>
+              <p>{{role | titlecase}}</p>
+            </div>
+            <div class="mt-2 border-end pe-5">
+              <p class="content__title"><i class="bi bi-people-fill me-2"></i>Members</p>
+              <h1 class="">1</h1>
+            </div>
+            <div class="mt-2 border-end pe-5">
+              <p class="">Next payment on</p>
+              <h1 class="">09 Jun, 2023</h1>
+            </div>
+            <div class="mt-2 border-end pe-5">
+              <p class="">Latest Invoice</p>
+              <h1 class="">$2.99</h1>
+              <a class="" href="">My Invoices</a>
+            </div>
+            <div class="mt-2 border-end pe-5">
+              <p class="">Balance</p>
+              <h1 class="">$0</h1>
+              <div class="fill-balance"><a href="">Make Payment</a>
+              </div>
             </div>
           </div>
         </div>
       </div>
-
     </div>
     <div class="row my-3 justify-content-evenly">
       <div class="col-md-4  dash-boxes p-3 bg-white">
@@ -128,7 +129,7 @@
     </div>
 
     <div class="row justify-content-evenly mb-4">
-      <div class="col-md-4   p-3 dash-report bg-white taskReport tableContainer">
+      <div class="col-md-4   p-3 dash-report bg-white tableContainer">
         <div class="d-flex justify-content-between">
           <p class="content__title"><i class="bi bi-clock-fill me-2"></i>Project-wise time spent on each task</p>
         </div>
@@ -139,24 +140,26 @@
             <option *ngFor="let m of members" value="{{m|json}}">{{m.name | titlecase}}</option>
           </select>
         </div>
-        <table class="mt-2 p-2 rounded">
-          <tbody>
-            <th>Project</th>
-            <th>Task</th>
-            <th>Time</th>
-            <ng-container *ngFor="let projectTask of projectTasks">
-              <tr *ngFor="let task of projectTask.tasks;let i = index ">
-                <td>
-                  {{i==0?projectTask?.projectName:''}}
-                </td>
-                <td class="py-2">{{task?.taskName}}</td>
-                <td>
-                  <span class="dash-percent"> {{ task?.totalTime | milliSecondsToTime }} </span>
-                </td>
-              </tr>
-            </ng-container>
-          </tbody>
-        </table>
+        <div class="taskReport mt-2 pe-2">
+          <table class="mt-2 p-2 rounded">
+            <tbody>
+              <th>Project</th>
+              <th>Task</th>
+              <th>Time</th>
+              <ng-container *ngFor="let projectTask of projectTasks">
+                <tr *ngFor="let task of projectTask.tasks;let i = index ">
+                  <td>
+                    {{i==0?projectTask?.projectName:''}}
+                  </td>
+                  <td class="py-2">{{task?.taskName}}</td>
+                  <td>
+                    <span class="dash-percent"> {{ task?.totalTime | milliSecondsToTime }} </span>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <div class="col-md-4   p-3 dash-report bg-white">

@@ -25,6 +25,7 @@ export class updateUser{
 }
 
 export class newUser{
+  [x: string]: any;
   firstName: string;
   lastName: string;
   email: string;

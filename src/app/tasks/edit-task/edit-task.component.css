@@ -8,9 +8,11 @@
     line-height: 13px;
     padding: 0.5rem;
 }
-.back-btn{
+
+.back-btn {
     color: #9090a7;
 }
+
 .taskDetails {
     max-height: 42.2rem;
     overflow-y: scroll;
@@ -25,15 +27,17 @@
     position: relative;
     overflow-y: auto;
 }
+
 .active-task {
     background-color: white;
     color: #3f51b5;
     border-bottom-left-radius: 40px;
     border-top-left-radius: 40px;
     padding-left: 20px !important;
-  }
-  .taskList .tasks{
-    padding: 5px ;
+}
+
+.taskList .tasks {
+    padding: 5px;
     display: inline-block;
     width: 200px;
     white-space: nowrap;
@@ -41,11 +45,13 @@
     text-overflow: ellipsis;
     cursor: pointer;
     line-height: 2.5;
-  }
-  .tasks-creation-row input.new-task-title-input {
+}
+
+.tasks-creation-row input.new-task-title-input {
     border: none;
     width: 80%;
 }
+
 .tasks-creation-row .add-task-action-box {
     height: 30px;
     background: #fafbfc;
@@ -55,6 +61,7 @@
     margin-right: 25px;
     border: 1.0001px solid #f2f4fb;
 }
+
 .tasks-creation-row .deadline-box {
     width: fit-content;
     font-size: 11px;
@@ -65,6 +72,7 @@
     opacity: 0.4;
     pointer-events: none;
 }
+
 .tasks-creation-row .add-task-action-circle.action-circle-close {
     background: #bec0c9;
 }
@@ -72,23 +80,28 @@
 .tasks-creation-row .add-task-action-circle:last-child {
     margin-left: 10px;
 }
+
 .tasks-creation-row .add-task-action-circle.action-circle-check {
     background: rgb(var(--red-part), var(--green-part), var(--blue-part));
     border: none !important;
 }
-.subtask-icon{
+
+.subtask-icon {
     font-size: 18px;
 }
-.add-user{
+
+.add-user {
     padding: 4px;
     color: #4f4d4d;
     font-size: 16px;
     border: 1px dashed rgb(88, 88, 88);
 }
+
 input:focus-visible {
     outline: 1px solid #d6d3d3;
     padding-inline: 10px;
 }
+
 .task-page-search-bar {
     border-radius: 4px;
     font-family: "Poppins", sans-serif;
@@ -102,55 +115,69 @@ input:focus-visible {
     padding-left: 2rem !important;
     width: 90%;
 }
-.search-task{
+
+.search-task {
     position: absolute;
     top: 20%;
     left: 6px;
 }
-.comment-time{
+
+.comment-time {
     font-weight: 300;
     font-size: 11px;
     line-height: 13px;
 }
-.comment-attachment{
+
+.comment-attachment {
     color: #5b5959;
 }
-.letter{
+
+.letter {
     height: 35px;
 }
-.actions{
+
+.actions {
     font-size: 20px;
     color: #5d5c5c;
 }
-.status{
+
+.status {
     color: white;
 }
-.attachment{
+
+.attachment {
     cursor: pointer;
 }
-.big-img{
-    height: 480px;
-    width: auto!important;
+
+.big-img {
+    /* height: 480px; */
+    min-width: auto;
+    max-width: 1050px;
 }
-.deleteAttachment{
+
+.deleteAttachment {
     position: absolute;
     /* margin-top: -170px; */
     margin-left: 100px;
 }
-.file{
+
+.file {
     font-size: 150px;
 }
-.cardAttachment{
+
+.cardAttachment {
     box-shadow: 0 1px 1px #bfbbbb;
     width: 150px;
     cursor: pointer;
 }
-.card-img-top{
+
+.card-img-top {
     height: 150px;
 }
-.deleteTask:hover{
-background: none;
-cursor: pointer
+
+.deleteTask:hover {
+    background: none;
+    cursor: pointer
 }
 
 /* ------------- */
@@ -159,14 +186,34 @@ cursor: pointer
     background: white !important;
     border-radius: 5px;
 }
-.sub_btn{
+
+.sub_btn {
     line-height: 0.7
 }
-.subtask-list:hover{
-background:#f5f7fb;
-cursor: pointer
+
+.subtask-list:hover {
+    background: #f5f7fb;
+    cursor: pointer
 }
-.pagination-option{
+
+.pagination-option {
     background-position: right 0.3rem center !important;
     padding: 0.375rem 0.5rem 0.375rem 0.75rem !important;
+}
+
+@media (min-width: 576px) {
+    .modal-dialog {
+        max-width: 1140px !important;
+    }
+}
+
+.modal-fixed-size {
+    max-width: 80vw !important; /* Adjust the max-width as needed */
+}
+
+.modal-image {
+    max-width: 100%; /* Ensure the image doesn't exceed the modal width */
+    max-height: 80vh; /* Adjust the max-height as needed */
+    margin: auto !important;
+    display: block !important;
 }

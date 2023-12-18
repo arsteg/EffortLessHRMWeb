@@ -88,7 +88,8 @@ export class UserListComponent implements OnInit {
 
   addUser(addForm) {
     this.UserService.addUser(addForm).subscribe(result => {
-      this.ngOnInit();
+      const users = result['data'].user;
+      this.usersList.push(users);
       this.toastrrr.success('New User Added', 'Successfully Added!')
     },
       err => {

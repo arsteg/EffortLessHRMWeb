@@ -5,7 +5,7 @@ import { environment } from 'src/environments/environment';
 import { Subordinate } from '../models/subordinate.Model';
 import { Observable } from 'rxjs';
 import { response } from '../models/response';
-import { AddTemplate, ApplicableCategories, ExpenseApplicationField, ExpenseCategory, ExpenseCategoryField, TemplateAssignment } from '../models/expenses';
+import { AddTemplate, ApplicableCategories, ExpenseApplicationField, ExpenseCategory, ExpenseCategoryField, TemplateAssignment, UpdateExpenseCategoryField } from '../models/expenses';
 
 @Injectable({
   providedIn: 'root'
@@ -53,8 +53,8 @@ export class ExpensesService {
     return response;
   }
 
-  updateCategoryField(id: string, expenseCategoryField: ExpenseCategoryField): Observable<response<any>> {
-    var response = this.http.put<response<any>>(`${environment.apiUrlDotNet}/expense/expense-application-fields/${id}`, expenseCategoryField, this.httpOptions);
+  updateCategoryField(updateExpenseCategoryField: UpdateExpenseCategoryField): Observable<response<any>> {
+    var response = this.http.put<response<any>>(`${environment.apiUrlDotNet}/expense/expense-application-fields`, updateExpenseCategoryField, this.httpOptions);
     return response;
   }
 
@@ -66,6 +66,20 @@ export class ExpensesService {
 
   addApplicationFieldValue(expenseApplicationField: ExpenseApplicationField): Observable<response<any>> {
     var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/expense-application-field-values`, expenseApplicationField, this.httpOptions);
+    return response;
+  }
+
+  updateApplicationFieldValue(expenseApplicationField: UpdateExpenseCategoryField): Observable<response<any>> {
+    var response = this.http.put<response<any>>(`${environment.apiUrlDotNet}/expense/expense-application-field-values`, expenseApplicationField, this.httpOptions);
+    return response;
+  }
+
+  deleteApplicationFieldValue(id: string): Observable<response<any>> {
+    var response = this.http.delete<response<any>>(`${environment.apiUrlDotNet}/expense/expense-application-field-values/${id}`, this.httpOptions);
+    return response;
+  }
+  getApplicationFieldValuebyFieldId(expenseApplicationFieldID: string): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/expense-application-fields-values-by-field/${expenseApplicationFieldID}`, this.httpOptions);
     return response;
   }
 
@@ -103,10 +117,21 @@ export class ExpensesService {
 
 
   addTemplateApplicableCategories(expenseTemplate: string, expenseCategories: string[]): Observable<response<any>> {
-    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/expense-template-applicable-categories`, {expenseTemplate, expenseCategories}, this.httpOptions);
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/expense-template-applicable-categories`, { expenseTemplate, expenseCategories }, this.httpOptions);
     return response;
   }
-//  expnse template assignment
+  
+  getCategoriesByTemplate(expenseTemplateId: string): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/expense-template-applicable-categories-by-template/${expenseTemplateId}`, this.httpOptions);
+    return response;
+  }
+
+  getAllCategoriesOfAllTemplate(): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/expense-template-applicable-categories`, this.httpOptions);
+    return response;
+  }
+
+  //  expnse template assignment
   addTemplateAssignment(templateAssignment: TemplateAssignment): Observable<response<any>> {
     var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/employee-expense-assignments`, templateAssignment, this.httpOptions);
     return response;

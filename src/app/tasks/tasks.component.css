@@ -34,9 +34,10 @@
   font-size: 16px;
   font-weight: 500;
   padding: 8px;
-  border: 1px dashed darkgrey;
-  border-radius: 2px;
+  border: 1px solid #e8eaef; 
+  border-radius: 9px;
   text-align: center;
+  cursor: pointer;
 }
 
 .deleteTaskAttachment {
@@ -122,9 +123,14 @@
   }
 }
 
-.addTask {
-  height: 50vh;
-  overflow-y: scroll;
-  overflow-x: hidden;
+.attach{
+  cursor: pointer;
 }
-
+.btn-outline-primary{
+  color: #76bc21 !important;
+  border: 0px !important
+}
+.taskFormBody{
+  overflow-y: scroll;
+  height: 50vh;
+}

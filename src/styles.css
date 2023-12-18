@@ -480,7 +480,7 @@ select {
 }
 @media (min-width: 768px){
   .dash-boxes, .dash-report{
-    width: 375px !important;
+    width: 365px !important;
   }
 }
 .time {
@@ -556,6 +556,14 @@ select {
 
 .fc .fc-daygrid-day-number {
   text-decoration: none !important;
+  color: #ff7b1d
+}
+
+.fc-direction-ltr .fc-daygrid-event.fc-event-end, .fc-direction-rtl .fc-daygrid-event.fc-event-start{
+  color: #ff7b1d !important;
+}
+.fc-daygrid-event-dot{
+  border: calc(var(--fc-daygrid-event-dot-width)/2) solid #ff7b1d !important;
 }
 
 .fc .fc-button, .mat-calendar-body-selected {
@@ -571,7 +579,7 @@ select {
 .fc .fc-button-primary:hover,
 .fc .fc-button-primary:not(:disabled):active {
   background-color: white;
-  color: #76bc21;
+  /* color: #76bc21; */
   border: 1px solid #76bc21
 }
 
@@ -663,7 +671,6 @@ tr {
 
 .actions {
   color: #64728c !important;
-  background-color: rgba(100, 114, 140, .1) !important;
   box-shadow: none !important
 }
 
@@ -734,8 +741,13 @@ label {
 
 .btn-outline-primary {
   color: #76bc21 !important;
+  border: 1px solid #76bc21;
 }
-
+.btn-outline-primary:hover {
+  color: #76bc21 !important;
+  background-color: white !important;
+  border: 1px solid #76bc21 !important;
+}
 .modal-content {
   background-color: #fff;
   border-radius: 1.2rem;
@@ -764,8 +776,24 @@ label {
 .form-check-input:checked {
   background-color: #76bc21 !important;
 }
+::selection{
+  background: #ff7b1d;
+  color: white
+}
 .footer{
   position: absolute;
   bottom: 10px;
   left: 40%;
+}
+#member option {
+  background-color: white; /* Set the default background color */
+  color: black; /* Set the text color */
+}
+
+#member:hover option:hover, #member option:focus, #member option:focus-within, .form-select-bg{
+  background: orange !important;
+}
+
+.mat-mini-fab.mat-accent {
+  background: none !important;
 }
