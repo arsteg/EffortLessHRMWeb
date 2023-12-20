@@ -5,7 +5,12 @@ export interface ExpenseCategory {
 
 export interface ExpenseCategoryField {
     expenseCategory: string;
-    fields: any[];
+    fields: {
+        fieldName: string;
+        fieldType: string;
+        isMandatory: boolean;
+        fieldvalues: { value: string }[];
+      }[];
 }
 
 export interface UpdateExpenseCategoryField{

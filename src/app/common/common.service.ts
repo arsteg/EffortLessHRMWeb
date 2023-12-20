@@ -43,7 +43,7 @@ export class CommonService {
   
   getRandomColor(firstName: string) {
     let colorMap = {
-      A: '#556def',
+      A: '#76bc21',
       B: '#faba5c',
       C: '#0000ff',
       D: '#ffff00',

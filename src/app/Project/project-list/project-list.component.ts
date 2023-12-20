@@ -108,8 +108,9 @@ export class ProjectListComponent implements OnInit {
     this.getProjectsByUser();
   }
   addProject(form) {
-    this.projectService.addproject(form).subscribe(result => {
-      this.ngOnInit();
+    this.projectService.addproject(form).subscribe((result: any) => {
+      const projects = result && result.data && result.data.newProject;
+      this.projectList.push(projects);
       this.toastr.success('New Project', 'Successfully Added!')
     },
       err => {
@@ -165,7 +166,6 @@ export class ProjectListComponent implements OnInit {
       }
     });
   }
-  
 
   onModelChange(projectUserList) {
     let index = this.projectUserList.findIndex(user => user.id === projectUserList.id);

@@ -222,7 +222,7 @@
                 <div class=" d-flex justify-content-between">
                     <div class="">
                         <h4 class="modal-title text-start">Users Assigned to the <b
-                                style="color: #556def">{{selectedProject?.projectName | titlecase}}</b></h4>
+                                style="color: #76bc21">{{selectedProject?.projectName | titlecase}}</b></h4>
                     </div>
                     <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
                     </div>
@@ -383,7 +383,7 @@
                 <div class="d-flex justify-content-between">
                     <div class="">
                         <h4 class="modal-title text-start">Update Project <b
-                                style="color: #556def">{{selectedProject.projectName | titlecase}}</b></h4>
+                                style="color: #76bc21">{{selectedProject.projectName | titlecase}}</b></h4>
                     </div>
                     <div class="">
                         <button type="button" class="btn-close text-end" data-bs-dismiss="modal"></button>
@@ -392,7 +392,7 @@
                 <div class="row" *ngIf="selectedProject">
                     <form class="row" [formGroup]="updateForm" (ngSubmit)="updateProject(updateForm.value)">
                         <div class="row d-flex justify-content-center">
-                            <div class="col-md-8">
+                            <div class="col-md-12">
                                 <div class="row">
                                     <label for="projectName" class="text-start">Project Name</label>
                                 </div>
@@ -498,7 +498,7 @@
                 <div class="d-flex justify-content-between">
                     <div class="">
                         <h4 class="modal-title text-start">Delete Project <b
-                                style="color: #556def">{{selectedProject.projectName | titlecase}}</b></h4>
+                                style="color: #76bc21">{{selectedProject.projectName | titlecase}}</b></h4>
                     </div>
                     <div class="">
                         <button type="button" class="btn-close text-end" data-bs-dismiss="modal"></button>

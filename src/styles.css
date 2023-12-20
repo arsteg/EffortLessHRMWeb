@@ -478,11 +478,15 @@ select {
   width: 410px !important;
   border-radius: 1.2rem
 }
-@media (min-width: 768px){
-  .dash-boxes, .dash-report{
+
+@media (min-width: 768px) {
+
+  .dash-boxes,
+  .dash-report {
     width: 365px !important;
   }
 }
+
 .time {
   font-weight: 500 !important;
 }
@@ -559,14 +563,17 @@ select {
   color: #ff7b1d
 }
 
-.fc-direction-ltr .fc-daygrid-event.fc-event-end, .fc-direction-rtl .fc-daygrid-event.fc-event-start{
+.fc-direction-ltr .fc-daygrid-event.fc-event-end,
+.fc-direction-rtl .fc-daygrid-event.fc-event-start {
   color: #ff7b1d !important;
 }
-.fc-daygrid-event-dot{
+
+.fc-daygrid-event-dot {
   border: calc(var(--fc-daygrid-event-dot-width)/2) solid #ff7b1d !important;
 }
 
-.fc .fc-button, .mat-calendar-body-selected {
+.fc .fc-button,
+.mat-calendar-body-selected {
   background: #76bc21 !important;
 }
 
@@ -743,11 +750,13 @@ label {
   color: #76bc21 !important;
   border: 1px solid #76bc21;
 }
+
 .btn-outline-primary:hover {
   color: #76bc21 !important;
   background-color: white !important;
   border: 1px solid #76bc21 !important;
 }
+
 .modal-content {
   background-color: #fff;
   border-radius: 1.2rem;
@@ -762,38 +771,66 @@ label {
   letter-spacing: .15px !important;
   color: #64728c !important;
 }
-.submenuBody{
-  border-radius:20px;
+
+.submenuBody {
+  border-radius: 20px;
 }
-.form-check-input{
+
+.form-check-input {
   min-height: 0 !important;
   padding: 0 !important;
   /* width: 2.5em !important; */
 }
-.error{
+
+.error {
   font-size: smaller;
 }
+
 .form-check-input:checked {
   background-color: #76bc21 !important;
 }
-::selection{
+
+::selection {
   background: #ff7b1d;
   color: white
 }
-.footer{
+
+.footer {
   position: absolute;
   bottom: 10px;
   left: 40%;
 }
+
 #member option {
-  background-color: white; /* Set the default background color */
-  color: black; /* Set the text color */
+  background-color: white;
+  /* Set the default background color */
+  color: black;
+  /* Set the text color */
 }
 
-#member:hover option:hover, #member option:focus, #member option:focus-within, .form-select-bg{
+#member:hover option:hover,
+#member option:focus,
+#member option:focus-within,
+.form-select-bg {
   background: orange !important;
 }
 
 .mat-mini-fab.mat-accent {
   background: none !important;
+}
+
+.mat-checkbox-checked.mat-primary .mat-checkbox-background,
+.mat-primary .mat-pseudo-checkbox-checked.mat-pseudo-checkbox-full,
+.mat-radio-button.mat-primary .mat-radio-inner-circle,
+.mat-raised-button.mat-primary {
+  background-color: #76bc21 !important;
+  background: #76bc21 !important;
+}
+
+.mat-radio-button.mat-primary.mat-radio-checked .mat-radio-outer-circle {
+  border-color: #76bc21 !important;
+}
+
+.mat-primary .mat-option.mat-selected:not(.mat-option-disabled) {
+  color: #76bc21 !important;
 }

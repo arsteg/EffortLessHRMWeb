@@ -85,7 +85,7 @@
             <div class="d-flex align-items-center">
                 <label for="">Please add/edit fields that employees need to fill during expense application</label>
                 <button class="submenuTab active rounded-pill ms-4" type="button"
-                    (click)="addCategoryField()">Add</button>
+                    (click)="addField()">Add</button>
             </div>
 
          <div formArrayName="fields">
@@ -130,10 +130,38 @@
                         </div>
 
 
+                        <div class="mt-2 align-items-center" *ngIf="getFieldType(0) === 'Dropdown' || fields.fieldType === 'Dropdown'">
+                            <div class="d-flex">
+                                <div>
+            
+                                    <button class="addBtn rounded-pill text-white me-2 py-2" type="button" (click)="addFieldValue(i)">
+                                        Add&nbsp;Option
+                                    </button>
+                                </div>
+                                <!-- <pre>{{fields.get('fieldvalues')['controls'] | json}}</pre> -->
+                                <div formArrayName="fieldvalues" class="w-100">
+                                    <div *ngFor="let fieldGroup of fields.get('fieldvalues')['controls']; let j = index">
+                                        <ng-container [formGroupName]="j">
+                                            <div class="d-flex align-items-center">
+                                                <input type="text" class="form-control fieldValue w-100 mb-1"
+                                                    placeholder="Enter Dropdown Options" formControlName="value">
+                                                <button class="actions removeFieldValue ms-2" title="Delete" mat-mini-fab
+                                                    type="button" aria-label="Example icon button with a menu icon"
+                                                    (click)="removeFieldValue(j)">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
                     </ng-container>
                 </div>
             </div>
-            <div class="mt-2 align-items-center" *ngIf="getFieldType(0) === 'Dropdown'">
+            <!-- <div class="mt-2 align-items-center" *ngIf="getFieldType(0) === 'Dropdown'">
                 <div class="d-flex">
                     <div>
 
@@ -160,7 +188,7 @@
 
 
                 </div>
-            </div> 
+            </div>  -->
            
 
             <div *ngIf="addCategoryForm.value['type'] === 'dateRange'">
