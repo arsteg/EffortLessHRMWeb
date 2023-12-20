@@ -291,7 +291,7 @@
     text-align: center;
     cursor: pointer;
     color: #fff;
-    z-index: 2000;
+    /* z-index: 2000; */
     background-color: #FF7B1D;
     transition: left .3s;
 }
@@ -328,7 +328,7 @@
 }
 
 .expanded {
-    left: calc(16rem - 75px);
+    left: calc(16.7rem - 75px);
 }
 
 .collapse-icons {
@@ -400,4 +400,7 @@ input {
     border: none !important;
     border-bottom: 1px solid !important;
     padding: 0 !important;
+}
+::-webkit-scrollbar{
+    width: 0.2rem !important;
 }
