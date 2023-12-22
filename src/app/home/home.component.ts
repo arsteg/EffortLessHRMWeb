@@ -24,26 +24,33 @@ export class HomeComponent implements OnInit {
   options: string[] = ['You spent the 7 connects on the availability',
     'The work week has ended, and your weekly summary is available for summary',
     'Your Proposal to job'];
-    sideBarMenu = SideBarAdminMenu;
+  sideBarMenu = SideBarAdminMenu;
 
-  constructor(private router: Router, private auth: AuthenticationService, private commonService: CommonService) 
-  {
-   }
+  constructor(private router: Router, private auth: AuthenticationService, private commonService: CommonService) {
+  }
 
   ngOnInit(): void {
+
     let roleId = localStorage.getItem('roleId');
     this.adminView = localStorage.getItem('adminView');
     this.auth.getRole(roleId).subscribe((response: any) => {
       let role = response && response.data && response.data[0].Name;
-
+      if (role == 'Admin') {
+        this.adminView = 'admin'
+      }
       this.commonService.setCurrentUserRole(role);
       if (this.adminView) {
         if (this.adminView?.toLowerCase() == 'admin') {
+          this.adminView = 'admin'
+          localStorage.setItem('adminView', 'admin');
           this.menuList = SideBarAdminMenu;
           this.portalType = this.adminView?.toLowerCase();
         }
         if (this.adminView?.toLowerCase() == 'user') {
+          this.adminView = 'user'
           this.menuList = SideBarUserMenu;
+          localStorage.setItem('adminView', 'user');
+
         }
       }
       else {
@@ -57,7 +64,7 @@ export class HomeComponent implements OnInit {
         this.adminView = role?.toLowerCase();
       }
       this.portalType = role && role?.toLowerCase();
-    
+
     });
 
 
@@ -113,10 +120,10 @@ export class HomeComponent implements OnInit {
     this.isCollapsedMenu = !this.isCollapsedMenu;
     localStorage.setItem('sidebar', JSON.stringify(this.isCollapsedMenu))
   }
- 
+
   filteredMenuItems() {
     console.log('searchTerm:', this.searchText);
-    
+
     const searchTerm = this.searchText.trim().toLowerCase(); // Trim and convert to lowercase
     if (searchTerm === '') {
       // If search term is empty, display all menu items
@@ -128,14 +135,14 @@ export class HomeComponent implements OnInit {
       console.log('filteredMenuItems:', filtered);
       this.menuList = filtered; // Update menuList with filtered items
     }
-    
+
     // Check if the search text was deleted completely, and if so, reset it to display all items
     if (this.searchText === '') {
       this.menuList = SideBarAdminMenu; // Reset to original unfiltered menuList
     }
   }
-  
-  
+
+
 
 }
 
@@ -174,8 +181,8 @@ export const SideBarAdminMenu = [
     icon: 'assets/Sidenav-Icons/organization.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/organization.png',
     url: '/organization'
-   
-  
+
+
   },
   {
     id: '5',
@@ -183,7 +190,7 @@ export const SideBarAdminMenu = [
     icon: 'assets/Sidenav-Icons/manage.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/manage.png',
     url: '/manage'
-  
+
   },
   {
     id: '6',
@@ -284,7 +291,7 @@ export const SideBarAdminMenu = [
     id: '18',
     icon: 'assets/Sidenav-Icons/rolePermission.png',
     title: 'Role Permission',
-     lightIcon: 'assets/Sidenav-Icons/light-Icons/rolePermission.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/rolePermission.png',
     url: '/rolePermission'
   },
   {
@@ -349,7 +356,7 @@ export const SideBarUserMenu = [
     icon: 'assets/Sidenav-Icons/organization.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/organization.png',
     url: 'organization'
-   
+
   },
   {
     id: '6',
@@ -385,7 +392,7 @@ export const SideBarUserMenu = [
     icon: 'assets/Sidenav-Icons/taxation.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/taxation.png',
     url: 'taxDeclaration'
-    
+
   },
   {
     id: '11',
@@ -406,7 +413,7 @@ export const SideBarUserMenu = [
     icon: 'assets/Sidenav-Icons/separation.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/separation.png',
     url: 'separation'
-    
+
   },
   {
     id: '14',
@@ -428,7 +435,7 @@ export const SideBarUserMenu = [
     icon: 'assets/Sidenav-Icons/settings.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/settings.png',
     url: '/userPreferences'
-    
+
   }
 
 ];

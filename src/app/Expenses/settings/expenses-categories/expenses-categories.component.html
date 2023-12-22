@@ -58,7 +58,7 @@
 
     <form action="" [formGroup]="addCategoryForm" (ngSubmit)="isEdit ? updateExpenseCategory() :  addExpenseCategory()">
         <div class="form-group">
-            <label for="">Please choose the type of expense</label>
+            <label for="">Please choose the type of expense <span class="text-danger">*</span></label>
             <select formControlName="type" required name="expenseType" class="">
                 <option value="perDay">Per Day</option>
                 <option value="time">Time</option>
@@ -72,7 +72,7 @@
             </div>
         </div>
         <div class="mt-2 form-group">
-            <label for="">Please provide a label for this Expense</label>
+            <label for="">Please provide a label for this Expense <span class="text-danger">*</span></label>
             <input type="text" class="input form-control" formControlName="label" required
                 placeholder="Enter Custom Label">
             <div *ngIf="addCategoryForm.get('label').invalid && addCategoryForm.get('label').touched"
@@ -84,34 +84,16 @@
         <div class="mt-2">
             <div class="d-flex align-items-center">
                 <label for="">Please add/edit fields that employees need to fill during expense application</label>
-                <button class="submenuTab active rounded-pill ms-4" type="button"
-                    (click)="addField()">Add</button>
+                <button class="submenuTab active rounded-pill ms-4" type="button" (click)="addField()">Add</button>
             </div>
 
-         <div formArrayName="fields">
+
+            <div formArrayName="fields">
                 <div class="categoryField"
                     *ngFor="let fields of addCategoryForm.get('fields')['controls']; let i = index">
                     <ng-container [formGroupName]="i">
 
-                        <div class="mt-2">
-                            <label for="">Is field mandatory while submitting expense request?</label>
-                            <div class="d-flex">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" id="flexRadioDefault-Yes{{i}}"
-                                        formControlName="isMandatory" required [value]="true">
-                                    <label class="form-check-label" for="flexRadioDefault-Yes{{i}}">
-                                        Yes
-                                    </label>
-                                </div>
-                                <div class="form-check ms-3">
-                                    <input class="form-check-input" type="radio" id="flexRadioDefault-No{{i}}"
-                                        formControlName="isMandatory" required [value]="false">
-                                    <label class="form-check-label" for="flexRadioDefault-No{{i}}">
-                                        No
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
+
 
                         <div class="d-flex mt-2">
                             <input type="text" class="form-control" formControlName="fieldName" required
@@ -130,23 +112,26 @@
                         </div>
 
 
-                        <div class="mt-2 align-items-center" *ngIf="getFieldType(0) === 'Dropdown' || fields.fieldType === 'Dropdown'">
+                        <div class="mt-2 align-items-center"
+                            *ngIf="getFieldType(0) === 'Dropdown' || fields.fieldType === 'Dropdown'">
                             <div class="d-flex">
                                 <div>
-            
-                                    <button class="addBtn rounded-pill text-white me-2 py-2" type="button" (click)="addFieldValue(i)">
+
+                                    <button class="addBtn rounded-pill text-white me-2 py-2" type="button"
+                                        (click)="addFieldValue(i)">
                                         Add&nbsp;Option
                                     </button>
                                 </div>
-                                <!-- <pre>{{fields.get('fieldvalues')['controls'] | json}}</pre> -->
                                 <div formArrayName="fieldvalues" class="w-100">
-                                    <div *ngFor="let fieldGroup of fields.get('fieldvalues')['controls']; let j = index">
+                                    <div
+                                        *ngFor="let fieldGroup of fields.get('fieldvalues')['controls']; let j = index">
                                         <ng-container [formGroupName]="j">
                                             <div class="d-flex align-items-center">
                                                 <input type="text" class="form-control fieldValue w-100 mb-1"
                                                     placeholder="Enter Dropdown Options" formControlName="value">
-                                                <button class="actions removeFieldValue ms-2" title="Delete" mat-mini-fab
-                                                    type="button" aria-label="Example icon button with a menu icon"
+                                                <button class="actions removeFieldValue ms-2" title="Delete"
+                                                    mat-mini-fab type="button"
+                                                    aria-label="Example icon button with a menu icon"
                                                     (click)="removeFieldValue(j)">
                                                     <i class="bi bi-trash"></i>
                                                 </button>
@@ -161,35 +146,6 @@
                     </ng-container>
                 </div>
             </div>
-            <!-- <div class="mt-2 align-items-center" *ngIf="getFieldType(0) === 'Dropdown'">
-                <div class="d-flex">
-                    <div>
-
-                        <button class="addBtn rounded-pill text-white me-2 py-2" type="button" (click)="addFieldValue()">
-                            Add&nbsp;Option
-                        </button>
-                    </div>
-                    <div formArrayName="fieldValue" class="w-100">
-                        <div *ngFor="let fieldGroup of addCategoryForm.get('fieldValue')['controls']; let j = index">
-                            <ng-container [formGroupName]="j">
-                                <div class="d-flex align-items-center">
-                                    <input type="text" class="form-control fieldValue w-100 mb-1"
-                                        placeholder="Enter Dropdown Options" formControlName="value">
-
-                                    <button class="actions removeFieldValue ms-2" title="Delete" mat-mini-fab
-                                        type="button" aria-label="Example icon button with a menu icon"
-                                        (click)="removeFieldValue(j)">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </div>
-                            </ng-container>
-                        </div>
-                    </div>
-
-
-                </div>
-            </div>  -->
-           
 
             <div *ngIf="addCategoryForm.value['type'] === 'dateRange'">
                 <div class="row d-flex my-2 justify-content-evenly">
@@ -202,13 +158,36 @@
                     <button mat-raised-button class="col-3 text-secondary" type="button">Date</button>
                 </div>
             </div>
+
+            <div class="mt-2">
+                <label for="">Is field mandatory while submitting expense request? <span class="text-danger">*</span></label>
+                <div class="d-flex">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="flexRadioDefault-Yes"
+                            formControlName="isMandatory" required [value]="true">
+                        <label class="form-check-label" for="flexRadioDefault-Yes">
+                            Yes
+                        </label>
+                    </div>
+                    <div class="form-check ms-3">
+                        <input class="form-check-input" type="radio" id="flexRadioDefault-No"
+                            formControlName="isMandatory" required [value]="false">
+                        <label class="form-check-label" for="flexRadioDefault-No">
+                            No
+                        </label>
+                    </div>
+                </div>
+            </div>
+
             <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
                 <button mat-raised-button type="button" (click)="onCancel()">Cancel</button>
-                <button mat-raised-button class="addBtn" type="submit">{{isEdit?
+                <button mat-raised-button class="addBtn" type="submit" [disabled]="!addCategoryForm.valid">{{isEdit?
                     'Update': 'Add'}}</button>
 
             </div>
         </div>
+
+
 
     </form>
 

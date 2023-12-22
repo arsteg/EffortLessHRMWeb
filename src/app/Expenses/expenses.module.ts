@@ -8,11 +8,23 @@ import { ExpensesTemplateAssignmentComponent } from './settings/expenses-templat
 import { SharedModule } from '../shared/shared.Module';
 import { CommonComponentsModule } from '../common/commonComponents.module';
 import { FormsModule } from '@angular/forms';
+import { AdvanceCategoriesComponent } from './settings/advance-categories/advance-categories.component';
+import { AdvanceTemplateAssignmentComponent } from './settings/advance-template-assignment/advance-template-assignment.component';
+import { AdvanceTemplatesComponent } from './settings/advance-templates/advance-templates.component';
 
 
 
 @NgModule({
-  declarations: [ExpensesComponent, SettingsComponent, ExpensesCategoriesComponent, ExpensesTemplatesComponent, ExpensesTemplateAssignmentComponent],
+  declarations: [
+    ExpensesComponent,
+    SettingsComponent,
+    ExpensesCategoriesComponent,
+    ExpensesTemplatesComponent,
+    ExpensesTemplateAssignmentComponent,
+    AdvanceCategoriesComponent,
+    AdvanceTemplateAssignmentComponent,
+    AdvanceTemplatesComponent
+  ],
   imports: [
     CommonModule,
     SharedModule,

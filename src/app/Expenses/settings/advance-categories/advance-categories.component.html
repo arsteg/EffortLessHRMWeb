@@ -1,0 +1,80 @@
+<div class="mainContent">
+    <div class="container">
+        <div class="py-2 px-0 bg-white tableContainer">
+            <div class="d-flex justify-content-between align-items-center mb-2 px-3">
+                <p class="mb-0">() Records Found</p>
+                <div class="d-flex align-items-center">
+                    <span class="bi bi-search searchIcon"></span>
+
+                    <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
+                        name="searchText" aria-label="default input example">
+                    <button mat-raised-button class="addBtn rounded-pill ms-3"(click)="open(addModal)">Add New</button>
+                </div>
+            </div>
+            <table class="px-4">
+                <thead>
+                    <tr>
+                        <th class="ps-2">Category&nbsp;Name</th>
+
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="ps-2"></td>
+                        <td class="">
+                            <button class="actions" mat-mini-fab title="Update"
+                                aria-label="Example icon button with a menu icon">
+                                <i class="bi bi-pencil-fill"></i>
+                            </button>
+                            <button class="actions ms-2" title="Delete" mat-mini-fab
+                                aria-label="Example icon button with a menu icon">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <pagination-controls class="pagination d-flex justify-content-end"></pagination-controls>
+        </div>
+
+    </div>
+</div>
+
+<!-- Add/Update category -->
+
+<ng-template #addModal let-modal>
+    <div class="modal-header border-bottom mb-2 pt-0">
+        <div>
+            <h1 class="modal-title text-muted mb-0">{{isEdit? 'Update': 'Add'}} Advance Category</h1>
+        </div>
+        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
+                (click)="modal.close('Escape clicked')"></button>
+        </div>
+    </div>
+
+    <form action="" [formGroup]="addCategoryForm">
+        <div class="form-group">
+            <label for="">Please provide a label for this category <span class="text-danger">*</span></label>
+            <input type="text" class="form-control w-100" placeholder="Add Custom Label" formControlName="advanceCategory">
+            <div *ngIf="addCategoryForm.get('advanceCategory').invalid && addCategoryForm.get('advanceCategory').touched"
+                class="text-danger error">
+                Please Add Advance Category!
+            </div>
+        </div>
+
+
+        <div class="mt-2">
+            <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
+                <button mat-raised-button type="button" (click)="onCancel()">Cancel</button>
+                <button mat-raised-button class="addBtn" type="submit">{{isEdit?
+                    'Update': 'Add'}}</button>
+
+            </div>
+        </div>
+
+
+
+    </form>
+
+</ng-template>

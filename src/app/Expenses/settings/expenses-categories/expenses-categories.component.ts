@@ -58,6 +58,7 @@ export class ExpensesCategoriesComponent implements OnInit {
     this.addCategoryForm = this.fb.group({
       type: ['', Validators.required],
       label: ['', Validators.required],
+      isMandatory: ['', Validators.required],
       expenseCategory: [''],
       fields: this.fb.array([]),
       expenseApplicationField: [''],
@@ -91,7 +92,10 @@ export class ExpensesCategoriesComponent implements OnInit {
   clearselectedRequest() {
     this.isEdit = false;
     this.addCategoryForm.reset();
-
+    const fieldsArray = this.addCategoryForm.get('fields') as FormArray;
+    while (fieldsArray.length !== 0) {
+      fieldsArray.removeAt(0);
+    }
   }
 
   addField(): void {
@@ -138,11 +142,15 @@ export class ExpensesCategoriesComponent implements OnInit {
   // }
 
   removeCatgoryField(index: number) {
-
-    // this.expenses.deleteApplicationField(this.fields.value[index].id).subscribe((res: any) => {
-    //   this.fields.removeAt(index);
-    //   this.toast.success('Successfully Deleted!!!', 'Expense Category Field');
-    // });
+    if (this.fields.value[index].id) {
+      this.expenses.deleteApplicationField(this.fields.value[index].id).subscribe((res: any) => {
+        this.fields.removeAt(index);
+        this.toast.success('Successfully Deleted!!!', 'Expense Category Field');
+      });
+    }
+    else {
+      this.fields.removeAt(index);
+    }
   }
 
   removeFieldValue(index: number) {
@@ -168,7 +176,8 @@ export class ExpensesCategoriesComponent implements OnInit {
     if (this.changeMode === 'Add') {
       let categoryPayload = {
         type: this.addCategoryForm.value['type'],
-        label: this.addCategoryForm.value['label']
+        label: this.addCategoryForm.value['label'],
+        isMandatory: this.addCategoryForm.value['isMandatory']
       };
 
       this.expenses.addCategory(categoryPayload).subscribe((res: any) => {
@@ -184,80 +193,12 @@ export class ExpensesCategoriesComponent implements OnInit {
             console.log(result.data);
           });
         }
-
-        this.isEdit = false;
-        this.addCategoryForm.reset();
+        this.clearselectedRequest();
       });
     }
     else if (this.changeMode === 'Update') {
-      // Handle the update case if needed
     }
   }
-
-
-  // addExpenseCategory() {
-  //   if (this.changeMode === 'Add') {
-  //     let categoryPayload = {
-  //       type: this.addCategoryForm.value['type'],
-  //       label: this.addCategoryForm.value['label']
-  //     };
-
-  //     this.expenses.addCategory(categoryPayload).pipe(
-  //       switchMap((categoryResponse: any) => {
-  //         const newCategory = categoryResponse.data;
-  //         this.expenseCategories.push(newCategory);
-  //         if (this.addCategoryForm.value['fields'].length > 0) {
-  //           let fieldsPayload = {
-  //             fields: this.addCategoryForm.value['fields'],
-  //             expenseCategory: newCategory._id
-  //           };
-
-  //           console.log(fieldsPayload);
-  //           return this.expenses.addCategoryField(fieldsPayload);
-  //         } else {
-  //           return of(null);
-  //         }
-  //       }),
-  //       switchMap((fieldsResponse: any) => {
-  //         if (fieldsResponse) {
-  //           const response = fieldsResponse.data;
-  //           const fieldObservables = response.map((field) => {
-  //             if (field.fieldType === 'Dropdown' && this.addCategoryForm.value['fieldValue'].length > 0) {
-  //               let fieldOptionsPayload = {
-  //                 expenseApplicationField: field._id,
-  //                 fieldValue: this.addCategoryForm.value['fieldValue'].map((valueObject: any) => {
-  //                   return {
-  //                     name: field.fieldName,
-  //                     type: field.fieldType,
-  //                     value: valueObject.value
-  //                   };
-  //                 })
-  //               };
-
-  //               console.log(fieldOptionsPayload);
-  //               return this.expenses.addApplicationFieldValue(fieldOptionsPayload);
-  //             } else {
-  //               return of(null); // No field options to add
-  //             }
-  //           });
-
-  //           return forkJoin(fieldObservables);
-  //         } else {
-  //           return of(null); // No fields added, no need to add options
-  //         }
-  //       })
-  //     ).subscribe((results: any) => {
-  //       // Handle results if needed
-  //       console.log('Results:', results);
-
-  //       this.isEdit = false;
-  //       this.addCategoryForm.reset();
-  //     });
-  //   } else if (this.changeMode === 'Update') {
-  //     // Handle the update case if needed
-  //   }
-  // }
-
 
   deleteCategory(id: string) {
     this.expenses.deleteCategory(id).subscribe((res: any) => {
@@ -293,11 +234,12 @@ export class ExpensesCategoriesComponent implements OnInit {
     let categoryPayload = {
       type: this.addCategoryForm.value['type'],
       label: this.addCategoryForm.value['label'],
+      isMandatory: this.addCategoryForm.value['isMandatory']
     };
     this.expenses.updateCategory(this.selectedCategory?._id, categoryPayload).subscribe((res: any) => {
       this.updatedCategory = res.data._id;
     });
-    // Update application field
+
     if (this.addCategoryForm.get('fields')) {
       let fieldsPayload = {
         fields: this.fields.value
@@ -355,7 +297,7 @@ export class ExpensesCategoriesComponent implements OnInit {
         return {
           fieldName: field.fieldName,
           fieldType: field.fieldType,
-          isMandatory: field.isMandatory,
+         
           id: field._id,
           expenseCategory: this.selectedCategory._id
         };
@@ -373,44 +315,52 @@ export class ExpensesCategoriesComponent implements OnInit {
           this.fields.push(this.fb.group({
             fieldName: field.fieldName,
             fieldType: field.fieldType,
-            isMandatory: field.isMandatory,
+          
             id: field.id,
             expenseCategory: this.selectedCategory._id,
-            fieldvalues: field.fieldvalues[0].value
+            fieldvalues: field.fieldvalues
           }));
         });
 
-        this.expenses.getApplicationFieldValuebyFieldId(this.selectedField[0]._id).subscribe((res: any) => {
-          const mappedValues = res.data.map((Value) => {
-            return {
-              value: Value.value,
-              name: Value.name,
-              type: Value.type,
-              id: Value._id,
-              expenseApplicationField: Value.expenseApplicationField
-            };
-          });
-          const fieldValueArray = this.addCategoryForm.get('fieldValue') as FormArray;
-          fieldValueArray.clear();
-          mappedValues.forEach((fieldValue) => {
-            fieldValueArray.push(this.fb.group({
-              name: fieldValue.name,
-              type: fieldValue.type,
-              value: fieldValue.value,
-              id: fieldValue.id,
-              expenseApplicationField: fieldValue.expenseApplicationField
-            }));
-          });
-          this.addCategoryForm.patchValue({
-            type: category.type,
-            label: category.label,
-            fields: this.fields.value,
-            expenseCategory: this.selectedCategory._id,
-            expenseApplicationField: this.selectedField[0]._id,
-          });
-          console.log(this.addCategoryForm.value)
-        });
+        // this.expenses.getApplicationFieldValuebyFieldId(this.selectedField[0]._id).subscribe((res: any) => {
+        //   const mappedValues = res.data.map((Value) => {
+        //     return {
+        //       value: Value.value,
+        //       name: Value.name,
+        //       type: Value.type,
+        //       id: Value._id,
+        //       expenseApplicationField: Value.expenseApplicationField
+        //     };
+        //   });
+        //   const fieldValueArray = this.addCategoryForm.get('fieldvalues') as FormArray;
+        //   fieldValueArray.clear();
+        //   mappedValues.forEach((fieldValue) => {
+        //     fieldValueArray.push(this.fb.group({
+        //       name: fieldValue.name,
+        //       type: fieldValue.type,
+        //       value: fieldValue.value,
+        //       id: fieldValue.id,
+        //       expenseApplicationField: fieldValue.expenseApplicationField
+        //     }));
+        //   });
+        //   this.addCategoryForm.patchValue({
+        //     type: category.type,
+        //     label: category.label,
+        //     fields: this.fields.value,
+        //     expenseCategory: this.selectedCategory._id,
+        //     expenseApplicationField: this.selectedField[0]._id,
+        //   });
+        //   console.log(this.addCategoryForm.value)
+        // });
       }
+      this.addCategoryForm.patchValue({
+        type: category.type,
+        label: category.label,
+        isMandatory: category.isMandatory,
+        fields: this.fields.value,
+        expenseCategory: this.selectedCategory._id,
+        // expenseApplicationField: this.selectedField[0]._id,
+      });
     });
   }
 

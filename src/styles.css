@@ -834,3 +834,6 @@ label {
 .mat-primary .mat-option.mat-selected:not(.mat-option-disabled) {
   color: #76bc21 !important;
 }
+option:hover{
+  background: orange !important;
+}

@@ -1,11 +1,17 @@
 <div class="main-content mt-5 pt-2">
     <div class="container-fluid">
         <div class="tabs">
-            <button mat-raised-button (click)="selectTab(1)" [class.active]="selectedTab === 1">Expense
+            <button (click)="selectTab(1)" [class.active]="selectedTab === 1">Expense
                 Categories</button>
-            <button mat-raised-button (click)="selectTab(2)" [class.active]="selectedTab === 2">Expense
+            <button (click)="selectTab(2)" [class.active]="selectedTab === 2">Expense
                 Templates</button>
-            <button mat-raised-button (click)="selectTab(3)" [class.active]="selectedTab === 3">Expense Template
+            <button (click)="selectTab(3)" [class.active]="selectedTab === 3">Expense Template
+                Assignment</button>
+            <button (click)="selectTab(4)" [class.active]="selectedTab === 4">Advance
+                Categories</button>
+            <button (click)="selectTab(5)" [class.active]="selectedTab === 5">Advance
+                Templates</button>
+            <button (click)="selectTab(6)" [class.active]="selectedTab === 6">Advance Template
                 Assignment</button>
         </div>
 
@@ -18,6 +24,14 @@
         <div *ngIf="selectedTab === 3" class="tab-content  p-0">
             <app-expenses-template-assignment></app-expenses-template-assignment>
         </div>
-
+        <div *ngIf="selectedTab === 4" class="tab-content p-0">
+            <app-advance-categories></app-advance-categories>
+        </div>
+        <div *ngIf="selectedTab === 5" class="tab-content  p-0">
+            <app-advance-templates></app-advance-templates>
+        </div>
+        <div *ngIf="selectedTab === 6" class="tab-content  p-0">
+            <app-advance-template-assignment></app-advance-template-assignment>
+        </div>
     </div>
 </div>

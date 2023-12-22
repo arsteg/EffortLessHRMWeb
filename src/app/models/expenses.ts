@@ -1,6 +1,7 @@
 export interface ExpenseCategory {
     type: string;
     label: string;
+    isMandatory: boolean;
 }
 
 export interface ExpenseCategoryField {
@@ -8,7 +9,7 @@ export interface ExpenseCategoryField {
     fields: {
         fieldName: string;
         fieldType: string;
-        isMandatory: boolean;
+        
         fieldvalues: { value: string }[];
       }[];
 }
