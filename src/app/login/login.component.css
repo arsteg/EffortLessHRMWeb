@@ -1,29 +1,51 @@
-.login-container{
+.login-container {
   max-width: 400px;
   margin: 60px auto 0;
 }
 
-.error{
+.error {
   color: white;
   font-size: 12px;
   padding-top: 4px
 }
-input.ng-invalid.ng-touched{
-  border:1px solid white;
+
+input.ng-invalid.ng-touched {
+  border: 1px solid white;
 }
-.validationErroMessage{
-  color:white;
+
+.validationErroMessage {
+  color: white;
 }
-.check{
+
+.check {
   border-radius: 2px !important;
   padding: 0 !important;
   min-height: 0 !important
 }
-.card{
+
+.card {
   background: #ff8b5b !important;
 }
-@media screen and (max-width: 480px){
-  .dashImg{
+
+@media screen and (max-width: 480px) {
+  .dashImg {
     display: none;
   }
+}
+
+@media screen and (min-width: 1024px) {
+  .card {
+    min-width: 440px !important;
+  }
+  .copy{
+    position: absolute !important;
+    bottom: 10px !important;
+    left: 35% !important;
+  }
+}
+
+.copy {
+  position: absolute;
+  bottom: 15px;
+  left: 10%;
 }
