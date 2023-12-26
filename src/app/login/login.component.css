@@ -22,6 +22,8 @@ input.ng-invalid.ng-touched{
 .card{
   background: #ff8b5b !important;
 }
-/* .background{
-  background-image: url('assets/images/login.png');
-} */
+@media screen and (max-width: 480px){
+  .dashImg{
+    display: none;
+  }
+}

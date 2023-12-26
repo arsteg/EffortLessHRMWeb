@@ -277,7 +277,7 @@
 .exp-col {
     position: fixed;
     left: calc(5.2rem - 11.5px);
-    top: calc(55px + (32px + 0.5rem + 0.5rem) - -40.5px);
+    top: calc(20px + (32px + 0.5rem + 0.5rem) - -40.5px);
     width: 25px;
     height: 25px;
     display: -ms-flexbox;
@@ -291,7 +291,7 @@
     text-align: center;
     cursor: pointer;
     color: #fff;
-    /* z-index: 2000; */
+    z-index: 2000;
     background-color: #FF7B1D;
     transition: left .3s;
 }
