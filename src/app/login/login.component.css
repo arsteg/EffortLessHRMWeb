@@ -37,11 +37,11 @@ input.ng-invalid.ng-touched {
   .card {
     min-width: 440px !important;
   }
-  .copy{
+  /* .copy{
     position: absolute !important;
     bottom: 10px !important;
     left: 35% !important;
-  }
+  } */
 }
 
 .copy {
