@@ -87,66 +87,48 @@
                 <button class="submenuTab active rounded-pill ms-4" type="button" (click)="addField()">Add</button>
             </div>
 
-
             <div formArrayName="fields">
-                <div class="categoryField"
-                    *ngFor="let fields of addCategoryForm.get('fields')['controls']; let i = index">
-                    <ng-container [formGroupName]="i">
-
-
-
-                        <div class="d-flex mt-2">
-                            <input type="text" class="form-control" formControlName="fieldName" required
-                                placeholder="Enter Field Name">
-                            <select name="" id="" formControlName="fieldType" required class="ms-2 form-control">
-                                <option value="Dropdown">Dropdown</option>
-                                <option value="Textfield">Textfield</option>
-                                <option value="Number">Number</option>
-                                <option value="DateRange">DateRange</option>
-                                <option value="Date">Date</option>
-                            </select>
-                            <button class="actions ms-2" title="Delete" mat-mini-fab type="button"
-                                aria-label="Example icon button with a menu icon" (click)="removeCatgoryField(i)">
-                                <i class="bi bi-trash"></i>
-                            </button>
+                <div class="categoryField" *ngFor="let fieldGroup of addCategoryForm.get('fields')['controls']; let i = index">
+                  <ng-container [formGroupName]="i">
+                    <div class="d-flex mt-2">
+                      <input type="text" class="form-control" formControlName="fieldName" required placeholder="Enter Field Name">
+                      <select name="" id="" formControlName="fieldType" required class="ms-2 form-control">
+                        <option value="Dropdown">Dropdown</option>
+                        <option value="Textfield">Textfield</option>
+                        <option value="Number">Number</option>
+                        <option value="DateRange">DateRange</option>
+                        <option value="Date">Date</option>
+                      </select>
+                      <button class="actions ms-2" title="Delete" mat-mini-fab type="button" aria-label="Example icon button with a menu icon" (click)="removeCatgoryField(i)">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </div>
+              
+                    <div class="mt-2 align-items-center" *ngIf="getFieldType(i) === 'Dropdown' || fieldGroup.get('fieldType').value === 'Dropdown'">
+                      <div class="d-flex">
+                        <div>
+                          <button class="addBtn rounded-pill text-white me-2 py-2" type="button" (click)="addFieldValue(i)">
+                            Add&nbsp;Option
+                          </button>
                         </div>
-
-
-                        <div class="mt-2 align-items-center"
-                            *ngIf="getFieldType(0) === 'Dropdown' || fields.fieldType === 'Dropdown'">
-                            <div class="d-flex">
-                                <div>
-
-                                    <button class="addBtn rounded-pill text-white me-2 py-2" type="button"
-                                        (click)="addFieldValue(i)">
-                                        Add&nbsp;Option
-                                    </button>
-                                </div>
-                                <div formArrayName="fieldvalues" class="w-100">
-                                    <div
-                                        *ngFor="let fieldGroup of fields.get('fieldvalues')['controls']; let j = index">
-                                        <ng-container [formGroupName]="j">
-                                            <div class="d-flex align-items-center">
-                                                <input type="text" class="form-control fieldValue w-100 mb-1"
-                                                    placeholder="Enter Dropdown Options" formControlName="value">
-                                                <button class="actions removeFieldValue ms-2" title="Delete"
-                                                    mat-mini-fab type="button"
-                                                    aria-label="Example icon button with a menu icon"
-                                                    (click)="removeFieldValue(j)">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </div>
-                                        </ng-container>
-                                    </div>
-                                </div>
-                            </div>
+                        <div formArrayName="expenseApplicationFieldValues" class="w-100">
+                          <div *ngFor="let fieldValueGroup of fieldGroup.get('expenseApplicationFieldValues')['controls']; let j = index">
+                            <ng-container [formGroupName]="j">
+                              <div class="d-flex align-items-center">
+                                <input type="text" class="form-control fieldValue w-100 mb-1" placeholder="Enter Dropdown Options" formControlName="value">
+                                <button class="actions removeFieldValue ms-2" title="Delete" mat-mini-fab type="button" aria-label="Example icon button with a menu icon" (click)="removeFieldValue(i,j)">
+                                  <i class="bi bi-trash"></i>
+                                </button>
+                              </div>
+                            </ng-container>
+                          </div>
                         </div>
-
-
-                    </ng-container>
+                      </div>
+                    </div>
+                  </ng-container>
                 </div>
-            </div>
-
+              </div>
+              
             <div *ngIf="addCategoryForm.value['type'] === 'dateRange'">
                 <div class="row d-flex my-2 justify-content-evenly">
                     <button mat-raised-button class="col-3 text-secondary" type="button">From Date</button>
@@ -169,6 +151,7 @@
                             Yes
                         </label>
                     </div>
+
                     <div class="form-check ms-3">
                         <input class="form-check-input" type="radio" id="flexRadioDefault-No"
                             formControlName="isMandatory" required [value]="false">

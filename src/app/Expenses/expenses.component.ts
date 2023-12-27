@@ -7,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ExpensesComponent implements OnInit {
   selectedTab: number = 1;
-  // view = localStorage.getItem('adminView');
+  view = localStorage.getItem('adminView');
 
   constructor(
     ) { }

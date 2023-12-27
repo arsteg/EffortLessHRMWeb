@@ -1,7 +1,7 @@
 <div class="main-content contentData">
     <div class="container-fluid px-0">
         <ng-container>
-            <div>
+            <div *ngIf="view === 'admin'">
                 <div class=" d-flex bg-white subMenu w-100">
                     <button class="btn rounded-pill submenuTab" (click)="selectTab(1)"
                         [class.active]="selectedTab === 1">Settings</button>
@@ -22,7 +22,7 @@
                 </div>
             </div>
 
-            <div>
+            <div *ngIf="view === 'user'">
                 <div class=" d-flex bg-white subMenu w-100">
                     <button class="btn rounded-pill submenuTab" (click)="selectTab(1)"
                         [class.active]="selectedTab === 1">My Expenses

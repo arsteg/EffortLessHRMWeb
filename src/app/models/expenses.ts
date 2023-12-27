@@ -9,8 +9,7 @@ export interface ExpenseCategoryField {
     fields: {
         fieldName: string;
         fieldType: string;
-        
-        fieldvalues: { value: string }[];
+        expenseApplicationFieldValues: { value: string }[];
       }[];
 }
 

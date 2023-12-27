@@ -64,10 +64,10 @@ export class ExpensesService {
     return response;
   }
 
-  addApplicationFieldValue(expenseApplicationField: ExpenseApplicationField): Observable<response<any>> {
-    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/expense-application-field-values`, expenseApplicationField, this.httpOptions);
-    return response;
-  }
+  // addApplicationFieldValue(expenseApplicationField: ExpenseApplicationField): Observable<response<any>> {
+  //   var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/expense-application-field-values`, expenseApplicationField, this.httpOptions);
+  //   return response;
+  // }
 
   updateApplicationFieldValue(expenseApplicationField: UpdateExpenseCategoryField): Observable<response<any>> {
     var response = this.http.put<response<any>>(`${environment.apiUrlDotNet}/expense/expense-application-field-values`, expenseApplicationField, this.httpOptions);

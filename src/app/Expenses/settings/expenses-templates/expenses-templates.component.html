@@ -67,7 +67,7 @@
                 </div>
             </div>
 
-            <div class="mt-2" class="form-group">
+            <div class="form-group mt-2">
                 <label for="">How many levels of approvals you want to add?<span class="text-danger">*</span></label>
                 <div class="d-flex">
 
@@ -91,20 +91,59 @@
                     Please Select Approval Type!
                 </div>
             </div>
+            <div class="mt-2 form-group">
+                <label for="">How would you like to add approvers?<span class="text-danger">*</span></label>
+                <div class="d-flex">
 
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="level" formControlName="approvalType"
+                            value="1 Level" required>
+                        <label class="form-check-label" for="level">
+                            Template Wise
+                        </label>
+                    </div>
+                    <div class="form-check ms-4">
+                        <input class="form-check-input" type="radio" id="level2" formControlName="approvalType" required
+                            value="2 Level">
+                        <label class="form-check-label" for="level2">
+                            Employee Wise
+                        </label>
+                    </div>
+                </div>
+                <div *ngIf="addTemplateForm.get('approvalType').invalid && addTemplateForm.get('approvalType').touched"
+                    class="text-danger error">
+                    Please Select Approval Type!
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-6">
+                    <label for="">Please Select An Employee For First Approver? <span
+                            class="text-danger">*</span></label>
+                    <select name="" id="" formControlName="fieldType" required class="ms-2 form-control">
+                        <option value="Dropdown">user</option>
+                    </select>
+                </div>
 
+                <div class="col-md-6">
+                    <label for="">Please Select An Employee For Second Approver? <span
+                            class="text-danger">*</span></label>
+                    <select name="" id="" formControlName="fieldType" required class="ms-2 form-control">
+                        <option value="Dropdown">user</option>
+                    </select>
+                </div>
+            </div>
             <div class="mt-2">
 
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>What expense categories are applicable in this expense template?<span
                             class="text-danger">*</span></mat-label>
-                    <mat-select multiple formControlName="expenseCategory" >
-                        <mat-option [value]="categories._id"
-                            *ngFor="let categories of expenseCategories; let i = index"  [selected]="isSelected(categories._id)">
+                    <mat-select multiple formControlName="expenseCategory">
+                        <mat-option [value]="categories._id" *ngFor="let categories of expenseCategories; let i = index"
+                            [selected]="isSelected(categories._id)">
                             {{categories.label}}
                         </mat-option>
                     </mat-select>
-                </mat-form-field>  
+                </mat-form-field>
             </div>
 
             <div class="mt-2">

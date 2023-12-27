@@ -1,7 +1,8 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, FormArray, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, FormArray, Validators, FormControl } from '@angular/forms';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { isEqual } from 'date-fns';
 import { ToastrService } from 'ngx-toastr';
 import { of, forkJoin } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators'
@@ -37,8 +38,6 @@ export class ExpensesCategoriesComponent implements OnInit {
   field: any = []
   fname: string;
   ftype: string;
-
-
   f: any = [{
     addName: 'user name:',
     type: 'text',
@@ -47,6 +46,7 @@ export class ExpensesCategoriesComponent implements OnInit {
   }]
   value: any;
   updatedCategory: any;
+  originalFields: any[] = [];
 
 
   constructor(private modalService: NgbModal,
@@ -61,7 +61,6 @@ export class ExpensesCategoriesComponent implements OnInit {
       isMandatory: ['', Validators.required],
       expenseCategory: [''],
       fields: this.fb.array([]),
-      expenseApplicationField: [''],
     });
   }
 
@@ -102,8 +101,7 @@ export class ExpensesCategoriesComponent implements OnInit {
     const fieldGroup = this.fb.group({
       fieldName: ['', Validators.required],
       fieldType: ['', Validators.required],
-      isMandatory: [false, Validators.required],
-      fieldvalues: this.fb.array([]),
+      expenseApplicationFieldValues: this.fb.array([]),
     });
 
     (this.addCategoryForm.get('fields') as FormArray).push(fieldGroup);
@@ -111,38 +109,18 @@ export class ExpensesCategoriesComponent implements OnInit {
 
   addFieldValue(fieldIndex: number): void {
     const fieldValueGroup = this.fb.group({
-      value: ['', Validators.required],
+      value: ['', Validators.required]
     });
-    ((this.addCategoryForm.get('fields') as FormArray).at(fieldIndex).get('fieldvalues') as FormArray).push(fieldValueGroup);
+    ((this.addCategoryForm.get('fields') as FormArray).at(fieldIndex).get('expenseApplicationFieldValues') as FormArray).push(fieldValueGroup);
   }
 
   get fields() {
     return this.addCategoryForm.get('fields') as FormArray;
   }
-  get values() {
-    return this.addCategoryForm.get('fieldValue') as FormArray;
-  }
-
-  // addCategoryField() {
-  //   this.fields.push(this.fb.group({
-  //     fieldName: '',
-  //     fieldType: '',
-  //     isMandatory: null,
-  //     id: '',
-  //     expenseCategory: '',
-  //     fieldvalues: ['']
-  //   }));
-  // }
-  // addFieldValue() {
-  //   this.values.push(this.fb.group({
-  //     name: '',
-  //     type: '',
-  //     value: ''
-  //   }))
-  // }
 
   removeCatgoryField(index: number) {
     if (this.fields.value[index].id) {
+      console.log(this.fields.value[index].id)
       this.expenses.deleteApplicationField(this.fields.value[index].id).subscribe((res: any) => {
         this.fields.removeAt(index);
         this.toast.success('Successfully Deleted!!!', 'Expense Category Field');
@@ -153,11 +131,11 @@ export class ExpensesCategoriesComponent implements OnInit {
     }
   }
 
-  removeFieldValue(index: number) {
-    const deletedValue = this.values.value[index].id;
-    this.values.removeAt(index);
-    this.expenses.deleteApplicationFieldValue(deletedValue).subscribe((res) => {
-      this.toast.success('Successfully Deleted!!!', 'Expense Category Field Value');
+  removeFieldValue(fieldIndex: number, valueIndex: number) {
+    const fieldArray = this.fields.at(fieldIndex).get('expenseApplicationFieldValues') as FormArray;
+    console.log(fieldArray.value[valueIndex]._id)
+    this.expenses.deleteApplicationFieldValue(fieldArray.value[valueIndex]._id).subscribe((res: any) => {
+      fieldArray.removeAt(valueIndex);
     });
   }
 
@@ -194,7 +172,11 @@ export class ExpensesCategoriesComponent implements OnInit {
           });
         }
         this.clearselectedRequest();
-      });
+        this.toast.success('New Expense Category Added', 'Successfully!!!')
+      },
+        err => {
+          this.toast.error('This category is already exist', 'Error!!!')
+        });
     }
     else if (this.changeMode === 'Update') {
     }
@@ -229,6 +211,9 @@ export class ExpensesCategoriesComponent implements OnInit {
   get isAddCategoryFormValid() {
     return this.addCategoryForm.valid;
   }
+  initializeFields() {
+    this.originalFields = this.addCategoryForm.value['fields'].map((field: any) => ({ ...field }));
+  }
 
   updateExpenseCategory() {
     let categoryPayload = {
@@ -236,70 +221,64 @@ export class ExpensesCategoriesComponent implements OnInit {
       label: this.addCategoryForm.value['label'],
       isMandatory: this.addCategoryForm.value['isMandatory']
     };
-    this.expenses.updateCategory(this.selectedCategory?._id, categoryPayload).subscribe((res: any) => {
-      this.updatedCategory = res.data._id;
-    });
 
+    if (
+      this.addCategoryForm.get('type').dirty ||
+      this.addCategoryForm.get('label').dirty ||
+      this.addCategoryForm.get('isMandatory').dirty
+    ) {
+      this.expenses.updateCategory(this.selectedCategory?._id, categoryPayload).subscribe((res: any) => {
+        this.updatedCategory = res.data._id;
+      });
+    }
     if (this.addCategoryForm.get('fields')) {
-      let fieldsPayload = {
-        fields: this.fields.value
-      };
-      this.expenses.updateCategoryField(fieldsPayload).subscribe((res: any) => {
-        console.log(res);
-      });
-    }
-    // Update application field Value
-    if (this.addCategoryForm.value['fieldValue'].length > 0) {
-      let fieldValuePayload = {
-        fields: this.addCategoryForm.value['fieldValue']
-      };
-      this.expenses.updateApplicationFieldValue(fieldValuePayload).subscribe((res: any) => {
-        console.log(res)
-      })
-    }
-    // if new field added
-    const newField = this.addCategoryForm.value['fields'].filter((field: any) => !field._id);
-    if (newField.length > 0) {
-      let fieldsPayload = {
-        fields: newField,
-        expenseCategory: this.selectedCategory._id
-      };
-      console.log('new Fields: ', fieldsPayload)
-      this.expenses.addCategoryField(fieldsPayload).subscribe((result: any) => {
-        console.log('New fields added during update:', result.data);
-      });
-    }
-    // Add new field values if any
-    const newFieldValues = this.addCategoryForm.value['fieldValue'].filter((fieldValue: any) => !fieldValue._id);
-    if (newFieldValues.length > 0) {
-      let fieldOptionsPayload = {
-        expenseApplicationField: this.addCategoryForm.value['fields'].id,  // You need to provide the correct field ID here
-        fieldValue: newFieldValues
-      };
-      console.log('New field values added:', fieldOptionsPayload);
-      this.expenses.addApplicationFieldValue(fieldOptionsPayload).subscribe((res: any) => {
-        console.log('New field values added:', res);
-      });
+      // Check if existing fields have been updated
+      const updateFields = (this.addCategoryForm.value['fields'] as any[]).filter(
+        (field) => field.id && !this.originalFields.some((originalField) => isEqual(field, originalField))
+      );
+      console.log(updateFields)
+      if (this.addCategoryForm.get('fields').dirty) {
+        let fieldsPayload = {
+          fields: updateFields
+        };
+        console.log(fieldsPayload)
+        this.expenses.updateCategoryField(fieldsPayload).subscribe((res: any) => {
+          console.log(res);
+        });
+      }
+      // Check if new fields have been added
+      const newFields = (this.addCategoryForm.value['fields'] as any[]).filter(
+        (field) => !field.id && !this.originalFields.some((originalField) => isEqual(field, originalField))
+      );
+      console.log(newFields);
+      if (newFields && newFields.length > 0) {
+        let fieldsPayload = {
+          fields: newFields,
+          expenseCategory: this.selectedCategory._id
+        };
+        console.log(fieldsPayload);
+        this.expenses.addCategoryField(fieldsPayload).subscribe((res: any) => {
+          console.log(res);
+        });
+      }
+
     }
     this.getAllExpensesCategories();
-    // this.isEdit = false;
   }
 
   editCategory(category, index) {
     this.isEdit = true;
     this.selectedCategory = category;
-    console.log(this.selectedCategory);
-
+    console.log(this.selectedCategory)
     this.expenses.getApplicationFieldbyCategory(this.selectedCategory._id).subscribe((res: any) => {
       this.field = res.data;
-      console.log(this.field)
       let fieldData = this.field.map((field) => {
         return {
           fieldName: field.fieldName,
           fieldType: field.fieldType,
-         
           id: field._id,
-          expenseCategory: this.selectedCategory._id
+          expenseCategory: this.selectedCategory._id,
+          expenseApplicationFieldValues: field.expenseApplicationFieldValues
         };
       });
 
@@ -311,47 +290,24 @@ export class ExpensesCategoriesComponent implements OnInit {
           };
         });
         fieldData.forEach((field) => {
-          console.log(field)
-          this.fields.push(this.fb.group({
+          const fieldGroup = this.fb.group({
             fieldName: field.fieldName,
             fieldType: field.fieldType,
-          
             id: field.id,
             expenseCategory: this.selectedCategory._id,
-            fieldvalues: field.fieldvalues
-          }));
+            expenseApplicationFieldValues: this.fb.array([])
+          });
+
+          field?.expenseApplicationFieldValues?.forEach((value) => {
+            const valueFormGroup = this.fb.group({
+              value: value.value,
+              _id: value._id
+            });
+            (fieldGroup.get('expenseApplicationFieldValues') as FormArray).push(valueFormGroup);
+          });
+          this.fields.push(fieldGroup);
         });
 
-        // this.expenses.getApplicationFieldValuebyFieldId(this.selectedField[0]._id).subscribe((res: any) => {
-        //   const mappedValues = res.data.map((Value) => {
-        //     return {
-        //       value: Value.value,
-        //       name: Value.name,
-        //       type: Value.type,
-        //       id: Value._id,
-        //       expenseApplicationField: Value.expenseApplicationField
-        //     };
-        //   });
-        //   const fieldValueArray = this.addCategoryForm.get('fieldvalues') as FormArray;
-        //   fieldValueArray.clear();
-        //   mappedValues.forEach((fieldValue) => {
-        //     fieldValueArray.push(this.fb.group({
-        //       name: fieldValue.name,
-        //       type: fieldValue.type,
-        //       value: fieldValue.value,
-        //       id: fieldValue.id,
-        //       expenseApplicationField: fieldValue.expenseApplicationField
-        //     }));
-        //   });
-        //   this.addCategoryForm.patchValue({
-        //     type: category.type,
-        //     label: category.label,
-        //     fields: this.fields.value,
-        //     expenseCategory: this.selectedCategory._id,
-        //     expenseApplicationField: this.selectedField[0]._id,
-        //   });
-        //   console.log(this.addCategoryForm.value)
-        // });
       }
       this.addCategoryForm.patchValue({
         type: category.type,
@@ -359,8 +315,8 @@ export class ExpensesCategoriesComponent implements OnInit {
         isMandatory: category.isMandatory,
         fields: this.fields.value,
         expenseCategory: this.selectedCategory._id,
-        // expenseApplicationField: this.selectedField[0]._id,
       });
+      console.log(this.addCategoryForm.value)
     });
   }
 
