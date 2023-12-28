@@ -11,6 +11,8 @@ import { FormsModule } from '@angular/forms';
 import { AdvanceCategoriesComponent } from './settings/advance-categories/advance-categories.component';
 import { AdvanceTemplateAssignmentComponent } from './settings/advance-template-assignment/advance-template-assignment.component';
 import { AdvanceTemplatesComponent } from './settings/advance-templates/advance-templates.component';
+import { ExpenseReportsComponent } from './expense-reports/expense-reports.component';
+import { PendingComponent } from './expense-reports/pending/pending.component';
 
 
 
@@ -23,7 +25,9 @@ import { AdvanceTemplatesComponent } from './settings/advance-templates/advance-
     ExpensesTemplateAssignmentComponent,
     AdvanceCategoriesComponent,
     AdvanceTemplateAssignmentComponent,
-    AdvanceTemplatesComponent
+    AdvanceTemplatesComponent,
+    ExpenseReportsComponent,
+    PendingComponent
   ],
   imports: [
     CommonModule,
