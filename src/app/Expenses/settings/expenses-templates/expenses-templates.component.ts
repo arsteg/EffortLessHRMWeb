@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
-import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { MatDialog } from '@angular/material/dialog';
+import { ModalDismissReasons, NgbModal, NgbModalConfig } from '@ng-bootstrap/ng-bootstrap';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { FormGroup, FormBuilder, FormArray, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { CommonService } from 'src/app/common/common.service';
 @Component({
   selector: 'app-expenses-templates',
   templateUrl: './expenses-templates.component.html',
-  styleUrls: ['./expenses-templates.component.css']
+  styleUrls: ['./expenses-templates.component.css'],
 })
 export class ExpensesTemplatesComponent implements OnInit {
   searchText: string = '';
@@ -17,38 +18,44 @@ export class ExpensesTemplatesComponent implements OnInit {
   templates: any[] = [];
   expenseCategories: any;
   addTemplateForm: FormGroup;
-  downloadableFormat = ['PDF', 'PNG', 'JPG', 'DOCX', 'XLS', 'TXT', 'DOC', 'XLSX'];
+
   selectedTemplateId: any;
-  formatChecked: boolean[] = Array(this.downloadableFormat.length).fill(false);
   formatValues: string;
   filteredTemplates: any[] = [];
   categoryList: any;
   selectedCategory: any;
   matchingCategories: any;
+  users: any;
+  step:number = 1;
+  constructor(
+    private modalService: NgbModal,
+    private config: NgbModalConfig,
 
-  constructor(private modalService: NgbModal,
     private dialog: MatDialog,
     private expenseService: ExpensesService,
     private fb: FormBuilder,
-    private toast: ToastrService) {
-    this.addTemplateForm = this.fb.group({
-      policyLabel: ['', Validators.required],
-      approvalType: ['', Validators.required],
-      advanceAmount: [true],
-      applyforSameCategorySamedate: [true],
-      downloadableFormats: this.fb.array([]),
-      expenseTemplate: [''],
-      expenseCategory: ['']
-    });
+    private toast: ToastrService,
+    public commonService: CommonService) {
+    config.backdrop = 'static';
 
   }
-
   ngOnInit(): void {
     this.getAllTemplates();
-    this.getAllExpensesCategories();
     this.filteredTemplate();
-    this.getAllCategoriesOfAllTemplate();
+    // this.getAllCategoriesOfAllTemplate();
+
   }
+
+  onClose(event) {
+    if (event) {
+      this.modalService.dismissAll()
+    }
+  }
+
+  onChangeStep(event){
+    this.step = event;
+  }
+
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
@@ -59,7 +66,6 @@ export class ExpensesTemplatesComponent implements OnInit {
     }
   }
   open(content: any) {
-
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
@@ -67,19 +73,20 @@ export class ExpensesTemplatesComponent implements OnInit {
     });
   }
   setFormValues(templateData: any) {
-    this.addTemplateForm.patchValue({
-      policyLabel: templateData.policyLabel,
-      approvalType: templateData.approvalType,
-      downloadableFormats: templateData.downloadableFormats,
-      applyforSameCategorySamedate: templateData.applyforSameCategorySamedate,
-      advanceAmount: templateData.advanceAmount
-    });
-    this.expenseService.getTemplateById(templateData._id).subscribe((res: any) => {
+    this.expenseService.selectedTemplate.next(templateData);
+    // this.addTemplateForm.patchValue({
+    //   policyLabel: templateData.policyLabel,
+    //   approvalType: templateData.approvalType,
+    //   downloadableFormats: templateData.downloadableFormats,
+    //   applyforSameCategorySamedate: templateData.applyforSameCategorySamedate,
+    //   advanceAmount: templateData.advanceAmount
+    // });
+    // this.expenseService.getTemplateById(templateData._id).subscribe((res: any) => {
 
-      this.formatValues = res.data.downloadableFormats;
-      this.formatChecked = this.downloadableFormat?.map(format => this.formatValues?.includes(format));
-    });
-    this.getCategoriesByTemplate(templateData._id)
+    //   this.formatValues = res.data.downloadableFormats;
+    //   // this.checkedFormats = this.downloadableFormat?.map(format => this.formatValues?.includes(format));
+    // });
+    // this.getCategoriesByTemplate(templateData._id)
   }
 
   deleteTemplate(_id: string) {
@@ -113,12 +120,6 @@ export class ExpensesTemplatesComponent implements OnInit {
     })
   }
 
-  getAllExpensesCategories() {
-    this.expenseService.getExpenseCatgories().subscribe((res: any) => {
-      this.expenseCategories = res.data;
-    })
-  }
-
 
   get downloadableFormatsArray() {
     return this.addTemplateForm.get('downloadableFormats') as FormArray;
@@ -127,43 +128,30 @@ export class ExpensesTemplatesComponent implements OnInit {
   get categoriesArray() {
     return this.addTemplateForm.get('selectedCategories') as FormArray;
   }
-  onCheckboxChange(event, format: string) {
-    const downloadableFormatsArray = this.addTemplateForm.get('downloadableFormats') as FormArray;
 
-    if (event.target.checked) {
-      if (downloadableFormatsArray.controls.every(control => control.value !== format)) {
-        downloadableFormatsArray.push(this.fb.control(format));
-      }
-    }
-    else {
-      const index = downloadableFormatsArray.controls.findIndex(
-        (control) => control.value === format
-      );
-      if (index !== -1) {
-        downloadableFormatsArray.removeAt(index);
-      }
-    }
-  }
-  addTemplate() {
+  createTemplate() {
     let payload = {
       policyLabel: this.addTemplateForm.value.policyLabel,
       approvalType: this.addTemplateForm.value.approvalType,
       applyforSameCategorySamedate: this.addTemplateForm.value.applyforSameCategorySamedate,
       advanceAmount: this.addTemplateForm.value.advanceAmount,
-      downloadableFormats: [''],
+      firstApprovalEmployee: this.addTemplateForm.value.firstApprovalEmployee,
+      secondApprovalEmployee: this.addTemplateForm.value.secondApprovalEmployee,
+      // downloadableFormats: this.checkedFormats,
       expenseTemplate: this.addTemplateForm.value.expenseTemplate,
-      expenseCategory: this.addTemplateForm.value.expenseCategory,
+      expenseCategories: this.addTemplateForm.value.expenseCategories,
 
     }
     if (this.changeMode === 'Add') {
-      payload.downloadableFormats = this.addTemplateForm.value.downloadableFormats;
+      // payload.downloadableFormats = this.addTemplateForm.value.downloadableFormats;
+      console.log(payload);
+      console.log(this.addTemplateForm.value)
       this.expenseService.addTemplate(payload).subscribe((res: any) => {
         const newTemplate = res.data;
         this.templates.push(newTemplate);
         const templateId = newTemplate._id;
-        this.categoriesAddOrUpdate(templateId, payload.expenseCategory);
+        this.categoriesAddOrUpdate(templateId, payload.expenseCategories);
         this.toast.success('New Template Created Successfully!');
-        this.formatChecked = [false];
         this.addTemplateForm.reset();
       }, err => {
         this.toast.error('Template Can not be Added', 'ERROR!')
@@ -173,15 +161,14 @@ export class ExpensesTemplatesComponent implements OnInit {
       const existingFormats = this.formatValues
       const updatedFormats = this.addTemplateForm.value.downloadableFormats;
 
-      payload.downloadableFormats = this.combineFormats(existingFormats, updatedFormats);
+      // payload.downloadableFormats = this.combineFormats(existingFormats, updatedFormats);
       this.expenseService.updateTemplate(this.selectedTemplateId, payload).subscribe((res: any) => {
         const updatedTemplate = res.data;
         const index = this.templates.findIndex(template => template._id === updatedTemplate._id);
         if (index !== -1) {
           this.templates[index] = updatedTemplate;
         }
-        this.categoriesAddOrUpdate(this.selectedTemplateId, payload.expenseCategory);
-        this.formatChecked = [false];
+        this.categoriesAddOrUpdate(this.selectedTemplateId, payload.expenseCategories);
         this.addTemplateForm.reset();
         this.toast.success('Template Updated Successfully!');
 
@@ -231,20 +218,22 @@ export class ExpensesTemplatesComponent implements OnInit {
     }
   }
 
-  categoriesAddOrUpdate(templateId: string, categories: any[]) {
+  categoriesAddOrUpdate(templateId: string, categories: any) {
     if (this.changeMode === 'Add') {
       console.log('add')
-      this.addOrUpdateCategories(templateId, categories);
+      this.addOrUpdateCategories(categories);
     } else {
       console.log('update')
-      this.addOrUpdateCategories(templateId, categories);
+      this.addOrUpdateCategories(categories);
     }
   }
 
-  addOrUpdateCategories(templateId: string, categories: any[]) {
+  addOrUpdateCategories(categories: any) {
     if (this.changeMode == 'Add') {
-      console.log(templateId, categories)
-      this.expenseService.addTemplateApplicableCategories(templateId, categories).subscribe(
+      console.log(categories)
+      categories = this.addTemplateForm.get('expenseCategories').value
+      console.log(categories)
+      this.expenseService.addTemplateApplicableCategories(categories).subscribe(
         (res: any) => {
           this.toast.success('Categories Added successfully!');
         },
@@ -256,7 +245,7 @@ export class ExpensesTemplatesComponent implements OnInit {
     else {
       if (categories.length === 0) {
         console.log('if empty')
-        this.expenseService.addTemplateApplicableCategories(templateId, categories).subscribe(
+        this.expenseService.addTemplateApplicableCategories(categories).subscribe(
           (res: any) => {
             this.toast.success('Categories updated successfully!');
           },
@@ -279,7 +268,8 @@ export class ExpensesTemplatesComponent implements OnInit {
     })
   }
   isSelected(categoryId: string): boolean {
-    const selectedCategories = this.addTemplateForm.get('expenseCategory').value;
+    const selectedCategories = this.addTemplateForm.get('expenseCategories').value;
+    console.log(selectedCategories.includes(categoryId))
     return selectedCategories.includes(categoryId);
   }
 

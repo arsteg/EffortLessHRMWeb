@@ -32,7 +32,19 @@ export interface AddTemplate {
 
 export interface ApplicableCategories {
     expenseTemplate: string;
-    expenseCategory: string[];
+    expenseCategory: {
+        expenseCategory: string,
+        isMaximumAmountPerExpenseSet: false,
+        maximumAmountPerExpense: 0,
+        isMaximumAmountWithoutReceiptSet: false,
+        maximumAmountWithoutReceipt: 0,
+        maximumExpensesCanApply: 0,
+        isTimePeroidSet: false,
+        timePeroid: string,
+        expiryDay: 0,
+        isEmployeeCanAddInTotalDirectly: false,
+        ratePerDay: 0
+      }
 }
 
 export interface TemplateAssignment {

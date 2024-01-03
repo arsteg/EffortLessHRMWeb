@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { baseService } from './base';
 import { environment } from 'src/environments/environment';
 import { Subordinate } from '../models/subordinate.Model';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { response } from '../models/response';
 import { AddTemplate, ApplicableCategories, ExpenseApplicationField, ExpenseCategory, ExpenseCategoryField, TemplateAssignment, UpdateExpenseCategoryField } from '../models/expenses';
 
@@ -21,6 +21,10 @@ export class ExpensesService {
     }),
     withCredentials: true
   };
+  selectedTemplate: any = new BehaviorSubject('');
+  allExpenseCategories: any = new BehaviorSubject('');
+  categories: any = new BehaviorSubject('');
+  
   constructor(private http: HttpClient) { }
 
   public getToken() {
@@ -90,7 +94,7 @@ export class ExpensesService {
 
   // Expense Template
 
-  addTemplate(template: AddTemplate): Observable<response<any>> {
+  addTemplate(template: any): Observable<response<any>> {
     var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/expense-templates`, template, this.httpOptions);
     return response;
   }
@@ -100,7 +104,7 @@ export class ExpensesService {
     return response;
   }
 
-  updateTemplate(id: string, template: AddTemplate): Observable<response<any>> {
+  updateTemplate(id: string, template: any): Observable<response<any>> {
     var response = this.http.put<response<any>>(`${environment.apiUrlDotNet}/expense/expense-templates/${id}`, template, this.httpOptions);
     return response;
   }
@@ -116,11 +120,11 @@ export class ExpensesService {
   }
 
 
-  addTemplateApplicableCategories(expenseTemplate: string, expenseCategories: string[]): Observable<response<any>> {
-    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/expense-template-applicable-categories`, { expenseTemplate, expenseCategories }, this.httpOptions);
+  addTemplateApplicableCategories(expenseCategories: ApplicableCategories): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/expense-template-applicable-categories`, { expenseCategories }, this.httpOptions);
     return response;
   }
-  
+
   getCategoriesByTemplate(expenseTemplateId: string): Observable<response<any>> {
     var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/expense-template-applicable-categories-by-template/${expenseTemplateId}`, this.httpOptions);
     return response;

@@ -73,6 +73,7 @@ import { SettingsComponent } from './settings/settings.component';
 import { ReportsComponent } from './reports/reports.component';
 import { ApprovalsComponent } from './approvals/approvals.component';
 import { UserTaxDeclarationComponent } from './Taxation/user-tax-declaration/user-tax-declaration.component';
+import { ExpenseCategorySettingsComponent } from './Expenses/settings/expense-category-settings/expense-category-settings.component';
 
 const routes: Routes = [
   // {path:'',component:LayoutComponentComponent, canActivate: [AuthGuard]},
@@ -85,7 +86,7 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'changePassword', component: ChangePasswordComponent },
   { path: 'resetPassword/:token', component: ResetPasswordComponent },
-
+  { path: 'category-settings', component: ExpenseCategorySettingsComponent },
   {
     path: '', component: HomeComponent, canActivate: [AuthGuard],
     children: [

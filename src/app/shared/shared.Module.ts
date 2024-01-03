@@ -4,22 +4,22 @@ import { SortDirective } from "../directive/sort.directive";
 import { CdkTableModule } from '@angular/cdk/table';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { SearchPipe } from "./search.pipe";
-import { MatLegacyCheckboxModule as MatCheckboxModule } from '@angular/material/legacy-checkbox';
-import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatRadioModule } from '@angular/material/radio';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
+import { MatButtonModule } from '@angular/material/button';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
-import { MatLegacyListModule as MatListModule } from '@angular/material/legacy-list';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from "@angular/material/legacy-input";
+import { MatListModule } from '@angular/material/list';
+import { MatTableModule } from '@angular/material/table';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule  } from "@angular/material/input";
 import { CommonModule } from "@angular/common";
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
+import { MatSelectModule  } from '@angular/material/select';
+import { MatTabsModule } from '@angular/material/tabs';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule, MatRippleModule } from '@angular/material/core';
-import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatTooltipModule } from "@angular/material/tooltip";
@@ -27,6 +27,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
 import { MilliSecondsToTimePipe } from '../pipes/SecondsToTimePipe';
+import { MatStepperModule }  from '@angular/material/stepper';
 
 @NgModule({
   declarations: [SortDirective, SearchPipe, MilliSecondsToTimePipe],
@@ -53,7 +54,8 @@ import { MilliSecondsToTimePipe } from '../pipes/SecondsToTimePipe';
     ToastrModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatRippleModule
+    MatRippleModule,
+    MatStepperModule
   ],
   exports: [
     SortDirective,
@@ -83,7 +85,8 @@ import { MilliSecondsToTimePipe } from '../pipes/SecondsToTimePipe';
     MatSortModule,
     ToastrModule,
     MilliSecondsToTimePipe,
-    MatFormFieldModule
+    MatFormFieldModule,
+    MatStepperModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

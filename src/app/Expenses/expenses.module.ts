@@ -11,7 +11,13 @@ import { FormsModule } from '@angular/forms';
 import { AdvanceCategoriesComponent } from './settings/advance-categories/advance-categories.component';
 import { AdvanceTemplateAssignmentComponent } from './settings/advance-template-assignment/advance-template-assignment.component';
 import { AdvanceTemplatesComponent } from './settings/advance-templates/advance-templates.component';
-
+import { ExpenseGeneralSettingsComponent } from './settings/expense-general-settings/expense-general-settings.component';
+import { ExpenseCategorySettingsComponent } from './settings/expense-category-settings/expense-category-settings.component';
+import { RouterModule } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 
 
 @NgModule({
@@ -23,13 +29,20 @@ import { AdvanceTemplatesComponent } from './settings/advance-templates/advance-
     ExpensesTemplateAssignmentComponent,
     AdvanceCategoriesComponent,
     AdvanceTemplateAssignmentComponent,
-    AdvanceTemplatesComponent
+    AdvanceTemplatesComponent,
+    ExpenseGeneralSettingsComponent,
+    ExpenseCategorySettingsComponent
   ],
   imports: [
     CommonModule,
     SharedModule,
     CommonComponentsModule,
-    FormsModule
+    FormsModule,
+    RouterModule,
+    MatButtonModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatSelectModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
