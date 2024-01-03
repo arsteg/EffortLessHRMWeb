@@ -1,0 +1,436 @@
+
+  <div class="mainContent">
+    <div class="container">
+        <div class="py-2 px-0 bg-white tableContainer">
+            <div class="d-flex justify-content-between align-items-center mb-2 px-3">
+                <p class="mb-0">({{expenseCategories?.length}}) Records Found</p>
+                <div class="d-flex align-items-center">
+                    <span class="bi bi-search searchIcon"></span>
+
+                    <input class="form-control search" type="text" placeholder="Search..."  [(ngModel)]="searchText"
+                        name="searchText" aria-label="default input example">
+
+                      <button mat-raised-button class="addBtn rounded-pill ms-3"
+                        (click)="clearselectedRequest(); open(addModal)">Add New</button>
+                   
+                </div>
+            </div>
+            <table class="px-4">
+                <thead>
+                    <tr>
+                        <th class="ps-2">Report&nbsp;Title</th>
+                        <th>Employee Name</th>
+                        <th>Band </th>
+                        <th>Department</th>
+                        <th>Designation</th>
+                        <th>Total Amount</th>
+                        <th>Reimbursable</th>
+                        <th>Billable</th>
+                        <th>Status</th>
+                        <th scope="col" class="text-center">Action</th>
+                      
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="ps-2"></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="">
+                            <button class="actions" mat-mini-fab title="Update"
+                                aria-label="Example icon button with a menu icon"
+                               >
+                                <i class="bi bi-pencil-fill"></i>
+                            </button>
+                            <button class="actions ms-2" title="Delete" mat-mini-fab
+                                aria-label="Example icon button with a menu icon"
+                                >
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                        <td class="action text-center" >
+                            <div class="dropdown-center">
+
+                                <button class="actions ms-2" mat-mini-fab data-bs-toggle="dropdown"
+                                    aria-expanded="false" aria-label="Example icon button with a menu icon">
+                                    <i class="bi bi-send"></i>
+                                </button>
+                                <ul class="dropdown-menu py-0">
+                                    <li class="d-flex  border-bottom action-list" data-bs-toggle="modal"
+                                        data-bs-target="#ApproveModal" >
+                                        <i
+                                            class="fas fa-check-circle   dropdown-item w-25"></i><span
+                                            class="pt-1 text-muted">Approve
+                                            </span>
+                                    </li>
+
+
+                                    <li class="d-flex  border-bottom action-list" data-bs-toggle="modal"
+                                        data-bs-target="#getUsers" 
+                                        >
+                                        <i
+                                            class="bi bi-person-dash  dropdown-item w-25"></i><span
+                                            class="pt-1 text-muted">Reject
+                                        </span>
+                                    </li>
+
+                                    <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
+                                        data-bs-target="#viewModal" >
+                                        <i class="fas fa-eye dropdown-item w-25"></i><span
+                                            class="pt-1 text-muted">view</span>
+                                    </li>
+
+                                    <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
+                                        data-bs-target="#Editmodel" >
+                                        <i class="bi bi-pencil text-success  dropdown-item w-25"></i><span
+                                            class="pt-1 text-muted">Edit</span>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+            <pagination-controls class="pagination d-flex justify-content-end"></pagination-controls>
+        </div>
+    </div>
+</div>
+
+<!-- Approve  -->
+<div class="modal" id="ApproveModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class=" d-flex justify-content-between">
+                    <div class="">
+                        <h4 class="modal-title text-start">Are you sure you want to approve this request?</h4>
+                    </div>
+                    <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
+                    </div>
+                </div>
+                <hr class="mt-0">
+                <div class="row" >
+                    <form class="row" >
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-md-8">
+
+                                <div class="mt-3">
+                                    <mat-label>Approve</mat-label>
+                                    <textarea _ngcontent-vsy-c115="" name="comment" placeholder="Leave a comment" formcontrolname="usrComment" cols="5" rows="3" class="form-control form-control-width ng-pristine ng-invalid ng-touched">             </textarea>
+                                    
+                                   
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between m-3">
+                            <div>
+                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
+                                    type="button">Close</button>
+                            </div>
+                            <div>
+                                <button mat-raised-button color="primary" data-bs-dismiss="modal"
+                                    type="submit">Approve</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Reject  -->
+<div class="modal" id="getUsers">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class=" d-flex justify-content-between">
+                    <div class="">
+                        <h4 class="modal-title text-start">Are you sure you want to reject this request</h4>
+                    </div>
+                    <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
+                    </div>
+                </div>
+                <hr class="mt-0">
+                <div class="row" >
+                    <form class="row" >
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-md-8">
+
+                                <div class="mt-3">
+                                    <mat-label>Reject</mat-label>
+                                    <textarea _ngcontent-vsy-c115="" name="comment" placeholder="Leave a comment" formcontrolname="usrComment" cols="5" rows="3" class="form-control form-control-width ng-pristine ng-invalid ng-touched">             </textarea>
+                                   
+                                   
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between m-3">
+                            <div>
+                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
+                                    type="button">Close</button>
+                            </div>
+                            <div>
+                                <button mat-raised-button color="primary" data-bs-dismiss="modal"
+                                    type="submit">  <i _ngcontent-vsy-c115="" class="fas fa-check" style="color: #fff;"></i>  Reject</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--View Modal-->
+<div class="modal" id="viewModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class=" d-flex justify-content-between">
+                    <div class="">
+                        <h4 class="modal-title text-start">Show Expense Details</h4>
+                    </div>
+                    <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
+                    </div>
+                </div>
+                <hr class="mt-0">
+                <div class="row" >
+                    <form class="row" >
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-md-8">
+
+                                <div class="mt-4">
+                                    <table _ngcontent-vsy-c115="" class="table table-bordered ng-star-inserted" style="color: #fff;"><tbody _ngcontent-vsy-c115=""><tr _ngcontent-vsy-c115=""><th _ngcontent-vsy-c115="">Expense Report Title</th><td _ngcontent-vsy-c115="">test</td></tr><tr _ngcontent-vsy-c115=""><th _ngcontent-vsy-c115="">Status</th><td _ngcontent-vsy-c115="">Level 1 Approval Pending</td></tr><tr _ngcontent-vsy-c115=""><th _ngcontent-vsy-c115="">Total Reimbursable</th><td _ngcontent-vsy-c115="">200</td></tr><tr _ngcontent-vsy-c115=""><th _ngcontent-vsy-c115="">Total Billable</th><td _ngcontent-vsy-c115="">0</td></tr><tr _ngcontent-vsy-c115=""><th _ngcontent-vsy-c115="">Advance Received</th><td _ngcontent-vsy-c115="">0</td></tr><tr _ngcontent-vsy-c115=""><th _ngcontent-vsy-c115="">Total Amount</th><td _ngcontent-vsy-c115="">200</td></tr><!----><!----><!----><!----><!----><!----></tbody></table>
+                                   
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between m-3">
+                            <div>
+                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
+                                    type="button">Close</button>
+                            </div>
+                            <div>
+                                <button mat-raised-button color="primary" data-bs-dismiss="modal"
+                                    type="submit">  <i _ngcontent-vsy-c115="" class="fas fa-check" style="color: #fff;"></i>  Reject</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Edit modal-->
+
+<div class="modal" id="Editmodel">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class=" d-flex justify-content-between">
+                    <div class="">
+                        <h4 class="modal-title text-start">Edit Expence Report</h4>
+                    </div>
+                    <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
+                    </div>
+                </div>
+                <hr class="mt-0">
+                <div class="row" >
+                    <form class="row" >
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-md-12">
+
+                                
+                                    <div class=" form-group">
+                                       
+                                        <input type="text" class="input form-control ng-untouched p-filled " formControlName="label" required readonly/>
+                                           
+                                        
+                                    </div>
+                                   
+                              
+                            </div>
+                            <div class="col-md-12">
+
+                              
+                                <div class=" form-group">
+                                    <label for="">Expense Report Title<span class="text-danger">*</span></label>
+                                    <input type="text" class="input form-control" formControlName="label" required
+                                        placeholder="Enter Custom Label">
+                                   
+                                </div>
+                               
+                          
+                        </div>
+
+                        <div class="col-md-12">
+
+                              
+                            <div class=" form-group">
+                                <label for="">Expense Report Title<span class="text-danger">*</span></label>
+                                <input type="number" class="input form-control" formControlName="label" required
+                                    placeholder="Enter Custom Label">
+                                
+                            </div>
+                           
+                      
+                    </div>
+                        </div>
+                        <div class="d-flex justify-content-between m-3">
+                            <div>
+                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
+                                    type="button">Close</button>
+                            </div>
+                            <div>
+                                <button mat-raised-button color="primary" data-bs-dismiss="modal"
+                                    type="submit">  <i _ngcontent-vsy-c115="" class="fas fa-check" style="color: #fff;"></i>  Reject</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add/Update category -->
+<ng-template #addModal let-modal>
+    <div class="modal-header border-bottom mb-2 pt-0">
+        <div>
+            <h1 class="modal-title text-muted mb-0"> </h1>
+        </div>
+        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
+            (click)="modal.close('Escape clicked')"    ></button> 
+        </div>
+    </div>
+
+    <form action=""  >
+        <div class="form-group">
+            <label for="">Please choose the type of expense <span class="text-danger">*</span></label>
+            <select formControlName="type" required name="expenseType" class="">
+                <option value="perDay">Per Day</option>
+                <option value="time">Time</option>
+                <option value="distance">Distance</option>
+                <option value="dateRange">Date Range</option>
+                <option value="other">Other</option>
+            </select>
+            <div 
+                class="text-danger error">
+                Please Select a Type of Category!
+            </div>
+        </div>
+        <div class="mt-2 form-group">
+            <label for="">Please provide a label for this Expense <span class="text-danger">*</span></label>
+            <input type="text" class="input form-control" formControlName="label" required
+                placeholder="Enter Custom Label">
+            <div 
+                class="text-danger error">
+                Please Enter Label of Category!
+            </div>
+        </div>
+
+        <div class="mt-2">
+            <div class="d-flex align-items-center">
+                <label for="">Please add/edit fields that employees need to fill during expense application</label>
+                <button class="submenuTab active rounded-pill ms-4" type="button" >Add</button>
+            </div>
+
+            <div formArrayName="fields">
+                <div class="categoryField">
+                  <ng-container >
+                    <div class="d-flex mt-2">
+                      <input type="text" class="form-control" formControlName="fieldName" required placeholder="Enter Field Name">
+                      <select name="" id="" formControlName="fieldType" required class="ms-2 form-control">
+                        <option value="Dropdown">Dropdown</option>
+                        <option value="Textfield">Textfield</option>
+                        <option value="Number">Number</option>
+                        <option value="DateRange">DateRange</option>
+                        <option value="Date">Date</option>
+                      </select>
+                      <button class="actions ms-2" title="Delete" mat-mini-fab type="button" aria-label="Example icon button with a menu icon" >
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </div>
+              
+                    <div class="mt-2 align-items-center" >
+                      <div class="d-flex">
+                        <div>
+                          <button class="addBtn rounded-pill text-white me-2 py-2" type="button" >
+                            Add&nbsp;Option
+                          </button>
+                        </div>
+                        <div formArrayName="expenseApplicationFieldValues" class="w-100">
+                          <div>
+                            <ng-container >
+                              <div class="d-flex align-items-center">
+                                <input type="text" class="form-control fieldValue w-100 mb-1" placeholder="Enter Dropdown Options" formControlName="value">
+                                <button class="actions removeFieldValue ms-2" title="Delete" mat-mini-fab type="button" aria-label="Example icon button with a menu icon" >
+                                  <i class="bi bi-trash"></i>
+                                </button>
+                              </div>
+                            </ng-container>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+              
+            <div >
+                <div class="row d-flex my-2 justify-content-evenly">
+                    <button mat-raised-button class="col-3 text-secondary" type="button">From Date</button>
+                    <button mat-raised-button class="col-3 text-secondary" type="button">Date</button>
+                </div>
+
+                <div class="row d-flex justify-content-evenly">
+                    <button mat-raised-button class="col-3 text-secondary" type="button">To Date</button>
+                    <button mat-raised-button class="col-3 text-secondary" type="button">Date</button>
+                </div>
+            </div>
+
+            <div class="mt-2">
+                <label for="">Is field mandatory while submitting expense request? <span class="text-danger">*</span></label>
+                <div class="d-flex">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="flexRadioDefault-Yes"
+                            formControlName="isMandatory" required >
+                        <label class="form-check-label" for="flexRadioDefault-Yes">
+                            Yes
+                        </label>
+                    </div>
+
+                    <div class="form-check ms-3">
+                        <input class="form-check-input" type="radio" id="flexRadioDefault-No"
+                            formControlName="isMandatory" required >
+                        <label class="form-check-label" for="flexRadioDefault-No">
+                            No
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
+                <button mat-raised-button type="button" (click)="onCancel()">Cancel</button>
+                <button mat-raised-button class="addBtn" type="submit" >isEdit?
+                   </button>
+
+            </div>
+        </div>
+
+
+
+    </form>
+
+</ng-template>

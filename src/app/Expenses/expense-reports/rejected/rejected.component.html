@@ -1,0 +1,57 @@
+<div class="mainContent">
+    <div class="container">
+        <div class="py-2 px-0 bg-white tableContainer">
+            <div class="d-flex justify-content-between align-items-center mb-2 px-3">
+                <p class="mb-0">() Records Found</p>
+                <div class="d-flex align-items-center">
+                    <span class="bi bi-search searchIcon"></span>
+
+                    <input class="form-control search" type="text" placeholder="Search..."  [(ngModel)]="searchText"
+                        name="searchText" aria-label="default input example">
+
+                      <button mat-raised-button class="addBtn rounded-pill ms-3"
+                        >    <i class="bi bi-download"></i> Download</button>
+                   
+                </div>
+            </div>
+            <table class="px-4">
+                <thead>
+                    <tr>
+                        <th class="ps-2">Report&nbsp;Title</th>
+                        <th>Employee Name</th>
+                        <th>Band </th>
+                        <th>Department</th>
+                        <th>Designation</th>
+                        <th>Total Amount</th>
+                        <th>Reimbursable</th>
+                        <th>Billable</th>
+                        <th>Status</th>
+                        <th scope="col" class="text-center">Action</th>
+                      
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="ps-2"></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="">
+                          
+                        </td>
+                       
+
+                    </tr>
+                </tbody>
+            </table>
+            <pagination-controls class="pagination d-flex justify-content-end"></pagination-controls>
+        </div>
+
+    </div>
+</div>
+
