@@ -672,8 +672,8 @@ tr {
 }
 
 .addBtn {
-  background-color: #76bc21;
-  color: white
+  background-color: #76bc21 !important;
+  color: white !important;
 }
 
 .actions {

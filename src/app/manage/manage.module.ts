@@ -2,8 +2,8 @@ import { CUSTOM_ELEMENTS_SCHEMA, NgModule, NO_ERRORS_SCHEMA } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { TimeLogService } from '../_services/timeLogService';
 // import { TeammembersComponent } from './teammembers/teammembers.component';
-import { MatLegacyCheckboxModule as MatCheckboxModule } from '@angular/material/legacy-checkbox';
-import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatRadioModule } from '@angular/material/radio';
 import { ManageComponent } from './manage/manage.component';
 import { UserListComponent } from '../users/user-list/user-list.component';
 import { CommonComponentsModule } from '../common/commonComponents.module';

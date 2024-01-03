@@ -53,13 +53,13 @@ import { FeaturesSettingsComponent } from './settings/features-settings/features
 import { LeaveSettingsComponent } from './settings/leave-settings/leave-settings.component';
 import { taskModule } from './tasks/task.Module';
 import { SharedModule } from './shared/shared.Module';
-import { MatPaginatorModule as MatPaginatorModule } from '@angular/material/paginator';
-import { MatSlideToggleModule as MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { CommonModule, DatePipe } from '@angular/common';
 // import { EditTaskComponent } from './tasks/edit-task/edit-task.component';
-import { MatDialogModule as MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { timesheetModule } from './timesheets/timesheet.Module';
 import { GenericSettingsComponent } from './settings/generic-settings/generic-settings.component';
 import { ViewLiveScreenComponent } from './viewLiveScreen/view-live-screen/view-live-screen.component';

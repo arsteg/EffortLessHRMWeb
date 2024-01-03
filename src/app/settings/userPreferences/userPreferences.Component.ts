@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { MatLegacyTabChangeEvent as MatTabChangeEvent } from '@angular/material/legacy-tabs';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 import { Preference, preferenceCategory, userPreference } from 'src/app/models/settings/userPreferences/userPreferences';
 import { SettingsService } from 'src/app/_services/settings.service';
 import { first } from 'rxjs';

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { AssetManagementService } from 'src/app/_services/assetManagement.service';
 import { AssetType, CustomAttribute, UpdateCustomAttribute } from 'src/app/models/AssetsManagement/Asset';

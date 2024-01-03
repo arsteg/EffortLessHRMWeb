@@ -5,7 +5,7 @@ import { UserService } from '../../_services/users.service';
 import { Validators, FormGroup, FormBuilder } from '@angular/forms';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { RoleService } from 'src/app/_services/role.service';
-import { LegacyTransitionCheckState as TransitionCheckState } from '@angular/material/legacy-checkbox';
+import { TransitionCheckState } from '@angular/material/checkbox';
 import { ToastrService } from 'ngx-toastr';
 import { CommonService } from 'src/app/common/common.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';

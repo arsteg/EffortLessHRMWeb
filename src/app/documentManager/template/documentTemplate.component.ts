@@ -5,7 +5,7 @@ import { EmailtemplateService } from 'src/app/_services/emailtemplate.service';
 import { template } from 'src/app/models/documents/documents';
 import { DocumentsService } from 'src/app/_services/documents.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 
 
 @Component({

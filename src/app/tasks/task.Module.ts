@@ -14,7 +14,7 @@ import { ConfirmationDialogComponent } from "./confirmation-dialog/confirmation-
 import { EditTaskComponent } from "./edit-task/edit-task.component";
 import { SubtaskComponent } from "./subtask/subtask.component";
 import { QuillModule } from "ngx-quill";
-import {MatLegacySnackBarModule as MatSnackBarModule} from '@angular/material/legacy-snack-bar';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 @NgModule({
     declarations:[TasksComponent,TagComponent,TaskCommentComponent,TaskCommentListComponent, ConfirmationDialogComponent, EditTaskComponent, SubtaskComponent],
     exports:[TasksComponent,TagComponent,TaskCommentComponent,TaskCommentListComponent, SubtaskComponent ],

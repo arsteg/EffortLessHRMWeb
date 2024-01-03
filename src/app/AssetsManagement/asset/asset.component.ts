@@ -7,7 +7,7 @@ import {
   FormControl,
   AbstractControl,
 } from '@angular/forms';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { AssetManagementService } from 'src/app/_services/assetManagement.service';
 import {

@@ -3,7 +3,7 @@ import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, NgModule } from "@angular/cor
 import { SharedModule } from "../shared/shared.Module";
 import { DashboardComponent } from './dashboard.component';
 import { RouterModule } from '@angular/router';
-import { MatFormFieldModule as MatFormFieldModule } from '@angular/material/form-field';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatButtonModule  } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
