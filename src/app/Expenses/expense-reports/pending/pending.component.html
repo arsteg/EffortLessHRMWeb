@@ -62,7 +62,7 @@
                                 </button>
                                 <ul class="dropdown-menu py-0">
                                     <li class="d-flex  border-bottom action-list" data-bs-toggle="modal"
-                                        data-bs-target="#addUserModal" >
+                                        data-bs-target="#ApproveModal" >
                                         <i
                                             class="fas fa-check-circle   dropdown-item w-25"></i><span
                                             class="pt-1 text-muted">Approve
@@ -74,19 +74,19 @@
                                         data-bs-target="#getUsers" 
                                         >
                                         <i
-                                            class="fas fa-ban text-success dropdown-item w-25"></i><span
+                                            class="bi bi-person-dash  dropdown-item w-25"></i><span
                                             class="pt-1 text-muted">Reject
                                         </span>
                                     </li>
 
                                     <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
-                                        data-bs-target="#deleteModal" >
+                                        data-bs-target="#viewModal" >
                                         <i class="fas fa-eye dropdown-item w-25"></i><span
                                             class="pt-1 text-muted">view</span>
                                     </li>
 
-                                    <li class="d-flex action-list" data-bs-toggle="modal"
-                                        data-bs-target="#updateModal" >
+                                    <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
+                                        data-bs-target="#Editmodel" >
                                         <i class="bi bi-pencil text-success  dropdown-item w-25"></i><span
                                             class="pt-1 text-muted">Edit</span>
                                     </li>
@@ -100,7 +100,207 @@
             </table>
             <pagination-controls class="pagination d-flex justify-content-end"></pagination-controls>
         </div>
+    </div>
+</div>
 
+<!-- Approve  -->
+<div class="modal" id="ApproveModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class=" d-flex justify-content-between">
+                    <div class="">
+                        <h4 class="modal-title text-start">Are you sure you want to approve this request?</h4>
+                    </div>
+                    <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
+                    </div>
+                </div>
+                <hr class="mt-0">
+                <div class="row" >
+                    <form class="row" >
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-md-8">
+
+                                <div class="mt-3">
+                                    <mat-label>Approve</mat-label>
+                                    <textarea _ngcontent-vsy-c115="" name="comment" placeholder="Leave a comment" formcontrolname="usrComment" cols="5" rows="3" class="form-control form-control-width ng-pristine ng-invalid ng-touched">             </textarea>
+                                    
+                                   
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between m-3">
+                            <div>
+                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
+                                    type="button">Close</button>
+                            </div>
+                            <div>
+                                <button mat-raised-button color="primary" data-bs-dismiss="modal"
+                                    type="submit">Approve</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Reject  -->
+<div class="modal" id="getUsers">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class=" d-flex justify-content-between">
+                    <div class="">
+                        <h4 class="modal-title text-start">Are you sure you want to reject this request</h4>
+                    </div>
+                    <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
+                    </div>
+                </div>
+                <hr class="mt-0">
+                <div class="row" >
+                    <form class="row" >
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-md-8">
+
+                                <div class="mt-3">
+                                    <mat-label>Reject</mat-label>
+                                    <textarea _ngcontent-vsy-c115="" name="comment" placeholder="Leave a comment" formcontrolname="usrComment" cols="5" rows="3" class="form-control form-control-width ng-pristine ng-invalid ng-touched">             </textarea>
+                                   
+                                   
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between m-3">
+                            <div>
+                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
+                                    type="button">Close</button>
+                            </div>
+                            <div>
+                                <button mat-raised-button color="primary" data-bs-dismiss="modal"
+                                    type="submit">  <i _ngcontent-vsy-c115="" class="fas fa-check" style="color: #fff;"></i>  Reject</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--View Modal-->
+<div class="modal" id="viewModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class=" d-flex justify-content-between">
+                    <div class="">
+                        <h4 class="modal-title text-start">Show Expense Details</h4>
+                    </div>
+                    <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
+                    </div>
+                </div>
+                <hr class="mt-0">
+                <div class="row" >
+                    <form class="row" >
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-md-8">
+
+                                <div class="mt-4">
+                                    <table _ngcontent-vsy-c115="" class="table table-bordered ng-star-inserted" style="color: #fff;"><tbody _ngcontent-vsy-c115=""><tr _ngcontent-vsy-c115=""><th _ngcontent-vsy-c115="">Expense Report Title</th><td _ngcontent-vsy-c115="">test</td></tr><tr _ngcontent-vsy-c115=""><th _ngcontent-vsy-c115="">Status</th><td _ngcontent-vsy-c115="">Level 1 Approval Pending</td></tr><tr _ngcontent-vsy-c115=""><th _ngcontent-vsy-c115="">Total Reimbursable</th><td _ngcontent-vsy-c115="">200</td></tr><tr _ngcontent-vsy-c115=""><th _ngcontent-vsy-c115="">Total Billable</th><td _ngcontent-vsy-c115="">0</td></tr><tr _ngcontent-vsy-c115=""><th _ngcontent-vsy-c115="">Advance Received</th><td _ngcontent-vsy-c115="">0</td></tr><tr _ngcontent-vsy-c115=""><th _ngcontent-vsy-c115="">Total Amount</th><td _ngcontent-vsy-c115="">200</td></tr><!----><!----><!----><!----><!----><!----></tbody></table>
+                                   
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between m-3">
+                            <div>
+                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
+                                    type="button">Close</button>
+                            </div>
+                            <div>
+                                <button mat-raised-button color="primary" data-bs-dismiss="modal"
+                                    type="submit">  <i _ngcontent-vsy-c115="" class="fas fa-check" style="color: #fff;"></i>  Reject</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Edit modal-->
+
+<div class="modal" id="Editmodel">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class=" d-flex justify-content-between">
+                    <div class="">
+                        <h4 class="modal-title text-start">Edit Expence Report</h4>
+                    </div>
+                    <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
+                    </div>
+                </div>
+                <hr class="mt-0">
+                <div class="row" >
+                    <form class="row" >
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-md-12">
+
+                                
+                                    <div class=" form-group">
+                                       
+                                        <input type="text" class="input form-control ng-untouched p-filled " formControlName="label" required readonly/>
+                                           
+                                        
+                                    </div>
+                                   
+                              
+                            </div>
+                            <div class="col-md-12">
+
+                              
+                                <div class=" form-group">
+                                    <label for="">Expense Report Title<span class="text-danger">*</span></label>
+                                    <input type="text" class="input form-control" formControlName="label" required
+                                        placeholder="Enter Custom Label">
+                                   
+                                </div>
+                               
+                          
+                        </div>
+
+                        <div class="col-md-12">
+
+                              
+                            <div class=" form-group">
+                                <label for="">Expense Report Title<span class="text-danger">*</span></label>
+                                <input type="number" class="input form-control" formControlName="label" required
+                                    placeholder="Enter Custom Label">
+                                
+                            </div>
+                           
+                      
+                    </div>
+                        </div>
+                        <div class="d-flex justify-content-between m-3">
+                            <div>
+                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
+                                    type="button">Close</button>
+                            </div>
+                            <div>
+                                <button mat-raised-button color="primary" data-bs-dismiss="modal"
+                                    type="submit">  <i _ngcontent-vsy-c115="" class="fas fa-check" style="color: #fff;"></i>  Reject</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

@@ -1,0 +1,18 @@
+:host ::ng-deep .pagination .ngx-pagination .current {
+    background: #76bc21 !important;
+    border: transparent !important;
+    border-radius: 20px !important;
+  }
+  
+  .fieldValue {
+    padding-right: 50px !important;
+  }
+  
+  .removeFieldValue {
+    position: absolute;
+    right: 25px;
+    margin-bottom: 4px;
+    border: 1px solid #d5d3d3;
+  }
+  
+  

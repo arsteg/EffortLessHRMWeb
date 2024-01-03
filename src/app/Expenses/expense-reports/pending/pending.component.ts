@@ -16,11 +16,14 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
   styleUrl: './pending.component.css'
 })
 export class PendingComponent {
+[x: string]: any;
   searchText: string = '';
   expenseCategories: any;
   isEdit = false;
   addCategoryForm: FormGroup;
   closeResult: string = '';
+
+  
   constructor(private modalService: NgbModal,
     private dialog: MatDialog,
     private expenses: ExpensesService,

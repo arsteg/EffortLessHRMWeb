@@ -4,6 +4,12 @@ export interface ExpenseCategory {
     isMandatory: boolean;
 }
 
+export interface AdvanceCategory {
+ 
+    label: string;
+   
+}
+
 export interface ExpenseCategoryField {
     expenseCategory: string;
     fields: {

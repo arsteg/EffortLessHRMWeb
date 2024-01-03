@@ -13,8 +13,9 @@ import { AdvanceTemplateAssignmentComponent } from './settings/advance-template-
 import { AdvanceTemplatesComponent } from './settings/advance-templates/advance-templates.component';
 import { ExpenseReportsComponent } from './expense-reports/expense-reports.component';
 import { PendingComponent } from './expense-reports/pending/pending.component';
-
-
+import { ApprovedComponent } from './expense-reports/approved/approved.component';
+import { CancelledComponent } from './expense-reports/cancelled/cancelled.component';
+import { RejectedComponent } from './expense-reports/rejected/rejected.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,11 @@ import { PendingComponent } from './expense-reports/pending/pending.component';
     AdvanceTemplateAssignmentComponent,
     AdvanceTemplatesComponent,
     ExpenseReportsComponent,
-    PendingComponent
+    PendingComponent,
+    ApprovedComponent,
+    CancelledComponent,
+    RejectedComponent
+    
   ],
   imports: [
     CommonModule,

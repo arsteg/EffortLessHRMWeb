@@ -5,7 +5,7 @@ import { environment } from 'src/environments/environment';
 import { Subordinate } from '../models/subordinate.Model';
 import { Observable } from 'rxjs';
 import { response } from '../models/response';
-import { AddTemplate, ApplicableCategories, ExpenseApplicationField, ExpenseCategory, ExpenseCategoryField, TemplateAssignment, UpdateExpenseCategoryField } from '../models/expenses';
+import { AddTemplate, AdvanceCategory, ApplicableCategories, ExpenseApplicationField, ExpenseCategory, ExpenseCategoryField, TemplateAssignment, UpdateExpenseCategoryField } from '../models/expenses';
 
 @Injectable({
   providedIn: 'root'
@@ -156,5 +156,27 @@ export class ExpensesService {
     var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/employee-expense-assignments`, this.httpOptions);
     return response;
   }
+    // Expense advance categories
+
+  getAdvanceCatgories(): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/advance-categories`, this.httpOptions);
+    return response;
+  }
+
+  addAdvanceCategory(expenseCategory: AdvanceCategory): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/advance-categories`, expenseCategory, this.httpOptions);
+    return response;
+  }
+
+  updateAdvanceCategory(id: string, expenseCategory: AdvanceCategory): Observable<response<any>> {
+    var response = this.http.put<response<any>>(`${environment.apiUrlDotNet}/expense/advance-categories/${id}`, expenseCategory, this.httpOptions);
+    return response;
+  }
+
+  deleteAdvanceCategory(id: string): Observable<response<any>> {
+    var response = this.http.delete<response<any>>(`${environment.apiUrlDotNet}/expense/advance-categories/${id}`, this.httpOptions);
+    return response;
+  }
+
 
 }
