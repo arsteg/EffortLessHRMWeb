@@ -837,3 +837,7 @@ label {
 option:hover{
   background: orange !important;
 }
+
+.cdk-overlay-pane{
+  background: white !important
+}
