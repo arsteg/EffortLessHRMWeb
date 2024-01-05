@@ -13,7 +13,7 @@ import { CommonService } from 'src/app/common/common.service';
 })
 export class ExpensesTemplatesComponent implements OnInit {
   searchText: string = '';
-  changeMode: 'Add' | 'Update' = 'Add';
+  changeMode: 'Add' | 'Next' = 'Add';
   closeResult: string = '';
   templates: any[] = [];
   expenseCategories: any;
@@ -191,7 +191,7 @@ export class ExpensesTemplatesComponent implements OnInit {
 
   updateTemplate(templateId: any) {
     this.selectedTemplateId = templateId;
-    this.changeMode = 'Update';
+    this.changeMode = 'Next';
     this.expenseService.getTemplateById(templateId).subscribe((res: any) => {
       console.log(res.data)
       this.setFormValues(res.data);
