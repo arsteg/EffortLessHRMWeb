@@ -2,36 +2,37 @@
     <div class="container">
         <div class="py-2 px-0 bg-white tableContainer">
             <div class="d-flex justify-content-between align-items-center mb-2 px-3">
-                <p class="mb-0">() Records Found</p>
+                <p class="mb-0">({{List?.length}}) Records Found</p>
                 <div class="d-flex align-items-center">
                     <span class="bi bi-search searchIcon"></span>
 
                     <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
                         name="searchText" aria-label="default input example">
-                    <button mat-raised-button class="addBtn rounded-pill ms-3" (click)="open(addModal)">Add New</button>
+                    <button mat-raised-button class="addBtn rounded-pill ms-3" (click)="clearselectedRequest(); open(addModal)">Add New</button>
                 </div>
             </div>
             <table class="px-4">
                 <thead>
                     <tr>
-                        <th class="ps-2">Advance&nbsp;Template&nbsp;Name</th>
-                        <th>Number of Employees Covered</th>
+                        <th class="ps-2">Advance&nbsp;Template&nbsp;Name</th>                     
                         <th>Number of Advance Categories</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td class="ps-2"></td>
-                        <td></td>
-                        <td></td>
+                    <tr *ngFor="let advance of List |  search: searchText ; let index = index">
+                        <td class="ps-2">{{advance?.policyLabel}}</td>
+                        
+                        <td>{{advance?.advanceCategories?.length}}</td>
                         <td class="">
                             <button class="actions" mat-mini-fab title="Update"
-                                aria-label="Example icon button with a menu icon">
+                                aria-label="Example icon button with a menu icon"
+                                (click)="open(addModal);editAdvanceCategory(advance, index)">
                                 <i class="bi bi-pencil-fill"></i>
                             </button>
                             <button class="actions ms-2" title="Delete" mat-mini-fab
-                                aria-label="Example icon button with a menu icon">
+                                aria-label="Example icon button with a menu icon"
+                                (click)="deleteAdvancecate(advance?._id)">
                                 <i class="bi bi-trash"></i>
                             </button>
                         </td>
@@ -49,39 +50,35 @@
 <ng-template #addModal let-modal>
     <div class="modal-header border-bottom mb-2 pt-0">
         <div>
-            <h1 class="modal-title text-muted mb-0">{{isEdit? 'Update': 'Add'}} Advance Category</h1>
+            <h1 class="modal-title text-muted mb-0">{{isEdit? 'Update': 'Add'}} Advance Template</h1>
         </div>
         <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
                 (click)="modal.close('Escape clicked')"></button>
         </div>
     </div>
 
-    <form action="">
+    <form action="" [formGroup]="addAdvanceTempForm" (ngSubmit)="isEdit ? updateAdvanceTemplate(): addAdvanceTemolate()">
         <div class="form-group">
-            <label for="">Please provide a label for this category <span class="text-danger">*</span></label>
-            <input type="text" class="form-control w-100" placeholder="Add Custom Label"
+            <label for="">Please provide a label for this Advance Template <span class="text-danger">*</span></label>
+            <input type="text" class="form-control w-100" placeholder="Add Custom Label"formControlName="policyLabel"
                 >
-            <div *ngIf="addCategoryForm.get('advanceCategory').invalid && addCategoryForm.get('advanceCategory').touched"
+            <div *ngIf="addAdvanceTempForm.get('policyLabel').invalid && addAdvanceTempForm.get('policyLabel').touched"
                 class="text-danger error">
                 Please Add Advance Category!
             </div>
         </div>
 
         <div class="mt-2">
-
             <mat-form-field appearance="outline" class="w-100">
-                <mat-label>What expense categories are applicable in this expense template? <span
-                        class="text-danger">*</span></mat-label>
-                <mat-select multiple>
-                    <mat-option>
-                        test 1
+                <mat-label>What expense categories are applicable in this expense template?</mat-label>
+                <mat-select multiple formControlName="advanceCategories">
+                    <mat-option [value]="advanceCategory?._id"  *ngFor="let advanceCategory of advanceCategoriesall; let i = index">
+                        {{advanceCategory.label}}
                     </mat-option>
-                    <mat-option>
-                        test 2
-                    </mat-option>
-
                 </mat-select>
             </mat-form-field>
+
+
         </div>
 
         <div class="mt-2">
@@ -90,39 +87,27 @@
                 <div class="d-flex">
 
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" id="level" formControlName="approvalType"
-                            value="1 Level" required>
+                        <input class="form-check-input" type="radio" id="level" formControlName="approvalLevel"
+                            value="Level 1" required>
                         <label class="form-check-label" for="level">
                             1 Level
                         </label>
                     </div>
                     <div class="form-check ms-4">
-                        <input class="form-check-input" type="radio" id="level2" formControlName="approvalType" required
-                            value="2 Level">
+                        <input class="form-check-input" type="radio" id="level2" formControlName="approvalLevel" required
+                            value="Level 2">
                         <label class="form-check-label" for="level2">
                             2 Level
                         </label>
                     </div>
                 </div>
+                <div *ngIf="addAdvanceTempForm.get('approvalLevel').invalid && addAdvanceTempForm.get('approvalLevel').touched"
+                class="text-danger error">
+                Please Select Approval Type!
+            </div>
             </div>
         </div>
-
-        <div class="mt-2">
-
-            <mat-form-field appearance="outline" class="w-100">
-                <mat-label>Select Locations Departments Bands or Designations for template <span
-                        class="text-danger">*</span></mat-label>
-                <mat-select multiple >
-                    <mat-option>
-                        test 1
-                    </mat-option>
-                    <mat-option>
-                        test 2
-                    </mat-option>
-
-                </mat-select>
-            </mat-form-field>
-        </div>
+      
 
         <div class="mt-2">
             <div class="form-group">
@@ -130,27 +115,31 @@
                 <div class="d-flex">
 
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" id="level" 
-                            value="1 Level" required>
+                        <input class="form-check-input" type="radio" id="level" formControlName="approvalType"
+                            required value="Template Wise">
                         <label class="form-check-label" for="level">
                             Template Wise
                         </label>
                     </div>
                     <div class="form-check ms-4">
-                        <input class="form-check-input" type="radio" id="level2"  required
-                            value="2 Level">
+                        <input class="form-check-input" type="radio" id="level2"  formControlName="approvalType" required
+                           value="Employee Wise">
                         <label class="form-check-label" for="level2">
                             Employee Wise
                         </label>
                     </div>
                 </div>
+                <div *ngIf="addAdvanceTempForm.get('approvalType').invalid && addAdvanceTempForm.get('approvalType').touched"
+                class="text-danger error">
+                Please Select Approval Type!
+            </div>
             </div>
         </div>
 
         <div class="mt-2">
             <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
                 <button mat-raised-button type="button" (click)="onCancel()">Cancel</button>
-                <button mat-raised-button class="addBtn" type="submit">{{isEdit?
+                <button mat-raised-button class="addBtn" type="submit" [disabled]="!addAdvanceTempForm.valid">{{isEdit?
                     'Update': 'Add'}}</button>
 
             </div>

@@ -7,8 +7,22 @@ export interface ExpenseCategory {
 export interface AdvanceCategory {
  
     label: string;
+
    
 }
+
+
+export interface AdvanceTemplate {
+     
+    policyLabel:string;
+    approvalType:string;
+    approvalLevel:string;
+    advanceCategories:{
+        advanceCategory: string
+      }[];
+   
+}
+
 
 export interface ExpenseCategoryField {
     expenseCategory: string;

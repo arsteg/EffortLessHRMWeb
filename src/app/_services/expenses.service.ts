@@ -5,7 +5,7 @@ import { environment } from 'src/environments/environment';
 import { Subordinate } from '../models/subordinate.Model';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { response } from '../models/response';
-import { AddTemplate, AdvanceCategory, ApplicableCategories, ExpenseApplicationField, ExpenseCategory, ExpenseCategoryField, TemplateAssignment, UpdateExpenseCategoryField } from '../models/expenses';
+import { AddTemplate, AdvanceCategory, AdvanceTemplate, ApplicableCategories, ExpenseApplicationField, ExpenseCategory, ExpenseCategoryField, TemplateAssignment, UpdateExpenseCategoryField } from '../models/expenses';
 
 @Injectable({
   providedIn: 'root'
@@ -160,7 +160,7 @@ export class ExpensesService {
     var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/employee-expense-assignments`, this.httpOptions);
     return response;
   }
-    // Expense advance categories
+    //  advance categories
 
   getAdvanceCatgories(): Observable<response<any>> {
     var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/advance-categories`, this.httpOptions);
@@ -182,5 +182,32 @@ export class ExpensesService {
     return response;
   }
 
+
+
+   //  advance Templates
+
+   getAdvanceTemplates(): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/advance-templates`, this.httpOptions);
+    return response;
+  }
+
+  addAdvanceTemplates(advanceTemplate: AdvanceTemplate): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/advance-templates`, advanceTemplate, this.httpOptions);
+    return response;
+  }
+
+  updateAdvanceTemplates(id: string, advanceTemplate: AdvanceTemplate): Observable<response<any>> {
+    var response = this.http.put<response<any>>(`${environment.apiUrlDotNet}/expense/advance-templates/${id}`, advanceTemplate, this.httpOptions);
+    return response;
+  }
+
+  deleteAdvanceTemplates(id: string): Observable<response<any>> {
+    var response = this.http.delete<response<any>>(`${environment.apiUrlDotNet}/expense/advance-templates/${id}`, this.httpOptions);
+    return response;
+  }
+  getAllCategoriesOfAlladvance(): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/advance-templates`, this.httpOptions);
+    return response;
+  }
 
 }

@@ -1,28 +1,46 @@
-import { Component } from '@angular/core';
+import { Component ,OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ExpensesService } from 'src/app/_services/expenses.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ToastrService } from 'ngx-toastr';
+import { MatDialog } from '@angular/material/dialog';
+import { Observable, forkJoin } from 'rxjs';
+import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-advance-templates',
   templateUrl: './advance-templates.component.html',
   styleUrl: './advance-templates.component.css'
 })
-export class AdvanceTemplatesComponent {
+export class AdvanceTemplatesComponent implements OnInit{
 searchText: '';
   isEdit = false;
   changeMode: 'Add' | 'Update' = 'Add';
-  addCategoryForm: FormGroup;
+  addAdvanceTempForm: FormGroup;
   closeResult: string = '';
+  selectedTemplate: any;
+  updatedCategory: any;
+   List:any;
+   advanceCategories: any = [];
+  selectedTemplateId: any;
+  advanceCategoriesall: any;
+  templates: any[] = [];
+  categoryList: any;
+  matchingCategories: any;
+  noofadvancecat: any;
+  
 
-  constructor(private fb: FormBuilder, private modalService: NgbModal) {
-    this.addCategoryForm = this.fb.group({
-      advanceCategory: ['', Validators.required]
+  constructor(private fb: FormBuilder, private modalService: NgbModal, private expenseService: ExpensesService,private toast: ToastrService,private dialog: MatDialog) {
+    this.addAdvanceTempForm = this.fb.group({
+      policyLabel: ['', Validators.required],
+      approvalType: ['', Validators.required],
+      approvalLevel: ['', Validators.required],
+      advanceCategories: [[], Validators.required],
+
     });
   }
-  onCancel() {
-    this.isEdit = false;
-  }
+
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
@@ -32,6 +50,22 @@ searchText: '';
       return `with: ${reason}`;
     }
   }
+
+
+  ngOnInit(): void {
+    this.getAllTemplates();
+    this.getAllAdvanceCategories(); 
+     
+ }
+  onCancel() {
+    this.isEdit = false;
+  }
+
+  clearselectedRequest() {
+    this.isEdit = false;
+    this.addAdvanceTempForm.reset();
+  }
+ 
   open(content: any) {
 
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
@@ -40,5 +74,172 @@ searchText: '';
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
     });
   }
+
+  
+  getAllTemplates() {
+    this.expenseService.getAdvanceTemplates().subscribe((res: any) => {
+      this.List = res.data;    
+    })
+  }
+
+
+  getAllAdvanceCategories() {
+    this.expenseService.getAdvanceCatgories().subscribe((res: any) => {
+      this.advanceCategoriesall = res.data;
+    })
+  }
+
+  getCategoriesByTemplate(id: string) {
+    this.selectedTemplateId = id;
+    this.expenseService.getCategoriesByTemplate(id).subscribe((res: any) => {
+      this.categoryList = res.data;
+      const selectedCategories = this.categoryList.map(category => category.advanceTemplate);
+      this.addAdvanceTempForm.get('advanceTemplates').setValue(selectedCategories);
+    })
+  }
+  isSelected(categoryId: string): boolean {
+    const selectedCategories = this.addAdvanceTempForm.get('advanceCategories').value;
+    console.log(selectedCategories.includes(categoryId))
+    return selectedCategories.includes(categoryId);
+  }
+
+  addAdvanceTemolate1() {
+    if (this.changeMode === 'Add') {
+      let categoryPayload = {
+        policyLabel: this.addAdvanceTempForm.value['policyLabel'], 
+        approvalType: this.addAdvanceTempForm.value['approvalType'], 
+        approvalLevel: this.addAdvanceTempForm.value['approvalLevel'], 
+        advanceCategories:this.addAdvanceTempForm.value.advanceCategories.map(category => ({ advanceCategory: category })),
+      };
+  
+      this.expenseService.addAdvanceTemplates(categoryPayload).subscribe(
+        (res: any) => {
+          console.log(res.data)      
+          this.clearselectedRequest();
+          this.ngOnInit();
+          this.toast.success('New Advance Template Added', 'Successfully!!!');
+        },
+        err => {
+          this.toast.error('Failed to save the category. Please try again.', 'Error!!!');
+        }
+      );
+    } 
+  }
+
+
+  addAdvanceTemolate() {
+    if (this.changeMode === 'Add') {
+      // Use Set to handle unique values in advanceCategories
+      let uniqueCategoriesSet = new Set(this.addAdvanceTempForm.value.advanceCategories);
+  
+      let categoryPayload = {
+        policyLabel: this.addAdvanceTempForm.value['policyLabel'], 
+        approvalType: this.addAdvanceTempForm.value['approvalType'], 
+        approvalLevel: this.addAdvanceTempForm.value['approvalLevel'], 
+        advanceCategories:this.addAdvanceTempForm.value.advanceCategories.map(category => ({ advanceCategory: category })),
+      };
+  
+      this.expenseService.addAdvanceTemplates(categoryPayload).subscribe(
+        (res: any) => {
+         const newCategory = res.data;
+        this.advanceCategories.push(newCategory);
+
+        if (this.advanceCategories.length > 0) {
+          let advanceCategories = {
+            expenseCategory: newCategory._id
+          };
+          console.log(advanceCategories);
+        }
+          this.toast.success('New Advance Template Added', 'Successfully!!!');
+        },
+        err => {
+          this.toast.error('Failed to save the category. Please try again.', 'Error!!!');
+        }
+      );
+    } 
+  }
+  
+
+  updateAdvanceTemplate() {
+    let selectedCategories = this.addAdvanceTempForm.value.advanceCategories.map(advanceCategory => ({ advanceCategory: advanceCategory }));
+  
+    // Create an array to hold the observables for each update request
+    let updateRequests: Observable<any>[] = [];
+  
+    // Iterate over each selected category and create an update request
+    selectedCategories.forEach((selectedCategory: any) => {
+      let categoryPayload = {
+        policyLabel: this.addAdvanceTempForm.value['policyLabel'],
+        approvalType: this.addAdvanceTempForm.value['approvalType'],
+        approvalLevel: this.addAdvanceTempForm.value['approvalLevel'],
+        advanceCategories: [selectedCategory],
+      };
+
+      // Add the update request to the array
+      updateRequests.push(this.expenseService.updateAdvanceTemplates(this.selectedTemplate?._id, categoryPayload));
+    });  
+    // Use forkJoin to wait for all update requests to complete
+    forkJoin(updateRequests).subscribe(
+      (responses: any[]) => {
+        // Handle the responses as needed for each category update
+        responses.forEach((res: any) => {
+          console.log(`Category updated: ${res.data._id}`);
+        });      
+        this.getAllTemplates();       
+        this.toast.success('Advance Template Update', 'Successfully!!!');
+      },
+    
+      (error) => {
+         // Execute this.getAllTemplates() after all updates are completed
+        this.getAllTemplates();       
+        this.toast.success('Advance Template Update', 'Successfully!!!');
+      }
+    );
+  }
+
+
+  editAdvanceCategory(category, index) {
+    this.isEdit = true;
+    this.selectedTemplate = category;
+    console.log(this.selectedTemplate);
+      this.addAdvanceTempForm.patchValue({
+        policyLabel: category.policyLabel, 
+        approvalType: category.approvalType,
+        approvalLevel: category.approvalLevel,
+        advanceCategories:[category.selectedTemplate]
+      });
+      console.log(this.addAdvanceTempForm.value)     
+    // this.changesMade=false;
+  }
+
+  deleteAdvancecate(id: string): void {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '400px',
+
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'delete') {
+        this.deleteAdvanceTemlate(id);
+      }
+      err => {
+        this.toast.error('Can not be Deleted', 'Error!')
+      }
+    });
+  }
+
+
+  deleteAdvanceTemlate(id: string) {
+    this.expenseService.deleteAdvanceTemplates(id).subscribe((res: any) => {
+      this.getAllTemplates();
+      this.toast.success('Successfully Deleted!!!', 'Advance Template')
+    },
+      (err) => {
+        this.toast.error('This category is already being used in an expense template!'
+          , 'Advance Category, Can not be deleted!')
+      })
+  }
+
+
+
 }
 

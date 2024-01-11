@@ -121,8 +121,7 @@ export class AdvanceCategoriesComponent implements OnInit{
         this.getAllAdvanceCategories();
       });
     }
-
-   
+    this.toast.success('Advance Category Update', 'Successfully!!!')
   }  
 
 
