@@ -97,19 +97,31 @@ export class ExpenseGeneralSettingsComponent {
   }
 
   setFormValues(templateData: any) {
-    this.addTemplateForm.patchValue({
-      policyLabel: templateData.policyLabel,
-      approvalType: templateData.approvalType,
-      approvalLevel: templateData.approvalLevel,
-      downloadableFormats: templateData.downloadableFormats,
-      applyforSameCategorySamedate: templateData.applyforSameCategorySamedate,
-      advanceAmount: templateData.advanceAmount,
-      firstApprovalEmployee: templateData.firstApprovalEmployee,
-      secondApprovalEmployee: templateData.secondApprovalEmployee
+    this.expenseService.getCategoriesByTemplate(templateData._id).subscribe((res: any) => {
+      let categoryList = res.data;
+      let expenseCategories = categoryList.map(category => ({ expensecategory: category.expenseCategory }));
+
+
+      this.addTemplateForm.patchValue({
+        policyLabel: templateData.policyLabel,
+        approvalType: templateData.approvalType,
+        approvalLevel: templateData.approvalLevel,
+        downloadableFormats: templateData.downloadableFormats,
+        applyforSameCategorySamedate: templateData.applyforSameCategorySamedate,
+        advanceAmount: templateData.advanceAmount,
+        firstApprovalEmployee: templateData.firstApprovalEmployee,
+        secondApprovalEmployee: templateData.secondApprovalEmployee,
+        expenseCategories: expenseCategories
+      });
+      this.checkedFormats = templateData.downloadableFormats;
+     
+      console.log(this.addTemplateForm.value);
     });
-    this.checkedFormats = templateData.downloadableFormats
-    this.getCategoriesByTemplate(templateData._id)
   }
+  compareExpenseCategories(category1: any, category2: any): boolean {
+    return category1 && category2 ? category1._id === category2._id : category1 === category2;
+  }
+  
 
   getCategoriesByTemplate(id: string) {
     this.expenseService.getCategoriesByTemplate(id).subscribe((res: any) => {
@@ -144,7 +156,7 @@ export class ExpenseGeneralSettingsComponent {
       approvalLevel: this.addTemplateForm.value.approvalLevel,
       applyforSameCategorySamedate: this.addTemplateForm.value.applyforSameCategorySamedate,
       advanceAmount: this.addTemplateForm.value.advanceAmount,
-      
+
       firstApprovalEmployee: '6390cbc4869680bf0202f212',
       secondApprovalEmployee: '6390cbc4869680bf0202f212',
       downloadableFormats: this.checkedFormats,
@@ -161,7 +173,10 @@ export class ExpenseGeneralSettingsComponent {
       });
     } else {
       let templateId = this.expenseService.selectedTemplate.getValue()._id;
+      console.log(templateId, payload)
+      
       this.expenseService.updateTemplate(templateId, payload).subscribe((res: any) => {
+        console.log(res)
         this.toast.success('Template Updated Successfully!');
         this.expenseService.categories.next(res.data)
         this.changeStep.emit(2);

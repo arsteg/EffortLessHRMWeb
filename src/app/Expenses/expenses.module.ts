@@ -23,6 +23,7 @@ import { PendingComponent } from './expense-reports/pending/pending.component';
 import { ApprovedComponent } from './expense-reports/approved/approved.component';
 import { CancelledComponent } from './expense-reports/cancelled/cancelled.component';
 import { RejectedComponent } from './expense-reports/rejected/rejected.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -40,8 +41,7 @@ import { RejectedComponent } from './expense-reports/rejected/rejected.component
     PendingComponent,
     ApprovedComponent,
     CancelledComponent,
-    RejectedComponent
-    
+    RejectedComponent,
   ],
   imports: [
     CommonModule,
@@ -52,7 +52,8 @@ import { RejectedComponent } from './expense-reports/rejected/rejected.component
     MatButtonModule,
     MatInputModule,
     MatFormFieldModule,
-    MatSelectModule
+    MatSelectModule,
+    BrowserAnimationsModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

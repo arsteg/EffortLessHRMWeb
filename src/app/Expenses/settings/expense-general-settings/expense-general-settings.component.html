@@ -94,7 +94,7 @@
         <div class="mt-2">
             <mat-form-field appearance="outline" class="w-100">
                 <mat-label>What expense categories are applicable in this expense template?</mat-label>
-                <mat-select multiple formControlName="expenseCategories">
+                <mat-select multiple formControlName="expenseCategories" [compareWith]="compareExpenseCategories">
                     <mat-option [value]="categories?._id" *ngFor="let categories of expenseCategories; let i = index">
                         {{categories.label}}
                     </mat-option>

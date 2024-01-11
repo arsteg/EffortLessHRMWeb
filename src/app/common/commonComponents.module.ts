@@ -10,6 +10,7 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { FormsModule } from '@angular/forms';
 import { SubordinateSelectionComponent } from "./subordinateSelection/subordinateSelection.component";
 import { CRUDComponent } from './crud/crud.component';
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 @NgModule({
     declarations:[SubordinateSelectionComponent, CRUDComponent],
@@ -24,7 +25,8 @@ import { CRUDComponent } from './crud/crud.component';
       MatNativeDateModule,
       MatRippleModule,
       NgxChartsModule,
-      FormsModule
+      FormsModule,
+      BrowserAnimationsModule
     ],
     schemas: [
       CUSTOM_ELEMENTS_SCHEMA,
