@@ -99,9 +99,8 @@ export class ExpenseGeneralSettingsComponent {
   setFormValues(templateData: any) {
     this.expenseService.getCategoriesByTemplate(templateData._id).subscribe((res: any) => {
       let categoryList = res.data;
-      let expenseCategories = categoryList.map(category => ({ expensecategory: category.expenseCategory }));
-
-
+      
+      let expenseCategories = categoryList.map(category => ({ expenseCategory: category.expenseCategory }));
       this.addTemplateForm.patchValue({
         policyLabel: templateData.policyLabel,
         approvalType: templateData.approvalType,
@@ -157,10 +156,10 @@ export class ExpenseGeneralSettingsComponent {
       applyforSameCategorySamedate: this.addTemplateForm.value.applyforSameCategorySamedate,
       advanceAmount: this.addTemplateForm.value.advanceAmount,
 
-      firstApprovalEmployee: '6390cbc4869680bf0202f212',
-      secondApprovalEmployee: '6390cbc4869680bf0202f212',
+      firstApprovalEmployee: this.addTemplateForm.value.firstApprovalEmployee,
+      secondApprovalEmployee: this.addTemplateForm.value.secondApprovalEmployee,
       downloadableFormats: this.checkedFormats,
-      expenseCategories: this.addTemplateForm.value.expenseCategories.map(category => ({ expenseCategory: category })),
+      expenseCategories: this.addTemplateForm.value.expenseCategories.map(category => ({ expenseCategory: category.expenseCategory })),
     }
     if (this.changeMode === 'Add') {
       this.expenseService.addTemplate(payload).subscribe((res: any) => {

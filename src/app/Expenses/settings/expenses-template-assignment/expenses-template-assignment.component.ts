@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import {  MatDialog } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
@@ -38,7 +38,8 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
     private toast: ToastrService) {
     this.templateAssignmentForm = this.fb.group({
       user: [''],
-      approver: [''],
+      primaryApprover: [''],
+      secondaryApprover: [''],
       expenseTemplate: [''],
       effectiveDate: []
     })
@@ -68,7 +69,7 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
     });
   }
   clearSelection() {
-      this.templateAssignmentForm.reset();
+    this.templateAssignmentForm.reset();
   }
 
   deleteTemplateAssignment(_id: string) {
@@ -111,26 +112,35 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
         this.authService.GetMe(assignment.user).toPromise()
       );
 
-      const approverRequests = this.templateAssignments.map(assignment =>
-        this.authService.GetMe(assignment.approver).toPromise()
+      const primaryRequests = this.templateAssignments.map(assignment =>
+        this.authService.GetMe(assignment.primaryApprover).toPromise()
+      );
+
+      const secondaryRequests = this.templateAssignments.map(assignment =>
+        this.authService.GetMe(assignment.secondaryApprover).toPromise()
       );
 
       const templateRequests = this.templateAssignments.map(assignment =>
         this.expenseService.getTemplateById(assignment.expenseTemplate).toPromise()
       );
 
-      Promise.all([...userRequests, ...templateRequests, ...approverRequests]).then(results => {
+      Promise.all([...userRequests, ...templateRequests, ...primaryRequests, ...secondaryRequests]).then(results => {
         for (let i = 0; i < this.templateAssignments.length; i++) {
           const userResponse = results[i];
           this.templateResponse = results[i + this.templateAssignments.length];
-          const approverResponse = results[i + this.templateAssignments.length * 2];
+          const primaryApproverResponse = results[i + this.templateAssignments.length * 2];
+          const secondaryApproverResponse = results[i + this.templateAssignments.length * 2];
 
           if (userResponse) {
             this.templateAssignments[i].user = userResponse.data.users;
           }
 
-          if (approverResponse) {
-            this.templateAssignments[i].approver = approverResponse.data.users;
+          if (primaryApproverResponse) {
+            this.templateAssignments[i].primaryApprover = primaryApproverResponse.data.users;
+          }
+
+          if (secondaryApproverResponse) {
+            this.templateAssignments[i].secondaryApprover = secondaryApproverResponse.data.users;
           }
 
           if (this.templateResponse.data != null) {
@@ -145,7 +155,8 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
   addOrUpdateAssignment() {
     let payload = {
       user: this.templateAssignmentForm.value.user,
-      approver: this.templateAssignmentForm.value.approver,
+      primaryApprover: this.templateAssignmentForm.value.primaryApprover,
+      secondaryApprover: this.templateAssignmentForm.value.secondaryApprover,
       expenseTemplate: this.templateAssignmentForm.value.expenseTemplate,
       effectiveDate: this.templateAssignmentForm.value.effectiveDate
     }

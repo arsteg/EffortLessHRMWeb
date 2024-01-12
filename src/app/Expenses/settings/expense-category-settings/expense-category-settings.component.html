@@ -1,52 +1,64 @@
 <div class="d-flex justify-content-between">
-  <button mat-raised-button type="button" data-bs-dismiss="modal" (click)="closeModal()">
-    Back
-  </button>
-  <button type="button" data-bs-dismiss="modal" class="btn-close text-end" (changeStep)="onChangeStep($event)"></button>
+  <button type="button" data-bs-dismiss="modal" class="btn-close text-end" (click)="closeModal()"></button>
 </div>
-<!-- <mat-stepper linear #stepper>
-  <ng-container *ngFor="let step of steps; let i = index">
-    <mat-step [stepControl]="applicableCategoriesForm" [editable]="isEditable">
-      <form [formGroup]="applicableCategoriesForm">
-        <ng-template matStepLabel>{{ categoryLabel }}</ng-template>
-      
-        <div formArrayName="expenseCategories">
-          <div *ngFor="let category of applicableCategoriesForm.get('expenseCategories')['controls']; let i = index">
-            <div [formGroupName]="i">
-             
-      
-              
-              <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" formControlName="isMaximumAmountPerExpenseSet">
-                <label class="form-check-label" for="flexSwitchCheckDefault">Is Maximum Amount Per Expense Set</label>
-              </div>
-      
-            </div>
-          </div>
+<mat-stepper #stepper >
+  <div [formGroup]="firstForm">
+  <ng-container formArrayName="expenseCategories">
+    <mat-step [stepControl]="firstForm" *ngFor="let categoryCtrl of firstForm.get('expenseCategories').controls; let i = index">
+      <form [formGroup]="categoryCtrl">
+        <ng-template matStepLabel>{{ getCategoryLabel(categoryCtrl.value.expenseCategory) }}</ng-template>
+        <div class="d-flex">
+          <label>Maximum amount limit per individual expense</label>
+          <input formControlName="maximumAmountPerExpense" class="form-control w-25">
+          <div class="form-check form-switch"><input  formControlName="isMaximumAmountPerExpenseSet"
+              id="maxAmount" class="form-check-input" type="checkbox"></div>
         </div>
-      
-        <button type="button" (click)="fetchCategories()">Add Expense Category</button>
-      
-        <div>
-          <h2>Form Value</h2>
-          <pre>{{ applicableCategoriesForm.value | json }}</pre>
+
+        <div class="d-flex mt-2">
+          <label>Maximum amount permitted per expense without receipt</label>
+          <input formControlName="maximumAmountWithoutReceipt" class="form-control w-25">
+          <div class="form-check form-switch"><input  formControlName="isMaximumAmountWithoutReceiptSet"
+              id="maxAmount" class="form-check-input" type="checkbox"></div>
         </div>
-        <div>
-          <button mat-button *ngIf="i > 0" matStepperPrevious>Back</button>
-          <button mat-button matStepperNext>Next</button>
+
+        <div class="d-flex mt-2">
+          <label>Times in a </label>
+          <select class="form-select" formControlName="timePeroid" aria-label="Default select example">
+            <option selected>Select Time</option>
+            <option value="Day">Day</option>
+            <option value="Week">Week</option>
+            <option value="Month">Month</option>
+          </select>
+          <div class="form-check form-switch"><input formControlName="isTimePeroidSet" id="maxAmount"
+              class="form-check-input" type="checkbox"></div>
+        </div>
+
+        <div class="d-flex  mt-2">
+          <label>Expense will expire Days after incurred date </label>
+          <input formControlName="expiryDay" class="form-control w-25">
+          <div class="form-check form-switch"><input  formControlName="isEmployeeCanAddInTotalDirectly" id="maxAmount"
+              class="form-check-input" type="checkbox"></div>
+        </div>
+
+
+        <div class="d-flex mt-2">
+          <label>An employee can apply maximum</label>
+          <input formControlName="maximumExpensesCanApply" class="form-control w-25">
+        </div>
+        <div class="">
+          <button mat-button matStepperNext >Next</button>
         </div>
       </form>
-      
     </mat-step>
   </ng-container>
-
+  </div>
   <mat-step>
     <ng-template matStepLabel>Done</ng-template>
-    <p>Do you want to submit?</p>
+    <p>You are now done.</p>
     <div>
-      <button mat-raised-button class="addBtn" type="submit" (click)="onSubmit()">Submit</button>
+      <button mat-button matStepperPrevious>Back</button>
       <button mat-button (click)="stepper.reset()">Reset</button>
+      <button mat-button (click)="onSubmit()" color="primary">Submit</button>
     </div>
   </mat-step>
-</mat-stepper> -->
-
+</mat-stepper>

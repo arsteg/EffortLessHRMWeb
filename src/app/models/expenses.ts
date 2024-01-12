@@ -52,7 +52,7 @@ export interface AddTemplate {
 
 export interface ApplicableCategories {
     expenseTemplate: string;
-    expenseCategory: {
+    expenseCategories: [{
         expenseCategory: string,
         isMaximumAmountPerExpenseSet: false,
         maximumAmountPerExpense: 0,
@@ -64,12 +64,13 @@ export interface ApplicableCategories {
         expiryDay: 0,
         isEmployeeCanAddInTotalDirectly: false,
         ratePerDay: 0
-      }
+      }]
 }
 
 export interface TemplateAssignment {
     user: string;
-    approver: string;
+    secondaryApprover: string;
+    primaryApprover: string;
     expenseTemplate: string;
     effectiveDate: Date;
 }

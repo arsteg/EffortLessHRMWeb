@@ -47,6 +47,6 @@
 <!-- Add/update template  -->
 <ng-template #addModal let-modal>
     <app-expense-general-settings [changeMode]="changeMode" (changeStep)="onChangeStep($event)" (close)="onClose($event)" *ngIf="step == 1"></app-expense-general-settings>
-    <app-expense-category-settings *ngIf="step == 2" (changeStep)="onChangeStep($event)"></app-expense-category-settings>
+    <app-expense-category-settings *ngIf="step == 2" (close)="onClose($event)" (changeStep)="onChangeStep($event)"></app-expense-category-settings>
     <!-- <app-expense-category-settings (close)="onClose($event)"></app-expense-category-settings> -->
 </ng-template>

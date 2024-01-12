@@ -5,32 +5,34 @@ import { DashboardComponent } from './dashboard.component';
 import { RouterModule } from '@angular/router';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatButtonModule  } from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule, MatRippleModule } from '@angular/material/core';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { FormsModule } from '@angular/forms';
-
+import { CommonModule } from '@angular/common';
 @NgModule({
-    declarations:[UserDashboardComponent,DashboardComponent],
-    exports:[UserDashboardComponent,DashboardComponent],
-    imports:[SharedModule,
-      RouterModule,
-      MatFormFieldModule,
-      MatDatepickerModule,
-      MatButtonModule,
-      MatInputModule,
-      MatRippleModule,
-      MatNativeDateModule,
-      MatRippleModule,
-      NgxChartsModule,
-      FormsModule
-    ],
-    schemas: [
-      CUSTOM_ELEMENTS_SCHEMA,
-      NO_ERRORS_SCHEMA
-    ]
-  })
-export class DashboardModule{
+  declarations: [UserDashboardComponent, DashboardComponent],
+  exports: [UserDashboardComponent, DashboardComponent],
+  imports: [SharedModule,
+    RouterModule,
+    MatFormFieldModule,
+    MatDatepickerModule,
+    MatButtonModule,
+    MatInputModule,
+    MatRippleModule,
+    MatNativeDateModule,
+    MatRippleModule,
+    NgxChartsModule,
+    FormsModule,
+    CommonModule,
+    SharedModule
+  ],
+  schemas: [
+    CUSTOM_ELEMENTS_SCHEMA,
+    NO_ERRORS_SCHEMA
+  ]
+})
+export class DashboardModule {
 }
 

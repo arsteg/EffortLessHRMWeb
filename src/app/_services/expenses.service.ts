@@ -120,8 +120,8 @@ export class ExpensesService {
   }
 
 
-  addTemplateApplicableCategories(expenseCategories: any): Observable<response<any>> {
-    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/expense-template-applicable-categories`, { expenseCategories }, this.httpOptions);
+  addTemplateApplicableCategories(expenseCategories: ApplicableCategories): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/expense-template-applicable-categories`, expenseCategories , this.httpOptions);
     return response;
   }
 

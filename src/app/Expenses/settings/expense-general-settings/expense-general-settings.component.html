@@ -61,7 +61,7 @@
                         Employee Wise
                     </label>
                 </div>
-            </div>
+            </div> 
             <div *ngIf="addTemplateForm.get('approvalType').invalid && addTemplateForm.get('approvalType').touched"
                 class="text-danger error">
                 Please Select Approval Type!
@@ -91,7 +91,7 @@
                 </select>
             </div>
         </div>
-        <div class="mt-2">
+        <div class="mt-4">
             <mat-form-field appearance="outline" class="w-100">
                 <mat-label>What expense categories are applicable in this expense template?</mat-label>
                 <mat-select multiple formControlName="expenseCategories" [compareWith]="compareExpenseCategories">
