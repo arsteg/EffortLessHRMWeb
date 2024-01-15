@@ -21,7 +21,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let categories of expenseCategories; let index = index">
+                    <tr *ngFor="let categories of expenseCategories | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }; let index = index">
                         <td class="ps-2">{{categories?.label}}</td>
                         <td>{{categories?.type}}</td>
                         <td class="">
@@ -39,7 +39,8 @@
                     </tr>
                 </tbody>
             </table>
-            <pagination-controls class="pagination d-flex justify-content-end"></pagination-controls>
+            <pagination-controls (pageChange)="p = $event"
+            class="pagination d-flex justify-content-end"></pagination-controls>
         </div>
 
     </div>

@@ -47,7 +47,7 @@ export class ExpensesCategoriesComponent implements OnInit {
   value: any;
   updatedCategory: any;
   originalFields: any[] = [];
-
+  p: number = 1;
 
   constructor(private modalService: NgbModal,
     private dialog: MatDialog,
@@ -133,10 +133,15 @@ export class ExpensesCategoriesComponent implements OnInit {
 
   removeFieldValue(fieldIndex: number, valueIndex: number) {
     const fieldArray = this.fields.at(fieldIndex).get('expenseApplicationFieldValues') as FormArray;
-    console.log(fieldArray.value[valueIndex]._id)
-    this.expenses.deleteApplicationFieldValue(fieldArray.value[valueIndex]._id).subscribe((res: any) => {
-      fieldArray.removeAt(valueIndex);
-    });
+    if (fieldArray.value[valueIndex]._id) {
+      console.log(fieldArray.value[valueIndex]._id)
+      this.expenses.deleteApplicationFieldValue(fieldArray.value[valueIndex]._id).subscribe((res: any) => {
+        fieldArray.removeAt(valueIndex);
+      });
+    }
+    else {
+      fieldArray.removeAt(valueIndex)
+    }
   }
 
   getAllExpensesCategories() {
