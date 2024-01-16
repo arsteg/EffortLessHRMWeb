@@ -27,7 +27,10 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
   templateResponse;
   selectedTemplateAssignmentId: any;
   allAssignee: any[];
-
+  p: number = 1;
+  bsValue = new Date();
+  bsRangeValue: Date[];
+  maxDate = new Date();
 
   constructor(private modalService: NgbModal,
     private dialog: MatDialog,
@@ -42,7 +45,11 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
       secondaryApprover: [''],
       expenseTemplate: [''],
       effectiveDate: []
-    })
+    });
+
+    this.maxDate.setDate(this.maxDate.getDate() + 7);
+    this.bsRangeValue = [this.bsValue, this.maxDate];
+
   }
 
   ngOnInit(): void {
@@ -69,6 +76,9 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
     });
   }
   clearSelection() {
+    this.changeMode = 'Add';
+    this.templateAssignmentForm.get('user')?.enable();
+    this.templateAssignmentForm.get('expenseTemplate')?.enable();
     this.templateAssignmentForm.reset();
   }
 
@@ -129,7 +139,7 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
           const userResponse = results[i];
           this.templateResponse = results[i + this.templateAssignments.length];
           const primaryApproverResponse = results[i + this.templateAssignments.length * 2];
-          const secondaryApproverResponse = results[i + this.templateAssignments.length * 2];
+          const secondaryApproverResponse = results[i + this.templateAssignments.length * 3];
 
           if (userResponse) {
             this.templateAssignments[i].user = userResponse.data.users;
@@ -154,46 +164,58 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
 
   addOrUpdateAssignment() {
     let payload = {
-      user: this.templateAssignmentForm.value.user,
+      user: this.templateAssignmentForm.value.user || null,
       primaryApprover: this.templateAssignmentForm.value.primaryApprover,
       secondaryApprover: this.templateAssignmentForm.value.secondaryApprover,
-      expenseTemplate: this.templateAssignmentForm.value.expenseTemplate,
+      expenseTemplate: this.templateAssignmentForm.value.expenseTemplate || null,
       effectiveDate: this.templateAssignmentForm.value.effectiveDate
     }
+
     if (this.changeMode == 'Add') {
+      console.log(payload)
       this.expenseService.addTemplateAssignment(payload).subscribe((res: any) => {
         const newTemplateAssignment = res.data;
         this.templateAssignments.push(newTemplateAssignment);
+        this.getAssignments();
         this.templateAssignmentForm.reset();
       });
     }
     else {
-      console.log(this.selectedTemplateAssignmentId, payload)
-      this.expenseService.updateTemplateAssignment(this.selectedTemplateAssignmentId, payload).subscribe((res: any) => {
+      let user = this.selectedTemplateAssignmentId.user._id;
+      let expenseTemplate = this.selectedTemplateAssignmentId.expenseTemplate._id;
+      payload.user = user;
+      payload.expenseTemplate = expenseTemplate;
+
+      this.expenseService.addTemplateAssignment(payload).subscribe((res: any) => {
         const updatedTemplateAssign = res.data;
         const index = this.templateAssignments.findIndex(templateAssign => templateAssign._id === updatedTemplateAssign._id);
         if (index !== -1) {
           this.templateAssignments[index] = updatedTemplateAssign;
         }
+        this.getAssignments();
       })
+
     }
   }
 
-  updateTemplateAssignment(templateId: any) {
-    this.selectedTemplateAssignmentId = templateId;
-    this.changeMode = 'Update';
-    this.expenseService.getTemplateAssignmentById(templateId).subscribe((res: any) => {
-      console.log(res.data)
-      this.setFormValues(res.data);
-    });
-  }
+  
 
-  setFormValues(templateAssignment: any) {
-    this.templateAssignmentForm.patchValue({
+  
+  editTemplateAssignment(templateAssignments, index: number) {
+    this.changeMode = 'Update';
+    let templateAssignment = templateAssignments;
+    const formValues = {
       user: templateAssignment.user._id,
-      approver: templateAssignment.approver._id,
+      primaryApprover: templateAssignment.primaryApprover._id,
+      secondaryApprover: templateAssignment.secondaryApprover._id,
       expenseTemplate: templateAssignment.expenseTemplate._id,
       effectiveDate: templateAssignment.effectiveDate
-    });
+    };
+    this.templateAssignmentForm.get('user')?.enable();
+    this.templateAssignmentForm.get('expenseTemplate')?.enable();
+    this.templateAssignmentForm.patchValue(formValues);
+    this.templateAssignmentForm.get('user')?.disable();
+    this.templateAssignmentForm.get('expenseTemplate')?.disable();
   }
+
 }

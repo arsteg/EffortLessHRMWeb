@@ -2,7 +2,7 @@
     <div class="container">
         <div class="py-2 px-0 bg-white tableContainer">
             <div class="d-flex justify-content-between align-items-center mb-2 px-3">
-                <p class="mb-0">({{List?.length}}) Records Found</p>
+                <p class="mb-0">({{list?.length}}) Records Found</p>
                 <div class="d-flex align-items-center">
                     <span class="bi bi-search searchIcon"></span>
 
@@ -20,7 +20,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let advance of List |  search: searchText ; let index = index">
+                    <tr *ngFor="let advance of list |  search: searchText ; let index = index">
                         <td class="ps-2">{{advance?.policyLabel}}</td>
                         
                         <td>{{advance?.advanceCategories?.length}}</td>
@@ -71,7 +71,7 @@
         <div class="mt-2">
             <mat-form-field appearance="outline" class="w-100">
                 <mat-label>What expense categories are applicable in this expense template?</mat-label>
-                <mat-select multiple formControlName="advanceCategories">
+                <mat-select multiple formControlName="expenseCategories">
                     <mat-option [value]="advanceCategory?._id"  *ngFor="let advanceCategory of advanceCategoriesall; let i = index">
                         {{advanceCategory.label}}
                     </mat-option>
@@ -88,14 +88,14 @@
 
                     <div class="form-check">
                         <input class="form-check-input" type="radio" id="level" formControlName="approvalLevel"
-                            value="Level 1" required>
+                            value="1" required>
                         <label class="form-check-label" for="level">
                             1 Level
                         </label>
                     </div>
                     <div class="form-check ms-4">
                         <input class="form-check-input" type="radio" id="level2" formControlName="approvalLevel" required
-                            value="Level 2">
+                            value="2">
                         <label class="form-check-label" for="level2">
                             2 Level
                         </label>
@@ -116,14 +116,14 @@
 
                     <div class="form-check">
                         <input class="form-check-input" type="radio" id="level" formControlName="approvalType"
-                            required value="Template Wise">
+                            required value="template-wise">
                         <label class="form-check-label" for="level">
                             Template Wise
                         </label>
                     </div>
                     <div class="form-check ms-4">
                         <input class="form-check-input" type="radio" id="level2"  formControlName="approvalType" required
-                           value="Employee Wise">
+                           value="employee -wise">
                         <label class="form-check-label" for="level2">
                             Employee Wise
                         </label>
@@ -133,6 +133,29 @@
                 class="text-danger error">
                 Please Select Approval Type!
             </div>
+            </div>
+        </div>
+        <div class="row mt-2" *ngIf="addAdvanceTempForm.get('approvalType').value === 'template-wise'">
+            <div class="col-md-6">
+                <label for="firstApprovalEmployee">Please Select An Employee For First Approver? <span
+                        class="text-danger">*</span></label>
+                <select name="" id="firstApprovalEmployee" formControlName="firstApprovalEmployee" required
+                    class="ms-2 form-control">
+                    <option [disabled] value="">Select First Approval</option>
+                    <option [value]="user?.id" *ngFor="let user of users; let i = index">{{user?.firstName |
+                        titlecase}} {{user.lastName | titlecase}}</option>
+
+                </select>
+            </div>
+            <div class="col-md-6" *ngIf="addAdvanceTempForm.get('approvalLevel').value === '2'">
+                <label for="secondApprovalEmployee">Please Select An Employee For Second Approver? <span
+                        class="text-danger">*</span></label>
+                <select name="" id="secondApprovalEmployee" formControlName="secondApprovalEmployee" required
+                    class="ms-2 form-control">
+                    <option [disabled] value="">Select Second Approval</option>
+                    <option [value]="user?.id" *ngFor="let user of users; let i = index">{{user?.firstName |
+                        titlecase}} {{user.lastName | titlecase}}</option>
+                </select>
             </div>
         </div>
 

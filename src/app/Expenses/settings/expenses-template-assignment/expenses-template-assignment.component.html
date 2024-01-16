@@ -26,17 +26,20 @@
                 </thead>
                 <tbody>
 
-                    <tr *ngFor="let templateAssignment of templateAssignments;  let i = index">
-                        <td class="ps-2">{{templateAssignments[i]?.user?.firstName | titlecase}}&nbsp;{{templateAssignments[i]?.user?.lastName | titlecase}}</td>
-                        <td *ngIf="templateResponse?.data != null">{{templateAssignments[i]?.expenseTemplate.policyLabel}}</td>
-                        <td>{{templateAssignments[i]?.primaryApprover?.firstName | titlecase}}&nbsp;{{templateAssignments[i]?.primaryApprover?.lastName | titlecase}}</td>
-                        <td>{{templateAssignments[i]?.secondaryApprover?.firstName | titlecase}}&nbsp;{{templateAssignments[i]?.secondaryApprover?.lastName | titlecase}}</td>
+                    <tr *ngFor="let templateAssignment of templateAssignments | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }; let i = index">
+                        <td class="ps-2">{{templateAssignments[i]?.user?.firstName |
+                            titlecase}}&nbsp;{{templateAssignments[i]?.user?.lastName | titlecase}}</td>
+                        <td *ngIf="templateResponse?.data != null">
+                            {{templateAssignments[i]?.expenseTemplate.policyLabel}}</td>
+                        <td>{{templateAssignments[i]?.primaryApprover?.firstName |
+                            titlecase}}&nbsp;{{templateAssignments[i]?.primaryApprover?.lastName | titlecase}}</td>
+                        <td>{{templateAssignments[i]?.secondaryApprover?.firstName |
+                            titlecase}}&nbsp;{{templateAssignments[i]?.secondaryApprover?.lastName | titlecase}}</td>
                         <td>{{templateAssignment?.effectiveDate | date:'mediumDate'}}</td>
                         <td class="">
                             <button class="actions" mat-mini-fab title="Update" (click)="changeMode='Update';
-                                setFormValues(templateAssignment);
-                                open(addModal); selectedTemplateAssignmentId= templateAssignment._id"
-                                aria-label="Example icon button with a menu icon">
+                               editTemplateAssignment(templateAssignment, i); selectedTemplateAssignmentId = templateAssignment;
+                                open(addModal); " aria-label="Example icon button with a menu icon">
                                 <i class="bi bi-pencil-fill"></i>
                             </button>
                             <button class="actions ms-2" title="Delete" mat-mini-fab
@@ -48,7 +51,7 @@
                     </tr>
                 </tbody>
             </table>
-            <pagination-controls class="pagination d-flex justify-content-end"></pagination-controls>
+            <pagination-controls (pageChange)="p = $event" class="pagination d-flex justify-content-end"></pagination-controls>
         </div>
 
     </div>
@@ -65,9 +68,10 @@
     </div>
 
     <form [formGroup]="templateAssignmentForm" (ngSubmit)="addOrUpdateAssignment()">
-        <div><label for="member"> Select User for Expense Template</label>
-            <select id="member" name="member" class="form-control" formControlName="user"
-                class="form-select form-select-sm" aria-label=".form-select-sm example">
+        <div>
+            <label for="member"> Select User for Expense Template</label>
+            <select id="member" name="member" class="form-control" [attr.disabled]="changeMode === 'Update'"
+                formControlName="user" class="form-select form-select-sm" aria-label=".form-select-sm example">
                 <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
                     {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
                 </option>
@@ -79,7 +83,8 @@
             <label for="expenseTemplate">Please Choose Expense Template</label>
 
             <select id="expenseTemplate" class="form-control" formControlName="expenseTemplate" name="expense"
-                class="form-select form-select-sm" aria-label=".form-select-sm example">
+                [attr.disabled]="changeMode === 'Update'" class="form-select form-select-sm"
+                aria-label=".form-select-sm example">
                 <option *ngFor="let template of templates" [value]="template?._id">
                     {{template?.policyLabel}}
                 </option>
@@ -111,9 +116,22 @@
 
         <div class="mt-2">
             <label for="">Select Effective From Date</label>
-            <input placeholder="YYYY-MM-DD" class="form-control" #datepickerYMD="bsDatepicker" bsDatepicker
-                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="effectiveDate" required>
-        </div>
+            <div class=" col-12 form-group mb-3">
+                <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
+                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="effectiveDate" />
+            </div>
+           </div>
+
+        <!--  -->
+        <!-- <div class="row">
+            <div class="col-xs-12 col-12 col-md-4 form-group mb-3">
+                <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
+                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }">
+            </div>
+        </div> -->
+
+
+
 
         <div class="d-flex border-top mt-2 py-2 justify-content-between">
             <button mat-raised-button (click)="clearSelection()">Cancel</button>

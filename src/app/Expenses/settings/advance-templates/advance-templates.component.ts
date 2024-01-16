@@ -1,4 +1,4 @@
-import { Component ,OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -7,37 +7,44 @@ import { ToastrService } from 'ngx-toastr';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, forkJoin } from 'rxjs';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
+import { CommonService } from 'src/app/common/common.service';
 
 @Component({
   selector: 'app-advance-templates',
   templateUrl: './advance-templates.component.html',
   styleUrl: './advance-templates.component.css'
 })
-export class AdvanceTemplatesComponent implements OnInit{
-searchText: '';
+export class AdvanceTemplatesComponent implements OnInit {
+  searchText: '';
   isEdit = false;
   changeMode: 'Add' | 'Update' = 'Add';
   addAdvanceTempForm: FormGroup;
   closeResult: string = '';
   selectedTemplate: any;
   updatedCategory: any;
-   List:any;
-   advanceCategories: any = [];
+  list: any;
+  advanceCategories: any = [];
   selectedTemplateId: any;
   advanceCategoriesall: any;
   templates: any[] = [];
   categoryList: any;
   matchingCategories: any;
   noofadvancecat: any;
-  
+  users: any;
 
-  constructor(private fb: FormBuilder, private modalService: NgbModal, private expenseService: ExpensesService,private toast: ToastrService,private dialog: MatDialog) {
+  constructor(private fb: FormBuilder,
+    private modalService: NgbModal,
+    private expenseService: ExpensesService,
+    private toast: ToastrService,
+    private commonService: CommonService,
+    private dialog: MatDialog) {
     this.addAdvanceTempForm = this.fb.group({
       policyLabel: ['', Validators.required],
       approvalType: ['', Validators.required],
       approvalLevel: ['', Validators.required],
-      advanceCategories: [[], Validators.required],
-
+      expenseCategories: [[], Validators.required],
+      firstApprovalEmployee: ['', Validators.required],
+      secondApprovalEmployee: ['', Validators.required]
     });
   }
 
@@ -53,10 +60,34 @@ searchText: '';
 
 
   ngOnInit(): void {
+    this.commonService.populateUsers().subscribe((res: any) => {
+      this.users = res.data.data;
+    })
     this.getAllTemplates();
-    this.getAllAdvanceCategories(); 
-     
- }
+    this.getAllAdvanceCategories();
+    this.addAdvanceTempForm.get('approvalLevel').valueChanges.subscribe((value: any) => {
+      this.validateApprovers(this.addAdvanceTempForm.get('approvalType').value, value)
+    });
+    this.addAdvanceTempForm.get('approvalType').valueChanges.subscribe((value: any) => {
+      this.validateApprovers(value, this.addAdvanceTempForm.get('approvalLevel').value)
+    });
+  }
+
+  validateApprovers(approverType, approverLevel) {
+    if (approverLevel == 1 && approverType == 'template-wise') {
+      this.addAdvanceTempForm.get('firstApprovalEmployee').setValidators([Validators.required]);
+      this.addAdvanceTempForm.get('secondApprovalEmployee').clearValidators();
+    } else if (approverLevel == 2 && approverType == 'template-wise') {
+      this.addAdvanceTempForm.get('firstApprovalEmployee').setValidators([Validators.required]);
+      this.addAdvanceTempForm.get('secondApprovalEmployee').setValidators([Validators.required]);
+    } else {
+      this.addAdvanceTempForm.get('firstApprovalEmployee').clearValidators();
+      this.addAdvanceTempForm.get('secondApprovalEmployee').clearValidators();
+    }
+    this.addAdvanceTempForm.get('firstApprovalEmployee').updateValueAndValidity();
+    this.addAdvanceTempForm.get('secondApprovalEmployee').updateValueAndValidity();
+  }
+
   onCancel() {
     this.isEdit = false;
   }
@@ -65,7 +96,7 @@ searchText: '';
     this.isEdit = false;
     this.addAdvanceTempForm.reset();
   }
- 
+
   open(content: any) {
 
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
@@ -75,10 +106,11 @@ searchText: '';
     });
   }
 
-  
+
   getAllTemplates() {
     this.expenseService.getAdvanceTemplates().subscribe((res: any) => {
-      this.List = res.data;    
+      this.list = res.data;
+      console.log(this.list)
     })
   }
 
@@ -98,100 +130,80 @@ searchText: '';
     })
   }
   isSelected(categoryId: string): boolean {
-    const selectedCategories = this.addAdvanceTempForm.get('advanceCategories').value;
+    const selectedCategories = this.addAdvanceTempForm.get('expenseCategories').value;
     console.log(selectedCategories.includes(categoryId))
     return selectedCategories.includes(categoryId);
   }
 
-  addAdvanceTemolate1() {
-    if (this.changeMode === 'Add') {
-      let categoryPayload = {
-        policyLabel: this.addAdvanceTempForm.value['policyLabel'], 
-        approvalType: this.addAdvanceTempForm.value['approvalType'], 
-        approvalLevel: this.addAdvanceTempForm.value['approvalLevel'], 
-        advanceCategories:this.addAdvanceTempForm.value.advanceCategories.map(category => ({ advanceCategory: category })),
-      };
-  
-      this.expenseService.addAdvanceTemplates(categoryPayload).subscribe(
-        (res: any) => {
-          console.log(res.data)      
-          this.clearselectedRequest();
-          this.ngOnInit();
-          this.toast.success('New Advance Template Added', 'Successfully!!!');
-        },
-        err => {
-          this.toast.error('Failed to save the category. Please try again.', 'Error!!!');
-        }
-      );
-    } 
-  }
 
 
   addAdvanceTemolate() {
     if (this.changeMode === 'Add') {
       // Use Set to handle unique values in advanceCategories
-      let uniqueCategoriesSet = new Set(this.addAdvanceTempForm.value.advanceCategories);
-  
+      let uniqueCategoriesSet = new Set(this.addAdvanceTempForm.value.expenseCategories);
+
       let categoryPayload = {
-        policyLabel: this.addAdvanceTempForm.value['policyLabel'], 
-        approvalType: this.addAdvanceTempForm.value['approvalType'], 
-        approvalLevel: this.addAdvanceTempForm.value['approvalLevel'], 
-        advanceCategories:this.addAdvanceTempForm.value.advanceCategories.map(category => ({ advanceCategory: category })),
+        policyLabel: this.addAdvanceTempForm.value['policyLabel'],
+        approvalType: this.addAdvanceTempForm.value['approvalType'],
+        approvalLevel: this.addAdvanceTempForm.value['approvalLevel'],
+        firstApprovalEmployee: this.addAdvanceTempForm.value['firstApprovalEmployee'],
+        secondApprovalEmployee: this.addAdvanceTempForm.value['secondApprovalEmployee'],
+        advanceCategories: this.addAdvanceTempForm.value.expenseCategories.map(category => ({ expenseCategory: category })),
       };
-  
+
       this.expenseService.addAdvanceTemplates(categoryPayload).subscribe(
         (res: any) => {
-         const newCategory = res.data;
-        this.advanceCategories.push(newCategory);
+          const newCategory = res.data;
+          this.advanceCategories.push(newCategory);
 
-        if (this.advanceCategories.length > 0) {
-          let advanceCategories = {
-            expenseCategory: newCategory._id
-          };
-          console.log(advanceCategories);
-        }
+          if (this.advanceCategories.length > 0) {
+            let advanceCategories = {
+              expenseCategory: newCategory._id
+            };
+            console.log(advanceCategories);
+          }
           this.toast.success('New Advance Template Added', 'Successfully!!!');
         },
         err => {
           this.toast.error('Failed to save the category. Please try again.', 'Error!!!');
         }
       );
-    } 
+    }
   }
-  
+
 
   updateAdvanceTemplate() {
-    let selectedCategories = this.addAdvanceTempForm.value.advanceCategories.map(advanceCategory => ({ advanceCategory: advanceCategory }));
-  
+    let selectedCategories = this.addAdvanceTempForm.value.expenseCategories.map(expenseCategory => ({ expenseCategory: expenseCategory }));
+
     // Create an array to hold the observables for each update request
     let updateRequests: Observable<any>[] = [];
-  
+
     // Iterate over each selected category and create an update request
     selectedCategories.forEach((selectedCategory: any) => {
       let categoryPayload = {
         policyLabel: this.addAdvanceTempForm.value['policyLabel'],
         approvalType: this.addAdvanceTempForm.value['approvalType'],
         approvalLevel: this.addAdvanceTempForm.value['approvalLevel'],
-        advanceCategories: [selectedCategory],
+        expenseCategories: [selectedCategory],
       };
 
       // Add the update request to the array
       updateRequests.push(this.expenseService.updateAdvanceTemplates(this.selectedTemplate?._id, categoryPayload));
-    });  
+    });
     // Use forkJoin to wait for all update requests to complete
     forkJoin(updateRequests).subscribe(
       (responses: any[]) => {
         // Handle the responses as needed for each category update
         responses.forEach((res: any) => {
           console.log(`Category updated: ${res.data._id}`);
-        });      
-        this.getAllTemplates();       
+        });
+        this.getAllTemplates();
         this.toast.success('Advance Template Update', 'Successfully!!!');
       },
-    
+
       (error) => {
-         // Execute this.getAllTemplates() after all updates are completed
-        this.getAllTemplates();       
+        // Execute this.getAllTemplates() after all updates are completed
+        this.getAllTemplates();
         this.toast.success('Advance Template Update', 'Successfully!!!');
       }
     );
@@ -202,13 +214,13 @@ searchText: '';
     this.isEdit = true;
     this.selectedTemplate = category;
     console.log(this.selectedTemplate);
-      this.addAdvanceTempForm.patchValue({
-        policyLabel: category.policyLabel, 
-        approvalType: category.approvalType,
-        approvalLevel: category.approvalLevel,
-        advanceCategories:[category.selectedTemplate]
-      });
-      console.log(this.addAdvanceTempForm.value)     
+    this.addAdvanceTempForm.patchValue({
+      policyLabel: category.policyLabel,
+      approvalType: category.approvalType,
+      approvalLevel: category.approvalLevel,
+      expenseCategories: [category.selectedTemplate]
+    });
+    console.log(this.addAdvanceTempForm.value)
     // this.changesMade=false;
   }
 

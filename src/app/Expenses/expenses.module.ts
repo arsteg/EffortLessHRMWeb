@@ -24,7 +24,7 @@ import { ApprovedComponent } from './expense-reports/approved/approved.component
 import { CancelledComponent } from './expense-reports/cancelled/cancelled.component';
 import { RejectedComponent } from './expense-reports/rejected/rejected.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 @NgModule({
   declarations: [
     ExpensesComponent,
@@ -49,11 +49,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     CommonComponentsModule,
     FormsModule,
     RouterModule,
-    MatButtonModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    BsDatepickerModule.forRoot()
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

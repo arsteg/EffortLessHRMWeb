@@ -17,8 +17,8 @@ export interface AdvanceTemplate {
     policyLabel:string;
     approvalType:string;
     approvalLevel:string;
-    advanceCategories:{
-        advanceCategory: string
+    expenseCategories:{
+        expenseCategory: string
       }[];
    
 }

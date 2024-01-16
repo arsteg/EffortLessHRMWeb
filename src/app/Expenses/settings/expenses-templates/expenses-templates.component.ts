@@ -18,7 +18,7 @@ export class ExpensesTemplatesComponent implements OnInit {
   templates: any[] = [];
   expenseCategories: any;
   addTemplateForm: FormGroup;
-
+  p: number = 1;
   selectedTemplateId: any;
   formatValues: string;
   filteredTemplates: any[] = [];
@@ -26,7 +26,7 @@ export class ExpensesTemplatesComponent implements OnInit {
   selectedCategory: any;
   matchingCategories: any;
   users: any;
-  step:number = 1;
+  step: number = 1;
   constructor(
     private modalService: NgbModal,
     private config: NgbModalConfig,
@@ -48,14 +48,16 @@ export class ExpensesTemplatesComponent implements OnInit {
 
   onClose(event) {
     if (event) {
-      this.modalService.dismissAll()
+      this.modalService.dismissAll();
+      this.addTemplateForm.reset();
+
     }
   }
 
-  onChangeStep(event){
+  onChangeStep(event) {
     this.step = event;
   }
-
+  
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';

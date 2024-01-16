@@ -2,13 +2,13 @@
     <div class="container">
         <div class="py-2 px-0 bg-white tableContainer">
             <div class="d-flex justify-content-between align-items-center mb-2 px-3">
-                <p class="mb-0">() Records Found</p>
+                <p class="mb-0">({{templateAssignments?.length}}) Records Found</p>
                 <div class="d-flex align-items-center">
                     <span class="bi bi-search searchIcon"></span>
 
                     <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
                         name="searchText" aria-label="default input example">
-                    <button mat-raised-button class="addBtn rounded-pill ms-3" (click)="open(addModal)">Add New</button>
+                    <button mat-raised-button class="addBtn rounded-pill ms-3" (click)="open(addModal); clearselectedRequest()">Add New</button>
                 </div>
             </div>
             <table class="px-4">
@@ -26,26 +26,35 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td class="ps-2"></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                    <tr *ngFor="let templateAssignment of templateAssignments | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }; let i = index">
+                        <td class="ps-2">{{templateAssignments[i]?.user?.firstName |
+                            titlecase}}&nbsp;{{templateAssignments[i]?.user?.lastName | titlecase}}</td>
+                        <td> -- </td>
+                        <td> -- </td>
+                        <td> -- </td>
+                        <td> -- </td>
+                        <td>
+                            {{templateAssignments[i]?.advanceTemplate.policyLabel}}</td>
+                        <td>{{templateAssignments[i]?.primaryApprover?.firstName |
+                            titlecase}}&nbsp;{{templateAssignments[i]?.primaryApprover?.lastName | titlecase}}</td>
+                        <td>{{templateAssignments[i]?.secondaryApprover?.firstName |
+                            titlecase}}&nbsp;{{templateAssignments[i]?.secondaryApprover?.lastName | titlecase}}</td>
                         <td class="">
                             <button class="actions" mat-mini-fab title="Add"
-                                aria-label="Example icon button with a menu icon" (click)="open(addModal)">
+                                aria-label="Example icon button with a menu icon" (click)="open(addModal); edit(templateAssignment, i)">
                                 <i class="bi bi-pencil-fill"></i>
+                            </button>
+                            <button class="actions ms-2" title="Delete" mat-mini-fab
+                            aria-label="Example icon button with a menu icon"
+                            (click)="deleteDialog(templateAssignment)">
+                            <i class="bi bi-trash"></i>
                             </button>
 
                         </td>
                     </tr>
                 </tbody>
             </table>
-            <pagination-controls class="pagination d-flex justify-content-end"></pagination-controls>
+            <pagination-controls (pageChange)="p = $event" class="pagination d-flex justify-content-end"></pagination-controls>
         </div>
 
     </div>
@@ -63,20 +72,51 @@
         </div>
     </div>
 
-    <form action="" [formGroup]="addCategoryForm">
+    <form action="" [formGroup]="addTemplateAssignmentForm" (ngSubmit)="onSubmit()">
+
+        <div><label for="member"> Select User for Expense Template</label>
+            <select id="member" name="member" class="form-control" formControlName="user"
+                class="form-select form-select-sm" aria-label=".form-select-sm example">
+                <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                    {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
+                </option>
+            </select>
+
+        </div>
+
+
         <div class="mt-2">
-            <mat-form-field appearance="outline" class="w-100">
-                <mat-label>Select template? <span
-                        class="text-danger">*</span></mat-label>
-                <mat-select multiple>
-                    <mat-option>
-                        test 1
-                    </mat-option>
-                    <mat-option>
-                        test 2
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
+
+            <label for="">Select Template</label>
+            <select id="expenseTemplate" class="form-control" formControlName="advanceTemplate" name="expense"
+                class="form-select form-select-sm" aria-label=".form-select-sm example">
+                <option *ngFor="let template of advanceTemplates" [value]="template?._id">
+                    {{template?.policyLabel}}
+                </option>
+            </select>
+        </div>
+
+        <div class="mt-2">
+            <label for="">Select Primary Approver of Expense Template</label>
+            <select id="member" name="member" class="form-control" formControlName="primaryApprover"
+                class="form-select form-select-sm" aria-label=".form-select-sm example">
+                <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                    {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
+                </option>
+            </select>
+
+
+        </div>
+        <div class="mt-2">
+            <label for="">Select Secondary Approver of Expense Template</label>
+            <select id="members" name="members" class="form-control" formControlName="secondaryApprover"
+                class="form-select form-select-sm" aria-label=".form-select-sm example">
+                <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                    {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
+                </option>
+            </select>
+
+
         </div>
 
         <div class="row mt-3">
@@ -84,7 +124,9 @@
         </div>
         <div class="row">
             <div class="col-12 form-group mb-3">
-                <input placeholder="YYYY-MM-DD" class="form-control" #datepickerYMD="bsDatepicker" bsDatepicker
+                <input placeholder="YYYY-MM-DD" 
+                formControlName="effectiveDate"
+                class="form-control" #datepickerYMD="bsDatepicker" bsDatepicker
                     [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" required>
             </div>
         </div>
