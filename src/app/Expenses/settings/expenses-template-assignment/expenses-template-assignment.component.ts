@@ -175,9 +175,13 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
       console.log(payload)
       this.expenseService.addTemplateAssignment(payload).subscribe((res: any) => {
         const newTemplateAssignment = res.data;
+        this.toast.success('Advance Template Assigned!', 'Successfully')
         this.templateAssignments.push(newTemplateAssignment);
         this.getAssignments();
         this.templateAssignmentForm.reset();
+      },
+      (err)=>{
+        this.toast.error('Advance Template Cannot be created!', 'Error')
       });
     }
     else {
@@ -188,11 +192,16 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
 
       this.expenseService.addTemplateAssignment(payload).subscribe((res: any) => {
         const updatedTemplateAssign = res.data;
+        this.toast.success('Advance Template Assignment Updated!', 'Successfully')
+
         const index = this.templateAssignments.findIndex(templateAssign => templateAssign._id === updatedTemplateAssign._id);
         if (index !== -1) {
           this.templateAssignments[index] = updatedTemplateAssign;
         }
         this.getAssignments();
+      },
+      (err)=>{
+        this.toast.error('Advance Template Cannot be Updated!', 'Error')
       })
 
     }

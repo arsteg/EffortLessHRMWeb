@@ -41,7 +41,10 @@
                             titlecase}}&nbsp;{{templateAssignments[i]?.secondaryApprover?.lastName | titlecase}}</td>
                         <td class="">
                             <button class="actions" mat-mini-fab title="Add"
-                                aria-label="Example icon button with a menu icon" (click)="open(addModal); edit(templateAssignment, i)">
+                                aria-label="Example icon button with a menu icon" (click)="open(addModal);
+                                 edit(templateAssignment, i);
+                                 selectedTemplateAssignment = templateAssignment"
+                                 >
                                 <i class="bi bi-pencil-fill"></i>
                             </button>
                             <button class="actions ms-2" title="Delete" mat-mini-fab
@@ -60,7 +63,6 @@
     </div>
 </div>
 
-<!-- Add/Update category -->
 
 <ng-template #addModal let-modal>
     <div class="modal-header border-bottom mb-2 pt-0">
@@ -75,7 +77,7 @@
     <form action="" [formGroup]="addTemplateAssignmentForm" (ngSubmit)="onSubmit()">
 
         <div><label for="member"> Select User for Expense Template</label>
-            <select id="member" name="member" class="form-control" formControlName="user"
+            <select id="member" name="member" class="form-control" formControlName="user" [attr.disabled]="changeMode === 'Update'"
                 class="form-select form-select-sm" aria-label=".form-select-sm example">
                 <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
                     {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
@@ -88,7 +90,7 @@
         <div class="mt-2">
 
             <label for="">Select Template</label>
-            <select id="expenseTemplate" class="form-control" formControlName="advanceTemplate" name="expense"
+            <select id="expenseTemplate" class="form-control" formControlName="advanceTemplate" name="expense" [attr.disabled]="changeMode === 'Update'"
                 class="form-select form-select-sm" aria-label=".form-select-sm example">
                 <option *ngFor="let template of advanceTemplates" [value]="template?._id">
                     {{template?.policyLabel}}
