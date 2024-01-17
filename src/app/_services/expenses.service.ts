@@ -24,7 +24,6 @@ export class ExpensesService {
   selectedTemplate: any = new BehaviorSubject('');
   allExpenseCategories: any = new BehaviorSubject('');
   categories: any = new BehaviorSubject('');
-  
   constructor(private http: HttpClient) { }
 
   public getToken() {
@@ -136,15 +135,15 @@ export class ExpensesService {
   }
 
   //  expnse template assignment
-  addTemplateAssignment(templateAssignment: TemplateAssignment): Observable<response<any>> {
+  addTemplateAssignment(templateAssignment: any): Observable<response<any>> {
     var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/employee-expense-assignments`, templateAssignment, this.httpOptions);
     return response;
   }
 
-  updateTemplateAssignment(id: string, templateAssignment: TemplateAssignment): Observable<response<any>> {
-    var response = this.http.put<response<any>>(`${environment.apiUrlDotNet}/expense/employee-expense-assignments/${id}`, templateAssignment, this.httpOptions);
-    return response;
-  }
+  // updateTemplateAssignment(id: string, templateAssignment: TemplateAssignment): Observable<response<any>> {
+  //   var response = this.http.put<response<any>>(`${environment.apiUrlDotNet}/expense/employee-expense-assignments/${id}`, templateAssignment, this.httpOptions);
+  //   return response;
+  // }
 
   deleteTemplateAssignment(id: string): Observable<response<any>> {
     var response = this.http.delete<response<any>>(`${environment.apiUrlDotNet}/expense/employee-expense-assignments/${id}`, this.httpOptions);
@@ -152,7 +151,7 @@ export class ExpensesService {
   }
 
   getTemplateAssignmentById(id: string): Observable<response<any>> {
-    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/employee-expense-assignments/${id}`, this.httpOptions);
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/employee-expense-assignments-by-user/${id}`, this.httpOptions);
     return response;
   }
 
@@ -191,12 +190,17 @@ export class ExpensesService {
     return response;
   }
 
-  addAdvanceTemplates(advanceTemplate: AdvanceTemplate): Observable<response<any>> {
+  getAdvanceTemplateById(id: string): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/advance-templates/${id}`, this.httpOptions);
+    return response;
+  }
+
+  addAdvanceTemplates(advanceTemplate: any): Observable<response<any>> {
     var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/advance-templates`, advanceTemplate, this.httpOptions);
     return response;
   }
 
-  updateAdvanceTemplates(id: string, advanceTemplate: AdvanceTemplate): Observable<response<any>> {
+  updateAdvanceTemplates(id: string, advanceTemplate: any): Observable<response<any>> {
     var response = this.http.put<response<any>>(`${environment.apiUrlDotNet}/expense/advance-templates/${id}`, advanceTemplate, this.httpOptions);
     return response;
   }
@@ -210,4 +214,23 @@ export class ExpensesService {
     return response;
   }
 
+  addAdvanceTemplateAssignment(templateAssignment: any): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/employee-advance-assignments`, templateAssignment, this.httpOptions);
+    return response;
+  }
+
+  getAdvanceTemplateAssignment(): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/employee-advance-assignments`, this.httpOptions);
+    return response;
+  }
+
+  getAdvanceTemplateAssignmentByUser(userId: string): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/employee-advance-assignments-by-user/${userId}`, this.httpOptions);
+    return response;
+  }
+
+  deleteAdvanceTemplateAssignment(id: string): Observable<response<any>> {
+    var response = this.http.delete<response<any>>(`${environment.apiUrlDotNet}/expense/employee-advance-assignments/${id}`, this.httpOptions);
+    return response;
+  }
 }

@@ -8,25 +8,59 @@
 
                     <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
                         name="searchText" aria-label="default input example">
-                    <button mat-raised-button class="addBtn rounded-pill ms-3" (click)="open(addModal); clearselectedRequest()">Add New</button>
+                    <button mat-raised-button class="addBtn rounded-pill ms-3"
+                        (click)="open(addModal); clearselectedRequest()">Add New</button>
                 </div>
             </div>
             <table class="px-4">
                 <thead>
                     <tr>
-                        <th class="ps-2">User</th>
-                        <th>Location</th>
-                        <th>Band</th>
-                        <th>Department</th>
-                        <th>Designation</th>
-                        <th>Current Advance Template</th>
-                        <th>Primary Supervisors</th>
-                        <th>Secondary Supervisors</th>
+                        <th class="ps-2" [appSort]="templateAssignments" [attr.data-order]="sortOrder" data-name="user"
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">User
+                            <i
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                        </th>
+                        <th [appSort]="templateAssignments" [attr.data-order]="sortOrder" data-name=""
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Location
+                            <i
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                        </th>
+                        <th [appSort]="templateAssignments" [attr.data-order]="sortOrder" data-name=""
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Band
+                            <i
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                        </th>
+                        <th [appSort]="templateAssignments" [attr.data-order]="sortOrder" data-name=""
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Department
+                            <i
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                        </th>
+                        <th [appSort]="templateAssignments" [attr.data-order]="sortOrder" data-name=""
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Designation
+                            <i
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                        </th>
+                        <th [appSort]="templateAssignments" [attr.data-order]="sortOrder" data-name="advanceTemplate"
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Current Advance Template
+                            <i
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                        </th>
+                        <th [appSort]="templateAssignments" [attr.data-order]="sortOrder" data-name="primaryApprover"
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Primary Supervisors
+                            <i
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                        </th>
+                        <th [appSort]="templateAssignments" [attr.data-order]="sortOrder" data-name="secondaryApprover"
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Secondary Supervisors
+                            <i
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                        </th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let templateAssignment of templateAssignments | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }; let i = index">
+                    <tr
+                        *ngFor="let templateAssignment of templateAssignments | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }; let i = index">
                         <td class="ps-2">{{templateAssignments[i]?.user?.firstName |
                             titlecase}}&nbsp;{{templateAssignments[i]?.user?.lastName | titlecase}}</td>
                         <td> -- </td>
@@ -43,21 +77,21 @@
                             <button class="actions" mat-mini-fab title="Add"
                                 aria-label="Example icon button with a menu icon" (click)="open(addModal);
                                  edit(templateAssignment, i);
-                                 selectedTemplateAssignment = templateAssignment"
-                                 >
+                                 selectedTemplateAssignment = templateAssignment">
                                 <i class="bi bi-pencil-fill"></i>
                             </button>
                             <button class="actions ms-2" title="Delete" mat-mini-fab
-                            aria-label="Example icon button with a menu icon"
-                            (click)="deleteDialog(templateAssignment)">
-                            <i class="bi bi-trash"></i>
+                                aria-label="Example icon button with a menu icon"
+                                (click)="deleteDialog(templateAssignment)">
+                                <i class="bi bi-trash"></i>
                             </button>
 
                         </td>
                     </tr>
                 </tbody>
             </table>
-            <pagination-controls (pageChange)="p = $event" class="pagination d-flex justify-content-end"></pagination-controls>
+            <pagination-controls (pageChange)="p = $event"
+                class="pagination d-flex justify-content-end"></pagination-controls>
         </div>
 
     </div>
@@ -77,8 +111,9 @@
     <form action="" [formGroup]="addTemplateAssignmentForm" (ngSubmit)="onSubmit()">
 
         <div><label for="member"> Select User for Expense Template</label>
-            <select id="member" name="member" class="form-control" formControlName="user" [attr.disabled]="changeMode === 'Update'"
-                class="form-select form-select-sm" aria-label=".form-select-sm example">
+            <select id="member" name="member" class="form-control" formControlName="user"
+                [attr.disabled]="changeMode === 'Update'" class="form-select form-select-sm"
+                aria-label=".form-select-sm example">
                 <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
                     {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
                 </option>
@@ -90,8 +125,9 @@
         <div class="mt-2">
 
             <label for="">Select Template</label>
-            <select id="expenseTemplate" class="form-control" formControlName="advanceTemplate" name="expense" [attr.disabled]="changeMode === 'Update'"
-                class="form-select form-select-sm" aria-label=".form-select-sm example">
+            <select id="expenseTemplate" class="form-control" formControlName="advanceTemplate" name="expense"
+                [attr.disabled]="changeMode === 'Update'" class="form-select form-select-sm"
+                aria-label=".form-select-sm example">
                 <option *ngFor="let template of advanceTemplates" [value]="template?._id">
                     {{template?.policyLabel}}
                 </option>
@@ -126,10 +162,8 @@
         </div>
         <div class="row">
             <div class="col-12 form-group mb-3">
-                <input placeholder="YYYY-MM-DD" 
-                formControlName="effectiveDate"
-                class="form-control" #datepickerYMD="bsDatepicker" bsDatepicker
-                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" required>
+                <input placeholder="YYYY-MM-DD" formControlName="effectiveDate" class="form-control"
+                    #datepickerYMD="bsDatepicker" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" required>
             </div>
         </div>
 

@@ -25,14 +25,19 @@ export class AdvanceCategoriesComponent implements OnInit{
   advanceCategories: any;
   changesMade: boolean =false;
   initialLabelValue:string;
+  public sortOrder: string = '';
 
-  constructor(private fb: FormBuilder,private dialog: MatDialog, private modalService: NgbModal, private expenseService: ExpensesService , private toast: ToastrService) {    
+  constructor(private fb: FormBuilder,
+    private dialog: MatDialog,
+    private modalService: NgbModal,
+    private expenseService: ExpensesService ,
+    private toast: ToastrService) {    
   
         this.addCategory = this.fb.group({
           label: ['', Validators.required]
        
         }) 
-        this.initialLabelValue = this.addCategory.get('label').value;
+        // this.initialLabelValue = this.addCategory.get('label').value;
   
   }
   ngOnInit(){
@@ -63,18 +68,6 @@ export class AdvanceCategoriesComponent implements OnInit{
     this.isEdit = false;
     this.addCategory.reset();
   }
-// for update button disable validation
-   onInput() {
-     // This method is called whenever there is an input change in the text field
-    const currentLabelValue = this.addCategory.get('label').value;
-    this.changesMade = currentLabelValue !== this.initialLabelValue;
-  }
-
-   isAddButtonDisabled(): boolean {
-    return   !this.changesMade || !this.addCategory.valid ;
-   }
-
- 
   
   getAllAdvanceCategories() {
     this.expenseService.getAdvanceCatgories().subscribe((res: any) => {
@@ -84,24 +77,21 @@ export class AdvanceCategoriesComponent implements OnInit{
 
   addAdvanceCategories() {
     if (this.changeMode === 'Add') {
-      let categoryPayl = {     
+      let payload = {     
         label: this.addCategory.value['label'],  
       };
 
-      this.expenseService.addAdvanceCategory(categoryPayl).subscribe((res: any) => {
+      this.expenseService.addAdvanceCategory(payload).subscribe((res: any) => {
         const newCategory = res.data;
+        this.toast.success('Advance Category Created!', 'Successfully');
         this.advanceCategories.push(newCategory)
         if (this.addCategory.value['label'].length > 0) {
           let fieldsPayload = {
             fields: this.addCategory.value['label'],
             expenseCategory: newCategory._id
           };
-          console.log(fieldsPayload)
-         
-        
         }
         this.clearselectedRequest();
-        this.toast.success('New Advance Category Added', 'Successfully!!!')
       },
         err => {
           this.toast.error('This category is already exist', 'Error!!!')
@@ -112,16 +102,20 @@ export class AdvanceCategoriesComponent implements OnInit{
 
   updateAdvanceCategory() {
     let categoryPayload = {
-      label: this.addCategory.value['label'], // Use value directly without ['label']
+      label: this.addCategory.value['label']
     };
   
     if (this.addCategory.get('label').dirty) {
       this.expenseService.updateAdvanceCategory(this.selectedCategory?._id, categoryPayload).subscribe((res: any) => {
         this.updatedCategory = res.data._id;
+        this.toast.success('Advance Category Updated!', 'Successfully');
         this.getAllAdvanceCategories();
+      },
+      (err)=>{
+        this.toast.error('Advance Category can not be Updated!', 'Error');
       });
     }
-    this.toast.success('Advance Category Update', 'Successfully!!!')
+    
   }  
 
 

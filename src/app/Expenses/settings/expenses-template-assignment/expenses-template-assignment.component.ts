@@ -31,6 +31,7 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
   bsValue = new Date();
   bsRangeValue: Date[];
   maxDate = new Date();
+  public sortOrder: string = '';
 
   constructor(private modalService: NgbModal,
     private dialog: MatDialog,

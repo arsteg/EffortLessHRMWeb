@@ -15,8 +15,16 @@
             <table class="px-4">
                 <thead>
                     <tr>
-                        <th class="ps-2">Expense&nbsp;Name</th>
-                        <th>Type</th>
+                        <th class="ps-2"  [appSort]="expenseCategories" [attr.data-order]="sortOrder"
+                        data-name="label" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Expense&nbsp;Name
+                            <i
+                            [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                 
+                        </th>
+                        <th [appSort]="expenseCategories" [attr.data-order]="sortOrder"
+                        data-name="type" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Type <i
+                            [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                 </th>
                         <th>Actions</th>
                     </tr>
                 </thead>

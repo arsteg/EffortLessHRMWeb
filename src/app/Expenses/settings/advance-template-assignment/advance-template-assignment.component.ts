@@ -27,6 +27,8 @@ export class AdvanceTemplateAssignmentComponent {
   allAssignee: any[];
   selectedTemplateAssignment: any;
   p: number = 1;
+  public sortOrder: string = '';
+
 
   constructor(private fb: FormBuilder,
     private modalService: NgbModal,

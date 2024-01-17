@@ -32,7 +32,7 @@ export class ExpensesCategoriesComponent implements OnInit {
   newOption: string = '';
   isEdit = false;
   removedFieldId: string = '';
-
+  public sortOrder: string = '';
   selectedField: any;
   selectedCategory: any;
   field: any = []

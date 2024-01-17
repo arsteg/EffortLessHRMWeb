@@ -14,7 +14,11 @@
             <table class="px-4">
                 <thead>
                     <tr>
-                        <th class="ps-2">Advance&nbsp;Template&nbsp;Name</th>                     
+                        <th class="ps-2" [appSort]="list" [attr.data-order]="sortOrder" data-name="policyLabel"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Advance&nbsp;Template&nbsp;Name
+                        <i
+                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+              </th>                     
                         <th>Number of Advance Categories</th>
                         <th>Actions</th>
                     </tr>
@@ -23,11 +27,11 @@
                     <tr *ngFor="let advance of list |  search: searchText ; let index = index">
                         <td class="ps-2">{{advance?.policyLabel}}</td>
                         
-                        <td>{{advance?.advanceCategories?.length}}</td>
+                        <td>{{advance?.expenseCategories?.length}}</td>
                         <td class="">
                             <button class="actions" mat-mini-fab title="Update"
                                 aria-label="Example icon button with a menu icon"
-                                (click)="open(addModal);editAdvanceCategory(advance, index)">
+                                (click)="open(addModal);editexpenseCategory(advance, index)">
                                 <i class="bi bi-pencil-fill"></i>
                             </button>
                             <button class="actions ms-2" title="Delete" mat-mini-fab
@@ -72,8 +76,8 @@
             <mat-form-field appearance="outline" class="w-100">
                 <mat-label>What expense categories are applicable in this expense template?</mat-label>
                 <mat-select multiple formControlName="expenseCategories">
-                    <mat-option [value]="advanceCategory?._id"  *ngFor="let advanceCategory of advanceCategoriesall; let i = index">
-                        {{advanceCategory.label}}
+                    <mat-option [value]="expenseCategory?._id"  *ngFor="let expenseCategory of expenseCategoriesall; let i = index">
+                        {{expenseCategory.label}}
                     </mat-option>
                 </mat-select>
             </mat-form-field>

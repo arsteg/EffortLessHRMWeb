@@ -23,14 +23,15 @@ export class AdvanceTemplatesComponent implements OnInit {
   selectedTemplate: any;
   updatedCategory: any;
   list: any;
-  advanceCategories: any = [];
+  expenseCategories: any = [];
   selectedTemplateId: any;
-  advanceCategoriesall: any;
+  expenseCategoriesall: any;
   templates: any[] = [];
   categoryList: any;
   matchingCategories: any;
   noofadvancecat: any;
   users: any;
+  public sortOrder: string = '';
 
   constructor(private fb: FormBuilder,
     private modalService: NgbModal,
@@ -64,7 +65,7 @@ export class AdvanceTemplatesComponent implements OnInit {
       this.users = res.data.data;
     })
     this.getAllTemplates();
-    this.getAllAdvanceCategories();
+    this.getAllexpenseCategories();
     this.addAdvanceTempForm.get('approvalLevel').valueChanges.subscribe((value: any) => {
       this.validateApprovers(this.addAdvanceTempForm.get('approvalType').value, value)
     });
@@ -115,9 +116,9 @@ export class AdvanceTemplatesComponent implements OnInit {
   }
 
 
-  getAllAdvanceCategories() {
+  getAllexpenseCategories() {
     this.expenseService.getAdvanceCatgories().subscribe((res: any) => {
-      this.advanceCategoriesall = res.data;
+      this.expenseCategoriesall = res.data;
     })
   }
 
@@ -139,7 +140,7 @@ export class AdvanceTemplatesComponent implements OnInit {
 
   addAdvanceTemolate() {
     if (this.changeMode === 'Add') {
-      // Use Set to handle unique values in advanceCategories
+      // Use Set to handle unique values in expenseCategories
       let uniqueCategoriesSet = new Set(this.addAdvanceTempForm.value.expenseCategories);
 
       let categoryPayload = {
@@ -148,19 +149,19 @@ export class AdvanceTemplatesComponent implements OnInit {
         approvalLevel: this.addAdvanceTempForm.value['approvalLevel'],
         firstApprovalEmployee: this.addAdvanceTempForm.value['firstApprovalEmployee'],
         secondApprovalEmployee: this.addAdvanceTempForm.value['secondApprovalEmployee'],
-        advanceCategories: this.addAdvanceTempForm.value.expenseCategories.map(category => ({ expenseCategory: category })),
+        expenseCategories: this.addAdvanceTempForm.value.expenseCategories.map(category => ({ expenseCategory: category })),
       };
 
       this.expenseService.addAdvanceTemplates(categoryPayload).subscribe(
         (res: any) => {
           const newCategory = res.data;
-          this.advanceCategories.push(newCategory);
+          this.expenseCategories.push(newCategory);
 
-          if (this.advanceCategories.length > 0) {
-            let advanceCategories = {
+          if (this.expenseCategories.length > 0) {
+            let expenseCategories = {
               expenseCategory: newCategory._id
             };
-            console.log(advanceCategories);
+            console.log(expenseCategories);
           }
           this.toast.success('New Advance Template Added', 'Successfully!!!');
         },
@@ -210,7 +211,7 @@ export class AdvanceTemplatesComponent implements OnInit {
   }
 
 
-  editAdvanceCategory(category, index) {
+  editexpenseCategory(category, index) {
     this.isEdit = true;
     this.selectedTemplate = category;
     console.log(this.selectedTemplate);

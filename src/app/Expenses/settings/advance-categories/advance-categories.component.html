@@ -8,19 +8,23 @@
 
                     <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
                         name="searchText" aria-label="default input example">
-                    <button mat-raised-button class="addBtn rounded-pill ms-3"(click)="clearselectedRequest(); open(addModal)">Add New</button>
+                    <button mat-raised-button class="addBtn rounded-pill ms-3"
+                        (click)="clearselectedRequest(); open(addModal)">Add New</button>
                 </div>
             </div>
             <table class="px-4">
                 <thead>
                     <tr>
-                        <th class="ps-2">Category&nbsp;Name</th>
-
+                        <th class="ps-2" [appSort]="advanceCategories" [attr.data-order]="sortOrder" data-name="label"
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Category&nbsp;Name
+                            <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                        </th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let categories of advanceCategories |  search: searchText ; let index = index">
+                    <tr
+                        *ngFor="let categories of advanceCategories |  search: searchText  |  paginate: { itemsPerPage: 5, currentPage: p }; let index = index">
                         <td class="ps-2">{{categories?.label}}</td>
                         <td class="">
                             <button class="actions" mat-mini-fab title="Update"
@@ -37,7 +41,8 @@
                     </tr>
                 </tbody>
             </table>
-            <pagination-controls class="pagination d-flex justify-content-end"></pagination-controls>
+            <pagination-controls (pageChange)="p = $event"
+                class="pagination d-flex justify-content-end"></pagination-controls>
         </div>
 
     </div>
@@ -57,26 +62,27 @@
 
     <form action="" [formGroup]="addCategory" (ngSubmit)="isEdit ? updateAdvanceCategory() :addAdvanceCategories()">
         <div class="form-group">
-            <label for="">Please provide a label for this category <span class="text-danger">*</span></label><!--(click)="onValueChanged()"-->
-            <input type="text"  class="form-control w-100" placeholder="Add Custom Label" formControlName="label" (input)="onInput()" >
-       
-       <div *ngIf="addCategory.get('label').invalid && addCategory.get('label').touched"
-                class="text-danger error">
-                Please Add Advance Category!    
-        </div>
+            <label for="">Please provide a label for this category <span
+                    class="text-danger">*</span></label>
+            <input type="text" class="form-control w-100" placeholder="Add Custom Label" formControlName="label"
+               required >
+
+            <div *ngIf="addCategory.get('label').invalid && addCategory.get('label').touched" class="text-danger error">
+                Please Add Advance Category!
+            </div>
 
 
-       <div class="mt-2">
-            <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
-                <button mat-raised-button type="button" (click)="onCancel()">Cancel</button>
-                <button mat-raised-button class="addBtn" type="submit" [disabled]="isAddButtonDisabled()" >{{isEdit?
-                    'Update': 'Add'}} </button>
-                   
+            <div class="mt-2">
+                <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
+                    <button mat-raised-button type="button" (click)="onCancel()">Cancel</button>
+                    <button mat-raised-button class="addBtn" type="submit" [disabled]="!addCategory.valid">{{isEdit?
+                        'Update': 'Add'}} </button>
+
                 </div>
-        </div>
-    
+            </div>
 
-    </div>
+
+        </div>
 
     </form>
 
