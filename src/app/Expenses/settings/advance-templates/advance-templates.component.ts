@@ -23,15 +23,16 @@ export class AdvanceTemplatesComponent implements OnInit {
   selectedTemplate: any;
   updatedCategory: any;
   list: any;
-  expenseCategories: any = [];
+  advanceCategories: any = [];
   selectedTemplateId: any;
-  expenseCategoriesall: any;
+  advanceCategoriesall: any;
   templates: any[] = [];
   categoryList: any;
   matchingCategories: any;
   noofadvancecat: any;
   users: any;
   public sortOrder: string = '';
+  p: number = 1;
 
   constructor(private fb: FormBuilder,
     private modalService: NgbModal,
@@ -43,7 +44,7 @@ export class AdvanceTemplatesComponent implements OnInit {
       policyLabel: ['', Validators.required],
       approvalType: ['', Validators.required],
       approvalLevel: ['', Validators.required],
-      expenseCategories: [[], Validators.required],
+      advanceCategories: [[], Validators.required],
       firstApprovalEmployee: ['', Validators.required],
       secondApprovalEmployee: ['', Validators.required]
     });
@@ -65,7 +66,7 @@ export class AdvanceTemplatesComponent implements OnInit {
       this.users = res.data.data;
     })
     this.getAllTemplates();
-    this.getAllexpenseCategories();
+    this.getAlladvanceCategories();
     this.addAdvanceTempForm.get('approvalLevel').valueChanges.subscribe((value: any) => {
       this.validateApprovers(this.addAdvanceTempForm.get('approvalType').value, value)
     });
@@ -111,14 +112,18 @@ export class AdvanceTemplatesComponent implements OnInit {
   getAllTemplates() {
     this.expenseService.getAdvanceTemplates().subscribe((res: any) => {
       this.list = res.data;
-      console.log(this.list)
+      // this.list.forEach(template => {
+      //   this.matchingCategories = this.list.filter(category => category.advanceTemplate === template._id);
+      //   template.matchingCategories = this.matchingCategories;
+      //   console.log(this.list, this.matchingCategories,  template.matchingCategories)
+      // });
     })
   }
 
 
-  getAllexpenseCategories() {
+  getAlladvanceCategories() {
     this.expenseService.getAdvanceCatgories().subscribe((res: any) => {
-      this.expenseCategoriesall = res.data;
+      this.advanceCategoriesall = res.data;
     })
   }
 
@@ -131,37 +136,33 @@ export class AdvanceTemplatesComponent implements OnInit {
     })
   }
   isSelected(categoryId: string): boolean {
-    const selectedCategories = this.addAdvanceTempForm.get('expenseCategories').value;
+    const selectedCategories = this.addAdvanceTempForm.get('advanceCategories').value;
     console.log(selectedCategories.includes(categoryId))
     return selectedCategories.includes(categoryId);
   }
 
 
 
-  addAdvanceTemolate() {
+  addAdvanceTemplate() {
+    let payload = {
+      policyLabel: this.addAdvanceTempForm.value['policyLabel'],
+      approvalType: this.addAdvanceTempForm.value['approvalType'],
+      approvalLevel: this.addAdvanceTempForm.value['approvalLevel'],
+      firstApprovalEmployee: this.addAdvanceTempForm.value['firstApprovalEmployee'],
+      secondApprovalEmployee: this.addAdvanceTempForm.value['secondApprovalEmployee'],
+      advanceCategories: this.addAdvanceTempForm.value.advanceCategories.map(category => ({ advanceCategory: category })),
+    };
     if (this.changeMode === 'Add') {
-      // Use Set to handle unique values in expenseCategories
-      let uniqueCategoriesSet = new Set(this.addAdvanceTempForm.value.expenseCategories);
 
-      let categoryPayload = {
-        policyLabel: this.addAdvanceTempForm.value['policyLabel'],
-        approvalType: this.addAdvanceTempForm.value['approvalType'],
-        approvalLevel: this.addAdvanceTempForm.value['approvalLevel'],
-        firstApprovalEmployee: this.addAdvanceTempForm.value['firstApprovalEmployee'],
-        secondApprovalEmployee: this.addAdvanceTempForm.value['secondApprovalEmployee'],
-        expenseCategories: this.addAdvanceTempForm.value.expenseCategories.map(category => ({ expenseCategory: category })),
-      };
-
-      this.expenseService.addAdvanceTemplates(categoryPayload).subscribe(
+      this.expenseService.addAdvanceTemplates(payload).subscribe(
         (res: any) => {
           const newCategory = res.data;
-          this.expenseCategories.push(newCategory);
+          this.list.push(newCategory);
 
-          if (this.expenseCategories.length > 0) {
-            let expenseCategories = {
-              expenseCategory: newCategory._id
+          if (this.advanceCategories.length > 0) {
+            let advanceCategories = {
+              advanceCategory: newCategory._id
             };
-            console.log(expenseCategories);
           }
           this.toast.success('New Advance Template Added', 'Successfully!!!');
         },
@@ -169,60 +170,47 @@ export class AdvanceTemplatesComponent implements OnInit {
           this.toast.error('Failed to save the category. Please try again.', 'Error!!!');
         }
       );
+      this.addAdvanceTempForm.reset();
     }
   }
 
-
   updateAdvanceTemplate() {
-    let selectedCategories = this.addAdvanceTempForm.value.expenseCategories.map(expenseCategory => ({ expenseCategory: expenseCategory }));
-
-    // Create an array to hold the observables for each update request
-    let updateRequests: Observable<any>[] = [];
-
-    // Iterate over each selected category and create an update request
-    selectedCategories.forEach((selectedCategory: any) => {
-      let categoryPayload = {
-        policyLabel: this.addAdvanceTempForm.value['policyLabel'],
-        approvalType: this.addAdvanceTempForm.value['approvalType'],
-        approvalLevel: this.addAdvanceTempForm.value['approvalLevel'],
-        expenseCategories: [selectedCategory],
-      };
-
-      // Add the update request to the array
-      updateRequests.push(this.expenseService.updateAdvanceTemplates(this.selectedTemplate?._id, categoryPayload));
+    let payload = {
+      policyLabel: this.addAdvanceTempForm.value['policyLabel'],
+      approvalType: this.addAdvanceTempForm.value['approvalType'],
+      approvalLevel: this.addAdvanceTempForm.value['approvalLevel'],
+      firstApprovalEmployee: this.addAdvanceTempForm.value['firstApprovalEmployee'],
+      secondApprovalEmployee: this.addAdvanceTempForm.value['secondApprovalEmployee'],
+      advanceCategories: this.addAdvanceTempForm.value.advanceCategories.map(category => ({ advanceCategory: category })),
+    };
+    let id = this.selectedTemplate._id;
+    this.expenseService.updateAdvanceTemplates(id, payload).subscribe((res: any) => {
+      this.getAllTemplates();
+      this.toast.success(' Advance Template Updated', 'Successfully!!!');
+      this.addAdvanceTempForm.reset();
+      this.isEdit = false;
+      this.changeMode == 'Add';
+    },
+    (err)=>{
+      this.toast.error('Advance template can not be updated', 'Error')
     });
-    // Use forkJoin to wait for all update requests to complete
-    forkJoin(updateRequests).subscribe(
-      (responses: any[]) => {
-        // Handle the responses as needed for each category update
-        responses.forEach((res: any) => {
-          console.log(`Category updated: ${res.data._id}`);
-        });
-        this.getAllTemplates();
-        this.toast.success('Advance Template Update', 'Successfully!!!');
-      },
 
-      (error) => {
-        // Execute this.getAllTemplates() after all updates are completed
-        this.getAllTemplates();
-        this.toast.success('Advance Template Update', 'Successfully!!!');
-      }
-    );
   }
 
-
-  editexpenseCategory(category, index) {
+  editadvanceCategory(category, index) {
     this.isEdit = true;
     this.selectedTemplate = category;
-    console.log(this.selectedTemplate);
+    let advanceCategories = category.advanceCategories;
+    let advanceCategoryValues = advanceCategories.map(category => category.advanceCategory);
     this.addAdvanceTempForm.patchValue({
       policyLabel: category.policyLabel,
+      firstApprovalEmployee: category.firstApprovalEmployee,
+      secondApprovalEmployee: category.secondApprovalEmployee,
       approvalType: category.approvalType,
       approvalLevel: category.approvalLevel,
-      expenseCategories: [category.selectedTemplate]
+      advanceCategories: advanceCategoryValues
     });
     console.log(this.addAdvanceTempForm.value)
-    // this.changesMade=false;
   }
 
   deleteAdvancecate(id: string): void {

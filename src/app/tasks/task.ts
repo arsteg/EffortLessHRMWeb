@@ -85,7 +85,7 @@ export interface attachments {
   attachmentType: string;
   attachmentSize: number;
   attachmentName: string;
-  extension: string;
+  extention: string;
   file: string
 }
 

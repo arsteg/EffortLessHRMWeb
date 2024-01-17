@@ -126,13 +126,13 @@ export class TaskCommentListComponent implements OnInit {
             const fileSize = file.size; // size of the file in bytes
             const fileType = file.type; // type of the file (e.g. image/png)
             const fileNameParts = file.name.split('.');
-            const extension = fileNameParts[fileNameParts.length - 1];
+            const extention = fileNameParts[fileNameParts.length - 1];
 
             attachments.push({
               attachmentName: file.name,
               attachmentType: fileType,
               attachmentSize: fileSize,
-              extension: extension,
+              extention: extention,
               file: base64String
             });
 

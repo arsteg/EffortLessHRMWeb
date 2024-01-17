@@ -15,7 +15,7 @@ import { GetTaskService } from '../_services/get-task.service';
 import * as moment from 'moment';
 import { Observable, switchMap } from 'rxjs';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import {MatSnackBar} from '@angular/material/snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Location } from '@angular/common';
 
 @Component({
@@ -110,7 +110,7 @@ export class TasksComponent implements OnInit {
     private auth: AuthenticationService,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
-    private location : Location
+    private location: Location
   ) {
     this.addForm = this.fb.group({
       taskName: [''],
@@ -165,14 +165,14 @@ export class TasksComponent implements OnInit {
     }
 
     this.getCurrentUser().subscribe(() => {
-    
-        
-        this.getprojects();
-        this.populateUsers();
-     
-        this.userId = this.storedFilters.userId;
-        this.projectId = this.storedFilters.projectId;
-        if (this.storedFilters) {
+
+
+      this.getprojects();
+      this.populateUsers();
+
+      this.userId = this.storedFilters.userId;
+      this.projectId = this.storedFilters.projectId;
+      if (this.storedFilters) {
         if (this.storedFilters.userId) {
           this.getTaskByIds();
         }
@@ -181,7 +181,7 @@ export class TasksComponent implements OnInit {
           this.getTasksByProject();
         }
         if (this.storedFilters.projectId && this.storedFilters.userId) {
-          console.log(this.storedFilters.projectId , this.storedFilters.userId)
+          console.log(this.storedFilters.projectId, this.storedFilters.userId)
           this.authService.getUserTaskListByProject(this.userId, this.projectId, this.skip, this.next).subscribe(
             (response: any) => {
               this.totalRecords = response;
@@ -190,7 +190,7 @@ export class TasksComponent implements OnInit {
             });
 
         }
-        else{
+        else {
           this.getTasks();
         }
       }
@@ -425,7 +425,7 @@ export class TasksComponent implements OnInit {
       this.usersByProject = this.usersByProject.filter(user => user !== null);
     });
   }
-  
+
   onSubmit() {
     const newTask: Task = {
       _id: '',
@@ -456,13 +456,13 @@ export class TasksComponent implements OnInit {
           const fileSize = file.size;
           const fileType = file.type;
           const fileNameParts = file.name.split('.');
-          const extension = fileNameParts[fileNameParts.length - 1];
+          const extention = fileNameParts[fileNameParts.length - 1];
 
           attachments.push({
             attachmentName: file.name,
             attachmentType: fileType,
             attachmentSize: fileSize,
-            extension: extension,
+            extention: extention,
             file: base64String
           });
 
@@ -475,17 +475,19 @@ export class TasksComponent implements OnInit {
                 this.task = response;
                 const newTask = this.task.data;
                 this.tasks.push(newTask);
+                newTask.taskAttachments = [];
                 if (this.userId && this.projectId) {
                   this.getTasksByProject()
                 }
                 else {
-      console.log('4')
-      this.getTaskByIds();
+                  this.getTaskByIds();
                 }
                 this.addForm.reset({
                   startDate: moment().format('YYYY-MM-DD'),
-                  endDate: moment().format('YYYY-MM-DD')
+                  endDate: moment().format('YYYY-MM-DD'),
+                  taskAttachments: []
                 });
+                this.selectedFiles = [];
                 this.toast.success('New Task Successfully Created!', `Task Number: ${newTask.newTask.taskNumber}`);
               },
               (err) => {
@@ -507,19 +509,21 @@ export class TasksComponent implements OnInit {
           }
           else if
             (!this.userId && !this.projectId) {
-              console.log('all task 3')
+            console.log('all task 3')
 
             this.listAllTasks();
           }
           else {
-      console.log('3')
+            console.log('3')
 
             this.getTaskByIds();
           }
           this.addForm.reset({
             startDate: moment().format('YYYY-MM-DD'),
-            endDate: moment().format('YYYY-MM-DD')
+            endDate: moment().format('YYYY-MM-DD'),
+            taskAttachments: []
           });
+          this.selectedFiles = [];
           this.toast.success('New Task Successfully Created!', `Task Number: ${newTask.newTask.taskNumber}`);
         },
         (err) => {
@@ -630,7 +634,7 @@ export class TasksComponent implements OnInit {
         this.getTasksbyTeam();
       }
       else if (this.view === 'admin' || this.role?.toLowerCase() === 'admin') {
-      console.log('all task 4')
+        console.log('all task 4')
 
         this.listAllTasks();
       }
@@ -863,7 +867,7 @@ export class TasksComponent implements OnInit {
   onLoad(event: Event): void {
     const hostname = window.location.hostname;
     const port = window.location.port;
-    
+
     if (hostname === 'localhost') {
       this.domain = `${hostname}:${port}`;
       // console.log(this.domain)
@@ -871,29 +875,29 @@ export class TasksComponent implements OnInit {
       this.domain = hostname;
       console.log(this.domain)
     }
-  
+
   }
-  
+
   copyTask(task) {
-    const taskID = task.id; 
+    const taskID = task.id;
     const p_Id = task.parentTask;
     const tempInput = document.createElement('input');
-   
-     if(p_Id && taskID){
+
+    if (p_Id && taskID) {
       tempInput.value = `http://${this.domain}/#/SubTask/${task.taskNumber}?taskId=${taskID}`;
       document.body.appendChild(tempInput);
       tempInput.select();
       document.execCommand('copy');
       document.body.removeChild(tempInput);
     }
-    if(taskID && !p_Id){
+    if (taskID && !p_Id) {
       tempInput.value = `http://${this.domain}/#/edit-task/${task.taskNumber}?taskId=${taskID}`;
       document.body.appendChild(tempInput);
       tempInput.select();
       document.execCommand('copy');
       document.body.removeChild(tempInput);
       console.log(tempInput.value)
-      }
+    }
     this.snackBar.open('Task is copied to clipboard', 'Dismiss', { duration: 4000 });
   }
 
