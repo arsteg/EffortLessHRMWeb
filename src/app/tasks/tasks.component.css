@@ -134,3 +134,6 @@
   overflow-y: scroll;
   height: 50vh;
 }
+.mdc-button .mdc-button__label{
+  display: flex !important;
+}

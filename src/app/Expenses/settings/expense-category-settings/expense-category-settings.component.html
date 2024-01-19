@@ -48,7 +48,7 @@
           <input formControlName="maximumExpensesCanApply" class="form-control w-50">
         </div>
         <div class="">
-          <button mat-button matStepperNext>Next</button>
+          <button mat-button matStepperNext class="addBtn">Next</button>
         </div>
       </form>
     </mat-step>
@@ -60,7 +60,7 @@
     <div>
       <button mat-button matStepperPrevious>Back</button>
       <button mat-button (click)="stepper.reset()">Reset</button>
-      <button mat-button (click)="onSubmit()" color="primary">Submit</button>
+      <button mat-button (click)="onSubmit()" class="addBtn">Submit</button>
     </div>
   </mat-step>
 </mat-stepper>
