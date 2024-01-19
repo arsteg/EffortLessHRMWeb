@@ -9,19 +9,28 @@
                     <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
                         (input)="filteredTemplate()" name="searchText" aria-label="default input example">
                     <button mat-raised-button class="addBtn rounded-pill ms-3"
-                        (click)="changeMode='Add'; open(addModal)">Add New</button>
+                        (click)="changeMode='Add'; open(addModal);">Add New</button>
                 </div>
             </div>
             <table class="px-4">
                 <thead>
                     <tr>
-                        <th class="ps-2">Expense&nbsp;Template&nbsp;Name</th>
-                        <th>Number of Expense Categories</th>
+                        <th class="ps-2" [appSort]="templates" [attr.data-order]="sortOrder"
+                            data-name="policyLabel" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                            Expense&nbsp;Template&nbsp;Name
+                            <i
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                        </th>
+                        <th [appSort]="templates" [attr.data-order]="sortOrder" data-name="matchingCategories"
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Number of Expense Categories <i
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                        </th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let temp of filteredTemplates; let template of templates; let i = index">
+                    <tr
+                        *ngFor="let temp of filteredTemplates; let template of templates | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }; let i = index">
                         <td class="ps-2">{{template?.policyLabel}}</td>
                         <td>{{template?.matchingCategories?.length}}</td>
                         <td class="">
@@ -39,14 +48,17 @@
                     </tr>
                 </tbody>
             </table>
-            <pagination-controls class="pagination d-flex justify-content-end"></pagination-controls>
+            <pagination-controls (pageChange)="p = $event"
+                class="pagination d-flex justify-content-end"></pagination-controls>
         </div>
 
     </div>
 </div>
 <!-- Add/update template  -->
 <ng-template #addModal let-modal>
-    <app-expense-general-settings [changeMode]="changeMode" (changeStep)="onChangeStep($event)" (close)="onClose($event)" *ngIf="step == 1"></app-expense-general-settings>
-    <app-expense-category-settings *ngIf="step == 2" (close)="onClose($event)" (changeStep)="onChangeStep($event)"></app-expense-category-settings>
-    <!-- <app-expense-category-settings (close)="onClose($event)"></app-expense-category-settings> -->
+    <app-expense-general-settings [changeMode]="changeMode" (changeStep)="onChangeStep($event)"
+        (close)="onClose($event)" *ngIf="step == 1"></app-expense-general-settings>
+    <app-expense-category-settings *ngIf="step == 2" (close)="onClose($event)"
+        (changeStep)="onChangeStep($event)"
+        (updateExpenseTemplateTable)="refreshExpenseTemplateTable()"></app-expense-category-settings>
 </ng-template>

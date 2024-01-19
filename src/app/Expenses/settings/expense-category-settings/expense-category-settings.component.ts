@@ -21,11 +21,13 @@ export class ExpenseCategorySettingsComponent {
   isEditable = false;
   @Output() close: any = new EventEmitter();
   @Output() changeStep: any = new EventEmitter();
+  @Output() updateExpenseTemplateTable: EventEmitter<void> = new EventEmitter<void>();
   step = 1;
   categoryLabel: any[];
   steps: any;
   categoriesForm: FormGroup;
   firstForm: any;
+  expenseCategory: any[];
 
 
   constructor(private _formBuilder: FormBuilder,
@@ -35,13 +37,11 @@ export class ExpenseCategorySettingsComponent {
 
   }
 
-
   ngOnInit() {
-    this.expenseService.getCategoriesByTemplate(this.expenseService.selectedTemplate.getValue()._id).subscribe((res: any) => {
+    let id = this.expenseService.selectedTemplate.getValue()._id;
+    this.expenseService.getCategoriesByTemplate(id).subscribe((res: any) => {
       let categoryList = res.data;
-      console.log(categoryList)
-      let expenseCategories = categoryList.map(category => ({ expensecategory: category.expenseCategory }));
-      console.log(expenseCategories)
+      this.expenseCategory = categoryList.map(category => ({ expensecategory: category.expenseCategory }));
     });
 
     this.expenseService.allExpenseCategories.subscribe((res: any) => {
@@ -77,7 +77,6 @@ export class ExpenseCategorySettingsComponent {
           }));
         }
       });
-
     });
   }
   getCategoryLabel(expenseCategoryId: string): string {
@@ -89,7 +88,7 @@ export class ExpenseCategorySettingsComponent {
     console.log(this.firstForm.value)
     this.expenseService.addTemplateApplicableCategories(this.firstForm.value).subscribe((res: any) => {
       this.toast.success('Expense Template Applicable Category Updated Successfully!');
-      this.changeStep.emit(1);
+      this.updateExpenseTemplateTable.emit();
     },
       err => {
         this.toast.error('Expense Template Applicable Category Can not be Updated', 'ERROR!')
@@ -98,6 +97,7 @@ export class ExpenseCategorySettingsComponent {
 
   closeModal() {
     this.changeStep.emit(1);
+    this.firstForm.reset();
     this.close.emit(true);
   }
 

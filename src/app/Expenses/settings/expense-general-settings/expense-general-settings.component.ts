@@ -48,6 +48,10 @@ export class ExpenseGeneralSettingsComponent {
   }
 
   ngOnInit() {
+    console.log(this.changeMode)
+    if (this.changeMode == 'Add') {
+      this.addTemplateForm.reset();
+    }
     this.getAllExpensesCategories();
     this.getAllUsers();
     this.addTemplateForm.get('approvalLevel').valueChanges.subscribe((value: any) => {
@@ -99,7 +103,7 @@ export class ExpenseGeneralSettingsComponent {
   setFormValues(templateData: any) {
     this.expenseService.getCategoriesByTemplate(templateData._id).subscribe((res: any) => {
       let categoryList = res.data;
-      
+
       let expenseCategories = categoryList.map(category => ({ expenseCategory: category.expenseCategory }));
       this.addTemplateForm.patchValue({
         policyLabel: templateData.policyLabel,
@@ -113,20 +117,19 @@ export class ExpenseGeneralSettingsComponent {
         expenseCategories: expenseCategories
       });
       this.checkedFormats = templateData.downloadableFormats;
-     
+
       console.log(this.addTemplateForm.value);
     });
   }
   compareExpenseCategories(category1: any, category2: any): boolean {
     return category1 && category2 ? category1._id === category2._id : category1 === category2;
   }
-  
+
 
   getCategoriesByTemplate(id: string) {
     this.expenseService.getCategoriesByTemplate(id).subscribe((res: any) => {
       let categoryList = res.data;
       console.log(categoryList)
-      //expenseCategories
     })
   }
 
@@ -147,7 +150,7 @@ export class ExpenseGeneralSettingsComponent {
       this.users = res.data.data;
     })
   }
-
+  
   createTemplate() {
     let payload = {
       policyLabel: this.addTemplateForm.value.policyLabel,
@@ -155,33 +158,37 @@ export class ExpenseGeneralSettingsComponent {
       approvalLevel: this.addTemplateForm.value.approvalLevel,
       applyforSameCategorySamedate: this.addTemplateForm.value.applyforSameCategorySamedate,
       advanceAmount: this.addTemplateForm.value.advanceAmount,
-
-      firstApprovalEmployee: this.addTemplateForm.value.firstApprovalEmployee,
-      secondApprovalEmployee: this.addTemplateForm.value.secondApprovalEmployee,
+      firstApprovalEmployee: this.addTemplateForm.value.firstApprovalEmployee || null,
+      secondApprovalEmployee: this.addTemplateForm.value.secondApprovalEmployee || null,
       downloadableFormats: this.checkedFormats,
-      expenseCategories: this.addTemplateForm.value.expenseCategories.map(category => ({ expenseCategory: category.expenseCategory })),
-    }
+      expenseCategories: this.addTemplateForm.value.expenseCategories.map(category => ({ expenseCategory: category }))
+    };
+
     if (this.changeMode === 'Add') {
       this.expenseService.addTemplate(payload).subscribe((res: any) => {
-        res.data.categories = this.addTemplateForm.value.expenseCategories
+        res.data.categories = this.addTemplateForm.value.expenseCategories;
         this.expenseService.selectedTemplate.next(res.data);
         this.toast.success('Template Created Successfully!');
         this.changeStep.emit(2);
       }, err => {
-        this.toast.error('Template Can not be Added', 'ERROR!')
+        this.toast.error('Template Can not be Added', 'ERROR!');
       });
     } else {
       let templateId = this.expenseService.selectedTemplate.getValue()._id;
-      console.log(templateId, payload)
-      
+      const isArrayStructureChanged = this.addTemplateForm.value.expenseCategories.some(category => typeof category !== 'object');
+
+      if (isArrayStructureChanged) {
+        payload.expenseCategories = this.addTemplateForm.value.expenseCategories.map(category => ({ expenseCategory: category }));
+      } else {
+        payload.expenseCategories = this.addTemplateForm.value.expenseCategories.map(category => ({ expenseCategory: category.expenseCategory }));
+      }
       this.expenseService.updateTemplate(templateId, payload).subscribe((res: any) => {
-        console.log(res)
         this.toast.success('Template Updated Successfully!');
-        this.expenseService.categories.next(res.data)
+        this.expenseService.categories.next(res.data);
         this.changeStep.emit(2);
       }, err => {
-        this.toast.error('Template Can not be Updated', 'ERROR!')
-      })
+        this.toast.error('Template Can not be Updated', 'ERROR!');
+      });
     }
   }
 

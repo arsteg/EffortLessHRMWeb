@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal, NgbModalConfig } from '@ng-bootstrap/ng-bootstrap';
 import { ExpensesService } from 'src/app/_services/expenses.service';
@@ -27,6 +27,9 @@ export class ExpensesTemplatesComponent implements OnInit {
   matchingCategories: any;
   users: any;
   step: number = 1;
+  public sortOrder: string = '';
+  @Output() expenseTemplateTableRefreshed: EventEmitter<void> = new EventEmitter<void>();
+
   constructor(
     private modalService: NgbModal,
     private config: NgbModalConfig,
@@ -42,8 +45,6 @@ export class ExpensesTemplatesComponent implements OnInit {
   ngOnInit(): void {
     this.getAllTemplates();
     this.filteredTemplate();
-    // this.getAllCategoriesOfAllTemplate();
-
   }
 
   onClose(event) {
@@ -76,19 +77,6 @@ export class ExpensesTemplatesComponent implements OnInit {
   }
   setFormValues(templateData: any) {
     this.expenseService.selectedTemplate.next(templateData);
-    // this.addTemplateForm.patchValue({
-    //   policyLabel: templateData.policyLabel,
-    //   approvalType: templateData.approvalType,
-    //   downloadableFormats: templateData.downloadableFormats,
-    //   applyforSameCategorySamedate: templateData.applyforSameCategorySamedate,
-    //   advanceAmount: templateData.advanceAmount
-    // });
-    // this.expenseService.getTemplateById(templateData._id).subscribe((res: any) => {
-
-    //   this.formatValues = res.data.downloadableFormats;
-    //   // this.checkedFormats = this.downloadableFormat?.map(format => this.formatValues?.includes(format));
-    // });
-    // this.getCategoriesByTemplate(templateData._id)
   }
 
   deleteTemplate(_id: string) {
@@ -284,6 +272,19 @@ export class ExpensesTemplatesComponent implements OnInit {
         template.matchingCategories = this.matchingCategories;
       });
     });
+  }
+
+  refreshExpenseTemplateTable() {
+    
+    this.expenseService.getAllTemplates().subscribe(
+      (res) => {
+        this.templates = res.data;
+        this.expenseTemplateTableRefreshed.emit();
+      },
+      (error) => {
+        console.error('Error refreshing expense template table:', error);
+      }
+    );
   }
 
 }
