@@ -25,6 +25,11 @@ import { CancelledComponent } from './expense-reports/cancelled/cancelled.compon
 import { RejectedComponent } from './expense-reports/rejected/rejected.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { AddExpenseReportComponent } from './expense-reports/add-expense-report/add-expense-report.component';
+import { CreateReportComponent } from './expense-reports/create-report/create-report.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import {MatIconModule} from '@angular/material/icon';
+
 @NgModule({
   declarations: [
     ExpensesComponent,
@@ -42,6 +47,8 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
     ApprovedComponent,
     CancelledComponent,
     RejectedComponent,
+    AddExpenseReportComponent,
+    CreateReportComponent
   ],
   imports: [
     CommonModule,
@@ -50,6 +57,8 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
     FormsModule,
     RouterModule,
     BrowserAnimationsModule,
+    MatDialogModule,
+    MatIconModule,
     BsDatepickerModule.forRoot()
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

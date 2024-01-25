@@ -1,0 +1,201 @@
+<div class="d-flex justify-content-between">
+    <!-- {{changeMode == true? 'Update': 'Add'}} -->
+    <h1 mat-dialog-title> {{expenseService.isEdit.getValue() == true? 'Update': 'Add'}} Expense</h1>
+    <div mat-dialog-actions>
+        <button mat-button mat-dialog-close><mat-icon aria-hidden="false" aria-label="Example close icon"
+                fontIcon="close"></mat-icon></button>
+
+
+    </div>
+</div>
+
+<div mat-dialog-content>
+  <form [formGroup]="expenseReportform">
+    <div class="form-group">
+
+        <label for="firstApprovalEmployee">Select Category<span class="text-danger">*</span></label>
+        <select name="" id="firstApprovalEmployee" formControlName="expenseCategory" required
+            class="ms-2 form-control">
+            <option>Select Category</option>
+            <option *ngFor="let category of categories" [value]="category._id">{{category.label}}</option>
+        </select>
+    </div>
+
+    <div class="mt-2">
+        <label for="">Select Date</label>
+        <div class=" col-12 form-group mb-3">
+            <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]=""
+                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="incurredDate" />
+        </div>
+    </div>
+
+    <div class="mt-2">
+        <label for="">Amount</label>
+        <div class=" col-12 form-group mb-3">
+            <input type="number" class="form-control" formControlName="amount" />
+        </div>
+    </div>
+    
+    <div class="form-check">
+        <input class="form-check-input" type="radio" [value]="true" formControlName="isReimbursable" name="flexRadioDefault" id="flexRadioDefault1">
+        <label class="form-check-label" for="flexRadioDefault1">
+            Reimbursable
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" [value]="false" formControlName="isBillable" name="flexRadioDefault" id="flexRadioDefault2" checked>
+        <label class="form-check-label" for="flexRadioDefault2">
+            Billable
+        </label>
+      </div>
+
+    <div class="mb-3">
+        <label for="exampleFormControlTextarea1" class="form-label">Reason</label>
+        <textarea class="form-control" id="exampleFormControlTextarea1" formControlName="reason"
+            rows="3"></textarea>
+    </div>
+
+    <div class="input-group mb-3">
+        <label class="input-group-text" for="inputGroupFile01">Upload</label>
+        <input type="file" class="form-control" formControlName="documentLink" id="inputGroupFile01">
+    </div> 
+
+    <div>
+        <button mat-raised-button type="button">Cancel</button>
+        <button mat-button mat-dialog-close type="submit" (click)="onSubmission()">Submit</button>
+
+    </div>
+
+
+</form>
+</div> 
+
+<!-- <form [formGroup]="expenseReportform">
+    <div class="form-group">
+
+        <label for="firstApprovalEmployee">Select Category<span class="text-danger">*</span></label>
+        <select name="" id="firstApprovalEmployee" formControlName="expenseCategory" required
+            class="ms-2 form-control">
+            <option>Select Category</option>
+            <option *ngFor="let category of categories" [value]="category._id">{{category.label}}</option>
+        </select>
+    </div>
+
+    <div class="mt-2">
+        <label for="">Select Date</label>
+        <div class=" col-12 form-group mb-3">
+            <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]=""
+                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="incurredDate" />
+        </div>
+    </div>
+
+    <div class="mt-2">
+        <label for="">Amount</label>
+        <div class=" col-12 form-group mb-3">
+            <input type="number" class="form-control" formControlName="amount" />
+        </div>
+    </div>
+
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" [value]="true" formControlName="isReimbursable"
+            id="flexCheckDefault">
+        <label class="form-check-label" for="flexCheckDefault">
+            Reimbursable
+        </label>
+    </div>
+
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" [value]="true" formControlName="isBillable"
+            id="flexCheckDefault">
+        <label class="form-check-label" for="flexCheckDefault">
+            Billable
+        </label>
+    </div>
+
+    <div class="mb-3">
+        <label for="exampleFormControlTextarea1" class="form-label">Reason</label>
+        <textarea class="form-control" id="exampleFormControlTextarea1" formControlName="reason"
+            rows="3"></textarea>
+    </div>
+
+    <div class="input-group mb-3">
+        <label class="input-group-text" for="inputGroupFile01">Upload</label>
+        <input type="file" class="form-control" formControlName="documentLink" id="inputGroupFile01">
+    </div> 
+
+    <div>
+        <button mat-raised-button type="button">Cancel</button>
+        <button mat-button mat-dialog-close type="submit" (click)="onSubmission()">Submit</button>
+
+    </div>
+
+
+</form> -->
+
+
+<!-- 
+<div class="modal-header border-bottom mb-2 pt-0">
+    <div>
+        <h1 class="modal-title text-muted mb-0">Add Expense </h1>
+    </div>
+    <div class="">
+        <button type="button" data-bs-dismiss="modal" class="btn-close text-end" (click)="closeModal()"></button>
+    </div>
+</div>
+    <form action="" (ngSubmit)=" onSubmission()">
+        <div class="form-group">
+           
+                <label for="firstApprovalEmployee">Select category<span class="text-danger">*</span></label>
+                <select name="" id="firstApprovalEmployee" required class="ms-2 form-control">
+                    <option></option>
+    
+                </select>
+
+                <div class="mt-2">
+                    <label for="">Select Date</label>
+                    <div class=" col-12 form-group mb-3">
+                        <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]=""
+                            [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" />
+                    </div>
+                </div>
+
+                <div class="mt-2">
+                    <label for="">Select Date</label>
+                    <div class=" col-12 form-group mb-3">
+                        <input type="number" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                    <label class="form-check-label" for="flexCheckDefault">
+                      Reimbursable
+                    </label>
+                  </div>
+
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                    <label class="form-check-label" for="flexCheckDefault">
+                      Billable
+                    </label>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="exampleFormControlTextarea1" class="form-label">Reason</label>
+                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                  </div>
+
+                  <div class="input-group mb-3">
+                    <label class="input-group-text" for="inputGroupFile01">Upload</label>
+                    <input type="file" class="form-control" id="inputGroupFile01">
+                  </div>
+
+                  <div>
+                    <button mat-raised-button type="button">Cancel</button>
+                    <button mat-raised-button type="submit">Submit</button>
+
+                  </div>
+            
+        </div>
+    </form>
+ -->

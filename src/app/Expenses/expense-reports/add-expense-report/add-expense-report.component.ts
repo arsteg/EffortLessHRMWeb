@@ -1,0 +1,139 @@
+import { Component, Output, EventEmitter, Input } from '@angular/core';
+import { CommonService } from 'src/app/common/common.service';
+import { CreateReportComponent } from '../create-report/create-report.component';
+import {
+  MatDialog,
+  MatDialogActions,
+  MatDialogClose,
+  MatDialogContent,
+  MatDialogTitle,
+} from '@angular/material/dialog';
+import { ExpensesService } from 'src/app/_services/expenses.service';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
+import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
+
+@Component({
+  selector: 'app-add-expense-report',
+  templateUrl: './add-expense-report.component.html',
+  styleUrl: './add-expense-report.component.css'
+})
+export class AddExpenseReportComponent {
+  users: any = [];
+  @Output() close: any = new EventEmitter();
+  @Input() changeMode: boolean;
+  addExpenseForm: FormGroup;
+  expenseReport: any[];
+  @Output() updateExpenseReportTable: EventEmitter<void> = new EventEmitter<void>();
+  isEdit: boolean = false;
+  category: any;
+
+  constructor(private dialog: MatDialog,
+    private commonService: CommonService,
+    public expenseService: ExpensesService,
+    private fb: FormBuilder,
+    private toast: ToastrService) {
+    this.addExpenseForm = this.fb.group({
+      employee: ['', Validators.required],
+      title: ['', Validators.required],
+      expenseReportExpenses: []
+    })
+  }
+
+
+
+  ngOnInit() {
+    this.addExpenseForm.patchValue({
+      employee: this.expenseService.selectedReport.getValue().employee,
+      title: this.expenseService.selectedReport.getValue().title
+    });
+    this.commonService.populateUsers().subscribe((res: any) => {
+      this.users = res.data.data;
+    });
+    this.getCategoryById();
+    this.getCategoryByUser();
+  }
+
+  openSecondModal(isEdit: boolean) {
+    this.expenseService.isEdit.next(isEdit);
+    if (isEdit = true) {
+      if (this.expenseService.selectedReport.getValue().id) {
+        this.expenseService.getExpenseReportExpensesById(this.expenseService.selectedReport.getValue().id).subscribe((res: any) => {
+          this.expenseService.expenseReportExpense.next(res.data);
+        })
+      }
+    }
+
+    const dialogRef = this.dialog.open(CreateReportComponent, {
+      width: '50%',
+      data: { isEdit: this.isEdit }
+    });
+    dialogRef.afterClosed().subscribe(result => {
+    });
+
+
+  }
+
+  closeModal() {
+    this.close.emit(true);
+  }
+  getCategoryByUser() {
+    const user = this.addExpenseForm.value.employee;
+    this.expenseService.selectedUser.next(user);
+    this.expenseService.getExpenseCategoryByUser(user).subscribe((res: any) => {
+      if (!res.data) {
+        this.toast.warning('User is not Assigned to any Expense Categories', 'Warning')
+      }
+    })
+  }
+  createReport() {
+    let payload = {
+      employee: this.addExpenseForm.value.employee,
+      title: this.addExpenseForm.value.title,
+      expenseReportExpenses: []
+    }
+    let formArray = this.expenseService.expenseReportExpense.getValue();
+    payload.expenseReportExpenses = [formArray];
+    console.log(payload, this.addExpenseForm.value);
+    this.expenseService.addExpensePendingReport(payload).subscribe((res: any) => {
+      this.toast.success('Expense Template Applicable Category Updated Successfully!');
+      this.updateExpenseReportTable.emit();
+    },
+      err => {
+        this.toast.error('Expense Template Applicable Category Can not be Updated', 'ERROR!')
+      }
+    )
+  }
+  getCategoryById() {
+    const id = this.expenseService.selectedReport.getValue().expenseCategory;
+    if (id) {
+      this.expenseService.getExpenseCategoryById(id).subscribe((res: any) => {
+        this.category = res.data;
+      })
+    }
+  }
+
+  deleteExpenseReportExpense(id: string): void {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '400px',
+
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'delete') {
+        this.deleteReport(id);
+      }
+      err => {
+        this.toast.error('Can not be Deleted', 'Error!')
+      }
+    });
+  }
+  deleteReport(id: string) {
+    this.expenseService.deleteExpenseReportExpenses(id).subscribe((res: any) => {
+      this.toast.success('Successfully Deleted!!!', 'Expense Report')
+    },
+      (err) => {
+        this.toast.error('Can not be deleted!')
+      })
+  }
+
+}

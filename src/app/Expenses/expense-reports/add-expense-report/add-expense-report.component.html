@@ -1,0 +1,94 @@
+<div class="modal-header border-bottom mb-2 pt-0">
+  <div>
+    <h1 class="modal-title text-muted mb-0">{{changeMode == true ? 'Update': 'Add'}} Expense Report</h1>
+  </div>
+  <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
+      (click)="closeModal()"></button>
+  </div>
+</div>
+
+<form action="" [formGroup]="addExpenseForm" (ngSubmit)="createReport()">
+
+  <div class="form-group">
+    <label for="firstApprovalEmployee">Please Select An Employee<span class="text-danger">*</span></label>
+    <select name="" id="firstApprovalEmployee" required class="ms-2 form-control" (change)="getCategoryByUser()"
+      formControlName="employee" required>
+      <option selected>Select Employee</option>
+      <option [value]="user?.id" *ngFor="let user of users; let i = index">{{user?.firstName |
+        titlecase}} {{user.lastName | titlecase}}</option>
+    </select>
+    <div *ngIf="addExpenseForm.get('employee').invalid && addExpenseForm.get('employee').touched"
+      class="text-danger error">
+      Please Enter Label for Expense Report!
+    </div>
+  </div>
+
+  <div class="form-group mt-2">
+    <label for="">Enter Label for Expense Report<span class="text-danger">*</span></label>
+    <input type="text" class="input form-control" formControlName="title" placeholder="Enter Label" required>
+    <div *ngIf="addExpenseForm.get('title').invalid && addExpenseForm.get('title').touched" class="text-danger error">
+      Please Enter Label for Expense Report!
+    </div>
+  </div>
+  <div class="tableContainer bg-white">
+    <table class="mt-2">
+      <thead>
+        <tr>
+          <th>Incurred Date</th>
+          <th>Category</th>
+          <th>Amount</th>
+          <th>Reimbursable</th>
+          <th>Billable</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{ expenseService.selectedReport.getValue().incurredDate | date:'mediumDate' }}</td>
+          <td>{{ category?.label }}</td>
+          <td>{{ expenseService.selectedReport.getValue().amount }}</td>
+         
+          <td>
+            <span *ngIf="expenseService.selectedReport.getValue().isReimbursable; else notReimbursable">
+              <mat-icon style="color: green;">check</mat-icon>
+            </span>
+            <ng-template #notReimbursable>
+              <mat-icon style="color: red;">close</mat-icon>
+            </ng-template>
+          </td>
+          <td>
+            <span *ngIf="expenseService.selectedReport.getValue().isBillable; else notBillable">
+              <mat-icon style="color: green;">check</mat-icon>
+            </span>
+            <ng-template #notBillable>
+              <mat-icon style="color: red;">close</mat-icon>
+            </ng-template>
+          </td>
+          
+          <td>
+            <button class="actions" type="button" [disabled]="!expenseService.selectedReport.getValue().id"
+              (click)="openSecondModal(true); isEdit = true" mat-mini-fab title="Update"
+              aria-label="Example icon button with a menu icon">
+              <i class="bi bi-pencil-fill"></i>
+            </button>
+            <button class="actions ms-2" title="Delete" type="button"
+              [disabled]="!expenseService.selectedReport.getValue().id"
+              (click)="deleteExpenseReportExpense(expenseService.selectedReport.getValue().id)" mat-mini-fab
+              aria-label="Example icon button with a menu icon">
+              <i class="bi bi-trash"></i>
+            </button>
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+  <div>
+    <button (click)="openSecondModal(false); isEdit == false " type="button" [disabled]="!addExpenseForm.valid"
+      class="submenuTab active rounded-pill">Add Expense</button>
+  </div>
+  <div class="mt-3 d-flex justify-content-between">
+    <button mat-raised-button type="button">Cancel</button>
+    <button mat-raised-button type="submit" class="addBtn">{{changeMode == true ? 'Update': 'Add'}}</button>
+  </div>
+</form>

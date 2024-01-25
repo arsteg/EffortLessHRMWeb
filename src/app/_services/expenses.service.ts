@@ -24,7 +24,13 @@ export class ExpensesService {
   selectedTemplate: any = new BehaviorSubject('');
   allExpenseCategories: any = new BehaviorSubject('');
   categories: any = new BehaviorSubject('');
-  constructor(private http: HttpClient) { }
+  selectedUser: any = new BehaviorSubject('');
+  expenseReportExpense: any = new BehaviorSubject('');
+  selectedReport: any = new BehaviorSubject('');
+  isEdit: any = new BehaviorSubject(false);
+
+  constructor(private http: HttpClient) {
+   }
 
   public getToken() {
     return localStorage.getItem('jwtToken');
@@ -36,6 +42,15 @@ export class ExpensesService {
     return response;
   }
 
+  getExpenseCategoryByUser(userId: string): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/expense-categories-by-employee/${userId}`, this.httpOptions);
+    return response;
+  }
+
+  getExpenseCategoryById(id: string): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/expense-categories/${id}`, this.httpOptions);
+    return response;
+  }
   addCategory(expenseCategory: ExpenseCategory): Observable<response<any>> {
     var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/expense-categories`, expenseCategory, this.httpOptions);
     return response;
@@ -67,10 +82,6 @@ export class ExpensesService {
     return response;
   }
 
-  // addApplicationFieldValue(expenseApplicationField: ExpenseApplicationField): Observable<response<any>> {
-  //   var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/expense-application-field-values`, expenseApplicationField, this.httpOptions);
-  //   return response;
-  // }
 
   updateApplicationFieldValue(expenseApplicationField: UpdateExpenseCategoryField): Observable<response<any>> {
     var response = this.http.put<response<any>>(`${environment.apiUrlDotNet}/expense/expense-application-field-values`, expenseApplicationField, this.httpOptions);
@@ -120,7 +131,7 @@ export class ExpensesService {
 
 
   addTemplateApplicableCategories(expenseCategories: ApplicableCategories): Observable<response<any>> {
-    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/expense-template-applicable-categories`, expenseCategories , this.httpOptions);
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/expense-template-applicable-categories`, expenseCategories, this.httpOptions);
     return response;
   }
 
@@ -140,11 +151,6 @@ export class ExpensesService {
     return response;
   }
 
-  // updateTemplateAssignment(id: string, templateAssignment: TemplateAssignment): Observable<response<any>> {
-  //   var response = this.http.put<response<any>>(`${environment.apiUrlDotNet}/expense/employee-expense-assignments/${id}`, templateAssignment, this.httpOptions);
-  //   return response;
-  // }
-
   deleteTemplateAssignment(id: string): Observable<response<any>> {
     var response = this.http.delete<response<any>>(`${environment.apiUrlDotNet}/expense/employee-expense-assignments/${id}`, this.httpOptions);
     return response;
@@ -159,7 +165,7 @@ export class ExpensesService {
     var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/employee-expense-assignments`, this.httpOptions);
     return response;
   }
-    //  advance categories
+  //  advance categories
 
   getAdvanceCatgories(): Observable<response<any>> {
     var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/advance-categories`, this.httpOptions);
@@ -183,9 +189,9 @@ export class ExpensesService {
 
 
 
-   //  advance Templates
+  //  advance Templates
 
-   getAdvanceTemplates(): Observable<response<any>> {
+  getAdvanceTemplates(): Observable<response<any>> {
     var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/advance-templates`, this.httpOptions);
     return response;
   }
@@ -231,6 +237,46 @@ export class ExpensesService {
 
   deleteAdvanceTemplateAssignment(id: string): Observable<response<any>> {
     var response = this.http.delete<response<any>>(`${environment.apiUrlDotNet}/expense/employee-advance-assignments/${id}`, this.httpOptions);
+    return response;
+  }
+
+  // Expense Report
+  addExpensePendingReport(report: any): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/expense-reports`, report, this.httpOptions);
+    return response;
+  }
+
+  getExpenseReport(): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/expense-reports`, this.httpOptions);
+    return response;
+  }
+
+  deleteExpenseReport(id: string): Observable<response<any>> {
+    var response = this.http.delete<response<any>>(`${environment.apiUrlDotNet}/expense/expense-reports/${id}`, this.httpOptions);
+    return response;
+  }
+  getAllExpenseReportExpenses(): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/expenseReportExpenses`, this.httpOptions);
+    return response;
+  }
+
+  addExpenseReportExpenses(expenseReportExpenses: any): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/expenseReportExpenses`, expenseReportExpenses, this.httpOptions);
+    return response;
+  }
+
+  deleteExpenseReportExpenses(id: string): Observable<response<any>> {
+    var response = this.http.delete<response<any>>(`${environment.apiUrlDotNet}/expense/expenseReportExpenses/${id}`, this.httpOptions);
+    return response;
+  }
+
+  updateExpenseReportExpenses(id: string, expenseReportExpenses: any): Observable<response<any>> {
+    var response = this.http.put<response<any>>(`${environment.apiUrlDotNet}/expense/expenseReportExpenses/${id}`, expenseReportExpenses, this.httpOptions);
+    return response;
+  }
+
+  getExpenseReportExpensesById(id: string): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/expenseReportExpenses/${id}`, this.httpOptions);
     return response;
   }
 }
