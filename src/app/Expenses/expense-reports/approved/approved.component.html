@@ -6,12 +6,15 @@
                 <div class="d-flex align-items-center">
                     <span class="bi bi-search searchIcon"></span>
 
-                    <input class="form-control search" type="text" placeholder="Search..."  [(ngModel)]="searchText"
+                    <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
                         name="searchText" aria-label="default input example">
 
-                      <button mat-raised-button class="addBtn rounded-pill ms-3"
-                        >    <i class="bi bi-download"></i> Download</button>
-                   
+                        <button mat-raised-button class="addBtn rounded-pill mx-3"
+                        (click)="open(addModal); step=1">Add Expense</button>
+
+                    <button  class="submenuTab active rounded-pill"> <i class="bi bi-download downloadBtn pe-2"></i>
+                        Download</button>
+
                 </div>
             </div>
             <table class="px-4">
@@ -27,7 +30,7 @@
                         <th>Billable</th>
                         <th>Status</th>
                         <th scope="col" class="text-center">Action</th>
-                      
+
                     </tr>
                 </thead>
                 <tbody>
@@ -42,24 +45,106 @@
                         <td></td>
                         <td></td>
                         <td class="">
-                            <button class="actions" mat-mini-fab title="View"
-                                aria-label="Example icon button with a menu icon"
-                               >
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button class="actions ms-2" title="Cancel" mat-mini-fab
-                                aria-label="Example icon button with a menu icon"
-                                >
-                                <i class="bi bi-ban"></i>
-                            </button>
+                            <div class="dropdown-center">
+                                <button class="actions ms-2" mat-mini-fab data-bs-toggle="dropdown"
+                                    aria-expanded="false" aria-label="Example icon button with a menu icon">
+                                    <i class="bi bi-send"></i>
+                                </button>
+                                <ul class="dropdown-menu py-0">
+                                    <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
+                                        data-bs-target="#viewModal">
+                                        <i class="fas fa-eye dropdown-item w-25"></i><span
+                                            class="pt-1 text-muted">View</span>
+                                    </li>
+                                    <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
+                                        data-bs-target="#cancelModal">
+                                        <i class="bi bi-trash text-success dropdown-item w-25"></i><span
+                                            class="pt-1 text-muted">Cancel</span>
+                                    </li>
+                                </ul>
+                            </div>
                         </td>
-                       
-
                     </tr>
                 </tbody>
             </table>
             <pagination-controls class="pagination d-flex justify-content-end"></pagination-controls>
         </div>
-
     </div>
 </div>
+
+<!-- View Only -->
+<div class="modal" id="viewModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class=" d-flex justify-content-between">
+                    <div class="">
+                        <h4 class="modal-title text-start">Show Expense Details</h4>
+                    </div>
+                    <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
+                    </div>
+                </div>
+                <hr class="mt-0">
+                <div class="row">
+                    
+                        <div class="mt-4 tableContainer">
+                            <table class="" style="color: #fff;">
+                                <tbody>
+                                    <tr>
+                                        <th>Expense Report Title</th>
+                                        <th>Status</th>
+                                        <th>Total Reimbursable</th>
+                                        <th>Total Billable</th>
+                                        <th>Advance Received</th>
+                                        <th>Total Amount</th>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- cancel request -->
+
+<div class="modal" id="cancelModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class=" d-flex justify-content-between">
+                    <div class="">
+                        
+                    </div>
+                    <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
+                    </div>
+                </div>
+                <hr class="mt-0">
+                <div class="row">
+                    <form class="row">
+                        <h4 class="modal-title text-start">Are You Sure You Want To Cancel This Request?</h4>
+                        <div class="d-flex justify-content-between m-3">
+                            <div>
+                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
+                                    type="button">No</button>
+                            </div>
+                            <div>
+                                <button mat-raised-button data-bs-dismiss="modal" class="addBtn" type="submit"> <i
+                                        class="fas fa-check" style="color: #fff;"></i>
+                                    Yes</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #addModal let-modal>
+    <app-add-expense-report (changeStep)="onChangeStep($event)" [changeMode]="isEdit" *ngIf="step == 1"
+        (close)="onClose($event)" (updateExpenseReportTable)="refreshExpenseReportTable()"></app-add-expense-report>
+    <app-create-report *ngIf="step == 2" (changeStep)="onChangeStep($event)" [changeMode]="isEdit"
+        (close)="onClose($event)" (updateExpenseReportTable)="refreshExpenseReportTable()"></app-create-report>
+</ng-template>

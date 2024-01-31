@@ -28,7 +28,13 @@ export class ExpensesService {
   expenseReportExpense: any = new BehaviorSubject('');
   selectedReport: any = new BehaviorSubject('');
   isEdit: any = new BehaviorSubject(false);
+  private updateTableSubject = new BehaviorSubject<void>(null);
+  updateTable$ = this.updateTableSubject.asObservable();
 
+  triggerUpdateTable() {
+    this.updateTableSubject.next();
+  }
+ 
   constructor(private http: HttpClient) {
    }
 
@@ -277,6 +283,11 @@ export class ExpensesService {
 
   getExpenseReportExpensesById(id: string): Observable<response<any>> {
     var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/expenseReportExpenses/${id}`, this.httpOptions);
+    return response;
+  }
+
+  getExpenseReportExpensesByReportId(id: string): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/expenseReportExpensesByExpenseReport/${id}`, this.httpOptions);
     return response;
   }
 }

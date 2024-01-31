@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, Input, Inject } from '@angular/core';
+import { Component, Output, EventEmitter, Input, Inject, ChangeDetectorRef } from '@angular/core';
 import { AddExpenseReportComponent } from '../add-expense-report/add-expense-report.component';
 
 import {
@@ -13,6 +13,7 @@ import {
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-create-report',
@@ -26,6 +27,12 @@ export class CreateReportComponent {
   expenseReportform: FormGroup;
   isEdit: boolean;
   formValues: any;
+  sharedData: any;
+  private sharedDataSubscription: Subscription;
+  private refreshSubscription: Subscription;
+  bsValue = new Date();
+  bsRangeValue: Date[];
+  maxDate = new Date();
 
   constructor(public expenseService: ExpensesService,
     private fb: FormBuilder,
@@ -34,17 +41,20 @@ export class CreateReportComponent {
     private toast: ToastrService) {
     this.expenseReportform = this.fb.group({
       expenseCategory: [''],
-      incurredDate: [null],
+      incurredDate: [],
       amount: [0],
       isReimbursable: [true],
       isBillable: [true],
       reason: [''],
       documentLink: [''],
       expenseReport: ['']
-    })
-  }
+    });
+    this.maxDate.setDate(this.maxDate.getDate() + 7);
+    this.bsRangeValue = [this.bsValue, this.maxDate];
+    }
 
   ngOnInit() {
+    console.log(this.expenseService.expenseReportExpense.getValue())
     if (this.expenseService.isEdit.getValue() == true) {
       this.expenseService.expenseReportExpense.subscribe(res => {
         this.formValues = res;
@@ -69,6 +79,12 @@ export class CreateReportComponent {
       this.categories = res.data;
     });
   }
+
+  ngOnDestroy() {
+    this.sharedDataSubscription.unsubscribe();
+    this.refreshSubscription.unsubscribe();
+  }
+
   onSubmission() {
     let payload = {
       expenseCategory: this.expenseReportform.value.expenseCategory,
@@ -81,10 +97,10 @@ export class CreateReportComponent {
       expenseReport: this.expenseReportform.value.expenseReport
     }
     payload.expenseReport = this.expenseService.selectedReport.getValue()._id;
-    const expenseReportId = this.expenseService.selectedReport.getValue().id
+    const expenseReportExpenses = this.expenseService.expenseReportExpense.getValue()._id;
     if (this.expenseService.isEdit.getValue() == true) {
       // update expense report expenses
-      this.expenseService.updateExpenseReportExpenses(expenseReportId, payload).subscribe((res: any) => {
+      this.expenseService.updateExpenseReportExpenses(expenseReportExpenses, payload).subscribe((res: any) => {
         this.expenseService.expenseReportExpense.next(this.expenseReportform.value);
         this.toast.success('Expense Report of Expenses is Updated!', 'Successfully!!!')
       },
@@ -103,10 +119,12 @@ export class CreateReportComponent {
           this.toast.error('This expense report of expenses can not be Added!', 'Error')
         })
     }
+    this.expenseService.triggerUpdateTable();
     this.dialogRef.close();
     this.changeStep.emit(1);
   }
   closeModal() {
+    this.expenseService.triggerUpdateTable();
     this.close.emit(true);
     this.changeStep.emit(1)
   }

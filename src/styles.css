@@ -843,3 +843,6 @@ option:hover{
 .cdk-overlay-pane{
   background: white !important
 }
+.downloadBtn{
+  font-size: large;
+}

@@ -58,7 +58,7 @@ export class ExpensesTemplatesComponent implements OnInit {
   onChangeStep(event) {
     this.step = event;
   }
-  
+
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
@@ -85,19 +85,23 @@ export class ExpensesTemplatesComponent implements OnInit {
       if (index !== -1) {
         this.templates.splice(index, 1);
       }
-    })
+      this.toast.success('Successfully Deleted!!!', 'Expense Template')
+    },
+      (err) => {
+        this.toast.error('This Template is already being used!'
+          , 'Expense template, Can not be deleted!')
+      })
   }
 
   deleteDialog(id: string): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '400px',
-    });
+    }
+    );
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result === 'delete') {
-        this.deleteTemplate(id)
-        this.toast.success('Deleted Successfully!');
-
+        this.deleteTemplate(id);
       }
 
     });
@@ -275,7 +279,7 @@ export class ExpensesTemplatesComponent implements OnInit {
   }
 
   refreshExpenseTemplateTable() {
-    
+
     this.expenseService.getAllTemplates().subscribe(
       (res) => {
         this.templates = res.data;

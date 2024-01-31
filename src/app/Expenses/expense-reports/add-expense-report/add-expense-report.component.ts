@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, Input } from '@angular/core';
+import { Component, Output, EventEmitter, Input, ChangeDetectorRef } from '@angular/core';
 import { CommonService } from 'src/app/common/common.service';
 import { CreateReportComponent } from '../create-report/create-report.component';
 import {
@@ -12,6 +12,7 @@ import { ExpensesService } from 'src/app/_services/expenses.service';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
+import { Observable, Subscription, map } from 'rxjs';
 
 @Component({
   selector: 'app-add-expense-report',
@@ -27,21 +28,26 @@ export class AddExpenseReportComponent {
   @Output() updateExpenseReportTable: EventEmitter<void> = new EventEmitter<void>();
   isEdit: boolean = false;
   category: any;
+  expenseReportExpenses: any;
+  selectedExpenseReportExpense: any;
+  private updateTableSubscription: Subscription;
 
   constructor(private dialog: MatDialog,
     private commonService: CommonService,
     public expenseService: ExpensesService,
     private fb: FormBuilder,
-    private toast: ToastrService) {
+    private toast: ToastrService,
+    private cdr: ChangeDetectorRef) {
     this.addExpenseForm = this.fb.group({
       employee: ['', Validators.required],
       title: ['', Validators.required],
       expenseReportExpenses: []
-    })
+    });
+   
   }
 
 
-
+  private expenseReportExpenseSubscription: Subscription;
   ngOnInit() {
     this.addExpenseForm.patchValue({
       employee: this.expenseService.selectedReport.getValue().employee,
@@ -50,28 +56,42 @@ export class AddExpenseReportComponent {
     this.commonService.populateUsers().subscribe((res: any) => {
       this.users = res.data.data;
     });
-    this.getCategoryById();
     this.getCategoryByUser();
+    this.getExpenseReportExpensesByReportId();
+   
+  }
+  ngAfterViewInit() {
+    this.updateTableSubscription = this.expenseService.updateTable$.subscribe(() => {
+      // Update the table or fetch data here
+      this.getExpenseReportExpensesByReportId();
+      this.refreshExpenseReportTable();
+    });
+  }
+
+  ngOnDestroy() {
+    this.updateTableSubscription.unsubscribe();
+  }
+  refreshExpenseReportTable() {
+      this.ngOnInit();
   }
 
   openSecondModal(isEdit: boolean) {
     this.expenseService.isEdit.next(isEdit);
     if (isEdit = true) {
-      if (this.expenseService.selectedReport.getValue().id) {
-        this.expenseService.getExpenseReportExpensesById(this.expenseService.selectedReport.getValue().id).subscribe((res: any) => {
-          this.expenseService.expenseReportExpense.next(res.data);
-        })
-      }
-    }
 
+    }
     const dialogRef = this.dialog.open(CreateReportComponent, {
       width: '50%',
       data: { isEdit: this.isEdit }
     });
     dialogRef.afterClosed().subscribe(result => {
     });
+  }
 
-
+  getSelectedExpenseReportExpense(selectedExpenseReportExpense: any) {
+    this.expenseService.expenseReportExpense.next(selectedExpenseReportExpense)
+    this.expenseService.getExpenseReportExpensesById(selectedExpenseReportExpense._id).subscribe((res: any) => {
+    })
   }
 
   closeModal() {
@@ -104,14 +124,18 @@ export class AddExpenseReportComponent {
       }
     )
   }
-  getCategoryById() {
-    const id = this.expenseService.selectedReport.getValue().expenseCategory;
-    if (id) {
-      this.expenseService.getExpenseCategoryById(id).subscribe((res: any) => {
-        this.category = res.data;
-      })
-    }
-  }
+  getCategoryById(categoryId) {
+  this.expenseService.getExpenseCategoryById(categoryId).subscribe((res: any) => {
+    this.category = res.data.label;
+    return this.category
+    console.log(this.category)
+  });
+}
+getCategoryLabel(expenseCategoryId: string): string {
+  const matchingCategory = this.expenseReportExpenses.find(category => category._id === expenseCategoryId);
+  return matchingCategory ? matchingCategory.label : '';
+}
+
 
   deleteExpenseReportExpense(id: string): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
@@ -129,6 +153,7 @@ export class AddExpenseReportComponent {
   }
   deleteReport(id: string) {
     this.expenseService.deleteExpenseReportExpenses(id).subscribe((res: any) => {
+      this.expenseReportExpenses = this.expenseReportExpenses.filter(report => report._id !== id);
       this.toast.success('Successfully Deleted!!!', 'Expense Report')
     },
       (err) => {
@@ -136,4 +161,10 @@ export class AddExpenseReportComponent {
       })
   }
 
+  getExpenseReportExpensesByReportId() {
+    let id = this.expenseService.selectedReport.getValue()._id
+    this.expenseService.getExpenseReportExpensesByReportId(id).subscribe((res: any) => {
+      this.expenseReportExpenses = res.data;
+    })
+  }
 }

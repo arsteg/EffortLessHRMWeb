@@ -10,8 +10,8 @@ import { ExpensesService } from 'src/app/_services/expenses.service';
 import { CommonService } from 'src/app/common/common.service';
 import { ExpenseCategory, ExpenseCategoryField } from 'src/app/models/expenses';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
-import { AddExpenseReportComponent } from '../add-expense-report/add-expense-report.component';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
+import { ExportService } from 'src/app/_services/export.service';
 
 @Component({
   selector: 'app-pending',
@@ -39,7 +39,8 @@ export class PendingComponent {
     private commonService: CommonService,
     private authService: AuthenticationService,
     private dialog: MatDialog,
-    private toast: ToastrService) { }
+    private toast: ToastrService,
+    private exportService: ExportService) { }
 
   ngOnInit() {
     this.getExpenseReport();
@@ -78,8 +79,7 @@ export class PendingComponent {
     });
   }
 
-  clearselectedRequest() {
-  }
+  
 
   onClose(event) {
     if (event) {
@@ -98,33 +98,12 @@ onChangeMode(event){
   getExpenseReport() {
     this.expenseService.getExpenseReport().subscribe((res: any) => {
       this.expenseReport = res.data;
-
-      this.expenseService.getAllExpenseReportExpenses().subscribe((allExpenseReports: any) => {
-        this.expenseReport.forEach((report) => {
-          const expenseReport = allExpenseReports.data.find(expense => expense.expenseReport === report._id);
-
-          this.displayedData.push({
-            title: report.title,
-            employee: report.employee,
-            amount: expenseReport?.amount,
-            isReimbursable: expenseReport?.isReimbursable,
-            isBillable: expenseReport?.isBillable,
-            expenseCategory: expenseReport?.expenseCategory,
-            incurredDate: expenseReport?.incurredDate,
-            status: report.status,
-            _id: report._id,
-            id: expenseReport?._id
-          });
-          
-        });
-      });
     });
   }
 
   deleteExpenseReport(id: string): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '400px',
-
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'delete') {
@@ -159,4 +138,18 @@ onChangeMode(event){
     this.expenseService.selectedReport.next(this.selectedReport)
 
   }
+
+ 
+  exportToCsv() {
+    const dataToExport = this.displayedData.map((categories) => ({
+        title: categories.title,
+        employee: this.getUser(categories.employee),
+        amount: categories.amount,
+        isReimbursable: categories.isReimbursable ? categories.amount : 0,
+        isBillable: categories.isBillable ? categories.amount : 0,
+        status: categories.status
+    }));
+    this.exportService.exportToCSV('ApplicationUsages', 'applicationUsages', dataToExport);
+}
+
 }
