@@ -33,6 +33,8 @@ export class PendingComponent {
   displayedData: any[] = [];
   changeMode: 'Add' | 'Update' = 'Add';
   selectedReport;
+  updateExpenseReport: FormGroup;
+  status: string;
 
   constructor(private modalService: NgbModal,
     private expenseService: ExpensesService,
@@ -40,7 +42,16 @@ export class PendingComponent {
     private authService: AuthenticationService,
     private dialog: MatDialog,
     private toast: ToastrService,
-    private exportService: ExportService) { }
+    private exportService: ExportService,
+    private fb: FormBuilder) {
+    this.updateExpenseReport = this.fb.group({
+      employee: [''],
+      title: [''],
+      status: [''],
+      primaryApprovalReason: [''],
+      secondaryApprovalReason: ['']
+    })
+  }
 
   ngOnInit() {
     this.getExpenseReport();
@@ -51,7 +62,8 @@ export class PendingComponent {
   refreshExpenseReportTable() {
     this.expenseService.getExpenseReport().subscribe(
       (res) => {
-        this.expenseReport = res.data;
+        this.expenseReport = res.data.filter(expense => expense.status === 'Level 1 Approval Pending');
+
         this.expenseTemplateReportRefreshed.emit();
       },
       (error) => {
@@ -79,7 +91,7 @@ export class PendingComponent {
     });
   }
 
-  
+
 
   onClose(event) {
     if (event) {
@@ -90,14 +102,14 @@ export class PendingComponent {
   onChangeStep(event) {
     this.step = event;
   }
-onChangeMode(event){
-  if(this.isEdit = true){
-    this.changeMode = event
+  onChangeMode(event) {
+    if (this.isEdit = true) {
+      this.changeMode = event
+    }
   }
-}
   getExpenseReport() {
     this.expenseService.getExpenseReport().subscribe((res: any) => {
-      this.expenseReport = res.data;
+      this.expenseReport = res.data.filter(expense => expense.status === 'Level 1 Approval Pending');
     });
   }
 
@@ -139,17 +151,43 @@ onChangeMode(event){
 
   }
 
- 
+
   exportToCsv() {
     const dataToExport = this.displayedData.map((categories) => ({
-        title: categories.title,
-        employee: this.getUser(categories.employee),
-        amount: categories.amount,
-        isReimbursable: categories.isReimbursable ? categories.amount : 0,
-        isBillable: categories.isBillable ? categories.amount : 0,
-        status: categories.status
+      title: categories.title,
+      employee: this.getUser(categories.employee),
+      amount: categories.amount,
+      isReimbursable: categories.isReimbursable ? categories.amount : 0,
+      isBillable: categories.isBillable ? categories.amount : 0,
+      status: categories.status
     }));
     this.exportService.exportToCSV('ApplicationUsages', 'applicationUsages', dataToExport);
-}
+  }
+  updateApprovedReport() {
+    let id = this.selectedReport._id;
+    let payload = {
+      employee: this.selectedReport.employee,
+      title: this.selectedReport.title,
+      status: 'Approved',
+      primaryApprovalReason: this.updateExpenseReport.value.primaryApprovalReason,
+      secondaryApprovalReason: ''
+    }
+    this.expenseService.updateExpenseReport(id, payload).subscribe((res: any) => {
+      this.expenseReport = this.expenseReport.filter(report => report._id !== id);
+    })
+  }
 
+  updateRejectedReport() {
+    let id = this.selectedReport._id;
+    let payload = {
+      employee: this.selectedReport.employee,
+      title: this.selectedReport.title,
+      status: 'Rejected',
+      primaryApprovalReason: this.updateExpenseReport.value.primaryApprovalReason,
+      secondaryApprovalReason: ''
+    }
+    this.expenseService.updateExpenseReport(id, payload).subscribe((res: any) => {
+      this.expenseReport = this.expenseReport.filter(report => report._id !== id);
+    })
+  }
 }

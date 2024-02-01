@@ -2,17 +2,17 @@
     <div class="container">
         <div class="py-2 px-0 bg-white tableContainer">
             <div class="d-flex justify-content-between align-items-center mb-2 px-3">
-                <p class="mb-0">() Records Found</p>
+                <p class="mb-0">({{expenseReport?.length}}) Records Found</p>
                 <div class="d-flex align-items-center">
                     <span class="bi bi-search searchIcon"></span>
 
                     <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
                         name="searchText" aria-label="default input example">
 
-                        <button mat-raised-button class="addBtn rounded-pill mx-3"
-                        (click)="open(addModal); step=1">Add Expense</button>
+                    <button mat-raised-button class="addBtn rounded-pill mx-3" (click)="open(addModal); step=1">Add
+                        Expense</button>
 
-                    <button  class="submenuTab active rounded-pill"> <i class="bi bi-download downloadBtn pe-2"></i>
+                    <button class="submenuTab active rounded-pill"> <i class="bi bi-download downloadBtn pe-2"></i>
                         Download</button>
 
                 </div>
@@ -34,16 +34,33 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td class="ps-2"></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                    <tr
+                        *ngFor="let expenseReport of expenseReport | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p };  let i = index">
+                        <td class="ps-2">{{expenseReport?.title}}</td>
+                        <td>{{getUser(expenseReport?.employee)}}</td>
+                        <td>--</td>
+                        <td>--</td>
+                        <td>--</td>
+                        <td> <ng-container
+                                *ngIf="expenseReport.expenseReportExpense && expenseReport.expenseReportExpense.length > 0">
+                                {{ expenseReport.expenseReportExpense[0]?.amount }}
+                            </ng-container></td>
+
+                        <td>
+                            <ng-container
+                                *ngIf="expenseReport.expenseReportExpense && expenseReport.expenseReportExpense.length > 0">{{
+                                expenseReport[i]?.expenseReportExpense?.isReimbursable }}
+                            </ng-container>
+                        </td>
+                        <td>
+                            <ng-container
+                                *ngIf="expenseReport.expenseReportExpense && expenseReport.expenseReportExpense.length > 0">{{
+                                expenseReport.expenseReportExpense?.isBillable }}
+                            </ng-container>
+                        </td>
+
+
+                        <td>{{expenseReport?.status}}</td>
                         <td class="">
                             <div class="dropdown-center">
                                 <button class="actions ms-2" mat-mini-fab data-bs-toggle="dropdown"
@@ -57,7 +74,7 @@
                                             class="pt-1 text-muted">View</span>
                                     </li>
                                     <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
-                                        data-bs-target="#cancelModal">
+                                        data-bs-target="#cancelModal" (click)="selectedReport = expenseReport">
                                         <i class="bi bi-trash text-success dropdown-item w-25"></i><span
                                             class="pt-1 text-muted">Cancel</span>
                                     </li>
@@ -86,21 +103,70 @@
                 </div>
                 <hr class="mt-0">
                 <div class="row">
-                    
-                        <div class="mt-4 tableContainer">
-                            <table class="" style="color: #fff;">
-                                <tbody>
-                                    <tr>
-                                        <th>Expense Report Title</th>
-                                        <th>Status</th>
-                                        <th>Total Reimbursable</th>
-                                        <th>Total Billable</th>
-                                        <th>Advance Received</th>
-                                        <th>Total Amount</th>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                    <div class="tableContainer">
+                        <table>
+                            <tr>
+                                <th class="w-50">Expense Report Title</th>
+                                <td>--</td>
+                            </tr>
+                            <tr>
+                                <th class="w-50">Status</th>
+                                <td>--</td>
+                            </tr>
+                            <tr>
+                                <th class="w-50">Total Reimbursable</th>
+                                <td>--</td>
+                            </tr>
+                            <tr>
+                                <th class="w-50">Total Billable</th>
+                                <td>--</td>
+                            </tr>
+                            <tr>
+                                <th class="w-50">Advance Received</th>
+                                <td>--</td>
+                            </tr>
+                            <tr>
+                                <th class="w-50">Total Amount</th>
+                                <td>--</td>
+                            </tr>
+                            <tr>
+                                <th class="w-50">Admin Approval Comment</th>
+                                <td>--</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="mt-4 tableContainer">
+                        <table class="" style="color: #fff;">
+                            <thead>
+                                <tr>
+                                    <th>Incurred Date</th>
+                                    <th>Category</th>
+                                    <th>Amount</th>
+                                    <th>Reimbursable</th>
+                                    <th>Billable</th>
+                                    <th>Attachment</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <button class="actions ms-2" mat-mini-fab data-bs-toggle="modal"
+                                            data-bs-target="viewReport">
+                                            <i class="bi bi-send"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -115,19 +181,18 @@
             <div class="modal-body">
                 <div class=" d-flex justify-content-between">
                     <div class="">
-                        
+                        <h2 class="text-muted text-start">Confirmation</h2>
                     </div>
                     <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
                     </div>
                 </div>
                 <hr class="mt-0">
                 <div class="row">
-                    <form class="row">
-                        <h4 class="modal-title text-start">Are You Sure You Want To Cancel This Request?</h4>
+                    <form [formGroup]="updateExpenseReport" (ngSubmit)="updateReport()">
+                        <h4 class="modal-title text-center">Are You Sure You Want To Cancel This Request?</h4>
                         <div class="d-flex justify-content-between m-3">
                             <div>
-                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
-                                    type="button">No</button>
+                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal" type="button">No</button>
                             </div>
                             <div>
                                 <button mat-raised-button data-bs-dismiss="modal" class="addBtn" type="submit"> <i

@@ -43,8 +43,8 @@ export class CreateReportComponent {
       expenseCategory: [''],
       incurredDate: [],
       amount: [0],
-      isReimbursable: [true],
-      isBillable: [true],
+      isReimbursable: [],
+      isBillable: [],
       reason: [''],
       documentLink: [''],
       expenseReport: ['']
@@ -108,7 +108,7 @@ export class CreateReportComponent {
           this.toast.error('This expense report of expenses can not be Updated!', 'Error')
         })
     }
-    else {
+    else if( this.expenseService.isEdit.getValue() == false && this.expenseService.selectedReport.getValue()._id){
       // add new expense report expenses  
       payload.expenseReport = this.expenseService.selectedReport.getValue()._id;
       this.expenseService.addExpenseReportExpenses(payload).subscribe((res: any) => {
@@ -119,6 +119,12 @@ export class CreateReportComponent {
           this.toast.error('This expense report of expenses can not be Added!', 'Error')
         })
     }
+    else(this.expenseService.isEdit.getValue() == false && !this.expenseService.selectedReport.getValue()._id)
+    {
+      console.log('no expense report', payload)
+      this.expenseService.expenseReportExpense.next(payload);
+    }
+
     this.expenseService.triggerUpdateTable();
     this.dialogRef.close();
     this.changeStep.emit(1);

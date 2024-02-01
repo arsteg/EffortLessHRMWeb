@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Output } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ExpensesService } from 'src/app/_services/expenses.service';
+import { CommonService } from 'src/app/common/common.service';
 
 @Component({
   selector: 'app-approved',
@@ -14,11 +16,31 @@ export class ApprovedComponent {
   changeMode: 'Add' | 'Update' = 'Add';
   @Output() expenseTemplateReportRefreshed: EventEmitter<void> = new EventEmitter<void>();
   expenseReport: any;
+  users: any[];
   isEdit: boolean = false;
+  p: number = 1;
+  updateExpenseReport: FormGroup;
+  selectedReport;
 
   constructor(private modalService: NgbModal,
-  private expenseService: ExpensesService ) { }
+    private expenseService: ExpensesService,
+    private commonService: CommonService,
+    private fb: FormBuilder) {
+      this.updateExpenseReport = this.fb.group({
+        employee: [''],
+        title: [''],
+        status: [''],
+        primaryApprovalReason: [''],
+        secondaryApprovalReason: ['']
+      })
+     }
 
+    ngOnInit() {
+    this.getExpenseReport();
+    this.commonService.populateUsers().subscribe((res: any) => {
+      this.users = res.data.data;
+    });
+  }
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
@@ -61,4 +83,29 @@ export class ApprovedComponent {
       }
     );
   }
+  getExpenseReport() {
+    this.expenseService.getExpenseReport().subscribe((res: any) => {
+      this.expenseReport = res.data.filter(expense => expense.status === 'Approved');
+    });
+  }
+
+  getUser(employeeId: string) {
+    const matchingUser = this.users.find(user => user._id === employeeId);
+    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'User Not Found';
+  }
+  
+  updateReport() {
+    let id = this.selectedReport._id;
+    let payload = {
+      employee: this.selectedReport.employee,
+      title: this.selectedReport.title,
+      status: 'Cancelled',
+      primaryApprovalReason: '',
+      secondaryApprovalReason: ''
+    }
+    this.expenseService.updateExpenseReport(id, payload).subscribe((res: any) => {
+      this.expenseReport = this.expenseReport.filter(report => report._id !== id);
+    })
+  }
+
 }

@@ -261,6 +261,12 @@ export class ExpensesService {
     var response = this.http.delete<response<any>>(`${environment.apiUrlDotNet}/expense/expense-reports/${id}`, this.httpOptions);
     return response;
   }
+
+  updateExpenseReport(id: string, expenseReport: any): Observable<response<any>> {
+    var response = this.http.put<response<any>>(`${environment.apiUrlDotNet}/expense/expense-reports/${id}`, expenseReport, this.httpOptions);
+    return response;
+  }
+
   getAllExpenseReportExpenses(): Observable<response<any>> {
     var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/expenseReportExpenses`, this.httpOptions);
     return response;

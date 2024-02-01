@@ -43,12 +43,12 @@ export class AddExpenseReportComponent {
       title: ['', Validators.required],
       expenseReportExpenses: []
     });
-   
+
   }
 
 
-  private expenseReportExpenseSubscription: Subscription;
   ngOnInit() {
+    console.log(this.isEdit, this.changeMode)
     this.addExpenseForm.patchValue({
       employee: this.expenseService.selectedReport.getValue().employee,
       title: this.expenseService.selectedReport.getValue().title
@@ -58,22 +58,18 @@ export class AddExpenseReportComponent {
     });
     this.getCategoryByUser();
     this.getExpenseReportExpensesByReportId();
-   
+
   }
   ngAfterViewInit() {
     this.updateTableSubscription = this.expenseService.updateTable$.subscribe(() => {
-      // Update the table or fetch data here
       this.getExpenseReportExpensesByReportId();
-      this.refreshExpenseReportTable();
     });
   }
 
   ngOnDestroy() {
     this.updateTableSubscription.unsubscribe();
   }
-  refreshExpenseReportTable() {
-      this.ngOnInit();
-  }
+
 
   openSecondModal(isEdit: boolean) {
     this.expenseService.isEdit.next(isEdit);
@@ -100,11 +96,13 @@ export class AddExpenseReportComponent {
   getCategoryByUser() {
     const user = this.addExpenseForm.value.employee;
     this.expenseService.selectedUser.next(user);
-    this.expenseService.getExpenseCategoryByUser(user).subscribe((res: any) => {
-      if (!res.data) {
-        this.toast.warning('User is not Assigned to any Expense Categories', 'Warning')
-      }
-    })
+    if (this.isEdit = false) {
+      this.expenseService.getExpenseCategoryByUser(user).subscribe((res: any) => {
+        if (!res.data) {
+          this.toast.warning('User is not Assigned to any Expense Categories', 'Warning')
+        }
+      })
+    }
   }
   createReport() {
     let payload = {
@@ -113,28 +111,40 @@ export class AddExpenseReportComponent {
       expenseReportExpenses: []
     }
     let formArray = this.expenseService.expenseReportExpense.getValue();
+
     payload.expenseReportExpenses = [formArray];
-    console.log(payload, this.addExpenseForm.value);
-    this.expenseService.addExpensePendingReport(payload).subscribe((res: any) => {
-      this.toast.success('Expense Template Applicable Category Updated Successfully!');
-      this.updateExpenseReportTable.emit();
-    },
-      err => {
-        this.toast.error('Expense Template Applicable Category Can not be Updated', 'ERROR!')
-      }
-    )
+    if (!this.isEdit && !this.changeMode) {
+      this.expenseService.addExpensePendingReport(payload).subscribe((res: any) => {
+        this.toast.success('Expense Template Applicable Category Added Successfully!');
+        this.updateExpenseReportTable.emit();
+      },
+        err => {
+          this.toast.error('Expense Template Applicable Category Can not be Added', 'ERROR!')
+        }
+      )
+    }
+    else {
+      let id = this.expenseService.selectedReport.getValue()._id
+      this.expenseService.updateExpenseReport(id, payload).subscribe((res: any) => {
+        this.updateExpenseReportTable.emit();
+        this.toast.success('Expense Template Applicable Category Updated Successfully!');
+      },
+        err => {
+          this.toast.error('Expense Template Applicable Category Can not be Updated', 'ERROR!')
+        }
+      )
+    }
   }
   getCategoryById(categoryId) {
-  this.expenseService.getExpenseCategoryById(categoryId).subscribe((res: any) => {
-    this.category = res.data.label;
-    return this.category
-    console.log(this.category)
-  });
-}
-getCategoryLabel(expenseCategoryId: string): string {
-  const matchingCategory = this.expenseReportExpenses.find(category => category._id === expenseCategoryId);
-  return matchingCategory ? matchingCategory.label : '';
-}
+    this.expenseService.getExpenseCategoryById(categoryId).subscribe((res: any) => {
+      this.category = res.data.label;
+      return this.category
+    });
+  }
+  getCategoryLabel(expenseCategoryId: string): string {
+    const matchingCategory = this.expenseReportExpenses.find(category => category._id === expenseCategoryId);
+    return matchingCategory ? matchingCategory.label : '';
+  }
 
 
   deleteExpenseReportExpense(id: string): void {
@@ -163,8 +173,10 @@ getCategoryLabel(expenseCategoryId: string): string {
 
   getExpenseReportExpensesByReportId() {
     let id = this.expenseService.selectedReport.getValue()._id
-    this.expenseService.getExpenseReportExpensesByReportId(id).subscribe((res: any) => {
-      this.expenseReportExpenses = res.data;
-    })
+    if (this.isEdit = true) {
+      this.expenseService.getExpenseReportExpensesByReportId(id).subscribe((res: any) => {
+        this.expenseReportExpenses = res.data;
+      })
+    }
   }
 }
