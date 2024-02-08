@@ -38,14 +38,16 @@
 
         <section class="example-section">
             <mat-radio-group (change)="toggleIsReimbursable($event)">
-                <mat-radio-button class="example-margin" value="true" [checked]="expenseReportform.get('isReimbursable').value === true">Reimbursable</mat-radio-button>
-                <mat-radio-button class="example-margin" value="false" [checked]="expenseReportform.get('isBillable').value === true">Billable</mat-radio-button>
+                <mat-radio-button class="example-margin" value="true"
+                    [checked]="expenseReportform.get('isReimbursable').value === true">Reimbursable</mat-radio-button>
+                <mat-radio-button class="example-margin" value="false"
+                    [checked]="expenseReportform.get('isBillable').value === true">Billable</mat-radio-button>
             </mat-radio-group>
         </section>
 
         <div class="mb-3">
             <label for="exampleFormControlTextarea1" class="form-label">
-
+                Reason
             </label>
             <textarea class="form-control" id="exampleFormControlTextarea1" formControlName="reason"
                 rows="3"></textarea>

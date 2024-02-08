@@ -41,22 +41,15 @@
                         <td>--</td>
                         <td>--</td>
                         <td>--</td>
-                        <td> <ng-container
-                                *ngIf="expenseReport.expenseReportExpense && expenseReport.expenseReportExpense.length > 0">
-                                {{ expenseReport?.expenseReportExpense[0]?.amount }}
-                            </ng-container></td>
+                        <td>
+                            {{calculateTotalAmount(expenseReport)}}
+                        </td>
 
                         <td>
-                            <ng-container
-                                *ngIf="expenseReport.expenseReportExpense && expenseReport.expenseReportExpense.length > 0">{{
-                                expenseReport[i]?.expenseReportExpense?.isReimbursable }}
-                            </ng-container>
+                            {{calculateTotalisReimbursable(expenseReport, true, false)}}
                         </td>
                         <td>
-                            <ng-container
-                                *ngIf="expenseReport.expenseReportExpense && expenseReport.expenseReportExpense.length > 0">{{
-                                expenseReport.expenseReportExpense?.isBillable }}
-                            </ng-container>
+                            {{calculateTotalisReimbursable(expenseReport, false, true)}}
                         </td>
 
 
