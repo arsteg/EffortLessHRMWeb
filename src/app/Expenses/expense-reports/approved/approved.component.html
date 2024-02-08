@@ -40,35 +40,24 @@
                         <td>{{getUser(expenseReport?.employee)}}</td>
                         <td>--</td>
                         <td>--</td>
-                        <td></td>
-                        <td> 
-                           
-                            <ng-container *ngFor="let expense of expenseReport.expenseReportExpense">
-                                {{ expense?.amount }} 
-                            </ng-container>
-                        </td>
+                        <td>--</td>
+                        <td> <ng-container
+                                *ngIf="expenseReport.expenseReportExpense && expenseReport.expenseReportExpense.length > 0">
+                                {{ expenseReport?.expenseReportExpense[0]?.amount }}
+                            </ng-container></td>
 
                         <td>
-                            <ng-container *ngFor="let expense of expenseReport.expenseReportExpense">
-                                <span *ngIf="expense.isReimbursable == true; else notReimbursable">
-                                    <mat-icon style="color: green;">check</mat-icon>
-                                  </span>
-                                  <ng-template #notReimbursable>
-                                    <mat-icon style="color: red;">close</mat-icon>
-                                  </ng-template>
+                            <ng-container
+                                *ngIf="expenseReport.expenseReportExpense && expenseReport.expenseReportExpense.length > 0">{{
+                                expenseReport[i]?.expenseReportExpense?.isReimbursable }}
                             </ng-container>
-                           
-                          </td>
-                          <td>
-                            <ng-container *ngFor="let expense of expenseReport.expenseReportExpense">
-                                <span *ngIf="expense.isBillable == true; else notReimbursable">
-                                    <mat-icon style="color: green;">check</mat-icon>
-                                  </span>
-                                  <ng-template #notReimbursable>
-                                    <mat-icon style="color: red;">close</mat-icon>
-                                  </ng-template>
+                        </td>
+                        <td>
+                            <ng-container
+                                *ngIf="expenseReport.expenseReportExpense && expenseReport.expenseReportExpense.length > 0">{{
+                                expenseReport.expenseReportExpense?.isBillable }}
                             </ng-container>
-                          </td>
+                        </td>
 
 
                         <td>{{expenseReport?.status}}</td>

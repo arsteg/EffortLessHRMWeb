@@ -90,6 +90,7 @@ export class ApprovedComponent {
   getExpenseReport() {
     this.expenseService.getExpenseReport().subscribe((res: any) => {
       this.expenseReport = res.data.filter(expense => expense.status === 'Approved');
+      console.log(this.expenseReport)
     });
   }
 

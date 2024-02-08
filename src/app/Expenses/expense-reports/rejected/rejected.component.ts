@@ -44,22 +44,10 @@ export class RejectedComponent {
     const matchingUser = this.users.find(user => user._id === employeeId);
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'User Not Found';
   }
-  getReports() {
-    this.expenseService.getExpenseReportExpensesByReportId(this.selectedReport._id).subscribe((res: any) => {
-      this.expenseReportExpenses = res.data;
-    })
-  }
-
-  calculateTotalAmount(): number {
-    let totalAmount = 0;
-    // if (Array.isArray(this.expenseReportExpenses)) {
-      console.log(this.expenseReportExpenses)
-      for (const expense of this.expenseReportExpenses) {
-        totalAmount += expense.amount;
-      // }
-    }
-    return totalAmount;
-  }
+ 
+  
+ 
+  
   editReport(report: any) {
     this.isEdit = true;
     this.selectedReport = report;

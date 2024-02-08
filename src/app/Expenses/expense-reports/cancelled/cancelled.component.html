@@ -35,43 +35,32 @@
                 </thead>
                 <tbody>
                     <tr
-                        *ngFor="let expenseReport of expenseReport | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p };  let i = index">
-                        <td class="ps-2">{{expenseReport?.title}}</td>
-                        <td>{{getUser(expenseReport?.employee)}}</td>
-                        <td>--</td>
-                        <td>--</td>
-                        <td></td>
-                        <td> 
-                           
-                            <ng-container *ngFor="let expense of expenseReport.expenseReportExpense">
-                                {{ expense?.amount }} 
-                            </ng-container>
-                        </td>
+                    *ngFor="let expenseReport of expenseReport | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p };  let i = index">
+                    <td class="ps-2">{{expenseReport?.title}}</td>
+                    <td>{{getUser(expenseReport?.employee)}}</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td> <ng-container
+                            *ngIf="expenseReport.expenseReportExpense && expenseReport.expenseReportExpense.length > 0">
+                            {{ expenseReport?.expenseReportExpense[i]?.amount }}
+                        </ng-container></td>
 
-                        <td>
-                            <ng-container *ngFor="let expense of expenseReport.expenseReportExpense">
-                                <span *ngIf="expense.isReimbursable == true; else notReimbursable">
-                                    <mat-icon style="color: green;">check</mat-icon>
-                                  </span>
-                                  <ng-template #notReimbursable>
-                                    <mat-icon style="color: red;">close</mat-icon>
-                                  </ng-template>
-                            </ng-container>
-                           
-                          </td>
-                          <td>
-                            <ng-container *ngFor="let expense of expenseReport.expenseReportExpense">
-                                <span *ngIf="expense.isBillable == true; else notReimbursable">
-                                    <mat-icon style="color: green;">check</mat-icon>
-                                  </span>
-                                  <ng-template #notReimbursable>
-                                    <mat-icon style="color: red;">close</mat-icon>
-                                  </ng-template>
-                            </ng-container>
-                          </td>
+                    <td>
+                        <ng-container
+                            *ngIf="expenseReport.expenseReportExpense && expenseReport.expenseReportExpense.length > 0">{{
+                            expenseReport[i]?.expenseReportExpense?.isReimbursable }}
+                        </ng-container>
+                    </td>
+                    <td>
+                        <ng-container
+                            *ngIf="expenseReport.expenseReportExpense && expenseReport.expenseReportExpense.length > 0">{{
+                            expenseReport.expenseReportExpense?.isBillable }}
+                        </ng-container>
+                    </td>
 
 
-                        <td>{{expenseReport?.status}}</td>
+                    <td>{{expenseReport?.status}}</td>
                     <td class="">
                         <div class="dropdown-center">
                             <button class="actions ms-2" mat-mini-fab data-bs-toggle="dropdown"
