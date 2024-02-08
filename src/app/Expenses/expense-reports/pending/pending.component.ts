@@ -35,6 +35,8 @@ export class PendingComponent {
   selectedReport;
   updateExpenseReport: FormGroup;
   status: string;
+  expenseReportExpenses: any;
+  
 
   constructor(private modalService: NgbModal,
     private expenseService: ExpensesService,
@@ -63,7 +65,6 @@ export class PendingComponent {
     this.expenseService.getExpenseReport().subscribe(
       (res) => {
         this.expenseReport = res.data.filter(expense => expense.status === 'Level 1 Approval Pending');
-
         this.expenseTemplateReportRefreshed.emit();
       },
       (error) => {
@@ -84,14 +85,13 @@ export class PendingComponent {
     this.isEdit = false;
   }
   open(content: any) {
+
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
     });
   }
-
-
 
   onClose(event) {
     if (event) {
@@ -148,7 +148,6 @@ export class PendingComponent {
     this.selectedReport = report;
     console.log(this.selectedReport)
     this.expenseService.selectedReport.next(this.selectedReport)
-
   }
 
 

@@ -1,5 +1,4 @@
 <div class="d-flex justify-content-between">
-    <!-- {{changeMode == true? 'Update': 'Add'}} -->
     <h1 mat-dialog-title> {{expenseService.isEdit.getValue() == true? 'Update': 'Add'}} Expense</h1>
     <div mat-dialog-actions>
         <button mat-button mat-dialog-close><mat-icon aria-hidden="false" aria-label="Example close icon"
@@ -10,65 +9,59 @@
 </div>
 
 <div mat-dialog-content>
-  <form [formGroup]="expenseReportform">
-    <div class="form-group">
+    <form [formGroup]="expenseReportform">
+        <div class="form-group">
 
-        <label for="firstApprovalEmployee">Select Category<span class="text-danger">*</span></label>
-        <select name="" id="firstApprovalEmployee" formControlName="expenseCategory" required
-            class="ms-2 form-control">
-            <option>Select Category</option>
-            <option *ngFor="let category of categories" [value]="category._id">{{category.label}}</option>
-        </select>
-    </div>
+            <label for="firstApprovalEmployee">Select Category<span class="text-danger">*</span></label>
+            <select name="" id="firstApprovalEmployee" formControlName="expenseCategory" required
+                class="ms-2 form-control">
+                <option>Select Category</option>
+                <option *ngFor="let category of categories" [value]="category._id">{{category.label}}</option>
+            </select>
+        </div>
 
-    <div class="mt-2">
-        <label for="">Select Date</label>
-        <div class=" col-12 form-group mb-3">
-          
+        <div class="mt-2">
+            <label for="">Select Date</label>
+            <div class=" col-12 form-group mb-3">
+
                 <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
                     [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="incurredDate" />
+            </div>
         </div>
-    </div>
 
-    <div class="mt-2">
-        <label for="">Amount</label>
-        <div class=" col-12 form-group mb-3">
-            <input type="number" class="form-control" formControlName="amount" />
+        <div class="mt-2">
+            <label for="">Amount</label>
+            <div class=" col-12 form-group mb-3">
+                <input type="number" class="form-control" formControlName="amount" />
+            </div>
         </div>
-    </div>
-    
-    <div class="form-check">
-        <input class="form-check-input" type="radio" [value]="true" formControlName="isReimbursable" name="flexRadioDefault" id="flexRadioDefault1">
-        <label class="form-check-label" for="flexRadioDefault1">
-            Reimbursable
-        </label>
-      </div>
-      <div class="form-check">
-        <input class="form-check-input" type="radio" [value]="false" formControlName="isBillable" name="flexRadioDefault" id="flexRadioDefault2" checked>
-        <label class="form-check-label" for="flexRadioDefault2">
-            Billable
-        </label>
-      </div>
 
-    <div class="mb-3">
-        <label for="exampleFormControlTextarea1" class="form-label">Reason</label>
-        <textarea class="form-control" id="exampleFormControlTextarea1" formControlName="reason"
-            rows="3"></textarea>
-    </div>
+        <section class="example-section">
+            <mat-radio-group (change)="toggleIsReimbursable($event)">
+                <mat-radio-button class="example-margin" value="true" [checked]="expenseReportform.get('isReimbursable').value === true">Reimbursable</mat-radio-button>
+                <mat-radio-button class="example-margin" value="false" [checked]="expenseReportform.get('isBillable').value === true">Billable</mat-radio-button>
+            </mat-radio-group>
+        </section>
 
-    <div class="input-group mb-3">
-        <label class="input-group-text" for="inputGroupFile01">Upload</label>
-        <input type="file" class="form-control" formControlName="documentLink" id="inputGroupFile01">
-    </div> 
+        <div class="mb-3">
+            <label for="exampleFormControlTextarea1" class="form-label">
 
-    <div>
-        <button mat-raised-button type="button">Cancel</button>
-        <button mat-button mat-dialog-close type="submit" (click)="onSubmission()">Submit</button>
+            </label>
+            <textarea class="form-control" id="exampleFormControlTextarea1" formControlName="reason"
+                rows="3"></textarea>
+        </div>
 
-    </div>
+        <div class="input-group mb-3">
+            <label class="input-group-text" for="inputGroupFile01">Upload</label>
+            <input type="file" class="form-control" formControlName="documentLink" id="inputGroupFile01">
+        </div>
+
+        <div>
+            <button mat-raised-button type="button">Cancel</button>
+            <button mat-button mat-dialog-close type="submit" (click)="onSubmission()">Submit</button>
+
+        </div>
 
 
-</form>
-</div> 
-
-
+    </form>
+</div>

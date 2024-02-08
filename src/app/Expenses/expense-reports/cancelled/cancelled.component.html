@@ -34,33 +34,63 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td class="ps-2"></td>
+                    <tr
+                        *ngFor="let expenseReport of expenseReport | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p };  let i = index">
+                        <td class="ps-2">{{expenseReport?.title}}</td>
+                        <td>{{getUser(expenseReport?.employee)}}</td>
+                        <td>--</td>
+                        <td>--</td>
                         <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td class="">
-                            <div class="dropdown-center">
-                                <button class="actions ms-2" mat-mini-fab data-bs-toggle="dropdown"
-                                    aria-expanded="false" aria-label="Example icon button with a menu icon">
-                                    <i class="bi bi-send"></i>
-                                </button>
-                                <ul class="dropdown-menu py-0">
-                                    <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
-                                        data-bs-target="#viewModal">
-                                        <i class="fas fa-eye dropdown-item w-25"></i><span
-                                            class="pt-1 text-muted">View</span>
-                                    </li>
-                                    
-                                </ul>
-                            </div>
+                        <td> 
+                           
+                            <ng-container *ngFor="let expense of expenseReport.expenseReportExpense">
+                                {{ expense?.amount }} 
+                            </ng-container>
                         </td>
-                    </tr>
+
+                        <td>
+                            <ng-container *ngFor="let expense of expenseReport.expenseReportExpense">
+                                <span *ngIf="expense.isReimbursable == true; else notReimbursable">
+                                    <mat-icon style="color: green;">check</mat-icon>
+                                  </span>
+                                  <ng-template #notReimbursable>
+                                    <mat-icon style="color: red;">close</mat-icon>
+                                  </ng-template>
+                            </ng-container>
+                           
+                          </td>
+                          <td>
+                            <ng-container *ngFor="let expense of expenseReport.expenseReportExpense">
+                                <span *ngIf="expense.isBillable == true; else notReimbursable">
+                                    <mat-icon style="color: green;">check</mat-icon>
+                                  </span>
+                                  <ng-template #notReimbursable>
+                                    <mat-icon style="color: red;">close</mat-icon>
+                                  </ng-template>
+                            </ng-container>
+                          </td>
+
+
+                        <td>{{expenseReport?.status}}</td>
+                    <td class="">
+                        <div class="dropdown-center">
+                            <button class="actions ms-2" mat-mini-fab data-bs-toggle="dropdown"
+                                aria-expanded="false" aria-label="Example icon button with a menu icon">
+                                <i class="bi bi-send"></i>
+                            </button>
+
+                            <ul class="dropdown-menu py-0">
+                                <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
+                                    data-bs-target="#viewModal"
+                                    (click)=" open(viewModal); selectedReport = expenseReport;">
+                                    <i class="fas fa-eye dropdown-item w-25"></i><span
+                                        class="pt-1 text-muted">View</span>
+                                </li>
+                               
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
                 </tbody>
             </table>
             <pagination-controls class="pagination d-flex justify-content-end"></pagination-controls>
@@ -70,39 +100,9 @@
 </div>
 
 <!-- View Modal -->
-<div class="modal" id="viewModal">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-body">
-                <div class=" d-flex justify-content-between">
-                    <div class="">
-                        <h4 class="modal-title text-start">Show Expense Details</h4>
-                    </div>
-                    <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
-                    </div>
-                </div>
-                <hr class="mt-0">
-                <div class="row">
-                    
-                        <div class="mt-4 tableContainer">
-                            <table class="" style="color: #fff;">
-                                <tbody>
-                                    <tr>
-                                        <th>Expense Report Title</th>
-                                        <th>Status</th>
-                                        <th>Total Reimbursable</th>
-                                        <th>Total Billable</th>
-                                        <th>Advance Received</th>
-                                        <th>Total Amount</th>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+<ng-template #viewModal let-modal>
+    <app-view-report (close)="onClose($event)" [report]="selectedReport"></app-view-report>
+</ng-template>
 
 
 

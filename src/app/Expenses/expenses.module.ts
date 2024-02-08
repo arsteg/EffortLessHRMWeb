@@ -29,6 +29,11 @@ import { AddExpenseReportComponent } from './expense-reports/add-expense-report/
 import { CreateReportComponent } from './expense-reports/create-report/create-report.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import {MatIconModule} from '@angular/material/icon';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatRadioModule} from '@angular/material/radio';
+import { ViewReportComponent } from './expense-reports/view-report/view-report.component';
+
 
 @NgModule({
   declarations: [
@@ -48,7 +53,8 @@ import {MatIconModule} from '@angular/material/icon';
     CancelledComponent,
     RejectedComponent,
     AddExpenseReportComponent,
-    CreateReportComponent
+    CreateReportComponent,
+    ViewReportComponent
   ],
   imports: [
     CommonModule,
@@ -59,7 +65,10 @@ import {MatIconModule} from '@angular/material/icon';
     BrowserAnimationsModule,
     MatDialogModule,
     MatIconModule,
-    BsDatepickerModule.forRoot()
+    BsDatepickerModule.forRoot(),
+    MatExpansionModule,
+    MatCheckboxModule,
+    MatRadioModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

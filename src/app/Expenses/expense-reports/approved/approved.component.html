@@ -40,24 +40,35 @@
                         <td>{{getUser(expenseReport?.employee)}}</td>
                         <td>--</td>
                         <td>--</td>
-                        <td>--</td>
-                        <td> <ng-container
-                                *ngIf="expenseReport.expenseReportExpense && expenseReport.expenseReportExpense.length > 0">
-                                {{ expenseReport.expenseReportExpense[0]?.amount }}
-                            </ng-container></td>
+                        <td></td>
+                        <td> 
+                           
+                            <ng-container *ngFor="let expense of expenseReport.expenseReportExpense">
+                                {{ expense?.amount }} 
+                            </ng-container>
+                        </td>
 
                         <td>
-                            <ng-container
-                                *ngIf="expenseReport.expenseReportExpense && expenseReport.expenseReportExpense.length > 0">{{
-                                expenseReport[i]?.expenseReportExpense?.isReimbursable }}
+                            <ng-container *ngFor="let expense of expenseReport.expenseReportExpense">
+                                <span *ngIf="expense.isReimbursable == true; else notReimbursable">
+                                    <mat-icon style="color: green;">check</mat-icon>
+                                  </span>
+                                  <ng-template #notReimbursable>
+                                    <mat-icon style="color: red;">close</mat-icon>
+                                  </ng-template>
                             </ng-container>
-                        </td>
-                        <td>
-                            <ng-container
-                                *ngIf="expenseReport.expenseReportExpense && expenseReport.expenseReportExpense.length > 0">{{
-                                expenseReport.expenseReportExpense?.isBillable }}
+                           
+                          </td>
+                          <td>
+                            <ng-container *ngFor="let expense of expenseReport.expenseReportExpense">
+                                <span *ngIf="expense.isBillable == true; else notReimbursable">
+                                    <mat-icon style="color: green;">check</mat-icon>
+                                  </span>
+                                  <ng-template #notReimbursable>
+                                    <mat-icon style="color: red;">close</mat-icon>
+                                  </ng-template>
                             </ng-container>
-                        </td>
+                          </td>
 
 
                         <td>{{expenseReport?.status}}</td>
@@ -67,9 +78,11 @@
                                     aria-expanded="false" aria-label="Example icon button with a menu icon">
                                     <i class="bi bi-send"></i>
                                 </button>
+
                                 <ul class="dropdown-menu py-0">
                                     <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
-                                        data-bs-target="#viewModal">
+                                        data-bs-target="#viewModal"
+                                        (click)=" open(viewModal); selectedReport = expenseReport;">
                                         <i class="fas fa-eye dropdown-item w-25"></i><span
                                             class="pt-1 text-muted">View</span>
                                     </li>
@@ -90,88 +103,9 @@
 </div>
 
 <!-- View Only -->
-<div class="modal" id="viewModal">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-body">
-                <div class=" d-flex justify-content-between">
-                    <div class="">
-                        <h4 class="modal-title text-start">Show Expense Details</h4>
-                    </div>
-                    <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
-                    </div>
-                </div>
-                <hr class="mt-0">
-                <div class="row">
-                    <div class="tableContainer">
-                        <table>
-                            <tr>
-                                <th class="w-50">Expense Report Title</th>
-                                <td>--</td>
-                            </tr>
-                            <tr>
-                                <th class="w-50">Status</th>
-                                <td>--</td>
-                            </tr>
-                            <tr>
-                                <th class="w-50">Total Reimbursable</th>
-                                <td>--</td>
-                            </tr>
-                            <tr>
-                                <th class="w-50">Total Billable</th>
-                                <td>--</td>
-                            </tr>
-                            <tr>
-                                <th class="w-50">Advance Received</th>
-                                <td>--</td>
-                            </tr>
-                            <tr>
-                                <th class="w-50">Total Amount</th>
-                                <td>--</td>
-                            </tr>
-                            <tr>
-                                <th class="w-50">Admin Approval Comment</th>
-                                <td>--</td>
-                            </tr>
-                        </table>
-                    </div>
-
-                    <div class="mt-4 tableContainer">
-                        <table class="" style="color: #fff;">
-                            <thead>
-                                <tr>
-                                    <th>Incurred Date</th>
-                                    <th>Category</th>
-                                    <th>Amount</th>
-                                    <th>Reimbursable</th>
-                                    <th>Billable</th>
-                                    <th>Attachment</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td>
-                                        <button class="actions ms-2" mat-mini-fab data-bs-toggle="modal"
-                                            data-bs-target="viewReport">
-                                            <i class="bi bi-send"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+<ng-template #viewModal let-modal>
+    <app-view-report (close)="onClose($event)" [report]="selectedReport"></app-view-report>
+</ng-template>
 
 <!-- cancel request -->
 
@@ -188,7 +122,7 @@
                 </div>
                 <hr class="mt-0">
                 <div class="row">
-                    <form [formGroup]="updateExpenseReport" (ngSubmit)="updateReport()">
+                    <form [formGroup]="updateExpenseReport" (ngSubmit)="updateCancelledReport()">
                         <h4 class="modal-title text-center">Are You Sure You Want To Cancel This Request?</h4>
                         <div class="d-flex justify-content-between m-3">
                             <div>

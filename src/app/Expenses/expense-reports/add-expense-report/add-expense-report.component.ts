@@ -26,7 +26,7 @@ export class AddExpenseReportComponent {
   addExpenseForm: FormGroup;
   expenseReport: any[];
   @Output() updateExpenseReportTable: EventEmitter<void> = new EventEmitter<void>();
-  isEdit: boolean = false;
+  isEdit: boolean;
   category: any;
   expenseReportExpenses: any;
   selectedExpenseReportExpense: any;
@@ -38,8 +38,9 @@ export class AddExpenseReportComponent {
     private fb: FormBuilder,
     private toast: ToastrService,
     private cdr: ChangeDetectorRef) {
+     
     this.addExpenseForm = this.fb.group({
-      employee: ['', Validators.required],
+      employee: [{value:'', disabled: this.changeMode}, Validators.required],
       title: ['', Validators.required],
       expenseReportExpenses: []
     });
@@ -48,18 +49,23 @@ export class AddExpenseReportComponent {
 
 
   ngOnInit() {
-    console.log(this.isEdit, this.changeMode)
-    this.addExpenseForm.patchValue({
-      employee: this.expenseService.selectedReport.getValue().employee,
-      title: this.expenseService.selectedReport.getValue().title
-    });
+    if (!this.isEdit && !this.changeMode) {
+      this.addExpenseForm.reset();
+    }
+    else {
+      this.addExpenseForm.patchValue({
+        employee: this.expenseService.selectedReport.getValue().employee,
+        title: this.expenseService.selectedReport.getValue().title
+      });
+      this.getExpenseReportExpensesByReportId();
+    }
     this.commonService.populateUsers().subscribe((res: any) => {
       this.users = res.data.data;
     });
     this.getCategoryByUser();
-    this.getExpenseReportExpensesByReportId();
 
   }
+
   ngAfterViewInit() {
     this.updateTableSubscription = this.expenseService.updateTable$.subscribe(() => {
       this.getExpenseReportExpensesByReportId();
@@ -85,9 +91,8 @@ export class AddExpenseReportComponent {
   }
 
   getSelectedExpenseReportExpense(selectedExpenseReportExpense: any) {
-    this.expenseService.expenseReportExpense.next(selectedExpenseReportExpense)
-    this.expenseService.getExpenseReportExpensesById(selectedExpenseReportExpense._id).subscribe((res: any) => {
-    })
+    console.log(selectedExpenseReportExpense)
+    this.expenseService.expenseReportExpense.next(selectedExpenseReportExpense);
   }
 
   closeModal() {
@@ -113,7 +118,7 @@ export class AddExpenseReportComponent {
     let formArray = this.expenseService.expenseReportExpense.getValue();
 
     payload.expenseReportExpenses = [formArray];
-    if (!this.isEdit && !this.changeMode) {
+    if (!this.isEdit || !this.changeMode) {
       this.expenseService.addExpensePendingReport(payload).subscribe((res: any) => {
         this.toast.success('Expense Template Applicable Category Added Successfully!');
         this.updateExpenseReportTable.emit();
@@ -161,6 +166,7 @@ export class AddExpenseReportComponent {
       }
     });
   }
+
   deleteReport(id: string) {
     this.expenseService.deleteExpenseReportExpenses(id).subscribe((res: any) => {
       this.expenseReportExpenses = this.expenseReportExpenses.filter(report => report._id !== id);
@@ -172,8 +178,9 @@ export class AddExpenseReportComponent {
   }
 
   getExpenseReportExpensesByReportId() {
-    let id = this.expenseService.selectedReport.getValue()._id
-    if (this.isEdit = true) {
+    let id = this.expenseService.selectedReport.getValue()._id;
+    console.log(this.expenseService.expenseReportExpense.getValue())
+    if (this.changeMode) {
       this.expenseService.getExpenseReportExpensesByReportId(id).subscribe((res: any) => {
         this.expenseReportExpenses = res.data;
       })

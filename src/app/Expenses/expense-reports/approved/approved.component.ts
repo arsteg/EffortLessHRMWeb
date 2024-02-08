@@ -1,8 +1,10 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Observable } from 'rxjs';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { CommonService } from 'src/app/common/common.service';
+import { map } from 'rxjs/operators'
 
 @Component({
   selector: 'app-approved',
@@ -20,22 +22,24 @@ export class ApprovedComponent {
   isEdit: boolean = false;
   p: number = 1;
   updateExpenseReport: FormGroup;
-  selectedReport;
+  expenseReportExpenses: any;
+  selectedReport: any;
+  categories: any;
 
   constructor(private modalService: NgbModal,
     private expenseService: ExpensesService,
     private commonService: CommonService,
     private fb: FormBuilder) {
-      this.updateExpenseReport = this.fb.group({
-        employee: [''],
-        title: [''],
-        status: [''],
-        primaryApprovalReason: [''],
-        secondaryApprovalReason: ['']
-      })
-     }
+    this.updateExpenseReport = this.fb.group({
+      employee: [''],
+      title: [''],
+      status: [''],
+      primaryApprovalReason: [''],
+      secondaryApprovalReason: ['']
+    })
+  }
 
-    ngOnInit() {
+  ngOnInit() {
     this.getExpenseReport();
     this.commonService.populateUsers().subscribe((res: any) => {
       this.users = res.data.data;
@@ -93,7 +97,7 @@ export class ApprovedComponent {
     const matchingUser = this.users.find(user => user._id === employeeId);
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'User Not Found';
   }
-  
+
   updateReport() {
     let id = this.selectedReport._id;
     let payload = {
@@ -108,4 +112,38 @@ export class ApprovedComponent {
     })
   }
 
+
+
+  getCategories() {
+    this.expenseService.getExpenseCatgories().subscribe((res: any) => {
+      console.log(res.data);
+      this.categories = res.data;
+    })
+  }
+
+
+
+  getCategoryLabel(expenseCategoryId: string): Observable<string> {
+    return this.expenseService.getExpenseCatgories().pipe(
+      map((res: any) => {
+        const categories = res.data;
+        const matchingCategory = categories.find(category => category._id === expenseCategoryId);
+        return matchingCategory ? matchingCategory.label : '';
+      })
+    );
+  }
+  updateCancelledReport() {
+    let id = this.selectedReport._id;
+    let payload = {
+      employee: this.selectedReport.employee,
+      title: this.selectedReport.title,
+      status: 'Cancelled',
+      primaryApprovalReason: this.updateExpenseReport.value.primaryApprovalReason,
+      secondaryApprovalReason: ''
+    }
+    this.expenseService.updateExpenseReport(id, payload).subscribe((res: any) => {
+      this.expenseReport = this.expenseReport.filter(report => report._id !== id);
+    })
+  }
+  
 }

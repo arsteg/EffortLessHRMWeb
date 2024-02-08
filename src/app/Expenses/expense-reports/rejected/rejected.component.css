@@ -14,3 +14,7 @@
     margin-bottom: 4px;
     border: 1px solid #d5d3d3;
   }
+
+  .mat-expansion-panel:not([class*=mat-elevation-z]){
+    box-shadow: none !important;
+  }

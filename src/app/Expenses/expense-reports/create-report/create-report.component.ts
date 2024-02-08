@@ -33,6 +33,7 @@ export class CreateReportComponent {
   bsValue = new Date();
   bsRangeValue: Date[];
   maxDate = new Date();
+  labelPosition: true | false = true;
 
   constructor(public expenseService: ExpensesService,
     private fb: FormBuilder,
@@ -43,8 +44,8 @@ export class CreateReportComponent {
       expenseCategory: [''],
       incurredDate: [],
       amount: [0],
-      isReimbursable: [],
-      isBillable: [],
+      isReimbursable: [''],
+      isBillable: [''],
       reason: [''],
       documentLink: [''],
       expenseReport: ['']
@@ -54,7 +55,6 @@ export class CreateReportComponent {
     }
 
   ngOnInit() {
-    console.log(this.expenseService.expenseReportExpense.getValue())
     if (this.expenseService.isEdit.getValue() == true) {
       this.expenseService.expenseReportExpense.subscribe(res => {
         this.formValues = res;
@@ -101,7 +101,7 @@ export class CreateReportComponent {
     if (this.expenseService.isEdit.getValue() == true) {
       // update expense report expenses
       this.expenseService.updateExpenseReportExpenses(expenseReportExpenses, payload).subscribe((res: any) => {
-        this.expenseService.expenseReportExpense.next(this.expenseReportform.value);
+        this.expenseService.expenseReportExpense.next(res.data);
         this.toast.success('Expense Report of Expenses is Updated!', 'Successfully!!!')
       },
         err => {
@@ -112,7 +112,7 @@ export class CreateReportComponent {
       // add new expense report expenses  
       payload.expenseReport = this.expenseService.selectedReport.getValue()._id;
       this.expenseService.addExpenseReportExpenses(payload).subscribe((res: any) => {
-        this.expenseService.expenseReportExpense.next(this.expenseReportform.value);
+        this.expenseService.expenseReportExpense.next(res.data);
         this.toast.success('Expense Report of Expenses is Created!', 'Successfully!!!')
       },
         err => {
@@ -134,5 +134,9 @@ export class CreateReportComponent {
     this.close.emit(true);
     this.changeStep.emit(1)
   }
-
+  toggleIsReimbursable(event: any) {
+    const value = event.value === 'true';
+    this.expenseReportform.patchValue({ isReimbursable: value });
+    this.expenseReportform.patchValue({ isBillable: !value });
+}
 }

@@ -1,0 +1,90 @@
+<div class="modal-body">
+    <div class=" d-flex justify-content-between">
+        <div class="">
+            <h4 class="modal-title text-start">Show Expense Details</h4>
+        </div>
+        <div class=""><button type="button" data-bs-dismiss="modal" (click)="closeModal()" class="btn-close text-end"></button>
+        </div>
+    </div>
+    <hr class="mt-0">
+    <div class="row">
+        <div class="tableContainer">
+            <table>
+                <tr>
+                    <th class="w-50">Expense Report Title</th>
+                    <td>{{report?.title}}</td>
+                </tr>
+                <tr>
+                    <th class="w-50">Status</th>
+                    <td>{{report?.status}}</td>
+                </tr>
+                <tr>
+                    <th class="w-50">Total Reimbursable</th>
+                    <td>{{calculateSumOfReimbursableAmounts()}}</td>
+                </tr>
+                <tr>
+                    <th class="w-50">Total Billable</th>
+                    <td>{{calculateSumOfBillableAmounts()}}</td>
+                </tr>
+                <tr>
+                    <th class="w-50">Advance Received</th>
+                    <td>--</td>
+                </tr>
+                <tr>
+                    <th class="w-50">Total Amount</th>
+                    <td>{{calculateTotalAmount()}}</td>
+                </tr>
+                <tr>
+                    <th class="w-50">Admin Approval Comment</th>
+                    <td>{{selectedReport?.reason}}</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="mt-4 tableContainer">
+            <table class="" style="color: #fff;">
+                <thead>
+                    <tr>
+                        <th>Incurred Date</th>
+                        <th>Category</th>
+                        <th>Amount</th>
+                        <th>Reimbursable</th>
+                        <th>Billable</th>
+                        <th>Attachment</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let report of expenseReportExpenses;">
+                        <td>{{report.incurredDate | date: 'mediumDate'}}</td>
+                        <td></td>
+                        <td>{{report?.amount}}</td>
+                        <td> <span *ngIf="report.isReimbursable == true; else notReimbursable">
+                                <mat-icon style="color: green;">check</mat-icon>
+                            </span>
+                            <ng-template #notReimbursable>
+                                <mat-icon style="color: red;">close</mat-icon>
+                            </ng-template>
+                        </td>
+                        <td><span *ngIf="report.isBillable == true; else notBillable">
+                                <mat-icon style="color: green;">check</mat-icon>
+                            </span>
+                            <ng-template #notBillable>
+                                <mat-icon style="color: red;">close</mat-icon>
+                            </ng-template>
+                        </td>
+                        <td><span *ngIf="report.documentLink" (click)="selectedReport = report; downloadFile();">
+                                <i class="bi bi-paperclip text-muted" style="font-size: large;"></i>
+                            </span></td>
+                        <td>
+                            <button class="actions ms-2" mat-mini-fab data-bs-toggle="modal"
+                                data-bs-target="viewReport">
+                                <i class="bi bi-send"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

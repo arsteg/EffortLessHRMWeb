@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ExpensesService } from 'src/app/_services/expenses.service';
+import { CommonService } from 'src/app/common/common.service';
 
 @Component({
   selector: 'app-cancelled',
@@ -15,10 +16,33 @@ export class CancelledComponent {
   @Output() expenseTemplateReportRefreshed: EventEmitter<void> = new EventEmitter<void>();
   expenseReport: any;
   isEdit: boolean = false;
+  users: any[];
+  selectedReport: any;
+  expenseReportExpenses: any;
+  p: number = 1;
 
   constructor(private modalService: NgbModal,
-    private expenseService: ExpensesService ) { }
+    private expenseService: ExpensesService,
+    private commonService: CommonService ) { }
+
+    ngOnInit() {
+      this.getExpenseReport();
+      this.commonService.populateUsers().subscribe((res: any) => {
+        this.users = res.data.data;
+      });
+    }
   
+    getExpenseReport() {
+      this.expenseService.getExpenseReport().subscribe((res: any) => {
+        this.expenseReport = res.data.filter(expense => expense.status === 'Cancelled');
+      });
+    }
+  
+    getUser(employeeId: string) {
+      const matchingUser = this.users.find(user => user._id === employeeId);
+      return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'User Not Found';
+    }
+
     private getDismissReason(reason: any): string {
       if (reason === ModalDismissReasons.ESC) {
         return 'by pressing ESC';
@@ -60,5 +84,10 @@ export class CancelledComponent {
           console.error('Error refreshing expense template table:', error);
         }
       );
+    }
+    getReports() {
+      this.expenseService.getExpenseReportExpensesByReportId(this.selectedReport._id).subscribe((res: any) => {
+        this.expenseReportExpenses = res.data;
+      })
     }
 }
