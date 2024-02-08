@@ -1,5 +1,8 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ExpensesService } from 'src/app/_services/expenses.service';
+import { ViewExpenseReportExpensesComponent } from '../view-expense-report-expenses/view-expense-report-expenses.component';
 
 @Component({
   selector: 'app-view-report',
@@ -12,8 +15,12 @@ export class ViewReportComponent {
   @Input() report: any;
   @Output() close: any = new EventEmitter();
   totalAmount: number = 0;
+  closeResult: string = '';
+  selectedExpense: any;
 
-  constructor(private expenseService: ExpensesService) { }
+  constructor(private expenseService: ExpensesService,
+    private modalService: NgbModal,
+    private dialog: MatDialog) { }
 
   ngOnInit() {
     this.expenseService.getExpenseReportExpensesByReportId(this.report._id).subscribe((res: any) => {
@@ -72,5 +79,36 @@ export class ViewReportComponent {
   closeModal() {
     this.close.emit(true);
   }
-
+  onClose(event) {
+    if (event) {
+      this.modalService.dismissAll();
+    }
+  }
+  open(content: any) {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
+  }
+  private getDismissReason(reason: any): string {
+    if (reason === ModalDismissReasons.ESC) {
+      return 'by pressing ESC';
+    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+      return 'by clicking on a backdrop';
+    } else {
+      return `with: ${reason}`;
+    }
+  }
+  openSecondModal(selectedReport: any): void {
+    console.log(selectedReport);
+    this.expenseService.report.next(selectedReport);
+    const dialogRef = this.dialog.open(ViewExpenseReportExpensesComponent, {
+        width: '50%',
+        data: { report: selectedReport } // Pass the selected report as data to the modal
+    });
+    dialogRef.afterClosed().subscribe(result => {
+        console.log('The modal was closed');
+    });
+}
 }

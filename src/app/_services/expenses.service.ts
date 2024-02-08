@@ -28,6 +28,7 @@ export class ExpensesService {
   expenseReportExpense: any = new BehaviorSubject('');
   selectedReport: any = new BehaviorSubject('');
   isEdit: any = new BehaviorSubject(false);
+  report: any = new BehaviorSubject('');
   private updateTableSubject = new BehaviorSubject<void>(null);
   updateTable$ = this.updateTableSubject.asObservable();
 

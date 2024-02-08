@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ExpensesService } from 'src/app/_services/expenses.service';
+import { ExportService } from 'src/app/_services/export.service';
 import { CommonService } from 'src/app/common/common.service';
 
 @Component({
@@ -20,10 +21,12 @@ export class CancelledComponent {
   selectedReport: any;
   expenseReportExpenses: any;
   p: number = 1;
+  displayedData: any[]=[];
 
   constructor(private modalService: NgbModal,
     private expenseService: ExpensesService,
-    private commonService: CommonService ) { }
+    private commonService: CommonService,
+    private exportService: ExportService  ) { }
 
     ngOnInit() {
       this.getExpenseReport();
@@ -85,9 +88,15 @@ export class CancelledComponent {
         }
       );
     }
-    getReports() {
-      this.expenseService.getExpenseReportExpensesByReportId(this.selectedReport._id).subscribe((res: any) => {
-        this.expenseReportExpenses = res.data;
-      })
+    exportToCsv() {
+      const dataToExport = this.expenseReport.map((categories) => ({
+        title: categories.title,
+        employee: this.getUser(categories.employee),
+        amount: categories?.expenseReportExpense[0]?.amount,
+        isReimbursable: categories?.expenseReportExpense[0]?.isReimbursable ? categories?.expenseReportExpense[0]?.amount : 0,
+        isBillable: categories?.expenseReportExpense[0]?.isBillable ? categories?.expenseReportExpense[0]?.amount : 0,
+        status: categories.status
+      }));
+      this.exportService.exportToCSV('Expense-Report', 'Expense-Report', dataToExport);
     }
 }

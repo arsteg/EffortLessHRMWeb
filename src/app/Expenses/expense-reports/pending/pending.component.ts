@@ -152,16 +152,17 @@ export class PendingComponent {
 
 
   exportToCsv() {
-    const dataToExport = this.displayedData.map((categories) => ({
+    const dataToExport = this.expenseReport.map((categories) => ({
       title: categories.title,
       employee: this.getUser(categories.employee),
-      amount: categories.amount,
-      isReimbursable: categories.isReimbursable ? categories.amount : 0,
-      isBillable: categories.isBillable ? categories.amount : 0,
+      amount: categories?.expenseReportExpense[0]?.amount,
+      isReimbursable: categories?.expenseReportExpense[0]?.isReimbursable ? categories?.expenseReportExpense[0]?.amount : 0,
+      isBillable: categories?.expenseReportExpense[0]?.isBillable ? categories?.expenseReportExpense[0]?.amount : 0,
       status: categories.status
     }));
-    this.exportService.exportToCSV('ApplicationUsages', 'applicationUsages', dataToExport);
+    this.exportService.exportToCSV('Expense-Report', 'Expense-Report', dataToExport);
   }
+  
   updateApprovedReport() {
     let id = this.selectedReport._id;
     let payload = {

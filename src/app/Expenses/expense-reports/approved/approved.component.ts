@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { CommonService } from 'src/app/common/common.service';
 import { map } from 'rxjs/operators'
+import { ExportService } from 'src/app/_services/export.service';
 
 @Component({
   selector: 'app-approved',
@@ -25,11 +26,14 @@ export class ApprovedComponent {
   expenseReportExpenses: any;
   selectedReport: any;
   categories: any;
+  displayedData: any[] = [];
+
 
   constructor(private modalService: NgbModal,
     private expenseService: ExpensesService,
     private commonService: CommonService,
-    private fb: FormBuilder) {
+    private fb: FormBuilder,
+    private exportService: ExportService) {
     this.updateExpenseReport = this.fb.group({
       employee: [''],
       title: [''],
@@ -146,5 +150,15 @@ export class ApprovedComponent {
       this.expenseReport = this.expenseReport.filter(report => report._id !== id);
     })
   }
-  
+  exportToCsv() {
+    const dataToExport = this.expenseReport.map((categories) => ({
+      title: categories.title,
+      employee: this.getUser(categories.employee),
+      amount: categories?.expenseReportExpense[0]?.amount,
+      isReimbursable: categories?.expenseReportExpense[0]?.isReimbursable ? categories?.expenseReportExpense[0]?.amount : 0,
+      isBillable: categories?.expenseReportExpense[0]?.isBillable ? categories?.expenseReportExpense[0]?.amount : 0,
+      status: categories.status
+    }));
+    this.exportService.exportToCSV('Expense-Report', 'Expense-Report', dataToExport);
+  }
 }

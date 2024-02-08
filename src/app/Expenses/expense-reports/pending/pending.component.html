@@ -206,7 +206,9 @@
 
 <!--View Modal-->
 <ng-template #viewModal let-modal>
-    <app-view-report (close)="onClose($event)" [report]="selectedReport"></app-view-report>
+    <app-view-report (close)="onClose($event)" (changeStep)="onChangeStep($event)" *ngIf="step == 1" [report]="selectedReport"></app-view-report>
+    <app-view-expense-report-expenses (close)="onClose($event)" (changeStep)="onChangeStep($event)" *ngIf="step == 2"></app-view-expense-report-expenses>
+
 </ng-template>
 
 <!-- Add/Update Modal -->

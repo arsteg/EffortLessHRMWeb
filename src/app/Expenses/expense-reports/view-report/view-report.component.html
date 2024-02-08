@@ -78,7 +78,7 @@
                             </span></td>
                         <td>
                             <button class="actions ms-2" mat-mini-fab data-bs-toggle="modal"
-                                data-bs-target="viewReport">
+                                data-bs-target="viewReport" (click)="openSecondModal(report);">
                                 <i class="bi bi-send"></i>
                             </button>
                         </td>
@@ -88,3 +88,6 @@
         </div>
     </div>
 </div>
+<!-- <ng-template #viewReport let-modal >
+    <app-view-expense-report-expenses (close)="onClose($event)" [expense]="selectedExpense"></app-view-expense-report-expenses>
+</ng-template> -->

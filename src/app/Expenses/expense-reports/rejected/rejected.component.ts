@@ -44,9 +44,6 @@ export class RejectedComponent {
     const matchingUser = this.users.find(user => user._id === employeeId);
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'User Not Found';
   }
- 
-  
- 
   
   editReport(report: any) {
     this.isEdit = true;
@@ -100,11 +97,11 @@ export class RejectedComponent {
     const dataToExport = this.expenseReport.map((categories) => ({
       title: categories.title,
       employee: this.getUser(categories.employee),
-      amount: categories.amount,
-      isReimbursable: categories.isReimbursable ? categories.amount : 0,
-      isBillable: categories.isBillable ? categories.amount : 0,
+      amount: categories?.expenseReportExpense[0]?.amount,
+      isReimbursable: categories?.expenseReportExpense[0]?.isReimbursable ? categories?.expenseReportExpense[0]?.amount : 0,
+      isBillable: categories?.expenseReportExpense[0]?.isBillable ? categories?.expenseReportExpense[0]?.amount : 0,
       status: categories.status
     }));
-    this.exportService.exportToCSV('ApplicationUsages', 'applicationUsages', dataToExport);
+    this.exportService.exportToCSV('Expense-Report', 'Expense-Report', dataToExport);
   }
 }

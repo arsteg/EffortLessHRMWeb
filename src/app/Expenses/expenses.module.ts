@@ -33,6 +33,7 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatRadioModule} from '@angular/material/radio';
 import { ViewReportComponent } from './expense-reports/view-report/view-report.component';
+import { ViewExpenseReportExpensesComponent } from './expense-reports/view-expense-report-expenses/view-expense-report-expenses.component';
 
 
 @NgModule({
@@ -54,7 +55,8 @@ import { ViewReportComponent } from './expense-reports/view-report/view-report.c
     RejectedComponent,
     AddExpenseReportComponent,
     CreateReportComponent,
-    ViewReportComponent
+    ViewReportComponent,
+    ViewExpenseReportExpensesComponent
   ],
   imports: [
     CommonModule,
