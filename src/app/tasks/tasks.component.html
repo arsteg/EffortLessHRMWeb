@@ -59,8 +59,8 @@
                                 <button (click)="toggleViewMode()" class="mt-2" mat-raised-button
                                     style="color: #647299;">
                                     <ng-container *ngIf="isListView; else boardIcon">
-                                        <div class="d-flex"> <mat-icon>leaderboard</mat-icon>
-                                            <span> Board&nbsp;View </span>
+                                        <div class="d-flex align-items-center"> <mat-icon>leaderboard</mat-icon>
+                                            <span class="ms-2"> Board&nbsp;View </span>
                                         </div>
                                     </ng-container>
                                     <ng-template #boardIcon>

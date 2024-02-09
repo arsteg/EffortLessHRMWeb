@@ -51,7 +51,6 @@ export class ExpensesTemplatesComponent implements OnInit {
     if (event) {
       this.modalService.dismissAll();
       this.addTemplateForm.reset();
-
     }
   }
 
@@ -75,6 +74,7 @@ export class ExpensesTemplatesComponent implements OnInit {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
     });
   }
+
   setFormValues(templateData: any) {
     this.expenseService.selectedTemplate.next(templateData);
   }
@@ -96,14 +96,11 @@ export class ExpensesTemplatesComponent implements OnInit {
   deleteDialog(id: string): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '400px',
-    }
-    );
-
+    });
     dialogRef.afterClosed().subscribe((result) => {
       if (result === 'delete') {
         this.deleteTemplate(id);
       }
-
     });
   }
 
@@ -113,7 +110,6 @@ export class ExpensesTemplatesComponent implements OnInit {
       this.getAllCategoriesOfAllTemplate()
     })
   }
-
 
   get downloadableFormatsArray() {
     return this.addTemplateForm.get('downloadableFormats') as FormArray;
@@ -131,15 +127,10 @@ export class ExpensesTemplatesComponent implements OnInit {
       advanceAmount: this.addTemplateForm.value.advanceAmount,
       firstApprovalEmployee: this.addTemplateForm.value.firstApprovalEmployee,
       secondApprovalEmployee: this.addTemplateForm.value.secondApprovalEmployee,
-      // downloadableFormats: this.checkedFormats,
       expenseTemplate: this.addTemplateForm.value.expenseTemplate,
       expenseCategories: this.addTemplateForm.value.expenseCategories,
-
     }
     if (this.changeMode === 'Add') {
-      // payload.downloadableFormats = this.addTemplateForm.value.downloadableFormats;
-      console.log(payload);
-      console.log(this.addTemplateForm.value)
       this.expenseService.addTemplate(payload).subscribe((res: any) => {
         const newTemplate = res.data;
         this.templates.push(newTemplate);
@@ -154,8 +145,6 @@ export class ExpensesTemplatesComponent implements OnInit {
     } else {
       const existingFormats = this.formatValues
       const updatedFormats = this.addTemplateForm.value.downloadableFormats;
-
-      // payload.downloadableFormats = this.combineFormats(existingFormats, updatedFormats);
       this.expenseService.updateTemplate(this.selectedTemplateId, payload).subscribe((res: any) => {
         const updatedTemplate = res.data;
         const index = this.templates.findIndex(template => template._id === updatedTemplate._id);
@@ -165,7 +154,6 @@ export class ExpensesTemplatesComponent implements OnInit {
         this.categoriesAddOrUpdate(this.selectedTemplateId, payload.expenseCategories);
         this.addTemplateForm.reset();
         this.toast.success('Template Updated Successfully!');
-
       }, err => {
         this.toast.error('Template Can not be Updated', 'ERROR!')
       })
@@ -187,11 +175,9 @@ export class ExpensesTemplatesComponent implements OnInit {
     this.selectedTemplateId = templateId;
     this.changeMode = 'Next';
     this.expenseService.getTemplateById(templateId).subscribe((res: any) => {
-      console.log(res.data)
       this.setFormValues(res.data);
     });
   }
-
 
   isFormatSelected(format: string): boolean {
     const downloadableFormatsArray = this.addTemplateForm.get('downloadableFormats') as FormArray;
@@ -252,7 +238,6 @@ export class ExpensesTemplatesComponent implements OnInit {
     }
   }
 
-
   getCategoriesByTemplate(id: string) {
     this.selectedTemplateId = id;
     this.expenseService.getCategoriesByTemplate(id).subscribe((res: any) => {
@@ -267,7 +252,6 @@ export class ExpensesTemplatesComponent implements OnInit {
     return selectedCategories.includes(categoryId);
   }
 
-
   getAllCategoriesOfAllTemplate() {
     this.expenseService.getAllCategoriesOfAllTemplate().subscribe((res: any) => {
       const categories = res.data;
@@ -279,10 +263,10 @@ export class ExpensesTemplatesComponent implements OnInit {
   }
 
   refreshExpenseTemplateTable() {
-
     this.expenseService.getAllTemplates().subscribe(
       (res) => {
         this.templates = res.data;
+        this.getAllCategoriesOfAllTemplate();
         this.expenseTemplateTableRefreshed.emit();
       },
       (error) => {
@@ -290,5 +274,4 @@ export class ExpensesTemplatesComponent implements OnInit {
       }
     );
   }
-
 }

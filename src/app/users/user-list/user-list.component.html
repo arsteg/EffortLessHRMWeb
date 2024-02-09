@@ -192,11 +192,14 @@
                                         <input type="password" name="passwordConfirm" id="passwordConfirm"
                                             class="form-control input" formControlName="passwordConfirm" ngModel
                                             required>
-                                        <div *ngIf="addForm.controls['passwordConfirm'].invalid && addForm.controls['passwordConfirm'].touched"
-                                            class="alert alert-danger error">
-                                            <div *ngIf="addForm.controls['passwordConfirm'].errors['required']">
-                                                Confirm Password is required.
-                                            </div>
+                                        
+                                        <div *ngIf="addForm.get('passwordConfirm').hasError('required') && addForm.get('passwordConfirm').touched"
+                                            class="text-danger">
+                                            Confirm Password is required.
+                                        </div>
+                                        <div *ngIf="addForm.get('passwordConfirm').hasError('mismatch')"
+                                            class="text-danger">
+                                            Passwords do not match.
                                         </div>
                                     </div>
                                 </div>
@@ -322,7 +325,13 @@
 
                                         <input type="text" name="phone" id="phone" class="form-control input pt-0"
                                             formControlName="phone" [(ngModel)]="selectedUser.phone">
-
+                                        <div
+                                            *ngIf="updateForm.get('phone').invalid && (updateForm.get('phone').dirty || updateForm.get('phone').touched)">
+                                            <div *ngIf="updateForm.get('phone').errors['required']" class="text-danger">
+                                                Phone number is required.</div>
+                                            <div *ngIf="updateForm.get('phone').errors['pattern']" class="text-danger">
+                                                Please enter a valid 10-digit phone number.</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -334,7 +343,7 @@
                                     type="button">Cancel</button>
                             </div>
                             <div>
-                                <button mat-raised-button color="primary" data-bs-dismiss="modal" type="submit"
+                                <button mat-raised-button class="addBtn" type="submit"
                                     [disabled]="!updateForm.valid">Update</button>
                             </div>
 

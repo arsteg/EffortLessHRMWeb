@@ -30,7 +30,7 @@
                 </thead>
                 <tbody>
                     <tr
-                        *ngFor="let temp of filteredTemplates; let template of templates | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }; let i = index">
+                        *ngFor="let template of templates | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }; let i = index">
                         <td class="ps-2">{{template?.policyLabel}}</td>
                         <td>{{template?.matchingCategories?.length}}</td>
                         <td class="">

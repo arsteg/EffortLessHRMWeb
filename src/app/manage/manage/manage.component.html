@@ -5,8 +5,8 @@
                 [class.active]="selectedTab === 1">Employees</button>
             <button class="btn rounded-pill submenuTab" (click)="selectTab(2)"
                 [class.active]="selectedTab === 2">Projects</button>
-            <button class="btn rounded-pill submenuTab" (click)="selectTab(3)"
-                [class.active]="selectedTab === 3">Tasks</button>
+            <button class="btn rounded-pill submenuTab" (click)="selectTab(3)" [class.active]="selectedTab === 3"
+               >Tasks</button>
             <button class="btn rounded-pill submenuTab" (click)="selectTab(4)" [class.active]="selectedTab === 4">Manual
                 Time</button>
             <button class="btn rounded-pill submenuTab" (click)="selectTab(5)" [class.active]="selectedTab === 5">Team
@@ -15,8 +15,8 @@
                 [class.active]="selectedTab === 6">Tags</button>
             <button class="btn rounded-pill submenuTab" (click)="selectTab(7)" [class.active]="selectedTab === 7">E-Mail
                 Template</button>
-                <button class="btn rounded-pill submenuTab" (click)="selectTab(8)" [class.active]="selectedTab === 8">
-                    CRUD Component Testing</button>
+            <button class="btn rounded-pill submenuTab" (click)="selectTab(8)" [class.active]="selectedTab === 8">
+                CRUD Component Testing</button>
         </div>
 
         <div *ngIf="selectedTab === 1" class="tab-content">

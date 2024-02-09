@@ -144,6 +144,7 @@ projectisNull;
     if (taskId) {
       this.tasksService.getTaskById(taskId).subscribe(res => {
         this.tasks = res;
+        console.log(this.tasks.data.task)
         this.assignee = this.tasks.data.newTaskUserList;
         this.currentTaskProject = this.tasks.data.task;
         this.projectisNull= (this.currentTaskProject.project==null)
@@ -347,8 +348,8 @@ projectisNull;
       reader.readAsDataURL(file);
       reader.onload = () => {
         const base64String = reader.result.toString().split(',')[1];
-        const fileSize = file.size; // size of the file in bytes
-        const fileType = file.type; // type of the file (e.g. image/png)
+        const fileSize = file.size; 
+        const fileType = file.type; 
         const fileNameParts = file.name.split('.');
         const extention = fileNameParts[fileNameParts.length - 1];
 
@@ -360,7 +361,6 @@ projectisNull;
           file: base64String
         });
         if (i === this.selectedFiles.length - 1) {
-          // This is the last file, so create the task attachment
           const taskAttachment: taskAttachments = {
             taskId: this.taskId,
             taskAttachments: attachments
@@ -578,6 +578,11 @@ projectisNull;
     link.target = '_blank';
     link.download = attachmentName;
     link.click();
+  }
+
+
+  goBack() {
+    this.router.navigate(['/manage'], { fragment: 'tab3' });
   }
 
 }

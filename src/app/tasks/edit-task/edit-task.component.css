@@ -203,7 +203,7 @@ input:focus-visible {
 
 @media (min-width: 576px) {
     .modal-dialog {
-        max-width: 1140px !important;
+        /* max-width: 1140px !important; */
     }
 }
 

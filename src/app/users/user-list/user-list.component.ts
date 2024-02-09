@@ -29,7 +29,7 @@ export class UserListComponent implements OnInit {
   roleName: any = [];
   firstLetter: string;
   color: string;
-  public sortOrder: string = ''; // 'asc' or 'desc'
+  public sortOrder: string = '';
 
   constructor(
     private UserService: UserService,
@@ -45,7 +45,7 @@ export class UserListComponent implements OnInit {
       email: ['', Validators.required],
       password: ['', Validators.required],
       passwordConfirm: ['', Validators.required],
-    });
+    }, { validator: this.passwordMatchValidator });
     this.updateForm = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
@@ -53,7 +53,7 @@ export class UserListComponent implements OnInit {
       pincode: ['',  Validators.pattern('^[0-9]{6}$')],
       state: ['',Validators.pattern('[A-Za-z]+')],
       city: ['', Validators.pattern('[A-Za-z]+')],
-      phone: ['', Validators.pattern('[0-9]{10}')],
+      phone: ['',[Validators.required, Validators.pattern('^[0-9]{10}$')]],
       address: [''],
       role: ['']
     });
@@ -66,6 +66,16 @@ export class UserListComponent implements OnInit {
     });
     this.firstLetter = this.commonservice.firstletter;
   }
+  passwordMatchValidator(formGroup: FormGroup) {
+    const passwordControl = formGroup.get('password');
+    const confirmPasswordControl = formGroup.get('passwordConfirm');
+
+    if (passwordControl.value === confirmPasswordControl.value) {
+        confirmPasswordControl.setErrors(null);
+    } else {
+        confirmPasswordControl.setErrors({ mismatch: true });
+    }
+}
   drop(event: CdkDragDrop<any[]>) {
     moveItemInArray(this.usersList, event.previousIndex, event.currentIndex);
   }
