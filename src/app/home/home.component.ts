@@ -300,6 +300,13 @@ export const SideBarAdminMenu = [
     lightIcon: 'assets/Sidenav-Icons/light-Icons/approval.png',
     title: 'Approvals',
     url: 'Approvals'
+  },
+  {
+    id: '20',
+    title: 'Interview Process',
+    icon: 'assets/Sidenav-Icons/settings.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/settings.png',
+    url: '/interviewProcess'
   }
 ];
 
@@ -435,9 +442,7 @@ export const SideBarUserMenu = [
     icon: 'assets/Sidenav-Icons/settings.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/settings.png',
     url: '/userPreferences'
-
   }
-
 ];
 
 

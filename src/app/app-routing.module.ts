@@ -74,6 +74,7 @@ import { ReportsComponent } from './reports/reports.component';
 import { ApprovalsComponent } from './approvals/approvals.component';
 import { UserTaxDeclarationComponent } from './Taxation/user-tax-declaration/user-tax-declaration.component';
 import { ExpenseCategorySettingsComponent } from './Expenses/settings/expense-category-settings/expense-category-settings.component';
+import { InterviewProcessMainComponent } from './pages/interviewProcess/interview-process-main/interview-process-main.component';
 
 const routes: Routes = [
   // {path:'',component:LayoutComponentComponent, canActivate: [AuthGuard]},
@@ -151,7 +152,8 @@ const routes: Routes = [
       { path: 'settings', component: SettingsComponent },
       { path: 'reports', component: ReportsComponent},
       { path: 'Approvals', component: ApprovalsComponent},
-      { path: 'taxDeclaration', component: UserTaxDeclarationComponent }
+      { path: 'taxDeclaration', component: UserTaxDeclarationComponent },
+      { path: 'interviewProcess', component: InterviewProcessMainComponent }
     ]
   }
 ]
