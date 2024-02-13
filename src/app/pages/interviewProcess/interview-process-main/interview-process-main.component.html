@@ -4,9 +4,9 @@
           <button class="btn rounded-pill submenuTab" (click)="selectTab(1)"
               [class.active]="selectedTab === 1">Application Status</button>
           <button class="btn rounded-pill submenuTab" (click)="selectTab(2)"
-              [class.active]="selectedTab === 2">Projects</button>
+              [class.active]="selectedTab === 2">Candidate Data Fields</button>
           <button class="btn rounded-pill submenuTab" (click)="selectTab(3)"
-              [class.active]="selectedTab === 3">Tasks</button>
+              [class.active]="selectedTab === 3">Candidates</button>
           <button class="btn rounded-pill submenuTab" (click)="selectTab(4)" [class.active]="selectedTab === 4">Manual
               Time</button>
           <button class="btn rounded-pill submenuTab" (click)="selectTab(5)" [class.active]="selectedTab === 5">Team
@@ -25,7 +25,7 @@
       <div *ngIf="selectedTab === 2" class="tab-content">
       </div>
       <div *ngIf="selectedTab === 3" class="tab-content">
-
+        <app-candidates></app-candidates>
       </div>
       <div *ngIf="selectedTab === 4" class="tab-content">
 
