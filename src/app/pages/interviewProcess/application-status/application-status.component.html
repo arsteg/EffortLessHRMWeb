@@ -7,10 +7,8 @@
             <p class="mb-0">({{filteredList?.length}}) Records Found</p>
             <div class="d-flex align-items-center">
               <span class="bi bi-search searchIcon"></span>
-
-              <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
-                name="searchText" aria-label="default input example"
-               >
+               <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
+                        name="searchText" aria-label="default input example">
 
             </div>
           </div>
@@ -25,7 +23,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let status of filteredList | paginate: { itemsPerPage: 10, currentPage: p }">
+              <tr *ngFor="let status of filteredList | search: searchText | paginate: { itemsPerPage: 10, currentPage: p }">
                 <td class="col-10 ps-3">{{ status.name}}</td>
 
                 <td>

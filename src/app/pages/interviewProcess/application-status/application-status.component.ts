@@ -5,11 +5,12 @@ import { FormBuilder, FormGroup, Validators,FormsModule,ReactiveFormsModule } fr
 import { NgxPaginationModule } from 'ngx-pagination';
 import { ToastrService } from 'ngx-toastr';
 import { InterviewProcessService } from 'src/app/_services/interviewProcess.service';
+import { SharedModule } from 'src/app/shared/shared.Module';
 
 @Component({
   selector: 'app-application-status',
   standalone: true,
-  imports: [CommonModule,FormsModule,NgxPaginationModule,ReactiveFormsModule],
+  imports: [SharedModule],
   templateUrl: './application-status.component.html',
   styleUrl: './application-status.component.css'
 })
