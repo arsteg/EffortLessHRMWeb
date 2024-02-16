@@ -28,7 +28,6 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
 import { MilliSecondsToTimePipe } from '../pipes/SecondsToTimePipe';
 import { MatStepperModule }  from '@angular/material/stepper';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [SortDirective, SearchPipe, MilliSecondsToTimePipe],
@@ -57,7 +56,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     MatNativeDateModule,
     MatRippleModule,
     MatStepperModule,
-    BrowserAnimationsModule
   ],
   exports: [
     SortDirective,
@@ -89,7 +87,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     MilliSecondsToTimePipe,
     MatFormFieldModule,
     MatStepperModule,
-    BrowserAnimationsModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,
