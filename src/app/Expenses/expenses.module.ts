@@ -7,7 +7,7 @@ import { ExpensesTemplatesComponent } from './settings/expenses-templates/expens
 import { ExpensesTemplateAssignmentComponent } from './settings/expenses-template-assignment/expenses-template-assignment.component';
 import { SharedModule } from '../shared/shared.Module';
 import { CommonComponentsModule } from '../common/commonComponents.module';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AdvanceCategoriesComponent } from './settings/advance-categories/advance-categories.component';
 import { AdvanceTemplateAssignmentComponent } from './settings/advance-template-assignment/advance-template-assignment.component';
 import { AdvanceTemplatesComponent } from './settings/advance-templates/advance-templates.component';
@@ -34,8 +34,16 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatRadioModule} from '@angular/material/radio';
 import { ViewReportComponent } from './expense-reports/view-report/view-report.component';
 import { ViewExpenseReportExpensesComponent } from './expense-reports/view-expense-report-expenses/view-expense-report-expenses.component';
-
-
+import { AdvanceReportsComponent } from './advance-reports/advance-reports.component';
+import { ShowReportComponent } from './advance-reports/show-report/show-report.component';
+import { AddAdvanceReportComponent } from './advance-reports/add-advance-report/add-advance-report.component';
+import { AdvancePendingComponent } from './advance-reports/advance-pending/advance-pending.component';
+import { AdvanceApprovedComponent } from './advance-reports/advance-approved/advance-approved.component';
+import { AdvanceRejectedComponent } from './advance-reports/advance-rejected/advance-rejected.component';
+import { AdvanceCancelledComponent } from './advance-reports/advance-cancelled/advance-cancelled.component';
+import { ViewReportsComponent } from './advance-reports/view-reports/view-reports.component';
+import { StatusUpdateComponent } from './advance-reports/status-update/status-update.component';
+import { BrowserModule } from '@angular/platform-browser';
 @NgModule({
   declarations: [
     ExpensesComponent,
@@ -56,13 +64,24 @@ import { ViewExpenseReportExpensesComponent } from './expense-reports/view-expen
     AddExpenseReportComponent,
     CreateReportComponent,
     ViewReportComponent,
-    ViewExpenseReportExpensesComponent
+    ViewExpenseReportExpensesComponent,
+    AdvanceReportsComponent,
+    ShowReportComponent,
+    AddAdvanceReportComponent,
+    AdvancePendingComponent,
+    AdvanceApprovedComponent,
+    AdvanceRejectedComponent,
+    AdvanceCancelledComponent,
+    ViewReportsComponent,
+    StatusUpdateComponent
   ],
   imports: [
+    BrowserModule,
     CommonModule,
     SharedModule,
     CommonComponentsModule,
     FormsModule,
+    ReactiveFormsModule,
     RouterModule,
     BrowserAnimationsModule,
     MatDialogModule,
@@ -70,7 +89,7 @@ import { ViewExpenseReportExpensesComponent } from './expense-reports/view-expen
     BsDatepickerModule.forRoot(),
     MatExpansionModule,
     MatCheckboxModule,
-    MatRadioModule
+    MatRadioModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

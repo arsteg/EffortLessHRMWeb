@@ -1,0 +1,61 @@
+<div class="d-flex justify-content-between">
+    <h1 mat-dialog-title> Add Advance Report</h1>
+    <div mat-dialog-actions>
+        <button mat-button mat-dialog-close (click)="closeModal()"><mat-icon aria-hidden="false"
+                aria-label="Example close icon" fontIcon="close"></mat-icon></button>
+
+
+    </div>
+</div>
+
+<div mat-dialog-content>
+    <form [formGroup]="addAdvanceReport">
+        <div>
+            <label for="member">Select an Employee for Advance Report</label>
+            <select id="member" name="member" class="form-control" formControlName="employee"
+                class="form-select form-select-sm" aria-label=".form-select-sm example" (change)="onEmployeeSelected()">
+                <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                    {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
+                </option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="firstApprovalEmployee">Select Advance Category<span class="text-danger">*</span></label>
+            <select name="" id="firstApprovalEmployee" formControlName="category" required class="ms-2 form-control">
+                <option>Select Advance Category</option>
+                <option *ngFor="let category of categoriesByUser" [value]="category?._id">
+                    {{getCategory(category?.advanceCategory)}}</option>
+            </select>
+        </div>
+
+
+
+        <div class="mt-2">
+            <label for="">Amount</label>
+            <div class=" col-12 form-group mb-3">
+                <input type="number" class="form-control" formControlName="amount" />
+            </div>
+        </div>
+
+
+
+        <div class="mb-3">
+            <label for="exampleFormControlTextarea1" class="form-label">
+                Comment
+            </label>
+            <textarea class="form-control" id="exampleFormControlTextarea1" formControlName="comment"
+                rows="3"></textarea>
+        </div>
+
+
+
+        <div>
+            <button mat-raised-button type="button">Cancel</button>
+            <button mat-button mat-dialog-close type="submit" (click)="onSubmission()">Submit</button>
+
+        </div>
+
+
+    </form>
+</div>

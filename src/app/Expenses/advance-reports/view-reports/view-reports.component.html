@@ -1,0 +1,39 @@
+<div class="modal-body">
+    <div class=" d-flex justify-content-between">
+        <div class="">
+            <h1 mat-dialog-title> Show Expense Details</h1>
+        </div>
+        <div mat-dialog-actions>
+            <button mat-button mat-dialog-close><mat-icon aria-hidden="false" aria-label="Example close icon"
+                    fontIcon="close"></mat-icon></button>
+        </div>
+    </div>
+    <hr class="mt-0">
+    <div class="row" mat-dialog-content>
+        <div class="tableContainer">
+            <table>
+                <tr>
+                    <th class="w-50">Employee Name</th>
+                    <td>{{advanceReport?.employee}}</td>
+                </tr>
+                <tr>
+                    <th class="w-50">Category Name</th>
+                    <td>{{advanceReport?.category}}</td>
+                </tr>
+                <tr>
+                    <th class="w-50">Amount</th>
+                    <td>{{advanceReport?.amount}}</td>
+                </tr>
+                <tr>
+                    <th class="w-50">Status</th>
+                    <td>{{advanceReport?.status}}</td>
+                </tr>
+
+                <tr>
+                    <th class="w-50">Admin Approval Comment</th>
+                    <td>{{advanceReport?.comment}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

@@ -126,8 +126,6 @@ export class ApprovedComponent {
     })
   }
 
-
-
   getCategoryLabel(expenseCategoryId: string): Observable<string> {
     return this.expenseService.getExpenseCatgories().pipe(
       map((res: any) => {

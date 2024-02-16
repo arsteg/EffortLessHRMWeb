@@ -29,6 +29,7 @@ export class ExpensesService {
   selectedReport: any = new BehaviorSubject('');
   isEdit: any = new BehaviorSubject(false);
   report: any = new BehaviorSubject('');
+  advanceReport: any = new BehaviorSubject('')
   private updateTableSubject = new BehaviorSubject<void>(null);
   updateTable$ = this.updateTableSubject.asObservable();
 
@@ -194,7 +195,10 @@ export class ExpensesService {
     return response;
   }
 
-
+  getAdvanceCategoryByUserId(userId: string): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/advance-categories-by-user/${userId}`, this.httpOptions);
+    return response;
+  }
 
   //  advance Templates
 
@@ -297,4 +301,30 @@ export class ExpensesService {
     var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/expenseReportExpensesByExpenseReport/${id}`, this.httpOptions);
     return response;
   }
+
+  // advance reports
+  addAdvanceReport(advanceReport: any): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/advance`, advanceReport, this.httpOptions);
+    return response;
+  }
+
+  deleteAdvanceReport(id: string): Observable<response<any>> {
+    var response = this.http.delete<response<any>>(`${environment.apiUrlDotNet}/expense/advance/${id}`, this.httpOptions);
+    return response;
+  }
+
+  updateAdvanceReport(id: string, advanceReport: any): Observable<response<any>> {
+    var response = this.http.put<response<any>>(`${environment.apiUrlDotNet}/expense/advance/${id}`, advanceReport, this.httpOptions);
+    return response;
+  }
+  getAdvanceReport(): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/advance`, this.httpOptions);
+    return response;
+  }
+
+  getAdvanceByUser(userId: string): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/advance-summary-by-employee/${userId}`, this.httpOptions);
+    return response;
+  }
+
 }
