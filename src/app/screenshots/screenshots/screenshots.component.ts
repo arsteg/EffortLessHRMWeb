@@ -69,11 +69,12 @@ roleName = localStorage.getItem('adminView')
     this.intervalId = setInterval(() => {
       this.showScreenShots();
     }, this.intervalDuration);
-    let roleId = localStorage.getItem('roleId');
-    this.auth.getRole(roleId).subscribe((response: any) => {
-      this.role = response && response.data && response.data[0].Name;
-      console.log(this.role)
-    });
+    // let roleId = localStorage.getItem('roleId');
+    // this.auth.getRole(roleId).subscribe((response: any) => {
+    //   this.role = response && response.data && response.data[0].Name;
+    //   console.log(this.role)
+    // });
+    this.role = localStorage.getItem('adminView')
   }
 
   ngOnDestroy() {
