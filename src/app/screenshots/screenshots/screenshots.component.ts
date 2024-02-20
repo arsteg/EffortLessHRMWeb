@@ -11,6 +11,7 @@ import * as moment from 'moment'; // import moment.
 import { AnimationDurations } from '@angular/material/core';
 import { Observable, Subscription } from 'rxjs';
 import { teamMember } from 'src/app/models/teamMember';
+import { AuthenticationService } from 'src/app/_services/authentication.service';
 // import { threadId } from 'worker_threads';
 
 @Component({
@@ -43,7 +44,8 @@ export class ScreenshotsComponent implements OnInit {
   selectAllChecked: false;
 roleName = localStorage.getItem('adminView')
   intervalId: any;
-  intervalDuration = 300000; // 5 minute in milliseconds
+  intervalDuration = 300000;
+  role: any;
 
 
   constructor(
@@ -51,7 +53,8 @@ roleName = localStorage.getItem('adminView')
     private route: ActivatedRoute,
     private router: Router,
     private datePipe: DatePipe,
-    private fb: FormBuilder, private renderer: Renderer2) {
+    private fb: FormBuilder, private renderer: Renderer2, 
+    private auth: AuthenticationService) {
     this.route.params.subscribe(params => {
       this.resetToken = params['token'];
     });
@@ -66,6 +69,11 @@ roleName = localStorage.getItem('adminView')
     this.intervalId = setInterval(() => {
       this.showScreenShots();
     }, this.intervalDuration);
+    let roleId = localStorage.getItem('roleId');
+    this.auth.getRole(roleId).subscribe((response: any) => {
+      this.role = response && response.data && response.data[0].Name;
+      console.log(this.role)
+    });
   }
 
   ngOnDestroy() {
@@ -279,12 +287,12 @@ data:any = [];
 
   attachTimelabel(rowNum: number, row: screenshotRow) {
     let h = this.padValue(rowNum);
-    if (!row.col1) { row.col1 = new screenShotCell(`${h}:00`, null, null, null, null, null, null, null, null, null) }
-    if (!row.col2) { row.col2 = new screenShotCell(`${h}:10`, null, null, null, null, null, null, null, null, null) }
-    if (!row.col3) { row.col3 = new screenShotCell(`${h}:20`, null, null, null, null, null, null, null, null, null) }
-    if (!row.col4) { row.col4 = new screenShotCell(`${h}:30`, null, null, null, null, null, null, null, null, null) }
-    if (!row.col5) { row.col5 = new screenShotCell(`${h}:40`, null, null, null, null, null, null, null, null, null) }
-    if (!row.col6) { row.col6 = new screenShotCell(`${h}:50`, null, null, null, null, null, null, null, null, null) }
+    if (!row.col1) { row.col1 = new screenShotCell(`${h}:00`, null, null, null, null, null, null, null, null, null, null) }
+    if (!row.col2) { row.col2 = new screenShotCell(`${h}:10`, null, null, null, null, null, null, null, null, null, null) }
+    if (!row.col3) { row.col3 = new screenShotCell(`${h}:20`, null, null, null, null, null, null, null, null, null, null) }
+    if (!row.col4) { row.col4 = new screenShotCell(`${h}:30`, null, null, null, null, null, null, null, null, null, null) }
+    if (!row.col5) { row.col5 = new screenShotCell(`${h}:40`, null, null, null, null, null, null, null, null, null, null) }
+    if (!row.col6) { row.col6 = new screenShotCell(`${h}:50`, null, null, null, null, null, null, null, null, null, null) }
     return row;
   }
 
@@ -359,10 +367,10 @@ data:any = [];
         if (hh == r && mm <= (c * 10 + 9) && mm >= (c * 10)) {
           mm = this.padValue(mm - (mm % 10));
           if (timeLogs[i].isManualTime) {
-            result = new screenShotCell(`${hh}:${mm}`, '', 0, 0, 0, '', timeLogs[i]._id, true, false, true);
+            result = new screenShotCell(`${hh}:${mm}`, '', 0, 0, 0, '', timeLogs[i]._id, true, false,'',  true);
             console.log(result);
           } else {
-            result = new screenShotCell(`${hh}:${mm}`, timeLogs[i].fileString, timeLogs[i].clicks, timeLogs[i].keysPressed, timeLogs[i].scrolls, timeLogs[i].url, timeLogs[i]._id, false, false, true);
+            result = new screenShotCell(`${hh}:${mm}`, timeLogs[i].fileString, timeLogs[i].clicks, timeLogs[i].keysPressed, timeLogs[i].scrolls, timeLogs[i].url, timeLogs[i]._id, false, false, timeLogs[i].allKeysPressed, true);
           }
         }
       }

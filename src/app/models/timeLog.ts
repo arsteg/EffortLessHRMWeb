@@ -11,6 +11,7 @@ export class timeLog{
   clicks: number;
   url: string;
   _id: string;
+  allKeysPressed: string;
   isManualTime: boolean;
 }
 
@@ -37,6 +38,7 @@ export class screenShotCell{
     public _id:string,
     public isManualTime: boolean,
     public isSelected: boolean,
+    public allKeysPressed: string,
     public hasValue:boolean){}
     public get GetActivityLevel() {
       let count =  this.clicks + this.keysPressed;

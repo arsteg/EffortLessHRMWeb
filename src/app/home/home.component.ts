@@ -85,6 +85,7 @@ export class HomeComponent implements OnInit {
   switchView(view: string) {
     this.adminView = view;
     localStorage.setItem('adminView', view);
+    // this.auth.portals.next(view)
     if (view == 'user') {
       this.menuList = SideBarUserMenu;
       this.router.navigate(['userDashboard'])
