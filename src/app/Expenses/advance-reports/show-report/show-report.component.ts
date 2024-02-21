@@ -82,7 +82,6 @@ export class ShowReportComponent {
   refreshExpenseReportTable() {
     this.expenseService.getAdvanceReport().subscribe(
       (res) => {
-        console.log(res)
         this.advanceReport = res.data.filter(expense => expense.status === this.status);
         this.advanceReportRefreshed.emit();
       },

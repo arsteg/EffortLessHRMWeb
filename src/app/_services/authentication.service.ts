@@ -11,7 +11,8 @@ import { Router } from '@angular/router';
 export class AuthenticationService {
   private loggedIn = new BehaviorSubject<boolean>(false);
   private currentUserSubject: BehaviorSubject<User>;
-  public currentUser: Observable<User>;
+  public currentUser: Observable<any>;
+  role: any = new BehaviorSubject('');
 
   private getHttpOptions() {
     const token = localStorage.getItem('jwtToken');
@@ -23,7 +24,7 @@ export class AuthenticationService {
     const httpOptions = { headers, withCredentials: true };
     return httpOptions;
   }
-  private defaultHttpOptions() {  
+  private defaultHttpOptions() {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*'
@@ -32,28 +33,27 @@ export class AuthenticationService {
     return httpOptions;
   }
   private loginTime: number | null = null;
+  
+  isLoggedIn(): Promise<boolean> {
+    return new Promise<boolean>((resolve) => {
+      const loginTime = localStorage.getItem('loginTime');
+      if (loginTime) {
+        const currentTime = new Date().getTime();
+        const twentyFourHours = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+        const lastLoginTime = parseInt(loginTime, 10);
+        const timeElapsed = currentTime - lastLoginTime;
 
-
-isLoggedIn(): Promise<boolean> {
-  return new Promise<boolean>((resolve) => {
-    const loginTime = localStorage.getItem('loginTime');
-    if (loginTime) {
-      const currentTime = new Date().getTime();
-      const twentyFourHours = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
-      const lastLoginTime = parseInt(loginTime, 10);
-      const timeElapsed = currentTime - lastLoginTime;
-
-      if (timeElapsed >= twentyFourHours) {
-        // Auto logout after 24 hours
-        this.logout().then(() => resolve(false));
+        if (timeElapsed >= twentyFourHours) {
+          // Auto logout after 24 hours
+          this.logout().then(() => resolve(false));
+        } else {
+          resolve(true);
+        }
       } else {
-        resolve(true);
+        resolve(false);
       }
-    } else {
-      resolve(false);
-    }
-  });
-}
+    });
+  }
   constructor(private http: HttpClient, private router: Router) {
     this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
     this.currentUser = this.currentUserSubject.asObservable();
@@ -84,13 +84,13 @@ isLoggedIn(): Promise<boolean> {
     localStorage.setItem('loginTime', loginTime.toString());
     return this.http.post<any>(`${environment.apiUrlDotNet}/users/login`, { email: user.email, password: user.password }, httpOptions)
       .pipe(map(user => {
-       
+
         this.currentUserSubject.next(user);
         this.loggedIn.next(true);
         return user;
       }));
   }
- 
+
   logout(): Promise<void> {
     return new Promise<void>((resolve) => {
       localStorage.removeItem('jwtToken');
@@ -98,9 +98,9 @@ isLoggedIn(): Promise<boolean> {
       localStorage.removeItem('rememberMe');
       localStorage.removeItem('roleId');
       localStorage.removeItem('loginTime');
-    
+
       // Perform any other necessary logout logic
-  
+
       this.loginTime = null; // Reset the loginTime in memory
       this.currentUserSubject.next(null);
       this.loggedIn.next(false);
@@ -108,7 +108,7 @@ isLoggedIn(): Promise<boolean> {
       resolve();
     });
   }
-  
+
   redirectToLogin() {
     this.router.navigate(['/login']);
   }
@@ -156,9 +156,9 @@ isLoggedIn(): Promise<boolean> {
     return this.http.get(`${environment.apiUrlDotNet}/users/getUserProjects/${id}`, httpOptions)
   }
 
-  getUserTaskListByProject(userId,projectId, skip: string, next: string): Observable<any> {
+  getUserTaskListByProject(userId, projectId, skip: string, next: string): Observable<any> {
     const httpOptions = this.getHttpOptions();
-    return this.http.post(`${environment.apiUrlDotNet}/task/getUserTaskListByProject`,{userId,projectId, skip, next}, httpOptions)
+    return this.http.post(`${environment.apiUrlDotNet}/task/getUserTaskListByProject`, { userId, projectId, skip, next }, httpOptions)
   }
 
 }

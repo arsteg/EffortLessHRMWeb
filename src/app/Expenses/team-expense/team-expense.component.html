@@ -1,0 +1,24 @@
+<div class="main-content mt-5 pt-2">
+    <div class="container-fluid">
+        <div class="tabs">
+            <button (click)="selectTab(1)" [class.active]="selectedTab === 1">Pending
+                </button>
+            <button (click)="selectTab(2)" [class.active]="selectedTab === 2">Approved
+                </button>
+           
+            <button (click)="selectTab(4)" [class.active]="selectedTab === 3">Rejected
+                </button>
+           
+        </div>
+
+        <div *ngIf="selectedTab === 1" class="tab-content p-0">
+            <app-pending-team-expenses></app-pending-team-expenses>
+        </div>
+        <div *ngIf="selectedTab === 2" class="tab-content  p-0">
+            <app-approved-team-expenses></app-approved-team-expenses>
+        </div>
+        <div *ngIf="selectedTab === 3" class="tab-content p-0">
+            <app-rejected-team-expenses></app-rejected-team-expenses>
+        </div>
+    </div>
+</div>

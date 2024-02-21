@@ -262,6 +262,11 @@ export class ExpensesService {
     return response;
   }
 
+  getExpenseReportByUser(userId: string): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/expense-reports-by-user/${userId}`, this.httpOptions);
+    return response;
+  }
+
   deleteExpenseReport(id: string): Observable<response<any>> {
     var response = this.http.delete<response<any>>(`${environment.apiUrlDotNet}/expense/expense-reports/${id}`, this.httpOptions);
     return response;

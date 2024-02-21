@@ -1,0 +1,87 @@
+<div class="modal-header border-bottom mb-2 pt-0">
+    <div>
+      <h1 class="modal-title text-muted mb-0">{{changeMode == true ? 'Update': 'Add'}} Expense Report</h1>
+    </div>
+    <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
+        (click)="closeModal()"></button>
+    </div>
+  </div>
+  
+  <form action="" [formGroup]="addExpenseForm" (ngSubmit)="createReport()">
+  
+    
+  
+    <div class="form-group mt-2">
+      <label for="">Enter Label for Expense Report<span class="text-danger">*</span></label>
+      <input type="text" class="input form-control" formControlName="title" placeholder="Enter Label" required>
+      <div *ngIf="addExpenseForm.get('title').invalid && addExpenseForm.get('title').touched" class="text-danger error">
+        Please Enter Label for Expense Report!
+      </div>
+    </div>
+
+    <div class="form-group mt-2">
+        <label for="">Advance Amount Recieve<span class="text-danger">*</span></label>
+        <input type="text" class="input form-control" formControlName="amount" placeholder="Enter Amount" required>
+        <div *ngIf="addExpenseForm.get('amount').invalid && addExpenseForm.get('amount').touched" class="text-danger error">
+          Please Enter amount for Expense Report!
+        </div>
+      </div>
+
+    <div class="tableContainer bg-white">
+      <table class="mt-2">
+        <thead>
+          <tr>
+            <th>Incurred Date</th>
+            <th>Category</th>
+            <th>Amount</th>
+            <th>Reimbursable</th>
+            <th>Billable</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="changeMode">
+         <tr *ngFor="let expenseReportExp of expenseReportExpenses">
+            <td>{{expenseReportExp?.incurredDate | date:'mediumDate' }}</td>
+            <td>{{ getCategoryLabel(expenseReportExp?.expenseCategory) }}</td>
+            <td>{{expenseReportExp?.amount}}</td>
+            <td>
+              <span *ngIf="expenseReportExp.isReimbursable == true; else notReimbursable">
+                <mat-icon style="color: green;">check</mat-icon>
+              </span>
+              <ng-template #notReimbursable>
+                <mat-icon style="color: red;">close</mat-icon>
+              </ng-template>
+            </td>
+            <td>
+              <span *ngIf="expenseReportExp.isBillable == true; else notBillable">
+                <mat-icon style="color: green;">check</mat-icon>
+              </span>
+              <ng-template #notBillable>
+                <mat-icon style="color: red;">close</mat-icon>
+              </ng-template>
+            </td>
+            <td><button class="actions" type="button" [disabled]="!expenseReportExp?._id"
+                (click)="openSecondModal(true); isEdit === true; getSelectedExpenseReportExpense(expenseReportExp)" mat-mini-fab title="Update"
+                aria-label="Example icon button with a menu icon">
+                <i class="bi bi-pencil-fill"></i>
+              </button>
+              <button class="actions ms-2" title="Delete" type="button" [disabled]="!expenseReportExp?._id"
+                (click)="deleteExpenseReportExpense(expenseReportExp?._id)" mat-mini-fab
+                aria-label="Example icon button with a menu icon">
+                <i class="bi bi-trash"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      
+      </table>
+    </div>
+    <div>
+      <button (click)="openSecondModal(false); isEdit === false " type="button"
+        class="submenuTab active rounded-pill mt-2">Add Expense</button>
+    </div>
+    <div class="mt-3 d-flex justify-content-between">
+      <button mat-raised-button type="button">Cancel</button>
+      <button mat-raised-button type="submit" class="addBtn">{{changeMode == true ? 'Update': 'Add'}}</button>
+    </div>
+  </form>

@@ -1,0 +1,106 @@
+<div class="mainContent mt-5">
+    <div class="container">
+        <div class="py-0 px-0 bg-white tableContainer">
+
+            <div class="d-flex justify-content-between align-items-center mb-2 px-3">
+                <p class="mb-0">() Records Found</p>
+                <div class="d-flex align-items-center">
+                    <span class="bi bi-search searchIcon"></span>
+
+                    <input class="form-control search" type="text" placeholder="Search..." name="searchText"
+                        aria-label="default input example">
+
+                    <button mat-raised-button (click)="open(addModal); step=1" class="addBtn rounded-pill mx-3">Add
+                        Expense</button>
+
+                    <button class="submenuTab active  rounded-pill"> <i class="bi bi-download downloadBtn pe-2"></i>
+                        Download</button>
+
+                </div>
+            </div>
+
+            <table class="px-4">
+                <thead>
+                    <tr>
+                        <th class="ps-2">Report&nbsp;Title</th>
+                        <th>Total&nbsp;Amount</th>
+                        <th>Advance&nbsp;Recieved</th>
+                        <th>Reimbursable</th>
+                        <th>Billable</th>
+                        <th>Status</th>
+                        <th scope="col" class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let report of expenseReport| search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
+                        <td>{{report?.title}}</td>
+                        <td>
+                            {{calculateTotalAmount(report)}}
+                        </td>
+                        <td>{{report?.amount}}</td>
+                       
+
+                        <td>
+                            {{calculateTotalisReimbursable(report, true, false)}}
+                        </td>
+                        <td>
+                            {{calculateTotalisReimbursable(report, false, true)}}
+                        </td>
+                        <td>{{report?.status}}</td>
+                        <td>
+                            <div class="dropdown-center">
+                                <button class="actions ms-2" mat-mini-fab data-bs-toggle="dropdown" aria-expanded="false"
+                                    aria-label="Example icon button with a menu icon">
+                                    <i class="bi bi-send"></i>
+                                </button>
+        
+                                <ul class="dropdown-menu py-0">
+                                    <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
+                                        *ngIf="actionOptions.approve" data-bs-target="#statusUpdate"
+                                        (click)="openStatusModal(report, 'Approved')">
+                                        <i class="fas fa-check-circle dropdown-item w-25"></i><span
+                                            class="pt-1 text-muted">Approve</span>
+                                    </li>
+                                    <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
+                                        *ngIf="actionOptions.reject" data-bs-target="#statusUpdate"
+                                        (click)="openStatusModal(report, 'Rejected')">
+                                        <i class="bi bi-person-dash dropdown-item w-25"></i><span
+                                            class="pt-1 text-muted">Reject</span>
+                                    </li>
+        
+                                    <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
+                                        *ngIf="actionOptions.cancel" data-bs-target="#statusUpdate"
+                                        (click)="openStatusModal(report, 'Cancelled')">
+                                        <i class="bi bi-person-dash dropdown-item w-25"></i><span
+                                            class="pt-1 text-muted">Cancel</span>
+                                    </li>
+                                    <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
+                                        *ngIf="actionOptions.view" data-bs-target="#viewModal"
+                                        (click)="openSecondModal(report)">
+                                        <i class="fas fa-eye dropdown-item w-25"></i><span class="pt-1 text-muted">View</span>
+                                    </li>
+        
+                                </ul>
+                            </div>
+                        </td>
+        
+                    </tr>
+                </tbody>
+            </table>
+            <pagination-controls (pageChange)="p = $event"
+                class="pagination d-flex justify-content-end"></pagination-controls>
+        </div>
+    </div>
+</div>
+
+<ng-template #addModal let-modal>
+    <app-add-my-expense (changeStep)="onChangeStep($event)" [changeMode]="isEdit" *ngIf="step == 1"
+        (close)="onClose($event)" (expenseTemplateReportRefreshed)="refreshExpenseReportTable()"></app-add-my-expense>
+    <app-create-expense-report-expenses *ngIf="step == 2" (changeStep)="onChangeStep($event)" [changeMode]="isEdit"
+        (close)="onClose($event)"
+        (expenseTemplateReportRefreshed)="refreshExpenseReportTable()"></app-create-expense-report-expenses>
+</ng-template>
+
+<ng-template #statusUpdate let-modal>
+    <app-status-update-expense (expenseTemplateReportRefreshed)="refreshExpenseReportTable()"></app-status-update-expense>
+</ng-template>
