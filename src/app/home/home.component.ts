@@ -30,26 +30,32 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
     let roleId = localStorage.getItem('roleId');
     this.adminView = localStorage.getItem('adminView');
     this.auth.getRole(roleId).subscribe((response: any) => {
       let role = response && response.data && response.data[0].Name;
-      if (role == 'Admin') {
-        this.adminView = 'admin'
-      }
+    //   if (role == 'Admin') {
+    //     this.adminView = 'admin';
+    // console.log(this.adminView)
+
+    //   }
       this.commonService.setCurrentUserRole(role);
       if (this.adminView) {
         if (this.adminView?.toLowerCase() == 'admin') {
           this.adminView = 'admin'
+    console.log(this.adminView)
+
           localStorage.setItem('adminView', 'admin');
           this.menuList = SideBarAdminMenu;
           this.portalType = this.adminView?.toLowerCase();
+    console.log(this.adminView)
+
         }
         if (this.adminView?.toLowerCase() == 'user') {
           this.adminView = 'user'
           this.menuList = SideBarUserMenu;
           localStorage.setItem('adminView', 'user');
+          console.log(this.adminView)
 
         }
       }
@@ -74,6 +80,7 @@ export class HomeComponent implements OnInit {
       this.commonService.setCurrentUser(this.currentProfile);
       return this.currentProfile;
     })
+    console.log(this.adminView)
   }
 
 
@@ -85,7 +92,6 @@ export class HomeComponent implements OnInit {
   switchView(view: string) {
     this.adminView = view;
     localStorage.setItem('adminView', view);
-    // this.auth.portals.next(view)
     if (view == 'user') {
       this.menuList = SideBarUserMenu;
       this.router.navigate(['userDashboard'])

@@ -13,4 +13,7 @@ export class RejectedTeamExpensesComponent {
     edit: true,
     cancel: false
   };
+  ngOnInit(){
+    console.log('test')
+  }
 }

@@ -24,9 +24,6 @@
                     <tr>
                         <th class="ps-2">Report&nbsp;Title</th>
                         <th>Employee</th>
-                        <th>Band </th>
-                        <th>Department</th>
-                        <th>Designation</th>
                         <th>Total Amount</th>
                         <th>Reimbursable</th>
                         <th>Billable</th>
@@ -39,9 +36,6 @@
                         *ngFor="let expenseReport of expenseReport | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p };  let i = index">
                         <td class="ps-2">{{expenseReport?.title}}</td>
                         <td>{{getUser(expenseReport?.employee)}}</td>
-                        <td>--</td>
-                        <td>--</td>
-                        <td>--</td>
                         <td>
                             {{calculateTotalAmount(expenseReport)}}
                         </td>

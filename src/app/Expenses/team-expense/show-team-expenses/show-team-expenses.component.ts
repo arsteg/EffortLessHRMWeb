@@ -23,6 +23,7 @@ export class ShowTeamExpensesComponent {
   expenseReport: any;
   allAssignee: any[];
   allCategory: any[];
+  public sortOrder: string = '';
   totalAmount: number = 0;
 
   constructor(private modalService: NgbModal,
@@ -123,5 +124,30 @@ export class ShowTeamExpensesComponent {
     dialogRef.afterClosed().subscribe(result => {
     });
   }
-}
 
+  calculateTotalAmount(expenseReport: any): number {
+    let totalAmount = 0;
+    totalAmount += expenseReport.amount || 0;
+    if (expenseReport.expenseReportExpense && expenseReport.expenseReportExpense.length > 0) {
+      for (const expense of expenseReport.expenseReportExpense) {
+        totalAmount += expense.amount;
+      }
+    }
+    return totalAmount;
+  }
+  calculateTotalisReimbursable(expenseReport: any, isReimbursable: boolean, isBillable: boolean): number {
+    let totalAmount = 0;
+    if (expenseReport.expenseReportExpense && expenseReport.expenseReportExpense.length > 0) {
+      for (const expense of expenseReport.expenseReportExpense) {
+        if (expense.isReimbursable === isReimbursable) {
+          totalAmount += expense.amount;
+        }
+        else if (expense.isBillable === isBillable) {
+          totalAmount += expense.amount;
+        }
+      }
+    }
+    return totalAmount;
+  }
+  
+}
