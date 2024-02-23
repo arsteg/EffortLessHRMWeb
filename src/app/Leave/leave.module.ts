@@ -11,13 +11,13 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { FormsModule } from '@angular/forms';
 import { LeaveApplicationComponent } from './leave-application/leave-application.component';
 import { LeaveSettingComponent } from './leave-setting/leave-setting.component';
-import { LeaveAssignmentComponent } from './leave-assignment/leave-assignment.component';
-import { LeaveCategoryComponent } from './leave-category/leave-category.component';
-import { LeaveTemplateComponent } from './leave-template/leave-template.component';
+import { LeaveAssignmentComponent } from './leave-setting/leave-assignment/leave-assignment.component';
+import { LeaveCategoryComponent } from './leave-setting/leave-category/leave-category.component';
+import { LeaveTemplateComponent } from './leave-setting/leave-template/leave-template.component';
 import { LeaveManagementComponent } from './leave-management/leave-management.component';
 import { LeaveComponent } from './leave/leave.component';
-
-
+import { GeneralSettingsComponent } from './leave-setting/general-settings/general-settings.component';
+import { CommonComponentsModule } from '../common/commonComponents.module';
 
 @NgModule({
   declarations: [LeaveApplicationComponent,
@@ -26,7 +26,8 @@ import { LeaveComponent } from './leave/leave.component';
     LeaveCategoryComponent,
     LeaveTemplateComponent,
     LeaveManagementComponent,
-    LeaveComponent],
+    LeaveComponent,
+    GeneralSettingsComponent],
   imports: [
     CommonModule,
     SharedModule,
@@ -40,6 +41,7 @@ import { LeaveComponent } from './leave/leave.component';
     MatRippleModule,
     NgxChartsModule,
     FormsModule,
+    CommonComponentsModule
   ],
   exports: [LeaveApplicationComponent,
     LeaveSettingComponent,

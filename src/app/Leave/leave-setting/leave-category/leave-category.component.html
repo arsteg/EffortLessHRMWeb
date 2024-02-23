@@ -1,0 +1,617 @@
+<div class="main-content mt-2">
+    <div class="container-fluid">
+        <div class="py-2 px-0 bg-white tableContainer">
+            <div class="d-flex justify-content-between align-items-center mb-2 px-3">
+                <p class="mb-0">({{leaveCategory?.length}}) Records Found</p>
+                <div class="d-flex align-items-center">
+                    <span class="bi bi-search searchIcon"></span>
+
+                    <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
+                    name="searchText" aria-label="default input example">
+
+                    <button mat-raised-button (click)="open(addModal); isEdit === false; reset()" class="addBtn rounded-pill mx-3">
+                       Add Leave</button>
+
+                    <button class="submenuTab active rounded-pill"  (click)="exportToCsv()"><i class="bi bi-download downloadBtn pe-2"></i>
+                        Download</button>
+
+                </div>
+            </div>
+            <table class="p-2 rounded mt-2">
+                <thead>
+                    <tr>
+                        <th>Leave Label</th>
+                        <th>Leave Type</th>
+                        <th>Frequency of Accrual</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let category of leaveCategory">
+                        <td>{{category?.label}}</td>
+                        <td>{{category?.leaveType}}</td>
+                        <td>{{category?.leaveAccrualPeriod}}</td>
+                        <td>
+                            <button class="actions" mat-mini-fab title="Update"
+                                aria-label="Example icon button with a menu icon"
+                                (click)="open(addModal); selectedLeaveCategory = category; editCategory(category)">
+                                <i class="bi bi-pencil-fill"></i>
+                            </button>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<ng-template #addModal let-modal>
+
+    <div class="modal-body">
+        <div class=" d-flex justify-content-between">
+            <div class="">
+                <h4 class="modal-title text-start">{{!isEdit ? 'Add' : 'Update'}} Leave Category</h4>
+            </div>
+            <div class=""><button type="button" (click)="modal.dismiss('Cross click')" data-bs-dismiss="modal" class="btn-close text-end"></button>
+            </div>
+        </div>
+        <hr class="mt-0">
+        <div class="">
+            <form class="" [formGroup]="categoryForm" (ngSubmit)="onSubmission()">
+                <div class="row d-flex">
+                    <div class="col-md-12">
+                        <div class="row categoryForm">
+                            <div class="col-sm-12 col-md-6 my-2">
+                                <label for="" class="">Please choose the type of leave&nbsp;<span
+                                        class="text-danger">*</span></label>
+                                <select name="" id="" class="form-control" formControlName="leaveType">
+                                    <option value="general-leave">General Leave</option>
+                                    <option value="annual-non-accural-leave">Annual Non-Accrual Leave</option>
+                                </select>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6 my-2">
+                                <label for="" class="">Please provide a label for this leave&nbsp;<span
+                                        class="text-danger">*</span></label>
+                                <input type="text" placeholder="Cutom Label" formControlName="label"
+                                    class="form-control">
+                            </div>
+
+                            <div class="col-sm-12 col-md-6 my-2">
+                                <label for="" class="">Please provide an abbreviation for this leave&nbsp;<span
+                                        class="text-danger">*</span></label>
+                                <input type="text" placeholder="Abbreviation Label" formControlName="abbreviation"
+                                    class="form-control">
+                            </div>
+
+                            <div class="col-sm-12 col-md-6 my-2">
+                                <label for="" class="">Can employee apply a leave for this category?&nbsp;<span
+                                        class="text-danger">*</span></label>
+
+                                <div class="d-flex">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" id="flexRadioDefault1"
+                                            formControlName="canEmployeeApply" required [value]="true">
+                                        <label class="form-check-label" for="flexRadioDefault1">
+                                            Yes
+                                        </label>
+                                    </div>
+                                    <div class="form-check ms-2">
+                                        <input class="form-check-input" type="radio" id="canEmployeeApplyFalse"
+                                            formControlName="canEmployeeApply" required [value]="false">
+                                        <label class="form-check-label" for="canEmployeeApplyFalse">
+                                            No
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6 my-2">
+                                <label for="" class="">Do you want to provide a half-day option for this type of
+                                    leave?</label>
+                                <div class="d-flex">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" id="isHalfDayTypeOfLeaveTrue"
+                                            formControlName="isHalfDayTypeOfLeave" required [value]="true">
+                                        <label class="form-check-label" for="isHalfDayTypeOfLeaveTrue">
+                                            Yes
+                                        </label>
+                                    </div>
+                                    <div class="form-check ms-2">
+                                        <input class="form-check-input" type="radio" id="isHalfDayTypeOfLeaveFalse"
+                                            formControlName="isHalfDayTypeOfLeave" required [value]="false">
+                                        <label class="form-check-label" for="isHalfDayTypeOfLeaveFalse">
+                                            No
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6 my-2">
+                                <label for="" class="">Number of days before which the leave application must be
+                                    submitted (leave blank for no limit)</label>
+                                <input type="number" placeholder="Days" formControlName="submitBefore"
+                                    class="form-control">
+                            </div>
+
+                            <div class="col-sm-12 col-md-6 my-2">
+                                <label for="" class="">Would you like to display used leave balance in the
+                                    employee's
+                                    payslips?
+                                </label>
+                                <div class="d-flex">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" id="displayLeaveBalanceInPayslip"
+                                            formControlName="displayLeaveBalanceInPayslip" required [value]="true">
+                                        <label class="form-check-label" for="displayLeaveBalanceInPayslip">
+                                            Yes
+                                        </label>
+                                    </div>
+                                    <div class="form-check ms-2">
+                                        <input class="form-check-input" type="radio" id="displayLeaveBalanceInPayslip1"
+                                            formControlName="displayLeaveBalanceInPayslip" required [value]="false">
+                                        <label class="form-check-label" for="displayLeaveBalanceInPayslip1">
+                                            No
+                                        </label>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <!-- If leave type is general leave -->
+                            <div class="row" *ngIf="categoryForm.value.leaveType === 'general-leave'">
+                                <div class="col-sm-12 col-md-6 my-2">
+                                    <label for="">Select your leave accrual period</label>
+                                    <select id="" formControlName="leaveAccrualPeriod">
+                                        <option value="annually">Annually</option>
+                                        <option value="semi-annually">Semi-Annually</option>
+                                        <option value="quaterly">Quaterly</option>
+                                        <option value="bi-monthly">Bi-Monthly</option>
+                                        <option value="monthly">Monthly</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-12 col-md-6 my-2">
+                                    <label for="">
+                                        Do your employees accrue leave in advance?
+                                    </label>
+                                    <div class="d-flex">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" id="displayLeaveBalanceInPayslipTrue"
+                                                formControlName="displayLeaveBalanceInPayslip" required [value]="true">
+                                            <label class="form-check-label" for="displayLeaveBalanceInPayslipTrue">
+                                                Yes
+                                            </label>
+                                        </div>
+                                        <div class="form-check ms-2">
+                                            <input class="form-check-input" type="radio" id="displayLeaveBalanceInPayslipFalse"
+                                                formControlName="displayLeaveBalanceInPayslip" required [value]="false">
+                                            <label class="form-check-label" for="displayLeaveBalanceInPayslipFalse">
+                                                No
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-sm-12 col-md-6 my-2">
+                                    <label for=""> If a weekly off is part of the leave request, should it be
+                                        included
+                                        in the number of days taken?</label>
+                                    <div class="d-flex">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio"
+                                                formControlName="isWeeklyOffLeavePartOfNumberOfDaysTaken" required
+                                                [value]="true" id="isWeeklyOffLeavePartOfNumberOfDaysTakenTrue">
+                                            <label class="form-check-label" for="isWeeklyOffLeavePartOfNumberOfDaysTakenTrue">
+                                                Yes
+                                            </label>
+                                        </div>
+                                        <div class="form-check ms-2">
+                                            <input class="form-check-input" type="radio"
+                                                formControlName="isWeeklyOffLeavePartOfNumberOfDaysTaken" required
+                                                [value]="false" id="isWeeklyOffLeavePartOfNumberOfDaysTakenFalse">
+                                            <label class="form-check-label" for="isWeeklyOffLeavePartOfNumberOfDaysTakenFalse">
+                                                No
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12 col-md-6 my-2">
+                                    <label for="">
+                                        If an Annual Holiday is part of the leave request, should it be included
+                                        in
+                                        the
+                                        number of days taken?
+                                    </label>
+
+                                    <div class="d-flex">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio"
+                                                id="isAnnualHolidayLeavePartOfNumberOfDaysTakenTrue"
+                                                formControlName="isAnnualHolidayLeavePartOfNumberOfDaysTaken" required
+                                                [value]="true">
+                                            <label class="form-check-label"
+                                                for="isAnnualHolidayLeavePartOfNumberOfDaysTakenTrue">
+                                                Yes
+                                            </label>
+                                        </div>
+                                        <div class="form-check ms-2">
+                                            <input class="form-check-input" type="radio"
+                                                id="isAnnualHolidayLeavePartOfNumberOfDaysTakenFalse"
+                                                formControlName="isAnnualHolidayLeavePartOfNumberOfDaysTaken" required
+                                                [value]="false">
+                                            <label class="form-check-label"
+                                                for="isAnnualHolidayLeavePartOfNumberOfDaysTakenFalse">
+                                                No
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12 col-md-6 my-2">
+                                    <label for="">Is this category eligible for leave encashment during
+                                        rollover?</label>
+                                    <div class="d-flex">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" id="isEligibleForLeaveEncashmentDuringRolloverTrue"
+                                                formControlName="isEligibleForLeaveEncashmentDuringRollover" required
+                                                [value]="true">
+                                            <label class="form-check-label" for="isEligibleForLeaveEncashmentDuringRolloverTrue">
+                                                Yes
+                                            </label>
+                                        </div>
+                                        <div class="form-check ms-2">
+                                            <input class="form-check-input" type="radio" id="isEligibleForLeaveEncashmentDuringRolloverFalse"
+                                                formControlName="isEligibleForLeaveEncashmentDuringRollover" required
+                                                [value]="false">
+                                            <label class="form-check-label" for="isEligibleForLeaveEncashmentDuringRolloverFalse">
+                                                No
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12 col-md-6 my-2">
+                                    <label for="">
+                                        Is there any document required to be uploaded for this category?
+                                    </label>
+                                    <div class="d-flex">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio"
+                                                formControlName="isDocumentRequired" required [value]="true"
+                                                id="isDocumentRequiredTrue">
+                                            <label class="form-check-label" for="isDocumentRequiredTrue">
+                                                Yes
+                                            </label>
+                                        </div>
+                                        <div class="form-check ms-2">
+                                            <input class="form-check-input" type="radio"
+                                                formControlName="isDocumentRequired" required [value]="false"
+                                                id="isDocumentRequiredFalse">
+                                            <label class="form-check-label" for="isDocumentRequiredFalse">
+                                                No
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12 col-md-6 my-2">
+                                    <label for="">
+                                        Is this category eligible for leave encashment/recovery during FNF?
+                                    </label>
+                                    <div class="d-flex">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio"
+                                                formControlName="isEligibleForEncashmentRecoveryDuringFNF" required
+                                                [value]="true" id="isEligibleForEncashmentRecoveryDuringFNFTrue">
+                                            <label class="form-check-label" for="isEligibleForEncashmentRecoveryDuringFNFTrue">
+                                                Yes
+                                            </label>
+                                        </div>
+                                        <div class="form-check ms-2">
+                                            <input class="form-check-input" type="radio"
+                                                formControlName="isEligibleForEncashmentRecoveryDuringFNF" required
+                                                [value]="false" id="isEligibleForEncashmentRecoveryDuringFNFFalse" checked>
+                                            <label class="form-check-label" for="isEligibleForEncashmentRecoveryDuringFNFFalse">
+                                                No
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12 col-md-6 my-2">
+                                    <label for="">
+                                        What is your policy with regards to carryover limits?
+                                    </label>
+                                    <select id="" formControlName="policyWithRegardsToCarryoverLimits">
+                                        <option value="no-carryover">No CarryOver</option>
+                                        <option value="carryover-gap">Carryover Gap</option>
+                                        <option value="no-limit">No Limit</option>
+
+                                    </select>
+                                </div>
+
+                                <div class="col-sm-12 col-md-6 my-2">
+                                    <label for="">Are employees allowed to have negative leave balance?</label>
+                                    <div class="d-flex">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio"
+                                                formControlName="isEmployeesAllowedToNegativeLeaveBalance" required
+                                                [value]="true" id="isEmployeesAllowedToNegativeLeaveBalanceTrue">
+                                            <label class="form-check-label" for="isEmployeesAllowedToNegativeLeaveBalanceTrue">
+                                                Yes
+                                            </label>
+                                        </div>
+                                        <div class="form-check ms-2">
+                                            <input class="form-check-input" type="radio"
+                                                formControlName="isEmployeesAllowedToNegativeLeaveBalance" required
+                                                [value]="false" id="isEmployeesAllowedToNegativeLeaveBalanceFalse">
+                                            <label class="form-check-label" for="isEmployeesAllowedToNegativeLeaveBalanceFalse">
+                                                No
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12 col-md-6 my-2">
+                                    <label for="">
+                                        Would you like to round-off the leave accrual to the nearest 0.5 unit?
+                                    </label>
+                                    <div class="d-flex">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio"
+                                                formControlName="isRoundOffLeaveAccrualNearestPointFiveUnit" required
+                                                [value]="true" id="isRoundOffLeaveAccrualNearestPointFiveUnitTrue">
+                                            <label class="form-check-label" for="isRoundOffLeaveAccrualNearestPointFiveUnitTrue">
+                                                Yes
+                                            </label>
+                                        </div>
+                                        <div class="form-check ms-2">
+                                            <input class="form-check-input" type="radio"
+                                                formControlName="isRoundOffLeaveAccrualNearestPointFiveUnit" required
+                                                [value]="false" id="isRoundOffLeaveAccrualNearestPointFiveUnitFalse" >
+                                            <label class="form-check-label" for="isRoundOffLeaveAccrualNearestPointFiveUnitFalse">
+                                                No
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12 col-md-6 my-2">
+                                    <label for="">Is intra-cycle lapse applicable for this category?</label>
+                                    <div class="d-flex">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio"
+                                                formControlName="isIntraCycleLapseApplicableForThisCategory" required
+                                                [value]="true" id="isIntraCycleLapseApplicableForThisCategoryTrue">
+                                            <label class="form-check-label" for="isIntraCycleLapseApplicableForThisCategoryTrue">
+                                                Yes
+                                            </label>
+                                        </div>
+                                        <div class="form-check ms-2">
+                                            <input class="form-check-input" type="radio"
+                                                formControlName="isIntraCycleLapseApplicableForThisCategory" required
+                                                [value]="false" id="isIntraCycleLapseApplicableForThisCategoryFalse" checked>
+                                            <label class="form-check-label" for="isIntraCycleLapseApplicableForThisCategoryFalse">
+                                                No
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12 col-md-6 my-2">
+                                    <label for=""> Minimum number of days allowed (leave blank for no
+                                        limit)</label>
+                                    <input type="number" class="w-100" formControlName="minimumNumberOfDaysAllowed">
+                                </div>
+
+                                <div class="col-sm-12 col-md-6 my-2">
+                                    <label for=""> How would you like to pro-rate the first month’s accrual for new
+                                        joinees?</label>
+                                    <select id="" formControlName="isProRateFirstMonthAccrualForNewJoinees">
+                                        <option value="fixed">Fixed cut-off day of the month</option>
+                                        <option value="pro-ration">Pro Ration by joining date in the calendar month</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-sm-12 col-md-6 my-2">
+                                    <label for=""> Maximum number of consecutive leave days allowed (leave blank for no limit)</label>
+                                    <input type="number" class="w-100" formControlName="maximumNumberConsecutiveLeaveDaysAllowed">
+                                </div>
+
+                                <div class="col-sm-12 col-md-6 my-2">
+                                    <label for="">Is this a paid Leave?</label>
+                                    <div class="d-flex">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" formControlName="isPaidLeave"
+                                                required [value]="true" id="isPaidLeaveTrue">
+                                            <label class="form-check-label" for="isPaidLeaveTrue">
+                                                Yes
+                                            </label>
+                                        </div>
+                                        <div class="form-check ms-2">
+                                            <input class="form-check-input" type="radio" formControlName="isPaidLeave"
+                                                required [value]="false" id="isPaidLeave2" >
+                                            <label class="form-check-label" for="isPaidLeave2">
+                                                No
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- If Leave type is annual leave -->
+                            <div class="row" *ngIf="categoryForm.value.leaveType === 'annual-non-accural-leave'">
+                                <div class="col-sm-12 col-md-6 my-2">
+                                    <label for="">If an Annual Holiday is part of the leave request, should it
+                                        be included in the number of days taken?</label>
+                                    <div class="d-flex">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" formControlName="isAnnualHolidayLeavePartOfNumberOfDaysTaken" id="isAnnualHolidayLeavePartOfNumberOfDaysTaken" [value]="true">
+                                            <label class="form-check-label" for="isAnnualHolidayLeavePartOfNumberOfDaysTaken">
+                                                Yes
+                                            </label>
+                                        </div>
+                                        <div class="form-check ms-2">
+                                            <input class="form-check-input" type="radio" formControlName="isAnnualHolidayLeavePartOfNumberOfDaysTaken" id="isAnnualHolidayLeavePartOfNumberOfDaysTaken1" [value]="false">
+                                            <label class="form-check-label" for="isAnnualHolidayLeavePartOfNumberOfDaysTaken1">
+                                                No
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12 col-md-6 my-2">
+                                    <label for="">If a weekly off is part of the leave request, should it be
+                                        included in
+                                        the number of days taken?</label>
+                                    <div class="d-flex">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" formControlName="isWeeklyOffLeavePartOfNumberOfDaysTaken"
+                                             id="isWeeklyOffLeavePartOfNumberOfDaysTaken" [value]="true">
+                                            <label class="form-check-label" for="isWeeklyOffLeavePartOfNumberOfDaysTaken">
+                                                Yes
+                                            </label>
+                                        </div>
+                                        <div class="form-check ms-2">
+                                            <input class="form-check-input" type="radio" id="isWeeklyOffLeavePartOfNumberOfDaysTaken1" 
+                                            formControlName="isWeeklyOffLeavePartOfNumberOfDaysTaken" [value]="false">
+                                            <label class="form-check-label" for="isWeeklyOffLeavePartOfNumberOfDaysTaken1">
+                                                No
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12 col-md-6 my-2">
+                                    <label for="">Is this category eligible for leave encashment during
+                                        rollover?</label>
+                                    <div class="d-flex">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio"
+                                            formControlName="isEligibleForLeaveEncashmentDuringRollover"
+                                            [value]="true"
+                                            id="isEligibleForLeaveEncashmentDuringRollover">
+                                            <label class="form-check-label" for="isEligibleForLeaveEncashmentDuringRollover">
+                                                Yes
+                                            </label>
+                                        </div>
+                                        <div class="form-check ms-2">
+                                            <input class="form-check-input" type="radio" id="isEligibleForLeaveEncashmentDuringRollover1"
+                                            formControlName="isEligibleForLeaveEncashmentDuringRollover"
+                                            [value]="false">
+                                            <label class="form-check-label" for="isEligibleForLeaveEncashmentDuringRollover1">
+                                                No
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12 col-md-6 my-2">
+                                    <label for="">Is there any document required to be uploaded for this
+                                        category?</label>
+                                    <div class="d-flex">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" formControlName="isDocumentRequired"
+                                            [value]="true" id="isDocumentRequired">
+                                            <label class="form-check-label" for="isDocumentRequired">
+                                                Yes
+                                            </label>
+                                        </div>
+                                        <div class="form-check ms-2">
+                                            <input class="form-check-input" type="radio" id="isDocumentRequired1" 
+                                            formControlName="isDocumentRequired" [value]="false">
+                                            <label class="form-check-label" for="isDocumentRequired1">
+                                                No
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12 col-md-6 my-2">
+                                    <label for="">
+                                        Is this category eligible for leave encashment/recovery during FNF?
+                                    </label>
+                                    <div class="d-flex">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" 
+                                            formControlName="isEligibleForEncashmentRecoveryDuringFNF"
+                                            [value]="true"
+                                            id="isEligibleForEncashmentRecoveryDuringFNF">
+                                            <label class="form-check-label" for="isEligibleForEncashmentRecoveryDuringFNF">
+                                                Yes
+                                            </label>
+                                        </div>
+                                        <div class="form-check ms-2">
+                                            <input class="form-check-input" type="radio" id="isEligibleForEncashmentRecoveryDuringFNF1"
+                                            formControlName="isEligibleForEncashmentRecoveryDuringFNF"
+                                            [value]="false">
+                                            <label class="form-check-label" for="isEligibleForEncashmentRecoveryDuringFNF1">
+                                                No
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12 col-md-6 my-2">
+                                    <label for="">Is there a date restriction as to when the employee can
+                                        apply?</label>
+                                    <div class="d-flex">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" id="isEmployeesAllowedToNegativeLeaveBalance"
+                                            formControlName="isEmployeesAllowedToNegativeLeaveBalance" [value]="true">
+                                            <label class="form-check-label" for="isEmployeesAllowedToNegativeLeaveBalance">
+                                                Yes
+                                            </label>
+                                        </div>
+                                        <div class="form-check ms-2">
+                                            <input class="form-check-input" type="radio" id="isEmployeesAllowedToNegativeLeaveBalance1" 
+                                            formControlName="isEmployeesAllowedToNegativeLeaveBalance" [value]="false">
+                                            <label class="form-check-label" for="isEmployeesAllowedToNegativeLeaveBalance1">
+                                                No
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12 col-md-6 my-2">
+                                    <label for=""> Is this a paid Leave?</label>
+                                    <div class="d-flex">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" id="isPaidLeave"
+                                            formControlName="isPaidLeave" [value]="true">
+                                            <label class="form-check-label" for="isPaidLeave">
+                                                Yes
+                                            </label>
+                                        </div>
+                                        <div class="form-check ms-2">
+                                            <input class="form-check-input" type="radio" id="isPaidLeave1" 
+                                            formControlName="isPaidLeave" [value]="false">
+                                            <label class="form-check-label" for="isPaidLeave1">
+                                                No
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer d-flex justify-content-between mt-3">
+
+                        <div>
+                            <button mat-raised-button class="mx-2" data-bs-dismiss="modal" type="reset">Cancel</button>
+                        </div>
+                        <div>
+                            <button mat-raised-button class="addBtn" type="submit">{{!isEdit ? 'Add' : 'Update'}}</button>
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</ng-template>

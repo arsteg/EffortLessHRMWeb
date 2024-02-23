@@ -1,0 +1,246 @@
+<div class="main-content mt-2">
+    <div class="container-fluid">
+        <div class="bg-white p-3">
+            <form [ngClass]="{'editable-form': isEdit}" #myForm="ngForm">
+                <div class="d-flex pb-3">
+                    <div class="ms-auto">
+                        <button mat-raised-button *ngIf="!isEdit" (click)="toggleEdit()">Edit</button>
+                        <button mat-raised-button *ngIf="isEdit" class="me-3">Cancel</button>
+                        <button mat-raised-button color="primary" *ngIf="isEdit">Save</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="">
+                                    What month of the year does your leave cycle start from?<span
+                                        class="text-danger" *ngIf="isEdit">&nbsp;*</span>
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <select name="" id="" class="py-2 month" [disabled]="!isEdit">
+                                    <option value="" *ngFor="let month of months">{{month}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="">
+                                    Are Admins Having Manage Access to Leave Module<br> Allowed To Approve/Reject Leave
+                                    Applications?<span class="text-danger" *ngIf="isEdit">&nbsp;*</span>
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <select name="" id="" class="py-2" [disabled]="!isEdit">
+                                    <option value="">Yes</option>
+                                    <option value="">No</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row my-5">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="">
+                                    Can Supervisors add Leave Adjustments for subordinates?<span
+                                        class="text-danger" *ngIf="isEdit">&nbsp;*</span>
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <select name="" id="" class="py-2" [disabled]="!isEdit">
+                                    <option value="">Yes</option>
+                                    <option value="">No</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="">
+                                    Would you like to run daily leave accruals?<span class="text-danger" *ngIf="isEdit">&nbsp;*</span>
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <select name="" id="" class="py-2" [disabled]="!isEdit">
+                                    <option value="">Yes</option>
+                                    <option value="">No</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="">
+                                    What date were initial balances set ?<span class="text-danger" *ngIf="isEdit">&nbsp;*</span>
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <select name="" id="" class="py-2" [disabled]="!isEdit">
+                                    <option value="">Yes</option>
+                                    <option value="">No</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="">
+                                    Would you like to freeze Initial balances once first accrual is run?<span
+                                        class="text-danger" *ngIf="isEdit">&nbsp;*</span>
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <select name="" id="" class="py-2" [disabled]="!isEdit">
+                                    <option value="">Yes</option>
+                                    <option value="">No</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row my-5">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="">
+                                    What should be the short leave application limit?<span
+                                        class="text-danger" *ngIf="isEdit">&nbsp;*</span>
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <input type="text" class="form-control" class="form-control"
+                                    placeholder="Enter the Limit" [disabled]="!isEdit">
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="">
+                                    What should be the max duration for short leave application (in minutes)?<span
+                                        class="text-danger" *ngIf="isEdit">&nbsp;*</span>
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <input type="text" class="form-control" class="form-control"
+                                    placeholder="Enter the Duration" [disabled]="!isEdit">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="">
+                                    Select Locations Departments Bands Designations or Employees for Short Leave
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <input type="text" class="form-control" class="form-control"
+                                    placeholder="Enter the Limit" [disabled]="!isEdit">
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="">
+                                    What are the minimum hours per day that an employee should work to get credit for a
+                                    Full Day Comp Off?<span class="text-danger" *ngIf="isEdit">&nbsp;*</span>
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <div class="time-picker-input d-flex" style="margin-top: -20px;">
+                                    <div style="display: grid;">
+                                        <button mat-icon-button
+                                            (click)="incrementHour()"><mat-icon>keyboard_arrow_up</mat-icon></button>
+                                        <input type="number" class="w-75" [(ngModel)]="selectedHour" name="selectedHour"
+                                            min="0" max="23" />
+                                        <button mat-icon-button
+                                            (click)="decrementHour()"><mat-icon>keyboard_arrow_down</mat-icon></button>
+                                    </div>
+                                    <span class="mt-4 pt-3 me-4"> : </span>
+                                    <div style="display: grid;">
+                                        <button mat-icon-button
+                                            (click)="incrementMinute()"><mat-icon>keyboard_arrow_up</mat-icon></button>
+                                        <input type="number" class="w-75" [(ngModel)]="selectedMinute"
+                                            name="selectedMinute" min="0" max="59" />
+                                        <button mat-icon-button
+                                            (click)="decrementMinute()"><mat-icon>keyboard_arrow_down</mat-icon></button>
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row my-2">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="">
+                                    What are the minimum hours per day that an employee should work to get credit for a
+                                    Half Day Comp Off?<span class="text-danger" *ngIf="isEdit">&nbsp;*</span>
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <div class="time-picker-input d-flex" style="margin-top: -20px;">
+                                    <div style="display: grid;">
+                                        <button mat-icon-button
+                                            (click)="incrementHour()"><mat-icon>keyboard_arrow_up</mat-icon></button>
+                                        <input type="number" class="w-75" [(ngModel)]="selectedHour" name="selectedHour"
+                                            min="0" max="23" />
+                                        <button mat-icon-button
+                                            (click)="decrementHour()"><mat-icon>keyboard_arrow_down</mat-icon></button>
+                                    </div>
+                                    <span class="mt-4 pt-3 me-4"> : </span>
+                                    <div style="display: grid;">
+                                        <button mat-icon-button
+                                            (click)="incrementMinute()"><mat-icon>keyboard_arrow_up</mat-icon></button>
+                                        <input type="number" class="w-75" [(ngModel)]="selectedMinute"
+                                            name="selectedMinute" min="0" max="59" />
+                                        <button mat-icon-button
+                                            (click)="decrementMinute()"><mat-icon>keyboard_arrow_down</mat-icon></button>
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

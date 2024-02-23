@@ -1,0 +1,11 @@
+.categoryForm {
+  height: 50vh;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+@media (min-width: 576px){
+  .modal-dialog{
+    max-width:70% !important;
+  }
+}
