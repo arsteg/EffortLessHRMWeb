@@ -16,8 +16,9 @@
             <table class="px-4">
                 <thead>
                     <tr>
-                        <th class="ps-2" [appSort]="templateAssignments" [attr.data-order]="sortOrder" data-name="user.firstName"
-                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Member<i
+                        <th class="ps-2" [appSort]="templateAssignments" [attr.data-order]="sortOrder"
+                            data-name="user.firstName" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                            Member<i
                                 [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                         </th>
                         <th [appSort]="templateAssignments" [attr.data-order]="sortOrder" data-name="expenseTemplate"
@@ -43,14 +44,11 @@
 
                     <tr
                         *ngFor="let templateAssignment of templateAssignments | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }; let i = index">
-                        <td class="ps-2">{{templateAssignments[i]?.user?.firstName |
-                            titlecase}}&nbsp;{{templateAssignments[i]?.user?.lastName | titlecase}}</td>
-                        <td *ngIf="templateResponse?.data != null">
-                            {{templateAssignments[i]?.expenseTemplate.policyLabel}}</td>
-                        <td>{{templateAssignments[i]?.primaryApprover?.firstName |
-                            titlecase}}&nbsp;{{templateAssignments[i]?.primaryApprover?.lastName | titlecase}}</td>
-                        <td>{{templateAssignments[i]?.secondaryApprover?.firstName |
-                            titlecase}}&nbsp;{{templateAssignments[i]?.secondaryApprover?.lastName | titlecase}}</td>
+
+                        <td>{{getUser(templateAssignment?.user)}}</td>
+                        <td>{{getTemplate(templateAssignment?.expenseTemplate)}}</td>
+                        <td>{{getUser(templateAssignment?.primaryApprover)}}</td>
+                        <td>{{getUser(templateAssignment?.secondaryApprover)}}</td>
                         <td>{{templateAssignment?.effectiveDate | date:'mediumDate'}}</td>
                         <td class="">
                             <button class="actions" mat-mini-fab title="Update" (click)="changeMode='Update';
@@ -141,7 +139,7 @@
 
         <div class="d-flex border-top mt-2 py-2 justify-content-between">
             <button mat-raised-button type="button" (click)="clearSelection()">Cancel</button>
-            <button mat-raised-button  type="submit" class="addBtn">{{changeMode}}</button>
+            <button mat-raised-button type="submit" class="addBtn">{{changeMode}}</button>
         </div>
     </form>
 </ng-template>

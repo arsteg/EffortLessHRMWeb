@@ -150,7 +150,7 @@ export class ExpenseGeneralSettingsComponent {
       this.users = res.data.data;
     })
   }
-  
+
   createTemplate() {
     let payload = {
       policyLabel: this.addTemplateForm.value.policyLabel,
@@ -179,8 +179,10 @@ export class ExpenseGeneralSettingsComponent {
 
       if (isArrayStructureChanged) {
         payload.expenseCategories = this.addTemplateForm.value.expenseCategories.map(category => ({ expenseCategory: category }));
+        console.log(payload.expenseCategories)
       } else {
         payload.expenseCategories = this.addTemplateForm.value.expenseCategories.map(category => ({ expenseCategory: category.expenseCategory }));
+        console.log(payload.expenseCategories);
       }
       this.expenseService.updateTemplate(templateId, payload).subscribe((res: any) => {
         this.toast.success('Template Updated Successfully!');

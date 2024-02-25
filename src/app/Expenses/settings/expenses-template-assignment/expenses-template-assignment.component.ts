@@ -60,6 +60,10 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
       this.allAssignee = result && result.data && result.data.data;
     });
   }
+  getUser(employeeId: string) {
+    const matchingUser = this.allAssignee?.find(user => user._id === employeeId);
+    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'User Not Found';
+  }
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
@@ -89,6 +93,7 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
       if (index !== -1) {
         this.templateAssignments.splice(index, 1);
       }
+      this.toast.success('Deleted Successfully!');
     })
   }
 
@@ -100,7 +105,7 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       if (result === 'delete') {
         this.deleteTemplateAssignment(id);
-        this.toast.success('Deleted Successfully!');
+      
       }
       (err) => {
         this.toast.error('Can not be Deleted', 'Error!');
@@ -114,51 +119,13 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
     })
   }
 
-
+  getTemplate(templateId: string) {
+    const template = this.templates?.find(user => user._id === templateId);
+    return template ? template.policyLabel : '';
+  }
   getAssignments() {
     this.expenseService.getTemplateAssignment().subscribe((res: any) => {
       this.templateAssignments = res.data;
-
-      const userRequests = this.templateAssignments.map(assignment =>
-        this.authService.GetMe(assignment.user).toPromise()
-      );
-
-      const primaryRequests = this.templateAssignments.map(assignment =>
-        this.authService.GetMe(assignment.primaryApprover).toPromise()
-      );
-
-      const secondaryRequests = this.templateAssignments.map(assignment =>
-        this.authService.GetMe(assignment.secondaryApprover).toPromise()
-      );
-
-      const templateRequests = this.templateAssignments.map(assignment =>
-        this.expenseService.getTemplateById(assignment.expenseTemplate).toPromise()
-      );
-
-      Promise.all([...userRequests, ...templateRequests, ...primaryRequests, ...secondaryRequests]).then(results => {
-        for (let i = 0; i < this.templateAssignments.length; i++) {
-          const userResponse = results[i];
-          this.templateResponse = results[i + this.templateAssignments.length];
-          const primaryApproverResponse = results[i + this.templateAssignments.length * 2];
-          const secondaryApproverResponse = results[i + this.templateAssignments.length * 3];
-
-          if (userResponse) {
-            this.templateAssignments[i].user = userResponse.data.users;
-          }
-
-          if (primaryApproverResponse) {
-            this.templateAssignments[i].primaryApprover = primaryApproverResponse.data.users;
-          }
-
-          if (secondaryApproverResponse) {
-            this.templateAssignments[i].secondaryApprover = secondaryApproverResponse.data.users;
-          }
-
-          if (this.templateResponse.data != null) {
-            this.templateAssignments[i].expenseTemplate = this.templateResponse.data;
-          }
-        }
-      });
     });
   }
 
@@ -215,12 +182,13 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
     this.changeMode = 'Update';
     let templateAssignment = templateAssignments;
     const formValues = {
-      user: templateAssignment.user._id,
-      primaryApprover: templateAssignment.primaryApprover._id,
-      secondaryApprover: templateAssignment.secondaryApprover._id,
-      expenseTemplate: templateAssignment.expenseTemplate._id,
+      user: templateAssignment.user,
+      primaryApprover: templateAssignment.primaryApprover,
+      secondaryApprover: templateAssignment.secondaryApprover,
+      expenseTemplate: templateAssignment.expenseTemplate,
       effectiveDate: templateAssignment.effectiveDate
     };
+    console.log(formValues)
     this.templateAssignmentForm.get('user')?.enable();
     this.templateAssignmentForm.get('expenseTemplate')?.enable();
     this.templateAssignmentForm.patchValue(formValues);

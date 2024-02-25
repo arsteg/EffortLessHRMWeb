@@ -76,6 +76,7 @@ export class ExpensesTemplatesComponent implements OnInit {
   }
 
   setFormValues(templateData: any) {
+    console.log(templateData)
     this.expenseService.selectedTemplate.next(templateData);
   }
 
