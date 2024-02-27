@@ -65,17 +65,9 @@ export class ViewReportComponent {
   }
 
   downloadFile() {
-    let response = this.selectedReport.documentLink;
-    const blob = new Blob([response], { type: 'application/png' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = response;
-    document.body.appendChild(a);
-    a.click();
-    window.URL.revokeObjectURL(url);
-
-  }
+    const fileContent = this.selectedReport.documentLink; 
+    window.open(fileContent, '_blank');
+}
   closeModal() {
     this.close.emit(true);
   }
@@ -100,12 +92,13 @@ export class ViewReportComponent {
       return `with: ${reason}`;
     }
   }
+  
   openSecondModal(selectedReport: any): void {
     console.log(selectedReport);
     this.expenseService.report.next(selectedReport);
     const dialogRef = this.dialog.open(ViewExpenseReportExpensesComponent, {
         width: '50%',
-        data: { report: selectedReport } // Pass the selected report as data to the modal
+        data: { report: selectedReport }
     });
     dialogRef.afterClosed().subscribe(result => {
         console.log('The modal was closed');

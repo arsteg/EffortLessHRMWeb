@@ -332,4 +332,18 @@ export class ExpensesService {
     return response;
   }
 
+  getExpenseReportByTeam(): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/expense-reports-by-team`, this.httpOptions);
+    return response;
+  }
+
+  getEmployeeExpenseAssignments(userId: string): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/employee-expense-assignments-by-user/${userId}`, this.httpOptions);
+    return response;
+  }
+
+  getEmployeeApplicableSettings(userId: string): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/employee-expense-applicable-setting/${userId}`, this.httpOptions);
+    return response;
+  }
 }

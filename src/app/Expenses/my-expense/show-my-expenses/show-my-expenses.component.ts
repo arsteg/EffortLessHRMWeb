@@ -35,6 +35,9 @@ export class ShowMyExpensesComponent {
     private commonService: CommonService) { }
 
   ngOnInit() {
+    this.auth.currentUser.subscribe(res=>{
+      console.log(res?.data?.user?.id)
+    })
     this.getExpenseByUser();
     this.commonService.populateUsers().subscribe(result => {
       this.allAssignee = result && result.data && result.data.data;
@@ -81,7 +84,7 @@ export class ShowMyExpensesComponent {
   refreshExpenseReportTable() {
     console.log('refreshed')
     const user = this.auth.currentUser.subscribe((res: any) => {
-      this.expenseService.getExpenseReportByUser(res.id).subscribe((res: any) => {
+      this.expenseService.getExpenseReportByUser(res?.data?.user?.id).subscribe((res: any) => {
         this.expenseReport = res.data.filter(expense => expense.status === this.status);
         this.totalAmount = this.expenseReport.reduce((total, report) => total + report.amount, 0);
         this.expenseTemplateReportRefreshed.emit();

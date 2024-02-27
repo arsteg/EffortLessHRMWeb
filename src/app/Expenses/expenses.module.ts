@@ -61,6 +61,8 @@ import { PendingTeamExpensesComponent } from './team-expense/pending-team-expens
 import { ApprovedTeamExpensesComponent } from './team-expense/approved-team-expenses/approved-team-expenses.component';
 import { RejectedTeamExpensesComponent } from './team-expense/rejected-team-expenses/rejected-team-expenses.component';
 import { StatusUpdateExpenseComponent } from './my-expense/status-update-expense/status-update-expense.component';
+import { ApplicableExpenseSettingsComponent } from './general-information/applicable-expense-settings/applicable-expense-settings.component';
+import { SupervisorsComponent } from './general-information/supervisors/supervisors.component';
  
 @NgModule({
   declarations: [
@@ -108,7 +110,9 @@ import { StatusUpdateExpenseComponent } from './my-expense/status-update-expense
     PendingTeamExpensesComponent,
     ApprovedTeamExpensesComponent,
     RejectedTeamExpensesComponent,
-    StatusUpdateExpenseComponent
+    StatusUpdateExpenseComponent,
+    ApplicableExpenseSettingsComponent,
+    SupervisorsComponent
   ],
   imports: [
     BrowserModule,

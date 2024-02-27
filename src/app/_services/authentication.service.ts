@@ -13,6 +13,8 @@ export class AuthenticationService {
   private currentUserSubject: BehaviorSubject<User>;
   public currentUser: Observable<any>;
   role: any = new BehaviorSubject('');
+  private userIdSubject = new BehaviorSubject<string | null>(null);
+  userId$ = this.userIdSubject.asObservable();
 
   private getHttpOptions() {
     const token = localStorage.getItem('jwtToken');
@@ -39,12 +41,11 @@ export class AuthenticationService {
       const loginTime = localStorage.getItem('loginTime');
       if (loginTime) {
         const currentTime = new Date().getTime();
-        const twentyFourHours = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+        const twentyFourHours = 24 * 60 * 60 * 1000;
         const lastLoginTime = parseInt(loginTime, 10);
         const timeElapsed = currentTime - lastLoginTime;
 
         if (timeElapsed >= twentyFourHours) {
-          // Auto logout after 24 hours
           this.logout().then(() => resolve(false));
         } else {
           resolve(true);
@@ -55,8 +56,15 @@ export class AuthenticationService {
     });
   }
   constructor(private http: HttpClient, private router: Router) {
-    this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
+    // this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
+    // this.currentUser = this.currentUserSubject.asObservable();
+
+    this.currentUserSubject = new BehaviorSubject<User | null>(null);
     this.currentUser = this.currentUserSubject.asObservable();
+    const storedUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (storedUser) {
+      this.currentUserSubject.next(storedUser);
+    }
   }
 
   public get currentUserValue(): User {

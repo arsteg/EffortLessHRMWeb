@@ -82,8 +82,7 @@ export class ShowTeamExpensesComponent {
   }
 
   getexpenseReport() {
-    this.expenseService.getExpenseReport().subscribe((res: any) => {
-      // this.expenseReport = res.data;
+    this.expenseService.getExpenseReportByTeam().subscribe((res: any) => {
       this.expenseReport = res.data.filter(expense => expense.status === this.status);
       this.totalAmount = this.expenseReport.reduce((total, report) => total + report.amount, 0);
     })

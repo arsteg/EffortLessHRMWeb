@@ -59,6 +59,7 @@ export class LoginComponent implements OnInit {
             localStorage.setItem('roleId', data.data.user?.role?.id);
            
             if (data.data.user?.role?.id === '639acb77b5e1ffe22eaa4a39') {
+              localStorage.setItem('adminView', 'admin');
               this.router.navigate(['/dashboard']);
             } else {
               this.router.navigate(['/userDashboard']);

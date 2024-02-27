@@ -34,29 +34,19 @@ export class HomeComponent implements OnInit {
     this.adminView = localStorage.getItem('adminView');
     this.auth.getRole(roleId).subscribe((response: any) => {
       let role = response && response.data && response.data[0].Name;
-    //   if (role == 'Admin') {
-    //     this.adminView = 'admin';
-    // console.log(this.adminView)
-
-    //   }
+   
       this.commonService.setCurrentUserRole(role);
       if (this.adminView) {
         if (this.adminView?.toLowerCase() == 'admin') {
           this.adminView = 'admin'
-    console.log(this.adminView)
-
           localStorage.setItem('adminView', 'admin');
           this.menuList = SideBarAdminMenu;
           this.portalType = this.adminView?.toLowerCase();
-    console.log(this.adminView)
-
         }
         if (this.adminView?.toLowerCase() == 'user') {
           this.adminView = 'user'
           this.menuList = SideBarUserMenu;
           localStorage.setItem('adminView', 'user');
-          console.log(this.adminView)
-
         }
       }
       else {

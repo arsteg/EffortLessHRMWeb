@@ -38,10 +38,12 @@ export class AddExpenseReportComponent {
     private fb: FormBuilder,
     private toast: ToastrService,
     private cdr: ChangeDetectorRef) {
-     
+
     this.addExpenseForm = this.fb.group({
-      employee: [{value:'', disabled: this.changeMode}, Validators.required],
+      employee: [{ value: '', disabled: this.changeMode }, Validators.required],
       title: ['', Validators.required],
+      status: [''],
+      amount: [''],
       expenseReportExpenses: []
     });
 
@@ -113,15 +115,19 @@ export class AddExpenseReportComponent {
     let payload = {
       employee: this.addExpenseForm.value.employee,
       title: this.addExpenseForm.value.title,
+      amount: this.addExpenseForm.value.amount,
+      status: this.addExpenseForm.value.status,
       expenseReportExpenses: []
     }
     let formArray = this.expenseService.expenseReportExpense.getValue();
-
+    console.log(formArray)
     payload.expenseReportExpenses = [formArray];
     if (!this.isEdit || !this.changeMode) {
+      console.log(payload)
       this.expenseService.addExpensePendingReport(payload).subscribe((res: any) => {
         this.toast.success('Expense Template Applicable Category Added Successfully!');
         this.updateExpenseReportTable.emit();
+        this.addExpenseForm.reset();
       },
         err => {
           this.toast.error('Expense Template Applicable Category Can not be Added', 'ERROR!')

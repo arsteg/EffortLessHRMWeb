@@ -14,6 +14,7 @@ import { ExpensesService } from 'src/app/_services/expenses.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
+import { attachments } from 'src/app/models/expenses';
 
 @Component({
   selector: 'app-create-report',
@@ -34,6 +35,9 @@ export class CreateReportComponent {
   bsRangeValue: Date[];
   maxDate = new Date();
   labelPosition: true | false = true;
+  attachments: attachments[] = [];
+  selectedFiles: any = [];
+
 
   constructor(public expenseService: ExpensesService,
     private fb: FormBuilder,
@@ -47,12 +51,12 @@ export class CreateReportComponent {
       isReimbursable: [''],
       isBillable: [''],
       reason: [''],
-      documentLink: [''],
+      expenseAttachments: [this.attachments],
       expenseReport: ['']
     });
     this.maxDate.setDate(this.maxDate.getDate() + 7);
     this.bsRangeValue = [this.bsValue, this.maxDate];
-    }
+  }
 
   ngOnInit() {
     if (this.expenseService.isEdit.getValue() == true) {
@@ -66,8 +70,8 @@ export class CreateReportComponent {
           isReimbursable: res.isReimbursable,
           isBillable: res.isBillable,
           reason: res.reason,
-          documentLink: res.documentLink,
           expenseReport: res._id
+          // expenseAttachments:
         })
       })
     }
@@ -93,41 +97,146 @@ export class CreateReportComponent {
       isReimbursable: this.expenseReportform.value.isReimbursable,
       isBillable: this.expenseReportform.value.isBillable,
       reason: this.expenseReportform.value.reason,
-      documentLink: this.expenseReportform.value.documentLink,
+      expenseAttachments: [],
       expenseReport: this.expenseReportform.value.expenseReport
     }
     payload.expenseReport = this.expenseService.selectedReport.getValue()._id;
     const expenseReportExpenses = this.expenseService.expenseReportExpense.getValue()._id;
     if (this.expenseService.isEdit.getValue() == true) {
       // update expense report expenses
-      this.expenseService.updateExpenseReportExpenses(expenseReportExpenses, payload).subscribe((res: any) => {
-        this.expenseService.expenseReportExpense.next(res.data);
-        this.toast.success('Expense Report of Expenses is Updated!', 'Successfully!!!')
-      },
-        err => {
-          this.toast.error('This expense report of expenses can not be Updated!', 'Error')
-        })
+      if (this.selectedFiles.length > 0) {
+        const attachments: attachments[] = [];
+
+        for (let i = 0; i < this.selectedFiles.length; i++) {
+          const file: File = this.selectedFiles[i];
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => {
+            const base64String = reader.result.toString().split(',')[1];
+            const fileSize = file.size;
+            const fileType = file.type;
+            const fileNameParts = file.name.split('.');
+            const extention = fileNameParts[fileNameParts.length - 1];
+
+            attachments.push({
+              attachmentName: file.name,
+              attachmentType: fileType,
+              attachmentSize: fileSize,
+              extention: extention,
+              file: base64String
+            });
+
+            if (i === this.selectedFiles.length - 1) {
+              payload.expenseAttachments = attachments;
+              console.log(payload)
+
+              this.expenseService.updateExpenseReportExpenses(expenseReportExpenses, payload).subscribe((res: any) => {
+                this.expenseService.expenseReportExpense.next(res.data);
+                this.toast.success('Expense Report of Expenses is Updated!', 'Successfully!!!')
+              },
+                err => {
+                  this.toast.error('This expense report of expenses can not be Updated!', 'Error')
+                });
+            }
+          }
+        }
+      }
     }
-    else if( this.expenseService.isEdit.getValue() == false && this.expenseService.selectedReport.getValue()._id){
+    else if (this.expenseService.isEdit.getValue() == false && this.expenseService.selectedReport.getValue()._id) {
       // add new expense report expenses  
       payload.expenseReport = this.expenseService.selectedReport.getValue()._id;
-      this.expenseService.addExpenseReportExpenses(payload).subscribe((res: any) => {
-        this.expenseService.expenseReportExpense.next(res.data);
-        this.toast.success('Expense Report of Expenses is Created!', 'Successfully!!!')
-      },
-        err => {
-          this.toast.error('This expense report of expenses can not be Added!', 'Error')
-        })
+
+      if (this.selectedFiles.length > 0) {
+        const attachments: attachments[] = [];
+
+        for (let i = 0; i < this.selectedFiles.length; i++) {
+          const file: File = this.selectedFiles[i];
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => {
+            const base64String = reader.result.toString().split(',')[1];
+            const fileSize = file.size;
+            const fileType = file.type;
+            const fileNameParts = file.name.split('.');
+            const extention = fileNameParts[fileNameParts.length - 1];
+
+            attachments.push({
+              attachmentName: file.name,
+              attachmentType: fileType,
+              attachmentSize: fileSize,
+              extention: extention,
+              file: base64String
+            });
+
+            if (i === this.selectedFiles.length - 1) {
+              payload.expenseAttachments = attachments;
+              console.log(payload)
+              this.expenseService.addExpenseReportExpenses(payload).subscribe((res: any) => {
+                this.expenseService.expenseReportExpense.next(res.data);
+                this.toast.success('Expense Report of Expenses is Created!', 'Successfully!!!')
+              },
+                err => {
+                  this.toast.error('This expense report of expenses can not be Added!', 'Error')
+                })
+            }
+          }
+        }
+      }
     }
-    else(this.expenseService.isEdit.getValue() == false && !this.expenseService.selectedReport.getValue()._id)
+    else (this.expenseService.isEdit.getValue() == false && !this.expenseService.selectedReport.getValue()._id)
     {
-      console.log('no expense report', payload)
-      this.expenseService.expenseReportExpense.next(payload);
+      if (this.selectedFiles.length > 0) {
+        const attachments: attachments[] = [];
+
+        for (let i = 0; i < this.selectedFiles.length; i++) {
+          const file: File = this.selectedFiles[i];
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => {
+            const base64String = reader.result.toString().split(',')[1];
+            const fileSize = file.size;
+            const fileType = file.type;
+            const fileNameParts = file.name.split('.');
+            const extention = fileNameParts[fileNameParts.length - 1];
+            attachments.push({
+              attachmentName: file.name,
+              attachmentType: fileType,
+              attachmentSize: fileSize,
+              extention: extention,
+              file: base64String
+            });
+            if (i === this.selectedFiles.length - 1) {
+              payload.expenseAttachments = attachments;
+              console.log('no expense report', payload)
+              this.expenseService.expenseReportExpense.next(payload);
+            }
+          }
+        }
+      }
     }
 
     this.expenseService.triggerUpdateTable();
     this.dialogRef.close();
     this.changeStep.emit(1);
+
+  }
+
+  onFileSelect(event) {
+    const files: FileList = event.target.files;
+    if (files) {
+      for (let i = 0; i < files.length; i++) {
+        const file: File = files.item(i);
+        if (file) {
+          console.log(this.selectedFiles, file)
+          this.selectedFiles.push(file);
+        }
+      }
+    }
+  }
+  removeFile(index: number) {
+    if (index !== -1) {
+      this.selectedFiles.splice(index, 1);
+    }
   }
   closeModal() {
     this.expenseService.triggerUpdateTable();
@@ -138,5 +247,5 @@ export class CreateReportComponent {
     const value = event.value === 'true';
     this.expenseReportform.patchValue({ isReimbursable: value });
     this.expenseReportform.patchValue({ isBillable: !value });
-}
+  }
 }

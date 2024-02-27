@@ -74,3 +74,11 @@ export interface TemplateAssignment {
     expenseTemplate: string;
     effectiveDate: Date;
 }
+
+export interface attachments{
+    attachmentType: string;
+    attachmentSize: number;
+    attachmentName: string;
+    extention: string;
+    file: string
+}

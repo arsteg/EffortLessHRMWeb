@@ -6,5 +6,13 @@ import { Component } from '@angular/core';
   styleUrl: './general-information.component.css'
 })
 export class GeneralInformationComponent {
+  selectedTab = 1;
 
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+  selectTab(tabIndex: number) {
+    this.selectedTab = tabIndex;
+  }
 }

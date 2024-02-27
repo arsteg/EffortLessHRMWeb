@@ -105,7 +105,7 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       if (result === 'delete') {
         this.deleteTemplateAssignment(id);
-      
+
       }
       (err) => {
         this.toast.error('Can not be Deleted', 'Error!');
@@ -148,16 +148,15 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
         this.getAssignments();
         this.templateAssignmentForm.reset();
       },
-      (err)=>{
-        this.toast.error('Advance Template Cannot be created!', 'Error')
-      });
+        (err) => {
+          this.toast.error('Advance Template Cannot be created!', 'Error')
+        });
     }
     else {
-      let user = this.selectedTemplateAssignmentId.user._id;
-      let expenseTemplate = this.selectedTemplateAssignmentId.expenseTemplate._id;
+      let user = this.selectedTemplateAssignmentId.user;
+      let expenseTemplate = this.selectedTemplateAssignmentId.expenseTemplate;
       payload.user = user;
       payload.expenseTemplate = expenseTemplate;
-
       this.expenseService.addTemplateAssignment(payload).subscribe((res: any) => {
         const updatedTemplateAssign = res.data;
         this.toast.success('Advance Template Assignment Updated!', 'Successfully')
@@ -168,16 +167,16 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
         }
         this.getAssignments();
       },
-      (err)=>{
-        this.toast.error('Advance Template Cannot be Updated!', 'Error')
-      })
+        (err) => {
+          this.toast.error('Advance Template Cannot be Updated!', 'Error')
+        })
 
     }
   }
 
-  
 
-  
+
+
   editTemplateAssignment(templateAssignments, index: number) {
     this.changeMode = 'Update';
     let templateAssignment = templateAssignments;

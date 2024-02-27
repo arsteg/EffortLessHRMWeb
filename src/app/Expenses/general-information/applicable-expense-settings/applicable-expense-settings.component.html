@@ -1,0 +1,19 @@
+<div class="tableContainer bg-white">
+    <table>
+        <thead>
+            <th>Expense Category</th>
+            <th>Policy Information</th>
+        </thead>
+        <tbody>
+            <ng-container *ngIf="employeeApplicableSettings?.length > 0">
+                <tr *ngFor="let employeeApplicableSettings of employeeApplicableSettings; let i = index">
+                    <td>{{getCategoryLabel(employeeApplicableSettings?.expenseCategory)}}</td>
+                    <td>Maximum amount for single expense: {{employeeApplicableSettings?.maximumExpensesCanApply}}<br>
+                        Maximum amount without receipt : {{employeeApplicableSettings?.maximumAmountWithoutReceipt}}<br>
+                        Maximum time can request: {{employeeApplicableSettings?.maximumExpensesCanApply}}
+                    </td>
+                </tr>
+            </ng-container>
+        </tbody>
+    </table>
+</div>

@@ -73,9 +73,12 @@
                                 <mat-icon style="color: red;">close</mat-icon>
                             </ng-template>
                         </td>
-                        <td><span *ngIf="report.documentLink" (click)="selectedReport = report; downloadFile();">
+                        <td>
+                            <span *ngIf="report.documentLink" (click)="selectedReport = report; downloadFile();">
                                 <i class="bi bi-paperclip text-muted" style="font-size: large;"></i>
-                            </span></td>
+                            </span>
+
+                        </td>
                         <td>
                             <button class="actions ms-2" mat-mini-fab data-bs-toggle="modal"
                                 data-bs-target="viewReport" (click)="openSecondModal(report);">

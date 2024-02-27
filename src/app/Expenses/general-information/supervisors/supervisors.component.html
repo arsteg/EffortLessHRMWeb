@@ -1,0 +1,20 @@
+<div class="tableContainer bg-white">
+    <table>
+        <thead>
+            <th>Name</th>
+            <th>Level</th>
+        </thead>
+        <tbody>
+            <ng-container *ngIf="supervisors?.length > 0">
+                <tr>
+                    <td>{{getUser(supervisors[0]?.primaryApprover) | titlecase}}</td>
+                    <td>1 Level</td>
+                </tr>
+                <tr>
+                    <td>{{getUser(supervisors[0]?.secondaryApprover) | titlecase}}</td>
+                    <td>2 Level</td>
+                </tr>
+            </ng-container>
+        </tbody>
+    </table>
+</div>
