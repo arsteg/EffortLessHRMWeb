@@ -1,21 +1,36 @@
-.attachment{
-    transform: translate(-10px, -40px );
+.attachment {
+    transform: translate(-10px, -40px);
 }
-.figure-caption{
+
+.figure-caption {
     position: relative;
     margin-top: -30px;
 }
-.file{
+
+.file {
     font-size: 110px;
 }
-.card-img-top{
+
+.card-img-top {
     height: 150px;
 }
-.cardAttachment{
+
+.cardAttachment {
     box-shadow: 0 1px 1px #bfbbbb;
     width: 150px;
     cursor: pointer;
 }
+
 .btn-outline-primary:hover {
-background: none;
+    background: none;
+}
+
+.modal-fixed-size {
+    max-width: 80vw !important;
+}
+.modal-image{
+    max-width: 100%;
+    max-height: 80vh;
+    margin: auto !important;
+    display: block !important;
 }

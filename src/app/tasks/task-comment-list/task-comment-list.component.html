@@ -154,7 +154,7 @@
 
   </ng-container>
   <div class="row comment-form">
-    <div class="d-flex ps-4">
+    <div class="d-flex ps-4 mt-3">
       <span class="letter text-light comment-user-letter addComment-User"
         [title]="(currentProfile?.firstName | titlecase)"
         [style.background-color]="commonService.getRandomColor(currentProfile?.firstName?.charAt(0) | uppercase)">
@@ -201,7 +201,7 @@
 
 <div class="modal fade" role="dialog" id="bigImageModal" tabindex="0" aria-labelledby="bigImageModalLabel"
   aria-hidden="true">
-  <div class="modal-dialog modal-xl">
+  <div class="modal-dialog modal-fixed-size modal-xl">
     <div class="modal-content">
       <button type="button" class="btn-close m-3" data-bs-dismiss="modal" aria-label="Close"></button><br>
       <div class="d-flex"> <span class="bi bi-image text-warning px-3" style="font-size: 40px;"></span>
