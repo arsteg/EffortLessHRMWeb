@@ -10,7 +10,7 @@
                     name="searchText" aria-label="default input example">
 
                     <button mat-raised-button (click)="open(addModal); isEdit === false; reset()" class="addBtn rounded-pill mx-3">
-                       Add Leave</button>
+                       Add</button>
 
                     <button class="submenuTab active rounded-pill"  (click)="exportToCsv()"><i class="bi bi-download downloadBtn pe-2"></i>
                         Download</button>
@@ -27,7 +27,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let category of leaveCategory">
+                    <tr *ngFor="let category of leaveCategory | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }; let i = index">
                         <td>{{category?.label}}</td>
                         <td>{{category?.leaveType}}</td>
                         <td>{{category?.leaveAccrualPeriod}}</td>
@@ -37,9 +37,15 @@
                                 (click)="open(addModal); selectedLeaveCategory = category; editCategory(category)">
                                 <i class="bi bi-pencil-fill"></i>
                             </button>
+                            <button class="actions ms-2" title="Delete" mat-mini-fab
+                            aria-label="Example icon button with a menu icon" (click)="deleteDialog(category?._id)">
+                            <i class="bi bi-trash"></i>
+                        </button>
                     </tr>
                 </tbody>
             </table>
+            <pagination-controls (pageChange)="p = $event"
+            class="pagination d-flex justify-content-end"></pagination-controls>
         </div>
     </div>
 </div>
@@ -141,16 +147,16 @@
                                 </label>
                                 <div class="d-flex">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" id="displayLeaveBalanceInPayslip"
+                                        <input class="form-check-input" type="radio" id="displayLeaveBalanceInPayslip-yes"
                                             formControlName="displayLeaveBalanceInPayslip" required [value]="true">
-                                        <label class="form-check-label" for="displayLeaveBalanceInPayslip">
+                                        <label class="form-check-label" for="displayLeaveBalanceInPayslip-yes">
                                             Yes
                                         </label>
                                     </div>
                                     <div class="form-check ms-2">
-                                        <input class="form-check-input" type="radio" id="displayLeaveBalanceInPayslip1"
+                                        <input class="form-check-input" type="radio" id="displayLeaveBalanceInPayslip-no"
                                             formControlName="displayLeaveBalanceInPayslip" required [value]="false">
-                                        <label class="form-check-label" for="displayLeaveBalanceInPayslip1">
+                                        <label class="form-check-label" for="displayLeaveBalanceInPayslip-no">
                                             No
                                         </label>
                                     </div>
@@ -172,7 +178,7 @@
                                 </div>
                                 <div class="col-sm-12 col-md-6 my-2">
                                     <label for="">
-                                        Do your employees accrue leave in advance?
+                                        Do your employees accrual leave in advance?
                                     </label>
                                     <div class="d-flex">
                                         <div class="form-check">

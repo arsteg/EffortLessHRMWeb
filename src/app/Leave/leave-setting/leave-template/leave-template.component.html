@@ -1,16 +1,16 @@
-<div class="main-content mt-2">
+<div class="main-content">
     <div class="container-fluid">
         <div class="py-2 px-0 bg-white tableContainer">
             <div class="d-flex justify-content-between align-items-center mb-2 px-3">
-                <p class="mb-0">() Records Found</p>
+                <p class="mb-0">({{leaveTemplate?.length}}) Records Found</p>
                 <div class="d-flex align-items-center">
                     <span class="bi bi-search searchIcon"></span>
 
                     <input class="form-control search" type="text" placeholder="Search..." name="searchText"
                         aria-label="default input example">
 
-                    <button mat-raised-button (click)="open(addModal);" class="addBtn rounded-pill mx-3">Add
-                        Expense</button>
+                    <button mat-raised-button (click)="open(addModal); isEdit === false; changeMode='Add';" class="addBtn rounded-pill mx-3">Add
+                        Leave</button>
 
                     <button class="submenuTab active  rounded-pill"> <i class="bi bi-download downloadBtn pe-2"></i>
                         Download</button>
@@ -27,91 +27,36 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
+                    <tr *ngFor="let leaveTemp of leaveTemplate | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }; let i = index">
+                        <td>{{leaveTemp?.label}}</td>
                         <td></td>
                         <td></td>
-                        <td></td>
-                        <td></td>
+                        <td>
+                            <button class="actions" mat-mini-fab title="Update" (click)="changeMode='Next'; isEdit === true;
+                            open(addModal);
+                            selectedTemplateId=leaveTemp._id;
+                            setFormValues(leaveTemp)" aria-label="Example icon button with a menu icon">
+                            <i class="bi bi-pencil-fill"></i>
+                        </button>
+                        <button class="actions ms-2" title="Delete" mat-mini-fab
+                            aria-label="Example icon button with a menu icon" (click)="deleteDialog(leaveTemp?._id)">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                        </td>
                     </tr>
                 </tbody>
             </table>
-
+            <pagination-controls (pageChange)="p = $event"
+            class="pagination d-flex justify-content-end"></pagination-controls>
 
         </div>
     </div>
 </div>
 
 <ng-template #addModal let-modal>
-    <div class="modal-header border-bottom mb-2 pt-0">
-        <div>
-            <h1 class="modal-title text-muted mb-0"> Category</h1>
-        </div>
-        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
-                (click)="modal.close('Escape clicked')"></button>
-        </div>
-    </div>
-
-    <form action="">
-        <div class="form-group">
-            <label for="">Please choose the type of expense <span class="text-danger">*</span></label>
-            <select formControlName="type" required name="expenseType" class="">
-                <option value="perDay">Per Day</option>
-                <option value="time">Time</option>
-                <option value="distance">Distance</option>
-                <option value="dateRange">Date Range</option>
-                <option value="other">Other</option>
-            </select>
-            <!-- <div *ngIf="addCategoryForm.get('type').invalid && addCategoryForm.get('type').touched"
-                class="text-danger error">
-                Please Select a Type of Category!
-            </div> -->
-        </div>
-        <div class="mt-2 form-group">
-            <label for="">Please provide a label for this Expense <span class="text-danger">*</span></label>
-            <input type="text" class="input form-control" formControlName="label" required
-                placeholder="Enter Custom Label">
-            <!-- <div *ngIf="addCategoryForm.get('label').invalid && addCategoryForm.get('label').touched"
-                class="text-danger error">
-                Please Enter Label of Category!
-            </div> -->
-        </div>
-
-        <div class="mt-2">
-
-
-
-            <div class="mt-2">
-                <label for="">Is field mandatory while submitting expense request? <span
-                        class="text-danger">*</span></label>
-                <div class="d-flex">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" id="flexRadioDefault-Yes"
-                            formControlName="isMandatory" required [value]="true">
-                        <label class="form-check-label" for="flexRadioDefault-Yes">
-                            Yes
-                        </label>
-                    </div>
-
-
-                    <div class="form-check ms-3">
-                        <input class="form-check-input" type="radio" id="flexRadioDefault-No"
-                            formControlName="isMandatory" required [value]="false">
-                        <label class="form-check-label" for="flexRadioDefault-No">
-                            No
-                        </label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
-                <button mat-raised-button type="button">Cancel</button>
-                <button mat-raised-button class="addBtn" type="submit"></button>
-
-            </div>
-        </div>
-
-
-
-    </form>
-
+    <!-- <app-create-leave [changeMode]="changeMode" (changeStep)="onChangeStep($event)"
+        (close)="onClose($event)" *ngIf="step == 1" [isEdit]="isEdit"></app-create-leave> -->
+    <app-add-category-leave *ngIf="step == 1" [isEdit]="isEdit" (close)="onClose($event)"
+        (changeStep)="onChangeStep($event)"
+        (updateLeaveTemplateTable)="refreshLeaveTemplateTable()"></app-add-category-leave>
 </ng-template>

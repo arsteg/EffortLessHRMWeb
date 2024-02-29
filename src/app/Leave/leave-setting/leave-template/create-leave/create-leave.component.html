@@ -1,0 +1,239 @@
+<div class="modal-header border-bottom mb-2 pt-0">
+    <div>
+        <h1 class="modal-title text-muted mb-0" *ngIf="changeMode == 'Next'">Update Leave Template</h1>
+        <h1 class="modal-title text-muted mb-0" *ngIf="changeMode == 'Add'">Add Leave Template</h1>
+
+    </div>
+    <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
+            (click)="closeModal()"></button>
+    </div>
+</div>
+
+<form [formGroup]="addTemplateForm" (ngSubmit)="onSubmission()">
+    <div class="form-group">
+        <label for="">Please provide a label for this Policy<span class="text-danger">*</span></label>
+        <input type="text" class="input form-control" placeholder="Enter Label" formControlName="label" required>
+        <div *ngIf="addTemplateForm.get('label').invalid && addTemplateForm.get('label').touched"
+            class="text-danger error">
+            Please Enter Label of Leave Template!
+        </div>
+    </div>
+
+    <div class="form-group mt-2">
+        <label for="">How many levels of approvals you want to add?<span class="text-danger">*</span></label>
+        <div class="d-flex">
+
+            <div class="form-check">
+                <input class="form-check-input" type="radio" id="level" formControlName="approvalLevel" value="1-level"
+                    required>
+                <label class="form-check-label" for="level">
+                    1 Level
+                </label>
+            </div>
+            <div class="form-check ms-4">
+                <input class="form-check-input" type="radio" id="level2" formControlName="approvalLevel" required
+                    value="2-level">
+                <label class="form-check-label" for="level2">
+                    2 Level
+                </label>
+            </div>
+        </div>
+        <div *ngIf="addTemplateForm.get('approvalLevel').invalid && addTemplateForm.get('approvalLevel').touched"
+            class="text-danger error">
+            Please Select Approval Type!
+        </div>
+    </div>
+
+    <div class="mt-2 form-group">
+        <label for="">How would you like to add approvers?<span class="text-danger">*</span></label>
+        <div class="d-flex">
+
+            <div class="form-check">
+                <input class="form-check-input" type="radio" id="template-wise" formControlName="approvalType"
+                    value="template-wise" required>
+                <label class="form-check-label" for="template-wise">
+                    Template Wise
+                </label>
+            </div>
+            <div class="form-check ms-4">
+                <input class="form-check-input" type="radio" id="employee-wise" formControlName="approvalType" required
+                    value="employee-wise">
+                <label class="form-check-label" for="employee-wise">
+                    Employee Wise
+                </label>
+            </div>
+        </div>
+        <div *ngIf="addTemplateForm.get('approvalType').invalid && addTemplateForm.get('approvalType').touched"
+            class="text-danger error">
+            Please Select Approval Type!
+        </div>
+    </div>
+
+    <div class="row mt-2" *ngIf="addTemplateForm.get('approvalType').value === 'template-wise'">
+        <div class="col-md-6">
+            <label for="primaryApprover">Please Select Primary Approver? <span class="text-danger">*</span></label>
+            <select name="" id="primaryApprover" formControlName="primaryApprover" required class="ms-2 form-control">
+                <option [disabled] value="">Select Primary Approval</option>
+                <option [value]="user?.id" *ngFor="let user of users; let i = index">{{user?.firstName |
+                    titlecase}} {{user.lastName | titlecase}}</option>
+
+            </select>
+        </div>
+
+        <div class="col-md-6">
+            <label for="secondaryApprover">Please Select Secondary Approver? <span class="text-danger">*</span></label>
+            <select name="" id="secondaryApprover" formControlName="secondaryApprover" required
+                class="ms-2 form-control">
+                <option [disabled] value="">Select Primary Approval</option>
+                <option [value]="user?.id" *ngFor="let user of users; let i = index">{{user?.firstName |
+                    titlecase}} {{user.lastName | titlecase}}</option>
+
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group mt-2">
+        <label for="">Would you like to add comment mandatory while applying or cancellation of leave application?<span
+                class="text-danger">*</span></label>
+        <div class="d-flex">
+
+            <div class="form-check">
+                <input class="form-check-input" type="radio" id="level" formControlName="isCommentMandatory"
+                    [value]="true" required>
+                <label class="form-check-label" for="level">
+                    Yes
+                </label>
+            </div>
+            <div class="form-check ms-4">
+                <input class="form-check-input" type="radio" id="level2" formControlName="isCommentMandatory" required
+                    [value]="false">
+                <label class="form-check-label" for="level2">
+                    No
+                </label>
+            </div>
+        </div>
+        <div *ngIf="addTemplateForm.get('isCommentMandatory').invalid && addTemplateForm.get('isCommentMandatory').touched"
+            class="text-danger error">
+            Please Select Approval!
+        </div>
+    </div>
+
+    <div class="mt-2 form-group">
+        <label for="firstApprovalEmployee">What Leave Categories are Applicable in the Leave Template ?<span
+                class="text-danger">*</span></label>
+        <mat-select multiple formControlName="leaveCategories" [compareWith]="compareExpenseCategories">
+            <mat-option [value]="categories?._id" *ngFor="let categories of categories; let i = index">
+                {{categories.label}}
+            </mat-option>
+        </mat-select>
+    </div>
+
+    <div class="form-group mt-2">
+        <label for="">Would you like to add clubbing restrictions?<span class="text-danger">*</span></label>
+        <div class="d-flex">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" id="level" formControlName="clubbingRestrictions"
+                    [value]="true" required>
+                <label class="form-check-label" for="level">
+                    Yes
+                </label>
+            </div>
+            <div class="form-check ms-4">
+                <input class="form-check-input" type="radio" id="level2" formControlName="clubbingRestrictions" required
+                    [value]="false">
+                <label class="form-check-label" for="level2">
+                    No
+                </label>
+            </div>
+        </div>
+        <div *ngIf="addTemplateForm.get('clubbingRestrictions').invalid && addTemplateForm.get('clubbingRestrictions').touched"
+            class="text-danger error">
+            Please Select Approval Type!
+        </div>
+    </div>
+
+    <div *ngIf="addTemplateForm.get('clubbingRestrictions').value === true">
+
+        <button type="button" class="submenuTab active rounded-pill" (click)="addClubbedCategory()">Add clubbing
+            Restriction</button>
+        <!-- if clicked on add button -->
+
+        <div class="mt-2" formArrayName="cubbingRestrictionCategories">
+            <div class="row"
+                *ngFor="let fieldGroup of addTemplateForm.get('cubbingRestrictionCategories')['controls']; let i = index">
+                <ng-container [formGroupName]="i">
+                    <div class="form-group col-5">
+                        <label for="">Category</label>
+                        <mat-select formControlName="leaveCategory" [compareWith]="compareExpenseCategories">
+                            <mat-option [value]="categories?._id" *ngFor="let categories of categories; let i = index">
+                                {{categories.label}}
+                            </mat-option>
+                        </mat-select>
+                    </div>
+                    <div class="form-group col-5">
+                        <label for="">Can not be clubbed with</label>
+                        <mat-select formControlName="restrictedclubbedLeaveCategory"
+                            [compareWith]="compareExpenseCategories">
+                            <mat-option [value]="categories?._id" *ngFor="let categories of categories; let i = index">
+                                {{categories?.label}}
+                            </mat-option>
+                        </mat-select>
+                    </div>
+                </ng-container>
+                <button class="actions ms-2 col-2" title="Delete" mat-mini-fab type="button"
+                    aria-label="Example icon button with a menu icon" (click)="removeCatgory(i)">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </div>
+        </div>
+
+
+        <div class="form-group mt-2">
+            <label for="">Are leaves seperated by a weekly off, considered as clubbed together?</label>
+            <div class="d-flex">
+
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" id="level" formControlName="weeklyOffClubTogether"
+                        [value]="true" required>
+                    <label class="form-check-label" for="level">
+                        Yes
+                    </label>
+                </div>
+                <div class="form-check ms-4">
+                    <input class="form-check-input" type="radio" id="level2" formControlName="weeklyOffClubTogether"
+                        required [value]="false">
+                    <label class="form-check-label" for="level2">
+                        No
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group mt-2">
+            <label for="">Are leaves seperated by a Holiday, considered as clubbed together?</label>
+            <div class="d-flex">
+
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" id="level" formControlName="holidayClubTogether"
+                        [value]="true" required>
+                    <label class="form-check-label" for="level">
+                        Yes
+                    </label>
+                </div>
+                <div class="form-check ms-4">
+                    <input class="form-check-input" type="radio" id="level2" formControlName="holidayClubTogether"
+                        required [value]="false">
+                    <label class="form-check-label" for="level2">
+                        No
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex border-top py-2 justify-content-between">
+        <button mat-raised-button type="reset">Cancel</button>
+        <button mat-raised-button class="addBtn" type="submit"
+            [disabled]="!addTemplateForm.valid">{{changeMode}}</button>
+    </div>
+</form>

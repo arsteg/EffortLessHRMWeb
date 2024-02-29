@@ -18,7 +18,8 @@ import { LeaveManagementComponent } from './leave-management/leave-management.co
 import { LeaveComponent } from './leave/leave.component';
 import { GeneralSettingsComponent } from './leave-setting/general-settings/general-settings.component';
 import { CommonComponentsModule } from '../common/commonComponents.module';
-
+import { AddCategoryLeaveComponent } from './leave-setting/leave-template/add-category-leave/add-category-leave.component';
+import { CreateLeaveComponent } from './leave-setting/leave-template/create-leave/create-leave.component'; 
 @NgModule({
   declarations: [LeaveApplicationComponent,
     LeaveSettingComponent,
@@ -27,7 +28,9 @@ import { CommonComponentsModule } from '../common/commonComponents.module';
     LeaveTemplateComponent,
     LeaveManagementComponent,
     LeaveComponent,
-    GeneralSettingsComponent],
+    GeneralSettingsComponent,
+    CreateLeaveComponent,
+    AddCategoryLeaveComponent],
   imports: [
     CommonModule,
     SharedModule,

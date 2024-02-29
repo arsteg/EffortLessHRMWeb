@@ -1,15 +1,17 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { ExportService } from 'src/app/_services/export.service';
 import { LeaveService } from 'src/app/_services/leave.service';
+import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-leave-Category',
   templateUrl: './leave-category.component.html',
   styleUrls: ['./leave-category.component.css'],
-  encapsulation: ViewEncapsulation.None
+  // encapsulation: ViewEncapsulation.None
 })
 export class LeaveCategoryComponent implements OnInit {
   searchText: string = '';
@@ -19,10 +21,13 @@ export class LeaveCategoryComponent implements OnInit {
   categoryForm: FormGroup;
   selectedLeaveCategory: any;
   isEdit: boolean = false;
+  p: number = 1;
+
 
   constructor(private modalService: NgbModal,
     private leaveService: LeaveService,
     private fb: FormBuilder,
+    private dialog: MatDialog,
     private toast: ToastrService,
     private exportService: ExportService) {
     this.categoryForm = this.fb.group({
@@ -89,7 +94,7 @@ export class LeaveCategoryComponent implements OnInit {
       this.leaveService.addLeaveCategory(this.categoryForm.value).subscribe((res: any) => {
         const leaveCategory = res.data;
         this.leaveCategory.push(leaveCategory);
-        this.toast.success('New Expense Category Added', 'Successfully!!!');
+        this.toast.success('New Leave Category Added', 'Successfully!!!');
       },
         err => {
           this.toast.error('Leave Category Can not be Added', 'Error!!!')
@@ -144,5 +149,30 @@ export class LeaveCategoryComponent implements OnInit {
   exportToCsv() {
     const dataToExport = this.leaveCategory;
     this.exportService.exportToCSV('Leave-Category', 'Leave-Category', dataToExport);
+  }
+
+  deleteTemplate(_id: string) {
+    this.leaveService.deleteLeaveCategory(_id).subscribe((res: any) => {
+      const index = this.leaveCategory.findIndex(temp => temp._id === _id);
+      if (index !== -1) {
+        this.leaveCategory.splice(index, 1);
+      }
+      this.toast.success('Successfully Deleted!!!', 'Leave Category')
+    },
+      (err) => {
+        this.toast.error('This Category is already being used!'
+          , 'Leave Category, Can not be deleted!')
+      })
+  }
+
+  deleteDialog(id: string): void {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '400px',
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result === 'delete') {
+        this.deleteTemplate(id);
+      }
+    });
   }
 }

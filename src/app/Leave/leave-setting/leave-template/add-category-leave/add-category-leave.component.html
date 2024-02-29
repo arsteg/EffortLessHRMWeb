@@ -1,0 +1,132 @@
+<div class="d-flex justify-content-between">
+    <h1 class="modal-title text-muted">Leave Template Applicable Categories</h1>
+    <button type="button" data-bs-dismiss="modal" class="btn-close text-end" (click)="closeModal()"></button>
+</div>
+<!-- <mat-stepper #stepper [formGroup]="firstForm"> -->
+<!-- <ng-container formArrayName="expenseCategories"> -->
+<!-- <mat-step *ngFor="let categoryCtrl of firstForm.get('leaveCategory').controls; let i = index"> -->
+<!-- <form [formGroup]="categoryCtrl"> -->
+<mat-stepper>
+    <ng-container>
+        <mat-step>
+            <form>
+                <!-- <ng-template matStepLabel>
+                    {{ getCategoryLabel(template?.applicableCategorie) }}
+                </ng-template> -->
+                <div class="form-group">
+                    <label for="">
+                        Do you want to limit number of times an employee can apply for this leave?
+                    </label>
+                    <div class="d-flex">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" id="level" [value]="true" required>
+                            <label class="form-check-label" for="level">
+                                Yes
+                            </label>
+                        </div>
+                        <div class="form-check ms-4">
+                            <input class="form-check-input" type="radio" id="level2" required [value]="false">
+                            <label class="form-check-label" for="level2">
+                                No
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group mt-2">
+                    <label for="">
+                        How would you like to deal with newly joined employees?
+                    </label>
+
+                    <select name="" id="primaryApprover" required class="ms-2 form-control">
+                        <option value="1">Make the employee eligible for leave immediately</option>
+                        <option value="2">Make the employee eligible for leave after completing <a href=""></a> certain
+                            tenure</option>
+                        <option value="3">Make the employee eligible for leave after getting confirmed</option>
+                    </select>
+                </div>
+                <!-- start of value sleection depends on above fields -->
+                <!-- if value 2 is selected -->
+                <div class="form-group mt-2">
+                    <label for="">How many days does the employee need to complete to become eligible for leave?</label>
+                    <input type="number" min="0" class="form-control" placeholder="Number of Days">
+                </div>
+
+                <!-- if value 2 or 3 any selected -->
+                <div class="form-group mt-2">
+                    <label for="">
+                        Upon becoming eligible, does the employee get credited the entire amount of leave that he/she
+                        earned during the period of ineligibility?
+                    </label>
+                    <div class="d-flex">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" id="level" [value]="true" required>
+                            <label class="form-check-label" for="level">
+                                Yes
+                            </label>
+                        </div>
+                        <div class="form-check ms-4">
+                            <input class="form-check-input" type="radio" id="level2" required [value]="false">
+                            <label class="form-check-label" for="level2">
+                                No
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <!-- end of value selection -->
+                <div class="form-group mt-2">
+                    <label for="">
+                        Please provide the accrual rate per period?(Annually)
+                    </label>
+                    <input type="number" min="0" class="form-control">
+                </div>
+                <div class="form-group mt-2">
+                    <label for="">Who is this category applicable to?</label>
+                    <div class="d-flex">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" id="template-wise" value="all-employees"
+                                required>
+                            <label class="form-check-label" for="template-wise">
+                                All Employees
+                            </label>
+                        </div>
+                        <div class="form-check ms-4">
+                            <input class="form-check-input" type="radio" id="employee-wise" required
+                                value="specific-employees">
+                            <label class="form-check-label" for="employee-wise">
+                                Specific Employees
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- if specify employees selected -->
+                <div class="form-group mt-2">
+                    <mat-form-field appearance="outline" class="w-100 mx-1">
+                        <mat-label>Select Employee</mat-label>
+                        <mat-select name="users" multiple>
+                            <mat-option *ngFor="let member of members" [value]="member.id">
+                                {{member?.firstName | titlecase}}&nbsp;{{member?.lastName}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="">
+                    <button mat-button matStepperNext class="addBtn">Next</button>
+                </div>
+            </form>
+        </mat-step>
+    </ng-container>
+    <mat-step>
+        <ng-template matStepLabel>Done</ng-template>
+
+        <p>You are now done.</p>
+        <div>
+            <button mat-button matStepperPrevious>Back</button>
+            <!-- <button mat-button (click)="stepper.reset()">Reset</button> -->
+            <button mat-button type="reset">Reset</button>
+            <!-- <button mat-button (click)="onSubmit()" class="addBtn">Submit</button> -->
+        </div>
+    </mat-step>
+</mat-stepper>

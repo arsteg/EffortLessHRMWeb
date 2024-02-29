@@ -1,12 +1,13 @@
 <div class="main-content mt-2">
     <div class="container-fluid">
         <div class="bg-white p-3">
-            <form [ngClass]="{'editable-form': isEdit}" #myForm="ngForm">
+            <form [ngClass]="{'editable-form': isEdit}" [formGroup]="leaveGeneralSettingForm">
                 <div class="d-flex pb-3">
                     <div class="ms-auto">
-                        <button mat-raised-button *ngIf="!isEdit" (click)="toggleEdit()">Edit</button>
-                        <button mat-raised-button *ngIf="isEdit" class="me-3">Cancel</button>
-                        <button mat-raised-button color="primary" *ngIf="isEdit">Save</button>
+                        <button mat-raised-button *ngIf="!isEdit" type="button" (click)="toggleEdit()">Edit</button>
+                        <button mat-raised-button *ngIf="isEdit" type="button" class="me-3">Cancel</button>
+                        <button mat-raised-button class="addBtn" type="submit" *ngIf="isEdit"
+                            (click)="onUpdate()">Save</button>
                     </div>
                 </div>
                 <div class="row">
@@ -14,13 +15,13 @@
                         <div class="row">
                             <div class="col-6">
                                 <label for="">
-                                    What month of the year does your leave cycle start from?<span
-                                        class="text-danger" *ngIf="isEdit">&nbsp;*</span>
+                                    What month of the year does your leave cycle start from?<span class="text-danger"
+                                        *ngIf="isEdit">&nbsp;*</span>
                                 </label>
                             </div>
                             <div class="col-6">
-                                <select name="" id="" class="py-2 month" [disabled]="!isEdit">
-                                    <option value="" *ngFor="let month of months">{{month}}</option>
+                                <select id="" class="py-2 month" formControlName="leaveCycleStart">
+                                    <option [value]="month" *ngFor="let month of months">{{month}}</option>
                                 </select>
                             </div>
                         </div>
@@ -35,9 +36,9 @@
                                 </label>
                             </div>
                             <div class="col-6">
-                                <select name="" id="" class="py-2" [disabled]="!isEdit">
-                                    <option value="">Yes</option>
-                                    <option value="">No</option>
+                                <select id="" class="py-2" formControlName="isAdminAccessLeaveApproveReject">
+                                    <option [value]="true">Yes</option>
+                                    <option [value]="false">No</option>
                                 </select>
                             </div>
                         </div>
@@ -50,14 +51,14 @@
                         <div class="row">
                             <div class="col-6">
                                 <label for="">
-                                    Can Supervisors add Leave Adjustments for subordinates?<span
-                                        class="text-danger" *ngIf="isEdit">&nbsp;*</span>
+                                    Can Supervisors add Leave Adjustments for subordinates?<span class="text-danger"
+                                        *ngIf="isEdit">&nbsp;*</span>
                                 </label>
                             </div>
                             <div class="col-6">
-                                <select name="" id="" class="py-2" [disabled]="!isEdit">
-                                    <option value="">Yes</option>
-                                    <option value="">No</option>
+                                <select id="" class="py-2" formControlName="canSupervisorAddLeaveAdjustment">
+                                    <option [value]="true">Yes</option>
+                                    <option [value]="false">No</option>
                                 </select>
                             </div>
                         </div>
@@ -67,13 +68,14 @@
                         <div class="row">
                             <div class="col-6">
                                 <label for="">
-                                    Would you like to run daily leave accruals?<span class="text-danger" *ngIf="isEdit">&nbsp;*</span>
+                                    Would you like to run daily leave accruals?<span class="text-danger"
+                                        *ngIf="isEdit">&nbsp;*</span>
                                 </label>
                             </div>
                             <div class="col-6">
-                                <select name="" id="" class="py-2" [disabled]="!isEdit">
-                                    <option value="">Yes</option>
-                                    <option value="">No</option>
+                                <select id="" class="py-2" formControlName="isDailyLeaveAccrualsRun">
+                                    <option [value]="true">Yes</option>
+                                    <option [value]="false">No</option>
                                 </select>
                             </div>
                         </div>
@@ -86,15 +88,18 @@
                         <div class="row">
                             <div class="col-6">
                                 <label for="">
-                                    What date were initial balances set ?<span class="text-danger" *ngIf="isEdit">&nbsp;*</span>
+                                    What date were initial balances set ?<span class="text-danger"
+                                        *ngIf="isEdit">&nbsp;*</span>
                                 </label>
                             </div>
-                            <div class="col-6">
-                                <select name="" id="" class="py-2" [disabled]="!isEdit">
-                                    <option value="">Yes</option>
-                                    <option value="">No</option>
-                                </select>
+                            <div class="form-group mb-3">
+
+                                <input type="text" formControlName="initialBalanceSetDate" class="form-control"
+                                    #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
+                                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
+                                    formControlName="initialBalanceSetDate" />
                             </div>
+
                         </div>
                     </div>
 
@@ -107,9 +112,9 @@
                                 </label>
                             </div>
                             <div class="col-6">
-                                <select name="" id="" class="py-2" [disabled]="!isEdit">
-                                    <option value="">Yes</option>
-                                    <option value="">No</option>
+                                <select id="" class="py-2" formControlName="isFreezeInitialBalancesOnceFirstAccrualRun">
+                                    <option [value]="true">Yes</option>
+                                    <option [value]="false">No</option>
                                 </select>
                             </div>
                         </div>
@@ -122,13 +127,13 @@
                         <div class="row">
                             <div class="col-6">
                                 <label for="">
-                                    What should be the short leave application limit?<span
-                                        class="text-danger" *ngIf="isEdit">&nbsp;*</span>
+                                    What should be the short leave application limit?<span class="text-danger"
+                                        *ngIf="isEdit">&nbsp;*</span>
                                 </label>
                             </div>
                             <div class="col-6">
-                                <input type="text" class="form-control" class="form-control"
-                                    placeholder="Enter the Limit" [disabled]="!isEdit">
+                                <input type="number" formControlName="shortLeaveApplicationLimit" class="form-control"
+                                    class="form-control" placeholder="Enter the Limit">
 
                             </div>
                         </div>
@@ -143,8 +148,9 @@
                                 </label>
                             </div>
                             <div class="col-6">
-                                <input type="text" class="form-control" class="form-control"
-                                    placeholder="Enter the Duration" [disabled]="!isEdit">
+                                <input type="text" class="form-control"
+                                    formControlName="maxDurationForShortLeaveApplicationInMin" class="form-control"
+                                    placeholder="Enter the Duration">
                             </div>
                         </div>
                     </div>
@@ -160,7 +166,7 @@
                             </div>
                             <div class="col-6">
                                 <input type="text" class="form-control" class="form-control"
-                                    placeholder="Enter the Limit" [disabled]="!isEdit">
+                                    placeholder="Enter the Limit" formControlName="band">
 
                             </div>
                         </div>
@@ -175,28 +181,26 @@
                                 </label>
                             </div>
                             <div class="col-6">
-                                <div class="time-picker-input d-flex" style="margin-top: -20px;">
+                                <!-- <div class="time-picker-input d-flex" style="margin-top: -20px;">
                                     <div style="display: grid;">
-                                        <button mat-icon-button
-                                            (click)="incrementHour()"><mat-icon>keyboard_arrow_up</mat-icon></button>
-                                        <input type="number" class="w-75" [(ngModel)]="selectedHour" name="selectedHour"
-                                            min="0" max="23" />
-                                        <button mat-icon-button
-                                            (click)="decrementHour()"><mat-icon>keyboard_arrow_down</mat-icon></button>
+                                        <input type="number" formControlName="fullDayMinHour" class="w-75" min="0"
+                                            max="23" />
                                     </div>
                                     <span class="mt-4 pt-3 me-4"> : </span>
                                     <div style="display: grid;">
-                                        <button mat-icon-button
-                                            (click)="incrementMinute()"><mat-icon>keyboard_arrow_up</mat-icon></button>
-                                        <input type="number" class="w-75" [(ngModel)]="selectedMinute"
+                                        <input type="number" formControlName="fullDayMinHour" class="w-75"
                                             name="selectedMinute" min="0" max="59" />
-                                        <button mat-icon-button
-                                            (click)="decrementMinute()"><mat-icon>keyboard_arrow_down</mat-icon></button>
+                                    </div>
+                                </div> -->
+                                <div class="time-picker-input d-flex" style="margin-top: -20px;">
+                                    <div style="display: grid;">
+                                        <input type="number" formControlName="hours" class="w-75" min="0" max="23" (input)="calculateTotalTime()" />
+                                    </div>
+                                    <span class="mt-4 pt-3 me-4"> : </span>
+                                    <div style="display: grid;">
+                                        <input type="number" formControlName="minutes" class="w-75" min="0" max="59" (input)="calculateTotalTime()" />
                                     </div>
                                 </div>
-
-
-
                             </div>
                         </div>
                     </div>
@@ -214,21 +218,21 @@
                             <div class="col-6">
                                 <div class="time-picker-input d-flex" style="margin-top: -20px;">
                                     <div style="display: grid;">
-                                        <button mat-icon-button
-                                            (click)="incrementHour()"><mat-icon>keyboard_arrow_up</mat-icon></button>
-                                        <input type="number" class="w-75" [(ngModel)]="selectedHour" name="selectedHour"
-                                            min="0" max="23" />
-                                        <button mat-icon-button
-                                            (click)="decrementHour()"><mat-icon>keyboard_arrow_down</mat-icon></button>
+                                        <!-- <button mat-icon-button
+                                            (click)="incrementHour()"><mat-icon>keyboard_arrow_up</mat-icon></button> -->
+                                        <input type="number" formControlName="halfDayMinHour" class="w-75"
+                                            [(ngModel)]="selectedHour" name="selectedHour" min="0" max="23" />
+                                        <!-- <button mat-icon-button
+                                            (click)="decrementHour()"><mat-icon>keyboard_arrow_down</mat-icon></button> -->
                                     </div>
                                     <span class="mt-4 pt-3 me-4"> : </span>
                                     <div style="display: grid;">
-                                        <button mat-icon-button
-                                            (click)="incrementMinute()"><mat-icon>keyboard_arrow_up</mat-icon></button>
-                                        <input type="number" class="w-75" [(ngModel)]="selectedMinute"
-                                            name="selectedMinute" min="0" max="59" />
-                                        <button mat-icon-button
-                                            (click)="decrementMinute()"><mat-icon>keyboard_arrow_down</mat-icon></button>
+                                        <!-- <button mat-icon-button
+                                            (click)="incrementMinute()"><mat-icon>keyboard_arrow_up</mat-icon></button> -->
+                                        <input type="number" formControlName="halfDayMinHour" class="w-75"
+                                            [(ngModel)]="selectedMinute" name="selectedMinute" min="0" max="59" />
+                                        <!-- <button mat-icon-button
+                                            (click)="decrementMinute()"><mat-icon>keyboard_arrow_down</mat-icon></button> -->
                                     </div>
                                 </div>
 
