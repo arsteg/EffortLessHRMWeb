@@ -33,72 +33,42 @@ export class GeneralSettingsComponent {
       band: ['', Validators.required],
       fullDayMinHour: [0, Validators.required],
       halfDayMinHour: [0, Validators.required],
+      fullDayMinMinutes: [0, Validators.required],
+      halfDayMinMinutes: [0, Validators.required]
     });
-    this.form = this.fb.group({
-      hours: [0],
-      minutes: [0]
-    });
+    
+
+    this.leaveGeneralSettingForm.disable();
   }
 
   ngOnInit(): void {
     const currentTime = new Date();
     this.selectedHour = currentTime.getHours();
     this.selectedMinute = currentTime.getMinutes();
-    // this.getLeave();
     this.leaveService.getGeneralSettingsByCompany().subscribe((res: any) => {
       this.leaveGeneralSettings = res.data;
-    this.leaveGeneralSettingForm.patchValue({
-      leaveCycleStart: this.leaveGeneralSettings.leaveCycleStart,
-      isAdminAccessLeaveApproveReject: this.leaveGeneralSettings.isAdminAccessLeaveApproveReject,
-      canSupervisorAddLeaveAdjustment: this.leaveGeneralSettings.canSupervisorAddLeaveAdjustment,
-      isDailyLeaveAccrualsRun: this.leaveGeneralSettings.isDailyLeaveAccrualsRun,
-      initialBalanceSetDate: this.leaveGeneralSettings.initialBalanceSetDate,
-      isFreezeInitialBalancesOnceFirstAccrualRun: this.leaveGeneralSettings.isFreezeInitialBalancesOnceFirstAccrualRun,
-      shortLeaveApplicationLimit: this.leaveGeneralSettings.shortLeaveApplicationLimit,
-      maxDurationForShortLeaveApplicationInMin: this.leaveGeneralSettings.maxDurationForShortLeaveApplicationInMin,
-      band: this.leaveGeneralSettings.band,
-      fullDayMinHour: this.leaveGeneralSettings.fullDayMinHour,
-      // fullDayMinHour: this.totalMinutes,
-      halfDayMinHour: this.leaveGeneralSettings.halfDayMinHour,
-    });
-  })
+      this.leaveGeneralSettingForm.patchValue({
+        leaveCycleStart: this.leaveGeneralSettings.leaveCycleStart,
+        isAdminAccessLeaveApproveReject: this.leaveGeneralSettings.isAdminAccessLeaveApproveReject,
+        canSupervisorAddLeaveAdjustment: this.leaveGeneralSettings.canSupervisorAddLeaveAdjustment,
+        isDailyLeaveAccrualsRun: this.leaveGeneralSettings.isDailyLeaveAccrualsRun,
+        initialBalanceSetDate: this.leaveGeneralSettings.initialBalanceSetDate,
+        isFreezeInitialBalancesOnceFirstAccrualRun: this.leaveGeneralSettings.isFreezeInitialBalancesOnceFirstAccrualRun,
+        shortLeaveApplicationLimit: this.leaveGeneralSettings.shortLeaveApplicationLimit,
+        maxDurationForShortLeaveApplicationInMin: this.leaveGeneralSettings.maxDurationForShortLeaveApplicationInMin,
+        band: this.leaveGeneralSettings.band,
+        fullDayMinHour: this.leaveGeneralSettings.fullDayMinHour,
+        halfDayMinHour: this.leaveGeneralSettings.halfDayMinHour,
+      });
+    })
 
   }
-
-
-  calculateTotalTime() {
-    const hours = this.form.value.hours;
-    const minutes = this.form.value.minutes;
-    this.totalMinutes = (hours * 60) + minutes;
-    console.log(this.totalMinutes)
-  }
-
   toggleEdit() {
     this.isEdit = !this.isEdit;
-  }
-
-  incrementHour() {
-    if (this.selectedHour < 23) {
-      this.selectedHour++;
-      console.log(this.selectedHour)
-    }
-  }
-
-  decrementHour() {
-    if (this.selectedHour > 0) {
-      this.selectedHour--;
-    }
-  }
-
-  incrementMinute() {
-    if (this.selectedMinute < 59) {
-      this.selectedMinute++;
-    }
-  }
-
-  decrementMinute() {
-    if (this.selectedMinute > 0) {
-      this.selectedMinute--;
+    if (this.isEdit) {
+      this.leaveGeneralSettingForm.enable(); 
+    } else {
+      this.leaveGeneralSettingForm.disable();
     }
   }
 
@@ -123,11 +93,9 @@ export class GeneralSettingsComponent {
       shortLeaveApplicationLimit: request.shortLeaveApplicationLimit,
       maxDurationForShortLeaveApplicationInMin: request.maxDurationForShortLeaveApplicationInMin,
       band: 'admin',
-      // fullDayMinHour: request.fullDayMinHour,
       fullDayMinHour: this.totalMinutes,
       halfDayMinHour: request.halfDayMinHour,
     }
-    console.log(payload);
     this.leaveService.updateGeneralSettings(id, payload).subscribe((res: any) => {
       this.leaveGeneralSettings = res.data;
     });

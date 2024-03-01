@@ -4,7 +4,7 @@
             <form [ngClass]="{'editable-form': isEdit}" [formGroup]="leaveGeneralSettingForm">
                 <div class="d-flex pb-3">
                     <div class="ms-auto">
-                        <button mat-raised-button *ngIf="!isEdit" type="button" (click)="toggleEdit()">Edit</button>
+                        <button mat-raised-button *ngIf="!isEdit" class="addBtn" type="button" (click)="toggleEdit()">Edit</button>
                         <button mat-raised-button *ngIf="isEdit" type="button" class="me-3">Cancel</button>
                         <button mat-raised-button class="addBtn" type="submit" *ngIf="isEdit"
                             (click)="onUpdate()">Save</button>
@@ -181,24 +181,16 @@
                                 </label>
                             </div>
                             <div class="col-6">
-                                <!-- <div class="time-picker-input d-flex" style="margin-top: -20px;">
+
+                                <div class="time-picker-input d-flex align-items-baseline" style="margin-top: -20px;">
                                     <div style="display: grid;">
                                         <input type="number" formControlName="fullDayMinHour" class="w-75" min="0"
                                             max="23" />
                                     </div>
                                     <span class="mt-4 pt-3 me-4"> : </span>
                                     <div style="display: grid;">
-                                        <input type="number" formControlName="fullDayMinHour" class="w-75"
-                                            name="selectedMinute" min="0" max="59" />
-                                    </div>
-                                </div> -->
-                                <div class="time-picker-input d-flex" style="margin-top: -20px;">
-                                    <div style="display: grid;">
-                                        <input type="number" formControlName="hours" class="w-75" min="0" max="23" (input)="calculateTotalTime()" />
-                                    </div>
-                                    <span class="mt-4 pt-3 me-4"> : </span>
-                                    <div style="display: grid;">
-                                        <input type="number" formControlName="minutes" class="w-75" min="0" max="59" (input)="calculateTotalTime()" />
+                                        <input type="number" formControlName="fullDayMinMinutes" class="w-75" min="0"
+                                            max="59" />
                                     </div>
                                 </div>
                             </div>
@@ -216,28 +208,18 @@
                                 </label>
                             </div>
                             <div class="col-6">
-                                <div class="time-picker-input d-flex" style="margin-top: -20px;">
+                                <div class="time-picker-input d-flex align-items-baseline" style="margin-top: -20px;">
                                     <div style="display: grid;">
-                                        <!-- <button mat-icon-button
-                                            (click)="incrementHour()"><mat-icon>keyboard_arrow_up</mat-icon></button> -->
                                         <input type="number" formControlName="halfDayMinHour" class="w-75"
-                                            [(ngModel)]="selectedHour" name="selectedHour" min="0" max="23" />
-                                        <!-- <button mat-icon-button
-                                            (click)="decrementHour()"><mat-icon>keyboard_arrow_down</mat-icon></button> -->
+                                            [(ngModel)]="selectedHour" min="0" max="23" />
                                     </div>
                                     <span class="mt-4 pt-3 me-4"> : </span>
                                     <div style="display: grid;">
-                                        <!-- <button mat-icon-button
-                                            (click)="incrementMinute()"><mat-icon>keyboard_arrow_up</mat-icon></button> -->
-                                        <input type="number" formControlName="halfDayMinHour" class="w-75"
-                                            [(ngModel)]="selectedMinute" name="selectedMinute" min="0" max="59" />
-                                        <!-- <button mat-icon-button
-                                            (click)="decrementMinute()"><mat-icon>keyboard_arrow_down</mat-icon></button> -->
+
+                                        <input type="number" formControlName="halfDayMinMinutes" class="w-75" min="0"
+                                            max="59" />
                                     </div>
                                 </div>
-
-
-
                             </div>
                         </div>
                     </div>
