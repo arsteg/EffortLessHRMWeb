@@ -8,8 +8,7 @@
           <button class="btn rounded-pill submenuTab" (click)="selectTab(3)"
               [class.active]="selectedTab === 3">Candidates</button>
           <button class="btn rounded-pill submenuTab" (click)="selectTab(4)" [class.active]="selectedTab === 4">Feedback Fields</button>
-          <button class="btn rounded-pill submenuTab" (click)="selectTab(5)" [class.active]="selectedTab === 5">Team
-              Members</button>
+          <button class="btn rounded-pill submenuTab" (click)="selectTab(5)" [class.active]="selectedTab === 5">Candidate Feedback</button>
           <button class="btn rounded-pill submenuTab" (click)="selectTab(6)"
               [class.active]="selectedTab === 6">Tags</button>
           <button class="btn rounded-pill submenuTab" (click)="selectTab(7)" [class.active]="selectedTab === 7">E-Mail
@@ -31,7 +30,7 @@
         <app-feedback-field></app-feedback-field>
       </div>
       <div *ngIf="selectedTab === 5" class="tab-content">
-
+        <app-candidate-feedback></app-candidate-feedback>
       </div>
       <div *ngIf="selectedTab === 6" class="tab-content">
 

@@ -26,7 +26,7 @@
                 <td>{{candidate.name}}</td>
                 <td>{{candidate.email}}</td>
                 <td> {{candidate.phoneNumber}} </td>
-                <td *ngFor="let candidateDataField of candidate.candidateDataFields"> {{candidateDataField.fieldValue}} </td>
+                <td *ngFor="let feedbackField of candidate.feedbackFields"> {{feedbackField.fieldValue}} </td>
 
                 <td class="text-end">
                     <button class="actions" mat-mini-fab title="Update User"
@@ -49,8 +49,8 @@
       </div>
 
       <div class="col-md-4 border-start">
-        <h2 class="contentHeading p-2">Add/Edit Candidate</h2>
-        <form [formGroup]="candidateForm" (ngSubmit)="isEditing ? updateCandidate() : addCandidate()"
+        <h2 class="contentHeading p-2">Add/Edit Candidate Feedback</h2>
+        <form [formGroup]="candidateForm" (ngSubmit)="isEditing ? updateCandidate() : updateCandidate()"
           class="mt-4 me-3 p-3 bg-light border rounded" style="background-color: gray;">
 
           <!-- Basic Fields -->
@@ -116,6 +116,7 @@
                 {{customAttribute.get('fieldName').value}} is required!
               </div>
               </div>
+
               <div *ngIf="customAttribute.get('fieldType').value.toLowerCase()=='date'" class="form-group mt-1">
                 <label>{{ customAttribute.get('fieldName').value }}</label>
                 <input type="date" formControlName="fieldValue" class="form-control"

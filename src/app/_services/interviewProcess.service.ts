@@ -130,4 +130,20 @@ export class InterviewProcessService extends baseService {
     this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
     return this.http.delete<any>(`${environment.apiUrlDotNet}/interviews/feedback-fields/${id}`, this.httpOptions);
   }
+  public feedbackFieldsWithData(): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.get<any>(`${environment.apiUrlDotNet}/interviews/feedback-fields-with-data`, this.httpOptions);
+  }
+
+  public deleteFeedbackFieldValue(id: string): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.delete<any>(`${environment.apiUrlDotNet}/interviews/feedback-field-values/${id}`, this.httpOptions);
+  }
+  public updateFeedbackFieldValue(feedbackField: any): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.post<any>(`${environment.apiUrlDotNet}/interviews/feedback-field-values`, feedbackField, this.httpOptions);
+  }
 }
