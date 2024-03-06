@@ -428,6 +428,16 @@ export class TasksComponent implements OnInit {
     });
   }
 
+  getUsersListByProject() {
+    const selectedProject = this.addForm.value.project;
+    console.log(selectedProject)
+    this.projectService.getprojectUser(selectedProject).subscribe((res: any) => {
+      this.usersByProject = res?.data?.projectUserList;
+      this.usersByProject = this.usersByProject.filter(user => user !== null);
+      console.log(this.usersByProject)
+    });
+  }
+
   onSubmit() {
     const newTask: Task = {
       _id: '',

@@ -1088,7 +1088,7 @@
                                 </div>
 
                                 <select class="custom-select  p-2" formControlName="project"
-                                    (change)="getUsersByProject()" required>
+                                    (change)="getUsersListByProject()" required>
                                     <option selected>-- ALL --</option>
                                     <option [value]="project.id" *ngFor="let project of projectList">
                                         {{project?.projectName}}</option>
