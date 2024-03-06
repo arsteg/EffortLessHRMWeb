@@ -92,9 +92,7 @@ export class CreateLeaveComponent {
     this.leaveService.selectedTemplate.next('');
   }
 
-  compareExpenseCategories(category1: any, category2: any): boolean {
-    return category1 && category2 ? category1._id === category2._id : category1 === category2;
-  }
+  
 
   onSubmission() {
     console.log('clicked')

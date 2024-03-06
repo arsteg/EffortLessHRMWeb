@@ -20,26 +20,8 @@
                             <i
                                 [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                         </th>
-                        <th [appSort]="templateAssignments" [attr.data-order]="sortOrder" data-name=""
-                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Location
-                            <i
-                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                        </th>
-                        <th [appSort]="templateAssignments" [attr.data-order]="sortOrder" data-name=""
-                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Band
-                            <i
-                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                        </th>
-                        <th [appSort]="templateAssignments" [attr.data-order]="sortOrder" data-name=""
-                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Department
-                            <i
-                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                        </th>
-                        <th [appSort]="templateAssignments" [attr.data-order]="sortOrder" data-name=""
-                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Designation
-                            <i
-                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                        </th>
+                       
+                       
                         <th [appSort]="templateAssignments" [attr.data-order]="sortOrder" data-name="advanceTemplate"
                             (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Current Advance Template
                             <i
@@ -63,10 +45,7 @@
                         *ngFor="let templateAssignment of templateAssignments | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }; let i = index">
                         <td class="ps-2">{{templateAssignments[i]?.user?.firstName |
                             titlecase}}&nbsp;{{templateAssignments[i]?.user?.lastName | titlecase}}</td>
-                        <td> -- </td>
-                        <td> -- </td>
-                        <td> -- </td>
-                        <td> -- </td>
+                       
                         <td>
                             {{templateAssignments[i]?.advanceTemplate.policyLabel}}</td>
                         <td>{{templateAssignments[i]?.primaryApprover?.firstName |

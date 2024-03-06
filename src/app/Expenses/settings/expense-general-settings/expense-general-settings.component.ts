@@ -18,12 +18,12 @@ export class ExpenseGeneralSettingsComponent {
   downloadableFormat = ['PDF', 'PNG', 'JPG', 'DOCX', 'XLS', 'TXT', 'DOC', 'XLSX'];
   expenseCategories: any = [];
   users: any = [];
-
   @Input() changeMode: any;
   @Input() modal: any;
   @Output() close: any = new EventEmitter();
   @Output() changeStep: any = new EventEmitter();
   closeResult: string = '';
+  categoryList: any;
 
   constructor(
     private fb: FormBuilder,
@@ -102,9 +102,9 @@ export class ExpenseGeneralSettingsComponent {
 
   setFormValues(templateData: any) {
     this.expenseService.getCategoriesByTemplate(templateData._id).subscribe((res: any) => {
-      let categoryList = res.data;
+     this.categoryList = res.data;
 
-      let expenseCategories = categoryList.map(category => ({ expenseCategory: category.expenseCategory }));
+      let expenseCategories = this.categoryList.map(category => category.expenseCategory );
       this.addTemplateForm.patchValue({
         policyLabel: templateData.policyLabel,
         approvalType: templateData.approvalType,
@@ -121,10 +121,6 @@ export class ExpenseGeneralSettingsComponent {
       console.log(this.addTemplateForm.value);
     });
   }
-  compareExpenseCategories(category1: any, category2: any): boolean {
-    return category1 && category2 ? category1._id === category2._id : category1 === category2;
-  }
-
 
   getCategoriesByTemplate(id: string) {
     this.expenseService.getCategoriesByTemplate(id).subscribe((res: any) => {

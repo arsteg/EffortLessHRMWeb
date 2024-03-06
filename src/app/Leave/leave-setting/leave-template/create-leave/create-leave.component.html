@@ -120,7 +120,7 @@
     <div class="mt-2 form-group">
         <label for="firstApprovalEmployee">What Leave Categories are Applicable in the Leave Template ?<span
                 class="text-danger">*</span></label>
-        <mat-select multiple formControlName="leaveCategories" [compareWith]="compareExpenseCategories">
+        <mat-select multiple formControlName="leaveCategories" >
             <mat-option [value]="categories?._id" *ngFor="let categories of categories; let i = index">
                 {{categories?.label}}
             </mat-option>
@@ -163,7 +163,7 @@
                 <ng-container [formGroupName]="i">
                     <div class="form-group col-5">
                         <label for="">Category</label>
-                        <mat-select formControlName="leaveCategory" [compareWith]="compareExpenseCategories">
+                        <mat-select formControlName="leaveCategory">
                             <mat-option [value]="categories?._id" *ngFor="let categories of categories; let i = index">
                                 {{categories.label}}
                             </mat-option>
@@ -172,7 +172,7 @@
                     <div class="form-group col-5">
                         <label for="">Can not be clubbed with</label>
                         <mat-select formControlName="restrictedclubbedLeaveCategory"
-                            [compareWith]="compareExpenseCategories">
+                            >
                             <mat-option [value]="categories?._id" *ngFor="let categories of categories; let i = index">
                                 {{categories?.label}}
                             </mat-option>

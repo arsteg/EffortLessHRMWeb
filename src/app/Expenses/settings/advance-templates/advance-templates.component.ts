@@ -153,7 +153,7 @@ export class AdvanceTemplatesComponent implements OnInit {
       advanceCategories: this.addAdvanceTempForm.value.advanceCategories.map(category => ({ advanceCategory: category })),
     };
     if (this.changeMode === 'Add') {
-
+console.log(payload)
       this.expenseService.addAdvanceTemplates(payload).subscribe(
         (res: any) => {
           const newCategory = res.data;
