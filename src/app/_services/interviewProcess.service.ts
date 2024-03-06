@@ -6,6 +6,7 @@ import { applicationStatus } from '../models/interviewProcess/applicationStatus'
 import { candidateDataField } from '../models/interviewProcess/candidateDataField';
 import { candidate } from '../models/interviewProcess/candidate';
 import { candidateDataFieldValue } from '../models/interviewProcess/candidateDataFieldValue';
+import { feedbackField } from '../models/interviewProcess/feedbackField';
 
 @Injectable({
   providedIn: 'root'
@@ -103,5 +104,30 @@ export class InterviewProcessService extends baseService {
     this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
     return this.http.delete<any>(`${environment.apiUrlDotNet}/interviews/candidate-data-field-values/${id}`, this.httpOptions);
   }
+  public addFeedbackField(feedbackField: feedbackField): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.post<any>(`${environment.apiUrlDotNet}/interviews/feedback-fields`, feedbackField, this.httpOptions);
+  }
+  public getAllFeedbackFields(): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.get<any>(`${environment.apiUrlDotNet}/interviews/feedback-fields`, this.httpOptions);
+  }
+  public getFeedbackField(id:string): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.get<any>(`${environment.apiUrlDotNet}/interviews/feedback-fields/${id}`, this.httpOptions);
+  }
 
+  public updateFeedbackField(feedbackField: feedbackField): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.put<any>(`${environment.apiUrlDotNet}/interviews/feedback-fields/${feedbackField._id}`, feedbackField, this.httpOptions);
+  }
+  public deleteFeedbackField(id: string): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.delete<any>(`${environment.apiUrlDotNet}/interviews/feedback-fields/${id}`, this.httpOptions);
+  }
 }
