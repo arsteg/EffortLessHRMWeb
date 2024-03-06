@@ -664,8 +664,22 @@ export class TasksComponent implements OnInit {
   }
 
   updateTaskStatus(selectedTask, status: string) {
-    const payload = { "status": status }
-    selectedTask.status = status;
+    const payload = {
+      status: selectedTask.status,
+      taskName: selectedTask.taskName,
+      startDate: selectedTask.startDate,
+      endDate: selectedTask.endDate,
+      startTime: selectedTask.startTime,
+      description: selectedTask.description,
+      comment: selectedTask.comment,
+      priority: selectedTask.priority,
+      project: selectedTask.project,
+      title: selectedTask.ttitle,
+      parentTask: selectedTask.parentTask,
+      estimate: selectedTask.estimate,
+      timeTaken: selectedTask.timeTaken,
+    }
+    // selectedTask.status = status;
     this.tasksService.updatetaskFlex(selectedTask._id, payload).subscribe(response => {
       this.toast.success('Task status updated successfully', `Task Number: ${selectedTask.taskNumber}`)
     },

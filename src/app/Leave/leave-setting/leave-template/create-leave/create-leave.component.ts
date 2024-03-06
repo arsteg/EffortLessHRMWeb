@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { LeaveService } from 'src/app/_services/leave.service';
 import { CommonService } from 'src/app/common/common.service';
 
@@ -16,6 +16,7 @@ export class CreateLeaveComponent {
   @Output() changeStep: any = new EventEmitter();
   categories: any;
   @Input() isEdit: boolean;
+  categoryList: any;
 
   constructor(private fb: FormBuilder,
     private commonService: CommonService,
@@ -24,13 +25,13 @@ export class CreateLeaveComponent {
       label: ['', Validators.required],
       approvalLevel: ['', Validators.required],
       approvalType: ['', Validators.required],
-      primaryApprover: ['', Validators.required],
-      secondaryApprover: ['', Validators.required],
-      isCommentMandatory: [true, Validators.required],
-      clubbingRestrictions: [, Validators.required],
-      weeklyOffClubTogether: [true, Validators.required],
-      holidayClubTogether: [true, Validators.required],
-      leaveCategories: [[], Validators.required],
+      primaryApprover: [''],
+      secondaryApprover: [''],
+      isCommentMandatory: [true],
+      clubbingRestrictions: [false, Validators.required],
+      weeklyOffClubTogether: [true],
+      holidayClubTogether: [true],
+      leaveCategories: new FormControl([]) ,
       cubbingRestrictionCategories: this.fb.array([])
     })
   }
@@ -43,13 +44,13 @@ export class CreateLeaveComponent {
         this.setFormValues(template)
       }
     });
-    console.log(this.changeMode)
   }
 
   setFormValues(templateData: any) {
     this.leaveService.getLeaveTemplateById(templateData._id).subscribe((res: any) => {
-      let categoryList = res.data;
-      let leaveCategories = categoryList.applicableCategories.map(category => ({ applicableCategories: category?.leaveCategory }));
+      this.categoryList = res.data;
+      let leaveCategories = this.categoryList.applicableCategories.map(category => category?.leaveCategory);
+      console.log(leaveCategories)
       this.addTemplateForm.patchValue({
         label: templateData.label,
         approvalLevel: templateData.approvalLevel,
@@ -63,7 +64,7 @@ export class CreateLeaveComponent {
         cubbingRestrictionCategories: templateData.cubbingRestrictionCategories,
         leaveCategories: leaveCategories
       });
-
+      console.log(this.addTemplateForm.value.leaveCategories)
     });
   }
   addClubbedCategory(): void {
@@ -118,8 +119,14 @@ export class CreateLeaveComponent {
       })
     }
     else {
-      console.log(this.changeMode)
-      this.changeStep.emit(2);
+      console.log(this.changeMode);
+      const id = this.leaveService.selectedTemplate.getValue()._id;
+      this.leaveService.updateLeaveTemplate(id, payload).subscribe((res: any)=>{
+        console.log(res.data);
+        this.leaveService.selectedTemplate.next(res.data);
+        this.changeStep.emit(2);
+      })
+      
     }
   }
 
@@ -138,6 +145,6 @@ export class CreateLeaveComponent {
       this.cubbingRestrictionCategories.removeAt(index);
     }
   }
- 
+
 
 }

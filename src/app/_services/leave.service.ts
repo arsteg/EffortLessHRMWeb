@@ -76,11 +76,55 @@ export class LeaveService extends baseService {
     this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
     return this.http.get<any>(`${environment.apiUrlDotNet}/leave/leave-templates/${id}`, this.httpOptions);
   }
-  
+
   public deleteTemplate(leaveId: string): any {
     const token = this.getToken();
     this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
     return this.http.delete<any>(`${environment.apiUrlDotNet}/leave/leave-template/${leaveId}`, this.httpOptions);
   }
-}
 
+  public updateLeaveTemplate(leaveId: string, template: any): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.put<any>(`${environment.apiUrlDotNet}/leave/leave-templates/${leaveId}`, template, this.httpOptions);
+  }
+
+  public updateLeaveTemplateCategories(templateId: string, categories: any): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.post<any>(`${environment.apiUrlDotNet}/leave/leave-template-categories/${templateId}`, categories, this.httpOptions);
+  }
+
+
+  public getLeaveTemplateCategoriesByTemplateId(templateId: string): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.get<any>(`${environment.apiUrlDotNet}/leave/leave-template-categories-by-template/${templateId}`, this.httpOptions);
+  }
+
+
+  public addLeaveTemplateAssignment(leaveAsignment: any): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.post<any>(`${environment.apiUrlDotNet}/Leave/employee-leave-assignments`, leaveAsignment, this.httpOptions);
+  }
+
+  public getLeaveTemplateAssignment(): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.get<any>(`${environment.apiUrlDotNet}/Leave/employee-leave-assignments`, this.httpOptions);
+  }
+
+  public deleteTemplateAssignment(leaveId: string): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.delete<any>(`${environment.apiUrlDotNet}/Leave/employee-leave-assignments/${leaveId}`, this.httpOptions);
+  }
+
+  public updateTemplateAssignment(leaveId: string, leaveAssignment: any): any{
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.put<any>(`${environment.apiUrlDotNet}/Leave/employee-leave-assignments/${leaveId}`, leaveAssignment ,this.httpOptions);
+  }
+
+}

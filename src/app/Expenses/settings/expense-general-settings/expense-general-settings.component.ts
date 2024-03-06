@@ -168,6 +168,7 @@ export class ExpenseGeneralSettingsComponent {
       this.expenseService.addTemplate(payload).subscribe((res: any) => {
         res.data.categories = this.addTemplateForm.value.expenseCategories;
         this.expenseService.selectedTemplate.next(res.data);
+        this.expenseService.categories.next(res.data);
         this.toast.success('Template Created Successfully!');
         this.changeStep.emit(2);
       }, err => {
@@ -210,5 +211,4 @@ export class ExpenseGeneralSettingsComponent {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
     });
   }
-
 }

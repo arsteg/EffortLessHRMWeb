@@ -29,15 +29,47 @@ export class ExpenseCategorySettingsComponent {
   firstForm: any;
   expenseCategory: any[];
 
-
   constructor(private _formBuilder: FormBuilder,
     private expenseService: ExpensesService,
     private toast: ToastrService
-  ) {
-
-  }
+  ) {}
 
   ngOnInit() {
+    // ------
+    this.expenseService.selectedTemplate.subscribe((selectedTemplate) => {
+      if (selectedTemplate) {
+        let id = selectedTemplate._id;
+        this.expenseService.getCategoriesByTemplate(id).subscribe((res: any) => {
+          let categoryList = res.data;
+          this.expenseCategory = categoryList.map(category => ({ expensecategory: category.expenseCategory }));
+          const expenseCategoriesArray = this.firstForm.get('expenseCategories') as FormArray;
+          this.steps = this.expenseCategory;
+          this.expenseService.allExpenseCategories.subscribe((res: any) => {
+            this.allExpenseCategories = res;
+            this.steps.forEach(step => {
+              const matchingCategory = this.allExpenseCategories.find(category => category._id === step);
+              if (matchingCategory) {
+                const categoryId = matchingCategory._id;
+                expenseCategoriesArray.push(this._formBuilder.group({
+                  expenseCategory: categoryId,
+                  isMaximumAmountPerExpenseSet: false,
+                  maximumAmountPerExpense: 0,
+                  isMaximumAmountWithoutReceiptSet: false,
+                  maximumAmountWithoutReceipt: 0,
+                  maximumExpensesCanApply: 0,
+                  isTimePeroidSet: false,
+                  timePeroid: '',
+                  expiryDay: 0,
+                  isEmployeeCanAddInTotalDirectly: false,
+                  ratePerDay: 0
+                }));
+              }
+            });
+          });
+        });
+      }
+    });
+    // ------
     let id = this.expenseService.selectedTemplate.getValue()._id;
     this.expenseService.getCategoriesByTemplate(id).subscribe((res: any) => {
       let categoryList = res.data;
@@ -53,13 +85,10 @@ export class ExpenseCategorySettingsComponent {
         expenseCategories: this._formBuilder.array([]),
         expenseTemplate: [this.expenseService.selectedTemplate.getValue()._id]
       });
-
       const expenseCategoriesArray = this.firstForm.get('expenseCategories') as FormArray;
-
       // Add form groups for each category
       this.steps.forEach(step => {
         const matchingCategory = this.allExpenseCategories.find(category => category._id === step.expenseCategory);
-
         if (matchingCategory) {
           const categoryId = matchingCategory._id;
           expenseCategoriesArray.push(this._formBuilder.group({

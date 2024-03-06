@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormArray, FormBuilder } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 import { LeaveService } from 'src/app/_services/leave.service';
 import { CommonService } from 'src/app/common/common.service';
 
@@ -13,72 +14,71 @@ export class AddCategoryLeaveComponent {
   @Output() changeStep: any = new EventEmitter();
   @Output() updateExpenseTemplateTable: EventEmitter<void> = new EventEmitter<void>();
   step = 1;
-  firstForm: any;
+  firstForm: FormGroup;
   categories: any;
   steps: any;
   template: any;
   @Input() isEdit: boolean;
-  members: any;
-
+  members: any = [];
+  leaveCategories: any;
+  allCategories: any;
+  categoryForm: FormGroup;
 
   constructor(private leaveService: LeaveService,
     private _formBuilder: FormBuilder,
-    private commonService: CommonService) { }
-
-  ngOnInit() {
-    // this.populateUsers();
-    this.commonService.populateUsers().subscribe((res: any)=>{
-      this.members = res.data.data;
-    })
-    // this.template = this.leaveService.selectedTemplate.getValue();
-    // console.log(this.template);
-
-    // -------------
-    // let id = this.leaveService.selectedTemplate.getValue()._id;
-    // this.leaveService.getLeaveTemplateById(id).subscribe((res: any) => {
-    //   let categoryList = res.data;
-    //   this.categories = categoryList.map(category => ({ expensecategory: category.expenseCategory }));
-    // });
-
-    // this.leaveService.getAllLeaveCategories().subscribe((res: any) => {
-    //   this.categories = res;
-    //   // let category = this.leaveService.categories.getValue();
-    //   this.steps = this.categories.expenseCategories;
-
-    //   // this.firstForm = this._formBuilder.group({
-    //   //   leaveCategory: this._formBuilder.array([]),
-    //   //   expenseTemplate: [this.leaveService.selectedTemplate.getValue()._id]
-    //   // });
-
-    //   const expenseCategoriesArray = this.firstForm.get('expenseCategories') as FormArray;
-
-    //   // Add form groups for each category
-    //   this.steps.forEach(step => {
-    //     const matchingCategory = this.categories.find(category => category._id === step.expenseCategory);
-
-    //     if (matchingCategory) {
-    //       const categoryId = matchingCategory._id;
-    //       expenseCategoriesArray.push(this._formBuilder.group({
-    //         // expenseCategory: categoryId,
-    //         // isMaximumAmountPerExpenseSet: false,
-    //         // maximumAmountPerExpense: 0,
-    //         // isMaximumAmountWithoutReceiptSet: false,
-    //         // maximumAmountWithoutReceipt: 0,
-    //         // maximumExpensesCanApply: 0,
-    //         // isTimePeroidSet: false,
-    //         // timePeroid: '',
-    //         // expiryDay: 0,
-    //         // isEmployeeCanAddInTotalDirectly: false,
-    //         // ratePerDay: 0
-    //       }));
-    //     }
-    //   });
-    // });
-
-    // -----------
+    private commonService: CommonService,
+    private toast: ToastrService) {
   }
 
- 
+  ngOnInit() {
+    this.commonService.populateUsers().subscribe((res: any) => {
+      this.members = res.data.data;
+    });
+    this.leaveService.selectedTemplate.subscribe((selectedTemplate) => {
+      this.firstForm = this._formBuilder.group({
+        leaveCategories: this._formBuilder.array([]),
+        leaveTemplate: [this.leaveService.selectedTemplate.getValue()._id]
+      });
+      console.log(this.firstForm.value);
+
+      const leaveCategoriesArray = this.firstForm.get('leaveCategories') as FormArray;
+      this.leaveService.getAllLeaveCategories().subscribe((res: any) => {
+        this.allCategories = res.data;
+
+        // let templateId = this.leaveService.selectedTemplate.getValue()._id;
+        this.leaveService.getLeaveTemplateCategoriesByTemplateId(selectedTemplate._id).subscribe((res: any) => {
+          this.leaveCategories = res.data;
+
+          this.steps = this.leaveCategories;
+          console.log(this.steps);
+          console.log(this.allCategories);
+          this.steps.forEach(step => {
+            const matchingCategory = this.allCategories.find(category => category?._id === step?.leaveCategory);
+            console.log(matchingCategory)
+            if (matchingCategory) {
+              const categoryId = matchingCategory._id;
+              leaveCategoriesArray.push(this._formBuilder.group({
+                leaveCategory: categoryId,
+                limitNumberOfTimesApply: true,
+                maximumNumbersEmployeeCanApply: 0,
+                maximumNumbersEmployeeCanApplyType: '',
+                dealWithNewlyJoinedEmployee: '',
+                daysToCompleteToBecomeEligibleForLeave: 0,
+                isEmployeeGetCreditedTheEntireAmount: true,
+                extendLeaveCategory: true,
+                extendMaximumDayNumber: 0,
+                extendFromCategory: '',
+                negativeBalanceCap: 0,
+                annualAccrualRatePerPeriod: 0,
+                categoryApplicable: 'all-employees'
+              }));
+              console.log(leaveCategoriesArray.value, this.firstForm.value)
+            }
+          });
+        })
+      })
+    })
+  }
 
   closeModal() {
     this.changeStep.emit(1);
@@ -88,12 +88,30 @@ export class AddCategoryLeaveComponent {
 
   getLeaveCategories() {
     this.leaveService.getAllLeaveCategories().subscribe((res: any) => {
+      this.allCategories = res.data;
     })
   }
 
-  getCategoryLabel(expenseCategoryId: string): string {
-    const matchingCategory = this.categories.find(category => category._id === expenseCategoryId);
-    return matchingCategory ? matchingCategory.label : '';
+  getCategoryLabel(leaveCategoryId: string): string {
+    const matchingCategory = this.allCategories?.find(category => category._id === leaveCategoryId);
+    return matchingCategory.label;
   }
-  
+
+  // getLeaveCategoriesById() {
+  //   let templateId = this.leaveService.selectedTemplate.getValue()._id;
+  //   this.leaveService.getLeaveApplicableCategoriesByTemplateId(templateId).subscribe((res: any) => {
+  //     console.log(res.data);
+  //     this.leaveCategories = res.data;
+  //   })
+  // }
+
+
+
+  onSubmit() {
+    const templateId = this.leaveService.selectedTemplate.getValue()._id;
+    this.leaveService.updateLeaveTemplateCategories(templateId, this.firstForm.value).subscribe((res: any) => {
+      this.toast.success('Leave Template Categories Updated', 'Successfully');
+    })
+    console.log('formSubmitted', this.firstForm.value)
+  }
 }

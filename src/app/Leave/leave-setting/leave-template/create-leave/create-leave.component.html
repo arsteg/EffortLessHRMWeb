@@ -117,13 +117,12 @@
             Please Select Approval!
         </div>
     </div>
-
     <div class="mt-2 form-group">
         <label for="firstApprovalEmployee">What Leave Categories are Applicable in the Leave Template ?<span
                 class="text-danger">*</span></label>
         <mat-select multiple formControlName="leaveCategories" [compareWith]="compareExpenseCategories">
             <mat-option [value]="categories?._id" *ngFor="let categories of categories; let i = index">
-                {{categories.label}}
+                {{categories?.label}}
             </mat-option>
         </mat-select>
     </div>

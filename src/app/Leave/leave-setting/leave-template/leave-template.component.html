@@ -30,7 +30,7 @@
                     <tr *ngFor="let leaveTemp of leaveTemplate | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }; let i = index">
                         <td>{{leaveTemp?.label}}</td>
                         <td></td>
-                        <td></td>
+                        <td class="text-center">{{leaveTemp?.applicableCategories?.length}}</td>
                         <td>
                             <button class="actions" mat-mini-fab title="Update" (click)="changeMode='Next'; isEdit === true;
                             open(addModal);
@@ -48,15 +48,14 @@
             </table>
             <pagination-controls (pageChange)="p = $event"
             class="pagination d-flex justify-content-end"></pagination-controls>
-
         </div>
     </div>
 </div>
 
 <ng-template #addModal let-modal>
-    <!-- <app-create-leave [changeMode]="changeMode" (changeStep)="onChangeStep($event)"
-        (close)="onClose($event)" *ngIf="step == 1" [isEdit]="isEdit"></app-create-leave> -->
-    <app-add-category-leave *ngIf="step == 1" [isEdit]="isEdit" (close)="onClose($event)"
+    <app-create-leave [changeMode]="changeMode" (changeStep)="onChangeStep($event)"
+        (close)="onClose($event)" *ngIf="step == 1" [isEdit]="isEdit"></app-create-leave>
+    <app-add-category-leave *ngIf="step == 2" [isEdit]="isEdit" (close)="onClose($event)"
         (changeStep)="onChangeStep($event)"
         (updateLeaveTemplateTable)="refreshLeaveTemplateTable()"></app-add-category-leave>
 </ng-template>

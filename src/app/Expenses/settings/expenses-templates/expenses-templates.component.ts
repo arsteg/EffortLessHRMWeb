@@ -47,6 +47,9 @@ export class ExpensesTemplatesComponent implements OnInit {
     this.filteredTemplate();
   }
 
+  clearForm(){
+    // this.addTemplateForm.reset();
+  }
   onClose(event) {
     if (event) {
       this.modalService.dismissAll();
