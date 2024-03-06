@@ -127,7 +127,7 @@ export class EditTaskComponent implements OnInit {
       })
     });
     this.getTasks();
-   
+
   }
 
   navigateToManage() {
@@ -135,11 +135,11 @@ export class EditTaskComponent implements OnInit {
     this.router.navigate(['../../../manage'], { relativeTo: this.route });
     console.log(this.route)
 
-}
+  }
   onParagraphClick() {
     this.showEditor = true;
   }
-projectisNull;
+  projectisNull;
   getTask(taskId: string) {
     if (taskId) {
       this.tasksService.getTaskById(taskId).subscribe(res => {
@@ -147,7 +147,7 @@ projectisNull;
         console.log(this.tasks.data.task)
         this.assignee = this.tasks.data.newTaskUserList;
         this.currentTaskProject = this.tasks.data.task;
-        this.projectisNull= (this.currentTaskProject.project==null)
+        this.projectisNull = (this.currentTaskProject.project == null)
         if (this.currentTaskProject === null) {
           this.loading = false;
         }
@@ -180,12 +180,12 @@ projectisNull;
     return '';
   }
   getCurrentUserTasks() {
-      this.tasksService.getTaskByUser(this.currentUser.id, this.skip, this.next).subscribe(response => {
-        this.taskList = response && response.data && response.data['taskList'];
-        this.totalRecords = response && response.data;
-        this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
-        this.taskList = this.taskList.filter(taskList => taskList !== null);
-      })
+    this.tasksService.getTaskByUser(this.currentUser.id, this.skip, this.next).subscribe(response => {
+      this.taskList = response && response.data && response.data['taskList'];
+      this.totalRecords = response && response.data;
+      this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
+      this.taskList = this.taskList.filter(taskList => taskList !== null);
+    })
   }
   nextPagination() {
     const newSkip = (parseInt(this.skip) + parseInt(this.next)).toString();
@@ -293,23 +293,38 @@ projectisNull;
     const payload = { "priority": priority }
     this.tasks.data.task.priority = priority;
     this.tasksService.updatetaskFlex(this.tasks.data.task.id, payload).subscribe(response => {
-      this.toast.success('Task priority updated successfully',  `Task Number: ${this.tasks.data.task.taskNumber}`)
+      this.toast.success('Task priority updated successfully', `Task Number: ${this.tasks.data.task.taskNumber}`)
     },
       err => {
         this.toast.error('Task could not be updated', 'ERROR!')
       })
   }
-  updateTaskStatus(selectedTask: Task, status: string) {
-    const payload = { "status": status }
-    this.tasks.data.task.status = status;
+  updateTaskStatus(selectedTask: any, status: string) {
+    selectedTask = this.tasks.data.task;
+    const payload = {
+      status: selectedTask.status,
+      taskName: selectedTask.taskName,
+      startDate: selectedTask.startDate,
+      endDate: selectedTask.endDate,
+      startTime: selectedTask.startTime,
+      description: selectedTask.description,
+      comment: selectedTask.comment,
+      priority: selectedTask.priority,
+      project: selectedTask.project,
+      title: selectedTask.ttitle,
+      parentTask: selectedTask.parentTask,
+      estimate: selectedTask.estimate,
+      timeTaken: selectedTask.timeTaken,
+    }
+    console.log(this.tasks.data.task)
     this.tasksService.updatetaskFlex(this.tasks.data.task.id, payload).subscribe(response => {
-      this.toast.success('Task status updated successfully',  `Task Number: ${this.tasks.data.task.taskNumber}`)
+      this.toast.success('Task status updated successfully', `Task Number: ${this.tasks.data.task.taskNumber}`)
     },
       err => {
         this.toast.error('Task could not be updated', 'ERROR!')
       })
   }
-  
+
 
   deleteTask() {
     this.loading = true; // Set loading to true
@@ -317,8 +332,8 @@ projectisNull;
     this.tasksService.deleteTask(this.taskId).subscribe(
       response => {
         this.ngOnInit();
-        this.toast.success('Successfully Deleted!',  `Task Number: ${this.tasks.data.task.taskNumber}` );
-      
+        this.toast.success('Successfully Deleted!', `Task Number: ${this.tasks.data.task.taskNumber}`);
+
       },
       err => {
         this.toast.error('Task Cannot Be Deleted', 'Error!');
@@ -348,8 +363,8 @@ projectisNull;
       reader.readAsDataURL(file);
       reader.onload = () => {
         const base64String = reader.result.toString().split(',')[1];
-        const fileSize = file.size; 
-        const fileType = file.type; 
+        const fileSize = file.size;
+        const fileType = file.type;
         const fileNameParts = file.name.split('.');
         const extention = fileNameParts[fileNameParts.length - 1];
 
@@ -564,7 +579,7 @@ projectisNull;
     console.log(taskId, user)
     this.tasksService.addUserToTask(taskId, user).subscribe((response: any) => {
       this.assignee = response && response.data && response.data['TaskUserList'];
-      this.toast.success('Task User updated successfully',  `Task Number: ${this.tasks.data.task.taskNumber}`)
+      this.toast.success('Task User updated successfully', `Task Number: ${this.tasks.data.task.taskNumber}`)
     },
       err => {
         this.toast.error('Task could not be updated', 'ERROR!')
