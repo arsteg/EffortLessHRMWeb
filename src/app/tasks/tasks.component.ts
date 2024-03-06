@@ -121,7 +121,7 @@ export class TasksComponent implements OnInit {
       estimate: [0],
       comment: ['Task Created'],
       priority: [''],
-      TaskUser: [''],
+      user: ['',  Validators.required],
       project: ['', Validators.required],
       taskAttachments: [this.attachments]
     });
@@ -132,7 +132,7 @@ export class TasksComponent implements OnInit {
       estimate: [0],
       comment: [''],
       priority: ['', Validators.required],
-      TaskUser: [''],
+      user: ['', Validators.required],
       project: ['', Validators.required]
     });
     this.updateForm = this.fb.group({
@@ -141,7 +141,7 @@ export class TasksComponent implements OnInit {
       description: ['', Validators.required],
       comment: ['', Validators.required],
       priority: ['', Validators.required],
-      TaskUser: ['', Validators.required],
+      user: ['', Validators.required],
       project: ['', Validators.required],
       status: ['', Validators.required],
       estimate: [0],
@@ -419,10 +419,12 @@ export class TasksComponent implements OnInit {
     }
   }
   getUsersByProject() {
-    const selectedProject = this.addForm.value.project;
+    const selectedProject = this.createTask_Board.value.project;
+    console.log(selectedProject)
     this.projectService.getprojectUser(selectedProject).subscribe((res: any) => {
       this.usersByProject = res?.data?.projectUserList;
       this.usersByProject = this.usersByProject.filter(user => user !== null);
+      console.log(this.usersByProject)
     });
   }
 
@@ -438,7 +440,7 @@ export class TasksComponent implements OnInit {
       comment: this.addForm.value.comment,
       isSubTask: false,
       priority: this.addForm.value.priority,
-      user: this.addForm.value.TaskUser || null,
+      user: this.addForm.value.user,
       status: "ToDo",
       project: this.addForm.value.project,
       taskAttachments: [] // Initialize an empty array of attachments
@@ -679,7 +681,6 @@ export class TasksComponent implements OnInit {
       estimate: selectedTask.estimate,
       timeTaken: selectedTask.timeTaken,
     }
-    // selectedTask.status = status;
     this.tasksService.updatetaskFlex(selectedTask._id, payload).subscribe(response => {
       this.toast.success('Task status updated successfully', `Task Number: ${selectedTask.taskNumber}`)
     },
@@ -733,13 +734,13 @@ export class TasksComponent implements OnInit {
   }
   addTaskToDo() {
     const id: '' = this.currentProfile.id
-    const taskFromBoard: TaskBoard = {
+    const taskFromBoard = {
       taskName: this.createTask_Board.value.taskName,
       title: this.createTask_Board.value.taskName,
       description: '',
       comment: '',
       priority: this.createTask_Board.value.priority,
-      taskUsers: this.view === 'admin' ? [] : [id],
+      user: this.view === 'admin' ? [] : [id],
       status: 'ToDo',
       project: this.createTask_Board.value.project
     }
@@ -755,13 +756,13 @@ export class TasksComponent implements OnInit {
 
   addTaskInProgress() {
     const id: '' = this.currentProfile.id
-    const taskFromBoard: TaskBoard = {
+    const taskFromBoard = {
       taskName: this.createTask_Board.value.taskName,
       title: this.createTask_Board.value.taskName,
       description: '',
       comment: '',
       priority: this.createTask_Board.value.priority,
-      taskUsers: this.view === 'admin' ? [] : [id],
+      user: this.view === 'admin' ? [] : [id],
       status: 'In Progress',
       project: this.createTask_Board.value.project
     }
@@ -777,13 +778,13 @@ export class TasksComponent implements OnInit {
 
   addTaskDone() {
     const id: '' = this.currentProfile.id
-    const taskFromBoard: TaskBoard = {
+    const taskFromBoard = {
       taskName: this.createTask_Board.value.taskName,
       title: this.createTask_Board.value.taskName,
       description: '',
       comment: '',
       priority: this.createTask_Board.value.priority,
-      taskUsers: this.view === 'admin' ? [] : [id],
+      user: this.view === 'admin' ? [] : [id],
       status: 'Done',
       project: this.createTask_Board.value.project
     }
@@ -798,13 +799,13 @@ export class TasksComponent implements OnInit {
   }
   addTaskClosed() {
     const id: '' = this.currentProfile.id
-    const taskFromBoard: TaskBoard = {
+    const taskFromBoard = {
       taskName: this.createTask_Board.value.taskName,
       title: this.createTask_Board.value.taskName,
       description: '',
       comment: '',
       priority: this.createTask_Board.value.priority,
-      taskUsers: this.view === 'admin' ? [] : [id],
+      user: this.view === 'admin' ? [] : [id],
       status: 'Closed',
       project: this.createTask_Board.value.project
     }

@@ -126,7 +126,7 @@
                                             <i
                                                 [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                                         </th>
-                                        <th scope="col" [appSort]="tasks" data-order="desc" data-name="TaskUser">
+                                        <th scope="col" [appSort]="tasks" data-order="desc" data-name="user">
                                             Assignee
                                             &nbsp;
                                             <i class="bi bi-arrow-up sort"></i>
@@ -308,39 +308,39 @@
                             </table>
                         </div>
 
-                        <ng-container>
-                            <div class="d-flex justify-content-end align-items-center" style="margin-bottom: -30px;">
-                                Items per page
-                                <select style="width: 80px;" class="page form-select form-select-sm mx-2"
-                                    [(ngModel)]="recordsPerPage" (ngModelChange)="updateRecordsPerPage()">
-                                    <option class="page" *ngFor="let option of recordsPerPageOptions" [value]="option">
-                                        {{
-                                        option }}
-                                    </option>
-                                </select>
-
-                                <span class="ml-2 page">{{ currentPage }} - {{ getTotalPages() }} of {{
-                                    totalRecords?.taskCount
-                                    }}</span>
-                                <!-- previous page -->
-                                <span (click)="firstPagePagination()"
-                                    class="page bi bi-chevron-bar-left btn-lg btn-outline-primary" title="First Page"
-                                    [class.disabled]="skip === '0' || currentPage === 1"></span>
-
-                                <span (click)="previousPagination()"
-                                    class="page bi bi-chevron-left btn-lg btn-outline-primary" title="Previous Page"
-                                    [class.disabled]="skip === '0' || currentPage === 1"></span>
-                                <!-- next page -->
-                                <span (click)="nextPagination()"
-                                    class="page bi bi-chevron-right btn-lg btn-outline-primary" title="Next Page"
-                                    [class.disabled]="currentPage === getTotalPages()"></span>
-
-                                <span (click)="lastPagePagination()"
-                                    class="page bi bi-chevron-bar-right btn-lg btn-outline-primary" title="Last Page"
-                                    [class.disabled]="currentPage === getTotalPages()"></span>
-                            </div>
-                        </ng-container>
                     </div>
+                    <ng-container>
+                        <div class="d-flex justify-content-end align-items-center" style="margin-bottom: -30px;">
+                            Items per page
+                            <select style="width: 80px;" class="page form-select form-select-sm mx-2"
+                                [(ngModel)]="recordsPerPage" (ngModelChange)="updateRecordsPerPage()">
+                                <option class="page" *ngFor="let option of recordsPerPageOptions" [value]="option">
+                                    {{
+                                    option }}
+                                </option>
+                            </select>
+
+                            <span class="ml-2 page">{{ currentPage }} - {{ getTotalPages() }} of {{
+                                totalRecords?.taskCount
+                                }}</span>
+                            <!-- previous page -->
+                            <span (click)="firstPagePagination()"
+                                class="page bi bi-chevron-bar-left btn-lg btn-outline-primary" title="First Page"
+                                [class.disabled]="skip === '0' || currentPage === 1"></span>
+
+                            <span (click)="previousPagination()"
+                                class="page bi bi-chevron-left btn-lg btn-outline-primary" title="Previous Page"
+                                [class.disabled]="skip === '0' || currentPage === 1"></span>
+                            <!-- next page -->
+                            <span (click)="nextPagination()"
+                                class="page bi bi-chevron-right btn-lg btn-outline-primary" title="Next Page"
+                                [class.disabled]="currentPage === getTotalPages()"></span>
+
+                            <span (click)="lastPagePagination()"
+                                class="page bi bi-chevron-bar-right btn-lg btn-outline-primary" title="Last Page"
+                                [class.disabled]="currentPage === getTotalPages()"></span>
+                        </div>
+                    </ng-container>
 
 
                     <div *ngIf="!isListView">
@@ -474,7 +474,7 @@
                                                         <label for="project" class="text-start">Project</label>
                                                     </div>
 
-                                                    <select class="custom-select mb-3 p-2" formControlName="project">
+                                                    <select class="custom-select mb-3 p-2"  (change)="getUsersByProject()" formControlName="project">
                                                         <option [value]="project.id"
                                                             *ngFor="let project of projectList">
                                                             {{project.projectName}}
@@ -492,7 +492,28 @@
                                                             <option value="High">High</option>
                                                         </select>
                                                     </div>
-                                                    <button mat-raised-button color="primary"
+                                                    <div>
+                                                        <div class="row mt-3">
+                                                            <label for="project" class="text-start">Assignee<span
+                                                                    class="text-danger">*</span></label>
+                                                        </div>
+                
+                                                        <select class="custom-select mb-3 p-2" formControlName="user">
+                                                            <option [value]="user?.user?.id" *ngFor="let user of usersByProject">
+                
+                                                                {{user?.user?.firstName | titlecase}} {{user?.user?.lastName |
+                                                                titlecase}}
+                
+                                                            </option>
+                                                        </select>
+                                                        <div *ngIf="addForm.controls['user'].invalid && addForm.controls['user'].touched"
+                                                            class="alert alert-danger error">
+                                                            <div *ngIf="addForm.controls['user'].errors['required']">
+                                                                Assignee is required!
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <button mat-raised-button class="addBtn"
                                                         type="submit">Submit</button>
                                                 </form>
                                             </div>
@@ -628,7 +649,7 @@
                                                         <label for="project" class="text-start">Project</label>
                                                     </div>
 
-                                                    <select class="custom-select mb-3 p-2" formControlName="project">
+                                                    <select class="custom-select mb-3 p-2"  (change)="getUsersByProject()" formControlName="project">
                                                         <option [value]="project.id"
                                                             *ngFor="let project of projectList">
                                                             {{project.projectName}}
@@ -646,7 +667,28 @@
                                                             <option value="High">High</option>
                                                         </select>
                                                     </div>
-                                                    <button mat-raised-button color="primary"
+                                                    <div>
+                                                        <div class="row mt-3">
+                                                            <label for="project" class="text-start">Assignee<span
+                                                                    class="text-danger">*</span></label>
+                                                        </div>
+                
+                                                        <select class="custom-select mb-3 p-2" formControlName="user">
+                                                            <option [value]="user?.user?.id" *ngFor="let user of usersByProject">
+                
+                                                                {{user?.user?.firstName | titlecase}} {{user?.user?.lastName |
+                                                                titlecase}}
+                
+                                                            </option>
+                                                        </select>
+                                                        <div *ngIf="addForm.controls['user'].invalid && addForm.controls['user'].touched"
+                                                            class="alert alert-danger error">
+                                                            <div *ngIf="addForm.controls['user'].errors['required']">
+                                                                Assignee is required!
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <button mat-raised-button class="addBtn"
                                                         type="submit">Submit</button>
                                                 </form>
                                             </div>
@@ -783,7 +825,7 @@
                                                         <label for="project" class="text-start">Project</label>
                                                     </div>
 
-                                                    <select class="custom-select mb-3 p-2" formControlName="project">
+                                                    <select class="custom-select mb-3 p-2"  (change)="getUsersByProject()" formControlName="project">
                                                         <option [value]="project.id"
                                                             *ngFor="let project of projectList">
                                                             {{project.projectName}}
@@ -801,7 +843,28 @@
                                                             <option value="High">High</option>
                                                         </select>
                                                     </div>
-                                                    <button mat-raised-button color="primary"
+                                                    <div>
+                                                        <div class="row mt-3">
+                                                            <label for="project" class="text-start">Assignee<span
+                                                                    class="text-danger">*</span></label>
+                                                        </div>
+                
+                                                        <select class="custom-select mb-3 p-2" formControlName="user">
+                                                            <option [value]="user?.user?.id" *ngFor="let user of usersByProject">
+                
+                                                                {{user?.user?.firstName | titlecase}} {{user?.user?.lastName |
+                                                                titlecase}}
+                
+                                                            </option>
+                                                        </select>
+                                                        <div *ngIf="addForm.controls['user'].invalid && addForm.controls['user'].touched"
+                                                            class="alert alert-danger error">
+                                                            <div *ngIf="addForm.controls['user'].errors['required']">
+                                                                Assignee is required!
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <button mat-raised-button class="addBtn"
                                                         type="submit">Submit</button>
                                                 </form>
                                             </div>
@@ -937,7 +1000,7 @@
                                                         <label for="project" class="text-start">Project</label>
                                                     </div>
 
-                                                    <select class="custom-select mb-3 p-2" formControlName="project">
+                                                    <select class="custom-select mb-3 p-2"  (change)="getUsersByProject()" formControlName="project">
                                                         <option [value]="project.id"
                                                             *ngFor="let project of projectList">
                                                             {{project.projectName}}
@@ -955,7 +1018,30 @@
                                                             <option value="High">High</option>
                                                         </select>
                                                     </div>
-                                                    <button mat-raised-button color="primary"
+
+                                                    <div>
+                                                        <div class="row mt-3">
+                                                            <label for="project" class="text-start">Assignee<span
+                                                                    class="text-danger">*</span></label>
+                                                        </div>
+                
+                                                        <select class="custom-select mb-3 p-2" formControlName="user">
+                                                            <option [value]="user?.user?.id" *ngFor="let user of usersByProject">
+                
+                                                                {{user?.user?.firstName | titlecase}} {{user?.user?.lastName |
+                                                                titlecase}}
+                
+                                                            </option>
+                                                        </select>
+                                                        <div *ngIf="addForm.controls['user'].invalid && addForm.controls['user'].touched"
+                                                            class="alert alert-danger error">
+                                                            <div *ngIf="addForm.controls['user'].errors['required']">
+                                                                Assignee is required!
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                   
+                                                    <button mat-raised-button class="addBtn"
                                                         type="submit">Submit</button>
                                                 </form>
                                             </div>
@@ -1132,10 +1218,11 @@
                                     </div>
                                     <div class="col-6">
                                         <div class="row mt-3">
-                                            <label for="project" class="text-start">Assignee</label>
+                                            <label for="project" class="text-start">Assignee<span
+                                                    class="text-danger">*</span></label>
                                         </div>
 
-                                        <select class="custom-select mb-3 p-2" formControlName="TaskUser">
+                                        <select class="custom-select mb-3 p-2" formControlName="user">
                                             <option [value]="user?.user?.id" *ngFor="let user of usersByProject">
 
                                                 {{user?.user?.firstName | titlecase}} {{user?.user?.lastName |
@@ -1143,6 +1230,12 @@
 
                                             </option>
                                         </select>
+                                        <div *ngIf="addForm.controls['user'].invalid && addForm.controls['user'].touched"
+                                            class="alert alert-danger error">
+                                            <div *ngIf="addForm.controls['user'].errors['required']">
+                                                Assignee is required!
+                                            </div>
+                                        </div>
 
                                     </div>
                                 </div>
@@ -1214,8 +1307,8 @@
                         <button mat-raised-button class="mx-2" data-bs-dismiss="modal" type="button">Cancel</button>
                     </div>
                     <div>
-                        <button mat-raised-button color="primary" class="" (click)="deleteTask()"
-                            data-bs-dismiss="modal" type="submit">Delete</button>
+                        <button mat-raised-button class="addBtn" class="" (click)="deleteTask()" data-bs-dismiss="modal"
+                            type="submit">Delete</button>
                     </div>
                 </div>
             </div>
