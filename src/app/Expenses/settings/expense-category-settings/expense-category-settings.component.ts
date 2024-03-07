@@ -32,7 +32,7 @@ export class ExpenseCategorySettingsComponent {
   constructor(private _formBuilder: FormBuilder,
     private expenseService: ExpensesService,
     private toast: ToastrService
-  ) {}
+  ) { }
 
   ngOnInit() {
     // ------
@@ -104,10 +104,24 @@ export class ExpenseCategorySettingsComponent {
             isEmployeeCanAddInTotalDirectly: false,
             ratePerDay: 0
           }));
+          const formGroupIndex = expenseCategoriesArray.length - 1;
+          expenseCategoriesArray.at(formGroupIndex).patchValue({
+            isMaximumAmountPerExpenseSet: step.isMaximumAmountPerExpenseSet,
+            maximumAmountPerExpense: step.maximumAmountPerExpense,
+            isMaximumAmountWithoutReceiptSet: step.isMaximumAmountWithoutReceiptSet,
+            maximumAmountWithoutReceipt: step.maximumAmountWithoutReceipt,
+            maximumExpensesCanApply: step.maximumExpensesCanApply,
+            isTimePeroidSet: step.isTimePeroidSet,
+            timePeroid: step.timePeroid,
+            expiryDay: step.expiryDay,
+            isEmployeeCanAddInTotalDirectly: step.isEmployeeCanAddInTotalDirectly,
+            ratePerDay: step.ratePerDay
+          })
         }
       });
     });
   }
+
   getCategoryLabel(expenseCategoryId: string): string {
     const matchingCategory = this.allExpenseCategories.find(category => category._id === expenseCategoryId);
     return matchingCategory ? matchingCategory.label : '';

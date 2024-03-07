@@ -121,7 +121,7 @@ export class TasksComponent implements OnInit {
       estimate: [0],
       comment: ['Task Created'],
       priority: [''],
-      user: ['',  Validators.required],
+      user: ['', Validators.required],
       project: ['', Validators.required],
       taskAttachments: [this.attachments]
     });
@@ -434,7 +434,7 @@ export class TasksComponent implements OnInit {
     this.projectService.getprojectUser(selectedProject).subscribe((res: any) => {
       this.usersByProject = res?.data?.projectUserList;
       this.usersByProject = this.usersByProject.filter(user => user !== null);
-      console.log(this.usersByProject)
+      console.log(this.usersByProject);
     });
   }
 
@@ -665,7 +665,20 @@ export class TasksComponent implements OnInit {
   }
 
   updateTaskPriority(selectedTask, priority: string) {
-    const payload = { "priority": priority }
+    const payload = { 
+      "priority": priority,
+      taskName: selectedTask.taskName,
+      startDate: selectedTask.startDate,
+      endDate: selectedTask.endDate,
+      startTime: selectedTask.startTime,
+      description: selectedTask.description,
+      comment: selectedTask.comment,
+      project: selectedTask.project,
+      title: selectedTask.ttitle,
+      parentTask: selectedTask.parentTask,
+      estimate: selectedTask.estimate,
+      timeTaken: selectedTask.timeTaken,
+   }
     selectedTask.priority = priority;
     this.tasksService.updatetaskFlex(selectedTask._id, payload).subscribe(response => {
       this.toast.success('Task priority updated successfully', `Task Number: ${selectedTask.taskNumber}`)
@@ -677,7 +690,7 @@ export class TasksComponent implements OnInit {
 
   updateTaskStatus(selectedTask, status: string) {
     const payload = {
-      status: selectedTask.status,
+      "status": status,
       taskName: selectedTask.taskName,
       startDate: selectedTask.startDate,
       endDate: selectedTask.endDate,
@@ -691,12 +704,26 @@ export class TasksComponent implements OnInit {
       estimate: selectedTask.estimate,
       timeTaken: selectedTask.timeTaken,
     }
-    this.tasksService.updatetaskFlex(selectedTask._id, payload).subscribe(response => {
+    payload.status = status
+    this.tasksService.updatetaskFlex(selectedTask._id, payload).subscribe((response: any) => {
+      const updatedTaskStatus = response && response.data && response.data.data;
+      console.log(updatedTaskStatus);
+      console.log(this.tasks)
+      const index = this.tasks.findIndex(task => task._id === updatedTaskStatus._id);
+      if (index !== -1) {
+        this.tasks[index] = updatedTaskStatus;
+        selectedTask.status = status;
+        console.log(selectedTask.status)
+      }
+
+
       this.toast.success('Task status updated successfully', `Task Number: ${selectedTask.taskNumber}`)
-    },
+    }
+      ,
       err => {
         this.toast.error('Task could not be updated', 'ERROR!')
-      })
+      }
+    )
   }
   getTaskById(id: string): void {
     this.tasksService.getTaskById(id).subscribe(task => {

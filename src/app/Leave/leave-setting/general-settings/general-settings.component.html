@@ -5,7 +5,7 @@
                 <div class="d-flex pb-3">
                     <div class="ms-auto">
                         <button mat-raised-button *ngIf="!isEdit" class="addBtn" type="button" (click)="toggleEdit()">Edit</button>
-                        <button mat-raised-button *ngIf="isEdit" type="button" class="me-3">Cancel</button>
+                        <button mat-raised-button *ngIf="isEdit" (click)="resetSettings()" type="button" class="me-3">Cancel</button>
                         <button mat-raised-button class="addBtn" type="submit" *ngIf="isEdit"
                             (click)="onUpdate()">Save</button>
                     </div>

@@ -44,7 +44,7 @@ export class AdvanceTemplatesComponent implements OnInit {
       policyLabel: ['', Validators.required],
       approvalType: ['', Validators.required],
       approvalLevel: ['', Validators.required],
-      advanceCategories: [[], Validators.required],
+      advanceCategories: [[]],
       firstApprovalEmployee: ['', Validators.required],
       secondApprovalEmployee: ['', Validators.required]
     });
@@ -153,7 +153,7 @@ export class AdvanceTemplatesComponent implements OnInit {
       advanceCategories: this.addAdvanceTempForm.value.advanceCategories.map(category => ({ advanceCategory: category })),
     };
     if (this.changeMode === 'Add') {
-console.log(payload)
+      console.log(payload)
       this.expenseService.addAdvanceTemplates(payload).subscribe(
         (res: any) => {
           const newCategory = res.data;
@@ -165,6 +165,7 @@ console.log(payload)
             };
           }
           this.toast.success('New Advance Template Added', 'Successfully!!!');
+          this.addAdvanceTempForm.reset();
         },
         err => {
           this.toast.error('Failed to save the category. Please try again.', 'Error!!!');
@@ -191,9 +192,9 @@ console.log(payload)
       this.isEdit = false;
       this.changeMode == 'Add';
     },
-    (err)=>{
-      this.toast.error('Advance template can not be updated', 'Error')
-    });
+      (err) => {
+        this.toast.error('Advance template can not be updated', 'Error')
+      });
 
   }
 

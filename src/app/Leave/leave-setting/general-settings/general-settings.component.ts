@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 import { LeaveService } from 'src/app/_services/leave.service';
 
 @Component({
@@ -20,7 +21,8 @@ export class GeneralSettingsComponent {
   form: FormGroup;
 
   constructor(private leaveService: LeaveService,
-    private fb: FormBuilder) {
+    private fb: FormBuilder, 
+    private toast: ToastrService) {
     this.leaveGeneralSettingForm = this.fb.group({
       leaveCycleStart: ['', Validators.required],
       isAdminAccessLeaveApproveReject: [true, Validators.required],
@@ -98,6 +100,15 @@ export class GeneralSettingsComponent {
     }
     this.leaveService.updateGeneralSettings(id, payload).subscribe((res: any) => {
       this.leaveGeneralSettings = res.data;
+      this.toast.success('General Settings Updated', 'Succesfully!!!')
+    },
+    err=>{
+      this.toast.error('General Settings Can not be Updated', 'Error')
     });
+    this.toggleEdit();
+  }
+
+  resetSettings(){
+    this.ngOnInit();
   }
 }

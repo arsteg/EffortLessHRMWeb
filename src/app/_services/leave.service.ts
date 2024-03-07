@@ -89,10 +89,10 @@ export class LeaveService extends baseService {
     return this.http.put<any>(`${environment.apiUrlDotNet}/leave/leave-templates/${leaveId}`, template, this.httpOptions);
   }
 
-  public updateLeaveTemplateCategories(templateId: string, categories: any): any {
+  public updateLeaveTemplateCategories(categories: any): any {
     const token = this.getToken();
     this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
-    return this.http.post<any>(`${environment.apiUrlDotNet}/leave/leave-template-categories/${templateId}`, categories, this.httpOptions);
+    return this.http.post<any>(`${environment.apiUrlDotNet}/leave/leave-template-categories`, categories, this.httpOptions);
   }
 
 

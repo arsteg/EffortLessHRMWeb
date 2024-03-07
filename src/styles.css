@@ -846,3 +846,10 @@ option:hover{
 .downloadBtn{
   font-size: large;
 }
+
+.mdc-text-field--outlined .mat-mdc-form-field-infix{
+  padding-bottom: 0px !important;
+}
+.mdc-notched-outline{
+  height: 85% !important;
+}

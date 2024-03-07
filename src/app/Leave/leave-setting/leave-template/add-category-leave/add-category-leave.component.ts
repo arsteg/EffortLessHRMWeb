@@ -72,13 +72,28 @@ export class AddCategoryLeaveComponent {
                 annualAccrualRatePerPeriod: 0,
                 categoryApplicable: 'all-employees'
               }));
-              console.log(leaveCategoriesArray.value, this.firstForm.value)
+              const formGroupIndex = leaveCategoriesArray.length - 1;
+              leaveCategoriesArray.at(formGroupIndex).patchValue({
+                limitNumberOfTimesApply: step.limitNumberOfTimesApply,
+                maximumNumbersEmployeeCanApply: step.maximumNumbersEmployeeCanApply,
+                maximumNumbersEmployeeCanApplyType: step.maximumNumbersEmployeeCanApplyType,
+                dealWithNewlyJoinedEmployee: step.dealWithNewlyJoinedEmployee,
+                daysToCompleteToBecomeEligibleForLeave: step.daysToCompleteToBecomeEligibleForLeave,
+                isEmployeeGetCreditedTheEntireAmount: step.isEmployeeGetCreditedTheEntireAmount,
+                extendLeaveCategory: step.extendLeaveCategory,
+                extendMaximumDayNumber: step.extendMaximumDayNumber,
+                extendFromCategory: step.extendFromCategory,
+                negativeBalanceCap: step.negativeBalanceCap,
+                annualAccrualRatePerPeriod: step.annualAccrualRatePerPeriod,
+                categoryApplicable: step.categoryApplicable
+              });
             }
           });
         })
       })
     })
   }
+
 
   closeModal() {
     this.changeStep.emit(1);
@@ -109,7 +124,7 @@ export class AddCategoryLeaveComponent {
 
   onSubmit() {
     const templateId = this.leaveService.selectedTemplate.getValue()._id;
-    this.leaveService.updateLeaveTemplateCategories(templateId, this.firstForm.value).subscribe((res: any) => {
+    this.leaveService.updateLeaveTemplateCategories(this.firstForm.value).subscribe((res: any) => {
       this.toast.success('Leave Template Categories Updated', 'Successfully');
     })
     console.log('formSubmitted', this.firstForm.value)

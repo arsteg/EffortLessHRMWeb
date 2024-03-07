@@ -94,10 +94,11 @@ export class LeaveCategoryComponent implements OnInit {
       this.leaveService.addLeaveCategory(this.categoryForm.value).subscribe((res: any) => {
         const leaveCategory = res.data;
         this.leaveCategory.push(leaveCategory);
-        this.toast.success('New Leave Category Added', 'Successfully!!!');
+        this.toast.success('Leave Category Created', 'Successfully!!!');
+        this.categoryForm.reset();
       },
         err => {
-          this.toast.error('Leave Category Can not be Added', 'Error!!!')
+          this.toast.error('Leave Category Can not be Created', 'Error!!!')
         });
     }
     else {
@@ -108,6 +109,7 @@ export class LeaveCategoryComponent implements OnInit {
         if (index !== -1) {
           this.leaveCategory[index] = updatedLeaveCategory;
           this.toast.success('Leave Category Updated', 'Successfully!!!');
+          this.categoryForm.reset();
         }
       },
         err => {

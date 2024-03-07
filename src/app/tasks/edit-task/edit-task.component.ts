@@ -93,7 +93,7 @@ export class EditTaskComponent implements OnInit {
       description: [this.tasks?.data?.task?.description, Validators.required],
       comment: [this.tasks?.data?.task?.comment, Validators.required],
       priority: [this.tasks?.data?.task?.priority, Validators.required],
-      TaskUser: ['', Validators.required],
+      user: ['', Validators.required],
       project: [this.tasks?.data?.task?.project?.id, Validators.required],
       status: [this.tasks?.data?.task?.status, Validators.required]
 
@@ -107,7 +107,7 @@ export class EditTaskComponent implements OnInit {
       estimate: [0],
       comment: ['Child Task', Validators.required],
       priority: ['', Validators.required],
-      TaskUser: ['', Validators.required],
+      user: ['', Validators.required],
       project: ['', Validators.required],
       taskAttachments: [[]]
     });
@@ -289,9 +289,22 @@ export class EditTaskComponent implements OnInit {
     return priority?.url ? priority?.url : this.unKnownImage;
   }
 
-  updateTaskPriority(selectedTask: Task, priority: string) {
-    const payload = { "priority": priority }
-    this.tasks.data.task.priority = priority;
+  updateTaskPriority(selectedTask: any, priority: string) {
+    const payload = { 
+      "priority": priority,
+      taskName: selectedTask.taskName,
+      startDate: selectedTask.startDate,
+      endDate: selectedTask.endDate,
+      startTime: selectedTask.startTime,
+      description: selectedTask.description,
+      comment: selectedTask.comment,
+      project: selectedTask.project,
+      title: selectedTask.ttitle,
+      parentTask: selectedTask.parentTask,
+      estimate: selectedTask.estimate,
+      timeTaken: selectedTask.timeTaken, 
+    }
+    payload.priority = priority;
     this.tasksService.updatetaskFlex(this.tasks.data.task.id, payload).subscribe(response => {
       this.toast.success('Task priority updated successfully', `Task Number: ${this.tasks.data.task.taskNumber}`)
     },
@@ -302,7 +315,7 @@ export class EditTaskComponent implements OnInit {
   updateTaskStatus(selectedTask: any, status: string) {
     selectedTask = this.tasks.data.task;
     const payload = {
-      status: selectedTask.status,
+      "status": status,
       taskName: selectedTask.taskName,
       startDate: selectedTask.startDate,
       endDate: selectedTask.endDate,
@@ -316,7 +329,7 @@ export class EditTaskComponent implements OnInit {
       estimate: selectedTask.estimate,
       timeTaken: selectedTask.timeTaken,
     }
-    console.log(this.tasks.data.task)
+    payload.status = status
     this.tasksService.updatetaskFlex(this.tasks.data.task.id, payload).subscribe(response => {
       this.toast.success('Task status updated successfully', `Task Number: ${this.tasks.data.task.taskNumber}`)
     },
@@ -444,7 +457,7 @@ export class EditTaskComponent implements OnInit {
 
   onSub() {
     const id: '' = this.currentUser.id
-    const newTask: SubTask = {
+    const newTask = {
       _id: '',
       parentTask: this.taskId,
       taskName: this.addForm.value.taskName,
@@ -456,7 +469,7 @@ export class EditTaskComponent implements OnInit {
       comment: 'Child Task',
       isSubTask: false,
       priority: this.addForm.value.priority,
-      taskUsers: this.view === 'admin' ? [] : [id],
+      user: this.view === 'admin' ? [] : [id],
       status: "ToDo",
       project: this.currentTaskProject?.project?.id,
       taskAttachments: []
