@@ -36,7 +36,7 @@
       </div>
     </div> -->
     <div class="d-flex flex-wrap justify-content-between mt-5 border-bottom pb-2">
-      <div class="col-lg-2 col-sm-6">
+      <div class="col-lg-2 col-sm-6 pb-0">
         <div class="input-group date-style">
           <span (click)="SetPreviousDay()" class="fa fa-angle-left fa-lg p-3"></span>
           <input type="date" name="date" id="date" class="form-control calendar" [(ngModel)]="selectedDate" (change)="showScreenShots()" />
@@ -67,7 +67,7 @@
           <label>This month: {{padValue(currentMonthTotalHours)}} h {{padValue(currentMonthTotalMinutes)}}&nbsp;m</label>
         </div>
       </div>
-      <div class="col-lg-1 col-sm-6 pt-md-1 pt-lg-0">
+      <div class="col-lg-1 col-6 pt-md-1 pt-lg-0">
         <div class="me-md-2">
           <button mat-raised-button id="btnRefresh" (click)="showScreenShots()">
             <i class="bi bi-arrow-repeat header-icons contentHeading"></i>
