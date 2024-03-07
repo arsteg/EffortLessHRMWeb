@@ -20,9 +20,23 @@
             <table class="p-2 rounded mt-2">
                 <thead>
                     <tr>
-                        <th>Leave Label</th>
-                        <th>Leave Type</th>
-                        <th>Frequency of Accrual</th>
+                        <th [appSort]="leaveCategory" data-name="label"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Leave Label
+                        <i
+                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+              
+                    </th>
+                        <th [appSort]="leaveCategory" data-name="leaveType"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Leave Type
+                        <i
+                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+              </th>
+                        <th [appSort]="leaveCategory" data-name="leaveAccrualPeriod"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Frequency of Accrual
+                            <i
+                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+              
+                        </th>
                         <th>Action</th>
                     </tr>
                 </thead>

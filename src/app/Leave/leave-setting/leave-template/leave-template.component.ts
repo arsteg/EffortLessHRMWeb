@@ -21,6 +21,7 @@ export class LeaveTemplateComponent implements OnInit {
   selectedTemplateId: any;
   isEdit: boolean = false;
   p: number = 1;
+  public sortOrder: string = ''; // 'asc' or 'desc'
 
 
   constructor(private modalService: NgbModal,

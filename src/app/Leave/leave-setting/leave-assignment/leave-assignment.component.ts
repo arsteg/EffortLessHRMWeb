@@ -21,6 +21,7 @@ export class LeaveAssignmentComponent implements OnInit {
   users: any[] = [];
   templates: any;
   templateAssignment: any;
+  public sortOrder: string = ''; // 'asc' or 'desc'
 
   constructor(private modalService: NgbModal,
     private commonService: CommonService,
@@ -116,7 +117,6 @@ export class LeaveAssignmentComponent implements OnInit {
 
   getTemplateLabel(leaveTemplate: string): string {
     const matchingCategory = this.templates?.find(template => template?._id === leaveTemplate);
-    console.log(matchingCategory)
     return matchingCategory?.label;
   }
 

@@ -22,7 +22,7 @@ export class LeaveCategoryComponent implements OnInit {
   selectedLeaveCategory: any;
   isEdit: boolean = false;
   p: number = 1;
-
+  public sortOrder: string = ''; // 'asc' or 'desc'
 
   constructor(private modalService: NgbModal,
     private leaveService: LeaveService,

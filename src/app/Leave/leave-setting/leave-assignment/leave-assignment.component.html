@@ -1,6 +1,6 @@
 <div class="main-content mt-2">
     <div class="tableContainer bg-white">
-        <div class="d-flex justify-content-between align-items-center mb-2 px-3">
+        <div class="d-flex justify-content-between align-items-center mb-2 pt-2 px-3">
             <p class="mb-0">({{templateAssignment?.length}}) Records Found</p>
             <div class="d-flex align-items-center">
                 <span class="bi bi-search searchIcon"></span>
@@ -19,10 +19,22 @@
         <table class="p-2 rounded mt-2">
             <thead>
                 <tr>
-                    <th>Employee</th>
-                    <th>Current Leave Policy</th>
-                    <th>Primary Supervisor</th>
-                    <th>Secondory Supervisor</th>
+                    <th [appSort]="templateAssignment" data-name="user"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Employee
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th [appSort]="templateAssignment" data-name="leaveTemplate"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Current Leave Policy
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th [appSort]="templateAssignment" data-name="primaryApprover"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Primary Supervisor
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th [appSort]="templateAssignment" data-name="secondaryApprover"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Secondory Supervisor
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -39,7 +51,8 @@
                             <i class="bi bi-pencil-fill"></i>
                         </button>
                         <button class="actions ms-2" title="Delete" mat-mini-fab
-                            aria-label="Example icon button with a menu icon" (click)="deleteDialog(tempAssignment?._id)">
+                            aria-label="Example icon button with a menu icon"
+                            (click)="deleteDialog(tempAssignment?._id)">
                             <i class="bi bi-trash"></i>
                         </button>
                     </td>
@@ -55,7 +68,7 @@
     <div class="modal-body">
         <div class=" d-flex justify-content-between">
             <div class="">
-                <h4 class="modal-title text-start">{{!isEdit ? 'Add' : 'Update'}} Leave Category</h4>
+                <h4 class="modal-title text-start">{{!isEdit ? 'Add' : 'Update'}} Leave Template Assignment</h4>
             </div>
             <div class=""><button type="button" (click)="modal.dismiss('Cross click')" data-bs-dismiss="modal"
                     class="btn-close text-end"></button>
@@ -105,7 +118,7 @@
 
                 <div class="my-2">
 
-                    <div class="modal-footer d-flex justify-content-between mt-3">
+                    <div class="modal-footer d-flex justify-content-between mt-3 pb-0">
 
                         <div>
                             <button mat-raised-button class="mx-2" data-bs-dismiss="modal" type="reset">Cancel</button>
