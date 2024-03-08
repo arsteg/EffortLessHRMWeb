@@ -275,9 +275,11 @@
 
 
 .exp-col {
-    position: fixed;
+    /* position: fixed;
     left: calc(5.2rem - 11.5px);
-    top: calc(20px + (32px + 0.5rem + 0.5rem) - -40.5px);
+    top: calc(20px + (32px + 0.5rem + 0.5rem) - -40.5px); */
+    /* margin-top: 15rem; */
+    margin-left:5rem;
     width: 25px;
     height: 25px;
     display: -ms-flexbox;
@@ -325,10 +327,13 @@
     width: 5.2rem;
     position: fixed;
     z-index: 992;
+    transition: width .3s;
 }
 
 .expanded {
-    left: calc(16.7rem - 75px);
+    /* left: calc(16.7rem - 75px); */
+    margin-left: 12rem;
+    /* margin-top: 15rem; */
 }
 
 .collapse-icons {
@@ -371,6 +376,7 @@ input:focus-visible {
 
 .expandedContent {
     padding-left: 12rem;
+    /* padding-left: 5rem; */
 }
 
 .collapsedContent {

@@ -2,7 +2,7 @@
   <div class="container-fluid d-flex">
 
 
-    <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+    <div class="collapse navbar-collapse justify-content-end" >
 
       <div class="text-right">
         <form class="d-flex">
@@ -157,22 +157,23 @@
 
     </mat-drawer-content>
   </mat-drawer-container>
-  <section>
-    <mat-icon *ngIf="!isCollapsedMenu" (click)="clickEvent()" (click)="drawer.toggle()" class="exp-col expanded"
-      data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-      aria-expanded="false" aria-label="Toggle navigation">chevron_left</mat-icon>
-    <mat-icon *ngIf="isCollapsedMenu" (click)="clickEvent()" (click)="drawer.toggle()" class="exp-col"
-      data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-      aria-expanded="false" aria-label="Toggle navigation">chevron_right</mat-icon>
-
-  </section>
+  
   <!-- Sidebar -->
   <div class="sidebar-title border-right" id="sidebar-wrapper" [ngClass]="isCollapsedMenu ? 'collapsed-menu' : 'show'">
     <div class="sidebar-heading pt-4 px-2" *ngIf="!isCollapsedMenu"><img src="assets/logo.png" width="170" alt=""></div>
     <div class="sidebar-heading py-4 ps-3" *ngIf="isCollapsedMenu"><img src="assets/CollapsedLogo.png" width="40"
         alt=""></div>
+        <div>
+          <mat-icon *ngIf="!isCollapsedMenu" (click)="clickEvent()" (click)="drawer.toggle()" class="exp-col expanded"
+            data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+            aria-expanded="false" aria-label="Toggle navigation">chevron_left</mat-icon>
+          <mat-icon *ngIf="isCollapsedMenu" (click)="clickEvent()" (click)="drawer.toggle()" class="exp-col"
+            data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+            aria-expanded="false" aria-label="Toggle navigation">chevron_right</mat-icon>
+      
+        </div>
 
-    <div class="d-flex align-items-center justify-content-evenly mx-1" *ngIf="!isCollapsedMenu">
+    <div class="d-flex align-items-center justify-content-evenly mx-1" *ngIf="!isCollapsedMenu" style="margin-top: -15px;">
       <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 500 500" role="presentation"
         class="oxd-icon oxd-menu-icon" data-v-bddebfba="" data-v-636d6b87="">
         <g fill="currentColor">
@@ -181,9 +182,12 @@
             data-v-bddebfba=""></path>
         </g>
       </svg>
+      
       <input type="text" placeholder="Search" class="w-75 border-bottom" (input)="filteredMenuItems()"
         [(ngModel)]="searchText" style="border: none; border-radius: 0 !important;">
+
     </div>
+   
     <!--Expanded Menu-->
     <div class="list-group list-group-flush" *ngIf="!isCollapsedMenu">
       <div class="expandedMenu">
@@ -205,12 +209,12 @@
       </div>
     </div>
     <!--Collapsed Menu-->
-    <div *ngIf="isCollapsedMenu" class="list-group">
+    <div *ngIf="isCollapsedMenu" class="list-group" style="margin-top: -25px;">
       <div class="expandedMenu">
         <ul class="nav flex-column" id="nav_accordion" *ngFor="let menu of menuList">
           <li class="nav-item has-submenu" dropdown container="body" placement="right">
             <a class="nav-link sidebar-links" dropdownToggle [ngClass]="{'active': menu.url== ''}"
-              [routerLink]="menu.url" routerLinkActive="active" [tooltip]="menu.title">
+              [routerLink]="menu.url" routerLinkActive="active" [tooltip]="menu.title" placement="right">
               <span [ngClass]="menu.icon" class="ms-2 collapse-icons fa-lg"></span>
               <img [ngClass]="{'active': menu.url== ''}" class="item" [src]="menu.icon" height="25" alt="">
               <img [ngClass]="{'active': menu.url== ''}" class="item1" [src]="menu.lightIcon" height="25" alt="">
