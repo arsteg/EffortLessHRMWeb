@@ -214,7 +214,7 @@
         <ul class="nav flex-column" id="nav_accordion" *ngFor="let menu of menuList">
           <li class="nav-item has-submenu" dropdown container="body" placement="right">
             <a class="nav-link sidebar-links" dropdownToggle [ngClass]="{'active': menu.url== ''}"
-              [routerLink]="menu.url" routerLinkActive="active" [tooltip]="menu.title" placement="right">
+              [routerLink]="menu.url" routerLinkActive="active" [tooltip]="menu.title" placement="left">
               <span [ngClass]="menu.icon" class="ms-2 collapse-icons fa-lg"></span>
               <img [ngClass]="{'active': menu.url== ''}" class="item" [src]="menu.icon" height="25" alt="">
               <img [ngClass]="{'active': menu.url== ''}" class="item1" [src]="menu.lightIcon" height="25" alt="">

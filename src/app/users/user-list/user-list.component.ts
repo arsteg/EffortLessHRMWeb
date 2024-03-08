@@ -128,5 +128,8 @@ export class UserListComponent implements OnInit {
       })
   }
 
+  clearForm(){
+    this.addForm.reset();
+  }
 }
 
