@@ -50,10 +50,10 @@ export class UserListComponent implements OnInit {
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       jobTitle: [''],
-      pincode: ['',  Validators.pattern('^[0-9]{6}$')],
-      state: ['',Validators.pattern('[A-Za-z]+')],
+      pincode: ['', Validators.pattern('^[0-9]{6}$')],
+      state: ['', Validators.pattern('[A-Za-z]+')],
       city: ['', Validators.pattern('[A-Za-z]+')],
-      phone: ['',[Validators.required, Validators.pattern('^[0-9]{10}$')]],
+      phone: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
       address: [''],
       role: ['']
     });
@@ -71,11 +71,11 @@ export class UserListComponent implements OnInit {
     const confirmPasswordControl = formGroup.get('passwordConfirm');
 
     if (passwordControl.value === confirmPasswordControl.value) {
-        confirmPasswordControl.setErrors(null);
+      confirmPasswordControl.setErrors(null);
     } else {
-        confirmPasswordControl.setErrors({ mismatch: true });
+      confirmPasswordControl.setErrors({ mismatch: true });
     }
-}
+  }
   drop(event: CdkDragDrop<any[]>) {
     moveItemInArray(this.usersList, event.previousIndex, event.currentIndex);
   }
@@ -85,28 +85,27 @@ export class UserListComponent implements OnInit {
         this.roleName = response.data;
       })
   }
-  getRoleName(id)
-   {
-    let rolename = this.roleName.find((role) => {   return role.id == id;  });
-    if(rolename && rolename.Name){
+  getRoleName(id) {
+    let rolename = this.roleName.find((role) => { return role.id == id; });
+    if (rolename && rolename.Name) {
       return rolename.Name
     }
-    else 
-    {return 'Employee' }
-   
+    else { return 'Employee' }
+
   }
 
   addUser(addForm) {
     this.UserService.addUser(addForm).subscribe(result => {
       const users = result['data'].user;
       this.usersList.push(users);
-      this.toastrrr.success('New User Added', 'Successfully Added!')
+      this.toastrrr.success('New User Added', 'Successfully Added!');
     },
       err => {
-        this.toastrrr.error('Can not be Added', 'ERROR!')
-      })
+        this.toastrrr.error('User with this Email already Exists', 'Duplicate Email!')
+      });
+      this.addForm.reset();
   }
-
+ 
   deleteUser() {
     this.UserService.deleteUser(this.selectedUser._id)
       .subscribe(response => {
@@ -128,7 +127,7 @@ export class UserListComponent implements OnInit {
       })
   }
 
-  clearForm(){
+  clearForm() {
     this.addForm.reset();
   }
 }
