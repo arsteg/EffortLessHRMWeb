@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-leave-management',
-  templateUrl: './leave-management.component.html',
-  styleUrls: ['./leave-management.component.css']
+  selector: 'app-leave-grant',
+  templateUrl: './leave-grant.component.html',
+  styleUrls: ['./leave-grant.component.css']
 })
 export class LeaveManagementComponent implements OnInit {
   selectedTab = 1;

@@ -81,7 +81,7 @@ export class LeaveAssignmentComponent implements OnInit {
     }
     else{
       const id = this.selectedLeaveAssignment._id
-      this.leaveService.updateTemplateAssignment(id, payload).subscribe((res: any)=>{
+      this.leaveService.addLeaveTemplateAssignment(payload).subscribe((res: any)=>{
 
         const updatedLeaveAssignment = res.data;
         const index = this.templateAssignment.findIndex(category => category._id === updatedLeaveAssignment._id);

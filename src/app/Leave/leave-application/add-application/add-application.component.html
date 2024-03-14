@@ -1,0 +1,145 @@
+<div class="d-flex justify-content-between">
+    <h1 class="modal-title text-muted">Add Leave Grant</h1>
+    <button type="button" data-bs-dismiss="modal" class="btn-close text-end" (click)="closeModal()"></button>
+</div>
+<div mat-dialog-content>
+    <form [formGroup]="leaveApplication" (ngSubmit)="onSubmission()">
+        <div>
+            <label for="member">Select Employee</label>
+            <mat-form-field appearance="outline" class="w-100 mx-1">
+                <mat-select formControlName="employee">
+                    <mat-option *ngFor="let member of allAssignee" [value]="member.id">
+                        {{member?.firstName | titlecase}}&nbsp;{{member?.lastName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <div>
+            <label for="member">Select Category</label>
+            <mat-form-field appearance="outline" class="w-100 mx-1">
+                <mat-select formControlName="leaveCategory">
+                    <mat-option *ngFor="let category of leaveCategories" [value]="category?._id">
+                        {{category?.label | titlecase}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <div class="mt-2">
+            <label for="">Select Start Date</label>
+            <div class=" col-12 form-group mb-3">
+                <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
+                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="startDate" />
+            </div>
+        </div>
+
+        <div class="mt-2">
+            <label for="">Select End Date</label>
+            <div class=" col-12 form-group mb-3">
+                <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
+                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="endDate" />
+            </div>
+        </div>
+        <div class="mt-2" *ngIf="leaveApplication.get('leaveCategory').value">
+            <label for="" class="">Do you want to provide a half-day option for this type of leave?&nbsp;<span
+                    class="text-danger">*</span></label>
+
+            <div class="d-flex">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" id="flexRadioDefault1"
+                        formControlName="isHalfDayOption" required [value]="true">
+                    <label class="form-check-label" for="flexRadioDefault1">
+                        Yes
+                    </label>
+                </div>
+                <div class="form-check ms-2">
+                    <input class="form-check-input" type="radio" id="canEmployeeApplyFalse"
+                        formControlName="isHalfDayOption" required [value]="false">
+                    <label class="form-check-label" for="canEmployeeApplyFalse">
+                        No
+                    </label>
+                </div>
+            </div>
+            <!--  -->
+            <div formArrayName="haldDays">
+                <div *ngFor="let halfDay of leaveApplication.get('haldDays')['controls']; let i = index">
+                    <ng-container [formGroupName]="i">
+                        <label for="date">Select Date</label>
+                        <div class="col-12 form-group mb-3">
+                            <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
+                                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="date" id="date{{i}}" />
+                        </div>
+
+                        <label for="dayHalf">Day Half</label>
+                        <select class="form-control" formControlName="dayHalf" id="dayHalf{{i}}">
+                            <option value="First Half">First Half</option>
+                            <option value="Second Half">Second Half</option>
+                        </select>
+                    </ng-container>
+                </div>
+            </div>
+            <!--  -->
+        </div>
+        <!-- if yes -->
+        <!-- <ng-container *ngIf="leaveApplication.get('isHalfDayOption').value == true && leaveApplication.get('leaveCategory').value">
+            <div class="mt-2">
+                <div *ngFor="let halfDay of haldDaysArray.controls; let i = index">
+                    <div>
+                        <pre>{{ halfDay.value | json }}</pre>
+                        <label for="date">Select Date</label>
+                        <div class="col-12 form-group mb-3">
+                            <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
+                                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="{{ i }}.date" id="date{{i}}" />
+                                <pre>{{halfDay[i]?.date}}</pre>
+                        </div>
+                        <label for="dayHalf">Day Half</label>
+                        <select class="form-control" formControlName="{{ i }}.dayHalf" id="dayHalf{{i}}">
+                            <option value="First Half">First Half</option>
+                            <option value="Second Half">Second Half</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+         -->
+         <ng-container *ngIf="leaveApplication.get('isHalfDayOption').value == true && leaveApplication.get('leaveCategory').value">
+            <div formArrayName="haldDays">
+                <div *ngFor="let halfDay of haldDaysArray.controls; let i = index" [formGroupName]="i">
+                    <label for="date">Select Date</label>
+                    <div class="col-12 form-group mb-3">
+                        <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
+                            [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="date" id="date{{i}}" />
+                    </div>
+        
+                    <label for="dayHalf">Day Half</label>
+                    <select class="form-control" formControlName="dayHalf" id="dayHalf{{i}}">
+                        <option value="First Half">First Half</option>
+                        <option value="Second Half">Second Half</option>
+                    </select>
+                </div>
+            </div>
+        </ng-container>
+        
+
+
+
+        <div class="mb-3">
+            <label for="exampleFormControlTextarea1" class="form-label">
+                Comment
+            </label>
+            <textarea class="form-control" id="exampleFormControlTextarea1" formControlName="comment"
+                rows="3"></textarea>
+        </div>
+
+
+
+        <div>
+            <button mat-raised-button type="button">Cancel</button>
+            <button mat-button mat-dialog-close type="submit">Submit</button>
+
+        </div>
+
+
+    </form>
+</div>

@@ -69,7 +69,7 @@ export class AddCategoryLeaveComponent {
                 extendMaximumDayNumber: 0,
                 extendFromCategory: '',
                 negativeBalanceCap: 0,
-                annualAccrualRatePerPeriod: 0,
+                accrualRatePerPeriod: 0,
                 categoryApplicable: 'all-employees'
               }));
               const formGroupIndex = leaveCategoriesArray.length - 1;
@@ -84,7 +84,7 @@ export class AddCategoryLeaveComponent {
                 extendMaximumDayNumber: step.extendMaximumDayNumber,
                 extendFromCategory: step.extendFromCategory,
                 negativeBalanceCap: step.negativeBalanceCap,
-                annualAccrualRatePerPeriod: step.annualAccrualRatePerPeriod,
+                accrualRatePerPeriod: step.accrualRatePerPeriod,
                 categoryApplicable: step.categoryApplicable
               });
             }

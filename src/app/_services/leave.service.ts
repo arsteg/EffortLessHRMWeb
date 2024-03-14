@@ -16,7 +16,7 @@ export class LeaveService extends baseService {
     }),
     withCredentials: true
   };
-
+  leave: any = new BehaviorSubject('')
   selectedTemplate: any = new BehaviorSubject('');
 
   constructor(private http: HttpClient) {
@@ -127,4 +127,61 @@ export class LeaveService extends baseService {
     return this.http.put<any>(`${environment.apiUrlDotNet}/Leave/employee-leave-assignments/${leaveId}`, leaveAssignment ,this.httpOptions);
   }
 
+  // leave grant
+  public getLeaveGrant(): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.get<any>(`${environment.apiUrlDotNet}/Leave/employee-leave-grant`, this.httpOptions);
+  }
+
+  public addLeaveGrant(leaveGrant: any): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.post<any>(`${environment.apiUrlDotNet}/Leave/employee-leave-grant`, leaveGrant, this.httpOptions);
+  }
+
+  public updateLeaveGrant(id: string, leaveGrant: any): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.put<any>(`${environment.apiUrlDotNet}/Leave/employee-leave-grant/${id}`, leaveGrant, this.httpOptions);
+  }
+
+  public deleteLeaveGrant(leave: string): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.delete<any>(`${environment.apiUrlDotNet}/Leave/employee-leave-grant/${leave}`, this.httpOptions);
+  }
+
+  // leave balance
+
+  public getLeaveBalance(leaveBalance: any): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.post<any>(`${environment.apiUrlDotNet}/leave/get-leave-balance`, leaveBalance, this.httpOptions);
+  }
+
+  // Leave Balance
+  public addLeaveApplication(leaveApplication: any): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.post<any>(`${environment.apiUrlDotNet}/Leave/employee-leave-application`, leaveApplication, this.httpOptions);
+  }
+
+  public getLeaveApplication(): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.get<any>(`${environment.apiUrlDotNet}/Leave/employee-leave-application`, this.httpOptions);
+  }
+
+  public updateLeaveApplication(id: string, leaveApplication: any): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.put<any>(`${environment.apiUrlDotNet}/Leave/employee-leave-application/${id}`, leaveApplication, this.httpOptions);
+  }
+
+  public deleteLeaveApplication(id: string): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.delete<any>(`${environment.apiUrlDotNet}/Leave/employee-leave-application/${id}`, this.httpOptions);
+  }
 }

@@ -116,6 +116,7 @@ export class LeaveCategoryComponent implements OnInit {
           this.toast.error('Leave Category Can not be updated', 'Error!!!')
         });
     }
+    this.categoryForm.reset();
   }
   editCategory(leaveCategory) {
     this.isEdit = true;

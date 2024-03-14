@@ -58,7 +58,7 @@ import { UserCalendarComponent } from './calendar/user-calendar/user-calendar.co
 import { AssetManagerComponent } from './AssetsManagement/assetAssetManager/asset.component';
 import { DocumentManagerComponent } from './documentManager/documentManager.component';
 import { UserAssetAssignmentComponent } from './AssetsManagement/user-asset-assignment/user-asset-assignment.component';
-import { LeaveManagementComponent } from './Leave/leave-management/leave-management.component';
+import { LeaveManagementComponent } from './Leave/leave-grant/leave-grant.component';
 import { ManageComponent } from './manage/manage/manage.component';
 import { OrganizationComponent } from './organization/organization/organization.component';
 import { AttendanceManagementComponent } from './attendance/attendance-management/attendance-management.component';

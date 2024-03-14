@@ -1,0 +1,87 @@
+<div class="bg-white py-2 px-0  tableContainer">
+    <div class="d-flex justify-content-between align-items-center mb-2 px-3">
+        <p class="mb-0">({{leaveApplication?.length}}) Records Found</p>
+        <div class="d-flex align-items-center">
+            <span class="bi bi-search searchIcon"></span>
+
+            <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
+                name="searchText" aria-label="default input example">
+
+            <button mat-raised-button class="addBtn rounded-pill mx-3" (click)="open(addModal)">Add
+                Expense</button>
+
+            <button class="submenuTab active rounded-pill" (click)="exportToCsv()"> <i
+                    class="bi bi-download downloadBtn pe-2"></i>
+                Download</button>
+        </div>
+    </div>
+
+    <table class="mt-2">
+        <thead>
+            <th>Employee Name</th>
+            <th>Leave Category</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Total Leave Days</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </thead>
+        <tbody>
+            <tr *ngFor="let leave of leaveApplication">
+                <td>{{getUser(leave?.employee)}}</td>
+                <td>{{getCategory(leave?.leaveCategory)}}</td>
+                <td>{{leave?.startDate | date: 'mediumDate'}}</td>
+                <td>{{leave?.endDate | date: 'mediumDate'}}</td>
+                <td> </td>
+                <td>{{leave?.status}}</td>
+                <td>
+                    <div class="dropdown-center">
+                        <button class="actions ms-2" mat-mini-fab data-bs-toggle="dropdown" aria-expanded="false"
+                            aria-label="Example icon button with a menu icon">
+                            <i class="bi bi-send"></i>
+                        </button>
+
+                        <ul class="dropdown-menu py-0">
+                            <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
+                                *ngIf="actionOptions.approve" data-bs-target="#statusUpdate"
+                                (click)="openStatusModal(leave, 'Approved')">
+                                <i class="fas fa-check-circle dropdown-item w-25"></i><span
+                                    class="pt-1 text-muted">Approve</span>
+                            </li>
+                            <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
+                                *ngIf="actionOptions.reject" data-bs-target="#statusUpdate"
+                                (click)="openStatusModal(leave, 'Rejected')">
+                                <i class="bi bi-person-dash dropdown-item w-25"></i><span
+                                    class="pt-1 text-muted">Reject</span>
+                            </li>
+
+                            <li class="d-flex border-bottom action-list" *ngIf="actionOptions.delete"
+                                (click)="deleteDialog(leave?._id)">
+                                <i class="bi bi-person-dash dropdown-item w-25"></i><span
+                                    class="pt-1 text-muted">Delete</span>
+                            </li>
+
+                            <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
+                                *ngIf="actionOptions.view" data-bs-target="#viewModal" (click)="openSecondModal(leave)">
+                                <i class="fas fa-eye dropdown-item w-25"></i><span class="pt-1 text-muted">View</span>
+                            </li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<ng-template #addModal let-modal>
+    <app-add-application (close)="onClose($event)" (leaveGrantRefreshed)="refreshLeaveGrantTable()"></app-add-application>
+</ng-template>
+
+<ng-template #statusUpdate let-modal>
+    <app-update-status (leaveGrantRefreshed)="refreshLeaveGrantTable()"></app-update-status>
+</ng-template>
+
+
+<ng-template #viewModal let-modal>
+    <app-view-leave (close)="onClose($event)"></app-view-leave>
+</ng-template>
