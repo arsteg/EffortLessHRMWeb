@@ -9,7 +9,7 @@ export class PendingApplicationComponent {
   actionOptions = {
     approve: true,
     reject: true,
-    delete: false,
+    delete: true,
     view: true
   };
 }

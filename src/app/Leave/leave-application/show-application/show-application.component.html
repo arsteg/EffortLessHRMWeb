@@ -74,11 +74,11 @@
 </div>
 
 <ng-template #addModal let-modal>
-    <app-add-application (close)="onClose($event)" (leaveGrantRefreshed)="refreshLeaveGrantTable()"></app-add-application>
+    <app-add-application (close)="onClose($event)" (leaveApplicationRefreshed)="refreshLeaveApplicationTable()"></app-add-application>
 </ng-template>
 
 <ng-template #statusUpdate let-modal>
-    <app-update-status (leaveGrantRefreshed)="refreshLeaveGrantTable()"></app-update-status>
+    <app-update-status (leaveGrantRefreshed)="refreshLeaveApplicationTable()"></app-update-status>
 </ng-template>
 
 

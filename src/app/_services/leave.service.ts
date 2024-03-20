@@ -160,7 +160,7 @@ export class LeaveService extends baseService {
     return this.http.post<any>(`${environment.apiUrlDotNet}/leave/get-leave-balance`, leaveBalance, this.httpOptions);
   }
 
-  // Leave Balance
+  // Leave application
   public addLeaveApplication(leaveApplication: any): any {
     const token = this.getToken();
     this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);

@@ -1,5 +1,5 @@
 <div class="d-flex justify-content-between">
-    <h1 class="modal-title text-muted">Add Leave Grant</h1>
+    <h1 class="modal-title text-muted">Add Leave Application</h1>
     <button type="button" data-bs-dismiss="modal" class="btn-close text-end" (click)="closeModal()"></button>
 </div>
 <div mat-dialog-content>
@@ -61,70 +61,35 @@
                     </label>
                 </div>
             </div>
-            <!--  -->
-            <div formArrayName="haldDays">
-                <div *ngFor="let halfDay of leaveApplication.get('haldDays')['controls']; let i = index">
-                    <ng-container [formGroupName]="i">
-                        <label for="date">Select Date</label>
-                        <div class="col-12 form-group mb-3">
-                            <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
-                                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="date" id="date{{i}}" />
-                        </div>
 
-                        <label for="dayHalf">Day Half</label>
-                        <select class="form-control" formControlName="dayHalf" id="dayHalf{{i}}">
-                            <option value="First Half">First Half</option>
-                            <option value="Second Half">Second Half</option>
-                        </select>
-                    </ng-container>
+            <ng-container *ngIf="leaveApplication.get('isHalfDayOption').value === true">
+
+                <button type="button" mat-raised-button class="addBtn" (click)="addHalfDayEntry()">Add Half Day</button>
+
+                <div formArrayName="haldDays">
+                    <div *ngFor="let halfDay of haldDays.controls; let i=index" [formGroupName]="i">
+                        <div class="d-flex justify-content-between my-2">
+                            <div>
+                                <label>Date:</label>
+                                <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker
+                                    [bsValue]="bsValue" [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
+                                    formControlName="date" />
+                            </div>
+
+                            <div class="w-50">
+                                <label>Day Half:</label>
+                                <select name="" id="" class="form-control" formControlName="dayHalf">
+                                    <option value="first half">First Half</option>
+                                    <option value="second half">Second Half</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <!--  -->
+            </ng-container>
         </div>
-        <!-- if yes -->
-        <!-- <ng-container *ngIf="leaveApplication.get('isHalfDayOption').value == true && leaveApplication.get('leaveCategory').value">
-            <div class="mt-2">
-                <div *ngFor="let halfDay of haldDaysArray.controls; let i = index">
-                    <div>
-                        <pre>{{ halfDay.value | json }}</pre>
-                        <label for="date">Select Date</label>
-                        <div class="col-12 form-group mb-3">
-                            <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
-                                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="{{ i }}.date" id="date{{i}}" />
-                                <pre>{{halfDay[i]?.date}}</pre>
-                        </div>
-                        <label for="dayHalf">Day Half</label>
-                        <select class="form-control" formControlName="{{ i }}.dayHalf" id="dayHalf{{i}}">
-                            <option value="First Half">First Half</option>
-                            <option value="Second Half">Second Half</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </ng-container>
-         -->
-         <ng-container *ngIf="leaveApplication.get('isHalfDayOption').value == true && leaveApplication.get('leaveCategory').value">
-            <div formArrayName="haldDays">
-                <div *ngFor="let halfDay of haldDaysArray.controls; let i = index" [formGroupName]="i">
-                    <label for="date">Select Date</label>
-                    <div class="col-12 form-group mb-3">
-                        <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
-                            [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="date" id="date{{i}}" />
-                    </div>
-        
-                    <label for="dayHalf">Day Half</label>
-                    <select class="form-control" formControlName="dayHalf" id="dayHalf{{i}}">
-                        <option value="First Half">First Half</option>
-                        <option value="Second Half">Second Half</option>
-                    </select>
-                </div>
-            </div>
-        </ng-container>
-        
 
-
-
-        <div class="mb-3">
+        <div class="my-3">
             <label for="exampleFormControlTextarea1" class="form-label">
                 Comment
             </label>
@@ -132,14 +97,9 @@
                 rows="3"></textarea>
         </div>
 
-
-
         <div>
             <button mat-raised-button type="button">Cancel</button>
             <button mat-button mat-dialog-close type="submit">Submit</button>
-
         </div>
-
-
     </form>
 </div>

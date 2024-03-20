@@ -1,12 +1,16 @@
-import { Component, EventEmitter, Output } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LeaveService } from 'src/app/_services/leave.service';
 import { CommonService } from 'src/app/common/common.service';
+import * as moment from 'moment';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+
 
 @Component({
   selector: 'app-add-application',
   templateUrl: './add-application.component.html',
-  styleUrl: './add-application.component.css'
+  styleUrl: './add-application.component.css',
+  encapsulation: ViewEncapsulation.None,
 })
 export class AddApplicationComponent {
   leaveApplication: FormGroup;
@@ -14,6 +18,10 @@ export class AddApplicationComponent {
   bsValue = new Date();
   @Output() close: any = new EventEmitter();
   leaveCategories: any;
+  fieldGroup: FormGroup;
+  selectedDates: Date[] = [];
+  @Output() leaveApplicationRefreshed: EventEmitter<void> = new EventEmitter<void>();
+
 
   constructor(private fb: FormBuilder,
     private commonService: CommonService,
@@ -27,8 +35,8 @@ export class AddApplicationComponent {
       endDate: [],
       comment: [''],
       status: [''],
-      isHalfDayOption: [true],
-      haldDays:  this.fb.array([])
+      isHalfDayOption: [false],
+      haldDays: this.fb.array([])
     });
   }
 
@@ -39,7 +47,14 @@ export class AddApplicationComponent {
     this.getleaveCatgeories();
   }
 
-  get haldDaysArray() {
+  addHalfDayEntry() {
+    this.haldDays.push(this.fb.group({
+      date: [''],
+      dayHalf: ['']
+    }));
+  }
+
+  get haldDays() {
     return this.leaveApplication.get('haldDays') as FormArray;
   }
 
@@ -51,11 +66,43 @@ export class AddApplicationComponent {
 
   onSubmission() {
     console.log(this.leaveApplication.value)
+    if (this.leaveApplication.value) {
+      // const payload = {
+      //   employee: this.leaveApplication.value.employee,
+      //   leaveCategory: this.leaveApplication.value.leaveCategory,
+      //   level1Reason: this.leaveApplication.value.level1Reason,
+      //   level2Reason: this.leaveApplication.value.level2Reason,
+      //   startDate: this.leaveApplication.value.startDate,
+      //   endDate: this.leaveApplication.value.endDate,
+      //   comment: this.leaveApplication.value.comment,
+      //   status: this.leaveApplication.value.status,
+      //   isHalfDayOption: this.leaveApplication.value.isHalfDayOption,
+      //   haldDays: this.leaveApplication.value.haldDays.map((halfDay: any) => {
+      //     return {
+      //       date: this.selectedDates,
+      //       dayHalf: halfDay.dayHalf
+      //     };
+      //   })
+      // };
+      this.leaveApplication.value.status = 'Pending'
+      this.leaveService.addLeaveApplication(this.leaveApplication.value).subscribe((res: any)=>{
+        this.leaveApplication.reset();
+       this.leaveApplicationRefreshed.emit();
+      })
+    }
   }
 
   closeModal() {
     this.leaveApplication.reset();
     this.close.emit(true);
+  }
+  // multiple date selection code
+
+  addEvent(type: string, event: MatDatepickerInputEvent<Date>) {
+    const selectedDate = event.value;
+    if (selectedDate && !this.selectedDates.find(date => date.getTime() === selectedDate.getTime())) {
+      this.selectedDates.push(selectedDate);
+    }
   }
 
 }

@@ -67,7 +67,7 @@ export class ShowStatusComponent {
         console.log(this.leaveGrant)
       },
       (error) => {
-        console.error('Error refreshing expense template table:', error);
+        console.error('Error refreshing leave grant table:', error);
       }
     );
   }
