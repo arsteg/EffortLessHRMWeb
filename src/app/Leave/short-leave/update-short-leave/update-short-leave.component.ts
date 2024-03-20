@@ -50,4 +50,8 @@ export class UpdateShortLeaveComponent {
     });
     this.shortLeaveRefreshed.emit();
   }
+  closeModal() {
+    this.dialogRef.close();
+  }
+  
 }

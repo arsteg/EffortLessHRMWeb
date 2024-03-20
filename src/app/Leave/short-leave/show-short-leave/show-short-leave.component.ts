@@ -56,7 +56,6 @@ export class ShowShortLeaveComponent {
       data: { report }
     });
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The modal was closed');
     });
   }
 
