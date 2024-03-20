@@ -121,10 +121,10 @@ export class LeaveService extends baseService {
     return this.http.delete<any>(`${environment.apiUrlDotNet}/Leave/employee-leave-assignments/${leaveId}`, this.httpOptions);
   }
 
-  public updateTemplateAssignment(leaveId: string, leaveAssignment: any): any{
+  public updateTemplateAssignment(leaveId: string, leaveAssignment: any): any {
     const token = this.getToken();
     this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
-    return this.http.put<any>(`${environment.apiUrlDotNet}/Leave/employee-leave-assignments/${leaveId}`, leaveAssignment ,this.httpOptions);
+    return this.http.put<any>(`${environment.apiUrlDotNet}/Leave/employee-leave-assignments/${leaveId}`, leaveAssignment, this.httpOptions);
   }
 
   // leave grant
@@ -183,5 +183,31 @@ export class LeaveService extends baseService {
     const token = this.getToken();
     this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
     return this.http.delete<any>(`${environment.apiUrlDotNet}/Leave/employee-leave-application/${id}`, this.httpOptions);
+  }
+
+  // Short Leave
+
+  public getShortLeave(): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.get<any>(`${environment.apiUrlDotNet}/leave/short-leave`, this.httpOptions);
+  }
+
+  public addShortLeave(shortLeave: any): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.post<any>(`${environment.apiUrlDotNet}/leave/short-leave`, shortLeave, this.httpOptions);
+  }
+
+  public updateShortLeave(id: string, shortLeave: any): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.put<any>(`${environment.apiUrlDotNet}/leave/short-leave/${id}`, shortLeave, this.httpOptions);
+  }
+
+  public deleteShortLeave(id: string): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.delete<any>(`${environment.apiUrlDotNet}/leave/short-leave/${id}`, this.httpOptions);
   }
 }

@@ -6,5 +6,8 @@ import { Component } from '@angular/core';
   styleUrl: './short-leave.component.css'
 })
 export class ShortLeaveComponent {
-
+  selectedTab: number = 1;
+  selectTab(tabIndex: number) {
+    this.selectedTab = tabIndex;
+  }
 }

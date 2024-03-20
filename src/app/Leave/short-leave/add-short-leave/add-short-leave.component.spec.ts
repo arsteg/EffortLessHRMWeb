@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ShortLeaveComponent } from './short-leave.component';
+import { AddShortLeaveComponent } from './add-short-leave.component';
 
-describe('ShortLeaveComponent', () => {
-  let component: ShortLeaveComponent;
-  let fixture: ComponentFixture<ShortLeaveComponent>;
+describe('AddShortLeaveComponent', () => {
+  let component: AddShortLeaveComponent;
+  let fixture: ComponentFixture<AddShortLeaveComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ShortLeaveComponent]
+      declarations: [AddShortLeaveComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(ShortLeaveComponent);
+    fixture = TestBed.createComponent(AddShortLeaveComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

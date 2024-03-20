@@ -1,0 +1,46 @@
+<div class="modal-body">
+    <div class=" d-flex justify-content-between">
+        <div class="">
+            <h1  class="p-3"> Show Short Leave Details</h1>
+        </div>
+        <div mat-dialog-actions>
+            <button mat-button mat-dialog-close (click)="closeModal()"><mat-icon aria-hidden="false" aria-label="Example close icon"
+                    fontIcon="close"></mat-icon></button>
+        </div>
+    </div>
+    <hr class="mt-0">
+    <div class="row" mat-dialog-content>
+        <div class="tableContainer">
+            <table>
+
+                <tr>
+                    <th class="w-50">Employee</th>
+                    <td>{{this.leaveService?.leave?.getValue()?.employee}}</td>
+                </tr>
+                <tr>
+                    <th class="w-50">Status</th>
+                    <td>{{this.leaveService?.leave?.getValue()?.status}}</td>
+                </tr>
+                <tr>
+                    <th class="w-50">Start Time</th>
+                    <td>{{this.leaveService?.leave?.getValue()?.startTime}}</td>
+                </tr>
+                <tr>
+                    <th class="w-50">End Time</th>
+                    <td>{{this.leaveService?.leave?.getValue()?.endTime}}</td>
+                </tr>
+
+                <tr>
+                    <th class="w-50">Total Time (in minutes)</th>
+                    <td>{{this.leaveService?.leave?.getValue()?.durationInMinutes}}</td>
+                </tr>
+                <tr>
+                    <th class="w-50">Comments</th>
+                    <td>{{this.leaveService?.leave?.getValue()?.comments}}</td>
+                </tr>
+
+               
+            </table>
+        </div>
+    </div>
+</div>

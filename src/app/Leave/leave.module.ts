@@ -37,6 +37,14 @@ import { CancelledApplicationComponent } from './leave-application/cancelled/can
 import { PendingApplicationComponent } from './leave-application/pending/pending-application.component';
 import { RejectedApplicationComponent } from './leave-application/rejected/rejected-application.component';
 import { ViewApplicationComponent } from './leave-application/view-application/view-application.component';
+import { ShowShortLeaveComponent } from './short-leave/show-short-leave/show-short-leave.component';
+import { UpdateShortLeaveComponent } from './short-leave/update-short-leave/update-short-leave.component';
+import { PendingShortLeaveComponent } from './short-leave/pending-short-leave/pending-short-leave.component';
+import { ApprovedShortLeaveComponent } from './short-leave/approved-short-leave/approved-short-leave.component';
+import { CancelledShortLeaveComponent } from './short-leave/cancelled-short-leave/cancelled-short-leave.component';
+import { RejectedShortLeaveComponent } from './short-leave/rejected-short-leave/rejected-short-leave.component';
+import { AddShortLeaveComponent } from './short-leave/add-short-leave/add-short-leave.component';
+import { ViewShortLeaveComponent } from './short-leave/view-short-leave/view-short-leave.component';
 @NgModule({
   declarations: [LeaveApplicationComponent,
     LeaveSettingComponent,
@@ -65,6 +73,14 @@ import { ViewApplicationComponent } from './leave-application/view-application/v
     PendingApplicationComponent,
     RejectedApplicationComponent,
     ViewApplicationComponent,
+    ShowShortLeaveComponent,
+    UpdateShortLeaveComponent,
+    PendingShortLeaveComponent,
+    ApprovedShortLeaveComponent,
+    CancelledShortLeaveComponent,
+    RejectedShortLeaveComponent,
+    AddShortLeaveComponent,
+    ViewShortLeaveComponent,
   ],
   imports: [
     CommonModule,
@@ -79,8 +95,8 @@ import { ViewApplicationComponent } from './leave-application/view-application/v
     MatRippleModule,
     NgxChartsModule,
     FormsModule,
-    CommonComponentsModule
-  ],
+    CommonComponentsModule  ],
+  
   exports: [LeaveApplicationComponent,
     LeaveSettingComponent,
     LeaveAssignmentComponent,

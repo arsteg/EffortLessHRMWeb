@@ -1,0 +1,61 @@
+<div class="d-flex justify-content-between">
+    <h1 class="modal-title text-muted">Add Leave Grant</h1>
+    <button type="button" data-bs-dismiss="modal" class="btn-close text-end" (click)="closeModal()"></button>
+</div>
+<div mat-dialog-content>
+    <form [formGroup]="shortLeave" (ngSubmit)="onSubmission()">
+        <div>
+            <label for="member">Select Employee</label>
+            <mat-form-field appearance="outline" class="w-100 mx-1">
+                <mat-select formControlName="employee">
+                    <mat-option *ngFor="let member of allAssignee" [value]="member.id">
+                        {{member?.firstName | titlecase}}&nbsp;{{member?.lastName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <div class="mt-2">
+            <label for="">Select Date</label>
+            <div class=" col-12 form-group mb-3">
+                <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
+                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="date" (bsValueChange)="onDateSelected($event)" />
+            </div>
+        </div>
+
+        <div class="mt-2">
+            <label for="">Select Start Time</label>
+            <div class="form-group mb-3">
+                <input type="datetime-local" formControlName="startTime" class="w-100" id="meeting-time" name="meeting-time" value="" />
+            </div>
+        </div>
+
+        <div class="mt-2">
+            <label for="">Select End Time</label>
+            <div class="form-group mb-3">
+                <input type="datetime-local"formControlName="endTime" class="w-100" id="meeting-time" name="meeting-time" value="" />
+            </div>
+        </div>
+
+        <div class="mt-2">
+            <label for="">Total Time (in minutes)</label>
+            <div class="form-group mb-3">
+                <input type="text"formControlName="durationInMinutes" class="w-100" [disabled] />
+            </div>
+        </div>
+
+
+        <div class="mb-3">
+            <label for="exampleFormControlTextarea1" class="form-label">
+                Comment
+            </label>
+            <textarea class="form-control" formControlName="comments" id="exampleFormControlTextarea1" 
+                rows="3"></textarea>
+        </div>
+
+        <div>
+            <button mat-raised-button type="button">Cancel</button>
+            <button mat-button mat-dialog-close type="submit">Submit</button>
+        </div>
+    </form>
+</div>

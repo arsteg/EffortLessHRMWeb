@@ -2764,6 +2764,11 @@ ajv@^8.0.0, ajv@^8.9.0, ajv@8.12.0:
     require-from-string "^2.0.2"
     uri-js "^4.2.2"
 
+angular-datepicker@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.npmjs.org/angular-datepicker/-/angular-datepicker-1.0.5.tgz"
+  integrity sha512-VG2T+Y6ydut1t1uvoJSMUtM24FdymX5SS4VpvdWVZRtCP06bV9iIyOvOACUa3R5/aSAa39xPaKl7ZhjefQwdMw==
+
 ansi-colors@4.1.3:
   version "4.1.3"
   resolved "https://registry.npmjs.org/ansi-colors/-/ansi-colors-4.1.3.tgz"
@@ -5812,7 +5817,7 @@ mkdirp@^1.0.3:
   resolved "https://registry.npmjs.org/mkdirp/-/mkdirp-1.0.4.tgz"
   integrity sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==
 
-moment@^2.29.3:
+moment@^2.30.1:
   version "2.30.1"
   resolved "https://registry.npmjs.org/moment/-/moment-2.30.1.tgz"
   integrity sha512-uEmtNhbDOrWPFS+hdjFCBfy9f2YoyzRpwcl+DqpC6taX21FzsTLQVbMV/W7PzNSX6x/bhC1zA3c2UQ5NzH6how==
