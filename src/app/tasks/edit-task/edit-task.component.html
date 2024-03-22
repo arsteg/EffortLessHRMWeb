@@ -299,7 +299,7 @@
                                         </div>
                                     </div>
                                     <div *ngIf="!showEditor" (click)="onParagraphClick()">
-                                        <div id="description" name="description" class="editorContent w-100"
+                                        <div id="description"  class="editorContent w-100"
                                             [innerHTML]="tasks?.data?.task?.description">
                                         </div>
                                     </div>
@@ -766,7 +766,7 @@
 
 
 
-    <div *ngIf="tasks.data.task === null " class="text-center mt-5">
+    <div *ngIf="tasks?.data?.task === null " class="text-center mt-5">
         <ng-container>
             <button *ngIf="view==='admin'" href="" (click)="goBack()" class="btn btn-outline-primary rounded-pill"><span
                     class="bi bi-arrow-left ">

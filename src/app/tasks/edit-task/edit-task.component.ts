@@ -88,16 +88,17 @@ export class EditTaskComponent implements OnInit {
 
     this.updateForm = this.fb.group({
       taskName: ['', Validators.required],
-      startDate: [this.tasks?.data?.task?.startDate, Validators.required],
-      endDate: [this.tasks?.data?.task?.endDate, Validators.required],
-      description: [this.tasks?.data?.task?.description, Validators.required],
-      comment: [this.tasks?.data?.task?.comment, Validators.required],
-      priority: [this.tasks?.data?.task?.priority, Validators.required],
+      startDate: ['', Validators.required],
+      endDate: ['', Validators.required],
+      description: ['', Validators.required],
+      comment: ['', Validators.required],
+      priority: ['', Validators.required],
       user: ['', Validators.required],
-      project: [this.tasks?.data?.task?.project?.id, Validators.required],
-      status: [this.tasks?.data?.task?.status, Validators.required]
+      project: ['', Validators.required],
+      status: ['', Validators.required]
 
     });
+    // console.log(this.tasks?.data?.task)
     this.addForm = this.fb.group({
       taskName: [''],
       title: [''],
@@ -121,7 +122,6 @@ export class EditTaskComponent implements OnInit {
       this.taskId = params['taskId'];
       this.getTaskAttachments();
       this.getTask(this.taskId);
-
       this.tasksService.getSubTask(this.taskId).subscribe((response: any) => {
         this.subTask = response && response.data && response.data['taskList']
       })
@@ -129,6 +129,7 @@ export class EditTaskComponent implements OnInit {
     this.getTasks();
 
   }
+
 
   navigateToManage() {
     // Use router.navigate with a relative path to go back three steps
@@ -144,6 +145,21 @@ export class EditTaskComponent implements OnInit {
     if (taskId) {
       this.tasksService.getTaskById(taskId).subscribe(res => {
         this.tasks = res;
+
+        // ------------
+        this.updateForm.patchValue({
+          taskName: this.tasks.data.task.taskName,
+          startDate: this.tasks.data.task.startDate,
+          endDate: this.tasks.data.task.endDate,
+          description: this.tasks.data.task.description,
+          comment: this.tasks.data.task.comment,
+          priority: this.tasks.data.task.priority,
+          user: '',
+          project: this.tasks.data.task.project._id,
+          status: this.tasks.data.task.status
+
+        });
+        // ---------------
         console.log(this.tasks.data.task)
         this.assignee = this.tasks.data.newTaskUserList;
         this.currentTaskProject = this.tasks.data.task;
@@ -256,14 +272,15 @@ export class EditTaskComponent implements OnInit {
   }
 
   updateTask() {
-    const updateTask: updateTask = {
+    const updateTask = {
       taskName: this.updateForm.value.taskName,
-      description: this.updateForm.value?.description,
+      description: this.updateForm.value.description,
       priority: this.currentTaskProject.priority,
       project: this.updateForm.value.project,
       title: this.updateForm.value.taskName,
       status: this.currentTaskProject.status,
-      comment: this.updateForm.value.comment
+      comment: this.updateForm.value.comment,
+      endDate: this.updateForm.value.endDate
     }
     this.tasksService.updateTask(this.tasks.data.task.id, updateTask).subscribe(response => {
       this.showEditor = false;
@@ -290,7 +307,7 @@ export class EditTaskComponent implements OnInit {
   }
 
   updateTaskPriority(selectedTask: any, priority: string) {
-    const payload = { 
+    const payload = {
       "priority": priority,
       taskName: selectedTask.taskName,
       startDate: selectedTask.startDate,
@@ -302,7 +319,7 @@ export class EditTaskComponent implements OnInit {
       title: selectedTask.ttitle,
       parentTask: selectedTask.parentTask,
       estimate: selectedTask.estimate,
-      timeTaken: selectedTask.timeTaken, 
+      timeTaken: selectedTask.timeTaken,
     }
     payload.priority = priority;
     this.tasksService.updatetaskFlex(this.tasks.data.task.id, payload).subscribe(response => {
