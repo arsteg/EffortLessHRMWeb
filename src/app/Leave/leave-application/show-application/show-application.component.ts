@@ -8,6 +8,7 @@ import { ViewApplicationComponent } from '../view-application/view-application.c
 import { CommonService } from 'src/app/common/common.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { ToastrService } from 'ngx-toastr';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-show-application',
@@ -22,6 +23,8 @@ export class ShowApplicationComponent {
   @Input() actionOptions: { approve: boolean, reject: boolean, delete: boolean, view: boolean };
   allAssignee: any;
   leaveCategories: any;
+  dateControl = new FormControl();
+  
 
   constructor(private modalService: NgbModal,
     private leaveService: LeaveService,
@@ -57,21 +60,20 @@ export class ShowApplicationComponent {
     });
   }
 
-  refreshLeaveGrantTable() {
-    this.leaveService.getLeaveGrant().subscribe(
+  refreshLeaveApplicationTable() {
+    this.leaveService.getLeaveApplication().subscribe(
       (res) => {
         this.leaveApplication = res.data.filter(leave => leave.status === this.status);
       },
       (error) => {
-        console.error('Error refreshing expense template table:', error);
+        console.error('Error refreshing leave application table:', error);
       }
     );
   }
 
   exportToCsv() {
     const dataToExport = this.leaveApplication
-
-    this.exportService.exportToCSV('Advance-Report', 'Advance-Report', dataToExport);
+    this.exportService.exportToCSV('Leave Application', 'Leave Application', dataToExport);
   }
 
   open(content: any) {
@@ -92,8 +94,8 @@ export class ShowApplicationComponent {
   }
 
   openSecondModal(selectedReport: any): void {
-    // const userName = this.getUser(selectedReport.employee);
-    // selectedReport.employee = userName;
+    const userName = this.getUser(selectedReport.employee);
+    selectedReport.employee = userName;
     this.leaveService.leave.next(selectedReport);
     const dialogRef = this.dialog.open(ViewApplicationComponent, {
       width: '50%',

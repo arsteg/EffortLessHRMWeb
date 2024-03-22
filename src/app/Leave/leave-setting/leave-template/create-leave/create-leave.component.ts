@@ -50,7 +50,6 @@ export class CreateLeaveComponent {
     this.leaveService.getLeaveTemplateById(templateData._id).subscribe((res: any) => {
       this.categoryList = res.data;
       let leaveCategories = this.categoryList.applicableCategories.map(category => category?.leaveCategory);
-      console.log(leaveCategories)
       this.addTemplateForm.patchValue({
         label: templateData.label,
         approvalLevel: templateData.approvalLevel,
@@ -64,7 +63,6 @@ export class CreateLeaveComponent {
         cubbingRestrictionCategories: templateData.cubbingRestrictionCategories,
         leaveCategories: leaveCategories
       });
-      console.log(this.addTemplateForm.value.leaveCategories)
     });
   }
   addClubbedCategory(): void {
@@ -95,7 +93,6 @@ export class CreateLeaveComponent {
   
 
   onSubmission() {
-    console.log('clicked')
     let payload = {
       label: this.addTemplateForm.value.label,
       approvalLevel: this.addTemplateForm.value.approvalLevel,
@@ -109,7 +106,6 @@ export class CreateLeaveComponent {
       cubbingRestrictionCategories: this.addTemplateForm.value.cubbingRestrictionCategories,
       leaveCategories: this.addTemplateForm.value.leaveCategories.map(category => ({ leaveCategory: category }))
     }
-    console.log(payload);
     if (this.changeMode == 'Add') {
       this.leaveService.addLeaveTemplate(payload).subscribe((res: any) => {
         this.leaveService.selectedTemplate.next(res.data);
@@ -117,10 +113,8 @@ export class CreateLeaveComponent {
       })
     }
     else {
-      console.log(this.changeMode);
       const id = this.leaveService.selectedTemplate.getValue()._id;
       this.leaveService.updateLeaveTemplate(id, payload).subscribe((res: any)=>{
-        console.log(res.data);
         this.leaveService.selectedTemplate.next(res.data);
         this.changeStep.emit(2);
       })

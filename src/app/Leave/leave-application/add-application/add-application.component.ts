@@ -67,23 +67,7 @@ export class AddApplicationComponent {
   onSubmission() {
     console.log(this.leaveApplication.value)
     if (this.leaveApplication.value) {
-      // const payload = {
-      //   employee: this.leaveApplication.value.employee,
-      //   leaveCategory: this.leaveApplication.value.leaveCategory,
-      //   level1Reason: this.leaveApplication.value.level1Reason,
-      //   level2Reason: this.leaveApplication.value.level2Reason,
-      //   startDate: this.leaveApplication.value.startDate,
-      //   endDate: this.leaveApplication.value.endDate,
-      //   comment: this.leaveApplication.value.comment,
-      //   status: this.leaveApplication.value.status,
-      //   isHalfDayOption: this.leaveApplication.value.isHalfDayOption,
-      //   haldDays: this.leaveApplication.value.haldDays.map((halfDay: any) => {
-      //     return {
-      //       date: this.selectedDates,
-      //       dayHalf: halfDay.dayHalf
-      //     };
-      //   })
-      // };
+      
       this.leaveApplication.value.status = 'Pending'
       this.leaveService.addLeaveApplication(this.leaveApplication.value).subscribe((res: any)=>{
         this.leaveApplication.reset();

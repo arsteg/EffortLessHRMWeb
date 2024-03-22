@@ -42,7 +42,6 @@ export class LeaveTemplateComponent implements OnInit {
   }
 
   setFormValues(templateData: any) {
-    console.log(templateData)
     this.leaveService.selectedTemplate.next(templateData);
   }
 
