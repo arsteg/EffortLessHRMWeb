@@ -4,14 +4,14 @@
 </div>
 
 
- <mat-stepper #stepper [formGroup]="firstForm">
+<mat-stepper #stepper [formGroup]="firstForm">
     <ng-container formArrayName="leaveCategories">
         <mat-step *ngFor="let category of firstForm.get('leaveCategories')['controls']; let i = index">
-          <form [formGroup]="category">
+            <form [formGroup]="category">
                 <ng-template matStepLabel>
                     {{ getCategoryLabel(category?.value?.leaveCategory) }}
                 </ng-template>
-             <div class="form-group">
+                <div class="form-group">
                     <label for="">
                         Do you want to limit number of times an employee can apply for this leave?
                     </label>
@@ -31,9 +31,9 @@
                             </label>
                         </div>
                     </div>
-                </div> 
+                </div>
 
-            <div class="form-group mt-2">
+                <div class="form-group mt-2">
                     <label for="">
                         How would you like to deal with newly joined employees?
                     </label>
@@ -102,18 +102,21 @@
                 <div class="form-group mt-2" *ngIf="category.get('categoryApplicable').value === 'specific-employees'">
                     <mat-form-field appearance="outline" class="w-100 mx-1">
                         <mat-label>Select Employee</mat-label>
-                        <mat-select name="users" multiple>
+                        <mat-select name="users" multiple formControlName="users">
                             <mat-option *ngFor="let member of members" [value]="member.id">
                                 {{member?.firstName | titlecase}}&nbsp;{{member?.lastName}}
                             </mat-option>
                         </mat-select>
+                        
+                          
                     </mat-form-field>
-                </div> 
+
+                </div>
 
                 <div class="">
                     <button mat-button matStepperNext class="addBtn">Next</button>
                 </div>
-            </form>  
+            </form>
         </mat-step>
     </ng-container>
     <mat-step>
@@ -126,4 +129,4 @@
             <button mat-button (click)="onSubmit()" class="addBtn">Submit</button>
         </div>
     </mat-step>
-</mat-stepper> 
+</mat-stepper>

@@ -23,6 +23,7 @@ export class AddCategoryLeaveComponent {
   leaveCategories: any;
   allCategories: any;
   categoryForm: FormGroup;
+  users: FormGroup;
 
   constructor(private leaveService: LeaveService,
     private _formBuilder: FormBuilder,
@@ -34,30 +35,30 @@ export class AddCategoryLeaveComponent {
     this.commonService.populateUsers().subscribe((res: any) => {
       this.members = res.data.data;
     });
+
     this.leaveService.selectedTemplate.subscribe((selectedTemplate) => {
       this.firstForm = this._formBuilder.group({
         leaveCategories: this._formBuilder.array([]),
         leaveTemplate: [this.leaveService.selectedTemplate.getValue()._id]
       });
-      console.log(this.firstForm.value);
 
       const leaveCategoriesArray = this.firstForm.get('leaveCategories') as FormArray;
+
       this.leaveService.getAllLeaveCategories().subscribe((res: any) => {
         this.allCategories = res.data;
 
-        // let templateId = this.leaveService.selectedTemplate.getValue()._id;
         this.leaveService.getLeaveTemplateCategoriesByTemplateId(selectedTemplate._id).subscribe((res: any) => {
           this.leaveCategories = res.data;
 
           this.steps = this.leaveCategories;
-          console.log(this.steps);
-          console.log(this.allCategories);
+
           this.steps.forEach(step => {
             const matchingCategory = this.allCategories.find(category => category?._id === step?.leaveCategory);
-            console.log(matchingCategory)
+
             if (matchingCategory) {
               const categoryId = matchingCategory._id;
-              leaveCategoriesArray.push(this._formBuilder.group({
+
+              const leaveCategoryGroup = this._formBuilder.group({
                 leaveCategory: categoryId,
                 limitNumberOfTimesApply: true,
                 maximumNumbersEmployeeCanApply: 0,
@@ -70,30 +71,38 @@ export class AddCategoryLeaveComponent {
                 extendFromCategory: '',
                 negativeBalanceCap: 0,
                 accrualRatePerPeriod: 0,
-                categoryApplicable: 'all-employees'
-              }));
-              const formGroupIndex = leaveCategoriesArray.length - 1;
-              leaveCategoriesArray.at(formGroupIndex).patchValue({
-                limitNumberOfTimesApply: step.limitNumberOfTimesApply,
-                maximumNumbersEmployeeCanApply: step.maximumNumbersEmployeeCanApply,
-                maximumNumbersEmployeeCanApplyType: step.maximumNumbersEmployeeCanApplyType,
-                dealWithNewlyJoinedEmployee: step.dealWithNewlyJoinedEmployee,
-                daysToCompleteToBecomeEligibleForLeave: step.daysToCompleteToBecomeEligibleForLeave,
-                isEmployeeGetCreditedTheEntireAmount: step.isEmployeeGetCreditedTheEntireAmount,
-                extendLeaveCategory: step.extendLeaveCategory,
-                extendMaximumDayNumber: step.extendMaximumDayNumber,
-                extendFromCategory: step.extendFromCategory,
-                negativeBalanceCap: step.negativeBalanceCap,
-                accrualRatePerPeriod: step.accrualRatePerPeriod,
-                categoryApplicable: step.categoryApplicable
+                categoryApplicable: 'all-employees',
+                users: ''
               });
+              leaveCategoriesArray.push(leaveCategoryGroup);
             }
+            const formGroupIndex = leaveCategoriesArray.length - 1;
+            let users = step.templateApplicableCategoryEmployee.map(user => user.user);
+            leaveCategoriesArray.at(formGroupIndex).patchValue({
+              limitNumberOfTimesApply: step.limitNumberOfTimesApply,
+              maximumNumbersEmployeeCanApply: step.maximumNumbersEmployeeCanApply,
+              maximumNumbersEmployeeCanApplyType: step.maximumNumbersEmployeeCanApplyType,
+              dealWithNewlyJoinedEmployee: step.dealWithNewlyJoinedEmployee,
+              daysToCompleteToBecomeEligibleForLeave: step.daysToCompleteToBecomeEligibleForLeave,
+              isEmployeeGetCreditedTheEntireAmount: step.isEmployeeGetCreditedTheEntireAmount,
+              extendLeaveCategory: step.extendLeaveCategory,
+              extendMaximumDayNumber: step.extendMaximumDayNumber,
+              extendFromCategory: step.extendFromCategory,
+              negativeBalanceCap: step.negativeBalanceCap,
+              accrualRatePerPeriod: step.accrualRatePerPeriod,
+              categoryApplicable: step.categoryApplicable,
+              users: users
+            });
           });
-        })
-      })
-    })
+        });
+      });
+    });
   }
 
+  getUserName(userId: string): string {
+    const user = this.members.find(member => member.id === userId);
+    return user ? `${user.firstName} ${user.lastName}` : '';
+  }
 
   closeModal() {
     this.changeStep.emit(1);
@@ -101,32 +110,21 @@ export class AddCategoryLeaveComponent {
     this.close.emit(true);
   }
 
-  getLeaveCategories() {
-    this.leaveService.getAllLeaveCategories().subscribe((res: any) => {
-      this.allCategories = res.data;
-    })
-  }
-
   getCategoryLabel(leaveCategoryId: string): string {
     const matchingCategory = this.allCategories?.find(category => category._id === leaveCategoryId);
     return matchingCategory.label;
   }
 
-  // getLeaveCategoriesById() {
-  //   let templateId = this.leaveService.selectedTemplate.getValue()._id;
-  //   this.leaveService.getLeaveApplicableCategoriesByTemplateId(templateId).subscribe((res: any) => {
-  //     console.log(res.data);
-  //     this.leaveCategories = res.data;
-  //   })
-  // }
-
-
-
   onSubmit() {
     const templateId = this.leaveService.selectedTemplate.getValue()._id;
+    this.firstForm.value.leaveCategories.forEach((category: any) => {
+      category.users = category.users.map((user: any) => ({ user }));
+    });
+    console.log(this.firstForm.value);
     this.leaveService.updateLeaveTemplateCategories(this.firstForm.value).subscribe((res: any) => {
       this.toast.success('Leave Template Categories Updated', 'Successfully');
-    })
-    console.log('formSubmitted', this.firstForm.value)
+      this.updateExpenseTemplateTable.emit();
+    });
   }
+  
 }
