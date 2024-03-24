@@ -43,16 +43,30 @@
                         [class.active]="selectedTab === 1">My Application</button>
                     <button class="btn rounded-pill submenuTab" (click)="selectTab(2)"
                         [class.active]="selectedTab === 2">
+                        Team Leave Balances</button>
+                    <button class="btn rounded-pill submenuTab" (click)="selectTab(3)"
+                        [class.active]="selectedTab === 3">My Leave Balance
+                    </button>
+                    <button class="btn rounded-pill submenuTab" (click)="selectTab(2)"
+                        [class.active]="selectedTab === 4">
                         My Leave Grant</button>
                     <button class="btn rounded-pill submenuTab" (click)="selectTab(3)"
-                        [class.active]="selectedTab === 3">General Information
+                        [class.active]="selectedTab === 5">Team Application
+                    </button>
+                    <button class="btn rounded-pill submenuTab" (click)="selectTab(1)"
+                        [class.active]="selectedTab === 6">Team Short Leave</button>
+                    <button class="btn rounded-pill submenuTab" (click)="selectTab(2)"
+                        [class.active]="selectedTab === 7">
+                        Team Leave Grant</button>
+                    <button class="btn rounded-pill submenuTab" (click)="selectTab(3)"
+                        [class.active]="selectedTab === 8">General Information
                     </button>
 
 
                 </div>
 
                 <div *ngIf="selectedTab === 1" class="tab-content">
-
+                    <app-leave-Application></app-leave-Application>
                 </div>
                 <div *ngIf="selectedTab === 2" class="tab-content">
 

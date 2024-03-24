@@ -8,7 +8,7 @@
                 name="searchText" aria-label="default input example">
 
             <button mat-raised-button class="addBtn rounded-pill mx-3" (click)="open(addModal)">Add
-                Expense</button>
+                </button>
 
             <button class="submenuTab active rounded-pill" (click)="exportToCsv()"> <i
                     class="bi bi-download downloadBtn pe-2"></i>
@@ -27,7 +27,7 @@
             <th>Actions</th>
         </thead>
         <tbody>
-            <tr *ngFor="let leave of leaveGrant">
+            <tr *ngFor="let leave of leaveGrant | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
                 <td>{{getUser(leave?.employee)}}</td>
                 <td>{{leave?.appliedOn | date: 'mediumDate'}}</td>
                 <td>{{leave?.date | date: 'mediumDate'}}</td>
@@ -73,15 +73,14 @@
             </tr>
         </tbody>
     </table>
+    <pagination-controls (pageChange)="p = $event"
+                class="pagination d-flex justify-content-end"></pagination-controls>
 </div>
 
 <ng-template #addModal let-modal>
     <app-add-leave (close)="onClose($event)" (leaveGrantRefreshed)="refreshLeaveGrantTable()"></app-add-leave>
 </ng-template>
 
-<!-- <ng-template #statusUpdate let-modal>
-    <app-update-status (leaveGrantRefreshed)="refreshLeaveGrantTable()"></app-update-status>
-</ng-template> -->
 <ng-template #statusUpdate let-modal>
     <app-update-status (leaveGrantRefreshed)="refreshLeaveGrantTable()"></app-update-status>
 </ng-template>

@@ -79,6 +79,7 @@ export class CommonService {
   }
 
   getCurrentUser(): BehaviorSubject<any> {
+    console.log(this.currentProfileSubject);
     return this.currentProfileSubject;
   }
 
@@ -112,4 +113,6 @@ export class CommonService {
   setSelectedTab(tab: number) {
     this.selectedTabSubject.next(tab);
   }
+
+  
 }

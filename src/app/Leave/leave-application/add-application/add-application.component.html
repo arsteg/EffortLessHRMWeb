@@ -4,7 +4,7 @@
 </div>
 <div mat-dialog-content>
     <form [formGroup]="leaveApplication" (ngSubmit)="onSubmission()">
-        <div>
+        <div *ngIf="portalView != 'user'">
             <label for="member">Select Employee</label>
             <mat-form-field appearance="outline" class="w-100 mx-1">
                 <mat-select formControlName="employee">

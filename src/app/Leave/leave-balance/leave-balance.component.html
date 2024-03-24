@@ -7,7 +7,7 @@
                 </label>
                     <mat-form-field appearance="outline" class="w-50 mx-1">
                         <mat-select name="users" formControlName="user">
-                            <mat-option *ngFor="let member of members" [value]="member.id">
+                            <mat-option *ngFor="let member of members" [value]="member.id"  (click)="selecteduser(member.id)">
                                 {{member?.firstName | titlecase}}&nbsp;{{member?.lastName}}
                             </mat-option>
                         </mat-select>
@@ -23,19 +23,18 @@
                         <mat-option value="JANUARY_2023-DECEMBER_2024">
                             JANUARY_2023-DECEMBER_2024
                         </mat-option>
-                        <mat-option value="June">June</mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>
 
-            <div class="form-group justify-content-between d-flex  align-items-baseline">
+            <div class="form-group justify-content-between d-flex align-items-baseline">
                 <label for="">
                     Select a leave category which you want
                 </label>
                 <mat-form-field appearance="outline" class="w-50">
                     <mat-select formControlName="category" >
-                        <mat-option [value]="category?._id" (click)="getLeaveBalance()" *ngFor="let category of leaveCategories">
-                           {{category?.label}}
+                        <mat-option [value]="category?._id"  *ngFor="let category of leaveCategories">
+                           {{getlaveCategoryLabel(category?.leaveCategory)}}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>

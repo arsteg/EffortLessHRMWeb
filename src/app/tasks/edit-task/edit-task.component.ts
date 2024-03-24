@@ -66,16 +66,18 @@ export class EditTaskComponent implements OnInit {
   currentSubtaskId: string;
   taskId: string;
   projectUser: any;
-  recordsPerPageOptions: number[] = [5, 10, 25, 50, 100]; // Add the available options for records per page
-  recordsPerPage: number = 10; // Default records per page
-  totalRecords: any; // Total number of records
+  recordsPerPageOptions: number[] = [5, 10, 25, 50, 100];
+  recordsPerPage: number = 10;
+  totalRecords: any;
   currentPage: number = 1;
   noUser: [] = [];
   showEditor: boolean = false;
   @ViewChild('editor') editor: any;
   assignee: any;
-  loading: boolean = true; // Initialize loading state
+  loading: boolean = true;
   taskDeleted: boolean = false;
+  projectisNull;
+
   constructor(private fb: FormBuilder,
     private tasksService: TasksService,
     private toast: ToastrService,
@@ -112,8 +114,8 @@ export class EditTaskComponent implements OnInit {
       project: ['', Validators.required],
       taskAttachments: [[]]
     });
-
   }
+
   ngOnInit(): void {
     this.commonService.getFilters();
     this.getprojects();
@@ -127,7 +129,6 @@ export class EditTaskComponent implements OnInit {
       })
     });
     this.getTasks();
-
   }
 
 
@@ -135,12 +136,12 @@ export class EditTaskComponent implements OnInit {
     // Use router.navigate with a relative path to go back three steps
     this.router.navigate(['../../../manage'], { relativeTo: this.route });
     console.log(this.route)
-
   }
+
   onParagraphClick() {
     this.showEditor = true;
   }
-  projectisNull;
+  
   getTask(taskId: string) {
     if (taskId) {
       this.tasksService.getTaskById(taskId).subscribe(res => {

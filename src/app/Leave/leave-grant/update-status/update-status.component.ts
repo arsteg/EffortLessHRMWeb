@@ -44,4 +44,8 @@ export class UpdateStatusComponent {
       this.dialogRef.close();
     })
   }
+
+  closeModal() {
+    this.dialogRef.close();
+  }
 }

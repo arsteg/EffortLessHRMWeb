@@ -13,6 +13,8 @@ export class LeaveBalanceComponent {
   members: any = [];
   leaveBalance: any;
   leaveCategories: any;
+  selectedUser: any;
+  allCategories: any;
 
   constructor(private leaveService: LeaveService,
     private fb: FormBuilder,
@@ -44,7 +46,24 @@ export class LeaveBalanceComponent {
 
   getAllLeaveCatgeories() {
     this.leaveService.getAllLeaveCategories().subscribe((res: any) => {
+      this.allCategories = res.data;
+    })
+  }
+
+  selecteduser(user) {
+    console.log(user);
+    this.leaveService.getLeaveCategoriesByUser(user).subscribe((res: any) => {
       this.leaveCategories = res.data;
     })
+  }
+  getCategoriesByUser() {
+    this.leaveService.getLeaveCategoriesByUser(this.selectedUser).subscribe((res: any) => {
+      this.leaveCategories = res.data;
+    })
+  }
+
+  getlaveCategoryLabel(categoryId: string) {
+    const category = this.allCategories.find(category => category._id === categoryId);
+    return category ? category.label : '';
   }
 }

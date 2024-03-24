@@ -11,7 +11,7 @@
                 name="searchText" aria-label="default input example">
 
             <button mat-raised-button class="addBtn rounded-pill mx-3" (click)="open(addModal)">Add
-                Expense</button>
+                </button>
 
             <button class="submenuTab active rounded-pill" (click)="exportToCsv()"> <i
                     class="bi bi-download downloadBtn pe-2"></i>
@@ -31,7 +31,7 @@
             <th>Actions</th>
         </thead>
         <tbody>
-            <tr *ngFor="let leave of shortLeave">
+            <tr *ngFor="let leave of shortLeave  | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
                 <td>{{getUser(leave?.employee) || this.leaveService?.leave?.getValue()?.employee}}</td>
                 <td>{{leave?.date | date: 'mediumDate'}}</td>
                 <td>{{leave?.startTime | date: 'shortTime'}}</td>
@@ -76,6 +76,8 @@
             </tr>
         </tbody>
     </table>
+    <pagination-controls (pageChange)="p = $event"
+                class="pagination d-flex justify-content-end"></pagination-controls>
 </div>
 
 <ng-template #addModal let-modal>

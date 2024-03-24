@@ -24,7 +24,7 @@ export class ShowApplicationComponent {
   allAssignee: any;
   leaveCategories: any;
   dateControl = new FormControl();
-  
+  p: number = 1;
 
   constructor(private modalService: NgbModal,
     private leaveService: LeaveService,

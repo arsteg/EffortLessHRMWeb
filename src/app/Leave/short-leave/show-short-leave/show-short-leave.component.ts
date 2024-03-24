@@ -21,6 +21,7 @@ export class ShowShortLeaveComponent {
   closeResult: string = '';
   searchText: string = '';
   allAssignee: any;
+  p: number = 1;
 
   constructor(private modalService: NgbModal,
     public leaveService: LeaveService,

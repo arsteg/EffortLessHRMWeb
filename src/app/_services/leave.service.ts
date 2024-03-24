@@ -29,6 +29,12 @@ export class LeaveService extends baseService {
     return this.http.get<any>(`${environment.apiUrlDotNet}/leave/leave-categories`, this.httpOptions);
   }
 
+  public getLeaveCategoriesByUser(userId: string): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.get<any>(`${environment.apiUrlDotNet}/leave/leave-categories-by-user/${userId}`, this.httpOptions);
+  }
+
   public addLeaveCategory(leave: any): any {
     const token = this.getToken();
     this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);

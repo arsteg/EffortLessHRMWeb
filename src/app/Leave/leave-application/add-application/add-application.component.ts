@@ -4,6 +4,7 @@ import { LeaveService } from 'src/app/_services/leave.service';
 import { CommonService } from 'src/app/common/common.service';
 import * as moment from 'moment';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { AuthenticationService } from 'src/app/_services/authentication.service';
 
 
 @Component({
@@ -21,11 +22,13 @@ export class AddApplicationComponent {
   fieldGroup: FormGroup;
   selectedDates: Date[] = [];
   @Output() leaveApplicationRefreshed: EventEmitter<void> = new EventEmitter<void>();
-
+  portalView = localStorage.getItem('adminView');
+  currentUser: any = localStorage.getItem('currentUser');
 
   constructor(private fb: FormBuilder,
     private commonService: CommonService,
-    private leaveService: LeaveService) {
+    private leaveService: LeaveService,
+  ) {
     this.leaveApplication = this.fb.group({
       employee: [''],
       leaveCategory: [''],
@@ -45,6 +48,7 @@ export class AddApplicationComponent {
       this.allAssignee = result && result.data && result.data.data;
     });
     this.getleaveCatgeories();
+    console.log(this.currentUser?.id)
   }
 
   addHalfDayEntry() {
@@ -66,12 +70,15 @@ export class AddApplicationComponent {
 
   onSubmission() {
     console.log(this.leaveApplication.value)
+    if (this.portalView == 'admin') {
+      this.leaveApplication.value.employee = this.currentUser
+    }
     if (this.leaveApplication.value) {
-      
+
       this.leaveApplication.value.status = 'Pending'
-      this.leaveService.addLeaveApplication(this.leaveApplication.value).subscribe((res: any)=>{
+      this.leaveService.addLeaveApplication(this.leaveApplication.value).subscribe((res: any) => {
         this.leaveApplication.reset();
-       this.leaveApplicationRefreshed.emit();
+        this.leaveApplicationRefreshed.emit();
       })
     }
   }

@@ -21,6 +21,7 @@ export class ShowStatusComponent {
   leaveGrant: any;
   allAssignee: any;
   @Input() status: string;
+  p: number = 1;
 
   constructor(private modalService: NgbModal,
     private leaveService: LeaveService,
@@ -37,7 +38,7 @@ export class ShowStatusComponent {
 
   getLeaveGrant() {
     this.leaveService.getLeaveGrant().subscribe((res: any) => {
-      this.leaveGrant =  res.data.filter(leave => leave.status === this.status);
+      this.leaveGrant = res.data.filter(leave => leave.status === this.status);
     });
   }
 
