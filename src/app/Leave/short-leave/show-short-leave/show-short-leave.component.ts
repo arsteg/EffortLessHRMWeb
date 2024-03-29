@@ -22,6 +22,10 @@ export class ShowShortLeaveComponent {
   searchText: string = '';
   allAssignee: any;
   p: number = 1;
+  public sortOrder: string = '';
+  @Input() tab: number;
+  portalView = localStorage.getItem('adminView');
+
 
   constructor(private modalService: NgbModal,
     public leaveService: LeaveService,

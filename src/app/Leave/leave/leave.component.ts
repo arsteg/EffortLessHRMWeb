@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-leave',
@@ -8,7 +8,6 @@ import { Component, OnInit } from '@angular/core';
 export class LeaveComponent implements OnInit {
   selectedTab: number = 1;
   view= localStorage.getItem('adminView');
-
   constructor(
     ) { }
 

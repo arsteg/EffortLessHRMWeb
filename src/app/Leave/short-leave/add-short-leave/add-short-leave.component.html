@@ -1,11 +1,11 @@
 <div class="d-flex justify-content-between">
-    <h1 class="modal-title text-muted">Add Leave Grant</h1>
+    <h1 class="modal-title text-muted">Add Short Leave Application</h1>
     <button type="button" data-bs-dismiss="modal" class="btn-close text-end" (click)="closeModal()"></button>
 </div>
 <div mat-dialog-content>
     <form [formGroup]="shortLeave" (ngSubmit)="onSubmission()">
-        <div>
-            <label for="member">Select Employee</label>
+        <div *ngIf="portalView != 'user'">
+            <label for="member">Select an Employee for Short Leave</label>
             <mat-form-field appearance="outline" class="w-100 mx-1">
                 <mat-select formControlName="employee">
                     <mat-option *ngFor="let member of allAssignee" [value]="member.id">
@@ -13,6 +13,24 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field>
+            <div *ngIf="shortLeave.get('employee').invalid && shortLeave.get('employee').touched" class="text-danger error">
+                Employee selection is required
+            </div>
+        </div>
+
+        <div *ngIf=" tab === 6" class="mb-2">
+            <label for="member">Select an Employee for Short Leave <span class="text-danger">*</span></label>
+            <mat-form-field appearance="outline" class="w-100 mx-1">
+                <mat-label>Select Employee</mat-label>
+                <mat-select name="users"  formControlName="employee" required>
+                    <mat-option *ngFor="let member of members" [value]="member.id">
+                        {{member?.name | titlecase}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <div *ngIf="shortLeave.get('employee').invalid && shortLeave.get('employee').touched" class="text-danger error">
+                Employee selection is required
+            </div>
         </div>
 
         <div class="mt-2">
@@ -20,6 +38,9 @@
             <div class=" col-12 form-group mb-3">
                 <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
                     [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="date" (bsValueChange)="onDateSelected($event)" />
+                    <div *ngIf="shortLeave.get('date').invalid && shortLeave.get('date').touched" class="text-danger error">
+                        Please add a valid Date
+                    </div>
             </div>
         </div>
 
@@ -27,6 +48,9 @@
             <label for="">Select Start Time</label>
             <div class="form-group mb-3">
                 <input type="datetime-local" formControlName="startTime" class="w-100" id="meeting-time" name="meeting-time" value="" />
+                <div *ngIf="shortLeave.get('startTime').invalid && shortLeave.get('startTime').touched" class="text-danger error">
+                    Please add a valid Start Time
+                </div>
             </div>
         </div>
 
@@ -34,6 +58,9 @@
             <label for="">Select End Time</label>
             <div class="form-group mb-3">
                 <input type="datetime-local"formControlName="endTime" class="w-100" id="meeting-time" name="meeting-time" value="" />
+                <div *ngIf="shortLeave.get('endTime').invalid && shortLeave.get('endTime').touched" class="text-danger error">
+                    Please add valid End Time
+                </div>
             </div>
         </div>
 
@@ -53,9 +80,9 @@
                 rows="3"></textarea>
         </div>
 
-        <div>
-            <button mat-raised-button type="button">Cancel</button>
-            <button mat-button mat-dialog-close type="submit">Submit</button>
+        <div class="d-flex justify-content-between">
+            <button mat-raised-button type="reset">Cancel</button>
+            <button mat-button mat-dialog-close class="addBtn" type="submit">Submit</button>
         </div>
     </form>
 </div>

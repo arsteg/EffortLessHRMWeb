@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NO_ERRORS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from "../shared/shared.Module";
 import { RouterModule } from '@angular/router';
@@ -45,6 +45,9 @@ import { CancelledShortLeaveComponent } from './short-leave/cancelled-short-leav
 import { RejectedShortLeaveComponent } from './short-leave/rejected-short-leave/rejected-short-leave.component';
 import { AddShortLeaveComponent } from './short-leave/add-short-leave/add-short-leave.component';
 import { ViewShortLeaveComponent } from './short-leave/view-short-leave/view-short-leave.component';
+import { SupervisorsComponent } from './general-information/supervisors/supervisors.component';
+import { HolidaysComponent } from './general-information/holidays/holidays.component';
+import { GeneralComponent } from './general-information/general/general.component';
 @NgModule({
   declarations: [LeaveApplicationComponent,
     LeaveSettingComponent,
@@ -81,6 +84,9 @@ import { ViewShortLeaveComponent } from './short-leave/view-short-leave/view-sho
     RejectedShortLeaveComponent,
     AddShortLeaveComponent,
     ViewShortLeaveComponent,
+    SupervisorsComponent,
+    HolidaysComponent,
+    GeneralComponent,
   ],
   imports: [
     CommonModule,
@@ -100,6 +106,7 @@ import { ViewShortLeaveComponent } from './short-leave/view-short-leave/view-sho
   exports: [LeaveApplicationComponent,
     LeaveSettingComponent,
     LeaveAssignmentComponent,
-    LeaveCategoryComponent]
+    LeaveCategoryComponent],
+    schemas: [NO_ERRORS_SCHEMA]
 })
 export class LeaveModule { }

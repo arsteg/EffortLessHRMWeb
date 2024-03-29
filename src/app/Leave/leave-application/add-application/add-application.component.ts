@@ -1,10 +1,11 @@
-import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LeaveService } from 'src/app/_services/leave.service';
 import { CommonService } from 'src/app/common/common.service';
 import * as moment from 'moment';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
+import { TimeLogService } from 'src/app/_services/timeLogService';
 
 
 @Component({
@@ -23,19 +24,23 @@ export class AddApplicationComponent {
   selectedDates: Date[] = [];
   @Output() leaveApplicationRefreshed: EventEmitter<void> = new EventEmitter<void>();
   portalView = localStorage.getItem('adminView');
-  currentUser: any = localStorage.getItem('currentUser');
+  currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  members: any[] = [];
+  member: any;
+  @Input() tab: number;
 
   constructor(private fb: FormBuilder,
     private commonService: CommonService,
     private leaveService: LeaveService,
+    private timeLogService: TimeLogService
   ) {
     this.leaveApplication = this.fb.group({
-      employee: [''],
-      leaveCategory: [''],
+      employee: ['', Validators.required],
+      leaveCategory: ['', Validators.required],
       level1Reason: [''],
       level2Reason: [''],
-      startDate: [],
-      endDate: [],
+      startDate: ['', Validators.required],
+      endDate: ['', Validators.required],
       comment: [''],
       status: [''],
       isHalfDayOption: [false],
@@ -44,11 +49,12 @@ export class AddApplicationComponent {
   }
 
   ngOnInit() {
+    console.log(this.tab)
     this.commonService.populateUsers().subscribe(result => {
       this.allAssignee = result && result.data && result.data.data;
     });
     this.getleaveCatgeories();
-    console.log(this.currentUser?.id)
+    this.populateMembers();
   }
 
   addHalfDayEntry() {
@@ -68,18 +74,55 @@ export class AddApplicationComponent {
     })
   }
 
+  populateMembers() {
+    this.members = [];
+    let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    this.members.push({ id: currentUser.id, name: "Me", email: currentUser.email });
+    this.member = currentUser;
+    this.timeLogService.getTeamMembers(this.member.id).subscribe({
+      next: response => {
+        this.timeLogService.getusers(response.data).subscribe({
+          next: result => {
+            result.data.forEach(user => {
+              if (user.id != currentUser.id) {
+                this.members.push({ id: user.id, name: `${user.firstName} ${user.lastName}`, email: user.email });
+              }
+            })
+          },
+          error: error => {
+            console.log('There was an error!', error);
+          }
+        });
+      },
+      error: error => {
+        console.log('There was an error!', error);
+      }
+    });
+  }
+  onMemberSelectionChange(member: any) {
+    this.member = JSON.parse(member.value);
+  }
+  
   onSubmission() {
-    console.log(this.leaveApplication.value)
-    if (this.portalView == 'admin') {
-      this.leaveApplication.value.employee = this.currentUser
-    }
+   
     if (this.leaveApplication.value) {
+      if (this.portalView == 'user') {
+        if (this.tab === 1) {
+          this.leaveApplication.value.employee = this.currentUser?.id;
+        } else if (this.tab === 5) {
+          this.leaveApplication.value.employee = this.member?.id;
+        }
+      }
+     
+      this.leaveApplication.value.status = 'Pending';
 
-      this.leaveApplication.value.status = 'Pending'
+      console.log(this.leaveApplication.value);
+
       this.leaveService.addLeaveApplication(this.leaveApplication.value).subscribe((res: any) => {
         this.leaveApplication.reset();
         this.leaveApplicationRefreshed.emit();
-      })
+      });
+
     }
   }
 

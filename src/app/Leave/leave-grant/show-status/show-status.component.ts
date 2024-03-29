@@ -7,6 +7,7 @@ import { CommonService } from 'src/app/common/common.service';
 import { ViewLeaveComponent } from '../view-leave/view-leave.component';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { ToastrService } from 'ngx-toastr';
+import { ExportService } from 'src/app/_services/export.service';
 
 @Component({
   selector: 'app-show-status',
@@ -22,14 +23,20 @@ export class ShowStatusComponent {
   allAssignee: any;
   @Input() status: string;
   p: number = 1;
+  @Input() tab: number;
+  portalView = localStorage.getItem('adminView');
+  currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  public sortOrder: string = '';
 
   constructor(private modalService: NgbModal,
     private leaveService: LeaveService,
     private dialog: MatDialog,
     private commonService: CommonService,
-    private toast: ToastrService) { }
+    private toast: ToastrService,
+    private exportService: ExportService) { }
 
   ngOnInit() {
+    console.log(this.tab)
     this.commonService.populateUsers().subscribe(result => {
       this.allAssignee = result && result.data && result.data.data;
     });
@@ -37,9 +44,25 @@ export class ShowStatusComponent {
   }
 
   getLeaveGrant() {
-    this.leaveService.getLeaveGrant().subscribe((res: any) => {
-      this.leaveGrant = res.data.filter(leave => leave.status === this.status);
-    });
+    if (this.portalView === 'admin') {
+      console.log(this.portalView)
+      this.leaveService.getLeaveGrant().subscribe((res: any) => {
+        this.leaveGrant = res.data.filter(leave => leave.status === this.status);
+      });
+    }
+    if (this.portalView === 'user') {
+      console.log(this.portalView, this.tab)
+      if (this.tab === 4) {
+        this.leaveService.getLeaveGrantByUser(this.currentUser?.id).subscribe((res: any) => {
+          this.leaveGrant = res.data.filter(leave => leave.status === this.status);
+        })
+      } else if (this.tab === 7) {
+        this.leaveService.getLeaveGrantByTeam().subscribe((res: any) => {
+          this.leaveGrant = res.data.filter(leave => leave.status === this.status);
+        })
+      }
+    }
+
   }
 
   onClose(event) {
@@ -57,6 +80,7 @@ export class ShowStatusComponent {
       data: { report }
     });
     dialogRef.afterClosed().subscribe(result => {
+      this.refreshLeaveGrantTable();
       console.log('The modal was closed');
     });
   }
@@ -65,7 +89,6 @@ export class ShowStatusComponent {
     this.leaveService.getLeaveGrant().subscribe(
       (res) => {
         this.leaveGrant = res.data.filter(leave => leave.status === this.status);
-        console.log(this.leaveGrant)
       },
       (error) => {
         console.error('Error refreshing leave grant table:', error);
@@ -74,16 +97,15 @@ export class ShowStatusComponent {
   }
 
   exportToCsv() {
-    // const dataToExport = this.advanceReport.map((advance) => ({
-    //   employee: this.getUser(advance.employee),
-    //   amount: advance?.amount,
-    //   status: advance.status,
-    //   category: this.getCategory(advance.category),
-    //   comment: advance.comment,
-    //   primaryApprovalReason:  advance.primaryApprovalReason,
-    //   secondaryApprovalReason: advance.secondaryApprovalReason    
-    // }));
-    // this.exportService.exportToCSV('Advance-Report', 'Advance-Report', dataToExport);
+    const dataToExport = this.leaveGrant.map((leave) => ({
+      Employee: this.getUser(leave.employee),
+      Applied_On: leave.appliedOn,
+      Applied_For: leave.date,
+      Used_On: leave.usedOn,
+      Comment: leave.comment,
+      Status: leave.status
+    }));
+    this.exportService.exportToCSV('Leave Grant', 'Leave Grant', dataToExport);
   }
 
   open(content: any) {

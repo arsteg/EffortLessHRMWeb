@@ -25,6 +25,12 @@ export class ShowApplicationComponent {
   leaveCategories: any;
   dateControl = new FormControl();
   p: number = 1;
+  @Input() tab: number;
+  portalView = localStorage.getItem('adminView');
+  totalLeaveDays;
+  currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  public sortOrder: string = '';
+
 
   constructor(private modalService: NgbModal,
     private leaveService: LeaveService,
@@ -39,8 +45,9 @@ export class ShowApplicationComponent {
       this.allAssignee = result && result.data && result.data.data;
     });
     this.getLeaveApplication();
+    this.getleaveCatgeories();
   }
-
+ 
   onClose(event) {
     if (event) {
       this.modalService.dismissAll();
@@ -56,7 +63,7 @@ export class ShowApplicationComponent {
       data: { report }
     });
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The modal was closed');
+      this.refreshLeaveApplicationTable();
     });
   }
 
@@ -110,18 +117,66 @@ export class ShowApplicationComponent {
     })
   }
   getUser(employeeId: string) {
+    console.log(employeeId)
     const matchingUser = this.allAssignee?.find(user => user._id === employeeId);
-    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'User Not Found';
+    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : '';
   }
   getCategory(categoryId: string) {
     const matchingCategory = this.leaveCategories?.find(category => category?._id === categoryId);
     return matchingCategory ? matchingCategory?.label : '';
   }
-
   getLeaveApplication() {
-    this.leaveService.getLeaveApplication().subscribe((res: any) => {
-      this.leaveApplication = res.data.filter(leave => leave.status === this.status);
-    })
+    // if (this.portalView === 'admin') {
+      this.leaveService.getLeaveApplication().subscribe((res: any) => {
+        this.leaveApplication = res.data.filter(leave => leave.status === this.status);
+        this.totalLeaveDays = 0;
+        this.leaveApplication.forEach(leave => {
+          const startDate = new Date(leave.startDate);
+          const endDate = new Date(leave.endDate);
+          const timeDifference = endDate.getTime() - startDate.getTime();
+          const dayDifference = timeDifference / (1000 * 3600 * 24);
+          leave.totalLeaveDays = Math.abs(Math.round(dayDifference));
+        });
+      })
+    // }
+    // if (this.portalView === 'user') {
+    //   console.log(this.portalView, this.tab)
+    //   if (this.tab === 1) {
+    //     this.leaveService.getLeaveApplicationbyUser(this.currentUser?.id).subscribe((res: any) => {
+    //       this.leaveApplication = res.data.filter(leave => leave.status === this.status);
+    //       this.totalLeaveDays = 0;
+    //       this.leaveApplication.forEach(leave => {
+    //         const startDate = new Date(leave.startDate);
+    //         const endDate = new Date(leave.endDate);
+    //         const timeDifference = endDate.getTime() - startDate.getTime();
+    //         const dayDifference = timeDifference / (1000 * 3600 * 24);
+    //         leave.totalLeaveDays = Math.abs(Math.round(dayDifference));
+    //       });
+    //     })
+    //   } else if (this.tab === 5) {
+    //     this.leaveService.getLeaveApplicationByTeam().subscribe((res: any) => {
+    //       this.leaveApplication = res.data.filter(leave => leave.status === this.status);
+    //       this.totalLeaveDays = 0;
+    //       this.leaveApplication.forEach(leave => {
+    //         const startDate = new Date(leave.startDate);
+    //         const endDate = new Date(leave.endDate);
+    //         const timeDifference = endDate.getTime() - startDate.getTime();
+    //         const dayDifference = timeDifference / (1000 * 3600 * 24);
+    //         leave.totalLeaveDays = Math.abs(Math.round(dayDifference));
+    //       });
+    //     })
+    //   }
+    // }
+
+    // this.totalLeaveDays = 0;
+    // this.leaveApplication.forEach(leave => {
+    //   const startDate = new Date(leave.startDate);
+    //   const endDate = new Date(leave.endDate);
+    //   const timeDifference = endDate.getTime() - startDate.getTime();
+    //   const dayDifference = timeDifference / (1000 * 3600 * 24);
+    //   leave.totalLeaveDays = Math.abs(Math.round(dayDifference));
+    // });
+    // });
   }
 
 

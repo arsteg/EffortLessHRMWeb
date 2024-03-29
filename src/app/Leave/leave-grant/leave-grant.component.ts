@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-leave-grant',
@@ -7,9 +7,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LeaveManagementComponent implements OnInit {
   selectedTab = 1;
+  @Input() tab: number;
   constructor() { }
 
   ngOnInit(): void {
+    console.log(this.tab)
   }
   selectTab(tabIndex: number) {
     this.selectedTab = tabIndex;

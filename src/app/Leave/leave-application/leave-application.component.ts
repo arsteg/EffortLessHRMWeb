@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
   selector: 'app-leave-Application',
@@ -7,6 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LeaveApplicationComponent implements OnInit {
   selectedTab = 1;
+  @Input() tab: number;
  
   constructor() { }
 

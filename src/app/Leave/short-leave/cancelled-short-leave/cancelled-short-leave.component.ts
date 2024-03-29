@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-cancelled-short-leave',
@@ -12,4 +12,6 @@ export class CancelledShortLeaveComponent {
     delete: false,
     view: true
   };
+  @Input() selectedTab: number;
+
 }

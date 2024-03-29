@@ -4,23 +4,44 @@
 </div>
 <div mat-dialog-content>
     <form [formGroup]="leaveGrant" (ngSubmit)="onSubmission()">
-        <div>
-            <label for="member">Select an Employee for Advance Report</label>
+        <div *ngIf="portalView != 'user'">
+            <label for="member">Select an Employee for Leave Grant<span class="text-danger">*</span></label>
             <mat-form-field appearance="outline" class="w-100 mx-1">
                 <mat-label>Select Employee</mat-label>
-                <mat-select name="users" multiple formControlName="users">
-                    <mat-option *ngFor="let member of members" [value]="member.id">
+                <mat-select name="users" multiple formControlName="users" required>
+                    <mat-option *ngFor="let member of allAssignee" [value]="member.id">
                         {{member?.firstName | titlecase}}&nbsp;{{member?.lastName}}
                     </mat-option>
                 </mat-select>
             </mat-form-field>
+            <div *ngIf="leaveGrant.get('users').invalid && leaveGrant.get('users').touched" class="text-danger error">
+                Employee selection is required
+            </div>
+        </div>
+
+        <div  *ngIf="portalView === 'user' && tab === 7">
+            <label for="member">Select an Employee for Leave Grant <span class="text-danger">*</span></label>
+            <mat-form-field appearance="outline" class="w-100 mx-1">
+                <mat-label>Select Employee</mat-label>
+                <mat-select name="users" multiple formControlName="users" required>
+                    <mat-option *ngFor="let member of members" [value]="member.id">
+                        {{member?.name | titlecase}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <div *ngIf="leaveGrant.get('users').invalid && leaveGrant.get('users').touched" class="text-danger error">
+                Employee selection is required
+            </div>
         </div>
 
         <div class="mt-2">
-            <label for="">Select Effective From Date</label>
+            <label for="">Select Effective From Date <span class="text-danger">*</span></label>
             <div class=" col-12 form-group mb-3">
                 <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
                     [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="date" />
+                    <div *ngIf="leaveGrant.get('date').invalid && leaveGrant.get('date').touched" class="text-danger error">
+                        Valid Date Required
+                    </div>
             </div>
         </div>
         <div class="mb-3">
@@ -33,10 +54,9 @@
 
 
 
-        <div>
-            <button mat-raised-button type="button">Cancel</button>
-            <button mat-button mat-dialog-close type="submit" >Submit</button>
-
+        <div class="d-flex justify-content-between">
+            <button mat-raised-button type="reset">Cancel</button>
+            <button mat-button mat-dialog-close class="addBtn" type="submit">Submit</button>
         </div>
 
 

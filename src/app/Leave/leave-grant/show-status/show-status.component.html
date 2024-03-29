@@ -8,7 +8,7 @@
                 name="searchText" aria-label="default input example">
 
             <button mat-raised-button class="addBtn rounded-pill mx-3" (click)="open(addModal)">Add
-                </button>
+            </button>
 
             <button class="submenuTab active rounded-pill" (click)="exportToCsv()"> <i
                     class="bi bi-download downloadBtn pe-2"></i>
@@ -18,10 +18,24 @@
 
     <table class="mt-2">
         <thead>
-            <th>Employee Name</th>
-            <th>Applied On</th>
-            <th>Applied For</th>
-            <th>Used On</th>
+            <th [appSort]="leaveGrant" data-name="employee"
+                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Employee Name
+                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+            </th>
+            <th  [appSort]="leaveGrant" data-name="appliedOn"
+            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Applied On
+            <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+        </th>
+            <th  [appSort]="leaveGrant" data-name="date"
+            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Applied For
+                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+
+            </th>
+            <th  [appSort]="leaveGrant" data-name="usedOn"
+            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Used On
+                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+
+            </th>
             <th>Comment</th>
             <th>Status</th>
             <th>Actions</th>
@@ -55,16 +69,14 @@
                                     class="pt-1 text-muted">Reject</span>
                             </li>
 
-                            <li class="d-flex border-bottom action-list"
-                                *ngIf="actionOptions.delete"
+                            <li class="d-flex border-bottom action-list" *ngIf="actionOptions.delete"
                                 (click)="deleteDialog(leave?._id)">
                                 <i class="bi bi-person-dash dropdown-item w-25"></i><span
                                     class="pt-1 text-muted">Delete</span>
                             </li>
 
                             <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
-                                *ngIf="actionOptions.view" data-bs-target="#viewModal"
-                                (click)="openSecondModal(leave)">
+                                *ngIf="actionOptions.view" data-bs-target="#viewModal" (click)="openSecondModal(leave)">
                                 <i class="fas fa-eye dropdown-item w-25"></i><span class="pt-1 text-muted">View</span>
                             </li>
                         </ul>
@@ -73,12 +85,12 @@
             </tr>
         </tbody>
     </table>
-    <pagination-controls (pageChange)="p = $event"
-                class="pagination d-flex justify-content-end"></pagination-controls>
+    <pagination-controls (pageChange)="p = $event" class="pagination d-flex justify-content-end"></pagination-controls>
 </div>
 
 <ng-template #addModal let-modal>
-    <app-add-leave (close)="onClose($event)" (leaveGrantRefreshed)="refreshLeaveGrantTable()"></app-add-leave>
+    <app-add-leave [tab]="tab" (close)="onClose($event)"
+        (leaveGrantRefreshed)="refreshLeaveGrantTable()"></app-add-leave>
 </ng-template>
 
 <ng-template #statusUpdate let-modal>

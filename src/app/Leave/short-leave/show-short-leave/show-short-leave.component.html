@@ -11,7 +11,7 @@
                 name="searchText" aria-label="default input example">
 
             <button mat-raised-button class="addBtn rounded-pill mx-3" (click)="open(addModal)">Add
-                </button>
+            </button>
 
             <button class="submenuTab active rounded-pill" (click)="exportToCsv()"> <i
                     class="bi bi-download downloadBtn pe-2"></i>
@@ -21,11 +21,26 @@
 
     <table class="mt-2">
         <thead>
-            <th>Employee Name</th>
-            <th>Date</th>
-            <th>Start Time</th>
-            <th>End Time</th>
-            <th>Total Duration(in minutes)</th>
+            <th [appSort]="shortLeave"
+                data-name="employee" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Employee Name
+                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+            </th>
+            <th [appSort]="shortLeave" data-name="date" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                Date
+                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+            </th>
+            <th [appSort]="shortLeave" data-name="startTime"
+                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Start Time
+                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+            </th>
+            <th [appSort]="shortLeave" data-name="endTime"
+                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">End Time
+                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+            </th>
+            <th [appSort]="shortLeave" data-name="durationInMinutes"
+                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Total Duration(in minutes)
+                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+            </th>
             <th>Reason</th>
             <th>Status</th>
             <th>Actions</th>
@@ -76,12 +91,11 @@
             </tr>
         </tbody>
     </table>
-    <pagination-controls (pageChange)="p = $event"
-                class="pagination d-flex justify-content-end"></pagination-controls>
+    <pagination-controls (pageChange)="p = $event" class="pagination d-flex justify-content-end"></pagination-controls>
 </div>
 
 <ng-template #addModal let-modal>
-    <app-add-short-leave (close)="onClose($event)"
+    <app-add-short-leave [tab]="tab" (close)="onClose($event)"
         (shortLeaveRefreshed)="refreshShortLeaveTable()"></app-add-short-leave>
 </ng-template>
 

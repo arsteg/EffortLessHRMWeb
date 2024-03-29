@@ -140,6 +140,19 @@ export class LeaveService extends baseService {
     return this.http.get<any>(`${environment.apiUrlDotNet}/Leave/employee-leave-grant`, this.httpOptions);
   }
 
+  public getLeaveGrantByUser(userId: string): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.get<any>(`${environment.apiUrlDotNet}/Leave/employee-leave-grant-by-user/${userId}`, this.httpOptions);
+  }
+
+  public getLeaveGrantByTeam(): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.get<any>(`${environment.apiUrlDotNet}/Leave/employee-leave-grant-by-team`, this.httpOptions);
+
+  }
+
   public addLeaveGrant(leaveGrant: any): any {
     const token = this.getToken();
     this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
@@ -177,6 +190,18 @@ export class LeaveService extends baseService {
     const token = this.getToken();
     this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
     return this.http.get<any>(`${environment.apiUrlDotNet}/Leave/employee-leave-application`, this.httpOptions);
+  }
+
+  public getLeaveApplicationbyUser(userId: string): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.get<any>(`${environment.apiUrlDotNet}/Leave/employee-leave-application-by-user/${userId}`, this.httpOptions);
+  }
+
+  public getLeaveApplicationByTeam(): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.get<any>(`${environment.apiUrlDotNet}/Leave/employee-leave-application-by-team`, this.httpOptions);
   }
 
   public updateLeaveApplication(id: string, leaveApplication: any): any {

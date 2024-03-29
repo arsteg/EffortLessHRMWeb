@@ -22,8 +22,7 @@
                     <tr>
                         <th [appSort]="leaveCategory" data-name="label"
                         (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Leave Label
-                        <i
-                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
               
                     </th>
                         <th [appSort]="leaveCategory" data-name="leaveType"

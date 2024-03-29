@@ -13,32 +13,59 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field>
+            <div *ngIf="leaveApplication.get('employee').invalid && leaveApplication.get('employee').touched" class="text-danger error">
+                Employee selection is required
+            </div>
+        </div>
+
+        <div *ngIf=" tab === 5" class="mb-2">
+            <label for="member">Select an Employee for Leave Application <span class="text-danger">*</span></label>
+            <mat-form-field appearance="outline" class="w-100 mx-1">
+                <mat-label>Select Employee</mat-label>
+                <mat-select name="users"  formControlName="employee" required>
+                    <mat-option *ngFor="let member of members" [value]="member.id">
+                        {{member?.name | titlecase}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <div *ngIf="leaveApplication.get('employee').invalid && leaveApplication.get('employee').touched" class="text-danger error">
+                Employee selection is required
+            </div>
         </div>
 
         <div>
-            <label for="member">Select Category</label>
+            <label for="member">Select Category <span class="text-danger">*</span></label>
             <mat-form-field appearance="outline" class="w-100 mx-1">
-                <mat-select formControlName="leaveCategory">
+                <mat-select formControlName="leaveCategory" required>
                     <mat-option *ngFor="let category of leaveCategories" [value]="category?._id">
                         {{category?.label | titlecase}}
                     </mat-option>
                 </mat-select>
             </mat-form-field>
-        </div>
-
-        <div class="mt-2">
-            <label for="">Select Start Date</label>
-            <div class=" col-12 form-group mb-3">
-                <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
-                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="startDate" />
+            <div *ngIf="leaveApplication.get('leaveCategory').invalid && leaveApplication.get('leaveCategory').touched" class="text-danger error">
+                Please Select Leave Category
             </div>
         </div>
 
         <div class="mt-2">
-            <label for="">Select End Date</label>
+            <label for="">Select Start Date <span class="text-danger">*</span></label>
             <div class=" col-12 form-group mb-3">
                 <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
-                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="endDate" />
+                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="startDate" required/>
+                    <div *ngIf="leaveApplication.get('startDate').invalid && leaveApplication.get('startDate').touched" class="text-danger error">
+                        Add a Valid Start date
+                    </div>
+            </div>
+        </div>
+
+        <div class="mt-2">
+            <label for="">Select End Date <span class="text-danger">*</span></label>
+            <div class=" col-12 form-group mb-3">
+                <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
+                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="endDate" required/>
+                    <div *ngIf="leaveApplication.get('endDate').invalid && leaveApplication.get('endDate').touched" class="text-danger error">
+                        Add a Valid End date
+                    </div>
             </div>
         </div>
         <div class="mt-2" *ngIf="leaveApplication.get('leaveCategory').value">
@@ -97,9 +124,9 @@
                 rows="3"></textarea>
         </div>
 
-        <div>
-            <button mat-raised-button type="button">Cancel</button>
-            <button mat-button mat-dialog-close type="submit">Submit</button>
+        <div class="d-flex justify-content-between">
+            <button mat-raised-button type="reset">Cancel</button>
+            <button mat-button mat-dialog-close class="addBtn" type="submit">Submit</button>
         </div>
     </form>
 </div>

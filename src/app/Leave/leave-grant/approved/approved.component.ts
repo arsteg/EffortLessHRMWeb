@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-approved',
@@ -12,4 +12,5 @@ export class ApprovedComponent {
     delete: false,
     view: true
   };
+  @Input() selectedTab: number;
 }

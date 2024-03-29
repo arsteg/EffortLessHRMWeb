@@ -39,10 +39,11 @@ export class UpdateStatusComponent {
       date: this.leaveUpdateStatus.date,
       comment: this.leaveUpdateStatus.comment
     }
-    this.leaveService.updateLeaveGrant(id, payload).subscribe((res: any)=>{
+    this.leaveService.updateLeaveGrant(id, payload).subscribe((res: any) => {
       this.leaveGrantRefreshed.emit();
       this.dialogRef.close();
-    })
+    });
+    this.leaveGrantRefreshed.emit();
   }
 
   closeModal() {

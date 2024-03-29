@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { LeaveService } from 'src/app/_services/leave.service';
+import { TimeLogService } from 'src/app/_services/timeLogService';
 import { CommonService } from 'src/app/common/common.service';
 
 @Component({
@@ -16,13 +17,18 @@ export class AddShortLeaveComponent {
   totalTimeInMinutes: number;
   @Output() close: any = new EventEmitter();
   @Output() shortLeaveRefreshed: EventEmitter<void> = new EventEmitter<void>();
-
+  members: any[] = [];
+  member: any;
+  currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  @Input() tab: number;
+  portalView = localStorage.getItem('adminView')
 
 
   constructor(private leaveService: LeaveService,
     private toast: ToastrService,
     private fb: FormBuilder,
-    private commonService: CommonService) {
+    private commonService: CommonService,
+    private timeLogService: TimeLogService) {
     this.shortLeave = this.fb.group({
       employee: [''],
       date: [],
@@ -39,10 +45,39 @@ export class AddShortLeaveComponent {
   }
 
   ngOnInit() {
+    console.log(this.tab)
     this.commonService.populateUsers().subscribe(result => {
       this.allAssignee = result && result.data && result.data.data;
     });
+    this.populateMembers();
   }
+
+  populateMembers() {
+    this.members = [];
+    let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    this.members.push({ id: currentUser.id, name: "Me", email: currentUser.email });
+    this.member = currentUser;
+    this.timeLogService.getTeamMembers(this.member.id).subscribe({
+      next: response => {
+        this.timeLogService.getusers(response.data).subscribe({
+          next: result => {
+            result.data.forEach(user => {
+              if (user.id != currentUser.id) {
+                this.members.push({ id: user.id, name: `${user.firstName} ${user.lastName}`, email: user.email });
+              }
+            })
+          },
+          error: error => {
+            console.log('There was an error!', error);
+          }
+        });
+      },
+      error: error => {
+        console.log('There was an error!', error);
+      }
+    });
+  }
+
   calculateTotalTime(): void {
     const startTime = new Date(this.shortLeave.get('startTime').value);
     const endTime = new Date(this.shortLeave.get('endTime').value);
@@ -88,9 +123,9 @@ export class AddShortLeaveComponent {
   }
 
   onDateSelected(date: Date): void {
-    const timezoneOffset = date.getTimezoneOffset() * 60000; 
+    const timezoneOffset = date.getTimezoneOffset() * 60000;
     const adjustedDate = new Date(date.getTime() - timezoneOffset);
-    const formattedDate = adjustedDate.toISOString().slice(0, 10); 
+    const formattedDate = adjustedDate.toISOString().slice(0, 10);
     const startTime = formattedDate + 'T00:00';
     const endTime = formattedDate + 'T23:59';
     this.shortLeave.patchValue({

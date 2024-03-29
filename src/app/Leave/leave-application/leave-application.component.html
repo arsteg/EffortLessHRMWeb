@@ -12,16 +12,16 @@
         </div>
 
         <div *ngIf="selectedTab === 1" class="tab-content p-0">
-            <app-pending-application></app-pending-application>
+            <app-pending-application [selectedTab]="tab"></app-pending-application>
         </div>
         <div *ngIf="selectedTab === 2" class="tab-content p-0">
-            <app-approved-application></app-approved-application>
+            <app-approved-application [selectedTab]="tab"></app-approved-application>
         </div>
         <div *ngIf="selectedTab === 3" class="tab-content p-0">
-            <app-cancelled-application></app-cancelled-application>
+            <app-cancelled-application [selectedTab]="tab"></app-cancelled-application>
         </div>
         <div *ngIf="selectedTab === 4" class="tab-content p-0">
-            <app-rejected-application></app-rejected-application>
+            <app-rejected-application [selectedTab]="tab"></app-rejected-application>
         </div>
     </div>
 </div>

@@ -8,7 +8,7 @@
                 name="searchText" aria-label="default input example">
 
             <button mat-raised-button class="addBtn rounded-pill mx-3" (click)="open(addModal)">Add
-                </button>
+            </button>
 
             <button class="submenuTab active rounded-pill" (click)="exportToCsv()"> <i
                     class="bi bi-download downloadBtn pe-2"></i>
@@ -18,21 +18,37 @@
 
     <table class="mt-2">
         <thead>
-            <th>Employee Name</th>
-            <th>Leave Category</th>
-            <th>Start Date</th>
-            <th>End Date</th>
-            <th>Total Leave Days</th>
+            <th *ngIf="portalView == 'admin'|| portalView== 'user' && tab == 5" [appSort]="leaveApplication"
+                data-name="employee" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Employee Name
+                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+            </th>
+            <th [appSort]="leaveApplication" data-name="leaveCategory"
+                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Leave Category
+                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+            </th>
+            <th [appSort]="leaveApplication" data-name="startDate"
+                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Start Date
+                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+            </th>
+            <th [appSort]="leaveApplication" data-name="endDate"
+                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">End Date
+                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+            </th>
+            <th [appSort]="leaveApplication" data-name="totalLeaveDays"
+                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Total Leave Days
+                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+            </th>
             <th>Status</th>
             <th>Actions</th>
         </thead>
         <tbody>
-            <tr *ngFor="let leave of leaveApplication  | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }; ">
-                <td>{{getUser(leave?.employee)}}</td>
+            <tr
+                *ngFor="let leave of leaveApplication  | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }; ">
+                <td *ngIf="portalView == 'admin'|| portalView== 'user' && tab == 5">{{getUser(leave?.employee)}}</td>
                 <td>{{getCategory(leave?.leaveCategory)}}</td>
                 <td>{{leave?.startDate | date: 'mediumDate'}}</td>
                 <td>{{leave?.endDate | date: 'mediumDate'}}</td>
-                <td> </td>
+                <td> {{leave?.totalLeaveDays}}</td>
                 <td>{{leave?.status}}</td>
                 <td>
                     <div class="dropdown-center">
@@ -71,12 +87,12 @@
             </tr>
         </tbody>
     </table>
-    <pagination-controls (pageChange)="p = $event"
-                class="pagination d-flex justify-content-end"></pagination-controls>
+    <pagination-controls (pageChange)="p = $event" class="pagination d-flex justify-content-end"></pagination-controls>
 </div>
 
 <ng-template #addModal let-modal>
-    <app-add-application (close)="onClose($event)" (leaveApplicationRefreshed)="refreshLeaveApplicationTable()"></app-add-application>
+    <app-add-application (close)="onClose($event)" [tab]="tab"
+        (leaveApplicationRefreshed)="refreshLeaveApplicationTable()"></app-add-application>
 </ng-template>
 
 <ng-template #statusUpdate let-modal>

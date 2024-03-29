@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-pending',
@@ -12,4 +12,5 @@ export class PendingComponent {
     delete: true,
     view: false
   };
+  @Input() selectedTab: number;
 }
