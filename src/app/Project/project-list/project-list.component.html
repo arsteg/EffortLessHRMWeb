@@ -25,8 +25,8 @@
                                 <span class="bi bi-search searchIcon"></span>
                                 <input class="form-control search" type="text" placeholder="Search..."
                                     [(ngModel)]="searchText" name="searchText" aria-label="default input example">
-                                <button mat-raised-button class="addBtn rounded-pill ms-3" data-bs-toggle="modal"
-                                    data-bs-target="#addModal">Add
+                                <button mat-raised-button class="addBtn rounded-pill ms-3" (click)="clearForm()"
+                                    data-bs-toggle="modal" data-bs-target="#addModal">Add
                                     New</button>
                             </div>
 
@@ -359,12 +359,10 @@
                         <div class="d-flex justify-content-between my-3 border-top pt-3">
 
                             <div>
-                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
-                                    type="button">Cancel</button>
+                                <button mat-raised-button class="mx-2" type="reset">Cancel</button>
                             </div>
                             <div>
-                                <button mat-raised-button class="addBtn" data-bs-dismiss="modal"
-                                    type="submit">Add</button>
+                                <button mat-raised-button class="addBtn" type="submit">Add</button>
                             </div>
 
                         </div>
@@ -380,7 +378,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-body">
-                <div class="d-flex justify-content-between">
+                <div class="d-flex justify-content-between border-bottom mb-3">
                     <div class="">
                         <h4 class="modal-title text-start">Update Project <b
                                 style="color: #76bc21">{{selectedProject.projectName | titlecase}}</b></h4>
@@ -404,43 +402,48 @@
                                         Project Name is required.
                                     </div>
                                 </div>
-
-                                <div class="row mt-3">
-                                    <label for="startDate" class="text-start">Start Date</label>
-                                </div>
                                 <div class="row">
-                                    <div class="col-12 form-group mb-3">
-                                        <input placeholder="YYYY-MM-DD" class="form-control"
-                                            #datepickerYMD="bsDatepicker" bsDatepicker
-                                            [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="startDate"
-                                            [(ngModel)]="selectedProject.startDate" required>
+                                    <div class="col-6">
+                                    <div class="row mt-3">
+                                        <label for="startDate" class="text-start">Start Date</label>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 form-group mb-3">
+                                            <input placeholder="YYYY-MM-DD" class="form-control"
+                                                #datepickerYMD="bsDatepicker" bsDatepicker
+                                                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
+                                                formControlName="startDate" [(ngModel)]="selectedProject.startDate"
+                                                required>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="updateForm.controls['startDate'].invalid && updateForm.controls['startDate'].touched"
+                                        class="alert alert-danger error">
+                                        <div *ngIf="updateForm.controls['startDate'].errors['required']">
+                                            Start Date is required.
+                                        </div>
+                                    </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="row mt-3">
+                                            <label for="endDate" class="text-start">End Date</label>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12 form-group mb-3">
+                                                <input placeholder="YYYY-MM-DD" class="form-control"
+                                                    #datepickerYMD="bsDatepicker" bsDatepicker
+                                                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
+                                                    formControlName="endDate" [(ngModel)]="selectedProject.endDate"
+                                                    required>
+                                            </div>
+                                        </div>
+                                        <div *ngIf="updateForm.controls['endDate'].invalid && updateForm.controls['endDate'].touched"
+                                            class="alert alert-danger error">
+                                            <div *ngIf="updateForm.controls['endDate'].errors['required']">
+                                                End Date is required.
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div *ngIf="updateForm.controls['startDate'].invalid && updateForm.controls['startDate'].touched"
-                                    class="alert alert-danger error">
-                                    <div *ngIf="updateForm.controls['startDate'].errors['required']">
-                                        Start Date is required.
-                                    </div>
-                                </div>
-
-                                <div class="row mt-3">
-                                    <label for="endDate" class="text-start">End Date</label>
-                                </div>
-                                <div class="row">
-                                    <div class="col-12 form-group mb-3">
-                                        <input placeholder="YYYY-MM-DD" class="form-control"
-                                            #datepickerYMD="bsDatepicker" bsDatepicker
-                                            [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="endDate"
-                                            [(ngModel)]="selectedProject.endDate" required>
-                                    </div>
-                                </div>
-                                <div *ngIf="updateForm.controls['endDate'].invalid && updateForm.controls['endDate'].touched"
-                                    class="alert alert-danger error">
-                                    <div *ngIf="updateForm.controls['endDate'].errors['required']">
-                                        End Date is required.
-                                    </div>
-                                </div>
-
                                 <div class="row mt-3">
                                     <label for="estimatedTime" class="text-start d-flex justify-content-between"><span>
                                             Estimated Time </span><span class="text-muted" style="font-size: 12px">(In
@@ -463,22 +466,17 @@
                                     <label for="notes" class="text-start">Notes</label>
                                 </div>
                                 <input type="text" name="notes" id="notes" class="form-control input  pt-0"
-                                    [(ngModel)]="selectedProject.notes" formControlName="notes" required>
-                                <div *ngIf="updateForm.controls['notes'].invalid && updateForm.controls['notes'].touched"
-                                    class="alert alert-danger error">
-                                    <div *ngIf="updateForm.controls['notes'].errors['required']">
-                                        Note is required.
-                                    </div>
-                                </div>
+                                    [(ngModel)]="selectedProject.notes" formControlName="notes" >
+                               
                             </div>
                         </div>
                         <div class="d-flex justify-content-between m-3">
                             <div class="">
-                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
-                                    type="button">Cancel</button>
+                                <button mat-raised-button class="mx-2"
+                                    type="reset">Cancel</button>
                             </div>
                             <div>
-                                <button mat-raised-button  class="addBtn" data-bs-dismiss="modal"
+                                <button mat-raised-button class="addBtn" 
                                     type="submit">Update</button>
                             </div>
                         </div>
@@ -516,8 +514,8 @@
                         <button mat-raised-button class="mx-2" data-bs-dismiss="modal" type="button">Cancel</button>
                     </div>
                     <div>
-                        <button mat-raised-button class="addBtn" (click)="deleteProject()"
-                            data-bs-dismiss="modal" type="submit">Delete</button>
+                        <button mat-raised-button class="addBtn" (click)="deleteProject()" data-bs-dismiss="modal"
+                            type="submit">Delete</button>
                     </div>
                 </div>
             </div>

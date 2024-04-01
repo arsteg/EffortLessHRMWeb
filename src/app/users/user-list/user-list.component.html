@@ -214,12 +214,10 @@
                         <div class="d-flex justify-content-between my-3 border-top pt-3">
 
                             <div>
-                                <button mat-raised-button class="mx-2" 
-                                    type="reset">Cancel</button>
+                                <button mat-raised-button class="mx-2" type="reset">Cancel</button>
                             </div>
                             <div>
-                                <button mat-raised-button class="addBtn" type="submit"
-                                    [disabled]="!addForm.valid">Add</button>
+                                <button mat-raised-button class="addBtn" type="submit">Add</button>
                             </div>
 
                         </div>
@@ -235,7 +233,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-body">
-                <div class="d-flex justify-content-between">
+                <div class="d-flex justify-content-between mb-3 border-bottom">
                     <div class="">
                         <h4 class="modal-title text-start">Update Member</h4>
                     </div>
@@ -249,7 +247,8 @@
                             <div class="col-md-12">
                                 <div class="row">
                                     <div class="col-6">
-                                        <label for="firstName" class="text-start">First Name</label>
+                                        <label for="firstName" class="text-start">First Name <span
+                                                class="text-danger">*</span></label>
 
                                         <input type="text" name="firstName" id="firstName"
                                             class="form-control input pt-0" formControlName="firstName"
@@ -266,7 +265,8 @@
                                     </div>
 
                                     <div class="col-6">
-                                        <label for="lastName" class="text-start">Last Name</label>
+                                        <label for="lastName" class="text-start">Last Name <span
+                                                class="text-danger">*</span></label>
 
                                         <input type="text" name="lastName" id="lastName" class="form-control input pt-0"
                                             formControlName="lastName" [(ngModel)]="selectedUser.lastName" required>
@@ -290,7 +290,8 @@
 
                                     </div>
                                     <div class="col-md-6">
-                                        <label for="role" class="text-start">Role</label>
+                                        <label for="role" class="text-start">Role <span
+                                                class="text-danger">*</span></label>
 
                                         <select class="custom-select mb-3 p-2" formControlName="role"
                                             [(ngModel)]="selectedUser.role.id">
@@ -303,60 +304,86 @@
                                     </div>
                                 </div>
                                 <div class="row mt-3">
-                                    <label for="address" class="text-start">Address</label>
+                                    <label for="address" class="text-start">Address <span
+                                            class="text-danger">*</span></label>
                                 </div>
                                 <input type="text" name="address" id="address" class="form-control input pt-0"
                                     formControlName="address" [(ngModel)]="selectedUser.address">
+                                <div *ngIf="updateForm.controls['address'].invalid && updateForm.controls['address'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="updateForm.controls['address'].errors['required']">
+                                        Address is required.
+                                    </div>
+                                </div>
 
                                 <div class="row mt-3">
                                     <div class="col-6">
-                                        <label for="city" class="text-start">City</label>
+                                        <label for="city" class="text-start">City <span
+                                                class="text-danger">*</span></label>
 
                                         <input type="text" name="city" id="city" class="form-control input pt-0"
                                             formControlName="city" [(ngModel)]="selectedUser.city">
+                                        <div *ngIf="updateForm.controls['city'].invalid && updateForm.controls['city'].touched"
+                                            class="alert alert-danger error">
+                                            <div *ngIf="updateForm.controls['city'].errors['required']">
+                                                City is required.
+                                            </div>
+                                        </div>
 
                                     </div>
                                     <div class="col-6">
-                                        <label for="state" class="text-start">State</label>
+                                        <label for="state" class="text-start">State <span
+                                                class="text-danger">*</span></label>
 
                                         <input type="text" name="state" id="state" class="form-control input pt-0"
                                             formControlName="state" [(ngModel)]="selectedUser.state">
+                                        <div *ngIf="updateForm.controls['state'].invalid && updateForm.controls['state'].touched"
+                                            class="alert alert-danger error">
+                                            <div *ngIf="updateForm.controls['state'].errors['required']">
+                                                State is required.
+                                            </div>
+                                        </div>
 
                                     </div>
                                 </div>
                                 <div class="row mt-3">
                                     <div class="col-4">
-                                        <label for="pincode" class="text-start">Pincode</label>
+                                        <label for="pincode" class="text-start">Pincode <span
+                                                class="text-danger">*</span></label>
 
                                         <input type="text" name="pincode" id="pincode" class="form-control input pt-0"
                                             formControlName="pincode" [(ngModel)]="selectedUser.pincode">
+                                        <div *ngIf="updateForm.controls['pincode'].invalid && updateForm.controls['pincode'].touched"
+                                            class="alert alert-danger error">
+                                            <div *ngIf="updateForm.controls['pincode'].errors['required']">
+                                                Pin code is required.
+                                            </div>
+                                        </div>
 
                                     </div>
                                     <div class="col-8">
-                                        <label for="phone" class="text-start">Phone</label>
+                                        <label for="phone" class="text-start">Phone <span
+                                                class="text-danger">*</span></label>
 
                                         <input type="text" name="phone" id="phone" class="form-control input pt-0"
                                             formControlName="phone" [(ngModel)]="selectedUser.phone">
-                                        <div
-                                            *ngIf="updateForm.get('phone').invalid && (updateForm.get('phone').dirty || updateForm.get('phone').touched)">
-                                            <div *ngIf="updateForm.get('phone').errors['required']" class="text-danger">
-                                                Phone number is required.</div>
-                                            <div *ngIf="updateForm.get('phone').errors['pattern']" class="text-danger">
-                                                Please enter a valid 10-digit phone number.</div>
+                                        <div *ngIf="updateForm.controls['phone'].invalid && updateForm.controls['phone'].touched"
+                                            class="alert alert-danger error">
+                                            <div *ngIf="updateForm.controls['phone'].errors['required']">
+                                                Phone is required.
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="d-flex justify-content-between m-3">
+                        <div class="d-flex justify-content-between m-3 pt-3 border-top">
 
                             <div>
-                                <button mat-raised-button class="mx-2" 
-                                    type="reset">Cancel</button>
+                                <button mat-raised-button class="mx-2" type="reset">Cancel</button>
                             </div>
                             <div>
-                                <button mat-raised-button class="addBtn" type="submit"
-                                    [disabled]="!updateForm.valid">Update</button>
+                                <button mat-raised-button class="addBtn" type="submit">Update</button>
                             </div>
 
                         </div>

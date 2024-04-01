@@ -60,9 +60,9 @@ export class ProjectListComponent implements OnInit {
     this.updateForm = this.fb.group({
       projectName: ['', Validators.required],
       startDate: ['', Validators.required],
-      endDate: ['', Validators.required],
-      estimatedTime: ['', Validators.required],
-      notes: ['', Validators.required],
+      endDate: [''],
+      estimatedTime: [''],
+      notes: [''],
       firstName: ['', Validators.required]
     });
 
@@ -108,16 +108,31 @@ export class ProjectListComponent implements OnInit {
     this.getProjectsByUser();
   }
   addProject(form) {
-    this.projectService.addproject(form).subscribe((result: any) => {
-      const projects = result && result.data && result.data.newProject;
-      this.projectList.push(projects);
-      this.toastr.success('New Project', 'Successfully Added!')
-    },
-      err => {
-        this.toastr.error('Can not be Added', 'ERROR!')
-      })
+    if (form.valid) {
+      this.projectService.addproject(form).subscribe((result: any) => {
+        const projects = result && result.data && result.data.newProject;
+        this.projectList.push(projects);
+        this.toastr.success('New Project', 'Successfully Added!');
+        this.form.reset();
+      },
+        err => {
+          this.toastr.error('Can not be Added', 'ERROR!')
+        })
+    }
+    else {
+      this.markFormGroupTouched(this.form);
+    }
   }
 
+  markFormGroupTouched(formGroup: FormGroup) {
+    Object.values(formGroup.controls).forEach(control => {
+      control.markAsTouched();
+
+      if (control instanceof FormGroup) {
+        this.markFormGroupTouched(control);
+      }
+    });
+  }
   deleteProject() {
     this.projectService.deleteproject(this.selectedProject._id)
       .subscribe(response => {
@@ -130,13 +145,16 @@ export class ProjectListComponent implements OnInit {
   }
 
   updateProject(updateForm) {
-    this.projectService.updateproject(this.selectedProject._id, updateForm).subscribe(response => {
+   if(updateForm.valid) {this.projectService.updateproject(this.selectedProject._id, updateForm).subscribe(response => {
       this.ngOnInit();
       this.toastr.success('Existing Project Updated', 'Successfully Updated!')
     },
       err => {
         this.toastr.error('Can not be Updated', 'ERROR!')
-      })
+      })}
+      else {
+        this.markFormGroupTouched(this.form);
+      }
   }
 
 
@@ -178,5 +196,8 @@ export class ProjectListComponent implements OnInit {
       err => {
         this.toastr.error(projectUserList.user.firstName.toUpperCase(), 'ERROR! Can not be Removed')
       })
+  }
+  clearForm(){
+    this.form.reset();
   }
 }

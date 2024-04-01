@@ -39,7 +39,7 @@ export class UserListComponent implements OnInit {
     private toastrrr: ToastrService,
     public commonservice: CommonService) {
     this.addForm = this.fb.group({
-      firstName: ['',  [Validators.required, Validators.pattern('[a-zA-Z ]*')]],
+      firstName: ['', [Validators.required, Validators.pattern('[a-zA-Z ]*')]],
       lastName: ['', [Validators.required, Validators.pattern('[a-zA-Z ]*')]],
       role: ['', Validators.required],
       email: ['', Validators.required],
@@ -50,12 +50,12 @@ export class UserListComponent implements OnInit {
       firstName: ['', [Validators.required, Validators.pattern('[a-zA-Z ]*')]],
       lastName: ['', [Validators.required, Validators.pattern('[a-zA-Z ]*')]],
       jobTitle: [''],
-      pincode: ['', Validators.pattern('^[0-9]{6}$')],
-      state: ['', Validators.pattern('[A-Za-z]+')],
-      city: ['', Validators.pattern('[A-Za-z]+')],
+      pincode: ['', [Validators.required, Validators.pattern('^[0-9]{6}$')]],
+      state: ['', [Validators.required, Validators.pattern('[A-Za-z]+')]],
+      city: ['', [Validators.required, Validators.pattern('[A-Za-z]+')]],
       phone: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
-      address: [''],
-      role: ['']
+      address: ['', Validators.required],
+      role: ['', Validators.required]
     });
   }
 
@@ -95,17 +95,32 @@ export class UserListComponent implements OnInit {
   }
 
   addUser(addForm) {
-    this.UserService.addUser(addForm).subscribe(result => {
-      const users = result['data'].user;
-      this.usersList.push(users);
-      this.toastrrr.success('New User Added', 'Successfully Added!');
-    },
-      err => {
-        this.toastrrr.error('User with this Email already Exists', 'Duplicate Email!')
-      });
+    if (addForm.valid) {
+      this.UserService.addUser(addForm).subscribe(result => {
+        const users = result['data'].user;
+        this.usersList.push(users);
+        this.toastrrr.success('New User Added', 'Successfully Added!');
+      },
+        err => {
+          this.toastrrr.error('User with this Email already Exists', 'Duplicate Email!')
+        });
       this.addForm.reset();
+    }
+    else {
+      this.markFormGroupTouched(this.addForm);
+    }
   }
- 
+
+  markFormGroupTouched(formGroup: FormGroup) {
+    Object.values(formGroup.controls).forEach(control => {
+      control.markAsTouched();
+
+      if (control instanceof FormGroup) {
+        this.markFormGroupTouched(control);
+      }
+    });
+  }
+
   deleteUser() {
     this.UserService.deleteUser(this.selectedUser._id)
       .subscribe(response => {
@@ -118,13 +133,18 @@ export class UserListComponent implements OnInit {
   }
 
   updateUser(updateForm) {
-    this.UserService.updateUser(this.selectedUser._id, updateForm).subscribe(resonse => {
-      this.ngOnInit();
-      this.toastrrr.success('Existing User Updated', 'Successfully Updated!')
-    },
-      err => {
-        this.toastrrr.error('Can not be Updated', 'ERROR!')
-      })
+    if (updateForm.valid) {
+      this.UserService.updateUser(this.selectedUser._id, updateForm).subscribe(resonse => {
+        this.ngOnInit();
+        this.toastrrr.success('Existing User Updated', 'Successfully Updated!')
+      },
+        err => {
+          this.toastrrr.error('Can not be Updated', 'ERROR!')
+        })
+    }
+    else {
+      this.markFormGroupTouched(this.updateForm);
+    }
   }
 
   clearForm() {
