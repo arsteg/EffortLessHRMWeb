@@ -77,7 +77,8 @@
                                     [(ngModel)]="searchText" name="searchText" aria-label="default input example">
                                 <div>
                                     <button mat-raised-button class="addBtn rounded-pill ms-3 mt-2"
-                                        data-bs-toggle="modal" data-bs-target="#addModal" (click)="clearForm()">Create</button>
+                                        data-bs-toggle="modal" data-bs-target="#addModal"
+                                        (click)="clearForm()">Create</button>
                                 </div>
                             </div>
                         </div>
@@ -1219,7 +1220,20 @@
                                     </select>
 
                                 </div>
-                                <div class="col-6 mt-3">
+
+                                <div class="col-6">
+                                    <div class="row mt-3">
+                                        <label for="estimate" class="text-start">Estimate (Hours)</label>
+                                    </div>
+                                    <input type="number" name="estimate" id="estimate" class="form-control input  pt-0"
+                                        formControlName="estimate">
+                                </div>
+
+
+                            </div>
+                            <!-- <div class="row"> -->
+
+                                <div class="col-12 mt-3">
                                     <label for="">Attachment</label>
                                     <div class="attachment flex-wrap mt-1"><label class="attach"><input
                                                 style="display: none;" formControlName="taskAttachments"
@@ -1244,18 +1258,8 @@
                                         </li>
                                     </ul>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-6">
-                                    <div class="row mt-3">
-                                        <label for="estimate" class="text-start">Estimate (Hours)</label>
-                                    </div>
-                                    <input type="number" name="estimate" id="estimate" class="form-control input  pt-0"
-                                        formControlName="estimate">
-                                </div>
-
-                            </div>
-
+                            <!-- </div> -->
+<!-- </div> -->
                             <div class="row mt-3">
                                 <label for="comment" class="text-start">Comments</label>
                             </div>
@@ -1265,8 +1269,7 @@
                             <div class="d-flex justify-content-between mt-3">
 
                                 <div>
-                                    <button mat-raised-button class="mx-2" 
-                                        type="reset">Cancel</button>
+                                    <button mat-raised-button class="mx-2" type="reset">Cancel</button>
                                 </div>
                                 <div>
                                     <button mat-raised-button class="addBtn" type="submit">Add</button>

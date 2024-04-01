@@ -546,7 +546,6 @@ export class TasksComponent implements OnInit {
       }
     }
     else {
-      // Mark all form controls as touched to trigger error messages
       this.markFormGroupTouched(this.addForm);
     }
   }
