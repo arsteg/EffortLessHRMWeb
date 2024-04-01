@@ -540,7 +540,7 @@ export class TasksComponent implements OnInit {
             this.toast.success('New Task Successfully Created!', `Task Number: ${newTask.newTask.taskNumber}`);
           },
           (err) => {
-            this.toast.error('Task Can not be Created', 'Error!');
+            this.toast.error('Choose a different, unique title for your task', 'Error!');
           }
         );
       }
@@ -559,6 +559,9 @@ export class TasksComponent implements OnInit {
             this.markFormGroupTouched(control);
         }
     });
+}
+clearForm(){
+  this.addForm.reset();
 }
 
   onFileSelect(event) {

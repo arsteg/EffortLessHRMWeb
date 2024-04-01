@@ -77,7 +77,7 @@
                                     [(ngModel)]="searchText" name="searchText" aria-label="default input example">
                                 <div>
                                     <button mat-raised-button class="addBtn rounded-pill ms-3 mt-2"
-                                        data-bs-toggle="modal" data-bs-target="#addModal">Create</button>
+                                        data-bs-toggle="modal" data-bs-target="#addModal" (click)="clearForm()">Create</button>
                                 </div>
                             </div>
                         </div>
@@ -1265,7 +1265,7 @@
                             <div class="d-flex justify-content-between mt-3">
 
                                 <div>
-                                    <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
+                                    <button mat-raised-button class="mx-2" 
                                         type="reset">Cancel</button>
                                 </div>
                                 <div>
