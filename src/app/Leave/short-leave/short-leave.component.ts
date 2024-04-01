@@ -10,7 +10,6 @@ export class ShortLeaveComponent {
   @Input() tab: number;
   
   ngOnInit() {
-    console.log(this.tab)
   }
   selectTab(tabIndex: number) {
     this.selectedTab = tabIndex;

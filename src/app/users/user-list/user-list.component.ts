@@ -39,16 +39,16 @@ export class UserListComponent implements OnInit {
     private toastrrr: ToastrService,
     public commonservice: CommonService) {
     this.addForm = this.fb.group({
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
+      firstName: ['',  [Validators.required, Validators.pattern('[a-zA-Z ]*')]],
+      lastName: ['', [Validators.required, Validators.pattern('[a-zA-Z ]*')]],
       role: ['', Validators.required],
       email: ['', Validators.required],
       password: ['', Validators.required],
       passwordConfirm: ['', Validators.required],
     }, { validator: this.passwordMatchValidator });
     this.updateForm = this.fb.group({
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
+      firstName: ['', [Validators.required, Validators.pattern('[a-zA-Z ]*')]],
+      lastName: ['', [Validators.required, Validators.pattern('[a-zA-Z ]*')]],
       jobTitle: [''],
       pincode: ['', Validators.pattern('^[0-9]{6}$')],
       state: ['', Validators.pattern('[A-Za-z]+')],

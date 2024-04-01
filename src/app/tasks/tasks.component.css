@@ -119,7 +119,8 @@
 
 @media (min-width: 576px) {
   .modal-dialog {
-    max-width: 764px !important;
+    min-width:60vw !important;
+    /* max-width: 764px !important; */
   }
 }
 

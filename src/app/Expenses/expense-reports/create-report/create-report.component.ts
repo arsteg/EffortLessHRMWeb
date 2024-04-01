@@ -85,7 +85,7 @@ export class CreateReportComponent {
   }
 
   ngOnDestroy() {
-    this.sharedDataSubscription.unsubscribe();
+    // this.sharedDataSubscription.unsubscribe();
     this.refreshSubscription.unsubscribe();
   }
 

@@ -119,6 +119,9 @@
                                             <div *ngIf="addForm.controls['firstName'].errors['required']">
                                                 First Name is required.
                                             </div>
+                                            <div *ngIf="addForm.controls['firstName'].errors['pattern']">
+                                                Only Alphabets are allowed.
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -131,6 +134,9 @@
                                             class="alert alert-danger error">
                                             <div *ngIf="addForm.controls['lastName'].errors['required']">
                                                 Last Name is required.
+                                            </div>
+                                            <div *ngIf="addForm.controls['lastName'].errors['pattern']">
+                                                Only Alphabets are allowed.
                                             </div>
                                         </div>
                                     </div>
@@ -208,8 +214,8 @@
                         <div class="d-flex justify-content-between my-3 border-top pt-3">
 
                             <div>
-                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
-                                    type="button">Cancel</button>
+                                <button mat-raised-button class="mx-2" 
+                                    type="reset">Cancel</button>
                             </div>
                             <div>
                                 <button mat-raised-button class="addBtn" type="submit"
@@ -253,6 +259,9 @@
                                             <div *ngIf="updateForm.controls['firstName'].errors['required']">
                                                 First Name is required.
                                             </div>
+                                            <div *ngIf="updateForm.controls['firstName'].errors['pattern']">
+                                                Only Alphabets are allowed.
+                                            </div>
                                         </div>
                                     </div>
 
@@ -265,6 +274,9 @@
                                             class="alert alert-danger error">
                                             <div *ngIf="updateForm.controls['lastName'].errors['required']">
                                                 Last Name is required.
+                                            </div>
+                                            <div *ngIf="updateForm.controls['lastName'].errors['pattern']">
+                                                Only Alphabets are allowed.
                                             </div>
                                         </div>
                                     </div>
@@ -339,8 +351,8 @@
                         <div class="d-flex justify-content-between m-3">
 
                             <div>
-                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
-                                    type="button">Cancel</button>
+                                <button mat-raised-button class="mx-2" 
+                                    type="reset">Cancel</button>
                             </div>
                             <div>
                                 <button mat-raised-button class="addBtn" type="submit"

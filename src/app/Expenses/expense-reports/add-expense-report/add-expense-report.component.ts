@@ -93,7 +93,6 @@ export class AddExpenseReportComponent {
   }
 
   getSelectedExpenseReportExpense(selectedExpenseReportExpense: any) {
-    console.log(selectedExpenseReportExpense)
     this.expenseService.expenseReportExpense.next(selectedExpenseReportExpense);
   }
 
@@ -120,10 +119,9 @@ export class AddExpenseReportComponent {
       expenseReportExpenses: []
     }
     let formArray = this.expenseService.expenseReportExpense.getValue();
-    console.log(formArray)
     payload.expenseReportExpenses = [formArray];
-    if (!this.isEdit || !this.changeMode) {
-      console.log(payload)
+    if (this.changeMode = false) {
+      console.log(this.changeMode,payload)
       this.expenseService.addExpensePendingReport(payload).subscribe((res: any) => {
         this.toast.success('Expense Template Applicable Category Added Successfully!');
         this.updateExpenseReportTable.emit();
@@ -185,7 +183,6 @@ export class AddExpenseReportComponent {
 
   getExpenseReportExpensesByReportId() {
     let id = this.expenseService.selectedReport.getValue()._id;
-    console.log(this.expenseService.expenseReportExpense.getValue())
     if (this.changeMode) {
       this.expenseService.getExpenseReportExpensesByReportId(id).subscribe((res: any) => {
         this.expenseReportExpenses = res.data;

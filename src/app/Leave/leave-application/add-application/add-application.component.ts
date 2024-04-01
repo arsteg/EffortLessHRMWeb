@@ -49,7 +49,6 @@ export class AddApplicationComponent {
   }
 
   ngOnInit() {
-    console.log(this.tab)
     this.commonService.populateUsers().subscribe(result => {
       this.allAssignee = result && result.data && result.data.data;
     });

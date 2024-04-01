@@ -106,9 +106,8 @@
                                 class="page bi bi-chevron-left btn-lg btn-outline-primary" title="Previous Page"
                                 [class.disabled]="skip === '0' || currentPage === 1"></span>
                             <!-- next page -->
-                            <span (click)="nextPagination()"
-                                class="page bi bi-chevron-right btn-lg btn-outline-primary" title="Next Page"
-                                [class.disabled]="currentPage === getTotalPages()"></span>
+                            <span (click)="nextPagination()" class="page bi bi-chevron-right btn-lg btn-outline-primary"
+                                title="Next Page" [class.disabled]="currentPage === getTotalPages()"></span>
 
                             <span (click)="lastPagePagination()"
                                 class="page bi bi-chevron-bar-right btn-lg btn-outline-primary" title="Last Page"
@@ -342,7 +341,7 @@
                         </div>
 
                     </div>
-                   
+
 
 
                     <div *ngIf="!isListView">
@@ -476,7 +475,8 @@
                                                         <label for="project" class="text-start">Project</label>
                                                     </div>
 
-                                                    <select class="custom-select mb-3 p-2"  (change)="getUsersByProject()" formControlName="project">
+                                                    <select class="custom-select mb-3 p-2"
+                                                        (change)="getUsersByProject()" formControlName="project">
                                                         <option [value]="project.id"
                                                             *ngFor="let project of projectList">
                                                             {{project.projectName}}
@@ -499,13 +499,15 @@
                                                             <label for="project" class="text-start">Assignee<span
                                                                     class="text-danger">*</span></label>
                                                         </div>
-                
+
                                                         <select class="custom-select mb-3 p-2" formControlName="user">
-                                                            <option [value]="user?.user?.id" *ngFor="let user of usersByProject">
-                
-                                                                {{user?.user?.firstName | titlecase}} {{user?.user?.lastName |
+                                                            <option [value]="user?.user?.id"
+                                                                *ngFor="let user of usersByProject">
+
+                                                                {{user?.user?.firstName | titlecase}}
+                                                                {{user?.user?.lastName |
                                                                 titlecase}}
-                
+
                                                             </option>
                                                         </select>
                                                         <div *ngIf="addForm.controls['user'].invalid && addForm.controls['user'].touched"
@@ -651,7 +653,8 @@
                                                         <label for="project" class="text-start">Project</label>
                                                     </div>
 
-                                                    <select class="custom-select mb-3 p-2"  (change)="getUsersByProject()" formControlName="project">
+                                                    <select class="custom-select mb-3 p-2"
+                                                        (change)="getUsersByProject()" formControlName="project">
                                                         <option [value]="project.id"
                                                             *ngFor="let project of projectList">
                                                             {{project.projectName}}
@@ -674,13 +677,15 @@
                                                             <label for="project" class="text-start">Assignee<span
                                                                     class="text-danger">*</span></label>
                                                         </div>
-                
+
                                                         <select class="custom-select mb-3 p-2" formControlName="user">
-                                                            <option [value]="user?.user?.id" *ngFor="let user of usersByProject">
-                
-                                                                {{user?.user?.firstName | titlecase}} {{user?.user?.lastName |
+                                                            <option [value]="user?.user?.id"
+                                                                *ngFor="let user of usersByProject">
+
+                                                                {{user?.user?.firstName | titlecase}}
+                                                                {{user?.user?.lastName |
                                                                 titlecase}}
-                
+
                                                             </option>
                                                         </select>
                                                         <div *ngIf="addForm.controls['user'].invalid && addForm.controls['user'].touched"
@@ -827,7 +832,8 @@
                                                         <label for="project" class="text-start">Project</label>
                                                     </div>
 
-                                                    <select class="custom-select mb-3 p-2"  (change)="getUsersByProject()" formControlName="project">
+                                                    <select class="custom-select mb-3 p-2"
+                                                        (change)="getUsersByProject()" formControlName="project">
                                                         <option [value]="project.id"
                                                             *ngFor="let project of projectList">
                                                             {{project.projectName}}
@@ -850,13 +856,15 @@
                                                             <label for="project" class="text-start">Assignee<span
                                                                     class="text-danger">*</span></label>
                                                         </div>
-                
+
                                                         <select class="custom-select mb-3 p-2" formControlName="user">
-                                                            <option [value]="user?.user?.id" *ngFor="let user of usersByProject">
-                
-                                                                {{user?.user?.firstName | titlecase}} {{user?.user?.lastName |
+                                                            <option [value]="user?.user?.id"
+                                                                *ngFor="let user of usersByProject">
+
+                                                                {{user?.user?.firstName | titlecase}}
+                                                                {{user?.user?.lastName |
                                                                 titlecase}}
-                
+
                                                             </option>
                                                         </select>
                                                         <div *ngIf="addForm.controls['user'].invalid && addForm.controls['user'].touched"
@@ -1002,7 +1010,8 @@
                                                         <label for="project" class="text-start">Project</label>
                                                     </div>
 
-                                                    <select class="custom-select mb-3 p-2"  (change)="getUsersByProject()" formControlName="project">
+                                                    <select class="custom-select mb-3 p-2"
+                                                        (change)="getUsersByProject()" formControlName="project">
                                                         <option [value]="project.id"
                                                             *ngFor="let project of projectList">
                                                             {{project.projectName}}
@@ -1026,13 +1035,15 @@
                                                             <label for="project" class="text-start">Assignee<span
                                                                     class="text-danger">*</span></label>
                                                         </div>
-                
+
                                                         <select class="custom-select mb-3 p-2" formControlName="user">
-                                                            <option [value]="user?.user?.id" *ngFor="let user of usersByProject">
-                
-                                                                {{user?.user?.firstName | titlecase}} {{user?.user?.lastName |
+                                                            <option [value]="user?.user?.id"
+                                                                *ngFor="let user of usersByProject">
+
+                                                                {{user?.user?.firstName | titlecase}}
+                                                                {{user?.user?.lastName |
                                                                 titlecase}}
-                
+
                                                             </option>
                                                         </select>
                                                         <div *ngIf="addForm.controls['user'].invalid && addForm.controls['user'].touched"
@@ -1042,7 +1053,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                   
+
                                                     <button mat-raised-button class="addBtn"
                                                         type="submit">Submit</button>
                                                 </form>
@@ -1078,194 +1089,195 @@
                     </div>
                 </div>
 
-                <div class="row">
-                    <form class="pt-2" [formGroup]="addForm" (ngSubmit)="onSubmit()">
-                        <div class="row d-flex addTask">
-                            <div class="col-md-12 taskFormBody">
-                                <div class="row mt-3">
-                                    <label for="project" class="text-start">Project <span
-                                            class="text-danger">*</span></label>
-                                </div>
+                <form class="pt-2" [formGroup]="addForm" (ngSubmit)="onSubmit()">
+                    <div class="row d-flex addTask">
+                        <div class="col-md-12 taskFormBody">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="row mt-3">
+                                        <label for="project" class="text-start">Project <span
+                                                class="text-danger">*</span></label>
+                                    </div>
 
-                                <select class="custom-select  p-2" formControlName="project"
-                                    (change)="getUsersListByProject()" required>
-                                    <option selected>-- ALL --</option>
-                                    <option [value]="project.id" *ngFor="let project of projectList">
-                                        {{project?.projectName}}</option>
-                                </select>
-                                <div *ngIf="addForm.controls['project'].invalid && addForm.controls['project'].touched"
-                                    class="alert alert-danger error">
-                                    <div *ngIf="addForm.controls['project'].errors['required']">
-                                        Please Select Project Name!
+                                    <select class="custom-select  p-2" formControlName="project"
+                                        (change)="getUsersListByProject()" required>
+                                        <option selected>-- ALL --</option>
+                                        <option [value]="project.id" *ngFor="let project of projectList">
+                                            {{project?.projectName}}</option>
+                                    </select>
+                                    <div *ngIf="addForm.controls['project'].invalid && addForm.controls['project'].touched"
+                                        class="alert alert-danger error">
+                                        <div *ngIf="addForm.controls['project'].errors['required']">
+                                            Please Select Project Name!
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="row mt-3">
+                                        <label for="project" class="text-start">Assignee<span
+                                                class="text-danger">*</span></label>
+                                    </div>
+
+                                    <select class="custom-select p-2" formControlName="user">
+                                        <option [value]="user?.user?.id" *ngFor="let user of usersByProject">
+
+                                            {{user?.user?.firstName | titlecase}} {{user?.user?.lastName |
+                                            titlecase}}
+
+                                        </option>
+                                    </select>
+                                    <div *ngIf="addForm.controls['user'].invalid && addForm.controls['user'].touched"
+                                        class="alert alert-danger error mb-0">
+                                        <div *ngIf="addForm.controls['user'].errors['required']">
+                                            Assignee is required!
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="row mt-3">
+                                <label for="taskTitle" class="text-start">Title <span
+                                        class="text-danger">*</span></label>
+                            </div>
+                            <input type="text" name="taskTitle" id="taskTitle" class="form-control input pt-0"
+                                formControlName="title" required>
+                            <div *ngIf="addForm.controls['title'].invalid && addForm.controls['title'].touched"
+                                class="alert alert-danger error">
+                                <div *ngIf="addForm.controls['title'].errors['required']">
+                                    Title is required!
+                                </div>
+                            </div>
+
+                            <div class="row mt-3">
+                                <label for="description" class="text-start">Description</label>
+                            </div>
+
+                            <div>
+                                <quill-editor [styles]="{ height: '100px' }" formControlName="description"
+                                    [(ngModel)]="tasks?.data?.task.description"></quill-editor>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="row mt-3">
+                                        <label for="startDate" class="text-start">Start Date</label>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 form-group mb-3">
+                                            <input placeholder="YYYY-MM-DD" class="form-control"
+                                                #datepickerYMD="bsDatepicker" bsDatepicker
+                                                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
+                                                formControlName="startDate" required>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="addForm.controls['startDate'].invalid && addForm.controls['startDate'].touched"
+                                        class="alert alert-danger error">
+                                        <div *ngIf="addForm.controls['startDate'].errors['required']">
+                                            Start Date is required.
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="row mt-3">
-                                    <label for="taskTitle" class="text-start">Title <span
-                                            class="text-danger">*</span></label>
-                                </div>
-                                <input type="text" name="taskTitle" id="taskTitle" class="form-control input pt-0"
-                                    formControlName="title" required>
-                                <div *ngIf="addForm.controls['title'].invalid && addForm.controls['title'].touched"
-                                    class="alert alert-danger error">
-                                    <div *ngIf="addForm.controls['title'].errors['required']">
-                                        Title is required!
+                                <div class="col-6">
+                                    <div class="row mt-3">
+                                        <label for="endDate" class="text-start">End Date</label>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 form-group mb-3">
+                                            <input placeholder="YYYY-MM-DD" class="form-control"
+                                                #datepickerYMD="bsDatepicker" bsDatepicker
+                                                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="endDate"
+                                                required>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="addForm.controls['endDate'].invalid && addForm.controls['endDate'].touched"
+                                        class="alert alert-danger error">
+                                        <div *ngIf="addForm.controls['endDate'].errors['required']">
+                                            End Date is required.
+                                        </div>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="row mt-3">
-                                    <label for="description" class="text-start">Description</label>
+
+
+
+                            <div class="d-flex row">
+                                <div class="col-6">
+                                    <div class="row mt-3">
+                                        <label for="priority" class="text-start">Priority</label>
+                                    </div>
+
+                                    <select class="custom-select mb-3 p-2" formControlName="priority" ngModel>
+                                        <option value="">Select Priority</option>
+                                        <option value="Low">Low</option>
+                                        <option value="Normal">Normal</option>
+                                        <option value="High">High</option>
+                                        <option value="Highest">Highest</option>
+                                    </select>
+
                                 </div>
+                                <div class="col-6 mt-3">
+                                    <label for="">Attachment</label>
+                                    <div class="attachment flex-wrap mt-1"><label class="attach"><input
+                                                style="display: none;" formControlName="taskAttachments"
+                                                accept=".jpeg,.mp4,.glb,.svg,.blend,.jpg,.png,.gif,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.odt,.fodt,.ods,.fods,.odp,.fodp,.odg,.fodg,.odf,.csv,.html,.css,.txt,.zip"
+                                                type="file" multiple (change)="onFileSelect($event)">
+                                            <div
+                                                class="details-attach-file d-flex align-items-center justify-content-center me-2 pointer">
+                                                <span class="fa fa-paperclip text-secondary"> Add files to Attach
+                                                </span>
+                                            </div>
+                                        </label>
 
+                                    </div>
+
+                                </div>
                                 <div>
-                                    <quill-editor [styles]="{ height: '100px' }" formControlName="description"
-                                        [(ngModel)]="tasks?.data?.task.description"></quill-editor>
+                                    <ul type="none" class="d-flex ps-0">
+                                        <li class="contentHeading p-2"
+                                            *ngFor="let files of selectedFiles; let i = index" (click)="removeFile(i)">
+                                            {{files.name}} <i
+                                                class="bi bi-x-circle-fill text-danger deleteTaskAttachment"></i>
+                                        </li>
+                                    </ul>
                                 </div>
-
-
-                                <div class="row">
-                                    <div class="col-6">
-                                        <div class="row mt-3">
-                                            <label for="startDate" class="text-start">Start Date</label>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-12 form-group mb-3">
-                                                <input placeholder="YYYY-MM-DD" class="form-control"
-                                                    #datepickerYMD="bsDatepicker" bsDatepicker
-                                                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
-                                                    formControlName="startDate" required>
-                                            </div>
-                                        </div>
-                                        <div *ngIf="addForm.controls['startDate'].invalid && addForm.controls['startDate'].touched"
-                                            class="alert alert-danger error">
-                                            <div *ngIf="addForm.controls['startDate'].errors['required']">
-                                                Start Date is required.
-                                            </div>
-                                        </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="row mt-3">
+                                        <label for="estimate" class="text-start">Estimate (Hours)</label>
                                     </div>
-
-                                    <div class="col-6">
-                                        <div class="row mt-3">
-                                            <label for="endDate" class="text-start">End Date</label>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-12 form-group mb-3">
-                                                <input placeholder="YYYY-MM-DD" class="form-control"
-                                                    #datepickerYMD="bsDatepicker" bsDatepicker
-                                                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
-                                                    formControlName="endDate" required>
-                                            </div>
-                                        </div>
-                                        <div *ngIf="addForm.controls['endDate'].invalid && addForm.controls['endDate'].touched"
-                                            class="alert alert-danger error">
-                                            <div *ngIf="addForm.controls['endDate'].errors['required']">
-                                                End Date is required.
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <input type="number" name="estimate" id="estimate" class="form-control input  pt-0"
+                                        formControlName="estimate">
                                 </div>
-
-
-
-
-                                <div class="d-flex row">
-                                    <div class="col-6">
-                                        <div class="row mt-3">
-                                            <label for="priority" class="text-start">Priority</label>
-                                        </div>
-
-                                        <select class="custom-select mb-3 p-2" formControlName="priority" ngModel>
-                                            <option value="">Select Priority</option>
-                                            <option value="Low">Low</option>
-                                            <option value="Normal">Normal</option>
-                                            <option value="High">High</option>
-                                            <option value="Highest">Highest</option>
-                                        </select>
-
-                                    </div>
-                                    <div class="col-6 mt-3">
-                                        <label for="">Attachment</label>
-                                        <div class="attachment flex-wrap mt-1"><label class="attach"><input
-                                                    style="display: none;" formControlName="taskAttachments"
-                                                    accept=".jpeg,.mp4,.glb,.svg,.blend,.jpg,.png,.gif,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.odt,.fodt,.ods,.fods,.odp,.fodp,.odg,.fodg,.odf,.csv,.html,.css,.txt,.zip"
-                                                    type="file" multiple (change)="onFileSelect($event)">
-                                                <div
-                                                    class="details-attach-file d-flex align-items-center justify-content-center me-2 pointer">
-                                                    <span class="fa fa-paperclip text-secondary"> Add files to Attach
-                                                    </span>
-                                                </div>
-                                            </label>
-
-                                        </div>
-
-                                    </div>
-                                    <div>
-                                        <ul type="none" class="d-flex ps-0">
-                                            <li class="contentHeading p-2"
-                                                *ngFor="let files of selectedFiles; let i = index"
-                                                (click)="removeFile(i)">
-                                                {{files.name}} <i
-                                                    class="bi bi-x-circle-fill text-danger deleteTaskAttachment"></i>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-6">
-                                        <div class="row mt-3">
-                                            <label for="estimate" class="text-start">Estimate (Hours)</label>
-                                        </div>
-                                        <input type="number" name="estimate" id="estimate"
-                                            class="form-control input  pt-0" formControlName="estimate">
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="row mt-3">
-                                            <label for="project" class="text-start">Assignee<span
-                                                    class="text-danger">*</span></label>
-                                        </div>
-
-                                        <select class="custom-select mb-3 p-2" formControlName="user">
-                                            <option [value]="user?.user?.id" *ngFor="let user of usersByProject">
-
-                                                {{user?.user?.firstName | titlecase}} {{user?.user?.lastName |
-                                                titlecase}}
-
-                                            </option>
-                                        </select>
-                                        <div *ngIf="addForm.controls['user'].invalid && addForm.controls['user'].touched"
-                                            class="alert alert-danger error">
-                                            <div *ngIf="addForm.controls['user'].errors['required']">
-                                                Assignee is required!
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-
-                                <div class="row mt-3">
-                                    <label for="comment" class="text-start">Comments</label>
-                                </div>
-                                <input type="text" name="comment" id="comment" class="form-control input  mb-2 pt-0"
-                                    formControlName="comment" ngModel>
 
                             </div>
-                            <div class="modal-footer d-flex justify-content-between">
+
+                            <div class="row mt-3">
+                                <label for="comment" class="text-start">Comments</label>
+                            </div>
+                            <input type="text" name="comment" id="comment" class="form-control input  mb-2 pt-0"
+                                formControlName="comment">
+
+                            <div class="d-flex justify-content-between mt-3">
 
                                 <div>
                                     <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
                                         type="reset">Cancel</button>
                                 </div>
                                 <div>
-                                    <button mat-raised-button class="addBtn" [disabled]="!addForm.valid"
-                                        type="submit">Add</button>
+                                    <button mat-raised-button class="addBtn" type="submit">Add</button>
                                 </div>
 
                             </div>
-
                         </div>
-                       
-                    </form>
-                </div>
+
+                    </div>
+
+                </form>
             </div>
         </div>
     </div>

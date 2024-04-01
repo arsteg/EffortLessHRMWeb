@@ -36,6 +36,8 @@ export class PendingComponent {
   updateExpenseReport: FormGroup;
   status: string;
   expenseReportExpenses: any;
+  public sortOrder: string = '';
+
   
 
   constructor(private modalService: NgbModal,

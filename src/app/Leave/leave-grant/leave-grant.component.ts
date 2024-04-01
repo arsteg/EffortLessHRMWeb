@@ -11,7 +11,6 @@ export class LeaveManagementComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    console.log(this.tab)
   }
   selectTab(tabIndex: number) {
     this.selectedTab = tabIndex;

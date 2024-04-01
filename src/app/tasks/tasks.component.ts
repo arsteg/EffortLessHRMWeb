@@ -439,112 +439,127 @@ export class TasksComponent implements OnInit {
   }
 
   onSubmit() {
-    const newTask: Task = {
-      _id: '',
-      taskName: this.addForm.value.title,
-      title: this.addForm.value.title,
-      estimate: this.addForm.value.estimate,
-      startDate: this.addForm.value.startDate,
-      endDate: this.addForm.value.endDate,
-      description: this.addForm.value?.description,
-      comment: this.addForm.value.comment,
-      isSubTask: false,
-      priority: this.addForm.value.priority,
-      user: this.addForm.value.user,
-      status: "ToDo",
-      project: this.addForm.value.project,
-      taskAttachments: [] // Initialize an empty array of attachments
-    };
+    if (this.addForm.valid) {
+      const newTask: Task = {
+        _id: '',
+        taskName: this.addForm.value.title,
+        title: this.addForm.value.title,
+        estimate: this.addForm.value.estimate,
+        startDate: this.addForm.value.startDate,
+        endDate: this.addForm.value.endDate,
+        description: this.addForm.value?.description,
+        comment: this.addForm.value.comment,
+        isSubTask: false,
+        priority: this.addForm.value.priority,
+        user: this.addForm.value.user,
+        status: "ToDo",
+        project: this.addForm.value.project,
+        taskAttachments: [] // Initialize an empty array of attachments
+      };
 
-    if (this.selectedFiles.length > 0) {
-      const attachments: attachments[] = [];
+      if (this.selectedFiles.length > 0) {
+        const attachments: attachments[] = [];
 
-      for (let i = 0; i < this.selectedFiles.length; i++) {
-        const file: File = this.selectedFiles[i];
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => {
-          const base64String = reader.result.toString().split(',')[1];
-          const fileSize = file.size;
-          const fileType = file.type;
-          const fileNameParts = file.name.split('.');
-          const extention = fileNameParts[fileNameParts.length - 1];
+        for (let i = 0; i < this.selectedFiles.length; i++) {
+          const file: File = this.selectedFiles[i];
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => {
+            const base64String = reader.result.toString().split(',')[1];
+            const fileSize = file.size;
+            const fileType = file.type;
+            const fileNameParts = file.name.split('.');
+            const extention = fileNameParts[fileNameParts.length - 1];
 
-          attachments.push({
-            attachmentName: file.name,
-            attachmentType: fileType,
-            attachmentSize: fileSize,
-            extention: extention,
-            file: base64String
-          });
+            attachments.push({
+              attachmentName: file.name,
+              attachmentType: fileType,
+              attachmentSize: fileSize,
+              extention: extention,
+              file: base64String
+            });
 
-          if (i === this.selectedFiles.length - 1) {
-            newTask.taskAttachments = attachments;
+            if (i === this.selectedFiles.length - 1) {
+              newTask.taskAttachments = attachments;
 
-            // Make the API call inside the asynchronous block
-            this.tasksService.addTask(newTask).subscribe(
-              (response) => {
-                this.task = response;
-                const newTask = this.task.data;
-                this.tasks.push(newTask);
-                newTask.taskAttachments = [];
-                if (this.userId && this.projectId) {
-                  this.getTasksByProject()
+              // Make the API call inside the asynchronous block
+              this.tasksService.addTask(newTask).subscribe(
+                (response) => {
+                  this.task = response;
+                  const newTask = this.task.data;
+                  this.tasks.push(newTask);
+                  newTask.taskAttachments = [];
+                  if (this.userId && this.projectId) {
+                    this.getTasksByProject()
+                  }
+                  else {
+                    this.getTaskByIds();
+                  }
+                  this.addForm.reset({
+                    startDate: moment().format('YYYY-MM-DD'),
+                    endDate: moment().format('YYYY-MM-DD'),
+                    taskAttachments: []
+                  });
+                  this.selectedFiles = [];
+                  this.toast.success('New Task Successfully Created!', `Task Number: ${newTask.newTask.taskNumber}`);
+                },
+                (err) => {
+                  this.toast.error('Task Can not be Created', 'Error!');
                 }
-                else {
-                  this.getTaskByIds();
-                }
-                this.addForm.reset({
-                  startDate: moment().format('YYYY-MM-DD'),
-                  endDate: moment().format('YYYY-MM-DD'),
-                  taskAttachments: []
-                });
-                this.selectedFiles = [];
-                this.toast.success('New Task Successfully Created!', `Task Number: ${newTask.newTask.taskNumber}`);
-              },
-              (err) => {
-                this.toast.error('Task Can not be Created', 'Error!');
-              }
-            );
-          }
-        };
-      }
-    } else {
-      // If no files are selected, directly make the API call without attachments
-      this.tasksService.addTask(newTask).subscribe(
-        (response) => {
-          this.task = response;
-          const newTask = this.task.data;
-          this.tasks.push(newTask);
-          if (this.userId && this.projectId) {
-            this.getTasksByProject()
-          }
-          else if
-            (!this.userId && !this.projectId) {
-            console.log('all task 3')
-
-            this.listAllTasks();
-          }
-          else {
-            console.log('3')
-
-            this.getTaskByIds();
-          }
-          this.addForm.reset({
-            startDate: moment().format('YYYY-MM-DD'),
-            endDate: moment().format('YYYY-MM-DD'),
-            taskAttachments: []
-          });
-          this.selectedFiles = [];
-          this.toast.success('New Task Successfully Created!', `Task Number: ${newTask.newTask.taskNumber}`);
-        },
-        (err) => {
-          this.toast.error('Task Can not be Created', 'Error!');
+              );
+            }
+          };
         }
-      );
+      } else {
+        // If no files are selected, directly make the API call without attachments
+        this.tasksService.addTask(newTask).subscribe(
+          (response) => {
+            this.task = response;
+            const newTask = this.task.data;
+            this.tasks.push(newTask);
+            if (this.userId && this.projectId) {
+              this.getTasksByProject()
+            }
+            else if
+              (!this.userId && !this.projectId) {
+              console.log('all task 3')
+
+              this.listAllTasks();
+            }
+            else {
+              console.log('3')
+
+              this.getTaskByIds();
+            }
+            this.addForm.reset({
+              startDate: moment().format('YYYY-MM-DD'),
+              endDate: moment().format('YYYY-MM-DD'),
+              taskAttachments: []
+            });
+            this.selectedFiles = [];
+            this.toast.success('New Task Successfully Created!', `Task Number: ${newTask.newTask.taskNumber}`);
+          },
+          (err) => {
+            this.toast.error('Task Can not be Created', 'Error!');
+          }
+        );
+      }
+    }
+    else {
+      // Mark all form controls as touched to trigger error messages
+      this.markFormGroupTouched(this.addForm);
     }
   }
 
+  markFormGroupTouched(formGroup: FormGroup) {
+    Object.values(formGroup.controls).forEach(control => {
+        control.markAsTouched();
+
+        if (control instanceof FormGroup) {
+            this.markFormGroupTouched(control);
+        }
+    });
+}
 
   onFileSelect(event) {
     const files: FileList = event.target.files;
@@ -665,7 +680,7 @@ export class TasksComponent implements OnInit {
   }
 
   updateTaskPriority(selectedTask, priority: string) {
-    const payload = { 
+    const payload = {
       "priority": priority,
       taskName: selectedTask.taskName,
       startDate: selectedTask.startDate,
@@ -678,7 +693,7 @@ export class TasksComponent implements OnInit {
       parentTask: selectedTask.parentTask,
       estimate: selectedTask.estimate,
       timeTaken: selectedTask.timeTaken,
-   }
+    }
     selectedTask.priority = priority;
     this.tasksService.updatetaskFlex(selectedTask._id, payload).subscribe(response => {
       this.toast.success('Task priority updated successfully', `Task Number: ${selectedTask.taskNumber}`)
