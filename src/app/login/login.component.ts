@@ -25,8 +25,8 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private authenticationService: AuthenticationService,
     private notifyService: NotificationService) {
-      if (this.authenticationService.currentUserValue) {
-      }
+    if (this.authenticationService.currentUserValue) {
+    }
   }
   ngOnInit(): void {
 
@@ -38,41 +38,41 @@ export class LoginComponent implements OnInit {
       this.router.navigateByUrl('login');
     }
     this.rememberMe = localStorage.getItem('rememberMe') == 'true';
-  
+
   }
 
   onSubmit() {
-    {
-      this.submitted = true;
-      this.loading = true;
-      this.user.email = this.loginForm.value.username;
-      this.user.password = this.loginForm.value.password;
-      this.authenticationService.login(this.user)
-        .pipe(first())
-        .subscribe(
-          data => {
-            this.loading = false;
-            this.user.id = data.data.user.id;
-            localStorage.setItem('jwtToken', data.token);
-            localStorage.setItem('currentUser', JSON.stringify(this.user));
-            localStorage.setItem('rememberMe', JSON.stringify(this.rememberMe));
-            localStorage.setItem('roleId', data.data.user?.role?.id);
-           
-            if (data.data.user?.role?.id === '639acb77b5e1ffe22eaa4a39') {
-              localStorage.setItem('adminView', 'admin');
-              this.router.navigate(['/dashboard']);
-            } else {
-              this.router.navigate(['/userDashboard']);
-              localStorage.setItem('adminView', 'user')
-            }
+    this.submitted = true;
+    this.loading = true;
+    this.user.email = this.loginForm.value.username;
+    this.user.password = this.loginForm.value.password;
 
-          },
-          err => {
-            this.notifyService.showError(err.message, "Error")
-            this.loading = false;
+    this.authenticationService.login(this.user)
+      .pipe(first())
+      .subscribe(
+        data => {
+          this.loading = false;
+          this.user.id = data.data.user.id;
+          localStorage.setItem('jwtToken', data.token);
+          localStorage.setItem('currentUser', JSON.stringify(this.user));
+          localStorage.setItem('rememberMe', JSON.stringify(this.rememberMe));
+          localStorage.setItem('roleId', data.data.user?.role?.id);
+
+          const desiredUrl = this.route.snapshot.queryParams['redirectUrl'];
+          console.log(desiredUrl)
+          if (data.data.user?.role?.id === '639acb77b5e1ffe22eaa4a39') {
+            localStorage.setItem('adminView', 'admin');
+            this.router.navigateByUrl(this.returnUrl);
+          } else {
+            localStorage.setItem('adminView', 'user');
+            this.router.navigateByUrl(this.returnUrl);
           }
-        );
-    }
+        },
+        err => {
+          this.notifyService.showError(err.message, "Error");
+          this.loading = false;
+        }
+      );
   }
-  
+
 }
