@@ -22,6 +22,8 @@ export class CancelledComponent {
   expenseReportExpenses: any;
   p: number = 1;
   displayedData: any[]=[];
+  public sortOrder: string = '';
+
 
   constructor(private modalService: NgbModal,
     private expenseService: ExpensesService,

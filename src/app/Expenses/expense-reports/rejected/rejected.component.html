@@ -25,9 +25,21 @@
             <table class="px-4">
                 <thead>
                     <tr>
-                        <th class="ps-2">Report&nbsp;Title</th>
-                        <th>Employee&nbsp;Name</th>
-                        <th>Total Amount</th>
+                        <th class="ps-2" [appSort]="expenseReport" data-name="title"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Report&nbsp;Title
+                        <i
+                            [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th [appSort]="expenseReport" data-name="employee"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Employee
+                        <i
+                            [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th [appSort]="expenseReport" data-name="expenseReport"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Total Amount
+                        <i
+                            [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
                         <th>Reimbursable</th>
                         <th>Billable</th>
                         <th>Status</th>
@@ -40,9 +52,6 @@
                     *ngFor="let expenseReport of expenseReport | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p };  let i = index">
                     <td class="ps-2">{{expenseReport?.title}}</td>
                     <td>{{getUser(expenseReport?.employee)}}</td>
-                    <td>--</td>
-                    <td>--</td>
-                    <td>--</td>
                     <td>
                         {{calculateTotalAmount(expenseReport)}}
                     </td>
@@ -56,6 +65,7 @@
 
 
                     <td>{{expenseReport?.status}}</td>
+
                         <td class="">
                             <div class="dropdown-center">
                                 <button class="actions ms-2" mat-mini-fab data-bs-toggle="dropdown"

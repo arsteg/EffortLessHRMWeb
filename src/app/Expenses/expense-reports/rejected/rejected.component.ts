@@ -21,6 +21,8 @@ export class RejectedComponent {
   p: number = 1;
   expenseReportExpenses: any;
   selectedReport: any;
+  public sortOrder: string = '';
+
 
   constructor(private modalService: NgbModal,
     private expenseService: ExpensesService,

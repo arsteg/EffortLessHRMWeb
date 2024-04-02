@@ -27,6 +27,7 @@ export class ApprovedComponent {
   selectedReport: any;
   categories: any;
   displayedData: any[] = [];
+  public sortOrder: string = '';
 
 
   constructor(private modalService: NgbModal,

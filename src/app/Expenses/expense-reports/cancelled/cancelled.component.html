@@ -20,10 +20,21 @@
             <table class="px-4">
                 <thead>
                     <tr>
-                        <th class="ps-2">Report&nbsp;Title</th>
-                        <th>Employee Name</th>
-                       
-                        <th>Total Amount</th>
+                        <th class="ps-2" [appSort]="expenseReport" data-name="title"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Report&nbsp;Title
+                        <i
+                            [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th [appSort]="expenseReport" data-name="employee"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Employee
+                        <i
+                            [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th [appSort]="expenseReport" data-name="expenseReport"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Total Amount
+                        <i
+                            [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
                         <th>Reimbursable</th>
                         <th>Billable</th>
                         <th>Status</th>
