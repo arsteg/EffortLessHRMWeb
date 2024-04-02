@@ -524,7 +524,7 @@
                                             </div>
 
                                         </ul>
-                                        <button class="btn btn-outline-primary  mt-2" (click)="toggleToDoTask()">Add
+                                        <button class="btn btn-outline-primary  mt-2" (click)="toggleToDoTask(); clearForm()">Add
                                             Task</button>
                                     </div>
                                 </div>
@@ -1170,15 +1170,10 @@
                                             <input placeholder="YYYY-MM-DD" class="form-control"
                                                 #datepickerYMD="bsDatepicker" bsDatepicker
                                                 [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
-                                                formControlName="startDate" required>
+                                                formControlName="startDate" >
                                         </div>
                                     </div>
-                                    <div *ngIf="addForm.controls['startDate'].invalid && addForm.controls['startDate'].touched"
-                                        class="alert alert-danger error">
-                                        <div *ngIf="addForm.controls['startDate'].errors['required']">
-                                            Start Date is required.
-                                        </div>
-                                    </div>
+                                    
                                 </div>
 
                                 <div class="col-6">
@@ -1190,15 +1185,10 @@
                                             <input placeholder="YYYY-MM-DD" class="form-control"
                                                 #datepickerYMD="bsDatepicker" bsDatepicker
                                                 [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="endDate"
-                                                required>
+                                                >
                                         </div>
                                     </div>
-                                    <div *ngIf="addForm.controls['endDate'].invalid && addForm.controls['endDate'].touched"
-                                        class="alert alert-danger error">
-                                        <div *ngIf="addForm.controls['endDate'].errors['required']">
-                                            End Date is required.
-                                        </div>
-                                    </div>
+                                    
                                 </div>
                             </div>
 

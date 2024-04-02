@@ -95,7 +95,8 @@ export class UserListComponent implements OnInit {
   }
 
   addUser(addForm) {
-    if (addForm.valid) {
+    if (this.addForm.valid) {
+
       this.UserService.addUser(addForm).subscribe(result => {
         const users = result['data'].user;
         this.usersList.push(users);
@@ -133,7 +134,7 @@ export class UserListComponent implements OnInit {
   }
 
   updateUser(updateForm) {
-    if (updateForm.valid) {
+    if (this.updateForm.valid) {
       this.UserService.updateUser(this.selectedUser._id, updateForm).subscribe(resonse => {
         this.ngOnInit();
         this.toastrrr.success('Existing User Updated', 'Successfully Updated!')

@@ -115,8 +115,8 @@ export class TasksComponent implements OnInit {
     this.addForm = this.fb.group({
       taskName: [''],
       title: [''],
-      startDate: [moment().format('YYYY-MM-DD'), Validators.required],
-      endDate: [moment().format('YYYY-MM-DD'), Validators.required],
+      startDate: [moment().format('YYYY-MM-DD')],
+      endDate: [moment().format('YYYY-MM-DD')],
       description: [''],
       estimate: [0],
       comment: ['Task Created'],
@@ -388,6 +388,7 @@ export class TasksComponent implements OnInit {
     if (!selectedUserId) {
       this.tasksService.getTasksByProjectId(this.projectId, this.skip, this.next).subscribe(
         (response: any) => {
+          console.log(response)
           if (response && response.data && Array.isArray(response.data.taskList)) {
             this.totalRecords = response && response.data
             this.tasks = response.data.taskList;
@@ -603,6 +604,9 @@ export class TasksComponent implements OnInit {
 
 
   onProjectSelectionChange() {
+    if(this.projectId){
+      this.getTasksByProject();
+    }
 
     if ((this.view === 'admin' || this.role?.toLowerCase() === 'admin') && (!this.userId && !this.currentProfile.id) && this.projectId === 'ALL') {
       this.getTasks();
