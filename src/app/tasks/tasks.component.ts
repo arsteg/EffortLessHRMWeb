@@ -552,16 +552,29 @@ export class TasksComponent implements OnInit {
 
   markFormGroupTouched(formGroup: FormGroup) {
     Object.values(formGroup.controls).forEach(control => {
-        control.markAsTouched();
+      control.markAsTouched();
 
-        if (control instanceof FormGroup) {
-            this.markFormGroupTouched(control);
-        }
+      if (control instanceof FormGroup) {
+        this.markFormGroupTouched(control);
+      }
     });
-}
-clearForm(){
-  this.addForm.reset();
-}
+  }
+  clearForm() {
+    this.addForm.reset();
+    if (this.view == 'admin') {
+      console.log('admin projects')
+      this.getprojects();
+    }
+    else if (this.view == 'user') {
+      console.log('projects by current user');
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'))
+      console.log(currentUser.id)
+      this.projectService.getProjectByUserId(currentUser.id).subscribe(response => {
+        this.projectList = response && response.data && response.data['projectList'];
+        this.projectList = this.projectList.filter(project => project !== null);
+      });
+    }
+  }
 
   onFileSelect(event) {
     const files: FileList = event.target.files;
