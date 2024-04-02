@@ -7,6 +7,7 @@ import { candidateDataField } from '../models/interviewProcess/candidateDataFiel
 import { candidate } from '../models/interviewProcess/candidate';
 import { candidateDataFieldValue } from '../models/interviewProcess/candidateDataFieldValue';
 import { feedbackField } from '../models/interviewProcess/feedbackField';
+import { InterviewDetail } from '../models/interviewProcess/candidateInterviewDetail';
 
 @Injectable({
   providedIn: 'root'
@@ -146,4 +147,60 @@ export class InterviewProcessService extends baseService {
     this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
     return this.http.post<any>(`${environment.apiUrlDotNet}/interviews/feedback-field-values`, feedbackField, this.httpOptions);
   }
+
+  // Interview Details API's
+
+  public addInterviewDetails(interviewDetails: InterviewDetail): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.post<any>(`${environment.apiUrlDotNet}/interviews/candidate-interview-details`, interviewDetails, this.httpOptions);
+  }
+  public getAllInterviewDetails(): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.get<any>(`${environment.apiUrlDotNet}/interviews/candidate-interview-details`, this.httpOptions);
+  }
+  public getInterviewDetailsById(id:string): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.get<any>(`${environment.apiUrlDotNet}/interviews/candidate-interview-details/${id}`, this.httpOptions);
+  }
+  public updateInterviewDetail(interviewDetails:any): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.put<any>(`${environment.apiUrlDotNet}/interviews/candidate-interview-details`, interviewDetails, this.httpOptions);
+  }
+  public deleteInterviewDetail(id: string): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.delete<any>(`${environment.apiUrlDotNet}/interviews/candidate-interview-details/${id}`, this.httpOptions);
+  }
+  //End of Interview Details API's
+
+  // Interviewer API's
+
+  public addInterviewer(interviewer: string ): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.post<any>(`${environment.apiUrlDotNet}/interviews/Interviewer`, {
+      "interviewer": interviewer
+    }, this.httpOptions);
+  }
+  public getAllInterviewers(): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.get<any>(`${environment.apiUrlDotNet}/interviews/Interviewer`, this.httpOptions);
+  }
+  public updateInterviewer(interviewDetails:any): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.put<any>(`${environment.apiUrlDotNet}/interviews/Interviewer`, interviewDetails, this.httpOptions);
+  }
+  public deleteInterviewer(id: string): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.delete<any>(`${environment.apiUrlDotNet}/interviews/Interviewer/${id}`, this.httpOptions);
+  }
+  //End of Interviewer API's
+
 }

@@ -6,11 +6,12 @@ import { CandidatesComponent } from '../candidates/candidates.component';
 import { CandidateDataFieldComponent } from '../candidate-data-field/candidate-data-field.component';
 import { FeedbackFieldComponent } from '../feedback-field/feedback-field.component';
 import { CandidateFeedbackComponent } from '../candidate-feedback/candidate-feedback.component';
+import { ScheduleInterviewComponent } from '../schedule-interview/schedule-interview.component';
 @Component({
   selector: 'app-interview-process-main',
   standalone: true,
   imports: [CommonModule,ApplicationStatusComponent,CandidatesComponent, CandidateDataFieldComponent,FeedbackFieldComponent,
-    CandidateFeedbackComponent],
+    CandidateFeedbackComponent, ScheduleInterviewComponent],
   templateUrl: './interview-process-main.component.html',
   styleUrl: './interview-process-main.component.css'
 })

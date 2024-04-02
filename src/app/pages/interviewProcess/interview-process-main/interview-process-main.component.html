@@ -10,13 +10,9 @@
           <button class="btn rounded-pill submenuTab" (click)="selectTab(4)" [class.active]="selectedTab === 4">Feedback Fields</button>
           <button class="btn rounded-pill submenuTab" (click)="selectTab(5)" [class.active]="selectedTab === 5">Candidate Feedback</button>
           <button class="btn rounded-pill submenuTab" (click)="selectTab(6)"
-              [class.active]="selectedTab === 6">Tags</button>
-          <button class="btn rounded-pill submenuTab" (click)="selectTab(7)" [class.active]="selectedTab === 7">E-Mail
-              Template</button>
-              <button class="btn rounded-pill submenuTab" (click)="selectTab(8)" [class.active]="selectedTab === 8">
-                  CRUD Component Testing</button>
+              [class.active]="selectedTab === 6">Schedule Interview</button>
       </div>
-
+      
       <div *ngIf="selectedTab === 1" class="tab-content">
       <app-application-status></app-application-status>
       </div>
@@ -33,13 +29,7 @@
         <app-candidate-feedback></app-candidate-feedback>
       </div>
       <div *ngIf="selectedTab === 6" class="tab-content">
-
-      </div>
-      <div *ngIf="selectedTab === 7" class="tab-content">
-
-      </div>
-      <div *ngIf="selectedTab === 8" class="tab-content">
-
+        <app-schedule-interview></app-schedule-interview>
       </div>
   </div>
 </div>

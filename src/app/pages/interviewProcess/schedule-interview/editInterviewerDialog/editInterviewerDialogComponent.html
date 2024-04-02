@@ -1,0 +1,26 @@
+<div class="container-fluid p-3">
+  <div class="interviewers-dialog d-flex flex-column">
+    <div class="row">
+      <div class="col-md-12 d-flex justify-content-between align-items-center">
+        <p class="contentHeading">Interviewers</p>
+        <button mat-button (click)="closeDialog()">Close</button>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <ul class="users" type="none">
+        <div class="members bg-white common">
+          <li *ngFor="let user of teamOfUsers">
+            <label [class.selected]="user === selectedUser">
+              <mat-checkbox color="primary" [checked]="user['isChecked']"
+                [disabled]="selectedManager && selectedManager.id == user.id"
+                [(ngModel)]="user['isChecked']"
+                (ngModelChange)="onModelChange($event, user)">
+                {{ user.firstName | titlecase }} {{ user.lastName | titlecase }}
+              </mat-checkbox>
+            </label>
+          </li>
+        </div>
+      </ul>
+    </div>
+  </div>
+</div>
