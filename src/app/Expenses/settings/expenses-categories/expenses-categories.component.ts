@@ -237,21 +237,17 @@ export class ExpensesCategoriesComponent implements OnInit {
       });
     }
     if (this.addCategoryForm.get('fields')) {
-      // Check if existing fields have been updated
       const updateFields = (this.addCategoryForm.value['fields'] as any[]).filter(
         (field) => field.id && !this.originalFields.some((originalField) => isEqual(field, originalField))
       );
-      console.log(updateFields)
       if (this.addCategoryForm.get('fields').dirty) {
         let fieldsPayload = {
           fields: updateFields
         };
-        console.log(fieldsPayload)
         this.expenses.updateCategoryField(fieldsPayload).subscribe((res: any) => {
-          console.log(res);
+          this.toast.success('Expense Category Applicable field Updated', 'Successfully')
         });
       }
-      // Check if new fields have been added
       const newFields = (this.addCategoryForm.value['fields'] as any[]).filter(
         (field) => !field.id && !this.originalFields.some((originalField) => isEqual(field, originalField))
       );
@@ -261,9 +257,8 @@ export class ExpensesCategoriesComponent implements OnInit {
           fields: newFields,
           expenseCategory: this.selectedCategory._id
         };
-        console.log(fieldsPayload);
         this.expenses.addCategoryField(fieldsPayload).subscribe((res: any) => {
-          console.log(res);
+          this.toast.success('Expense Category Applicable field Added', 'Successfully')
         });
       }
 
@@ -275,7 +270,7 @@ export class ExpensesCategoriesComponent implements OnInit {
     this.isEdit = true;
     this.selectedCategory = category;
     console.log(this.selectedCategory)
-    this.expenses.getApplicationFieldbyCategory(this.selectedCategory._id).subscribe((res: any) => {
+    this.expenses.getApplicationFieldbyCategory(this.selectedCategory?._id).subscribe((res: any) => {
       this.field = res.data;
       let fieldData = this.field.map((field) => {
         return {
@@ -314,15 +309,15 @@ export class ExpensesCategoriesComponent implements OnInit {
         });
 
       }
-      this.addCategoryForm.patchValue({
-        type: category.type,
-        label: category.label,
-        isMandatory: category.isMandatory,
-        fields: this.fields.value,
-        expenseCategory: this.selectedCategory._id,
-      });
-      console.log(this.addCategoryForm.value)
     });
+    this.addCategoryForm.patchValue({
+      type: category.type,
+      label: category.label,
+      isMandatory: category.isMandatory,
+      fields: this.fields.value,
+      expenseCategory: this.selectedCategory._id,
+    });
+    console.log(this.addCategoryForm.value)
   }
 
   getFieldType(index: number): string {

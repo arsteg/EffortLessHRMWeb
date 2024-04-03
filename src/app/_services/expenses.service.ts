@@ -106,7 +106,7 @@ export class ExpensesService {
   }
 
   getApplicationFieldbyCategory(id: string): Observable<response<any>> {
-    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/expense-application-fields-by-expence-category/${id}`, this.httpOptions);
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/expense-application-fields-by-expense-category/${id}`, this.httpOptions);
     return response;
   }
 
