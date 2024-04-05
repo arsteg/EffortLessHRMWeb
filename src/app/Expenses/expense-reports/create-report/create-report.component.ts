@@ -39,6 +39,7 @@ export class CreateReportComponent {
   selectedFiles: any = [];
 
 
+
   constructor(public expenseService: ExpensesService,
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<AddExpenseReportComponent>,
@@ -86,7 +87,7 @@ export class CreateReportComponent {
 
   ngOnDestroy() {
     // this.sharedDataSubscription.unsubscribe();
-    this.refreshSubscription.unsubscribe();
+    // this.refreshSubscription.unsubscribe();
   }
 
   onSubmission() {
@@ -104,7 +105,7 @@ export class CreateReportComponent {
     const expenseReportExpenses = this.expenseService.expenseReportExpense.getValue()._id;
     if (this.expenseService.isEdit.getValue() == true) {
       // update expense report expenses
-      if (this.selectedFiles.length > 0) {
+      if (this.selectedFiles.length >= 0) {
         const attachments: attachments[] = [];
 
         for (let i = 0; i < this.selectedFiles.length; i++) {
@@ -128,19 +129,17 @@ export class CreateReportComponent {
 
             if (i === this.selectedFiles.length - 1) {
               payload.expenseAttachments = attachments;
-              console.log(payload)
-
-              this.expenseService.updateExpenseReportExpenses(expenseReportExpenses, payload).subscribe((res: any) => {
-                this.expenseService.expenseReportExpense.next(res.data);
-                this.toast.success('Expense Report of Expenses is Updated!', 'Successfully!!!')
-              },
-                err => {
-                  this.toast.error('This expense report of expenses can not be Updated!', 'Error')
-                });
             }
           }
         }
       }
+      this.expenseService.updateExpenseReportExpenses(expenseReportExpenses, payload).subscribe((res: any) => {
+        this.expenseService.expenseReportExpense.next(res.data);
+        this.toast.success('Expense Report of Expenses is Updated!', 'Successfully!!!')
+      },
+        err => {
+          this.toast.error('This expense report of expenses can not be Updated!', 'Error')
+        });
     }
     else if (this.expenseService.isEdit.getValue() == false && this.expenseService.selectedReport.getValue()._id) {
       // add new expense report expenses  
@@ -170,8 +169,8 @@ export class CreateReportComponent {
 
             if (i === this.selectedFiles.length - 1) {
               payload.expenseAttachments = attachments;
-              console.log(payload)
               this.expenseService.addExpenseReportExpenses(payload).subscribe((res: any) => {
+                console.log(res.data);
                 this.expenseService.expenseReportExpense.next(res.data);
                 this.toast.success('Expense Report of Expenses is Created!', 'Successfully!!!')
               },
@@ -207,14 +206,13 @@ export class CreateReportComponent {
             });
             if (i === this.selectedFiles.length - 1) {
               payload.expenseAttachments = attachments;
-              console.log('no expense report', payload)
               this.expenseService.expenseReportExpense.next(payload);
             }
           }
         }
       }
     }
-
+    this.expenseService.expenseReportExpense.next(payload)
     this.expenseService.triggerUpdateTable();
     this.dialogRef.close();
     this.changeStep.emit(1);
@@ -227,7 +225,6 @@ export class CreateReportComponent {
       for (let i = 0; i < files.length; i++) {
         const file: File = files.item(i);
         if (file) {
-          console.log(this.selectedFiles, file)
           this.selectedFiles.push(file);
         }
       }

@@ -57,7 +57,9 @@ export class AddExpenseReportComponent {
     else {
       this.addExpenseForm.patchValue({
         employee: this.expenseService.selectedReport.getValue().employee,
-        title: this.expenseService.selectedReport.getValue().title
+        title: this.expenseService.selectedReport.getValue().title,
+        amount: this.expenseService.selectedReport.getValue().amount,
+        status: this.expenseService.selectedReport.getValue().status
       });
       this.getExpenseReportExpensesByReportId();
     }
@@ -81,14 +83,20 @@ export class AddExpenseReportComponent {
 
   openSecondModal(isEdit: boolean) {
     this.expenseService.isEdit.next(isEdit);
-    if (isEdit = true) {
-
-    }
     const dialogRef = this.dialog.open(CreateReportComponent, {
       width: '50%',
       data: { isEdit: this.isEdit }
     });
     dialogRef.afterClosed().subscribe(result => {
+      console.log(this.expenseService.expenseReportExpense.getValue());
+      this.expenseService.expenseReportExpense.subscribe((res: any) => {
+        console.log(res)
+        this.expenseReportExpenses.push(res); 
+        console.log(this.expenseReportExpenses)
+      this.expenseReportExpenses = [...this.expenseReportExpenses];
+      console.log(this.expenseReportExpenses)
+      });
+      this.expenseService.triggerUpdateTable();
     });
   }
 
@@ -121,7 +129,7 @@ export class AddExpenseReportComponent {
     let formArray = this.expenseService.expenseReportExpense.getValue();
     payload.expenseReportExpenses = [formArray];
     if (this.changeMode = false) {
-      console.log(this.changeMode,payload)
+      console.log(this.changeMode, payload)
       this.expenseService.addExpensePendingReport(payload).subscribe((res: any) => {
         this.toast.success('Expense Template Applicable Category Added Successfully!');
         this.updateExpenseReportTable.emit();
@@ -174,6 +182,7 @@ export class AddExpenseReportComponent {
   deleteReport(id: string) {
     this.expenseService.deleteExpenseReportExpenses(id).subscribe((res: any) => {
       this.expenseReportExpenses = this.expenseReportExpenses.filter(report => report._id !== id);
+      this.ngOnInit();
       this.toast.success('Successfully Deleted!!!', 'Expense Report')
     },
       (err) => {

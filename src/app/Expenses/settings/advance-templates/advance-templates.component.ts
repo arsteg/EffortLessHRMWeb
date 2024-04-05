@@ -198,20 +198,38 @@ export class AdvanceTemplatesComponent implements OnInit {
 
   }
 
+  // editadvanceCategory(category, index) {
+  //   this.isEdit = true;
+  //   this.selectedTemplate = category;
+  //   let advanceCategories = category.advanceCategories;
+  //   console.log(advanceCategories)
+  //   let advanceCategoryValues = advanceCategories.map(category => category.advanceCategory);
+  //   console.log(advanceCategoryValues)
+
+  //   this.addAdvanceTempForm.patchValue({
+  //     policyLabel: category.policyLabel,
+  //     firstApprovalEmployee: category.firstApprovalEmployee,
+  //     secondApprovalEmployee: category.secondApprovalEmployee,
+  //     approvalType: category.approvalType,
+  //     approvalLevel: category.approvalLevel,
+  //     advanceCategories: advanceCategoryValues
+  //   });
+  //   console.log(this.addAdvanceTempForm.value)
+  // }
+
   editadvanceCategory(category, index) {
     this.isEdit = true;
-    this.selectedTemplate = category;
-    let advanceCategories = category.advanceCategories;
-    let advanceCategoryValues = advanceCategories.map(category => category.advanceCategory);
-    this.addAdvanceTempForm.patchValue({
-      policyLabel: category.policyLabel,
-      firstApprovalEmployee: category.firstApprovalEmployee,
-      secondApprovalEmployee: category.secondApprovalEmployee,
-      approvalType: category.approvalType,
-      approvalLevel: category.approvalLevel,
-      advanceCategories: advanceCategoryValues
-    });
-    console.log(this.addAdvanceTempForm.value)
+    this.expenseService.getAdvanceTemplateById(category?._id).subscribe((res: any) => {
+      this.addAdvanceTempForm.patchValue({
+        policyLabel: res.data.policyLabel,
+        firstApprovalEmployee: res.data.firstApprovalEmployee,
+        secondApprovalEmployee: res.data.secondApprovalEmployee,
+        approvalType: res.data.approvalType,
+        approvalLevel: res.data.approvalLevel,
+        advanceCategories: res.data.advanceCategories
+      });
+      console.log(this.addAdvanceTempForm.value)
+    })
   }
 
   deleteAdvancecate(id: string): void {
