@@ -47,7 +47,7 @@ export class ExpenseCategorySettingsComponent {
           this.expenseService.allExpenseCategories.subscribe((res: any) => {
             this.allExpenseCategories = res;
             this.steps.forEach(step => {
-              const matchingCategory = this.allExpenseCategories.find(category => category._id === step);
+              const matchingCategory = this.allExpenseCategories.find(category => category?._id === step);
               if (matchingCategory) {
                 const categoryId = matchingCategory._id;
                 expenseCategoriesArray.push(this._formBuilder.group({
@@ -79,7 +79,7 @@ export class ExpenseCategorySettingsComponent {
     this.expenseService.allExpenseCategories.subscribe((res: any) => {
       this.allExpenseCategories = res;
       let category = this.expenseService.categories.getValue();
-      this.steps = category.expenseCategories;
+      this.steps = category;
 
       this.firstForm = this._formBuilder.group({
         expenseCategories: this._formBuilder.array([]),
@@ -134,7 +134,7 @@ export class ExpenseCategorySettingsComponent {
       this.updateExpenseTemplateTable.emit();
     },
       err => {
-        this.toast.error('Expense Template Applicable Category Can not be Updated', 'ERROR!')
+        this.toast.error('Expense Template Applicable Category Can not be Updated', 'ERROR!');
       })
   }
 
