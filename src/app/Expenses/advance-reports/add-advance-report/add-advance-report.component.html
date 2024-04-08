@@ -31,7 +31,7 @@
                     {{getCategory(category?.advanceCategory)}}</option>
             </select>
             <div *ngIf="addAdvanceReport.get('category').invalid && addAdvanceReport.get('category').touched" class="text-danger error">
-                Please Select Employee!
+                Please Select Advance Category of employee!
               </div>
         </div>
 
@@ -41,7 +41,7 @@
                 <input type="number" class="form-control" formControlName="amount" />
             </div>
             <div *ngIf="addAdvanceReport.get('amount').invalid && addAdvanceReport.get('amount').touched" class="text-danger error">
-                Please Select Employee!
+                Please add Amount!
               </div>
         </div>
 

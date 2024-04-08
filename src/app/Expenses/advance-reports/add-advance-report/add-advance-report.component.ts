@@ -25,7 +25,7 @@ export class AddAdvanceReportComponent {
     this.addAdvanceReport = this.fb.group({
       employee: ['', Validators.required],
       category: ['', Validators.required],
-      status: ['', Validators.required],
+      status: ['Level 1 Approval Pending', Validators.required],
       comment: [''],
       amount: ['', Validators.required]
     });
@@ -45,16 +45,13 @@ export class AddAdvanceReportComponent {
   }
 
   onSubmission() {
-    let payload = {
-      employee: this.addAdvanceReport.value.employee,
-      category: this.addAdvanceReport.value.category,
-      comment: this.addAdvanceReport.value.comment,
-      amount: this.addAdvanceReport.value.amount
-    }
+   
+    console.log(this.addAdvanceReport.value)
     if(this.addAdvanceReport.valid){
-      this.expenseService.addAdvanceReport(payload).subscribe((res: any) => {
+      this.expenseService.addAdvanceReport(this.addAdvanceReport.value).subscribe((res: any) => {
         this.advanceReportRefreshed.emit();
         this.expenseService.advanceReport.next(res.data);
+        this.addAdvanceReport.reset();
       });
     }
     else {
