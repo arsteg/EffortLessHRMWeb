@@ -50,7 +50,8 @@ export class StatusUpdateComponent {
       this.toast.success('Status Updated Successfully!');
       this.advanceReportRefreshed.emit();
       this.dialogRef.close();
-    })
+    });
+    this.advanceReportRefreshed.emit();
   }
 
   

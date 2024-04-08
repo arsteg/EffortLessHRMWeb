@@ -10,7 +10,7 @@ export class ViewReportsComponent {
   @Output() close: any = new EventEmitter();
   advanceReport: any;
 
-  constructor(private expenseService: ExpensesService) { }
+  constructor(public expenseService: ExpensesService) { }
 
   ngOnInit() {
     this.advanceReport = this.expenseService.advanceReport.getValue();

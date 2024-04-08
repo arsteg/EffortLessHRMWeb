@@ -1,7 +1,7 @@
 <div class="modal-body">
     <div class=" d-flex justify-content-between">
         <div class="">
-            <h1 mat-dialog-title> Show Expense Details</h1>
+            <h1 mat-dialog-title> Show Advance Expense Report Details</h1>
         </div>
         <div mat-dialog-actions>
             <button mat-button mat-dialog-close><mat-icon aria-hidden="false" aria-label="Example close icon"
@@ -29,8 +29,22 @@
                     <td>{{advanceReport?.status}}</td>
                 </tr>
 
+                <!-- <h4 class="modal-title text-start"
+                *ngIf="expenseService.advanceReport.getValue().status == 'Rejected'">Are you sure you want to
+                Reject this request?</h4>
+            <h4 class="modal-title text-start"
+                *ngIf="expenseService.advanceReport.getValue().status == 'Approved'">Are you sure you want to
+                Approve this request?</h4>
+            <h4 class="modal-title text-start"
+                *ngIf="expenseService.advanceReport.getValue().status == 'Cancelled'">Are you sure you want to
+                Cancel this request?</h4> -->
                 <tr>
-                    <th class="w-50">Admin Approval Comment</th>
+                    <th class="w-50">Admin 
+                        <span *ngIf="expenseService.advanceReport.getValue().status == 'Level 1 Approval Pending'">Pending</span> 
+                        <span *ngIf="expenseService.advanceReport.getValue().status == 'Approved'">Approval</span> 
+                        <span *ngIf="expenseService.advanceReport.getValue().status == 'Rejected'">Rejected</span>
+                        <span *ngIf="expenseService.advanceReport.getValue().status == 'Cancelled'">Cancelled</span> 
+                        Comment</th>
                     <td>{{advanceReport?.comment}}</td>
                 </tr>
             </table>

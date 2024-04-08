@@ -51,6 +51,7 @@ export class AddExpenseReportComponent {
 
 
   ngOnInit() {
+    console.log(this.changeMode);
     if (!this.isEdit && !this.changeMode) {
       this.addExpenseForm.reset();
     }
@@ -90,14 +91,16 @@ export class AddExpenseReportComponent {
     dialogRef.afterClosed().subscribe(result => {
       console.log(this.expenseService.expenseReportExpense.getValue());
       this.expenseService.expenseReportExpense.subscribe((res: any) => {
-        console.log(res)
         this.expenseReportExpenses.push(res); 
-        console.log(this.expenseReportExpenses)
       this.expenseReportExpenses = [...this.expenseReportExpenses];
-      console.log(this.expenseReportExpenses)
       });
       this.expenseService.triggerUpdateTable();
     });
+  }
+
+  resetForm(){
+    this.addExpenseForm.reset();
+    this.addExpenseForm.value.expenseReportExpenses = [];
   }
 
   getSelectedExpenseReportExpense(selectedExpenseReportExpense: any) {

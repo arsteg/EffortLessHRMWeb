@@ -27,7 +27,7 @@
 
         </div>
         <div class="ms-auto d-flex justify-content-between">
-            <p>Total Pending Advance: <span *ngIf="status === 'Pending'">{{ totalAmount }}</span></p>
+            <p>Total Pending Advance: <span *ngIf="status === 'Level 1 Approval Pending'">{{ totalAmount }}</span></p>
             <p class="ps-3">Total Approved Advance: <span *ngIf="status === 'Approved'">{{ totalAmount }}</span></p>
             <p class="ps-3">Total Remaining Advance: {{totalAmount}}</p>
 

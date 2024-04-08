@@ -92,7 +92,6 @@ export class AddAdvanceReportComponent {
     return matchingCategory ? `${matchingCategory.label}` : 'Category Not Found';
   }
 
-
   closeModal() {
     this.close.emit(true);
   }

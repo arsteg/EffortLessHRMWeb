@@ -76,7 +76,7 @@
 
         <div class="mt-2">
             <mat-form-field appearance="outline" class="w-100">
-                <mat-label>What expense categories are applicable in this expense template?</mat-label>
+                <mat-label>What expense categories are applicable in this expense template? <span class="text-danger">*</span></mat-label>
                 <mat-select multiple formControlName="advanceCategories">
                     <mat-option [value]="advanceCategory?._id"
                         *ngFor="let advanceCategory of advanceCategoriesall; let i = index">
@@ -84,12 +84,15 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field>
-
+            <div *ngIf="addAdvanceTempForm.get('advanceCategories').invalid && addAdvanceTempForm.get('advanceCategories').touched"
+            class="text-danger error">
+            Please Add Advance Category!
+        </div>
         </div>
 
         <div class="mt-2">
             <div class="form-group">
-                <label for="">How many levels of approvals you want to add?</label>
+                <label for="">How many levels of approvals you want to add? <span class="text-danger">*</span></label>
                 <div class="d-flex">
 
                     <div class="form-check">
@@ -117,7 +120,7 @@
 
         <div class="mt-2">
             <div class="form-group">
-                <label for="">How would you like to add approvers?</label>
+                <label for="">How would you like to add approvers? <span class="text-danger">*</span></label>
                 <div class="d-flex">
 
                     <div class="form-check">

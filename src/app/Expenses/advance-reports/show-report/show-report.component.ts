@@ -107,7 +107,7 @@ export class ShowReportComponent {
       data: { report }
     });
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The modal was closed');
+      this.refreshExpenseReportTable(); 
     });
   }
 
