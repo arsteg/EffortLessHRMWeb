@@ -116,8 +116,7 @@ export class ExpenseGeneralSettingsComponent {
         expenseCategories: expenseCategories
       });
       this.checkedFormats = templateData.downloadableFormats;
-      // this.expenseService.categories.next(this.addTemplateForm.value.expenseCategories)
-      // console.log(this.addTemplateForm.value);
+     
     });
   }
 

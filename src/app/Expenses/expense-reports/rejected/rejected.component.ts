@@ -23,7 +23,6 @@ export class RejectedComponent {
   selectedReport: any;
   public sortOrder: string = '';
 
-
   constructor(private modalService: NgbModal,
     private expenseService: ExpensesService,
     private commonService: CommonService,
@@ -104,7 +103,7 @@ export class RejectedComponent {
       isBillable: categories?.expenseReportExpense[0]?.isBillable ? categories?.expenseReportExpense[0]?.amount : 0,
       status: categories.status
     }));
-    this.exportService.exportToCSV('Expense-Report', 'Expense-Report', dataToExport);
+    this.exportService.exportToCSV('Expense-Rejected-Report', 'Expense-Rejected-Report', dataToExport);
   }
   calculateTotalAmount(expenseReport: any): number {
     let totalAmount = 0;

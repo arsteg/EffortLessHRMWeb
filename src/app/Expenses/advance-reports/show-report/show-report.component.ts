@@ -27,6 +27,8 @@ export class ShowReportComponent {
   employee = new FormControl('');
   reportSummary: any;
   totalAmount: number = 0;
+  p: number = 1;
+  public sortOrder: string = '';
 
 
   constructor(private commonService: CommonService,
@@ -137,14 +139,13 @@ export class ShowReportComponent {
   }
   
   exportToCsv() {
+    console.log(this.advanceReport)
     const dataToExport = this.advanceReport.map((advance) => ({
       employee: this.getUser(advance.employee),
+      category: this.getCategory(advance.category),
       amount: advance?.amount,
       status: advance.status,
-      category: this.getCategory(advance.category),
       comment: advance.comment,
-      primaryApprovalReason:  advance.primaryApprovalReason,
-      secondaryApprovalReason: advance.secondaryApprovalReason    
     }));
     this.exportService.exportToCSV('Advance-Report', 'Advance-Report', dataToExport);
   }

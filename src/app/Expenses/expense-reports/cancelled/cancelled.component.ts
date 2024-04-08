@@ -99,7 +99,7 @@ export class CancelledComponent {
         isBillable: categories?.expenseReportExpense[0]?.isBillable ? categories?.expenseReportExpense[0]?.amount : 0,
         status: categories.status
       }));
-      this.exportService.exportToCSV('Expense-Report', 'Expense-Report', dataToExport);
+      this.exportService.exportToCSV('Expense-Cancelled-Report', 'Expense-Cancelled-Report', dataToExport);
     }
     calculateTotalAmount(expenseReport: any): number {
       let totalAmount = 0;

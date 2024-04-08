@@ -43,15 +43,10 @@
                 <tbody>
                     <tr
                         *ngFor="let templateAssignment of templateAssignments | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }; let i = index">
-                        <td class="ps-2">{{templateAssignments[i]?.user?.firstName |
-                            titlecase}}&nbsp;{{templateAssignments[i]?.user?.lastName | titlecase}}</td>
-                       
-                        <td>
-                            {{templateAssignments[i]?.advanceTemplate.policyLabel}}</td>
-                        <td>{{templateAssignments[i]?.primaryApprover?.firstName |
-                            titlecase}}&nbsp;{{templateAssignments[i]?.primaryApprover?.lastName | titlecase}}</td>
-                        <td>{{templateAssignments[i]?.secondaryApprover?.firstName |
-                            titlecase}}&nbsp;{{templateAssignments[i]?.secondaryApprover?.lastName | titlecase}}</td>
+                        <td class="ps-2">{{getUser(templateAssignment?.user)}}</td>
+                        <td>{{getAdvanceTemplate(templateAssignment?.advanceTemplate)}}</td>
+                        <td>{{getUser(templateAssignment?.primaryApprover)}}</td>
+                        <td>{{getUser(templateAssignment?.secondaryApprover)}}</td>
                         <td class="">
                             <button class="actions" mat-mini-fab title="Add"
                                 aria-label="Example icon button with a menu icon" (click)="open(addModal);
@@ -89,7 +84,7 @@
 
     <form action="" [formGroup]="addTemplateAssignmentForm" (ngSubmit)="onSubmit()">
 
-        <div><label for="member"> Select User for Expense Template</label>
+        <div><label for="member"> Select User for Advance Expense Template Assignment <span class="text-danger">*</span></label>
             <select id="member" name="member" class="form-control" formControlName="user"
                 [attr.disabled]="changeMode === 'Update'" class="form-select form-select-sm"
                 aria-label=".form-select-sm example">
@@ -97,13 +92,17 @@
                     {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
                 </option>
             </select>
+            <div *ngIf="addTemplateAssignmentForm.get('user').invalid && addTemplateAssignmentForm.get('user').touched"
+                class="text-danger error">
+                Please select User!
+            </div>
 
         </div>
 
 
         <div class="mt-2">
 
-            <label for="">Select Template</label>
+            <label for="">Select Template <span class="text-danger">*</span></label>
             <select id="expenseTemplate" class="form-control" formControlName="advanceTemplate" name="expense"
                 [attr.disabled]="changeMode === 'Update'" class="form-select form-select-sm"
                 aria-label=".form-select-sm example">
@@ -111,38 +110,52 @@
                     {{template?.policyLabel}}
                 </option>
             </select>
+            <div *ngIf="addTemplateAssignmentForm.get('advanceTemplate').invalid && addTemplateAssignmentForm.get('advanceTemplate').touched"
+            class="text-danger error">
+            Please select Advance Template!
+        </div>
         </div>
 
         <div class="mt-2">
-            <label for="">Select Primary Approver of Expense Template</label>
+            <label for="">Select Primary Approver of Expense Template <span class="text-danger">*</span></label>
             <select id="member" name="member" class="form-control" formControlName="primaryApprover"
                 class="form-select form-select-sm" aria-label=".form-select-sm example">
                 <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
                     {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
                 </option>
             </select>
-
+            <div *ngIf="addTemplateAssignmentForm.get('primaryApprover').invalid && addTemplateAssignmentForm.get('primaryApprover').touched"
+            class="text-danger error">
+            Please select Primary Approver!
+        </div>
 
         </div>
         <div class="mt-2">
-            <label for="">Select Secondary Approver of Expense Template</label>
+            <label for="">Select Secondary Approver of Expense Template <span class="text-danger">*</span></label>
             <select id="members" name="members" class="form-control" formControlName="secondaryApprover"
                 class="form-select form-select-sm" aria-label=".form-select-sm example">
                 <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
                     {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
                 </option>
             </select>
-
+            <div *ngIf="addTemplateAssignmentForm.get('secondaryApprover').invalid && addTemplateAssignmentForm.get('secondaryApprover').touched"
+            class="text-danger error">
+            Please select Secondary Approver!
+        </div>
 
         </div>
 
         <div class="row mt-3">
-            <label for="startDate" class="text-start">Select Effective From Date</label>
+            <label for="startDate" class="text-start">Select Effective From Date <span class="text-danger">*</span></label>
         </div>
         <div class="row">
             <div class="col-12 form-group mb-3">
                 <input placeholder="YYYY-MM-DD" formControlName="effectiveDate" class="form-control"
                     #datepickerYMD="bsDatepicker" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" required>
+                    <div *ngIf="addTemplateAssignmentForm.get('effectiveDate').invalid && addTemplateAssignmentForm.get('effectiveDate').touched"
+                    class="text-danger error">
+                    Please select Date!
+                </div>
             </div>
         </div>
 

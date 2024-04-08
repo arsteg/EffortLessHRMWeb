@@ -173,30 +173,43 @@ export class AdvanceTemplatesComponent implements OnInit {
       );
       this.addAdvanceTempForm.reset();
     }
+    else if (this.changeMode === 'Update') {
+      // let id = this.selectedTemplate._id;
+      this.expenseService.updateAdvanceTemplates(this.selectedTemplateId, payload).subscribe((res: any) => {
+        this.addAdvanceTempForm.reset();
+        this.toast.success(' Advance Template Updated', 'Successfully!!!');
+        this.isEdit = false;
+        this.changeMode == 'Add';
+      },
+        (err) => {
+          this.toast.error('Advance template can not be updated', 'Error')
+        });
+    }
   }
 
-  updateAdvanceTemplate() {
-    let payload = {
-      policyLabel: this.addAdvanceTempForm.value['policyLabel'],
-      approvalType: this.addAdvanceTempForm.value['approvalType'],
-      approvalLevel: this.addAdvanceTempForm.value['approvalLevel'],
-      firstApprovalEmployee: this.addAdvanceTempForm.value['firstApprovalEmployee'],
-      secondApprovalEmployee: this.addAdvanceTempForm.value['secondApprovalEmployee'],
-      advanceCategories: this.addAdvanceTempForm.value.advanceCategories.map(category => ({ advanceCategory: category })),
-    };
-    let id = this.selectedTemplate._id;
-    this.expenseService.updateAdvanceTemplates(id, payload).subscribe((res: any) => {
-      this.getAllTemplates();
-      this.toast.success(' Advance Template Updated', 'Successfully!!!');
-      this.addAdvanceTempForm.reset();
-      this.isEdit = false;
-      this.changeMode == 'Add';
-    },
-      (err) => {
-        this.toast.error('Advance template can not be updated', 'Error')
-      });
+  // updateAdvanceTemplate() {
+  //   let payload = {
+  //     policyLabel: this.addAdvanceTempForm.value['policyLabel'],
+  //     approvalType: this.addAdvanceTempForm.value['approvalType'],
+  //     approvalLevel: this.addAdvanceTempForm.value['approvalLevel'],
+  //     firstApprovalEmployee: this.addAdvanceTempForm.value['firstApprovalEmployee'],
+  //     secondApprovalEmployee: this.addAdvanceTempForm.value['secondApprovalEmployee'],
+  //     advanceCategories: this.addAdvanceTempForm.value.advanceCategories.map(category => ({ advanceCategory: category })),
+  //   };
+  //   let id = this.selectedTemplate._id;
+  //   console.log(payload)
+  //   this.expenseService.updateAdvanceTemplates(id, payload).subscribe((res: any) => {
+  //     this.getAllTemplates();
+  //     this.toast.success(' Advance Template Updated', 'Successfully!!!');
+  //     this.addAdvanceTempForm.reset();
+  //     this.isEdit = false;
+  //     this.changeMode == 'Add';
+  //   },
+  //     (err) => {
+  //       this.toast.error('Advance template can not be updated', 'Error')
+  //     });
 
-  }
+  // }
 
   // editadvanceCategory(category, index) {
   //   this.isEdit = true;
@@ -219,6 +232,7 @@ export class AdvanceTemplatesComponent implements OnInit {
 
   editadvanceCategory(category, index) {
     this.isEdit = true;
+    this.changeMode = 'Update';
     this.expenseService.getAdvanceTemplateById(category?._id).subscribe((res: any) => {
       this.addAdvanceTempForm.patchValue({
         policyLabel: res.data.policyLabel,
