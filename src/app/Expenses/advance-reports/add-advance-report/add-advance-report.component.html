@@ -1,5 +1,5 @@
 <div class="d-flex justify-content-between">
-    <h1 mat-dialog-title> Add Advance Report</h1>
+    <h1 mat-dialog-title class="modal-title text-muted mb-0"> Add Advance Report</h1>
     <div mat-dialog-actions>
         <button mat-button mat-dialog-close (click)="closeModal()"><mat-icon aria-hidden="false"
                 aria-label="Example close icon" fontIcon="close"></mat-icon></button>
@@ -7,40 +7,47 @@
 
     </div>
 </div>
-
+<hr>
 <div mat-dialog-content>
-    <form [formGroup]="addAdvanceReport">
+    <form [formGroup]="addAdvanceReport"  (ngSubmit)="onSubmission()">
         <div>
-            <label for="member">Select an Employee for Advance Report</label>
+            <label for="member">Select an Employee for Advance Report <span class="text-danger">*</span></label>
             <select id="member" name="member" class="form-control" formControlName="employee"
                 class="form-select form-select-sm" aria-label=".form-select-sm example" (change)="onEmployeeSelected()">
                 <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
                     {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
                 </option>
             </select>
+            <div *ngIf="addAdvanceReport.get('employee').invalid && addAdvanceReport.get('employee').touched" class="text-danger error">
+                Please Select Employee!
+              </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group mt-2">
             <label for="firstApprovalEmployee">Select Advance Category<span class="text-danger">*</span></label>
             <select name="" id="firstApprovalEmployee" formControlName="category" required class="ms-2 form-control">
                 <option>Select Advance Category</option>
                 <option *ngFor="let category of categoriesByUser" [value]="category?._id">
                     {{getCategory(category?.advanceCategory)}}</option>
             </select>
+            <div *ngIf="addAdvanceReport.get('category').invalid && addAdvanceReport.get('category').touched" class="text-danger error">
+                Please Select Employee!
+              </div>
         </div>
-
-
 
         <div class="mt-2">
-            <label for="">Amount</label>
-            <div class=" col-12 form-group mb-3">
+            <label for="">Amount <span class="text-danger">*</span></label>
+            <div class=" col-12 form-group">
                 <input type="number" class="form-control" formControlName="amount" />
             </div>
+            <div *ngIf="addAdvanceReport.get('amount').invalid && addAdvanceReport.get('amount').touched" class="text-danger error">
+                Please Select Employee!
+              </div>
         </div>
 
 
 
-        <div class="mb-3">
+        <div class="my-3">
             <label for="exampleFormControlTextarea1" class="form-label">
                 Comment
             </label>
@@ -50,9 +57,9 @@
 
 
 
-        <div>
-            <button mat-raised-button type="button">Cancel</button>
-            <button mat-button mat-dialog-close type="submit" (click)="onSubmission()">Submit</button>
+        <div class="d-flex justify-content-between">
+            <button mat-raised-button type="reset">Cancel</button>
+            <button mat-button  type="submit" class="addBtn">Submit</button>
 
         </div>
 

@@ -74,7 +74,6 @@
             </div>
         </div>
 
-        <pre *ngFor="let advanceCategory of advanceCategoriesall">{{advanceCategory?._id}}</pre>
         <div class="mt-2">
             <mat-form-field appearance="outline" class="w-100">
                 <mat-label>What expense categories are applicable in this expense template?</mat-label>
@@ -85,7 +84,6 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field>
-            <pre>{{addAdvanceTempForm.get('advanceCategories').value| json}}</pre>
 
         </div>
 

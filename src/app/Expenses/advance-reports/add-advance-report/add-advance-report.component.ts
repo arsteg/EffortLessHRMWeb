@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { CommonService } from 'src/app/common/common.service';
@@ -23,11 +23,11 @@ export class AddAdvanceReportComponent {
     private commonService: CommonService,
     private toast: ToastrService) {
     this.addAdvanceReport = this.fb.group({
-      employee: [''],
-      category: [''],
-      status: [''],
+      employee: ['', Validators.required],
+      category: ['', Validators.required],
+      status: ['', Validators.required],
       comment: [''],
-      amount: ['']
+      amount: ['', Validators.required]
     });
   }
 
@@ -51,12 +51,28 @@ export class AddAdvanceReportComponent {
       comment: this.addAdvanceReport.value.comment,
       amount: this.addAdvanceReport.value.amount
     }
-    this.expenseService.addAdvanceReport(payload).subscribe((res: any) => {
-      this.advanceReportRefreshed.emit();
-      this.expenseService.advanceReport.next(res.data);
-    });
-
+    if(this.addAdvanceReport.valid){
+      this.expenseService.addAdvanceReport(payload).subscribe((res: any) => {
+        this.advanceReportRefreshed.emit();
+        this.expenseService.advanceReport.next(res.data);
+      });
+    }
+    else {
+      console.log('form is invalid')
+      this.markFormGroupTouched(this.addAdvanceReport);
+    }
   }
+
+  markFormGroupTouched(formGroup: FormGroup) {
+    Object.values(formGroup.controls).forEach(control => {
+      control.markAsTouched();
+
+      if (control instanceof FormGroup) {
+        this.markFormGroupTouched(control);
+      }
+    });
+  }
+
 
   getAdvanceCategoryByUserId() {
     this.expenseService.getAdvanceCategoryByUserId(this.addAdvanceReport.value.employee).subscribe((res: any) => {
