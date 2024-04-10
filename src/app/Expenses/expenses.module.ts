@@ -44,14 +44,9 @@ import { AdvanceCancelledComponent } from './advance-reports/advance-cancelled/a
 import { ViewReportsComponent } from './advance-reports/view-reports/view-reports.component';
 import { StatusUpdateComponent } from './advance-reports/status-update/status-update.component';
 import { BrowserModule } from '@angular/platform-browser';
-import { MyExpenseComponent } from './my-expense/my-expense.component';
 import { TeamExpenseComponent } from './team-expense/team-expense.component';
 import { GeneralInformationComponent } from './general-information/general-information.component';
 import { ShowMyExpensesComponent } from './my-expense/show-my-expenses/show-my-expenses.component';
-import { PendingMyExpenseComponent } from './my-expense/pending-my-expenses/pending.component';
-import { RejectedMyExpensesComponent } from './my-expense/rejected/rejected.component';
-import { CancelledMyExpensesComponent } from './my-expense/cancelled/cancelled.component';
-import { ApprovedMyExpensesComponent } from './my-expense/approved/approved.component';
 import { AddMyExpenseComponent } from './my-expense/add-my-expense/add-my-expense.component';
 import { CreateExpenseReportExpensesComponent } from './my-expense/create-expense-report-expenses/create-expense-report-expenses.component';
 import { ShowTeamExpensesComponent } from './team-expense/show-team-expenses/show-team-expenses.component';
@@ -60,9 +55,9 @@ import { AddTeamExpensesReportComponent } from './team-expense/add-team-expenses
 import { PendingTeamExpensesComponent } from './team-expense/pending-team-expenses/pending-team-expenses.component';
 import { ApprovedTeamExpensesComponent } from './team-expense/approved-team-expenses/approved-team-expenses.component';
 import { RejectedTeamExpensesComponent } from './team-expense/rejected-team-expenses/rejected-team-expenses.component';
-import { StatusUpdateExpenseComponent } from './my-expense/status-update-expense/status-update-expense.component';
 import { ApplicableExpenseSettingsComponent } from './general-information/applicable-expense-settings/applicable-expense-settings.component';
 import { SupervisorsComponent } from './general-information/supervisors/supervisors.component';
+import { ViewMyExpenseComponent } from './my-expense/view-my-expense/view-my-expense.component';
  
 @NgModule({
   declarations: [
@@ -94,14 +89,9 @@ import { SupervisorsComponent } from './general-information/supervisors/supervis
     AdvanceCancelledComponent,
     ViewReportsComponent,
     StatusUpdateComponent,
-    MyExpenseComponent,
     TeamExpenseComponent,
     GeneralInformationComponent,
     ShowMyExpensesComponent,
-    PendingMyExpenseComponent,
-    RejectedMyExpensesComponent,
-    CancelledMyExpensesComponent,
-    ApprovedMyExpensesComponent,
     AddMyExpenseComponent,
     CreateExpenseReportExpensesComponent,
     ShowTeamExpensesComponent,
@@ -110,9 +100,9 @@ import { SupervisorsComponent } from './general-information/supervisors/supervis
     PendingTeamExpensesComponent,
     ApprovedTeamExpensesComponent,
     RejectedTeamExpensesComponent,
-    StatusUpdateExpenseComponent,
     ApplicableExpenseSettingsComponent,
-    SupervisorsComponent
+    SupervisorsComponent,
+    ViewMyExpenseComponent
   ],
   imports: [
     BrowserModule,

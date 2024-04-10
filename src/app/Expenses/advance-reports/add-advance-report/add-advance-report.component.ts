@@ -45,8 +45,6 @@ export class AddAdvanceReportComponent {
   }
 
   onSubmission() {
-   
-    console.log(this.addAdvanceReport.value)
     if(this.addAdvanceReport.valid){
       this.expenseService.addAdvanceReport(this.addAdvanceReport.value).subscribe((res: any) => {
         this.advanceReportRefreshed.emit();

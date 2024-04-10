@@ -5,8 +5,9 @@ import { ExpensesService } from 'src/app/_services/expenses.service';
 import { StatusUpdateComponent } from '../../advance-reports/status-update/status-update.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ViewReportsComponent } from '../../advance-reports/view-reports/view-reports.component';
-import { StatusUpdateExpenseComponent } from '../status-update-expense/status-update-expense.component';
 import { CommonService } from 'src/app/common/common.service';
+import { ExportService } from 'src/app/_services/export.service';
+import { ViewMyExpenseComponent } from '../view-my-expense/view-my-expense.component';
 
 @Component({
   selector: 'app-show-my-expenses',
@@ -21,23 +22,22 @@ export class ShowMyExpensesComponent {
   isEdit: boolean = false;
   changeMode: 'Add' | 'Update' = 'Add';
   @Output() expenseTemplateReportRefreshed: EventEmitter<void> = new EventEmitter<void>();
-  @Input() actionOptions: { approve: boolean, reject: boolean, cancel: boolean, view: boolean };
+  @Input() actionOptions: { view: boolean };
   @Input() status: string;
   expenseReport: any;
   allCategory: any[];
   totalAmount: number = 0;
   allAssignee: any[];
+  currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
   constructor(private modalService: NgbModal,
     private expenseService: ExpensesService,
     private auth: AuthenticationService,
     private dialog: MatDialog,
-    private commonService: CommonService) { }
+    private commonService: CommonService,
+  private exportService: ExportService) { }
 
   ngOnInit() {
-    this.auth.currentUser.subscribe(res=>{
-      console.log(res?.data?.user?.id)
-    })
     this.getExpenseByUser();
     this.commonService.populateUsers().subscribe(result => {
       this.allAssignee = result && result.data && result.data.data;
@@ -82,58 +82,37 @@ export class ShowMyExpensesComponent {
   }
 
   refreshExpenseReportTable() {
-    console.log('refreshed')
-    const user = this.auth.currentUser.subscribe((res: any) => {
-      this.expenseService.getExpenseReportByUser(res?.data?.user?.id).subscribe((res: any) => {
-        this.expenseReport = res.data.filter(expense => expense.status === this.status);
+      this.expenseService.getExpenseReportByUser(this.currentUser.id).subscribe((res: any) => {
+        this.expenseReport = res.data;
         this.totalAmount = this.expenseReport.reduce((total, report) => total + report.amount, 0);
         this.expenseTemplateReportRefreshed.emit();
       })
-    });
-
-   
   }
 
   getExpenseByUser() {
-    const user = this.auth.currentUser.subscribe((res: any) => {
+    this.auth.currentUser.subscribe((res: any) => {
       this.expenseService.getExpenseReportByUser(res.id).subscribe((res: any) => {
-        this.expenseReport = res.data.filter(expense => expense.status === this.status);
+        this.expenseReport = res.data;
         this.totalAmount = this.expenseReport.reduce((total, report) => total + report.amount, 0);
       })
     });
   }
-
-  openStatusModal(report: any, status: string): void {
-    report.status = status;
-    this.expenseService.advanceReport.next(report);
-   
-      console.log('The modal was closed');
-    this.modalService.open(report
-      , { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-    });
-  }
- 
-  getCategory(categoryId: string) {
+  
+   getCategory(categoryId: string) {
     const matchingCategory = this.allCategory?.find(category => category._id === categoryId);
     return matchingCategory ? `${matchingCategory.label}` : 'Category Not Found';
   }
 
   getUser(employeeId: string) {
     const matchingUser = this.allAssignee?.find(user => user._id === employeeId);
-    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'User Not Found';
+    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : '';
   }
 
   openSecondModal(selectedReport: any): void {
-    console.log(selectedReport)
-    const userName = this.getUser(selectedReport.employee);
     const categoryLabel = this.getCategory(selectedReport.category);
-    selectedReport.employee = userName;
     selectedReport.category = categoryLabel;
     this.expenseService.advanceReport.next(selectedReport);
-    const dialogRef = this.dialog.open(ViewReportsComponent, {
+    const dialogRef = this.dialog.open(ViewMyExpenseComponent, {
       width: '50%',
       data: { report: selectedReport }
     });
@@ -164,5 +143,23 @@ export class ShowMyExpensesComponent {
     }
     return totalAmount;
   }
+  exportToCsv() {
+    const dataToExport = this.expenseReport.map((report) => {
+        let totalAmount = report.amount || 0;
+        if (report.expenseReportExpense && report.expenseReportExpense.length > 0) {
+            totalAmount += report.expenseReportExpense.reduce((acc, rep) => acc + (rep.amount || 0), 0);
+        }
+        return {
+            title: report.title,
+            amount: report?.amount,
+            totalAmount: totalAmount,
+            isReimbursable: report?.expenseReportExpense[0]?.isReimbursable ? report?.expenseReportExpense[0]?.amount : 0,
+            isBillable: report?.expenseReportExpense[0]?.isBillable ? report?.expenseReportExpense[0]?.amount : 0,
+            status: report?.status
+        };
+    });
+    this.exportService.exportToCSV('My-Expense-Report', 'My-Expense-Report', dataToExport);
+}
+
 }
 

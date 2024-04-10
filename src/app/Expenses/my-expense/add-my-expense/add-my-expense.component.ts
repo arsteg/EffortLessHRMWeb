@@ -28,6 +28,7 @@ export class AddMyExpenseComponent {
   selectedExpenseReportExpense: any;
   private updateTableSubscription: Subscription;
   employee: string;
+  currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
   constructor(private dialog: MatDialog,
     private commonService: CommonService,
@@ -116,9 +117,8 @@ export class AddMyExpenseComponent {
       expenseReportExpenses: []
     }
     let formArray = this.expenseService.expenseReportExpense.getValue();
-    this.authService.currentUser.subscribe((res: any) => {
-      console.log(res)
-      payload.employee = res.id
+    if (this.addExpenseForm.valid) {
+      payload.employee = this.currentUser.id;
       payload.expenseReportExpenses = [formArray];
       if (!this.isEdit || !this.changeMode) {
         console.log(payload)
@@ -142,8 +142,22 @@ export class AddMyExpenseComponent {
           }
         )
       }
-    })
+    }
+    else {
+      this.markFormGroupTouched(this.addExpenseForm);
+    }
   }
+
+  markFormGroupTouched(formGroup: FormGroup) {
+    Object.values(formGroup.controls).forEach(control => {
+      control.markAsTouched();
+
+      if (control instanceof FormGroup) {
+        this.markFormGroupTouched(control);
+      }
+    });
+  }
+
   getCategoryById(categoryId) {
     this.expenseService.getExpenseCategoryById(categoryId).subscribe((res: any) => {
       this.category = res.data.label;
