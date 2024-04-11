@@ -70,11 +70,15 @@ export class InterviewProcessService extends baseService {
     this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
     return this.http.delete<any>(`${environment.apiUrlDotNet}/interviews/candidate-data-fields/${deleteDataField}`, this.httpOptions);
   }
-
-  public getAllCandidates(): any {
+  public getAllCandidatesWithData(): any {
     const token = this.getToken();
     this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
     return this.http.get<any>(`${environment.apiUrlDotNet}/interviews/candidatesWithData`, this.httpOptions);
+  }
+  public getAllCandidates(): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.get<any>(`${environment.apiUrlDotNet}/interviews/candidates`, this.httpOptions);
   }
   public addCandidate(candidate: candidate): any {
     const token = this.getToken();

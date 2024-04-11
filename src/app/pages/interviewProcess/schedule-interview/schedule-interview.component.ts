@@ -70,7 +70,7 @@ export class ScheduleInterviewComponent implements OnInit {
   }
 
   getAllCandidates(){
-    this.interviewProcessService.getAllCandidates().subscribe((response: any) => {
+    this.interviewProcessService.getAllCandidatesWithData().subscribe((response: any) => {
       this.candidates = response && response.data;
     });
   }

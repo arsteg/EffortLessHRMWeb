@@ -17,6 +17,7 @@ import { candidate, candidateFeedback, feedbackField } from 'src/app/models/inte
   styleUrl: './candidate-feedback.component.css'
 })
 export class CandidateFeedbackComponent implements OnInit {
+  candidateList: candidateFeedback[] = [];
   candidates: candidateFeedback[] = [];
   filteredCandidates: candidateFeedback[] = [];
   searchText: string = '';
@@ -43,12 +44,12 @@ export class CandidateFeedbackComponent implements OnInit {
 
   ngOnInit(): void {
     this.initCandidateForm();
+    this.getAllCandidatesWithData();
     this.getAllCandidates();
     this.candidateForm.statusChanges.subscribe((f)=>{
     });
   }
-
-  getAllCandidates() {
+  getAllCandidatesWithData() {
     this.interviewProcessService.feedbackFieldsWithData().subscribe((response: any) => {
       this.candidates = response && response.data;
       this.filteredCandidates = response && response.data;
@@ -125,7 +126,7 @@ export class CandidateFeedbackComponent implements OnInit {
       this.toast.success('Candidate feedback fields updated successfully!');
             this.isEditing = false;
             this.resetCandidateForm();
-            this.getAllCandidates();
+            this.getAllCandidatesWithData();
     }
   }
 
@@ -244,7 +245,7 @@ export class CandidateFeedbackComponent implements OnInit {
           });
         })
         this.toast.success('Candidate feedback has been deleted successfully!');
-          this.getAllCandidates();
+          this.getAllCandidatesWithData();
       }
     } catch (err) {
       this.toast.error('Error deleting tag', 'Error!');
@@ -252,6 +253,14 @@ export class CandidateFeedbackComponent implements OnInit {
   }
   confirmAction(): boolean {
     return window.confirm('Are you sure you want to perform this action?');
+  }
+  getAllCandidates(){
+    this.interviewProcessService.getAllCandidatesWithData().subscribe((response: any) => {
+      this.candidateList = response && response.data;
+    });
+  }
+  refreshCandidates(){
+    this.getAllCandidatesWithData();
   }
 }
 

@@ -9,8 +9,10 @@
               <span class="bi bi-search searchIcon"></span>
               <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
                 name="searchText" aria-label="default input example">
+                <button mat-raised-button id="btnRefresh" (click)="refreshCandidates()"
+                        class="bi bi-arrow-repeat header-icons contentHeading"></button>
             </div>
-          </div>
+            </div>
           <table class="px-12">
             <thead>
               <tr>
@@ -49,41 +51,26 @@
       </div>
 
       <div class="col-md-4 border-start">
-        <h2 class="contentHeading p-2">Add/Edit Candidate Feedback</h2>
+        <h2 class="contentHeading p-2">Candidate Feedback</h2>
         <form [formGroup]="candidateForm" (ngSubmit)="isEditing ? updateCandidate() : updateCandidate()"
           class="mt-4 me-3 p-3 bg-light border rounded" style="background-color: gray;">
 
           <!-- Basic Fields -->
           <div class="form-group">
             <label for="assetType">Name</label>
-            <input type="text" name="assetType" formControlName="name" class="form-control" [ngClass]="{ 'is-invalid': !validateOption('string',candidateForm.value.name) && (candidateForm.get('name').touched || candidateForm.get('name').dirty)}" >
+            <select class="custom-select  p-2" formControlName="_id" required>
+              <option [value]="candidate._id" *ngFor="let candidate of candidateList">
+                  {{candidate.name}}</option>
+          </select>
+            <!-- <input type="text" name="assetType" formControlName="name" class="form-control" [ngClass]="{ 'is-invalid': !validateOption('string',candidateForm.value.name) && (candidateForm.get('name').touched || candidateForm.get('name').dirty)}" > -->
             <div *ngIf="!validateOption('string',candidateForm.value.name) && (candidateForm.get('name').touched || candidateForm.get('name').dirty)"
             class="invalid-feedback">
             Name is required!  !
           </div>
           </div>
-          <div class="form-group mt-1">
-            <label>email</label>
-            <input type="email" formControlName="email" class="form-control" [ngClass]="{ 'is-invalid': !validateOption('string',candidateForm.value.email) && (candidateForm.get('email').touched || candidateForm.get('email').dirty)}">
-            <div
-              *ngIf="!validateOption('string',candidateForm.value.email) && (candidateForm.get('email').touched || candidateForm.get('email').dirty)"
-              class="invalid-feedback">
-              Email is required!
-            </div>
-          </div>
-          <div class="form-group mt-1">
-            <label>Phone Number</label>
-            <input type="text" formControlName="phoneNumber" class="form-control"
-              [ngClass]="{ 'is-invalid': !validateOption('string',candidateForm.value.phoneNumber) && (candidateForm.get('phoneNumber').touched || candidateForm.get('phoneNumber').dirty)}">
-            <div
-              *ngIf="!validateOption('string',candidateForm.value.phoneNumber) && (candidateForm.get('phoneNumber').touched || candidateForm.get('phoneNumber').dirty)"
-              class="invalid-feedback">
-              Phone number is required!
-            </div>
-          </div>
-          <div formArrayName="customAttributes">
-            <ng-container class="form-group"
-              *ngFor="let customAttribute of candidateForm.get('customAttributes')['controls']; let i=index;"
+
+          <div formArrayName="customAttributes" *ngIf="isEditing">
+            <ng-container class="form-group" *ngFor="let customAttribute of candidateForm.get('customAttributes')['controls']; let i=index;"
               [formGroupName]="i">
               <div *ngIf="customAttribute.get('fieldType').value.toLowerCase()=='string'" class="form-group mt-1">
                 <label>{{ customAttribute.get('fieldName').value }}</label>
@@ -131,13 +118,8 @@
           </div>
 
           <div class="form-group d-flex justify-content-between mt-2">
-            <div class="">
-              <button type="submit" class="btn addBtn ml-5">{{ isEditing ? 'Update' :
-                'Add'
-                }}</button>
-            </div>
-            <div class="">
-              <button type="button" *ngIf="isEditing" (click)="isEditing = false" mat-raised-button>Cancel</button>
+            <div class="" *ngIf="isEditing">
+              <button type="submit" class="btn addBtn ml-5">Update</button>
             </div>
           </div>
         </form>
