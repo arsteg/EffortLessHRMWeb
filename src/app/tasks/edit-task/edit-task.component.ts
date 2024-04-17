@@ -131,6 +131,17 @@ export class EditTaskComponent implements OnInit {
     this.getTasks();
   }
 
+  getColor(status: string): string {
+    if (status === 'In Progress') {
+      return 'blue';
+    } else if (status === 'ToDo') {
+      return '#b038fa';
+    } else if (status === 'Done') {
+      return 'green';
+    } else {
+      return 'grey';
+    }
+  }
 
   navigateToManage() {
     // Use router.navigate with a relative path to go back three steps
@@ -285,7 +296,7 @@ export class EditTaskComponent implements OnInit {
     }
     this.tasksService.updateTask(this.tasks.data.task.id, updateTask).subscribe(response => {
       this.showEditor = false;
-      this.toast.success('Successfully Updated!', `Task Number: ${this.tasks.data.task.taskNumber}`)
+      this.toast.success('Successfully Updated!', `Task Number: ${this.tasks.data.task.taskNumber}`);
     },
       err => {
         this.toast.error('Task could not be updated', 'ERROR!')
@@ -330,7 +341,8 @@ export class EditTaskComponent implements OnInit {
         this.toast.error('Task could not be updated', 'ERROR!')
       })
   }
-  updateTaskStatus(selectedTask: any, status: string) {
+  
+  updateTaskStatus(selectedTask , status: string) {
     selectedTask = this.tasks.data.task;
     const payload = {
       "status": status,
@@ -349,6 +361,8 @@ export class EditTaskComponent implements OnInit {
     }
     payload.status = status
     this.tasksService.updatetaskFlex(this.tasks.data.task.id, payload).subscribe(response => {
+      this.showEditor = false;
+      this.tasks.data.task.status = status;
       this.toast.success('Task status updated successfully', `Task Number: ${this.tasks.data.task.taskNumber}`)
     },
       err => {
@@ -415,7 +429,7 @@ export class EditTaskComponent implements OnInit {
           this.tasksService.addTaskAttachment(taskAttachment).subscribe(
             (response) => {
               this.selectedFiles = [];
-              this.ngOnInit();
+              this.getTaskAttachments();
             },
             (error) => {
               console.error('Error creating task attachment:', error);

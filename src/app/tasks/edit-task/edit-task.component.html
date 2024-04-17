@@ -85,7 +85,7 @@
                             </div>
                         </div>
                     </div>
-                    <form class="row taskDetails" [formGroup]="updateForm" (ngSubmit)="updateTask()">
+                    <form class="row taskDetails" [formGroup]="updateForm" >
                         <div class="row mb-3">
                             <div class="col-12  align-self-center">
                                 <div class="sub-header mt-3 py-3 px-3 align-self-center w-100 rounded">
@@ -100,9 +100,8 @@
                                                     'bg-danger text-white!important': (selectedStatus || tasks?.data?.task?.status) === 'ToDo',
                                                     'bg-secondary text-white!important': (selectedStatus || tasks?.data?.task?.status) === 'Closed'                                                    
                                                 }">
-                                                <i class="fa fa-tasks"></i> {{ selectedStatus ||
-                                                currentTaskProject?.status
-                                                }}
+                                                <i class="fa fa-tasks"></i>
+                                                {{ selectedStatus || currentTaskProject?.status }}
                                             </button>
                                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                                 <button *ngFor="let s of statusList" type="button" tabindex="0"
@@ -272,7 +271,7 @@
                                                     type="button">Cancel</button>
                                             </div>
                                             <div>
-                                                <button mat-raised-button class="addBtn" type="submit">Update</button>
+                                                <button mat-raised-button (click)="updateTask()" class="addBtn" type="submit">Update</button>
                                             </div>
                                         </div>
                                     </div>
@@ -281,10 +280,10 @@
                                         <label for="taskName" class="text-start">Task</label>
                                     </div>
                                     <input type="text" name="taskName" id="project" class="form-control input pt-0"
-                                        *ngIf="tasks?.data?.task?.id" formControlName="taskName"
+                                        *ngIf="tasks?.data?.task?.id" formControlName="taskName" onkeydown="return event.key != 'Enter';"
                                         [(ngModel)]="tasks?.data?.task.taskName" required>
 
-                                    <div *ngIf="updateForm.controls['taskName'].invalid && updateForm.controls['taskName'].touched"
+                                        <div *ngIf="updateForm.controls['taskName'].invalid && updateForm.controls['taskName'].touched"
                                         class="alert alert-danger error">
                                         <div *ngIf="updateForm.controls['taskName'].errors['required']">
                                             Please Select Task Name!
