@@ -131,17 +131,6 @@ export class EditTaskComponent implements OnInit {
     this.getTasks();
   }
 
-  getColor(status: string): string {
-    if (status === 'In Progress') {
-      return 'blue';
-    } else if (status === 'ToDo') {
-      return '#b038fa';
-    } else if (status === 'Done') {
-      return 'green';
-    } else {
-      return 'grey';
-    }
-  }
 
   navigateToManage() {
     // Use router.navigate with a relative path to go back three steps

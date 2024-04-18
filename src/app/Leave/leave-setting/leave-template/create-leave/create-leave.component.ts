@@ -115,7 +115,6 @@ export class CreateLeaveComponent {
     else {
       const id = this.leaveService.selectedTemplate.getValue()._id;
       this.leaveService.updateLeaveTemplate(id, payload).subscribe((res: any)=>{
-        this.leaveService.selectedTemplate.next(res.data);
         this.changeStep.emit(2);
       })
       

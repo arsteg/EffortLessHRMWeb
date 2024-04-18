@@ -1,8 +1,10 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, resolveForwardRef } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { Location } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 import { LeaveService } from 'src/app/_services/leave.service';
 import { CommonService } from 'src/app/common/common.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-category-leave',
@@ -12,7 +14,7 @@ import { CommonService } from 'src/app/common/common.service';
 export class AddCategoryLeaveComponent {
   @Output() close: any = new EventEmitter();
   @Output() changeStep: any = new EventEmitter();
-  @Output() updateExpenseTemplateTable: EventEmitter<void> = new EventEmitter<void>();
+  @Output() updateLeaveTemplateTable: EventEmitter<void> = new EventEmitter<void>();
   step = 1;
   firstForm: FormGroup;
   categories: any;
@@ -26,15 +28,24 @@ export class AddCategoryLeaveComponent {
   users: FormGroup;
 
   constructor(private leaveService: LeaveService,
+    private location : Location,
+    private router : Router,
     private _formBuilder: FormBuilder,
     private commonService: CommonService,
     private toast: ToastrService) {
   }
 
   ngOnInit() {
+   this.leaveService.selectedTemplate.subscribe(res=>{
+      console.log(res);
+    })
     this.commonService.populateUsers().subscribe((res: any) => {
       this.members = res.data.data;
     });
+    
+    this.router.navigateByUrl('/Leave', { skipLocationChange: true }).then(() => {
+      this.router.navigate([this.router.url]);
+  });
 
     this.leaveService.selectedTemplate.subscribe((selectedTemplate) => {
       this.firstForm = this._formBuilder.group({
@@ -108,6 +119,7 @@ export class AddCategoryLeaveComponent {
     this.changeStep.emit(1);
     this.firstForm.reset();
     this.close.emit(true);
+    this.updateLeaveTemplateTable.emit();
   }
 
   getCategoryLabel(leaveCategoryId: string): string {
@@ -120,11 +132,12 @@ export class AddCategoryLeaveComponent {
     this.firstForm.value.leaveCategories.forEach((category: any) => {
       category.users = category.users.map((user: any) => ({ user }));
     });
-    console.log(this.firstForm.value);
+    //console.log(this.firstForm.value);
     this.leaveService.updateLeaveTemplateCategories(this.firstForm.value).subscribe((res: any) => {
+      this.updateLeaveTemplateTable.emit();
       this.toast.success('Leave Template Categories Updated', 'Successfully');
-      this.updateExpenseTemplateTable.emit();
     });
+    
   }
   
 }
