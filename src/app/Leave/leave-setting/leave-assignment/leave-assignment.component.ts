@@ -17,6 +17,7 @@ export class LeaveAssignmentComponent implements OnInit {
   selectedLeaveAssignment: any;
   isEdit: boolean = false;
   searchText: string = '';
+  p: number = 1;
   templateAssignmentForm: FormGroup;
   users: any[] = [];
   templates: any;

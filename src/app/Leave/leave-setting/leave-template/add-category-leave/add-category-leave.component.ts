@@ -136,6 +136,7 @@ export class AddCategoryLeaveComponent {
     this.leaveService.updateLeaveTemplateCategories(this.firstForm.value).subscribe((res: any) => {
       this.updateLeaveTemplateTable.emit();
       this.toast.success('Leave Template Categories Updated', 'Successfully');
+      this.closeModal();
     });
     
   }

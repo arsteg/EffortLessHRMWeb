@@ -29,9 +29,7 @@ export class LeaveTemplateComponent implements OnInit {
     private dialog: MatDialog,
     private toast: ToastrService) { }
 
-  ngOnInit(): void {
-    //this.refreshLeaveTemplateTable();
-    
+  ngOnInit(): void {   
     this.getLeaveTemplates();
   }
 
@@ -73,7 +71,7 @@ export class LeaveTemplateComponent implements OnInit {
       (res) => {
         this.templates = res.data;
         this.getLeaveTemplates();
-        this.LeaveTableRefreshed.emit();
+        //this.LeaveTableRefreshed.emit();
         
       },
       (error) => {
@@ -85,7 +83,7 @@ export class LeaveTemplateComponent implements OnInit {
   getLeaveTemplates() {
     this.leaveService.getLeavetemplates().subscribe((res: any) => {
       this.leaveTemplate = res.data;
-      console.log(this.leaveTemplate);
+      
     })
   }
   
@@ -98,8 +96,7 @@ export class LeaveTemplateComponent implements OnInit {
       this.toast.success('Successfully Deleted!!!', 'Leave Template')
     },
       (err) => {
-        this.toast.error('This Leave is already being used!'
-          , 'Leave template, Can not be deleted!')
+        this.toast.error('This Leave is already being used! Leave template, Can not be deleted!')
       })
   }
 

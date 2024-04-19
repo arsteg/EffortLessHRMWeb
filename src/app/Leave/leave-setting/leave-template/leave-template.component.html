@@ -41,7 +41,7 @@
                 </thead>
                 <tbody>
                     <tr
-                        *ngFor="let leaveTemp of leaveTemplate ">
+                        *ngFor="let leaveTemp of leaveTemplate | search : searchText | paginate: { itemsPerPage: 5, currentPage: p }; let i = index ">
                         <td>{{leaveTemp?.label}}</td>
                         <td>{{leaveTemp?.applicableCategories?.templateApplicableCategoryEmployee?.length}}</td>
                         <td class="text-center">{{leaveTemp?.applicableCategories?.length}}</td>

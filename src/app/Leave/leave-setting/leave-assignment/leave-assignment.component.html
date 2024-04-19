@@ -39,7 +39,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let tempAssignment of templateAssignment">
+                <tr *ngFor="let tempAssignment of templateAssignment  | search : searchText | paginate: { itemsPerPage: 5, currentPage: p }; let i = index ">
                     <td>{{getUser(tempAssignment?.user)}}</td>
                     <td>{{getTemplateLabel(tempAssignment?.leaveTemplate)}}</td>
                     <td>{{getUser(tempAssignment?.primaryApprover)}}</td>
