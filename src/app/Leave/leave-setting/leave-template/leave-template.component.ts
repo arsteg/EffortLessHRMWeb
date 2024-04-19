@@ -15,7 +15,7 @@ export class LeaveTemplateComponent implements OnInit {
   searchText: string = '';
   changeMode: 'Add' | 'Next' = 'Add';
   step: number = 1;
-  leaveTemplate: any;
+  leaveTemplate: any[] = [];
   templates: any;
   @Output() LeaveTableRefreshed: EventEmitter<void> = new EventEmitter<void>();
   selectedTemplateId: any;
@@ -30,6 +30,8 @@ export class LeaveTemplateComponent implements OnInit {
     private toast: ToastrService) { }
 
   ngOnInit(): void {
+    //this.refreshLeaveTemplateTable();
+    
     this.getLeaveTemplates();
   }
 
@@ -72,6 +74,7 @@ export class LeaveTemplateComponent implements OnInit {
         this.templates = res.data;
         this.getLeaveTemplates();
         this.LeaveTableRefreshed.emit();
+        
       },
       (error) => {
         console.error('Error refreshing leave template table:', error);
@@ -82,9 +85,10 @@ export class LeaveTemplateComponent implements OnInit {
   getLeaveTemplates() {
     this.leaveService.getLeavetemplates().subscribe((res: any) => {
       this.leaveTemplate = res.data;
+      console.log(this.leaveTemplate);
     })
   }
-
+  
   deleteTemplate(_id: string) {
     this.leaveService.deleteTemplate(_id).subscribe((res: any) => {
       const index = this.templates.findIndex(temp => temp._id === _id);
