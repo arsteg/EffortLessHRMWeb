@@ -11,7 +11,7 @@ import {
   MatDialogTitle,
 } from '@angular/material/dialog';
 import { ExpensesService } from 'src/app/_services/expenses.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 import { attachments } from 'src/app/models/expenses';
@@ -34,11 +34,12 @@ export class CreateReportComponent {
   bsValue = new Date();
   bsRangeValue: Date[];
   maxDate = new Date();
+  minDate = new Date();
   labelPosition: true | false = true;
   attachments: attachments[] = [];
   selectedFiles: any = [];
-
-
+  selectedCategoryId: string;
+  applicationfields: any[] = [];
 
   constructor(public expenseService: ExpensesService,
     private fb: FormBuilder,
@@ -53,11 +54,18 @@ export class CreateReportComponent {
       isBillable: [''],
       reason: [''],
       expenseAttachments: [this.attachments],
-      expenseReport: ['']
+      expenseReport: [''],
+      expenseReportExpenseFields: this.fb.array([])
     });
+    // this.maxDate.setDate(this.maxDate.getDate() + 7);
+    // this.bsRangeValue = [this.bsValue, this.maxDate];
+
+    this.minDate.setDate(this.minDate.getDate() - 1);
     this.maxDate.setDate(this.maxDate.getDate() + 7);
     this.bsRangeValue = [this.bsValue, this.maxDate];
+
   }
+
 
   ngOnInit() {
     if (this.expenseService.isEdit.getValue() == true) {
@@ -72,7 +80,6 @@ export class CreateReportComponent {
           isBillable: res.isBillable,
           reason: res.reason,
           expenseReport: res._id
-          // expenseAttachments:
         })
       })
     }
@@ -85,137 +92,149 @@ export class CreateReportComponent {
     });
   }
 
+  applicationfieldValue(fieldIndex: number) {
+    const fieldValueGroup = this.fb.group({
+      expenseApplicationField: ['', Validators.required],
+      value: ['', Validators.required]
+    });
+    (this.expenseReportform.get('expenseReportExpenseFields') as FormArray).push(fieldValueGroup);
+  }
+  get fieldsValue() {
+    return this.expenseReportform.get('expenseReportExpenseFields') as FormArray;
+  }
+
   ngOnDestroy() {
     // this.sharedDataSubscription.unsubscribe();
     // this.refreshSubscription.unsubscribe();
   }
 
   onSubmission() {
-    let payload = {
-      expenseCategory: this.expenseReportform.value.expenseCategory,
-      incurredDate: this.expenseReportform.value.incurredDate,
-      amount: this.expenseReportform.value.amount,
-      isReimbursable: this.expenseReportform.value.isReimbursable,
-      isBillable: this.expenseReportform.value.isBillable,
-      reason: this.expenseReportform.value.reason,
-      expenseAttachments: [],
-      expenseReport: this.expenseReportform.value.expenseReport
-    }
-    payload.expenseReport = this.expenseService.selectedReport.getValue()._id;
-    const expenseReportExpenses = this.expenseService.expenseReportExpense.getValue()._id;
-    if (this.expenseService.isEdit.getValue() == true) {
-      // update expense report expenses
-      if (this.selectedFiles.length >= 0) {
-        const attachments: attachments[] = [];
+    console.log('submittedform: ', this.expenseReportform.value)
+    // let payload = {
+    //   expenseCategory: this.expenseReportform.value.expenseCategory,
+    //   incurredDate: this.expenseReportform.value.incurredDate,
+    //   amount: this.expenseReportform.value.amount,
+    //   isReimbursable: this.expenseReportform.value.isReimbursable,
+    //   isBillable: this.expenseReportform.value.isBillable,
+    //   reason: this.expenseReportform.value.reason,
+    //   expenseAttachments: [],
+    //   expenseReport: this.expenseReportform.value.expenseReport
+    // }
+    // payload.expenseReport = this.expenseService.selectedReport.getValue()._id;
+    // const expenseReportExpenses = this.expenseService.expenseReportExpense.getValue()._id;
+    // if (this.expenseService.isEdit.getValue() == true) {
+    //   // update expense report expenses
+    //   if (this.selectedFiles.length >= 0) {
+    //     const attachments: attachments[] = [];
 
-        for (let i = 0; i < this.selectedFiles.length; i++) {
-          const file: File = this.selectedFiles[i];
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onload = () => {
-            const base64String = reader.result.toString().split(',')[1];
-            const fileSize = file.size;
-            const fileType = file.type;
-            const fileNameParts = file.name.split('.');
-            const extention = fileNameParts[fileNameParts.length - 1];
+    //     for (let i = 0; i < this.selectedFiles.length; i++) {
+    //       const file: File = this.selectedFiles[i];
+    //       const reader = new FileReader();
+    //       reader.readAsDataURL(file);
+    //       reader.onload = () => {
+    //         const base64String = reader.result.toString().split(',')[1];
+    //         const fileSize = file.size;
+    //         const fileType = file.type;
+    //         const fileNameParts = file.name.split('.');
+    //         const extention = fileNameParts[fileNameParts.length - 1];
 
-            attachments.push({
-              attachmentName: file.name,
-              attachmentType: fileType,
-              attachmentSize: fileSize,
-              extention: extention,
-              file: base64String
-            });
+    //         attachments.push({
+    //           attachmentName: file.name,
+    //           attachmentType: fileType,
+    //           attachmentSize: fileSize,
+    //           extention: extention,
+    //           file: base64String
+    //         });
 
-            if (i === this.selectedFiles.length - 1) {
-              payload.expenseAttachments = attachments;
-            }
-          }
-        }
-      }
-      this.expenseService.updateExpenseReportExpenses(expenseReportExpenses, payload).subscribe((res: any) => {
-        this.expenseService.expenseReportExpense.next(res.data);
-        this.toast.success('Expense Report of Expenses is Updated!', 'Successfully!!!')
-      },
-        err => {
-          this.toast.error('This expense report of expenses can not be Updated!', 'Error')
-        });
-    }
-    else if (this.expenseService.isEdit.getValue() == false && this.expenseService.selectedReport.getValue()._id) {
-      // add new expense report expenses  
-      payload.expenseReport = this.expenseService.selectedReport.getValue()._id;
+    //         if (i === this.selectedFiles.length - 1) {
+    //           payload.expenseAttachments = attachments;
+    //         }
+    //       }
+    //     }
+    //   }
+    //   this.expenseService.updateExpenseReportExpenses(expenseReportExpenses, payload).subscribe((res: any) => {
+    //     this.expenseService.expenseReportExpense.next(res.data);
+    //     this.toast.success('Expense Report of Expenses is Updated!', 'Successfully!!!')
+    //   },
+    //     err => {
+    //       this.toast.error('This expense report of expenses can not be Updated!', 'Error')
+    //     });
+    // }
+    // else if (this.expenseService.isEdit.getValue() == false && this.expenseService.selectedReport.getValue()._id) {
+    //   // add new expense report expenses  
+    //   payload.expenseReport = this.expenseService.selectedReport.getValue()._id;
 
-      if (this.selectedFiles.length > 0) {
-        const attachments: attachments[] = [];
+    //   if (this.selectedFiles.length > 0) {
+    //     const attachments: attachments[] = [];
 
-        for (let i = 0; i < this.selectedFiles.length; i++) {
-          const file: File = this.selectedFiles[i];
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onload = () => {
-            const base64String = reader.result.toString().split(',')[1];
-            const fileSize = file.size;
-            const fileType = file.type;
-            const fileNameParts = file.name.split('.');
-            const extention = fileNameParts[fileNameParts.length - 1];
+    //     for (let i = 0; i < this.selectedFiles.length; i++) {
+    //       const file: File = this.selectedFiles[i];
+    //       const reader = new FileReader();
+    //       reader.readAsDataURL(file);
+    //       reader.onload = () => {
+    //         const base64String = reader.result.toString().split(',')[1];
+    //         const fileSize = file.size;
+    //         const fileType = file.type;
+    //         const fileNameParts = file.name.split('.');
+    //         const extention = fileNameParts[fileNameParts.length - 1];
 
-            attachments.push({
-              attachmentName: file.name,
-              attachmentType: fileType,
-              attachmentSize: fileSize,
-              extention: extention,
-              file: base64String
-            });
+    //         attachments.push({
+    //           attachmentName: file.name,
+    //           attachmentType: fileType,
+    //           attachmentSize: fileSize,
+    //           extention: extention,
+    //           file: base64String
+    //         });
 
-            if (i === this.selectedFiles.length - 1) {
-              payload.expenseAttachments = attachments;
-              this.expenseService.addExpenseReportExpenses(payload).subscribe((res: any) => {
-                console.log(res.data);
-                this.expenseService.expenseReportExpense.next(res.data);
-                this.toast.success('Expense Report of Expenses is Created!', 'Successfully!!!')
-              },
-                err => {
-                  this.toast.error('This expense report of expenses can not be Added!', 'Error')
-                })
-            }
-          }
-        }
-      }
-    }
-    else (this.expenseService.isEdit.getValue() == false && !this.expenseService.selectedReport.getValue()._id)
-    {
-      if (this.selectedFiles.length > 0) {
-        const attachments: attachments[] = [];
+    //         if (i === this.selectedFiles.length - 1) {
+    //           payload.expenseAttachments = attachments;
+    //           this.expenseService.addExpenseReportExpenses(payload).subscribe((res: any) => {
+    //             console.log(res.data);
+    //             this.expenseService.expenseReportExpense.next(res.data);
+    //             this.toast.success('Expense Report of Expenses is Created!', 'Successfully!!!')
+    //           },
+    //             err => {
+    //               this.toast.error('This expense report of expenses can not be Added!', 'Error')
+    //             })
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
+    // else (this.expenseService.isEdit.getValue() == false && !this.expenseService.selectedReport.getValue()._id)
+    // {
+    //   if (this.selectedFiles.length > 0) {
+    //     const attachments: attachments[] = [];
 
-        for (let i = 0; i < this.selectedFiles.length; i++) {
-          const file: File = this.selectedFiles[i];
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onload = () => {
-            const base64String = reader.result.toString().split(',')[1];
-            const fileSize = file.size;
-            const fileType = file.type;
-            const fileNameParts = file.name.split('.');
-            const extention = fileNameParts[fileNameParts.length - 1];
-            attachments.push({
-              attachmentName: file.name,
-              attachmentType: fileType,
-              attachmentSize: fileSize,
-              extention: extention,
-              file: base64String
-            });
-            if (i === this.selectedFiles.length - 1) {
-              payload.expenseAttachments = attachments;
-              this.expenseService.expenseReportExpense.next(payload);
-            }
-          }
-        }
-      }
-    }
-    this.expenseService.expenseReportExpense.next(payload)
-    this.expenseService.triggerUpdateTable();
-    this.dialogRef.close();
-    this.changeStep.emit(1);
+    //     for (let i = 0; i < this.selectedFiles.length; i++) {
+    //       const file: File = this.selectedFiles[i];
+    //       const reader = new FileReader();
+    //       reader.readAsDataURL(file);
+    //       reader.onload = () => {
+    //         const base64String = reader.result.toString().split(',')[1];
+    //         const fileSize = file.size;
+    //         const fileType = file.type;
+    //         const fileNameParts = file.name.split('.');
+    //         const extention = fileNameParts[fileNameParts.length - 1];
+    //         attachments.push({
+    //           attachmentName: file.name,
+    //           attachmentType: fileType,
+    //           attachmentSize: fileSize,
+    //           extention: extention,
+    //           file: base64String
+    //         });
+    //         if (i === this.selectedFiles.length - 1) {
+    //           payload.expenseAttachments = attachments;
+    //           this.expenseService.expenseReportExpense.next(payload);
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
+    // this.expenseService.expenseReportExpense.next(payload)
+    // this.expenseService.triggerUpdateTable();
+    // this.dialogRef.close();
+    // this.changeStep.emit(1);
 
   }
 
@@ -244,5 +263,11 @@ export class CreateReportComponent {
     const value = event.value === 'true';
     this.expenseReportform.patchValue({ isReimbursable: value });
     this.expenseReportform.patchValue({ isBillable: !value });
+  }
+  onCategorySelection(categoryId: string) {
+    this.expenseService.getApplicationFieldbyCategory(categoryId).subscribe((res: any) => {
+      this.applicationfields = res.data;
+      console.log(this.fieldsValue)
+    })
   }
 }

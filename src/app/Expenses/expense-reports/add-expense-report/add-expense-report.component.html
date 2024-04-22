@@ -19,7 +19,7 @@
     </select>
     <div *ngIf="addExpenseForm.get('employee').invalid && addExpenseForm.get('employee').touched"
       class="text-danger error">
-      Please Enter Label for Expense Report!
+      Please select Employee for this Expense Report!
     </div>
   </div>
 
@@ -35,22 +35,11 @@
     <label for="">Enter Amount for Expense Report<span class="text-danger">*</span></label>
     <input type="number" class="input form-control" formControlName="amount" placeholder="Enter amount" required>
     <div *ngIf="addExpenseForm.get('amount').invalid && addExpenseForm.get('amount').touched" class="text-danger error">
-      Please Enter Label for Expense Report!
+      Please add amount!
     </div>
   </div>
 
-  <div class="form-group mt-2">
-    <label for="">Select Status for Expense Report<span class="text-danger">*</span></label>
-    <select  formControlName="status" id="">
-      <option value="Level 1 Approval Pending">Level 1 Approval Pending</option>
-      <option value="Approved">Approved</option>
-      <option value="Rejected">Rejected</option>
-      <option value="Cancelled">Cancelled</option>
-    </select>
-    <div *ngIf="addExpenseForm.get('status').invalid && addExpenseForm.get('status').touched" class="text-danger error">
-      Please Enter Label for Expense Report!
-    </div>
-  </div>
+ 
   <div class="tableContainer bg-white">
     <table class="mt-2">
       <thead>

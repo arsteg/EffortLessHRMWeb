@@ -244,6 +244,7 @@ export class ExpensesCategoriesComponent implements OnInit {
         let fieldsPayload = {
           fields: updateFields
         };
+        console.log(fieldsPayload)
         this.expenses.updateCategoryField(fieldsPayload).subscribe((res: any) => {
           this.toast.success('Expense Category Applicable field Updated', 'Successfully')
         });
@@ -257,6 +258,7 @@ export class ExpensesCategoriesComponent implements OnInit {
           fields: newFields,
           expenseCategory: this.selectedCategory._id
         };
+        console.log(fieldsPayload)
         this.expenses.addCategoryField(fieldsPayload).subscribe((res: any) => {
           this.toast.success('Expense Category Applicable field Added', 'Successfully')
         });

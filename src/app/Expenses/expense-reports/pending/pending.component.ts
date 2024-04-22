@@ -148,7 +148,6 @@ export class PendingComponent {
   editReport(report: any) {
     this.isEdit = true;
     this.selectedReport = report;
-    console.log(this.selectedReport)
     this.expenseService.selectedReport.next(this.selectedReport)
   }
 
