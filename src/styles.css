@@ -1,5 +1,7 @@
 @import '~quill/dist/quill.snow.css';
-html .mat-mdc-mini-fab.mat-accent , .mat-mdc-mini-fab.mat-accent {
+
+html .mat-mdc-mini-fab.mat-accent,
+.mat-mdc-mini-fab.mat-accent {
   --mdc-fab-container-color: #e8eaef !important;
 }
 
@@ -788,7 +790,9 @@ label {
   font-size: smaller;
 }
 
-.form-check-input:checked , .mat-step-icon-selected , .mat-step-icon-state-edit{
+.form-check-input:checked,
+.mat-step-icon-selected,
+.mat-step-icon-state-edit {
   background-color: #76bc21 !important;
 }
 
@@ -836,20 +840,23 @@ label {
 .mat-primary .mat-option.mat-selected:not(.mat-option-disabled) {
   color: #76bc21 !important;
 }
-option:hover{
+
+option:hover {
   background: orange !important;
 }
 
-.cdk-overlay-pane{
+.cdk-overlay-pane {
   background: white !important
 }
-.downloadBtn{
+
+.downloadBtn {
   font-size: large;
 }
 
-.mdc-text-field--outlined .mat-mdc-form-field-infix{
+.mdc-text-field--outlined .mat-mdc-form-field-infix {
   padding-bottom: 0px !important;
 }
-.mdc-notched-outline{
+
+.mdc-notched-outline {
   height: 85% !important;
 }
