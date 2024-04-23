@@ -53,55 +53,34 @@
           <input formControlName="maximumExpensesCanApply" class="form-control w-50">
         </div>
 
-        <button class="submenuTab active rounded-pill ms-4" type="button" (click)="addField()">Add Fields</button>
+        <button class="submenuTab active rounded-pill ms-4" type="button"
+          (click)="addField(categoryCtrl.get('fields'))">Add Fields</button>
 
-        <!-- <div *ngIf="expenseCategory[i]?.expensecategory == typeCategory?._id "> -->
-        <pre>{{ categoryCtrl.get('categoryType').value }}</pre>
-        <!-- </div> -->
+        <div formArrayName="fields">
+          <div *ngFor="let fieldCtrl of categoryCtrl.get('fields').controls; let j = index">
+            <ng-container [formGroupName]="j">
+              <div class="d-flex justify-content-between my-2">
+                <ng-container *ngFor="let fieldTemplate of fieldTemplates[categoryCtrl.get('categoryType').value]">
+                  <ng-container *ngIf="fieldTemplate.type !== 'select'; else selectField">
+                    <input [formControlName]="fieldTemplate.formControlName" [placeholder]="fieldTemplate.placeholder"
+                      class="form-control me-2">
+                  </ng-container>
+                  <ng-template #selectField>
+                    <select [formControlName]="fieldTemplate.formControlName" class="form-control">
+                      <option *ngFor="let option of fieldTemplate.options" [value]="option">{{ option }}</option>
+                    </select>
+                  </ng-template>
+                </ng-container>
 
-        <!-- Dynamic fields -->
-        <ng-container>
-          <div formArrayName="fields">
-            <div *ngFor="let fieldGroup of firstForm.get('fields')['controls']; let i = index">
-              <ng-container [formGroupName]="i">
-                <div *ngIf="categoryCtrl.get('categoryType').value == 'distance'">
-                  <input type="text" formControlName="label" placeholder="Enter label">
-
-                  <select name="" id="">
-                    <option>Select Distance in -</option>
-                    <option value="KM">KM</option>
-                    <option value="Miles">Miles</option>
-                  </select>
-
-                  <input type="number" formControlName="rate" placeholder="Rate per Day">
-                </div>
-
-                <div *ngIf="categoryCtrl.get('categoryType').value == 'perDay'">
-                  <input type="text" formControlName="label" placeholder="Enter label">
-                  <input type="number" formControlName="rate" placeholder="Rate per Day">
-                </div>
-
-                <div *ngIf="categoryCtrl.get('categoryType').value == 'time'">
-                  <input type="text" formControlName="label" placeholder="Enter label">
-                  <input type="number" formControlName="rate" placeholder="Rate per Hour">
-                </div>
-
-                <div *ngIf="categoryCtrl.get('categoryType').value == 'dateRange'">
-
-                </div>
-
-                <div *ngIf="categoryCtrl.get('categoryType').value == 'other'">
-
-                </div>
-                <button class="actions ms-2" title="Delete" mat-mini-fab type="button"
-                  aria-label="Example icon button with a menu icon" (click)="removeCatgoryField(i)">
+                <!-- Delete button -->
+                <button class="actions ms-2" title="Delete" mat-mini-fab type="button" aria-label="Delete"
+                  (click)="removeField(categoryCtrl.get('fields'), j)">
                   <i class="bi bi-trash"></i>
                 </button>
-
-              </ng-container>
-            </div>
+              </div>
+            </ng-container>
           </div>
-        </ng-container>
+        </div>
 
 
         <div class="">
