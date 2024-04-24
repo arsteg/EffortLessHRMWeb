@@ -1,26 +1,19 @@
-<div class="main-content contentData">
+<div class="main-content mt-5 pt-2">
     <div class="container-fluid px-0">
-        <ng-container>
-            <div *ngIf="view === 'user'">
-                <div class=" d-flex bg-white subMenu w-100">
-                    <button class="btn rounded-pill submenuTab" (click)="selectTab(1)"
-                        [class.active]="selectedTab === 1">Supervisors</button>
-                    <button class="btn rounded-pill submenuTab" (click)="selectTab(2)"
-                        [class.active]="selectedTab === 2">Holidays & Flexi Holidays</button>
+        <div>
+            <div class=" d-flex tabs w-100">
+                <button (click)="selectTab(1)" [class.active]="selectedTab === 1">Supervisors</button>
+                <button (click)="selectTab(2)" [class.active]="selectedTab === 2">Holidays & Flexi Holidays</button>
 
-
-                </div>
-
-                <div *ngIf="selectedTab === 1" class="tab-content">
-                    <app-supervisors></app-supervisors>
-                </div>
-                <div *ngIf="selectedTab === 2" class="tab-content">
-                    <app-holidays></app-holidays>
-                </div>
 
             </div>
 
-
-        </ng-container>
+            <div *ngIf="selectedTab === 1" class="tab-content">
+                <app-supervisors></app-supervisors>
+            </div>
+            <div *ngIf="selectedTab === 2" class="tab-content">
+                <app-holidays></app-holidays>
+            </div>
+        </div>
     </div>
 </div>

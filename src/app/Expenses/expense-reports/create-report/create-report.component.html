@@ -15,7 +15,7 @@
             <label for="firstApprovalEmployee">Select Category<span class="text-danger">*</span></label>
             <select name="" id="firstApprovalEmployee" formControlName="expenseCategory" required
                 class="ms-2 form-control" [(ngModel)]="selectedCategoryId"
-                (ngModelChange)="onCategorySelection($event)">
+                (ngModelChange)="onCategorySelection(selectedCategoryId)">
                 <option>Select Category</option>
                 <option *ngFor="let category of categories" [value]="category._id">{{category?.label}}</option>
             </select>
@@ -29,15 +29,21 @@
             </div>
         </div>
 
-        <!-- <div class="mt-2">
-            <label for="">Select Type</label>
-            <div class=" col-12 form-group mb-3">
-                <select name="" required class="ms-2 form-control">
-                    <option>Select Type</option>
-                    <option></option>
-                </select>
-            </div>
-        </div> -->
+        <div class="form-group mt-2">
+
+            <label for="">Type<span class="text-danger">*</span></label>
+            <select name="" id="" formControlName="type" required class="ms-2 form-control">
+                <option></option>
+            </select>
+        </div>
+
+        <div class="form-group mt-2">
+
+            <label for="">Quantity<span class="text-danger">*</span></label>
+            <input type="number">
+            <strong>Rate per (according to category type)</strong>
+        </div>
+
 
 
         <div class="mt-2">
@@ -46,67 +52,45 @@
                 <input type="number" class="form-control" formControlName="amount" />
             </div>
         </div>
-        <!-- <pre>{{fieldsValue| json}}</pre>
-        <div formArrayName="expenseReportExpenseFields">
-            <pre>{{fieldsValue| json}}</pre>
-            <ng-container *ngFor="let appField of expenseReportform.get('expenseApplicationField')['controls']; let i = index">
-                <div class="form-group" [formGroupName]="i">
-                    <pre>{{appField | json}}</pre>
-                     <ng-container [ngSwitch]="appField.fieldType">
-                        <label>{{ appField?.fieldName }}</label>
-                        <select *ngSwitchCase="'Dropdown'" class="form-control"
-                            formControlName="value">
+        <div *ngIf="applicationfields && applicationfields.length> 0">
+            <div *ngFor="let field of applicationfields">
+                <label for="">{{field?.fieldName}}</label>
+                <select name="" id="" *ngIf="field?.fieldType == 'Dropdown'"></select>
+                <input type="text" *ngIf="field?.fieldType == 'Textfield'">
+                <input type="number" *ngIf="field?.fieldType == 'Number'">
+                <input *ngIf="field?.fieldType == 'DateRange'" type="text" class="w-100" placeholder="Select Date Range"
+                    class="form-control" bsDaterangepicker [(ngModel)]="bsRangeValue" [bsConfig]="{ isAnimated: true }"
+                    formControlName="value" />
+                <input *ngIf="field?.fieldType == 'Date'" type="text" class="form-control" #dp="bsDatepicker"
+                    bsDatepicker [bsValue]="bsValue" [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
+                    formControlName="value" />
+            </div>
+        </div>
+        <!-- <div formArrayName="fieldsValue">
+            <ng-container *ngFor="let fieldGroup of fieldsValue.controls; let i = index">
+                <pre>{{fieldGroup| json}}</pre>
+                <div [formGroupName]="i">
+                    <label>{{ applicationfields[i].expenseApplicationField }}</label>
+                    <ng-container [ngSwitch]="applicationfields[i].fieldType">
+                        <select *ngSwitchCase="'Dropdown'" class="form-control" formControlName="value">
                             <option>Select Value</option>
-                            <option value="options?.value"
-                                *ngFor="let options of appField?.expenseApplicationFieldValues">
-                                {{options?.value}}</option>
+                            <option *ngFor="let option of applicationfields[i].expenseApplicationFieldValues"
+                                [value]="option.value">{{ option.value }}</option>
                         </select>
-
-                        <textarea *ngSwitchCase="'Textfield'" class="form-control"
-                            formControlName="value"></textarea>
-
-                        <input *ngSwitchCase="'Number'" type="number" class="form-control"
-                            formControlName="value" />
-
+                        <input *ngSwitchCase="'Textfield'" type="text" class="form-control" formControlName="value">
+                        <input *ngSwitchCase="'Number'" type="number" class="form-control" formControlName="value" />
                         <input *ngSwitchCase="'Date'" type="text" class="form-control" #dp="bsDatepicker" bsDatepicker
                             [bsValue]="bsValue" [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
                             formControlName="value" />
-
                         <input *ngSwitchCase="'DateRange'" type="text" class="w-100" placeholder="Select Date Range"
                             class="form-control" bsDaterangepicker [(ngModel)]="bsRangeValue"
-                            [bsConfig]="{ isAnimated: true }" formControlName="value">
-                    </ng-container> 
+                            [bsConfig]="{ isAnimated: true }" formControlName="value" />
+                    </ng-container>
                 </div>
             </ng-container>
         </div> -->
-<div formArrayName="fieldsValue">
-    <ng-container *ngFor="let fieldGroup of fieldsValue.controls; let i = index">
-        <pre>{{fieldGroup| json}}</pre>
-        <div [formGroupName]="i">
-            <label>{{ applicationfields[i].expenseApplicationField }}</label>
-            <ng-container [ngSwitch]="applicationfields[i].fieldType">
-                <select *ngSwitchCase="'Dropdown'" class="form-control"
-                    formControlName="value">
-                    <option>Select Value</option>
-                    <option *ngFor="let option of applicationfields[i].expenseApplicationFieldValues"
-                        [value]="option.value">{{ option.value }}</option>
-                </select>
-                <input *ngSwitchCase="'Textfield'" type="text" class="form-control"
-                    formControlName="value">
-                <input *ngSwitchCase="'Number'" type="number" class="form-control"
-                    formControlName="value" />
-                <input *ngSwitchCase="'Date'" type="text" class="form-control" #dp="bsDatepicker" bsDatepicker
-                    [bsValue]="bsValue" [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
-                    formControlName="value" />
-                <input *ngSwitchCase="'DateRange'" type="text" class="w-100" placeholder="Select Date Range"
-                    class="form-control" bsDaterangepicker [(ngModel)]="bsRangeValue"
-                    [bsConfig]="{ isAnimated: true }" formControlName="value" />
-            </ng-container>
-        </div>
-    </ng-container>
-</div>
 
-       
+
         <section class="example-section">
             <mat-radio-group (change)="toggleIsReimbursable($event)">
                 <mat-radio-button class="example-margin" value="true"

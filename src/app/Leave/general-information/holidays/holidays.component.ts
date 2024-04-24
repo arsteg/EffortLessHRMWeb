@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { ExportService } from 'src/app/_services/export.service';
+import { HolidaysService } from 'src/app/_services/holidays.service';
 
 @Component({
   selector: 'app-holidays',
@@ -6,5 +8,39 @@ import { Component } from '@angular/core';
   styleUrl: './holidays.component.css'
 })
 export class HolidaysComponent {
+  currentYear: number;
+  holidays: any[] = [];
+  p: number = 1;
+
+  constructor(private holidayService: HolidaysService,
+    private exportService: ExportService
+  ) {
+    this.currentYear = new Date().getFullYear();
+  }
+
+  ngOnInit() {
+    this.getHolidays(this.currentYear.toString());
+  }
+
+  getYearOptions(): number[] {
+    const currentYear = new Date().getFullYear();
+    return [currentYear - 1, currentYear, currentYear + 1]; 
+  }
+
+  getHolidays(year: string) {
+    this.holidayService.getHolidaysOfYear(year).subscribe((res: any) => {
+      this.holidays = res.data;
+    });
+  }
+
+  onYearChange(event: any) {
+    const selectedYear = event.target.value;
+    this.getHolidays(selectedYear);
+  }
+
+  exportToCsv() {
+    const dataToExport = this.holidays;
+    this.exportService.exportToCSV('Holidays', 'Holidays', dataToExport);
+  }
 
 }

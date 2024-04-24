@@ -1,1 +1,33 @@
-<p>holidays works!</p>
+<div class="bg-white py-4 px-0  tableContainer">
+    <div class="d-flex justify-content-end mb-2">
+        <div class="d-flex">
+            <select name="selectedYear" id="selectedYear" class="w-100" (change)="onYearChange($event)">
+                <option *ngFor="let year of getYearOptions()" [value]="year"
+                    [attr.selected]="year === currentYear ? 'selected' : null">Calendar year- {{ year }}</option>
+            </select>
+    
+            <button class="ms-2 submenuTab active rounded-pill" (click)="exportToCsv()"> <i
+                    class="bi bi-download downloadBtn pe-2"></i>
+                Download</button>
+        </div>
+    </div>
+    <table>
+        <thead>
+            <th>Date</th>
+            <th>Holiday Label</th>
+            <th>Is this Holiday Mandatory</th>
+        </thead>
+        <tbody>
+            <tr *ngFor="let holiday of holidays |  paginate: { itemsPerPage: 5, currentPage: p };">
+                <td>{{holiday?.date | date: 'mediumDate'}}</td>
+                <td>{{holiday?.label}}</td>
+                <td>
+                    <span *ngIf="holiday?.isMandatoryForFlexiHoliday == true">Yes</span>
+                    <span *ngIf="holiday?.isMandatoryForFlexiHoliday == false">No</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <pagination-controls (pageChange)="p = $event" class="pagination d-flex justify-content-end"></pagination-controls>
+
+</div>

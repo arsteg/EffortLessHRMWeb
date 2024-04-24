@@ -1,13 +1,17 @@
-<div class="bg-white py-2 px-0  tableContainer">
+<div class="bg-white py-4 px-0  tableContainer">
     <table>
         <thead>
             <th>Name</th>
             <th>Level</th>
         </thead>
         <tbody>
-            <tr *ngFor="let manager of supervisors">
-                <td class="py-2">{{manager?.name}}</td>
-                <td></td>
+            <tr *ngFor="let supervisor of supervisors">
+                <td class="py-2">{{getUser(supervisor?.primaryApprover) | titlecase}}</td>
+                <td>First Level</td>
+            </tr>
+            <tr *ngFor="let supervisor of supervisors">
+                <td>{{getUser(supervisor?.secondaryApprover) | titlecase}}</td>
+                <td>Second Level</td>
             </tr>
         </tbody>
     </table>

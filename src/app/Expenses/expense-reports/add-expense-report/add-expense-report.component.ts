@@ -93,6 +93,7 @@ export class AddExpenseReportComponent {
   }
 
   getSelectedExpenseReportExpense(selectedExpenseReportExpense: any) {
+    console.log(selectedExpenseReportExpense);
     this.expenseService.expenseReportExpense.next(selectedExpenseReportExpense);
   }
 
