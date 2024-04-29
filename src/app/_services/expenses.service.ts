@@ -32,6 +32,7 @@ export class ExpensesService {
   advanceReport: any = new BehaviorSubject('')
   private updateTableSubject = new BehaviorSubject<void>(null);
   updateTable$ = this.updateTableSubject.asObservable();
+  tempAndCat: any = new BehaviorSubject<void>(null);
 
   triggerUpdateTable() {
     this.updateTableSubject.next();
@@ -107,6 +108,11 @@ export class ExpensesService {
 
   getApplicationFieldbyCategory(id: string): Observable<response<any>> {
     var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/expense-application-fields-by-expense-category/${id}`, this.httpOptions);
+    return response;
+  }
+
+  getApplicableFieldByTemplateAndCategory( tempId: string, catId: string ): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/expense-template-applicable-categories-by-template-category/${tempId}/${catId}`, this.httpOptions);
     return response;
   }
 

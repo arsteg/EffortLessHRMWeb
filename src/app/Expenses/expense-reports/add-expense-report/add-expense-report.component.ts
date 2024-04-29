@@ -31,6 +31,7 @@ export class AddExpenseReportComponent {
   expenseReportExpenses: any[] = [];
   selectedExpenseReportExpense: any;
   private updateTableSubscription: Subscription;
+  allCategories: any;
 
   constructor(private dialog: MatDialog,
     private commonService: CommonService,
@@ -67,9 +68,14 @@ export class AddExpenseReportComponent {
       this.users = res.data.data;
     });
     this.getCategoryByUser();
-
+    this.getAllCatgeories();
   }
 
+  getAllCatgeories() {
+    this.expenseService.getExpenseCatgories().subscribe((res: any) => {
+      this.allCategories = res.data;
+    })
+  }
   openSecondModal(isEdit: boolean) {
     this.expenseService.isEdit.next(isEdit);
     const dialogRef = this.dialog.open(CreateReportComponent, {
@@ -78,7 +84,7 @@ export class AddExpenseReportComponent {
     });
     dialogRef.afterClosed().subscribe(result => {
       this.expenseService.expenseReportExpense.subscribe((res: any) => {
-        console.log(res)
+        console.log(res);
         this.expenseReportExpenses.push(res);
         this.expenseReportExpenses = [...this.expenseReportExpenses];
         console.log(this.expenseReportExpenses);
@@ -103,9 +109,13 @@ export class AddExpenseReportComponent {
   getCategoryByUser() {
     const user = this.addExpenseForm.value.employee;
     this.expenseService.selectedUser.next(user);
-    if (this.isEdit = false) {
+    console.log(user, this.isEdit, this.changeMode)
+    if (this.changeMode) {
+
       this.expenseService.getExpenseCategoryByUser(user).subscribe((res: any) => {
-        if (!res.data) {
+
+        this.expenseService.tempAndCat.next(res);
+        if (!res) {
           this.toast.warning('User is not Assigned to any Expense Categories', 'Warning')
         }
       })
@@ -126,7 +136,7 @@ export class AddExpenseReportComponent {
     if (!this.changeMode) {
       this.expenseService.addExpensePendingReport(payload).subscribe((res: any) => {
         this.toast.success('Expense Template Applicable Category Added Successfully!');
-        this.updateExpenseReportTable.emit();
+        // this.updateExpenseReportTable.emit();
         this.addExpenseForm.reset();
         this.expenseService.expenseReportExpense.next();
         payload.expenseReportExpenses = [];
@@ -141,7 +151,7 @@ export class AddExpenseReportComponent {
     else {
       let id = this.expenseService.selectedReport.getValue()._id
       this.expenseService.updateExpenseReport(id, payload).subscribe((res: any) => {
-        this.updateExpenseReportTable.emit();
+        // this.updateExpenseReportTable.emit();
         this.expenseService.expenseReportExpense.next();
         this.toast.success('Expense Template  Updated Successfully!');
       },
@@ -150,6 +160,7 @@ export class AddExpenseReportComponent {
         }
       )
     }
+    this.updateExpenseReportTable.emit();
   }
   getCategoryById(categoryId) {
     this.expenseService.getExpenseCategoryById(categoryId).subscribe((res: any) => {
@@ -158,7 +169,7 @@ export class AddExpenseReportComponent {
     });
   }
   getCategoryLabel(expenseCategoryId: string): string {
-    const matchingCategory = this.expenseReportExpenses.find(category => category._id === expenseCategoryId);
+    const matchingCategory = this.allCategories.find(category => category._id === expenseCategoryId);
     return matchingCategory ? matchingCategory.label : '';
   }
 
