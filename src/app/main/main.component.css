@@ -6713,3 +6713,49 @@ header .navigation__dropdown-popup.show li {
     z-index: 10;
     position: relative;
 }
+@media (max-width: 1080px) {
+    .navigation__list {
+        display: none; 
+        flex-direction: column;
+        position: absolute;
+        top: 60px; 
+        left: 0;
+        width: 100%;
+        background-color: #fff; 
+        border: 1px solid #ccc; 
+        padding: 10px;
+    }
+
+    .burger {
+        display: block; 
+    }
+}
+.burger {
+    display: none; 
+    cursor: pointer;
+}
+
+.burger__line {
+    width: 30px;
+    height: 3px;
+    background-color: #000;
+    margin: 5px;
+}
+
+.navigation {
+    display: flex;
+}
+
+.navigation__list {
+    list-style: none;
+    display: flex;
+    align-items: center;
+}
+.show {
+    width: 50%;
+    border-radius: 15px;
+    border: none;
+    box-shadow: 5px 5px 20px rgb(250 165 71);
+    translate: 100%;
+    display: flex !important;
+}

@@ -5,9 +5,12 @@
             <!-- <h3>EffortLessHRM </h3> -->
             <img src="assets/logo.png" alt="effortlessHRM" height="70">
         </div>
-        <nav>
-            <ul id="navigation" class="navigation__list">
+        <nav class="navigation">
+            <ul id="navigation" class="navigation__list" [class.show]="isMenuOpen">
 
+                <li><a routerLink="/login" class="top__login  main-font-semibold"
+                        style=" color: #76bc21 !important;">Log
+                        in</a></li>
                 <li class="navigation__list-item navigation__list-item--products" (click)="scrollToAboutUs()">
                     <button class="navigation__link" type="button" aria-haspopup="true" aria-expanded="false"
                         style="height: 70px">
@@ -70,7 +73,9 @@
             <a class="get__started">Sign up</a>
         </div>
 
-        <div class="burger"></div>
+        <div class="burger" (click)="toggleMenu()">
+            <i class="bi bi-list"></i>
+        </div>
 
     </div>
 </header>
@@ -91,24 +96,28 @@
                         It's a complete software solution made to fit today's businesses. EffortlessHRM has lots of cool
                         features to make work easier, like helping with tasks, making people more productive, and making
                         sure everyone has a good work experience. </p>
-                   
+
 
                 </div>
                 <div class="col-md-6" style="height: 500px">
                     <div class="row ps-3 bannerImg">
                         <div class="col-6 ">
-                       <span><img src="assets/main/banner-01.png"  class="main-bannerSection home banner1" alt=""></span> 
-                       <span><img src="assets/main/banner-02.png"  class="main-bannerSection home banner2 ms-2" alt=""></span>  
-                    </div>
-                    <div class="col-6">
-                        <span><img src="assets/main/banner-04.png"  class="main-bannerSection2 home banner3" alt=""></span>  
-                        <span><img src="assets/main/banner-03.png"  class="main-bannerSection2 home banner4" alt=""></span>   
-                    </div>
+                            <span><img src="assets/main/banner-01.png" class="main-bannerSection home banner1"
+                                    alt=""></span>
+                            <span><img src="assets/main/banner-02.png" class="main-bannerSection home banner2 ms-2"
+                                    alt=""></span>
+                        </div>
+                        <div class="col-6">
+                            <span><img src="assets/main/banner-04.png" class="main-bannerSection2 home banner3"
+                                    alt=""></span>
+                            <span><img src="assets/main/banner-03.png" class="main-bannerSection2 home banner4"
+                                    alt=""></span>
+                        </div>
                     </div>
                 </div>
-               
 
-                
+
+
 
             </div>
 
@@ -148,7 +157,7 @@
             </div>
         </div>
     </section>
-   
+
 
 
     <!-- Add new secton-->

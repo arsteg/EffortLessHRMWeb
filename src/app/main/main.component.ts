@@ -90,5 +90,9 @@ export class MainComponent implements OnInit {
       document.body.style.setProperty('--navbar-scroll-shadow', "none");
     }
   }
+  isMenuOpen: boolean = false;
 
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen; // Toggle the value of isMenuOpen
+  }
 }
