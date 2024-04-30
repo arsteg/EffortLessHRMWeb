@@ -26,6 +26,7 @@ export class ExpensesService {
   categories: any = new BehaviorSubject('');
   selectedUser: any = new BehaviorSubject('');
   expenseReportExpense: any = new BehaviorSubject('');
+  expenseReportExpId: any = new BehaviorSubject('');
   selectedReport: any = new BehaviorSubject('');
   isEdit: any = new BehaviorSubject(false);
   report: any = new BehaviorSubject('');
