@@ -1526,7 +1526,7 @@ p {
     position: relative;
     overflow: hidden;
     /* top: -70px; */
-    padding-top: 100px
+    padding-top: 150px
 }
 
 .main-homepage .section-container {
@@ -6605,6 +6605,111 @@ header .navigation__dropdown-popup.show li {
     height: 91%;
     border: 5px solid #f2f4f6;
 }
-#aboutUsSection{
+
+#aboutUsSection {
     background: linear-gradient(180deg, hsla(0, 0%, 100%, .7) 3%, rgb(255 149 42 / 50%) 75%, hsla(0, 0%, 100%, .8)) !important;
+}
+
+.feature_col {
+    transition: 0.5s all ease-in-out;
+    /* background-image: -webkit-linear-gradient(45deg, #fc01fd 32%, #6b2c94 100%); */
+}
+
+.feature_col:hover:before {
+    -webkit-transform: translate(7px, 7px);
+    -ms-transform: translate(7px, 7px);
+    transform: translate(7px, 7px);
+}
+
+.feature_col:hover {
+    transform: translate(-7px, -7px);
+
+}
+
+.feature_col.saas_two_service_section .service_content_box:after {
+    content: "";
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -2;
+    border-radius: 10px;
+    background-color: #fff;
+}
+
+.main-bannerSection {
+
+    position: relative;
+    animation: moving_position_animatin 6s infinite linear;
+    z-index: -1;
+}
+
+.main-bannerSection2 {
+
+    animation: moving_object 6s infinite linear;
+}
+
+.home {
+    border-radius: 20px;
+    box-shadow: 0px 4px 10px #f6b568;;
+    margin-bottom: 20px;
+
+}
+
+.banner1 {
+    height: 10%;
+}
+
+.banner2 {
+    height: 25%;
+    width: 80%;
+}
+
+.banner3,
+.banner4 {
+    width: 90%;
+}
+
+@keyframes moving_position_animatin {
+    0% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-30px);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@keyframes moving_object {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-30px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+.hero_bg {
+    animation: mymove 10s infinite;
+}
+.hero_bg {
+    position: absolute;
+    top: -200px;
+    right: 50px;
+}
+@keyframes mymove{
+    50% {
+        transform: rotate(180deg);
+    }
+}
+.bannerImg{
+    z-index: 10;
+    position: relative;
 }

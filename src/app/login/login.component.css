@@ -29,7 +29,14 @@ input.ng-invalid.ng-touched {
 
 @media screen and (max-width: 480px) {
   .dashImg {
-    display: none;
+    position: absolute;
+  }
+
+  .login-row{
+    justify-content: center !important;
+  }
+  .card-box{
+    width:100%;
   }
 }
 
@@ -43,9 +50,32 @@ input.ng-invalid.ng-touched {
     left: 35% !important;
   }
 }
+.login-banner {
 
-.copy {
-  /* position: absolute;
-  bottom: 15px;
-  left: 10%; */
+  animation: moving_object 6s infinite linear;
+}
+@keyframes moving_object {
+  0% {
+      transform: translateY(0);
+  }
+  50% {
+      transform: translateY(-30px);
+  }
+  100% {
+      transform: translateY(0);
+  }
+}
+
+.hero_bg {
+  animation: mymove 10s infinite;
+}
+.hero_bg {
+  position: absolute;
+  top: -200px;
+  /* right: 50px; */
+}
+@keyframes mymove{
+  50% {
+      transform: rotate(180deg);
+  }
 }
