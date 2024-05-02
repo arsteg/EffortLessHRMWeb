@@ -34,6 +34,7 @@ export class ExpensesService {
   private updateTableSubject = new BehaviorSubject<void>(null);
   updateTable$ = this.updateTableSubject.asObservable();
   tempAndCat: any = new BehaviorSubject<void>(null);
+  expenseTemplateCategoryFieldValues: any = new BehaviorSubject('');
 
   triggerUpdateTable() {
     this.updateTableSubject.next();

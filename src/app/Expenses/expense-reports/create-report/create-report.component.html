@@ -1,10 +1,8 @@
 <div class="d-flex justify-content-between">
     <h1 mat-dialog-title> {{expenseService.isEdit.getValue() == true? 'Update': 'Add'}} Expense</h1>
     <div mat-dialog-actions>
-        <button mat-button mat-dialog-close><mat-icon aria-hidden="false" aria-label="Example close icon"
+        <button mat-button mat-dialog-close type="button"><mat-icon aria-hidden="false" aria-label="Example close icon"
                 fontIcon="close"></mat-icon></button>
-
-
     </div>
 </div>
 
@@ -13,12 +11,19 @@
         <div class="form-group">
 
             <label for="firstApprovalEmployee">Select Category<span class="text-danger">*</span></label>
-            <select name="" id="firstApprovalEmployee" formControlName="expenseCategory" required
-                class="ms-2 form-control" [(ngModel)]="selectedCategoryId"
-                (ngModelChange)="onCategorySelection(selectedCategoryId)">
-                <option>Select Category</option>
+
+            <select name="expenseCategory" *ngIf="this.expenseService.isEdit.getValue() == true" id="firstApprovalEmployee" formControlName="expenseCategory" required
+                class="ms-2 form-control">
+                <option value="">Select Category</option>
                 <option *ngFor="let category of categories" [value]="category._id">{{category?.label}}</option>
             </select>
+
+            <select name="expenseCategory" *ngIf="this.expenseService.isEdit.getValue() == false" id="firstApprovalEmployee" formControlName="expenseCategory" required
+                class="ms-2 form-control" (ngModelChange)="onCategorySelection($event)">
+                <option value="">-Select Category-</option>
+                <option *ngFor="let category of categories" [value]="category._id">{{category?.label}}</option>
+            </select>
+
         </div>
 
         <div class="mt-2">
@@ -32,8 +37,9 @@
         <div class="form-group mt-2">
             <label for="">Type<span class="text-danger">*</span></label>
             <select name="type" id="type" formControlName="type" required class="ms-2 form-control"
-                [(ngModel)]="selectedType" (click)="selectedType" (ngModelChange)="onTypeChange(selectedType)">
-                <option *ngFor="let field of applicableCategoryFields">{{ field.label }}</option>
+                (ngModelChange)="onTypeChange($event)">
+                <option value="">Select Applicable Category Field</option>
+                <option [value]="field?.label" *ngFor="let field of applicableCategoryFields">{{ field.label }}</option>
             </select>
         </div>
 
@@ -48,43 +54,33 @@
         <div class="mt-2">
             <label for="">Amount</label>
             <div class=" col-12 form-group mb-3">
-                <input type="number" class="form-control" formControlName="amount" value="{{totalRate}}" />
+                <input type="number" class="form-control" formControlName="amount" [value]="totalRate" />
             </div>
         </div>
-
-
+       
         <div formArrayName="expenseReportExpenseFields">
             <div
                 *ngFor="let fieldGroup of expenseReportform.get('expenseReportExpenseFields')['controls']; let i = index">
                 <div [formGroupName]="i">
                     <label>{{ fieldGroup.controls['type'].value | titlecase}}</label>
                     <select class="w-100" formControlName="value" *ngIf="applicationfields[i].fieldType == 'Dropdown'">
-                        <option value="">Select Application category field</option>
-                        <option value="{{values?.value}}" *ngFor="let values of applicationfields[i].expenseApplicationFieldValues">
+                        <option value="">Select Category Application field</option>
+                        <option [value]="values?.value"
+                            *ngFor="let values of applicationfields[i].expenseApplicationFieldValues">
                             {{values?.value}}</option>
                     </select>
-                    <input class="w-100" type="text" formControlName="value"  *ngIf="applicationfields[i].fieldType == 'Textfield'">
-                    <input  class="w-100" type="number" formControlName="value"  *ngIf="applicationfields[i].fieldType == 'Number'">
-                    <input  class="w-100" formControlName="value"  *ngIf="applicationfields[i].fieldType =='DateRange'" type="text" class="w-100"
-                        placeholder="Select Date Range" class="form-control" bsDaterangepicker
+                    <input class="w-100" type="text" formControlName="value"
+                        *ngIf="applicationfields[i].fieldType == 'Textfield'">
+                    <input class="w-100" type="number" formControlName="value"
+                        *ngIf="applicationfields[i].fieldType == 'Number'">
+                    <input class="w-100" formControlName="value" *ngIf="applicationfields[i].fieldType =='DateRange'"
+                        type="text" class="w-100" placeholder="Select Date Range" class="form-control" bsDaterangepicker
                         [(ngModel)]="bsRangeValue" [bsConfig]="{ isAnimated: true }" formControlName="value" />
-                    <input  class="w-100" formControlName="value" *ngIf="applicationfields[i].fieldType == 'Date'" type="text" class="form-control"
-                        #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
+                    <input class="w-100" formControlName="value" *ngIf="applicationfields[i].fieldType == 'Date'"
+                        type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
                         [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="value" />
 
-                    <!-- <ng-container [ngSwitch]="applicationfields[i].fieldType">
-                            <select class="w-100" *ngSwitchCase="'Dropdown'" formControlName="value">
-                              <option value="{{ values?.value }}" *ngFor="let values of applicationfields[i].expenseApplicationFieldValues">
-                                {{ values?.value }}
-                              </option>
-                            </select>
-                            <input class="w-100" type="text" *ngSwitchCase="'Textfield'" formControlName="value">
-                            <input class="w-100" type="number" *ngSwitchCase="'Number'" formControlName="value">
-                            <input class="w-100" *ngSwitchCase="'DateRange'" type="text" class="form-control"
-                              placeholder="Select Date Range" bsDaterangepicker [(ngModel)]="bsRangeValue" [bsConfig]="{ isAnimated: true }">
-                            <input class="w-100" *ngSwitchCase="'Date'" type="text" class="form-control"
-                              #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue" [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }">
-                          </ng-container> -->
+
                 </div>
             </div>
         </div>

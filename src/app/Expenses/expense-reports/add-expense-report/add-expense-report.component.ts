@@ -83,13 +83,10 @@ export class AddExpenseReportComponent {
       data: { isEdit: this.isEdit }
     });
     dialogRef.afterClosed().subscribe(result => {
-      this.expenseService.expenseReportExpense.subscribe((res: any) => {
-        console.log(res);
-        this.expenseReportExpenses.push(res);
-        this.expenseReportExpenses = [...this.expenseReportExpenses];
-        console.log(this.expenseReportExpenses);
-      });
-      this.expenseService.triggerUpdateTable();
+     const id = this.expenseService.selectedReport.getValue();
+      this.expenseService.getExpenseReportExpensesByReportId(id._id).subscribe((res: any) => {
+        this.expenseReportExpenses = res.data;
+      })
     });
   }
 
@@ -99,7 +96,7 @@ export class AddExpenseReportComponent {
   }
 
   getSelectedExpenseReportExpense(selectedExpenseReportExpense: any) {
-    console.log(selectedExpenseReportExpense);
+    this.expenseService.expenseReportExpId.next(selectedExpenseReportExpense._id)
     this.expenseService.expenseReportExpense.next(selectedExpenseReportExpense);
   }
 
@@ -109,7 +106,6 @@ export class AddExpenseReportComponent {
   getCategoryByUser() {
     const user = this.addExpenseForm.value.employee;
     this.expenseService.selectedUser.next(user);
-    console.log(user, this.isEdit, this.changeMode)
     if (this.changeMode) {
 
       this.expenseService.getExpenseCategoryByUser(user).subscribe((res: any) => {
