@@ -77,19 +77,24 @@ export class GeneralSettingsComponent implements OnInit {
   }
 
   savegeneralSettings() {
-    this.attendanceService.addGeneralSettings(this.generalSettingForm.value).subscribe((res: any) => {
+    this.attendanceService.getGeneralSettings().subscribe((res: any) => {
       this.generalSettings = res.data;
-      this.getGeneralSettings();
+      if (this.generalSettings.length && this.generalSettings.length >= 1) {
+        this.attendanceService.updateGeneralSettings(this.generalSettings[0]._id, this.generalSettingForm.value).subscribe((res: any) => {
+          this.generalSettings = res.data;
+          this.getGeneralSettings();
+          this.toast.success('Successfully!!!', 'General Setting Updated');
+        })
+      }
+      else {
+        this.attendanceService.addGeneralSettings(this.generalSettingForm.value).subscribe((res: any) => {
+          this.generalSettings = res.data;
+          this.toast.success('Successfully!!!', 'General Setting Created');
+          this.getGeneralSettings();
+
+        });
+      }
     });
-    // this.attendanceService.getGeneralSettings().subscribe((res: any) => {
-    //   this.generalSettings = res.data;
-    //   if (this.generalSettings.length && this.generalSettings.length >= 1) {
-    //     console.log('update setting')
-    //     this.attendanceService.updateGeneralSettings(this.generalSettings[0]._id, this.generalSettingForm.value).subscribe((res: any) => {
-    //       this.generalSettings = res.data;
-    //     })
-    //   }
-    // });
   }
 
   getGeneralSettings() {
@@ -127,6 +132,8 @@ export class GeneralSettingsComponent implements OnInit {
     this.regularizationForm.value.users = formattedUsers;
     this.attendanceService.addRegularizationReason(this.regularizationForm.value).subscribe((res: any) => {
       this.regularization = res.data;
+      this.toast.success('Regularization Reason Added', 'Successfully!!!');
+
       this.getRegularizationReason();
       this.regularizationForm.reset();
     })
@@ -245,7 +252,6 @@ export class GeneralSettingsComponent implements OnInit {
       this.dutyReasonForm.value.users = formattedUsers;
     }
     this.attendanceService.updateDutyReason(id, this.dutyReasonForm.value).subscribe((res: any) => {
-      // this.dutyReason = res.data;
       const reason = res.data;
       const index = this.dutyReason.findIndex(reas => reas._id === reason._id);
       if (index !== -1) {

@@ -7,7 +7,7 @@
         <button class="btn addBtn" type="submit">Save General Settings</button>
       </div>
     </div>
-    <div class="row mt-3">
+    <div class="row mt-3 bg-white rounded-pill p-2">
       <div class="col-10">
         <label>Can Employees select Regularization Reason?</label>
       </div>
@@ -18,7 +18,7 @@
         </div>
       </div>
     </div>
-    <div class="row mt-3">
+    <div class="row mt-3 bg-white rounded-pill p-2">
       <div class="col-10">
         <label>Can Employees select On Duty Reason?</label>
       </div>
@@ -29,7 +29,7 @@
         </div>
       </div>
     </div>
-    <div class="row mt-3">
+    <div class="row mt-3 bg-white rounded-pill p-2">
       <div class="col-10">
         <label>Should shift assignments be driven by Rosters?</label>
       </div>
@@ -40,7 +40,7 @@
         </div>
       </div>
     </div>
-    <div class="row mt-3">
+    <div class="row mt-3 bg-white rounded-pill p-2">
       <div class="col-10">
         <label>Is regularization request and leave application blocked for user?</label>
       </div>
@@ -69,8 +69,9 @@
       <div class="tab-content pt-0">
         <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabRegularizationReason'}"
           id="tabRegularizationReason">
-          <div>
-            <div class="text-end">
+          <div class="d-flex justify-content-between align-items-center">
+            <div class=""><label>({{regularization?.length}}) Records found</label></div>
+            <div class="">
               <button class="btn addBtn" (click)="open(addModal); clearForm(); isEdit= false">Add&nbsp;Reason</button>
             </div>
           </div>
