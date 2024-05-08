@@ -1,0 +1,285 @@
+<div class="main-content pt-0">
+  <form [formGroup]="generalSettingForm" (ngSubmit)="savegeneralSettings()">
+    <div class="row">
+      <div class="col-10">
+      </div>
+      <div class="col-2">
+        <button class="btn addBtn" type="submit">Save General Settings</button>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-10">
+        <label>Can Employees select Regularization Reason?</label>
+      </div>
+      <div class="col-2">
+        <div class="form-check form-switch">
+          <input class="form-check-input" formControlName="canSelectRegularizationReason" type="checkbox" role="switch"
+            id="canSelectRegularizationReason" checked>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-10">
+        <label>Can Employees select On Duty Reason?</label>
+      </div>
+      <div class="col-2">
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" role="switch" formControlName="canSelectOnDutyReason"
+            id="canSelectOnDutyReason" checked>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-10">
+        <label>Should shift assignments be driven by Rosters?</label>
+      </div>
+      <div class="col-2">
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" role="switch" formControlName="shiftAssignmentsBasedOnRoster"
+            id="shiftAssignmentsBasedOnRoster" checked>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-10">
+        <label>Is regularization request and leave application blocked for user?</label>
+      </div>
+      <div class="col-2">
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" role="switch"
+            formControlName="IsRegularizationandLeaveBlockedForUser" id="IsRegularizationandLeaveBlockedForUser"
+            checked>
+        </div>
+      </div>
+    </div>
+  </form>
+  <hr>
+  <div class="row">
+    <div class="col-12">
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabRegularizationReason'}"
+            (click)="selectTab('tabRegularizationReason')">Regularization Reason</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabOnDutyReason'}"
+            (click)="selectTab('tabOnDutyReason')">On Duty Reason</a>
+        </li>
+      </ul>
+      <div class="tab-content pt-0">
+        <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabRegularizationReason'}"
+          id="tabRegularizationReason">
+          <div>
+            <div class="text-end">
+              <button class="btn addBtn" (click)="open(addModal); clearForm(); isEdit= false">Add&nbsp;Reason</button>
+            </div>
+          </div>
+          <div class="mt-2 bg-white tableContainer">
+            <table>
+              <thead>
+                <th>Reason</th>
+                <th>Visible To</th>
+                <th>Action</th>
+              </thead>
+              <tbody>
+                <tr *ngFor="let reason of regularization | paginate: { itemsPerPage: 5, currentPage: p }; ">
+                  <td>{{reason?.label}}</td>
+                  <td>{{reason?.applicableEmployee | titlecase}}</td>
+                  <td>
+                    <button class="actions" mat-mini-fab title="Update"
+                      aria-label="Example icon button with a menu icon"
+                      (click)="selectedReason = reason; isEdit= true; editReason(); open(addModal); ">
+                      <i class="bi bi-pencil-fill"></i>
+                    </button>
+                    <button class="actions ms-2" title="Delete" mat-mini-fab
+                      aria-label="Example icon button with a menu icon" (click)="deleteDialog(reason?._id)">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <pagination-controls (pageChange)="p = $event"
+              class="pagination d-flex justify-content-end"></pagination-controls>
+          </div>
+        </div>
+        <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabOnDutyReason'}" id="tabOnDutyReason">
+          <div>
+            <div class="text-end">
+              <button class="btn addBtn" (click)="open(addDutyModal); clearForm() ;isEdit= false">On&nbsp;Duty&nbsp;Reason</button>
+            </div>
+          </div>
+          <div class="mt-2 bg-white tableContainer">
+            <table>
+              <thead>
+                <th>Reason</th>
+                <th>Visible To</th>
+                <th>Action</th>
+              </thead>
+              <tbody>
+                <tr *ngFor="let dutyReason of dutyReason | paginate: { itemsPerPage: 5, currentPage: p }; ">
+                  <td>{{dutyReason?.label}}</td>
+                  <td>{{dutyReason?.applicableEmployee | titlecase}}</td>
+                  <td>
+                    <button class="actions" mat-mini-fab title="Update"
+                      aria-label="Example icon button with a menu icon"
+                      (click)="selectedDutyReason = dutyReason; isEdit= true; editDutyReason(); open(addDutyModal); ">
+                      <i class="bi bi-pencil-fill"></i>
+                    </button>
+                    <button class="actions ms-2" title="Delete" mat-mini-fab
+                      aria-label="Example icon button with a menu icon" (click)="deleteDutyDialog(dutyReason?._id)">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <pagination-controls (pageChange)="p = $event"
+              class="pagination d-flex justify-content-end"></pagination-controls>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #addModal let-modal>
+  <div class="modal-header border-bottom mb-2 pt-0">
+    <div>
+      <h1 class="modal-title text-muted mb-0">{{isEdit? 'Update': 'Add'}} Regularization Reason
+      </h1>
+    </div>
+    <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
+        (click)="modal.close('Escape clicked')"></button>
+    </div>
+  </div>
+
+  <form action="" [formGroup]="regularizationForm" (ngSubmit)="isEdit ? updateRegularization() :  addRegularization()">
+
+    <div class="form-group">
+      <label for="">Label for Regularization Reason</label>
+      <input type="text" class="form-control" placeholder="Enter Label" formControlName="label">
+    </div>
+
+    <div class="form-check form-switch ps-0 mt-2 d-flex justify-content-between">
+      <label for="isFrequecyRestriction">Frequency Restriction</label>
+      <input class="form-check-input" type="checkbox" role="switch" formControlName="isFrequecyRestriction"
+        id="isFrequecyRestriction" checked>
+    </div>
+
+    <div *ngIf="regularizationForm.get('isFrequecyRestriction').value == true">
+      <p>An Employee can apply Maximum</p>
+      <div class="form-group">
+        <label for="">Limit</label>
+        <input type="number" class="form-control" placeholder="Limit" formControlName="limit">
+      </div>
+
+      <div class="form-group mt-2">
+        <select name="" id="" formControlName="frequency">
+          <option value="week">Week</option>
+          <option value="calendar-month">Calendar Month</option>
+          <option value="annual-cycle">Annual Cycle</option>
+        </select>
+      </div>
+    </div>
+
+
+    <div class="form-group mt-2">
+      <label for="">Which Employees Does this Reason Apply to?</label>
+      <div class="d-flex">
+        <div class="form-check">
+          <input class="form-check-input" type="radio" id="all-employees" value="all-employees" required
+            formControlName="applicableEmployee">
+          <label class="form-check-label" for="all-employees">
+            All Employees
+          </label>
+        </div>
+        <div class="form-check ms-4">
+          <input class="form-check-input" type="radio" id="specific-employees" required value="specific-employees"
+            formControlName="applicableEmployee">
+          <label class="form-check-label" for="specific-employees">
+            Specific Employees
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="form-group mt-2" *ngIf="regularizationForm.get('applicableEmployee').value === 'specific-employees'">
+      <mat-form-field appearance="outline" class="w-100 mx-1">
+        <mat-label>Select Employee</mat-label>
+        <mat-select name="users" multiple formControlName="users">
+          <mat-option *ngFor="let member of members" [value]="member.id">
+            {{member?.firstName | titlecase}}&nbsp;{{member?.lastName}}
+          </mat-option>
+        </mat-select>
+
+
+      </mat-form-field>
+    </div>
+    <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
+      <button mat-raised-button type="button">Cancel</button>
+      <button mat-raised-button class="addBtn" type="submit">{{isEdit?
+        'Update': 'Add'}}</button>
+
+    </div>
+  </form>
+
+</ng-template>
+
+<ng-template #addDutyModal let-dutyModal>
+  <div class="modal-header border-bottom mb-2 pt-0">
+    <div>
+      <h1 class="modal-title text-muted mb-0">{{isEdit? 'Update': 'Add'}} On Duty Reason
+      </h1>
+    </div>
+    <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
+        (click)="dutyModal.close('Escape clicked')"></button>
+    </div>
+  </div>
+
+  <form action="" [formGroup]="dutyReasonForm" (ngSubmit)="isEdit ? updateDutyReason() :  addDutyReason()">
+
+    <div class="form-group">
+      <label for="">Label for On Duty Reason</label>
+      <input type="text" class="form-control" placeholder="Enter Label" formControlName="label">
+    </div>
+
+    <div class="form-group mt-2">
+      <label for="">Which Employees Does this Reason Apply to?</label>
+      <div class="d-flex">
+        <div class="form-check">
+          <input class="form-check-input" type="radio" id="all-employees" value="all-employees" required
+            formControlName="applicableEmployee">
+          <label class="form-check-label" for="all-employees">
+            All Employees
+          </label>
+        </div>
+        <div class="form-check ms-4">
+          <input class="form-check-input" type="radio" id="specific-employees" required value="specific-employees"
+            formControlName="applicableEmployee">
+          <label class="form-check-label" for="specific-employees">
+            Specific Employees
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="form-group mt-2" *ngIf="dutyReasonForm.get('applicableEmployee').value === 'specific-employees'">
+      <mat-form-field appearance="outline" class="w-100 mx-1">
+        <mat-label>Select Employee</mat-label>
+        <mat-select name="users" multiple formControlName="users">
+          <mat-option *ngFor="let member of members" [value]="member.id">
+            {{member?.firstName | titlecase}}&nbsp;{{member?.lastName}}
+          </mat-option>
+        </mat-select>
+
+
+      </mat-form-field>
+    </div>
+    <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
+      <button mat-raised-button type="button">Cancel</button>
+      <button mat-raised-button class="addBtn" type="submit">{{isEdit?
+        'Update': 'Add'}}</button>
+
+    </div>
+  </form>
+
+</ng-template>
