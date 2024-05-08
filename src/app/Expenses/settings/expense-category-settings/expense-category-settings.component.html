@@ -4,11 +4,12 @@
 <mat-stepper #stepper [formGroup]="firstForm">
   <ng-container formArrayName="expenseCategories">
     <mat-step *ngFor="let categoryCtrl of firstForm?.get('expenseCategories')?.controls; let i = index">
+      <pre>{{expenseCategory[i]?.expensecategory | json}}</pre>
       <form [formGroup]="categoryCtrl">
         <ng-template matStepLabel>{{ getCategoryLabel(expenseCategory[i]?.expensecategory) }}</ng-template>
         <div class="d-flex">
           <label class="w-50">Maximum amount limit per individual expense</label>
-          <input formControlName="maximumAmountPerExpense" class="form-control w-50">
+          <input formControlName="maximumAmountPerExpense" type="number" class="form-control w-50">
           <div class="form-check form-switch ms-2">
             <input formControlName="isMaximumAmountPerExpenseSet" id="maxAmount{{i}}" class="form-check-input"
               type="checkbox">
@@ -17,7 +18,7 @@
 
         <div class="d-flex mt-2">
           <label class="w-50">Maximum amount permitted per expense without receipt</label>
-          <input formControlName="maximumAmountWithoutReceipt" class="form-control w-50">
+          <input formControlName="maximumAmountWithoutReceipt" type="number" class="form-control w-50">
           <div class="form-check form-switch ms-2">
             <input formControlName="isMaximumAmountWithoutReceiptSet" id="maxAmountWithoutReceipt{{i}}"
               class="form-check-input" type="checkbox">
@@ -39,7 +40,7 @@
 
         <div class="d-flex  mt-2">
           <label class="w-50">Expense will expire Days after incurred date </label>
-          <input formControlName="expiryDay" class="form-control w-50">
+          <input formControlName="expiryDay" type="number" class="form-control w-50">
           <div class="form-check form-switch ms-2">
             <input formControlName="isEmployeeCanAddInTotalDirectly" id="employeeCanAdd{{i}}" class="form-check-input"
               type="checkbox">
@@ -50,14 +51,27 @@
 
         <div class="d-flex mt-2">
           <label class="w-50">An employee can apply maximum</label>
-          <input formControlName="maximumExpensesCanApply" class="form-control w-50">
+          <input formControlName="maximumExpensesCanApply" type="number" class="form-control w-50">
         </div>
 
         <button class="submenuTab active rounded-pill ms-4" type="button"
           (click)="addField(categoryCtrl.get('fields'))">Add Fields</button>
-
-        <div formArrayName="fields">
+        <pre *ngFor="let values of categoryCtrl.get('fields').value">label: {{values.label | json}} rate: {{values.rate | json}}
+        </pre>
+        <pre>{{fields | json}}</pre>
+        <!-- <div formArrayName="fields">
           <div *ngFor="let fieldCtrl of categoryCtrl.get('fields').controls; let j = index">
+            <div [formGroupName]="j">
+              <input formControlName="label" placeholder="Label" class="form-control">
+              <input formControlName="type" placeholder="Type" class="form-control">
+              <input formControlName="rate" type="number" placeholder="Rate" class="form-control">
+              <button (click)="removeField(categoryCtrl.get('fields'), j)">Remove</button>
+            </div>
+          </div>
+        </div> -->
+        <!-- <div formArrayName="fields">
+          <div *ngFor="let fieldCtrl of categoryCtrl.get('fields').controls; let j = index">
+            <select [formControlName]="fieldTemplate.formControlName" class="form-control">
             <ng-container [formGroupName]="j">
               <div class="d-flex justify-content-between my-2">
                 <ng-container *ngFor="let fieldTemplate of fieldTemplates[categoryCtrl.get('categoryType').value]">
@@ -66,13 +80,11 @@
                       class="form-control me-2">
                   </ng-container>
                   <ng-template #selectField>
-                    <select [formControlName]="fieldTemplate.formControlName" class="form-control">
                       <option *ngFor="let option of fieldTemplate.options" [value]="option">{{ option }}</option>
                     </select>
                   </ng-template>
                 </ng-container>
 
-                <!-- Delete button -->
                 <button class="actions ms-2" title="Delete" mat-mini-fab type="button" aria-label="Delete"
                   (click)="removeField(categoryCtrl.get('fields'), j)">
                   <i class="bi bi-trash"></i>
@@ -80,10 +92,9 @@
               </div>
             </ng-container>
           </div>
-        </div>
+        </div> -->
 
-
-        <div class="">
+        <div class="mt-3">
           <button mat-button matStepperNext class="addBtn">Next</button>
         </div>
       </form>

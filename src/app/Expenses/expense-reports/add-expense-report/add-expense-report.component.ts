@@ -122,7 +122,7 @@ export class AddExpenseReportComponent {
       employee: this.addExpenseForm.value.employee,
       title: this.addExpenseForm.value.title,
       amount: this.addExpenseForm.value.amount,
-      status: this.addExpenseForm.value.status,
+      status: 'Level 1 Approval Pending',
       expenseReportExpenses: []
     }
     if (this.expenseService.expenseReportExpense.getValue()) {

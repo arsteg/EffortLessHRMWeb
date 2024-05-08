@@ -26,12 +26,12 @@
                             <i
                                 [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                         </th>
-                        <th [appSort]="leaveTemplate" data-name="label"
+                        <th class="text-center" [appSort]="leaveTemplate" data-name="label"
                             (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Number Of Employees Covered
                             <i
                                 [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                         </th>
-                        <th [appSort]="leaveTemplate" data-name="applicableCategories"
+                        <th class="text-center" [appSort]="leaveTemplate" data-name="applicableCategories"
                             (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Number Of Leave Categories
                             <i
                                 [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
@@ -43,7 +43,7 @@
                     <tr
                         *ngFor="let leaveTemp of leaveTemplate | search : searchText | paginate: { itemsPerPage: 5, currentPage: p }; let i = index ">
                         <td>{{leaveTemp?.label}}</td>
-                        <td>{{leaveTemp?.applicableCategories?.templateApplicableCategoryEmployee?.length}}</td>
+                        <td class="text-center">{{ calculateTotalEmployees(leaveTemp) }}</td>
                         <td class="text-center">{{leaveTemp?.applicableCategories?.length}}</td>
                         <td>
                             <button class="actions" mat-mini-fab title="Update" (click)="changeMode='Next'; isEdit === true;

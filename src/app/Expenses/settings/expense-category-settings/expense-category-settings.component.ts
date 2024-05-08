@@ -81,6 +81,7 @@ export class ExpenseCategorySettingsComponent {
             if (matchingCategory._id === step.expenseCategory) {
               this.typeCategory = matchingCategory.type;
             }
+            const fieldsFormArray = this.generateFieldsFormArray();
             expenseCategoriesArray.push(this._formBuilder.group({
               expenseCategory: categoryId,
               isMaximumAmountPerExpenseSet: false,
@@ -93,9 +94,12 @@ export class ExpenseCategorySettingsComponent {
               expiryDay: 0,
               isEmployeeCanAddInTotalDirectly: false,
               ratePerDay: 0,
-              fields: this._formBuilder.array([]),
+              fields: fieldsFormArray,
               categoryType: this.typeCategory
             }));
+            // expenseCategoriesArray.value.fields = this._formBuilder.array([]).value;
+
+            console.log(expenseCategoriesArray.value);
             const formGroupIndex = expenseCategoriesArray.length - 1;
             expenseCategoriesArray.at(formGroupIndex).patchValue({
               isMaximumAmountPerExpenseSet: step.isMaximumAmountPerExpenseSet,
@@ -107,18 +111,40 @@ export class ExpenseCategorySettingsComponent {
               timePeroid: step.timePeroid,
               expiryDay: step.expiryDay,
               isEmployeeCanAddInTotalDirectly: step.isEmployeeCanAddInTotalDirectly,
-              ratePerDay: step.ratePerDay
+              ratePerDay: step.ratePerDay,
+              fields: fieldsFormArray
             });
+            // expenseCategoriesArray.value.fields = this._formBuilder.array([]);
+            console.log(expenseCategoriesArray.value);
+
+            // if (step.expenseTemplateCategoryFieldValues.length && step.expenseTemplateCategoryFieldValues.length >= 1) {
+              console.log(step.expenseTemplateCategoryFieldValues)
+              step.expenseTemplateCategoryFieldValues?.forEach((value) => {
+                const fieldFormGroup = this._formBuilder.group({
+                  label: value.label,
+                  rate: value.rate,
+                  type: value.type
+                });
+                const formGroupIndex = expenseCategoriesArray.length - 1;
+                const fieldsArray = (expenseCategoriesArray.at(formGroupIndex).get('fields') as FormArray);
+                fieldsArray.push(fieldFormGroup);
+                console.log(expenseCategoriesArray.value);
+
+              });
+              console.log(expenseCategoriesArray.value);
+            // }
           }
         });
       });
     });
   }
-
+  generateFieldsFormArray(): FormArray {
+    return this._formBuilder.array([]);
+  }
+  
 
   addField(fieldsArray: FormArray) {
-    fieldsArray.push(
-      this._formBuilder.group({
+    fieldsArray.value.push(this._formBuilder.group({
         label: [''],
         type: [''],
         rate: [0]

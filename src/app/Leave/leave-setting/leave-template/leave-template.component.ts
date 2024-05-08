@@ -116,4 +116,14 @@ export class LeaveTemplateComponent implements OnInit {
       this.isEdit == true;
     }
   }
+  calculateTotalEmployees(leaveTemp: any): number {
+    let totalEmployees = 0;
+    for (const category of leaveTemp.applicableCategories) {
+      totalEmployees += category.templateApplicableCategoryEmployee.length;
+    }
+  
+    return totalEmployees;
+    console.log(totalEmployees)
+  }
+
 }
