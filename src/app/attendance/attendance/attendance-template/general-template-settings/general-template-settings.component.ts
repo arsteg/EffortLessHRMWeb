@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { AttendanceService } from 'src/app/_services/attendance.service';
 import { LeaveService } from 'src/app/_services/leave.service';
@@ -21,7 +21,7 @@ export class GeneralTemplateSettingsComponent {
   selectedCategories: any = [];
   leaveCategories: any[];
   selectedCategory: string[] = ['loss-of-pay', 'present'];
-  selectedWeeklyDays: string[] = [];
+  selectedWeeklyDays: any[] = [false, false, false, false, false, false, false];
   selectedHalfDays: string[] = [];
   selectedAlternateWeekDays: string[] = [];
   attendanceTemplate: any;
@@ -33,26 +33,26 @@ export class GeneralTemplateSettingsComponent {
     private toast: ToastrService,
   ) {
     this.addTemplateForm = this.fb.group({
-      label: [''],
-      attendanceMode: [''],
-      missingCheckInCheckoutHandlingMode: [''],
-      missingCheckinCheckoutAttendanceProcessMode: [''],
-      minimumHoursRequiredPerWeek: [40],
-      minimumMinutesRequiredPerWeek: [0],
-      notifyEmployeeMinHours: [true],
-      isShortTimeLeaveDeductible: [true],
+      label: ['', Validators.required],
+      attendanceMode: ['', Validators.required],
+      missingCheckInCheckoutHandlingMode: ['', Validators.required],
+      missingCheckinCheckoutAttendanceProcessMode: ['', Validators.required],
+      minimumHoursRequiredPerWeek: [40, Validators.required],
+      minimumMinutesRequiredPerWeek: [0, Validators.required],
+      notifyEmployeeMinHours: [true, Validators.required],
+      isShortTimeLeaveDeductible: [true, Validators.required],
       weeklyOfDays: [null],
       weklyofHalfDay: [null],
-      alternateWeekOffRoutine: ['none'],
+      alternateWeekOffRoutine: ['none', Validators.required],
       daysForAlternateWeekOffRoutine: [null],
       isNotificationToSupervisors: [true],
-      isCommentMandatoryForRegularisation: [true],
-      departmentDesignations: ['Software Developer'],
-      approversType: [''],
-      approvalLevel: [''],
+      isCommentMandatoryForRegularisation: [true, Validators.required],
+      departmentDesignations: ['Software Developer', Validators.required],
+      approversType: ['', Validators.required],
+      approvalLevel: ['', Validators.required],
       primaryApprover: [null],
       secondaryApprover: [null],
-      leveCategoryHierarchyForAbsentHalfDay: [['']]
+      leveCategoryHierarchyForAbsentHalfDay: [[''], Validators.required]
     })
   }
 
@@ -68,8 +68,27 @@ export class GeneralTemplateSettingsComponent {
         }
       })
     }
+    this.addTemplateForm.get('approvalLevel').valueChanges.subscribe((value: any) => {
+      this.validateApprovers(this.addTemplateForm.get('approvalType').value, value)
+    });
+    this.addTemplateForm.get('approvalType').valueChanges.subscribe((value: any) => {
+      this.validateApprovers(value, this.addTemplateForm.get('approvalLevel').value)
+    });
   }
-
+  validateApprovers(approverType, approverLevel) {
+    if (approverLevel == 1 && approverType == 'template-wise') {
+      this.addTemplateForm.get('firstApprovalEmployee').setValidators([Validators.required]);
+      this.addTemplateForm.get('secondApprovalEmployee').clearValidators();
+    } else if (approverLevel == 2 && approverType == 'template-wise') {
+      this.addTemplateForm.get('firstApprovalEmployee').setValidators([Validators.required]);
+      this.addTemplateForm.get('secondApprovalEmployee').setValidators([Validators.required]);
+    } else {
+      this.addTemplateForm.get('firstApprovalEmployee').clearValidators();
+      this.addTemplateForm.get('secondApprovalEmployee').clearValidators();
+    }
+    this.addTemplateForm.get('firstApprovalEmployee').updateValueAndValidity();
+    this.addTemplateForm.get('secondApprovalEmployee').updateValueAndValidity();
+  }
   setFormValues(templateData: any) {
     this.addTemplateForm.patchValue({
       label: templateData?.label,
@@ -96,6 +115,7 @@ export class GeneralTemplateSettingsComponent {
     this.selectedWeeklyDays = templateData?.weeklyOfDays;
     this.selectedHalfDays = templateData?.weklyofHalfDay;
     this.selectedAlternateWeekDays = templateData?.daysForAlternateWeekOffRoutine;
+    this.selectedCategory = templateData?.leveCategoryHierarchyForAbsentHalfDay;
 
     console.log(this.selectedWeeklyDays, this.addTemplateForm.value);
   }
@@ -103,6 +123,7 @@ export class GeneralTemplateSettingsComponent {
   isWeeklyDays(days) {
     return this.selectedWeeklyDays?.length ? this.selectedWeeklyDays.includes(days) : days != 'Sun' && days != 'Mon' && days != 'Tue' && days != 'Wed' && days != 'Thu' && days != 'Fri' && days != 'Sat';
   }
+
   isHalfDays(days) {
     return this.selectedHalfDays?.length ? this.selectedHalfDays.includes(days) : days != 'Sun' && days != 'Mon' && days != 'Tue' && days != 'Wed' && days != 'Thu' && days != 'Fri' && days != 'Sat';
   }
@@ -133,6 +154,7 @@ export class GeneralTemplateSettingsComponent {
     } else if (!event.target.checked && index !== -1) {
       selectedDays.splice(index, 1);
     }
+
   }
 
   getAllUsers() {
@@ -149,7 +171,8 @@ export class GeneralTemplateSettingsComponent {
   }
 
   onSubmission() {
-   if(this.isEdit) {
+    if (this.isEdit == false) {
+      console.log('add template')
       this.addTemplateForm.value.leveCategoryHierarchyForAbsentHalfDay = this.selectedCategory;
       this.addTemplateForm.value.daysForAlternateWeekOffRoutine = this.selectedAlternateWeekDays;
       this.addTemplateForm.value.weklyofHalfDay = this.selectedHalfDays
@@ -164,7 +187,7 @@ export class GeneralTemplateSettingsComponent {
           this.toast.error('Attendance Template can not be created', 'Error!!!')
         })
     }
-    else{
+    else {
       console.log('update call')
     }
   }
