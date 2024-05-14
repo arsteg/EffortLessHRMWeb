@@ -40,8 +40,8 @@ export class ExpensesTemplatesComponent implements OnInit {
     private toast: ToastrService,
     public commonService: CommonService) {
     config.backdrop = 'static';
-
   }
+  
   ngOnInit(): void {
     this.getAllTemplates();
     this.filteredTemplate();
@@ -50,10 +50,11 @@ export class ExpensesTemplatesComponent implements OnInit {
   clearForm(){
     // this.addTemplateForm.reset();
   }
+  
   onClose(event) {
     if (event) {
       this.modalService.dismissAll();
-      this.addTemplateForm.reset();
+      // this.addTemplateForm.reset();
     }
   }
 
@@ -70,6 +71,7 @@ export class ExpensesTemplatesComponent implements OnInit {
       return `with: ${reason}`;
     }
   }
+
   open(content: any) {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;

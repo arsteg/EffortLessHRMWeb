@@ -1,0 +1,67 @@
+<div class="mainContent pt-2">
+    <div class="container">
+        <div class="py-0 px-0 bg-white tableContainer">
+
+            <div class="d-flex justify-content-between align-items-center mb-2 px-3">
+                <p class="mb-0">({{attendanceTemplate?.length}}) Records Found</p>
+                <div class="d-flex align-items-center">
+                    <span class="bi bi-search searchIcon"></span>
+
+                    <input class="form-control search" type="text" placeholder="Search..." name="searchText"
+                        aria-label="default input example">
+
+                    <button mat-raised-button (click)="open(addModal); isEdit= false; step=1" class="addBtn rounded-pill mx-3">Add
+                        Template</button>
+
+                    <button class="submenuTab active  rounded-pill" (click)="exportToCsv()"> <i
+                            class="bi bi-download downloadBtn pe-2"></i>
+                        Download</button>
+
+                </div>
+            </div>
+
+            <table class="px-4">
+                <thead>
+                    <tr>
+                        <th class="ps-2">Attendance Template</th>
+                        <th>Number of Employees Covered</th>
+                        <th scope="col" class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        *ngFor="let template of attendanceTemplate| search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
+                        <td>{{template?.label}}</td>
+
+
+                        <td>
+                            <pre>fetch from template assignment</pre>
+                        </td>
+                        <td>
+                            <button class="actions" mat-mini-fab title="Update" (click)="changeMode='Next';
+                                open(addModal);
+                                isEdit= true;
+                                selectedTemplateId=template._id;
+                                setFormValues(template)" aria-label="Example icon button with a menu icon">
+                                <i class="bi bi-pencil-fill"></i>
+                            </button>
+                           
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+            <pagination-controls (pageChange)="p = $event"
+                class="pagination d-flex justify-content-end"></pagination-controls>
+        </div>
+    </div>
+</div>
+
+<ng-template #addModal let-modal>
+    <app-general-template-settings (changeStep)="onChangeStep($event)" [changeMode]="changeMode" *ngIf="step == 1"
+        (close)="onClose($event)"  [isEdit]="isEdit"
+        (expenseTemplateReportRefreshed)="refreshExpenseReportTable()"></app-general-template-settings>
+    <app-attendance-regularization *ngIf="step == 2" (changeStep)="onChangeStep($event)" [changeMode]="changeMode"
+        (close)="onClose($event)" (changeStep)="onChangeStep($event)"
+        (expenseTemplateReportRefreshed)="refreshExpenseReportTable()"></app-attendance-regularization>
+</ng-template>

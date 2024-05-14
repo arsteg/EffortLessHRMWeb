@@ -103,7 +103,6 @@ export class ExpensesCategoriesComponent implements OnInit {
       fieldType: ['', Validators.required],
       expenseApplicationFieldValues: this.fb.array([]),
     });
-
     (this.addCategoryForm.get('fields') as FormArray).push(fieldGroup);
   }
 
@@ -120,7 +119,7 @@ export class ExpensesCategoriesComponent implements OnInit {
 
   removeCatgoryField(index: number) {
     if (this.fields.value[index].id) {
-      console.log(this.fields.value[index].id)
+      console.log(this.fields.value[index].id);
       this.expenses.deleteApplicationField(this.fields.value[index].id).subscribe((res: any) => {
         this.fields.removeAt(index);
         this.toast.success('Successfully Deleted!!!', 'Expense Category Field');
@@ -140,7 +139,7 @@ export class ExpensesCategoriesComponent implements OnInit {
       });
     }
     else {
-      fieldArray.removeAt(valueIndex)
+      fieldArray.removeAt(valueIndex);
     }
   }
 
@@ -201,7 +200,6 @@ export class ExpensesCategoriesComponent implements OnInit {
   deleteDialog(id: string): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '400px',
-
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'delete') {

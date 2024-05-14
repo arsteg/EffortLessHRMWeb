@@ -2,9 +2,8 @@
   <button type="button" data-bs-dismiss="modal" class="btn-close text-end" (click)="closeModal()"></button>
 </div>
 <mat-stepper #stepper [formGroup]="firstForm">
-  <ng-container formArrayName="expenseCategories">
+  <ng-container>
     <mat-step *ngFor="let categoryCtrl of firstForm?.get('expenseCategories')?.controls; let i = index">
-      <pre>{{expenseCategory[i]?.expensecategory | json}}</pre>
       <form [formGroup]="categoryCtrl">
         <ng-template matStepLabel>{{ getCategoryLabel(expenseCategory[i]?.expensecategory) }}</ng-template>
         <div class="d-flex">
@@ -54,43 +53,48 @@
           <input formControlName="maximumExpensesCanApply" type="number" class="form-control w-50">
         </div>
 
-        <button class="submenuTab active rounded-pill ms-4" type="button"
-          (click)="addField(categoryCtrl.get('fields'))">Add Fields</button>
-        <pre *ngFor="let values of categoryCtrl.get('fields').value">label: {{values.label | json}} rate: {{values.rate | json}}
-        </pre>
-        <pre>{{fields | json}}</pre>
+        <button class="submenuTab active rounded-pill ms-4" type="button" (click)="addField(i)">Add Fields</button>
+        <div formArrayName="fields">
+          <div *ngIf="i === stepper.selectedIndex">
+            <div *ngFor="let fieldCtrl of categoryCtrl.get('fields').controls; let j = index">
+              <div [formGroupName]="j">
+                <div class="d-flex pt-2 align-items-center justify-content-between">
+                  <input formControlName="label" placeholder="Label" class="w-50 form-control">
+                  <select *ngIf="categoryCtrl.get('categoryType').value === 'distance'" formControlName="type"
+                    class="form-control w-50 ms-2">
+                    <option value="km">KM</option>
+                    <option value="miles">Miles</option>
+                  </select>
+                  <input formControlName="rate" type="number" placeholder="Rate" class="w-50 mx-2 form-control">
+                  <button (click)="removeField(categoryCtrl.get('fields'), j)" class="rounded-pill btn submenuTab active">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
         <!-- <div formArrayName="fields">
           <div *ngFor="let fieldCtrl of categoryCtrl.get('fields').controls; let j = index">
             <div [formGroupName]="j">
-              <input formControlName="label" placeholder="Label" class="form-control">
-              <input formControlName="type" placeholder="Type" class="form-control">
-              <input formControlName="rate" type="number" placeholder="Rate" class="form-control">
-              <button (click)="removeField(categoryCtrl.get('fields'), j)">Remove</button>
-            </div>
-          </div>
-        </div> -->
-        <!-- <div formArrayName="fields">
-          <div *ngFor="let fieldCtrl of categoryCtrl.get('fields').controls; let j = index">
-            <select [formControlName]="fieldTemplate.formControlName" class="form-control">
-            <ng-container [formGroupName]="j">
-              <div class="d-flex justify-content-between my-2">
-                <ng-container *ngFor="let fieldTemplate of fieldTemplates[categoryCtrl.get('categoryType').value]">
-                  <ng-container *ngIf="fieldTemplate.type !== 'select'; else selectField">
-                    <input [formControlName]="fieldTemplate.formControlName" [placeholder]="fieldTemplate.placeholder"
-                      class="form-control me-2">
-                  </ng-container>
-                  <ng-template #selectField>
-                      <option *ngFor="let option of fieldTemplate.options" [value]="option">{{ option }}</option>
-                    </select>
-                  </ng-template>
-                </ng-container>
+              <div class="d-flex pt-2 align-items-center justify-content-between">
 
-                <button class="actions ms-2" title="Delete" mat-mini-fab type="button" aria-label="Delete"
-                  (click)="removeField(categoryCtrl.get('fields'), j)">
+                <input formControlName="label" placeholder="Label" class="w-50 form-control">
+                <select *ngIf="categoryCtrl.get('categoryType').value === 'distance'" formControlName="type"
+                  class="form-control w-50 ms-2">
+                  <option value="km">KM</option>
+                  <option value="miles">Miles</option>
+                </select>
+
+                <input formControlName="rate" type="number" placeholder="Rate" class="w-50 mx-2 form-control">
+
+                <button (click)="removeField(categoryCtrl.get('fields'), j)" class="rounded-pill btn submenuTab active">
                   <i class="bi bi-trash"></i>
                 </button>
+
               </div>
-            </ng-container>
+            </div>
           </div>
         </div> -->
 

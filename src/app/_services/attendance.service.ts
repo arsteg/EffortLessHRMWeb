@@ -19,6 +19,8 @@ export class AttendanceService {
     withCredentials: true
   };
 
+  selectedTemplate: any = new BehaviorSubject('');
+
   constructor(private http: HttpClient) {
   }
 
@@ -78,4 +80,30 @@ export class AttendanceService {
     var response = this.http.delete<response<any>>(`${environment.apiUrlDotNet}/attendance/duty-reasons/${id}`, this.httpOptions);
     return response;
   }
+
+  getAttendanceTemplate(): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/attendance-templates`, this.httpOptions);
+    return response;
+  }
+
+  addAttendanceTemplate(templates: any): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/attendance-templates`, templates, this.httpOptions);
+    return response;
+  }
+
+  updateAttendanceTemplate(id: string, templates: any): Observable<response<any>> {
+    var response = this.http.put<response<any>>(`${environment.apiUrlDotNet}/attendance/attendance-templates/${id}`, templates, this.httpOptions);
+    return response;
+  }
+
+  deleteAttendanceTemplate(id: string): Observable<response<any>> {
+    var response = this.http.delete<response<any>>(`${environment.apiUrlDotNet}/attendance/attendance-templates/${id}`, this.httpOptions);
+    return response;
+  }
+
+  getAttendanceTemplateById(id: string): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/attendance-templates/${id}`, this.httpOptions);
+    return response;
+  }
+
 }

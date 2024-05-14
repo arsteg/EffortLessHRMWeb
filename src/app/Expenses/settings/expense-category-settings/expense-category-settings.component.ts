@@ -58,7 +58,13 @@ export class ExpenseCategorySettingsComponent {
     this.minDate.setDate(this.minDate.getDate() - 1);
     this.maxDate.setDate(this.maxDate.getDate() + 7);
     this.bsRangeValue = [this.bsValue, this.maxDate];
+
+    // this.firstForm = this._formBuilder.group({
+    //   fields: this._formBuilder.array([])
+    // });
+    // console.log(this.firstForm.value.fields)
   }
+
 
   ngOnInit() {
     let id = this.expenseService.selectedTemplate.getValue()._id;
@@ -73,7 +79,7 @@ export class ExpenseCategorySettingsComponent {
           expenseTemplate: [id]
         });
         const expenseCategoriesArray = this.firstForm.get('expenseCategories') as FormArray;
-        this.steps.forEach(step => {
+        this.steps.forEach(async (step) => {
           const matchingCategory = this.allExpenseCategories.find(category => category._id === step.expenseCategory);
           if (matchingCategory) {
             const categoryId = matchingCategory._id;
@@ -81,7 +87,9 @@ export class ExpenseCategorySettingsComponent {
             if (matchingCategory._id === step.expenseCategory) {
               this.typeCategory = matchingCategory.type;
             }
-            const fieldsFormArray = this.generateFieldsFormArray();
+            // Fetch category details by ID
+            const categoryDetails = await this.expenseService.getExpenseCategoryById(categoryId).toPromise();
+
             expenseCategoriesArray.push(this._formBuilder.group({
               expenseCategory: categoryId,
               isMaximumAmountPerExpenseSet: false,
@@ -94,12 +102,10 @@ export class ExpenseCategorySettingsComponent {
               expiryDay: 0,
               isEmployeeCanAddInTotalDirectly: false,
               ratePerDay: 0,
-              fields: fieldsFormArray,
-              categoryType: this.typeCategory
+              fields: this._formBuilder.array([]),
+              categoryType: categoryDetails.data.type,
+              _id: ''
             }));
-            // expenseCategoriesArray.value.fields = this._formBuilder.array([]).value;
-
-            console.log(expenseCategoriesArray.value);
             const formGroupIndex = expenseCategoriesArray.length - 1;
             expenseCategoriesArray.at(formGroupIndex).patchValue({
               isMaximumAmountPerExpenseSet: step.isMaximumAmountPerExpenseSet,
@@ -112,52 +118,52 @@ export class ExpenseCategorySettingsComponent {
               expiryDay: step.expiryDay,
               isEmployeeCanAddInTotalDirectly: step.isEmployeeCanAddInTotalDirectly,
               ratePerDay: step.ratePerDay,
-              fields: fieldsFormArray
+              fields: [],
+              categoryType: categoryDetails.data.type,
+              _id: step._id
             });
-            // expenseCategoriesArray.value.fields = this._formBuilder.array([]);
-            console.log(expenseCategoriesArray.value);
 
-            // if (step.expenseTemplateCategoryFieldValues.length && step.expenseTemplateCategoryFieldValues.length >= 1) {
-              console.log(step.expenseTemplateCategoryFieldValues)
+            if (step.expenseTemplateCategoryFieldValues.length && step.expenseTemplateCategoryFieldValues.length >= 1) {
               step.expenseTemplateCategoryFieldValues?.forEach((value) => {
-                const fieldFormGroup = this._formBuilder.group({
-                  label: value.label,
-                  rate: value.rate,
-                  type: value.type
-                });
-                const formGroupIndex = expenseCategoriesArray.length - 1;
-                const fieldsArray = (expenseCategoriesArray.at(formGroupIndex).get('fields') as FormArray);
-                fieldsArray.push(fieldFormGroup);
-                console.log(expenseCategoriesArray.value);
-
+                if (value.expenseTemplateCategory === step._id && categoryDetails.data._id === step.expenseCategory) { 
+                  const fieldFormGroup = this._formBuilder.group({
+                    label: value.label,
+                    rate: value.rate,
+                    type: value.type
+                  });
+                  const fieldsArray = (expenseCategoriesArray.at(formGroupIndex).get('fields') as FormArray);
+                  fieldsArray.push(fieldFormGroup);
+                }
               });
-              console.log(expenseCategoriesArray.value);
-            // }
+            }
+            
           }
         });
       });
     });
   }
-  generateFieldsFormArray(): FormArray {
-    return this._formBuilder.array([]);
-  }
-  
 
-  addField(fieldsArray: FormArray) {
-    fieldsArray.value.push(this._formBuilder.group({
-        label: [''],
-        type: [''],
-        rate: [0]
-      })
-    );
+  addField(expenseCategoryIndex: number) {
+    const newField = this._formBuilder.group({
+      label: [''],
+      type: [''],
+      rate: []
+    });
+    const expenseCategoriesArray = this.firstForm.get('expenseCategories') as FormArray;
+    const expenseCategoryFormGroup = expenseCategoriesArray.at(expenseCategoryIndex) as FormGroup;
+    const fieldsArray = expenseCategoryFormGroup.get('fields') as FormArray;
+    fieldsArray.push(newField);
+  }
+
+
+  get fields() {
+    return this.firstForm.get('fields') as FormArray;
   }
 
   removeField(fieldsArray: FormArray, index: number) {
     fieldsArray.removeAt(index);
   }
-  get fields() {
-    return this.firstForm.get('fields') as FormArray;
-  }
+
 
   getCategoryLabel(expenseCategoryId: string): string {
     const matchingCategory = this.allExpenseCategories.find(category => category._id === expenseCategoryId);
@@ -181,7 +187,7 @@ export class ExpenseCategorySettingsComponent {
 
   closeModal() {
     this.changeStep.emit(1);
-    this.firstForm.reset();
+    // this.firstForm.reset();
     this.close.emit(true);
   }
 

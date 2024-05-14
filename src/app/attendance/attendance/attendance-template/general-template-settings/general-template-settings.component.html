@@ -1,0 +1,326 @@
+<div class="modal-header border-bottom mb-2 pt-0">
+    <div>
+        <h1 class="modal-title text-muted mb-0">{{changeMode == true ? 'Update': 'Add'}} Expense Report</h1>
+    </div>
+    <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
+            (click)="closeModal()"></button>
+    </div>
+</div>
+
+<form action="" [formGroup]="addTemplateForm" (ngSubmit)="onSubmission()">
+    <div class="form-group my-3">
+        <label for="">Enter Label for Attendance Template</label>
+        <input type="text" formControlName="label" class="form-control">
+    </div>
+
+    <div class="form-group my-3">
+        <label for="">Please select the mode of capturing attendance</label>
+        <select name="" id="" formControlName="attendanceMode">
+            <option value="web_check-in">Web Check-In</option>
+            <option value="manually-upload">Manually Upload</option>
+            <option value="mobile">Mobile</option>
+            <option value="biometric">Biometric</option>
+        </select>
+    </div>
+
+    <div class="form-group my-3">
+        <label for="">How do you want to handle single missing check in or check out in attendance process</label>
+        <select name="" id="" formControlName="missingCheckInCheckoutHandlingMode">
+            <option value="consider_as_invalid_record">Consider as invalid record</option>
+            <option value="regularize _check-in_and_check-out_to_default_shift_start_and_end_time">Regularize Check-in
+                and Check-out to default shift start and end time</option>
+            <option value="regularize_check-out_to_default">Regularize Check-out to default</option>
+        </select>
+    </div>
+
+    <div class="form-group my-3">
+        <label for="">How do you want to handle both missing check in or check out in attendance process</label>
+        <select name="" id="" formControlName="missingCheckinCheckoutAttendanceProcessMode">
+            <option value="consider_as_invalid_record">Consider as Invalid Record</option>
+            <option value="regularize _check-in_and_check-out_to_default_shift_start_and_end_time">Regularize Check-in
+                and Check-out to default shift start and end time</option>
+        </select>
+    </div>
+
+    <div class="form-group my-3">
+        <label for="">No. of minimum hours required per Week</label>
+        <div class="d-flex justify-content-between">
+            <input type="number" placeholder="Enter Hours" formControlName="minimumHoursRequiredPerWeek"
+                class="form-control w-50">
+            <input type="number" placeholder="Enter Minutes" class="form-control w-50">
+        </div>
+    </div>
+
+    <div class="form-group my-3">
+        <label for="">Do you want to notify employee if Min Hours not accomplished?</label>
+        <div class="d-flex">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" formControlName="notifyEmployeeMinHours"
+                    id="flexRadioDefault-Yes" required [value]="true">
+                <label class="form-check-label" for="flexRadioDefault-Yes">
+                    Yes
+                </label>
+            </div>
+
+
+            <div class="form-check ms-3">
+                <input class="form-check-input" type="radio" formControlName="notifyEmployeeMinHours"
+                    id="flexRadioDefault-No" required [value]="false">
+                <label class="form-check-label" for="flexRadioDefault-No">
+                    No
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group my-3">
+        <label for="">Are late coming or early going defaulters leave deductible?</label>
+        <div class="d-flex">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" id="flexRadioDefault1-Yes"
+                    formControlName="isShortTimeLeaveDeductible" required [value]="true">
+                <label class="form-check-label" for="flexRadioDefault1-Yes">
+                    Yes
+                </label>
+            </div>
+
+
+            <div class="form-check ms-3">
+                <input class="form-check-input" type="radio" id="flexRadioDefault1-No"
+                    formControlName="isShortTimeLeaveDeductible" required [value]="false">
+                <label class="form-check-label" for="flexRadioDefault1-No">
+                    No
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group my-3">
+        <label for="">Which days should be considered as weekly off?</label>
+        <div class="d-flex justify-content-between">
+            <!-- <ng-container *ngFor="let day of weekDays; let i = index">
+                <label class="d-flex align-items-center">
+                    <input *ngIf="isWeeklyDays(day)" class="form-check-input checks mx-1" formControlName="weeklyOfDays"
+                        [id]="'day' + i" type="checkbox" [checked]="isWeeklyDays(day)"
+                        (change)="onDaysChange($event, day, 'weeklyOfDays')" />
+
+                    <input *ngIf="!isWeeklyDays(day)" class="form-check-input checks mx-1"
+                        formControlName="weeklyOfDays" [id]="'day' + i" type="checkbox"
+                        [checked]="selectedWeeklyDays.includes(day)"
+                        (change)="onDaysChange($event, day, 'weeklyOfDays')" />
+                    {{day}}
+                </label>
+            </ng-container> -->
+            <ng-container *ngFor="let day of weekDays; let i = index">
+                <label class="d-flex align-items-center">
+                    <input  class="form-check-input checks mx-1" formControlName="weeklyOfDays"
+                        [id]="'day' + i" type="checkbox" [checked]="isWeeklyDays(day)"
+                        (change)="onDaysChange($event, day, 'weeklyOfDays')" />
+            
+                    <!-- <input *ngIf="!isWeeklyDays(day)" class="form-check-input checks mx-1"
+                        formControlName="weeklyOfDays" [id]="'day' + i"
+                         type="checkbox" [checked]="selectedWeeklyDays.includes(day)"
+                        (change)="onDaysChange($event, day, 'weeklyOfDays')" /> -->
+                    {{day}}
+                </label>
+            </ng-container>
+            
+        </div>
+    </div>
+
+    <div class="form-group my-3">
+        <label for="">Which week off is a half day?</label>
+        <div class="d-flex justify-content-between">
+            <ng-container *ngFor="let halfDay of weekDays; let i = index">
+                <label class="d-flex align-items-center">
+                    <input *ngIf="isHalfDays(halfDay)" class="form-check-input checks mx-1"
+                        formControlName="weklyofHalfDay" [id]="'halfDay' + i" type="checkbox"
+                        [checked]="isHalfDays(halfDay)" (change)="onDaysChange($event, halfDay, 'weklyofHalfDay')" />
+                    <input *ngIf="!isHalfDays(halfDay)" class="form-check-input checks mx-1"
+                        formControlName="weeklyOfDays" [id]="'day' + i" type="checkbox"
+                        [checked]="selectedHalfDays.includes(halfDay)"
+                        (change)="onDaysChange($event, halfDay, 'weeklyOfDays')" />
+                    {{halfDay}}
+                </label>
+            </ng-container>
+        </div>
+    </div>
+
+    <div class="form-group my-3">
+        <label for="">Alternate week off routine</label>
+        <div class="d-flex">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" formControlName="alternateWeekOffRoutine"
+                    id="flexRadioDefault2-Yes" required value="odd">
+                <label class="form-check-label" for="flexRadioDefault2-Yes">
+                    Odd
+                </label>
+            </div>
+
+            <div class="form-check mx-3">
+                <input class="form-check-input" type="radio" formControlName="alternateWeekOffRoutine"
+                    id="flexRadioDefault2-No" required value="even">
+                <label class="form-check-label" for="flexRadioDefault2-No">
+                    Even
+                </label>
+            </div>
+
+            <div class="form-check">
+                <input class="form-check-input" type="radio" formControlName="alternateWeekOffRoutine"
+                    id="flexRadioDefaul2-No" required value="none">
+                <label class="form-check-label" for="flexRadioDefaul2-No">
+                    None
+                </label>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="addTemplateForm.get('alternateWeekOffRoutine').value != 'none'">
+        <div class="form-group my-3">
+            <label for="">Days for alternate week off routine</label>
+            <div class="d-flex justify-content-between">
+                <ng-container *ngFor="let weekday of weekDays; let i = index">
+                    <label class="d-flex align-items-center">
+                        <input *ngIf="isAlternateWeekDays(weekday)" class="form-check-input checks mx-1"
+                            formControlName="daysForAlternateWeekOffRoutine" [id]="'weekday' + i" type="checkbox"
+                            [checked]="isAlternateWeekDays(weekday)" type="checkbox"
+                            (change)="onDaysChange($event, weekday, 'daysForAlternateWeekOffRoutine')" />
+                        {{weekday}}
+                    </label>
+                </ng-container>
+            </div>
+        </div>
+
+        <div class="form-group my-3">
+            <label for="">Do you want to send notification to supervisors?</label>
+            <div class="d-flex">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" formControlName="isNotificationToSupervisors"
+                        id="flexRadioDefault3-Yes" required [value]="true">
+                    <label class="form-check-label" for="flexRadioDefault3-Yes">
+                        Yes
+                    </label>
+                </div>
+
+                <div class="form-check ms-3">
+                    <input class="form-check-input" type="radio" formControlName="isNotificationToSupervisors"
+                        id="flexRadioDefault3-No" required [value]="false">
+                    <label class="form-check-label" for="flexRadioDefault3-No">
+                        No
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group my-3">
+        <label for="">Is comment mandatory while submitting regularisation request</label>
+        <div class="d-flex">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" formControlName="isCommentMandatoryForRegularisation"
+                    id="flexRadioDefault4-Yes" required [value]="true">
+                <label class="form-check-label" for="flexRadioDefault4-Yes">
+                    Yes
+                </label>
+            </div>
+
+            <div class="form-check ms-3">
+                <input class="form-check-input" type="radio" formControlName="isCommentMandatoryForRegularisation"
+                    id="flexRadioDefault4-No" required [value]="false">
+                <label class="form-check-label" for="flexRadioDefault4-No">
+                    No
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group my-3">
+        <label for="">Approvers Type for each employee</label>
+        <div class="d-flex">
+            <div class="form-check">
+                <input class="form-check-input" formControlName="approversType" type="radio" id="flexRadioDefault5-Yes"
+                    required value="template-wise">
+                <label class="form-check-label" for="flexRadioDefault5-Yes">
+                    Template Wise
+                </label>
+            </div>
+
+            <div class="form-check ms-3">
+                <input class="form-check-input" formControlName="approversType" type="radio" id="flexRadioDefault5-No"
+                    required value="employee-wise">
+                <label class="form-check-label" for="flexRadioDefault5-No">
+                    Employee Wise
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group my-3">
+        <label for="">How many levels of approvals you want to add?</label>
+        <div class="d-flex">
+            <div class="form-check">
+                <input class="form-check-input" formControlName="approvalLevel" type="radio" id="flexRadioDefault6-Yes"
+                    required value="1">
+                <label class="form-check-label" for="flexRadioDefault6-Yes">
+                    Level 1
+                </label>
+            </div>
+
+            <div class="form-check ms-3">
+                <input class="form-check-input" formControlName="approvalLevel" type="radio" id="flexRadioDefault6-No"
+                    required value="2">
+                <label class="form-check-label" for="flexRadioDefault6-No">
+                    Level 2
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-2" *ngIf="addTemplateForm.get('approversType').value === 'template-wise'">
+        <div class="col-md-6">
+            <label for="firstApprovalEmployee">Please select the primary approver for this template <span
+                    class="text-danger">*</span></label>
+            <select name="" id="firstApprovalEmployee" formControlName="primaryApprover" required
+                class="ms-2 form-control">
+                <option [disabled] value="">Select Primary Approver</option>
+                <option [value]="user?.id" *ngFor="let user of users; let i = index">{{user?.firstName |
+                    titlecase}} {{user.lastName | titlecase}}</option>
+
+            </select>
+        </div>
+        <div class="col-md-6" *ngIf="addTemplateForm.get('approvalLevel').value === '2'">
+            <label for="secondApprovalEmployee">Please select the Secondary approver for this template <span
+                    class="text-danger">*</span></label>
+            <select name="" id="secondApprovalEmployee" formControlName="secondaryApprover" required
+                class="ms-2 form-control">
+                <option [disabled] value="">Select Secondary Approver</option>
+                <option [value]="user?.id" *ngFor="let user of users; let i = index">{{user?.firstName |
+                    titlecase}} {{user.lastName | titlecase}}</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group my-3">
+        <label for="">Please choose the hierarchy for which absent days/half days (due to insufficient hours, or missing
+            clock-in or clock-outs) get treated?</label>
+        <div>
+            <ng-container>
+                <mat-form-field appearance="outline" class=" w-100 mx-1">
+                    <mat-label>Select Leave General Categories</mat-label>
+                    <mat-select multiple [(value)]="selectedCategory">
+                        <mat-option value="loss-of-pay" disabled>Loss of Pay</mat-option>
+                        <mat-option value="present" disabled>Present</mat-option>
+
+                        <mat-option *ngFor="let categories of leaveCategories" [value]="categories._id"
+                            [selected]="selectedCategories?.includes(categories?.id)">
+                            {{categories.label | titlecase}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </ng-container>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between">
+        <button type="reset" mat-raised-button>Cancel</button>
+        <button type="submit" mat-raised-button>Save</button>
+    </div>
+</form>
