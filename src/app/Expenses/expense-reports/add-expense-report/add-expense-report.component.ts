@@ -83,7 +83,7 @@ export class AddExpenseReportComponent {
       data: { isEdit: this.isEdit }
     });
     dialogRef.afterClosed().subscribe(result => {
-     const id = this.expenseService.selectedReport.getValue();
+      const id = this.expenseService.selectedReport.getValue();
       this.expenseService.getExpenseReportExpensesByReportId(id._id).subscribe((res: any) => {
         this.expenseReportExpenses = res.data;
       })
@@ -91,8 +91,8 @@ export class AddExpenseReportComponent {
   }
 
   resetForm() {
+    this.expenseReportExpenses = [];
     this.addExpenseForm.reset();
-    this.addExpenseForm.value.expenseReportExpenses = [];
   }
 
   getSelectedExpenseReportExpense(selectedExpenseReportExpense: any) {

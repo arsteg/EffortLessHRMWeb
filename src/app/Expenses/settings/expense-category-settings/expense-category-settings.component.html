@@ -54,9 +54,9 @@
         </div>
 
         <button class="submenuTab active rounded-pill ms-4" type="button" (click)="addField(i)">Add Fields</button>
-        <div formArrayName="fields">
+        <div formArrayName="expenseTemplateCategoryFieldValues">
           <div *ngIf="i === stepper.selectedIndex">
-            <div *ngFor="let fieldCtrl of categoryCtrl.get('fields').controls; let j = index">
+            <div *ngFor="let fieldCtrl of categoryCtrl.get('expenseTemplateCategoryFieldValues').controls; let j = index">
               <div [formGroupName]="j">
                 <div class="d-flex pt-2 align-items-center justify-content-between">
                   <input formControlName="label" placeholder="Label" class="w-50 form-control">

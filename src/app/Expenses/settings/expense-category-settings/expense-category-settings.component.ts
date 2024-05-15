@@ -102,7 +102,7 @@ export class ExpenseCategorySettingsComponent {
               expiryDay: 0,
               isEmployeeCanAddInTotalDirectly: false,
               ratePerDay: 0,
-              fields: this._formBuilder.array([]),
+              expenseTemplateCategoryFieldValues: this._formBuilder.array([]),
               categoryType: categoryDetails.data.type,
               _id: ''
             }));
@@ -118,7 +118,7 @@ export class ExpenseCategorySettingsComponent {
               expiryDay: step.expiryDay,
               isEmployeeCanAddInTotalDirectly: step.isEmployeeCanAddInTotalDirectly,
               ratePerDay: step.ratePerDay,
-              fields: [],
+              expenseTemplateCategoryFieldValues: [],
               categoryType: categoryDetails.data.type,
               _id: step._id
             });
@@ -131,7 +131,7 @@ export class ExpenseCategorySettingsComponent {
                     rate: value.rate,
                     type: value.type
                   });
-                  const fieldsArray = (expenseCategoriesArray.at(formGroupIndex).get('fields') as FormArray);
+                  const fieldsArray = (expenseCategoriesArray.at(formGroupIndex).get('expenseTemplateCategoryFieldValues') as FormArray);
                   fieldsArray.push(fieldFormGroup);
                 }
               });
@@ -151,13 +151,13 @@ export class ExpenseCategorySettingsComponent {
     });
     const expenseCategoriesArray = this.firstForm.get('expenseCategories') as FormArray;
     const expenseCategoryFormGroup = expenseCategoriesArray.at(expenseCategoryIndex) as FormGroup;
-    const fieldsArray = expenseCategoryFormGroup.get('fields') as FormArray;
+    const fieldsArray = expenseCategoryFormGroup.get('expenseTemplateCategoryFieldValues') as FormArray;
     fieldsArray.push(newField);
   }
 
 
-  get fields() {
-    return this.firstForm.get('fields') as FormArray;
+  get expenseTemplateCategoryFieldValues() {
+    return this.firstForm.get('expenseTemplateCategoryFieldValues') as FormArray;
   }
 
   removeField(fieldsArray: FormArray, index: number) {

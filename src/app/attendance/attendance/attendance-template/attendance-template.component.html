@@ -10,7 +10,8 @@
                     <input class="form-control search" type="text" placeholder="Search..." name="searchText"
                         aria-label="default input example">
 
-                    <button mat-raised-button (click)="open(addModal); isEdit= false; step=1" class="addBtn rounded-pill mx-3">Add
+                    <button mat-raised-button (click)="open(addModal); isEdit= false; step=1"
+                        class="addBtn rounded-pill mx-3">Add
                         Template</button>
 
                     <button class="submenuTab active  rounded-pill" (click)="exportToCsv()"> <i
@@ -37,7 +38,7 @@
                         <td>
                             <pre>fetch from template assignment</pre>
                         </td>
-                        <td>
+                        <td class="text-center">
                             <button class="actions" mat-mini-fab title="Update" (click)="changeMode='Next';
                                 open(addModal);
                                 isEdit= true;
@@ -45,7 +46,12 @@
                                 setFormValues(template)" aria-label="Example icon button with a menu icon">
                                 <i class="bi bi-pencil-fill"></i>
                             </button>
-                           
+
+                            <button class="actions" mat-mini-fab title="Delete"
+                                aria-label="Example icon button with a menu icon">
+                                <i class="bi bi-trash"></i>
+                            </button>
+
                         </td>
 
                     </tr>
@@ -59,7 +65,7 @@
 
 <ng-template #addModal let-modal>
     <app-general-template-settings (changeStep)="onChangeStep($event)" [changeMode]="changeMode" *ngIf="step == 1"
-        (close)="onClose($event)"  [isEdit]="isEdit"
+        (close)="onClose($event)" [isEdit]="isEdit"
         (expenseTemplateReportRefreshed)="refreshExpenseReportTable()"></app-general-template-settings>
     <app-attendance-regularization *ngIf="step == 2" (changeStep)="onChangeStep($event)" [changeMode]="changeMode"
         (close)="onClose($event)" (changeStep)="onChangeStep($event)"

@@ -10,6 +10,8 @@ import { GeneralSettingsComponent } from './attendance/generalSettings/generalSe
 import { AttendanceRegularizationComponent } from './attendance/attendance-template/attendance-regularization/attendance-regularization.component';
 import { AttendanceTemplateComponent } from './attendance/attendance-template/attendance-template.component';
 import { GeneralTemplateSettingsComponent } from './attendance/attendance-template/general-template-settings/general-template-settings.component';
+import { LocationComponent } from './attendance/attendance-template/location/location.component';
+// import { AgmCoreModule } from '@agm/core';
 
 @NgModule({
   declarations: [
@@ -18,14 +20,18 @@ import { GeneralTemplateSettingsComponent } from './attendance/attendance-templa
     GeneralSettingsComponent,
     AttendanceRegularizationComponent,
     AttendanceTemplateComponent,
-    GeneralTemplateSettingsComponent
+    GeneralTemplateSettingsComponent,
+    LocationComponent
   ],
   imports: [
     MatRadioModule,
     MatCheckboxModule,
     CommonModule,
     CommonComponentsModule,
-    SharedModule
+    SharedModule,
+    // AgmCoreModule.forRoot({
+    //   apiKey: 'YOUR GOOGLE API KEY HERE'
+    // })
   ],
   exports: [
     AttendanceManagementComponent,

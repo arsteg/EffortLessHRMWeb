@@ -77,18 +77,6 @@ export class AttendanceTemplateComponent {
     // })
   }
 
-  openSecondModal(selectedReport: any): void {
-    // const categoryLabel = this.getCategory(selectedReport.category);
-    // selectedReport.category = categoryLabel;
-    // this.expenseService.advanceReport.next(selectedReport);
-    const dialogRef = this.dialog.open(GeneralTemplateSettingsComponent, {
-      width: '50%',
-      data: { report: selectedReport }
-    });
-    dialogRef.afterClosed().subscribe(result => {
-    });
-  }
-
   exportToCsv() {
     const dataToExport = this.attendanceTemplate;
     this.exportService.exportToCSV('My-Expense-Report', 'My-Expense-Report', dataToExport);

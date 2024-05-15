@@ -204,4 +204,6 @@ export class ExpenseGeneralSettingsComponent {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
     });
   }
+
+  
 }

@@ -25,6 +25,8 @@ export class GeneralTemplateSettingsComponent {
   selectedHalfDays: string[] = [];
   selectedAlternateWeekDays: string[] = [];
   attendanceTemplate: any;
+  @Output() changeStep: any = new EventEmitter();
+  capturingAttendance: any = [''];
 
   constructor(private commonService: CommonService,
     private leaveService: LeaveService,
@@ -89,6 +91,7 @@ export class GeneralTemplateSettingsComponent {
     this.addTemplateForm.get('firstApprovalEmployee').updateValueAndValidity();
     this.addTemplateForm.get('secondApprovalEmployee').updateValueAndValidity();
   }
+
   setFormValues(templateData: any) {
     this.addTemplateForm.patchValue({
       label: templateData?.label,
@@ -116,8 +119,8 @@ export class GeneralTemplateSettingsComponent {
     this.selectedHalfDays = templateData?.weklyofHalfDay;
     this.selectedAlternateWeekDays = templateData?.daysForAlternateWeekOffRoutine;
     this.selectedCategory = templateData?.leveCategoryHierarchyForAbsentHalfDay;
-
-    console.log(this.selectedWeeklyDays, this.addTemplateForm.value);
+    this.capturingAttendance = templateData?.attendanceMode;
+    console.log(this.capturingAttendance);
   }
 
   isWeeklyDays(days) {
@@ -171,24 +174,29 @@ export class GeneralTemplateSettingsComponent {
   }
 
   onSubmission() {
-    if (this.isEdit == false) {
-      console.log('add template')
-      this.addTemplateForm.value.leveCategoryHierarchyForAbsentHalfDay = this.selectedCategory;
-      this.addTemplateForm.value.daysForAlternateWeekOffRoutine = this.selectedAlternateWeekDays;
-      this.addTemplateForm.value.weklyofHalfDay = this.selectedHalfDays
-      this.addTemplateForm.value.weeklyOfDays = this.selectedWeeklyDays
 
+    console.log('add template')
+    this.addTemplateForm.value.leveCategoryHierarchyForAbsentHalfDay = this.selectedCategory;
+    this.addTemplateForm.value.daysForAlternateWeekOffRoutine = this.selectedAlternateWeekDays;
+    this.addTemplateForm.value.weklyofHalfDay = this.selectedHalfDays;
+    this.addTemplateForm.value.weeklyOfDays = this.selectedWeeklyDays;
+    this.addTemplateForm.value.attendanceMode = this.capturingAttendance;
+    if (this.isEdit == false) {
       this.attendanceService.addAttendanceTemplate(this.addTemplateForm.value).subscribe((res: any) => {
-        this.attendanceTemplate = res.data;
         this.toast.success('Attendance Template created', 'Successfully!!!');
-        this.addTemplateForm.reset();
+        this.changeStep.emit(2);
       },
-        err => {
+        (err) => {
           this.toast.error('Attendance Template can not be created', 'Error!!!')
         })
     }
+
     else {
-      console.log('update call')
+      const templateId = this.attendanceService.selectedTemplate.getValue()._id;
+      console.log(templateId);
+      this.attendanceService.updateAttendanceTemplate(templateId, this.addTemplateForm.value).subscribe((res: any) => {
+        this.changeStep.emit(2);
+      })
     }
   }
 
