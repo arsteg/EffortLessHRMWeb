@@ -11,6 +11,30 @@
 
     <!-- MAP -->
     <form action="">
+        <!-- <google-map height="300px" width="700px" [center]="center" [zoom]="zoom" (mapClick)="moveMap($event)"
+            (mapMousemove)="move($event)">
+        </google-map> -->
+        <google-map height="300px" width="700px" [center]="center" [zoom]="zoom" (mapClick)="moveMap($event)"
+            (mapMousemove)="move($event)"></google-map>
+
+        <div class="form-group">
+            <label for="">Location Label</label>
+            <input type="text">
+        </div>
+
+        <div class="form-group">
+            <label>Latitude</label>
+            <input type="text" value="{{display?.lat}}">
+        </div>
+        <div class="form-group">
+            <label>Longitude</label>
+            <input type="text" value="{{display?.lng}}">
+        </div>
+
+        <div class="form-group">
+            <label for="">Radius</label>
+            <input type="text">
+        </div>
 
     </form>
 </div>

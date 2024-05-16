@@ -79,7 +79,7 @@ export class AttendanceTemplateComponent {
 
   exportToCsv() {
     const dataToExport = this.attendanceTemplate;
-    this.exportService.exportToCSV('My-Expense-Report', 'My-Expense-Report', dataToExport);
+    this.exportService.exportToCSV('attendance-template', 'attendance-template', dataToExport);
   }
 
   getAttendanceTemplate() {

@@ -106,4 +106,24 @@ export class AttendanceService {
     return response;
   }
 
+  addAttendanceAssignment(templateAssignment: any): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/attendance-assignments`, templateAssignment, this.httpOptions);
+    return response;
+  }
+
+  updateAttendanceAssignment(id: string, templateAssignment: any): Observable<response<any>> {
+    var response = this.http.put<response<any>>(`${environment.apiUrlDotNet}/attendance/attendance-assignments/${id}`, templateAssignment, this.httpOptions);
+    return response;
+  }
+
+  deleteAttendanceAssignment(id: string): Observable<response<any>> {
+    var response = this.http.delete<response<any>>(`${environment.apiUrlDotNet}/attendance/attendance-assignments/${id}`, this.httpOptions);
+    return response;
+  }
+
+  getAttendanceAssignment(): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/attendance-assignments`, this.httpOptions);
+    return response;
+  }
+
 }

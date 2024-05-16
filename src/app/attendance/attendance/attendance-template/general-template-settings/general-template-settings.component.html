@@ -353,7 +353,6 @@
 
     <div class="d-flex justify-content-between">
         <button type="reset" mat-raised-button>Cancel</button>
-        <button *ngIf="isEdit" type="submit" mat-raised-button class="addBtn">Next</button>
-        <button *ngIf="!isEdit" type="submit" mat-raised-button [disabled]="!addTemplateForm.valid" class="addBtn">Next</button>
+        <button  type="submit" mat-raised-button class="addBtn">Next</button>
     </div>
 </form>

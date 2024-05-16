@@ -1,0 +1,211 @@
+<div class="mainContent pt-2">
+    <div class="container">
+        <div class="py-0 px-0 bg-white tableContainer">
+
+            <div class="d-flex justify-content-between align-items-center mb-2 px-3">
+                <p class="mb-0">({{attendanceTemplateAssignment?.length}}) Records Found</p>
+                <div class="d-flex align-items-center">
+                    <span class="bi bi-search searchIcon"></span>
+
+                    <input class="form-control search" type="text" placeholder="Search..." name="searchText"
+                        aria-label="default input example">
+
+                    <button mat-raised-button (click)="open(addModal); changeMode = 'Update'; isEdit= false;"
+                        class="addBtn rounded-pill mx-3">Assign
+                        Template</button>
+
+                    <button class="submenuTab active  rounded-pill" (click)="exportToCsv()"> <i
+                            class="bi bi-download downloadBtn pe-2"></i>
+                        Download</button>
+
+                </div>
+            </div>
+
+            <table class="px-4">
+                <thead>
+                    <tr>
+                        <th class="ps-2">Employee Name</th>
+                        <th>Assigned Attendance Template</th>
+                        <th>Primary Supervisor</th>
+                        <th>Secondary Supervisor</th>
+                        <th>Effective Date</th>
+                        <th scope="col" class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        *ngFor="let template of attendanceTemplateAssignment| search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
+                        <td>{{getUser(template?.employee) | titlecase}}</td>
+                        <td>{{getTemplate(template?.attandanceTemplate) | titlecase}}</td>
+                        <td>{{getUser(template?.primaryApprover) | titlecase}}</td>
+                        <td>{{getUser(template?.secondaryApprover) | titlecase}}</td>
+                        <td>{{template?.effectiveFrom | date: 'mediumDate'}}</td>
+                        <td class="text-center">
+                            <button class="actions" mat-mini-fab title="Update" (click)="open(editModal);
+                                isEdit= true;
+                                selectedTemplate=template;
+                                setFormValues(template)" aria-label="Example icon button with a menu icon">
+                                <i class="bi bi-pencil-fill"></i>
+                            </button>
+
+                            <button class="actions ms-1" mat-mini-fab title="Delete"
+                                aria-label="Example icon button with a menu icon" (click)="deleteDialog(template._id)">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <pagination-controls (pageChange)="p = $event"
+                class="pagination d-flex justify-content-end"></pagination-controls>
+        </div>
+    </div>
+</div>
+
+
+<ng-template #addModal let-modal>
+    <div class="modal-header border-bottom mb-2 pt-0">
+        <div>
+            <h1 class="modal-title text-muted mb-0">Attendance Template Assignment</h1>
+        </div>
+        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
+                (click)="closeModal()"></button>
+        </div>
+    </div>
+
+    <form [formGroup]="attendanceTemplateAssignmentForm" (ngSubmit)="onCreate()">
+
+        <div class="form-group">
+            <label for="">Select An Employee for Template Assignment</label>
+            <select id="member" name="member" class="form-control" [attr.disabled]="changeMode === 'Update'"
+                formControlName="employee" class="form-select form-select-sm" aria-label="form-select-sm example">
+                <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                    {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
+                </option>
+            </select>
+        </div>
+
+        <div class="form-group my-2">
+            <label for="">Select Template</label>
+            <select id="attendanceTemplate" class="form-control" [attr.disabled]="isEdit === true"
+                formControlName="attandanceTemplate" name="attendanceTemp" class="form-select form-select-sm"
+                aria-label=".form-select-sm example" (change)="onTemplateSelectionChange($event)">
+                <option *ngFor="let template of templates" [value]="template?._id">
+                    {{template?.label}}
+                </option>
+            </select>
+        </div>
+
+
+        <div class="form-group my-2">
+            <label for="">Select an Effective Date</label>
+            <div class=" col-12 form-group mb-3">
+                <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
+                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="effectiveFrom" />
+            </div>
+        </div>
+
+        <div class="form-group my-2">
+            <label for="">Choose Primary Approver</label>
+            <select id="member" name="primary" class="form-control" formControlName="primaryApprover"
+                class="form-select form-select-sm" aria-label=".form-select-sm example">
+                <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                    {{assignee?.firstName | titlecase}} {{assignee?.lastName | titlecase}}
+                </option>
+            </select>
+        </div>
+
+        <div class="form-group my-2">
+            <label for="">Choose Secondary Approver</label>
+            <select id="member" name="secondary" class="form-control" formControlName="secondaryApprover"
+                class="form-select form-select-sm" aria-label="form-select-sm example">
+                <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                    {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
+                </option>
+            </select>
+        </div>
+        <div class="d-flex border-top mt-2 py-2 justify-content-between">
+            <button mat-raised-button type="reset">Cancel</button>
+            <button mat-raised-button type="submit" class="addBtn">Add</button>
+        </div>
+    </form>
+</ng-template>
+
+<ng-template #editModal let-modal>
+    <div class="modal-header border-bottom mb-2 pt-0">
+        <div>
+            <h1 class="modal-title text-muted mb-0">Update Attendance Template Assignment</h1>
+            <small>Employee: <span class="small-text">{{getUser(selectedTemplate?.employee)}}</span></small><br>
+            <small>Attendance Template: <span
+                    class="small-text">{{getTemplate(selectedTemplate?.attandanceTemplate)}}</span></small>
+        </div>
+        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
+                (click)="closeModal()"></button>
+        </div>
+    </div>
+
+    <form [formGroup]="updateTemplateAssignForm" (ngSubmit)="onUpdate()">
+        <div *ngIf="templateById?.approversType === 'employee-wise'">
+
+            <div class="form-group my-2">
+                <label for="">Choose Primary Approver</label>
+                <select id="member" name="primary" class="form-control" formControlName="primaryApprovar"
+                    class="form-select form-select-sm" aria-label=".form-select-sm example">
+                    <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                        {{assignee?.firstName | titlecase}} {{assignee?.lastName | titlecase}}
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-group my-2">
+                <label for="">Choose Secondary Approver</label>
+                <select id="member" name="secondary" class="form-control" formControlName="secondaryApprovar"
+                    class="form-select form-select-sm" aria-label="form-select-sm example">
+                    <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                        {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div *ngIf="templateById?.approversType === 'template-wise' && templateById?.approvalLevel === '1'">
+
+            <div class="form-group my-2">
+                <label for="">Choose Primary Approver</label>
+                <select id="member" name="primary" [disabled] class="form-control" formControlName="primaryApprovar"
+                    class="form-select form-select-sm" aria-label=".form-select-sm example">
+                    <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                        {{assignee?.firstName | titlecase}} {{assignee?.lastName | titlecase}}
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div *ngIf="templateById?.approversType === 'template-wise' && templateById?.approvalLevel === '2'">
+            <div class="form-group my-2">
+                <label for="">Choose Primary Approver</label>
+                <select id="member" name="primary" [disabled] class="form-control" formControlName="primaryApprovar"
+                    class="form-select form-select-sm" aria-label=".form-select-sm example">
+                    <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                        {{assignee?.firstName | titlecase}} {{assignee?.lastName | titlecase}}
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-group my-2">
+                <label for="">Choose Secondary Approver</label>
+                <select id="member" name="secondary" [disabled] class="form-control" formControlName="secondaryApprovar"
+                    class="form-select form-select-sm" aria-label="form-select-sm example">
+                    <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                        {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="d-flex border-top mt-2 py-2 justify-content-between">
+            <button mat-raised-button type="reset">Cancel</button>
+            <button mat-raised-button type="submit" class="addBtn">Update</button>
+        </div>
+    </form>
+</ng-template>

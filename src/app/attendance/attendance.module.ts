@@ -11,7 +11,9 @@ import { AttendanceRegularizationComponent } from './attendance/attendance-templ
 import { AttendanceTemplateComponent } from './attendance/attendance-template/attendance-template.component';
 import { GeneralTemplateSettingsComponent } from './attendance/attendance-template/general-template-settings/general-template-settings.component';
 import { LocationComponent } from './attendance/attendance-template/location/location.component';
-// import { AgmCoreModule } from '@agm/core';
+import { RouterOutlet } from '@angular/router';
+import { GoogleMapsModule } from '@angular/google-maps';
+import { AttendanceTemplateAssignmentComponent } from './attendance/attendance-template-assignment/attendance-template-assignment.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +23,8 @@ import { LocationComponent } from './attendance/attendance-template/location/loc
     AttendanceRegularizationComponent,
     AttendanceTemplateComponent,
     GeneralTemplateSettingsComponent,
-    LocationComponent
+    LocationComponent,
+    AttendanceTemplateAssignmentComponent
   ],
   imports: [
     MatRadioModule,
@@ -29,8 +32,10 @@ import { LocationComponent } from './attendance/attendance-template/location/loc
     CommonModule,
     CommonComponentsModule,
     SharedModule,
+    RouterOutlet,
+    GoogleMapsModule
     // AgmCoreModule.forRoot({
-    //   apiKey: 'YOUR GOOGLE API KEY HERE'
+    //   apiKey: 'AIzaSyDcVHb7z2aA1VGUL5mtDZtplf3EMVMX4q8'
     // })
   ],
   exports: [
