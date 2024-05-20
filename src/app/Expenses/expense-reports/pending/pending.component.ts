@@ -98,6 +98,7 @@ export class PendingComponent {
   onClose(event) {
     if (event) {
       this.modalService.dismissAll();
+      this.getExpenseReport();
     }
   }
 
