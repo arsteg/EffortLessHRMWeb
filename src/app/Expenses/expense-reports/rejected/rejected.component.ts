@@ -71,12 +71,14 @@ export class RejectedComponent {
   onClose(event) {
     if (event) {
       this.modalService.dismissAll();
+      this.getExpenseReport();
     }
   }
 
   onChangeStep(event) {
     this.step = event;
   }
+  
   onChangeMode(event) {
     if (this.isEdit = true) {
       this.changeMode = event

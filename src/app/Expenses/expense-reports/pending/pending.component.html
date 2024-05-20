@@ -214,8 +214,8 @@
 
 <!-- Add/Update Modal -->
 <ng-template #addModal let-modal>
-    <app-add-expense-report (changeStep)="onChangeStep($event)" [changeMode]="isEdit" *ngIf="step == 1"
+    <app-add-expense-report (changeStep)="onChangeStep($event)" [changeMode]="changeMode" *ngIf="step == 1"
         (close)="onClose($event)" (updateExpenseReportTable)="refreshExpenseReportTable()"></app-add-expense-report>
-    <app-create-report *ngIf="step == 2" (changeStep)="onChangeStep($event)" [changeMode]="isEdit"
+    <app-create-report *ngIf="step == 2" (changeStep)="onChangeStep($event)" [changeMode]="changeMode"
         (close)="onClose($event)" (updateExpenseReportTable)="refreshExpenseReportTable()"></app-create-report>
 </ng-template>

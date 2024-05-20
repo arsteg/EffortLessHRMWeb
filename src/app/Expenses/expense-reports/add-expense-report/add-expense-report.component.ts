@@ -22,7 +22,7 @@ import { Observable, Subscription, map } from 'rxjs';
 export class AddExpenseReportComponent {
   users: any = [];
   @Output() close: any = new EventEmitter();
-  @Input() changeMode: boolean;
+  @Input() changeMode: string;
   addExpenseForm: FormGroup;
   expenseReport: any[];
   @Output() updateExpenseReportTable: EventEmitter<void> = new EventEmitter<void>();
@@ -52,6 +52,8 @@ export class AddExpenseReportComponent {
 
 
   ngOnInit() {
+    console.log(this.changeMode, this.isEdit)
+    this.expenseService.changeMode.next(this.changeMode)
     if (!this.isEdit && !this.changeMode) {
       this.addExpenseForm.reset();
     }
@@ -83,10 +85,12 @@ export class AddExpenseReportComponent {
       data: { isEdit: this.isEdit }
     });
     dialogRef.afterClosed().subscribe(result => {
-      const id = this.expenseService.selectedReport.getValue();
-      this.expenseService.getExpenseReportExpensesByReportId(id._id).subscribe((res: any) => {
-        this.expenseReportExpenses = res.data;
-      })
+      if (this.changeMode == 'Update') {
+        const id = this.expenseService.selectedReport.getValue();
+        this.expenseService.getExpenseReportExpensesByReportId(id._id).subscribe((res: any) => {
+          this.expenseReportExpenses = res.data;
+        })
+      }
     });
   }
 
@@ -129,7 +133,7 @@ export class AddExpenseReportComponent {
       let formArray = this.expenseService.expenseReportExpense.getValue();
       payload.expenseReportExpenses = [formArray];
     }
-    if (!this.changeMode) {
+    if (this.changeMode == 'Add') {
       this.expenseService.addExpensePendingReport(payload).subscribe((res: any) => {
         this.toast.success('Expense Template Applicable Category Added Successfully!');
         // this.updateExpenseReportTable.emit();

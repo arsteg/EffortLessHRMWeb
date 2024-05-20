@@ -69,6 +69,7 @@ export class ApprovedComponent {
   onClose(event) {
     if (event) {
       this.modalService.dismissAll();
+      this.getExpenseReport();
     }
   }
 

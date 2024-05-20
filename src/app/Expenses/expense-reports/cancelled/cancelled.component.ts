@@ -67,6 +67,7 @@ export class CancelledComponent {
     onClose(event) {
       if (event) {
         this.modalService.dismissAll();
+        this.getExpenseReport();
       }
     }
   
