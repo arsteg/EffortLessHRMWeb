@@ -64,9 +64,9 @@
                                 <div class="flex-grow-1 ms-3">
                                     <h5 class="mb-1">{{ productivity[0]?.firstName | titlecase}}
                                         {{productivity[0]?.lastName | titlecase}}</h5>
-                                    <h5 class="mb-1">Member since: {{ productivity[0]?.dateOfJoining | date:'MMM dd,
+                                    <!-- <h5 class="mb-1">Member since: {{ productivity[0]?.dateOfJoining | date:'MMM dd,
                                         yyyy' }}
-                                    </h5>
+                                    </h5> -->
                                 </div>
                             </div>
                         </div>
@@ -81,36 +81,30 @@
                                     <div>Idle: {{ millisecondsToTime(productivity[0]?.inactive) }}</div>
                                 </div>
                                 <div class="flex-grow-1 ms-5">
-                                    <h5 class="mb-1">AVG mouse/minute: {{ averageCount(millisecondsToMinutes(productivity[0]?.total), productivity[0]?.mouseClicks)}}</h5>
-                                    <h5 class="mb-1">AVG keyboard/minute: {{ averageCount(millisecondsToMinutes(productivity[0]?.total), productivity[0]?.keyboardStrokes)}}</h5>
+                                    <h5 class="mb-1">AVG mouse/minute: {{ productivity?.length ? averageCount(millisecondsToMinutes(productivity[0]?.total), productivity[0]?.mouseClicks) : 'N/A'}}</h5>
+                                    <h5 class="mb-1">AVG keyboard/minute: {{ productivity?.length ? averageCount(millisecondsToMinutes(productivity[0]?.total), productivity[0]?.keyboardStrokes) : 'N/A'}}</h5>
                                 </div>
                                 <div class="flex-grow-1 ms-5">
-                                    <h5 class="mb-1">AVG scroll/minute: {{ averageCount(millisecondsToMinutes(productivity[0]?.total), productivity[0]?.scrollingNumber) }}</h5>
+                                    <h5 class="mb-1">AVG scroll/minute: {{ productivity?.length ? averageCount(millisecondsToMinutes(productivity[0]?.total), productivity[0]?.scrollingNumber): 'N/A' }}</h5>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="row p-5 mt-2 bg-white">
+            <div class="p-5 mt-2 bg-white">
                 <h4>App & Web Usage</h4>
                 <hr>
-                <div class="progress">
-                    <div class="progress-bar" role="progressbar" style="width: 100%" aria-valuenow="100"
+                <div class="progress" style="height: 30px !important;">
+                    <div class="progress-bar" role="progressbar" [style.width.%]="getProductiveProgressValue(this.productivity)"
                         aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
                 <div class="d-flex justify-content-evenly">
                     <div>
-                        Productive<br />
-                        Team AVG 0%
+                        Productive AVG {{ getProductiveProgressValue(this.productivity) }}%
                     </div>
                     <div>
-                        Neutral <br />
-                        Team AVG 100%
-                    </div>
-                    <div>
-                        Non-productive <br />
-                        Team AVG 0%
+                        Non-productive AVG {{ getNonProductiveProgressValue(this.productivity) }}%
                     </div>
                 </div>
 
@@ -118,14 +112,14 @@
             <div class="row bg-white p-5 mt-2">
                 <div class="d-flex justify-content-between pt-4">
                     <h1 class="pt-0 pb-3 mb-0">Active Minutes</h1>
-                    <h1 class="pt-0 pb-3 mb-0">Score: 80/100</h1>
+                    <h1 class="pt-0 pb-3 mb-0">Score: {{getActiveProgress(productivity)}} /100</h1>
                 </div>
                 <div>
-                    <div class="progress" style="height: 30px;">
-                        <div class="progress-bar bg-success" role="progressbar" style="width: 80%" aria-valuemax="100">
-                            80%</div>
-                        <div class="progress-bar bg-danger" role="progressbar" style="width: 20%" aria-valuemax="100">
-                            20%</div>
+                    <div class="progress" style="height: 50px !important;">
+                        <div class="progress-bar bg-success" role="progressbar" [style.width.%]="getActiveProgress(productivity)" aria-valuemax="100">
+                            {{getActiveProgress(productivity)}}%</div>
+                        <div class="progress-bar bg-danger" role="progressbar" [style.width.%]="100 - getActiveProgress(productivity)" aria-valuemax="100">
+                        {{100-getActiveProgress(productivity)}}%</div>
                     </div>
                 </div>
                 <div class="d-flex justify-content-between pt-4">
@@ -135,7 +129,7 @@
                     <div>{{ millisecondsToTime(productivity[0]?.inactive) }}<br />Inactive</div>
                 </div>
                 <div class="d-flex justify-content-center pt-4">
-                    Team AVG active minutes: 80%
+                    Team AVG active minutes: {{getActiveProgress(productivity)}}%
                 </div>
             </div>
         </div>
@@ -185,12 +179,12 @@
                 </thead>
                 <tbody>
                     <tr *ngFor="let data of productivity">
-                        <td>{{data.firstName}} {{data.lastName}}</td>
-                        <td>{{minutesToTime(data?.TimeSpent) }}</td>
+                        <td>{{ data.firstName }} {{ data.lastName }}</td>
+                        <td>{{ millisecondsToTime(data?.total) }}</td>
                         <td>{{ data?.mouseClicks }}</td>
                         <td>{{ data?.keyboardStrokes}}</td>
-                        <td>{{ ((data.timeSpentProductive / (1000 * 60 * 60)) ) * 100 | number: '1.2-2' }} %</td>
-                        <td>{{data?.timeSpentNonProductive}} %</td>
+                        <td>{{ getProductiveProgressValueAllMember(data) }} %</td>
+                        <td>{{ getNonProductiveProgressValueAllMember(data) }} %</td>
                     </tr>
 
                 </tbody>

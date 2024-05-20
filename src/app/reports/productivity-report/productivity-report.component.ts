@@ -117,24 +117,29 @@ export class ProductivityReportComponent implements OnInit {
     this.getProductivityPerMem();
   }
 
-  minutesToTime(minutes) {
-    let hours = Math.floor(minutes / 60);
-    minutes = minutes % 60;
-    return hours + ' hr ' + minutes + ' m';
+  minutesToTime(input) {
+    debugger;
+    const minutes = Math.floor(Math.abs(input));
+    const hours = Math.floor(minutes / 60);
+    const seconds = minutes % 60;
+    return hours + ' hr ' + minutes + ' m ' + seconds +' s';
   }
 
 
   convertToPercentage(total, consumed) {
-    return ((consumed * 100) / total);
+    return Math.floor((consumed * 100) / total);
   }
 
   averageCount(totalTime, totalCount) {
     return Math.floor(totalCount / totalTime);
   }
+  
   millisecondsToTime(milliseconds) {
-    let hours = Math.floor((milliseconds / (1000 * 60 * 60)) % 24);
-    let minutes = Math.floor((milliseconds / (1000 * 60)) % 60);
-    return hours + ' hr ' + minutes + ' m';
+    const ms = Math.floor(Math.abs(milliseconds));
+    const seconds = Math.floor(ms / 1000) % 60;
+    const minutes = Math.floor(ms / (1000 * 60)) % 60;
+    const hours = Math.floor(ms / (1000 * 60 * 60));
+    return hours + ' hr ' + minutes + ' m ' + seconds + ' s';
   }
 
   millisecondsToMinutes(milliseconds: number): number {
@@ -143,8 +148,12 @@ export class ProductivityReportComponent implements OnInit {
 
   getProductivityPerMem() {
     let searchProductivity = new Productivity();
-    searchProductivity.fromdate = new Date(this.fromDate);
-    searchProductivity.todate = new Date(this.toDate);
+    let fromdate = new Date(this.fromDate);
+    fromdate.setUTCHours(0, 0, 0, 0);
+    searchProductivity.fromdate = fromdate.toUTCString();
+    let toDate = new Date(this.toDate);
+    toDate.setUTCHours(23, 59, 59, 999);
+    searchProductivity.todate = toDate.toUTCString();
     searchProductivity.users = (this.role.toLowerCase() === "admin" || null) ? this.selectedUser : [];
     this.reportService.getProductivity(searchProductivity).subscribe(result => {
       this.productivity = result.data;
@@ -153,11 +162,17 @@ export class ProductivityReportComponent implements OnInit {
 
   getProductivityAllMem() {
     let searchProductivity = new Productivity();
-    searchProductivity.fromdate = new Date(this.fromDate);
-    searchProductivity.todate = new Date(this.toDate);
+    let fromdate = new Date(this.fromDate);
+    fromdate.setUTCHours(0, 0, 0, 0);
+    let toDate = new Date(this.toDate);
+    toDate.setUTCHours(23, 59, 59, 999);
+
+
+    searchProductivity.fromdate = fromdate.toUTCString();
+    searchProductivity.todate = toDate.toUTCString();
     searchProductivity.users = this.currentProfile.id
-    searchProductivity.fromdate = new Date(this.fromDate);
-    searchProductivity.todate = new Date(this.toDate);
+    // searchProductivity.fromdate = new Date(this.fromDate);
+    // searchProductivity.todate = new Date(this.toDate);
     searchProductivity.users = [];
     this.reportService.getProductivity(searchProductivity).subscribe(result => {
       this.productivity = result.data;
@@ -174,5 +189,25 @@ export class ProductivityReportComponent implements OnInit {
         });
       })
     );
+  }
+
+  getProductiveProgressValue(productivity:any[]) {
+    return productivity?.length ? this.convertToPercentage(productivity[0]?.total, productivity[0]?.timeSpentProductive) : 0;
+  }
+
+  getNonProductiveProgressValue(productivity:any[]) {
+    return productivity?.length ? this.convertToPercentage(productivity[0]?.total, productivity[0]?.timeSpentNonProductive) : 0;
+  }
+
+  getActiveProgress(productivity:any[]) {
+    return productivity?.length ? this.convertToPercentage(productivity[0]?.total, productivity[0]?.TimeSpent) : 0;
+  }
+
+  getProductiveProgressValueAllMember(data:any) {
+    return this.convertToPercentage(data.total, data.timeSpentProductive);
+  }
+
+  getNonProductiveProgressValueAllMember(productivity) {
+    return this.convertToPercentage(productivity.total, productivity.timeSpentNonProductive);
   }
 }

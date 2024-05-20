@@ -103,10 +103,15 @@ export class AppAndWebsiteUsageComponent implements OnInit {
 
   getApplicationData() {
     let searchAppUsagesRequest = new SearchAppUsagesRequest();
-    searchAppUsagesRequest.fromdate = new Date(this.fromDate);
-    searchAppUsagesRequest.todate = new Date(this.toDate);
+    let fromdate = new Date(this.fromDate);
+    fromdate.setUTCHours(0, 0, 0, 0);
+    searchAppUsagesRequest.fromdate = fromdate.toUTCString();
+    let toDate = new Date(this.toDate);
+    toDate.setUTCHours(23, 59, 59, 999);
+    searchAppUsagesRequest.todate = toDate.toUTCString();
     searchAppUsagesRequest.projects = this.selectedProject;
-    searchAppUsagesRequest.users = (this.role.toLowerCase() === "admin" || null) ? this.selectedUser : [this.currentUser.id];
+    searchAppUsagesRequest.users = (this.role.toLowerCase() === "admin" || null) ? this.selectedUser : [this.currentUser.id];  
+  
     this.reportService.getAppUsagesReport(searchAppUsagesRequest).subscribe(result => {
       this.appUsagesList = result.data;
       this.totalHours = result.data.reduce((sum, elem) => parseInt(sum) + parseInt(elem.timeSpent), 0);
@@ -118,15 +123,18 @@ export class AppAndWebsiteUsageComponent implements OnInit {
   }
 
   millisecondsToTime(milliseconds) {
-    let hours = Math.floor((milliseconds / (1000 * 60 * 60)) % 24);
-    let minutes = Math.floor((milliseconds / (1000 * 60)) % 60);
-    return hours + ' hr ' + minutes + ' m';
+    const ms = Math.floor(Math.abs(milliseconds));
+    const seconds = Math.floor(ms / 1000) % 60;
+    const minutes = Math.floor(ms / (1000 * 60)) % 60;
+    const hours = Math.floor(ms / (1000 * 60 * 60));
+    return hours + ' hr ' + minutes + ' m ' + seconds + ' s';
   }
 
-  minutesToTime(minutes) {
-    let hours = Math.floor(minutes / 60);
-    minutes = minutes % 60;
-    return hours + ' hr ' + minutes + ' m';
+  minutesToTime(input) {
+    const minutes = Math.floor(Math.abs(input));
+    const hours = Math.floor(minutes / 60);
+    const seconds = minutes % 60;
+    return hours + ' hr ' + minutes + ' m ' + seconds +' s';
   }
 
   exportToExcel() {
