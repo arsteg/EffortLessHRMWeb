@@ -45,8 +45,8 @@ export class Activity{
 
 export class Productivity{
   users: [];
-  fromdate:Date = new Date();      
-  todate: Date= new Date();
+  fromdate:string = "";      
+  todate: string= "";
 }
 export class Attendance{
   users: [];
@@ -57,8 +57,8 @@ export class Attendance{
 export class SearchAppUsagesRequest {
   users: [];
   projects: []; 
-  fromdate:Date = new Date();      
-  todate: Date= new Date();
+  fromdate:string = "";      
+  todate: string= "";
 }
 export class TimeLine{
   users: [];
