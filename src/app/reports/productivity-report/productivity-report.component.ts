@@ -1,11 +1,9 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { DatePipe } from '@angular/common';
-import { Observable, switchMap } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
 import { TimeLogService } from 'src/app/_services/timeLogService';
 import { Productivity } from '../model/productivityModel';
 import { ReportsService } from '../../_services/reports.service';
 import { CommonService } from 'src/app/common/common.service';
+import { UtilsService } from 'src/app/_services/utils.service';
 
 @Component({
   selector: 'app-productivity-report',
@@ -13,20 +11,14 @@ import { CommonService } from 'src/app/common/common.service';
   styleUrls: ['./productivity-report.component.css']
 })
 export class ProductivityReportComponent implements OnInit {
-
-  private _jsonURL = '.../../../assets/reportproductivity.json';
   userId = [];
   projectId: string;
   members: any;
   member: any;
   fromDate: any;
   toDate: any;
-  currentDate: Date = new Date();
-  diff: any = this.currentDate.getDate() - this.currentDate.getDay() + (this.currentDate.getDay() === 0 ? -6 : 1);
-  lastday: any = this.currentDate.getDate() - (this.currentDate.getDay() - 1) + 6;
   selectedUser: any = [];
-  roleName = localStorage.getItem('adminView');
-  currentProfile: any;
+  currentUser = JSON.parse(localStorage.getItem('currentUser'));
   firstLetter: string;
   totalActiveTime: Number;
   productivity: any = [];
@@ -34,40 +26,21 @@ export class ProductivityReportComponent implements OnInit {
   showAllMembers: boolean = true;
   public sortOrder: string = ''; // 'asc' or 'desc'
   activeButton: string = 'Members';
-  role: any;
 
 
   constructor(
-    private datepipe: DatePipe
-    , private http: HttpClient
-    , private timeLogService: TimeLogService,
+    private timeLogService: TimeLogService,
     private reportService: ReportsService,
-    public commonservice: CommonService
+    public commonservice: CommonService,
+    private utilsService:UtilsService
   ) {
-    this.fromDate = this.datepipe.transform(new Date(this.currentDate.setDate(this.diff)), 'yyyy-MM-dd');
-    this.toDate = this.datepipe.transform(new Date(this.currentDate.setDate(this.lastday)), 'yyyy-MM-dd');
+    this.fromDate = new Date().toISOString().slice(0, 10);
+    this.toDate = new Date().toISOString().slice(0, 10);
   }
 
   ngOnInit(): void {
     this.toggleSingleMember();
-
-//================= added temporary=======
-    //this.commonservice.getCurrentUserRole().subscribe((role: any) => {   // comment temporary
-      this.role = "admin"; // added temporary
-    //})
-//=========================
-
-
-    this.getCurrentUser().subscribe(() => {
-      this.initializeDefaultUser();
-      this.populateUsers();
-      if (this.showSingleMember && !this.showAllMembers) {
-        this.getProductivityPerMem();
-      }
-      else{
-        this.getProductivityAllMem();
-      }
-    });
+    this.populateUsers();
   }
  
   toggleSingleMember() {
@@ -80,24 +53,17 @@ export class ProductivityReportComponent implements OnInit {
     this.showAllMembers = true;
     this.activeButton = 'Members';
   }
-  initializeDefaultUser() {
-    if ((this.role.toLowerCase() === "admin" || null) || this.members.some(member => member.id === this.currentProfile.id)) {
-      this.selectedUser = this.currentProfile.id;
-    } else if (!this.selectedUser && this.members.length > 0) {
-      this.selectedUser = this.members[0].id;
-    }
-  }
 
   populateUsers() {
     this.members = [];
-    this.members.push({ id: this.currentProfile.id, name: "Me", email: this.currentProfile.email });
-    this.member = this.currentProfile;
+    this.members.push({ id: this.currentUser.id, name: "Me", email: this.currentUser.email });
+    this.member = this.currentUser;
     this.timeLogService.getTeamMembers(this.member.id).subscribe({
       next: (response: { data: any; }) => {
         this.timeLogService.getusers(response.data).subscribe({
           next: result => {
             result.data.forEach(user => {
-              if (user.email != this.currentProfile.email) {
+              if (user.email != this.currentUser.email) {
                 this.members.push({ id: user.id, name: `${user.firstName} ${user.lastName}`, email: user.email });
               }
             })
@@ -118,7 +84,6 @@ export class ProductivityReportComponent implements OnInit {
   }
 
   minutesToTime(input) {
-    debugger;
     const minutes = Math.floor(Math.abs(input));
     const hours = Math.floor(minutes / 60);
     const seconds = minutes % 60;
@@ -148,13 +113,9 @@ export class ProductivityReportComponent implements OnInit {
 
   getProductivityPerMem() {
     let searchProductivity = new Productivity();
-    let fromdate = new Date(this.fromDate);
-    fromdate.setUTCHours(0, 0, 0, 0);
-    searchProductivity.fromdate = fromdate.toUTCString();
-    let toDate = new Date(this.toDate);
-    toDate.setUTCHours(23, 59, 59, 999);
-    searchProductivity.todate = toDate.toUTCString();
-    searchProductivity.users = (this.role.toLowerCase() === "admin" || null) ? this.selectedUser : [];
+    searchProductivity.fromdate = this.utilsService.convertToUTC(this.convertToDateWithStartTime(this.fromDate));
+    searchProductivity.todate = this.utilsService.convertToLocal(this.convertToDateWithEndTime(this.toDate));
+    searchProductivity.users = (this.selectedUser.length==0) ? [this.currentUser.id] : this.selectedUser;
     this.reportService.getProductivity(searchProductivity).subscribe(result => {
       this.productivity = result.data;
     });
@@ -162,33 +123,12 @@ export class ProductivityReportComponent implements OnInit {
 
   getProductivityAllMem() {
     let searchProductivity = new Productivity();
-    let fromdate = new Date(this.fromDate);
-    fromdate.setUTCHours(0, 0, 0, 0);
-    let toDate = new Date(this.toDate);
-    toDate.setUTCHours(23, 59, 59, 999);
-
-
-    searchProductivity.fromdate = fromdate.toUTCString();
-    searchProductivity.todate = toDate.toUTCString();
-    searchProductivity.users = this.currentProfile.id
-    // searchProductivity.fromdate = new Date(this.fromDate);
-    // searchProductivity.todate = new Date(this.toDate);
+    searchProductivity.fromdate = this.utilsService.convertToUTC(this.convertToDateWithStartTime(this.fromDate));
+    searchProductivity.todate = this.utilsService.convertToLocal(this.convertToDateWithEndTime(this.toDate));
     searchProductivity.users = [];
     this.reportService.getProductivity(searchProductivity).subscribe(result => {
       this.productivity = result.data;
     });
-  }
-
-  getCurrentUser() {
-    return this.commonservice.getCurrentUser().pipe(
-      switchMap((profile: any) => {
-        this.currentProfile = profile;
-        return new Observable((observer) => {
-          observer.next();
-          observer.complete();
-        });
-      })
-    );
   }
 
   getProductiveProgressValue(productivity:any[]) {
@@ -209,5 +149,22 @@ export class ProductivityReportComponent implements OnInit {
 
   getNonProductiveProgressValueAllMember(productivity) {
     return this.convertToPercentage(productivity.total, productivity.timeSpentNonProductive);
+  }
+
+  private convertToDateWithStartTime(dateString: string): Date {
+    const date = new Date(dateString);
+    date.setUTCHours(0, 0, 0, 0);
+    return date;
+  }
+
+  private convertToDateWithEndTime(dateString: string): Date {
+    const date = new Date(dateString);
+    date.setUTCHours(23, 59, 59, 999);
+    return date;
+  }
+
+  selectedUsersChanged($event: string): void {
+    this.selectedUser = $event;
+    this.getProductivityPerMem();
   }
 }

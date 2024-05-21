@@ -1,12 +1,11 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ProjectService } from '../../_services/project.service';
-import { DatePipe } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { TimeLogService } from 'src/app/_services/timeLogService';
 import { ExportService } from 'src/app/_services/export.service';
 import { SearchAppUsagesRequest } from '../model/productivityModel';
 import { ReportsService } from '../../_services/reports.service';
 import { CommonService } from 'src/app/common/common.service';
+import { UtilsService } from 'src/app/_services/utils.service';
 
 @Component({
   selector: 'app-app-and-website-usage',
@@ -24,27 +23,22 @@ export class AppAndWebsiteUsageComponent implements OnInit {
   toDate: any;
   totalHours: number = 0;
   searchText = '';
-  currentDate: Date = new Date();
-  diff: any = this.currentDate.getDate() - this.currentDate.getDay() + (this.currentDate.getDay() === 0 ? -6 : 1);
-  lastday: any = this.currentDate.getDate() - (this.currentDate.getDay() - 1) + 6;
   appUsagesList: any = [];
   p: number = 1;
   selectedUser: any = [];
   selectedProject: any = [];
-  roleName = localStorage.getItem('adminView');
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   role: any;
   constructor(
-    private projectService: ProjectService,
-    private datepipe: DatePipe
-    , private http: HttpClient
+    private projectService: ProjectService
     , private timeLogService: TimeLogService
     , private exportService: ExportService
-    , private reportService: ReportsService,
-    private commonservice: CommonService
+    , private reportService: ReportsService
+    , private commonservice: CommonService
+    , private utilsService:UtilsService
   ) {
-    this.fromDate = this.datepipe.transform(new Date(this.currentDate.setDate(this.diff)), 'yyyy-MM-dd');
-    this.toDate = this.datepipe.transform(new Date(this.currentDate.setDate(this.lastday)), 'yyyy-MM-dd');
+    this.fromDate = new Date().toISOString().slice(0, 10);
+    this.toDate = new Date().toISOString().slice(0, 10);
   }
 
   ngOnInit(): void {
@@ -103,15 +97,10 @@ export class AppAndWebsiteUsageComponent implements OnInit {
 
   getApplicationData() {
     let searchAppUsagesRequest = new SearchAppUsagesRequest();
-    let fromdate = new Date(this.fromDate);
-    fromdate.setUTCHours(0, 0, 0, 0);
-    searchAppUsagesRequest.fromdate = fromdate.toUTCString();
-    let toDate = new Date(this.toDate);
-    toDate.setUTCHours(23, 59, 59, 999);
-    searchAppUsagesRequest.todate = toDate.toUTCString();
+    searchAppUsagesRequest.fromdate = this.utilsService.convertToUTC(this.convertToDateWithStartTime(this.fromDate));
+    searchAppUsagesRequest.todate = this.utilsService.convertToLocal(this.convertToDateWithEndTime(this.toDate));
     searchAppUsagesRequest.projects = this.selectedProject;
-    searchAppUsagesRequest.users = (this.role.toLowerCase() === "admin" || null) ? this.selectedUser : [this.currentUser.id];  
-  
+    searchAppUsagesRequest.users = (this.selectedUser.length==0) ? [this.currentUser.id] : this.selectedUser;
     this.reportService.getAppUsagesReport(searchAppUsagesRequest).subscribe(result => {
       this.appUsagesList = result.data;
       this.totalHours = result.data.reduce((sum, elem) => parseInt(sum) + parseInt(elem.timeSpent), 0);
@@ -149,4 +138,15 @@ export class AppAndWebsiteUsageComponent implements OnInit {
     this.exportService.exportToPdf('ApplicationUsages', this.content.nativeElement)
   }
 
+  private convertToDateWithStartTime(dateString: string): Date {
+    const date = new Date(dateString);
+    date.setUTCHours(0, 0, 0, 0);
+    return date;
+  }
+
+  private convertToDateWithEndTime(dateString: string): Date {
+    const date = new Date(dateString);
+    date.setUTCHours(23, 59, 59, 999);
+    return date;
+  }
 }

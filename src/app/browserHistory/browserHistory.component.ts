@@ -30,7 +30,6 @@ export class BrowserHistoryComponent implements OnInit {
   getBrowserHistory(): void {
     const fromDate = this.utilsService.convertToUTC(this.convertToDateWithStartTime(this.startDate));
     const toDate = this.utilsService.convertToLocal(this.convertToDateWithEndTime(this.endDate));
-
     this.appWebsiteService.getBrowserHistory(fromDate, toDate, this.userId)
       .pipe(first())
       .subscribe(
@@ -62,13 +61,13 @@ export class BrowserHistoryComponent implements OnInit {
 
   private convertToDateWithStartTime(dateString: string): Date {
     const date = new Date(dateString);
-    date.setHours(0, 0, 0, 0);
+    date.setUTCHours(0, 0, 0, 0);
     return date;
   }
 
   private convertToDateWithEndTime(dateString: string): Date {
     const date = new Date(dateString);
-    date.setHours(23, 59, 59, 999);
+    date.setUTCHours(23, 59, 59, 999);
     return date;
   }
   onStartDateChange(newDate: string): void {
