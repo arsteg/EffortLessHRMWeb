@@ -14,10 +14,6 @@ import { AdvanceTemplatesComponent } from './settings/advance-templates/advance-
 import { ExpenseGeneralSettingsComponent } from './settings/expense-general-settings/expense-general-settings.component';
 import { ExpenseCategorySettingsComponent } from './settings/expense-category-settings/expense-category-settings.component';
 import { RouterModule } from '@angular/router';
-import { MatButtonModule } from '@angular/material/button';
-import {MatInputModule} from '@angular/material/input';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
 import { ExpenseReportsComponent } from './expense-reports/expense-reports.component';
 import { PendingComponent } from './expense-reports/pending/pending.component';
 import { ApprovedComponent } from './expense-reports/approved/approved.component';

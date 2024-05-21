@@ -7,7 +7,7 @@
                 <div class="d-flex align-items-center">
                     <span class="bi bi-search searchIcon"></span>
 
-                    <input class="form-control search" type="text" placeholder="Search..." name="searchText"
+                    <input class="form-control search" type="text"  placeholder="Search..." [(ngModel)]="searchText" name="searchText"
                         aria-label="default input example">
 
                     <button mat-raised-button (click)="open(addModal); changeMode == 'Add'; isEdit= false;"
@@ -24,18 +24,22 @@
             <table class="px-4">
                 <thead>
                     <tr>
-                        <th class="ps-2">Template Name</th>
-                        <th>Number of Employees Covered</th>
+                        <th class="ps-2">Employee</th>
+                        <th>OnDuty Template</th>
+                        <th>Effective From</th>
+                        <th>Primary Approver</th>
+                        <th>Secondary Approver</th>
                         <th scope="col" class="text-center">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr
                         *ngFor="let template of templateAssigments| search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
-                        <td>{{template?.name}}</td>
-                        <td>
-                            <pre>fetch from template assignment</pre>
-                        </td>
+                       <td>{{getUser(template?.user)}}</td>
+                        <td>{{getOnDutyTemplateName(template?.onDutyTemplate)}}</td>
+                        <td>{{template?.effectiveFrom | date: 'mediumDate'}}</td>
+                        <td>{{getUser(template?.primaryApprovar)}}</td>
+                        <td>{{getUser(template?.secondaryApprovar)}}</td>
                         <td class="text-center">
                             <button class="actions" mat-mini-fab title="Update" (click)="changeMode=='Update';
                                 open(addModal);
@@ -50,7 +54,6 @@
                                 <i class="bi bi-trash"></i>
                             </button>
                         </td>
-
                     </tr>
                 </tbody>
             </table>
@@ -73,6 +76,55 @@
 
     <form action="" [formGroup]="onDutyTempAssignForm" (ngSubmit)="onSubmission()">
 
+        <div class="form-group">
+            <label for="">Select An Employee for Template Assignment</label>
+            <select id="member" name="member" class="form-control" [attr.disabled]="changeMode === 'Update'"
+                formControlName="user" class="form-select form-select-sm" aria-label="form-select-sm example">
+                <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                    {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
+                </option>
+            </select>
+        </div>
+
+        <div class="form-group my-2">
+            <label for="">Select Template</label>
+            <select id="attendanceTemplate" class="form-control" [attr.disabled]="isEdit === true"
+                formControlName="onDutyTemplate" name="attendanceTemp" class="form-select form-select-sm"
+                aria-label=".form-select-sm example" (change)="onTemplateSelectionChange($event)">
+                <option *ngFor="let template of templates" [value]="template?._id">
+                    {{template?.name}}
+                </option>
+            </select>
+        </div>
+
+
+        <div class="form-group my-2">
+            <label for="">Select an Effective Date</label>
+            <div class=" col-12 form-group mb-3">
+                <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
+                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="effectiveFrom" />
+            </div>
+        </div>
+
+        <div class="form-group my-2">
+            <label for="">Choose Primary Approver</label>
+            <select id="member" name="primary" class="form-control" formControlName="primaryApprovar"
+                class="form-select form-select-sm" aria-label=".form-select-sm example">
+                <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                    {{assignee?.firstName | titlecase}} {{assignee?.lastName | titlecase}}
+                </option>
+            </select>
+        </div>
+
+        <div class="form-group my-2">
+            <label for="">Choose Secondary Approver</label>
+            <select id="member" name="secondary" class="form-control" formControlName="secondaryApprovar"
+                class="form-select form-select-sm" aria-label="form-select-sm example">
+                <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                    {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
+                </option>
+            </select>
+        </div>
 
 
         <div class="d-flex justify-content-between mt-2">

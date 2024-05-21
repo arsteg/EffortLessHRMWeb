@@ -23,6 +23,11 @@ export class OnDutyTemplateAssignmentComponent {
   selectedTemplateId: string;
   users: any[];
   templateAssigments: any;
+  allAssignee: any[];
+  templateById: any;
+  templates: any;
+  bsValue = new Date();
+
 
   constructor(
     private attendanceService: AttendanceService,
@@ -31,7 +36,8 @@ export class OnDutyTemplateAssignmentComponent {
     private exportService: ExportService,
     private toast: ToastrService,
     private commonService: CommonService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    
   ) {
     this.onDutyTempAssignForm = this.fb.group({
       user: [''],
@@ -44,7 +50,19 @@ export class OnDutyTemplateAssignmentComponent {
 
   ngOnInit() {
     this.getOnDutyTemplatesAssignment();
-    this.getAllUsers();
+    this.getOnDutyTemplates();
+    this.commonService.populateUsers().subscribe(result => {
+      this.allAssignee = result && result.data && result.data.data;
+    });
+  }
+
+  getUser(employeeId: string) {
+    const matchingUser = this.allAssignee?.find(user => user._id === employeeId);
+    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'N/A';
+  }
+  getOnDutyTemplateName(templateId: string) {
+    const template = this.templates?.find(temp => temp._id === templateId);
+    return template ? template.name : '';
   }
 
   getOnDutyTemplatesAssignment() {
@@ -53,7 +71,13 @@ export class OnDutyTemplateAssignmentComponent {
     })
   }
 
-  onSubmission() { }
+  getOnDutyTemplates() {
+    this.attendanceService.getOnDutyTemplate().subscribe((res: any) => {
+      this.templates = res.data;
+    })
+  }
+
+ 
 
   closeModal() {
     this.modalService.dismissAll();
@@ -76,10 +100,18 @@ export class OnDutyTemplateAssignmentComponent {
     });
   }
 
-  setFormValues(data) { }
+  setFormValues(data) {
+    this.onDutyTempAssignForm.patchValue({
+      user: data.user,
+      onDutyTemplate: data.onDutyTemplate,
+      effectiveFrom: data.effectiveFrom,
+      primaryApprovar: data.primaryApprovar,
+      secondaryApprovar: data.secondaryApprovar
+    })
+  }
 
   deleteTemplate(id: string) {
-    this.attendanceService.deleteOnDutyTemplate(id).subscribe((res: any) => {
+    this.attendanceService.deleteOnDutyAssignmentTemplate(id).subscribe((res: any) => {
       this.getOnDutyTemplatesAssignment();
       this.toast.success('Successfully Deleted!!!', 'OnDuty Template Assignment');
     },
@@ -103,28 +135,81 @@ export class OnDutyTemplateAssignmentComponent {
   }
   exportToCsv() {
     const dataToExport = this.templateAssigments.map((data) => ({
-      name: data.name,
-      isCommentMandatory: data.isCommentMandatory,
-      canSubmitForMultipleDays: data.canSubmitForMultipleDays,
-      ApprovalLevel: data.ApprovalLevel,
-      FirstApproverCommentsMandatoryforApproval: data.FirstApproverCommentsMandatoryforApproval,
-      SecondApproverCommentsMandatoryforApproval: data.SecondApproverCommentsMandatoryforApproval,
-      FirstApproverCommentsMandatoryforRejection: data.FirstApproverCommentsMandatoryforRejection,
-      SecondApproverCommentsMandatoryforRejection: data.SecondApproverCommentsMandatoryforRejection,
-      IntitiateDutyRequestBy: data.IntitiateDutyRequestBy,
-      ApprovarType: data.ApprovarType,
-      FirstLevelApprovar: this.getUser(data.FirstLevelApprovar),
-      SecondLevelApprovar: this.getUser(data.SecondLevelApprovar)
+      user: this.getUser(data.user),
+      onDutyTemplate: this.getOnDutyTemplateName(data.onDutyTemplate),
+      effectiveFrom: data.effectiveFrom,
+      primaryApprovar: this.getUser(data.primaryApprovar),
+      secondaryApprovar: this.getUser(data.secondaryApprovar)
     }));
     this.exportService.exportToCSV('attendance-template-Assignment', 'attendance-template-assignment', dataToExport);
   }
-  getAllUsers() {
-    this.commonService.populateUsers().subscribe((res: any) => {
-      this.users = res.data.data;
-    })
+
+  onTemplateSelectionChange(event: any) {
+    const selectedTemplateId = event.target.value;
+
+    this.attendanceService.getOnDutyTemplateById(selectedTemplateId).subscribe((res: any) => {
+      this.templateById = res.data;
+
+      if (this.templateById.ApprovarType === 'template-wise') {
+        if (this.templateById.ApprovalLevel === '1') {
+          this.onDutyTempAssignForm.patchValue({
+            primaryApprovar: this.templateById.FirstLevelApprovar,
+            secondaryApprovar: null
+          });
+          this.onDutyTempAssignForm.get('primaryApprovar').disable();
+
+        } else if (this.templateById.ApprovalLevel === '2') {
+          this.onDutyTempAssignForm.patchValue({
+            primaryApprovar: this.templateById.FirstLevelApprovar,
+            secondaryApprovar: this.templateById.SecondLevelApprovar
+          });
+          console.log(this.onDutyTempAssignForm.value)
+        }
+        this.onDutyTempAssignForm.get('primaryApprovar').disable();
+        this.onDutyTempAssignForm.get('secondaryApprovar').disable();
+      } else if (this.templateById.ApprovarType === 'employee-wise') {
+        this.onDutyTempAssignForm.patchValue({
+          primaryApprovar: null,
+          secondaryApprovar: null
+        });
+
+        this.onDutyTempAssignForm.get('primaryApprovar').enable();
+        this.onDutyTempAssignForm.get('secondaryApprovar').enable();
+      }
+    });
   }
-  getUser(employeeId: string) {
-    const matchingUser = this.users?.find(user => user._id === employeeId);
-    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'N/A';
+
+  onSubmission() {
+    this.onDutyTempAssignForm.get('primaryApprovar').enable();
+    this.onDutyTempAssignForm.get('secondaryApprovar').enable();
+    let payload ={
+      user: this.onDutyTempAssignForm.value.user,
+      onDutyTemplate: this.onDutyTempAssignForm.value.onDutyTemplate,
+      effectiveFrom: this.onDutyTempAssignForm.value.effectiveFrom,
+      primaryApprovar: this.onDutyTempAssignForm.value.primaryApprovar,
+      secondaryApprovar: this.onDutyTempAssignForm.value.secondaryApprovar
+    }
+    if (this.templateById.ApprovarType === 'template-wise') {
+      this.onDutyTempAssignForm.get('primaryApprovar').disable();
+      this.onDutyTempAssignForm.get('secondaryApprovar').disable();
+    }
+
+    console.log(payload)
+    if (!this.isEdit) {
+      console.log(payload);
+      this.attendanceService.addOnDutyAssignmentTemplate(payload).subscribe((res: any) => {
+        this.getOnDutyTemplatesAssignment();
+        this.toast.success('OnDuty Template Assigned', 'Successfully');
+        this.onDutyTempAssignForm.reset();
+      })
+    }
+    else {
+      this.attendanceService.updateOnDutyAssignmentTemplate(this.selectedTemplateId, payload).subscribe((res: any) => {
+        this.getOnDutyTemplatesAssignment();
+        this.toast.success('OnDuty Template Assignment Updated', 'Successfully');
+        this.onDutyTempAssignForm.reset();
+      })
+    }
   }
+
 }

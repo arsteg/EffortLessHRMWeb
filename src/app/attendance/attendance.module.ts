@@ -17,6 +17,7 @@ import { AttendanceTemplateAssignmentComponent } from './attendance/attendance-t
 import { OvertimeComponent } from './attendance/overtime/overtime.component';
 import { OnDutyTemplatesComponent } from './attendance/on-duty-templates/on-duty-templates.component';
 import { OnDutyTemplateAssignmentComponent } from './attendance/on-duty-template-assignment/on-duty-template-assignment.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,9 @@ import { OnDutyTemplateAssignmentComponent } from './attendance/on-duty-template
     CommonComponentsModule,
     SharedModule,
     RouterOutlet,
-    GoogleMapsModule
+    GoogleMapsModule,
+    FormsModule,
+    ReactiveFormsModule,
     // AgmCoreModule.forRoot({
     //   apiKey: 'AIzaSyDcVHb7z2aA1VGUL5mtDZtplf3EMVMX4q8'
     // })

@@ -223,6 +223,11 @@ export class AttendanceService {
     return response;
   }
 
+  getOnDutyTemplateById(id: string):  Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/on-duty-templates/${id}`, this.httpOptions);
+    return response;
+  }
+
   // On-duty template assignment
 
   addOnDutyAssignmentTemplate(userOnDutyTemp: any): Observable<response<any>> {

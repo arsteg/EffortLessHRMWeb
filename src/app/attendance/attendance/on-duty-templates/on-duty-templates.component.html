@@ -7,7 +7,7 @@
                 <div class="d-flex align-items-center">
                     <span class="bi bi-search searchIcon"></span>
 
-                    <input class="form-control search" type="text" placeholder="Search..." name="searchText"
+                    <input class="form-control search" type="text" placeholder="Search..."  [(ngModel)]="searchText" name="searchText"
                         aria-label="default input example">
 
                     <button mat-raised-button (click)="open(addModal); changeMode == 'Add'; isEdit= false;"
