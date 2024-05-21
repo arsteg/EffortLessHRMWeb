@@ -18,6 +18,9 @@ import { OvertimeComponent } from './attendance/overtime/overtime.component';
 import { OnDutyTemplatesComponent } from './attendance/on-duty-templates/on-duty-templates.component';
 import { OnDutyTemplateAssignmentComponent } from './attendance/on-duty-template-assignment/on-duty-template-assignment.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ShiftComponent } from './attendance/shift/shift.component';
+import { ShiftAssignmentsComponent } from './attendance/shift-assignments/shift-assignments.component';
+import { ColorChromeModule } from 'ngx-color/chrome'
 
 @NgModule({
   declarations: [
@@ -31,7 +34,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     AttendanceTemplateAssignmentComponent,
     OvertimeComponent,
     OnDutyTemplatesComponent,
-    OnDutyTemplateAssignmentComponent
+    OnDutyTemplateAssignmentComponent,
+    ShiftComponent,
+    ShiftAssignmentsComponent
   ],
   imports: [
     MatRadioModule,
@@ -43,6 +48,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     GoogleMapsModule,
     FormsModule,
     ReactiveFormsModule,
+    ColorChromeModule,
     // AgmCoreModule.forRoot({
     //   apiKey: 'AIzaSyDcVHb7z2aA1VGUL5mtDZtplf3EMVMX4q8'
     // })

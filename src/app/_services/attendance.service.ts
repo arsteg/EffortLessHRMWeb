@@ -249,4 +249,26 @@ export class AttendanceService {
     var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/user-on-duty-templates`, this.httpOptions);
     return response;
   }
+
+  // Shift
+  addShift(shift: any): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/shifts`, shift, this.httpOptions);
+    return response;
+  }
+
+  updateShift(id: string, shift: any): Observable<response<any>> {
+    var response = this.http.put<response<any>>(`${environment.apiUrlDotNet}/attendance/shifts/${id}`, shift, this.httpOptions);
+    return response;
+  }
+
+  deleteShift(id: string): Observable<response<any>> {
+    var response = this.http.delete<response<any>>(`${environment.apiUrlDotNet}/attendance/shifts/${id}`, this.httpOptions);
+    return response;
+  }
+
+  getShift(): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/shifts`, this.httpOptions);
+    return response;
+  }
+
 }
