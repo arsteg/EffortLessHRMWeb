@@ -14,6 +14,9 @@ import { LocationComponent } from './attendance/attendance-template/location/loc
 import { RouterOutlet } from '@angular/router';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { AttendanceTemplateAssignmentComponent } from './attendance/attendance-template-assignment/attendance-template-assignment.component';
+import { OvertimeComponent } from './attendance/overtime/overtime.component';
+import { OnDutyTemplatesComponent } from './attendance/on-duty-templates/on-duty-templates.component';
+import { OnDutyTemplateAssignmentComponent } from './attendance/on-duty-template-assignment/on-duty-template-assignment.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +27,10 @@ import { AttendanceTemplateAssignmentComponent } from './attendance/attendance-t
     AttendanceTemplateComponent,
     GeneralTemplateSettingsComponent,
     LocationComponent,
-    AttendanceTemplateAssignmentComponent
+    AttendanceTemplateAssignmentComponent,
+    OvertimeComponent,
+    OnDutyTemplatesComponent,
+    OnDutyTemplateAssignmentComponent
   ],
   imports: [
     MatRadioModule,

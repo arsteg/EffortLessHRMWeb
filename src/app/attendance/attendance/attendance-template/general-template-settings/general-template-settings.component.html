@@ -16,23 +16,9 @@
         </div>
     </div>
 
-    <!-- <div class="form-group my-3">
-        <label for="">Please select the mode of capturing attendance <span class="text-danger">*</span></label>
-        <select name="" id="" formControlName="attendanceMode">
-            <option value="web_check-in">Web Check-In</option>
-            <option value="manually-upload">Manually Upload</option>
-            <option value="mobile">Mobile</option>
-            <option value="biometric">Biometric</option>
-        </select>
-        <div *ngIf="addTemplateForm.get('attendanceMode').invalid && addTemplateForm.get('attendanceMode').touched"
-            class="text-danger">
-            Attendance Mode is required.
-        </div>
-    </div> -->
-    <pre>{{capturingAttendance}}</pre>
-    <mat-form-field appearance="outline" class=" w-100 my-3 mx-1">
+    <mat-form-field appearance="outline" class=" w-100 mx-1">
         <mat-label>Please select the mode of capturing attendance</mat-label>
-        <mat-select multiple  [(values)]="capturingAttendance">
+        <mat-select multiple  formControlName="attendanceMode">
             <mat-option value="web_check-in">Web Check-In</mat-option>
             <mat-option value="manually-upload">Manually Upload</mat-option>
             <mat-option value="mobile">Mobile</mat-option>
@@ -40,7 +26,7 @@
         </mat-select>
     </mat-form-field>
 
-    <div class="form-group my-3">
+    <div class="form-group mb-3">
         <label for="">How do you want to handle single missing check in or check out in attendance process <span
                 class="text-danger">*</span></label>
         <select name="" id="" formControlName="missingCheckInCheckoutHandlingMode">

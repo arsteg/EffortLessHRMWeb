@@ -21,6 +21,7 @@ export class AttendanceService {
 
   selectedTemplate: any = new BehaviorSubject('');
 
+
   constructor(private http: HttpClient) {
   }
 
@@ -126,4 +127,121 @@ export class AttendanceService {
     return response;
   }
 
+  // Rounding Records
+
+  addRounding(rounding: any): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/rounding-information`, rounding, this.httpOptions);
+    return response;
+  }
+
+  updateRounding(id: string, rounding: any): Observable<response<any>> {
+    var response = this.http.put<response<any>>(`${environment.apiUrlDotNet}/attendance/rounding-information/${id}`, rounding, this.httpOptions);
+    return response;
+  }
+
+  getRounding(): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/rounding-information`, this.httpOptions);
+    return response;
+  }
+
+  getRoundingById(id: string): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/rounding-information/${id}`, this.httpOptions);
+    return response;
+  }
+
+  deleteRounding(id: string): Observable<response<any>> {
+    var response = this.http.delete<response<any>>(`${environment.apiUrlDotNet}/attendance/rounding-information/${id}`, this.httpOptions);
+    return response;
+  }
+
+  // Over time
+
+  addOverTime(overtime: any): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/overtime-information`, overtime, this.httpOptions);
+    return response;
+  }
+
+  updateOverTime(id: string, overtime: any): Observable<response<any>> {
+    var response = this.http.put<response<any>>(`${environment.apiUrlDotNet}/attendance/overtime-information/${id}`, overtime, this.httpOptions);
+    return response;
+  }
+
+  getOverTime(): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/overtime-information`, this.httpOptions);
+    return response;
+  }
+
+  deleteOverTime(id: string): Observable<response<any>> {
+    var response = this.http.delete<response<any>>(`${environment.apiUrlDotNet}/attendance/overtime-information/${id}`, this.httpOptions);
+    return response;
+  }
+  // attendance regularizations
+
+  addRegularizations(regularization: any): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/regularizations`, regularization, this.httpOptions);
+    return response;
+  }
+
+  updateRegularizations(id: string, regularization: any): Observable<response<any>> {
+    var response = this.http.put<response<any>>(`${environment.apiUrlDotNet}/attendance/regularizations/${id}`, regularization, this.httpOptions);
+    return response;
+  }
+
+  deleteRegularizations(id: string): Observable<response<any>> {
+    var response = this.http.delete<response<any>>(`${environment.apiUrlDotNet}/attendance/regularizations/${id}`, this.httpOptions);
+    return response;
+  }
+
+  getRegularizations(): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/regularizations-by-company`, this.httpOptions);
+    return response;
+  }
+
+  getRegularizationByTemplateId(tempId: string): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/regularization-by-template/${tempId}`, this.httpOptions);
+    return response;
+  }
+  // OnDuty Templates
+
+  addOnDutyTemplate(onDutyTemp: any): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/on-duty-templates`, onDutyTemp, this.httpOptions);
+    return response;
+  }
+
+  updateOnDutyTemplate(id: string, onDutyTemp: any): Observable<response<any>> {
+    var response = this.http.put<response<any>>(`${environment.apiUrlDotNet}/attendance/on-duty-templates/${id}`, onDutyTemp, this.httpOptions);
+    return response;
+  }
+
+  deleteOnDutyTemplate(id: string): Observable<response<any>> {
+    var response = this.http.delete<response<any>>(`${environment.apiUrlDotNet}/attendance/on-duty-templates/${id}`, this.httpOptions);
+    return response;
+  }
+
+  getOnDutyTemplate(): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/on-duty-templates`, this.httpOptions);
+    return response;
+  }
+
+  // On-duty template assignment
+
+  addOnDutyAssignmentTemplate(userOnDutyTemp: any): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/user-on-duty-templates`, userOnDutyTemp, this.httpOptions);
+    return response;
+  }
+
+  updateOnDutyAssignmentTemplate(id: string, userOnDutyTemp: any): Observable<response<any>> {
+    var response = this.http.put<response<any>>(`${environment.apiUrlDotNet}/attendance/user-on-duty-templates/${id}`, userOnDutyTemp, this.httpOptions);
+    return response;
+  }
+
+  deleteOnDutyAssignmentTemplate(id: string): Observable<response<any>> {
+    var response = this.http.delete<response<any>>(`${environment.apiUrlDotNet}/attendance/user-on-duty-templates/${id}`, this.httpOptions);
+    return response;
+  }
+
+  getOnDutyAssignmentTemplate(): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/user-on-duty-templates`, this.httpOptions);
+    return response;
+  }
 }

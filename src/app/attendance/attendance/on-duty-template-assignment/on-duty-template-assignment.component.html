@@ -3,15 +3,15 @@
         <div class="py-0 px-0 bg-white tableContainer">
 
             <div class="d-flex justify-content-between align-items-center mb-2 px-3">
-                <p class="mb-0">({{attendanceTemplate?.length}}) Records Found</p>
+                <p class="mb-0">({{templateAssigments?.length}}) Records Found</p>
                 <div class="d-flex align-items-center">
                     <span class="bi bi-search searchIcon"></span>
 
                     <input class="form-control search" type="text" placeholder="Search..." name="searchText"
                         aria-label="default input example">
 
-                    <button mat-raised-button (click)="open(addModal); isEdit= false; step=1"
-                        class="addBtn rounded-pill mx-3">Add
+                    <button mat-raised-button (click)="open(addModal); changeMode == 'Add'; isEdit= false;"
+                        class="addBtn rounded-pill mx-3">Assign
                         Template</button>
 
                     <button class="submenuTab active  rounded-pill" (click)="exportToCsv()"> <i
@@ -24,22 +24,20 @@
             <table class="px-4">
                 <thead>
                     <tr>
-                        <th class="ps-2">Attendance Template</th>
+                        <th class="ps-2">Template Name</th>
                         <th>Number of Employees Covered</th>
                         <th scope="col" class="text-center">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr
-                        *ngFor="let template of attendanceTemplate| search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
-                        <td>{{template?.label}}</td>
-
-
+                        *ngFor="let template of templateAssigments| search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
+                        <td>{{template?.name}}</td>
                         <td>
                             <pre>fetch from template assignment</pre>
                         </td>
                         <td class="text-center">
-                            <button class="actions" mat-mini-fab title="Update" (click)="changeMode='Next';
+                            <button class="actions" mat-mini-fab title="Update" (click)="changeMode=='Update';
                                 open(addModal);
                                 isEdit= true;
                                 selectedTemplateId=template._id;
@@ -47,12 +45,10 @@
                                 <i class="bi bi-pencil-fill"></i>
                             </button>
 
-                            <button class="actions" mat-mini-fab title="Delete"
-                                aria-label="Example icon button with a menu icon"
-                                (click)="deleteDialog(template._id)">
+                            <button class="actions ms-2" mat-mini-fab title="Delete"
+                                aria-label="Example icon button with a menu icon" (click)="deleteDialog(template._id)">
                                 <i class="bi bi-trash"></i>
                             </button>
-
                         </td>
 
                     </tr>
@@ -65,13 +61,24 @@
 </div>
 
 <ng-template #addModal let-modal>
+    <div class="modal-header border-bottom mb-2 pt-0">
+        <div>
+            <h1 class="modal-title text-muted mb-0">{{isEdit == true ? 'Update': 'Add'}} OnDuty Template Assignment
+            </h1>
+        </div>
+        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
+                (click)="closeModal()"></button>
+        </div>
+    </div>
+
+    <form action="" [formGroup]="onDutyTempAssignForm" (ngSubmit)="onSubmission()">
 
 
-    <app-general-template-settings (changeStep)="onChangeStep($event)" [changeMode]="changeMode" *ngIf="step == 1"
-        (close)="onClose($event)" [isEdit]="isEdit"
-        (expenseTemplateReportRefreshed)="refreshExpenseReportTable()"></app-general-template-settings>
 
-    <app-attendance-regularization *ngIf="step == 2" [changeMode]="changeMode" (close)="onClose($event)"
-        (changeStep)="onChangeStep($event)" [isEdit]="isEdit"
-        (expenseTemplateReportRefreshed)="refreshExpenseReportTable()"></app-attendance-regularization>
+        <div class="d-flex justify-content-between mt-2">
+            <button type="reset" mat-raised-button>Cancel</button>
+            <button type="submit" mat-raised-button class="addBtn">{{isEdit == true ? 'Update': 'Add'}}</button>
+        </div>
+    </form>
+
 </ng-template>

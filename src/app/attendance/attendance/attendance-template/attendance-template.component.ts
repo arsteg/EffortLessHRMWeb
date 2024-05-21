@@ -8,6 +8,8 @@ import { AttendanceRegularizationComponent } from './attendance-regularization/a
 import { ExportService } from 'src/app/_services/export.service';
 import { AttendanceService } from 'src/app/_services/attendance.service';
 import { GeneralTemplateSettingsComponent } from './general-template-settings/general-template-settings.component';
+import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-attendance-template',
@@ -23,17 +25,17 @@ export class AttendanceTemplateComponent {
   attendanceTemplate: any;
   selectedTemplateId: any;
   changeMode: 'Add' | 'Next' = 'Add';
-
+  regularizations: any;
 
   constructor(private modalService: NgbModal,
-    private auth: AuthenticationService,
     private dialog: MatDialog,
-    private commonService: CommonService,
     private exportService: ExportService,
+    private toast: ToastrService,
     private attendanceService: AttendanceService) { }
 
     ngOnInit(){
       this.getAttendanceTemplate();
+      // this.getRegularizations();
     }
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
@@ -55,6 +57,7 @@ export class AttendanceTemplateComponent {
 
   onChangeStep(event) {
     this.step = event;
+    console.log(this.step)
   }
 
   onChangeMode(event) {
@@ -92,4 +95,34 @@ export class AttendanceTemplateComponent {
     this.attendanceService.selectedTemplate.next(templateData);
   }
   
+  deleteTemplate(id: string) {
+    this.attendanceService.deleteAttendanceTemplate(id).subscribe((res: any) => {
+      this.getAttendanceTemplate();
+      this.toast.success('Successfully Deleted!!!', 'Attendance Template')
+    },
+      (err) => {
+        this.toast.error('This Attendance Template Can not be deleted'
+          , 'Error')
+      })
+  }
+
+  deleteDialog(id: string): void {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '400px',
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'delete') {
+        this.deleteTemplate(id);
+      }
+      err => {
+        this.toast.error('Can not be Deleted', 'Error!')
+      }
+    });
+  }
+
+  getRegularizations() {
+    this.attendanceService.getRegularizations().subscribe((res: any) => {
+      this.regularizations = res.data;
+    })
+  }
 }

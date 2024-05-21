@@ -36,7 +36,7 @@ export class GeneralTemplateSettingsComponent {
   ) {
     this.addTemplateForm = this.fb.group({
       label: ['', Validators.required],
-      attendanceMode: ['', Validators.required],
+      attendanceMode: [[], Validators.required],
       missingCheckInCheckoutHandlingMode: ['', Validators.required],
       missingCheckinCheckoutAttendanceProcessMode: ['', Validators.required],
       minimumHoursRequiredPerWeek: [40, Validators.required],
@@ -180,17 +180,17 @@ export class GeneralTemplateSettingsComponent {
     this.addTemplateForm.value.daysForAlternateWeekOffRoutine = this.selectedAlternateWeekDays;
     this.addTemplateForm.value.weklyofHalfDay = this.selectedHalfDays;
     this.addTemplateForm.value.weeklyOfDays = this.selectedWeeklyDays;
-    this.addTemplateForm.value.attendanceMode = this.capturingAttendance;
     console.log(this.addTemplateForm.value);
-    console.log(this.capturingAttendance)
+    // console.log(this.capturingAttendance)
     if (this.isEdit == false) {
-      // this.attendanceService.addAttendanceTemplate(this.addTemplateForm.value).subscribe((res: any) => {
-      //   this.toast.success('Attendance Template created', 'Successfully!!!');
-      //   this.changeStep.emit(2);
-      // },
-      //   (err) => {
-      //     this.toast.error('Attendance Template can not be created', 'Error!!!')
-      //   })
+      this.attendanceService.addAttendanceTemplate(this.addTemplateForm.value).subscribe((res: any) => {
+        this.attendanceService.selectedTemplate.next(res.data);
+        this.toast.success('Attendance Template created', 'Successfully!!!');
+        this.changeStep.emit(2);
+      },
+        (err) => {
+          this.toast.error('Attendance Template can not be created', 'Error!!!')
+        })
     }
 
     else {
