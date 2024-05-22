@@ -12,7 +12,7 @@
 
                     <button mat-raised-button (click)="open(addModal); clearForm(); changeMode == 'Add'; isEdit= false;"
                         class="addBtn rounded-pill mx-3">Add
-                        </button>
+                    </button>
 
                     <button class="submenuTab active  rounded-pill" (click)="exportToCsv()"> <i
                             class="bi bi-download downloadBtn pe-2"></i>
@@ -75,12 +75,16 @@
     <form action="" [formGroup]="shiftForm" (ngSubmit)="onSubmission()">
 
         <div class="form-group">
-            <label for="">Please assign a shift name</label>
+            <label for="">Please assign a shift name <span class="text-danger">*</span></label>
             <input type="text" formControlName="name" class="form-control">
+
+            <div *ngIf="shiftForm.get('name').invalid && shiftForm.get('name').touched" class="text-danger error">
+                Please Add Name for shift!
+            </div>
         </div>
 
         <div class="form-group my-2">
-            <label for="">Dashboard Color Code</label>
+            <label for="">Dashboard Color Code <span class="text-danger">*</span></label>
             <div>
                 <button (click)="toggleColorPicker()" type="button" class="rounded py-2 me-2 addBtn">Choose
                     Color</button>
@@ -91,11 +95,14 @@
             </div>
             <input class="form-control mt-2" type="text" formControlName="dashboardColor"
                 placeholder="Please Add a color code">
-
+            <div *ngIf="shiftForm.get('dashboardColor').invalid && shiftForm.get('dashboardColor').touched"
+                class="text-danger error">
+                Please Select Dashboard Color!
+            </div>
         </div>
 
         <div class="form-group my-2">
-            <label for="">Is this shift an Off-Shift?</label>
+            <label for="">Is this shift an Off-Shift? <span class="text-danger">*</span></label>
             <div class="d-flex">
                 <div class="form-check">
                     <input class="form-check-input" type="radio" formControlName="isOffShift" id="isOffShift" required
@@ -114,6 +121,10 @@
                     </label>
                 </div>
             </div>
+            <div *ngIf="shiftForm.get('isOffShift').invalid && shiftForm.get('isOffShift').touched"
+                class="text-danger error">
+                Please Select Shift!
+            </div>
         </div>
 
         <div *ngIf="shiftForm.get('isOffShift').value == true">
@@ -128,11 +139,11 @@
 
             <div class="form-group my-2">
                 <label for="">What is the shift start timing?</label>
-                <div class="d-flex justify-content-between">
-                    <div> <label for="startTimeHour">Hour</label>
+                <div class="row">
+                    <div class="col-md-6"> <label for="startTimeHour">Hour</label>
                         <input type="number" id="startTimeHour" formControlName="startTimeHour" class="form-control">
                     </div>
-                    <div> <label for="startTimeMinutes">Minutes</label>
+                    <div class="col-md-6"> <label for="startTimeMinutes">Minutes</label>
                         <input type="number" id="startTimeMinutes" formControlName="startTimeMinutes"
                             class="form-control">
                     </div>
@@ -141,11 +152,11 @@
 
             <div class="form-group my-2">
                 <label for="">What is the shift end timing?</label>
-                <div class="d-flex justify-content-between">
-                    <div> <label for="endTimeHour">Hour</label>
+                <div class="row">
+                    <div class="col-md-6"> <label for="endTimeHour">Hour</label>
                         <input type="number" id="endTimeHour" formControlName="endTimeHour" class="form-control">
                     </div>
-                    <div> <label for="endTimeMinutes">Minutes</label>
+                    <div class="col-md-6"> <label for="endTimeMinutes">Minutes</label>
                         <input type="number" formControlName="endTimeMinutes" id="endTimeMinutes" class="form-control">
                     </div>
                 </div>
@@ -318,7 +329,7 @@
                 *ngIf="shiftForm.get('shiftType').value == 'fixed duration' || shiftForm.get('shiftType').value == 'flexi'">
                 <label for="">What are the minimum hours per day that an employee should work to get credit for a Full
                     Day?</label>
-                <div class="d-flex">
+                <div class="d-flex justify-content-between">
                     <div> <label for="minhoursPerDayToGetCreditForFullDayHour">Hour</label>
                         <input type="number" id="minhoursPerDayToGetCreditForFullDayHour"
                             formControlName="minhoursPerDayToGetCreditForFullDayHour" class="form-control">
@@ -356,11 +367,11 @@
                 <div class="form-group my-2">
                     <label for="">What are the minimum hours per day that an employee should work to get credit for a
                         Half Day?</label>
-                    <div class="d-flex justify-content-between">
-                        <div> <label for="">Hour</label>
+                    <div class="row">
+                        <div class="col-md-6"> <label for="">Hour</label>
                             <input type="number" formControlName="" class="form-control">
                         </div>
-                        <div> <label for="">Minutes</label>
+                        <div class="col-md-6"> <label for="">Minutes</label>
                             <input type="number" formControlName="" class="form-control">
                         </div>
                     </div>

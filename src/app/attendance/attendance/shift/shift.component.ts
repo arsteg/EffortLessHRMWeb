@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
@@ -22,7 +22,7 @@ export class ShiftComponent {
   p: number = 1;
   selectedShift: any;
   shiftForm: FormGroup;
-  showColorPicker: boolean = false; 
+  showColorPicker: boolean = false;
   color: string = '#fff';
 
   constructor(
@@ -35,9 +35,9 @@ export class ShiftComponent {
     private fb: FormBuilder,
   ) {
     this.shiftForm = this.fb.group({
-      name: [''],
-      dashboardColor: ['#fff'],
-      isOffShift: [true],
+      name: ['', Validators.required],
+      dashboardColor: ['#fff', Validators.required],
+      isOffShift: [true, Validators.required],
       shiftType: [''],
       startTimeHour: [''],
       startTimeMinutes: [''],
@@ -69,7 +69,7 @@ export class ShiftComponent {
     this.getShift();
   }
 
-  clearForm(){
+  clearForm() {
     this.shiftForm.reset();
   }
   closeModal() {
@@ -130,14 +130,14 @@ export class ShiftComponent {
       enterNumberOfDaysForEarlyGoing: data.enterNumberOfDaysForEarlyGoing,
       graceTimeLimitForEarlyGoing: data.graceTimeLimitForEarlyGoing
     })
-   }
+  }
 
   getShift() {
     this.attendanceService.getShift().subscribe((res: any) => {
       this.shift = res.data;
     })
   }
- 
+
   toggleColorPicker() {
     this.showColorPicker = true;
   }
@@ -149,32 +149,47 @@ export class ShiftComponent {
     });
   }
 
-  closeColorPicker(){
+  closeColorPicker() {
     this.showColorPicker = false
   }
 
   onSubmission() {
-    console.log(this.shiftForm.value);
-    this.shiftForm.value.dashboardColor = this.color;
-    console.log(this.shiftForm.value)
-    if (!this.isEdit) {
-      this.attendanceService.addShift(this.shiftForm.value).subscribe((res: any) => {
-        this.getShift();
-        this.toast.success('Shift Created', 'Successfully');
-        this.shiftForm.reset();
-      })
-    }
-    else {
-      console.log('update call');
-      this.attendanceService.updateShift(this.selectedShift, this.shiftForm.value).subscribe((res: any) => {
-        this.changeMode = 'Add';
-        this.getShift();
-        this.toast.success('Shift Updated', 'Successfully');
-        this.shiftForm.reset();
-      })
+    this.shiftForm.patchValue({ dashboardColor: this.color });
+    const payload = this.fb.group({
+      name: this.shiftForm.value.name,
+      dashboardColor: this.shiftForm.value.dashboardColor,
+      isOffShift: this.shiftForm.value.isOffShift,
+    })
+    if (this.shiftForm.valid) {
+      if (!this.isEdit) {
+        this.attendanceService.addShift(this.shiftForm.value).subscribe((res: any) => {
+          this.getShift();
+          this.toast.success('Shift Created', 'Successfully');
+          this.shiftForm.reset();
+        })
+      }
+      else {
+        this.attendanceService.updateShift(this.selectedShift, this.shiftForm.value).subscribe((res: any) => {
+          this.changeMode = 'Add';
+          this.getShift();
+          this.toast.success('Shift Updated', 'Successfully');
+          this.shiftForm.reset();
+        })
+      }
+    } else {
+      this.toast.error('Please fill the required Fields')
+      this.markFormGroupTouched(payload);
     }
   }
-
+  markFormGroupTouched(formGroup: FormGroup) {
+    Object.values(formGroup.controls).forEach(control => {
+      if (control instanceof FormGroup) {
+        this.markFormGroupTouched(control);
+      } else {
+        control.markAsTouched();
+      }
+    });
+  }
   deleteTemplate(id: string) {
     this.attendanceService.deleteShift(id).subscribe((res: any) => {
       this.getShift();
