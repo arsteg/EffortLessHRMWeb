@@ -263,7 +263,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <form class="pt-2" [formGroup]="form" (ngSubmit)="addProject(form.value)">
+                    <form class="pt-2" [formGroup]="form" (ngSubmit)="addProject()">
                         <div class="row d-flex justify-content-center">
                             <div class="col-md-12">
                                 <div class="row">
@@ -271,7 +271,7 @@
                                         <label for="projectName" class="text-start">Project Name</label>
 
                                         <input type="text" name="projectName" id="projectName"
-                                            formControlName="projectName" class="form-control input pt-0" ngModel
+                                            formControlName="projectName" class="form-control input pt-0" 
                                             required>
                                         <div *ngIf="form.controls['projectName'].invalid && form.controls['projectName'].touched"
                                             class="alert alert-danger error">
@@ -288,8 +288,8 @@
                                                 style="font-size: 12px">(In
                                                 hours)</span></label>
 
-                                        <input type="text" name="estimatedTime" id="estimatedTime"
-                                            class="form-control input pt-0" formControlName="estimatedTime" ngModel
+                                        <input type="number" name="estimatedTime" id="estimatedTime"
+                                            class="form-control input pt-0" formControlName="estimatedTime" 
                                             required>
                                         <div *ngIf="form.controls['estimatedTime'].invalid && form.controls['estimatedTime'].touched"
                                             class="alert alert-danger error">
@@ -301,16 +301,18 @@
                                 </div>
 
 
-                                <div class="row mt-3">
+                                <div class="row mt-2">
                                     <div class="col-md-6">
                                         <label for="startDate" class="text-start">Start Date</label>
 
                                         <div class="row">
-                                            <div class="col-12 form-group mb-3">
-                                                <input placeholder="YYYY-MM-DD" class="form-control"
+                                            <div class="col-12 form-group ">
+                                                <!-- <input placeholder="YYYY-MM-DD" class="form-control"
                                                     #datepickerYMD="bsDatepicker" bsDatepicker
                                                     [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
-                                                    formControlName="startDate" ngModel required>
+                                                    formControlName="startDate"  required> -->
+                                                    <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
+                                                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="startDate" />
                                             </div>
                                         </div>
                                         <div *ngIf="form.controls['startDate'].invalid && form.controls['startDate'].touched"
@@ -326,11 +328,13 @@
                                         <label for="endDate" class="text-start">End Date</label>
 
                                         <div class="row">
-                                            <div class="col-12 form-group mb-3">
-                                                <input placeholder="YYYY-MM-DD" class="form-control"
+                                            <div class="col-12 form-group">
+                                                <!-- <input placeholder="YYYY-MM-DD" class="form-control"
                                                     #datepickerYMD="bsDatepicker" bsDatepicker
                                                     [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
-                                                    formControlName="endDate" ngModel required>
+                                                    formControlName="endDate"  required> -->
+                                                    <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
+                                                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="endDate" />
                                             </div>
                                         </div>
                                         <div *ngIf="form.controls['endDate'].invalid && form.controls['endDate'].touched"
@@ -343,11 +347,11 @@
                                 </div>
 
 
-                                <div class="row mt-3">
+                                <div class="row mt-2">
                                     <label for="notes" class="text-start">Notes</label>
                                 </div>
                                 <input type="text" name="notes" id="notes" class="form-control input  pt-0"
-                                    formControlName="notes" ngModel required>
+                                    formControlName="notes"  required>
                                 <div *ngIf="form.controls['notes'].invalid && form.controls['notes'].touched"
                                     class="alert alert-danger error">
                                     <div *ngIf="form.controls['notes'].errors['required']">

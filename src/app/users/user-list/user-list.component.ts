@@ -98,7 +98,7 @@ export class UserListComponent implements OnInit {
     if (this.addForm.valid) {
 
       this.UserService.addUser(addForm).subscribe(result => {
-        const users = result['data'].user;
+        const users = result['data'].User;
         this.usersList.push(users);
         this.toastrrr.success('New User Added', 'Successfully Added!');
       },

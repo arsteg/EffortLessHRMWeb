@@ -39,7 +39,8 @@ export class ProjectListComponent implements OnInit {
     dateYMD: new FormControl(new Date()),
 
   });
-  public sortOrder: string = ''; // 'asc' or 'desc'
+  public sortOrder: string = ''; 
+  bsValue = new Date();
 
 
   constructor(
@@ -50,9 +51,9 @@ export class ProjectListComponent implements OnInit {
   ) {
     this.form = this.fb.group({
       projectName: ['', Validators.required],
-      startDate: ['this.formDate.dateYMD', [Validators.required, this.dateValidator]],
-      endDate: ['this.formDate.dateYMD', Validators.required],
-      estimatedTime: ['', Validators.required],
+      startDate: ['', Validators.required],
+      endDate: ['', Validators.required],
+      estimatedTime: [0, Validators.required],
       notes: ['', Validators.required]
     });
 
@@ -107,97 +108,99 @@ export class ProjectListComponent implements OnInit {
   onMemberSelectionChange(user) {
     this.getProjectsByUser();
   }
-  addProject(form) {
-    if (form.valid) {
-      this.projectService.addproject(form).subscribe((result: any) => {
-        const projects = result && result.data && result.data.newProject;
-        this.projectList.push(projects);
-        this.toastr.success('New Project', 'Successfully Added!');
-        this.form.reset();
-      },
-        err => {
-          this.toastr.error('Can not be Added', 'ERROR!')
-        })
+  addProject() {
+    if(this.form.valid){
+    this.projectService.addproject(this.form.value).subscribe((result: any) => {
+      const projects = result && result.data && result.data.newProject;
+      this.projectList.push(projects);
+      this.toastr.success('New Project', 'Successfully Added!');
+      this.form.reset();
+    },
+      err => {
+        this.toastr.error('Can not be Added', 'ERROR!')
+      })
     }
     else {
       this.markFormGroupTouched(this.form);
+  }
+}
+
+markFormGroupTouched(formGroup: FormGroup) {
+  Object.values(formGroup.controls).forEach(control => {
+    control.markAsTouched();
+
+    if (control instanceof FormGroup) {
+      this.markFormGroupTouched(control);
     }
-  }
+  });
+}
+deleteProject() {
+  this.projectService.deleteproject(this.selectedProject._id)
+    .subscribe(response => {
+      this.ngOnInit();
+      this.toastr.success('Successfully Deleted!')
+    },
+      err => {
+        this.toastr.error('Can not be Deleted', 'ERROR!')
+      })
+}
 
-  markFormGroupTouched(formGroup: FormGroup) {
-    Object.values(formGroup.controls).forEach(control => {
-      control.markAsTouched();
-
-      if (control instanceof FormGroup) {
-        this.markFormGroupTouched(control);
-      }
-    });
-  }
-  deleteProject() {
-    this.projectService.deleteproject(this.selectedProject._id)
-      .subscribe(response => {
-        this.ngOnInit();
-        this.toastr.success('Successfully Deleted!')
-      },
-        err => {
-          this.toastr.error('Can not be Deleted', 'ERROR!')
-        })
-  }
-
-  updateProject(updateForm) {
-   if(updateForm.valid) {this.projectService.updateproject(this.selectedProject._id, updateForm).subscribe(response => {
+updateProject(updateForm) {
+  if (updateForm.valid) {
+    this.projectService.updateproject(this.selectedProject._id, updateForm).subscribe(response => {
       this.ngOnInit();
       this.toastr.success('Existing Project Updated', 'Successfully Updated!')
     },
       err => {
         this.toastr.error('Can not be Updated', 'ERROR!')
-      })}
-      else {
-        this.markFormGroupTouched(this.form);
-      }
-  }
-
-
-  addUserToProject(addUserForm) {
-    let selectedUsers = this.addUserForm.get('userName').value;
-    let newUsers = selectedUsers.filter(id => !this.projectUserList.find(user => user.user.id === id));
-    let project_Users = newUsers.map((id) => { return { user: id } });
-    if (project_Users.length > 0) {
-      this.projectService.addUserToProject(this.selectedProject.id, project_Users).subscribe(result => {
-        this.ngOnInit();
-        this.toastr.success('New Member Added', 'Successfully Added!')
-      },
-        err => {
-          this.toastr.error('Member Already Exist', 'ERROR!')
-        })
-    } else {
-      this.toastr.error('All selected users already exist', 'ERROR!')
-    }
-  }
-
-  getProjectUser(id) {
-    this.projectService.getprojectUser(id).subscribe(response => {
-      this.projectUserList = response && response.data && response.data['projectUserList'];
-      if (this.projectUserList) {
-        this.projectUserList = this.projectUserList.filter(user => user.user != null);
-        this.selectedUser = this.projectUserList.map(user => user.user.id);
-      }
-    });
-  }
-
-  onModelChange(projectUserList) {
-    let index = this.projectUserList.findIndex(user => user.id === projectUserList.id);
-    console.log(projectUserList.id)
-    this.projectService.deleteprojectUser(projectUserList.id).subscribe(response => {
-      this.projectUserList.splice(index, 1);
-      this.ngOnInit();
-      this.toastr.success(projectUserList.user.firstName.toUpperCase(), 'Successfully Removed!')
-    },
-      err => {
-        this.toastr.error(projectUserList.user.firstName.toUpperCase(), 'ERROR! Can not be Removed')
       })
   }
-  clearForm(){
-    this.form.reset();
+  else {
+    this.markFormGroupTouched(this.form);
   }
+}
+
+
+addUserToProject(addUserForm) {
+  let selectedUsers = this.addUserForm.get('userName').value;
+  let newUsers = selectedUsers.filter(id => !this.projectUserList.find(user => user.user.id === id));
+  let project_Users = newUsers.map((id) => { return { user: id } });
+  if (project_Users.length > 0) {
+    this.projectService.addUserToProject(this.selectedProject.id, project_Users).subscribe(result => {
+      this.ngOnInit();
+      this.toastr.success('New Member Added', 'Successfully Added!')
+    },
+      err => {
+        this.toastr.error('Member Already Exist', 'ERROR!')
+      })
+  } else {
+    this.toastr.error('All selected users already exist', 'ERROR!')
+  }
+}
+
+getProjectUser(id) {
+  this.projectService.getprojectUser(id).subscribe(response => {
+    this.projectUserList = response && response.data && response.data['projectUserList'];
+    if (this.projectUserList) {
+      this.projectUserList = this.projectUserList.filter(user => user.user != null);
+      this.selectedUser = this.projectUserList.map(user => user.user.id);
+    }
+  });
+}
+
+onModelChange(projectUserList) {
+  let index = this.projectUserList.findIndex(user => user.id === projectUserList.id);
+  console.log(projectUserList.id)
+  this.projectService.deleteprojectUser(projectUserList.id).subscribe(response => {
+    this.projectUserList.splice(index, 1);
+    this.ngOnInit();
+    this.toastr.success(projectUserList.user.firstName.toUpperCase(), 'Successfully Removed!')
+  },
+    err => {
+      this.toastr.error(projectUserList.user.firstName.toUpperCase(), 'ERROR! Can not be Removed')
+    })
+}
+clearForm(){
+  this.form.reset();
+}
 }
