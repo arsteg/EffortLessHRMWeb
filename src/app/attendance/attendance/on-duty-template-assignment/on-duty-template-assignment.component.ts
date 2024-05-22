@@ -141,7 +141,7 @@ export class OnDutyTemplateAssignmentComponent {
       primaryApprovar: this.getUser(data.primaryApprovar),
       secondaryApprovar: this.getUser(data.secondaryApprovar)
     }));
-    this.exportService.exportToCSV('attendance-template-Assignment', 'attendance-template-assignment', dataToExport);
+    this.exportService.exportToCSV('onDuty-template-Assignment', 'onDuty-template-assignment', dataToExport);
   }
 
   onTemplateSelectionChange(event: any) {

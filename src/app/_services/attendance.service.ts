@@ -270,5 +270,25 @@ export class AttendanceService {
     var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/shifts`, this.httpOptions);
     return response;
   }
+// Shift Assignment
+addShiftAssignment(shiftAssignment: any): Observable<response<any>> {
+  var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/shift-template-assignments`, shiftAssignment, this.httpOptions);
+  return response;
+}
+
+updateShiftAssignment(id: string, shiftAssignment: any): Observable<response<any>> {
+  var response = this.http.put<response<any>>(`${environment.apiUrlDotNet}/attendance/shift-template-assignments/${id}`, shiftAssignment, this.httpOptions);
+  return response;
+}
+
+deleteShiftAssignment(id: string): Observable<response<any>> {
+  var response = this.http.delete<response<any>>(`${environment.apiUrlDotNet}/attendance/shift-template-assignments/${id}`, this.httpOptions);
+  return response;
+}
+
+getShiftAssignment(): Observable<response<any>> {
+  var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/shift-template-assignments`, this.httpOptions);
+  return response;
+}
 
 }
