@@ -92,11 +92,11 @@ export class ProductivityReportComponent implements OnInit {
 
 
   convertToPercentage(total, consumed) {
-    return Math.floor((consumed * 100) / total);
+    return Math.round((consumed * 100) / total);
   }
 
   averageCount(totalTime, totalCount) {
-    return Math.floor(totalCount / totalTime);
+    return Math.round(totalCount / totalTime);
   }
   
   millisecondsToTime(milliseconds) {
@@ -108,7 +108,7 @@ export class ProductivityReportComponent implements OnInit {
   }
 
   millisecondsToMinutes(milliseconds: number): number {
-    return milliseconds / 60000;
+    return Math.round(milliseconds / 60000);
   }
 
   getProductivityPerMem() {
@@ -140,7 +140,7 @@ export class ProductivityReportComponent implements OnInit {
   }
 
   getActiveProgress(productivity:any[]) {
-    return productivity?.length ? this.convertToPercentage(productivity[0]?.total, productivity[0]?.TimeSpent) : 0;
+    return productivity?.length ? this.convertToPercentage(productivity[0]?.total, (productivity[0]?.TimeSpent)) : 0;
   }
 
   getProductiveProgressValueAllMember(data:any) {
