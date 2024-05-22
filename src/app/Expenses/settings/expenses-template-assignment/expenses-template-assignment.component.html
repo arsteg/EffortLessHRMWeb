@@ -9,7 +9,7 @@
                     <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
                         name="searchText" aria-label="default input example">
                     <button mat-raised-button class="addBtn rounded-pill ms-3"
-                        (click)="changeMode='Add'; open(addModal); clearSelection()">Add New</button>
+                        (click)="changeMode='Add'; open(addModal); isEdit == false;clearSelection()">Add New</button>
                 </div>
             </div>
 
@@ -52,8 +52,11 @@
                         <td>{{templateAssignment?.effectiveDate | date:'mediumDate'}}</td>
                         <td class="">
                             <button class="actions" mat-mini-fab title="Update" (click)="changeMode='Update';
-                               editTemplateAssignment(templateAssignment, i); selectedTemplateAssignmentId = templateAssignment;
-                                open(addModal); " aria-label="Example icon button with a menu icon">
+                               setFormValues(templateAssignment);
+                               selectedTemplateAssignmentId = templateAssignment;
+                                open(addModal); 
+                                isEdit == true
+                                " aria-label="Example icon button with a menu icon">
                                 <i class="bi bi-pencil-fill"></i>
                             </button>
                             <button class="actions ms-2" title="Delete" mat-mini-fab
@@ -85,7 +88,7 @@
     <form [formGroup]="templateAssignmentForm" (ngSubmit)="addOrUpdateAssignment()">
         <div>
             <label for="member"> Select User for Expense Template</label>
-            <select id="member" name="member" class="form-control" [attr.disabled]="changeMode === 'Update'"
+            <select id="member" name="member" class="form-control" [attr.disabled]="isEdit === true"
                 formControlName="user" class="form-select form-select-sm" aria-label=".form-select-sm example">
                 <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
                     {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
@@ -98,15 +101,37 @@
             <label for="expenseTemplate">Please Choose Expense Template</label>
 
             <select id="expenseTemplate" class="form-control" formControlName="expenseTemplate" name="expense"
-                [attr.disabled]="changeMode === 'Update'" class="form-select form-select-sm"
+                [attr.disabled]="changeMode === 'Update'" (change)="onTemplateSelectionChange($event)" class="form-select form-select-sm"
                 aria-label=".form-select-sm example">
                 <option *ngFor="let template of templates" [value]="template?._id">
                     {{template?.policyLabel}}
                 </option>
             </select>
         </div>
+        <div *ngIf="templateById?.approvalType === 'employee-wise'">
 
-        <div class="mt-2">
+            <div class="form-group my-2">
+                <label for="">Choose Primary Approver</label>
+                <select id="member" name="primary" class="form-control" formControlName="primaryApprover"
+                    class="form-select form-select-sm" aria-label=".form-select-sm example">
+                    <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                        {{assignee?.firstName | titlecase}} {{assignee?.lastName | titlecase}}
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-group my-2">
+                <label for="">Choose Secondary Approver</label>
+                <select id="member" name="secondary" class="form-control" formControlName="secondaryApprover"
+                    class="form-select form-select-sm" aria-label="form-select-sm example">
+                    <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                        {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="mt-2" *ngIf="templateById?.approvalType === 'template-wise' && templateById?.approvalLevel === '1'">
             <label for="">Select Primary Approver of Expense Template</label>
             <select id="member" name="member" class="form-control" formControlName="primaryApprover"
                 class="form-select form-select-sm" aria-label=".form-select-sm example">
@@ -117,7 +142,28 @@
 
 
         </div>
-        <div class="mt-2">
+        <div *ngIf="templateById?.approvalType === 'template-wise' && templateById?.approvalLevel === '2'">
+            <div class="form-group my-2">
+                <label for="">Choose Primary Approver</label>
+                <select id="member" name="primary" [disabled] class="form-control" formControlName="primaryApprover"
+                    class="form-select form-select-sm" aria-label=".form-select-sm example">
+                    <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                        {{assignee?.firstName | titlecase}} {{assignee?.lastName | titlecase}}
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-group my-2">
+                <label for="">Choose Secondary Approver</label>
+                <select id="member" name="secondary" [disabled] class="form-control" formControlName="secondaryApprover"
+                    class="form-select form-select-sm" aria-label="form-select-sm example">
+                    <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                        {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
+                    </option>
+                </select>
+            </div>
+        </div>
+        <!-- <div class="mt-2">
             <label for="">Select Secondary Approver of Expense Template</label>
             <select id="member" name="member" class="form-control" formControlName="secondaryApprover"
                 class="form-select form-select-sm" aria-label=".form-select-sm example">
@@ -127,7 +173,7 @@
             </select>
 
 
-        </div>
+        </div> -->
 
         <div class="mt-2">
             <label for="">Select Effective From Date</label>
