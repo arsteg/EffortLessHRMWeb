@@ -12,14 +12,15 @@
 
             <label for="firstApprovalEmployee">Select Category<span class="text-danger">*</span></label>
 
-            <select name="expenseCategory" *ngIf="this.expenseService.isEdit.getValue() == true" id="firstApprovalEmployee" formControlName="expenseCategory" required
-                class="ms-2 form-control">
+            <select name="expenseCategory" *ngIf="this.expenseService.isEdit.getValue() == true"
+                id="firstApprovalEmployee" formControlName="expenseCategory" required class="ms-2 form-control">
                 <option value="">Select Category</option>
                 <option *ngFor="let category of categories" [value]="category._id">{{category?.label}}</option>
             </select>
 
-            <select name="expenseCategory" *ngIf="this.expenseService.isEdit.getValue() == false" id="firstApprovalEmployee" formControlName="expenseCategory" required
-                class="ms-2 form-control" (ngModelChange)="onCategorySelection($event)">
+            <select name="expenseCategory" *ngIf="this.expenseService.isEdit.getValue() == false"
+                id="firstApprovalEmployee" formControlName="expenseCategory" required class="ms-2 form-control"
+                (ngModelChange)="onCategorySelection($event)">
                 <option value="">-Select Category-</option>
                 <option *ngFor="let category of categories" [value]="category._id">{{category?.label}}</option>
             </select>
@@ -57,7 +58,7 @@
                 <input type="number" class="form-control" formControlName="amount" [value]="totalRate" />
             </div>
         </div>
-       
+
         <div formArrayName="expenseReportExpenseFields">
             <div
                 *ngFor="let fieldGroup of expenseReportform.get('expenseReportExpenseFields')['controls']; let i = index">
@@ -73,9 +74,21 @@
                         *ngIf="applicationfields[i].fieldType == 'Textfield'">
                     <input class="w-100" type="number" formControlName="value"
                         *ngIf="applicationfields[i].fieldType == 'Number'">
-                    <input class="w-100" formControlName="value" *ngIf="applicationfields[i].fieldType =='DateRange'"
+                    <div *ngIf="applicationfields[i].fieldType =='DateRange'">
+                        <label for="">From Date</label>
+                        <input class="w-100" formControlName="value" 
+                            type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
+                            [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="value" />
+
+                        <label for="" class="mt-2">To Date</label>
+                        <input class="w-100" formControlName="value"
+                            type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
+                            [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="value" />
+
+                    </div>
+                    <!-- <input class="w-100" formControlName="value" *ngIf="applicationfields[i].fieldType =='DateRange'"
                         type="text" class="w-100" placeholder="Select Date Range" class="form-control" bsDaterangepicker
-                        [(ngModel)]="bsRangeValue" [bsConfig]="{ isAnimated: true }" formControlName="value" />
+                        [(ngModel)]="bsRangeValue" [bsConfig]="{ isAnimated: true }" formControlName="value" /> -->
                     <input class="w-100" formControlName="value" *ngIf="applicationfields[i].fieldType == 'Date'"
                         type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
                         [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="value" />

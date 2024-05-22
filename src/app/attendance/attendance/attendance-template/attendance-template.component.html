@@ -33,11 +33,7 @@
                     <tr
                         *ngFor="let template of attendanceTemplate| search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
                         <td>{{template?.label}}</td>
-
-
-                        <td>
-                            <pre>fetch from template assignment</pre>
-                        </td>
+                        <td>{{ templateAssignmentCount[template._id] || 0 }}</td>
                         <td class="text-center">
                             <button class="actions" mat-mini-fab title="Update" (click)="changeMode='Next';
                                 open(addModal);
@@ -47,7 +43,7 @@
                                 <i class="bi bi-pencil-fill"></i>
                             </button>
 
-                            <button class="actions" mat-mini-fab title="Delete"
+                            <button class="actions ms-2" mat-mini-fab title="Delete"
                                 aria-label="Example icon button with a menu icon"
                                 (click)="deleteDialog(template._id)">
                                 <i class="bi bi-trash"></i>

@@ -36,7 +36,7 @@ export class ShiftComponent {
   ) {
     this.shiftForm = this.fb.group({
       name: ['', Validators.required],
-      dashboardColor: ['#fff', Validators.required],
+      dashboardColor: ['', Validators.required],
       isOffShift: [true, Validators.required],
       shiftType: [''],
       startTimeHour: [''],
@@ -61,7 +61,11 @@ export class ShiftComponent {
       maximumTimeLimitForLateComing: [0],
       isEarlyGoingAllowed: [true],
       enterNumberOfDaysForEarlyGoing: [0],
-      graceTimeLimitForEarlyGoing: [0]
+      graceTimeLimitForEarlyGoing: [0],
+      isHalfDayApplicable: [true],
+      minHoursToGetCreditforHalafDay: [0],
+      minMinutesToGetCreditforHalafDay: [0],
+      maxLateComingAllowedMinutesFirstHalfAttendance: [0],
     })
   }
 
@@ -118,7 +122,7 @@ export class ShiftComponent {
       latestDeparture: data.latestDeparture,
       firstHalfDuration: data.firstHalfDuration,
       secondHalfDuration: data.secondHalfDuration,
-      // company: [''],
+      company: data.company,
       isLateComingAllowed: data.isLateComingAllowed,
       noOfDaysLateComing: data.noOfDaysLateComing,
       graceTimeLimitForLateComing: data.graceTimeLimitForLateComing,
@@ -128,7 +132,11 @@ export class ShiftComponent {
       maximumTimeLimitForLateComing: data.maximumTimeLimitForLateComing,
       isEarlyGoingAllowed: data.isEarlyGoingAllowed,
       enterNumberOfDaysForEarlyGoing: data.enterNumberOfDaysForEarlyGoing,
-      graceTimeLimitForEarlyGoing: data.graceTimeLimitForEarlyGoing
+      graceTimeLimitForEarlyGoing: data.graceTimeLimitForEarlyGoing,
+      isHalfDayApplicable: data.isHalfDayApplicable,
+      minHoursToGetCreditforHalafDay: data.minHoursToGetCreditforHalafDay,
+      minMinutesToGetCreditforHalafDay: data.minMinutesToGetCreditforHalafDay,
+      maxLateComingAllowedMinutesFirstHalfAttendance: data.maxLateComingAllowedMinutesFirstHalfAttendance
     })
   }
 
@@ -154,7 +162,7 @@ export class ShiftComponent {
   }
 
   onSubmission() {
-    this.shiftForm.patchValue({ dashboardColor: this.color });
+    // this.shiftForm.patchValue({ dashboardColor: this.color });
     const payload = this.fb.group({
       name: this.shiftForm.value.name,
       dashboardColor: this.shiftForm.value.dashboardColor,

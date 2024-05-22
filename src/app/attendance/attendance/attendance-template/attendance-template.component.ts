@@ -26,6 +26,8 @@ export class AttendanceTemplateComponent {
   selectedTemplateId: any;
   changeMode: 'Add' | 'Next' = 'Add';
   regularizations: any;
+  attendanceAssignment: any;
+  templateAssignmentCount;
 
   constructor(private modalService: NgbModal,
     private dialog: MatDialog,
@@ -33,10 +35,33 @@ export class AttendanceTemplateComponent {
     private toast: ToastrService,
     private attendanceService: AttendanceService) { }
 
-    ngOnInit(){
-      this.getAttendanceTemplate();
-      // this.getRegularizations();
+  ngOnInit() {
+    this.getAttendanceTemplate();
+    this.getAttendanceTemplateAssignment();
+    // this.getRegularizations();
+  }
+  getAttendanceTemplate() {
+    this.attendanceService.getAttendanceTemplate().subscribe((res: any) => {
+      this.attendanceTemplate = res.data;
+      this.updateTemplateAssignmentCount();
+    });
+  }
+
+  getAttendanceTemplateAssignment() {
+    this.attendanceService.getAttendanceAssignment().subscribe((res: any) => {
+      this.attendanceAssignment = res.data;
+      this.updateTemplateAssignmentCount();
+    });
+  }
+
+  updateTemplateAssignmentCount() {
+    if (this.attendanceTemplate?.length > 0 && this.attendanceAssignment?.length > 0) {
+      this.templateAssignmentCount = this.attendanceTemplate.reduce((acc, template) => {
+        const count = this.attendanceAssignment.filter(assignment => assignment.attandanceTemplate === template._id).length;
+        return { ...acc, [template._id]: count };
+      }, {});
     }
+  }
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
@@ -85,16 +110,22 @@ export class AttendanceTemplateComponent {
     this.exportService.exportToCSV('attendance-template', 'attendance-template', dataToExport);
   }
 
-  getAttendanceTemplate() {
-    this.attendanceService.getAttendanceTemplate().subscribe((res: any) => {
-      this.attendanceTemplate = res.data;
-    })
-  }
+  // getAttendanceTemplate() {
+  //   this.attendanceService.getAttendanceTemplate().subscribe((res: any) => {
+  //     this.attendanceTemplate = res.data;
+  //   })
+  // }
+
+  // getAttendanceTemplateAssignment() {
+  //   this.attendanceService.getAttendanceAssignment().subscribe((res: any) => {
+  //     this.attendanceAssignment = res.data;
+  //   })
+  // }
 
   setFormValues(templateData: any) {
     this.attendanceService.selectedTemplate.next(templateData);
   }
-  
+
   deleteTemplate(id: string) {
     this.attendanceService.deleteAttendanceTemplate(id).subscribe((res: any) => {
       this.getAttendanceTemplate();
@@ -125,4 +156,6 @@ export class AttendanceTemplateComponent {
       this.regularizations = res.data;
     })
   }
+
+
 }

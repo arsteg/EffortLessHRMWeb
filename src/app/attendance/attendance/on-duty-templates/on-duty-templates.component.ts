@@ -23,6 +23,8 @@ export class OnDutyTemplatesComponent {
   onDutyTemplate: any;
   onDutyTempForm: FormGroup;
   users: any[];
+  templateAssignmentCount;
+  onDutyTemplateAssignment;
 
   constructor(private modalService: NgbModal,
     private dialog: MatDialog,
@@ -46,12 +48,12 @@ export class OnDutyTemplatesComponent {
       FirstLevelApprovar: [null],
       SecondLevelApprovar: [null]
     });
-
   }
 
   ngOnInit() {
     this.getAllUsers();
     this.getOnDutyTemplates();
+    this.getOnDutyTempAssignment();
   }
   getAllUsers() {
     this.commonService.populateUsers().subscribe((res: any) => {
@@ -101,7 +103,24 @@ export class OnDutyTemplatesComponent {
   getOnDutyTemplates() {
     this.attendanceService.getOnDutyTemplate().subscribe((res: any) => {
       this.onDutyTemplate = res.data;
+      this.updateTemplateAssignmentCount();
     })
+  }
+
+  getOnDutyTempAssignment() {
+    this.attendanceService.getOnDutyAssignmentTemplate().subscribe((res: any) => {
+      this.onDutyTemplateAssignment = res.data;
+      this.updateTemplateAssignmentCount();
+    })
+  }
+
+  updateTemplateAssignmentCount() {
+    if (this.onDutyTemplate?.length > 0 && this.onDutyTemplate?.length > 0) {
+      this.templateAssignmentCount = this.onDutyTemplate.reduce((acc, template) => {
+        const count = this.onDutyTemplateAssignment.filter(assignment => assignment.onDutyTemplate === template._id).length;
+        return { ...acc, [template._id]: count };
+      }, {});
+    }
   }
 
   onSubmission() {

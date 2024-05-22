@@ -161,32 +161,17 @@ export class AttendanceTemplateAssignmentComponent {
       primaryApprover: this.attendanceTemplateAssignmentForm.value.primaryApprover,
       secondaryApprover: this.attendanceTemplateAssignmentForm.value.secondaryApprover
     }
-    this.attendanceService.getAttendanceTemplateById(this.selectedTemplate.attandanceTemplate).subscribe((res: any) => {
-      this.templateById = res.data;
-      if (this.templateById.approversType == 'template-wise' && this.templateById.approvalLevel == '1') {
-        payload.primaryApprover = this.templateById.primaryApprover,
-          payload.secondaryApprover = null
-      }
-      else if (this.templateById.approversType == 'template-wise' && this.templateById.approvalLevel == '2') {
-        payload.primaryApprover = this.templateById.primaryApprover;
-        payload.secondaryApprover = this.templateById.secondaryApprover;
-      }
-      else {
-        payload.secondaryApprover = this.attendanceTemplateAssignmentForm.value.secondaryApprover;
-        payload.primaryApprover = this.attendanceTemplateAssignmentForm.value.secondaryApprover;
-      }
-      this.attendanceService.addAttendanceAssignment(payload).subscribe((res: any) => {
-        this.ngOnInit();
-      });
+    this.attendanceService.addAttendanceAssignment(payload).subscribe((res: any) => {
+      this.getAttendanceAssignments();
+      this.toast.success('Attendance Template Assigned', 'Successfully');
+      this.attendanceTemplateAssignmentForm.reset();
     });
   }
 
   onTemplateSelectionChange(event: any) {
     const selectedTemplateId = event.target.value;
-
     this.attendanceService.getAttendanceTemplateById(selectedTemplateId).subscribe((res: any) => {
       this.templateById = res.data;
-
       if (this.templateById.approversType === 'template-wise') {
         if (this.templateById.approvalLevel === '1') {
           this.attendanceTemplateAssignmentForm.patchValue({

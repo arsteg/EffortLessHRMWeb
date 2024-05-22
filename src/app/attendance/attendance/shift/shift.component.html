@@ -35,8 +35,14 @@
                     <tr
                         *ngFor="let shift of shift| search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
                         <td>{{shift?.name}}</td>
-                        <td>{{shift?.startTimeHour}}:{{shift?.startTimeMinutes}}</td>
-                        <td>{{shift?.endTimeHour}}:{{shift?.endTimeMinutes}}</td>
+                        <td><span
+                                *ngIf="shift?.startTimeHour != null">{{shift?.startTimeHour}}:{{shift?.startTimeMinutes}}</span>
+                            <span *ngIf="shift?.startTimeHour == null">N/A</span>
+                        </td>
+                        <td><span
+                                *ngIf="shift?.endTimeHour != null">{{shift?.endTimeHour}}:{{shift?.endTimeMinutes}}</span>
+                            <span *ngIf="shift?.endTimeHour == null">N/A</span>
+                        </td>
 
                         <td class="text-center">
                             <button class="actions" mat-mini-fab title="Update" (click)="changeMode=='Update';
@@ -346,18 +352,18 @@
                     <label for="">Is half day Applicable?</label>
                     <div class="d-flex">
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" formControlName="" id="checkout" required
-                                value="true">
-                            <label class="form-check-label" for="checkout">
+                            <input class="form-check-input" type="radio" formControlName="isHalfDayApplicable"
+                                id="isHalfDayApplicable" required value="true">
+                            <label class="form-check-label" for="isHalfDayApplicable">
                                 Yes
                             </label>
                         </div>
 
 
                         <div class="form-check ms-3">
-                            <input class="form-check-input" type="radio" formControlName="" id="checkout-No" required
-                                value="false">
-                            <label class="form-check-label" for="checkout-No">
+                            <input class="form-check-input" type="radio" formControlName="isHalfDayApplicable"
+                                id="isHalfDayApplicable-No" required value="false">
+                            <label class="form-check-label" for="isHalfDayApplicable-No">
                                 No
                             </label>
                         </div>
@@ -369,10 +375,11 @@
                         Half Day?</label>
                     <div class="row">
                         <div class="col-md-6"> <label for="">Hour</label>
-                            <input type="number" formControlName="" class="form-control">
+                            <input type="number" formControlName="minHoursToGetCreditforHalafDay" class="form-control">
                         </div>
                         <div class="col-md-6"> <label for="">Minutes</label>
-                            <input type="number" formControlName="" class="form-control">
+                            <input type="number" formControlName="minMinutesToGetCreditforHalafDay"
+                                class="form-control">
                         </div>
                     </div>
                 </div>
@@ -380,7 +387,8 @@
             <!-- if flexi selected -->
             <div class="form-group my-2" *ngIf="shiftForm.get('shiftType').value == 'flexi'">
                 <label for="">Maximum Late Coming Allowed Minutes for First Half Attendance</label>
-                <input type="number" formControlName="" class="form-control">
+                <input type="number" formControlName="maxLateComingAllowedMinutesFirstHalfAttendance"
+                    class="form-control">
             </div>
         </div>
 

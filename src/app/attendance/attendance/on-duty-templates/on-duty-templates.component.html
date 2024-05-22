@@ -33,9 +33,7 @@
                     <tr
                         *ngFor="let template of onDutyTemplate| search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
                         <td>{{template?.name}}</td>
-                        <td>
-                            <pre>fetch from template assignment</pre>
-                        </td>
+                        <td>{{ templateAssignmentCount[template._id] || 0 }}</td>
                         <td class="text-center">
                             <button class="actions" mat-mini-fab title="Update" (click)="changeMode=='Update';
                                 open(addModal);
