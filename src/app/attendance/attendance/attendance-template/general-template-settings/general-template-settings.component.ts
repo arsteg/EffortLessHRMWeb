@@ -197,13 +197,14 @@ export class GeneralTemplateSettingsComponent {
       const templateId = this.attendanceService.selectedTemplate.getValue()._id;
       console.log(templateId);
       this.attendanceService.updateAttendanceTemplate(templateId, this.addTemplateForm.value).subscribe((res: any) => {
+        this.toast.success('Attendance Template Updated', 'Successfully!')
+
         this.changeStep.emit(2);
-      })
+      },
+        err => {
+          this.toast.error('Attendance Template can not be Updated', 'Error!')
+
+        })
     }
-  }
-
-  getTemplateById() {
-
-    this.attendanceService.getAttendanceTemplateById
   }
 }

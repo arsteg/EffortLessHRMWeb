@@ -10,7 +10,6 @@ import { GeneralSettingsComponent } from './attendance/generalSettings/generalSe
 import { AttendanceRegularizationComponent } from './attendance/attendance-template/attendance-regularization/attendance-regularization.component';
 import { AttendanceTemplateComponent } from './attendance/attendance-template/attendance-template.component';
 import { GeneralTemplateSettingsComponent } from './attendance/attendance-template/general-template-settings/general-template-settings.component';
-import { LocationComponent } from './attendance/attendance-template/location/location.component';
 import { RouterOutlet } from '@angular/router';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { AttendanceTemplateAssignmentComponent } from './attendance/attendance-template-assignment/attendance-template-assignment.component';
@@ -30,7 +29,6 @@ import { ColorChromeModule } from 'ngx-color/chrome'
     AttendanceRegularizationComponent,
     AttendanceTemplateComponent,
     GeneralTemplateSettingsComponent,
-    LocationComponent,
     AttendanceTemplateAssignmentComponent,
     OvertimeComponent,
     OnDutyTemplatesComponent,

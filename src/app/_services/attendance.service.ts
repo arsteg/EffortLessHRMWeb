@@ -178,22 +178,22 @@ export class AttendanceService {
   // attendance regularizations
 
   addRegularizations(regularization: any): Observable<response<any>> {
-    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/regularizations`, regularization, this.httpOptions);
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/regularization`, regularization, this.httpOptions);
     return response;
   }
 
   updateRegularizations(id: string, regularization: any): Observable<response<any>> {
-    var response = this.http.put<response<any>>(`${environment.apiUrlDotNet}/attendance/regularizations/${id}`, regularization, this.httpOptions);
+    var response = this.http.put<response<any>>(`${environment.apiUrlDotNet}/attendance/regularization/${id}`, regularization, this.httpOptions);
     return response;
   }
 
   deleteRegularizations(id: string): Observable<response<any>> {
-    var response = this.http.delete<response<any>>(`${environment.apiUrlDotNet}/attendance/regularizations/${id}`, this.httpOptions);
+    var response = this.http.delete<response<any>>(`${environment.apiUrlDotNet}/attendance/regularization/${id}`, this.httpOptions);
     return response;
   }
 
   getRegularizations(): Observable<response<any>> {
-    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/regularizations-by-company`, this.httpOptions);
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/regularization-by-company`, this.httpOptions);
     return response;
   }
 
@@ -288,6 +288,27 @@ deleteShiftAssignment(id: string): Observable<response<any>> {
 
 getShiftAssignment(): Observable<response<any>> {
   var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/shift-template-assignments`, this.httpOptions);
+  return response;
+}
+
+// Map location in attendance template
+addLocation(location: any): Observable<response<any>> {
+  var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/attendanceRegularizationRestrictedLocations`, location, this.httpOptions);
+  return response;
+}
+
+updateLocation(id: string, location: any): Observable<response<any>> {
+  var response = this.http.put<response<any>>(`${environment.apiUrlDotNet}/attendance/attendanceRegularizationRestrictedLocations/${id}`, location, this.httpOptions);
+  return response;
+}
+
+deleteLocation(id: string): Observable<response<any>> {
+  var response = this.http.delete<response<any>>(`${environment.apiUrlDotNet}/attendance/attendanceRegularizationRestrictedLocations/${id}`, this.httpOptions);
+  return response;
+}
+
+getLocation(regularizationID: string): Observable<response<any>> {
+  var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/attendanceRegularizationRestrictedLocations/${regularizationID}`, this.httpOptions);
   return response;
 }
 

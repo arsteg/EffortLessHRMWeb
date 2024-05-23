@@ -3,6 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { AttendanceService } from 'src/app/_services/attendance.service';
+import { ToastrService } from 'ngx-toastr';
+import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-attendance-regularization',
@@ -17,10 +20,19 @@ export class AttendanceRegularizationComponent {
   searchText: string = '';
   @Output() changeStep: any = new EventEmitter();
   regularizations: any;
+  regularizationId: string;
+  location: any;
+  p: number = 1;
+  locationForm: FormGroup;
+  display: any;
+  center: google.maps.LatLngLiteral;
+  zoom = 16;
 
   constructor(private fb: FormBuilder,
     private modalService: NgbModal,
-    private attendanceService: AttendanceService
+    private attendanceService: AttendanceService,
+    private toast: ToastrService,
+    private dialog: MatDialog
   ) {
     this.regularisationForm = this.fb.group({
       canEmpRegularizeOwnAttendance: [''],
@@ -31,14 +43,23 @@ export class AttendanceRegularizationComponent {
       shouldWeeklyEmailNotificationToBeSent: [''],
       whoReceiveWeeklyEmailNotification: this.fb.array([]),
       isRestrictLocationForCheckInCheckOutUsingMobile: [''],
-      restrictLocationDetails: [null],
+      restrictLocationDetails: [],
       howAssignLocationsForEachEmployee: [''],
       enableLocationCaptureFromMobile: [''],
       geoLocationAPIProvider: [''],
       googleAPIKey: [''],
       isFacialFingerprintRecognitionFromMobile: [''],
       attendanceTemplate: ['']
+    });
+
+    this.locationForm = this.fb.group({
+      attendanceRegularization: [this.regularizationId],
+      Location: [''],
+      Latitude: [''],
+      Longitude: [''],
+      Radius: ['']
     })
+
   }
 
   ngOnInit() {
@@ -46,6 +67,8 @@ export class AttendanceRegularizationComponent {
 
     if (this.isEdit) {
       this.getRegularizationByTemplateId();
+      this.getCurrentLocation();
+
     }
   }
 
@@ -96,6 +119,7 @@ export class AttendanceRegularizationComponent {
   }
 
   open(content: any) {
+
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
@@ -133,13 +157,14 @@ export class AttendanceRegularizationComponent {
     const templateId = this.attendanceService.selectedTemplate.getValue()._id;
     this.attendanceService.getRegularizationByTemplateId(templateId).subscribe((res: any) => {
       const data = res.data;
+      this.regularizationId = data._id
       console.log(data);
-  
-      // Clear existing IPDetails form array
+      this.attendanceService.getLocation(this.regularizationId).subscribe((res: any) => {
+        this.location = res.data;
+      })
       const ipDetailsControl = <FormArray>this.regularisationForm.get('IPDetails');
       ipDetailsControl.clear();
-  
-      // Populate IPDetails form array with new data
+
       if (data.IPDetails) {
         data.IPDetails.forEach(ipDetail => {
           ipDetailsControl.push(this.fb.group({
@@ -147,8 +172,6 @@ export class AttendanceRegularizationComponent {
           }));
         });
       }
-  
-      // Populate whoReceiveWeeklyEmailNotification form array with new data
       const whoReceiveWeeklyEmailNotificationControl = <FormArray>this.regularisationForm.get('whoReceiveWeeklyEmailNotification');
       whoReceiveWeeklyEmailNotificationControl.clear();
       if (data.whoReceiveWeeklyEmailNotification) {
@@ -156,7 +179,7 @@ export class AttendanceRegularizationComponent {
           whoReceiveWeeklyEmailNotificationControl.push(new FormControl(notification));
         });
       }
-  
+
       this.regularisationForm.patchValue({
         canEmpRegularizeOwnAttendance: data.canEmpRegularizeOwnAttendance,
         canSupervisorsRegularizeSubordinatesAttendance: data.canSupervisorsRegularizeSubordinatesAttendance,
@@ -172,31 +195,118 @@ export class AttendanceRegularizationComponent {
         isFacialFingerprintRecognitionFromMobile: data.isFacialFingerprintRecognitionFromMobile,
         attendanceTemplate: data.attendanceTemplate
       });
-  
+
       console.log(this.regularisationForm.value);
     });
   }
-  
+
 
 
   onSubmission() {
     const templateId = this.attendanceService.selectedTemplate.getValue()._id;
     this.regularisationForm.value.attendanceTemplate = templateId;
-
+    this.regularisationForm.value.restrictLocationDetails = []
     if (!this.isEdit) {
-      console.log(this.regularisationForm.value)
       this.attendanceService.addRegularizations(this.regularisationForm.value).subscribe((res: any) => {
         this.getRegularizations();
-      });
+        this.toast.success('Attendance Regularization Created', 'Successfully!')
+      },
+        err => {
+          this.toast.error('Attendance Regularization can not be Created', 'Error!')
+
+        });
     }
     else {
       console.log(this.regularisationForm.value);
       this.attendanceService.getRegularizationByTemplateId(templateId).subscribe((res: any) => {
         const data = res.data;
         this.attendanceService.updateRegularizations(data._id, this.regularisationForm.value).subscribe((res: any) => {
-        });
+          this.toast.success('Attendance Regularization Updated', 'Successfully!')
+
+        },
+          err => {
+            this.toast.error('Attendance Regularization can not be updated', 'Error!')
+
+          });
       })
     }
-
   }
+
+  //  map locations
+  deleteTemplate(id: string, index: number) {
+    this.attendanceService.deleteLocation(id).subscribe((res: any) => {
+      this.location.splice(index)
+      this.toast.success('Successfully Deleted!!!', 'Attendance Template')
+    },
+      (err) => {
+        this.toast.error('This Attendance Template Can not be deleted'
+          , 'Error')
+      })
+  }
+
+  deleteDialog(id: string, index: number): void {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '400px',
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'delete') {
+        this.deleteTemplate(id, index);
+      }
+      err => {
+        this.toast.error('Can not be Deleted', 'Error!')
+      }
+    });
+  }
+
+
+
+
+
+  getCurrentLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          this.center = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+          console.log(position)
+        },
+        () => {
+          console.log('Location access denied.');
+          this.center = { lat: 22.2736308, lng: 70.7512555 };
+        }
+      );
+    } else {
+      console.log('Geolocation is not supported by this browser.');
+      this.center = { lat: 22.2736308, lng: 70.7512555 };
+    }
+  }
+
+  moveMap(event: google.maps.MapMouseEvent) {
+    if (event.latLng != null) this.center = (event.latLng.toJSON());
+  }
+
+  move(event: google.maps.MapMouseEvent) {
+    if (event.latLng != null) this.display = event.latLng.toJSON();
+  }
+
+  // closeModal() {
+  //   this.closeMap.emit(true);
+  // }
+
+  onSubmissionMap() {
+    console.log(this.display);
+    this.locationForm.value.Latitude = this.display.lat,
+      this.locationForm.value.Longitude = this.display.lng,
+      this.locationForm.value.attendanceRegularization = this.regularizationId
+    console.log(this.locationForm.value)
+
+    this.attendanceService.addLocation(this.locationForm.value).subscribe((res: any) => {
+      const newLocation = res.data;
+      this.location.push(newLocation);
+    })
+  }
+  
+
 }

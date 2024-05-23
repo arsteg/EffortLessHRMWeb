@@ -116,29 +116,32 @@
 
 
     <div class="form-group"
-    *ngIf="regularisationForm.get('shouldWeeklyEmailNotificationToBeSent').value === 'Dont notify'">
-   <label for="">Who should receive weekly email notification for missing check in/check out?</label>
-   <div class="d-flex">
-       <div class="d-flex">
-           <input type="checkbox" class="form-check-input me-2 checks"
-                  (change)="onCheckboxChange($event)"
-                  [value]="'admin'" [checked]="regularisationForm.get('whoReceiveWeeklyEmailNotification').value.includes('admin')" id="admin"> 
-           <label for="admin">Admin</label>
-       </div>
-       <div class="d-flex mx-2">
-           <input type="checkbox" class="form-check-input me-2 checks"
-                  (change)="onCheckboxChange($event)"
-                  [value]="'supervisors'" [checked]="regularisationForm.get('whoReceiveWeeklyEmailNotification').value.includes('supervisors')" id="supervisors"> 
-           <label for="supervisors">Supervisor</label>
-       </div>
-       <div class="d-flex">
-           <input type="checkbox" class="form-check-input me-2 checks"
-                  (change)="onCheckboxChange($event)"
-                  [value]="'employees'" [checked]="regularisationForm.get('whoReceiveWeeklyEmailNotification').value.includes('employees')" id="employees"> 
-           <label for="employees">Employees</label>
-       </div>
-   </div>
-</div>
+        *ngIf="regularisationForm.get('shouldWeeklyEmailNotificationToBeSent').value === 'Dont notify'">
+        <label for="">Who should receive weekly email notification for missing check in/check out?</label>
+        <div class="d-flex">
+            <div class="d-flex">
+                <input type="checkbox" class="form-check-input me-2 checks" (change)="onCheckboxChange($event)"
+                    [value]="'admin'"
+                    [checked]="regularisationForm.get('whoReceiveWeeklyEmailNotification').value.includes('admin')"
+                    id="admin">
+                <label for="admin">Admin</label>
+            </div>
+            <div class="d-flex mx-2">
+                <input type="checkbox" class="form-check-input me-2 checks" (change)="onCheckboxChange($event)"
+                    [value]="'supervisors'"
+                    [checked]="regularisationForm.get('whoReceiveWeeklyEmailNotification').value.includes('supervisors')"
+                    id="supervisors">
+                <label for="supervisors">Supervisor</label>
+            </div>
+            <div class="d-flex">
+                <input type="checkbox" class="form-check-input me-2 checks" (change)="onCheckboxChange($event)"
+                    [value]="'employees'"
+                    [checked]="regularisationForm.get('whoReceiveWeeklyEmailNotification').value.includes('employees')"
+                    id="employees">
+                <label for="employees">Employees</label>
+            </div>
+        </div>
+    </div>
 
 
     <div class="form-group">
@@ -305,7 +308,7 @@
             <div class="d-flex justify-content-between pb-2">
                 <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
                     name="searchText" aria-label="default input example">
-                <button class="addBtn" mat-raised-button (click)="open(addModal);">Add Location</button>
+                <button class="addBtn" type="button" mat-raised-button (click)="open(addModal);">Add Location</button>
             </div>
             <table>
                 <thead>
@@ -316,25 +319,29 @@
                     <th>Action</th>
                 </thead>
                 <tbody>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>
-                        <button class="actions" mat-mini-fab title="Update"
-                            aria-label="Example icon button with a menu icon">
-                            <i class="bi bi-pencil-fill"></i>
-                        </button>
+                    <tr *ngFor="let location of location | paginate: { itemsPerPage: 5, currentPage: p }, let i = index ">
+                        <td>{{location?.Location}}</td>
+                        <td>{{location?.Longitude}}</td>
+                        <td>{{location?.Latitude}}</td>
+                        <td>{{location?.Radius}}</td>
+                        <td>
+                            <button class="actions" mat-mini-fab title="Update" type="button"
+                                aria-label="Example icon button with a menu icon">
+                                <i class="bi bi-pencil-fill"></i>
+                            </button>
 
-                        <button class="actions" mat-mini-fab title="Delete"
-                            aria-label="Example icon button with a menu icon">
-                            <i class="bi bi-trash"></i>
-                        </button>
+                            <button class="actions ms-2" mat-mini-fab title="Delete" type="button"
+                                aria-label="Example icon button with a menu icon" (click)="deleteDialog(location._id, i)">
+                                <i class="bi bi-trash"></i>
+                            </button>
 
 
-                    </td>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
+            <pagination-controls (pageChange)="p = $event"
+                class="pagination d-flex justify-content-end"></pagination-controls>
         </div>
     </div>
 
@@ -346,5 +353,44 @@
 </form>
 
 <ng-template #addModal let-modal>
-    <app-location (closeMap)="onCloseMap($event)"></app-location>
-</ng-template>
+    <div class="modal-header border-bottom mb-2 pt-0">
+        <div>
+            <h1 class="modal-title text-muted mb-0">Add Location</h1>
+        </div>
+        <div class="">
+            <button type="button" data-bs-dismiss="modal" class="btn-close text-end" (click)="modal.dismiss('Cross click')"></button>
+        </div>
+    </div>
+  
+    <div class="">
+        <form [formGroup]="locationForm" (ngSubmit)="onSubmissionMap()">
+            <google-map height="300px" width="700px" [center]="center" [zoom]="zoom" (mapClick)="moveMap($event)" (mapMousemove)="move($event)"></google-map>
+  
+            <div class="form-group">
+                <label for="">Location Label</label>
+                <input type="text" formControlName="Location">
+            </div>
+  
+            <div class="form-group">
+                <label>Latitude</label>
+                <input type="text" formControlName="Latitude" [value]="display?.lat">
+            </div>
+            <div class="form-group">
+                <label>Longitude</label>
+                <input type="text" formControlName="Longitude" [value]="display?.lng">
+            </div>
+  
+            <div class="form-group">
+                <label for="">Radius</label>
+                <input type="text" formControlName="Radius">
+            </div>
+  
+            <div class="d-flex my-2">
+                <button type="reset" mat-raised-button>Cancel</button>
+                <button type="submit" class="addBtn" mat-raised-button>Submit</button>
+            </div>
+        </form>
+    </div>
+  </ng-template>
+  
+  
