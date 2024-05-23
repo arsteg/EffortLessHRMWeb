@@ -78,12 +78,12 @@
                         <label for="">From Date</label>
                         <input class="w-100" formControlName="value" 
                             type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
-                            [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="value" />
+                            [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="fromDate" />
 
                         <label for="" class="mt-2">To Date</label>
                         <input class="w-100" formControlName="value"
                             type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
-                            [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="value" />
+                            [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="toDate" />
 
                     </div>
                     <!-- <input class="w-100" formControlName="value" *ngIf="applicationfields[i].fieldType =='DateRange'"
