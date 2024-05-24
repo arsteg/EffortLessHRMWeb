@@ -29,7 +29,7 @@ export class BrowserHistoryComponent implements OnInit {
 
   getBrowserHistory(): void {
     const fromDate = this.utilsService.convertToUTC(this.convertToDateWithStartTime(this.startDate));
-    const toDate = this.utilsService.convertToLocal(this.convertToDateWithEndTime(this.endDate));
+    const toDate = this.utilsService.convertToUTC(this.convertToDateWithEndTime(this.endDate));
     this.appWebsiteService.getBrowserHistory(fromDate, toDate, this.userId)
       .pipe(first())
       .subscribe(
