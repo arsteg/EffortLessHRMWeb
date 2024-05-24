@@ -16,7 +16,7 @@
     "@angular/compiler": "^17.1.0",
     "@angular/core": "^17.1.0",
     "@angular/forms": "^17.1.0",
-    "@angular/google-maps": "^17.3.9",
+    "@angular/google-maps": "^17.3.10",
     "@angular/localize": "^17.1.0",
     "@angular/material": "^17.1.0",
     "@angular/platform-browser": "^17.1.0",

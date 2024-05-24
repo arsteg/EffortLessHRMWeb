@@ -64,34 +64,31 @@
                 *ngFor="let fieldGroup of expenseReportform.get('expenseReportExpenseFields')['controls']; let i = index">
                 <div [formGroupName]="i">
                     <label>{{ fieldGroup.controls['type'].value | titlecase}}</label>
-                    <select class="w-100" formControlName="value" *ngIf="applicationfields[i].fieldType == 'Dropdown'">
+                    <select class="w-100" formControlName="value" *ngIf="applicationfields[i]?.fieldType == 'Dropdown'">
                         <option value="">Select Category Application field</option>
                         <option [value]="values?.value"
-                            *ngFor="let values of applicationfields[i].expenseApplicationFieldValues">
+                            *ngFor="let values of applicationfields[i]?.expenseApplicationFieldValues">
                             {{values?.value}}</option>
                     </select>
                     <input class="w-100" type="text" formControlName="value"
-                        *ngIf="applicationfields[i].fieldType == 'Textfield'">
+                        *ngIf="applicationfields[i]?.fieldType == 'Textfield'">
                     <input class="w-100" type="number" formControlName="value"
-                        *ngIf="applicationfields[i].fieldType == 'Number'">
-                    <div *ngIf="applicationfields[i].fieldType =='DateRange'">
+                        *ngIf="applicationfields[i]?.fieldType == 'Number'">
+                    <div *ngIf="applicationfields[i]?.fieldType =='DateRange'">
                         <label for="">From Date</label>
-                        <input class="w-100" formControlName="value" 
-                            type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
-                            [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="fromDate" />
+                        <input class="w-100" type="text" class="form-control" #dp="bsDatepicker" bsDatepicker
+                            [bsValue]="bsValue" [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
+                            formControlName="fromDate" />
 
                         <label for="" class="mt-2">To Date</label>
-                        <input class="w-100" formControlName="value"
-                            type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
-                            [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="toDate" />
+                        <input class="w-100" type="text" class="form-control" #dp="bsDatepicker" bsDatepicker
+                            [bsValue]="bsValue" [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
+                            formControlName="toDate" />
 
                     </div>
-                    <!-- <input class="w-100" formControlName="value" *ngIf="applicationfields[i].fieldType =='DateRange'"
-                        type="text" class="w-100" placeholder="Select Date Range" class="form-control" bsDaterangepicker
-                        [(ngModel)]="bsRangeValue" [bsConfig]="{ isAnimated: true }" formControlName="value" /> -->
-                    <input class="w-100" formControlName="value" *ngIf="applicationfields[i].fieldType == 'Date'"
+                    <input class="w-100" formControlName="value" *ngIf="applicationfields[i]?.fieldType == 'Date'"
                         type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
-                        [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="value" />
+                        [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" />
 
 
                 </div>

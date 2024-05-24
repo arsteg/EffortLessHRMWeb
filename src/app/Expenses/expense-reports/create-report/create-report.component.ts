@@ -77,7 +77,7 @@ export class CreateReportComponent {
 
 
   ngOnInit() {
-    // console.log(this.expenseService.changeMode.getValue())
+    console.log(this.expenseService.isEdit.getValue())
     if (this.expenseService.isEdit.getValue() == true) {
       const expenseFieldsArray = this.expenseReportform.get('expenseReportExpenseFields') as FormArray;
       expenseFieldsArray.clear();
@@ -98,6 +98,7 @@ export class CreateReportComponent {
           expenseTemplateCategoryFieldValues: res.expenseTemplateCategoryFieldValues,
           expenseReportExpenseFields: res.expenseReportExpenseFields
         });
+        console.log(this.expenseReportform.value)
       });
       let categoryId = this.expenseService.expenseReportExpense.getValue().expenseCategory;
       this.onCategorySelection(categoryId);
@@ -111,89 +112,7 @@ export class CreateReportComponent {
     this.updateTotalRate();
   }
 
-  // onSubmission() {
-  //   const payload = {
-  //     expenseCategory: this.expenseReportform.value.expenseCategory,
-  //     incurredDate: this.expenseReportform.value.incurredDate,
-  //     expenseTemplateCategoryFieldValues: '',
-  //     quantity: this.expenseReportform.value.quantity,
-  //     type: this.expenseReportform.value.type,
-  //     amount: this.totalRate || this.expenseReportform.value.amount,
-  //     isReimbursable: this.expenseReportform.value.isReimbursable,
-  //     isBillable: this.expenseReportform.value.isBillable,
-  //     reason: this.expenseReportform.value.reason,
-  //     expenseReport: '',
-  //     expenseAttachments: [],
-  //     expenseReportExpenseFields: this.expenseFieldsArray.value,
-  //   };
-  //   if (this.selectedFiles.length >= 0) {
-  //     const attachments: attachments[] = [];
-  //     for (let i = 0; i < this.selectedFiles.length; i++) {
-  //       const file: File = this.selectedFiles[i];
-  //       const reader = new FileReader();
-  //       reader.readAsDataURL(file);
-  //       reader.onload = () => {
-  //         const base64String = reader.result.toString().split(',')[1];
-  //         const fileSize = file.size;
-  //         const fileType = file.type;
-  //         const fileNameParts = file.name.split('.');
-  //         const extention = fileNameParts[fileNameParts.length - 1];
 
-  //         attachments.push({
-  //           attachmentName: file.name,
-  //           attachmentType: fileType,
-  //           attachmentSize: fileSize,
-  //           extention: extention,
-  //           file: base64String
-  //         });
-  //       }
-  //     }
-
-  //     if (this.expenseService.isEdit.getValue() == true) {
-  //       this.expenseService.expenseReportExpense.subscribe(res => {
-  //         payload.expenseTemplateCategoryFieldValues = res.expenseTemplateCategoryFieldValues;
-  //         payload.expenseReport = res.expenseReport
-  //       });
-  //       payload.expenseAttachments = attachments;
-  //       const expenseReportExpId = this.expenseService.expenseReportExpId.getValue();
-  //       console.log('update: ', payload.expenseAttachments, payload)
-  //       if (payload.expenseAttachments.length >= 1) {
-  //         console.log(payload.expenseAttachments)
-  //       }
-  //       this.expenseService.updateExpenseReportExpenses(expenseReportExpId, payload).subscribe(
-  //         (result: any) => {
-  //           this.expenseService.expenseReportExpense.next(result.data);
-  //           this.closeModal();
-  //           this.toast.success('Expense Report of Expenses is Updated!', 'Successfully!!!');
-  //         },
-  //         (err) => {
-  //           this.toast.error('This expense report of expenses cannot be Updated!', 'Error');
-  //         }
-  //       );
-  //     }
-
-  //   else if (this.expenseService.isEdit.getValue() == false) {
-  //     const report = this.expenseService.selectedReport.getValue();
-  //     payload.expenseReport = report._id;
-  //     payload.expenseTemplateCategoryFieldValues = this.expenseService.expenseTemplateCategoryFieldValues.getValue();
-  //     payload.expenseAttachments = attachments;
-
-  //     console.log('add: ', payload);
-  //     this.expenseService.addExpenseReportExpenses(payload).subscribe(
-  //       (result: any) => {
-  //         this.expenseService.expenseReportExpense.next(result.data);
-  //         this.toast.success('Expense Report of Expenses is Created!', 'Successfully!!!');
-  //       },
-  //       (err) => {
-  //         this.toast.error('This expense report of expenses can not be Added!', 'Error');
-  //       }
-  //     );
-  //   }
-  // }
-  //   else {
-  //     console.log(this.selectedFiles, payload)
-  //   }
-  // }
   onSubmission() {
     const payload = {
       expenseCategory: this.expenseReportform.value.expenseCategory,
@@ -226,10 +145,11 @@ export class CreateReportComponent {
           if (payload.expenseAttachments.length >= 1) {
             console.log(payload.expenseAttachments)
           }
+          console.log(payload)
           this.expenseService.updateExpenseReportExpenses(expenseReportExpId, payload).subscribe(
             (result: any) => {
               this.expenseService.expenseReportExpense.next(result.data);
-             
+
               this.toast.success('Expense Report of Expenses is Updated!', 'Successfully!!!');
               this.closeModal();
             },
@@ -238,8 +158,8 @@ export class CreateReportComponent {
             }
           );
         } else if (this.expenseService.isEdit.getValue() == false) {
-       
-          
+
+
           payload.expenseTemplateCategoryFieldValues = this.expenseService.expenseTemplateCategoryFieldValues.getValue();
           if (this.expenseService.changeMode.getValue() == 'Update') {
             const report = this.expenseService.selectedReport.getValue();
@@ -260,7 +180,7 @@ export class CreateReportComponent {
             this.expenseService.expenseReportExpense.next(payload);
           }
         }
-       
+
       }).catch(error => {
         console.error('Error processing files:', error);
       });
@@ -274,6 +194,8 @@ export class CreateReportComponent {
         if (payload.expenseAttachments.length >= 1) {
           console.log(payload.expenseAttachments)
         }
+        console.log(payload);
+
         this.expenseService.updateExpenseReportExpenses(expenseReportExpId, payload).subscribe(
           (result: any) => {
             this.expenseService.expenseReportExpense.next(result.data);
@@ -357,11 +279,13 @@ export class CreateReportComponent {
   }
 
   onCategorySelection(categoryId: string) {
-    if (this.expenseService.isEdit.getValue() == true) {
+    const isEdit = this.expenseService.isEdit.getValue();
+    if (isEdit) {
       this.expenseService.getApplicationFieldbyCategory(categoryId).subscribe((res: any) => {
         this.applicationfields = res.data;
         this.expenseFieldsArray.clear();
         this.expenseFieldsArray = this.expenseReportform.get('expenseReportExpenseFields') as FormArray;
+        const expenseReportExpenseFields = this.expenseService.expenseReportExpense.getValue().expenseReportExpenseFields;
         this.applicationfields.forEach(field => {
           let expenseApplicationField = null;
           if (field.expenseApplicationFieldValues && field.expenseApplicationFieldValues.length > 0) {
@@ -369,29 +293,27 @@ export class CreateReportComponent {
           } else {
             expenseApplicationField = field.expenseApplicationField || null;
           }
-
-          const expenseReportExpenseFields = this.expenseService.expenseReportExpense.getValue().expenseReportExpenseFields;
-          const matchingField = expenseReportExpenseFields.find(reportField => reportField);
+  
+          const matchingField = expenseReportExpenseFields.find(reportField => reportField.expenseApplicationField === expenseApplicationField);
           const value = matchingField ? matchingField.value : '';
-
-          this.expenseFieldsArray.push(this.fb.group({
-            type: [field.fieldName],
+          const formGroupConfig: any = {
+            type: [field.fieldType],
             value: [value],
-            expenseApplicationField: [expenseApplicationField]
-          }));
+            expenseApplicationField: [expenseApplicationField],
+            fromDate: [matchingField ? matchingField.fromDate : ''],
+            toDate: [matchingField ? matchingField.toDate : '']
+          };
+          this.expenseFieldsArray.push(this.fb.group(formGroupConfig));
         });
-
       });
       const user = this.expenseService.selectedUser.getValue();
       this.expenseService.getExpenseCategoryByUser(user).subscribe((response: any) => {
         const results = response.details;
-
         this.expenseService.getApplicableFieldByTemplateAndCategory(results[0]?.expenseTemplate, categoryId).subscribe((res: any) => {
           this.applicableCategoryFields = res.data['expenseTemplateCategoryFieldValues'];
         });
       });
-    }
-    else if (this.expenseService.isEdit.getValue() == false) {
+    } else {
       let categoryId = this.expenseReportform.value.expenseCategory;
       this.expenseService.getApplicationFieldbyCategory(categoryId).subscribe((res: any) => {
         this.applicationfields = res.data;
@@ -403,27 +325,31 @@ export class CreateReportComponent {
           } else {
             expenseApplicationField = field.expenseApplicationField || null;
           }
-          this.expenseFieldsArray.push(this.fb.group({
-            type: [field.fieldName],
+          const formGroupConfig: any = {
+            type: [field.fieldType],
             value: [''],
-            expenseApplicationField: [expenseApplicationField]
-          }));
+            expenseApplicationField: [expenseApplicationField],
+            fromDate: [''],
+            toDate: ['']
+          };
+          this.expenseFieldsArray.push(this.fb.group(formGroupConfig));
         });
+  
         this.expenseFieldsArray.controls.forEach((control: FormGroup) => {
           control.get('value').reset('');
         });
       });
-
+  
       this.expenseService.tempAndCat.subscribe(res => {
-        this.categoryType = res.data?.find(catType => catType._id == categoryId)
-        let category = res.details?.find(cat => cat.expenseCategory == categoryId);
+        this.categoryType = res.data?.find(catType => catType._id === categoryId);
+        const category = res.details?.find(cat => cat.expenseCategory === categoryId);
         this.expenseService.getApplicableFieldByTemplateAndCategory(category.expenseTemplate, category.expenseCategory).subscribe((res: any) => {
           this.applicableCategoryFields = res.data['expenseTemplateCategoryFieldValues'];
         });
-      })
+      });
     }
   }
-
+  
   onTypeChange(selectedType: string): void {
     this.selectedType = selectedType;
     const selectedField = this.applicableCategoryFields?.find(field => field.label === selectedType);
