@@ -1064,7 +1064,21 @@ header .loginButton {
     }
 }
 
+@media (min-width: 1080px) {
+    .feature_col{
+        width: 30% !important;
+    }
+}
+
 @media (max-width:575px) {
+    header .header__logo img {
+        height: 50px;
+    }
+
+    .feature_col {
+        width: 100% !important;
+    }
+
     header .header__logo a {
         display: inline-block;
         height: 38px;
@@ -1091,6 +1105,10 @@ header .loginButton {
     header .mobile-nav__dropdown-text span {
         font-size: 12px;
         line-height: 20px
+    }
+
+    header .burger {
+        display: block;
     }
 }
 
@@ -6376,9 +6394,9 @@ img {
     color: #76bc21;
 }
 
-.feature_col {
+/* .feature_col {
     width: 30% !important;
-}
+} */
 
 .big-circle_1 {
     background: #f8e4ea;
