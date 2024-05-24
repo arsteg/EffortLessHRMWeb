@@ -114,7 +114,7 @@ export class ProductivityReportComponent implements OnInit {
   getProductivityPerMem() {
     let searchProductivity = new Productivity();
     searchProductivity.fromdate = this.utilsService.convertToUTC(this.convertToDateWithStartTime(this.fromDate));
-    searchProductivity.todate = this.utilsService.convertToLocal(this.convertToDateWithEndTime(this.toDate));
+    searchProductivity.todate = this.utilsService.convertToUTC(this.convertToDateWithEndTime(this.toDate));
     searchProductivity.users = (this.selectedUser.length==0) ? [this.currentUser.id] : this.selectedUser;
     this.reportService.getProductivity(searchProductivity).subscribe(result => {
       this.productivity = result.data;
@@ -124,7 +124,7 @@ export class ProductivityReportComponent implements OnInit {
   getProductivityAllMem() {
     let searchProductivity = new Productivity();
     searchProductivity.fromdate = this.utilsService.convertToUTC(this.convertToDateWithStartTime(this.fromDate));
-    searchProductivity.todate = this.utilsService.convertToLocal(this.convertToDateWithEndTime(this.toDate));
+    searchProductivity.todate = this.utilsService.convertToUTC(this.convertToDateWithEndTime(this.toDate));
     searchProductivity.users = [];
     this.reportService.getProductivity(searchProductivity).subscribe(result => {
       this.productivity = result.data;

@@ -98,7 +98,7 @@ export class AppAndWebsiteUsageComponent implements OnInit {
   getApplicationData() {
     let searchAppUsagesRequest = new SearchAppUsagesRequest();
     searchAppUsagesRequest.fromdate = this.utilsService.convertToUTC(this.convertToDateWithStartTime(this.fromDate));
-    searchAppUsagesRequest.todate = this.utilsService.convertToLocal(this.convertToDateWithEndTime(this.toDate));
+    searchAppUsagesRequest.todate = this.utilsService.convertToUTC(this.convertToDateWithEndTime(this.toDate));
     searchAppUsagesRequest.projects = this.selectedProject;
     searchAppUsagesRequest.users = (this.selectedUser.length==0) ? [this.currentUser.id] : this.selectedUser;
     this.reportService.getAppUsagesReport(searchAppUsagesRequest).subscribe(result => {
