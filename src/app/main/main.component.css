@@ -1034,9 +1034,17 @@ header .mobile-nav__item--download .mobile-nav__dropdown-text strong {
     }
 }
 
+header .loginButton {
+    display: none;
+}
+
 @media (max-width:1080px) {
     header .navigation__list {
         display: none
+    }
+
+    header .loginButton {
+        display: block;
     }
 
     header .burger {
@@ -6652,7 +6660,8 @@ header .navigation__dropdown-popup.show li {
 
 .home {
     border-radius: 20px;
-    box-shadow: 0px 4px 10px #f6b568;;
+    box-shadow: 0px 4px 10px #f6b568;
+    ;
     margin-bottom: 20px;
 
 }
@@ -6689,49 +6698,57 @@ header .navigation__dropdown-popup.show li {
     0% {
         transform: translateY(0);
     }
+
     50% {
         transform: translateY(-30px);
     }
+
     100% {
         transform: translateY(0);
     }
 }
+
 .hero_bg {
     animation: mymove 10s infinite;
 }
+
 .hero_bg {
     position: absolute;
     top: -200px;
     right: 50px;
 }
-@keyframes mymove{
+
+@keyframes mymove {
     50% {
         transform: rotate(180deg);
     }
 }
-.bannerImg{
+
+.bannerImg {
     z-index: 10;
     position: relative;
 }
+
 @media (max-width: 1080px) {
     .navigation__list {
-        display: none; 
+        display: none;
         flex-direction: column;
         position: absolute;
-        top: 60px; 
+        top: 60px;
         left: 0;
         width: 100%;
-        background-color: #fff; 
-        border: 1px solid #ccc; 
+        background-color: #fff;
+        border: 1px solid #ccc;
         padding: 10px;
     }
 
     .burger {
-        display: block; 
+        display: block;
     }
 }
+
 .burger {
-    display: none; 
+    display: none;
     cursor: pointer;
 }
 
@@ -6751,6 +6768,7 @@ header .navigation__dropdown-popup.show li {
     display: flex;
     align-items: center;
 }
+
 .show {
     width: 50%;
     border-radius: 15px;
