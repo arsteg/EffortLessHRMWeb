@@ -50,7 +50,6 @@ import { UserDashboardComponent } from './dashboard/user-dashboard/user-dashboar
 import { EmailTemplateComponent } from './email-template/email-template.component';
 import { SubtaskComponent } from './tasks/subtask/subtask.component';
 import { productivityAppsApprovalComponent } from './approvals/productivityAppsApproval/productivityAppsApproval.component';
-// import { BrowserHistoryComponent } from './browserHistory/browserHistory.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { UserPreferencesComponent } from './settings/userPreferences/userPreferences.Component';
 import { AdminCalendarComponent } from './calendar/admin-calendar/admin-calendar.component';
@@ -61,7 +60,6 @@ import { UserAssetAssignmentComponent } from './AssetsManagement/user-asset-assi
 import { LeaveManagementComponent } from './Leave/leave-grant/leave-grant.component';
 import { ManageComponent } from './manage/manage/manage.component';
 import { OrganizationComponent } from './organization/organization/organization.component';
-import { AttendanceManagementComponent } from './attendance/attendance-management/attendance-management.component';
 import { TimesheetsComponent } from './timesheets/timesheets.component';
 import { LeaveComponent } from './Leave/leave/leave.component';
 import { ExpensesComponent } from './Expenses/expenses.component';
@@ -75,7 +73,7 @@ import { ApprovalsComponent } from './approvals/approvals.component';
 import { UserTaxDeclarationComponent } from './Taxation/user-tax-declaration/user-tax-declaration.component';
 import { ExpenseCategorySettingsComponent } from './Expenses/settings/expense-category-settings/expense-category-settings.component';
 import { InterviewProcessMainComponent } from './pages/interviewProcess/interview-process-main/interview-process-main.component';
-
+import { AttendanceManagementComponent } from './attendance/attendance-management/attendance-management.component';
 const routes: Routes = [
   // {path:'',component:LayoutComponentComponent, canActivate: [AuthGuard]},
 

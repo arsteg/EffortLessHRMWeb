@@ -28,6 +28,7 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
 import { MilliSecondsToTimePipe } from '../pipes/SecondsToTimePipe';
 import { MatStepperModule }  from '@angular/material/stepper';
+import { MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [SortDirective, SearchPipe, MilliSecondsToTimePipe],
@@ -56,6 +57,10 @@ import { MatStepperModule }  from '@angular/material/stepper';
     MatNativeDateModule,
     MatRippleModule,
     MatStepperModule,
+    MatDialogActions,
+    MatDialogClose,
+    MatDialogContent,
+    MatDialogTitle
   ],
   exports: [
     SortDirective,
@@ -87,6 +92,10 @@ import { MatStepperModule }  from '@angular/material/stepper';
     MilliSecondsToTimePipe,
     MatFormFieldModule,
     MatStepperModule,
+    MatDialogActions,
+    MatDialogClose,
+    MatDialogContent,
+    MatDialogTitle
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

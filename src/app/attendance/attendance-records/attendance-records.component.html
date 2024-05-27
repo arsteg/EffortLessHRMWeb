@@ -1,0 +1,77 @@
+<div class="mainContent pt-3 mt-5">
+    <div class="container">
+        <div class="py-2 px-0 bg-white tableContainer">
+
+            <div class="d-flex justify-content-between align-items-center mb-2 px-3">
+                <p class="mb-0">() Records Found</p>
+                <div class="d-flex align-items-baseline">
+                    <button (click)="navigateWeek(-1)"
+                        class="btn rounded-pill submenuTab active mx-2 bi bi-chevron-left"></button>
+                    <label>{{fromDate}} - {{toDate}}</label>
+                    <button (click)="navigateWeek(1)"
+                        class="btn rounded-pill submenuTab active mx-2 bi bi-chevron-right"></button>
+                </div>
+
+                <div class="d-flex align-items-center">
+
+                    <!-- open(addModal); clearForm(); -->
+                    <button mat-raised-button class="addBtn rounded-pill mx-3" (click)="uploadAttendanceRecord()">Upload</button>
+
+                   
+
+                </div>
+            </div>
+
+            <div class="row">
+                <button class="col-md-1 me-2 my-2 rounded-pill present" mat-raised-button type="button">Present</button>
+                <button class="col-md-1 me-2 my-2 rounded-pill absent" mat-raised-button type="button">Absent</button>
+                <button class="col-md-1 me-2 my-2 rounded-pill in-out" mat-raised-button type="button">In/Out</button>
+                <button class="col-md-2 me-2 my-2  rounded-pill incomplete-record" mat-raised-button
+                    type="button">Incomplete Record</button>
+                <button class="col-md-1 me-2 my-2  rounded-pill halfday" mat-raised-button
+                    type="button">Halfday</button>
+                <button class="col-md-1 me-2 my-2  rounded-pill weeklyOff" mat-raised-button
+                    type="button">Weekly&nbsp;Off</button>
+                <button class="col-md-1 me-2 my-2  rounded-pill holiday" mat-raised-button
+                    type="button">Holiday</button>
+                <button class="col-md-1 me-2 my-2  rounded-pill leave" mat-raised-button type="button">Leave</button>
+                <button class="col-md-2 my-2 rounded-pill not-applicable" mat-raised-button type="button">Not
+                    Applicable</button>
+
+            </div>
+
+            <div class="d-flex my-2 align-items-center">
+                <span class="bi bi-search searchIcon"></span>
+                <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
+                    name="searchText" aria-label="default input example">
+            </div>
+
+            <table>
+                <thead>
+                    <th>Employee</th>
+                    <th *ngFor="let date of weekDates">{{ date.day }}<br>{{ date.date }}</th>
+                    <th>Action</th>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>xyz</td>
+                        <td *ngFor="let date of weekDates">
+                            <ng-container *ngIf="date.day === 'Sun' || date.day === 'Sat'; else workday">
+                                <button class="rounded weeklyOff" mat-raised-button type="button">Weekly Off</button>
+                            </ng-container>
+                            <ng-template #workday>
+                                <button class="rounded present" mat-raised-button type="button">Present</button>
+                            </ng-template>
+                        </td>
+                        <td>
+                            <button mat-mini-fab title="View Attendance History" type="button"
+                            (click)="viewHistory()"><mat-icon
+                                    color="warn">remove_red_eye</mat-icon></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

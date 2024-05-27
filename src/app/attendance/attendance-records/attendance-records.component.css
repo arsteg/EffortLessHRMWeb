@@ -1,0 +1,42 @@
+.present{
+    background: #64b53f;
+    color: white;
+}
+
+.absent{
+    background: #f41e0c;
+    color: white;
+}
+.in-out{
+    background: #9fe78c;
+    color: white;
+}
+
+.incomplete-record{
+    background: #f4b146;
+    color: white;
+}
+
+.halfday{
+    background: #46d1f4;
+    color: white;
+}
+.weeklyOff{
+    background: #159297;
+    color: white;
+}
+
+.holiday{
+    background: #c247fc;
+    color: white;
+}
+
+.leave{
+    background: #fa6ec4;
+    color: white;
+}
+
+.not-applicable{
+    background: #434240;
+    color: white;
+}

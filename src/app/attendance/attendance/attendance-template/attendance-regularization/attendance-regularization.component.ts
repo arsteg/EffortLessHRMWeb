@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
@@ -6,6 +6,14 @@ import { AttendanceService } from 'src/app/_services/attendance.service';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { HttpClient } from '@angular/common/http';
+// import { GoogleMap, MapInfoWindow, MapMarker } from '@angular/google-maps';
+import {  GoogleMap } from '@angular/google-maps';
+interface Marker {
+  lat: number;
+  lng: number;
+  label?: string; // Optional label for the marker
+}
 
 @Component({
   selector: 'app-attendance-regularization',
@@ -26,29 +34,39 @@ export class AttendanceRegularizationComponent {
   locationForm: FormGroup;
   display: any;
   center: google.maps.LatLngLiteral;
-  zoom = 16;
+  // zoom = 16;
+  ipAddress: string;
+  markerPosition: google.maps.LatLngLiteral;
+
+  @ViewChild(GoogleMap, { static: false }) map: GoogleMap | undefined;
+  // center: any = { lat: 30.3753, lng: 76.7881 }; // Default center coordinates (Ambala, Haryana)
+  zoom = 15;
+  markers: Marker[] = [];
+  currentLocation: Marker | undefined;
+  radius: number; // Initial radius in meters
 
   constructor(private fb: FormBuilder,
     private modalService: NgbModal,
     private attendanceService: AttendanceService,
     private toast: ToastrService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private http: HttpClient
   ) {
     this.regularisationForm = this.fb.group({
-      canEmpRegularizeOwnAttendance: [''],
-      canSupervisorsRegularizeSubordinatesAttendance: [''],
-      canAdminEditRegularizeAttendance: [''],
-      isIPrestrictedEmployeeCheckInCheckOut: [''],
+      canEmpRegularizeOwnAttendance: [false],
+      canSupervisorsRegularizeSubordinatesAttendance: [false],
+      canAdminEditRegularizeAttendance: [false],
+      isIPrestrictedEmployeeCheckInCheckOut: [false],
       IPDetails: this.fb.array([]),
       shouldWeeklyEmailNotificationToBeSent: [''],
       whoReceiveWeeklyEmailNotification: this.fb.array([]),
-      isRestrictLocationForCheckInCheckOutUsingMobile: [''],
+      isRestrictLocationForCheckInCheckOutUsingMobile: [false],
       restrictLocationDetails: [],
       howAssignLocationsForEachEmployee: [''],
-      enableLocationCaptureFromMobile: [''],
+      enableLocationCaptureFromMobile: [false],
       geoLocationAPIProvider: [''],
       googleAPIKey: [''],
-      isFacialFingerprintRecognitionFromMobile: [''],
+      isFacialFingerprintRecognitionFromMobile: [false],
       attendanceTemplate: ['']
     });
 
@@ -259,9 +277,6 @@ export class AttendanceRegularizationComponent {
   }
 
 
-
-
-
   getCurrentLocation() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -308,5 +323,34 @@ export class AttendanceRegularizationComponent {
     })
   }
   
+  geolocationSuccess(position: GeolocationPosition) {
+    const { latitude, longitude } = position.coords;
+    this.center = { lat: latitude, lng: longitude };
+    this.currentLocation = { lat: latitude, lng: longitude, label: 'Your Location' };
+    this.markers?.push(this.currentLocation);
+    console.log(this.markers)
+  }
 
+  geolocationError(error: GeolocationPositionError) {
+    console.error('Error getting location:', error.message);
+  }
+
+  // Call geolocation API to get user's location
+  getUserLocation() {
+    if (navigator.geolocation) {
+      console.log(navigator.geolocation.getCurrentPosition(this.geolocationSuccess.bind(this), this.geolocationError.bind(this)));
+      navigator.geolocation.getCurrentPosition(this.geolocationSuccess.bind(this), this.geolocationError.bind(this));
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+    }
+  }
+
+  // Function to update map center and marker on user interaction (optional)
+  handleMapClick(event: google.maps.MapMouseEvent) {
+    const newLat = event.latLng.lat();
+    const newLng = event.latLng.lng();
+    this.center = { lat: newLat, lng: newLng };
+    this.currentLocation = { lat: newLat, lng: newLng, label: 'Your Location' };
+    console.log(this.currentLocation)
+  }
 }

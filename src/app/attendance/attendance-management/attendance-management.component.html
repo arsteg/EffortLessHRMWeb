@@ -1,55 +1,57 @@
-<div class="main-content mt-5 pt-5">
+<div class="main-content contentData">
     <div class="container-fluid px-0">
 
         <ng-container>
             <div *ngIf="view === 'admin'">
                 <div class=" d-flex bg-white mt-2 subMenu">
                     <button class="btn rounded-pill submenuTab" (click)="selectTab(1)"
-                        [class.active]="selectedTab === 1">General Settings</button>
+                        [class.active]="selectedTab === 1">Settings</button>
                     <button class="btn rounded-pill submenuTab" (click)="selectTab(2)"
-                        [class.active]="selectedTab === 2">Attendance Templates</button>
+                        [class.active]="selectedTab === 2">Attendance Records</button>
                     <button class="btn rounded-pill submenuTab" (click)="selectTab(3)"
-                        [class.active]="selectedTab === 3">Attendance&nbsp;Template&nbsp;Assignment
+                        [class.active]="selectedTab === 3">Roster Records
                     </button>
                     <button class="btn rounded-pill submenuTab" (click)="selectTab(4)"
-                        [class.active]="selectedTab === 4">Over Time
+                        [class.active]="selectedTab === 4">Overtime Records
                     </button>
                     <button class="btn rounded-pill submenuTab" (click)="selectTab(5)"
-                        [class.active]="selectedTab === 5">On Duty Template
+                        [class.active]="selectedTab === 5">Regularization Requests
                     </button>
                     <button class="btn rounded-pill submenuTab" (click)="selectTab(6)"
-                        [class.active]="selectedTab === 6">On Duty Template Assignments
+                        [class.active]="selectedTab === 6">OnDuty Requests
                     </button>
                     <button class="btn rounded-pill submenuTab" (click)="selectTab(7)"
-                        [class.active]="selectedTab === 7">
-                        Shift</button>
+                        [class.active]="selectedTab === 7">Attendance Audit
+                    </button>
                     <button class="btn rounded-pill submenuTab" (click)="selectTab(8)"
-                        [class.active]="selectedTab === 8">Shift Assignments</button>
+                        [class.active]="selectedTab === 8">Attendance Process</button>
+                    <button class="btn rounded-pill submenuTab" (click)="selectTab(9)"
+                        [class.active]="selectedTab === 9">Reconciliation</button>
                 </div>
 
                 <div *ngIf="selectedTab === 1" class="tab-content">
-                    <app-generalSettings></app-generalSettings>
+                    <app-attendance-management-settings></app-attendance-management-settings>
                 </div>
                 <div *ngIf="selectedTab === 2" class="tab-content">
-                    <app-attendance-template></app-attendance-template>
+                    <app-attendance-records></app-attendance-records>
                 </div>
                 <div *ngIf="selectedTab === 3" class="tab-content">
-                    <app-attendance-template-assignment></app-attendance-template-assignment>
+                    <!-- <app-attendance-template-assignment></app-attendance-template-assignment> -->
                 </div>
                 <div *ngIf="selectedTab === 4" class="tab-content">
-                    <app-overtime></app-overtime>
+                    <!-- <app-overtime></app-overtime> -->
                 </div>
                 <div *ngIf="selectedTab === 5" class="tab-content">
-                    <app-on-duty-templates></app-on-duty-templates>
+                    <!-- <app-on-duty-templates></app-on-duty-templates> -->
                 </div>
                 <div *ngIf="selectedTab === 6" class="tab-content">
-                    <app-on-duty-template-assignment></app-on-duty-template-assignment>
+                    <!-- <app-on-duty-template-assignment></app-on-duty-template-assignment> -->
                 </div>
                 <div *ngIf="selectedTab === 7" class="tab-content">
-                    <app-shift></app-shift>
+                    <!-- <app-shift></app-shift> -->
                 </div>
                 <div *ngIf="selectedTab === 8" class="tab-content">
-                    <app-shift-assignments></app-shift-assignments>
+                    <!-- <app-shift-assignments></app-shift-assignments> -->
                 </div>
             </div>
 
@@ -70,7 +72,7 @@
                 </div>
 
                 <div *ngIf="selectedTab === 1" class="tab-content">
-                    <app-attendance></app-attendance>
+                    <!-- <app-attendance></app-attendance> -->
                 </div>
                 <div *ngIf="selectedTab === 2" class="tab-content">
                     <!-- <app-attendance></app-attendance> -->

@@ -1,0 +1,82 @@
+<div class="d-flex justify-content-between">
+    <h2 mat-dialog-title>Attendance Record for <span>Employee Name</span></h2>
+    <mat-dialog-actions>
+        <button mat-button mat-dialog-close><mat-icon>close</mat-icon></button>
+    </mat-dialog-actions>
+</div>
+<mat-dialog-content class="backgroundOfTables">
+    <div class="tableContainer bg-white">
+        <div class="d-flex justify-content-between">
+            <div class="d-flex my-2 align-items-center">
+                <span class="bi bi-search searchIcon"></span>
+                <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
+                    name="searchText" aria-label="default input example">
+            </div>
+            <button class="submenuTab active  rounded-pill" (click)="exportToCsv()"> <i
+                    class="bi bi-download downloadBtn pe-2"></i>
+                Download</button>
+        </div>
+        <table>
+            <thead>
+                <th>Date</th>
+                <th>Check-In</th>
+                <th>Check-Out</th>
+                <th>Duration</th>
+                <th>OD Hours</th>
+                <th>SL Hours</th>
+                <th>Before Processing</th>
+                <th>After Processing</th>
+                <th>Early/Late Status</th>
+                <th>Deviation Hours</th>
+                <th>Shift Timings</th>
+                <th>Late Coming Remarks</th>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of attendanceHistory |  paginate: { itemsPerPage: 5, currentPage: p }"></tr>
+            </tbody>
+        </table>
+        <pagination-controls (pageChange)="p = $event"
+            class="pagination d-flex justify-content-end"></pagination-controls>
+    </div>
+    <div class="tableContainer mt-2 bg-white">
+        <div class="d-flex my-2 align-items-center">
+            <span class="bi bi-search searchIcon"></span>
+            <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
+                name="searchText" aria-label="default input example">
+        </div>
+        <table>
+            <thead>
+                <th>Summary</th>
+                <th>Days Present</th>
+                <th>Days Absent</th>
+                <th>Leave Taken</th>
+                <th>WeeklyOff</th>
+                <th>Holidays</th>
+                <th>Invalid Records</th>
+                <th>Total Hours</th>
+                <th>Total Deviation</th>
+                <th>Total Payable Days</th>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of attendanceHistory |  paginate: { itemsPerPage: 5, currentPage: p }">
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+
+                </tr>
+
+            </tbody>
+        </table>
+
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button mat-dialog-close>Close</button>
+</mat-dialog-actions>

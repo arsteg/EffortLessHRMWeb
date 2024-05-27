@@ -19,11 +19,14 @@ import { OnDutyTemplateAssignmentComponent } from './attendance/on-duty-template
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ShiftComponent } from './attendance/shift/shift.component';
 import { ShiftAssignmentsComponent } from './attendance/shift-assignments/shift-assignments.component';
-import { ColorChromeModule } from 'ngx-color/chrome'
+import { ColorChromeModule } from 'ngx-color/chrome';
+import { AttendanceRecordsComponent } from './attendance-records/attendance-records.component';
+import { AttendanceManagementSettingsComponent } from './attendance-settings/attendance-management-settings.component';
+import { UploadRecordsComponent } from './attendance-records/upload-records/upload-records.component';
+import { EmployeeAttendanceHistoryComponent } from './attendance-records/employee-attendance-history/employee-attendance-history.component';
 
 @NgModule({
   declarations: [
-    AttendanceManagementComponent,
     AttendanceComponent,
     GeneralSettingsComponent,
     AttendanceRegularizationComponent,
@@ -34,7 +37,12 @@ import { ColorChromeModule } from 'ngx-color/chrome'
     OnDutyTemplatesComponent,
     OnDutyTemplateAssignmentComponent,
     ShiftComponent,
-    ShiftAssignmentsComponent
+    ShiftAssignmentsComponent,
+    AttendanceRecordsComponent,
+    AttendanceManagementComponent,
+    AttendanceManagementSettingsComponent,
+    UploadRecordsComponent,
+    EmployeeAttendanceHistoryComponent
   ],
   imports: [
     MatRadioModule,
@@ -47,9 +55,6 @@ import { ColorChromeModule } from 'ngx-color/chrome'
     FormsModule,
     ReactiveFormsModule,
     ColorChromeModule,
-    // AgmCoreModule.forRoot({
-    //   apiKey: 'AIzaSyDcVHb7z2aA1VGUL5mtDZtplf3EMVMX4q8'
-    // })
   ],
   exports: [
     AttendanceManagementComponent,

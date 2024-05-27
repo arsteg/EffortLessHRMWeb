@@ -133,7 +133,7 @@ a
   getFirstDayOfWeek(){
     const today = new Date();
     const dayOfWeek = today.getDay();
-    const diff = today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1); // adjust when day is Sunday
+    const diff = today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1); 
     const firstDayOfWeek = new Date(today.setDate(diff));
     this.fromDate = this.datePipe.transform(firstDayOfWeek, 'yyyy-MM-dd');
   }

@@ -1,0 +1,29 @@
+<div class="d-flex justify-content-between">
+    <h2 mat-dialog-title>Upload Attendance Record</h2>
+    <mat-dialog-actions>
+        <button mat-button mat-dialog-close><mat-icon>close</mat-icon></button>
+    </mat-dialog-actions>
+</div>
+<mat-dialog-content>
+    <form>
+        <p>Step - 1: Download Attendance Updation Format : <button mat-raised-button type="button" class="addBtn">Download</button></p>
+
+        <p>Step - 2:<br>
+            Includes all your Employees with their pre-existing attendance records as per Company's Attendance Cycle Dates</p>
+            <p>Please follow the below instructions when uploading attendance:</p>
+        <ol type="1">
+            <li>Includes Employees details with their attendance data.</li>
+            <li>Date, Employee Code, Check-In, Check-Out Time and Employee Shift fields are mandatory; please make sure to enter the correct data.</li>
+            <li>Enter the dates in format of 'DD-MM-YYYY'. (E.g. 15-01-2020)</li>
+            <li>Enter the check-in and check-out time in 24 hour format of 'hh:mm:ss'. (E.g. 08:05:00 or 16:30:00)</li>
+            <li>Select the employee shift</li>
+        </ol>
+        <p>Make necessary changes in the downloaded file and upload<span class="text-danger">*</span></p>
+        <button  type="button" class="rounded-pill submenuTab active">Upload</button>
+        <hr>
+        <div class="d-flex justify-content-between">
+            <button type="button" mat-raised-button>Cancel</button>
+            <button type="submit" class="addBtn" mat-raised-button>Submit</button>
+        </div>
+    </form>
+</mat-dialog-content>
