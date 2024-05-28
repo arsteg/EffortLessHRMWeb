@@ -312,4 +312,34 @@ getLocation(regularizationID: string): Observable<response<any>> {
   return response;
 }
 
+// regularization records
+addRegularization(location: any): Observable<response<any>> {
+  var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/regularizationRequests`, location, this.httpOptions);
+  return response;
+}
+
+updateRegularization(id: string, location: any): Observable<response<any>> {
+  var response = this.http.put<response<any>>(`${environment.apiUrlDotNet}/attendance/regularizationRequests/${id}`, location, this.httpOptions);
+  return response;
+}
+
+deleteRegularization(id: string): Observable<response<any>> {
+  var response = this.http.delete<response<any>>(`${environment.apiUrlDotNet}/attendance/regularizationRequests/${id}`, this.httpOptions);
+  return response;
+}
+
+getRegularization(regularizationID: string): Observable<response<any>> {
+  var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/regularizationRequests/${regularizationID}`, this.httpOptions);
+  return response;
+}
+
+getAllRegularization(): Observable<response<any>> {
+  var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/regularizationRequests`, this.httpOptions);
+  return response;
+}
+getRegularizationByUser(userId: string): Observable<response<any>> {
+  var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/regularizationRequests/${userId}`, this.httpOptions);
+  return response;
+}
+
 }

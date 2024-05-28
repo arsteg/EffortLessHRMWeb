@@ -7,12 +7,12 @@ import { Component } from '@angular/core';
 })
 export class AttendanceManagementComponent {
   selectedTab: number = 1;
-  view:string="";
+  view = localStorage.getItem('adminView');
 
   constructor() { }
 
   ngOnInit(): void {
-    this.view ='admin';// localStorage.getItem('adminView');
+    console.log(this.view)
   }
   selectTab(tabIndex: number) {
     this.selectedTab = tabIndex;

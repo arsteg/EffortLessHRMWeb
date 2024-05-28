@@ -18,12 +18,15 @@ export class CommonService {
   private filterParams: any = {};
   private selectedTabSubject = new BehaviorSubject<number>(1); // Default selected tab is 1
   selectedTab$ = this.selectedTabSubject.asObservable();
+  private weekDatesSubject = new BehaviorSubject<{ day: string, date: string }[]>([]);
+  weekDates$ = this.weekDatesSubject.asObservable();
+
 
   constructor(private userService: UserService,
     private projectService: ProjectService,
     private http: HttpClient) { }
 
-  
+
   populateUsers(): Observable<any> {
     return this.userService.getUserList().pipe(
       map(result => {
@@ -35,12 +38,12 @@ export class CommonService {
   getProjectList(): Observable<any> {
     return this.projectService.getprojects('', '').pipe(
       map((response: any) => {
-      this.projectList = response && response.data && response.data['projectList'];
+        this.projectList = response && response.data && response.data['projectList'];
         return response;
       })
     );
   }
-  
+
   getRandomColor(firstName: string) {
     let colorMap = {
       A: '#76bc21',
@@ -83,7 +86,7 @@ export class CommonService {
     return this.currentProfileSubject;
   }
 
-  setCurrentUserRole(role: any): void{
+  setCurrentUserRole(role: any): void {
     this.currentProfileRoleSubject.next(role);
   }
 
@@ -91,7 +94,7 @@ export class CommonService {
     return this.currentProfileRoleSubject;
   }
 
-  setJwt(token: any): void{
+  setJwt(token: any): void {
     this.jwtToken.next(token);
   }
 
@@ -108,11 +111,13 @@ export class CommonService {
   }
   get isCollapsedMenu(): boolean {
     const storedValue = localStorage.getItem('sidebar');
-    return storedValue === 'true'; 
+    return storedValue === 'true';
   }
   setSelectedTab(tab: number) {
     this.selectedTabSubject.next(tab);
   }
+  updateWeekDates(weekDates: { day: string, date: string }[]) {
+    this.weekDatesSubject.next(weekDates);
+  }
 
-  
 }

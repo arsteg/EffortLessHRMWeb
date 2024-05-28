@@ -846,7 +846,8 @@ option:hover {
 }
 
 .cdk-overlay-pane {
-  background: white !important
+  background: white !important;
+  border-radius: 100px !important;
 }
 
 .downloadBtn {

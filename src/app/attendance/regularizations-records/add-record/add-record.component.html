@@ -1,0 +1,103 @@
+<div class="d-flex justify-content-between">
+    <h2 mat-dialog-title class="pb-0">New Regularization Request</h2>
+    <mat-dialog-actions>
+        <button mat-button mat-dialog-close><mat-icon>close</mat-icon></button>
+    </mat-dialog-actions>
+</div>
+<hr>
+<mat-dialog-content>
+    <form [formGroup]="addRegularization" (ngSubmit)="onSubmission()">
+        <div class="form-group">
+            <label for="">Regularization Date</label>
+            <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
+                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="regularizationDate" />
+        </div>
+
+        <div class="form-group my-2">
+            <label for="">Request Type</label>
+            <select name="" id="" formControlName="requestType">
+                <option value="Check-In Request">Check-In Request</option>
+                <option value="Check-Out Request">Check-Out Request</option>
+                <option value="Check-In and Check-Out Request">Check-In and Check-Out Request</option>
+            </select>
+        </div>
+        <div class="form-group"
+            *ngIf="addRegularization.get('requestType').value == 'Check-In Request' || addRegularization.get('requestType').value == 'Check-In and Check-Out Request'">
+            <label for="">Check-In Time</label>
+            <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
+                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="checkInTime" />
+        </div>
+        <div class="form-group"
+            *ngIf="addRegularization.get('requestType').value == 'Check-Out Request' || addRegularization.get('requestType').value ==  'Check-In and Check-Out Request'">
+            <label for="">Check-Out Time</label>
+            <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
+                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="checkOutTime" />
+        </div>
+
+        <div class="form-group my-2">
+            <label for="">Shift</label>
+            <select name="" id="" formControlName="shift">
+                <option [value]="shift._id" *ngFor="let shift of shift">
+                    {{shift?.name}}
+                </option>
+            </select>
+        </div>
+
+        <div class="form-group my-2">
+            <label for="">Is it Half Day Regularization?</label>
+            <div class="d-flex">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" id="half-Yes" formControlName="isHalfDayRegularization"
+                        required [value]="true">
+                    <label class="form-check-label" for="half-Yes">
+                        Yes
+                    </label>
+                </div>
+
+                <div class="form-check ms-3">
+                    <input class="form-check-input" type="radio" id="half-No" formControlName="isHalfDayRegularization"
+                        required [value]="false">
+                    <label class="form-check-label" for="half-No">
+                        No
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group my-2" *ngIf="addRegularization.get('isHalfDayRegularization').value == true">
+            <label for="">Select half</label>
+            <select name="" id="" formControlName="halfDayType">
+                <option value="first half">
+                    First Half
+                </option>
+                <option value="second half">
+                    Second Half
+                </option>
+            </select>
+        </div>
+
+
+        <div class="form-group my-2">
+            <label for="">Reason</label>
+            <select name="" id="" formControlName="reason">
+                <option value="Forgot to Check-In">Forgot to Check-In</option>
+                <option value="Forgot to Check-Out">Forgot to Check-Out</option>
+                <option value="Forgot to Check-In and Check-Out">Forgot to Check-In and Check-Out</option>
+            </select>
+        </div>
+
+
+        <div class="form-group my-2">
+            <label for="">Comment</label>
+            <textarea name="" rows="3" id="" placeholder="Add comment" class="form-control"
+                formControlName="comment"></textarea>
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <button mat-raised-button type="reset">Cancel</button>
+            <button mat-raised-button class="addBtn" type="submit">Submit</button>
+
+        </div>
+
+    </form>
+</mat-dialog-content>

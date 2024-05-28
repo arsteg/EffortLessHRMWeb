@@ -1,0 +1,72 @@
+<div class="mainContent pt-3 mt-5">
+    <div class="container">
+        <div class="py-2 px-0 bg-white tableContainer">
+
+            <div class="d-flex justify-content-between align-items-center mb-2 px-3">
+                <app-date-range></app-date-range>
+
+                <div class="d-flex align-items-center">
+
+                    <button *ngIf="isMultiSelectEnabled" mat-raised-button class="multiSelectionButton rounded-pill mx-3"
+                        >Assign
+                        Multiple Roster</button>
+
+                    <button mat-raised-button class="addBtn rounded-pill mx-3"
+                        (click)="uploadRosterRecord()">Upload</button>
+
+                    <div class="form-check d-flex form-switch">
+                        <input class="form-check-input toggleBtn me-2" type="checkbox" role="switch"
+                            id="flexSwitchCheckDefault" [(ngModel)]="isMultiSelectEnabled">
+                        <label for="">Multi Select</label>
+                    </div>
+
+
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                <button class="col-md-2 me-2 my-2 rounded-pill noShift" mat-raised-button type="button">No Shift
+                    Assigned</button>
+                <button class="col-md-2 me-2 my-2 rounded-pill fullWorking" mat-raised-button type="button">Full Working
+                    Day</button>
+                <button class="col-md-2 me-2 my-2 rounded-pill halfday" mat-raised-button type="button">Halfday Weekly
+                    Off</button>
+                <button class="col-md-2 me-2 my-2  rounded-pill weeklyOff" mat-raised-button
+                    type="button">Weekly Off/Holiday</button>
+
+                <button class="col-md-2 my-2 rounded-pill notApplicable" mat-raised-button type="button">Not
+                    Applicable</button>
+
+            </div>
+
+            <div class="d-flex my-2 align-items-center">
+                <span class="bi bi-search searchIcon"></span>
+                <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
+                    name="searchText" aria-label="default input example">
+            </div>
+
+            <table>
+                <thead>
+                    <th>Employee</th>
+                    <th>Employee Code</th>
+                    <th *ngFor="let date of weekDates">{{ date.day }}<br>{{ date.date }}</th>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>xyz</td>
+                        <td>001</td>
+                        <td *ngFor="let date of weekDates">
+                            <ng-container *ngIf="date.day === 'Sun' || date.day === 'Sat'; else workday">
+                                <button class="rounded weeklyOff" mat-raised-button type="button">Weekly Off</button>
+                            </ng-container>
+                            <ng-template #workday>
+                                <button class="rounded present" mat-raised-button type="button">N/A</button>
+                            </ng-template>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

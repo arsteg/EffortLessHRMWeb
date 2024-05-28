@@ -1,0 +1,29 @@
+.multiSelectionButton {
+    color: #ff7b1e !important;
+    border: 1px solid #ff7b1e !important;
+}
+
+.notApplicable {
+    background: #777;
+    color: white;
+}
+
+.weeklyOff {
+    color: white;
+    background: #19b698;
+}
+
+.halfday {
+    color: white;
+    background: #4aa3df;
+}
+
+.fullWorking {
+    color: white;
+    background: rgb(179, 178, 178)
+}
+
+.noShift {
+    color: white;
+    background: #ec7211;
+}

@@ -1,0 +1,34 @@
+<div class="d-flex justify-content-between">
+    <h2 mat-dialog-title>Upload Attendance Record</h2>
+    <mat-dialog-actions>
+        <button mat-button mat-dialog-close><mat-icon>close</mat-icon></button>
+    </mat-dialog-actions>
+</div>
+<hr>
+<mat-dialog-content>
+    <form>
+        <p>Step - 1: Select date Range</p>
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label for="">Start Date</label>
+                <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
+                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="startDate" />
+            </div>
+
+            <div class="form-group col-md-6">
+                <label for="">End Date</label>
+                <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
+                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="endDate" />
+            </div>
+        </div>
+        <p class="my-3">Step - 2: Download roster global format <button mat-raised-button type="button">Download</button></p>
+
+        <p>Make necessary changes in the downloaded file and upload<span class="text-danger">*</span></p>
+        <button type="button" class="rounded-pill submenuTab active">Upload</button>
+        <hr>
+        <div class="d-flex justify-content-between mt-2">
+            <button type="button" mat-raised-button>Cancel</button>
+            <button type="submit" class="addBtn" mat-raised-button>Submit</button>
+        </div>
+    </form>
+</mat-dialog-content>

@@ -24,6 +24,19 @@ import { AttendanceRecordsComponent } from './attendance-records/attendance-reco
 import { AttendanceManagementSettingsComponent } from './attendance-settings/attendance-management-settings.component';
 import { UploadRecordsComponent } from './attendance-records/upload-records/upload-records.component';
 import { EmployeeAttendanceHistoryComponent } from './attendance-records/employee-attendance-history/employee-attendance-history.component';
+import { RosterRecordsComponent } from './roster-records/roster-records.component';
+import { UploadRosterRecordComponent } from './roster-records/upload-roster-record/upload-roster-record.component';
+import { OvertimeRecordsComponent } from './overtime-records/overtime-records.component';
+import { DateRangeComponent } from './date-range/date-range.component';
+import { RegularizationsRecordsComponent } from './regularizations-records/regularizations-records.component';
+import { PendingComponent } from './regularizations-records/pending/pending.component';
+import { ApprovedComponent } from './regularizations-records/approved/approved.component';
+import { CancelComponent } from './regularizations-records/cancel/cancel.component';
+import { RejectedComponent } from './regularizations-records/rejected/rejected.component';
+import { UpdateRecordComponent } from './regularizations-records/update-record/update-record.component';
+import { ViewRecordComponent } from './regularizations-records/view-record/view-record.component';
+import { ShowRecordComponent } from './regularizations-records/show-record/show-record.component';
+import { AddRecordComponent } from './regularizations-records/add-record/add-record.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +55,20 @@ import { EmployeeAttendanceHistoryComponent } from './attendance-records/employe
     AttendanceManagementComponent,
     AttendanceManagementSettingsComponent,
     UploadRecordsComponent,
-    EmployeeAttendanceHistoryComponent
+    EmployeeAttendanceHistoryComponent,
+    RosterRecordsComponent,
+    UploadRosterRecordComponent,
+    OvertimeRecordsComponent,
+    DateRangeComponent,
+    RegularizationsRecordsComponent,
+    PendingComponent,
+    ApprovedComponent,
+    CancelComponent,
+    RejectedComponent,
+    UpdateRecordComponent,
+    ViewRecordComponent,
+    ShowRecordComponent,
+    AddRecordComponent
   ],
   imports: [
     MatRadioModule,

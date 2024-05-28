@@ -1,0 +1,19 @@
+<div class="mainContent pt-3 mt-5">
+    <div class="container">
+        <div class="py-2 px-0 bg-white tableContainer">
+
+            <div class="d-flex justify-content-between align-items-center mb-2 px-3">
+                <p class="mb-0">() Records Found</p>
+                <app-date-range></app-date-range>
+
+                
+            </div>
+            <table>
+                <thead>
+                    <th>Employee</th>
+                    <th *ngFor="let date of weekDates">{{ date.day }}<br>{{ date.date }}</th>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
