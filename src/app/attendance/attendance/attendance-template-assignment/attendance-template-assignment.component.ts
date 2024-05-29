@@ -28,7 +28,7 @@ export class AttendanceTemplateAssignmentComponent {
   templates: any;
   updateTemplateAssignForm: FormGroup;
   templateById: any;
-
+  selectedTemp: any;
 
   constructor(private modalService: NgbModal,
     private exportService: ExportService,
@@ -42,8 +42,10 @@ export class AttendanceTemplateAssignmentComponent {
       employee: [''],
       attandanceTemplate: [''],
       effectiveFrom: [],
-      primaryApprover: [{ value: '', disabled: true }],
-      secondaryApprover: [{ value: '', disabled: true }]
+      primaryApprover: [''],
+      secondaryApprover: ['']
+      // primaryApprover: [{ value: '', disabled: true }],
+      // secondaryApprover: [{ value: '', disabled: true }]
     });
     this.updateTemplateAssignForm = this.fb.group({
       primaryApprovar: [{ value: '', disabled: true }],
@@ -89,7 +91,42 @@ export class AttendanceTemplateAssignmentComponent {
 
   setFormValues(formValue: any) {
     this.isEdit = true;
-    this.getTemplateById();
+    // this.getTemplateById();
+    this.attendanceService.getAttendanceTemplateById(this.selectedTemplate.attandanceTemplate).subscribe((res: any) => {
+      this.templateById = res.data;
+
+      if (this.templateById.approversType === 'template-wise') {
+        if (this.templateById.approvalLevel === '1') {
+          this.updateTemplateAssignForm.patchValue({
+            primaryApprovar: this.templateById.primaryApprover,
+            secondaryApprovar: null
+          });
+          this.updateTemplateAssignForm.get('primaryApprovar').disable();
+
+        } else if (this.templateById.approvalLevel === '2') {
+          this.updateTemplateAssignForm.patchValue({
+            primaryApprovar: this.templateById.primaryApprover,
+            secondaryApprovar: this.templateById.secondaryApprover
+          });
+        }
+        this.updateTemplateAssignForm.get('primaryApprovar').disable();
+        this.updateTemplateAssignForm.get('secondaryApprovar').disable();
+
+      }
+      else if (this.templateById.approversType === 'employee-wise') {
+        this.attendanceService.getAttendanceAssignmentById(this.selectedTemplate._id).subscribe((res: any) => {
+          const response = res.data;
+console.log(response);
+          this.updateTemplateAssignForm.patchValue({
+            primaryApprovar: response.primaryApprover,
+            secondaryApprovar: response.secondaryApprover
+          });
+        })
+        console.log(this.templateById, this.updateTemplateAssignForm.value)
+        this.updateTemplateAssignForm.get('primaryApprovar').enable();
+        this.updateTemplateAssignForm.get('secondaryApprovar').enable();
+      }
+    })
   }
 
   exportToCsv() {
@@ -105,7 +142,43 @@ export class AttendanceTemplateAssignmentComponent {
   closeModal() {
     this.modalService.dismissAll();
   }
+  onTemplateSelectionChange(event: any) {
+    const selectedTemplateId = event.target.value;
+    this.selectedTemp = selectedTemplateId;
+    this.attendanceService.getAttendanceTemplateById(selectedTemplateId).subscribe((res: any) => {
+      this.templateById = res.data;
+      console.log(this.templateById)
+      if (this.templateById.approversType === 'template-wise') {
+        if (this.templateById.approvalLevel === '1') {
+          this.attendanceTemplateAssignmentForm.patchValue({
+            primaryApprover: this.templateById.primaryApprover,
+            secondaryApprover: null
+          });
+          this.attendanceTemplateAssignmentForm.get('primaryApprover').disable();
 
+        } else if (this.templateById.approvalLevel === '2') {
+          this.attendanceTemplateAssignmentForm.patchValue({
+            primaryApprover: this.templateById.primaryApprover,
+            secondaryApprover: this.templateById.secondaryApprover
+          });
+        }
+        this.attendanceTemplateAssignmentForm.get('primaryApprover').disable();
+        this.attendanceTemplateAssignmentForm.get('secondaryApprover').disable();
+
+      }
+      else if (this.templateById.approversType === 'employee-wise') {
+        this.attendanceTemplateAssignmentForm.patchValue({
+          primaryApprover: this.templateById.primaryApprover,
+          secondaryApprover: this.templateById.secondaryApprover
+        });
+        console.log(this.templateById, this.updateTemplateAssignForm.value)
+        this.attendanceTemplateAssignmentForm.get('primaryApprover').enable();
+        this.attendanceTemplateAssignmentForm.get('secondaryApprover').enable();
+      }
+
+    });
+
+  }
   getTemplateById() {
     console.log(this.selectedTemplate.attandanceTemplate)
     this.attendanceService.getAttendanceTemplateById(this.selectedTemplate.attandanceTemplate).subscribe((res: any) => {
@@ -154,49 +227,29 @@ export class AttendanceTemplateAssignmentComponent {
   }
 
   onCreate() {
-    let payload = {
-      employee: this.attendanceTemplateAssignmentForm.value.employee,
-      attandanceTemplate: this.attendanceTemplateAssignmentForm.value.attandanceTemplate,
-      effectiveFrom: this.attendanceTemplateAssignmentForm.value.effectiveFrom,
-      primaryApprover: this.attendanceTemplateAssignmentForm.value.primaryApprover,
-      secondaryApprover: this.attendanceTemplateAssignmentForm.value.secondaryApprover
-    }
-    this.attendanceService.addAttendanceAssignment(payload).subscribe((res: any) => {
-      this.getAttendanceAssignments();
-      this.toast.success('Attendance Template Assigned', 'Successfully');
-      this.attendanceTemplateAssignmentForm.reset();
-    });
-  }
-
-  onTemplateSelectionChange(event: any) {
-    const selectedTemplateId = event.target.value;
-    this.attendanceService.getAttendanceTemplateById(selectedTemplateId).subscribe((res: any) => {
+    console.log(this.selectedTemp)
+    this.attendanceService.getAttendanceTemplateById(this.selectedTemp).subscribe((res: any) => {
       this.templateById = res.data;
-      if (this.templateById.approversType === 'template-wise') {
-        if (this.templateById.approvalLevel === '1') {
-          this.attendanceTemplateAssignmentForm.patchValue({
-            primaryApprover: this.templateById.primaryApprover,
-            secondaryApprover: null
-          });
-          this.attendanceTemplateAssignmentForm.get('primaryApprover').disable();
-
-        } else if (this.templateById.approvalLevel === '2') {
-          this.attendanceTemplateAssignmentForm.patchValue({
-            primaryApprover: this.templateById.primaryApprover,
-            secondaryApprover: this.templateById.secondaryApprover
-          });
-        }
-        this.attendanceTemplateAssignmentForm.get('primaryApprover').disable();
-        this.attendanceTemplateAssignmentForm.get('secondaryApprover').disable();
-      } else if (this.templateById.approversType === 'employee-wise') {
-        this.attendanceTemplateAssignmentForm.patchValue({
-          primaryApprover: null,
-          secondaryApprover: null
-        });
-
-        this.attendanceTemplateAssignmentForm.get('primaryApprover').enable();
-        this.attendanceTemplateAssignmentForm.get('secondaryApprover').enable();
+      let payload = {
+        employee: this.attendanceTemplateAssignmentForm.value.employee,
+        attandanceTemplate: this.attendanceTemplateAssignmentForm.value.attandanceTemplate,
+        effectiveFrom: this.attendanceTemplateAssignmentForm.value.effectiveFrom,
+        primaryApprover: this.attendanceTemplateAssignmentForm.value.primaryApprover,
+        secondaryApprover: this.attendanceTemplateAssignmentForm.value.secondaryApprover
       }
+      if (this.templateById.approversType == 'template-wise' && this.templateById.approvalLevel == '2') {
+        payload.primaryApprover = this.templateById.primaryApprover,
+          payload.secondaryApprover = this.templateById.secondaryApprover
+      }
+      else if (this.templateById.approversType == 'template-wise' && this.templateById.approvalLevel == '1') {
+        payload.primaryApprover = this.templateById.primaryApprover,
+          payload.secondaryApprover = null
+      }
+      this.attendanceService.addAttendanceAssignment(payload).subscribe((res: any) => {
+        this.getAttendanceAssignments();
+        this.toast.success('Attendance Template Assigned', 'Successfully');
+        this.attendanceTemplateAssignmentForm.reset();
+      });
     });
   }
 

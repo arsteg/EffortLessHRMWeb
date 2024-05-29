@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 import { AttendanceService } from 'src/app/_services/attendance.service';
 
 @Component({
@@ -15,7 +16,8 @@ export class AddRecordComponent {
   shift: any;
 
   constructor(private attendanceService: AttendanceService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private toast: ToastrService
   ) {
     this.addRegularization = this.fb.group({
       regularizationDate: [],
@@ -48,7 +50,6 @@ export class AddRecordComponent {
   }
 
   onSubmission() {
-    console.log(this.addRegularization.value);
     this.addRegularization.value.firstApprover = null,
       this.addRegularization.value.firstApproverDate = null,
       this.addRegularization.value.firstApproverComment = null,
@@ -57,6 +58,10 @@ export class AddRecordComponent {
       this.addRegularization.value.secondApproverComment = null,
       this.attendanceService.addRegularization(this.addRegularization.value).subscribe((res: any) => {
         this.leaveGrantRefreshed.emit();
+        this.toast.success('Successfully Created!!!', 'Regularization Request');
+
+      }, (err) => {
+        this.toast.error('This Regularization Request Can not be Created', 'Error')
       })
   }
 }
