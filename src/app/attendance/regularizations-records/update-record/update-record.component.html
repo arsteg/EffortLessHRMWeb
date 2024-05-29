@@ -1,1 +1,26 @@
-<p>update-record works!</p>
+<div class="d-flex justify-content-between">
+    <h2 mat-dialog-title class="pb-0">Are you sure to {{status?.status}} Regularization Request?</h2>
+    <mat-dialog-actions>
+        <button mat-button mat-dialog-close><mat-icon>close</mat-icon></button>
+    </mat-dialog-actions>
+</div>
+<hr class="my-0">
+<mat-dialog-content>
+    <form [formGroup]="updateRegularization" (ngSubmit)="onSubmission()">
+        <div class="">
+            <mat-label>Please add a Comment</mat-label>
+            <textarea name="comment" placeholder="Leave a comment" formControlName="comment" cols="5" rows="3"
+                class="form-control form-control-width ng-pristine ng-invalid ng-touched">             </textarea>
+        </div>
+
+        <div class="d-flex justify-content-between m-3">
+            <div>
+                <button mat-raised-button type="button" class="mx-2" data-bs-dismiss="modal" type="button">No</button>
+            </div>
+            <div>
+                <button mat-raised-button class="addBtn" type="submit" data-bs-dismiss="modal"
+                    type="submit">Yes</button>
+            </div>
+        </div>
+    </form>
+</mat-dialog-content>

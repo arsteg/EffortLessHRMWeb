@@ -6,6 +6,7 @@ import { ViewRecordComponent } from '../view-record/view-record.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AttendanceService } from 'src/app/_services/attendance.service';
 import { AddRecordComponent } from '../add-record/add-record.component';
+import { CommonService } from 'src/app/common/common.service';
 
 @Component({
   selector: 'app-show-record',
@@ -19,15 +20,26 @@ export class ShowRecordComponent {
   @Input() status: string;
   portalView = localStorage.getItem('adminView');
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  allAssignee: any;
+  p: number = 1;
+
 
   constructor(private dialog: MatDialog,
     private exportService: ExportService,
     private modalService: NgbModal,
-    private attendanceService: AttendanceService
+    private attendanceService: AttendanceService,
+    private commonService: CommonService
   ) { }
 
   ngOnInit() {
+    this.commonService.populateUsers().subscribe(result => {
+      this.allAssignee = result && result.data && result.data.data;
+    });
     this.getAllRegularization();
+  }
+  getUser(employeeId: string) {
+    const matchingUser = this.allAssignee?.find(user => user._id === employeeId);
+    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'N/A';
   }
 
   getAllRegularization() {
@@ -35,14 +47,14 @@ export class ShowRecordComponent {
       this.regularizationRecords = res.data.filter(data => data.status === this.status);
     });
     if (this.portalView === 'user') {
-        this.attendanceService.getRegularizationByUser(this.currentUser?.id).subscribe((res: any) => {
-          this.regularizationRecords = res.data.filter(data => data.status === this.status);
-        })
-      
+      this.attendanceService.getRegularizationByUser(this.currentUser?.id).subscribe((res: any) => {
+        this.regularizationRecords = res.data.filter(data => data.status === this.status);
+      })
+
     }
   }
   openAddModal(): void {
-    
+
     const dialogRef = this.dialog.open(AddRecordComponent, {
       width: '650px',
       height: 'auto'
@@ -54,8 +66,7 @@ export class ShowRecordComponent {
   }
   openStatusModal(report: any, status: string): void {
     report.status = status;
-    console.log(report)
-    // this.leaveService.leave.next(report);
+    this.attendanceService.status.next(report);
     const dialogRef = this.dialog.open(UpdateRecordComponent, {
       width: '50%',
       data: { report }
@@ -66,20 +77,20 @@ export class ShowRecordComponent {
     });
   }
   refreshLeaveGrantTable() {
-    // this.leaveService.getLeaveGrant().subscribe(
-    //   (res) => {
-    //     this.leaveGrant = res.data.filter(leave => leave.status === this.status);
-    //   },
-    //   (error) => {
-    //     console.error('Error refreshing leave grant table:', error);
-    //   }
-    // );
+    this.attendanceService.getAllRegularization().subscribe(
+      (res) => {
+        this.regularizationRecords = res.data.filter(data => data.status === this.status);
+      },
+      (error) => {
+        console.error('Error Refreshing Regularization table:', error);
+      }
+    );
   }
 
   openSecondModal(selectedReport: any): void {
-    // const userName = this.getUser(selectedReport.employee);
-    // selectedReport.employee = userName;
-    // this.leaveService.leave.next(selectedReport);
+    const userName = this.getUser(selectedReport.employee);
+    selectedReport.employee = userName;
+    this.attendanceService.status.next(selectedReport);
     const dialogRef = this.dialog.open(ViewRecordComponent, {
       width: '50%',
       data: { report: selectedReport }

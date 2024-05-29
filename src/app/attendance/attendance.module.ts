@@ -37,6 +37,15 @@ import { UpdateRecordComponent } from './regularizations-records/update-record/u
 import { ViewRecordComponent } from './regularizations-records/view-record/view-record.component';
 import { ShowRecordComponent } from './regularizations-records/show-record/show-record.component';
 import { AddRecordComponent } from './regularizations-records/add-record/add-record.component';
+import { OnDutyRecordsComponent } from './on-duty-records/on-duty-records.component';
+import { CancelledComponent } from './on-duty-records/cancelled/cancelled.component';
+import { PendingOnDutyComponent } from './on-duty-records/pending/pending.component';
+import { RejectedOnDutyComponent } from './on-duty-records/rejected/rejected.component';
+import { ApprovedOnDutyComponent } from './on-duty-records/approved/approved.component';
+import { AddOnDutyComponent } from './on-duty-records/add-on-duty/add-on-duty.component';
+import { ViewOnDutyComponent } from './on-duty-records/view-on-duty/view-on-duty.component';
+import { UpdateOnDutyComponent } from './on-duty-records/update-on-duty/update-on-duty.component';
+import { ShowOnDutyComponent } from './on-duty-records/show-on-duty/show-on-duty.component';
 
 @NgModule({
   declarations: [
@@ -68,7 +77,16 @@ import { AddRecordComponent } from './regularizations-records/add-record/add-rec
     UpdateRecordComponent,
     ViewRecordComponent,
     ShowRecordComponent,
-    AddRecordComponent
+    AddRecordComponent,
+    OnDutyRecordsComponent,
+    CancelledComponent,
+    AddOnDutyComponent,
+    ViewOnDutyComponent,
+    UpdateOnDutyComponent,
+    ShowOnDutyComponent,
+    PendingOnDutyComponent,
+    RejectedOnDutyComponent,
+    ApprovedOnDutyComponent
   ],
   imports: [
     MatRadioModule,

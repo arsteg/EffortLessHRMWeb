@@ -19,23 +19,20 @@
         <table *ngIf="portalView === 'admin'">
             <thead>
                 <th>Employee</th>
-                <th>Date</th>
-                <th>Type</th>
-                <th>Request Check-In</th>
-                <th>Request Check-Out</th>
+                <th>Start Date</th>
+                <th>End Date</th>
                 <th>Reason</th>
+                <th>Comments</th>
                 <th>Status</th>
                 <th>Actions</th>
             </thead>
             <tbody>
-                <tr
-                    *ngFor="let data of regularizationRecords | search: searchText  |  paginate: { itemsPerPage: 5, currentPage: p }">
-                    <td>{{getUser(data?.user)}}</td>
-                    <td>{{data?.appliedOn | date: 'mediumDate'}}</td>
-                    <td>{{data?.requestType}}</td>
-                    <td>{{data?.checkInTime | date: 'medium'}}</td>
-                    <td>{{data?.checkOutTime | date: 'medium'}}</td>
-                    <td>{{data?.reason}}</td>
+                <tr *ngFor="let data of onDutyRequest">
+                    <td>{{data?.user}}</td>
+                    <td>{{data?.startDate}}</td>
+                    <td>{{data?.endDate}}</td>
+                    <td>{{data?.onDutyReason}}</td>
+                    <td>{{data?.comment}}</td>
                     <td>{{data?.status}}</td>
                     <td>
                         <div class="dropdown-center">
@@ -62,7 +59,7 @@
                                     *ngIf="actionOptions.cancel" data-bs-target="#statusUpdate"
                                     (click)="openStatusModal(data, 'Cancelled')">
                                     <i class="bi bi-person-dash dropdown-item w-25"></i><span
-                                        class="pt-1 text-muted">Cancel</span>
+                                        class="pt-1 text-muted">Reject</span>
                                 </li>
 
                                 <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
@@ -77,26 +74,27 @@
                 </tr>
             </tbody>
         </table>
-        <pagination-controls *ngIf="portalView === 'admin'" (pageChange)="p = $event"
-            class="pagination d-flex justify-content-end"></pagination-controls>
 
         <table *ngIf="portalView === 'user'">
             <thead>
-                <th>Date</th>
-                <th>Type</th>
-                <th>Requested Check-In</th>
-                <th>Requested Check-Out</th>
+                <th>Employee Code</th>
+                <th>Start Date</th>
+                <th>End Date</th>
                 <th>Reason</th>
+                <th>Comments</th>
                 <th>Status</th>
                 <th>Actions</th>
             </thead>
+            <tbody>
+                <tr></tr>
+            </tbody>
         </table>
     </div>
 </div>
 
 
 <ng-template #statusUpdate let-modal>
-    <app-update-status (regularization)="refreshLeaveGrantTable()"></app-update-status>
+    <app-update-status (leaveGrantRefreshed)="refreshLeaveGrantTable()"></app-update-status>
 </ng-template>
 
 <ng-template #viewModal let-modal>
