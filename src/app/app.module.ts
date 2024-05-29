@@ -84,6 +84,7 @@ import { ReportsModule } from './reports/reports.module';
 import { UserTaxDeclarationComponent } from './Taxation/user-tax-declaration/user-tax-declaration.component';
 import { FormsModule } from '@angular/forms';
 import { BrowserHistoryModule } from './browserHistory/browserHistory.module';
+import { LiveScreenComponent } from './realtime/live-screen/live-screen.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -127,6 +128,7 @@ import { BrowserHistoryModule } from './browserHistory/browserHistory.module';
     AdminCalendarComponent,
     SettingsComponent,
     UserTaxDeclarationComponent,
+    LiveScreenComponent,
 
 
   ],
