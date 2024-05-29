@@ -9,6 +9,8 @@ import { ProjectService } from '../_services/project.service';
 import { ExportService } from '../_services/export.service';
 import { RealTime } from '../models/timeLog';
 import { Observable, switchMap } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { LiveScreenComponent } from './live-screen/live-screen.component';
 
 @Component({
   selector: 'app-realtime',
@@ -41,7 +43,8 @@ export class RealtimeComponent implements OnInit {
     private datepipe: DatePipe,
     private reportService: ReportsService,
     private projectService: ProjectService,
-    private exportService: ExportService,) {
+    private exportService: ExportService,
+    private dialog: MatDialog) {
 
   }
 
@@ -147,6 +150,15 @@ console.log(this.teamUser)
       this.timelog.realTime(realtime).subscribe(result => {
         this.realtime = result.data[0];
       })
+    });
+  }
+  openLiveScreen(){
+    const dialogRef = this.dialog.open(LiveScreenComponent, {
+      width: '650px',
+      height: 'auto'
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The modal was closed');
     });
   }
 }
