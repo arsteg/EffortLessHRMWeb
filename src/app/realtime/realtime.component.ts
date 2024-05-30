@@ -9,7 +9,7 @@ import { ProjectService } from '../_services/project.service';
 import { ExportService } from '../_services/export.service';
 import { RealTime } from '../models/timeLog';
 import { Observable, switchMap } from 'rxjs';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { LiveScreenComponent } from './live-screen/live-screen.component';
 
 @Component({
@@ -44,7 +44,8 @@ export class RealtimeComponent implements OnInit {
     private reportService: ReportsService,
     private projectService: ProjectService,
     private exportService: ExportService,
-    private dialog: MatDialog) {
+    private dialog: MatDialog,
+  ){
 
   }
 
@@ -139,7 +140,7 @@ export class RealtimeComponent implements OnInit {
     console.log(this.member.id)
     this.timelog.getTeamMembers(this.member.id).subscribe((response: any) => {
       this.teamUser = response.data;
-console.log(this.teamUser)
+      console.log(this.teamUser)
 
       let realtime = new RealTime();
       realtime.projects = this.selectedProject;
@@ -152,13 +153,25 @@ console.log(this.teamUser)
       })
     });
   }
-  openLiveScreen(){
-    const dialogRef = this.dialog.open(LiveScreenComponent, {
-      width: '650px',
-      height: 'auto'
+  openLiveScreen(id){
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.width = '850px';
+    dialogConfig.height = 'auto';
+    dialogConfig.data = { id: id };
+    
+    const dialogRef = this.dialog.open(LiveScreenComponent, dialogConfig);
+
+    const requestBody = { users: id };
+    this.timelog.createLiveScreenRecord(requestBody).subscribe(result => {
+      let response = result;
     });
+
     dialogRef.afterClosed().subscribe(result => {
       console.log('The modal was closed');
+      const requestBody = { users: id };
+      this.timelog.removeLiveScreenRecord(requestBody).subscribe(result => {
+        let response = result;
+      });
     });
   }
 }

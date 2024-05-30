@@ -102,6 +102,16 @@ export class TimeLogService{
     var response  = this.http.post<any>(`${environment.apiUrlDotNet}/timelogs/timesheets`, {"userIds" :userId, "startDate":fromDate, "endDate":toDate},this.httpOptions);
     return response;
   }
+
+  createLiveScreenRecord(requestBody: any): any {
+    var response  = this.http.post<any>(`${environment.apiUrlDotNet}/liveTracking/setLiveTrackingByUser`, requestBody, this.httpOptions);
+    return response;
+  }
+
+  removeLiveScreenRecord(requestBody: any): any {
+    var response  = this.http.post<any>(`${environment.apiUrlDotNet}/liveTracking/removeUserFromLiveTracking`, requestBody, this.httpOptions);
+    return response;
+  }
   //mostPopularBook: Book = allBooks[0];
 
   // setMostPopularBook(popularBook: Book): void {
