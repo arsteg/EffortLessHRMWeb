@@ -79,3 +79,69 @@ input.ng-invalid.ng-touched {
       transform: rotate(180deg);
   }
 }
+
+.bannerImg {
+  z-index: 10;
+  position: relative;
+}
+.main-bannerSection {
+
+  position: relative;
+  animation: moving_position_animatin 6s infinite linear;
+  z-index: -1;
+}
+
+.main-bannerSection2 {
+
+  animation: moving_object 6s infinite linear;
+}
+
+.home {
+  border-radius: 20px;
+  box-shadow: 0px 4px 10px #f6b568;
+  ;
+  margin-bottom: 20px;
+
+}
+
+.banner1 {
+  /* height: 10%; */
+}
+
+.banner2 {
+  /* height: 25%; */
+  width: 80%;
+}
+
+.banner3,
+.banner4 {
+  width: 90%;
+}
+
+@keyframes moving_position_animatin {
+  0% {
+      transform: translateY(0);
+  }
+
+  50% {
+      transform: translateY(-30px);
+  }
+
+  100% {
+      transform: translateY(0);
+  }
+}
+
+@keyframes moving_object {
+  0% {
+      transform: translateY(0);
+  }
+
+  50% {
+      transform: translateY(-30px);
+  }
+
+  100% {
+      transform: translateY(0);
+  }
+}
