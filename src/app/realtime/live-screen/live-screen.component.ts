@@ -25,7 +25,7 @@ export class LiveScreenComponent {
     if (!this.intervalId) {
       this.intervalId = setInterval(() => {
         this.backgroundTask(this.userId);
-      }, 1000);
+      }, 500);
     }
   }
 
