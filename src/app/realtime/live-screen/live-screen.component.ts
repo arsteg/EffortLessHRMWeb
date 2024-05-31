@@ -32,9 +32,11 @@ export class LiveScreenComponent {
   backgroundTask(userId:any) {
     const requestBody = { "users": userId };
     this.getLiveImages(requestBody).subscribe(result => {
-      result.data.forEach(data => {
-        this.imageVideo[data.user.id] = this._sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + data.fileString);
-      });
+      if(result.status){
+        result.data.forEach(data => {
+          this.imageVideo[data.user.id] = this._sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + data.fileString);
+        });
+      }
     },
     error => {
       console.error(error);      
