@@ -59,10 +59,7 @@ export class ExpenseCategorySettingsComponent {
     this.maxDate.setDate(this.maxDate.getDate() + 7);
     this.bsRangeValue = [this.bsValue, this.maxDate];
 
-    // this.firstForm = this._formBuilder.group({
-    //   fields: this._formBuilder.array([])
-    // });
-    // console.log(this.firstForm.value.fields)
+
   }
 
 
@@ -106,6 +103,7 @@ export class ExpenseCategorySettingsComponent {
               categoryType: categoryDetails.data.type,
               _id: ''
             }));
+
             const formGroupIndex = expenseCategoriesArray.length - 1;
             expenseCategoriesArray.at(formGroupIndex).patchValue({
               isMaximumAmountPerExpenseSet: step.isMaximumAmountPerExpenseSet,
@@ -122,22 +120,71 @@ export class ExpenseCategorySettingsComponent {
               categoryType: categoryDetails.data.type,
               _id: step._id
             });
+                const formGroup = expenseCategoriesArray.at(formGroupIndex);
 
-            if (step.expenseTemplateCategoryFieldValues.length && step.expenseTemplateCategoryFieldValues.length >= 1) {
-              step.expenseTemplateCategoryFieldValues?.forEach((value) => {
-                if (value.expenseTemplateCategory === step._id && categoryDetails.data._id === step.expenseCategory) { 
-                  const fieldFormGroup = this._formBuilder.group({
-                    label: value.label,
-                    rate: value.rate,
-                    type: value.type
-                  });
-                  const fieldsArray = (expenseCategoriesArray.at(formGroupIndex).get('expenseTemplateCategoryFieldValues') as FormArray);
-                  fieldsArray.push(fieldFormGroup);
+                if (!formGroup.get('isMaximumAmountPerExpenseSet').value) {
+                  formGroup.get('maximumAmountPerExpense').disable();
                 }
-              });
-            }
-            
-          }
+
+                formGroup.get('isMaximumAmountPerExpenseSet').valueChanges.subscribe((value) => {
+                  if (value) {
+                    formGroup.get('maximumAmountPerExpense').enable();
+                  } else {
+                    formGroup.get('maximumAmountPerExpense').disable();
+                  }
+                });
+
+                if (!formGroup.get('isMaximumAmountWithoutReceiptSet').value) {
+                  formGroup.get('maximumAmountWithoutReceipt').disable();
+                }
+
+                formGroup.get('isMaximumAmountWithoutReceiptSet').valueChanges.subscribe((value) => {
+                  if (value) {
+                    formGroup.get('maximumAmountWithoutReceipt').enable();
+                  } else {
+                    formGroup.get('maximumAmountWithoutReceipt').disable();
+                  }
+                });
+
+                if (!formGroup.get('isTimePeroidSet').value) {
+                  formGroup.get('timePeroid').disable();
+                }
+
+                formGroup.get('isTimePeroidSet').valueChanges.subscribe((value) => {
+                  if (value) {
+                    formGroup.get('timePeroid').enable();
+                  } else {
+                    formGroup.get('timePeroid').disable();
+                  }
+                });
+
+                if (!formGroup.get('isEmployeeCanAddInTotalDirectly').value) {
+                  formGroup.get('expiryDay').disable();
+                }
+
+                formGroup.get('isEmployeeCanAddInTotalDirectly').valueChanges.subscribe((value) => {
+                  if (value) {
+                    formGroup.get('expiryDay').enable();
+                  } else {
+                    formGroup.get('expiryDay').disable();
+                  }
+                });
+
+                if (step.expenseTemplateCategoryFieldValues.length && step.expenseTemplateCategoryFieldValues.length >= 1) {
+                  step.expenseTemplateCategoryFieldValues?.forEach((value) => {
+                    if (value.expenseTemplateCategory === step._id && categoryDetails.data._id === step.expenseCategory) {
+                      const fieldFormGroup = this._formBuilder.group({
+                        label: value.label,
+                        rate: value.rate,
+                        type: value.type
+                      });
+                      const fieldsArray = (expenseCategoriesArray.at(formGroupIndex).get('expenseTemplateCategoryFieldValues') as FormArray);
+                      fieldsArray.push(fieldFormGroup);
+                    }
+                  });
+                }
+
+              }
         });
       });
     });
@@ -160,9 +207,17 @@ export class ExpenseCategorySettingsComponent {
     return this.firstForm.get('expenseTemplateCategoryFieldValues') as FormArray;
   }
 
-  removeField(fieldsArray: FormArray, index: number) {
-    fieldsArray.removeAt(index);
+  removeField(expenseCategoryIndex: number, fieldIndex: number) {
+    const expenseCategoriesArray = this.firstForm.get('expenseCategories') as FormArray;
+    const expenseCategoryFormGroup = expenseCategoriesArray.at(expenseCategoryIndex) as FormGroup;
+    const fieldsArray = expenseCategoryFormGroup.get('expenseTemplateCategoryFieldValues') as FormArray;
+    if (fieldsArray) {
+      fieldsArray.removeAt(fieldIndex);
+    } else {
+      console.error('FormArray not found');
+    }
   }
+
 
 
   getCategoryLabel(expenseCategoryId: string): string {

@@ -231,6 +231,8 @@ export class ExpensesCategoriesComponent implements OnInit {
       this.addCategoryForm.get('isMandatory').dirty
     ) {
       this.expenses.updateCategory(this.selectedCategory?._id, categoryPayload).subscribe((res: any) => {
+        this.getAllExpensesCategories();
+        this.toast.success('Expense Category Updated', 'Succesffully')
         this.updatedCategory = res.data._id;
       });
     }

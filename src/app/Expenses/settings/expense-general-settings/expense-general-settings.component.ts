@@ -49,7 +49,15 @@ export class ExpenseGeneralSettingsComponent {
 
   ngOnInit() {
     if (this.changeMode == 'Add') {
+      console.log(this.changeMode)
       this.addTemplateForm.reset();
+    }
+    else {
+      this.expenseService.selectedTemplate.subscribe((template: any) => {
+        if (template._id) {
+          this.setFormValues(template)
+        }
+      })
     }
     this.getAllExpensesCategories();
     this.getAllUsers();
@@ -59,11 +67,6 @@ export class ExpenseGeneralSettingsComponent {
     this.addTemplateForm.get('approvalType').valueChanges.subscribe((value: any) => {
       this.validateApprovers(value, this.addTemplateForm.get('approvalLevel').value)
     });
-    this.expenseService.selectedTemplate.subscribe((template: any) => {
-      if (template._id) {
-        this.setFormValues(template)
-      }
-    })
   }
 
   validateApprovers(approverType, approverLevel) {
@@ -116,7 +119,7 @@ export class ExpenseGeneralSettingsComponent {
         expenseCategories: expenseCategories
       });
       this.checkedFormats = templateData.downloadableFormats;
-     
+
     });
   }
 
@@ -205,5 +208,5 @@ export class ExpenseGeneralSettingsComponent {
     });
   }
 
-  
+
 }

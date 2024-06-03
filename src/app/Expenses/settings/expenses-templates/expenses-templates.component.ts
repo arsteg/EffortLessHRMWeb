@@ -48,7 +48,6 @@ export class ExpensesTemplatesComponent implements OnInit {
   }
 
   clearForm(){
-    // this.addTemplateForm.reset();
   }
   
   onClose(event) {

@@ -8,42 +8,42 @@
         <ng-template matStepLabel>{{ getCategoryLabel(expenseCategory[i]?.expensecategory) }}</ng-template>
         <div class="d-flex">
           <label class="w-50">Maximum amount limit per individual expense</label>
-          <input formControlName="maximumAmountPerExpense" type="number" class="form-control w-50">
           <div class="form-check form-switch ms-2">
             <input formControlName="isMaximumAmountPerExpenseSet" id="maxAmount{{i}}" class="form-check-input"
-              type="checkbox">
+            type="checkbox">
           </div>
+          <input  formControlName="maximumAmountPerExpense" type="number" class="form-control w-50"  [attr.disabled]="!categoryCtrl.get('isMaximumAmountPerExpenseSet').value ? true : null">
         </div>
 
         <div class="d-flex mt-2">
           <label class="w-50">Maximum amount permitted per expense without receipt</label>
-          <input formControlName="maximumAmountWithoutReceipt" type="number" class="form-control w-50">
           <div class="form-check form-switch ms-2">
             <input formControlName="isMaximumAmountWithoutReceiptSet" id="maxAmountWithoutReceipt{{i}}"
-              class="form-check-input" type="checkbox">
+            class="form-check-input" type="checkbox">
           </div>
+          <input formControlName="maximumAmountWithoutReceipt" type="number" class="form-control w-50" [attr.disabled]="!categoryCtrl.get('isMaximumAmountWithoutReceiptSet').value ? true : null">
         </div>
 
         <div class="d-flex mt-2">
           <label class="w-50">Times in a </label>
-          <select class="form-select w-50" formControlName="timePeroid" aria-label="Default select example">
+          <div class="form-check form-switch ms-2">
+            <input formControlName="isTimePeroidSet" id="timePeroid{{i}}" class="form-check-input" type="checkbox">
+          </div>
+          <select class="form-select w-50" formControlName="timePeroid" aria-label="Default select example"  [attr.disabled]="!categoryCtrl.get('isTimePeroidSet').value ? true : null">
             <option selected>Select Time</option>
             <option value="Day">Day</option>
             <option value="Week">Week</option>
             <option value="Month">Month</option>
           </select>
-          <div class="form-check form-switch ms-2">
-            <input formControlName="isTimePeroidSet" id="timePeroid{{i}}" class="form-check-input" type="checkbox">
-          </div>
         </div>
 
         <div class="d-flex  mt-2">
           <label class="w-50">Expense will expire Days after incurred date </label>
-          <input formControlName="expiryDay" type="number" class="form-control w-50">
           <div class="form-check form-switch ms-2">
             <input formControlName="isEmployeeCanAddInTotalDirectly" id="employeeCanAdd{{i}}" class="form-check-input"
-              type="checkbox">
+            type="checkbox">
           </div>
+          <input formControlName="expiryDay" type="number" class="form-control w-50"   [attr.disabled]="!categoryCtrl.get('isEmployeeCanAddInTotalDirectly').value ? true : null">
         </div>
 
 
@@ -66,7 +66,7 @@
                     <option value="miles">Miles</option>
                   </select>
                   <input formControlName="rate" type="number" placeholder="Rate" class="w-50 mx-2 form-control">
-                  <button (click)="removeField(categoryCtrl.get('fields'), j)" class="rounded-pill btn submenuTab active">
+                  <button (click)="removeField(i, j)" class="rounded-pill btn submenuTab active">
                     <i class="bi bi-trash"></i>
                   </button>
                 </div>
