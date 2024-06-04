@@ -1,10 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CommonService } from '../common/common.service';
-import { ManageTeamService } from '../_services/manage-team.service';
 import { TimeLogService } from '../_services/timeLogService';
-import { SearchTaskRequest } from '../reports/model/productivityModel';
-import { DatePipe } from '@angular/common';
-import { ReportsService } from '../_services/reports.service';
 import { ProjectService } from '../_services/project.service';
 import { ExportService } from '../_services/export.service';
 import { RealTime } from '../models/timeLog';
@@ -37,11 +33,10 @@ export class RealtimeComponent implements OnInit {
   onlineUserData: any;
   user: any;
   role: any;
+  showAllUserLiveButton: boolean = false;
+
   constructor(private timelog: TimeLogService,
-    private manageTeamService: ManageTeamService,
     public commonService: CommonService,
-    private datepipe: DatePipe,
-    private reportService: ReportsService,
     private projectService: ProjectService,
     private exportService: ExportService,
     private dialog: MatDialog,
@@ -150,28 +145,38 @@ export class RealtimeComponent implements OnInit {
 
       this.timelog.realTime(realtime).subscribe(result => {
         this.realtime = result.data[0];
+        this.showAllUserLiveButton = this.realtime.onlineUsers.length > 1;
       })
     });
   }
-  openLiveScreen(id){
+
+  multipleUserLiveScreen(){
+    let userIds: string[] = [];
+    for (let item of this.realtime.onlineUsers) {
+      if(item.user.id != this.currentUser.id)
+      {
+        userIds = userIds.concat(item.user.id);
+      }
+    }
+    this.openLiveScreen(userIds);
+  }
+
+  singleUserLiveScreen(id){
+    let userIds: string[] = [];
+    userIds.push(id);
+    this.openLiveScreen(userIds);
+  }
+
+  openLiveScreen(userIds){
     const dialogConfig = new MatDialogConfig();
-    dialogConfig.width = '850px';
+    dialogConfig.width = '60vw';
     dialogConfig.height = 'auto';
-    dialogConfig.data = { id: id };
+    dialogConfig.data = { id: userIds };
     
     const dialogRef = this.dialog.open(LiveScreenComponent, dialogConfig);
 
-    const requestBody = { users: id };
-    this.timelog.createLiveScreenRecord(requestBody).subscribe(result => {
-      let response = result;
-    });
-
     dialogRef.afterClosed().subscribe(result => {
       console.log('The modal was closed');
-      const requestBody = { users: id };
-      this.timelog.removeLiveScreenRecord(requestBody).subscribe(result => {
-        let response = result;
-      });
     });
   }
 }
