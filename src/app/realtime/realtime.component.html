@@ -60,7 +60,10 @@
             </div>
 
 
-            <div class="align-items-start flex-wrap gap-3 ms-auto">
+            <div class="d-flex align-items-start flex-wrap gap-3 ms-auto">
+                <div class="d-flex">
+                    <button mat-raised-button *ngIf="showAllUserLiveButton" class="rounded-pill addBtn" (click)="multipleUserLiveScreen()">All User Live Screen</button>
+                </div>
                 <div class="dropdown order-first order-sm-last d-flex">
                     <button class="export-btn dropdown-toggle formrow-inputState form-select select-styled active"
                         type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -111,7 +114,7 @@
                         <td>{{data?.task}}</td>
                         <td></td>
                         <td>
-                            <button mat-raised-button class="rounded-pill addBtn" (click)="openLiveScreen(data.user.id)">Live Screen</button>
+                            <button mat-raised-button class="rounded-pill addBtn" (click)="singleUserLiveScreen(data.user.id)">Live Screen</button>
                         </td>
                     </tr>
                 </tbody>
