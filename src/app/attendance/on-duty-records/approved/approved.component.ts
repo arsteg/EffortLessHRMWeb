@@ -9,7 +9,7 @@ export class ApprovedOnDutyComponent {
   actionOptions = {
     approve: false,
     reject: false,
-    cancel: false,
+    cancel: true,
     view: true
   };
   @Input() selectedTab: number;

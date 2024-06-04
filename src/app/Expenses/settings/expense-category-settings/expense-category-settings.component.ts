@@ -58,8 +58,6 @@ export class ExpenseCategorySettingsComponent {
     this.minDate.setDate(this.minDate.getDate() - 1);
     this.maxDate.setDate(this.maxDate.getDate() + 7);
     this.bsRangeValue = [this.bsValue, this.maxDate];
-
-
   }
 
 

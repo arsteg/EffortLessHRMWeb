@@ -14,11 +14,11 @@
             <table>
                 <tr>
                     <th class="w-50">Employee Name</th>
-                    <td>{{advanceReport?.employee}}</td>
+                    <td>{{report?.employee}}</td>
                 </tr>
                 <tr>
                     <th class="w-50">Category Name</th>
-                    <td>{{advanceReport?.category}}</td>
+                    <td>{{report?.category}}</td>
                 </tr>
                 <tr>
                     <th class="w-50">Amount</th>
@@ -29,23 +29,17 @@
                     <td>{{advanceReport?.status}}</td>
                 </tr>
 
-                <!-- <h4 class="modal-title text-start"
-                *ngIf="expenseService.advanceReport.getValue().status == 'Rejected'">Are you sure you want to
-                Reject this request?</h4>
-            <h4 class="modal-title text-start"
-                *ngIf="expenseService.advanceReport.getValue().status == 'Approved'">Are you sure you want to
-                Approve this request?</h4>
-            <h4 class="modal-title text-start"
-                *ngIf="expenseService.advanceReport.getValue().status == 'Cancelled'">Are you sure you want to
-                Cancel this request?</h4> -->
+
                 <tr>
-                    <th class="w-50">Admin 
-                        <span *ngIf="expenseService.advanceReport.getValue().status == 'Level 1 Approval Pending'">Pending</span> 
-                        <span *ngIf="expenseService.advanceReport.getValue().status == 'Approved'">Approval</span> 
+                    <th class="w-50">Admin
+                        <span
+                            *ngIf="expenseService.advanceReport.getValue().status == 'Level 1 Approval Pending'">Pending</span>
+                        <span *ngIf="expenseService.advanceReport.getValue().status == 'Approved'">Approval</span>
                         <span *ngIf="expenseService.advanceReport.getValue().status == 'Rejected'">Rejected</span>
-                        <span *ngIf="expenseService.advanceReport.getValue().status == 'Cancelled'">Cancelled</span> 
-                        Comment</th>
-                    <td>{{advanceReport?.comment}}</td>
+                        <span *ngIf="expenseService.advanceReport.getValue().status == 'Cancelled'">Cancelled</span>
+                        Comment
+                    </th>
+                    <td>{{advanceReport?.primaryApprovalReason || advanceReport?.comment }}</td>
                 </tr>
             </table>
         </div>

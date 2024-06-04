@@ -143,31 +143,19 @@
                 </select>
             </div>
 
-            <div class="form-group my-2">
-                <label for="">What is the shift start timing?</label>
-                <div class="row">
-                    <div class="col-md-6"> <label for="startTimeHour">Hour</label>
-                        <input type="number" id="startTimeHour" formControlName="startTimeHour" class="form-control">
-                    </div>
-                    <div class="col-md-6"> <label for="startTimeMinutes">Minutes</label>
-                        <input type="number" id="startTimeMinutes" formControlName="startTimeMinutes"
-                            class="form-control">
-                    </div>
+            <div class="row">
+                <div class="form-group my-2 col-md-6">
+                    <label for="">What is the shift start timing?</label>
+
+                    <input type="time" formControlName="startTime" class="form-control formTable" />
+
+                </div>
+
+                <div class="form-group my-2 col-md-6">
+                    <label for="">What is the shift end timing?</label>
+                    <input type="time" formControlName="endTime" class="form-control formTable" />
                 </div>
             </div>
-
-            <div class="form-group my-2">
-                <label for="">What is the shift end timing?</label>
-                <div class="row">
-                    <div class="col-md-6"> <label for="endTimeHour">Hour</label>
-                        <input type="number" id="endTimeHour" formControlName="endTimeHour" class="form-control">
-                    </div>
-                    <div class="col-md-6"> <label for="endTimeMinutes">Minutes</label>
-                        <input type="number" formControlName="endTimeMinutes" id="endTimeMinutes" class="form-control">
-                    </div>
-                </div>
-            </div>
-
 
             <div class="form-group my-2">
                 <label for="">Is checkout time next Day?</label>
@@ -335,17 +323,10 @@
                 *ngIf="shiftForm.get('shiftType').value == 'fixed duration' || shiftForm.get('shiftType').value == 'flexi'">
                 <label for="">What are the minimum hours per day that an employee should work to get credit for a Full
                     Day?</label>
-                <div class="d-flex justify-content-between">
-                    <div> <label for="minhoursPerDayToGetCreditForFullDayHour">Hour</label>
-                        <input type="number" id="minhoursPerDayToGetCreditForFullDayHour"
-                            formControlName="minhoursPerDayToGetCreditForFullDayHour" class="form-control">
-                    </div>
-                    <div> <label for="minhoursPerDayToGetCreditForFullDayMinutes">Minutes</label>
-                        <input type="number" id="minhoursPerDayToGetCreditForFullDayMinutes"
-                            formControlName="minhoursPerDayToGetCreditForFullDayMinutes" class="form-control">
-                    </div>
-                </div>
+                <input type="time" formControlName="minHoursPerDayToGetCreditForFullDay"
+                    class="form-control formTable" />
             </div>
+            
             <!-- if fixed duration selected -->
             <div *ngIf="shiftForm.get('shiftType').value == 'fixed duration'">
                 <div class="form-group my-2">
@@ -370,19 +351,16 @@
                     </div>
                 </div>
 
+
                 <div class="form-group my-2">
                     <label for="">What are the minimum hours per day that an employee should work to get credit for a
                         Half Day?</label>
-                    <div class="row">
-                        <div class="col-md-6"> <label for="">Hour</label>
-                            <input type="number" formControlName="minHoursToGetCreditforHalafDay" class="form-control">
-                        </div>
-                        <div class="col-md-6"> <label for="">Minutes</label>
-                            <input type="number" formControlName="minMinutesToGetCreditforHalafDay"
-                                class="form-control">
-                        </div>
-                    </div>
+
+                    <input type="time" formControlName="minHoursPerDayToGetCreditforHalfDay"
+                        class="form-control formTable" />
+
                 </div>
+
             </div>
             <!-- if flexi selected -->
             <div class="form-group my-2" *ngIf="shiftForm.get('shiftType').value == 'flexi'">

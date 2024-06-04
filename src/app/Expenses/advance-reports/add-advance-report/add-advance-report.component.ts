@@ -38,12 +38,14 @@ export class AddAdvanceReportComponent {
     this.commonService.populateUsers().subscribe(result => {
       this.allAssignee = result && result.data && result.data.data;
     });
-    this.expenseService.getAdvanceCatgories().subscribe((res: any) => {
-      this.allAdvanceCategories = res.data;
-      console.log(res.data);
-    })
+   this.getAllAdvanceCategories();
   }
-
+getAllAdvanceCategories(){
+  this.expenseService.getAdvanceCatgories().subscribe((res: any) => {
+    this.allAdvanceCategories = res.data;
+    console.log(res.data);
+  })
+}
   onSubmission() {
     if(this.addAdvanceReport.valid){
       this.expenseService.addAdvanceReport(this.addAdvanceReport.value).subscribe((res: any) => {
@@ -71,10 +73,11 @@ export class AddAdvanceReportComponent {
 
   getAdvanceCategoryByUserId() {
     this.expenseService.getAdvanceCategoryByUserId(this.addAdvanceReport.value.employee).subscribe((res: any) => {
-      if (res.status === "failure" || !res.details || res.details.length === 0) {
-        this.toast.error('Advance Category is not assigned to the selected employee', 'Error');
+      if (res.status === "failure" || !res.details || res.details.length === 0 || res.details == null) {
+        this.toast.error('Advance Category is not assigned to the selected Employee', 'Error');
       } else {
         this.categoriesByUser = res.details;
+        console.log(this.categoriesByUser)
       }
     }, (error) => {
       this.toast.error('Failed to fetch advance category. Please try again later.', 'Error');

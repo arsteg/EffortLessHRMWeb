@@ -1,1 +1,65 @@
-<p>view-on-duty works!</p>
+<div class="modal-body">
+    <div class=" d-flex justify-content-between">
+        <div class="">
+            <h1 mat-dialog-title class="text-muted pb-0 mb-0"> View {{viewRequest?.status}} OnDutyRequest Of
+                <span class="user">{{getUser(viewRequest?.user)}}</span>
+            </h1>
+        </div>
+        <div mat-dialog-actions>
+            <button mat-button mat-dialog-close><mat-icon aria-hidden="false" aria-label="Example close icon"
+                    fontIcon="close"></mat-icon></button>
+        </div>
+    </div>
+    <hr class="mt-0">
+    <div class="row" mat-dialog-content>
+        <div class="tableContainer">
+            <table>
+                <tr>
+                    <th class="w-50">Employee</th>
+                    <td>{{getUser(viewRequest?.user)}}</td>
+                </tr>
+                <tr>
+                    <th class="w-50">Start Date</th>
+                    <td>{{viewRequest?.startDate | date: 'mediumDate'}}</td>
+                </tr>
+                <tr>
+                    <th class="w-50">End Date</th>
+                    <td>{{viewRequest?.endDate | date: 'mediumDate'}}</td>
+                </tr>
+                <tr>
+                    <th class="w-50">Status</th>
+                    <td>{{viewRequest?.status}}</td>
+                </tr>
+                <tr>
+                    <th class="w-50">Reason</th>
+                    <td>{{viewRequest?.onDutyReason}}</td>
+                </tr>
+                <tr>
+                    <th class="w-50">Comment</th>
+                    <td>{{viewRequest?.comment}}</td>
+                </tr>
+            </table>
+
+            <div class="tableContainer bg-white p-2">
+                <table>
+                    <thead>
+                        <th>Date</th>
+                        <th>Shift Durations</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Remarks</th>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let shifts of viewRequest?.employeeOnDutyShifts">
+                            <td>{{shifts?.date | date: 'mediumDate'}}</td>
+                            <td>{{shifts?.shiftDuration | titlecase}}</td>
+                            <td>{{shifts?.startTime}}</td>
+                            <td>{{shifts?.endTime}}</td>
+                            <td>{{shifts?.remarks}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

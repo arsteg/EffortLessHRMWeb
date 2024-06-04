@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { ExportService } from 'src/app/_services/export.service';
@@ -23,12 +24,22 @@ export class CancelledComponent {
   p: number = 1;
   displayedData: any[]=[];
   public sortOrder: string = '';
-
+  status: string;
+  updateExpenseReport: FormGroup;
 
   constructor(private modalService: NgbModal,
     private expenseService: ExpensesService,
     private commonService: CommonService,
-    private exportService: ExportService  ) { }
+    private exportService: ExportService,
+  private fb: FormBuilder  ) {
+      this.updateExpenseReport = this.fb.group({
+        employee: [''],
+        title: [''],
+        status: [''],
+        primaryApprovalReason: [''],
+        secondaryApprovalReason: ['']
+      })
+     }
 
     ngOnInit() {
       this.getExpenseReport();
@@ -125,4 +136,6 @@ export class CancelledComponent {
       }
       return totalAmount;
     }
+
+    
 }

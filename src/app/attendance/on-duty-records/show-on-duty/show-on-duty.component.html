@@ -10,8 +10,7 @@
                 <button class="submenuTab active mx-2 rounded-pill" (click)="exportToCsv()"> <i
                         class="bi bi-download downloadBtn pe-2"></i>
                     Download</button>
-                <button *ngIf="portalView === 'user'" class="addBtn" (click)="openAddModal()" mat-raised-button
-                    type="button">Add Request</button>
+                <button class="addBtn" (click)="openAddModal()" mat-raised-button type="button">Add Request</button>
             </div>
 
         </div>
@@ -27,11 +26,11 @@
                 <th>Actions</th>
             </thead>
             <tbody>
-                <tr *ngFor="let data of onDutyRequest">
-                    <td>{{data?.user}}</td>
-                    <td>{{data?.startDate}}</td>
-                    <td>{{data?.endDate}}</td>
-                    <td>{{data?.onDutyReason}}</td>
+                <tr *ngFor="let data of onDutyRequest | paginate: { itemsPerPage: 5, currentPage: p };">
+                    <td>{{getUser(data?.user)}}</td>
+                    <td>{{data?.startDate | date: 'mediumDate'}}</td>
+                    <td>{{data?.endDate | date: 'mediumDate'}}</td>
+                    <td>{{getReason(data?.onDutyReason)}}</td>
                     <td>{{data?.comment}}</td>
                     <td>{{data?.status}}</td>
                     <td>
@@ -74,10 +73,12 @@
                 </tr>
             </tbody>
         </table>
+        <pagination-controls *ngIf="portalView === 'admin'" (pageChange)="p = $event"
+            class="pagination d-flex justify-content-end"></pagination-controls>
 
         <table *ngIf="portalView === 'user'">
             <thead>
-                <th>Employee Code</th>
+
                 <th>Start Date</th>
                 <th>End Date</th>
                 <th>Reason</th>
@@ -86,15 +87,44 @@
                 <th>Actions</th>
             </thead>
             <tbody>
-                <tr></tr>
+                <tr *ngFor="let request of onDutyRequest">
+                    <td>{{request?.startDate | date: 'mediumDate'}}</td>
+                    <td>{{request?.endDate | date: 'mediumDate'}}</td>
+                    <td>{{getReason(request?.onDutyReason)}}</td>
+                    <td>{{request?.comment}}</td>
+                    <td>{{request?.status}}</td>
+                    <td>
+                        <div class="dropdown-center">
+                            <button class="actions ms-2" mat-mini-fab data-bs-toggle="dropdown" aria-expanded="false"
+                                aria-label="Example icon button with a menu icon">
+                                <i class="bi bi-send"></i>
+                            </button>
+
+                            <ul class="dropdown-menu py-0">
+                                <li class="d-flex border-bottom action-list" (click)="deleteDialog(request?._id)">
+                                    <i class="bi bi-trash dropdown-item w-25"></i><span
+                                        class="pt-1 text-muted">Cancel</span>
+                                </li>
+                                <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
+                                     data-bs-target="#viewModal"
+                                    (click)="openSecondModal(request)">
+                                    <i class="fas fa-eye dropdown-item w-25"></i><span
+                                        class="pt-1 text-muted">View</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
             </tbody>
         </table>
+        <pagination-controls *ngIf="portalView === 'user'" (pageChange)="p = $event"
+            class="pagination d-flex justify-content-end"></pagination-controls>
     </div>
 </div>
 
 
 <ng-template #statusUpdate let-modal>
-    <app-update-status (leaveGrantRefreshed)="refreshLeaveGrantTable()"></app-update-status>
+    <app-update-status (onDutyRequest)="requestRefreshed()"></app-update-status>
 </ng-template>
 
 <ng-template #viewModal let-modal>

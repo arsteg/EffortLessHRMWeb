@@ -38,7 +38,7 @@ import { ViewRecordComponent } from './regularizations-records/view-record/view-
 import { ShowRecordComponent } from './regularizations-records/show-record/show-record.component';
 import { AddRecordComponent } from './regularizations-records/add-record/add-record.component';
 import { OnDutyRecordsComponent } from './on-duty-records/on-duty-records.component';
-import { CancelledComponent } from './on-duty-records/cancelled/cancelled.component';
+import { CancelledOnDutyComponent } from './on-duty-records/cancelled/cancelled.component';
 import { PendingOnDutyComponent } from './on-duty-records/pending/pending.component';
 import { RejectedOnDutyComponent } from './on-duty-records/rejected/rejected.component';
 import { ApprovedOnDutyComponent } from './on-duty-records/approved/approved.component';
@@ -79,7 +79,7 @@ import { ShowOnDutyComponent } from './on-duty-records/show-on-duty/show-on-duty
     ShowRecordComponent,
     AddRecordComponent,
     OnDutyRecordsComponent,
-    CancelledComponent,
+    CancelledOnDutyComponent,
     AddOnDutyComponent,
     ViewOnDutyComponent,
     UpdateOnDutyComponent,

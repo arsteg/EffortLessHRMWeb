@@ -176,7 +176,7 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
   }
   getUser(employeeId: string) {
     const matchingUser = this.allAssignee?.find(user => user._id === employeeId);
-    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'User Not Found';
+    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : '';
   }
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {

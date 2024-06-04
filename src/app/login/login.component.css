@@ -104,9 +104,6 @@ input.ng-invalid.ng-touched {
 
 }
 
-.banner1 {
-  /* height: 10%; */
-}
 
 .banner2 {
   /* height: 25%; */
@@ -143,5 +140,18 @@ input.ng-invalid.ng-touched {
 
   100% {
       transform: translateY(0);
+  }
+}
+
+.secondCol{
+  margin-left:-60px;
+}
+
+@media (max-width: 575px){
+  .dashImg{
+    display: none;
+  }
+  .card-box{
+    width:100% !important;
   }
 }

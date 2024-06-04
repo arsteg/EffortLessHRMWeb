@@ -27,7 +27,7 @@
             <label for="firstApprovalEmployee">Select Advance Category<span class="text-danger">*</span></label>
             <select name="" id="firstApprovalEmployee" formControlName="category" required class="ms-2 form-control">
                 <option>Select Advance Category</option>
-                <option *ngFor="let category of categoriesByUser" [value]="category?._id">
+                <option *ngFor="let category of categoriesByUser" [value]="category?.advanceCategory">
                     {{getCategory(category?.advanceCategory)}}</option>
             </select>
             <div *ngIf="addAdvanceReport.get('category').invalid && addAdvanceReport.get('category').touched" class="text-danger error">

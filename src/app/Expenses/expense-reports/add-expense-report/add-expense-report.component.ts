@@ -115,7 +115,7 @@ export class AddExpenseReportComponent {
       this.expenseService.getExpenseCategoryByUser(user).subscribe((res: any) => {
 
         this.expenseService.tempAndCat.next(res);
-        if (!res) {
+        if (!res || res.data == null) {
           this.toast.warning('User is not Assigned to any Expense Categories', 'Warning')
         }
       })

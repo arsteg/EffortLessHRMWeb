@@ -39,12 +39,9 @@ export class ShiftComponent {
       dashboardColor: ['', Validators.required],
       isOffShift: [true, Validators.required],
       shiftType: [''],
-      startTimeHour: [''],
-      startTimeMinutes: [''],
-      endTimeHour: [''],
-      endTimeMinutes: [''],
-      minhoursPerDayToGetCreditForFullDayHour: [0],
-      minhoursPerDayToGetCreditForFullDayMinutes: [0],
+      startTime: [''],
+      endTime: [''],
+      minHoursPerDayToGetCreditForFullDay: [''],
       isCheckoutTimeNextDay: [true],
       // isLatestDepartureTimeNextDay: [true],
       earliestArrival: [''],
@@ -63,8 +60,7 @@ export class ShiftComponent {
       enterNumberOfDaysForEarlyGoing: [0],
       graceTimeLimitForEarlyGoing: [0],
       isHalfDayApplicable: [true],
-      minHoursToGetCreditforHalafDay: [0],
-      minMinutesToGetCreditforHalafDay: [0],
+      minHoursPerDayToGetCreditforHalfDay: [''],
       maxLateComingAllowedMinutesFirstHalfAttendance: [0],
     })
   }
@@ -110,12 +106,10 @@ export class ShiftComponent {
       dashboardColor: data.dashboardColor,
       isOffShift: data.isOffShift,
       shiftType: data.shiftType,
-      startTimeHour: data.startTimeHour,
-      startTimeMinutes: data.startTimeMinutes,
-      endTimeHour: data.endTimeHour,
-      endTimeMinutes: data.endTimeMinutes,
-      minhoursPerDayToGetCreditForFullDayHour: data.minhoursPerDayToGetCreditForFullDayHour,
-      minhoursPerDayToGetCreditForFullDayMinutes: data.minhoursPerDayToGetCreditForFullDayMinutes,
+      
+      startTime: data.startTime,
+      endTime: data.endTime,
+      minHoursPerDayToGetCreditForFullDay: data.minHoursPerDayToGetCreditForFullDay,
       isCheckoutTimeNextDay: data.isCheckoutTimeNextDay,
       // isLatestDepartureTimeNextDay: [true],
       earliestArrival: data.earliestArrival,
@@ -134,8 +128,8 @@ export class ShiftComponent {
       enterNumberOfDaysForEarlyGoing: data.enterNumberOfDaysForEarlyGoing,
       graceTimeLimitForEarlyGoing: data.graceTimeLimitForEarlyGoing,
       isHalfDayApplicable: data.isHalfDayApplicable,
-      minHoursToGetCreditforHalafDay: data.minHoursToGetCreditforHalafDay,
-      minMinutesToGetCreditforHalafDay: data.minMinutesToGetCreditforHalafDay,
+      minHoursPerDayToGetCreditforHalfDay: data.minHoursPerDayToGetCreditforHalfDay,
+      
       maxLateComingAllowedMinutesFirstHalfAttendance: data.maxLateComingAllowedMinutesFirstHalfAttendance
     })
   }

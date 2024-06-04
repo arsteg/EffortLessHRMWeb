@@ -275,6 +275,11 @@ export class AttendanceService {
     var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/shifts`, this.httpOptions);
     return response;
   }
+
+  getShiftByUser(userId: string): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/shifts-by-user/${userId}`, this.httpOptions);
+    return response;
+  }
   // Shift Assignment
   addShiftAssignment(shiftAssignment: any): Observable<response<any>> {
     var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/shift-template-assignments`, shiftAssignment, this.httpOptions);
@@ -343,7 +348,7 @@ export class AttendanceService {
     return response;
   }
   getRegularizationByUser(userId: string): Observable<response<any>> {
-    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/regularizationRequests/${userId}`, this.httpOptions);
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/regularizationRequests-by-user/${userId}`, this.httpOptions);
     return response;
   }
 
@@ -370,6 +375,11 @@ export class AttendanceService {
 
   getAllOnDutyRequests(): Observable<response<any>> {
     var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/employee-duty-requests`, this.httpOptions);
+    return response;
+  }
+
+  getAllOnDutyRequestsByUser(userId: string): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/employee-duty-requests-by-user/${userId}`, this.httpOptions);
     return response;
   }
 

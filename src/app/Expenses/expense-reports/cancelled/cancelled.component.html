@@ -9,7 +9,7 @@
                     <input class="form-control search" type="text" placeholder="Search..."  [(ngModel)]="searchText"
                         name="searchText" aria-label="default input example">
 
-                        <button mat-raised-button class="addBtn rounded-pill mx-3"
+                        <button mat-raised-button class="addBtn rounded-pill mx-3"   (click)="open(addModal); isEdit = false; step=1"
                         >Add Expense</button>
  
                      <button  class="submenuTab active rounded-pill" (click)="exportToCsv()"> <i class="bi bi-download downloadBtn pe-2"></i>
@@ -75,7 +75,7 @@
                                     <i class="fas fa-eye dropdown-item w-25"></i><span
                                         class="pt-1 text-muted">View</span>
                                 </li>
-                               
+
                             </ul>
                         </div>
                     </td>
@@ -101,3 +101,4 @@
     <app-create-report *ngIf="step == 2" (changeStep)="onChangeStep($event)" [changeMode]="changeMode"
         (close)="onClose($event)" (updateExpenseReportTable)="refreshExpenseReportTable()"></app-create-report>
 </ng-template>
+

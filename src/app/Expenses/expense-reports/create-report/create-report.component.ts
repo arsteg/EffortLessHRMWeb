@@ -293,7 +293,7 @@ export class CreateReportComponent {
           } else {
             expenseApplicationField = field.expenseApplicationField || null;
           }
-  
+
           const matchingField = expenseReportExpenseFields.find(reportField => reportField.expenseApplicationField === expenseApplicationField);
           const value = matchingField ? matchingField.value : '';
           const formGroupConfig: any = {
@@ -317,6 +317,7 @@ export class CreateReportComponent {
       let categoryId = this.expenseReportform.value.expenseCategory;
       this.expenseService.getApplicationFieldbyCategory(categoryId).subscribe((res: any) => {
         this.applicationfields = res.data;
+        console.log(this.applicationfields);
         this.expenseFieldsArray.clear();
         this.applicationfields.forEach(field => {
           let expenseApplicationField = null;
@@ -334,12 +335,12 @@ export class CreateReportComponent {
           };
           this.expenseFieldsArray.push(this.fb.group(formGroupConfig));
         });
-  
+
         this.expenseFieldsArray.controls.forEach((control: FormGroup) => {
           control.get('value').reset('');
         });
       });
-  
+
       this.expenseService.tempAndCat.subscribe(res => {
         this.categoryType = res.data?.find(catType => catType._id === categoryId);
         const category = res.details?.find(cat => cat.expenseCategory === categoryId);
@@ -349,7 +350,7 @@ export class CreateReportComponent {
       });
     }
   }
-  
+
   onTypeChange(selectedType: string): void {
     this.selectedType = selectedType;
     const selectedField = this.applicableCategoryFields?.find(field => field.label === selectedType);

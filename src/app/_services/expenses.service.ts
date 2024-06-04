@@ -40,9 +40,9 @@ export class ExpensesService {
   triggerUpdateTable() {
     this.updateTableSubject.next();
   }
- 
+
   constructor(private http: HttpClient) {
-   }
+  }
 
   public getToken() {
     return localStorage.getItem('jwtToken');
@@ -114,7 +114,7 @@ export class ExpensesService {
     return response;
   }
 
-  getApplicableFieldByTemplateAndCategory( tempId: string, catId: string ): Observable<response<any>> {
+  getApplicableFieldByTemplateAndCategory(tempId: string, catId: string): Observable<response<any>> {
     var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/expense-template-applicable-categories-by-template-category/${tempId}/${catId}`, this.httpOptions);
     return response;
   }
@@ -353,6 +353,11 @@ export class ExpensesService {
 
   getEmployeeApplicableSettings(userId: string): Observable<response<any>> {
     var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/employee-expense-applicable-setting/${userId}`, this.httpOptions);
+    return response;
+  }
+
+  getAdvanceReportById(id: string): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/advance/${id}`, this.httpOptions);
     return response;
   }
 }

@@ -53,7 +53,7 @@
                 <td>{{getUser(report?.employee)}}</td>
                 <td>{{report?.amount}}</td>
                 <td>{{getCategory(report?.category)}}</td>
-                <td>{{report?.comment}}</td>
+                <td>{{report?.primaryApprovalReason || report?.comment}}</td>
                 <td>{{report?.status}}</td>
                 <td>
                     <div class="dropdown-center">

@@ -5,10 +5,10 @@ import { Component, Input } from '@angular/core';
   templateUrl: './cancelled.component.html',
   styleUrl: './cancelled.component.css'
 })
-export class CancelledComponent {
+export class CancelledOnDutyComponent {
   actionOptions = {
-    approve: false,
-    reject: false,
+    approve: true,
+    reject: true,
     cancel: false,
     view: true
   };

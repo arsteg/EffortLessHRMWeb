@@ -9,12 +9,16 @@ import { ExpensesService } from 'src/app/_services/expenses.service';
 export class ViewReportsComponent {
   @Output() close: any = new EventEmitter();
   advanceReport: any;
+  report: any;
 
   constructor(public expenseService: ExpensesService) { }
 
   ngOnInit() {
-    this.advanceReport = this.expenseService.advanceReport.getValue();
-    console.log(this.advanceReport);
+    this.report = this.expenseService.advanceReport.getValue();
+    console.log(this.report)
+    this.expenseService.getAdvanceReportById(this.report._id).subscribe((res: any) => {
+      this.advanceReport = res.data;
+    })
   }
 
   closeModal() {
