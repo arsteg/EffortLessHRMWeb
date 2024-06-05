@@ -25,9 +25,9 @@
             </thead>
             <tbody>
               <tr *ngFor="let interview of filteredInterviews | search: searchText | paginate: { itemsPerPage: 10, currentPage: page }">
-                <td>{{interview.candidate.name}}</td>
-                <td> {{interview.interviewer.firstName}} </td>
-                <td> {{interview.scheduledBy.firstName}} </td>
+                <td>{{interview.candidate?.name}}</td>
+                <td> {{interview.interviewer?.firstName}} </td>
+                <td> {{interview.scheduledBy?.firstName}} </td>
                 <td>{{interview.interviewDateTime | date:'dd-MMM-yyyy'}}</td>
                 <td>{{interview.zoomLink}}</td>
                 <td class="text-end">
@@ -58,10 +58,11 @@
           <!-- Basic Fields -->
           <div class="form-group">
             <label for="assetType">Candidate</label>
-            <select class="custom-select  p-2" formControlName="candidate" required>
-              <option [value]="candidate" *ngFor="let candidate of candidates">
+            <select class="custom-select  p-2" formControlName="candidate._id" required>
+              <option [value]="candidate._id" *ngFor="let candidate of candidateList">
                   {{candidate.name}}</option>
             </select>
+
             <div *ngIf="!validateOption('string',scheduleInterviewForm.value.name) && (scheduleInterviewForm.get('name').touched || scheduleInterviewForm.get('name').dirty)"
             class="invalid-feedback">
             Name is required!  !
@@ -70,7 +71,7 @@
           <div class="form-group mt-1">
             <label>Interviewer</label>
             <div class="d-flex">
-              <select class="custom-select p-2" formControlName="candidate" required>
+              <select class="custom-select p-2"  required>
                 <option [value]="" *ngFor="let interviewer of interviewers" class="d-flex">
                   {{interviewer.interviewer.firstName}} {{interviewer.interviewer.lastName}}
                 </option>

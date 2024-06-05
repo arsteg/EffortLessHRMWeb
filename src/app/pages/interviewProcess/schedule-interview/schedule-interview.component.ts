@@ -23,6 +23,7 @@ import { CommonService } from 'src/app/common/common.service';
 })
 export class ScheduleInterviewComponent implements OnInit {
   candidates:candidate[]=[];
+  candidateList :candidate[]=[];
   interviews: InterviewDetail[] = [];
   interviewers:interviewer[]=[];
   filteredInterviews: InterviewDetail[] = [];
@@ -45,10 +46,16 @@ export class ScheduleInterviewComponent implements OnInit {
   ) {
     this.scheduleInterviewForm = this.fb.group({
       _id:['', Validators.required],
+      candidate: ['', Validators.required],
+      topic: ['', Validators.required],
+      type: ['', Validators.required],
+      startTime: ['', Validators.required],
+      duration: ['', Validators.required],
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       phoneNumber: ['',Validators.required],
       timeZone: ['',Validators.required],
+      password: ['',Validators.required],
       customAttributes: this.fb.array([]),
     });
   }
@@ -56,6 +63,7 @@ export class ScheduleInterviewComponent implements OnInit {
   ngOnInit(): void {
     this.initCandidateForm();
     this.getAllCandidateInterviews();
+    this.getAllCandidatesWithData();
     this.getAllCandidates();
     this.getAllInterviewers();
     this.scheduleInterviewForm.statusChanges.subscribe((f)=>{
@@ -69,7 +77,7 @@ export class ScheduleInterviewComponent implements OnInit {
     });
   }
 
-  getAllCandidates(){
+  getAllCandidatesWithData(){
     this.interviewProcessService.getAllCandidatesWithData().subscribe((response: any) => {
       this.candidates = response && response.data;
     });
@@ -230,9 +238,10 @@ export class ScheduleInterviewComponent implements OnInit {
     (<FormArray>this.scheduleInterviewForm.get('customAttributes')).clear();
     this.selectedCustomAttributes.forEach((attribute) => {
       const attributeFormGroup = new FormGroup({
-        _id:new FormControl(attribute._id),
+        _id:new FormControl(this.selectedInterviewDetail.candidate._id),
         candidate: new FormControl(attribute.candidate),
         candidateDataField : new FormControl(attribute._id),
+        topic : new FormControl(""),
         fieldName : new FormControl(attribute.fieldName),
         fieldType : new FormControl(attribute.fieldType),
         fieldValue : new FormControl(attribute.fieldValue),
@@ -252,7 +261,7 @@ export class ScheduleInterviewComponent implements OnInit {
       (<FormArray>this.scheduleInterviewForm.get('customAttributes')).clear();
       candidate.candidateDataFields.forEach((attribute) => {
         const attributeFormGroup = new FormGroup({
-          _id:new FormControl(attribute._id),
+          _id:new FormControl(this.selectedInterviewDetail.candidate._id),
           candidate: new FormControl(attribute.candidate),
           candidateDataField : new FormControl(attribute._id),
           fieldName : new FormControl(attribute.fieldName),
@@ -347,6 +356,11 @@ export class ScheduleInterviewComponent implements OnInit {
 
   confirmAction(): boolean {
     return window.confirm('Are you sure you want to perform this action?');
+  }
+  getAllCandidates(){
+    this.interviewProcessService.getAllCandidates().subscribe((response: any) => {
+      this.candidateList = response && response.data;
+    });
   }
 }
 
