@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -17,7 +17,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class ExpensesTemplateAssignmentComponent implements OnInit {
   searchText: string = '';
-  isEdit: boolean;
+  isEdit: boolean = false;
   changeMode: 'Add' | 'Update' = 'Add';
   closeResult: string = '';
   templates: any[] = [];
@@ -34,6 +34,9 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
   maxDate = new Date();
   public sortOrder: string = '';
   templateById: any;
+  @ViewChild('primaryApproverField') primaryApproverField: ElementRef;
+  @ViewChild('secondaryApproverField') secondaryApproverField: ElementRef;
+  showApproverFields = true;
 
   constructor(private modalService: NgbModal,
     private dialog: MatDialog,
@@ -63,6 +66,7 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
     });
   }
   setFormValues(data) {
+    this.showApproverFields = true;
     this.expenseService.getTemplateById(data.expenseTemplate).subscribe((res: any) => {
       this.templateById = res.data;
       this.expenseService.getTemplateAssignmentById(data.user).subscribe((res: any) => {
@@ -141,7 +145,9 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
     })
   }
 
+
   onTemplateSelectionChange(event: any) {
+    this.showApproverFields = true;
     const selectedTemplateId = event.target.value;
 
     this.expenseService.getTemplateById(selectedTemplateId).subscribe((res: any) => {
@@ -150,30 +156,63 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
       if (this.templateById.approvalType === 'template-wise') {
         if (this.templateById.approvalLevel === '1') {
           this.templateAssignmentForm.patchValue({
-            primaryApprover: this.templateById.primaryApprover,
+            primaryApprover: this.templateById.firstApprovalEmployee,
             secondaryApprover: null
           });
           this.templateAssignmentForm.get('primaryApprover').disable();
+          this.templateAssignmentForm.get('primaryApprover').updateValueAndValidity();
+          this.templateAssignmentForm.get('secondaryApprover').disable();
+          this.templateAssignmentForm.get('secondaryApprover').updateValueAndValidity();
+
+          // Disable the fields
+          this.primaryApproverField.nativeElement.disabled = true;
+          this.secondaryApproverField.nativeElement.disabled = true;
 
         } else if (this.templateById.approvalLevel === '2') {
           this.templateAssignmentForm.patchValue({
-            primaryApprover: this.templateById.primaryApprover,
-            secondaryApprover: this.templateById.secondaryApprover
+            primaryApprover: this.templateById.firstApprovalEmployee,
+            secondaryApprover: this.templateById.secondApprovalEmployee
           });
-        }
-        this.templateAssignmentForm.get('primaryApprover').disable();
-        this.templateAssignmentForm.get('secondaryApprover').disable();
-      } else if (this.templateById.approvalType === 'employee-wise') {
-        this.templateAssignmentForm.patchValue({
-          primaryApprover: null,
-          secondaryApprover: null
-        });
+          this.templateAssignmentForm.get('primaryApprover').disable();
+          this.templateAssignmentForm.get('primaryApprover').updateValueAndValidity();
+          this.templateAssignmentForm.get('secondaryApprover').disable();
+          this.templateAssignmentForm.get('secondaryApprover').updateValueAndValidity();
 
-        this.templateAssignmentForm.get('primaryApprover').enable();
-        this.templateAssignmentForm.get('secondaryApprover').enable();
+          // Disable the fields
+          this.primaryApproverField.nativeElement.disabled = true;
+          this.secondaryApproverField.nativeElement.disabled = true;
+        }
+      } else if (this.templateById.approvalType === 'employee-wise') {
+        if (this.templateById.approvalLevel === '1') {
+          this.templateAssignmentForm.patchValue({
+            primaryApprover: this.templateById.firstApprovalEmployee,
+            secondaryApprover: null
+          });
+          this.templateAssignmentForm.get('primaryApprover').enable();
+          this.templateAssignmentForm.get('primaryApprover').updateValueAndValidity();
+          this.templateAssignmentForm.get('secondaryApprover').enable();
+          this.templateAssignmentForm.get('secondaryApprover').updateValueAndValidity();
+
+          // Enable the fields
+          this.primaryApproverField.nativeElement.disabled = false;
+          this.secondaryApproverField.nativeElement.disabled = false;
+
+        } else if (this.templateById.approvalLevel === '2') {
+          this.templateAssignmentForm.patchValue({
+            primaryApprover: this.templateById.firstApprovalEmployee,
+            secondaryApprover: this.templateById.secondApprovalEmployee
+          });
+          this.templateAssignmentForm.get('primaryApprover').enable();
+          this.templateAssignmentForm.get('primaryApprover').updateValueAndValidity();
+          this.templateAssignmentForm.get('secondaryApprover').enable();
+          this.templateAssignmentForm.get('secondaryApprover').updateValueAndValidity();
+          this.primaryApproverField.nativeElement.disabled = false;
+          this.secondaryApproverField.nativeElement.disabled = false;
+        }
       }
     });
   }
+
   getUser(employeeId: string) {
     const matchingUser = this.allAssignee?.find(user => user._id === employeeId);
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : '';
@@ -188,7 +227,10 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
     }
   }
   open(content: any) {
-    console.log(content)
+    if (this.changeMode == 'Add') { this.showApproverFields = false; 
+    }
+    else { this.showApproverFields = true;
+     }
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
@@ -262,6 +304,7 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
         this.templateAssignments.push(newTemplateAssignment);
         this.getAssignments();
         this.templateAssignmentForm.reset();
+        this.showApproverFields = false;
       },
         (err) => {
           this.toast.error('Advance Template Cannot be created!', 'Error')
@@ -275,6 +318,8 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
       this.expenseService.addTemplateAssignment(payload).subscribe((res: any) => {
         const updatedTemplateAssign = res.data;
         this.toast.success('Advance Template Assignment Updated!', 'Successfully')
+        this.templateAssignmentForm.reset();
+        this.showApproverFields = false;
 
         const index = this.templateAssignments.findIndex(templateAssign => templateAssign._id === updatedTemplateAssign._id);
         if (index !== -1) {

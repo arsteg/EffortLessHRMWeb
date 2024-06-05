@@ -90,12 +90,10 @@ export class ShowMyExpensesComponent {
   }
 
   getExpenseByUser() {
-    this.auth.currentUser.subscribe((res: any) => {
-      this.expenseService.getExpenseReportByUser(res.id).subscribe((res: any) => {
+      this.expenseService.getExpenseReportByUser(this.currentUser.id).subscribe((res: any) => {
         this.expenseReport = res.data;
         this.totalAmount = this.expenseReport.reduce((total, report) => total + report.amount, 0);
       })
-    });
   }
   
    getCategory(categoryId: string) {

@@ -32,11 +32,11 @@
               <td class="" [innerHTML]="data?.contentData"></td>
               <td class="">{{data?.subject}}</td>
               <td class="">
-                <button class="actions" mat-mini-fab title="Update" data-bs-toggle="modal" data-bs-target="#updateModal"
+                <button class="actions" mat-mini-fab  matTooltip="Edit" matTooltipPosition="before" data-bs-toggle="modal" data-bs-target="#updateModal"
                   (click)="selectedEmail=data" aria-label="Example icon button with a menu icon">
                   <i class="bi bi-pencil-fill"></i>
                 </button>
-                <button class="actions ms-2" title="Delete" mat-mini-fab (click)="deleteEmail(data._id)"
+                <button class="actions ms-2" mat-mini-fab matTooltip="Delete" matTooltipPosition="after" (click)="deleteEmail(data._id)"
                   aria-label="Example icon button with a menu icon">
                   <i class="bi bi-trash"></i>
                 </button>

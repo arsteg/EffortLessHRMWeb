@@ -72,7 +72,7 @@
               </ng-template>
             </td>
             <td><button class="actions" type="button" [disabled]="!expenseReportExp?._id"
-                (click)="openSecondModal(true); isEdit === true; getSelectedExpenseReportExpense(expenseReportExp)" mat-mini-fab title="Update"
+                (click)="openSecondModal(true); isEdit === true; getSelectedExpenseReportExpense(expenseReportExp)" mat-mini-fab  matTooltip="Edit" matTooltipPosition="before"
                 aria-label="Example icon button with a menu icon">
                 <i class="bi bi-pencil-fill"></i>
               </button>

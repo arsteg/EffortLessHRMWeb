@@ -46,13 +46,13 @@
                         <td class="text-center">{{ calculateTotalEmployees(leaveTemp) }}</td>
                         <td class="text-center">{{leaveTemp?.applicableCategories?.length}}</td>
                         <td>
-                            <button class="actions" mat-mini-fab title="Update" (click)="changeMode='Next'; isEdit === true;
+                            <button class="actions" mat-mini-fab  matTooltip="Edit" matTooltipPosition="before" (click)="changeMode='Next'; isEdit === true;
                             open(addModal);
                             selectedTemplateId=leaveTemp._id;
                             setFormValues(leaveTemp)" aria-label="Example icon button with a menu icon">
                                 <i class="bi bi-pencil-fill"></i>
                             </button>
-                            <button class="actions ms-2" title="Delete" mat-mini-fab
+                            <button class="actions ms-2" mat-mini-fab matTooltip="Delete" matTooltipPosition="after"
                                 aria-label="Example icon button with a menu icon"
                                 (click)="deleteDialog(leaveTemp?._id)">
                                 <i class="bi bi-trash"></i>

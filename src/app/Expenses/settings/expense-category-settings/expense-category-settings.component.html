@@ -5,8 +5,10 @@
   <ng-container>
     <mat-step *ngFor="let categoryCtrl of firstForm?.get('expenseCategories')?.controls; let i = index">
       <form [formGroup]="categoryCtrl">
-        <ng-template matStepLabel>{{ getCategoryLabel(expenseCategory[i]?.expensecategory) }}</ng-template>
-        
+        <ng-template matStepLabel>{{ getCategoryLabel(expenseCategory[i]?.expensecategory) }}
+          <span [matTooltip]="getCategoryLabel(expenseCategory[i]?.expensecategory)" matTooltipPosition="below"></span>
+        </ng-template>
+
 
         <div class="d-flex" *ngIf="categoryCtrl.get('categoryType').value == 'dateRange'">
           <label for="">Would you like the employee to enter Total Expense amount in an expense application?</label>
@@ -75,7 +77,8 @@
 
         <button class="submenuTab active rounded-pill ms-4" type="button"
           *ngIf="categoryCtrl.get('categoryType').value != 'dateRange'" (click)="addField(i)">Add Fields</button>
-        <div formArrayName="expenseTemplateCategoryFieldValues"  *ngIf="categoryCtrl.get('categoryType').value != 'dateRange'">
+        <div formArrayName="expenseTemplateCategoryFieldValues"
+          *ngIf="categoryCtrl.get('categoryType').value != 'dateRange'">
           <div *ngIf="i === stepper.selectedIndex">
             <div
               *ngFor="let fieldCtrl of categoryCtrl.get('expenseTemplateCategoryFieldValues').controls; let j = index">

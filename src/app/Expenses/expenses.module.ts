@@ -54,6 +54,7 @@ import { RejectedTeamExpensesComponent } from './team-expense/rejected-team-expe
 import { ApplicableExpenseSettingsComponent } from './general-information/applicable-expense-settings/applicable-expense-settings.component';
 import { SupervisorsComponent } from './general-information/supervisors/supervisors.component';
 import { ViewMyExpenseComponent } from './my-expense/view-my-expense/view-my-expense.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
  
 @NgModule({
   declarations: [
@@ -115,6 +116,7 @@ import { ViewMyExpenseComponent } from './my-expense/view-my-expense/view-my-exp
     MatExpansionModule,
     MatCheckboxModule,
     MatRadioModule,
+    MatTooltipModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

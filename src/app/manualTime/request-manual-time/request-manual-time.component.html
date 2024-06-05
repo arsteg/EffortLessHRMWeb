@@ -72,12 +72,12 @@
                   [title]="record.status"></i>
               </span></td>
             <td>
-              <button class="actions" *ngIf="record.status=='pending'" mat-mini-fab title="Update"
+              <button class="actions" *ngIf="record.status=='pending'" mat-mini-fab  matTooltip="Edit" matTooltipPosition="before"
                 (click)="setUpdateMode(record);selectedRequest=record;changeMode='Update';open(requestModal)"
                 aria-label="Example icon button with a menu icon">
                 <i class="bi bi-pencil-fill"></i>
               </button>
-              <button class="actions ms-2" title="Delete" mat-mini-fab data-bs-toggle="modal"
+              <button class="actions ms-2" mat-mini-fab matTooltip="Delete" matTooltipPosition="after" data-bs-toggle="modal"
                 data-bs-target="#deleteModal" (click)="selectedRequest = record"
                 aria-label="Example icon button with a menu icon">
                 <i class="bi bi-trash"></i>

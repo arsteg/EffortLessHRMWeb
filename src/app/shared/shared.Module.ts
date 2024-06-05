@@ -60,7 +60,8 @@ import { MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle } fr
     MatDialogActions,
     MatDialogClose,
     MatDialogContent,
-    MatDialogTitle
+    MatDialogTitle,
+    MatTooltipModule
   ],
   exports: [
     SortDirective,
@@ -95,7 +96,9 @@ import { MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle } fr
     MatDialogActions,
     MatDialogClose,
     MatDialogContent,
-    MatDialogTitle
+    MatDialogTitle,
+    TooltipModule,
+    MatTooltipModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

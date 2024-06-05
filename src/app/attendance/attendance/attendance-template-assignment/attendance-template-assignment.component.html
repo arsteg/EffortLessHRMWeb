@@ -41,7 +41,7 @@
                         <td>{{getUser(template?.secondaryApprover) | titlecase}}</td>
                         <td>{{template?.effectiveFrom | date: 'mediumDate'}}</td>
                         <td class="text-center">
-                            <button class="actions" mat-mini-fab title="Update" (click)="open(editModal);
+                            <button class="actions" mat-mini-fab  matTooltip="Edit" matTooltipPosition="before" (click)="open(editModal);
                                 isEdit= true;
                                 selectedTemplate=template;
                                 setFormValues(template)" aria-label="Example icon button with a menu icon">

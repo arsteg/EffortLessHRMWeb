@@ -52,7 +52,7 @@
                                 <td>{{roundingInfo?.shift}}</td>
                                 <td>{{roundingInfo?.roundingPattern}}</td>
                                 <td class="text-center">
-                                    <button class="actions" mat-mini-fab title="Update" (click)="open(addModal);
+                                    <button class="actions" mat-mini-fab  matTooltip="Edit" matTooltipPosition="before" (click)="open(addModal);
                                 isEdit= true;
                                 changeMode = 'Update';
                                 selectedRecord=roundingInfo;
@@ -115,7 +115,7 @@
                                 <td>{{overtime?.ToTimeHour}}:{{overtime?.ToTimeMinutes}} {{overtime?.ToTimeTT |
                                     uppercase}}</td>
                                 <td class="text-center">
-                                    <button class="actions" mat-mini-fab title="Update" (click)="open(addOverTimeModal);
+                                    <button class="actions" mat-mini-fab  matTooltip="Edit" matTooltipPosition="before" (click)="open(addOverTimeModal);
                                 isEdit= true;
                                 changeMode = 'Update';
                                 selectedOverTime=overtime;
