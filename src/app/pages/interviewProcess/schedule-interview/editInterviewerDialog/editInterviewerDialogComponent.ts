@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component,OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -18,7 +18,7 @@ import { interviewer } from 'src/app/models/interviewProcess/interviewer';
   templateUrl: './editInterviewerDialogComponent.html',
   styleUrl: './editInterviewerDialogComponent.css'
 })
-export class EditInterviewerDialogComponent {
+export class EditInterviewerDialogComponent implements OnInit {
   //#region Private Members
   teamOfUsers: User[] = [];
   interviewers:interviewer[]=[];
@@ -35,11 +35,10 @@ export class EditInterviewerDialogComponent {
     private datePipe: DatePipe,
     private toasttt: ToastrService,
     private dialogRef: MatDialogRef<EditInterviewerDialogComponent>) {
-
+    this.populateTeamOfUsers();
   }
   //#endregion
   ngOnInit(): void {
-    this.populateTeamOfUsers();
   }
   //#region Private methods
   populateTeamOfUsers() {
