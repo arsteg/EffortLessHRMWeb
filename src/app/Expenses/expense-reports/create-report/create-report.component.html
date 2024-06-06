@@ -7,7 +7,7 @@
 </div>
 
 <div mat-dialog-content>
-    <form [formGroup]="expenseReportform">
+    <form [formGroup]="expenseReportform" (ngSubmit)="onSubmission()">
         <div class="form-group">
 
             <label for="firstApprovalEmployee">Select Category<span class="text-danger">*</span></label>
@@ -40,7 +40,7 @@
             <select name="type" id="type" formControlName="type" required class="ms-2 form-control"
                 (ngModelChange)="onTypeChange($event)">
                 <option value="">Select Applicable Category Field</option>
-                <option [value]="field?.label" *ngFor="let field of applicableCategoryFields">{{ field.label }}</option>
+                <option [value]="field?.label" *ngFor="let field of applicableCategoryFields">{{ field?.label }}</option>
             </select>
         </div>
 
@@ -49,8 +49,6 @@
             <input type="number" formControlName="quantity" (input)="updateTotalRate()"><br>
             <strong>Rate per {{categoryType?.type}} Category {{ selectedRate }}</strong><br>
         </div>
-
-
 
         <div class="mt-2">
             <label for="">Amount</label>
@@ -119,9 +117,9 @@
                 id="inputGroupFile01">
         </div>
 
-        <div>
+        <div class="d-flex justify-content-between">
             <button mat-raised-button type="reset">Cancel</button>
-            <button mat-button type="submit" (click)="onSubmission()">Submit</button>
+            <button mat-button type="submit" class="addBtn">Submit</button>
 
         </div>
 

@@ -178,6 +178,7 @@ export class CreateReportComponent {
           else {
             payload.expenseReport = null;
             this.expenseService.expenseReportExpense.next(payload);
+            this.closeModal();
           }
         }
 
@@ -335,12 +336,10 @@ export class CreateReportComponent {
           };
           this.expenseFieldsArray.push(this.fb.group(formGroupConfig));
         });
-
         this.expenseFieldsArray.controls.forEach((control: FormGroup) => {
           control.get('value').reset('');
         });
       });
-
       this.expenseService.tempAndCat.subscribe(res => {
         this.categoryType = res.data?.find(catType => catType._id === categoryId);
         const category = res.details?.find(cat => cat.expenseCategory === categoryId);

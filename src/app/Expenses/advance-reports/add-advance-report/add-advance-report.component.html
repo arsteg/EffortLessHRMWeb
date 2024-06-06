@@ -3,8 +3,6 @@
     <div mat-dialog-actions>
         <button mat-button mat-dialog-close (click)="closeModal()"><mat-icon aria-hidden="false"
                 aria-label="Example close icon" fontIcon="close"></mat-icon></button>
-
-
     </div>
 </div>
 <hr>
@@ -14,6 +12,7 @@
             <label for="member">Select an Employee for Advance Report <span class="text-danger">*</span></label>
             <select id="member" name="member" class="form-control" formControlName="employee"
                 class="form-select form-select-sm" aria-label=".form-select-sm example" (change)="onEmployeeSelected()">
+                <option>Select Employee</option>
                 <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
                     {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
                 </option>
