@@ -5,14 +5,21 @@
                 [class.active]="selectedTab === 1">Setup Issues</button>
             <button class="btn rounded-pill submenuTab" (click)="selectTab(2)" [class.active]="selectedTab === 2">
                 Pending Reports</button>
-           
+            <button class="btn rounded-pill submenuTab" (click)="selectTab(3)" [class.active]="selectedTab === 3">
+                  Notification Types</button>
+            <button class="btn rounded-pill submenuTab" (click)="selectTab(4)" [class.active]="selectedTab === 4">
+                    Notification</button>
         </div>
 
         <div *ngIf="selectedTab === 1" class="tab-content">
         </div>
         <div *ngIf="selectedTab === 2" class="tab-content">
         </div>
-        
-       
+        <div *ngIf="selectedTab === 3" class="tab-content">
+        <app-notification-type></app-notification-type>
+        </div>
+        <div *ngIf="selectedTab === 4" class="tab-content">
+          <app-event-notification></app-event-notification>
+          </div>
     </div>
 </div>
