@@ -110,5 +110,6 @@ export class GeneralSettingsComponent {
 
   resetSettings(){
     this.ngOnInit();
+    this.toggleEdit();
   }
 }

@@ -621,7 +621,7 @@
                     <div class="modal-footer d-flex justify-content-between mt-3">
 
                         <div>
-                            <button mat-raised-button class="mx-2" data-bs-dismiss="modal" type="reset">Cancel</button>
+                            <button mat-raised-button class="mx-2" data-bs-dismiss="modal" (click)="modal.dismiss('Cancel click')" type="reset">Cancel</button>
                         </div>
                         <div>
                             <button mat-raised-button class="addBtn" type="submit">{{!isEdit ? 'Add' : 'Update'}}</button>

@@ -231,7 +231,7 @@
     </div>
 
     <div class="d-flex border-top py-2 justify-content-between">
-        <button mat-raised-button type="reset">Cancel</button>
+        <button mat-raised-button type="reset" (click)="closeModal()">Cancel</button>
         <button mat-raised-button class="addBtn" type="submit"
             [disabled]="!addTemplateForm.valid">{{changeMode}}</button>
     </div>
