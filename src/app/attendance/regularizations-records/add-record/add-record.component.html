@@ -23,15 +23,16 @@
         </div>
         <div class="form-group"
             *ngIf="addRegularization.get('requestType').value == 'Check-In Request' || addRegularization.get('requestType').value == 'Check-In and Check-Out Request'">
-            <label for="">Check-In Time</label>
-            <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
-                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="checkInTime" />
+            <label for="checkIn">Check-In Time</label>
+            <input id="checkIn" type="datetime-local" class="form-control" formControlName="checkInTime"
+                />
         </div>
+
         <div class="form-group"
             *ngIf="addRegularization.get('requestType').value == 'Check-Out Request' || addRegularization.get('requestType').value ==  'Check-In and Check-Out Request'">
-            <label for="">Check-Out Time</label>
-            <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
-                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="checkOutTime" />
+            <label for="checkOut">Check-Out Time</label>
+            <input id="checkOut" class="form-control" type="datetime-local" formControlName="checkOutTime"
+                />
         </div>
 
         <div class="form-group my-2">
@@ -80,9 +81,8 @@
         <div class="form-group my-2">
             <label for="">Reason</label>
             <select name="" id="" formControlName="reason">
-                <option value="Forgot to Check-In">Forgot to Check-In</option>
-                <option value="Forgot to Check-Out">Forgot to Check-Out</option>
-                <option value="Forgot to Check-In and Check-Out">Forgot to Check-In and Check-Out</option>
+                <option value="">Select Regularization Reason</option>
+                <option *ngFor="let reason of reason" [value]="reason._id">{{reason?.label}}</option>
             </select>
         </div>
 

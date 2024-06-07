@@ -2,7 +2,7 @@
     <div class=" d-flex justify-content-between">
         <div class="">
             <h1 mat-dialog-title class="text-muted pb-0 mb-0"> View {{viewRequest?.status}} Regularization Request Of
-            <span *ngIf="portalView === 'admin'" class="user">{{getUser(viewRequest?.user)}}</span></h1>
+            <span  class="user">{{viewRequest?.user}}</span></h1>
         </div>
         <div mat-dialog-actions>
             <button mat-button mat-dialog-close><mat-icon aria-hidden="false" aria-label="Example close icon"
@@ -14,12 +14,8 @@
         <div class="tableContainer">
             <table>
                 <tr>
-                    <th class="w-50">Attendance Template</th>
-                    <td></td>
-                </tr>
-                <tr>
                     <th class="w-50">Regularization Date</th>
-                    <td></td>
+                    <td>{{viewRequest?.regularizationDate}}</td>
                 </tr>
                 <tr>
                     <th class="w-50">Status</th>
@@ -31,23 +27,23 @@
                 </tr>
                 <tr>
                     <th class="w-50">Type of Request</th>
-                    <td></td>
+                    <td>{{viewRequest?.requestType}}</td>
                 </tr>
                 <tr>
                     <th class="w-50">Requested Check In</th>
-                    <td></td>
+                    <td>{{viewRequest?.checkInTime}}</td>
                 </tr>
                 <tr>
                     <th class="w-50">Requested Check Out</th>
-                    <td></td>
+                    <td>{{viewRequest?.checkOutTime}}</td>
                 </tr>
                 <tr>
                     <th class="w-50">Reason</th>
-                    <td></td>
+                    <td>{{viewRequest?.reason}}</td>
                 </tr>
                 <tr>
                     <th class="w-50">HalfDay</th>
-                    <td></td>
+                    <td>{{viewRequest?.halfDayType}}</td>
                 </tr>
                 <tr>
                     <th class="w-50">Comment</th>

@@ -98,7 +98,7 @@ export class AddOnDutyComponent {
             const time = this.shift?.startTime;
             const firstHalfDuration = this.shift?.firstHalfDuration;
 
-            const startTime = moment(time, 'HH:mm');  // parse startTime
+            const startTime = moment(time, 'HH:mm'); 
             const endTime = moment(startTime).add(firstHalfDuration, 'hours');
 
             shiftGroup.patchValue({
@@ -166,9 +166,9 @@ export class AddOnDutyComponent {
       this.onDutyShiftForm.value.user = this.user.id
     }
     this.attendanceService.addOnDutyRequest(this.onDutyShiftForm.value).subscribe((res: any) => {
-      this.toast.success('OnDuty Request Created', 'Successfully!');
       this.requestRefreshed.emit();
       this.onDutyShiftForm.reset();
+      this.toast.success('OnDuty Request Created', 'Successfully!');
     })
   }
 

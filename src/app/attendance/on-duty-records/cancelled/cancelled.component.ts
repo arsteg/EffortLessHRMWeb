@@ -7,8 +7,8 @@ import { Component, Input } from '@angular/core';
 })
 export class CancelledOnDutyComponent {
   actionOptions = {
-    approve: true,
-    reject: true,
+    approve: false,
+    reject: false,
     cancel: false,
     view: true
   };

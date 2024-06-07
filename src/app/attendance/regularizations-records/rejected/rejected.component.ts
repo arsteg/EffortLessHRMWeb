@@ -7,7 +7,7 @@ import { Component, Input } from '@angular/core';
 })
 export class RejectedComponent {
   actionOptions = {
-    approve: false,
+    approve: true,
     reject: false,
     cancel: false,
     view: true

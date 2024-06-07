@@ -54,7 +54,7 @@ export class UpdateRecordComponent {
       checkOutTime: status.checkOutTime,
       firstApprover: status.firstApprover,
       firstApproverDate: status.firstApproverDate,
-      firstApproverComment: status.firstApproverComment,
+      firstApproverComment: this.updateRegularization.value.firstApproverComment,
       secondApprover: status.secondApprover,
       secondApproverDate: status.secondApproverDate,
       secondApproverComment: status.secondApproverComment,

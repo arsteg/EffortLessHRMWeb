@@ -861,3 +861,7 @@ option:hover {
 .mdc-notched-outline {
   height: 85% !important;
 }
+
+html .mat-mdc-mini-fab.mat-accent{
+  --mat-fab-foreground-color: #7bbf2a;
+}

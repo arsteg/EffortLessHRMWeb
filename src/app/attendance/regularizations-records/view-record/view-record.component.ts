@@ -17,15 +17,13 @@ export class ViewRecordComponent {
   ) { }
 
   ngOnInit() {
-    this.commonService.populateUsers().subscribe(result => {
-      this.allAssignee = result && result.data && result.data.data;
-    });
+    // this.commonService.populateUsers().subscribe(result => {
+    //   this.allAssignee = result && result.data && result.data.data;
+    // });
     this.viewRequest = this.attendanceService.status.getValue();
+    console.log(this.viewRequest)
   }
   
-  getUser(employeeId: string) {
-    const matchingUser = this.allAssignee?.find(user => user._id === employeeId);
-    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'N/A';
-  }
+  
 
 }

@@ -14,6 +14,7 @@ export class AddRecordComponent {
   @Output() leaveGrantRefreshed: EventEmitter<void> = new EventEmitter<void>();
   bsValue = new Date();
   shift: any;
+  reason: any;
 
   constructor(private attendanceService: AttendanceService,
     private fb: FormBuilder,
@@ -42,13 +43,18 @@ export class AddRecordComponent {
 
   ngOnInit() {
     this.getShift();
+    this.getregularizationReason();
   }
   getShift() {
     this.attendanceService.getShift().subscribe((res: any) => {
       this.shift = res.data;
     })
   }
-
+  getregularizationReason() {
+    this.attendanceService.getRegularizationReason().subscribe((res: any) => {
+      this.reason = res.data;
+    })
+  }
   onSubmission() {
     this.addRegularization.value.firstApprover = null,
       this.addRegularization.value.firstApproverDate = null,
@@ -58,6 +64,7 @@ export class AddRecordComponent {
       this.addRegularization.value.secondApproverComment = null,
       this.attendanceService.addRegularization(this.addRegularization.value).subscribe((res: any) => {
         this.leaveGrantRefreshed.emit();
+        this.addRegularization.reset();
         this.toast.success('Successfully Created!!!', 'Regularization Request');
 
       }, (err) => {

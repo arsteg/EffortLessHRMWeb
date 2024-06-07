@@ -25,7 +25,12 @@ export class ShowOnDutyComponent {
   allAssignee: any;
   onDutyReason: any;
   p: number = 1;
-
+  statusList: status[] = [
+    { name: 'Pending',  isChecked: true },
+    { name: 'Approved',  isChecked: true },
+    { name: 'Cancelled', isChecked: true },
+    { name: 'Rejected', isChecked: true }
+  ];
 
   constructor(private dialog: MatDialog,
     private exportService: ExportService,
@@ -162,4 +167,12 @@ export class ShowOnDutyComponent {
       }
     });
   }
+  isStatusChecked(status: string): boolean {
+    const statusItem = this.statusList.find(item => item.name === status);
+    return statusItem ? statusItem.isChecked : false;
+  }
+}
+interface status {
+  name: string,
+  isChecked: boolean
 }

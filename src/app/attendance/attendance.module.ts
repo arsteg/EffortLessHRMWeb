@@ -103,7 +103,8 @@ import { ShowOnDutyComponent } from './on-duty-records/show-on-duty/show-on-duty
   exports: [
     AttendanceManagementComponent,
     AttendanceComponent,
-    GeneralSettingsComponent
+    GeneralSettingsComponent,
+    CommonModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,
