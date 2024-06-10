@@ -60,8 +60,8 @@ export class ShowReportComponent {
   }
 
   getCategory(categoryId: string) {
-    const matchingCategory = this.allCategory?.find(category => category._id === categoryId);
-    return matchingCategory ? `${matchingCategory.label}` : 'Category Not Found';
+    const matchingCategory = this.allCategory?.find(category => category?._id === categoryId);
+    return matchingCategory ? `${matchingCategory?.label}` : 'Category Not Found';
   }
 
   open(content: any) {

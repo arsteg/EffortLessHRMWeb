@@ -36,7 +36,7 @@
                 </tr>
                 <tr>
                     <th class="w-50">Admin Approval Comment</th>
-                    <td>{{selectedReport?.reason}}</td>
+                    <td>{{selectedReport?.primaryApprovalReason || selectedReport?.reason}}</td>
                 </tr>
             </table>
         </div>

@@ -383,4 +383,30 @@ export class AttendanceService {
     return response;
   }
 
+// Time entries (My Attendance Records)
+addTimeEntry(onDuty: any): Observable<response<any>> {
+  var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/time-entries`, onDuty, this.httpOptions);
+  return response;
+}
+
+updateTimeEntry(id: string, location: any): Observable<response<any>> {
+  var response = this.http.put<response<any>>(`${environment.apiUrlDotNet}/attendance/time-entries/${id}`, location, this.httpOptions);
+  return response;
+}
+
+deleteTimeEntry(id: string): Observable<response<any>> {
+  var response = this.http.delete<response<any>>(`${environment.apiUrlDotNet}/attendance/time-entries/${id}`, this.httpOptions);
+  return response;
+}
+
+getTimeEntryById(id: string): Observable<response<any>> {
+  var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/time-entries/${id}`, this.httpOptions);
+  return response;
+}
+
+getTimeEntry(): Observable<response<any>> {
+  var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/time-entries-by-company`, this.httpOptions);
+  return response;
+}
+
 }

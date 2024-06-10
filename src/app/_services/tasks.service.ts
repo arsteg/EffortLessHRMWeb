@@ -68,6 +68,9 @@ export class TasksService {
     return this.http.post<Task[]>(`${this.apiUrl}/task/tasklistbyuser`, { userId }, this.httpOptions);
   }
 
+  getTaskByUserAndProject(payload: any): Observable<Task[]> {
+    return this.http.post<Task[]>(`${this.apiUrl}/task/getUserTaskListByProject`,  payload , this.httpOptions);
+  }
   getAllTags(): Observable<Tag[]> {
     return this.http.get<Tag[]>(`${this.apiUrl}/task/tags/0`, this.httpOptions);
   }

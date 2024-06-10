@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { Spinkit } from 'ng-http-loader';
 import { AuthenticationService } from '../_services/authentication.service';
 import { CommonService } from '../common/common.service';
+import { MatDialog } from '@angular/material/dialog';
+import { AddTimeEntryComponent } from './add-time-entry/add-time-entry.component';
 
 
 @Component({
@@ -26,7 +28,10 @@ export class HomeComponent implements OnInit {
     'Your Proposal to job'];
   sideBarMenu = SideBarAdminMenu;
 
-  constructor(private router: Router, private auth: AuthenticationService, private commonService: CommonService) {
+  constructor(private router: Router,
+    private auth: AuthenticationService,
+    private commonService: CommonService,
+    private dialog: MatDialog) {
   }
 
   ngOnInit(): void {
@@ -119,26 +124,31 @@ export class HomeComponent implements OnInit {
   }
 
   filteredMenuItems() {
-    console.log('searchTerm:', this.searchText);
-
-    const searchTerm = this.searchText.trim().toLowerCase(); // Trim and convert to lowercase
+    const searchTerm = this.searchText.trim().toLowerCase(); 
     if (searchTerm === '') {
-      // If search term is empty, display all menu items
-      this.menuList = SideBarAdminMenu; // Reset to original unfiltered menuList
+     
+      this.menuList = SideBarAdminMenu; 
     } else {
       const filtered = SideBarAdminMenu.filter(item =>
         item.title.toLowerCase().includes(searchTerm)
       );
       console.log('filteredMenuItems:', filtered);
-      this.menuList = filtered; // Update menuList with filtered items
+      this.menuList = filtered; 
     }
 
-    // Check if the search text was deleted completely, and if so, reset it to display all items
     if (this.searchText === '') {
-      this.menuList = SideBarAdminMenu; // Reset to original unfiltered menuList
+      this.menuList = SideBarAdminMenu; 
     }
   }
-
+  openAddModal(): void {
+    const dialogRef = this.dialog.open(AddTimeEntryComponent, {
+      width: '700px',
+      height: 'auto'
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The modal was closed');
+    });
+  }
 
 
 }

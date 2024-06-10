@@ -11,7 +11,7 @@ import { AttendanceService } from 'src/app/_services/attendance.service';
 export class AddRecordComponent {
   user = JSON.parse(localStorage.getItem('currentUser'));
   addRegularization: FormGroup;
-  @Output() leaveGrantRefreshed: EventEmitter<void> = new EventEmitter<void>();
+  @Output() regularizationRequestRefreshed: EventEmitter<void> = new EventEmitter<void>();
   bsValue = new Date();
   shift: any;
   reason: any;
@@ -24,8 +24,8 @@ export class AddRecordComponent {
       regularizationDate: [],
       requestType: [''],
       shift: [''],
-      checkInTime: [],
-      checkOutTime: [],
+      checkInTime: [''],
+      checkOutTime: [''],
       firstApprover: [''],
       firstApproverDate: [],
       firstApproverComment: [''],
@@ -63,7 +63,7 @@ export class AddRecordComponent {
       this.addRegularization.value.secondApproverDate = null,
       this.addRegularization.value.secondApproverComment = null,
       this.attendanceService.addRegularization(this.addRegularization.value).subscribe((res: any) => {
-        this.leaveGrantRefreshed.emit();
+        this.regularizationRequestRefreshed.emit();
         this.addRegularization.reset();
         this.toast.success('Successfully Created!!!', 'Regularization Request');
 

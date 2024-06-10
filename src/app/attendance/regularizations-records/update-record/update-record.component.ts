@@ -11,7 +11,7 @@ import { AttendanceService } from 'src/app/_services/attendance.service';
 export class UpdateRecordComponent {
   updateRegularization: FormGroup;
   status: any;
-  @Output() regularization: EventEmitter<void> = new EventEmitter<void>();
+  @Output() regularizationRequestRefreshed: EventEmitter<void> = new EventEmitter<void>();
 
 
   constructor(private fb: FormBuilder,
@@ -66,7 +66,7 @@ export class UpdateRecordComponent {
       status: status.status
     }
     this.attendanceService.updateRegularization(status._id, payload).subscribe((res: any) => {
-      this.regularization.emit();
+      this.regularizationRequestRefreshed.emit();
       this.dialogRef.close();
     })
   }

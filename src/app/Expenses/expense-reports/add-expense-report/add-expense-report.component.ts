@@ -52,9 +52,10 @@ export class AddExpenseReportComponent {
 
 
   ngOnInit() {
-    console.log(this.changeMode, this.isEdit)
+    console.log(this.changeMode)
     this.expenseService.changeMode.next(this.changeMode)
-    if (!this.isEdit && !this.changeMode) {
+    if (this.changeMode == 'Add') {
+      console.log('reset')
       this.addExpenseForm.reset();
     }
     else {

@@ -1,0 +1,81 @@
+<div class="d-flex justify-content-between">
+    <h2 mat-dialog-title class="pb-0 mb-0">Time Entry</h2>
+    <mat-dialog-actions>
+        <button mat-button mat-dialog-close><mat-icon>close</mat-icon></button>
+    </mat-dialog-actions>
+</div>
+<hr class="my-0">
+<mat-dialog-content class="pt-0">
+    <form action="" [formGroup]="timeEntry" (ngSubmit)="onSubmission()">
+
+        <div class="my-2">
+            <label for="duration">Duration</label>
+            <input id="duration" type="number" class="form-control" formControlName="duration" />
+        </div>
+
+        <div class="my-2">
+            <label for="">Date</label>
+            <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
+                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="date" />
+        </div>
+
+        <div class="my-2">
+            <label for="project">Project</label>
+            <select formControlName="project" id="project" (ngModelChange)="getTaskByUserAndProject()">
+                <option disabled>Select Project</option>
+                <option [value]="project?._id" *ngFor="let project of projects">{{project?.projectName}}</option>
+            </select>
+        </div>
+
+        <div class="my-2">
+            <label for="task">Task(please select a project to get the tasks)</label>
+            <select formControlName="task" id="task">
+                <option [value]="" *ngFor="let task of tasks">{{task}}</option>
+            </select>
+        </div>
+
+        <button class="submenuTab active" (click)="addField()">Add</button>
+        <div formArrayName="trackTimeEntries">
+            <div class="categoryField"
+                *ngFor="let fieldGroup of timeEntry.get('trackTimeEntries')['controls']; let i = index">
+                <ng-container [formGroupName]="i">
+                    <div>
+                        <div class="my-2 d-flex">
+                            <div>
+                                <label for="">From Time</label>
+                                <input id="checkIn" type="time" class="form-control"
+                                    formControlName="fromTime" />
+                            </div>
+                            <div class="ms-2">
+                                <label for="">To Time</label>
+                                <input id="checkIn" type="time" class="form-control"
+                                    formControlName="toTime" />
+                            </div>
+                        </div>
+                        <div class="d-flex">
+                            <div>
+                                <label for="">Total Time</label>
+                                <input id="checkIn" type="time" class="form-control"
+                                    formControlName="totalTime" />
+                            </div>
+                            <div class="ms-2">
+                                <label for="">Note(Optional)</label>
+                                <input type="text" placeholder="Add Note" />
+                            </div>
+
+                        </div>
+                        <button class="actions ms-2" mat-mini-fab matTooltip="Delete" matTooltipPosition="after"
+                            type="button" aria-label="Example icon button with a menu icon"
+                            (click)="removeCatgoryField(i)">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+        <div class="d-flex justify-content-between mt-2">
+            <button mat-raised-button type="reset">Cancel</button>
+            <button mat-raised-button class="addBtn" type="submit">Submit</button>
+        </div>
+    </form>
+</mat-dialog-content>

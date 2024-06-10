@@ -141,6 +141,7 @@ export class AdvanceTemplateAssignmentComponent {
     });
   }
 
+  
   onSubmit() {
     let payload = {
       user: this.addTemplateAssignmentForm.value.user,
@@ -150,20 +151,35 @@ export class AdvanceTemplateAssignmentComponent {
       effectiveDate: this.addTemplateAssignmentForm.value.effectiveDate
     }
     if (this.addTemplateAssignmentForm.valid) {
+     
       if (this.isEdit == false) {
-        this.expenseService.addAdvanceTemplateAssignment(payload).subscribe((res: any) => {
-          const newTemplateAssignment = res.data;
-          this.toast.success('Advance Template Assigned!', 'Successfully')
-          this.templateAssignments.push(newTemplateAssignment);
-          // this.getAssignments();
-          this.addTemplateAssignmentForm.reset();
-        },
-          (err) => {
-            this.toast.error('Advance Template Cannot be created!', 'Error')
-          });
+        const existingAssignment = this.templateAssignments.find(assignment => assignment.user === payload.user);
+        if (existingAssignment) {
+          this.expenseService.addAdvanceTemplateAssignment(payload).subscribe((res: any) => {
+            const updatedTemplateAssignment = res.data;
+            this.toast.success('Advance Template already assigned to the selected user, it is updated successfully!', 'Successfully')
+            const index = this.templateAssignments.findIndex(templateAssign => templateAssign.user === updatedTemplateAssignment.user);
+            if (index!== -1) {
+              this.templateAssignments[index] = updatedTemplateAssignment;
+            }
+          },
+            (err) => {
+              this.toast.error('Advance Template Cannot be updated!', 'Error')
+            });
+        } else {
+          this.expenseService.addAdvanceTemplateAssignment(payload).subscribe((res: any) => {
+            const newTemplateAssignment = res.data;
+            this.templateAssignments.push(newTemplateAssignment);
+            this.toast.success('Advance Template Assigned!', 'Successfully')
+            this.addTemplateAssignmentForm.reset();
+          },
+            (err) => {
+              this.toast.error('Advance Template Cannot be created!', 'Error')
+            });
+        }
       }
       else if (this.isEdit == true) {
-        let user = this.selectedTemplateAssignment.user._id;
+        let user = this.selectedTemplateAssignment.user;
         let advanceTemplate = this.selectedTemplateAssignment.advanceTemplate._id;
         payload.user = user;
         payload.advanceTemplate = advanceTemplate;
@@ -171,7 +187,7 @@ export class AdvanceTemplateAssignmentComponent {
           const updatedTemplateAssign = res.data;
           // this.getAssignments();
           this.toast.success('Advance Template Assignment Updated!', 'Successfully')
-
+  
           const index = this.templateAssignments.findIndex(templateAssign => templateAssign._id === updatedTemplateAssign._id);
           if (index !== -1) {
             this.templateAssignments[index] = updatedTemplateAssign;
@@ -186,7 +202,6 @@ export class AdvanceTemplateAssignmentComponent {
       this.markFormGroupTouched(this.addTemplateAssignmentForm);
     }
   }
-
   markFormGroupTouched(formGroup: FormGroup) {
     Object.values(formGroup.controls).forEach(control => {
       control.markAsTouched();
@@ -200,18 +215,6 @@ export class AdvanceTemplateAssignmentComponent {
   edit(templateAssignment, index) {
     this.isEdit = true;
     this.changeMode = 'Update';
-    // let templateAssignment = assignment;
-    // console.log(templateAssignment)
-    // const formValues = {
-    //   user: templateAssignment.user._id,
-    //   primaryApprover: templateAssignment.primaryApprover._id,
-    //   secondaryApprover: templateAssignment.secondaryApprover._id,
-    //   advanceTemplate: templateAssignment.advanceTemplate._id,
-    //   effectiveDate: templateAssignment.effectiveDate
-    // };
-    // this.selectedTemplateAssignment = assignment.user.id;
-    // this.expenseService.getAdvanceTemplateAssignmentByUser(this.selectedTemplateAssignment).subscribe((res: any) => {
-    // let templateAssignment = res.data;
     this.addTemplateAssignmentForm.patchValue({
       user: templateAssignment.user,
       advanceTemplate: templateAssignment.advanceTemplate,
@@ -220,7 +223,6 @@ export class AdvanceTemplateAssignmentComponent {
       effectiveDate: templateAssignment.effectiveDate
     });
     console.log(this.addTemplateAssignmentForm.value);
-    // })
   }
 
   clearselectedRequest() {
@@ -228,10 +230,10 @@ export class AdvanceTemplateAssignmentComponent {
     this.addTemplateAssignmentForm.reset();
   }
 
-  deleteAdvanceTemplateAssignment(id) {
+  deleteAdvanceTemplateAssignment(id, index: number) {
     let _id = id._id;
     this.expenseService.deleteAdvanceTemplateAssignment(_id).subscribe((res: any) => {
-      // this.getAssignments();
+      this.templateAssignments.splice(index)
       this.toast.success('Successfully Deleted!!!', 'Advance Template Assgnment')
     },
       (err) => {
@@ -239,14 +241,13 @@ export class AdvanceTemplateAssignmentComponent {
       })
   }
 
-  deleteDialog(id: string): void {
+  deleteDialog(id: string, index: number): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '400px',
-
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'delete') {
-        this.deleteAdvanceTemplateAssignment(id);
+        this.deleteAdvanceTemplateAssignment(id, index);
       }
       err => {
         this.toast.error('Can not be Deleted', 'Error!')
@@ -254,4 +255,3 @@ export class AdvanceTemplateAssignmentComponent {
     });
   }
 }
-

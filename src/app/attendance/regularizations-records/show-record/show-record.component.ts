@@ -66,20 +66,11 @@ export class ShowRecordComponent {
   getAllRegularization() {
     if(this.portalView == 'admin'){this.attendanceService.getAllRegularization().subscribe((res: any) => {
       this.regularizationRecords = res.data.filter(data => data.status === this.status);
-      this.regularizationRecords.forEach(record => {
-        record.checkInTime = moment.utc(record.checkInTime).local().format('YYYY-MM-DD HH:mm:ss');
-        record.checkOutTime = moment.utc(record.checkOutTime).local().format('YYYY-MM-DD HH:mm:ss');
-      });
     });}
     else {
       this.attendanceService.getRegularizationByUser(this.currentUser?.id).subscribe((res: any) => {
         this.regularizationRecords = res.data;
-        this.regularizationRecords.forEach(record => {
-          record.checkInTime = moment.utc(record.checkInTime).local().format('YYYY-MM-DD HH:mm');
-          record.checkOutTime = moment.utc(record.checkOutTime).local().format('YYYY-MM-DD HH:mm');
-        });
       })
-
     }
   }
   openAddModal(): void {
@@ -89,7 +80,7 @@ export class ShowRecordComponent {
       height: 'auto'
     });
     dialogRef.afterClosed().subscribe(result => {
-      this.refreshLeaveGrantTable();
+      this.regularizationRequestRefreshed();
       console.log('The modal was closed');
     });
   }
@@ -101,19 +92,12 @@ export class ShowRecordComponent {
       data: { report }
     });
     dialogRef.afterClosed().subscribe(result => {
-      this.refreshLeaveGrantTable();
+      this.regularizationRequestRefreshed();
       console.log('The modal was closed');
     });
   }
-  refreshLeaveGrantTable() {
-    this.attendanceService.getAllRegularization().subscribe(
-      (res) => {
-        this.regularizationRecords = res.data.filter(data => data.status === this.status);
-      },
-      (error) => {
-        console.error('Error Refreshing Regularization table:', error);
-      }
-    );
+  regularizationRequestRefreshed() {
+    this.getAllRegularization();
   }
 
   openSecondModal(selectedReport: any): void {

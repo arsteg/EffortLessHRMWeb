@@ -51,12 +51,12 @@
             </thead>
             <tbody>
                 <tr
-                    *ngFor="let data of regularizationRecords | search: searchText  |  paginate: { itemsPerPage: 5, currentPage: p }">
+                    *ngFor="let data of regularizationRecords | search: searchText | paginate: { itemsPerPage: 5, currentPage: p }">
                     <td>{{getUser(data?.user)}}</td>
                     <td>{{data?.appliedOn | date: 'mediumDate'}}</td>
                     <td>{{data?.requestType}}</td>
-                    <td>{{data?.checkInTime | date: 'medium'}}</td>
-                    <td>{{data?.checkOutTime | date: 'medium'}}</td>
+                    <td>{{data?.checkInTime | date: 'yyyy-MM-dd - HH:mm'}}</td>
+                    <td>{{data?.checkOutTime | date: 'yyyy-MM-dd - HH:mm'}}</td>
                     <td>{{getReason(data?.reason)}}</td>
                     <td>{{data?.status}}</td>
                     <td>
@@ -114,10 +114,10 @@
             </thead>
             <tbody>
                 <tr *ngFor="let request of regularizationRecords" [ngClass]="{ 'd-none': !isStatusChecked(request.status) }">
-                    <td>{{request?.regularizationDate | date}}</td>
+                    <td>{{request?.regularizationDate | date: 'mediumDate'}}</td>
                     <td>{{request?.requestType}}</td>
-                    <td>{{request?.checkInTime}}</td>
-                    <td>{{request?.checkOutTime}}</td>
+                    <td>{{request?.checkInTime | date: 'yyyy-MM-dd - HH:mm'}}</td>
+                    <td>{{request?.checkOutTime | date: 'yyyy-MM-dd - HH:mm'}}</td>
                     <td>{{getReason(request?.reason)}}</td>
                     <td>
                         <button mat-mini-fab *ngIf="request?.status == 'Pending'" matTooltip="Pending"
@@ -159,7 +159,7 @@
 
 
 <ng-template #statusUpdate let-modal>
-    <app-update-status (regularization)="refreshLeaveGrantTable()"></app-update-status>
+    <app-update-status (regularizationRequestRefreshed)="regularizationRequestRefreshed()"></app-update-status>
 </ng-template>
 
 <ng-template #viewModal let-modal>

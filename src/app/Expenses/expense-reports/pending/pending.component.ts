@@ -83,11 +83,12 @@ export class PendingComponent {
       return `with: ${reason}`;
     }
   }
+  
   onCancel() {
     this.isEdit = false;
   }
-  open(content: any) {
 
+  open(content: any) {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {

@@ -89,8 +89,10 @@ getAllAdvanceCategories(){
   }
 
   getCategory(categoryId: string) {
-    const matchingCategory = this.allAdvanceCategories?.find(category => category._id === categoryId);
-    return matchingCategory ? `${matchingCategory.label}` : 'Category Not Found';
+    console.log(categoryId);
+    console.log(this.allAdvanceCategories);
+    const matchingCategory = this.allAdvanceCategories?.find(category => category?._id === categoryId);
+    return matchingCategory ? matchingCategory?.label : '';
   }
 
   closeModal() {

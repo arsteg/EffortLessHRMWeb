@@ -46,6 +46,8 @@ import { AddOnDutyComponent } from './on-duty-records/add-on-duty/add-on-duty.co
 import { ViewOnDutyComponent } from './on-duty-records/view-on-duty/view-on-duty.component';
 import { UpdateOnDutyComponent } from './on-duty-records/update-on-duty/update-on-duty.component';
 import { ShowOnDutyComponent } from './on-duty-records/show-on-duty/show-on-duty.component';
+import { MyAttendanceRecordsComponent } from './attendance-records/my-attendance-records/my-attendance-records.component';
+import { AddTimeEntryComponent } from '../home/add-time-entry/add-time-entry.component';
 
 @NgModule({
   declarations: [
@@ -86,7 +88,9 @@ import { ShowOnDutyComponent } from './on-duty-records/show-on-duty/show-on-duty
     ShowOnDutyComponent,
     PendingOnDutyComponent,
     RejectedOnDutyComponent,
-    ApprovedOnDutyComponent
+    ApprovedOnDutyComponent,
+    MyAttendanceRecordsComponent,
+    AddTimeEntryComponent
   ],
   imports: [
     MatRadioModule,
