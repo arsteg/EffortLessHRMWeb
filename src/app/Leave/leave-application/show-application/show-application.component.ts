@@ -30,6 +30,8 @@ export class ShowApplicationComponent {
   totalLeaveDays;
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   public sortOrder: string = '';
+  defaultCatSkip="0";
+  defaultCatNext="100000";
 
 
   constructor(private modalService: NgbModal,
@@ -112,7 +114,8 @@ export class ShowApplicationComponent {
     });
   }
   getleaveCatgeories() {
-    this.leaveService.getAllLeaveCategories().subscribe((res: any) => {
+    const requestBody = { "skip": this.defaultCatSkip, "next": this.defaultCatNext };
+    this.leaveService.getAllLeaveCategories(requestBody).subscribe((res: any) => {
       this.leaveCategories = res.data;
     })
   }

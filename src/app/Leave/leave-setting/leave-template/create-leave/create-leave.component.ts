@@ -17,6 +17,8 @@ export class CreateLeaveComponent {
   categories: any;
   @Input() isEdit: boolean;
   categoryList: any;
+  skip: string = '0';
+  next = '10000';
 
   constructor(private fb: FormBuilder,
     private commonService: CommonService,
@@ -44,6 +46,28 @@ export class CreateLeaveComponent {
         this.setFormValues(template)
       }
     });
+
+    this.addTemplateForm.get('approvalLevel').valueChanges.subscribe((value: any) => {
+      this.validateApprovers(this.addTemplateForm.get('approvalType').value, value)
+    });
+    this.addTemplateForm.get('approvalType').valueChanges.subscribe((value: any) => {
+      this.validateApprovers(value, this.addTemplateForm.get('approvalLevel').value)
+    });
+  }
+
+  validateApprovers(approverType, approverLevel) {
+    if (approverLevel == '1 Level' && approverType == 'template-wise') {
+      this.addTemplateForm.get('primaryApprover').setValidators([Validators.required]);
+      this.addTemplateForm.get('secondaryApprover').clearValidators();
+    } else if (approverLevel == '2 Level' && approverType == 'template-wise') {
+      this.addTemplateForm.get('primaryApprover').setValidators([Validators.required]);
+      this.addTemplateForm.get('secondaryApprover').setValidators([Validators.required]);
+    } else {
+      this.addTemplateForm.get('primaryApprover').clearValidators();
+      this.addTemplateForm.get('secondaryApprover').clearValidators();
+    }
+    this.addTemplateForm.get('primaryApprover').updateValueAndValidity();
+    this.addTemplateForm.get('secondaryApprover').updateValueAndValidity();
   }
 
   setFormValues(templateData: any) {
@@ -75,7 +99,8 @@ export class CreateLeaveComponent {
   }
 
   getLeaveCatgeories() {
-    this.leaveService.getAllLeaveCategories().subscribe((res: any) => {
+    const requestBody = { "skip": this.skip, "next": this.next };
+    this.leaveService.getAllLeaveCategories(requestBody).subscribe((res: any) => {
       this.categories = res.data;
     })
   }
@@ -107,15 +132,18 @@ export class CreateLeaveComponent {
       leaveCategories: this.addTemplateForm.value.leaveCategories.map(category => ({ leaveCategory: category }))
     }
     if (this.changeMode == 'Add') {
+      debugger;
       this.leaveService.addLeaveTemplate(payload).subscribe((res: any) => {
         this.leaveService.selectedTemplate.next(res.data);
         this.changeStep.emit(2);
+        this.closeModal();
       })
     }
     else {
       const id = this.leaveService.selectedTemplate.getValue()._id;
       this.leaveService.updateLeaveTemplate(id, payload).subscribe((res: any)=>{
         this.changeStep.emit(2);
+        this.closeModal();
       })
       
     }

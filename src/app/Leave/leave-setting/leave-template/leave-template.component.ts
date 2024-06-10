@@ -20,8 +20,13 @@ export class LeaveTemplateComponent implements OnInit {
   @Output() LeaveTableRefreshed: EventEmitter<void> = new EventEmitter<void>();
   selectedTemplateId: any;
   isEdit: boolean = false;
-  p: number = 1;
   public sortOrder: string = ''; // 'asc' or 'desc'
+  recordsPerPageOptions: number[] = [5, 10, 25, 50, 100]; // Add the available options for records per page
+  recordsPerPage: number = 10; // Default records per page
+  totalRecords: number=0; // Total number of records
+  currentPage: number = 1;
+  skip: string = '0';
+  next = '10';
 
 
   constructor(private modalService: NgbModal,
@@ -38,6 +43,7 @@ export class LeaveTemplateComponent implements OnInit {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+      this.getLeaveTemplates();
     });
   }
 
@@ -67,7 +73,8 @@ export class LeaveTemplateComponent implements OnInit {
   }
 
   refreshLeaveTemplateTable() {
-    this.leaveService.getLeavetemplates().subscribe(
+    const requestBody = { "skip": 0, "next": 100000 };
+    this.leaveService.getLeavetemplates(requestBody).subscribe(
       (res) => {
         this.templates = res.data;
         this.getLeaveTemplates();
@@ -81,17 +88,24 @@ export class LeaveTemplateComponent implements OnInit {
   }
 
   getLeaveTemplates() {
-    this.leaveService.getLeavetemplates().subscribe((res: any) => {
-      this.leaveTemplate = res.data;
-      
+    const requestBody = { "skip": this.skip, "next": this.next };
+    this.leaveService.getLeavetemplates(requestBody).subscribe((res: any) => {
+      if(res.status=="success"){
+        this.leaveTemplate = res.data;
+        this.totalRecords = res.total;
+        this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
+      }
     })
   }
   
   deleteTemplate(_id: string) {
     this.leaveService.deleteTemplate(_id).subscribe((res: any) => {
-      const index = this.templates.findIndex(temp => temp._id === _id);
-      if (index !== -1) {
-        this.templates.splice(index, 1);
+      this.getLeaveTemplates();
+      if(res != null){
+        const index = this.templates.findIndex(temp => temp._id === _id);
+        if (index !== -1) {
+          this.templates.splice(index, 1);
+        }
       }
       this.toast.success('Successfully Deleted!!!', 'Leave Template')
     },
@@ -126,4 +140,58 @@ export class LeaveTemplateComponent implements OnInit {
     console.log(totalEmployees)
   }
 
+  // //Pagging related functions
+  nextPagination() {
+    if (!this.isNextButtonDisabled()) {
+      const newSkip = (parseInt(this.skip) + parseInt(this.next)).toString();
+      this.skip = newSkip;
+      this.getLeaveTemplates();
+    }
+  }
+
+  previousPagination() {
+    if (!this.isPreviousButtonDisabled()) {
+      const newSkip = (parseInt(this.skip) >= parseInt(this.next)) ? (parseInt(this.skip) - parseInt(this.next)).toString() : '0';
+      this.skip = newSkip;
+      this.getLeaveTemplates();
+    }
+  }
+  firstPagePagination() {
+    if (this.currentPage !== 1) {
+      this.currentPage = 1;
+      this.skip = '0';
+      this.next = this.recordsPerPage.toString();
+      this.getLeaveTemplates();
+    }
+  }
+  lastPagePagination() {
+    const totalPages = this.getTotalPages();
+    if (this.currentPage !== totalPages) {
+      this.currentPage = totalPages;
+      this.updateSkip();
+      this.getLeaveTemplates();
+    }
+  }
+  updateSkip() {
+    const newSkip = (this.currentPage - 1) * this.recordsPerPage;
+    this.skip = newSkip.toString();
+  }
+
+  isNextButtonDisabled(): boolean {
+    return this.currentPage === this.getTotalPages();
+  }
+
+  isPreviousButtonDisabled(): boolean {
+    return this.skip === '0' || this.currentPage === 1;
+  }
+  updateRecordsPerPage() {
+    this.currentPage = 1;
+    this.skip = '0';
+    this.next = this.recordsPerPage.toString();
+    this.getLeaveTemplates();
+  }
+  getTotalPages(): number {
+    const totalCount = this.totalRecords;
+    return Math.ceil(totalCount / this.recordsPerPage);
+  }
 }

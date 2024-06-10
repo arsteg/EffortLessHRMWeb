@@ -22,6 +22,8 @@ export class LeaveBalanceComponent {
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   users: any = [];
   user: any;
+  defaultCatSkip="0";
+  defaultCatNext="100000";
 
   constructor(private leaveService: LeaveService,
     private fb: FormBuilder,
@@ -96,7 +98,8 @@ export class LeaveBalanceComponent {
   }
 
   getAllLeaveCatgeories() {
-    this.leaveService.getAllLeaveCategories().subscribe((res: any) => {
+    const requestBody = { "skip": this.defaultCatSkip, "next": this.defaultCatNext };
+    this.leaveService.getAllLeaveCategories(requestBody).subscribe((res: any) => {
       this.allCategories = res.data;
     })
   }

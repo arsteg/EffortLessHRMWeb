@@ -27,6 +27,8 @@ export class GeneralTemplateSettingsComponent {
   attendanceTemplate: any;
   @Output() changeStep: any = new EventEmitter();
   capturingAttendance: any = [''];
+  defaultCatSkip="0";
+  defaultCatNext="100000";
 
   constructor(private commonService: CommonService,
     private leaveService: LeaveService,
@@ -167,7 +169,8 @@ export class GeneralTemplateSettingsComponent {
   }
 
   getLeaveCatgeories() {
-    this.leaveService.getAllLeaveCategories().subscribe((res: any) => {
+    const requestBody = { "skip": this.defaultCatSkip, "next": this.defaultCatNext };
+    this.leaveService.getAllLeaveCategories(requestBody).subscribe((res: any) => {
       const categories = res.data;
       this.leaveCategories = categories.filter((leaveType) => leaveType.leaveType === 'general-leave');
     })

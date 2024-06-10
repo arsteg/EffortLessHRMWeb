@@ -26,6 +26,8 @@ export class AddCategoryLeaveComponent {
   allCategories: any;
   categoryForm: FormGroup;
   users: FormGroup;
+  defaultCatSkip="0";
+  defaultCatNext="100000";
 
   constructor(private leaveService: LeaveService,
     private location : Location,
@@ -54,8 +56,8 @@ export class AddCategoryLeaveComponent {
       });
 
       const leaveCategoriesArray = this.firstForm.get('leaveCategories') as FormArray;
-
-      this.leaveService.getAllLeaveCategories().subscribe((res: any) => {
+      const requestBody = { "skip": this.defaultCatSkip, "next": this.defaultCatNext };
+      this.leaveService.getAllLeaveCategories(requestBody).subscribe((res: any) => {
         this.allCategories = res.data;
 
         this.leaveService.getLeaveTemplateCategoriesByTemplateId(selectedTemplate._id).subscribe((res: any) => {

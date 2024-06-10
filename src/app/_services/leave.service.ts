@@ -23,10 +23,10 @@ export class LeaveService extends baseService {
     super();
   }
 
-  public getAllLeaveCategories(): any {
+  public getAllLeaveCategories(requestBody:any): any {
     const token = this.getToken();
     this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
-    return this.http.get<any>(`${environment.apiUrlDotNet}/leave/leave-categories`, this.httpOptions);
+    return this.http.post<any>(`${environment.apiUrlDotNet}/leave/leave-categories-list`, requestBody, this.httpOptions);
   }
 
   public getLeaveCategoriesByUser(userId: string): any {
@@ -65,10 +65,10 @@ export class LeaveService extends baseService {
     return this.http.put<any>(`${environment.apiUrlDotNet}/leave/general-settings/${generalSettingsId}`, generalSettings, this.httpOptions);
   }
 
-  public getLeavetemplates(): any {
+  public getLeavetemplates(requestBody:any): any {
     const token = this.getToken();
     this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
-    return this.http.get<any>(`${environment.apiUrlDotNet}/leave/leave-templates`, this.httpOptions);
+    return this.http.post<any>(`${environment.apiUrlDotNet}/leave/leave-templates-list`, requestBody, this.httpOptions);
   }
 
   public addLeaveTemplate(leave: any): any {
@@ -115,10 +115,10 @@ export class LeaveService extends baseService {
     return this.http.post<any>(`${environment.apiUrlDotNet}/Leave/employee-leave-assignments`, leaveAsignment, this.httpOptions);
   }
 
-  public getLeaveTemplateAssignment(): any {
+  public getLeaveTemplateAssignment(leaveTemplateAssignment: any): any {
     const token = this.getToken();
     this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
-    return this.http.get<any>(`${environment.apiUrlDotNet}/Leave/employee-leave-assignments`, this.httpOptions);
+    return this.http.post<any>(`${environment.apiUrlDotNet}/Leave/employee-leave-assignments-list`, leaveTemplateAssignment, this.httpOptions);
   }
 
   public getLeaveTemplateAssignmentByUser(userId: string): any {

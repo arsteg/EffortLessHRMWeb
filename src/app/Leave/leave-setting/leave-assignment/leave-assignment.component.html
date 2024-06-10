@@ -16,6 +16,37 @@
 
             </div>
         </div>
+        <ng-container>
+            <div class="d-flex justify-content-end align-items-center mt-2">
+                Items per page
+                <select style="width: 80px;" class="page form-select form-select-sm mx-2"
+                    [(ngModel)]="recordsPerPage" (ngModelChange)="updateRecordsPerPage()">
+                    <option class="page" *ngFor="let option of recordsPerPageOptions" [value]="option">
+                        {{
+                        option }}
+                    </option>
+                </select>
+
+                <span class="ml-2 page">{{ currentPage }} - {{ getTotalPages() }} of {{
+                    totalRecords
+                    }}</span>
+                <!-- previous page -->
+                <span (click)="firstPagePagination()"
+                    class="page bi bi-chevron-bar-left btn-lg btn-outline-primary" title="First Page"
+                    [class.disabled]="skip === '0' || currentPage === 1"></span>
+
+                <span (click)="previousPagination()"
+                    class="page bi bi-chevron-left btn-lg btn-outline-primary" title="Previous Page"
+                    [class.disabled]="skip === '0' || currentPage === 1"></span>
+                <!-- next page -->
+                <span (click)="nextPagination()" class="page bi bi-chevron-right btn-lg btn-outline-primary"
+                    title="Next Page" [class.disabled]="currentPage === getTotalPages()"></span>
+
+                <span (click)="lastPagePagination()"
+                    class="page bi bi-chevron-bar-right btn-lg btn-outline-primary" title="Last Page"
+                    [class.disabled]="currentPage === getTotalPages()"></span>
+            </div>
+        </ng-container>
         <table class="p-2 rounded mt-2">
             <thead>
                 <tr>
@@ -39,7 +70,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let tempAssignment of templateAssignment  | search : searchText | paginate: { itemsPerPage: 5, currentPage: p }; let i = index ">
+                <tr *ngFor="let tempAssignment of templateAssignment  | search : searchText; let i = index ">
                     <td>{{getUser(tempAssignment?.user)}}</td>
                     <td>{{getTemplateLabel(tempAssignment?.leaveTemplate)}}</td>
                     <td>{{getUser(tempAssignment?.primaryApprover)}}</td>

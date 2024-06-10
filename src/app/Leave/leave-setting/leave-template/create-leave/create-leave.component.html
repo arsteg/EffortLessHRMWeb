@@ -80,7 +80,7 @@
             </select>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-6" *ngIf="addTemplateForm.get('approvalLevel').value === '2-level'">
             <label for="secondaryApprover">Please Select Secondary Approver? <span class="text-danger">*</span></label>
             <select name="" id="secondaryApprover" formControlName="secondaryApprover" required
                 class="ms-2 form-control">

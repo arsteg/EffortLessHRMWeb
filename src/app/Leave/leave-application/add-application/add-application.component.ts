@@ -28,6 +28,8 @@ export class AddApplicationComponent {
   members: any[] = [];
   member: any;
   @Input() tab: number;
+  defaultCatSkip="0";
+  defaultCatNext="100000";
 
   constructor(private fb: FormBuilder,
     private commonService: CommonService,
@@ -68,7 +70,8 @@ export class AddApplicationComponent {
   }
 
   getleaveCatgeories() {
-    this.leaveService.getAllLeaveCategories().subscribe((res: any) => {
+    const requestBody = { "skip": this.defaultCatSkip, "next": this.defaultCatNext };
+    this.leaveService.getAllLeaveCategories(requestBody).subscribe((res: any) => {
       this.leaveCategories = res.data;
     })
   }

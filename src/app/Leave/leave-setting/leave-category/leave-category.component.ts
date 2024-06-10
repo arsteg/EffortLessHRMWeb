@@ -21,8 +21,13 @@ export class LeaveCategoryComponent implements OnInit {
   categoryForm: FormGroup;
   selectedLeaveCategory: any;
   isEdit: boolean = false;
-  p: number = 1;
   public sortOrder: string = ''; // 'asc' or 'desc'
+  recordsPerPageOptions: number[] = [5, 10, 25, 50, 100]; // Add the available options for records per page
+  recordsPerPage: number = 10; // Default records per page
+  totalRecords: number=0; // Total number of records
+  currentPage: number = 1;
+  skip: string = '0';
+  next = '10';
 
   constructor(private modalService: NgbModal,
     private leaveService: LeaveService,
@@ -55,7 +60,8 @@ export class LeaveCategoryComponent implements OnInit {
       maximumNumberConsecutiveLeaveDaysAllowed: [0],
       dayOfTheMonthEmployeeNeedJoinToGetCreditForThatMonth: [0],
       dayOfMonthEmployeeNeedToResignToGetCreditforTheMonth: [0],
-      isPaidLeave: [true]
+      isPaidLeave: [true],
+      isEmployeeAccrualLeaveInAdvance: [true]
     })
   }
 
@@ -84,8 +90,11 @@ export class LeaveCategoryComponent implements OnInit {
   }
 
   getAllLeaveCategories() {
-    this.leaveService.getAllLeaveCategories().subscribe((res: any) => {
+    const requestBody = { "skip": this.skip, "next": this.next };
+    this.leaveService.getAllLeaveCategories(requestBody).subscribe((res: any) => {
       this.leaveCategory = res.data;
+      this.totalRecords = res && res.total
+      this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
     })
   }
 
@@ -145,7 +154,8 @@ export class LeaveCategoryComponent implements OnInit {
       maximumNumberConsecutiveLeaveDaysAllowed: leaveCategory.maximumNumberConsecutiveLeaveDaysAllowed,
       dayOfTheMonthEmployeeNeedJoinToGetCreditForThatMonth: leaveCategory.dayOfTheMonthEmployeeNeedJoinToGetCreditForThatMonth,
       dayOfMonthEmployeeNeedToResignToGetCreditforTheMonth: leaveCategory.dayOfMonthEmployeeNeedToResignToGetCreditforTheMonth,
-      isPaidLeave: leaveCategory.isPaidLeave
+      isPaidLeave: leaveCategory.isPaidLeave,
+      isEmployeeAccrualLeaveInAdvance: leaveCategory.isEmployeeAccrualLeaveInAdvance
     })
   }
 
@@ -177,5 +187,60 @@ export class LeaveCategoryComponent implements OnInit {
         this.deleteTemplate(id);
       }
     });
+  }
+
+  // //Pagging related functions
+  nextPagination() {
+    if (!this.isNextButtonDisabled()) {
+      const newSkip = (parseInt(this.skip) + parseInt(this.next)).toString();
+      this.skip = newSkip;
+      this.getAllLeaveCategories();
+    }
+  }
+
+  previousPagination() {
+    if (!this.isPreviousButtonDisabled()) {
+      const newSkip = (parseInt(this.skip) >= parseInt(this.next)) ? (parseInt(this.skip) - parseInt(this.next)).toString() : '0';
+      this.skip = newSkip;
+      this.getAllLeaveCategories();
+    }
+  }
+  firstPagePagination() {
+    if (this.currentPage !== 1) {
+      this.currentPage = 1;
+      this.skip = '0';
+      this.next = this.recordsPerPage.toString();
+      this.getAllLeaveCategories();
+    }
+  }
+  lastPagePagination() {
+    const totalPages = this.getTotalPages();
+    if (this.currentPage !== totalPages) {
+      this.currentPage = totalPages;
+      this.updateSkip();
+      this.getAllLeaveCategories();
+    }
+  }
+  updateSkip() {
+    const newSkip = (this.currentPage - 1) * this.recordsPerPage;
+    this.skip = newSkip.toString();
+  }
+
+  isNextButtonDisabled(): boolean {
+    return this.currentPage === this.getTotalPages();
+  }
+
+  isPreviousButtonDisabled(): boolean {
+    return this.skip === '0' || this.currentPage === 1;
+  }
+  updateRecordsPerPage() {
+    this.currentPage = 1;
+    this.skip = '0';
+    this.next = this.recordsPerPage.toString();
+    this.getAllLeaveCategories();
+  }
+  getTotalPages(): number {
+    const totalCount = this.totalRecords;
+    return Math.ceil(totalCount / this.recordsPerPage);
   }
 }

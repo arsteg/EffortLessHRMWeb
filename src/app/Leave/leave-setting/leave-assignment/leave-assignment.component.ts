@@ -22,7 +22,15 @@ export class LeaveAssignmentComponent implements OnInit {
   users: any[] = [];
   templates: any;
   templateAssignment: any;
-  public sortOrder: string = ''; // 'asc' or 'desc'
+  public sortOrder: string = ''; // 'asc' or 'desc',
+  defaultnext: "100000";
+  defaultskip: "0";
+  recordsPerPageOptions: number[] = [5, 10, 25, 50, 100]; // Add the available options for records per page
+  recordsPerPage: number = 10; // Default records per page
+  totalRecords: number=0; // Total number of records
+  currentPage: number = 1;
+  skip: string = '0';
+  next = '10';
 
   constructor(private modalService: NgbModal,
     private commonService: CommonService,
@@ -50,8 +58,16 @@ export class LeaveAssignmentComponent implements OnInit {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+      this.getTemplateAssignments();
     });
   }
+
+  onClose(event) {
+    if (event) {
+      this.modalService.dismissAll();
+    }
+  }
+
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
@@ -105,14 +121,20 @@ export class LeaveAssignmentComponent implements OnInit {
   }
 
   getAlltemplates() {
-    this.leaveService.getLeavetemplates().subscribe((res: any) => {
+    const requestBody = { "skip": this.defaultskip, "next": this.defaultnext };
+    this.leaveService.getLeavetemplates(requestBody).subscribe((res: any) => {
       this.templates = res.data;
     })
   }
 
   getTemplateAssignments() {
-    this.leaveService.getLeaveTemplateAssignment().subscribe((res: any) => {
-      this.templateAssignment = res.data;
+    const requestBody = { "skip": this.skip, "next": this.next };
+    this.leaveService.getLeaveTemplateAssignment(requestBody).subscribe((res: any) => {
+      if(res.status == "success"){
+        this.templateAssignment = res.data;
+        this.totalRecords = res.total;
+        this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
+      }
     })
   }
 
@@ -161,4 +183,58 @@ export class LeaveAssignmentComponent implements OnInit {
     });
   }
 
+  // //Pagging related functions
+  nextPagination() {
+    if (!this.isNextButtonDisabled()) {
+      const newSkip = (parseInt(this.skip) + parseInt(this.next)).toString();
+      this.skip = newSkip;
+      this.getTemplateAssignments();
+    }
+  }
+
+  previousPagination() {
+    if (!this.isPreviousButtonDisabled()) {
+      const newSkip = (parseInt(this.skip) >= parseInt(this.next)) ? (parseInt(this.skip) - parseInt(this.next)).toString() : '0';
+      this.skip = newSkip;
+      this.getTemplateAssignments();
+    }
+  }
+  firstPagePagination() {
+    if (this.currentPage !== 1) {
+      this.currentPage = 1;
+      this.skip = '0';
+      this.next = this.recordsPerPage.toString();
+      this.getTemplateAssignments();
+    }
+  }
+  lastPagePagination() {
+    const totalPages = this.getTotalPages();
+    if (this.currentPage !== totalPages) {
+      this.currentPage = totalPages;
+      this.updateSkip();
+      this.getTemplateAssignments();
+    }
+  }
+  updateSkip() {
+    const newSkip = (this.currentPage - 1) * this.recordsPerPage;
+    this.skip = newSkip.toString();
+  }
+
+  isNextButtonDisabled(): boolean {
+    return this.currentPage === this.getTotalPages();
+  }
+
+  isPreviousButtonDisabled(): boolean {
+    return this.skip === '0' || this.currentPage === 1;
+  }
+  updateRecordsPerPage() {
+    this.currentPage = 1;
+    this.skip = '0';
+    this.next = this.recordsPerPage.toString();
+    this.getTemplateAssignments();
+  }
+  getTotalPages(): number {
+    const totalCount = this.totalRecords;
+    return Math.ceil(totalCount / this.recordsPerPage);
+  }
 }
