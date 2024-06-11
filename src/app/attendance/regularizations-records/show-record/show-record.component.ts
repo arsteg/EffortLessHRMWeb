@@ -58,9 +58,9 @@ export class ShowRecordComponent {
   }
 
   getAllRegularizationReason() {
-    this.attendanceService.getRegularizationReason().subscribe((res: any) => {
-      this.reason = res.data;
-    })
+    // this.attendanceService.getRegularizationReason().subscribe((res: any) => {
+    //   this.reason = res.data;
+    // })
   }
 
   getAllRegularization() {

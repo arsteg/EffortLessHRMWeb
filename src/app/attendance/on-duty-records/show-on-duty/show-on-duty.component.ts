@@ -132,9 +132,9 @@ export class ShowOnDutyComponent {
   }
 
   getOnDutyReason() {
-    this.attendanceService.getDutyReason().subscribe((res: any) => {
-      this.onDutyReason = res.data;
-    })
+    // this.attendanceService.getDutyReason().subscribe((res: any) => {
+    //   this.onDutyReason = res.data;
+    // })
   }
 
   getOnDutyRequestByuser() {

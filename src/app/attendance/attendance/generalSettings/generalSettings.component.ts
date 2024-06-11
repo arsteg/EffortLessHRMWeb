@@ -10,6 +10,7 @@ import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { ToastrService } from 'ngx-toastr';
 import { MatDialog } from '@angular/material/dialog';
+import { PaginationService } from 'src/app/_services/pagination.service'
 
 @Component({
   selector: 'app-generalSettings',
@@ -32,6 +33,9 @@ export class GeneralSettingsComponent implements OnInit {
   dutyReason: any;
   dutyReasonForm: FormGroup;
   selectedDutyReason: any;
+  totalRecords: number // example total records
+  recordsPerPage: number = 10;
+  currentPage: number = 1;
 
   constructor(
     public commonService: CommonService,
@@ -41,6 +45,7 @@ export class GeneralSettingsComponent implements OnInit {
     private modalService: NgbModal,
     private dialog: MatDialog,
     private toast: ToastrService,
+    private paginationService: PaginationService
   ) {
     this.generalSettingForm = this.fb.group({
       canSelectRegularizationReason: [false],
@@ -68,12 +73,46 @@ export class GeneralSettingsComponent implements OnInit {
     this.commonService.populateUsers().subscribe((res: any) => {
       this.members = res.data.data;
     });
-    this.getRegularizationReason();
-    this.getDutyReason();
+    this.loadRecords()
+  }
+
+
+
+  onPageChange(page: number) {
+    this.currentPage = page;
+    this.loadRecords();
+  }
+
+  onRecordsPerPageChange(recordsPerPage: number) {
+    this.recordsPerPage = recordsPerPage;
+    this.loadRecords();
+  }
+
+  loadRecords() {
+    const pagination = {
+      skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
+      next: this.recordsPerPage.toString()
+    };
+    if (this.activeTab == 'tabRegularizationReason') {
+      this.attendanceService.getRegularizationReason(pagination.skip, pagination.next).subscribe((res: any) => {
+        this.regularization = res.data;
+        this.totalRecords = res.total;
+      });
+    }
+    else if(this.activeTab == 'tabOnDutyReason'){
+      console.log('on dutyReason')
+      this.attendanceService.getDutyReason(pagination.skip, pagination.next).subscribe((res: any) => {
+        this.dutyReason = res.data;
+        this.totalRecords = res.total;
+      });
+    }
   }
 
   selectTab(tabId: string) {
+
     this.activeTab = tabId;
+    console.log(this.activeTab);
+    this.loadRecords();
   }
 
   savegeneralSettings() {
@@ -134,7 +173,7 @@ export class GeneralSettingsComponent implements OnInit {
       this.regularization = res.data;
       this.toast.success('Regularization Reason Added', 'Successfully!!!');
 
-      this.getRegularizationReason();
+      // this.getRegularizationReason();
       this.regularizationForm.reset();
     })
   }
@@ -165,12 +204,7 @@ export class GeneralSettingsComponent implements OnInit {
       }
     })
   }
-  getRegularizationReason() {
-    this.attendanceService.getRegularizationReason().subscribe((res: any) => {
-      this.regularization = res.data;
-    })
-  }
-
+  
   deleteReason(_id: string) {
     this.attendanceService.deleteReason(_id).subscribe((res: any) => {
       const index = this.regularization.findIndex(temp => temp._id === _id);
@@ -227,7 +261,7 @@ export class GeneralSettingsComponent implements OnInit {
     this.dutyReasonForm.value.users = formattedUsers;
     this.attendanceService.addDutyReason(this.dutyReasonForm.value).subscribe((res: any) => {
       this.dutyReason = res.data;
-      this.getDutyReason();
+      // this.getDutyReason();
       this.dutyReasonForm.reset();
       this.toast.success('On Duty Reason Created', 'Successfully!!!');
     })
@@ -262,11 +296,7 @@ export class GeneralSettingsComponent implements OnInit {
     })
   }
 
-  getDutyReason() {
-    this.attendanceService.getDutyReason().subscribe((res: any) => {
-      this.dutyReason = res.data;
-    });
-  }
+  
 
   clearForm() {
     this.dutyReasonForm.reset();

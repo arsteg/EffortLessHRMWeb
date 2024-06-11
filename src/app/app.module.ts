@@ -129,8 +129,6 @@ import { LiveScreenComponent } from './realtime/live-screen/live-screen.componen
     SettingsComponent,
     UserTaxDeclarationComponent,
     LiveScreenComponent,
-
-
   ],
   imports: [
     BrowserModule,

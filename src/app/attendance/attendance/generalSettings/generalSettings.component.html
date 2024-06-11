@@ -76,6 +76,10 @@
             </div>
           </div>
           <div class="mt-2 bg-white tableContainer">
+            <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
+              [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
+              (recordsPerPageChange)="onRecordsPerPageChange($event)">
+            </app-pagination>
             <table>
               <thead>
                 <th>Reason</th>
@@ -83,11 +87,11 @@
                 <th>Action</th>
               </thead>
               <tbody>
-                <tr *ngFor="let reason of regularization | paginate: { itemsPerPage: 5, currentPage: p }; ">
+                <tr *ngFor="let reason of regularization ">
                   <td>{{reason?.label}}</td>
                   <td>{{reason?.applicableEmployee | titlecase}}</td>
                   <td>
-                    <button class="actions" mat-mini-fab  matTooltip="Edit" matTooltipPosition="before"
+                    <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before"
                       aria-label="Example icon button with a menu icon"
                       (click)="selectedReason = reason; isEdit= true; editReason(); open(addModal); ">
                       <i class="bi bi-pencil-fill"></i>
@@ -100,17 +104,22 @@
                 </tr>
               </tbody>
             </table>
-            <pagination-controls (pageChange)="p = $event"
-              class="pagination d-flex justify-content-end"></pagination-controls>
+            
           </div>
         </div>
         <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabOnDutyReason'}" id="tabOnDutyReason">
           <div>
             <div class="text-end">
-              <button class="btn addBtn" (click)="open(addDutyModal); clearForm() ;isEdit= false">On&nbsp;Duty&nbsp;Reason</button>
+              <button class="btn addBtn"
+                (click)="open(addDutyModal); clearForm() ;isEdit= false">On&nbsp;Duty&nbsp;Reason</button>
             </div>
           </div>
           <div class="mt-2 bg-white tableContainer">
+            <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
+              [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
+              (recordsPerPageChange)="onRecordsPerPageChange($event)">
+            </app-pagination>
+
             <table>
               <thead>
                 <th>Reason</th>
@@ -118,11 +127,11 @@
                 <th>Action</th>
               </thead>
               <tbody>
-                <tr *ngFor="let dutyReason of dutyReason | paginate: { itemsPerPage: 5, currentPage: p }; ">
+                <tr *ngFor="let dutyReason of dutyReason ">
                   <td>{{dutyReason?.label}}</td>
                   <td>{{dutyReason?.applicableEmployee | titlecase}}</td>
                   <td>
-                    <button class="actions" mat-mini-fab  matTooltip="Edit" matTooltipPosition="before"
+                    <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before"
                       aria-label="Example icon button with a menu icon"
                       (click)="selectedDutyReason = dutyReason; isEdit= true; editDutyReason(); open(addDutyModal); ">
                       <i class="bi bi-pencil-fill"></i>
@@ -135,8 +144,7 @@
                 </tr>
               </tbody>
             </table>
-            <pagination-controls (pageChange)="p = $event"
-              class="pagination d-flex justify-content-end"></pagination-controls>
+            
           </div>
         </div>
       </div>

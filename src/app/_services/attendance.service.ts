@@ -54,8 +54,8 @@ export class AttendanceService {
     return response;
   }
 
-  getRegularizationReason(): Observable<response<any>> {
-    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/regularization-reasons`, this.httpOptions);
+  getRegularizationReason(skip: string, next: string): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/regularization-reasons-list`,{skip, next},  this.httpOptions);
     return response;
   }
 
@@ -68,8 +68,8 @@ export class AttendanceService {
     var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/duty-reasons`, dutyReason, this.httpOptions);
     return response;
   }
-  getDutyReason(): Observable<response<any>> {
-    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/duty-reasons`, this.httpOptions);
+  getDutyReason(skip: string, next: string): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/duty-reasons-list`,{skip, next}, this.httpOptions);
     return response;
   }
 

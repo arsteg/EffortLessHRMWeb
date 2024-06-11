@@ -51,9 +51,9 @@ export class AddRecordComponent {
     })
   }
   getregularizationReason() {
-    this.attendanceService.getRegularizationReason().subscribe((res: any) => {
-      this.reason = res.data;
-    })
+    // this.attendanceService.getRegularizationReason().subscribe((res: any) => {
+    //   this.reason = res.data;
+    // })
   }
   onSubmission() {
     this.addRegularization.value.firstApprover = null,

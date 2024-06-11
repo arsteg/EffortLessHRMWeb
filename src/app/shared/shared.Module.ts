@@ -29,9 +29,10 @@ import { ToastrModule } from 'ngx-toastr';
 import { MilliSecondsToTimePipe } from '../pipes/SecondsToTimePipe';
 import { MatStepperModule }  from '@angular/material/stepper';
 import { MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle } from '@angular/material/dialog';
+import { PaginationComponent } from '../pagination/pagination.component';
 
 @NgModule({
-  declarations: [SortDirective, SearchPipe, MilliSecondsToTimePipe],
+  declarations: [SortDirective, SearchPipe, MilliSecondsToTimePipe, PaginationComponent],
   imports: [
     CommonModule,
     MatToolbarModule,
@@ -61,7 +62,7 @@ import { MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle } fr
     MatDialogClose,
     MatDialogContent,
     MatDialogTitle,
-    MatTooltipModule
+    MatTooltipModule,
   ],
   exports: [
     SortDirective,
@@ -98,7 +99,8 @@ import { MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle } fr
     MatDialogContent,
     MatDialogTitle,
     TooltipModule,
-    MatTooltipModule
+    MatTooltipModule,
+    PaginationComponent
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,
