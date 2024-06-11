@@ -24,6 +24,9 @@ export class ShiftComponent {
   shiftForm: FormGroup;
   showColorPicker: boolean = false;
   color: string = '#fff';
+  totalRecords: number
+  recordsPerPage: number = 10;
+  currentPage: number = 1;
 
   constructor(
     private attendanceService: AttendanceService,
@@ -66,7 +69,28 @@ export class ShiftComponent {
   }
 
   ngOnInit() {
-    this.getShift();
+    this.loadRecords();
+  }
+
+  onPageChange(page: number) {
+    this.currentPage = page;
+    this.loadRecords();
+  }
+
+  onRecordsPerPageChange(recordsPerPage: number) {
+    this.recordsPerPage = recordsPerPage;
+    this.loadRecords();
+  }
+
+  loadRecords() {
+    const pagination = {
+      skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
+      next: this.recordsPerPage.toString()
+    };
+    this.attendanceService.getShift(pagination.skip, pagination.next).subscribe((res: any) => {
+      this.shift = res.data;
+      this.totalRecords = res.total;
+    })
   }
 
   clearForm() {
@@ -106,7 +130,7 @@ export class ShiftComponent {
       dashboardColor: data.dashboardColor,
       isOffShift: data.isOffShift,
       shiftType: data.shiftType,
-      
+
       startTime: data.startTime,
       endTime: data.endTime,
       minHoursPerDayToGetCreditForFullDay: data.minHoursPerDayToGetCreditForFullDay,
@@ -129,14 +153,8 @@ export class ShiftComponent {
       graceTimeLimitForEarlyGoing: data.graceTimeLimitForEarlyGoing,
       isHalfDayApplicable: data.isHalfDayApplicable,
       minHoursPerDayToGetCreditforHalfDay: data.minHoursPerDayToGetCreditforHalfDay,
-      
-      maxLateComingAllowedMinutesFirstHalfAttendance: data.maxLateComingAllowedMinutesFirstHalfAttendance
-    })
-  }
 
-  getShift() {
-    this.attendanceService.getShift().subscribe((res: any) => {
-      this.shift = res.data;
+      maxLateComingAllowedMinutesFirstHalfAttendance: data.maxLateComingAllowedMinutesFirstHalfAttendance
     })
   }
 
@@ -165,7 +183,7 @@ export class ShiftComponent {
     if (this.shiftForm.valid) {
       if (!this.isEdit) {
         this.attendanceService.addShift(this.shiftForm.value).subscribe((res: any) => {
-          this.getShift();
+          this.loadRecords();
           this.toast.success('Shift Created', 'Successfully');
           this.shiftForm.reset();
         })
@@ -173,7 +191,7 @@ export class ShiftComponent {
       else {
         this.attendanceService.updateShift(this.selectedShift, this.shiftForm.value).subscribe((res: any) => {
           this.changeMode = 'Add';
-          this.getShift();
+          this.loadRecords();
           this.toast.success('Shift Updated', 'Successfully');
           this.shiftForm.reset();
         })
@@ -194,7 +212,7 @@ export class ShiftComponent {
   }
   deleteTemplate(id: string) {
     this.attendanceService.deleteShift(id).subscribe((res: any) => {
-      this.getShift();
+      this.loadRecords();
       this.toast.success('Successfully Deleted!!!', 'Shift');
     },
       (err) => {

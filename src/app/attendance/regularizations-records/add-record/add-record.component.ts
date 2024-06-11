@@ -46,7 +46,7 @@ export class AddRecordComponent {
     this.getregularizationReason();
   }
   getShift() {
-    this.attendanceService.getShift().subscribe((res: any) => {
+    this.attendanceService.getShift('','').subscribe((res: any) => {
       this.shift = res.data;
     })
   }

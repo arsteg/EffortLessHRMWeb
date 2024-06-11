@@ -29,6 +29,9 @@ export class AttendanceTemplateAssignmentComponent {
   updateTemplateAssignForm: FormGroup;
   templateById: any;
   selectedTemp: any;
+  totalRecords: number 
+  recordsPerPage: number = 10;
+  currentPage: number = 1;
 
   constructor(private modalService: NgbModal,
     private exportService: ExportService,
@@ -58,7 +61,30 @@ export class AttendanceTemplateAssignmentComponent {
       this.allAssignee = result && result.data && result.data.data;
     });
     this.getAllTemplates();
-    this.getAttendanceAssignments();
+    // this.getAttendanceAssignments();
+    this.loadRecords();
+  }
+
+  onPageChange(page: number) {
+    this.currentPage = page;
+    this.loadRecords();
+  }
+
+  onRecordsPerPageChange(recordsPerPage: number) {
+    this.recordsPerPage = recordsPerPage;
+    this.loadRecords();
+  }
+
+  loadRecords() {
+    const pagination = {
+      skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
+      next: this.recordsPerPage.toString()
+    };
+    this.attendanceService.getAttendanceAssignment(pagination.skip, pagination.next).subscribe((res: any) => {
+      this.attendanceTemplateAssignment = res.data;
+      this.totalRecords = res.total;
+    })
+   
   }
 
   getUser(employeeId: string) {
@@ -215,16 +241,12 @@ console.log(response);
   }
 
   getAllTemplates() {
-    this.attendanceService.getAttendanceTemplate().subscribe((res: any) => {
+    this.attendanceService.getAttendanceTemplate('','').subscribe((res: any) => {
       this.templates = res.data;
     })
   }
 
-  getAttendanceAssignments() {
-    this.attendanceService.getAttendanceAssignment().subscribe((res: any) => {
-      this.attendanceTemplateAssignment = res.data;
-    })
-  }
+ 
 
   onCreate() {
     console.log(this.selectedTemp)
@@ -246,7 +268,7 @@ console.log(response);
           payload.secondaryApprover = null
       }
       this.attendanceService.addAttendanceAssignment(payload).subscribe((res: any) => {
-        this.getAttendanceAssignments();
+        this.loadRecords();
         this.toast.success('Attendance Template Assigned', 'Successfully');
         this.attendanceTemplateAssignmentForm.reset();
       });
@@ -261,13 +283,13 @@ console.log(response);
     }
     console.log(payload);
     this.attendanceService.updateAttendanceAssignment(this.selectedTemplate._id, payload).subscribe((res: any) => {
-      this.getAttendanceAssignments();
+      this.loadRecords();
     })
   }
 
   deleteTempAssignment(id: string) {
     this.attendanceService.deleteAttendanceAssignment(id).subscribe((res: any) => {
-      this.getAttendanceAssignments();
+      this.loadRecords();
       this.toast.success('Successfully Deleted!!!', 'Attendance Template Assignment')
     },
       (err) => {

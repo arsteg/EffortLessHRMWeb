@@ -27,6 +27,9 @@ export class OvertimeComponent {
   selectedTab: number = 1;
   selectedOverTime: any;
   selectedRoundingPattern: any;
+  totalRecords: number
+  recordsPerPage: number = 10;
+  currentPage: number = 1;
 
   constructor(private fb: FormBuilder,
     private modalService: NgbModal,
@@ -87,12 +90,43 @@ export class OvertimeComponent {
   }
 
   ngOnInit() {
-    this.getRounding();
-    this.getOverTimeRecords();
+    this.loadRecords();
+  }
+
+  onPageChange(page: number) {
+    this.currentPage = page;
+    this.loadRecords();
+  }
+
+  onRecordsPerPageChange(recordsPerPage: number) {
+    this.recordsPerPage = recordsPerPage;
+    this.loadRecords();
+  }
+
+  loadRecords() {
+    const pagination = {
+      skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
+      next: this.recordsPerPage.toString()
+    };
+   if(this.activeTab == 'overTime') {
+      this.attendanceService.getOverTime(pagination.skip, pagination.next).subscribe((res: any) => {
+        this.overTimeRecord = res.data;
+        this.totalRecords = res.total;
+      })
+    }
+    else {
+      this.attendanceService.getRounding(pagination.skip, pagination.next).subscribe((res: any) => {
+        this.rounding = res.data;
+        this.totalRecords = res.total;
+      })
+    }
+
   }
 
   selectTab(tabId: string) {
     this.activeTab = tabId;
+    console.log(this.activeTab);
+    this.loadRecords();
   }
 
   closeModal() {
@@ -143,7 +177,7 @@ export class OvertimeComponent {
   onSubmission() {
     if (this.changeMode == 'Add') {
       this.attendanceService.addRounding(this.roundingForm.value).subscribe((res: any) => {
-        this.getRounding();
+        this.loadRecords();
         this.roundingForm.reset();
         this.toast.success('Rounding Information Created', 'Successfully')
       },
@@ -153,7 +187,7 @@ export class OvertimeComponent {
     }
     else {
       this.attendanceService.updateRounding(this.selectedRecord._id, this.roundingForm.value).subscribe((res: any) => {
-        this.getRounding();
+        this.loadRecords();
         this.roundingForm.reset();
         this.toast.success('Rounding Information Updated', 'Successfully')
       },
@@ -163,12 +197,6 @@ export class OvertimeComponent {
     }
   }
 
-  getRounding() {
-    this.attendanceService.getRounding().subscribe((res: any) => {
-      this.rounding = res.data;
-    })
-  }
- 
   onRoundingPatternChange(event) {
     const selectedPatternName = event.target.value;
     this.selectedRoundingPattern = this.rounding.find(
@@ -178,7 +206,7 @@ export class OvertimeComponent {
 
   deleteRoundingInfo(id: string) {
     this.attendanceService.deleteRounding(id).subscribe((res: any) => {
-      this.getRounding();
+      this.loadRecords();
       this.toast.success('Successfully Deleted!!!', 'Rounding Information')
     },
       (err) => {
@@ -201,28 +229,24 @@ export class OvertimeComponent {
     });
   }
 
-  exportToCsv() { 
+  exportToCsv() {
     const dataToExport = this.rounding;
     this.exportService.exportToCSV('Rounding-information', 'Rounding-information', dataToExport);
   }
-  
+
   exportToCsvOverTime() {
     const dataToExport = this.overTimeRecord;
     this.exportService.exportToCSV('Overtime-Information', 'Overtime-Information', dataToExport);
-   }
-  
-
-  getOverTimeRecords() {
-    this.attendanceService.getOverTime().subscribe((res: any) => {
-      this.overTimeRecord = res.data;
-    })
   }
+
+
+
 
   onOverTimeSubmission() {
     if (!this.isEdit) {
       console.log(this.overTimeForm.value)
       this.attendanceService.addOverTime(this.overTimeForm.value).subscribe((res: any) => {
-        this.getOverTimeRecords();
+        this.loadRecords();
         this.overTimeForm.reset();
         this.toast.success('Over Time Information Created', 'Successfully');
       },
@@ -233,7 +257,7 @@ export class OvertimeComponent {
     else {
       console.log(this.selectedOverTime)
       this.attendanceService.updateOverTime(this.selectedOverTime._id, this.overTimeForm.value).subscribe((res: any) => {
-        this.getOverTimeRecords();
+        this.loadRecords();
         this.toast.success('Over Time Information Updated', 'Successfully');
       },
         err => {
@@ -268,7 +292,7 @@ export class OvertimeComponent {
 
   deleteOvertimeInfo(id: string) {
     this.attendanceService.deleteOverTime(id).subscribe((res: any) => {
-      this.getOverTimeRecords();
+      this.loadRecords();
       this.toast.success('Successfully Deleted!!!', 'Overtime Information')
     },
       (err) => {

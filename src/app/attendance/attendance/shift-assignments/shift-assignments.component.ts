@@ -25,7 +25,9 @@ export class ShiftAssignmentsComponent {
   bsValue = new Date();
   allAssignee: any;
   shiftAssigments: any;
-
+  totalRecords: number
+  recordsPerPage: number = 10;
+  currentPage: number = 1;
 
   constructor(private attendanceService: AttendanceService,
     private modalService: NgbModal,
@@ -41,11 +43,33 @@ export class ShiftAssignmentsComponent {
     })
   }
   ngOnInit() {
-    this.getShiftAssignment();
     this.getshift();
     this.commonService.populateUsers().subscribe(result => {
       this.allAssignee = result && result.data && result.data.data;
     });
+    this.loadRecords();
+  }
+
+  onPageChange(page: number) {
+    this.currentPage = page;
+    this.loadRecords();
+  }
+
+  onRecordsPerPageChange(recordsPerPage: number) {
+    this.recordsPerPage = recordsPerPage;
+    this.loadRecords();
+  }
+
+  loadRecords() {
+    const pagination = {
+      skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
+      next: this.recordsPerPage.toString()
+    };
+    this.attendanceService.getShiftAssignment(pagination.skip, pagination.next).subscribe((res: any) => {
+      this.shiftAssigments = res.data;
+    this.totalRecords = res.total;
+    })
+    
   }
 
   getUser(employeeId: string) {
@@ -57,14 +81,10 @@ export class ShiftAssignmentsComponent {
     return template ? template.name : '';
   }
 
-  getShiftAssignment() {
-    this.attendanceService.getShiftAssignment().subscribe((res: any) => {
-      this.shiftAssigments = res.data;
-    })
-  }
+  
 
   getshift() {
-    this.attendanceService.getShift().subscribe((res: any) => {
+    this.attendanceService.getShift('','').subscribe((res: any) => {
       this.shift = res.data;
     })
   }
@@ -116,7 +136,7 @@ export class ShiftAssignmentsComponent {
     if (this.shiftForm.valid) {
       if (!this.isEdit) {
         this.attendanceService.addShiftAssignment(this.shiftForm.value).subscribe((res: any) => {
-          this.getShiftAssignment();
+          this.loadRecords();
           this.toast.success('Shift Template Assigned', 'Successfully');
           this.shiftForm.reset();
         },
@@ -126,7 +146,7 @@ export class ShiftAssignmentsComponent {
       }
       else {
         this.attendanceService.updateShiftAssignment(this.selectedShift, this.shiftForm.value).subscribe((res: any) => {
-          this.getShiftAssignment();
+          this.loadRecords();
           this.shiftForm.reset();
           this.isEdit = false,
             this.toast.success('Shift Template Assignment Updated', 'Succesfully')
@@ -154,7 +174,7 @@ export class ShiftAssignmentsComponent {
 
   deleteTemplate(id: string) {
     this.attendanceService.deleteShiftAssignment(id).subscribe((res: any) => {
-      this.getShiftAssignment();
+      this.loadRecords();
       this.toast.success('Successfully Deleted!!!', 'Shift Template Assignment');
     },
       (err) => {

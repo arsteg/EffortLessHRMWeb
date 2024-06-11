@@ -30,7 +30,7 @@ export class UploadRecordsComponent {
   }
 
   getShift() {
-    this.attendanceService.getShift().subscribe((res: any) => {
+    this.attendanceService.getShift('', '').subscribe((res: any) => {
       this.shift = res.data;
       if(this.shift.length>0){
         let response = this.shift.map((shift: any) => shift.name);

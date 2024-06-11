@@ -1,5 +1,5 @@
 <div class="main-content pt-2">
-    <div class=" bg-white tableContainer">
+    <div class="py-2 bg-white tableContainer">
         <div class="d-flex justify-content-between bg-white tableContainer align-items-center mb-2 px-3">
             <p class="mb-0">({{regularizationRecords?.length}}) Records Found</p>
             <div class="d-flex align-items-center">
@@ -37,7 +37,10 @@
             </div>
 
         </div>
-
+        <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
+        [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
+        (recordsPerPageChange)="onRecordsPerPageChange($event)">
+        </app-pagination>
         <table *ngIf="portalView === 'admin'">
             <thead>
                 <th>Employee</th>
@@ -51,7 +54,7 @@
             </thead>
             <tbody>
                 <tr
-                    *ngFor="let data of regularizationRecords | search: searchText | paginate: { itemsPerPage: 5, currentPage: p }">
+                    *ngFor="let data of regularizationRecords | search: searchText">
                     <td>{{getUser(data?.user)}}</td>
                     <td>{{data?.appliedOn | date: 'mediumDate'}}</td>
                     <td>{{data?.requestType}}</td>
@@ -99,8 +102,6 @@
                 </tr>
             </tbody>
         </table>
-        <pagination-controls *ngIf="portalView === 'admin'" (pageChange)="p = $event"
-            class="pagination d-flex justify-content-end"></pagination-controls>
 
         <table *ngIf="portalView === 'user'">
             <thead>

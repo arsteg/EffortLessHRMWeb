@@ -55,7 +55,7 @@ export class AttendanceService {
   }
 
   getRegularizationReason(skip: string, next: string): Observable<response<any>> {
-    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/regularization-reasons-list`,{skip, next},  this.httpOptions);
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/regularization-reasons-list`, { skip, next }, this.httpOptions);
     return response;
   }
 
@@ -69,7 +69,7 @@ export class AttendanceService {
     return response;
   }
   getDutyReason(skip: string, next: string): Observable<response<any>> {
-    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/duty-reasons-list`,{skip, next}, this.httpOptions);
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/duty-reasons-list`, { skip, next }, this.httpOptions);
     return response;
   }
 
@@ -82,8 +82,8 @@ export class AttendanceService {
     return response;
   }
 
-  getAttendanceTemplate(): Observable<response<any>> {
-    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/attendance-templates`, this.httpOptions);
+  getAttendanceTemplate(skip: string, next: string): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/attendance-templates-by-company`, { skip, next }, this.httpOptions);
     return response;
   }
 
@@ -122,8 +122,8 @@ export class AttendanceService {
     return response;
   }
 
-  getAttendanceAssignment(): Observable<response<any>> {
-    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/attendance-assignments`, this.httpOptions);
+  getAttendanceAssignment(skip: string, next: string): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/attendance-assignments-by-company`, { skip, next }, this.httpOptions);
     return response;
   }
 
@@ -144,8 +144,8 @@ export class AttendanceService {
     return response;
   }
 
-  getRounding(): Observable<response<any>> {
-    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/rounding-information`, this.httpOptions);
+  getRounding(skip: string, next: string): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/rounding-information-by-company`, { skip, next }, this.httpOptions);
     return response;
   }
 
@@ -171,8 +171,8 @@ export class AttendanceService {
     return response;
   }
 
-  getOverTime(): Observable<response<any>> {
-    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/overtime-information`, this.httpOptions);
+  getOverTime(skip: string, next: string): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/overtime-information-by-company`, { skip, next }, this.httpOptions);
     return response;
   }
 
@@ -223,8 +223,8 @@ export class AttendanceService {
     return response;
   }
 
-  getOnDutyTemplate(): Observable<response<any>> {
-    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/on-duty-templates`, this.httpOptions);
+  getOnDutyTemplate(skip: string, next: string): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/on-duty-templates-by-company`, { skip, next }, this.httpOptions);
     return response;
   }
 
@@ -250,8 +250,8 @@ export class AttendanceService {
     return response;
   }
 
-  getOnDutyAssignmentTemplate(): Observable<response<any>> {
-    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/user-on-duty-templates`, this.httpOptions);
+  getOnDutyAssignmentTemplate(skip: string, next: string): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/user-on-duty-templates-by-company`, { skip, next }, this.httpOptions);
     return response;
   }
 
@@ -271,8 +271,8 @@ export class AttendanceService {
     return response;
   }
 
-  getShift(): Observable<response<any>> {
-    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/shifts`, this.httpOptions);
+  getShift(skip: string, next: string): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/shifts-by-company`, { skip, next }, this.httpOptions);
     return response;
   }
 
@@ -296,8 +296,8 @@ export class AttendanceService {
     return response;
   }
 
-  getShiftAssignment(): Observable<response<any>> {
-    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/shift-template-assignments`, this.httpOptions);
+  getShiftAssignment(skip: string, next: string): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/shift-template-assignments-by-company`,{skip, next}, this.httpOptions);
     return response;
   }
 
@@ -343,8 +343,8 @@ export class AttendanceService {
     return response;
   }
 
-  getAllRegularization(): Observable<response<any>> {
-    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/regularizationRequests`, this.httpOptions);
+  getAllRegularization(skip: string, next: string): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/regularizationRequests-by-company`,{skip, next}, this.httpOptions);
     return response;
   }
   getRegularizationByUser(userId: string): Observable<response<any>> {
@@ -383,30 +383,30 @@ export class AttendanceService {
     return response;
   }
 
-// Time entries (My Attendance Records)
-addTimeEntry(onDuty: any): Observable<response<any>> {
-  var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/time-entries`, onDuty, this.httpOptions);
-  return response;
-}
+  // Time entries (My Attendance Records)
+  addTimeEntry(onDuty: any): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/time-entries`, onDuty, this.httpOptions);
+    return response;
+  }
 
-updateTimeEntry(id: string, location: any): Observable<response<any>> {
-  var response = this.http.put<response<any>>(`${environment.apiUrlDotNet}/attendance/time-entries/${id}`, location, this.httpOptions);
-  return response;
-}
+  updateTimeEntry(id: string, location: any): Observable<response<any>> {
+    var response = this.http.put<response<any>>(`${environment.apiUrlDotNet}/attendance/time-entries/${id}`, location, this.httpOptions);
+    return response;
+  }
 
-deleteTimeEntry(id: string): Observable<response<any>> {
-  var response = this.http.delete<response<any>>(`${environment.apiUrlDotNet}/attendance/time-entries/${id}`, this.httpOptions);
-  return response;
-}
+  deleteTimeEntry(id: string): Observable<response<any>> {
+    var response = this.http.delete<response<any>>(`${environment.apiUrlDotNet}/attendance/time-entries/${id}`, this.httpOptions);
+    return response;
+  }
 
-getTimeEntryById(id: string): Observable<response<any>> {
-  var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/time-entries/${id}`, this.httpOptions);
-  return response;
-}
+  getTimeEntryById(id: string): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/time-entries/${id}`, this.httpOptions);
+    return response;
+  }
 
-getTimeEntry(): Observable<response<any>> {
-  var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/time-entries-by-company`, this.httpOptions);
-  return response;
-}
+  getTimeEntry(): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/time-entries-by-company`, this.httpOptions);
+    return response;
+  }
 
 }

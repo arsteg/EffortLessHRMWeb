@@ -220,7 +220,6 @@ assignee: any;
         const file: File = files.item(i);
         if (file) {
           this.selectedFiles.push(file);
-
         }
       }
     }

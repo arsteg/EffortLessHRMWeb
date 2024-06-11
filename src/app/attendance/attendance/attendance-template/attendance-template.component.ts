@@ -28,6 +28,9 @@ export class AttendanceTemplateComponent {
   regularizations: any;
   attendanceAssignment: any;
   templateAssignmentCount;
+  totalRecords: number // example total records
+  recordsPerPage: number = 10;
+  currentPage: number = 1;
 
   constructor(private modalService: NgbModal,
     private dialog: MatDialog,
@@ -36,19 +39,35 @@ export class AttendanceTemplateComponent {
     private attendanceService: AttendanceService) { }
 
   ngOnInit() {
-    this.getAttendanceTemplate();
     this.getAttendanceTemplateAssignment();
-    // this.getRegularizations();
+    this.loadRecords();
   }
-  getAttendanceTemplate() {
-    this.attendanceService.getAttendanceTemplate().subscribe((res: any) => {
+
+  onPageChange(page: number) {
+    this.currentPage = page;
+    this.loadRecords();
+  }
+
+  onRecordsPerPageChange(recordsPerPage: number) {
+    this.recordsPerPage = recordsPerPage;
+    this.loadRecords();
+  }
+
+  loadRecords() {
+    const pagination = {
+      skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
+      next: this.recordsPerPage.toString()
+    };
+    this.attendanceService.getAttendanceTemplate(pagination.skip, pagination.next).subscribe((res: any) => {
       this.attendanceTemplate = res.data;
+      this.totalRecords = res.total;
       this.updateTemplateAssignmentCount();
     });
   }
 
+
   getAttendanceTemplateAssignment() {
-    this.attendanceService.getAttendanceAssignment().subscribe((res: any) => {
+    this.attendanceService.getAttendanceAssignment('', '').subscribe((res: any) => {
       this.attendanceAssignment = res.data;
       this.updateTemplateAssignmentCount();
     });
@@ -128,7 +147,7 @@ export class AttendanceTemplateComponent {
 
   deleteTemplate(id: string) {
     this.attendanceService.deleteAttendanceTemplate(id).subscribe((res: any) => {
-      this.getAttendanceTemplate();
+      this.loadRecords();
       this.toast.success('Successfully Deleted!!!', 'Attendance Template')
     },
       (err) => {

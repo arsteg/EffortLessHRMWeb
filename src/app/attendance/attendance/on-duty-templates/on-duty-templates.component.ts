@@ -25,6 +25,9 @@ export class OnDutyTemplatesComponent {
   users: any[];
   templateAssignmentCount;
   onDutyTemplateAssignment;
+  totalRecords: number 
+  recordsPerPage: number = 10;
+  currentPage: number = 1;
 
   constructor(private modalService: NgbModal,
     private dialog: MatDialog,
@@ -52,9 +55,33 @@ export class OnDutyTemplatesComponent {
 
   ngOnInit() {
     this.getAllUsers();
-    this.getOnDutyTemplates();
     this.getOnDutyTempAssignment();
+    this.loadRecords();
   }
+
+  onPageChange(page: number) {
+    this.currentPage = page;
+    this.loadRecords();
+  }
+
+  onRecordsPerPageChange(recordsPerPage: number) {
+    this.recordsPerPage = recordsPerPage;
+    this.loadRecords();
+  }
+
+  loadRecords() {
+    const pagination = {
+      skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
+      next: this.recordsPerPage.toString()
+    };
+    this.attendanceService.getOnDutyTemplate(pagination.skip, pagination.next).subscribe((res: any) => {
+      this.onDutyTemplate = res.data;
+      this.totalRecords = res.total;
+      this.updateTemplateAssignmentCount();
+    })
+  }
+
+
   getAllUsers() {
     this.commonService.populateUsers().subscribe((res: any) => {
       this.users = res.data.data;
@@ -100,15 +127,10 @@ export class OnDutyTemplatesComponent {
     console.log(this.onDutyTempForm.value);
   }
 
-  getOnDutyTemplates() {
-    this.attendanceService.getOnDutyTemplate().subscribe((res: any) => {
-      this.onDutyTemplate = res.data;
-      this.updateTemplateAssignmentCount();
-    })
-  }
+  
 
   getOnDutyTempAssignment() {
-    this.attendanceService.getOnDutyAssignmentTemplate().subscribe((res: any) => {
+    this.attendanceService.getOnDutyAssignmentTemplate('', '').subscribe((res: any) => {
       this.onDutyTemplateAssignment = res.data;
       this.updateTemplateAssignmentCount();
     })
@@ -126,7 +148,7 @@ export class OnDutyTemplatesComponent {
   onSubmission() {
     if (!this.isEdit) {
       this.attendanceService.addOnDutyTemplate(this.onDutyTempForm.value).subscribe((res: any) => {
-        this.getOnDutyTemplates();
+        this.loadRecords();
         this.toast.success('Successfully Created!!!', 'OnDuty Template');
 
       }, (err) => {
@@ -135,9 +157,8 @@ export class OnDutyTemplatesComponent {
     }
     else {
       this.attendanceService.updateOnDutyTemplate(this.selectedTemplateId, this.onDutyTempForm.value).subscribe((res: any) => {
-        this.getOnDutyTemplates();
+        this.loadRecords();
         this.toast.success('Successfully Updated!!!', 'OnDuty Template');
-
       }, (err) => {
         this.toast.error('This OnDuty Template Can not be Updated', 'Error')
       })
@@ -146,7 +167,7 @@ export class OnDutyTemplatesComponent {
 
   deleteTemplate(id: string) {
     this.attendanceService.deleteOnDutyTemplate(id).subscribe((res: any) => {
-      this.getOnDutyTemplates();
+      this.loadRecords();
       this.toast.success('Successfully Deleted!!!', 'OnDuty Template');
     },
       (err) => {

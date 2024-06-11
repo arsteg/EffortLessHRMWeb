@@ -27,11 +27,15 @@ export class ShowRecordComponent {
   p: number = 1;
   reason: any;
   statusList: status[] = [
-    { name: 'Pending',  isChecked: true },
-    { name: 'Approved',  isChecked: true },
+    { name: 'Pending', isChecked: true },
+    { name: 'Approved', isChecked: true },
     { name: 'Cancelled', isChecked: true },
     { name: 'Rejected', isChecked: true }
   ];
+  totalRecords: number
+  recordsPerPage: number = 10;
+  currentPage: number = 1;
+
   constructor(private dialog: MatDialog,
     private exportService: ExportService,
     private modalService: NgbModal,
@@ -44,9 +48,40 @@ export class ShowRecordComponent {
     this.commonService.populateUsers().subscribe(result => {
       this.allAssignee = result && result.data && result.data.data;
     });
-    this.getAllRegularization();
     this.getAllRegularizationReason();
+    this.loadRecords();
   }
+
+  onPageChange(page: number) {
+    this.currentPage = page;
+    this.loadRecords();
+  }
+
+  onRecordsPerPageChange(recordsPerPage: number) {
+    this.recordsPerPage = recordsPerPage;
+    this.loadRecords();
+  }
+
+  loadRecords() {
+    const pagination = {
+      skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
+      next: this.recordsPerPage.toString()
+    };
+    if (this.portalView == 'admin') {
+      this.attendanceService.getAllRegularization(pagination.skip, pagination.next).subscribe((res: any) => {
+        this.regularizationRecords = res.data.filter(data => data.status === this.status);
+        this.totalRecords = res.total;
+      });
+    }
+    else {
+      this.attendanceService.getRegularizationByUser(this.currentUser?.id).subscribe((res: any) => {
+        this.regularizationRecords = res.data;
+        this.totalRecords = res.total;
+      })
+    }
+
+  }
+
   getUser(employeeId: string) {
     const matchingUser = this.allAssignee?.find(user => user._id === employeeId);
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'N/A';
@@ -58,21 +93,11 @@ export class ShowRecordComponent {
   }
 
   getAllRegularizationReason() {
-    // this.attendanceService.getRegularizationReason().subscribe((res: any) => {
-    //   this.reason = res.data;
-    // })
+    this.attendanceService.getRegularizationReason('', '').subscribe((res: any) => {
+      this.reason = res.data;
+    })
   }
 
-  getAllRegularization() {
-    if(this.portalView == 'admin'){this.attendanceService.getAllRegularization().subscribe((res: any) => {
-      this.regularizationRecords = res.data.filter(data => data.status === this.status);
-    });}
-    else {
-      this.attendanceService.getRegularizationByUser(this.currentUser?.id).subscribe((res: any) => {
-        this.regularizationRecords = res.data;
-      })
-    }
-  }
   openAddModal(): void {
 
     const dialogRef = this.dialog.open(AddRecordComponent, {
@@ -97,7 +122,7 @@ export class ShowRecordComponent {
     });
   }
   regularizationRequestRefreshed() {
-    this.getAllRegularization();
+    this.loadRecords();
   }
 
   openSecondModal(selectedReport: any): void {
@@ -126,7 +151,7 @@ export class ShowRecordComponent {
   }
   deleteRequest(id: string) {
     this.attendanceService.deleteRegularization(id).subscribe((res: any) => {
-      this.getAllRegularization();
+      this.loadRecords();
       this.toast.success('Successfully Deleted!!!', 'Regularization Request');
     },
       (err) => {

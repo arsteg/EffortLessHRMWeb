@@ -27,7 +27,9 @@ export class OnDutyTemplateAssignmentComponent {
   templateById: any;
   templates: any;
   bsValue = new Date();
-
+  totalRecords: number 
+  recordsPerPage: number = 10;
+  currentPage: number = 1;
 
   constructor(
     private attendanceService: AttendanceService,
@@ -49,11 +51,32 @@ export class OnDutyTemplateAssignmentComponent {
   }
 
   ngOnInit() {
-    this.getOnDutyTemplatesAssignment();
     this.getOnDutyTemplates();
     this.commonService.populateUsers().subscribe(result => {
       this.allAssignee = result && result.data && result.data.data;
     });
+    this.loadRecords();
+  }
+
+  onPageChange(page: number) {
+    this.currentPage = page;
+    this.loadRecords();
+  }
+
+  onRecordsPerPageChange(recordsPerPage: number) {
+    this.recordsPerPage = recordsPerPage;
+    this.loadRecords();
+  }
+
+  loadRecords() {
+    const pagination = {
+      skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
+      next: this.recordsPerPage.toString()
+    };
+    this.attendanceService.getOnDutyAssignmentTemplate(pagination.skip, pagination.next).subscribe((res: any) => {
+      this.templateAssigments = res.data;
+      this.totalRecords = res.total;
+    })
   }
 
   getUser(employeeId: string) {
@@ -65,16 +88,10 @@ export class OnDutyTemplateAssignmentComponent {
     return template ? template.name : '';
   }
 
-  getOnDutyTemplatesAssignment() {
-    this.attendanceService.getOnDutyAssignmentTemplate().subscribe((res: any) => {
-      this.templateAssigments = res.data;
-    })
-  }
-
   getOnDutyTemplates() {
-    this.attendanceService.getOnDutyTemplate().subscribe((res: any) => {
+    this.attendanceService.getOnDutyTemplate('', '').subscribe((res: any) => {
       this.templates = res.data;
-    })
+    });
   }
 
  
@@ -112,7 +129,7 @@ export class OnDutyTemplateAssignmentComponent {
 
   deleteTemplate(id: string) {
     this.attendanceService.deleteOnDutyAssignmentTemplate(id).subscribe((res: any) => {
-      this.getOnDutyTemplatesAssignment();
+      this.loadRecords();
       this.toast.success('Successfully Deleted!!!', 'OnDuty Template Assignment');
     },
       (err) => {
@@ -198,14 +215,14 @@ export class OnDutyTemplateAssignmentComponent {
     if (!this.isEdit) {
       console.log(payload);
       this.attendanceService.addOnDutyAssignmentTemplate(payload).subscribe((res: any) => {
-        this.getOnDutyTemplatesAssignment();
+        this.loadRecords();
         this.toast.success('OnDuty Template Assigned', 'Successfully');
         this.onDutyTempAssignForm.reset();
       })
     }
     else {
       this.attendanceService.updateOnDutyAssignmentTemplate(this.selectedTemplateId, payload).subscribe((res: any) => {
-        this.getOnDutyTemplatesAssignment();
+        this.loadRecords();
         this.toast.success('OnDuty Template Assignment Updated', 'Successfully');
         this.onDutyTempAssignForm.reset();
       })
