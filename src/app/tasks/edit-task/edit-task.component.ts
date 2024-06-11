@@ -189,6 +189,20 @@ export class EditTaskComponent implements OnInit {
       );
     }
   }
+  removeAssigneeFromSubtask() {
+    const unassignedUserId = this.assignee[0]?.id;
+    if (unassignedUserId) {
+      this.tasksService.deleteTaskUser(unassignedUserId).subscribe(
+        (res: any) => {
+          this.assignee = []
+          this.toast.success('Sub task is unassigned', 'Successfully');
+        },
+        (err) => {
+          this.toast.error('This Sub Task could not be Unassigned', 'ERROR!');
+        }
+      );
+    }
+  }
   getProjectNameInitials(proejctName: string): string {
     if (proejctName) {
       const words = proejctName.split(' ');
@@ -488,17 +502,20 @@ export class EditTaskComponent implements OnInit {
       endDate: this.addForm.value.endDate,
       description: this.addForm.value?.description,
       comment: 'Child Task',
-      isSubTask: false,
+      isSubTask: true,
       priority: this.addForm.value.priority,
-      user: this.view === 'admin' ? [] : [id],
+      user: this.tasks.data.newTaskUserList[0].user._id,
       status: "ToDo",
       project: this.currentTaskProject?.project?.id,
       taskAttachments: []
     };
     const taskAttachments: taskAttachments[] = [];
     newTask.taskAttachments = taskAttachments;
+    console.log(newTask)
     this.tasksService.addTask(newTask).subscribe((response: any) => {
       this.task = response;
+      this.toast.success('Sub Task Created successfully')
+      
       this.addForm.reset();
       this.ngOnInit();
       if (taskAttachments) {
@@ -510,8 +527,8 @@ export class EditTaskComponent implements OnInit {
           reader.readAsDataURL(file);
           reader.onload = () => {
             const base64String = reader.result.toString().split(',')[1];
-            const fileSize = file.size; // size of the file in bytes
-            const fileType = file.type; // type of the file (e.g. image/png)
+            const fileSize = file.size;
+            const fileType = file.type;
             const fileNameParts = file.name.split('.');
             const extention = fileNameParts[fileNameParts.length - 1];
 
@@ -546,7 +563,10 @@ export class EditTaskComponent implements OnInit {
         console.log("Error creating task!");
       }
 
-    })
+    },
+    err=>{
+    this.toast.error('Sub task Can not be created', 'Error')
+  })
   }
 
   onFileSelects(event) {
@@ -583,7 +603,7 @@ export class EditTaskComponent implements OnInit {
     const navigationExtras: NavigationExtras = {
       queryParams: { taskId: taskId }
     };
-    this.router.navigate(['/SubTask', subTask.taskNumber], navigationExtras);
+    this.router.navigate(['/SubTask'], navigationExtras);
   }
 
   onSubtaskIdChanged(subtaskId: string) {
@@ -610,6 +630,18 @@ export class EditTaskComponent implements OnInit {
       })
   }
   addUserToTask(taskId: string, user: string): void {
+    console.log(taskId, user)
+    this.tasksService.addUserToTask(taskId, user).subscribe((response: any) => {
+      this.assignee = response && response.data && response.data['TaskUserList'];
+      this.toast.success('Task User updated successfully', `Task Number: ${this.tasks.data.task.taskNumber}`)
+    },
+      err => {
+        this.toast.error('Task could not be updated', 'ERROR!')
+      }
+    );
+  }
+
+  addUserToSubTask(taskId: string, user: string): void {
     console.log(taskId, user)
     this.tasksService.addUserToTask(taskId, user).subscribe((response: any) => {
       this.assignee = response && response.data && response.data['TaskUserList'];

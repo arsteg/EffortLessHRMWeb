@@ -232,7 +232,7 @@
                                         <div class="mt-3 me-2">
                                             <span for="project" class="text-start text-muted">Project</span>
                                             <select class="custom-select mb-3 p-2" formControlName="project"
-                                                [(ngModel)]="projectisNull || currentTaskProject?.project.id">
+                                                >
                                                 <option [value]="project?.id" *ngFor="let project of projectList">
                                                     {{project?.projectName}}
                                                 </option>
@@ -607,15 +607,94 @@
                             <div class="subtask-creating-row-wrapper bg-white rounded">
                                 <form action="" [formGroup]="addForm" (ngSubmit)="onSub()">
                                     <div class="d-flex tasks-creation-row justify-content-between subtask-creating-row">
-                                        <input class="new-task-title-input" placeholder="Add subtask..." value=""
+                                        <input class="new-task-title-input mt-2" placeholder="Add subtask..." value=""
                                             formControlName="taskName">
 
 
-
-                                        <!-- --------------------- -->
-
                                         <ng-container>
-                                            <div class="user-container btn-group align-items-center">
+                                            <ng-container *ngIf="assignee && assignee.length === 0;">
+                                                <div>
+                                                    <span type="button"
+                                                        class="btn btn-sm rounded-pill btn-primary px-2 dropdown-toggle dropdown-toggle-no-caret"
+                                                        data-bs-toggle="dropdown" aria-expanded="false">Assignee <i
+                                                            class="bi bi-chevron-down"></i></span>
+                                                    <ul class="dropdown-menu" style="width: 225px; transform: translate3d(-29px, 40px, 0px) !important; height: 200px;
+     overflow-y: scroll;">
+                                                        <li *ngFor="let assignee of projectUser" class="border-left "
+                                                            [value]="assignee?.user?.id">
+                                                            <p *ngIf="assignee.user != null" class="ps-4 py-2 mb-1"
+                                                                style="font-size: 13px;"
+                                                                (click)="addUserToSubTask('', assignee.user.id)">
+                                                                <span class="letter p-1 rounded text-light"
+                                                                    style="font-size: 12px;"
+                                                                    [tooltip]="(assignee?.user?.firstName | titlecase) + ' ' + (assignee?.user?.lastName | titlecase)"
+                                                                    [style.background-color]="commonService.getRandomColor(assignee?.user?.firstName?.charAt(0) | uppercase)">
+                                                                    {{ assignee?.user?.firstName?.charAt(0) | uppercase
+                                                                    }}
+                                                                    {{ assignee?.user?.lastName?.charAt(0) | uppercase
+                                                                    }}
+                                                                </span> &nbsp;{{assignee?.user?.firstName | titlecase}}
+                                                                {{assignee?.user?.lastName | titlecase}}
+                                                            </p>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+
+                                            </ng-container>
+
+                                            <div class="user-container btn-group align-items-center"
+                                                *ngFor="let user of assignee;">
+
+                                                <span class="letters  p-1 rounded text-light"
+                                                    [tooltip]="(user?.user?.firstName | titlecase) + ' ' + (user?.user?.lastName | titlecase)"
+                                                    [style.background-color]="commonService.getRandomColor(user?.user?.firstName?.charAt(0) | uppercase)">
+                                                    {{ user?.user?.firstName?.charAt(0) | uppercase }}&nbsp;{{
+                                                    user?.user?.lastName?.charAt(0) | uppercase }}
+                                                </span>
+
+                                                <button type="button"
+                                                    class="btn dropdown-toggle dropdown-toggle-no-caret"
+                                                    data-bs-toggle="dropdown" aria-expanded="false">
+
+                                                    <span class="text-muted">
+                                                        {{ user?.user?.firstName }} {{ user?.user?.lastName
+                                                        }}
+                                                    </span>
+                                                </button>
+
+
+                                                <ul class="dropdown-menu" style="width: 225px; transform: translate3d(-29px, 40px, 0px) !important; max-height: 200px;
+                                                overflow-y: scroll;">
+                                                    <li class="border-left py-1"
+                                                        *ngIf="assignee.length === 1 && assignee[0]?.id">
+                                                        <span (click)="removeAssigneeFromSubtask()" class="ps-2 py-2 mb-1"
+                                                            style="font-size: 13px;"><i
+                                                                class="bi bi-person-circle me-3 text-secondary"
+                                                                style="font-size: 20px"></i>
+                                                            Unassigned</span>
+                                                    </li>
+                                                    <li *ngFor="let assignee of projectUser" class="border-left "
+                                                        [value]="assignee?.user?.id">
+                                                        <p *ngIf="assignee.user != null" class="ps-2 py-2 mb-1"
+                                                            style="font-size: 13px;"
+                                                            (click)="addUserToTask(tasks?.data?.task?.id, assignee.user.id)">
+
+                                                            <span class="letters p-1 rounded text-light"
+                                                                style="font-size: 12px;"
+                                                                [tooltip]="(assignee?.user?.firstName | titlecase) + ' ' + (assignee?.user?.lastName | titlecase)"
+                                                                [style.background-color]="commonService.getRandomColor(assignee?.user?.firstName?.charAt(0) | uppercase)">
+                                                                {{ assignee?.user?.firstName?.charAt(0) |uppercase
+                                                                }}&nbsp;{{ assignee?.user?.lastName?.charAt(0) |
+                                                                uppercase }}
+                                                            </span>&nbsp;{{assignee?.user?.firstName |
+                                                            titlecase}}&nbsp;{{assignee?.user?.lastName | titlecase}}
+                                                        </p>
+                                                    </li>
+                                                </ul>
+
+                                            </div>
+
+                                            <!-- <div class="user-container btn-group align-items-center">
                                                 <button *ngIf="assignee && assignee.length > 0" type="button" class="btn dropdown-toggle dropdown-toggle-no-caret"
                                                     data-bs-toggle="dropdown" aria-expanded="false">
                                                     <ng-container *ngFor="let user of assignee">
@@ -625,7 +704,7 @@
                                                             {{ user.user.firstName?.charAt(0) | uppercase }}&nbsp;{{ user.user.lastName?.charAt(0) | uppercase }}
                                                         </span>
                                                     </ng-container>
-                                                    <!-- Show icon -->
+                                                    
                                                     <i class="bi bi-person-plus-fill"></i>
                                                 </button>
                                                 <button *ngIf="!(assignee && assignee.length > 0)" type="button" 
@@ -645,7 +724,7 @@
                                                         </p>
                                                     </li>
                                                 </ul>
-                                            </div>
+                                            </div> -->
                                         </ng-container>
                                         
                                         
@@ -765,16 +844,15 @@
 
 
 
-    <div *ngIf="tasks?.data?.task === null " class="text-center mt-5">
+    <div *ngIf="tasks?.data?.task === null " class="d-flex justify-content-center mt-5">
         <ng-container>
-            <button *ngIf="view==='admin'" href="" (click)="goBack()" class="btn btn-outline-primary rounded-pill"><span
+            <button *ngIf="view==='admin'" href="" (click)="goBack()" class="btn submenuTab active rounded-pill"><span
                     class="bi bi-arrow-left ">
                     Back</span></button>
             <a href="" *ngIf="view==='user'" [routerLink]="['/tasks']"> <button
                     class="btn btn-outline-primary rounded-pill"><span class="bi bi-arrow-left ">
                         Back</span></button></a>
         </ng-container>
-        <h2 class="mt-2">This task no longer exists.</h2>
     </div>
 </div>
 

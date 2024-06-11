@@ -753,6 +753,7 @@ label {
 .btn-outline-primary {
   color: #76bc21 !important;
   margin: 0 3px 0 3px;
+  border: none !important;
 }
 
 .btn-outline-primary:hover {
