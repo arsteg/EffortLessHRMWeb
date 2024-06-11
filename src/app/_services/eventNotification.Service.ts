@@ -4,7 +4,8 @@ import { baseService } from './base';
 import { environment } from 'src/environments/environment';
 import { response } from '../models/response';
 import { Observable } from 'rxjs';
-import { eventNotification, eventNotificationType } from '../models/eventNotification/eventNotitication';
+import { UserNotification, eventNotification, eventNotificationType } from '../models/eventNotification/eventNotitication';
+import { User } from '../models/user';
 
 @Injectable({
   providedIn: 'root'
@@ -61,5 +62,21 @@ export class EventNotificationService {
   deleteEventNotification(id: string): Observable<response<any>> {
     var response = this.http.delete<response<any>>(`${environment.apiUrlDotNet}/eventNotifications/Notification/${id}`, this.httpOptions);
     return response;
+  }
+
+  getUsers(): Observable<User[]> {
+    return this.http.get<User[]>(`${this.apiUrl}/users`);
+  }
+
+  getNotifications(): Observable<Notification[]> {
+    return this.http.get<Notification[]>(`${this.apiUrl}/notifications`);
+  }
+
+  getUserNotifications(userId: string): Observable<UserNotification[]> {
+    return this.http.get<UserNotification[]>(`${this.apiUrl}/users/${userId}/notifications`);
+  }
+
+  updateUserNotifications(userId: string, notifications: UserNotification[]): Observable<any> {
+    return this.http.put(`${this.apiUrl}/users/${userId}/notifications`, notifications);
   }
 }

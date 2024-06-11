@@ -9,6 +9,8 @@
                   Notification Types</button>
             <button class="btn rounded-pill submenuTab" (click)="selectTab(4)" [class.active]="selectedTab === 4">
                     Notification</button>
+            <button class="btn rounded-pill submenuTab" (click)="selectTab(5)" [class.active]="selectedTab === 5">
+              Viewer</button>
         </div>
 
         <div *ngIf="selectedTab === 1" class="tab-content">
@@ -21,5 +23,8 @@
         <div *ngIf="selectedTab === 4" class="tab-content">
           <app-event-notification></app-event-notification>
           </div>
+          <div *ngIf="selectedTab === 5" class="tab-content">
+            <app-event-notification-viewer></app-event-notification-viewer>
+            </div>
     </div>
 </div>

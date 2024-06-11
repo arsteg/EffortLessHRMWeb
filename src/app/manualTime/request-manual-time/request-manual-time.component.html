@@ -109,7 +109,9 @@
           <div class="col-md-12">
             <div class="row">
               <div class="col-md-6">
-                <label for="project" class="text-start">Project</label>
+                <label for="project" class="text-start">
+                  Project <span class="required-asterisk">*</span>
+                </label>
 
                 <select class="custom-select mb-3 p-2" formControlName="project" [(ngModel)]="selectedProject"
                   (change)="onProjectChange($event.target)">
@@ -127,7 +129,7 @@
               </div>
 
               <div class="col-md-6">
-                <label for="manager" class="text-start">Manager</label>
+                <label for="manager" class="text-start">Manager<span class="required-asterisk">*</span></label>
 
                 <select class="custom-select mb-3 p-2" formControlName="manager" [(ngModel)]="selectedManager">
                   <option disabled selected value="undefined">Choose Any Manager</option>
@@ -145,7 +147,7 @@
             </div>
 
             <div class="row mt-3">
-              <label for="task" class="text-start">Task</label>
+              <label for="task" class="text-start">Task<span class="required-asterisk">*</span></label>
             </div>
             <select class="custom-select mb-3 p-2" formControlName="task" [(ngModel)]="selectedTask">
               <option disabled selected value="undefined">Choose Any Task</option>
@@ -162,10 +164,10 @@
 
             <div class="row">
               <div class="col-md-6">
-                <label for="startDate" class="text-start">Start Date</label>
+                <label for="startDate" class="text-start">Start Date<span class="required-asterisk">*</span></label>
                 <input matInput type="datetime-local" name="startDate" id="startDate" placeholder="start date"
                   formControlName="startDate" [ngModel]="startDate | date:'yyyy-MM-ddTHH:mm'"
-                  class="form-control input pt-0" ngModel required>
+                  class="form-control input pt-0" ngModel required [max]="today">
 
                 <div
                   *ngIf="addRequestForm.controls['startDate'].invalid && addRequestForm.controls['startDate'].touched"
@@ -181,10 +183,10 @@
               </div>
 
               <div class="col-md-6">
-                <label for="endDate" class="text-start">End Date</label>
+                <label for="endDate" class="text-start">End Date<span class="required-asterisk">*</span></label>
                 <input matInput type="datetime-local" name="endDate" id="endDate" placeholder="end date"
                   formControlName="endDate" class="form-control input pt-0"
-                  [ngModel]="selectedRequest?.toDate | date:'yyyy-MM-ddTHH:mm'">
+                  [ngModel]="selectedRequest?.toDate | date:'yyyy-MM-ddTHH:mm'" [max]="today">
 
                 <div *ngIf="addRequestForm.controls['endDate'].invalid && addRequestForm.controls['endDate'].touched"
                   class="alert alert-danger error">
@@ -199,16 +201,12 @@
             </div>
 
 
-
-            <div class="row">
-              <label for="reason" class="text-start mt-3">Reason</label>
-            </div>
-            <input type="text" name="reason" id="reason" class="form-control input pt-0" formControlName="reason"
-              required [(ngModel)]="selectedRequest.reason">
-            <div *ngIf="addRequestForm.controls['reason'].invalid && addRequestForm.controls['reason'].touched"
-              class="alert alert-danger error">
-              <div *ngIf="addRequestForm.controls['reason'].errors['required']">
-                Reason is required.
+            <div class="col-md-12">
+              <label for="reason" class="text-start">Reason <span class="required-asterisk">*</span></label>
+              <input type="text" class="form-control" formControlName="reason" id="reason" rows="4"  [ngModel]="selectedRequest.reason"/>
+              <div *ngIf="addRequestForm.controls['reason'].invalid && addRequestForm.controls['reason'].touched"
+                class="alert alert-danger error">
+                <div *ngIf="addRequestForm.controls['reason'].errors['required']">Reason is required.</div>
               </div>
             </div>
           </div>
@@ -220,7 +218,7 @@
     </div>
     <div class="modal-footer">
       <button mat-raised-button class="addBtn" data-bs-dismiss="modal" type="submit"
-        [disabled]="!addRequestForm.valid">{{changeMode}} Request</button>
+      [disabled]="addRequestForm.invalid">{{changeMode}} Request</button>
     </div>
   </form>
 </ng-template>

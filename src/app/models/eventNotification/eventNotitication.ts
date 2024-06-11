@@ -14,5 +14,9 @@ recurringFrequency:string,
 leadTime:number
 }
 
-
+export interface UserNotification {
+  user: string;
+  notification: string;
+  status: string;
+}
 
