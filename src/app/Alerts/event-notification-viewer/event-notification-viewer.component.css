@@ -1,0 +1,31 @@
+.user-notification-manager {
+  display: flex;
+  justify-content: space-between;
+}
+
+.user-list, .notification-list {
+  width: 45%;
+}
+
+.user-list ul, .notification-list ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.user-list li, .notification-list li {
+  padding: 5px;
+  cursor: pointer;
+}
+
+.user-list li:hover {
+  background-color: #f0f0f0;
+}
+
+.notification-list li {
+  display: flex;
+  align-items: center;
+}
+
+.notification-list li input {
+  margin-right: 10px;
+}

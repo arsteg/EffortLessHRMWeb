@@ -23,6 +23,7 @@ export class RequestManualTimeComponent implements OnInit {
   managers: {id:string, name:string }[]=[];
   projects:{id:string,projectName:string}[]=[];
   tasks:{id:string,taskName:string}[]=[];
+  today: string = new Date().toISOString().split('T')[0];
   id:string;
   projectId:string;
   closeResult: string = '';
@@ -93,7 +94,7 @@ export class RequestManualTimeComponent implements OnInit {
         err => {
         });
 
-   
+
         this.fetchManualTimeRequests();
       }
       onChange(newId: number) {
