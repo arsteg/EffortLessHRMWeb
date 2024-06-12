@@ -27,8 +27,9 @@ export class GeneralTemplateSettingsComponent {
   attendanceTemplate: any;
   @Output() changeStep: any = new EventEmitter();
   capturingAttendance: any = [''];
-  defaultCatSkip="0";
-  defaultCatNext="100000";
+  defaultCatSkip = "0";
+  defaultCatNext = "100000";
+  modes: any;
 
   constructor(private commonService: CommonService,
     private leaveService: LeaveService,
@@ -61,7 +62,9 @@ export class GeneralTemplateSettingsComponent {
   }
 
   ngOnInit() {
-    console.log(this.isEdit)
+    console.log(this.isEdit);
+    this.getModes();
+
     this.getAllUsers();
     this.getLeaveCatgeories();
     if (this.isEdit) {
@@ -78,7 +81,9 @@ export class GeneralTemplateSettingsComponent {
     this.addTemplateForm.get('approvalType').valueChanges.subscribe((value: any) => {
       this.validateApprovers(value, this.addTemplateForm.get('approvalLevel').value)
     });
+    this.getModes();
   }
+
   validateApprovers(approverType, approverLevel) {
     if (approverLevel == 1 && approverType == 'template-wise') {
       this.addTemplateForm.get('firstApprovalEmployee').setValidators([Validators.required]);
@@ -178,13 +183,11 @@ export class GeneralTemplateSettingsComponent {
 
   onSubmission() {
 
-    console.log('add template')
+    
     this.addTemplateForm.value.leveCategoryHierarchyForAbsentHalfDay = this.selectedCategory;
     this.addTemplateForm.value.daysForAlternateWeekOffRoutine = this.selectedAlternateWeekDays;
     this.addTemplateForm.value.weklyofHalfDay = this.selectedHalfDays;
     this.addTemplateForm.value.weeklyOfDays = this.selectedWeeklyDays;
-    console.log(this.addTemplateForm.value);
-    // console.log(this.capturingAttendance)
     if (this.isEdit == false) {
       this.attendanceService.addAttendanceTemplate(this.addTemplateForm.value).subscribe((res: any) => {
         this.attendanceService.selectedTemplate.next(res.data);
@@ -195,13 +198,10 @@ export class GeneralTemplateSettingsComponent {
           this.toast.error('Attendance Template can not be created', 'Error!!!')
         })
     }
-
     else {
       const templateId = this.attendanceService.selectedTemplate.getValue()._id;
-      console.log(templateId);
       this.attendanceService.updateAttendanceTemplate(templateId, this.addTemplateForm.value).subscribe((res: any) => {
-        this.toast.success('Attendance Template Updated', 'Successfully!')
-
+        this.toast.success('Attendance Template Updated', 'Successfully!');
         this.changeStep.emit(2);
       },
         err => {
@@ -209,5 +209,11 @@ export class GeneralTemplateSettingsComponent {
 
         })
     }
+  }
+
+  getModes() {
+    this.attendanceService.getModes().subscribe((res: any) => {
+      this.modes = res.data;
+    })
   }
 }

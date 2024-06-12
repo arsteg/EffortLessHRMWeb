@@ -409,4 +409,31 @@ export class AttendanceService {
     return response;
   }
 
+  // Attendance modes
+
+  addModes(mode: any): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/attendance-modes`, mode, this.httpOptions);
+    return response;
+  }
+
+  updateModes(id: string, mode: any): Observable<response<any>> {
+    var response = this.http.put<response<any>>(`${environment.apiUrlDotNet}/attendance/attendance-modes/${id}`, mode, this.httpOptions);
+    return response;
+  }
+
+  deleteModes(id: string): Observable<response<any>> {
+    var response = this.http.delete<response<any>>(`${environment.apiUrlDotNet}/attendance/attendance-modes/${id}`, this.httpOptions);
+    return response;
+  }
+
+  getModesById(id: string): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/attendance-modes/${id}`, this.httpOptions);
+    return response;
+  }
+
+  getModes(): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/attendance-modes`, this.httpOptions);
+    return response;
+  }
+
 }

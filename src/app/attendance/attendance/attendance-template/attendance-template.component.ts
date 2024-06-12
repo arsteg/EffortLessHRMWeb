@@ -65,7 +65,6 @@ export class AttendanceTemplateComponent {
     });
   }
 
-
   getAttendanceTemplateAssignment() {
     this.attendanceService.getAttendanceAssignment('', '').subscribe((res: any) => {
       this.attendanceAssignment = res.data;
@@ -117,11 +116,7 @@ export class AttendanceTemplateComponent {
   }
 
   refreshExpenseReportTable() {
-    // this.expenseService.getExpenseReportByUser(this.currentUser.id).subscribe((res: any) => {
-    //   this.expenseReport = res.data;
-    //   this.totalAmount = this.expenseReport.reduce((total, report) => total + report.amount, 0);
-    //   this.expenseTemplateReportRefreshed.emit();
-    // })
+    this.loadRecords();
   }
 
   exportToCsv() {

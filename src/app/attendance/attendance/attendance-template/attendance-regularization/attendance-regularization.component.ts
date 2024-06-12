@@ -81,17 +81,13 @@ export class AttendanceRegularizationComponent {
   }
 
   ngOnInit() {
-    console.log(this.isEdit);
-
     if (this.isEdit) {
       this.getRegularizationByTemplateId();
       this.getCurrentLocation();
-
     }
   }
 
   closeModal() {
-    this.changeStep.emit(1);
     this.close.emit(true);
   }
 
