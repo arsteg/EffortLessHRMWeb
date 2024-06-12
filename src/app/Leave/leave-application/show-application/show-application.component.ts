@@ -24,7 +24,6 @@ export class ShowApplicationComponent {
   allAssignee: any;
   leaveCategories: any;
   dateControl = new FormControl();
-  p: number = 1;
   @Input() tab: number;
   portalView = localStorage.getItem('adminView');
   totalLeaveDays;
@@ -32,6 +31,9 @@ export class ShowApplicationComponent {
   public sortOrder: string = '';
   defaultCatSkip="0";
   defaultCatNext="100000";
+  totalRecords: number = 0 // example total records
+  recordsPerPage: number = 10;
+  currentPage: number = 1;
 
 
   constructor(private modalService: NgbModal,
@@ -48,6 +50,16 @@ export class ShowApplicationComponent {
     });
     this.getLeaveApplication();
     this.getleaveCatgeories();
+  }
+
+  onPageChange(page: number) {
+    this.currentPage = page;
+    this.getLeaveApplication();
+  }
+
+  onRecordsPerPageChange(recordsPerPage: number) {
+    this.recordsPerPage = recordsPerPage;
+    this.getLeaveApplication();
   }
  
   onClose(event) {
@@ -70,7 +82,8 @@ export class ShowApplicationComponent {
   }
 
   refreshLeaveApplicationTable() {
-    this.leaveService.getLeaveApplication().subscribe(
+    const requestBody = { "skip": ((this.currentPage - 1) * this.recordsPerPage).toString(), "next": this.recordsPerPage.toString() };
+    this.leaveService.getLeaveApplication(requestBody).subscribe(
       (res) => {
         this.leaveApplication = res.data.filter(leave => leave.status === this.status);
       },
@@ -130,8 +143,9 @@ export class ShowApplicationComponent {
   }
   getLeaveApplication() {
     // if (this.portalView === 'admin') {
-      this.leaveService.getLeaveApplication().subscribe((res: any) => {
-        this.leaveApplication = res.data.filter(leave => leave.status === this.status);
+      const requestBody = { "status": this.status, "skip": ((this.currentPage - 1) * this.recordsPerPage).toString(), "next": this.recordsPerPage.toString() };
+      this.leaveService.getLeaveApplication(requestBody).subscribe((res: any) => {
+        this.leaveApplication = res.data;//.filter(leave => leave.status === this.status);
         this.totalLeaveDays = 0;
         this.leaveApplication.forEach(leave => {
           const startDate = new Date(leave.startDate);
@@ -140,7 +154,8 @@ export class ShowApplicationComponent {
           const dayDifference = timeDifference / (1000 * 3600 * 24);
           leave.totalLeaveDays = Math.abs(Math.round(dayDifference));
         });
-      })
+        this.totalRecords = res.total;
+      });
     // }
     // if (this.portalView === 'user') {
     //   console.log(this.portalView, this.tab)
