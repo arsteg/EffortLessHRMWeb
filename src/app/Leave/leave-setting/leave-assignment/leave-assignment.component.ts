@@ -23,14 +23,15 @@ export class LeaveAssignmentComponent implements OnInit {
   templates: any;
   templateAssignment: any;
   public sortOrder: string = ''; // 'asc' or 'desc',
-  defaultnext: "100000";
-  defaultskip: "0";
+  defaultnext= "100000";
+  defaultskip= "0";
   recordsPerPageOptions: number[] = [5, 10, 25, 50, 100]; // Add the available options for records per page
   recordsPerPage: number = 10; // Default records per page
   totalRecords: number=0; // Total number of records
   currentPage: number = 1;
   skip: string = '0';
   next = '10';
+  showApprovers: boolean = false;
 
   constructor(private modalService: NgbModal,
     private commonService: CommonService,
@@ -51,6 +52,9 @@ export class LeaveAssignmentComponent implements OnInit {
     this.getAllUsers();
     this.getAlltemplates();
     this.getTemplateAssignments();
+    this.templateAssignmentForm.get('leaveTemplate')?.valueChanges.subscribe(value => {
+      this.onTemplateChange(value);
+    });
   }
 
   open(content: any) {
@@ -99,7 +103,6 @@ export class LeaveAssignmentComponent implements OnInit {
     else{
       const id = this.selectedLeaveAssignment._id
       this.leaveService.addLeaveTemplateAssignment(payload).subscribe((res: any)=>{
-
         const updatedLeaveAssignment = res.data;
         const index = this.templateAssignment.findIndex(category => category._id === updatedLeaveAssignment._id);
         if (index !== -1) {
@@ -141,6 +144,19 @@ export class LeaveAssignmentComponent implements OnInit {
   getTemplateLabel(leaveTemplate: string): string {
     const matchingCategory = this.templates?.find(template => template?._id === leaveTemplate);
     return matchingCategory?.label;
+  }
+
+  onTemplateChange(templateId: string): void {
+    const selectedTemplate = this.templates.find(temp => temp._id === templateId);
+    if (selectedTemplate && selectedTemplate.approvalType === 'template-wise') {
+      this.showApprovers = false;
+    } else {
+      this.showApprovers = true;
+    }
+    this.templateAssignmentForm.patchValue({
+      primaryApprover: [''],
+      secondaryApprover: ['']
+    });
   }
 
   getUser(employeeId: string) {

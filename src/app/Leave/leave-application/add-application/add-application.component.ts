@@ -106,7 +106,6 @@ export class AddApplicationComponent {
   }
   
   onSubmission() {
-   
     if (this.leaveApplication.value) {
       if (this.portalView == 'user') {
         if (this.tab === 1) {
@@ -121,7 +120,7 @@ export class AddApplicationComponent {
       console.log(this.leaveApplication.value);
 
       this.leaveService.addLeaveApplication(this.leaveApplication.value).subscribe((res: any) => {
-        this.leaveApplication.reset();
+        this.closeModal();
         this.leaveApplicationRefreshed.emit();
       });
 
