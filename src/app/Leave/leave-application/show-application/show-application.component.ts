@@ -82,10 +82,10 @@ export class ShowApplicationComponent {
   }
 
   refreshLeaveApplicationTable() {
-    const requestBody = { "skip": ((this.currentPage - 1) * this.recordsPerPage).toString(), "next": this.recordsPerPage.toString() };
+    const requestBody = { "status": this.status, "skip": ((this.currentPage - 1) * this.recordsPerPage).toString(), "next": this.recordsPerPage.toString() };
     this.leaveService.getLeaveApplication(requestBody).subscribe(
       (res) => {
-        this.leaveApplication = res.data.filter(leave => leave.status === this.status);
+        this.leaveApplication = res.data;//.filter(leave => leave.status === this.status);
       },
       (error) => {
         console.error('Error refreshing leave application table:', error);

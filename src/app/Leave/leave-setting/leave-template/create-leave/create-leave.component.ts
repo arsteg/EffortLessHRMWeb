@@ -132,18 +132,15 @@ export class CreateLeaveComponent {
       leaveCategories: this.addTemplateForm.value.leaveCategories.map(category => ({ leaveCategory: category }))
     }
     if (this.changeMode == 'Add') {
-      debugger;
       this.leaveService.addLeaveTemplate(payload).subscribe((res: any) => {
         this.leaveService.selectedTemplate.next(res.data);
         this.changeStep.emit(2);
-        this.closeModal();
       })
     }
     else {
       const id = this.leaveService.selectedTemplate.getValue()._id;
       this.leaveService.updateLeaveTemplate(id, payload).subscribe((res: any)=>{
         this.changeStep.emit(2);
-        this.closeModal();
       })
       
     }
