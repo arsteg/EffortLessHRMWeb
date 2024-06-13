@@ -10,7 +10,7 @@
                         name="searchText" aria-label="default input example">
 
                     <button mat-raised-button class="addBtn rounded-pill mx-3"
-                        (click)="open(addModal); changeMode === 'Add'; step=1">Add
+                        (click)="open(addModal);clearform(); changeMode === 'Add'; step=1">Add
                         Expense</button>
 
                     <button class="submenuTab active  rounded-pill" (click)="exportToCsv()"> <i

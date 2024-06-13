@@ -38,11 +38,17 @@
     <table class="mt-2">
         <thead>
             <th class="ps-2" [appSort]="advanceReport" [attr.data-order]="sortOrder" data-name="employee"
-            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Employee Name</th>
+                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Employee Name
+                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+            </th>
             <th class="ps-2" [appSort]="advanceReport" [attr.data-order]="sortOrder" data-name="amount"
-            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Amount</th>
+                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Amount
+                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+            </th>
             <th class="ps-2" [appSort]="advanceReport" [attr.data-order]="sortOrder" data-name="category"
-            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Category Name</th>
+                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Category Name
+                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+            </th>
             <th>Comments</th>
             <th>Status</th>
             <th>Actions</th>
@@ -50,9 +56,9 @@
         <tbody>
             <tr
                 *ngFor="let report of advanceReport  | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }; let i = index">
-                <td>{{getUser(report?.employee)}}</td>
+                <td>{{report?.employeeName}}</td>
                 <td>{{report?.amount}}</td>
-                <td>{{getCategory(report?.category)}}</td>
+                <td>{{report?.categoryLabel}}</td>
                 <td>{{report?.primaryApprovalReason || report?.comment}}</td>
                 <td>{{report?.status}}</td>
                 <td>

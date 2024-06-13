@@ -26,6 +26,7 @@ export class AdvanceCategoriesComponent implements OnInit{
   changesMade: boolean =false;
   initialLabelValue:string;
   public sortOrder: string = '';
+  updateButtonClicked = false;
 
   constructor(private fb: FormBuilder,
     private dialog: MatDialog,
@@ -115,9 +116,7 @@ export class AdvanceCategoriesComponent implements OnInit{
         this.toast.error('Advance Category can not be Updated!', 'Error');
       });
     }
-    
   }  
-
 
   editAdvanceCategory(category, index) {
     this.isEdit = true;

@@ -48,7 +48,6 @@ export class CreateReportComponent {
   expenseFieldsArray: FormArray;
   @Input() changeMode: string;
 
-
   constructor(public expenseService: ExpensesService,
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<AddExpenseReportComponent>,
@@ -200,6 +199,7 @@ export class CreateReportComponent {
         this.expenseService.updateExpenseReportExpenses(expenseReportExpId, payload).subscribe(
           (result: any) => {
             this.expenseService.expenseReportExpense.next(result.data);
+            this.changeStep.emit(1);
             this.toast.success('Expense Report of Expenses is Updated!', 'Successfully!!!');
             this.closeModal();
           },
@@ -209,17 +209,47 @@ export class CreateReportComponent {
         );
       } else if (this.expenseService.isEdit.getValue() == false) {
         const report = this.expenseService.selectedReport.getValue();
-        payload.expenseReport = report._id;
+        console.log(report);
         payload.expenseTemplateCategoryFieldValues = this.expenseService.expenseTemplateCategoryFieldValues.getValue();
-        this.expenseService.addExpenseReportExpenses(payload).subscribe(
-          (result: any) => {
-            this.expenseService.expenseReportExpense.next(result.data);
-            this.toast.success('Expense Report of Expenses is Created!', 'Successfully!!!');
-          },
-          (err) => {
-            this.toast.error('This expense report of expenses can not be Added!', 'Error');
-          }
-        );
+
+        if (report._id) {
+          payload.expenseReport = report._id;
+          this.expenseService.addExpenseReportExpenses(payload).subscribe(
+            (result: any) => {
+              this.expenseService.expenseReportExpense.next(result.data);
+            });
+        } else {
+          const expenseReportExpense = {
+            expenseCategory: this.expenseReportform.value.expenseCategory,
+            incurredDate: this.expenseReportform.value.incurredDate,
+            expenseTemplateCategoryFieldValues: '',
+            quantity: this.expenseReportform.value.quantity,
+            type: this.expenseReportform.value.type,
+            amount: this.totalRate || this.expenseReportform.value.amount,
+            isReimbursable: this.expenseReportform.value.isReimbursable,
+            isBillable: this.expenseReportform.value.isBillable,
+            reason: this.expenseReportform.value.reason,
+            expenseAttachments: [],
+            expenseReportExpenseFields: this.expenseFieldsArray.value,
+          };
+
+          console.log(expenseReportExpense);
+
+          this.expenseService.expenseReportExpense.next(expenseReportExpense);
+          this.changeStep.emit(1);
+        }
+        // payload.expenseReport = report._id;
+        // payload.expenseTemplateCategoryFieldValues = this.expenseService.expenseTemplateCategoryFieldValues.getValue();
+        // this.expenseService.addExpenseReportExpenses(payload).subscribe(
+        //   (result: any) => {
+        //     this.expenseService.expenseReportExpense.next(result.data);
+        //     this.changeStep.emit(1);
+        //     this.toast.success('Expense Report of Expenses is Created!', 'Successfully!!!');
+        //   },
+        //   (err) => {
+        //     this.toast.error('This expense report of expenses can not be Added!', 'Error');
+        //   }
+        // );
       }
     }
   }

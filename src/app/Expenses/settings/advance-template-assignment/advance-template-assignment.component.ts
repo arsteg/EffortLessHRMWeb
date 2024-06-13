@@ -148,7 +148,7 @@ export class AdvanceTemplateAssignmentComponent {
       primaryApprover: this.addTemplateAssignmentForm.value.primaryApprover,
       secondaryApprover: this.addTemplateAssignmentForm.value.secondaryApprover,
       advanceTemplate: this.addTemplateAssignmentForm.value.advanceTemplate,
-      effectiveDate: this.addTemplateAssignmentForm.value.effectiveDate
+      effectiveDate: this.addTemplateAssignmentForm.value.effectiveDate,
     }
     if (this.addTemplateAssignmentForm.valid) {
      

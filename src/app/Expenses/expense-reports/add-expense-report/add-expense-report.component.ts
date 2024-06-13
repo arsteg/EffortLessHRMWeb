@@ -135,9 +135,9 @@ export class AddExpenseReportComponent {
       payload.expenseReportExpenses = [formArray];
     }
     if (this.changeMode == 'Add') {
+      console.log(payload)
       this.expenseService.addExpensePendingReport(payload).subscribe((res: any) => {
         this.toast.success('Expense Template Applicable Category Added Successfully!');
-        // this.updateExpenseReportTable.emit();
         this.addExpenseForm.reset();
         this.expenseService.expenseReportExpense.next();
         payload.expenseReportExpenses = [];
@@ -145,7 +145,7 @@ export class AddExpenseReportComponent {
         this.addExpenseForm.value.expenseReportExpenses = [];
       },
         err => {
-          this.toast.error('Expense Template Applicable Category Can not be Added', 'ERROR!')
+          this.toast.error('Expense Template Applicable Category Can not be Added', 'ERROR!');
         }
       )
     }
@@ -169,6 +169,7 @@ export class AddExpenseReportComponent {
       return this.category
     });
   }
+
   getCategoryLabel(expenseCategoryId: string): string {
     const matchingCategory = this.allCategories.find(category => category._id === expenseCategoryId);
     return matchingCategory ? matchingCategory.label : '';
@@ -178,7 +179,6 @@ export class AddExpenseReportComponent {
   deleteExpenseReportExpense(id: string): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '400px',
-
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'delete') {

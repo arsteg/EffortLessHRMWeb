@@ -92,6 +92,7 @@ export class AdvanceTemplatesComponent implements OnInit {
 
   onCancel() {
     this.isEdit = false;
+    this.changeMode == 'Add';
   }
 
   clearselectedRequest() {
@@ -165,7 +166,7 @@ export class AdvanceTemplatesComponent implements OnInit {
             this.addAdvanceTempForm.reset();
           },
           err => {
-            this.toast.error('Failed to save the category. Please try again.', 'Error!!!');
+            this.toast.error('Advance template already in use, Try with another Label', 'Error!!!');
           }
         );
         this.addAdvanceTempForm.reset();
@@ -206,7 +207,6 @@ export class AdvanceTemplatesComponent implements OnInit {
     });
   }
 
-
   editadvanceCategory(category, index) {
     this.isEdit = true;
     this.changeMode = 'Update';
@@ -237,7 +237,6 @@ export class AdvanceTemplatesComponent implements OnInit {
       }
     });
   }
-
 
   deleteAdvanceTemlate(id: string) {
     this.expenseService.deleteAdvanceTemplates(id).subscribe((res: any) => {

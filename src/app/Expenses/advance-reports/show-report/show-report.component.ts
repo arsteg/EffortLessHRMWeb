@@ -8,7 +8,6 @@ import { StatusUpdateComponent } from '../status-update/status-update.component'
 import { FormControl } from '@angular/forms';
 import { ExportService } from 'src/app/_services/export.service';
 
-
 @Component({
   selector: 'app-show-report',
   templateUrl: './show-report.component.html',
@@ -30,38 +29,47 @@ export class ShowReportComponent {
   p: number = 1;
   public sortOrder: string = '';
 
-
   constructor(private commonService: CommonService,
-    private expenseService: ExpensesService,
-    private dialog: MatDialog,
-    private modalService: NgbModal,
-    private exportService: ExportService) { }
+              private expenseService: ExpensesService,
+              private dialog: MatDialog,
+              private modalService: NgbModal,
+              private exportService: ExportService) { }
 
   ngOnInit(): void {
     this.commonService.populateUsers().subscribe(result => {
       this.allAssignee = result && result.data && result.data.data;
     });
     this.getAdvanceReports();
-
   }
+
   getAdvanceReports() {
     this.expenseService.getAdvanceReport().subscribe((res: any) => {
-      this.advanceReport = res.data.filter(expense => expense.status === this.status);
-      this.totalAmount = this.advanceReport.reduce((total, report) => total + report.amount, 0);
-    })
+      const rawReports = res.data.filter(expense => expense.status === this.status);
+      this.totalAmount = rawReports.reduce((total, report) => total + report.amount, 0);
+      this.transformReports(rawReports);
+    });
     this.expenseService.getAdvanceCatgories().subscribe((res: any) => {
       this.allCategory = res.data;
     });
   }
 
+  transformReports(rawReports: any) {
+    this.advanceReport = rawReports.map(report => ({
+      ...report,
+      employeeName: this.getUser(report.employee),
+      categoryLabel: this.getCategory(report.category)
+    }));
+    console.log(this.advanceReport[0].employeeName)
+  }
+
   getUser(employeeId: string) {
-    const matchingUser = this.allAssignee?.find(user => user._id === employeeId);
-    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'User Not Found';
+    const matchingUser = this.allAssignee?.find(user => user?._id === employeeId);
+    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : '';
   }
 
   getCategory(categoryId: string) {
     const matchingCategory = this.allCategory?.find(category => category?._id === categoryId);
-    return matchingCategory ? `${matchingCategory?.label}` : 'Category Not Found';
+    return matchingCategory ? `${matchingCategory?.label}` : '';
   }
 
   open(content: any) {
@@ -71,6 +79,7 @@ export class ShowReportComponent {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
     });
   }
+
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
@@ -84,7 +93,8 @@ export class ShowReportComponent {
   refreshExpenseReportTable() {
     this.expenseService.getAdvanceReport().subscribe(
       (res) => {
-        this.advanceReport = res.data.filter(expense => expense.status === this.status);
+        const rawReports = res.data.filter(expense => expense.status === this.status);
+        this.transformReports(rawReports);
         this.advanceReportRefreshed.emit();
       },
       (error) => {
@@ -112,10 +122,8 @@ export class ShowReportComponent {
   }
 
   openSecondModal(selectedReport: any): void {
-    const userName = this.getUser(selectedReport.employee);
-    const categoryLabel = this.getCategory(selectedReport.category);
-    selectedReport.employee = userName;
-    selectedReport.category = categoryLabel;
+    selectedReport.employeeName = this.getUser(selectedReport.employee);
+    selectedReport.categoryLabel = this.getCategory(selectedReport.category);
     this.expenseService.advanceReport.next(selectedReport);
     const dialogRef = this.dialog.open(ViewReportsComponent, {
       width: '50%',
@@ -124,30 +132,26 @@ export class ShowReportComponent {
     dialogRef.afterClosed().subscribe(result => {
     });
   }
+
   selectedEmployee() {
     this.getAdvanceByUser();
   }
 
-
   getAdvanceByUser() {
     this.expenseService.getAdvanceByUser(this.employee.value).subscribe((res: any) => {
       this.reportSummary = res.details;
-      
-      // Calculate totalAmount
       this.totalAmount = this.reportSummary.reduce((acc, curr) => acc + curr.amount, 0);
     });
   }
-  
+
   exportToCsv() {
-    console.log(this.advanceReport)
     const dataToExport = this.advanceReport.map((advance) => ({
-      employee: this.getUser(advance.employee),
-      category: this.getCategory(advance.category),
+      employee: advance.employeeName,
+      category: advance.categoryLabel,
       amount: advance?.amount,
       status: advance.status,
       comment: advance.comment,
     }));
     this.exportService.exportToCSV('Advance-Report', 'Advance-Report', dataToExport);
   }
-  
 }

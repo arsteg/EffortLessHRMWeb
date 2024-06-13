@@ -31,7 +31,7 @@
 
                         <td>{{advance?.advanceCategories?.length}}</td>
                         <td class="">
-                            <button class="actions" mat-mini-fab  matTooltip="Edit" matTooltipPosition="before"
+                            <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before"
                                 aria-label="Example icon button with a menu icon"
                                 (click)="open(addModal);editadvanceCategory(advance, index); selectedTemplateId= advance?._id">
                                 <i class="bi bi-pencil-fill"></i>
@@ -76,7 +76,8 @@
 
         <div class="mt-2">
             <mat-form-field appearance="outline" class="w-100">
-                <mat-label>What expense categories are applicable in this expense template? <span class="text-danger">*</span></mat-label>
+                <mat-label>What expense categories are applicable in this expense template? <span
+                        class="text-danger">*</span></mat-label>
                 <mat-select multiple formControlName="advanceCategories">
                     <mat-option [value]="advanceCategory?._id"
                         *ngFor="let advanceCategory of advanceCategoriesall; let i = index">
@@ -85,9 +86,9 @@
                 </mat-select>
             </mat-form-field>
             <div *ngIf="addAdvanceTempForm.get('advanceCategories').invalid && addAdvanceTempForm.get('advanceCategories').touched"
-            class="text-danger error">
-            Please Add Advance Category!
-        </div>
+                class="text-danger error">
+                Please Add Advance Category!
+            </div>
         </div>
 
         <div class="mt-2">
@@ -117,12 +118,10 @@
             </div>
         </div>
 
-
         <div class="mt-2">
             <div class="form-group">
                 <label for="">How would you like to add approvers? <span class="text-danger">*</span></label>
                 <div class="d-flex">
-
                     <div class="form-check">
                         <input class="form-check-input" type="radio" id="template-wise" formControlName="approvalType"
                             required value="template-wise">
@@ -170,15 +169,10 @@
 
         <div class="mt-2">
             <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
-                <button mat-raised-button type="reset">Cancel</button>
+                <button mat-raised-button type="reset" (click)="onCancel()">Cancel</button>
                 <button mat-raised-button class="addBtn" type="submit" [disabled]="!addAdvanceTempForm.valid">{{isEdit?
                     'Update': 'Add'}}</button>
-
             </div>
         </div>
-
-
-
     </form>
-
 </ng-template>

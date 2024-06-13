@@ -38,8 +38,6 @@ export class PendingComponent {
   expenseReportExpenses: any;
   public sortOrder: string = '';
 
-  
-
   constructor(private modalService: NgbModal,
     private expenseService: ExpensesService,
     private commonService: CommonService,
@@ -67,13 +65,12 @@ export class PendingComponent {
     this.expenseService.getExpenseReport().subscribe(
       (res) => {
         this.expenseReport = res.data.filter(expense => expense.status === 'Level 1 Approval Pending');
-        this.expenseTemplateReportRefreshed.emit();
       },
       (error) => {
         console.error('Error refreshing expense template table:', error);
-      }
-    );
+      });
   }
+
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
@@ -83,11 +80,18 @@ export class PendingComponent {
       return `with: ${reason}`;
     }
   }
-  
+
   onCancel() {
     this.isEdit = false;
   }
 
+  clearform() {
+    this.isEdit = false;
+    if (!this.isEdit) {
+      this.changeMode = 'Add';
+    }
+  }
+  
   open(content: any) {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
@@ -106,6 +110,7 @@ export class PendingComponent {
   onChangeStep(event) {
     this.step = event;
   }
+
   onChangeMode(event) {
     if (this.isEdit = true) {
       this.changeMode = event
@@ -133,14 +138,13 @@ export class PendingComponent {
   deleteReport(id: string) {
     this.expenseService.deleteExpenseReport(id).subscribe((res: any) => {
       this.displayedData = this.displayedData.filter(report => report._id !== id);
-      this.toast.success('Successfully Deleted!!!', 'Advance Category')
+      this.toast.success('Successfully Deleted!!!', 'Advance Category');
     },
       (err) => {
         this.toast.error('This category is already being used in an expense template!'
           , 'Advance Category, Can not be deleted!')
       })
   }
-
 
   getUser(employeeId: string) {
     const matchingUser = this.users.find(user => user._id === employeeId);
@@ -153,7 +157,6 @@ export class PendingComponent {
     this.expenseService.selectedReport.next(this.selectedReport)
   }
 
-
   exportToCsv() {
     const dataToExport = this.expenseReport.map((categories) => ({
       title: categories.title,
@@ -165,7 +168,7 @@ export class PendingComponent {
     }));
     this.exportService.exportToCSV('Expense-pending-Report', 'Expense-Pending-Report', dataToExport);
   }
-  
+
   updateApprovedReport() {
     let id = this.selectedReport._id;
     let payload = {

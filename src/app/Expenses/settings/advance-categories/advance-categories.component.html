@@ -17,7 +17,8 @@
                     <tr>
                         <th class="ps-2" [appSort]="advanceCategories" [attr.data-order]="sortOrder" data-name="label"
                             (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Category&nbsp;Name
-                            <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                            <i
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                         </th>
                         <th>Actions</th>
                     </tr>
@@ -27,7 +28,7 @@
                         *ngFor="let categories of advanceCategories |  search: searchText  |  paginate: { itemsPerPage: 5, currentPage: p }; let index = index">
                         <td class="ps-2">{{categories?.label}}</td>
                         <td class="">
-                            <button class="actions" mat-mini-fab  matTooltip="Edit" matTooltipPosition="before"
+                            <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before"
                                 aria-label="Example icon button with a menu icon"
                                 (click)="open(addModal);editAdvanceCategory(categories, index)">
                                 <i class="bi bi-pencil-fill"></i>
@@ -62,22 +63,23 @@
 
     <form action="" [formGroup]="addCategory" (ngSubmit)="isEdit ? updateAdvanceCategory() :addAdvanceCategories()">
         <div class="form-group">
-            <label for="">Please provide a label for this category <span
-                    class="text-danger">*</span></label>
+            <label for="">Please provide a label for this category <span class="text-danger">*</span></label>
             <input type="text" class="form-control w-100" placeholder="Add Custom Label" formControlName="label"
-               required >
+                required>
 
             <div *ngIf="addCategory.get('label').invalid && addCategory.get('label').touched" class="text-danger error">
                 Please Add Advance Category!
             </div>
 
-
+            <div *ngIf="(addCategory.pristine || !addCategory.valid)  && updateButtonClicked" class="text-danger error">
+                {{ isEdit ? 'Please make changes to the form before submitting.' : 'Please fill in the required fields.' }}
+            </div>
             <div class="mt-2">
                 <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
                     <button mat-raised-button type="button" (click)="onCancel()">Cancel</button>
-                    <button mat-raised-button class="addBtn" type="submit" [disabled]="!addCategory.valid">{{isEdit?
+                    <button mat-raised-button class="addBtn" type="submit" (click)="updateButtonClicked = true">{{isEdit?
                         'Update': 'Add'}} </button>
-
+                   
                 </div>
             </div>
 
