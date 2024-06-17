@@ -35,6 +35,18 @@ export class LeaveService extends baseService {
     return this.http.get<any>(`${environment.apiUrlDotNet}/leave/leave-categories-by-user/${userId}`, this.httpOptions);
   }
 
+  public getLeaveCategoriesByUserv1(userId: string): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.get<any>(`${environment.apiUrlDotNet}/leave/leave-categories-by-userv1/${userId}`, this.httpOptions);
+  }
+
+  public getattendanceTemplatesByUser(userId: string): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.get<any>(`${environment.apiUrlDotNet}/attendance/attendance-templates-by-user/${userId}`, this.httpOptions);
+  }
+
   public addLeaveCategory(leave: any): any {
     const token = this.getToken();
     this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);

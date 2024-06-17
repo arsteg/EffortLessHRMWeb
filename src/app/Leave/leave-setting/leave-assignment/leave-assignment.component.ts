@@ -91,10 +91,13 @@ export class LeaveAssignmentComponent implements OnInit {
     }
     if (!this.isEdit) {
       this.leaveService.addLeaveTemplateAssignment(payload).subscribe((res: any) => {
-        const templateAssignment = res.data;
-        this.templateAssignment.push(templateAssignment);
-        this.toast.success('Employee assigned to the Template', 'Successfully!!!');
-        this.templateAssignmentForm.reset();
+        if(res.status == 'success'){
+          const templateAssignment = res.data;
+          this.templateAssignment.push(templateAssignment);
+          this.toast.success('Employee assigned to the Template', 'Successfully!!!');
+          this.templateAssignmentForm.reset();
+          this.modalService.dismissAll();
+        }
       },
         err => {
           this.toast.error('Employee cannot be assigned to the Template', 'Error')
@@ -103,13 +106,15 @@ export class LeaveAssignmentComponent implements OnInit {
     else{
       const id = this.selectedLeaveAssignment._id
       this.leaveService.addLeaveTemplateAssignment(payload).subscribe((res: any)=>{
-        const updatedLeaveAssignment = res.data;
-        const index = this.templateAssignment.findIndex(category => category._id === updatedLeaveAssignment._id);
-        if (index !== -1) {
-          this.templateAssignment[index] = updatedLeaveAssignment;
+        if(res.status == 'success'){
+          const updatedLeaveAssignment = res.data;
+          const index = this.templateAssignment.findIndex(category => category._id === updatedLeaveAssignment._id);
+          if (index !== -1) {
+            this.templateAssignment[index] = updatedLeaveAssignment;
+          }
+          this.toast.success('Leave assignment Updated', 'Successfully!!!');
+          this.modalService.dismissAll();
         }
-        this.toast.success('Leave assignment Updated', 'Successfully!!!');
-
       },
       err =>{
         this.toast.error('Leave Assignment can not be updated', 'Error!!!')

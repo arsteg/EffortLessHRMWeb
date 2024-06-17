@@ -37,8 +37,8 @@
             <label for="member">Select Category <span class="text-danger">*</span></label>
             <mat-form-field appearance="outline" class="w-100 mx-1">
                 <mat-select formControlName="leaveCategory" required>
-                    <mat-option *ngFor="let category of leaveCategories" [value]="category?._id">
-                        {{category?.label | titlecase}}
+                    <mat-option *ngFor="let category of leaveCategories" [value]="category?.leaveCategory?._id">
+                        {{category?.leaveCategory?.label | titlecase}}
                     </mat-option>
                 </mat-select>
             </mat-form-field>
@@ -50,8 +50,8 @@
         <div class="mt-2">
             <label for="">Select Start Date <span class="text-danger">*</span></label>
             <div class=" col-12 form-group mb-3">
-                <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
-                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="startDate" required/>
+                    <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
+                    [bsConfig]="bsConfig" formControlName="startDate" required/>
                     <div *ngIf="leaveApplication.get('startDate').invalid && leaveApplication.get('startDate').touched" class="text-danger error">
                         Add a Valid Start date
                     </div>
@@ -61,14 +61,14 @@
         <div class="mt-2">
             <label for="">Select End Date <span class="text-danger">*</span></label>
             <div class=" col-12 form-group mb-3">
-                <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
-                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="endDate" required/>
+                    <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
+                    [bsConfig]="bsConfigEnd" formControlName="endDate" required/>
                     <div *ngIf="leaveApplication.get('endDate').invalid && leaveApplication.get('endDate').touched" class="text-danger error">
                         Add a Valid End date
                     </div>
             </div>
         </div>
-        <div class="mt-2" *ngIf="leaveApplication.get('leaveCategory').value">
+        <div class="mt-2" *ngIf="leaveApplication.get('leaveCategory').value && this.tempLeaveCategory.isHalfDayTypeOfLeave === true">
             <label for="" class="">Do you want to provide a half-day option for this type of leave?&nbsp;<span
                     class="text-danger">*</span></label>
 
@@ -88,7 +88,6 @@
                     </label>
                 </div>
             </div>
-
             <ng-container *ngIf="leaveApplication.get('isHalfDayOption').value === true">
 
                 <button type="button" mat-raised-button class="addBtn" (click)="addHalfDayEntry()">Add Half Day</button>

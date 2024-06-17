@@ -6,6 +6,8 @@ import * as moment from 'moment';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { TimeLogService } from 'src/app/_services/timeLogService';
+import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -30,11 +32,23 @@ export class AddApplicationComponent {
   @Input() tab: number;
   defaultCatSkip="0";
   defaultCatNext="100000";
+  bsConfig: Partial<BsDatepickerConfig>;
+  bsConfigEnd: Partial<BsDatepickerConfig>;
+  minStartDate: Date;
+  maxStartDate: Date;
+  minEndDate: Date;
+  maxEndDate: Date;
+  tempLeaveCategory: any;
+  totalLeaveApplied: number = 0;
+  weekOffCount: number = 0;
+  dayCounts = {};
+  annualHolidayCount: number = 0;
 
   constructor(private fb: FormBuilder,
     private commonService: CommonService,
     private leaveService: LeaveService,
-    private timeLogService: TimeLogService
+    private timeLogService: TimeLogService,
+    private toast: ToastrService
   ) {
     this.leaveApplication = this.fb.group({
       employee: ['', Validators.required],
@@ -48,14 +62,37 @@ export class AddApplicationComponent {
       isHalfDayOption: [false],
       haldDays: this.fb.array([])
     });
+
+    this.bsConfig = {
+      dateInputFormat: 'YYYY-MM-DD',
+      minDate: this.minStartDate,
+      maxDate: this.maxStartDate
+    };
+
+    this.bsConfigEnd = {
+      dateInputFormat: 'YYYY-MM-DD',
+      minDate: this.minEndDate,
+      maxDate: this.maxEndDate
+    };
   }
 
   ngOnInit() {
     this.commonService.populateUsers().subscribe(result => {
       this.allAssignee = result && result.data && result.data.data;
     });
-    this.getleaveCatgeories();
+    this.getleaveCatgeoriesByUser();
     this.populateMembers();
+
+    this.leaveApplication.get('startDate').valueChanges.subscribe(selectedDate => {
+      this.onStartDateChange(selectedDate);
+    });
+    this.leaveApplication.get('endDate').valueChanges.subscribe(selectedDate => {
+      this.onEndDateChange(selectedDate);
+    });
+    this.leaveApplication.get('leaveCategory').valueChanges.subscribe(leaveCategory => {
+      this.tempLeaveCategory = this.leaveCategories.find(l=>l.leaveCategory._id === leaveCategory);
+    });
+    this.getattendanceTemplatesByUser();
   }
 
   addHalfDayEntry() {
@@ -69,10 +106,29 @@ export class AddApplicationComponent {
     return this.leaveApplication.get('haldDays') as FormArray;
   }
 
-  getleaveCatgeories() {
-    const requestBody = { "skip": this.defaultCatSkip, "next": this.defaultCatNext };
-    this.leaveService.getAllLeaveCategories(requestBody).subscribe((res: any) => {
+  // getleaveCatgeories() {
+  //   const requestBody = { "skip": this.defaultCatSkip, "next": this.defaultCatNext };
+  //   this.leaveService.getLeaveCategoriesByUser(this.currentUser.id).subscribe((res: any) => {
+  //     this.leaveCategories = res.data;
+  //   })
+  // }
+
+  getleaveCatgeoriesByUser() {
+    this.leaveService.getLeaveCategoriesByUserv1(this.currentUser.id).subscribe((res: any) => {
       this.leaveCategories = res.data;
+    });
+  }
+
+  getattendanceTemplatesByUser(){
+    this.leaveService.getattendanceTemplatesByUser(this.currentUser.id).subscribe((res: any) => {
+      if(res.status == "success"){
+        let attandanceData = res.data;
+        attandanceData.weeklyOfDays.forEach(day => {
+          if (day != "false") {
+            this.dayCounts[day] = 0;
+          }
+        });
+      }
     })
   }
 
@@ -114,10 +170,26 @@ export class AddApplicationComponent {
           this.leaveApplication.value.employee = this.member?.id;
         }
       }
-     
+      let finalLeaveApplied = 0;
       this.leaveApplication.value.status = 'Pending';
 
       console.log(this.leaveApplication.value);
+
+      if(!this.tempLeaveCategory.isAnnualHolidayLeavePartOfNumberOfDaysTaken){
+        finalLeaveApplied = this.totalLeaveApplied - this.weekOffCount;
+      }
+
+      if(!this.tempLeaveCategory.isWeeklyOffLeavePartOfNumberOfDaysTaken){
+        finalLeaveApplied = finalLeaveApplied - this.weekOffCount;
+      }
+
+      if (this.tempLeaveCategory.maximumNumberConsecutiveLeaveDaysAllowed != null) {
+        //this.toast.error('Error adding event notification', 'Error!');
+        return;
+      }
+
+      if (this.tempLeaveCategory.minimumNumberOfDaysAllowed != null) {
+      }
 
       this.leaveService.addLeaveApplication(this.leaveApplication.value).subscribe((res: any) => {
         this.closeModal();
@@ -140,4 +212,62 @@ export class AddApplicationComponent {
     }
   }
 
+  onStartDateChange(selectedDate: Date): void {
+    this.minEndDate = new Date(selectedDate);
+    this.bsConfig = {
+      ...this.bsConfig,
+      minDate: this.minStartDate,
+      maxDate: this.maxStartDate
+    };
+
+    this.bsConfigEnd = {
+      ...this.bsConfig,
+      minDate: this.minEndDate,
+      maxDate: this.maxEndDate
+    };
+
+    this.weeklyCount();
+  }
+
+  onEndDateChange(selectedDate: Date): void {
+    this.maxStartDate = new Date(selectedDate);
+    this.bsConfig = {
+      ...this.bsConfig,
+      minDate: this.minStartDate,
+      maxDate: this.maxStartDate
+    };
+
+    this.bsConfigEnd = {
+      ...this.bsConfig,
+      minDate: this.minEndDate,
+      maxDate: this.maxEndDate
+    };
+
+    this.weeklyCount();
+  }
+
+  getDayName(date) {
+    return date.toLocaleString('en-US', { weekday: 'short' });
+  }
+
+  weeklyCount(){
+    this.weekOffCount = 0;
+    this.totalLeaveApplied = 0;
+    if(this.leaveApplication.get('startDate').value !='' && this.leaveApplication.get('endDate').value != ''){
+      let start = this.leaveApplication.get('startDate').value;
+      let end = this.leaveApplication.get('endDate').value;
+      for (let date = new Date(start); date <= end; date.setDate(date.getDate() + 1)) {
+        this.totalLeaveApplied++;
+        let day = this.getDayName(date);
+        if (this.dayCounts.hasOwnProperty(day)) {
+          this.weekOffCount++;
+        }
+      }
+      console.log(this.weekOffCount);
+   }
+  }
+
+  holydayCount(){
+
+  }
 }
