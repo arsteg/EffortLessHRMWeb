@@ -1,0 +1,568 @@
+<div class="main-content pt-0">
+    <div class="tableContainer bg-white rounded p-2">
+        <form [formGroup]="generalSettingForm" [ngClass]="{'editable-form': isEdit}" (ngSubmit)="saveGeneralSettings()">
+            <div class="d-flex justify-content-between m-2">
+                <h2><u>Payroll General Settings</u></h2>
+                <div class="">
+                    <button mat-raised-button *ngIf="!isEdit" class="addBtn" type="button"
+                        (click)="toggleEdit()">Edit</button>
+                    <button mat-raised-button *ngIf="isEdit" (click)="resetSettings()" type="button"
+                        class="me-3">Cancel</button>
+                    <button mat-raised-button class="addBtn" type="submit" *ngIf="isEdit"
+                        (click)="saveGeneralSettings()">Save</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6 mt-3  p-2">
+                    <label>What day of the month do you run your payroll?</label>
+                    <select name="" id=""></select>
+
+                </div>
+                <div class="form-group col-md-6 mt-3  p-2">
+                    <label>Payroll Approver</label>
+                    <select name="" class="form-control" id="">
+                        <option value="">Select Approver</option>
+                        <option value=""></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group mt-3  p-2">
+                <div class="col-10">
+                    <label>Attendance Cycle?</label>
+                    <div class="d-flex">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" id="flexRadioDefault1" required [value]="true">
+                            <label class="form-check-label" for="flexRadioDefault1">
+                                Customize
+                            </label>
+                        </div>
+                        <div class="form-check ms-2">
+                            <input class="form-check-input" type="radio" id="canEmployeeApplyFalse" required
+                                [value]="false">
+                            <label class="form-check-label" for="canEmployeeApplyFalse">
+                                Non-Customize
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class=" mt-3  p-2">
+                <div class="form-group">
+                    <label>On What day of the month does your attendance cycle begin?</label>
+                    <input type="number" class="form-control">
+                </div>
+
+            </div>
+
+            <div class="mt-3  p-2">
+                <div class="form-group">
+                    <label>Do you want to keep password for salary register or not?</label>
+                    <div class="d-flex">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" id="flexRadioDefault1" required [value]="true">
+                            <label class="form-check-label" for="flexRadioDefault1">
+                                Yes
+                            </label>
+                        </div>
+                        <div class="form-check ms-2">
+                            <input class="form-check-input" type="radio" id="canEmployeeApplyFalse" required
+                                [value]="false">
+                            <label class="form-check-label" for="canEmployeeApplyFalse">
+                                No
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- if( Do you want to keep password for salary register or not?) is yes -->
+            <div class="form-group mt-3">
+                <label for="">Password for salary register</label>
+                <input type="password" class="form-control">
+            </div>
+            <!-- end -->
+
+            <div class="mt-3  p-2">
+                <div class="form-group">
+                    <label>Is Company eligible for Gratuity?</label>
+                    <div class="d-flex">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" id="flexRadioDefault1" required [value]="true">
+                            <label class="form-check-label" for="flexRadioDefault1">
+                                Yes
+                            </label>
+                        </div>
+                        <div class="form-check ms-2">
+                            <input class="form-check-input" type="radio" id="canEmployeeApplyFalse" required
+                                [value]="false">
+                            <label class="form-check-label" for="canEmployeeApplyFalse">
+                                No
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- start if  (Is Company eligible for Gratuity) is yes-->
+            <div>
+                <div class="mt-3 form-group">
+                    <label for="">Percentage for Gratuity</label>
+                    <input type="text" class="form-control">
+                </div>
+
+                <div class="form-group mt-3">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Components on which Gratuity is calculated</mat-label>
+                        <mat-select multiple>
+                            <mat-option>
+                                <!-- {{categories?.label}} -->
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+            <!-- end if  (Is Company eligible for Gratuity) is yes-->
+
+            <div class=" mt-3  p-2">
+
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>How would you like to calculate Leave Encashment?</mat-label>
+                    <mat-select multiple>
+                        <mat-option>
+                            <!-- {{categories?.label}} -->
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+            </div>
+
+            <div class="mt-3  p-2">
+                <div class="form-group">
+                    <label>What is the denominator for calculating the Encashment?</label>
+                    <input type="number" class="form-control">
+                </div>
+
+            </div>
+
+            <div class=" mt-3  p-2">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>In which month do you wish to pay out rollover leave encashment for
+                        employees?</mat-label>
+                    <mat-select multiple>
+                        <mat-option>
+                            <!-- {{all months}} -->
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <div class=" mt-3  p-2">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>How would you like to calculate Leave Recovery?</mat-label>
+                    <mat-select multiple>
+                        <mat-option>
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+            </div>
+            <div class=" mt-3  p-2">
+                <div class="col-10">
+                    <label>What is the denominator for calculating the Leave Recovery?</label>
+                    <select name="" id="">
+                        <option value=""></option>
+                    </select>
+                </div>
+
+            </div>
+            <div class=" mt-3  p-2">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>When do you want to recover outstanding income tax of employees?</mat-label>
+                    <mat-select multiple>
+                        <mat-option>
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <div class="form-group mt-3  p-2">
+
+                <label>Is Notice Period Recovery applicable?</label>
+                <div class="d-flex">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="flexRadioDefault1" required [value]="true">
+                        <label class="form-check-label" for="flexRadioDefault1">
+                            Yes
+                        </label>
+                    </div>
+                    <div class="form-check ms-2">
+                        <input class="form-check-input" type="radio" id="canEmployeeApplyFalse" required
+                            [value]="false">
+                        <label class="form-check-label" for="canEmployeeApplyFalse">
+                            No
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- if (Is Notice Period Recovery applicable?) field is yes -->
+
+            <div class="form-group mt-3  p-2">
+
+                <label>What is the denominator for calculating the Notice Recovery?</label>
+                <select name="" id="">
+                    <option value=""></option>
+                </select>
+            </div>
+
+            <div class="form-group mt-3  p-2">
+
+                <label>Do you wish to calculate your TDS from ProH2R?</label>
+                <div class="d-flex">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="flexRadioDefault1" required [value]="true">
+                        <label class="form-check-label" for="flexRadioDefault1">
+                            Yes
+                        </label>
+                    </div>
+                    <div class="form-check ms-2">
+                        <input class="form-check-input" type="radio" id="canEmployeeApplyFalse" required
+                            [value]="false">
+                        <label class="form-check-label" for="canEmployeeApplyFalse">
+                            No
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="form-group mt-3  p-2">
+
+                <label>Is Ncp Days Applicable in PF?</label>
+                <div class="d-flex">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="flexRadioDefault1" required [value]="true">
+                        <label class="form-check-label" for="flexRadioDefault1">
+                            Yes
+                        </label>
+                    </div>
+                    <div class="form-check ms-2">
+                        <input class="form-check-input" type="radio" id="canEmployeeApplyFalse" required
+                            [value]="false">
+                        <label class="form-check-label" for="canEmployeeApplyFalse">
+                            No
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group mt-3  p-2">
+
+                <label>Do you wish to calculate overtime from ProH2r?</label>
+                <div class="d-flex">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="flexRadioDefault1" required [value]="true">
+                        <label class="form-check-label" for="flexRadioDefault1">
+                            Yes
+                        </label>
+                    </div>
+                    <div class="form-check ms-2">
+                        <input class="form-check-input" type="radio" id="canEmployeeApplyFalse" required
+                            [value]="false">
+                        <label class="form-check-label" for="canEmployeeApplyFalse">
+                            No
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+    <hr>
+    <div class="">
+        <div class="col-12">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabRoundingRules'}"
+                        (click)="selectTab('tabRegularizationReason')">Rounding Rules for Statutory Contributions</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabPFTemplate'}"
+                        (click)="selectTab('tabOnDutyReason')">PF Template</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabGratuityTemplates'}"
+                        (click)="selectTab('tabOnDutyReason')">Gratuity Templates</a>
+                </li>
+            </ul>
+            <div class="tab-content pt-0">
+                <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabRoundingRules'}" id="tabRoundingRules">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class=""><label>({{regularization?.length}}) Records found</label></div>
+                        <div class="">
+                            <button class="btn addBtn"
+                                (click)="open(addModal); clearForm(); isEdit= false">Add&nbsp;Reason</button>
+                        </div>
+                    </div>
+                    <div class="mt-2 bg-white tableContainer">
+                        <!-- <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
+                [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
+                (recordsPerPageChange)="onRecordsPerPageChange($event)">
+              </app-pagination> -->
+                        <table>
+                            <thead>
+                                <th>Reason</th>
+                                <th>Visible To</th>
+                                <th>Action</th>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let reason of regularization ">
+                                    <td>{{reason?.label}}</td>
+                                    <td>{{reason?.applicableEmployee | titlecase}}</td>
+                                    <td>
+                                        <button class="actions" mat-mini-fab matTooltip="Edit"
+                                            matTooltipPosition="before"
+                                            aria-label="Example icon button with a menu icon"
+                                            (click)="selectedRecord = reason; isEdit= true; editReason(); open(addModal); ">
+                                            <i class="bi bi-pencil-fill"></i>
+                                        </button>
+                                        <button class="actions ms-2" mat-mini-fab matTooltip="Delete"
+                                            matTooltipPosition="after" aria-label="Example icon button with a menu icon"
+                                            (click)="deleteDialog(reason?._id)">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+                <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabPFTemplate'}" id="tabPFTemplate">
+                    <div>
+                        <div class="text-end">
+                            <button class="btn addBtn"
+                                (click)="open(addDutyModal); clearForm() ;isEdit= false">On&nbsp;Duty&nbsp;Reason</button>
+                        </div>
+                    </div>
+                    <div class="mt-2 bg-white tableContainer">
+                        <!-- <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
+                [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
+                (recordsPerPageChange)="onRecordsPerPageChange($event)">
+              </app-pagination> -->
+
+                        <table>
+                            <thead>
+                                <th>Reason</th>
+                                <th>Visible To</th>
+                                <th>Action</th>
+                            </thead>
+                            <tbody>
+                                <!-- <tr *ngFor="let dutyReason of dutyReason ">
+                    <td>{{dutyReason?.label}}</td>
+                    <td>{{dutyReason?.applicableEmployee | titlecase}}</td>
+                    <td>
+                      <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before"
+                        aria-label="Example icon button with a menu icon"
+                        (click)="selectedDutyReason = dutyReason; isEdit= true; editDutyReason(); open(addDutyModal); ">
+                        <i class="bi bi-pencil-fill"></i>
+                      </button>
+                      <button class="actions ms-2" mat-mini-fab matTooltip="Delete" matTooltipPosition="after"
+                        aria-label="Example icon button with a menu icon" (click)="deleteDutyDialog(dutyReason?._id)">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </td>
+                  </tr> -->
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+                <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabGratuityTemplates'}"
+                    id="tabGratuityTemplates">
+                    <div>
+                        <div class="text-end">
+                            <button class="btn addBtn"
+                                (click)="open(addDutyModal); clearForm() ;isEdit= false">On&nbsp;Duty&nbsp;Reason</button>
+                        </div>
+                    </div>
+                    <div class="mt-2 bg-white tableContainer">
+                        <!-- <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
+                [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
+                (recordsPerPageChange)="onRecordsPerPageChange($event)">
+              </app-pagination> -->
+
+                        <table>
+                            <thead>
+                                <th>Reason</th>
+                                <th>Visible To</th>
+                                <th>Action</th>
+                            </thead>
+                            <tbody>
+                                <!-- <tr *ngFor="let dutyReason of dutyReason ">
+                    <td>{{dutyReason?.label}}</td>
+                    <td>{{dutyReason?.applicableEmployee | titlecase}}</td>
+                    <td>
+                      <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before"
+                        aria-label="Example icon button with a menu icon"
+                        (click)="selectedDutyReason = dutyReason; isEdit= true; editDutyReason(); open(addDutyModal); ">
+                        <i class="bi bi-pencil-fill"></i>
+                      </button>
+                      <button class="actions ms-2" mat-mini-fab matTooltip="Delete" matTooltipPosition="after"
+                        aria-label="Example icon button with a menu icon" (click)="deleteDutyDialog(dutyReason?._id)">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </td>
+                  </tr> -->
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #addModal let-modal>
+    <div class="modal-header border-bottom mb-2 pt-0">
+        <div>
+            <h1 class="modal-title text-muted mb-0">{{isEdit? 'Update': 'Add'}} Regularization Reason
+            </h1>
+        </div>
+        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
+                (click)="modal.close('Escape clicked')"></button>
+        </div>
+    </div>
+
+    <!-- <form action="" [formGroup]="regularizationForm" (ngSubmit)="isEdit ? updateRegularization() :  addRegularization()">
+  
+      <div class="form-group">
+        <label for="">Label for Regularization Reason</label>
+        <input type="text" class="form-control" placeholder="Enter Label" formControlName="label">
+      </div>
+  
+      <div class="form-check form-switch ps-0 mt-2 d-flex justify-content-between">
+        <label for="isFrequecyRestriction">Frequency Restriction</label>
+        <input class="form-check-input" type="checkbox" role="switch" formControlName="isFrequecyRestriction"
+          id="isFrequecyRestriction" checked>
+      </div>
+  
+      <div *ngIf="regularizationForm.get('isFrequecyRestriction').value == true">
+        <p>An Employee can apply Maximum</p>
+        <div class="form-group">
+          <label for="">Limit</label>
+          <input type="number" class="form-control" placeholder="Limit" formControlName="limit">
+        </div>
+  
+        <div class="form-group mt-2">
+          <select name="" id="" formControlName="frequency">
+            <option value="week">Week</option>
+            <option value="calendar-month">Calendar Month</option>
+            <option value="annual-cycle">Annual Cycle</option>
+          </select>
+        </div>
+      </div>
+  
+  
+      <div class="form-group mt-2">
+        <label for="">Which Employees Does this Reason Apply to?</label>
+        <div class="d-flex">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" id="all-employees" value="all-employees" required
+              formControlName="applicableEmployee">
+            <label class="form-check-label" for="all-employees">
+              All Employees
+            </label>
+          </div>
+          <div class="form-check ms-4">
+            <input class="form-check-input" type="radio" id="specific-employees" required value="specific-employees"
+              formControlName="applicableEmployee">
+            <label class="form-check-label" for="specific-employees">
+              Specific Employees
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="form-group mt-2" *ngIf="regularizationForm.get('applicableEmployee').value === 'specific-employees'">
+        <mat-form-field appearance="outline" class="w-100 mx-1">
+          <mat-label>Select Employee</mat-label>
+          <mat-select name="users" multiple formControlName="users">
+            <mat-option *ngFor="let member of members" [value]="member.id">
+              {{member?.firstName | titlecase}}&nbsp;{{member?.lastName}}
+            </mat-option>
+          </mat-select>
+  
+  
+        </mat-form-field>
+      </div>
+      <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
+        <button mat-raised-button type="button">Cancel</button>
+        <button mat-raised-button class="addBtn" type="submit">{{isEdit?
+          'Update': 'Add'}}</button>
+  
+      </div>
+    </form> -->
+
+</ng-template>
+
+<ng-template #addDutyModal let-dutyModal>
+    <div class="modal-header border-bottom mb-2 pt-0">
+        <div>
+            <h1 class="modal-title text-muted mb-0">{{isEdit? 'Update': 'Add'}} On Duty Reason
+            </h1>
+        </div>
+        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
+                (click)="dutyModal.close('Escape clicked')"></button>
+        </div>
+    </div>
+
+    <!-- <form action="" [formGroup]="dutyReasonForm" (ngSubmit)="isEdit ? updateDutyReason() :  addDutyReason()">
+  
+      <div class="form-group">
+        <label for="">Label for On Duty Reason</label>
+        <input type="text" class="form-control" placeholder="Enter Label" formControlName="label">
+      </div>
+  
+      <div class="form-group mt-2">
+        <label for="">Which Employees Does this Reason Apply to?</label>
+        <div class="d-flex">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" id="all-employees" value="all-employees" required
+              formControlName="applicableEmployee">
+            <label class="form-check-label" for="all-employees">
+              All Employees
+            </label>
+          </div>
+          <div class="form-check ms-4">
+            <input class="form-check-input" type="radio" id="specific-employees" required value="specific-employees"
+              formControlName="applicableEmployee">
+            <label class="form-check-label" for="specific-employees">
+              Specific Employees
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="form-group mt-2" *ngIf="dutyReasonForm.get('applicableEmployee').value === 'specific-employees'">
+        <mat-form-field appearance="outline" class="w-100 mx-1">
+          <mat-label>Select Employee</mat-label>
+          <mat-select name="users" multiple formControlName="users">
+            <mat-option *ngFor="let member of members" [value]="member.id">
+              {{member?.firstName | titlecase}}&nbsp;{{member?.lastName}}
+            </mat-option>
+          </mat-select>
+  
+  
+        </mat-form-field>
+      </div>
+      <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
+        <button mat-raised-button type="button">Cancel</button>
+        <button mat-raised-button class="addBtn" type="submit">{{isEdit?
+          'Update': 'Add'}}</button>
+  
+      </div>
+    </form> -->
+
+</ng-template>

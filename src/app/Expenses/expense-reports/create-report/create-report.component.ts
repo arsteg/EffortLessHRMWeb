@@ -76,7 +76,6 @@ export class CreateReportComponent {
 
 
   ngOnInit() {
-    console.log(this.expenseService.isEdit.getValue())
     if (this.expenseService.isEdit.getValue() == true) {
       const expenseFieldsArray = this.expenseReportform.get('expenseReportExpenseFields') as FormArray;
       expenseFieldsArray.clear();
@@ -97,7 +96,7 @@ export class CreateReportComponent {
           expenseTemplateCategoryFieldValues: res.expenseTemplateCategoryFieldValues,
           expenseReportExpenseFields: res.expenseReportExpenseFields
         });
-        console.log(this.expenseReportform.value)
+        console.log(this.expenseReportform.value);
       });
       let categoryId = this.expenseService.expenseReportExpense.getValue().expenseCategory;
       this.onCategorySelection(categoryId);

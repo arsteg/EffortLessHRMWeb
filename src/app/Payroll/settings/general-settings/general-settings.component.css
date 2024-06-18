@@ -1,0 +1,10 @@
+.nav-link.activeTab {
+    background-color: #ff7b1d; 
+    color: #fff !important; 
+  }
+  .nav-link{
+    color: #64728c !important; 
+  }
+  .nav-link:hover {
+    border-color: #ffcba6 #ffcba6 #ffcba6 !important ;
+  }

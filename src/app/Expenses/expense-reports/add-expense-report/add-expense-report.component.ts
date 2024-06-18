@@ -135,7 +135,7 @@ export class AddExpenseReportComponent {
       payload.expenseReportExpenses = [formArray];
     }
     if (this.changeMode == 'Add') {
-      console.log(payload)
+      console.log(payload);
       this.expenseService.addExpensePendingReport(payload).subscribe((res: any) => {
         this.toast.success('Expense Template Applicable Category Added Successfully!');
         this.addExpenseForm.reset();

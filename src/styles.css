@@ -866,3 +866,7 @@ option:hover {
 html .mat-mdc-mini-fab.mat-accent{
   --mat-fab-foreground-color: #7bbf2a;
 }
+
+h2{
+  color: #64728c;
+}

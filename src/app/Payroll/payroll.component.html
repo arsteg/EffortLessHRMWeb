@@ -10,23 +10,29 @@
             <button class="btn rounded-pill submenuTab" (click)="selectTab(4)" [class.active]="selectedTab === 4">
                 Run Payroll</button>
             <button class="btn rounded-pill submenuTab" (click)="selectTab(5)" [class.active]="selectedTab === 5">
-                Full and Final</button>
-            <button class="btn rounded-pill submenuTab" (click)="selectTab(6)" [class.active]="selectedTab === 6">
                 Payslips</button>
+            <button class="btn rounded-pill submenuTab" (click)="selectTab(6)" [class.active]="selectedTab === 6">
+                Full and Final</button>
 
         </div>
 
         <div *ngIf="selectedTab === 1" class="tab-content">
+            <app-settings></app-settings>
         </div>
         <div *ngIf="selectedTab === 2" class="tab-content">
+            <app-ctc-templates></app-ctc-templates>
         </div>
         <div *ngIf="selectedTab === 3" class="tab-content">
+            <app-lop-reversal></app-lop-reversal>
         </div>
         <div *ngIf="selectedTab === 4" class="tab-content">
+            <app-run-payroll></app-run-payroll>
         </div>
         <div *ngIf="selectedTab === 5" class="tab-content">
+            <app-payslips></app-payslips>
         </div>
         <div *ngIf="selectedTab === 6" class="tab-content">
+            <app-fnf-payslips></app-fnf-payslips>
         </div>
 
 
