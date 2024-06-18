@@ -65,16 +65,17 @@ export class ShowRecordComponent {
   loadRecords() {
     const pagination = {
       skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
-      next: this.recordsPerPage.toString()
+      next: this.recordsPerPage.toString(),
+      status: this.status
     };
     if (this.portalView == 'admin') {
-      this.attendanceService.getAllRegularization(pagination.skip, pagination.next).subscribe((res: any) => {
-        this.regularizationRecords = res.data.filter(data => data.status === this.status);
+      this.attendanceService.getAllRegularization(pagination.skip, pagination.next, pagination.status).subscribe((res: any) => {
+        this.regularizationRecords = res.data;
         this.totalRecords = res.total;
       });
     }
     else {
-      this.attendanceService.getRegularizationByUser(this.currentUser?.id).subscribe((res: any) => {
+      this.attendanceService.getRegularizationByUser(this.currentUser?.id, pagination).subscribe((res: any) => {
         this.regularizationRecords = res.data;
         this.totalRecords = res.total;
       })

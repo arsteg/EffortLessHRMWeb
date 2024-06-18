@@ -26,11 +26,14 @@ export class ShowOnDutyComponent {
   onDutyReason: any;
   p: number = 1;
   statusList: status[] = [
-    { name: 'Pending',  isChecked: true },
-    { name: 'Approved',  isChecked: true },
+    { name: 'Pending', isChecked: true },
+    { name: 'Approved', isChecked: true },
     { name: 'Cancelled', isChecked: true },
     { name: 'Rejected', isChecked: true }
   ];
+  totalRecords: number
+  recordsPerPage: number = 10;
+  currentPage: number = 1;
 
   constructor(private dialog: MatDialog,
     private exportService: ExportService,
@@ -41,37 +44,44 @@ export class ShowOnDutyComponent {
   ) { }
 
   ngOnInit() {
-    if (this.portalView == 'admin') { this.getAllOnDutyRequest(); }
-    else {
-      this.getOnDutyRequestByuser();
-    }
+    this.loadRecords();
     this.getOnDutyReason();
     this.commonService.populateUsers().subscribe(result => {
       this.allAssignee = result && result.data && result.data.data;
     });
   }
 
-  getAllOnDutyRequest() {
-    this.attendanceService.getAllOnDutyRequests().subscribe((res: any) => {
-      this.onDutyRequest = res.data.filter(data => data.status === this.status);
-    })
+  onPageChange(page: number) {
+    this.currentPage = page;
+    this.loadRecords();
+  }
+
+  onRecordsPerPageChange(recordsPerPage: number) {
+    this.recordsPerPage = recordsPerPage;
+    this.loadRecords();
+  }
+
+
+  loadRecords() {
+    const pagination = {
+      skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
+      next: this.recordsPerPage.toString(),
+      status: this.status
+    };
+    if (this.portalView == 'admin') {
+      this.attendanceService.getAllOnDutyRequests(pagination).subscribe((res: any) => {
+        this.onDutyRequest = res.data;
+      })
+    }
+    else {
+      this.attendanceService.getAllOnDutyRequestsByUser(this.currentUser.id, pagination?.skip, pagination.next).subscribe((res: any) => {
+        this.onDutyRequest = res.data;
+      })
+    }
   }
 
   requestRefreshed() {
-    if (this.portalView == 'admin') {
-      this.attendanceService.getAllOnDutyRequests().subscribe(
-        (res) => {
-          this.onDutyRequest = res.data.filter(data => data.status === this.status);
-          console.log(this.onDutyRequest)
-        },
-        (error) => {
-          console.error('Error refreshing  table:', error);
-        }
-      );
-    }
-    else {
-      this.getOnDutyRequestByuser();
-    }
+    this.loadRecords();
   }
 
   exportToCsv() {
@@ -137,16 +147,11 @@ export class ShowOnDutyComponent {
     // })
   }
 
-  getOnDutyRequestByuser() {
-    this.attendanceService.getAllOnDutyRequestsByUser(this.currentUser.id).subscribe((res: any) => {
-      this.onDutyRequest = res.data;
-    })
-  }
+
 
   deleteRequest(id: string) {
     this.attendanceService.deleteOnDutyRequest(id).subscribe((res: any) => {
-      if (this.portalView == 'admin') { this.getAllOnDutyRequest(); }
-      else { this.getOnDutyRequestByuser(); }
+      this.loadRecords();
       this.toast.success('Successfully Deleted!!!', 'OnDuty Request');
     },
       (err) => {

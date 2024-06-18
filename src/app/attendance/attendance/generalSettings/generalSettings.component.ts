@@ -101,7 +101,7 @@ export class GeneralSettingsComponent implements OnInit {
     }
     else if(this.activeTab == 'tabOnDutyReason'){
       console.log('on dutyReason')
-      this.attendanceService.getDutyReason(pagination.skip, pagination.next).subscribe((res: any) => {
+      this.attendanceService.getDutyReason(pagination).subscribe((res: any) => {
         this.dutyReason = res.data;
         this.totalRecords = res.total;
       });

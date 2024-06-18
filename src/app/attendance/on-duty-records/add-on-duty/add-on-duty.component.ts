@@ -20,6 +20,9 @@ export class AddOnDutyComponent {
   allAssignee: any;
   onDutyReason: any;
   @Output() requestRefreshed: EventEmitter<void> = new EventEmitter<void>();
+  totalRecords: number
+  recordsPerPage: number = 10;
+  currentPage: number = 1;
 
   constructor(private fb: FormBuilder,
     private attendanceService: AttendanceService,
@@ -43,7 +46,7 @@ export class AddOnDutyComponent {
 
   ngOnInit() {
     if (this.portalView == 'user') { this.getShiftByUser(); }
-    this.getDutyReason();
+    this.loadRecords();
     this.onDutyShiftForm.get('startDate').valueChanges.subscribe(() => this.populateShifts());
     this.onDutyShiftForm.get('endDate').valueChanges.subscribe(() => this.populateShifts());
     this.commonService.populateUsers().subscribe(result => {
@@ -97,8 +100,7 @@ export class AddOnDutyComponent {
           } else if (shiftDuration === 'first-half') {
             const time = this.shift?.startTime;
             const firstHalfDuration = this.shift?.firstHalfDuration;
-
-            const startTime = moment(time, 'HH:mm'); 
+            const startTime = moment(time, 'HH:mm');
             const endTime = moment(startTime).add(firstHalfDuration, 'hours');
 
             shiftGroup.patchValue({
@@ -153,13 +155,28 @@ export class AddOnDutyComponent {
       })
     }
   }
-
-
-  getDutyReason() {
-    // this.attendanceService.getDutyReason().subscribe((res: any) => {
-    //   this.onDutyReason = res.data;
-    // })
+  onPageChange(page: number) {
+    this.currentPage = page;
+    this.loadRecords();
   }
+
+  onRecordsPerPageChange(recordsPerPage: number) {
+    this.recordsPerPage = recordsPerPage;
+    this.loadRecords();
+  }
+
+
+  loadRecords() {
+    const pagination = {
+      skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
+      next: this.recordsPerPage.toString(),
+    
+    };
+    this.attendanceService.getDutyReason(pagination).subscribe((res: any) => {
+      this.onDutyReason = res.data;
+    })
+  }
+
 
   onSubmission() {
     if (this.portalView === 'user') {

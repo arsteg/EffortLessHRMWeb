@@ -68,8 +68,8 @@ export class AttendanceService {
     var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/duty-reasons`, dutyReason, this.httpOptions);
     return response;
   }
-  getDutyReason(skip: string, next: string): Observable<response<any>> {
-    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/duty-reasons-list`, { skip, next }, this.httpOptions);
+  getDutyReason(payload: any): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/duty-reasons-list`, payload, this.httpOptions);
     return response;
   }
 
@@ -343,12 +343,12 @@ export class AttendanceService {
     return response;
   }
 
-  getAllRegularization(skip: string, next: string): Observable<response<any>> {
-    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/regularizationRequests-by-company`,{skip, next}, this.httpOptions);
+  getAllRegularization(skip: string, next: string, status: string): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/regularizationRequests-by-company`,{skip, next, status}, this.httpOptions);
     return response;
   }
-  getRegularizationByUser(userId: string): Observable<response<any>> {
-    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/regularizationRequests-by-user/${userId}`, this.httpOptions);
+  getRegularizationByUser(userId: string, payload: any): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/regularizationRequests-by-user/${userId}`,payload, this.httpOptions);
     return response;
   }
 
@@ -373,13 +373,13 @@ export class AttendanceService {
     return response;
   }
 
-  getAllOnDutyRequests(): Observable<response<any>> {
-    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/employee-duty-requests`, this.httpOptions);
+  getAllOnDutyRequests(payload: any): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/employee-duty-requests-by-company`,payload, this.httpOptions);
     return response;
   }
 
-  getAllOnDutyRequestsByUser(userId: string): Observable<response<any>> {
-    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/employee-duty-requests-by-user/${userId}`, this.httpOptions);
+  getAllOnDutyRequestsByUser(userId: string, skip: string, next: string): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/employee-duty-requests-by-user/${userId}`,{skip,next}, this.httpOptions);
     return response;
   }
 
