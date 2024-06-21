@@ -16,7 +16,7 @@
         <div class="members bg-white common" style="height: 400px; overflow-y: auto;">
           <li>
             <label>
-              <mat-checkbox color="primary" (change)="onAllCheckChange($event)">
+              <mat-checkbox color="primary" [checked]="allChecked" (change)="onAllCheckChange($event)">
                 All
               </mat-checkbox>
             </label>

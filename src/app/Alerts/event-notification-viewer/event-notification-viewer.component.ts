@@ -1,11 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.Module';
 import { eventNotification, notificationUser } from 'src/app/models/eventNotification/eventNotitication';
-import { User } from 'src/app/models/user';
 import { FormBuilder } from '@angular/forms';
 import { EventNotificationService } from 'src/app/_services/eventNotification.Service';
 import { ToastrService } from 'ngx-toastr';
-import { UserService } from 'src/app/_services/users.service';
 import { Subscription } from 'rxjs';
 import { ManageTeamService } from 'src/app/_services/manage-team.service';
 import { TimeLogService } from 'src/app/_services/timeLogService';
@@ -25,15 +23,13 @@ export class EventNotificationViewerComponent implements OnInit, OnDestroy {
   selectedUser: notificationUser | null = null;
   selectedManager: notificationUser | null = null;
   selectedEventNotification: eventNotification | null = null;
+  allChecked: boolean = false;
 
   constructor(
     private fb: FormBuilder,
     private eventNotificationService: EventNotificationService,
-    private userService: UserService,
     private manageTeamService: ManageTeamService,
-    private timeLogService: TimeLogService,
-    private toastr: ToastrService,
-    private socketService: SocketService
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -52,7 +48,7 @@ export class EventNotificationViewerComponent implements OnInit, OnDestroy {
         const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
         this.selectedManager = this.teamOfUsers.find(user => user._id === currentUser.id) || null;
       },
-      error: error => {
+      error: () => {
         this.toastr.error('Failed to load team of users');
       }
     });
@@ -63,13 +59,13 @@ export class EventNotificationViewerComponent implements OnInit, OnDestroy {
       next: result => {
         this.eventNotifications = result.data;
       },
-      error: error => {
+      error: () => {
         this.toastr.error('Failed to load event notifications');
       }
     });
   }
 
-  onModelChange(isChecked: boolean, notification: eventNotification): void {
+  onModelChange(isChecked: any, notification: eventNotification): void {
     this.selectedEventNotification = notification;
     if (isChecked) {
       this.eventNotificationService.getNotificationUsers(notification._id).subscribe({
@@ -82,25 +78,31 @@ export class EventNotificationViewerComponent implements OnInit, OnDestroy {
               user.isSelected = true;
             }
           });
+          this.updateAllCheckboxState();
         },
         error: () => {
-          console.log('getNotificationUsers failed');
+          this.toastr.error('Failed to load user notifications');
         }
       });
     }
   }
 
-  onAllCheckChange(event): void {
-    const isChecked = event;
+  onAllCheckChange(event: any): void {
+    const isChecked = event.source._checked;
     this.teamOfUsers.forEach(user => {
       user.isSelected = isChecked;
-      this.updateUserNotifications(this.selectedEventNotification?._id, user._id, isChecked ? 'assign' : 'unassign');
+      const action = isChecked==true ? 'assign' : 'unassign';
+      this.updateUserNotifications(this.selectedEventNotification?._id, user._id,action );
     });
+    //this.allChecked = isChecked;
   }
 
   selectManager(event: any, user: notificationUser): void {
-    const isChecked = event.target.checked;
-    this.updateUserNotifications(this.selectedEventNotification?._id, user._id, isChecked ? 'assign' : 'unassign');
+    const isChecked = event.source._checked;
+    user.isSelected = isChecked;
+    const action = isChecked==true ? 'assign' : 'unassign';
+    this.updateUserNotifications(this.selectedEventNotification?._id, user._id, action);
+    this.updateAllCheckboxState();
   }
 
   updateUserNotifications(notificationId: string | undefined, userId: string, action: string): void {
@@ -119,5 +121,9 @@ export class EventNotificationViewerComponent implements OnInit, OnDestroy {
         this.toastr.error('Failed to update user notifications');
       }
     });
+  }
+
+  private updateAllCheckboxState(): void {
+    this.allChecked = this.teamOfUsers.every(user => user.isSelected);
   }
 }
