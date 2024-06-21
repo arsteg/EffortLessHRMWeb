@@ -259,4 +259,10 @@ export class LeaveService extends baseService {
     this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
     return this.http.delete<any>(`${environment.apiUrlDotNet}/leave/short-leave/${id}`, this.httpOptions);
   }
+
+  public getAppliedLeaveCount(userId: string, requestBody:any): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.post<any>(`${environment.apiUrlDotNet}/leave/employee-leave-application-by-user/${userId}`, requestBody,this.httpOptions);
+  }
 }

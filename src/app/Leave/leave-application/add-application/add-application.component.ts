@@ -43,6 +43,7 @@ export class AddApplicationComponent {
   weekOffCount: number = 0;
   dayCounts = {};
   annualHolidayCount: number = 0;
+  numberOfLeaveAppliedForSelectedCategory: number = 0;
 
   constructor(private fb: FormBuilder,
     private commonService: CommonService,
@@ -91,8 +92,31 @@ export class AddApplicationComponent {
     });
     this.leaveApplication.get('leaveCategory').valueChanges.subscribe(leaveCategory => {
       this.tempLeaveCategory = this.leaveCategories.find(l=>l.leaveCategory._id === leaveCategory);
+      this.handleLeaveCategoryChange();
     });
     this.getattendanceTemplatesByUser();
+  }
+
+  ngOnChanges() {
+    this.handleLeaveCategoryChange();
+  }
+
+  handleLeaveCategoryChange() {
+    if (!this.tempLeaveCategory || !this.tab) {
+      // Exit if tempLeaveCategory or tab is not set yet
+      return;
+    }
+
+    if (this.portalView == 'user') {
+      if (this.tab === 1) {
+        this.leaveApplication.patchValue({ employee: this.currentUser?.id });
+      } else if (this.tab === 5) {
+        this.leaveApplication.patchValue({ employee: this.member?.id });
+      }
+    }
+
+    this.numberOfLeaveAppliedForSelectedCategory = 0;
+    this.getAppliedLeaveCount(this.leaveApplication.value.employee, this.tempLeaveCategory.leaveCategory._id);
   }
 
   addHalfDayEntry() {
@@ -163,17 +187,25 @@ export class AddApplicationComponent {
   
   onSubmission() {
     if (this.leaveApplication.value) {
-      if (this.portalView == 'user') {
-        if (this.tab === 1) {
-          this.leaveApplication.value.employee = this.currentUser?.id;
-        } else if (this.tab === 5) {
-          this.leaveApplication.value.employee = this.member?.id;
-        }
-      }
+      // if (this.portalView == 'user') {
+      //   if (this.tab === 1) {
+      //     this.leaveApplication.value.employee = this.currentUser?.id;
+      //   } else if (this.tab === 5) {
+      //     this.leaveApplication.value.employee = this.member?.id;
+      //   }
+      // }
       let finalLeaveApplied = 0;
       this.leaveApplication.value.status = 'Pending';
 
       console.log(this.leaveApplication.value);
+
+      // check for number of times leave applied for this category
+      if(this.tempLeaveCategory.limitNumberOfTimesApply){
+        if(this.tempLeaveCategory.maximumNumbersEmployeeCanApply <= this.numberOfLeaveAppliedForSelectedCategory){
+          this.toast.error('You have crossed maximum limit with this leave category.', 'Error!');
+          return;
+        }
+      }
 
       if(!this.tempLeaveCategory.isAnnualHolidayLeavePartOfNumberOfDaysTaken){
         finalLeaveApplied = this.totalLeaveApplied - this.weekOffCount;
@@ -269,5 +301,16 @@ export class AddApplicationComponent {
 
   holydayCount(){
 
+  }
+
+  getAppliedLeaveCount(userId: string, category: string){
+    const requestBody = { "skip": "0", "next": "500" };
+    const currentYear = new Date().getFullYear();
+    this.leaveService.getAppliedLeaveCount(userId, requestBody).subscribe((res: any) => {
+      if(res.status == "success"){
+        let appliedLeave = res.data;
+        this.numberOfLeaveAppliedForSelectedCategory = appliedLeave.filter((leave: any) => leave.leaveCategory == category && new Date(leave.addedBy).getFullYear() === currentYear).length;
+      }
+    });
   }
 }
