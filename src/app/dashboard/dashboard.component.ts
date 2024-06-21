@@ -9,12 +9,23 @@ import { DashboardService } from '../_services/dashboard.Service';
 import { ToastrService } from 'ngx-toastr';
 import { teamMember } from '../models/teamMember';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { Observable, Subscription } from 'rxjs';
+import { User } from '../models/user';
+import { SocketService } from '../_services/socket.Service';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
 })
 export class DashboardComponent implements OnInit {
+
+  //region Event notification related code
+  users$: Observable<User[]>;
+  private usersOnlineSubscription: Subscription;
+  userId: string;
+
+  //end region
+
   selectedManager: any;
   selectedUsers: any;
   selectedUser: any;
@@ -43,12 +54,29 @@ export class DashboardComponent implements OnInit {
     public commonService: CommonService,
     private auth: AuthenticationService,
     private dashboardService: DashboardService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private socketService : SocketService
   ) {
 
   }
   // selectedUser: any;
   ngOnInit(): void {
+
+    //region event notifications
+    // Register the user when the component initializes
+    this.userId = JSON.parse(localStorage.getItem('currentUser')).id
+    this.socketService.registerUser(this.userId);
+
+    // Emit user details to the server
+    this.socketService.emitUser(this.currentUser.id);
+
+    //Subscribe to get the list of users online
+    this.socketService.getUsersOnline().subscribe((message) => {
+      console.log(`This is the message from web socket as a notification: ${message.message}`);
+    });
+
+    //end region
+
     this.populateTeamOfUsers();
     this.firstLetter = this.commonService.firstletter;
 

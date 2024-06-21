@@ -182,7 +182,7 @@
     symbol-observable "4.0.0"
     yargs "17.7.2"
 
-"@angular/common@^13.0.0", "@angular/common@^17.0.0", "@angular/common@^17.0.0 || ^18.0.0", "@angular/common@^17.1.0", "@angular/common@>=12.0.0", "@angular/common@>=13.0.0", "@angular/common@>=16.0.0-0", "@angular/common@>=2.0.0", "@angular/common@12 - 17", "@angular/common@17.1.0":
+"@angular/common@^13.0.0", "@angular/common@^17.0.0", "@angular/common@^17.0.0 || ^18.0.0", "@angular/common@^17.1.0", "@angular/common@^18.0.0", "@angular/common@>=12.0.0", "@angular/common@>=13.0.0", "@angular/common@>=16.0.0-0", "@angular/common@>=2.0.0", "@angular/common@12 - 17", "@angular/common@17.1.0":
   version "17.1.0"
   resolved "https://registry.npmjs.org/@angular/common/-/common-17.1.0.tgz"
   integrity sha512-0Zg62iSynyRr2QslC8dVwSo46mkKrVENnwcBvsgTJ8rfGiuRdKMX8nWm5EUEm3ohKmYLfHvyEjsKDRn//UefVw==
@@ -210,7 +210,7 @@
   dependencies:
     tslib "^2.3.0"
 
-"@angular/core@^13.0.0", "@angular/core@^17.0.0", "@angular/core@^17.0.0 || ^18.0.0", "@angular/core@^17.1.0", "@angular/core@>=12.0.0", "@angular/core@>=13.0.0", "@angular/core@>=16.0.0-0", "@angular/core@>=2.0.0", "@angular/core@12 - 17", "@angular/core@17.1.0":
+"@angular/core@^13.0.0", "@angular/core@^17.0.0", "@angular/core@^17.0.0 || ^18.0.0", "@angular/core@^17.1.0", "@angular/core@^18.0.0", "@angular/core@>=12.0.0", "@angular/core@>=13.0.0", "@angular/core@>=16.0.0-0", "@angular/core@>=2.0.0", "@angular/core@12 - 17", "@angular/core@17.1.0":
   version "17.1.0"
   resolved "https://registry.npmjs.org/@angular/core/-/core-17.1.0.tgz"
   integrity sha512-9OvRRZq+46S+ICZLRYIGVU2pknuPz23B+5V3jz7cDA5V43GVcMnfmAbMClPQxm7kRGnqtQ+yzBjn+HubCerE6g==
@@ -3672,7 +3672,7 @@ core-js-compat@^3.31.0, core-js-compat@^3.33.1:
   dependencies:
     browserslist "^4.22.2"
 
-core-js@^3.6.0, core-js@^3.8.3:
+core-js@^3.0.0, core-js@^3.6.0, core-js@^3.8.3:
   version "3.35.0"
   resolved "https://registry.npmjs.org/core-js/-/core-js-3.35.0.tgz"
   integrity sha512-ntakECeqg81KqMueeGJ79Q5ZgQNR+6eaE8sxGCx62zMbAIj65q+uYvatToew3m6eAGdU4gNZwpZ34NMe4GYswg==
@@ -6258,6 +6258,18 @@ ngx-quill@^24.0.2:
   dependencies:
     tslib "^2.3.0"
 
+ngx-socket-io@^4.7.0:
+  version "4.7.0"
+  resolved "https://registry.npmjs.org/ngx-socket-io/-/ngx-socket-io-4.7.0.tgz"
+  integrity sha512-2uwc5OWPOXM2EmiTrsMpWKm97gE6K3Zuzo1JeScncWQ3r/VxLQuGismVXtGF4Dv3h1Orvurt3ISiNztqOuL3gQ==
+  dependencies:
+    core-js "^3.0.0"
+    reflect-metadata "^0.1.10"
+    socket.io "^4.7.2"
+    socket.io-client "^4.7.2"
+    tslib "^2.3.0"
+    zone.js "~0.14.0"
+
 ngx-toastr@^18.0.0:
   version "18.0.0"
   resolved "https://registry.npmjs.org/ngx-toastr/-/ngx-toastr-18.0.0.tgz"
@@ -7027,7 +7039,7 @@ readdirp@~3.6.0:
   dependencies:
     picomatch "^2.2.1"
 
-reflect-metadata@^0.1.2:
+reflect-metadata@^0.1.10, reflect-metadata@^0.1.2:
   version "0.1.14"
   resolved "https://registry.npmjs.org/reflect-metadata/-/reflect-metadata-0.1.14.tgz"
   integrity sha512-ZhYeb6nRaXCfhnndflDK8qI6ZQ/YcWZCISRAWICW9XYqMUwjZM9Z0DveWX/ABN01oxSHwVxKQmxeYZSsm0jh5A==
@@ -7551,7 +7563,7 @@ socket.io-adapter@~2.5.2:
   dependencies:
     ws "~8.11.0"
 
-socket.io-client@^4.4.1:
+socket.io-client@^4.4.1, socket.io-client@^4.7.2:
   version "4.7.3"
   resolved "https://registry.npmjs.org/socket.io-client/-/socket.io-client-4.7.3.tgz"
   integrity sha512-nU+ywttCyBitXIl9Xe0RSEfek4LneYkJxCeNnKCuhwoH4jGXO1ipIUw/VA/+Vvv2G1MTym11fzFC0SxkrcfXDw==
@@ -7569,7 +7581,7 @@ socket.io-parser@~4.2.4:
     "@socket.io/component-emitter" "~3.1.0"
     debug "~4.3.1"
 
-socket.io@^4.4.1:
+socket.io@^4.4.1, socket.io@^4.7.2:
   version "4.7.3"
   resolved "https://registry.npmjs.org/socket.io/-/socket.io-4.7.3.tgz"
   integrity sha512-SE+UIQXBQE+GPG2oszWMlsEmWtHVqw/h1VrYJGK5/MC7CH5p58N448HwIrtREcvR4jfdOJAY4ieQfxMr55qbbw==

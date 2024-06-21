@@ -1,31 +1,73 @@
-.user-notification-manager {
+/* In styles.css or your component-specific stylesheet */
+
+.contentHeading {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.members {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.common {
+  margin-bottom: 20px;
+}
+
+.overflow-auto {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.example-radio-group {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
 }
 
-.user-list, .notification-list {
-  width: 45%;
+.example-radio-button {
+  margin-bottom: 5px;
 }
 
-.user-list ul, .notification-list ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-.user-list li, .notification-list li {
-  padding: 5px;
-  cursor: pointer;
-}
-
-.user-list li:hover {
+.selected {
+  font-weight: bold;
   background-color: #f0f0f0;
 }
 
-.notification-list li {
-  display: flex;
-  align-items: center;
+.members-list {
+  columns: 1; /* Default to 1 column for narrow screens */
+  column-gap: 20px;
 }
 
-.notification-list li input {
-  margin-right: 10px;
+@media (min-width: 576px) {
+  .members-list {
+    columns: 2; /* 2 columns for small screens and up */
+  }
+}
+
+@media (min-width: 992px) {
+  .members-list {
+    columns: 3; /* 3 columns for large screens and up */
+  }
+}
+
+.members-list li {
+  break-inside: avoid;
+  padding: 5px 0;
+}
+
+.mat-checkbox {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.checkbox-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Two columns */
+  gap: 10px; /* Adjust the gap between checkboxes as needed */
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
 }

@@ -1,16 +1,14 @@
 <div class="main-content contentData">
     <div class="container-fluid px-0">
         <div class=" d-flex bg-white subMenu w-100">
-            <button class="btn rounded-pill submenuTab" (click)="selectTab(1)"
-                [class.active]="selectedTab === 1">Setup Issues</button>
-            <button class="btn rounded-pill submenuTab" (click)="selectTab(2)" [class.active]="selectedTab === 2">
-                Pending Reports</button>
-            <button class="btn rounded-pill submenuTab" (click)="selectTab(3)" [class.active]="selectedTab === 3">
-                  Notification Types</button>
-            <button class="btn rounded-pill submenuTab" (click)="selectTab(4)" [class.active]="selectedTab === 4">
-                    Notification</button>
-            <button class="btn rounded-pill submenuTab" (click)="selectTab(5)" [class.active]="selectedTab === 5">
-              Viewer</button>
+            <button class="btn rounded-pill submenuTab" (click)="selectTab(1)">Setup Issues</button>
+            <button class="btn rounded-pill submenuTab" (click)="selectTab(2)" [class.active]="selectedTab === 2">Pending Reports</button>
+            <button class="btn rounded-pill submenuTab" (click)="selectTab(3)" [class.active]="selectedTab === 3">Notification Types</button>
+            <button class="btn rounded-pill submenuTab" (click)="selectTab(4)" [class.active]="selectedTab === 4">Notification</button>
+            <button class="btn rounded-pill submenuTab" (click)="selectTab(5)" [class.active]="selectedTab === 5"
+            [class.active]="selectedTab === 5">
+            Viewer
+          </button>
         </div>
 
         <div *ngIf="selectedTab === 1" class="tab-content">

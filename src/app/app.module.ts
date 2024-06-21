@@ -85,6 +85,10 @@ import { UserTaxDeclarationComponent } from './Taxation/user-tax-declaration/use
 import { FormsModule } from '@angular/forms';
 import { BrowserHistoryModule } from './browserHistory/browserHistory.module';
 import { LiveScreenComponent } from './realtime/live-screen/live-screen.component';
+import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
+
+const config: SocketIoConfig = { url: 'http://localhost:8090', options: {} };
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -171,7 +175,8 @@ import { LiveScreenComponent } from './realtime/live-screen/live-screen.componen
     SettingsModule,
     ReportsModule,
     FormsModule,
-    BrowserHistoryModule
+    BrowserHistoryModule,
+    SocketIoModule.forRoot(config),
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

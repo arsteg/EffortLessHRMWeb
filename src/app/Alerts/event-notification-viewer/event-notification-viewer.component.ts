@@ -1,126 +1,123 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.Module';
-import { eventNotification, UserNotification } from 'src/app/models/eventNotification/eventNotitication';
+import { eventNotification, notificationUser } from 'src/app/models/eventNotification/eventNotitication';
 import { User } from 'src/app/models/user';
 import { FormBuilder } from '@angular/forms';
 import { EventNotificationService } from 'src/app/_services/eventNotification.Service';
 import { ToastrService } from 'ngx-toastr';
 import { UserService } from 'src/app/_services/users.service';
-import { Subscription, lastValueFrom } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { ManageTeamService } from 'src/app/_services/manage-team.service';
 import { TimeLogService } from 'src/app/_services/timeLogService';
-import { Subordinate } from 'src/app/models/subordinate.Model';
+import { SocketService } from 'src/app/_services/socket.Service';
 
 @Component({
   selector: 'app-event-notification-viewer',
   standalone: true,
   imports: [SharedModule],
   templateUrl: './event-notification-viewer.component.html',
-  styleUrl: './event-notification-viewer.component.css'
+  styleUrls: ['./event-notification-viewer.component.css']
 })
-export class EventNotificationViewerComponent implements OnInit{
-   //#region Private Members
-   resetToken: null;
-   teamOfUsers: User[] = [];
-   allUsers: User[] = [];
-   selectedUsers: any;
-   selectedUser: any;
-   selectedManager: any;
-   message: [] = [];
-   subscription: Subscription;
-   selectedValue: any;
+export class EventNotificationViewerComponent implements OnInit, OnDestroy {
+  private subscription: Subscription = new Subscription();
+  teamOfUsers: notificationUser[] = [];
+  eventNotifications: eventNotification[] = [];
+  selectedUser: notificationUser | null = null;
+  selectedManager: notificationUser | null = null;
+  selectedEventNotification: eventNotification | null = null;
 
-  constructor(private fb: FormBuilder, private eventNotificationService: EventNotificationService,
-    private userService:UserService, private manageTeamService:ManageTeamService, private timeLogService:TimeLogService,
-    private toast: ToastrService) { }
+  constructor(
+    private fb: FormBuilder,
+    private eventNotificationService: EventNotificationService,
+    private userService: UserService,
+    private manageTeamService: ManageTeamService,
+    private timeLogService: TimeLogService,
+    private toastr: ToastrService,
+    private socketService: SocketService
+  ) {}
 
-  //#endregion
   ngOnInit(): void {
     this.populateTeamOfUsers();
-    //this.subscription = this.timeLogService.currentMessage.subscribe(message => this.selectedValue = message)
+    this.populateEventNotifications();
   }
-  ngOnDestroy() {
+
+  ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 
-  //#region Private methods
-  populateTeamOfUsers() {
+  populateTeamOfUsers(): void {
     this.manageTeamService.getAllUsers().subscribe({
       next: result => {
         this.teamOfUsers = result.data.data;
-        this.allUsers = result.data.data;
-        let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        this.teamOfUsers.forEach((user: any, index: number) => {
-          if (user.id == currentUser.id) {
-            this.selectedManager = user;
-            this.Selectmanager(user);
-          }
-        });
-      },
-      error: error => { }
-    })
-  }
-
-  Selectmanager(user: any) {
-    this.selectedManager = user;
-    this.timeLogService.getTeamMembers(user.id).subscribe({
-      next: response => {
-        this.timeLogService.getusers(response.data).subscribe({
-          next: result => {
-            this.selectedUsers = result.data;
-            this.teamOfUsers.forEach((user: any, index: number) => {
-              user['isChecked'] = this.selectedUsers.some((selectedUser: any) => selectedUser.id == user.id);
-
-            });
-          },
-          error: error => {
-            console.log('There was an error!', error);
-          }
-        });
+        const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+        this.selectedManager = this.teamOfUsers.find(user => user._id === currentUser.id) || null;
       },
       error: error => {
-        console.log('There was an error!', error);
+        this.toastr.error('Failed to load team of users');
       }
     });
   }
 
-  onModelChange(isChecked, user: User) {
-    if (isChecked) {
-      let subordinate: any = new Subordinate(this.selectedManager, user.id);
-      this.manageTeamService.addSubordinate(subordinate).subscribe(result => {
-        this.toast.success(user.firstName + (' ')+ user.lastName, 'Successfully Assigned!')
+  populateEventNotifications(): void {
+    this.eventNotificationService.getAllEventNotifications().subscribe({
+      next: result => {
+        this.eventNotifications = result.data;
+      },
+      error: error => {
+        this.toastr.error('Failed to load event notifications');
+      }
+    });
+  }
 
-      },
-        err => {
-          this.toast.error(' Can not be Selected', user.firstName + (' ')+ user.lastName)
+  onModelChange(isChecked: boolean, notification: eventNotification): void {
+    this.selectedEventNotification = notification;
+    if (isChecked) {
+      this.eventNotificationService.getNotificationUsers(notification._id).subscribe({
+        next: result => {
+          const userNotifications = result.data;
+          this.teamOfUsers.forEach(user => user.isSelected = false);
+          userNotifications.forEach(userNotification => {
+            const user = this.teamOfUsers.find(u => u._id === userNotification.user);
+            if (user) {
+              user.isSelected = true;
+            }
+          });
+        },
+        error: () => {
+          console.log('getNotificationUsers failed');
         }
-      );
-    } else {
-        this.manageTeamService.deleteSubordinate(this.selectedManager, user.id).subscribe(result => {
-        this.toast.success(user.firstName + (' ')+ user.lastName, 'Successfully Deleted!')
-      },
-        err => {
-          this.toast.error('Can not be Deleted', user.firstName + (' ')+ user.lastName,)
-        }
-      );
+      });
     }
   }
-  removeField(index, value) {
-    this.selectedManager.splice(index, 1);
-    this.selectedManager.map((x) => {
-      if (x.Name === value) {
-        x.isChecked = false;
-      }
+
+  onAllCheckChange(event): void {
+    const isChecked = event;
+    this.teamOfUsers.forEach(user => {
+      user.isSelected = isChecked;
+      this.updateUserNotifications(this.selectedEventNotification?._id, user._id, isChecked ? 'assign' : 'unassign');
     });
   }
 
+  selectManager(event: any, user: notificationUser): void {
+    const isChecked = event.target.checked;
+    this.updateUserNotifications(this.selectedEventNotification?._id, user._id, isChecked ? 'assign' : 'unassign');
+  }
 
+  updateUserNotifications(notificationId: string | undefined, userId: string, action: string): void {
+    if (!notificationId) {
+      this.toastr.error('Notification ID is missing');
+      return;
+    }
 
+    const updateUserNotification = { user: userId, notification: notificationId, action };
 
-
-
-
-
-
-
+    this.eventNotificationService.updateUserNotifications(updateUserNotification).subscribe({
+      next: () => {
+        // Handle success (if any additional actions are needed)
+      },
+      error: () => {
+        this.toastr.error('Failed to update user notifications');
+      }
+    });
+  }
 }

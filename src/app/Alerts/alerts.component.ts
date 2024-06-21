@@ -6,11 +6,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./alerts.component.css']
 })
 export class AlertsComponent implements OnInit {
-  selectedTab: number = 1;
+  selectedTab: number = 5;
   constructor(
     ) { }
 
-  ngOnInit(): void {  
+  ngOnInit(): void {
   }
   selectTab(tabIndex: number) {
     this.selectedTab = tabIndex;

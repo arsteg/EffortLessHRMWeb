@@ -20,3 +20,17 @@ export interface UserNotification {
   status: string;
 }
 
+export class notificationUser{
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  isSelected:boolean;
+}
+export class updateUserNotification{
+  user: string;
+  notification: string;
+  action: string;
+}
+
+
