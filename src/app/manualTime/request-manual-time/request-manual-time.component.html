@@ -115,9 +115,9 @@
             <div class="row">
               <div class="col-md-6">
                 <label for="project" class="text-start">
-                  Project <span class="required-asterisk">*</span>
+                  Project <span class="text-danger">*</span>
                 </label>
-                <select class="custom-select mb-3 p-2" formControlName="project" 
+                <select class="custom-select p-2" formControlName="project" 
                   (change)="onProjectChange($event.target)">
                   <option  selected value="">Choose Any Project</option>
                   <option *ngFor="let project of projects" [value]="project.id">
@@ -133,9 +133,9 @@
               </div>
 
               <div class="col-md-6">
-                <label for="manager" class="text-start">Manager<span class="required-asterisk">*</span></label>
+                <label for="manager" class="text-start">Manager<span class="text-danger">*</span></label>
 
-                <select class="custom-select mb-3 p-2" formControlName="manager">
+                <select class="custom-select p-2" formControlName="manager">
                   <option disabled selected value="undefined">Choose Any Manager</option>
                   <option *ngFor="let manager of managers" [value]="manager?.id">
                     {{manager.name}}
@@ -150,9 +150,9 @@
               </div>
             </div>
             <div class="row mt-3">
-              <label for="task" class="text-start">Task<span class="required-asterisk">*</span></label>
+              <label for="task" class="text-start">Task<span class="text-danger">*</span></label>
             </div>
-            <select class="custom-select mb-3 p-2" formControlName="task" >
+            <select class="custom-select p-2" formControlName="task" >
               <option  selected value="">Choose Any Task</option>
               <option *ngFor="let task of tasks" [value]="task?.id">
                 {{task.taskName}}
@@ -167,7 +167,7 @@
 
             <div class="row">
               <div class="col-md-6">
-                <label for="startDate" class="text-start">Start Date<span class="required-asterisk">*</span></label>
+                <label for="startDate" class="text-start">Start Date<span class="text-danger">*</span></label>
                 <input  type="datetime-local" id="startDate" class="form-control"
                   formControlName="startDate"
                   required [max]="today">
@@ -186,7 +186,7 @@
               </div>
 
               <div class="col-md-6">
-                <label for="endDate" class="text-start">End Date<span class="required-asterisk">*</span></label>
+                <label for="endDate" class="text-start">End Date<span class="text-danger">*</span></label>
                 <input matInput type="datetime-local" name="endDate" id="endDate" placeholder="end date"
                   formControlName="endDate"
                   class="form-control input pt-0"
@@ -205,7 +205,7 @@
             </div>
 
             <div class="col-md-12">
-              <label for="reason" class="text-start">Reason <span class="required-asterisk">*</span></label>
+              <label for="reason" class="text-start">Reason <span class="text-danger">*</span></label>
               <input type="text" class="form-control" formControlName="reason" id="reason" rows="4"
                  />
               <div *ngIf="addRequestForm.controls['reason'].invalid && addRequestForm.controls['reason'].touched"

@@ -106,20 +106,35 @@ export class RequestManualTimeComponent implements OnInit {
     console.log(`Selected item with id: ${newId}`);
   }
 
-  onProjectChange(event): Observable<any> {
+  // onProjectChange(event): Observable<any> {
+  //   const projectId = event.value;
+  //  return this.getUserTaskListByProject(projectId);
+  // }
+  // getUserTaskListByProject(projectId: string): Observable<any> {
+  //   return this.authenticationService.getUserTaskListByProject(this.id, projectId, '', '').
+  //   pipe(
+  //     tap(res => {
+  //       this.tasks = res && res['taskList'];
+  //       console.log(this.tasks);
+  //     })
+  //   );
+  // }
+  
+  onProjectChange(event): void {
     const projectId = event.value;
-   return this.getUserTaskListByProject(projectId);
-  }
-  getUserTaskListByProject(projectId: string): Observable<any> {
-    return this.authenticationService.getUserTaskListByProject(this.id, projectId, '', '').pipe(
-      tap(res => {
-        this.tasks = res && res['taskList'];
-        console.log(this.tasks);
-      })
-    );
+    this.getUserTaskListByProject(projectId).subscribe();
   }
   
-
+  getUserTaskListByProject(projectId: string): Observable<any> {
+    return this.authenticationService.getUserTaskListByProject(this.id, projectId, '', '')
+      .pipe(
+        tap(res => {
+          this.tasks = res && res['taskList'];
+          console.log(this.tasks);
+        })
+      );
+  }
+  
   open(content: any) {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
@@ -282,8 +297,25 @@ export class RequestManualTimeComponent implements OnInit {
     this.addRequestForm.reset();
   }
 
+  // setUpdateMode(record): void {
+  //   this.onProjectChange({ value: record.project.id }).subscribe(() => {
+  //     const formattedStartDate = moment(record.fromDate).format('YYYY-MM-DDTHH:mm');
+  //     const formattedEndDate = moment(record.toDate).format('YYYY-MM-DDTHH:mm');
+  //     this.addRequestForm.patchValue({
+  //       manager: record.manager.id,
+  //       project: record.project.id,
+  //       startDate: formattedStartDate,
+  //       endDate: formattedEndDate,
+  //       reason: record.reason,
+  //       task: record.task.id
+  //     });
+  //     this.selectedTask = record.task.id;
+  //     console.log(this.selectedTask);
+  //     console.log(this.addRequestForm.value);
+  //   });
+  // }
   setUpdateMode(record): void {
-    this.onProjectChange({ value: record.project.id }).subscribe(() => {
+    this.getUserTaskListByProject(record.project.id).subscribe(() => {
       const formattedStartDate = moment(record.fromDate).format('YYYY-MM-DDTHH:mm');
       const formattedEndDate = moment(record.toDate).format('YYYY-MM-DDTHH:mm');
       this.addRequestForm.patchValue({
