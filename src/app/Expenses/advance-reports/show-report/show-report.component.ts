@@ -59,7 +59,7 @@ export class ShowReportComponent {
       employeeName: this.getUser(report.employee),
       categoryLabel: this.getCategory(report.category)
     }));
-    console.log(this.advanceReport[0].employeeName)
+    console.log(this.advanceReport)
   }
 
   getUser(employeeId: string) {

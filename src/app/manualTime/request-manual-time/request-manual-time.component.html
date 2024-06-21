@@ -2,40 +2,40 @@
   <div class="container-fluid">
     <div class="container-fluid mt-3 py-2 px-0 bg-white tableContainer">
       <div class="d-flex justify-content-between align-items-center mb-2 px-3">
-        <p class="mb-0">({{manualTimeRequests.length}}) Records Found</p>
+        <p class="mb-0">({{manualTimeRequests?.length}}) Records Found</p>
         <div class="d-flex align-items-center">
           <span class="bi bi-search searchIcon"></span>
-
           <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
-            name="searchText" aria-label="default input example">
-          <button mat-raised-button class="addBtn rounded-pill ms-3"
-            (click)="clearselectedRequest();changeMode='Add';open(requestModal)">New Request</button>
+            (input)="filterRecords()" name="searchText" aria-label="default input example">
+
+          <button mat-raised-button class="addBtn rounded-pill ms-3"  data-bs-toggle="modal" data-bs-target="#requestModal"
+            (click)="clearselectedRequest();changeMode='Add';">New Request</button>
         </div>
       </div>
       <table class="px-4 mx-2 rounded">
         <thead>
           <tr>
-            <th class="ps-3" [appSort]="manualTimeRequests" data-order="{{ sortOrder }}" data-name="date"
+            <th class="ps-3" [appSort]="filteredManualTimeRequests" data-order="{{ sortOrder }}" data-name="date"
               (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Date&nbsp;
               <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
             </th>
-            <th [appSort]="manualTimeRequests" data-order="{{ sortOrder }}" data-name="project?.projectName"
+            <th [appSort]="filteredManualTimeRequests" data-order="{{ sortOrder }}" data-name="projectName"
               (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Project&nbsp;
               <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
             </th>
-            <th [appSort]="manualTimeRequests" data-order="{{ sortOrder }}" data-name="manager?.firstName"
+            <th [appSort]="filteredManualTimeRequests" data-order="{{ sortOrder }}" data-name="manager"
               (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Manager&nbsp;
               <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
             </th>
-            <th [appSort]="manualTimeRequests" data-order="{{ sortOrder }}" data-name="task?.title"
+            <th [appSort]="filteredManualTimeRequests" data-order="{{ sortOrder }}" data-name="task"
               (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Task&nbsp;
               <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
             </th>
-            <th [appSort]="manualTimeRequests" data-order="{{ sortOrder }}" data-name="fromdate"
+            <th [appSort]="filteredManualTimeRequests" data-order="{{ sortOrder }}" data-name="fromDate"
               (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">From Date&nbsp;
               <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
             </th>
-            <th [appSort]="manualTimeRequests" data-order="{{ sortOrder }}" data-name="toDate"
+            <th [appSort]="filteredManualTimeRequests" data-order="{{ sortOrder }}" data-name="toDate"
               (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">To Date&nbsp;
               <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
             </th>
@@ -48,37 +48,40 @@
 
         <tbody>
           <tr
-            *ngFor="let record of manualTimeRequests | search: searchText |  paginate: { itemsPerPage: 20, currentPage: p }">
+            *ngFor="let record of filteredManualTimeRequests | search: searchText |  paginate: { itemsPerPage: 20, currentPage: p }">
             <td class="ps-3">
-              <div>{{record.date | date: 'MM/dd/yyyy'}}</div>
+              <div>{{record?.date | date: 'MM/dd/yyyy'}}</div>
             </td>
-            <td><span>{{record.project.projectName | uppercase}}</span> </td>
-
-            <td><span class="letter ms-2" [tooltip]="(record.manager.firstName) + (' ') + (record.manager.lastName)"
-                [style.background-color]="commonservice.getRandomColor(record.manager.firstName)">{{record.manager.firstName.slice(0,1)
-                | uppercase}}{{record.manager.lastName.slice(0,1) | uppercase}}</span></td>
-
-            <td><span>{{record.task?.taskName}}</span></td>
-
-            <td>{{ record.fromDate | date: 'MM/dd/yyyy'}} {{ record.fromDate | date: 'shortTime'}}</td>
-            <td>{{ record.toDate | date: 'MM/dd/yyyy'}} {{ record.toDate | date: 'shortTime'}}</td>
-            <td>{{ record.reason}}</td>
-            <td> <span>
+            <td>{{record?.projectName}}</td>
+            <td>
+              <span class="letter ms-2"
+                [tooltip]="(record?.manager?.firstName | titlecase)+ ' ' + (record?.manager?.lastName) "
+                [style.background-color]="commonservice.getRandomColor(record?.manager?.firstName)">{{record?.manager?.firstName.slice(0,1)
+                | uppercase}}</span>
+            </td>
+            <td>{{record?.task?.taskName}}</td>
+            <td>{{ record?.fromDate | date: 'short'}}</td>
+            <td>{{ record?.toDate | date: 'short'}}</td>
+            <td>{{ record?.reason}}</td>
+            <td>
+              <span>
                 <i *ngIf="record.status=='approved'" class="fa fa-thumbs-up" style="color:green"
                   [title]="record.status"></i>
                 <i *ngIf="record.status=='rejected'" class="fa fa-thumbs-down" style="color:red"
                   [title]="record.status"></i>
                 <i *ngIf="record.status=='pending'" class="fa fa-clock-o" style="color:blue"
                   [title]="record.status"></i>
-              </span></td>
+              </span>
+            </td>
             <td>
-              <button class="actions" *ngIf="record.status=='pending'" mat-mini-fab  matTooltip="Edit" matTooltipPosition="before"
-                (click)="setUpdateMode(record);selectedRequest=record;changeMode='Update';open(requestModal)"
+              <button class="actions" *ngIf="record.status=='pending'" mat-mini-fab matTooltip="Edit"
+                matTooltipPosition="before"  data-bs-toggle="modal" data-bs-target="#requestModal"
+                (click)="setUpdateMode(record);changeMode='Update';"
                 aria-label="Example icon button with a menu icon">
                 <i class="bi bi-pencil-fill"></i>
               </button>
-              <button class="actions ms-2" mat-mini-fab matTooltip="Delete" matTooltipPosition="after" data-bs-toggle="modal"
-                data-bs-target="#deleteModal" (click)="selectedRequest = record"
+              <button class="actions ms-2" mat-mini-fab matTooltip="Delete" matTooltipPosition="after"
+                data-bs-toggle="modal" data-bs-target="#deleteModal" (click)="selectedRequest = record"
                 aria-label="Example icon button with a menu icon">
                 <i class="bi bi-trash"></i>
               </button>
@@ -87,23 +90,25 @@
           </tr>
         </tbody>
       </table>
-      <pagination-controls (pageChange)="p = $event"
-        class="pagination d-flex justify-content-end"></pagination-controls>
+
     </div>
   </div>
 </div>
 
-<ng-template #requestModal let-modal>
-  <div class="modal-header pb-0">
-    <div>
-      <h1 class="modal-title text-muted mb-0">{{changeMode}} Manual Time Request</h1>
-    </div>
-    <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
-        (click)="modal.close('Escape clicked')"></button>
-    </div>
-  </div>
+<div class="modal" id="requestModal">
+
   <form [formGroup]="addRequestForm" (ngSubmit)="onSubmit()">
-    <div class="modal-body">
+   <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header pb-0">
+        <div>
+          <h1 class="modal-title text-muted mb-0">{{changeMode}} Manual Time Request</h1>
+        </div>
+        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
+        </div>
+      </div>
+      <div class="modal-body">
+    
       <div class="row">
         <div class="row d-flex justify-content-center">
           <div class="col-md-12">
@@ -112,10 +117,9 @@
                 <label for="project" class="text-start">
                   Project <span class="required-asterisk">*</span>
                 </label>
-
-                <select class="custom-select mb-3 p-2" formControlName="project" [(ngModel)]="selectedProject"
+                <select class="custom-select mb-3 p-2" formControlName="project" 
                   (change)="onProjectChange($event.target)">
-                  <option disabled selected value="undefined">Choose Any Project</option>
+                  <option  selected value="">Choose Any Project</option>
                   <option *ngFor="let project of projects" [value]="project.id">
                     {{project.projectName}}
                   </option>
@@ -131,7 +135,7 @@
               <div class="col-md-6">
                 <label for="manager" class="text-start">Manager<span class="required-asterisk">*</span></label>
 
-                <select class="custom-select mb-3 p-2" formControlName="manager" [(ngModel)]="selectedManager">
+                <select class="custom-select mb-3 p-2" formControlName="manager">
                   <option disabled selected value="undefined">Choose Any Manager</option>
                   <option *ngFor="let manager of managers" [value]="manager?.id">
                     {{manager.name}}
@@ -145,12 +149,11 @@
                 </div>
               </div>
             </div>
-
             <div class="row mt-3">
               <label for="task" class="text-start">Task<span class="required-asterisk">*</span></label>
             </div>
-            <select class="custom-select mb-3 p-2" formControlName="task" [(ngModel)]="selectedTask">
-              <option disabled selected value="undefined">Choose Any Task</option>
+            <select class="custom-select mb-3 p-2" formControlName="task" >
+              <option  selected value="">Choose Any Task</option>
               <option *ngFor="let task of tasks" [value]="task?.id">
                 {{task.taskName}}
               </option>
@@ -165,9 +168,9 @@
             <div class="row">
               <div class="col-md-6">
                 <label for="startDate" class="text-start">Start Date<span class="required-asterisk">*</span></label>
-                <input matInput type="datetime-local" name="startDate" id="startDate" placeholder="start date"
-                  formControlName="startDate" [ngModel]="startDate | date:'yyyy-MM-ddTHH:mm'"
-                  class="form-control input pt-0" ngModel required [max]="today">
+                <input  type="datetime-local" id="startDate" class="form-control"
+                  formControlName="startDate"
+                  required [max]="today">
 
                 <div
                   *ngIf="addRequestForm.controls['startDate'].invalid && addRequestForm.controls['startDate'].touched"
@@ -185,8 +188,9 @@
               <div class="col-md-6">
                 <label for="endDate" class="text-start">End Date<span class="required-asterisk">*</span></label>
                 <input matInput type="datetime-local" name="endDate" id="endDate" placeholder="end date"
-                  formControlName="endDate" class="form-control input pt-0"
-                  [ngModel]="selectedRequest?.toDate | date:'yyyy-MM-ddTHH:mm'" [max]="today">
+                  formControlName="endDate"
+                  class="form-control input pt-0"
+                 [max]="today">
 
                 <div *ngIf="addRequestForm.controls['endDate'].invalid && addRequestForm.controls['endDate'].touched"
                   class="alert alert-danger error">
@@ -200,10 +204,10 @@
               </div>
             </div>
 
-
             <div class="col-md-12">
               <label for="reason" class="text-start">Reason <span class="required-asterisk">*</span></label>
-              <input type="text" class="form-control" formControlName="reason" id="reason" rows="4"  [ngModel]="selectedRequest.reason"/>
+              <input type="text" class="form-control" formControlName="reason" id="reason" rows="4"
+                 />
               <div *ngIf="addRequestForm.controls['reason'].invalid && addRequestForm.controls['reason'].touched"
                 class="alert alert-danger error">
                 <div *ngIf="addRequestForm.controls['reason'].errors['required']">Reason is required.</div>
@@ -212,16 +216,20 @@
           </div>
         </div>
       </div>
-    </div>
+    
     <div *ngIf="dateMismatchError" class="alert alert-danger error text-end pe-4">
       Start Date and End Date should be Similar!
     </div>
-    <div class="modal-footer">
-      <button mat-raised-button class="addBtn" data-bs-dismiss="modal" type="submit"
-      [disabled]="addRequestForm.invalid">{{changeMode}} Request</button>
+    <div class="modal-footer d-flex justify-content-between">
+      <button mat-raised-button class="mx-2" data-bs-dismiss="modal">Cancel</button>
+      <button mat-raised-button class="addBtn"  type="submit"
+        [disabled]="addRequestForm.invalid">{{changeMode}} Request</button>
     </div>
+  </div>
+  </div>
+</div>
   </form>
-</ng-template>
+</div>
 
 
 <!-- Delete -->
@@ -248,8 +256,7 @@
             <button mat-raised-button class="mx-2" data-bs-dismiss="modal">No</button>
           </div>
           <div>
-            <button mat-raised-button color="primary" class="" data-bs-dismiss="modal"
-              (click)="deleteRequest()">Yes</button>
+            <button mat-raised-button class="addBtn" data-bs-dismiss="modal" (click)="deleteRequest()">Yes</button>
           </div>
         </div>
       </div>
