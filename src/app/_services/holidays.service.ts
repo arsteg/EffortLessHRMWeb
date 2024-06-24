@@ -21,10 +21,10 @@ export class HolidaysService extends baseService {
     super();
   }
 
-  public getHolidaysOfYear(year: string): any {
+  public getHolidaysOfYear(requestBody: any): any {
     const token = this.getToken();
     this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
-    return this.http.get<any>(`${environment.apiUrlDotNet}/company/holiday-by-year`, this.httpOptions);
+    return this.http.post<any>(`${environment.apiUrlDotNet}/company/holiday-by-year`, requestBody, this.httpOptions);
   }
 
 }

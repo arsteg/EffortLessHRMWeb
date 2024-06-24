@@ -8,6 +8,7 @@ import { AuthenticationService } from 'src/app/_services/authentication.service'
 import { TimeLogService } from 'src/app/_services/timeLogService';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { ToastrService } from 'ngx-toastr';
+import { HolidaysService } from 'src/app/_services/holidays.service';
 
 
 @Component({
@@ -44,12 +45,15 @@ export class AddApplicationComponent {
   dayCounts = {};
   annualHolidayCount: number = 0;
   numberOfLeaveAppliedForSelectedCategory: number = 0;
+  appliedLeave: any;
+  holidayCount: number;
 
   constructor(private fb: FormBuilder,
     private commonService: CommonService,
     private leaveService: LeaveService,
     private timeLogService: TimeLogService,
-    private toast: ToastrService
+    private toast: ToastrService,
+    private holidayService: HolidaysService
   ) {
     this.leaveApplication = this.fb.group({
       employee: ['', Validators.required],
@@ -86,12 +90,15 @@ export class AddApplicationComponent {
 
     this.leaveApplication.get('startDate').valueChanges.subscribe(selectedDate => {
       this.onStartDateChange(selectedDate);
+      this.getHoliydaysCountBetweenAppliedLeave();
     });
     this.leaveApplication.get('endDate').valueChanges.subscribe(selectedDate => {
       this.onEndDateChange(selectedDate);
+      this.getHoliydaysCountBetweenAppliedLeave();
     });
     this.leaveApplication.get('leaveCategory').valueChanges.subscribe(leaveCategory => {
       this.tempLeaveCategory = this.leaveCategories.find(l=>l.leaveCategory._id === leaveCategory);
+      console.log(this.tempLeaveCategory);
       this.handleLeaveCategoryChange();
     });
     this.getattendanceTemplatesByUser();
@@ -199,6 +206,26 @@ export class AddApplicationComponent {
 
       console.log(this.leaveApplication.value);
 
+      //Check duplicate leave applied
+      const dateArray = this.getDatesInRange(
+        new Date(this.leaveApplication.get('startDate').value), 
+        new Date(this.leaveApplication.get('endDate').value));
+      for (const date of dateArray) {
+        const applyDate = new Date(date);
+        if(this.checkDuplicateLeaveApplied(applyDate)){
+          this.toast.error(`Already a leave applied with ${new Date(applyDate.getFullYear(), applyDate.getMonth(), applyDate.getDate())} date`, 'Error!');
+          return;
+        }
+      }
+
+      // Check for submit the leave before days
+      const submitBefore = this.tempLeaveCategory.leaveCategory.submitBefore;
+      const calculateBeforeCount = this.calculateDaysDifference(new Date(this.leaveApplication.get('startDate').value));
+      if (submitBefore && submitBefore > 0 && calculateBeforeCount < submitBefore) {
+        this.toast.error(`You should apply this leave before ${submitBefore} days`, 'Error!');
+        return;
+      }
+
       // check for number of times leave applied for this category
       if(this.tempLeaveCategory.limitNumberOfTimesApply){
         if(this.tempLeaveCategory.maximumNumbersEmployeeCanApply <= this.numberOfLeaveAppliedForSelectedCategory){
@@ -208,19 +235,25 @@ export class AddApplicationComponent {
       }
 
       if(!this.tempLeaveCategory.isAnnualHolidayLeavePartOfNumberOfDaysTaken){
-        finalLeaveApplied = this.totalLeaveApplied - this.weekOffCount;
+        finalLeaveApplied = this.totalLeaveApplied - this.holidayCount;
       }
 
       if(!this.tempLeaveCategory.isWeeklyOffLeavePartOfNumberOfDaysTaken){
         finalLeaveApplied = finalLeaveApplied - this.weekOffCount;
       }
-
-      if (this.tempLeaveCategory.maximumNumberConsecutiveLeaveDaysAllowed != null) {
-        //this.toast.error('Error adding event notification', 'Error!');
+debugger;
+      // Check for minimum number of consecutive leave days allowed
+      const minConsecutiveLeaveDays = this.tempLeaveCategory.leaveCategory.minimumNumberOfDaysAllowed;
+      if (minConsecutiveLeaveDays && minConsecutiveLeaveDays > 0 && finalLeaveApplied > minConsecutiveLeaveDays) {
+        this.toast.error(`Please apply minumum ${this.tempLeaveCategory.leaveCategory.minimumNumberOfDaysAllowed} day leave`, 'Error!');
         return;
       }
 
-      if (this.tempLeaveCategory.minimumNumberOfDaysAllowed != null) {
+      // Check for maximum number of consecutive leave days allowed
+      const maxConsecutiveLeaveDays = this.tempLeaveCategory.leaveCategory.maximumNumberConsecutiveLeaveDaysAllowed;
+      if (maxConsecutiveLeaveDays && maxConsecutiveLeaveDays > 0 && finalLeaveApplied > maxConsecutiveLeaveDays) {
+        this.toast.error(`You can't apply more than ${maxConsecutiveLeaveDays} consecutive leave days`, 'Error!');
+        return;
       }
 
       this.leaveService.addLeaveApplication(this.leaveApplication.value).subscribe((res: any) => {
@@ -288,13 +321,14 @@ export class AddApplicationComponent {
     if(this.leaveApplication.get('startDate').value !='' && this.leaveApplication.get('endDate').value != ''){
       let start = this.leaveApplication.get('startDate').value;
       let end = this.leaveApplication.get('endDate').value;
-      for (let date = new Date(start); date <= end; date.setDate(date.getDate() + 1)) {
+      for (let date = new Date(start); (date.setUTCHours(0, 0, 0, 0)) <= (end.setUTCHours(0, 0, 0, 0)); date.setDate(date.getDate() + 1)) {
         this.totalLeaveApplied++;
         let day = this.getDayName(date);
         if (this.dayCounts.hasOwnProperty(day)) {
           this.weekOffCount++;
         }
       }
+      debugger;
       console.log(this.weekOffCount);
    }
   }
@@ -308,8 +342,72 @@ export class AddApplicationComponent {
     const currentYear = new Date().getFullYear();
     this.leaveService.getAppliedLeaveCount(userId, requestBody).subscribe((res: any) => {
       if(res.status == "success"){
-        let appliedLeave = res.data;
-        this.numberOfLeaveAppliedForSelectedCategory = appliedLeave.filter((leave: any) => leave.leaveCategory == category && new Date(leave.addedBy).getFullYear() === currentYear).length;
+        this.appliedLeave = res.data;
+        this.numberOfLeaveAppliedForSelectedCategory = this.appliedLeave.filter((leave: any) => leave.leaveCategory == category && new Date(leave.addedBy).getFullYear() === currentYear).length;
+      }
+    });
+  }
+
+  checkDuplicateLeaveApplied(applyDate: Date): boolean {
+    const applyDateOnly = new Date(applyDate.getFullYear(), applyDate.getMonth(), applyDate.getDate());
+  
+    let leaveAppliedCountForSameDate = this.appliedLeave.filter((leave: any) => {
+      const startDate = new Date(leave.startDate);
+      const endDate = new Date(leave.endDate);
+      const startDateOnly = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+      const endDateOnly = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
+  
+      return applyDateOnly >= startDateOnly && applyDateOnly <= endDateOnly;
+    }).length;
+  
+    if (leaveAppliedCountForSameDate) {
+      return true;
+    }
+    return false;
+  }
+
+  getDatesInRange(startDate: Date, endDate: Date): Date[] {
+    const dateArray: Date[] = [];
+    let currentDate = new Date(startDate);
+    while (currentDate <= endDate) {
+      dateArray.push(new Date(currentDate));
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+    return dateArray;
+  }
+
+  calculateDaysDifference(startDate: Date): number {
+    const currentDate = new Date();
+    const startDateOnly = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+    const currentDateOnly = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
+
+    const timeDifference = startDateOnly.getTime() - currentDateOnly.getTime();
+    const daysDifference = Math.floor(timeDifference / (1000 * 3600 * 24));
+    return daysDifference;
+  }
+
+  getHoliydaysCountBetweenAppliedLeave(){
+    if(this.leaveApplication.get('startDate').value === "" || this.leaveApplication.get('endDate').value === ""){
+      return;
+    }
+    let startDate = new Date(this.leaveApplication.get('startDate').value);
+    let endDate = new Date(this.leaveApplication.get('endDate').value);
+
+    const holidayYears = [startDate.getFullYear(), endDate.getFullYear()];
+    const requestBody = {"skip": 0, "next": 500, "years": holidayYears };
+    this.holidayService.getHolidaysOfYear(requestBody).subscribe((res: any) => {
+      if (res && res.data) {
+        const holidays = res.data;
+        let count: number = 0;
+        let holidayData = holidays.map((holiday: any) => holiday.date);
+        for (let date = startDate; date <= endDate; date.setDate(date.getDate() + 1)) {
+          date.setUTCHours(0, 0, 0, 0);
+          const dateStr = date.toISOString();
+          if (holidayData.includes(dateStr)) {
+            count++;
+          }
+        }
+        this.holidayCount = count;
       }
     });
   }

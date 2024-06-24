@@ -28,7 +28,10 @@ export class HolidaysComponent {
   }
 
   getHolidays(year: string) {
-    this.holidayService.getHolidaysOfYear(year).subscribe((res: any) => {
+    const holidayYears = [];
+    holidayYears.push(year);
+    const requestBody = {"skip": 0, "next": 500, "years": holidayYears };
+    this.holidayService.getHolidaysOfYear(requestBody).subscribe((res: any) => {
       this.holidays = res.data;
     });
   }
