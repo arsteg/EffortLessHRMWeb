@@ -89,7 +89,7 @@ export class EventNotificationComponent implements OnInit {
       updatedEventNotification.description = this.eventNotificationForm.value.description;
       updatedEventNotification.eventNotificationType = this.eventNotificationForm.value.eventNotificationType;
       updatedEventNotification.isRecurring = this.eventNotificationForm.value.isRecurring;
-      updatedEventNotification.isRecurring = this.eventNotificationForm.value.isRecurring;
+      updatedEventNotification.date = this.eventNotificationForm.value.date;
       updatedEventNotification.recurringFrequency = this.eventNotificationForm.value.recurringFrequency;
       updatedEventNotification.leadTime = this.eventNotificationForm.value.leadTime;
 
