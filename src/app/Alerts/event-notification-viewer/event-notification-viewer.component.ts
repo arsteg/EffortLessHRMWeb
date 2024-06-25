@@ -116,6 +116,7 @@ export class EventNotificationViewerComponent implements OnInit, OnDestroy {
     this.eventNotificationService.updateUserNotifications(updateUserNotification).subscribe({
       next: () => {
         // Handle success (if any additional actions are needed)
+        this.toastr.success('User notification updated!');
       },
       error: () => {
         this.toastr.error('Failed to update user notifications');
