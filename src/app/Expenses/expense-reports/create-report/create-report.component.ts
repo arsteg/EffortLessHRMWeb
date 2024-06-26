@@ -109,6 +109,7 @@ export class CreateReportComponent {
     if (this.expenseService.tabIndex.getValue() === 1) {
       const user = this.user.id;
       this.isEdit = this.data ? this.data.isEdit : false;
+      console.log('current user')
       this.expenseService.getExpenseCategoryByUser(user).subscribe((res: any) => {
         this.categories = res.data;
       });
@@ -384,12 +385,12 @@ export class CreateReportComponent {
         });
       });
       this.expenseService.tempAndCat.subscribe(res => {
-        console.log(res)
         const expCategory = res.details;
         // this.categoryType = res.data?.find(catType => catType._id === categoryId);
-        console.log(expCategory, categoryId)
-        const category = res.details?.find(cat => cat.expenseCategory === categoryId);
-        this.expenseService.getApplicableFieldByTemplateAndCategory(category.expenseTemplate, category.expenseCategory).subscribe((res: any) => {
+        // console.log(expCategory, categoryId)
+        // const category = res.details?.find(cat => cat.expenseCategory === categoryId);
+        console.log(expCategory[0].expenseTemplate, categoryId)
+        this.expenseService.getApplicableFieldByTemplateAndCategory(expCategory[0].expenseTemplate, categoryId).subscribe((res: any) => {
           this.applicableCategoryFields = res.data['expenseTemplateCategoryFieldValues'];
         });
       });

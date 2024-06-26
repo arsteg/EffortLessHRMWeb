@@ -7,7 +7,6 @@ import { ExpensesService } from 'src/app/_services/expenses.service';
 import { CommonService } from 'src/app/common/common.service';
 import { CreateReportComponent } from '../../expense-reports/create-report/create-report.component';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
-import { CreateExpenseReportExpensesComponent } from '../create-expense-report-expenses/create-expense-report-expenses.component';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 
 @Component({
@@ -18,7 +17,7 @@ import { AuthenticationService } from 'src/app/_services/authentication.service'
 export class AddMyExpenseComponent {
   users: any = [];
   @Output() close: any = new EventEmitter();
-  @Input() changeMode: boolean;
+  changeMode: 'Add' | 'Update' = 'Add';
   addExpenseForm: FormGroup;
   expenseReport: any[];
   @Output() updateExpenseReportTable: EventEmitter<void> = new EventEmitter<void>();
@@ -29,7 +28,7 @@ export class AddMyExpenseComponent {
   private updateTableSubscription: Subscription;
   employee: string;
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
-@Input() selectedTab : number;
+  @Input() selectedTab: number;
 
   constructor(private dialog: MatDialog,
     private commonService: CommonService,
@@ -67,6 +66,16 @@ export class AddMyExpenseComponent {
     this.getCategoryByUser();
   }
 
+  // ngAfterViewInit() {
+  //   this.updateTableSubscription = this.expenseService.updateTable$.subscribe(() => {
+  //     this.getExpenseReportExpensesByReportId();
+  //   });
+  // }
+
+  // ngOnDestroy() {
+  //   this.updateTableSubscription.unsubscribe();
+  // }
+
   ngAfterViewInit() {
     this.updateTableSubscription = this.expenseService.updateTable$.subscribe(() => {
       this.getExpenseReportExpensesByReportId();
@@ -76,11 +85,9 @@ export class AddMyExpenseComponent {
   ngOnDestroy() {
     this.updateTableSubscription.unsubscribe();
   }
-
-
   openSecondModal(isEdit: boolean) {
     this.expenseService.isEdit.next(isEdit);
-    const dialogRef = this.dialog.open(CreateExpenseReportExpensesComponent, {
+    const dialogRef = this.dialog.open(CreateReportComponent, {
       width: '50%',
       data: { isEdit: this.isEdit }
     });
@@ -97,10 +104,11 @@ export class AddMyExpenseComponent {
     this.close.emit(true);
   }
   getCategoryByUser() {
-    const user = this.addExpenseForm.value.employee;
+    const user = this.currentUser.id;
     this.expenseService.selectedUser.next(user);
-    if (this.isEdit = false) {
+    if (this.changeMode == 'Add') {
       this.expenseService.getExpenseCategoryByUser(user).subscribe((res: any) => {
+        this.expenseService.tempAndCat.next(res);
         if (!res.data) {
           this.toast.warning('User is not Assigned to any Expense Categories', 'Warning')
         }
@@ -109,24 +117,23 @@ export class AddMyExpenseComponent {
   }
   createReport() {
     let payload = {
-      employee: this.addExpenseForm.value.employee,
+      employee: this.currentUser.id,
       title: this.addExpenseForm.value.title,
       amount: this.addExpenseForm.value.amount,
       status: 'Level 1 Approval Pending',
       expenseReportExpenses: []
     }
     let formArray = this.expenseService.expenseReportExpense.getValue();
-    if (this.addExpenseForm.valid) {
-      payload.employee = this.currentUser.id;
-      payload.expenseReportExpenses = [formArray];
-      if (!this.isEdit || !this.changeMode) {
-        console.log(payload)
+    payload.expenseReportExpenses = [formArray];
+    if (this.addExpenseForm.value) {
+      if (this.changeMode == 'Add') {
+        console.log(payload);
         this.expenseService.addExpensePendingReport(payload).subscribe((res: any) => {
-          this.toast.success('Expense Template Applicable Category Added Successfully!');
+          this.toast.success('Expense Report Added Successfully!');
           this.updateExpenseReportTable.emit();
         },
           err => {
-            this.toast.error('Expense Template Applicable Category Can not be Added', 'ERROR!')
+            this.toast.error('Expense Report Can not be Added', 'ERROR!')
           }
         )
       }
@@ -134,10 +141,10 @@ export class AddMyExpenseComponent {
         let id = this.expenseService.selectedReport.getValue()._id
         this.expenseService.updateExpenseReport(id, payload).subscribe((res: any) => {
           this.updateExpenseReportTable.emit();
-          this.toast.success('Expense Template Applicable Category Updated Successfully!');
+          this.toast.success('Expense Report Updated Successfully!');
         },
           err => {
-            this.toast.error('Expense Template Applicable Category Can not be Updated', 'ERROR!')
+            this.toast.error('Expense Report Can not be Updated', 'ERROR!')
           }
         )
       }
@@ -196,7 +203,8 @@ export class AddMyExpenseComponent {
 
   getExpenseReportExpensesByReportId() {
     let id = this.expenseService.selectedReport.getValue()._id;
-    if (this.changeMode) {
+    if (this.changeMode == 'Add') { this.expenseReportExpenses = this.expenseService.expenseReportExpense; }
+    if (this.changeMode == 'Update') {
       this.expenseService.getExpenseReportExpensesByReportId(id).subscribe((res: any) => {
         this.expenseReportExpenses = res.data;
       })

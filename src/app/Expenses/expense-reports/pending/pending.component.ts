@@ -153,11 +153,11 @@ export class PendingComponent {
   deleteReport(id: string) {
     this.expenseService.deleteExpenseReport(id).subscribe((res: any) => {
       this.displayedData = this.displayedData.filter(report => report._id !== id);
-      this.toast.success('Successfully Deleted!!!', 'Advance Category');
+      this.toast.success('Successfully Deleted!!!', 'Expense Report');
     },
       (err) => {
-        this.toast.error('This category is already being used in an expense template!'
-          , 'Advance Category, Can not be deleted!')
+        this.toast.error('This Expense Report is already being used!'
+          , 'Error!')
       })
   }
 

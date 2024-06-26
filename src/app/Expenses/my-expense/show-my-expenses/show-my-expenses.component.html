@@ -78,9 +78,9 @@
 </div>
 
 <ng-template #addModal let-modal>
-    <app-add-my-expense (changeStep)="onChangeStep($event)" [selectedTab]="selectedTab" [changeMode]="isEdit" *ngIf="step == 1"
+    <app-add-my-expense (changeStep)="onChangeStep($event)" [selectedTab]="selectedTab" [changeMode]="changeMode" *ngIf="step == 1"
         (close)="onClose($event)" (expenseTemplateReportRefreshed)="refreshExpenseReportTable()"></app-add-my-expense>
-    <app-create-expense-report-expenses *ngIf="step == 2" (changeStep)="onChangeStep($event)" [changeMode]="isEdit"
+    <app-create-report *ngIf="step == 2" (changeStep)="onChangeStep($event)" [changeMode]="changeMode"
         (close)="onClose($event)" 
-        (expenseTemplateReportRefreshed)="refreshExpenseReportTable()"></app-create-expense-report-expenses>
+        (expenseTemplateReportRefreshed)="refreshExpenseReportTable()"></app-create-report>
 </ng-template>

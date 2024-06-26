@@ -44,7 +44,6 @@ import { TeamExpenseComponent } from './team-expense/team-expense.component';
 import { GeneralInformationComponent } from './general-information/general-information.component';
 import { ShowMyExpensesComponent } from './my-expense/show-my-expenses/show-my-expenses.component';
 import { AddMyExpenseComponent } from './my-expense/add-my-expense/add-my-expense.component';
-import { CreateExpenseReportExpensesComponent } from './my-expense/create-expense-report-expenses/create-expense-report-expenses.component';
 import { ShowTeamExpensesComponent } from './team-expense/show-team-expenses/show-team-expenses.component';
 import { AddTeamExpensesComponent } from './team-expense/add-team-expenses/add-team-expenses.component';
 import { PendingTeamExpensesComponent } from './team-expense/pending-team-expenses/pending-team-expenses.component';
@@ -90,7 +89,6 @@ import { ViewComponent } from './team-expense/view/view.component';
     GeneralInformationComponent,
     ShowMyExpensesComponent,
     AddMyExpenseComponent,
-    CreateExpenseReportExpensesComponent,
     ShowTeamExpensesComponent,
     AddTeamExpensesComponent,
     PendingTeamExpensesComponent,

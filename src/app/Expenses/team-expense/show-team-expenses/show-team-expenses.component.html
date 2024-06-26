@@ -108,9 +108,7 @@
 <ng-template #addModal let-modal>
     <app-add-team-expenses (changeStep)="onChangeStep($event)" [changeMode]="changeMode" *ngIf="step == 1"
         (close)="onClose($event)" (updateExpenseReportTable)="refreshExpenseReportTable()"></app-add-team-expenses>
-    <!-- <app-create-expense-report-expenses *ngIf="step == 2" (changeStep)="onChangeStep($event)" [changeMode]="isEdit"
-        (close)="onClose($event)" (updateExpenseReportTable)="refreshExpenseReportTable()"></app-create-expense-report-expenses> -->
-        <app-create-report  *ngIf="step == 2" (changeStep)="onChangeStep($event)" [changeMode]="changeMode"
+    <app-create-report  *ngIf="step == 2" (changeStep)="onChangeStep($event)" [changeMode]="changeMode"
         (close)="onClose($event)" (updateExpenseReportTable)="refreshExpenseReportTable()"></app-create-report>
 </ng-template>
 

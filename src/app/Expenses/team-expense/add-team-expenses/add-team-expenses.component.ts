@@ -8,7 +8,6 @@ import { ExpensesService } from 'src/app/_services/expenses.service';
 import { CommonService } from 'src/app/common/common.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { TimeLogService } from 'src/app/_services/timeLogService';
-import { CreateExpenseReportExpensesComponent } from '../../my-expense/create-expense-report-expenses/create-expense-report-expenses.component';
 import { CreateReportComponent } from '../../expense-reports/create-report/create-report.component';
 
 @Component({
@@ -129,7 +128,7 @@ export class AddTeamExpensesComponent {
     }
     let formArray = this.expenseService.expenseReportExpense.getValue();
     payload.expenseReportExpenses = [formArray];
-    if (!this.isEdit || !this.changeMode) {
+    if (this.changeMode == 'Add') {
       console.log(payload)
       this.expenseService.addExpensePendingReport(payload).subscribe((res: any) => {
         this.toast.success('Expense Template Applicable Category Added Successfully!');
