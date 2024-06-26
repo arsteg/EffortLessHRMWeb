@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, Input } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray, Validators, FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -22,7 +22,7 @@ export class PendingComponent {
   [x: string]: any;
   searchText: string = '';
   expenseCategories: any;
-  isEdit = false;
+  @Input() isEdit : boolean = false;
   closeResult: string = '';
   step: number = 1;
   expenseReport: any;
@@ -37,6 +37,10 @@ export class PendingComponent {
   status: string;
   expenseReportExpenses: any;
   public sortOrder: string = '';
+  totalRecords: number
+  recordsPerPage: number = 10;
+  currentPage: number = 1;
+  
 
   constructor(private modalService: NgbModal,
     private expenseService: ExpensesService,
@@ -62,13 +66,7 @@ export class PendingComponent {
     });
   }
   refreshExpenseReportTable() {
-    this.expenseService.getExpenseReport().subscribe(
-      (res) => {
-        this.expenseReport = res.data.filter(expense => expense.status === 'Level 1 Approval Pending');
-      },
-      (error) => {
-        console.error('Error refreshing expense template table:', error);
-      });
+   this.getExpenseReport();
   }
 
   private getDismissReason(reason: any): string {
@@ -116,9 +114,26 @@ export class PendingComponent {
       this.changeMode = event
     }
   }
+  onPageChange(page: number) {
+    this.currentPage = page;
+    this.getExpenseReport();
+  }
+
+  onRecordsPerPageChange(recordsPerPage: number) {
+    this.recordsPerPage = recordsPerPage;
+    this.getExpenseReport();
+  }
+
+  
   getExpenseReport() {
-    this.expenseService.getExpenseReport().subscribe((res: any) => {
-      this.expenseReport = res.data.filter(expense => expense.status === 'Level 1 Approval Pending');
+    const pagination = {
+      skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
+      next: this.recordsPerPage.toString(),
+      status: 'Level 1 Approval Pending'
+    };
+    this.expenseService.getExpenseReport(pagination).subscribe((res: any) => {
+      this.expenseReport = res.data;
+      this.totalRecords = res.total;
     });
   }
 

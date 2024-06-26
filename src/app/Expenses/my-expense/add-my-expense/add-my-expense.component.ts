@@ -29,6 +29,7 @@ export class AddMyExpenseComponent {
   private updateTableSubscription: Subscription;
   employee: string;
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
+@Input() selectedTab : number;
 
   constructor(private dialog: MatDialog,
     private commonService: CommonService,
@@ -48,7 +49,6 @@ export class AddMyExpenseComponent {
 
   }
 
-
   ngOnInit() {
     if (!this.isEdit && !this.changeMode) {
       this.addExpenseForm.reset();
@@ -65,7 +65,6 @@ export class AddMyExpenseComponent {
       this.users = res.data.data;
     });
     this.getCategoryByUser();
-
   }
 
   ngAfterViewInit() {
@@ -197,7 +196,6 @@ export class AddMyExpenseComponent {
 
   getExpenseReportExpensesByReportId() {
     let id = this.expenseService.selectedReport.getValue()._id;
-    console.log(this.expenseService.expenseReportExpense.getValue())
     if (this.changeMode) {
       this.expenseService.getExpenseReportExpensesByReportId(id).subscribe((res: any) => {
         this.expenseReportExpenses = res.data;

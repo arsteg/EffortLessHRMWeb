@@ -22,7 +22,10 @@ export class RejectedComponent {
   expenseReportExpenses: any;
   selectedReport: any;
   public sortOrder: string = '';
-
+  totalRecords: number
+  recordsPerPage: number = 10;
+  currentPage: number = 1;
+  
   constructor(private modalService: NgbModal,
     private expenseService: ExpensesService,
     private commonService: CommonService,
@@ -34,13 +37,28 @@ export class RejectedComponent {
       this.users = res.data.data;
     });
   }
+  onPageChange(page: number) {
+    this.currentPage = page;
+    this.getExpenseReport();
+  }
 
+  onRecordsPerPageChange(recordsPerPage: number) {
+    this.recordsPerPage = recordsPerPage;
+    this.getExpenseReport();
+  }
+  
   getExpenseReport() {
-    this.expenseService.getExpenseReport().subscribe((res: any) => {
-      this.expenseReport = res.data.filter(expense => expense.status === 'Rejected');
-      console.log(this.expenseReport)
+    const pagination = {
+      skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
+      next: this.recordsPerPage.toString(),
+      status: 'Rejected'
+    };
+    this.expenseService.getExpenseReport(pagination).subscribe((res: any) => {
+      this.expenseReport = res.data;
+      this.totalRecords = res.total;
     });
   }
+ 
   getUser(employeeId: string) {
     const matchingUser = this.users.find(user => user._id === employeeId);
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'User Not Found';
@@ -86,15 +104,7 @@ export class RejectedComponent {
   }
 
   refreshExpenseReportTable() {
-    this.expenseService.getExpenseReport().subscribe(
-      (res) => {
-        this.expenseReport = res.data.filter(expense => expense.status === 'Rejected');
-        this.expenseTemplateReportRefreshed.emit();
-      },
-      (error) => {
-        console.error('Error refreshing expense template table:', error);
-      }
-    );
+    this.getExpenseReport();
   }
   exportToCsv() {
     const dataToExport = this.expenseReport.map((categories) => ({

@@ -25,7 +25,11 @@ export class ApplicableExpenseSettingsComponent {
   }
 
   getCategories() {
-    this.expenseService.getExpenseCatgories().subscribe((res: any) => {
+    let payload = {
+      next: '',
+      skip: ''
+    }
+    this.expenseService.getExpenseCatgories(payload).subscribe((res: any) => {
       this.categories = res.data;
     })
   }

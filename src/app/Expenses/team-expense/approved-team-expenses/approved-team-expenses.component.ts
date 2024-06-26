@@ -7,8 +7,8 @@ import { Component } from '@angular/core';
 })
 export class ApprovedTeamExpensesComponent {
   actionOptions = {
-    approve: true,
-    reject: true,
+    approve: false,
+    reject: false,
     view: true,
     edit: false,
     cancel: false,

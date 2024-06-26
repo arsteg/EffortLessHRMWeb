@@ -19,8 +19,12 @@ export class ViewMyExpenseComponent {
     console.log(this.expenseReport);
   }
 
-  getAllCatgeories(){
-    this.expenseService.getExpenseCatgories().subscribe((res: any) => {
+  getAllCatgeories() {
+    let payload = {
+      next: '',
+      skip: ''
+    }
+    this.expenseService.getExpenseCatgories(payload).subscribe((res: any) => {
       this.allCategory = res.data;
     });
   }

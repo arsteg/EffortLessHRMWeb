@@ -17,7 +17,10 @@
                         Download</button>
                 </div>
             </div>
-
+            <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
+            [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
+            (recordsPerPageChange)="onRecordsPerPageChange($event)">
+        </app-pagination>
             <table class="px-4">
                 <thead>
                     <tr>
@@ -53,7 +56,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let report of expenseReport | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }; ">
+                    <tr *ngFor="let report of expenseReport | search: searchText ">
                         <td>{{report?.title}}</td>
                         <td>{{getUser(report?.employee)}}</td>
                         <td>{{calculateTotalAmount(report)}}</td>
@@ -69,25 +72,22 @@
                                 </button>
 
                                 <ul class="dropdown-menu py-0">
-                                    <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
-                                        *ngIf="actionOptions.approve" data-bs-target="#statusUpdate"
-                                        (click)="openStatusModal(report, 'Approved')">
-                                        <i class="fas fa-check-circle dropdown-item w-25"></i><span
-                                            class="pt-1 text-muted">Approve</span>
-                                    </li>
-                                    <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
-                                        *ngIf="actionOptions.reject" data-bs-target="#statusUpdate"
-                                        (click)="openStatusModal(report, 'Rejected')">
-                                        <i class="bi bi-person-dash dropdown-item w-25"></i><span
-                                            class="pt-1 text-muted">Reject</span>
-                                    </li>
+                                    <li class="d-flex  border-bottom action-list" data-bs-toggle="modal"
+                                    data-bs-target="#ApproveModal" *ngIf="actionOptions.approve"
+                                    (click)="selectedReport = report; status = 'Approved'">
+                                    <i class="fas fa-check-circle   dropdown-item w-25"></i><span
+                                        class="pt-1 text-muted">Approve
+                                    </span>
+                                </li>
 
-                                    <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
-                                        *ngIf="actionOptions.cancel" data-bs-target="#statusUpdate"
-                                        (click)="openStatusModal(report, 'Cancelled')">
-                                        <i class="bi bi-person-dash dropdown-item w-25"></i><span
-                                            class="pt-1 text-muted">Cancel</span>
-                                    </li>
+                                <li class="d-flex  border-bottom action-list" data-bs-toggle="modal"
+                                    data-bs-target="#cancel" *ngIf="actionOptions.reject"
+                                    (click)="selectedReport = report; status = 'Rejected'">
+                                    <i class="bi bi-person-dash  dropdown-item w-25"></i><span
+                                        class="pt-1 text-muted">Reject
+                                    </span>
+                                </li>
+
                                     <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
                                         *ngIf="actionOptions.view" data-bs-target="#viewModal"
                                         (click)="openSecondModal(report)">
@@ -101,17 +101,99 @@
                     </tr>
                 </tbody>
             </table>
-            <pagination-controls (pageChange)="p = $event"
-            class="pagination d-flex justify-content-end"></pagination-controls>
-
         </div>
     </div>
 </div>
 
 <ng-template #addModal let-modal>
-    <app-add-team-expenses (changeStep)="onChangeStep($event)" [changeMode]="isEdit" *ngIf="step == 1"
+    <app-add-team-expenses (changeStep)="onChangeStep($event)" [changeMode]="changeMode" *ngIf="step == 1"
         (close)="onClose($event)" (updateExpenseReportTable)="refreshExpenseReportTable()"></app-add-team-expenses>
-    <app-create-expense-report-expenses *ngIf="step == 2" (changeStep)="onChangeStep($event)" [changeMode]="isEdit"
-        (close)="onClose($event)"
-        (updateExpenseReportTable)="refreshExpenseReportTable()"></app-create-expense-report-expenses>
+    <!-- <app-create-expense-report-expenses *ngIf="step == 2" (changeStep)="onChangeStep($event)" [changeMode]="isEdit"
+        (close)="onClose($event)" (updateExpenseReportTable)="refreshExpenseReportTable()"></app-create-expense-report-expenses> -->
+        <app-create-report  *ngIf="step == 2" (changeStep)="onChangeStep($event)" [changeMode]="changeMode"
+        (close)="onClose($event)" (updateExpenseReportTable)="refreshExpenseReportTable()"></app-create-report>
 </ng-template>
+
+<!-- Approve status -->
+<div class="modal" id="ApproveModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class=" d-flex justify-content-between">
+                    <div class="">
+                        <h4 class="modal-title text-start">Are you sure you want to approve this request?</h4>
+                    </div>
+                    <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
+                    </div>
+                </div>
+                <hr class="mt-0">
+                <div class="row">
+                    <form [formGroup]="updateExpenseReport" (ngSubmit)="updateApprovedReport()">
+                        <div class="mt-3">
+                            <mat-label>Please add a Reason</mat-label>
+                            <textarea name="comment" placeholder="Leave a comment"
+                                formControlName="primaryApprovalReason" cols="5" rows="3"
+                                class="form-control form-control-width ng-pristine ng-invalid ng-touched">             </textarea>
+                        </div>
+
+
+                        <div class="d-flex justify-content-between m-3">
+                            <div>
+                                <button mat-raised-button type="button" class="mx-2" data-bs-dismiss="modal"
+                                    type="button">Close</button>
+                            </div>
+                            <div>
+                                <button mat-raised-button class="addBtn" type="submit" data-bs-dismiss="modal"
+                                    type="submit">Approve</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Reject  -->
+<div class="modal" id="cancel">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class=" d-flex justify-content-between">
+                    <div class="">
+                        <h4 class="modal-title text-start">Are you sure you want to Reject this request</h4>
+                    </div>
+                    <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
+                    </div>
+                </div>
+                <hr class="mt-0">
+                <div class="row">
+                    <form [formGroup]="updateExpenseReport" (ngSubmit)="updateRejectedReport()">
+
+
+                        <div class="mt-3">
+                            <mat-label>Please add a Reason</mat-label>
+                            <textarea name="comment" placeholder="Leave a comment"
+                                formcontrolname="primaryApprovalReason" cols="5" rows="3"
+                                class="form-control form-control-width ng-pristine ng-invalid ng-touched">             </textarea>
+
+
+                        </div>
+
+                        <div class="d-flex justify-content-between m-3">
+                            <div>
+                                <button mat-raised-button type=button class="mx-2" data-bs-dismiss="modal"
+                                    type="button">Close</button>
+                            </div>
+                            <div>
+                                <button mat-raised-button class="addBtn" data-bs-dismiss="modal" type="submit"> <i
+                                        class="fas fa-check" style="color: #fff;"></i>
+                                    Reject</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

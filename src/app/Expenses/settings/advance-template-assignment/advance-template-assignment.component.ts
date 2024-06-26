@@ -28,7 +28,9 @@ export class AdvanceTemplateAssignmentComponent {
   selectedTemplateAssignment: any;
   p: number = 1;
   public sortOrder: string = '';
-
+  totalRecords: number
+  recordsPerPage: number = 10;
+  currentPage: number = 1;
 
   constructor(private fb: FormBuilder,
     private modalService: NgbModal,
@@ -53,8 +55,14 @@ export class AdvanceTemplateAssignmentComponent {
     this.commonService.populateUsers().subscribe(result => {
       this.allAssignee = result && result.data && result.data.data;
     });
-    this.expenseService.getAdvanceTemplateAssignment().subscribe((res: any) => {
+    let payload={
+      next: '',
+      skip: ''
+    }
+    this.expenseService.getAdvanceTemplateAssignment(payload).subscribe((res: any) => {
       this.templateAssignments = res.data;
+this.totalRecords = res.total
+
     })
   }
 
@@ -69,7 +77,11 @@ export class AdvanceTemplateAssignmentComponent {
   }
 
   getAllTemplates() {
-    this.expenseService.getAdvanceTemplates().subscribe((res: any) => {
+    let payload = {
+      next: '',
+      skip: ''
+    }
+    this.expenseService.getAdvanceTemplates(payload).subscribe((res: any) => {
       this.advanceTemplates = res.data;
     })
   }
@@ -94,9 +106,21 @@ export class AdvanceTemplateAssignmentComponent {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
     });
   }
+  onPageChange(page: number) {
+    this.currentPage = page;
+    this.getAssignments();
+  }
 
+  onRecordsPerPageChange(recordsPerPage: number) {
+    this.recordsPerPage = recordsPerPage;
+    this.getAssignments();
+  }
   getAssignments() {
-    this.expenseService.getAdvanceTemplateAssignment().subscribe((res: any) => {
+    let pagination = {
+      skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
+      next: this.recordsPerPage.toString()
+    };
+    this.expenseService.getAdvanceTemplateAssignment(pagination).subscribe((res: any) => {
       this.templateAssignments = res.data;
       const userRequests = this.templateAssignments.map(assignment =>
         this.authService.GetMe(assignment.user).toPromise()

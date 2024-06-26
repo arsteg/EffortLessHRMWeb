@@ -29,6 +29,9 @@ export class ExpensesTemplatesComponent implements OnInit {
   step: number = 1;
   public sortOrder: string = '';
   @Output() expenseTemplateTableRefreshed: EventEmitter<void> = new EventEmitter<void>();
+  totalRecords: number
+  recordsPerPage: number = 10;
+  currentPage: number = 1;
 
   constructor(
     private modalService: NgbModal,
@@ -107,10 +110,24 @@ export class ExpensesTemplatesComponent implements OnInit {
       }
     });
   }
+  onPageChange(page: number) {
+    this.currentPage = page;
+    this.getAllTemplates();
+  }
 
+  onRecordsPerPageChange(recordsPerPage: number) {
+    this.recordsPerPage = recordsPerPage;
+    this.getAllTemplates();
+  }
+  
   getAllTemplates() {
-    this.expenseService.getAllTemplates().subscribe((res: any) => {
+    let pagination = {
+      skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
+      next: this.recordsPerPage.toString()
+    };
+    this.expenseService.getAllTemplates(pagination).subscribe((res: any) => {
       this.templates = res.data;
+      this.totalRecords = res.total;
       this.getAllCategoriesOfAllTemplate()
     })
   }
@@ -267,15 +284,6 @@ export class ExpensesTemplatesComponent implements OnInit {
   }
 
   refreshExpenseTemplateTable() {
-    this.expenseService.getAllTemplates().subscribe(
-      (res) => {
-        this.templates = res.data;
-        this.getAllCategoriesOfAllTemplate();
-        this.expenseTemplateTableRefreshed.emit();
-      },
-      (error) => {
-        console.error('Error refreshing expense template table:', error);
-      }
-    );
+    this.getAllTemplates();
   }
 }

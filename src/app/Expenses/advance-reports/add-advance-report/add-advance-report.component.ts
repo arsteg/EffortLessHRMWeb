@@ -32,7 +32,10 @@ export class AddAdvanceReportComponent {
   }
 
   ngOnInit() {
-    this.expenseService.getAdvanceCatgories().subscribe((res: any) => {
+    let payload ={
+      next: '', skip: ''
+    }
+    this.expenseService.getAdvanceCatgories(payload).subscribe((res: any) => {
       this.allCategory = res.data;
     });
     this.commonService.populateUsers().subscribe(result => {
@@ -41,7 +44,10 @@ export class AddAdvanceReportComponent {
    this.getAllAdvanceCategories();
   }
 getAllAdvanceCategories(){
-  this.expenseService.getAdvanceCatgories().subscribe((res: any) => {
+  let payload ={
+    next: '', skip: ''
+  }
+  this.expenseService.getAdvanceCatgories(payload).subscribe((res: any) => {
     this.allAdvanceCategories = res.data;
     console.log(res.data);
   })

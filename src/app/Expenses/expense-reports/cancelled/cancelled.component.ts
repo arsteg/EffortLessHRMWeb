@@ -26,6 +26,9 @@ export class CancelledComponent {
   public sortOrder: string = '';
   status: string;
   updateExpenseReport: FormGroup;
+  totalRecords: number
+  recordsPerPage: number = 10;
+  currentPage: number = 1;
 
   constructor(private modalService: NgbModal,
     private expenseService: ExpensesService,
@@ -47,13 +50,28 @@ export class CancelledComponent {
         this.users = res.data.data;
       });
     }
-  
-    getExpenseReport() {
-      this.expenseService.getExpenseReport().subscribe((res: any) => {
-        this.expenseReport = res.data.filter(expense => expense.status === 'Cancelled');
-      });
+    onPageChange(page: number) {
+      this.currentPage = page;
+      this.getExpenseReport();
     }
   
+    onRecordsPerPageChange(recordsPerPage: number) {
+      this.recordsPerPage = recordsPerPage;
+      this.getExpenseReport();
+    }
+    
+    getExpenseReport() {
+      const pagination = {
+        skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
+        next: this.recordsPerPage.toString(),
+        status: 'Cancelled'
+      };
+      this.expenseService.getExpenseReport(pagination).subscribe((res: any) => {
+        this.expenseReport = res.data;
+        this.totalRecords = res.total;
+      });
+    }
+      
     getUser(employeeId: string) {
       const matchingUser = this.users.find(user => user._id === employeeId);
       return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'User Not Found';
@@ -92,15 +110,7 @@ export class CancelledComponent {
     }
   
     refreshExpenseReportTable() {
-      this.expenseService.getExpenseReport().subscribe(
-        (res) => {
-          this.expenseReport = res.data;
-          this.expenseTemplateReportRefreshed.emit();
-        },
-        (error) => {
-          console.error('Error refreshing expense template table:', error);
-        }
-      );
+      this.getExpenseReport();
     }
     exportToCsv() {
       const dataToExport = this.expenseReport.map((categories) => ({

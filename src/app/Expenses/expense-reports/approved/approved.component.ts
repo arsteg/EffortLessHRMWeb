@@ -28,7 +28,9 @@ export class ApprovedComponent {
   categories: any;
   displayedData: any[] = [];
   public sortOrder: string = '';
-
+  totalRecords: number
+  recordsPerPage: number = 10;
+  currentPage: number = 1;
 
   constructor(private modalService: NgbModal,
     private expenseService: ExpensesService,
@@ -83,23 +85,30 @@ export class ApprovedComponent {
   }
 
   refreshExpenseReportTable() {
-    this.expenseService.getExpenseReport().subscribe(
-      (res) => {
-        this.expenseReport = res.data;
-        this.expenseTemplateReportRefreshed.emit();
-      },
-      (error) => {
-        console.error('Error refreshing expense template table:', error);
-      }
-    );
+    this.getExpenseReport();
   }
-  getExpenseReport() {
-    this.expenseService.getExpenseReport().subscribe((res: any) => {
-      this.expenseReport = res.data.filter(expense => expense.status === 'Approved');
-      console.log(this.expenseReport)
-    });
+  onPageChange(page: number) {
+    this.currentPage = page;
+    this.getExpenseReport();
   }
 
+  onRecordsPerPageChange(recordsPerPage: number) {
+    this.recordsPerPage = recordsPerPage;
+    this.getExpenseReport();
+  }
+  
+  getExpenseReport() {
+    const pagination = {
+      skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
+      next: this.recordsPerPage.toString(),
+      status: 'Approved'
+    };
+    this.expenseService.getExpenseReport(pagination).subscribe((res: any) => {
+      this.expenseReport = res.data;
+      this.totalRecords = res.total;
+    });
+  }
+ 
   getUser(employeeId: string) {
     const matchingUser = this.users.find(user => user._id === employeeId);
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'User Not Found';
@@ -122,14 +131,22 @@ export class ApprovedComponent {
 
 
   getCategories() {
-    this.expenseService.getExpenseCatgories().subscribe((res: any) => {
+    let payload = {
+      next: '',
+      skip: ''
+    }
+    this.expenseService.getExpenseCatgories(payload).subscribe((res: any) => {
       console.log(res.data);
       this.categories = res.data;
     })
   }
 
   getCategoryLabel(expenseCategoryId: string): Observable<string> {
-    return this.expenseService.getExpenseCatgories().pipe(
+    let payload = {
+      next: '',
+      skip: ''
+    }
+    return this.expenseService.getExpenseCatgories(payload).pipe(
       map((res: any) => {
         const categories = res.data;
         const matchingCategory = categories.find(category => category._id === expenseCategoryId);

@@ -19,7 +19,10 @@
 
                 </div>
             </div>
-
+            <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
+                [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
+                (recordsPerPageChange)="onRecordsPerPageChange($event)">
+            </app-pagination>
             <table class="px-4">
                 <thead>
                     <tr>
@@ -34,7 +37,7 @@
                 </thead>
                 <tbody>
                     <tr
-                        *ngFor="let report of expenseReport| search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
+                        *ngFor="let report of expenseReport| search: searchText">
                         <td>{{report?.title}}</td>
                         <td>
                             {{calculateTotalAmount(report)}}
@@ -58,8 +61,7 @@
 
                                 <ul class="dropdown-menu py-0">
                                     <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
-                                        data-bs-target="#viewModal"
-                                        (click)="openSecondModal(report)">
+                                        data-bs-target="#viewModal" (click)="openSecondModal(report)">
                                         <i class="fas fa-eye dropdown-item w-25"></i><span
                                             class="pt-1 text-muted">View</span>
                                     </li>
@@ -71,17 +73,14 @@
                     </tr>
                 </tbody>
             </table>
-            <pagination-controls (pageChange)="p = $event"
-                class="pagination d-flex justify-content-end"></pagination-controls>
         </div>
     </div>
 </div>
 
 <ng-template #addModal let-modal>
-    <app-add-my-expense (changeStep)="onChangeStep($event)" [changeMode]="isEdit" *ngIf="step == 1"
+    <app-add-my-expense (changeStep)="onChangeStep($event)" [selectedTab]="selectedTab" [changeMode]="isEdit" *ngIf="step == 1"
         (close)="onClose($event)" (expenseTemplateReportRefreshed)="refreshExpenseReportTable()"></app-add-my-expense>
     <app-create-expense-report-expenses *ngIf="step == 2" (changeStep)="onChangeStep($event)" [changeMode]="isEdit"
-        (close)="onClose($event)"
+        (close)="onClose($event)" 
         (expenseTemplateReportRefreshed)="refreshExpenseReportTable()"></app-create-expense-report-expenses>
 </ng-template>
-

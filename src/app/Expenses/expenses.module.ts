@@ -47,7 +47,6 @@ import { AddMyExpenseComponent } from './my-expense/add-my-expense/add-my-expens
 import { CreateExpenseReportExpensesComponent } from './my-expense/create-expense-report-expenses/create-expense-report-expenses.component';
 import { ShowTeamExpensesComponent } from './team-expense/show-team-expenses/show-team-expenses.component';
 import { AddTeamExpensesComponent } from './team-expense/add-team-expenses/add-team-expenses.component';
-import { AddTeamExpensesReportComponent } from './team-expense/add-team-expenses-report/add-team-expenses-report.component';
 import { PendingTeamExpensesComponent } from './team-expense/pending-team-expenses/pending-team-expenses.component';
 import { ApprovedTeamExpensesComponent } from './team-expense/approved-team-expenses/approved-team-expenses.component';
 import { RejectedTeamExpensesComponent } from './team-expense/rejected-team-expenses/rejected-team-expenses.component';
@@ -55,6 +54,7 @@ import { ApplicableExpenseSettingsComponent } from './general-information/applic
 import { SupervisorsComponent } from './general-information/supervisors/supervisors.component';
 import { ViewMyExpenseComponent } from './my-expense/view-my-expense/view-my-expense.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ViewComponent } from './team-expense/view/view.component';
  
 @NgModule({
   declarations: [
@@ -93,13 +93,13 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     CreateExpenseReportExpensesComponent,
     ShowTeamExpensesComponent,
     AddTeamExpensesComponent,
-    AddTeamExpensesReportComponent,
     PendingTeamExpensesComponent,
     ApprovedTeamExpensesComponent,
     RejectedTeamExpensesComponent,
     ApplicableExpenseSettingsComponent,
     SupervisorsComponent,
-    ViewMyExpenseComponent
+    ViewMyExpenseComponent,
+    ViewComponent
   ],
   imports: [
     BrowserModule,

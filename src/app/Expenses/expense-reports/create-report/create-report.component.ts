@@ -47,6 +47,8 @@ export class CreateReportComponent {
   totalRate: number;
   expenseFieldsArray: FormArray;
   @Input() changeMode: string;
+  user = JSON.parse(localStorage.getItem('currentUser'));
+  @Output() expenseReportExpensesEmitter = new EventEmitter<any>();
 
   constructor(public expenseService: ExpensesService,
     private fb: FormBuilder,
@@ -76,6 +78,7 @@ export class CreateReportComponent {
 
 
   ngOnInit() {
+    console.log('expense reports')
     if (this.expenseService.isEdit.getValue() == true) {
       const expenseFieldsArray = this.expenseReportform.get('expenseReportExpenseFields') as FormArray;
       expenseFieldsArray.clear();
@@ -102,11 +105,22 @@ export class CreateReportComponent {
       this.onCategorySelection(categoryId);
       this.updateTotalRate();
     }
-    const user = this.expenseService.selectedUser.getValue();
-    this.isEdit = this.data ? this.data.isEdit : false;
-    this.expenseService.getExpenseCategoryByUser(user).subscribe((res: any) => {
-      this.categories = res.data;
-    });
+   
+    if (this.expenseService.tabIndex.getValue() === 1) {
+      const user = this.user.id;
+      this.isEdit = this.data ? this.data.isEdit : false;
+      this.expenseService.getExpenseCategoryByUser(user).subscribe((res: any) => {
+        this.categories = res.data;
+      });
+    }
+    else {
+      const user = this.expenseService.selectedUser.getValue();
+      this.isEdit = this.data ? this.data.isEdit : false;
+      console.log('new report selected', user)
+      this.expenseService.getExpenseCategoryByUser(user).subscribe((res: any) => {
+        this.categories = res.data;
+      });
+    }
     this.updateTotalRate();
   }
 
@@ -139,7 +153,6 @@ export class CreateReportComponent {
             payload.expenseReport = res.expenseReport
           });
           const expenseReportExpId = this.expenseService.expenseReportExpId.getValue();
-          console.log('update: ', payload.expenseAttachments, payload)
           if (payload.expenseAttachments.length >= 1) {
             console.log(payload.expenseAttachments)
           }
@@ -149,15 +162,13 @@ export class CreateReportComponent {
               this.expenseService.expenseReportExpense.next(result.data);
 
               this.toast.success('Expense Report of Expenses is Updated!', 'Successfully!!!');
-              this.closeModal();
+              this.dialogRef.close();
             },
             (err) => {
               this.toast.error('This expense report of expenses cannot be Updated!', 'Error');
             }
           );
         } else if (this.expenseService.isEdit.getValue() == false) {
-
-
           payload.expenseTemplateCategoryFieldValues = this.expenseService.expenseTemplateCategoryFieldValues.getValue();
           if (this.expenseService.changeMode.getValue() == 'Update') {
             const report = this.expenseService.selectedReport.getValue();
@@ -167,6 +178,7 @@ export class CreateReportComponent {
               (result: any) => {
                 this.expenseService.expenseReportExpense.next(result.data);
                 this.toast.success('Expense Report of Expenses is Created!', 'Successfully!!!');
+                this.dialogRef.close();
               },
               (err) => {
                 this.toast.error('This expense report of expenses can not be Added!', 'Error');
@@ -175,7 +187,9 @@ export class CreateReportComponent {
           }
           else {
             payload.expenseReport = null;
+            this.changeStep.emit(1)
             this.expenseService.expenseReportExpense.next(payload);
+            this.dialogRef.close();
             this.closeModal();
           }
         }
@@ -200,7 +214,7 @@ export class CreateReportComponent {
             this.expenseService.expenseReportExpense.next(result.data);
             this.changeStep.emit(1);
             this.toast.success('Expense Report of Expenses is Updated!', 'Successfully!!!');
-            this.closeModal();
+            this.dialogRef.close();
           },
           (err) => {
             this.toast.error('This expense report of expenses cannot be Updated!', 'Error');
@@ -216,6 +230,7 @@ export class CreateReportComponent {
           this.expenseService.addExpenseReportExpenses(payload).subscribe(
             (result: any) => {
               this.expenseService.expenseReportExpense.next(result.data);
+              this.dialogRef.close();
             });
         } else {
           const expenseReportExpense = {
@@ -347,7 +362,6 @@ export class CreateReportComponent {
       let categoryId = this.expenseReportform.value.expenseCategory;
       this.expenseService.getApplicationFieldbyCategory(categoryId).subscribe((res: any) => {
         this.applicationfields = res.data;
-        console.log(this.applicationfields);
         this.expenseFieldsArray.clear();
         this.applicationfields.forEach(field => {
           let expenseApplicationField = null;
@@ -370,7 +384,10 @@ export class CreateReportComponent {
         });
       });
       this.expenseService.tempAndCat.subscribe(res => {
-        this.categoryType = res.data?.find(catType => catType._id === categoryId);
+        console.log(res)
+        const expCategory = res.details;
+        // this.categoryType = res.data?.find(catType => catType._id === categoryId);
+        console.log(expCategory, categoryId)
         const category = res.details?.find(cat => cat.expenseCategory === categoryId);
         this.expenseService.getApplicableFieldByTemplateAndCategory(category.expenseTemplate, category.expenseCategory).subscribe((res: any) => {
           this.applicableCategoryFields = res.data['expenseTemplateCategoryFieldValues'];

@@ -34,6 +34,10 @@
         </div>
     </div>
 
+    <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
+        [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
+        (recordsPerPageChange)="onRecordsPerPageChange($event)">
+    </app-pagination>
 
     <table class="mt-2">
         <thead>
@@ -54,11 +58,10 @@
             <th>Actions</th>
         </thead>
         <tbody>
-            <tr
-                *ngFor="let report of advanceReport  | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }; let i = index">
-                <td>{{report?.employeeName}}</td>
+            <tr *ngFor="let report of advanceReport  | search: searchText; let i = index">
+                <td>{{getUser(report?.employee)}}</td>
                 <td>{{report?.amount}}</td>
-                <td>{{report?.categoryLabel}}</td>
+                <td>{{getCategory(report?.category)}}</td>
                 <td>{{report?.primaryApprovalReason || report?.comment}}</td>
                 <td>{{report?.status}}</td>
                 <td>
@@ -101,7 +104,6 @@
             </tr>
         </tbody>
     </table>
-    <pagination-controls (pageChange)="p = $event" class="pagination d-flex justify-content-end"></pagination-controls>
 </div>
 
 <ng-template #addModal let-modal>

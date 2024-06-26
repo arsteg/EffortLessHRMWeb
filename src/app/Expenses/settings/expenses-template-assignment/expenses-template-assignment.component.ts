@@ -37,6 +37,9 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
   @ViewChild('primaryApproverField') primaryApproverField: ElementRef;
   @ViewChild('secondaryApproverField') secondaryApproverField: ElementRef;
   showApproverFields = true;
+  totalRecords: number
+  recordsPerPage: number = 10;
+  currentPage: number = 1;
 
   constructor(private modalService: NgbModal,
     private dialog: MatDialog,
@@ -227,10 +230,12 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
     }
   }
   open(content: any) {
-    if (this.changeMode == 'Add') { this.showApproverFields = false; 
+    if (this.changeMode == 'Add') {
+      this.showApproverFields = false;
     }
-    else { this.showApproverFields = true;
-     }
+    else {
+      this.showApproverFields = true;
+    }
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
@@ -271,7 +276,11 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
   }
 
   getAllTemplates() {
-    this.expenseService.getAllTemplates().subscribe((res: any) => {
+    let payload = {
+      next: '',
+      skip: ''
+    }
+    this.expenseService.getAllTemplates(payload).subscribe((res: any) => {
       this.templates = res.data;
     })
   }
@@ -280,9 +289,25 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
     const template = this.templates?.find(user => user._id === templateId);
     return template ? template.policyLabel : '';
   }
+
+  onPageChange(page: number) {
+    this.currentPage = page;
+    this.getAllTemplates();
+  }
+
+  onRecordsPerPageChange(recordsPerPage: number) {
+    this.recordsPerPage = recordsPerPage;
+    this.getAllTemplates();
+  }
+  
   getAssignments() {
-    this.expenseService.getTemplateAssignment().subscribe((res: any) => {
+    let pagination = {
+      skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
+      next: this.recordsPerPage.toString()
+    };
+    this.expenseService.getTemplateAssignment(pagination).subscribe((res: any) => {
       this.templateAssignments = res.data;
+      this.totalRecords = res.total;
     });
   }
 

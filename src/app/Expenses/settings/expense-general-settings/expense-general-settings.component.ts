@@ -136,7 +136,11 @@ export class ExpenseGeneralSettingsComponent {
   }
 
   getAllExpensesCategories() {
-    this.expenseService.getExpenseCatgories().subscribe((res: any) => {
+    let payload ={
+      next: '',
+      skip: ''
+    }
+    this.expenseService.getExpenseCatgories(payload).subscribe((res: any) => {
       this.expenseCategories = res.data;
       this.expenseService.allExpenseCategories.next(this.expenseCategories)
     })

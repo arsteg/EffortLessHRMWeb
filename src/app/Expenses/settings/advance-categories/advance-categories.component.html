@@ -12,6 +12,10 @@
                         (click)="clearselectedRequest(); open(addModal)">Add New</button>
                 </div>
             </div>
+            <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
+                [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
+                (recordsPerPageChange)="onRecordsPerPageChange($event)">
+            </app-pagination>
             <table class="px-4">
                 <thead>
                     <tr>
@@ -25,7 +29,7 @@
                 </thead>
                 <tbody>
                     <tr
-                        *ngFor="let categories of advanceCategories |  search: searchText  |  paginate: { itemsPerPage: 5, currentPage: p }; let index = index">
+                        *ngFor="let categories of advanceCategories |  search: searchText ; let index = index">
                         <td class="ps-2">{{categories?.label}}</td>
                         <td class="">
                             <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before"
@@ -42,8 +46,7 @@
                     </tr>
                 </tbody>
             </table>
-            <pagination-controls (pageChange)="p = $event"
-                class="pagination d-flex justify-content-end"></pagination-controls>
+            
         </div>
 
     </div>
@@ -72,14 +75,16 @@
             </div>
 
             <div *ngIf="(addCategory.pristine || !addCategory.valid)  && updateButtonClicked" class="text-danger error">
-                {{ isEdit ? 'Please make changes to the form before submitting.' : 'Please fill in the required fields.' }}
+                {{ isEdit ? 'Please make changes to the form before submitting.' : 'Please fill in the required fields.'
+                }}
             </div>
             <div class="mt-2">
                 <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
                     <button mat-raised-button type="button" (click)="onCancel()">Cancel</button>
-                    <button mat-raised-button class="addBtn" type="submit" (click)="updateButtonClicked = true">{{isEdit?
+                    <button mat-raised-button class="addBtn" type="submit"
+                        (click)="updateButtonClicked = true">{{isEdit?
                         'Update': 'Add'}} </button>
-                   
+
                 </div>
             </div>
 

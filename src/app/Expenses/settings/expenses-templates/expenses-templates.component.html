@@ -12,6 +12,10 @@
                         (click)="changeMode='Add'; clearForm(); open(addModal);">Add New</button>
                 </div>
             </div>
+            <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
+                [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
+                (recordsPerPageChange)="onRecordsPerPageChange($event)">
+            </app-pagination>
             <table class="px-4">
                 <thead>
                     <tr>
@@ -30,7 +34,7 @@
                 </thead>
                 <tbody>
                     <tr
-                        *ngFor="let template of templates | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }; let i = index">
+                        *ngFor="let template of templates | search: searchText; let i = index">
                         <td class="ps-2">{{template?.policyLabel}}</td>
                         <td>{{template?.matchingCategories?.length}}</td>
                         <td class="">
@@ -48,8 +52,7 @@
                     </tr>
                 </tbody>
             </table>
-            <pagination-controls (pageChange)="p = $event"
-                class="pagination d-flex justify-content-end"></pagination-controls>
+           
         </div>
 
     </div>

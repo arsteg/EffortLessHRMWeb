@@ -48,6 +48,9 @@ export class ExpensesCategoriesComponent implements OnInit {
   updatedCategory: any;
   originalFields: any[] = [];
   p: number = 1;
+  totalRecords: number
+  recordsPerPage: number = 10;
+  currentPage: number = 1;
 
   constructor(private modalService: NgbModal,
     private dialog: MatDialog,
@@ -142,11 +145,25 @@ export class ExpensesCategoriesComponent implements OnInit {
       fieldArray.removeAt(valueIndex);
     }
   }
+  onPageChange(page: number) {
+    this.currentPage = page;
+    this.getAllExpensesCategories();
+  }
 
+  onRecordsPerPageChange(recordsPerPage: number) {
+    this.recordsPerPage = recordsPerPage;
+    this.getAllExpensesCategories();
+  }
+  
   getAllExpensesCategories() {
-    this.expenses.getExpenseCatgories().subscribe((res: any) => {
+    let pagination = {
+      skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
+      next: this.recordsPerPage.toString()
+    };
+    this.expenses.getExpenseCatgories(pagination).subscribe((res: any) => {
       this.expenseCategories = res.data;
-    })
+      this.totalRecords = res.total;
+    });
   }
 
   onCancel() {

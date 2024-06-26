@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-team-expense',
@@ -6,11 +6,13 @@ import { Component } from '@angular/core';
   styleUrl: './team-expense.component.css'
 })
 export class TeamExpenseComponent {
-  selectedTab = 1;
-  ngOnInit(){
+  selectedTabs = 1;
+  @Input() selectedTab: number;
+  ngOnInit() {
+    console.log(this.selectedTab);
   }
   selectTab(tabIndex: number) {
-    this.selectedTab = tabIndex;
+    this.selectedTabs = tabIndex;
   }
 
 }

@@ -17,6 +17,10 @@
 
                 </div>
             </div>
+            <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
+        [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
+        (recordsPerPageChange)="onRecordsPerPageChange($event)">
+        </app-pagination>
             <table class="px-4">
                 <thead>
                     <tr>
@@ -44,7 +48,7 @@
                 </thead>
                 <tbody>
                     <tr
-                        *ngFor="let expenseReport of expenseReport | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p };  let i = index">
+                        *ngFor="let expenseReport of expenseReport | search: searchText;  let i = index">
                         <td class="ps-2">{{expenseReport?.title}}</td>
                         <td>{{getUser(expenseReport?.employee)}}</td>
                         
@@ -86,7 +90,6 @@
                     </tr>
                 </tbody>
             </table>
-            <pagination-controls class="pagination d-flex justify-content-end"></pagination-controls>
         </div>
     </div>
 </div>

@@ -28,38 +28,53 @@ export class ShowReportComponent {
   totalAmount: number = 0;
   p: number = 1;
   public sortOrder: string = '';
+  totalRecords: number
+  recordsPerPage: number = 10;
+  currentPage: number = 1;
 
   constructor(private commonService: CommonService,
-              private expenseService: ExpensesService,
-              private dialog: MatDialog,
-              private modalService: NgbModal,
-              private exportService: ExportService) { }
+    private expenseService: ExpensesService,
+    private dialog: MatDialog,
+    private modalService: NgbModal,
+    private exportService: ExportService) { }
 
   ngOnInit(): void {
     this.commonService.populateUsers().subscribe(result => {
       this.allAssignee = result && result.data && result.data.data;
+      console.log(this.allAssignee)
     });
     this.getAdvanceReports();
-  }
-
-  getAdvanceReports() {
-    this.expenseService.getAdvanceReport().subscribe((res: any) => {
-      const rawReports = res.data.filter(expense => expense.status === this.status);
-      this.totalAmount = rawReports.reduce((total, report) => total + report.amount, 0);
-      this.transformReports(rawReports);
-    });
-    this.expenseService.getAdvanceCatgories().subscribe((res: any) => {
+    let payload = {
+      next: '', skip: ''
+    }
+    this.expenseService.getAdvanceCatgories(payload).subscribe((res: any) => {
       this.allCategory = res.data;
     });
   }
 
-  transformReports(rawReports: any) {
-    this.advanceReport = rawReports.map(report => ({
-      ...report,
-      employeeName: this.getUser(report.employee),
-      categoryLabel: this.getCategory(report.category)
-    }));
-    console.log(this.advanceReport)
+  onPageChange(page: number) {
+    this.currentPage = page;
+    this.getAdvanceReports();
+  }
+
+  onRecordsPerPageChange(recordsPerPage: number) {
+    this.recordsPerPage = recordsPerPage;
+    this.getAdvanceReports();
+  }
+
+  getAdvanceReports() {
+    let pagination = {
+      skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
+      next: this.recordsPerPage.toString(),
+      status: this.status
+    };
+    this.expenseService.getAdvanceReport(pagination).subscribe((res: any) => {
+      const rawReports = res.data
+      this.totalAmount = rawReports.reduce((total, report) => total + report.amount, 0);
+      this.advanceReport = res.data;
+      this.totalRecords = res.total;
+    });
+
   }
 
   getUser(employeeId: string) {
@@ -69,7 +84,7 @@ export class ShowReportComponent {
 
   getCategory(categoryId: string) {
     const matchingCategory = this.allCategory?.find(category => category?._id === categoryId);
-    return matchingCategory ? `${matchingCategory?.label}` : '';
+    return matchingCategory ? `${matchingCategory?.label}` : 'Category does not exist';
   }
 
   open(content: any) {
@@ -91,16 +106,7 @@ export class ShowReportComponent {
   }
 
   refreshExpenseReportTable() {
-    this.expenseService.getAdvanceReport().subscribe(
-      (res) => {
-        const rawReports = res.data.filter(expense => expense.status === this.status);
-        this.transformReports(rawReports);
-        this.advanceReportRefreshed.emit();
-      },
-      (error) => {
-        console.error('Error refreshing expense template table:', error);
-      }
-    );
+    this.getAdvanceReports();
   }
 
   onClose(event) {
@@ -117,7 +123,7 @@ export class ShowReportComponent {
       data: { report }
     });
     dialogRef.afterClosed().subscribe(result => {
-      this.refreshExpenseReportTable(); 
+      this.refreshExpenseReportTable();
     });
   }
 

@@ -75,7 +75,11 @@ export class AddExpenseReportComponent {
   }
 
   getAllCatgeories() {
-    this.expenseService.getExpenseCatgories().subscribe((res: any) => {
+    let payload = {
+      next: '',
+      skip: ''
+    }
+    this.expenseService.getExpenseCatgories(payload).subscribe((res: any) => {
       this.allCategories = res.data;
     })
   }

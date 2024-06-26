@@ -27,6 +27,9 @@ export class AdvanceCategoriesComponent implements OnInit{
   initialLabelValue:string;
   public sortOrder: string = '';
   updateButtonClicked = false;
+  totalRecords: number
+  recordsPerPage: number = 10;
+  currentPage: number = 1;
 
   constructor(private fb: FormBuilder,
     private dialog: MatDialog,
@@ -69,10 +72,23 @@ export class AdvanceCategoriesComponent implements OnInit{
     this.isEdit = false;
     this.addCategory.reset();
   }
-  
+  onPageChange(page: number) {
+    this.currentPage = page;
+    this.getAllAdvanceCategories();
+  }
+
+  onRecordsPerPageChange(recordsPerPage: number) {
+    this.recordsPerPage = recordsPerPage;
+    this.getAllAdvanceCategories();
+  }
   getAllAdvanceCategories() {
-    this.expenseService.getAdvanceCatgories().subscribe((res: any) => {
+    let pagination = {
+      skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
+      next: this.recordsPerPage.toString()
+    };
+    this.expenseService.getAdvanceCatgories(pagination).subscribe((res: any) => {
       this.advanceCategories = res.data;
+      this.totalRecords = res.total;
     })
   }
 

@@ -4,6 +4,8 @@ import { ExpensesService } from 'src/app/_services/expenses.service';
 import { ViewReportsComponent } from '../../advance-reports/view-reports/view-reports.component';
 import { CommonService } from 'src/app/common/common.service';
 import { MatDialog } from '@angular/material/dialog';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { ViewComponent } from '../view/view.component';
 
 @Component({
   selector: 'app-show-team-expenses',
@@ -25,21 +27,35 @@ export class ShowTeamExpensesComponent {
   allCategory: any[];
   public sortOrder: string = '';
   totalAmount: number = 0;
+  totalRecords: number
+  recordsPerPage: number = 10;
+  currentPage: number = 1;
+  selectedReport: any;
+  updateExpenseReport: FormGroup;
+  @Input() selectedTab: number;
 
   constructor(private modalService: NgbModal,
-    private expenseService: ExpensesService, 
+    private expenseService: ExpensesService,
     private commonService: CommonService,
-    private dialog: MatDialog) { }
+    private dialog: MatDialog,
+    private fb: FormBuilder) {
+    this.updateExpenseReport = this.fb.group({
+      employee: [''],
+      title: [''],
+      status: [''],
+      primaryApprovalReason: [''],
+      secondaryApprovalReason: ['']
+    })
+  }
 
   ngOnInit() {
+    console.log(this.selectedTab)
     this.getexpenseReport();
     this.commonService.populateUsers().subscribe(result => {
       this.allAssignee = result && result.data && result.data.data;
     });
-    this.expenseService.getExpenseCatgories().subscribe((res: any) => {
-      this.allCategory = res.data;
-    });
   }
+
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
@@ -70,36 +86,70 @@ export class ShowTeamExpensesComponent {
     }
   }
   refreshExpenseReportTable() {
-    this.expenseService.getExpenseReport().subscribe(
-      (res) => {
-        this.expenseReport = res.data;
-        this.expenseTemplateReportRefreshed.emit();
-      },
-      (error) => {
-        console.error('Error refreshing expense template table:', error);
-      }
-    );
+    // this.expenseService.getExpenseReport().subscribe(
+    //   (res) => {
+    //     this.expenseReport = res.data;
+    //     this.expenseTemplateReportRefreshed.emit();
+    //   },
+    //   (error) => {
+    //     console.error('Error refreshing expense template table:', error);
+    //   }
+    // );
+  }
+  onPageChange(page: number) {
+    this.currentPage = page;
+    this.getexpenseReport();
   }
 
+  onRecordsPerPageChange(recordsPerPage: number) {
+    this.recordsPerPage = recordsPerPage;
+    this.getexpenseReport();
+  }
+
+
   getexpenseReport() {
-    this.expenseService.getExpenseReportByTeam().subscribe((res: any) => {
-      this.expenseReport = res.data.filter(expense => expense.status === this.status);
+    let pagination = {
+      skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
+      next: this.recordsPerPage.toString(),
+      status: this.status
+    };
+    this.expenseService.getExpenseReportByTeam(pagination).subscribe((res: any) => {
+      this.expenseReport = res.data;
       this.totalAmount = this.expenseReport.reduce((total, report) => total + report.amount, 0);
+      this.totalRecords = res.total
     })
   }
 
-  openStatusModal(report: any, status: string): void {
-    report.status = status;
-    this.expenseService.advanceReport.next(report);
-   
-      console.log('The modal was closed');
-    this.modalService.open(report
-      , { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-    });
+  updateApprovedReport() {
+    let id = this.selectedReport._id;
+    console.log(id)
+    let payload = {
+      employee: this.selectedReport.employee,
+      title: this.selectedReport.title,
+      status: 'Approved',
+      primaryApprovalReason: this.updateExpenseReport.value.primaryApprovalReason,
+      secondaryApprovalReason: ''
+    }
+    console.log(id, payload);
+    this.expenseService.updateExpenseReport(id, payload).subscribe((res: any) => {
+      this.expenseReport = this.expenseReport.filter(report => report._id !== id);
+    })
   }
+
+  updateRejectedReport() {
+    let id = this.selectedReport._id;
+    let payload = {
+      employee: this.selectedReport.employee,
+      title: this.selectedReport.title,
+      status: 'Rejected',
+      primaryApprovalReason: this.updateExpenseReport.value.primaryApprovalReason,
+      secondaryApprovalReason: ''
+    }
+    this.expenseService.updateExpenseReport(id, payload).subscribe((res: any) => {
+      this.expenseReport = this.expenseReport.filter(report => report._id !== id);
+    })
+  }
+
   getCategory(categoryId: string) {
     const matchingCategory = this.allCategory?.find(category => category._id === categoryId);
     return matchingCategory ? `${matchingCategory.label}` : 'Category Not Found';
@@ -115,8 +165,10 @@ export class ShowTeamExpensesComponent {
     const categoryLabel = this.getCategory(selectedReport.category);
     selectedReport.employee = userName;
     selectedReport.category = categoryLabel;
+    console.log(selectedReport);
     this.expenseService.advanceReport.next(selectedReport);
-    const dialogRef = this.dialog.open(ViewReportsComponent, {
+
+    const dialogRef = this.dialog.open(ViewComponent, {
       width: '50%',
       data: { report: selectedReport }
     });
@@ -148,5 +200,5 @@ export class ShowTeamExpensesComponent {
     }
     return totalAmount;
   }
-  
+
 }

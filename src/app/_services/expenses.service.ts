@@ -36,6 +36,7 @@ export class ExpensesService {
   tempAndCat: any = new BehaviorSubject<void>(null);
   expenseTemplateCategoryFieldValues: any = new BehaviorSubject('');
   changeMode: any = new BehaviorSubject('');
+  tabIndex: any = new BehaviorSubject('')
 
   triggerUpdateTable() {
     this.updateTableSubject.next();
@@ -47,10 +48,11 @@ export class ExpensesService {
   public getToken() {
     return localStorage.getItem('jwtToken');
   }
+
   // Expense Category
 
-  getExpenseCatgories(): Observable<response<any>> {
-    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/expense-categories`, this.httpOptions);
+  getExpenseCatgories(payload: any): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/expense-categories-list`,payload, this.httpOptions);
     return response;
   }
 
@@ -136,8 +138,8 @@ export class ExpensesService {
     return response;
   }
 
-  getAllTemplates(): Observable<response<any>> {
-    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/expense-templates`, this.httpOptions);
+  getAllTemplates(payload: any): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/expense-templates-list`, payload, this.httpOptions);
     return response;
   }
 
@@ -178,14 +180,14 @@ export class ExpensesService {
     return response;
   }
 
-  getTemplateAssignment(): Observable<response<any>> {
-    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/employee-expense-assignments`, this.httpOptions);
+  getTemplateAssignment(payload: any): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/employee-expense-assignments-list`, payload, this.httpOptions);
     return response;
   }
   //  advance categories
 
-  getAdvanceCatgories(): Observable<response<any>> {
-    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/advance-categories`, this.httpOptions);
+  getAdvanceCatgories(payload: any): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/advance-categories-list`, payload, this.httpOptions);
     return response;
   }
 
@@ -211,8 +213,8 @@ export class ExpensesService {
 
   //  advance Templates
 
-  getAdvanceTemplates(): Observable<response<any>> {
-    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/advance-templates`, this.httpOptions);
+  getAdvanceTemplates(payload: any): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/advance-templates-list`, payload, this.httpOptions);
     return response;
   }
 
@@ -245,8 +247,8 @@ export class ExpensesService {
     return response;
   }
 
-  getAdvanceTemplateAssignment(): Observable<response<any>> {
-    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/employee-advance-assignments`, this.httpOptions);
+  getAdvanceTemplateAssignment(payload: any): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/employee-advance-assignments-list`, payload,  this.httpOptions);
     return response;
   }
 
@@ -266,13 +268,13 @@ export class ExpensesService {
     return response;
   }
 
-  getExpenseReport(): Observable<response<any>> {
-    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/expense-reports`, this.httpOptions);
+  getExpenseReport(payload: any): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/expense-reports-list`, payload,this.httpOptions);
     return response;
   }
 
-  getExpenseReportByUser(userId: string): Observable<response<any>> {
-    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/expense-reports-by-user/${userId}`, this.httpOptions);
+  getExpenseReportByUser(userId: string, payload: any): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/expense-reports-by-user/${userId}`,payload, this.httpOptions);
     return response;
   }
 
@@ -331,8 +333,8 @@ export class ExpensesService {
     var response = this.http.put<response<any>>(`${environment.apiUrlDotNet}/expense/advance/${id}`, advanceReport, this.httpOptions);
     return response;
   }
-  getAdvanceReport(): Observable<response<any>> {
-    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/advance`, this.httpOptions);
+  getAdvanceReport(payload: any): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/advance-list`, payload, this.httpOptions);
     return response;
   }
 
@@ -341,8 +343,8 @@ export class ExpensesService {
     return response;
   }
 
-  getExpenseReportByTeam(): Observable<response<any>> {
-    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/expense-reports-by-team`, this.httpOptions);
+  getExpenseReportByTeam(payload: any): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/expense-reports-by-team`, payload, this.httpOptions);
     return response;
   }
 

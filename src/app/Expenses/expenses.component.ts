@@ -8,7 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./expenses.component.css']
 })
 export class ExpensesComponent implements OnInit {
-  selectedTab: number = 1;
+  selectedTab = 1;
   view = localStorage.getItem('adminView');
 
   constructor(private auth: AuthenticationService,
@@ -16,7 +16,9 @@ export class ExpensesComponent implements OnInit {
     private route: ActivatedRoute
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    console.log(this.selectedTab)
+  }
 
   selectTab(tabIndex: number) {
     this.selectedTab = tabIndex;

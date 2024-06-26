@@ -33,6 +33,9 @@ export class AdvanceTemplatesComponent implements OnInit {
   users: any;
   public sortOrder: string = '';
   p: number = 1;
+  totalRecords: number
+  recordsPerPage: number = 10;
+  currentPage: number = 1;
 
   constructor(private fb: FormBuilder,
     private modalService: NgbModal,
@@ -109,17 +112,33 @@ export class AdvanceTemplatesComponent implements OnInit {
     });
   }
 
+  onPageChange(page: number) {
+    this.currentPage = page;
+    this.getAllTemplates();
+  }
 
+  onRecordsPerPageChange(recordsPerPage: number) {
+    this.recordsPerPage = recordsPerPage;
+    this.getAllTemplates();
+  }
   getAllTemplates() {
-    this.expenseService.getAdvanceTemplates().subscribe((res: any) => {
+    let pagination = {
+      skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
+      next: this.recordsPerPage.toString()
+    };
+    this.expenseService.getAdvanceTemplates(pagination).subscribe((res: any) => {
       this.list = res.data;
-
+      this.totalRecords = res.total
     })
   }
 
 
   getAlladvanceCategories() {
-    this.expenseService.getAdvanceCatgories().subscribe((res: any) => {
+    let payload = {
+      next: '',
+      skip: ''
+    }
+    this.expenseService.getAdvanceCatgories(payload).subscribe((res: any) => {
       this.advanceCategoriesall = res.data;
     })
   }
@@ -141,8 +160,8 @@ export class AdvanceTemplatesComponent implements OnInit {
 
 
   addAdvanceTemplate() {
-   
-   if(this.addAdvanceTempForm.valid) {
+
+    if (this.addAdvanceTempForm.valid) {
       if (this.changeMode === 'Add') {
         let payload = {
           policyLabel: this.addAdvanceTempForm.value['policyLabel'],

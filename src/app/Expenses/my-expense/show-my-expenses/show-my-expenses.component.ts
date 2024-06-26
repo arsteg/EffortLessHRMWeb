@@ -29,20 +29,28 @@ export class ShowMyExpensesComponent {
   totalAmount: number = 0;
   allAssignee: any[];
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  totalRecords: number;
+  recordsPerPage: number = 10;
+  currentPage: number = 1;
+  @Input() selectedTab: number;
 
   constructor(private modalService: NgbModal,
     private expenseService: ExpensesService,
     private auth: AuthenticationService,
     private dialog: MatDialog,
     private commonService: CommonService,
-  private exportService: ExportService) { }
+    private exportService: ExportService) { }
 
   ngOnInit() {
     this.getExpenseByUser();
     this.commonService.populateUsers().subscribe(result => {
       this.allAssignee = result && result.data && result.data.data;
     });
-    this.expenseService.getExpenseCatgories().subscribe((res: any) => {
+    let payload = {
+      next: '',
+      skip: ''
+    }
+    this.expenseService.getExpenseCatgories(payload).subscribe((res: any) => {
       this.allCategory = res.data;
     });
   }
@@ -58,6 +66,7 @@ export class ShowMyExpensesComponent {
   }
 
   open(content: any) {
+    this.expenseService.tabIndex.next(this.selectedTab);
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
@@ -66,6 +75,7 @@ export class ShowMyExpensesComponent {
   }
 
   onChangeStep(event) {
+    this.selectedTab
     this.step = event;
   }
 
@@ -82,21 +92,31 @@ export class ShowMyExpensesComponent {
   }
 
   refreshExpenseReportTable() {
-      this.expenseService.getExpenseReportByUser(this.currentUser.id).subscribe((res: any) => {
-        this.expenseReport = res.data;
-        this.totalAmount = this.expenseReport.reduce((total, report) => total + report.amount, 0);
-        this.expenseTemplateReportRefreshed.emit();
-      })
+    this.getExpenseByUser();
+  }
+  onPageChange(page: number) {
+    this.currentPage = page;
+    this.getExpenseByUser();
+  }
+
+  onRecordsPerPageChange(recordsPerPage: number) {
+    this.recordsPerPage = recordsPerPage;
+    this.getExpenseByUser();
   }
 
   getExpenseByUser() {
-      this.expenseService.getExpenseReportByUser(this.currentUser.id).subscribe((res: any) => {
-        this.expenseReport = res.data;
-        this.totalAmount = this.expenseReport.reduce((total, report) => total + report.amount, 0);
-      })
+    let pagination = {
+      skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
+      next: this.recordsPerPage.toString()
+    };
+    this.expenseService.getExpenseReportByUser(this.currentUser.id, pagination).subscribe((res: any) => {
+      this.expenseReport = res.data;
+      this.totalAmount = this.expenseReport.reduce((total, report) => total + report.amount, 0);
+      this.totalRecords = res.total;
+    })
   }
-  
-   getCategory(categoryId: string) {
+
+  getCategory(categoryId: string) {
     const matchingCategory = this.allCategory?.find(category => category._id === categoryId);
     return matchingCategory ? `${matchingCategory.label}` : 'Category Not Found';
   }
@@ -143,21 +163,21 @@ export class ShowMyExpensesComponent {
   }
   exportToCsv() {
     const dataToExport = this.expenseReport.map((report) => {
-        let totalAmount = report.amount || 0;
-        if (report.expenseReportExpense && report.expenseReportExpense.length > 0) {
-            totalAmount += report.expenseReportExpense.reduce((acc, rep) => acc + (rep.amount || 0), 0);
-        }
-        return {
-            title: report.title,
-            amount: report?.amount,
-            totalAmount: totalAmount,
-            isReimbursable: report?.expenseReportExpense[0]?.isReimbursable ? report?.expenseReportExpense[0]?.amount : 0,
-            isBillable: report?.expenseReportExpense[0]?.isBillable ? report?.expenseReportExpense[0]?.amount : 0,
-            status: report?.status
-        };
+      let totalAmount = report.amount || 0;
+      if (report.expenseReportExpense && report.expenseReportExpense.length > 0) {
+        totalAmount += report.expenseReportExpense.reduce((acc, rep) => acc + (rep.amount || 0), 0);
+      }
+      return {
+        title: report.title,
+        amount: report?.amount,
+        totalAmount: totalAmount,
+        isReimbursable: report?.expenseReportExpense[0]?.isReimbursable ? report?.expenseReportExpense[0]?.amount : 0,
+        isBillable: report?.expenseReportExpense[0]?.isBillable ? report?.expenseReportExpense[0]?.amount : 0,
+        status: report?.status
+      };
     });
     this.exportService.exportToCSV('My-Expense-Report', 'My-Expense-Report', dataToExport);
-}
+  }
 
 }
 

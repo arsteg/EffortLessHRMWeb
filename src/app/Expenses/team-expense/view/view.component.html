@@ -1,0 +1,59 @@
+<div class=" d-flex justify-content-between">
+    <div class="">
+        <h4 class="modal-title text-start">Show Expense Details</h4>
+    </div>
+    
+    <div mat-dialog-actions>
+        <button mat-button mat-dialog-close><mat-icon aria-hidden="false" aria-label="Example close icon"
+                fontIcon="close"></mat-icon></button>
+
+
+    </div>
+</div>
+<div mat-dialog-content>    <hr class="mt-0">
+<div class="row">
+    <div class="tableContainer">
+        <table>
+            <tr>
+                <th class="w-50">Expense Report</th>
+                <td>{{expenseReport?.title}}</td>
+            </tr>
+            <tr>
+                <th class="w-50">Incurred Date</th>
+                <td>{{expenseReportExpense?.incurredDate | date: 'mediumDate'}}</td>
+            </tr>
+            <tr>
+                <th class="w-50">Reimbursable</th>
+                <td><span *ngIf="expenseReportExpense?.isReimbursable == true; else notReimbursable">
+                        <mat-icon style="color: green;">check</mat-icon>
+                    </span>
+                    <ng-template #notReimbursable>
+                        <mat-icon style="color: red;">close</mat-icon>
+                    </ng-template>
+                </td>
+            </tr>
+            <tr>
+                <th class="w-50">Billable</th>
+                <td><span *ngIf="expenseReportExpense?.isBillable == true; else notisBillable">
+                    <mat-icon style="color: green;">check</mat-icon>
+                </span>
+                <ng-template #notisBillable>
+                    <mat-icon style="color: red;">close</mat-icon>
+                </ng-template></td>
+            </tr>
+            <tr>
+                <th class="w-50">Status</th>
+                <td>{{expenseReport?.status}}</td>
+            </tr>
+            <tr>
+                <th class="w-50">Rate Fix</th>
+                <td></td>
+            </tr>
+            <tr>
+                <th class="w-50">Expense Reason</th>
+                <td>{{expenseReportExpense?.reason}}</td>
+            </tr>
+        </table>
+    </div>
+</div>
+</div>

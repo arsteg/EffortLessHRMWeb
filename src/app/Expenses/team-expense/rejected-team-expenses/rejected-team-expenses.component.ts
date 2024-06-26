@@ -12,8 +12,9 @@ export class RejectedTeamExpensesComponent {
     view: true,
     edit: true,
     cancel: false
-  };
+  }
+
   ngOnInit(){
-    console.log('test')
+    console.log(this.actionOptions)
   }
 }
