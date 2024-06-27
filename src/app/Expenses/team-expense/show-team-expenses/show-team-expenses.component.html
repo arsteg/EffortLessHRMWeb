@@ -88,12 +88,12 @@
                                     </span>
                                 </li>
 
-                                    <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
-                                        *ngIf="actionOptions.view" data-bs-target="#viewModal"
-                                        (click)="openSecondModal(report)">
-                                        <i class="fas fa-eye dropdown-item w-25"></i><span
-                                            class="pt-1 text-muted">View</span>
-                                    </li>
+                                <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
+                                data-bs-target="#viewModal"
+                                (click)=" open(viewModal); selectedReport = report;">
+                                <i class="fas fa-eye dropdown-item w-25"></i><span
+                                    class="pt-1 text-muted">View</span>
+                            </li>
 
                                 </ul>
                             </div>
@@ -112,6 +112,12 @@
         (close)="onClose($event)" (updateExpenseReportTable)="refreshExpenseReportTable()"></app-create-report>
 </ng-template>
 
+<ng-template #viewModal let-modal>
+    <app-view-report (close)="onClose($event)" (changeStep)="onChangeStep($event)" *ngIf="step == 1"
+        [report]="selectedReport"></app-view-report>
+    <app-view-expense-report-expenses (close)="onClose($event)" (changeStep)="onChangeStep($event)"
+        *ngIf="step == 2"></app-view-expense-report-expenses>
+</ng-template>
 <!-- Approve status -->
 <div class="modal" id="ApproveModal">
     <div class="modal-dialog modal-dialog-centered">

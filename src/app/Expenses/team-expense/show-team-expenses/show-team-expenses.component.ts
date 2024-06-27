@@ -66,6 +66,7 @@ export class ShowTeamExpensesComponent {
     }
   }
   open(content: any) {
+    this.expenseService.expenseReportExpense.next(this.selectedReport);
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
@@ -166,8 +167,6 @@ export class ShowTeamExpensesComponent {
     selectedReport.employee = userName;
     selectedReport.category = categoryLabel;
     console.log(selectedReport);
-    this.expenseService.advanceReport.next(selectedReport);
-
     const dialogRef = this.dialog.open(ViewReportComponent, {
       width: '50%',
       data: { report: selectedReport }

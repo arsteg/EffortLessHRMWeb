@@ -1,7 +1,7 @@
 <div class="modal-body">
     <div class=" d-flex justify-content-between">
         <div class="">
-            <h4 class="modal-title text-start">Show Expense Details</h4>
+            <h4 class="modal-title text-start">Show Expense Report</h4>
         </div>
         <div class=""><button type="button" data-bs-dismiss="modal" (click)="closeModal()"
                 class="btn-close text-end"></button>
@@ -63,7 +63,7 @@
                             </ng-template>
                         </td>
                         <td>
-                            <span *ngIf="report.documentLink" (click)="selectedReport = report; downloadFile();">
+                            <span *ngIf="report.documentLink" matTooltip="{{getFileNameFromUrl(report?.documentLink)}}" matTooltipPosition="below" (click)="selectedReport = report; downloadFile();">
                                 <i class="bi bi-paperclip text-muted" style="font-size: large;"></i>
                             </span>
 

@@ -33,6 +33,8 @@ export class ShowMyExpensesComponent {
   recordsPerPage: number = 10;
   currentPage: number = 1;
   @Input() selectedTab: number;
+  selectedReport;
+
 
   constructor(private modalService: NgbModal,
     private expenseService: ExpensesService,
@@ -67,6 +69,8 @@ export class ShowMyExpensesComponent {
 
   open(content: any) {
     this.expenseService.tabIndex.next(this.selectedTab);
+    this.expenseService.expenseReportExpense.next(this.selectedReport);
+
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
@@ -129,14 +133,17 @@ export class ShowMyExpensesComponent {
   openSecondModal(selectedReport: any): void {
     const categoryLabel = this.getCategory(selectedReport.category);
     selectedReport.category = categoryLabel;
-    this.expenseService.advanceReport.next(selectedReport);
+    // this.expenseService.advanceReport.next(selectedReport);
+    this.expenseService.expenseReportExpense.next(selectedReport);
     const dialogRef = this.dialog.open(ViewReportComponent, {
       width: '50%',
-      data: { report: selectedReport }
+      // data: { report: selectedReport }
     });
     dialogRef.afterClosed().subscribe(result => {
     });
   }
+
+
   calculateTotalAmount(expenseReport: any): number {
     let totalAmount = 0;
     totalAmount += expenseReport.amount || 0;
