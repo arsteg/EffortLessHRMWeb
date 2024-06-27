@@ -1,4 +1,4 @@
-<div class="main-content mt-5 pt-5">
+<div class="main-content mt-5 pt-3">
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-8">
@@ -7,25 +7,24 @@
             <p class="mb-0">({{filteredList?.length}}) Records Found</p>
             <div class="d-flex align-items-center">
               <span class="bi bi-search searchIcon"></span>
-               <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
-                        name="searchText" aria-label="default input example">
+              <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
+                name="searchText" aria-label="default input example">
             </div>
           </div>
-          <table class="table table-striped">
+          <table>
             <thead>
-              <tr>
-                <th scope="col">Name</th>
-                <th scope="col">Description</th>
-                <th scope="col">Type</th>
-                <th scope="col">Date</th>
-                <th scope="col">Recurring</th>
-                <th scope="col">Frequency</th>
-                <th scope="col">Lead Time</th>
-                <th scope="col">Actions</th>
-              </tr>
+              <th scope="col">Name</th>
+              <th scope="col">Description</th>
+              <th scope="col">Type</th>
+              <th scope="col">Date</th>
+              <th scope="col">Recurring</th>
+              <th scope="col">Frequency</th>
+              <th scope="col">Lead Time</th>
+              <th scope="col">Actions</th>
             </thead>
             <tbody>
-              <tr *ngFor="let eventNotification of filteredList | search: searchText | paginate: { itemsPerPage: 10, currentPage: p }">
+              <tr
+                *ngFor="let eventNotification of filteredList | search: searchText">
                 <td class="ps-1">{{ eventNotification.name }}</td>
                 <td class="ps-1">{{ eventNotification.description }}</td>
                 <td class="ps-1">{{ getNotificationTypeName(eventNotification.eventNotificationType) }}</td>
@@ -34,12 +33,12 @@
                 <td class="ps-2">{{ eventNotification.recurringFrequency }}</td>
                 <td class="ps-1">{{ eventNotification.leadTime }}</td>
                 <td>
-                  <button class="actions" mat-mini-fab title="Update Event" (click)="editEventNotification(eventNotification)"
-                    aria-label="Update Event">
+                  <button class="actions" mat-mini-fab title="Update Event"
+                    (click)="editEventNotification(eventNotification)" aria-label="Update Event">
                     <i class="bi bi-pencil-fill"></i>
                   </button>
-                  <button class="actions ms-2" mat-mini-fab title="Delete Event" (click)="deleteEventNotification(eventNotification)"
-                    aria-label="Delete Event">
+                  <button class="actions ms-2" mat-mini-fab title="Delete Event"
+                    (click)="deleteEventNotification(eventNotification)" aria-label="Delete Event">
                     <i class="bi bi-trash"></i>
                   </button>
                 </td>
@@ -47,16 +46,13 @@
             </tbody>
           </table>
         </div>
-        <div class="d-flex justify-content-center">
-          <pagination-controls (pageChange)="p = $event"
-            class="pagination d-flex justify-content-end"></pagination-controls>
-        </div>
       </div>
       <div class="col-md-4">
         <h2 class="contentHeading">{{ isEdit ? 'Edit' : 'Add' }} Event Notification</h2>
-        <form [formGroup]="eventNotificationForm" (ngSubmit)="isEdit ? updateEventNotification() : addEventNotification()"
-          class="mt-4 p-3 bg-light border rounded">
-          <div class="form-group row">
+        <form [formGroup]="eventNotificationForm"
+          (ngSubmit)="isEdit ? updateEventNotification() : addEventNotification()"
+          class="p-3 bg-light border rounded">
+          <div class="form-group row mt-2">
             <div class="col-sm-0">
               Name:
             </div>
@@ -64,7 +60,7 @@
               <input type="text" formControlName="name" class="form-control" (focus)="onEditFocus($event)">
             </div>
           </div>
-          <div class="form-group row">
+          <div class="form-group row mt-2">
             <div class="col-sm-0">
               Description:
             </div>
@@ -72,7 +68,7 @@
               <input type="text" formControlName="description" class="form-control" (focus)="onEditFocus($event)">
             </div>
           </div>
-          <div class="form-group row">
+          <div class="form-group row mt-2">
             <div class="col-sm-0">
               Type:
             </div>
@@ -81,12 +77,12 @@
             </div> -->
             <div class="col-sm-12">
               <select class="custom-select  p-2" formControlName="eventNotificationType" required>
-                                    <option [value]="notificationType._id" *ngFor="let notificationType of notificationTypeList ">
-                                        {{notificationType.name}}</option>
-                                </select>
+                <option [value]="notificationType._id" *ngFor="let notificationType of notificationTypeList ">
+                  {{notificationType.name}}</option>
+              </select>
             </div>
           </div>
-          <div class="form-group row">
+          <div class="form-group row mt-2">
             <div class="col-sm-0">
               Date:
             </div>
@@ -94,7 +90,7 @@
               <input type="date" formControlName="date" class="form-control" (focus)="onEditFocus($event)">
             </div>
           </div>
-          <div class="form-group row">
+          <div class="form-group row mt-2">
             <div class="col-sm-0">
               Recurring:
             </div>
@@ -102,18 +98,18 @@
               <input type="checkbox" formControlName="isRecurring" class="form-check-input">
             </div>
           </div>
-          <div class="form-group row" *ngIf="eventNotificationForm.get('isRecurring').value">
+          <div class="form-group row mt-2" *ngIf="eventNotificationForm.get('isRecurring').value">
             <div class="col-sm-0">
               Frequency:
             </div>
             <div class="col-sm-12">
               <select class="custom-select  p-2" formControlName="recurringFrequency" required>
                 <option [value]="frequency" *ngFor="let frequency of ['daily',  'weekly', 'monthly', 'annually'] ">
-                    {{frequency}}</option>
-            </select>
+                  {{frequency}}</option>
+              </select>
             </div>
           </div>
-          <div class="form-group row">
+          <div class="form-group row mt-2">
             <div class="col-sm-0">
               Lead Time:
             </div>
@@ -128,7 +124,7 @@
                 isEdit ? 'Update' : 'Add' }}</button>
             </div>
             <div class="">
-              <button type="button" *ngIf="isEdit" (click)="isEdit = false" mat-raised-button
+              <button type="button" *ngIf="isEdit" (click)="isEdit = false;" mat-raised-button
                 style="min-width: 100px;">Cancel</button>
             </div>
           </div>
