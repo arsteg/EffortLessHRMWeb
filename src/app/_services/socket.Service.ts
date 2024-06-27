@@ -33,4 +33,9 @@ export class SocketService {
   getUsersOnline(): Observable<any> {
     return this.socket.fromEvent<User[]>('users-online');
   }
+
+  // Get the list of users online
+  getImageOnline(): Observable<any> {
+    return this.socket.fromEvent<User[]>('liveImage');
+  }
 }

@@ -6,6 +6,7 @@ import { environment } from 'src/environments/environment';
 import { Observable, catchError, throwError } from 'rxjs';
 import { TimeLogService } from 'src/app/_services/timeLogService';
 import { CommonService } from 'src/app/common/common.service';
+import { SocketService } from 'src/app/_services/socket.Service';
 
 @Component({
   selector: 'app-live-screen',
@@ -26,19 +27,19 @@ export class LiveScreenComponent {
   private http: HttpClient,
   private timelog: TimeLogService,
   public commonService: CommonService,
+  private socketService : SocketService
 ) {
     this.userIds = data.id;
     this.isSingle = this.userIds.length == 1;
-    //this.liveScreenFor = this.userIds.length>1;
     const requestBody = { users: this.userIds };
     this.timelog.createLiveScreenRecord(requestBody).subscribe(result => {
       let response = result;
 
-      if (!this.intervalId) {
-        this.intervalId = setInterval(() => {
-          this.backgroundTask();
-        }, 500);
-      }
+      // if (!this.intervalId) {
+      //   this.intervalId = setInterval(() => {
+      //     this.backgroundTask();
+      //   }, 500);
+      // }
     });
   }
 
@@ -47,6 +48,30 @@ export class LiveScreenComponent {
     this.commonService.populateUsers().subscribe(result => {
       this.allUsers = result && result.data && result.data.data;
     });
+
+    //this.testuserid = this.userIds[0];//JSON.parse(localStorage.getItem('currentUser')).id
+    this.socketService.registerUser(this.userIds[0]);
+
+    // // Emit user details to the server
+    // let aaa:any="664229eec5a0b7f0dc0b7e0f";
+    // this.socketService.emitUser(aaa);
+
+    this.socketService.getImageOnline().subscribe((message) => {
+      this.imageVideoSingleUser = this._sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + message);
+    });
+
+    // //this.socket.connect();
+    // this.socket.on('connect', () => {
+    //   this.socket.emit('message', '664229eec5a0b7f0dc0b7e0f'); // Send user ID or any initial message
+    // });
+
+
+    // this.socket.on('message', (data: string) => {
+    //   let testdata = data;
+    //   this.imageVideoSingleUser = this._sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + testdata);
+    // });
+    // //send message to server
+    // this.socket.emit('message', "664229eec5a0b7f0dc0b7e0f");
   }
 
   backgroundTask() {
@@ -125,6 +150,7 @@ export class LiveScreenComponent {
   }
 
   ngOnDestroy() {
+    //this.socket.disconnect();
     // Clear the interval to stop the background task
     if (this.intervalId) {
       clearInterval(this.intervalId);
