@@ -747,7 +747,7 @@ label {
 }
 
 .contentHeading {
-  color: #ff7b1d
+  color: #ff7b1d !important;
 }
 
 .btn-outline-primary {
@@ -863,10 +863,21 @@ option:hover {
   height: 85% !important;
 }
 
-html .mat-mdc-mini-fab.mat-accent{
+html .mat-mdc-mini-fab.mat-accent {
   --mat-fab-foreground-color: #7bbf2a;
 }
 
-h2{
+h2 {
   color: #64728c;
+}
+
+.mdc-checkbox .mdc-checkbox__native-control:enabled:checked~.mdc-checkbox__background{
+  background: #76bc21 !important;
+  border-color: #76bc21 !important;
+}
+.mat-mdc-radio-button .mdc-radio .mdc-radio__native-control:enabled:checked+.mdc-radio__background .mdc-radio__outer-circle, .mat-mdc-radio-button .mdc-radio .mdc-radio__native-control:enabled+.mdc-radio__background .mdc-radio__inner-circle{
+  border-color: #76bc21 !important; 
+}
+.mat-mdc-radio-button.mat-mdc-radio-checked .mdc-radio__background::before {
+  background: #76bc21 !important;
 }

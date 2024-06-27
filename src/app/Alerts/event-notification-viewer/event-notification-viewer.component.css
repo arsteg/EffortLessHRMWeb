@@ -1,7 +1,7 @@
-/* In styles.css or your component-specific stylesheet */
 
 .contentHeading {
-  font-weight: bold;
+  font-weight: 400;
+  font-size: large;
   margin-bottom: 10px;
 }
 

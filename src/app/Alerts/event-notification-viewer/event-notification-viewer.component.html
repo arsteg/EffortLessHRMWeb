@@ -1,5 +1,5 @@
-<div class="container-fluid" style="margin-top: 50px;">
-  <div class="row">
+<div class="mainContent mt-5 pt-2 container-fluid">
+  <div class="row tableContainer bg-white pt-3">
     <div class="col-md-6">
       <p id="example-radio-group-label" class="contentHeading">Notifications</p>
       <mat-radio-group id="member" name="member" aria-labelledby="example-radio-group-label"
@@ -11,9 +11,9 @@
       </mat-radio-group><br>
     </div>
     <div class="col-md-6">
-      <ul class="users">
         <p class="contentHeading">Members</p>
-        <div class="members bg-white common" style="height: 400px; overflow-y: auto;">
+        <div class="members bg-white common" style="height: calc(82vh - 100px); overflow-y: auto;">
+          <ul type="none" class="ps-0">
           <li>
             <label>
               <mat-checkbox color="primary" [checked]="allChecked" (change)="onAllCheckChange($event)">
@@ -29,8 +29,8 @@
               </mat-checkbox>
             </label>
           </li>
+        </ul>
         </div>
-      </ul>
     </div>
   </div>
 </div>
