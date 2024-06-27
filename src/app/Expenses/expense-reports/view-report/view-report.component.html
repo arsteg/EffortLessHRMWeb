@@ -3,7 +3,8 @@
         <div class="">
             <h4 class="modal-title text-start">Show Expense Details</h4>
         </div>
-        <div class=""><button type="button" data-bs-dismiss="modal" (click)="closeModal()" class="btn-close text-end"></button>
+        <div class=""><button type="button" data-bs-dismiss="modal" (click)="closeModal()"
+                class="btn-close text-end"></button>
         </div>
     </div>
     <hr class="mt-0">
@@ -11,32 +12,20 @@
         <div class="tableContainer">
             <table>
                 <tr>
-                    <th class="w-50">Expense Report Title</th>
+                    <thead> <th class="w-50">Employee</th></thead>
+                    <td>{{getUser(report?.employee)}}</td>
+                </tr>
+                <tr>
+                    <thead> <th class="w-50">Expense Report Title</th></thead>
                     <td>{{report?.title}}</td>
                 </tr>
                 <tr>
-                    <th class="w-50">Status</th>
+                    <thead>  <th class="w-50">Status</th></thead>
                     <td>{{report?.status}}</td>
                 </tr>
                 <tr>
-                    <th class="w-50">Total Reimbursable</th>
-                    <td>{{calculateSumOfReimbursableAmounts()}}</td>
-                </tr>
-                <tr>
-                    <th class="w-50">Total Billable</th>
-                    <td>{{calculateSumOfBillableAmounts()}}</td>
-                </tr>
-                <tr>
-                    <th class="w-50">Advance Received</th>
-                    <td>--</td>
-                </tr>
-                <tr>
-                    <th class="w-50">Total Amount</th>
-                    <td>{{calculateTotalAmount()}}</td>
-                </tr>
-                <tr>
-                    <th class="w-50">Admin Approval Comment</th>
-                    <td>{{selectedReport?.primaryApprovalReason || selectedReport?.reason}}</td>
+                   <thead> <th class="w-50">Total Amount</th></thead>
+                    <td>{{report?.amount}}</td>
                 </tr>
             </table>
         </div>
@@ -57,7 +46,7 @@
                 <tbody>
                     <tr *ngFor="let report of expenseReportExpenses;">
                         <td>{{report.incurredDate | date: 'mediumDate'}}</td>
-                        <td></td>
+                        <td>{{getCategoryById(report?.expenseCategory)}}</td>
                         <td>{{report?.amount}}</td>
                         <td> <span *ngIf="report.isReimbursable == true; else notReimbursable">
                                 <mat-icon style="color: green;">check</mat-icon>
@@ -80,8 +69,8 @@
 
                         </td>
                         <td>
-                            <button class="actions ms-2" title="View Expense Report Expenses" mat-mini-fab data-bs-toggle="modal"
-                                data-bs-target="viewReport" (click)="openSecondModal(report);">
+                            <button class="actions ms-2" title="View Expense Report Expenses" mat-mini-fab
+                                data-bs-toggle="modal" data-bs-target="viewReport" (click)="openSecondModal(report);">
                                 <i class="bi bi-send"></i>
                             </button>
                         </td>
@@ -91,6 +80,3 @@
         </div>
     </div>
 </div>
-<!-- <ng-template #viewReport let-modal >
-    <app-view-expense-report-expenses (close)="onClose($event)" [expense]="selectedExpense"></app-view-expense-report-expenses>
-</ng-template> -->

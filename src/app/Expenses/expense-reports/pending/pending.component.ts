@@ -91,6 +91,8 @@ export class PendingComponent {
   }
   
   open(content: any) {
+    console.log(content);
+    this.expenseService.expenseReportExpense.next(this.selectedReport);
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {

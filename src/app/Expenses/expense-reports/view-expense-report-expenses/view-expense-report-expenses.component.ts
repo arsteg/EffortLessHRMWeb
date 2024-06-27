@@ -10,24 +10,27 @@ export class ViewExpenseReportExpensesComponent {
   @Output() close: any = new EventEmitter();
   @Input() expense: any;
   expenseReportExpense: any;
-category: any;
+  category: any;
+
   constructor(private expenseService: ExpensesService) { }
+
   ngOnInit() {
     let id = this.expenseService.report.getValue()._id;
-    console.log(this.expenseService.report.getValue())
-   
     this.expenseService.getExpenseReportExpensesById(id).subscribe(res => {
       this.expenseReportExpense = res.data;
+      console.log('Expense report expenses: ',this.expenseReportExpense)
     });
     this.getCategory();
   }
-  getCategory(){
+
+  getCategory() {
     let category = this.expenseService.report.getValue().expenseCategory
-    this.expenseService.getExpenseCategoryById(category).subscribe(res=>{
+    this.expenseService.getExpenseCategoryById(category).subscribe(res => {
       this.category = res.data;
-      console.log(this.category)
+      console.log(this.category);
     })
   }
+
   closeModal() {
     this.close.emit(true);
   }

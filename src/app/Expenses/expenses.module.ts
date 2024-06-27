@@ -51,9 +51,7 @@ import { ApprovedTeamExpensesComponent } from './team-expense/approved-team-expe
 import { RejectedTeamExpensesComponent } from './team-expense/rejected-team-expenses/rejected-team-expenses.component';
 import { ApplicableExpenseSettingsComponent } from './general-information/applicable-expense-settings/applicable-expense-settings.component';
 import { SupervisorsComponent } from './general-information/supervisors/supervisors.component';
-import { ViewMyExpenseComponent } from './my-expense/view-my-expense/view-my-expense.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ViewComponent } from './team-expense/view/view.component';
  
 @NgModule({
   declarations: [
@@ -96,8 +94,6 @@ import { ViewComponent } from './team-expense/view/view.component';
     RejectedTeamExpensesComponent,
     ApplicableExpenseSettingsComponent,
     SupervisorsComponent,
-    ViewMyExpenseComponent,
-    ViewComponent
   ],
   imports: [
     BrowserModule,

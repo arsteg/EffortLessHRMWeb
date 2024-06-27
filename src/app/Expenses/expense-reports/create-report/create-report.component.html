@@ -61,7 +61,7 @@
             <div
                 *ngFor="let fieldGroup of expenseReportform.get('expenseReportExpenseFields')['controls']; let i = index">
                 <div [formGroupName]="i">
-                    <label>{{ fieldGroup.controls['type'].value | titlecase}}</label>
+                    <label>{{ applicationfields[i]?.fieldName | titlecase}}</label>
                     <select class="w-100" formControlName="value" *ngIf="applicationfields[i]?.fieldType == 'Dropdown'">
                         <option value="">Select Category Application field</option>
                         <option [value]="values?.value"

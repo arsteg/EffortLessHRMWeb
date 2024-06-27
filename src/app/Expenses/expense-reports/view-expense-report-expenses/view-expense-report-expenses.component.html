@@ -1,6 +1,6 @@
     <div class=" d-flex justify-content-between">
         <div class="">
-            <h4 class="modal-title text-start">Show Expense Details</h4>
+            <h4 class="modal-title ps-3 pt-3">Show Expense Report Expenses Details</h4>
         </div>
         
         <div mat-dialog-actions>
@@ -41,13 +41,18 @@
                         <mat-icon style="color: red;">close</mat-icon>
                     </ng-template></td>
                 </tr>
-                <tr>
-                    <th class="w-50">Public Transport</th>
-                    <td></td>
+                <!-- <tr>
+                    <th class="w-50">{{expenseReportExpense?.expenseReportExpenseFields[0]?.type}}</th>
+                    <td>{{expenseReportExpense?.expenseReportExpenseFields[0]?.value}}</td>
+                </tr> -->
+                <tr *ngFor="let field of expenseReportExpense?.expenseReportExpenseFields; let i = index">
+                    <th class="w-50">{{ field.type }}</th>
+                    <td>{{ field.value }}</td>
                 </tr>
+                
                 <tr>
                     <th class="w-50">Rate Fix</th>
-                    <td></td>
+                    <td>{{expenseReportExpense?.amount}}</td>
                 </tr>
                 <tr>
                     <th class="w-50">Expense Reason</th>

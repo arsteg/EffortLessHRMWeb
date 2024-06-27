@@ -386,10 +386,6 @@ export class CreateReportComponent {
       });
       this.expenseService.tempAndCat.subscribe(res => {
         const expCategory = res.details;
-        // this.categoryType = res.data?.find(catType => catType._id === categoryId);
-        // console.log(expCategory, categoryId)
-        // const category = res.details?.find(cat => cat.expenseCategory === categoryId);
-        console.log(expCategory[0].expenseTemplate, categoryId)
         this.expenseService.getApplicableFieldByTemplateAndCategory(expCategory[0].expenseTemplate, categoryId).subscribe((res: any) => {
           this.applicableCategoryFields = res.data['expenseTemplateCategoryFieldValues'];
         });

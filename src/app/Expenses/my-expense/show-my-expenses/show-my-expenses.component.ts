@@ -7,7 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ViewReportsComponent } from '../../advance-reports/view-reports/view-reports.component';
 import { CommonService } from 'src/app/common/common.service';
 import { ExportService } from 'src/app/_services/export.service';
-import { ViewMyExpenseComponent } from '../view-my-expense/view-my-expense.component';
+import { ViewReportComponent } from '../../expense-reports/view-report/view-report.component';
 
 @Component({
   selector: 'app-show-my-expenses',
@@ -130,7 +130,7 @@ export class ShowMyExpensesComponent {
     const categoryLabel = this.getCategory(selectedReport.category);
     selectedReport.category = categoryLabel;
     this.expenseService.advanceReport.next(selectedReport);
-    const dialogRef = this.dialog.open(ViewMyExpenseComponent, {
+    const dialogRef = this.dialog.open(ViewReportComponent, {
       width: '50%',
       data: { report: selectedReport }
     });

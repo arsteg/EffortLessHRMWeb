@@ -5,7 +5,7 @@ import { ViewReportsComponent } from '../../advance-reports/view-reports/view-re
 import { CommonService } from 'src/app/common/common.service';
 import { MatDialog } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { ViewComponent } from '../view/view.component';
+import { ViewReportComponent } from '../../expense-reports/view-report/view-report.component';
 
 @Component({
   selector: 'app-show-team-expenses',
@@ -168,7 +168,7 @@ export class ShowTeamExpensesComponent {
     console.log(selectedReport);
     this.expenseService.advanceReport.next(selectedReport);
 
-    const dialogRef = this.dialog.open(ViewComponent, {
+    const dialogRef = this.dialog.open(ViewReportComponent, {
       width: '50%',
       data: { report: selectedReport }
     });
