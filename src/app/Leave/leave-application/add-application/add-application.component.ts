@@ -430,7 +430,7 @@ export class AddApplicationComponent {
               {
                 attachmentType: this.selectedFile.type,
                 attachmentName: this.selectedFile.name.split('.')[0],
-                attachmentSize: this.selectedFile.size,
+                attachmentSize: this.selectedFile.size.toString(),
                 extension: this.selectedFile.name.split('.')[1],
                 file: e.target.result as string
               }
