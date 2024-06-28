@@ -47,6 +47,8 @@ export class AddApplicationComponent {
   numberOfLeaveAppliedForSelectedCategory: number = 0;
   appliedLeave: any;
   holidayCount: number;
+  leaveDocumentUpload: boolean = false;
+  selectedFile: File | null = null;
 
   constructor(private fb: FormBuilder,
     private commonService: CommonService,
@@ -65,7 +67,8 @@ export class AddApplicationComponent {
       comment: [''],
       status: [''],
       isHalfDayOption: [false],
-      haldDays: this.fb.array([])
+      haldDays: this.fb.array([]),
+      leaveApplicationAttachments: this.fb.array([])
     });
 
     this.bsConfig = {
@@ -79,6 +82,16 @@ export class AddApplicationComponent {
       minDate: this.minEndDate,
       maxDate: this.maxEndDate
     };
+  }
+
+  createAttachment(data: any = {}): FormGroup {
+    return this.fb.group({
+      attachmentType: [data.attachmentType || null],
+      attachmentName: [data.attachmentName || null],
+      attachmentSize: [data.attachmentSize || null],
+      extension: [data.extension || null],
+      file: [data.file || null]
+    });
   }
 
   ngOnInit() {
@@ -99,7 +112,14 @@ export class AddApplicationComponent {
     this.leaveApplication.get('leaveCategory').valueChanges.subscribe(leaveCategory => {
       this.tempLeaveCategory = this.leaveCategories.find(l=>l.leaveCategory._id === leaveCategory);
       console.log(this.tempLeaveCategory);
+      this.leaveDocumentUpload = this.tempLeaveCategory.leaveCategory.isDocumentRequired
+      this.updateValidators();
       this.handleLeaveCategoryChange();
+    });
+    this.leaveApplication.get('employee').valueChanges.subscribe(employee => {
+      this.leaveService.getLeaveCategoriesByUserv1(employee.id).subscribe((res: any) => {
+        this.leaveCategories = res.data;
+      });
     });
     this.getattendanceTemplatesByUser();
   }
@@ -136,13 +156,6 @@ export class AddApplicationComponent {
   get haldDays() {
     return this.leaveApplication.get('haldDays') as FormArray;
   }
-
-  // getleaveCatgeories() {
-  //   const requestBody = { "skip": this.defaultCatSkip, "next": this.defaultCatNext };
-  //   this.leaveService.getLeaveCategoriesByUser(this.currentUser.id).subscribe((res: any) => {
-  //     this.leaveCategories = res.data;
-  //   })
-  // }
 
   getleaveCatgeoriesByUser() {
     this.leaveService.getLeaveCategoriesByUserv1(this.currentUser.id).subscribe((res: any) => {
@@ -193,14 +206,7 @@ export class AddApplicationComponent {
   }
   
   onSubmission() {
-    if (this.leaveApplication.value) {
-      // if (this.portalView == 'user') {
-      //   if (this.tab === 1) {
-      //     this.leaveApplication.value.employee = this.currentUser?.id;
-      //   } else if (this.tab === 5) {
-      //     this.leaveApplication.value.employee = this.member?.id;
-      //   }
-      // }
+    if (this.leaveApplication.status === "VALID") {
       let finalLeaveApplied = 0;
       this.leaveApplication.value.status = 'Pending';
 
@@ -241,7 +247,7 @@ export class AddApplicationComponent {
       if(!this.tempLeaveCategory.isWeeklyOffLeavePartOfNumberOfDaysTaken){
         finalLeaveApplied = finalLeaveApplied - this.weekOffCount;
       }
-debugger;
+
       // Check for minimum number of consecutive leave days allowed
       const minConsecutiveLeaveDays = this.tempLeaveCategory.leaveCategory.minimumNumberOfDaysAllowed;
       if (minConsecutiveLeaveDays && minConsecutiveLeaveDays > 0 && finalLeaveApplied > minConsecutiveLeaveDays) {
@@ -328,13 +334,8 @@ debugger;
           this.weekOffCount++;
         }
       }
-      debugger;
       console.log(this.weekOffCount);
    }
-  }
-
-  holydayCount(){
-
   }
 
   getAppliedLeaveCount(userId: string, category: string){
@@ -410,5 +411,48 @@ debugger;
         this.holidayCount = count;
       }
     });
+  }
+
+  get leaveApplicationAttachments(): FormArray {
+    return this.leaveApplication.get('leaveApplicationAttachments') as FormArray;
+  }
+
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files?.length) {
+      this.selectedFile = input.files[0];
+      if (this.selectedFile) {
+        const reader = new FileReader();
+        reader.readAsDataURL(this.selectedFile);
+        reader.onloadend = (e) => {
+          if (e.target.readyState === FileReader.DONE) {
+            const staticAttachments = [
+              {
+                attachmentType: this.selectedFile.type,
+                attachmentName: this.selectedFile.name.split('.')[0],
+                attachmentSize: this.selectedFile.size,
+                extension: this.selectedFile.name.split('.')[1],
+                file: e.target.result as string
+              }
+            ];
+
+            staticAttachments.forEach(attachment => { 
+              this.leaveApplicationAttachments.push(this.createAttachment(attachment));
+            });
+          }
+        };
+      }
+    }
+  }
+
+  updateValidators(){
+    if(this.leaveDocumentUpload)
+    {
+      this.leaveApplication.get('leaveApplicationAttachments')?.setValidators(Validators.required);
+    }
+    else{
+      this.leaveApplication.get('leaveApplicationAttachments')?.clearValidators();
+    }
+    this.leaveApplication.get('leaveApplicationAttachments')?.updateValueAndValidity();
   }
 }

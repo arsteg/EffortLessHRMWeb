@@ -16,7 +16,7 @@ export class LeaveBalanceComponent {
   leaveCategories: any;
   selectedUser: any;
   allCategories: any;
-  member: any;
+  member: any = JSON.parse(localStorage.getItem('currentUser')).id;
   @Input() tab: number;
   portalView = localStorage.getItem('adminView');
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -43,6 +43,10 @@ export class LeaveBalanceComponent {
     this.getAllLeaveCatgeories();
     this.populateMembers();
     this.getCategoriesByCurrentUser();
+
+    this.leaveBalanceForm.get('category').valueChanges.subscribe(employee => {
+      this.getLeaveBalance();
+    });
   }
 
 
@@ -76,6 +80,7 @@ export class LeaveBalanceComponent {
   }
 
   getLeaveBalance() {
+    this.leaveBalanceForm.get('user').setValue(this.member);
     if (this.leaveBalanceForm.valid) {
       let payload = {
         user: this.leaveBalanceForm.value.user,
@@ -105,22 +110,30 @@ export class LeaveBalanceComponent {
   }
 
   selecteduser(user) {
-    console.log(user);
-    this.leaveService.getLeaveCategoriesByUser(user).subscribe((res: any) => {
-      this.leaveCategories = res.data;
+    this.member = user;
+    this.leaveService.getLeaveCategoriesByUserv1(user).subscribe((res: any) => {
+      if(res.status == 'success'){
+        this.leaveCategories = res.data;
+      }
     })
   }
 
   getCategoriesByUser() {
-    this.leaveService.getLeaveCategoriesByUser(this.selectedUser).subscribe((res: any) => {
-      this.leaveCategories = res.data;
+    this.member = this.selectedUser;
+    this.leaveService.getLeaveCategoriesByUserv1(this.selectedUser).subscribe((res: any) => {
+      if(res.status == 'success'){
+        this.leaveCategories = res.data;
+      }
     })
   }
 
   getCategoriesByCurrentUser() {
     const user = this.currentUser?.id;
-    this.leaveService.getLeaveCategoriesByUser(user).subscribe((res: any) => {
-      this.leaveCategories = res.data;
+    this.member = user;
+    this.leaveService.getLeaveCategoriesByUserv1(user).subscribe((res: any) => {
+      if(res.status == 'success'){
+        this.leaveCategories = res.data;
+      }
     })
   }
 

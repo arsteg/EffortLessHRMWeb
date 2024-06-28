@@ -44,8 +44,8 @@
                 </label>
                 <mat-form-field appearance="outline" class="w-50">
                     <mat-select formControlName="category">
-                        <mat-option [value]="category?._id" *ngFor="let category of leaveCategories">
-                            {{getlaveCategoryLabel(category?.leaveCategory)}}
+                        <mat-option *ngFor="let category of leaveCategories" [value]="category?.leaveCategory?._id">
+                            {{category?.leaveCategory?.label | titlecase}}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
