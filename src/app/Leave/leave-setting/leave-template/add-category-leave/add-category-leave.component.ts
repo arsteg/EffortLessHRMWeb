@@ -103,7 +103,7 @@ export class AddCategoryLeaveComponent {
               extendFromCategory: step.extendFromCategory,
               negativeBalanceCap: step.negativeBalanceCap,
               accrualRatePerPeriod: step.accrualRatePerPeriod,
-              categoryApplicable: step.categoryApplicable,
+              categoryApplicable: step.categoryApplicable || 'all-employees',
               users: users
             });
           });

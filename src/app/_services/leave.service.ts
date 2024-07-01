@@ -236,10 +236,10 @@ export class LeaveService extends baseService {
 
   // Short Leave
 
-  public getShortLeave(): any {
+  public getShortLeave(requestBody: any): any {
     const token = this.getToken();
     this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
-    return this.http.get<any>(`${environment.apiUrlDotNet}/leave/short-leave`, this.httpOptions);
+    return this.http.post<any>(`${environment.apiUrlDotNet}/leave/all-short-leave`, requestBody, this.httpOptions);
   }
 
   public addShortLeave(shortLeave: any): any {
@@ -264,5 +264,11 @@ export class LeaveService extends baseService {
     const token = this.getToken();
     this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
     return this.http.post<any>(`${environment.apiUrlDotNet}/leave/employee-leave-application-by-user/${userId}`, requestBody,this.httpOptions);
+  }
+
+  public getShortLeaveByUserId(userId: string, requestBody: any): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.post<any>(`${environment.apiUrlDotNet}/leave/short-leave-by-user/${userId}`, requestBody, this.httpOptions);
   }
 }

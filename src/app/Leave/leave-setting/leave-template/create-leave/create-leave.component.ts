@@ -25,8 +25,8 @@ export class CreateLeaveComponent {
     private leaveService: LeaveService) {
     this.addTemplateForm = this.fb.group({
       label: ['', Validators.required],
-      approvalLevel: ['', Validators.required],
-      approvalType: ['', Validators.required],
+      approvalLevel: ['1-level', Validators.required],
+      approvalType: ['employee-wise', Validators.required],
       primaryApprover: [''],
       secondaryApprover: [''],
       isCommentMandatory: [true],

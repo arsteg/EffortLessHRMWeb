@@ -89,7 +89,7 @@ export class AddApplicationComponent {
       attachmentType: [data.attachmentType || null],
       attachmentName: [data.attachmentName || null],
       attachmentSize: [data.attachmentSize || null],
-      extension: [data.extension || null],
+      extention: [data.extention || null],
       file: [data.file || null]
     });
   }
@@ -206,7 +206,11 @@ export class AddApplicationComponent {
   }
   
   onSubmission() {
-    if (this.leaveApplication.status === "VALID") {
+    if(this.leaveApplication.invalid){
+      this.toast.error('Please enter valid data');
+    }
+
+    if (this.leaveApplication.valid) {
       let finalLeaveApplied = 0;
       this.leaveApplication.value.status = 'Pending';
 
@@ -431,7 +435,7 @@ export class AddApplicationComponent {
                 attachmentType: this.selectedFile.type,
                 attachmentName: this.selectedFile.name.split('.')[0],
                 attachmentSize: this.selectedFile.size.toString(),
-                extension: this.selectedFile.name.split('.')[1],
+                extention: this.selectedFile.name.split('.')[1],
                 file: e.target.result as string
               }
             ];

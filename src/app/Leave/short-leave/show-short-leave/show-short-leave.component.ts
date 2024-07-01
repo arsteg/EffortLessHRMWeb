@@ -21,10 +21,12 @@ export class ShowShortLeaveComponent {
   closeResult: string = '';
   searchText: string = '';
   allAssignee: any;
-  p: number = 1;
   public sortOrder: string = '';
   @Input() tab: number;
   portalView = localStorage.getItem('adminView');
+  totalRecords: number = 0 // example total records
+  recordsPerPage: number = 10;
+  currentPage: number = 1;
 
 
   constructor(private modalService: NgbModal,
@@ -42,8 +44,16 @@ export class ShowShortLeaveComponent {
   }
 
   getShortLeaves() {
-    this.leaveService.getShortLeave().subscribe((res: any) => {
-      this.shortLeave = res.data.filter(leave => leave.status === this.status);
+    debugger;
+    const requestBody = { 
+      "skip": ((this.currentPage - 1) * this.recordsPerPage).toString(), 
+      "next": this.recordsPerPage.toString(),
+      "status": this.status };
+    this.leaveService.getShortLeave(requestBody).subscribe((res: any) => {
+      if(res.status==='success') {
+        this.shortLeave = res.data;
+        this.totalRecords = res.total;
+      }
     })
   }
 
@@ -51,6 +61,16 @@ export class ShowShortLeaveComponent {
     if (event) {
       this.modalService.dismissAll();
     }
+  }
+
+  onPageChange(page: number) {
+    this.currentPage = page;
+    this.getShortLeaves();
+  }
+
+  onRecordsPerPageChange(recordsPerPage: number) {
+    this.recordsPerPage = recordsPerPage;
+    this.getShortLeaves();
   }
 
   openStatusModal(report: any, status: string): void {
@@ -65,9 +85,11 @@ export class ShowShortLeaveComponent {
   }
 
   refreshShortLeaveTable() {
-    this.leaveService.getShortLeave().subscribe(
+    const requestBody = { "status": this.status, "skip": ((this.currentPage - 1) * this.recordsPerPage).toString(), "next": this.recordsPerPage.toString() };
+    this.leaveService.getShortLeave(requestBody).subscribe(
       (res) => {
-        this.shortLeave = res.data.filter(leave => leave.status === this.status);
+        this.shortLeave = res.data;
+        this.totalRecords = res.total;
       },
       (error) => {
         console.error('Error refreshing short leave table:', error);
