@@ -21,8 +21,8 @@ import { mergeMap } from 'rxjs/operators';
   styleUrls: ['./request-manual-time.component.css']
 })
 export class RequestManualTimeComponent implements OnInit {
-  startDate: any;
-  endDate: any;
+  fromDate: any;
+  toDate: any;
   reason: string = '';
   managers: { id: string, name: string }[] = [];
   projects: { id: string, projectName: string }[] = [];
@@ -45,6 +45,10 @@ export class RequestManualTimeComponent implements OnInit {
   color: string;
   dateMismatchError: boolean = false;
   filteredManualTimeRequests: any[] = [];
+  totalRecords: number
+  recordsPerPage: number = 10;
+  currentPage: number = 1;
+  isEdit: boolean = false;
 
   constructor(private modalService: NgbModal, private formBuilder: FormBuilder,
     private authenticationService: AuthenticationService,
@@ -59,19 +63,19 @@ export class RequestManualTimeComponent implements OnInit {
       manager: ['', Validators.required],
       project: ['', Validators.required],
       task: ['', Validators.required],
-      startDate: ['', [Validators.required, this.validateStartDate]],
-      endDate: ['', [Validators.required, this.validateEndDate]],
+      fromDate: ['', [Validators.required, this.validateStartDate]],
+      toDate: ['', [Validators.required, this.validateEndDate]],
       reason: ['', Validators.required]
     },
       (formGroup: FormGroup) => {
-        const fromDate = formGroup.controls['startDate'].value;
-        const toDate = formGroup.controls['endDate'].value;
+        const fromDate = formGroup.controls['fromDate'].value;
+        const toDate = formGroup.controls['toDate'].value;
         return fromDate <= toDate ? null : { 'Invalid Dates': true };
       }
     );
-    this.startDate = new Date().toString().slice(0, 15);
-    this.endDate = new Date();
-    this.endDate.setHours(23, 59, 59, 999);
+    this.fromDate = new Date().toString().slice(0, 15);
+    this.toDate = new Date();
+    this.toDate.setHours(23, 59, 59, 999);
   }
 
   ngOnInit(): void {
@@ -150,19 +154,19 @@ export class RequestManualTimeComponent implements OnInit {
 
 
   validateStartDate(control: FormControl) {
-    const startDate = control.value;
-    const endDate = control.parent?.get('endDate').value;
+    const fromDate = control.value;
+    const toDate = control.parent?.get('toDate').value;
 
-    if (endDate && startDate && startDate > endDate) {
+    if (toDate && fromDate && fromDate > toDate) {
       return { 'endDateBeforeStartDate': true };
     }
     return null;
   }
 
   validateEndDate(control: FormControl) {
-    const startDate = control.parent?.get('startDate').value;
-    const endDate = control.value;
-    if (startDate && endDate && startDate > endDate) {
+    const fromDate = control.parent?.get('fromDate').value;
+    const toDate = control.value;
+    if (fromDate && toDate && fromDate > toDate) {
       return { 'endDateBeforeStartDate': true };
     }
     return null;
@@ -180,28 +184,29 @@ export class RequestManualTimeComponent implements OnInit {
     }
   }
   onSubmit() {
-    let request = new manualTimeRequest();
-    request.date = new Date().toString().slice(0, 15);;
-    request.manager = this.addRequestForm.value.manager;
-    request.project = this.addRequestForm.value.project;
-    request.task = this.addRequestForm.value.task;
-    request.reason = this.addRequestForm.value.reason;
     var currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    request.user = currentUser?.id;
 
-    request.fromDate = this.utilsService.convertToUTC(this.addRequestForm.value.startDate);
-    request.toDate = this.utilsService.convertToUTC(this.addRequestForm.value.endDate);
+    let request = {
+      date: new Date().toString().slice(0, 15),
+      manager: this.addRequestForm.value.manager,
+      project: this.addRequestForm.value.project,
+      task: this.addRequestForm.value.task,
+      reason: this.addRequestForm.value.reason,
+      user: currentUser?.id,
+      requestId: this.selectedRequest._id || null,
+      fromDate: this.utilsService.convertToUTC(this.addRequestForm.value.fromDate),
+      toDate: this.utilsService.convertToUTC(this.addRequestForm.value.toDate)
+     
+    }
 
+    const fromDate = new Date(this.addRequestForm.value.fromDate).toLocaleDateString('en-GB');
+    const toDate = new Date(this.addRequestForm.value.toDate).toLocaleDateString('en-GB');
 
-    const startDate = new Date(this.addRequestForm.value.startDate).toLocaleDateString('en-GB');
-    const endDate = new Date(this.addRequestForm.value.endDate).toLocaleDateString('en-GB');
-
-    // Compare only the date parts for equality
-    if (startDate !== endDate) {
+    if (fromDate !== toDate) {
       this.dateMismatchError = true;
       return;
     } else {
-      this.dateMismatchError = false; // Reset the error state
+      this.dateMismatchError = false;
     }
 
     if (this.changeMode == 'Add') {
@@ -217,8 +222,8 @@ export class RequestManualTimeComponent implements OnInit {
         });
     }
     else {
-      request.id = this.selectedRequest._id;
       this.manualTimeRequestService.updateManualTimeRequest(request).subscribe((res: any) => {
+        this.changeMode = 'Add';
         this.toastService.success("Manual time request updated successfully", "success");
         this.addRequestForm.reset();
         this.fetchManualTimeRequests();
@@ -228,6 +233,7 @@ export class RequestManualTimeComponent implements OnInit {
         });
     }
   }
+
   getColor(char: string): string {
     switch (char) {
       case 'A':
@@ -256,11 +262,24 @@ export class RequestManualTimeComponent implements OnInit {
         err => {
         });
   }
+  onPageChange(page: number) {
+    this.currentPage = page;
+    this.fetchManualTimeRequests();
+  }
 
+  onRecordsPerPageChange(recordsPerPage: number) {
+    this.recordsPerPage = recordsPerPage;
+    this.fetchManualTimeRequests();
+  }
   fetchManualTimeRequests() {
-    this.manualTimeRequestService.getManualTimeRequestsByUser(this.id).subscribe((res: any) => {
+    let pagination = {
+      skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
+      next: this.recordsPerPage.toString()
+    };
+    this.manualTimeRequestService.getManualTimeRequestsByUser(this.id, pagination).subscribe((res: any) => {
       const data = res.data;
       this.transformRecords(data);
+      this.totalRecords = res.total;
     });
   }
 
@@ -307,8 +326,8 @@ export class RequestManualTimeComponent implements OnInit {
       project: undefined,
       manager: undefined,
       task: undefined,
-      startDate: localISOTime,
-      endDate: localISOTime,
+      fromDate: localISOTime,
+      toDate: localISOTime,
       reason: ''
     });
     this.tasks = [];
@@ -322,12 +341,13 @@ export class RequestManualTimeComponent implements OnInit {
       this.addRequestForm.patchValue({
         manager: record.manager.id,
         project: record.project.id,
-        startDate: formattedStartDate,
-        endDate: formattedEndDate,
+        fromDate: formattedStartDate,
+        toDate: formattedEndDate,
         reason: record.reason,
         task: record.task.id
       });
       this.selectedTask = record.task.id;
+      console.log(this.selectedTask);
       console.log(this.addRequestForm.value);
     });
   }

@@ -23,19 +23,19 @@ export class ManualTimeRequestService extends baseService{
     withCredentials: true
   };
   
-  public getManualTimeRequestsByUser(userId:string): any {
-    return this.http.get<any>(`${environment.apiUrlDotNet}/manualTime/getManualTimeRequests/${userId}`, this.httpOptions);
+  public getManualTimeRequestsByUser(userId:string, payload: any): any {
+    return this.http.post<any>(`${environment.apiUrlDotNet}/manualTime/getManualTimeRequests/${userId}`, payload, this.httpOptions);
   }
   
   public DeleteManualTimeRequest(Id:string): any {
     return this.http.delete<any>(`${environment.apiUrlDotNet}/manualTime/manualTimeRequest/${Id}`, this.httpOptions);
   }
   
-  addManualTimeRequest(request:manualTimeRequest):Observable<any>{
+  addManualTimeRequest(request:any):Observable<any>{
     return this.http.post(`${environment.apiUrlDotNet}/manualTime/addManualTimeRequest`, request, this.httpOptions);
   }
   
-  updateManualTimeRequest(request:manualTimeRequest):Observable<any>{
+  updateManualTimeRequest(request:any):Observable<any>{
     return this.http.post(`${environment.apiUrlDotNet}/manualTime/updateManualTimeRequest`, request, this.httpOptions);
   }
   
