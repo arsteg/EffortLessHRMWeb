@@ -3,7 +3,7 @@ import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LeaveService } from 'src/app/_services/leave.service';
 import { UpdateStatusComponent } from '../update-status/update-status.component';
 import { MatDialog } from '@angular/material/dialog';
-import { CommonService } from 'src/app/common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 import { ViewLeaveComponent } from '../view-leave/view-leave.component';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { ToastrService } from 'ngx-toastr';

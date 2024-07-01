@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { CommonService } from '../common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 import { TimeLogService } from '../_services/timeLogService';
 import { ProjectService } from '../_services/project.service';
 import { ExportService } from '../_services/export.service';
@@ -172,7 +172,7 @@ export class RealtimeComponent implements OnInit {
     dialogConfig.width = '60vw';
     dialogConfig.height = 'auto';
     dialogConfig.data = { id: userIds };
-    
+
     const dialogRef = this.dialog.open(LiveScreenComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(result => {

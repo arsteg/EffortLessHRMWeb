@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { ViewExpenseReportExpensesComponent } from '../view-expense-report-expenses/view-expense-report-expenses.component';
-import { CommonService } from 'src/app/common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 
 @Component({
   selector: 'app-view-report',

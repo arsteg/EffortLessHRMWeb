@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { LeaveService } from 'src/app/_services/leave.service';
-import { CommonService } from 'src/app/common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 
 @Component({
   selector: 'app-create-leave',
@@ -115,7 +115,7 @@ export class CreateLeaveComponent {
     this.leaveService.selectedTemplate.next('');
   }
 
-  
+
 
   onSubmission() {
     let payload = {
@@ -142,7 +142,7 @@ export class CreateLeaveComponent {
       this.leaveService.updateLeaveTemplate(id, payload).subscribe((res: any)=>{
         this.changeStep.emit(2);
       })
-      
+
     }
   }
 

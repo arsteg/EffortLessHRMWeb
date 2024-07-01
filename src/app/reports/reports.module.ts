@@ -9,7 +9,7 @@ import { AppAndWebsiteUsageComponent } from './app-and-website-usage/app-and-web
 import { ProductivityReportComponent } from './productivity-report/productivity-report.component';
 import { LeaveReportComponent } from './leave-report/leave-report.component';
 import { FormsModule } from '@angular/forms';
-import { CommonService } from '../common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 
 @NgModule({
   declarations: [],

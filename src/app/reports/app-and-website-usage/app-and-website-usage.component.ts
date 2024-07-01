@@ -4,7 +4,7 @@ import { TimeLogService } from 'src/app/_services/timeLogService';
 import { ExportService } from 'src/app/_services/export.service';
 import { SearchAppUsagesRequest } from '../model/productivityModel';
 import { ReportsService } from '../../_services/reports.service';
-import { CommonService } from 'src/app/common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 import { UtilsService } from 'src/app/_services/utils.service';
 
 @Component({
@@ -42,7 +42,7 @@ export class AppAndWebsiteUsageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-  
+
     this.populateUsers();
 
     this.commonservice.getCurrentUserRole().subscribe((role: any) => {

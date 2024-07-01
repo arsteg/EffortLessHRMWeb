@@ -1,5 +1,5 @@
 import { Component, Output, EventEmitter, Input, ChangeDetectorRef } from '@angular/core';
-import { CommonService } from 'src/app/common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 import { CreateReportComponent } from '../create-report/create-report.component';
 import {
   MatDialog,

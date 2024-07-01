@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CommonService } from 'src/app/common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 
 @Component({
   selector: 'app-overtime-records',

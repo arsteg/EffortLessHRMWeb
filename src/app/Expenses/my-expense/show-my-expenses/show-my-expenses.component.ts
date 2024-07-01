@@ -5,7 +5,7 @@ import { ExpensesService } from 'src/app/_services/expenses.service';
 import { StatusUpdateComponent } from '../../advance-reports/status-update/status-update.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ViewReportsComponent } from '../../advance-reports/view-reports/view-reports.component';
-import { CommonService } from 'src/app/common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 import { ExportService } from 'src/app/_services/export.service';
 import { ViewReportComponent } from '../../expense-reports/view-report/view-report.component';
 

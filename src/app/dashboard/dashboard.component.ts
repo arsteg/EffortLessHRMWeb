@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonService } from '../common/common.service';
+import { CommonService } from '../_services/common.Service';
 import { ManageTeamService } from '../_services/manage-team.service';
 import { TimeLogService } from '../_services/timeLogService';
 import { FormControl } from '@angular/forms';
@@ -12,12 +12,16 @@ import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { Observable, Subscription } from 'rxjs';
 import { User } from '../models/user';
 import { SocketService } from '../_services/socket.Service';
+import { StatefulComponent } from '../common/statefulComponent/statefulComponent';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent extends StatefulComponent implements OnInit {
+
+
+  componentName = 'adminDashboardComponent'; // Provide a unique name for the component
 
   //region Event notification related code
   users$: Observable<User[]>;
@@ -51,17 +55,17 @@ export class DashboardComponent implements OnInit {
   constructor(
     private timelog: TimeLogService,
     private manageTeamService: ManageTeamService,
-    public commonService: CommonService,
     private auth: AuthenticationService,
     private dashboardService: DashboardService,
     private toastr: ToastrService,
-    private socketService : SocketService
+    private socketService : SocketService,
+    protected override commonService: CommonService,
   ) {
-
+    super(commonService);
   }
   // selectedUser: any;
-  ngOnInit(): void {
-
+  override ngOnInit(): void {
+    super.ngOnInit();
     //region event notifications
     // Register the user when the component initializes
     this.userId = JSON.parse(localStorage.getItem('currentUser')).id
@@ -323,5 +327,16 @@ export class DashboardComponent implements OnInit {
       err => {
         this.toastr.error(err, 'ERROR!')
       });
+  }
+  captureState(): any {
+    return {
+      selectedDate: this.selectedDate,
+    };
+  }
+
+  restoreState(state: any): void {
+    if (state.pageSize) {
+      this.selectedDate = state.selectedDate;
+    }
   }
 }

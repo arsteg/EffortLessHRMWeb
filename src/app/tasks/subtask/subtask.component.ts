@@ -3,7 +3,7 @@ import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { TasksService } from 'src/app/_services/tasks.service';
 import { TimeLogService } from 'src/app/_services/timeLogService';
-import { CommonService } from 'src/app/common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 import { Validators, FormGroup, FormBuilder } from '@angular/forms';
 import { attachments, taskAttachments, updateTask } from '../task';
 import { GetTaskService } from 'src/app/_services/get-task.service';

@@ -6,7 +6,7 @@ import { addUser, project } from '../model/project';
 import { Validators, FormGroup, FormBuilder, FormControl, AbstractControl } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { CommonService } from 'src/app/common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 import { DatePipe } from '@angular/common';
 @Component({
   selector: 'app-project-list',
@@ -39,7 +39,7 @@ export class ProjectListComponent implements OnInit {
     dateYMD: new FormControl(new Date()),
 
   });
-  public sortOrder: string = ''; 
+  public sortOrder: string = '';
   bsValue = new Date();
 
 

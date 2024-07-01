@@ -2,7 +2,7 @@ import { Component, Output, EventEmitter, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LeaveService } from 'src/app/_services/leave.service';
 import { TimeLogService } from 'src/app/_services/timeLogService';
-import { CommonService } from 'src/app/common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 
 @Component({
   selector: 'app-add-leave',

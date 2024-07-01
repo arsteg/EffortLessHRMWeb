@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ExpensesService } from 'src/app/_services/expenses.service';
-import { CommonService } from 'src/app/common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ViewReportsComponent } from '../view-reports/view-reports.component';
 import { StatusUpdateComponent } from '../status-update/status-update.component';

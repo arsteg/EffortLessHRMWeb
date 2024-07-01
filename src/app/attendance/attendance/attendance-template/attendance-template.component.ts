@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { MatDialog } from '@angular/material/dialog';
-import { CommonService } from 'src/app/common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 import { AttendanceRegularizationComponent } from './attendance-regularization/attendance-regularization.component';
 import { ExportService } from 'src/app/_services/export.service';
 import { AttendanceService } from 'src/app/_services/attendance.service';

@@ -6,7 +6,7 @@ import { AuthenticationService } from 'src/app/_services/authentication.service'
 import { DashboardService } from 'src/app/_services/dashboard.Service';
 import { ManageTeamService } from 'src/app/_services/manage-team.service';
 import { TimeLogService } from 'src/app/_services/timeLogService';
-import { CommonService } from 'src/app/common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 import { HoursWorked, MonthlySummary, WeeklySummary, ProjectTask } from 'src/app/models/dashboard/userdashboardModel';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 

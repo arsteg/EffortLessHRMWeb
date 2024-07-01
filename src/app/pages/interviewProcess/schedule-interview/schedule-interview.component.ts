@@ -11,7 +11,7 @@ import { InterviewDetail } from 'src/app/models/interviewProcess/candidateInterv
 import { interviewer } from 'src/app/models/interviewProcess/interviewer';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import {EditInterviewerDialogComponent} from 'src/app/pages/interviewProcess/schedule-interview/editInterviewerDialog/editInterviewerDialogComponent'
-import { CommonService } from 'src/app/common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 
 
 @Component({

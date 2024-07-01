@@ -3,7 +3,7 @@ import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { Location } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 import { LeaveService } from 'src/app/_services/leave.service';
-import { CommonService } from 'src/app/common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -44,7 +44,7 @@ export class AddCategoryLeaveComponent {
     this.commonService.populateUsers().subscribe((res: any) => {
       this.members = res.data.data;
     });
-    
+
     this.router.navigateByUrl('/Leave', { skipLocationChange: true }).then(() => {
       this.router.navigate([this.router.url]);
   });
@@ -140,7 +140,7 @@ export class AddCategoryLeaveComponent {
       this.toast.success('Leave Template Categories Updated', 'Successfully');
       this.closeModal();
     });
-    
+
   }
-  
+
 }

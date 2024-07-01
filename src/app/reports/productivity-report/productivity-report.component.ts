@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { TimeLogService } from 'src/app/_services/timeLogService';
 import { Productivity } from '../model/productivityModel';
 import { ReportsService } from '../../_services/reports.service';
-import { CommonService } from 'src/app/common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 import { UtilsService } from 'src/app/_services/utils.service';
 
 @Component({
@@ -42,7 +42,7 @@ export class ProductivityReportComponent implements OnInit {
     this.toggleSingleMember();
     this.populateUsers();
   }
- 
+
   toggleSingleMember() {
     this.showSingleMember = true;
     this.showAllMembers = false;
@@ -98,7 +98,7 @@ export class ProductivityReportComponent implements OnInit {
   averageCount(totalTime, totalCount) {
     return Math.round(totalCount / totalTime);
   }
-  
+
   millisecondsToTime(milliseconds) {
     const ms = Math.floor(Math.abs(milliseconds));
     const seconds = Math.floor(ms / 1000) % 60;

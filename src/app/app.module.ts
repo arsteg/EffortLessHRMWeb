@@ -32,7 +32,7 @@ import { MainComponent } from './main/main.component';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { CommonService } from './common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 import { UserService } from './_services/users.service';
 import { ActivityDescriptionComponent } from './reports/activity-description/activity-description.component';
 import { AppAndWebsiteUsageComponent } from './reports/app-and-website-usage/app-and-website-usage.component';

@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { CommonService } from 'src/app/common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 import { ManageTeamService } from 'src/app/_services/manage-team.service';
 import { TimeLogService } from 'src/app/_services/timeLogService';
 import { Attendance, Timesheet } from 'src/app/reports/model/productivityModel';
@@ -67,7 +67,7 @@ export class AttendanceComponent implements OnInit {
     this.firstLetter = this.commonservice.firstletter;
   }
 
-  
+
   populateUsers() {
     this.members = [];
     this.members.push({ id: this.currentUser.id, name: "Me", email: this.currentUser.email });

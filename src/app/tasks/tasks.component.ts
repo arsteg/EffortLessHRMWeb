@@ -7,7 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { project } from '../Project/model/project';
 import { ProjectService } from '../_services/project.service';
 import { UserService } from '../_services/users.service';
-import { CommonService } from '../common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 import { NavigationExtras, Router } from '@angular/router';
 import { AuthenticationService } from '../_services/authentication.service';
 import { TimeLogService } from '../_services/timeLogService';

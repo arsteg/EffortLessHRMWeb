@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { ToastrService } from 'ngx-toastr';
 import { AttendanceService } from 'src/app/_services/attendance.service';
 import { LeaveService } from 'src/app/_services/leave.service';
-import { CommonService } from 'src/app/common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 
 @Component({
   selector: 'app-general-template-settings',
@@ -183,7 +183,7 @@ export class GeneralTemplateSettingsComponent {
 
   onSubmission() {
 
-    
+
     this.addTemplateForm.value.leveCategoryHierarchyForAbsentHalfDay = this.selectedCategory;
     this.addTemplateForm.value.daysForAlternateWeekOffRoutine = this.selectedAlternateWeekDays;
     this.addTemplateForm.value.weklyofHalfDay = this.selectedHalfDays;

@@ -6,7 +6,7 @@ import { ProjectService } from 'src/app/_services/project.service';
 import { ExportService } from 'src/app/_services/export.service';
 import { DatePipe } from '@angular/common';
 import * as moment from 'moment';
-import { CommonService } from 'src/app/common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 @Component({
   selector: 'app-timeline',
   templateUrl: './timeline.component.html',

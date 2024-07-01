@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { LeaveService } from 'src/app/_services/leave.service';
 import { TimeLogService } from 'src/app/_services/timeLogService';
-import { CommonService } from 'src/app/common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 
 @Component({
   selector: 'app-add-short-leave',
@@ -68,8 +68,8 @@ export class AddShortLeaveComponent {
   }
 
   getShortLeaveCountForEmployee(userId: any){
-    const requestBody = { 
-      "skip": "0", 
+    const requestBody = {
+      "skip": "0",
       "next": "1000" };
     const currentYear = new Date().getFullYear();
     this.leaveService.getShortLeaveByUserId(userId, requestBody).subscribe(result => {
@@ -122,7 +122,7 @@ export class AddShortLeaveComponent {
   onSubmission() {
     if(this.shortLeave.invalid){
       this.toast.error('Please enter valid data');
-    }   
+    }
 
     const startTime = new Date(this.shortLeave.get('startTime').value);
     const endTime = new Date(this.shortLeave.get('endTime').value);
@@ -134,7 +134,7 @@ export class AddShortLeaveComponent {
     } else {
       this.shortLeave.get('durationInMinutes').setValue('');
     }
-    
+
     if(this.sameDateShortLeaveCount > 0){
       this.toast.error('You cannot apply for more than one short leave for the same day');
       return;

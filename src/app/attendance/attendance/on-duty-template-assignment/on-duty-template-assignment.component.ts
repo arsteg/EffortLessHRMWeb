@@ -5,7 +5,7 @@ import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { AttendanceService } from 'src/app/_services/attendance.service';
 import { ExportService } from 'src/app/_services/export.service';
-import { CommonService } from 'src/app/common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
@@ -27,7 +27,7 @@ export class OnDutyTemplateAssignmentComponent {
   templateById: any;
   templates: any;
   bsValue = new Date();
-  totalRecords: number 
+  totalRecords: number
   recordsPerPage: number = 10;
   currentPage: number = 1;
 
@@ -39,7 +39,7 @@ export class OnDutyTemplateAssignmentComponent {
     private toast: ToastrService,
     private commonService: CommonService,
     private fb: FormBuilder,
-    
+
   ) {
     this.onDutyTempAssignForm = this.fb.group({
       user: [''],
@@ -94,7 +94,7 @@ export class OnDutyTemplateAssignmentComponent {
     });
   }
 
- 
+
 
   closeModal() {
     this.modalService.dismissAll();

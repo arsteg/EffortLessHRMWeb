@@ -7,7 +7,7 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 import * as moment from 'moment';
 import { UserService } from 'src/app/_services/users.service';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
-import { CommonService } from 'src/app/common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -299,7 +299,7 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
     this.recordsPerPage = recordsPerPage;
     this.getAllTemplates();
   }
-  
+
   getAssignments() {
     let pagination = {
       skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),

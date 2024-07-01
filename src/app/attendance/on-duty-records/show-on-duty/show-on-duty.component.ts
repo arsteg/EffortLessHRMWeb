@@ -6,7 +6,7 @@ import { ExportService } from 'src/app/_services/export.service';
 import { ViewOnDutyComponent } from '../view-on-duty/view-on-duty.component';
 import { UpdateOnDutyComponent } from '../update-on-duty/update-on-duty.component';
 import { AddOnDutyComponent } from '../add-on-duty/add-on-duty.component';
-import { CommonService } from 'src/app/common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { ToastrService } from 'ngx-toastr';
 

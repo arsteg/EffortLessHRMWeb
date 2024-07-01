@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { LeaveService } from 'src/app/_services/leave.service';
-import { CommonService } from 'src/app/common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 
 @Component({
   selector: 'app-supervisors',

@@ -5,7 +5,7 @@ import { UpdateApplicationComponent } from '../update-application/update-applica
 import { MatDialog } from '@angular/material/dialog';
 import { ExportService } from 'src/app/_services/export.service';
 import { ViewApplicationComponent } from '../view-application/view-application.component';
-import { CommonService } from 'src/app/common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { ToastrService } from 'ngx-toastr';
 import { FormControl } from '@angular/forms';
@@ -61,7 +61,7 @@ export class ShowApplicationComponent {
     this.recordsPerPage = recordsPerPage;
     this.getLeaveApplication();
   }
- 
+
   onClose(event) {
     if (event) {
       this.modalService.dismissAll();

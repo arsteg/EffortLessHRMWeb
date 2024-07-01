@@ -4,7 +4,7 @@ import { TasksService } from '../../_services/tasks.service';
 import { Toast, ToastrService } from 'ngx-toastr';
 import { project } from 'src/app/Project/model/project';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CommonService } from 'src/app/common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 import { DatePipe } from '@angular/common';
 import { taskComment } from 'src/app/models/task/taskComment';
 import { taskAttachments, TaskAttachment, attachments, Task, SubTask, updateSubTask, updateTask } from '../task';
@@ -141,7 +141,7 @@ export class EditTaskComponent implements OnInit {
   onParagraphClick() {
     this.showEditor = true;
   }
-  
+
   getTask(taskId: string) {
     if (taskId) {
       this.tasksService.getTaskById(taskId).subscribe(res => {
@@ -344,7 +344,7 @@ export class EditTaskComponent implements OnInit {
         this.toast.error('Task could not be updated', 'ERROR!')
       })
   }
-  
+
   updateTaskStatus(selectedTask , status: string) {
     selectedTask = this.tasks.data.task;
     const payload = {
@@ -515,7 +515,7 @@ export class EditTaskComponent implements OnInit {
     this.tasksService.addTask(newTask).subscribe((response: any) => {
       this.task = response;
       this.toast.success('Sub Task Created successfully')
-      
+
       this.addForm.reset();
       this.ngOnInit();
       if (taskAttachments) {

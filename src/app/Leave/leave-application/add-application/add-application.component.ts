@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LeaveService } from 'src/app/_services/leave.service';
-import { CommonService } from 'src/app/common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 import * as moment from 'moment';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
@@ -204,7 +204,7 @@ export class AddApplicationComponent {
   onMemberSelectionChange(member: any) {
     this.member = JSON.parse(member.value);
   }
-  
+
   onSubmission() {
     if(this.leaveApplication.invalid){
       this.toast.error('Please enter valid data');
@@ -218,7 +218,7 @@ export class AddApplicationComponent {
 
       //Check duplicate leave applied
       const dateArray = this.getDatesInRange(
-        new Date(this.leaveApplication.get('startDate').value), 
+        new Date(this.leaveApplication.get('startDate').value),
         new Date(this.leaveApplication.get('endDate').value));
       for (const date of dateArray) {
         const applyDate = new Date(date);
@@ -355,16 +355,16 @@ export class AddApplicationComponent {
 
   checkDuplicateLeaveApplied(applyDate: Date): boolean {
     const applyDateOnly = new Date(applyDate.getFullYear(), applyDate.getMonth(), applyDate.getDate());
-  
+
     let leaveAppliedCountForSameDate = this.appliedLeave.filter((leave: any) => {
       const startDate = new Date(leave.startDate);
       const endDate = new Date(leave.endDate);
       const startDateOnly = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
       const endDateOnly = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
-  
+
       return applyDateOnly >= startDateOnly && applyDateOnly <= endDateOnly;
     }).length;
-  
+
     if (leaveAppliedCountForSameDate) {
       return true;
     }
@@ -440,7 +440,7 @@ export class AddApplicationComponent {
               }
             ];
 
-            staticAttachments.forEach(attachment => { 
+            staticAttachments.forEach(attachment => {
               this.leaveApplicationAttachments.push(this.createAttachment(attachment));
             });
           }

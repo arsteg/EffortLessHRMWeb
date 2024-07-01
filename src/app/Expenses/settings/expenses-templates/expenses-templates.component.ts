@@ -5,7 +5,7 @@ import { ExpensesService } from 'src/app/_services/expenses.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { FormGroup, FormBuilder, FormArray, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { CommonService } from 'src/app/common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 @Component({
   selector: 'app-expenses-templates',
   templateUrl: './expenses-templates.component.html',
@@ -44,7 +44,7 @@ export class ExpensesTemplatesComponent implements OnInit {
     public commonService: CommonService) {
     config.backdrop = 'static';
   }
-  
+
   ngOnInit(): void {
     this.getAllTemplates();
     this.filteredTemplate();
@@ -52,7 +52,7 @@ export class ExpensesTemplatesComponent implements OnInit {
 
   clearForm(){
   }
-  
+
   onClose(event) {
     if (event) {
       this.modalService.dismissAll();
@@ -119,7 +119,7 @@ export class ExpensesTemplatesComponent implements OnInit {
     this.recordsPerPage = recordsPerPage;
     this.getAllTemplates();
   }
-  
+
   getAllTemplates() {
     let pagination = {
       skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),

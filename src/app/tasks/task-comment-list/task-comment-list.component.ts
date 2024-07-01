@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { TasksService } from '../../_services/tasks.service';
 import { taskComment } from 'src/app/models/task/taskComment';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
-import { CommonService } from 'src/app/common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 import { attachments, commentAttachment } from '../task';
 import { ActivatedRoute } from '@angular/router';
 @Component({
@@ -70,7 +70,7 @@ export class TaskCommentListComponent implements OnInit {
     this.taskService.getComments(this.taskId || this.subtaskId).subscribe((response) => {
       this.comments = response.data;
     });
-   
+
   }
 
   updateComment(index: number, text: any) {
@@ -212,7 +212,7 @@ export class TaskCommentListComponent implements OnInit {
     return kilobytes.toFixed(2) + ' KB';
   }
   onInputClick() {
-    this.showEditor = true; 
+    this.showEditor = true;
   }
   cancelEditMode(){
     this.newComment = '';

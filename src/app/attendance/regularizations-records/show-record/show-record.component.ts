@@ -6,7 +6,7 @@ import { ViewRecordComponent } from '../view-record/view-record.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AttendanceService } from 'src/app/_services/attendance.service';
 import { AddRecordComponent } from '../add-record/add-record.component';
-import { CommonService } from 'src/app/common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { ToastrService } from 'ngx-toastr';
 import * as moment from 'moment';

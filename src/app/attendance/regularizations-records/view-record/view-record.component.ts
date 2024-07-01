@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { AttendanceService } from 'src/app/_services/attendance.service';
-import { CommonService } from 'src/app/common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 
 @Component({
   selector: 'app-view-record',
@@ -23,7 +23,7 @@ export class ViewRecordComponent {
     this.viewRequest = this.attendanceService.status.getValue();
     console.log(this.viewRequest)
   }
-  
-  
+
+
 
 }

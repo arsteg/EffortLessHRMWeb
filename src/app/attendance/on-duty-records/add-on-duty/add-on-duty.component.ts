@@ -2,7 +2,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AttendanceService } from 'src/app/_services/attendance.service';
 import * as moment from 'moment';
-import { CommonService } from 'src/app/common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -170,7 +170,7 @@ export class AddOnDutyComponent {
     const pagination = {
       skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
       next: this.recordsPerPage.toString(),
-    
+
     };
     this.attendanceService.getDutyReason(pagination).subscribe((res: any) => {
       this.onDutyReason = res.data;

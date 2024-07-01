@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { ExportService } from 'src/app/_services/export.service';
-import { CommonService } from 'src/app/common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 
 @Component({
   selector: 'app-cancelled',
@@ -54,12 +54,12 @@ export class CancelledComponent {
       this.currentPage = page;
       this.getExpenseReport();
     }
-  
+
     onRecordsPerPageChange(recordsPerPage: number) {
       this.recordsPerPage = recordsPerPage;
       this.getExpenseReport();
     }
-    
+
     getExpenseReport() {
       const pagination = {
         skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
@@ -71,7 +71,7 @@ export class CancelledComponent {
         this.totalRecords = res.total;
       });
     }
-      
+
     getUser(employeeId: string) {
       const matchingUser = this.users.find(user => user._id === employeeId);
       return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'User Not Found';
@@ -99,7 +99,7 @@ export class CancelledComponent {
         this.getExpenseReport();
       }
     }
-  
+
     onChangeStep(event) {
       this.step = event;
     }
@@ -108,7 +108,7 @@ export class CancelledComponent {
         this.changeMode = event
       }
     }
-  
+
     refreshExpenseReportTable() {
       this.getExpenseReport();
     }
@@ -147,5 +147,5 @@ export class CancelledComponent {
       return totalAmount;
     }
 
-    
+
 }

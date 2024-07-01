@@ -8,7 +8,7 @@ import { MatrixData } from '../model/timesheet';
 import { Attendance } from 'src/app/reports/model/productivityModel';
 import { ExportService } from 'src/app/_services/export.service';
 import { milliseconds } from 'date-fns';
-import { CommonService } from 'src/app/common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 
 @Component({
   selector: 'app-admin-timesheet',
@@ -107,14 +107,14 @@ export class AdminTimesheetComponent implements OnInit {
   exportToExcel() {
     const tableId = 'adminTimeSheet';
     const table = document.getElementById(tableId);
-  
+
     if (!table) {
       console.error(`Table with ID '${tableId}' not found.`);
       return;
     }
-  
+
     console.log('Table found:', table);
-  
+
     try {
       this.exportService.export('Admin Timesheet', tableId, 'xls');
     } catch (error) {
@@ -122,16 +122,16 @@ export class AdminTimesheetComponent implements OnInit {
     }
   }
   exportToCsv() {
-    const tableId = 'adminTimeSheet'; 
+    const tableId = 'adminTimeSheet';
     const table = document.getElementById(tableId);
-  
+
     if (!table) {
       console.error(`Table with ID '${tableId}' not found.`);
       return;
     }
-  
+
     console.log('Table found:', table);
-  
+
     try {
       this.exportService.export('Admin Timesheet', tableId, 'csv');
     } catch (error) {

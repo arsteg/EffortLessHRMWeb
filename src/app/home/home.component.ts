@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Spinkit } from 'ng-http-loader';
 import { AuthenticationService } from '../_services/authentication.service';
-import { CommonService } from '../common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 import { MatDialog } from '@angular/material/dialog';
 import { AddTimeEntryComponent } from './add-time-entry/add-time-entry.component';
 
@@ -39,7 +39,7 @@ export class HomeComponent implements OnInit {
     this.adminView = localStorage.getItem('adminView');
     this.auth.getRole(roleId).subscribe((response: any) => {
       let role = response && response.data && response.data[0].Name;
-   
+
       this.commonService.setCurrentUserRole(role);
       if (this.adminView) {
         if (this.adminView?.toLowerCase() == 'admin') {
@@ -124,20 +124,20 @@ export class HomeComponent implements OnInit {
   }
 
   filteredMenuItems() {
-    const searchTerm = this.searchText.trim().toLowerCase(); 
+    const searchTerm = this.searchText.trim().toLowerCase();
     if (searchTerm === '') {
-     
-      this.menuList = SideBarAdminMenu; 
+
+      this.menuList = SideBarAdminMenu;
     } else {
       const filtered = SideBarAdminMenu.filter(item =>
         item.title.toLowerCase().includes(searchTerm)
       );
       console.log('filteredMenuItems:', filtered);
-      this.menuList = filtered; 
+      this.menuList = filtered;
     }
 
     if (this.searchText === '') {
-      this.menuList = SideBarAdminMenu; 
+      this.menuList = SideBarAdminMenu;
     }
   }
   openAddModal(): void {

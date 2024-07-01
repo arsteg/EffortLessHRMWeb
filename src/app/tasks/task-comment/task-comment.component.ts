@@ -5,7 +5,7 @@ import { UserService } from 'src/app/_services/users.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { ToastrService } from 'ngx-toastr';
-import { CommonService } from 'src/app/common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 
 @Component({
   selector: 'app-task-comment',
@@ -18,7 +18,7 @@ export class TaskCommentComponent implements OnInit {
   @Output() commentUpdated = new EventEmitter<{text: string }>();
   @Output() commentDeleted = new EventEmitter<taskComment>();
   @Input() currentProfile: any;
-  @Input() attachments: TaskAttachment[]; 
+  @Input() attachments: TaskAttachment[];
   isEditMode: boolean = false;
   editedComment: any;
   index: number;
@@ -74,7 +74,7 @@ export class TaskCommentComponent implements OnInit {
     if (this.isEditMode) {
       this.showEditor = true;
       this.editedComment = this.tempComment;
-     
+
     } else {
       this.showEditor = false;
       this.tempComment = {...this.editedComment};

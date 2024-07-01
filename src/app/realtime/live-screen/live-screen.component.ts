@@ -5,7 +5,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Observable, catchError, throwError } from 'rxjs';
 import { TimeLogService } from 'src/app/_services/timeLogService';
-import { CommonService } from 'src/app/common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 import { SocketService } from 'src/app/_services/socket.Service';
 
 @Component({
@@ -85,7 +85,7 @@ export class LiveScreenComponent {
         }
       },
       error => {
-        console.error(error);      
+        console.error(error);
       });
     }
     else{
@@ -101,7 +101,7 @@ export class LiveScreenComponent {
         }
       },
       error => {
-        console.error(error);      
+        console.error(error);
       });
     }
   }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { CommonService } from 'src/app/common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 
 @Component({
   selector: 'app-manage',
@@ -32,5 +32,5 @@ export class ManageComponent implements OnInit {
     this.selectedTab = 3;
     console.log(this.selectTab)
   }
-  
+
 }

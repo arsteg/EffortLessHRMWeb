@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { CommonService } from 'src/app/common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 import { TimeLogService } from 'src/app/_services/timeLogService';
 import { DatePipe, NgIf } from '@angular/common';
 import { ReportsService } from 'src/app/_services/reports.service';
@@ -204,7 +204,7 @@ export class GeneralSettingsComponent implements OnInit {
       }
     })
   }
-  
+
   deleteReason(_id: string) {
     this.attendanceService.deleteReason(_id).subscribe((res: any) => {
       const index = this.regularization.findIndex(temp => temp._id === _id);
@@ -296,7 +296,7 @@ export class GeneralSettingsComponent implements OnInit {
     })
   }
 
-  
+
 
   clearForm() {
     this.dutyReasonForm.reset();

@@ -7,7 +7,7 @@ import { AuthenticationService } from 'src/app/_services/authentication.service'
 import { RoleService } from 'src/app/_services/role.service';
 import { TransitionCheckState } from '@angular/material/checkbox';
 import { ToastrService } from 'ngx-toastr';
-import { CommonService } from 'src/app/common/common.service';
+import { CommonService } from 'src/app/_services/common.Service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
