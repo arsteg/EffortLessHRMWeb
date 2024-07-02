@@ -6,7 +6,7 @@ html .mat-mdc-mini-fab.mat-accent,
 }
 
 .main-content {
-  padding: 30px 0px;
+  /* padding: 30px 0px; */
   background: #f5f7fb;
   min-height: calc(100vh - 60px);
 }
@@ -631,7 +631,8 @@ select {
 .subMenu {
   padding: 8px 48px;
   top: 55px;
-  position: fixed;
+  position: static;
+  margin-top: 5%;
   z-index: 991;
 }
 
@@ -871,13 +872,16 @@ h2 {
   color: #64728c;
 }
 
-.mdc-checkbox .mdc-checkbox__native-control:enabled:checked~.mdc-checkbox__background{
+.mdc-checkbox .mdc-checkbox__native-control:enabled:checked~.mdc-checkbox__background {
   background: #76bc21 !important;
   border-color: #76bc21 !important;
 }
-.mat-mdc-radio-button .mdc-radio .mdc-radio__native-control:enabled:checked+.mdc-radio__background .mdc-radio__outer-circle, .mat-mdc-radio-button .mdc-radio .mdc-radio__native-control:enabled+.mdc-radio__background .mdc-radio__inner-circle{
-  border-color: #76bc21 !important; 
+
+.mat-mdc-radio-button .mdc-radio .mdc-radio__native-control:enabled:checked+.mdc-radio__background .mdc-radio__outer-circle,
+.mat-mdc-radio-button .mdc-radio .mdc-radio__native-control:enabled+.mdc-radio__background .mdc-radio__inner-circle {
+  border-color: #76bc21 !important;
 }
+
 .mat-mdc-radio-button.mat-mdc-radio-checked .mdc-radio__background::before {
   background: #76bc21 !important;
 }

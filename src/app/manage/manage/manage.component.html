@@ -15,8 +15,8 @@
                 [class.active]="selectedTab === 6">Tags</button>
             <button class="btn rounded-pill submenuTab" (click)="selectTab(7)" [class.active]="selectedTab === 7">E-Mail
                 Template</button>
-            <button class="btn rounded-pill submenuTab" (click)="selectTab(8)" [class.active]="selectedTab === 8">
-                CRUD Component Testing</button>
+            <!-- <button class="btn rounded-pill submenuTab" (click)="selectTab(8)" [class.active]="selectedTab === 8">
+                CRUD Component Testing</button> -->
         </div>
 
         <div *ngIf="selectedTab === 1" class="tab-content">
@@ -40,8 +40,8 @@
         <div *ngIf="selectedTab === 7" class="tab-content">
             <app-email-template></app-email-template>
         </div>
-        <div *ngIf="selectedTab === 8" class="tab-content">
+        <!-- <div *ngIf="selectedTab === 8" class="tab-content">
             <app-crud [readOnly]="false"></app-crud>
-        </div>
+        </div> -->
     </div>
 </div>
