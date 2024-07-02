@@ -193,7 +193,7 @@ export class RequestManualTimeComponent implements OnInit {
       task: this.addRequestForm.value.task,
       reason: this.addRequestForm.value.reason,
       user: currentUser?.id,
-      requestId: this.selectedRequest._id || null,
+      requestId: null,
       fromDate: this.utilsService.convertToUTC(this.addRequestForm.value.fromDate),
       toDate: this.utilsService.convertToUTC(this.addRequestForm.value.toDate)
 
@@ -222,6 +222,7 @@ export class RequestManualTimeComponent implements OnInit {
         });
     }
     else {
+      request.requestId = this.selectedRequest.requestId;
       this.manualTimeRequestService.updateManualTimeRequest(request).subscribe((res: any) => {
         this.changeMode = 'Add';
         this.toastService.success("Manual time request updated successfully", "success");
