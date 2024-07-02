@@ -1,0 +1,32 @@
+<div class="modal-body">
+    <div class=" d-flex justify-content-between">
+        <div class="">
+            <h4 class="modal-title text-start">{{changeMode ? 'Update' : 'Add'}} Rounding Rules</h4>
+        </div>
+        <div class=""><button type="button" data-bs-dismiss="modal" (click)="closeModal()"
+                class="btn-close text-end"></button>
+        </div>
+    </div>
+    <hr class="mt-0">
+    <form [formGroup]="roundingRulesForm" (ngSubmit)="onSubmission()">
+        <div class="form-group">
+            <label for="">Statutory Name</label>
+            <input type="text" class="form-control" formControlName="name">
+        </div>
+
+        <div class="form-group mt-3">
+            <label for="">Rounding Type</label>
+            <select formControlName="roundingType" class="form-select">
+                <option value="" disabled selected>Choose Rounding type</option>
+                <option value="Rounding_Up">Rounding Up</option>
+                <option value="Rounding_Off">Rounding Off</option>
+                <option value="Rounding_Down">Rounding Down</option>
+            </select>
+        </div>
+
+        <div class="d-flex justify-content-between mt-2">
+            <button mat-raised-button type="reset">Cancel</button>
+            <button mat-raised-button type="submit" class="addBtn">Submit</button>
+        </div>
+    </form>
+</div>

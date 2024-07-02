@@ -15,72 +15,74 @@
             <div class="row">
                 <div class="form-group col-md-6 mt-3  p-2">
                     <label>What day of the month do you run your payroll?</label>
-                    <select name="" id=""></select>
+                    <select id="dayOfMonthToRunPayroll" formControlName="dayOfMonthToRunPayroll">
+                        <option *ngFor="let number of day" [value]="number">
+                            {{number}}
+                        </option>
+                    </select>
 
                 </div>
                 <div class="form-group col-md-6 mt-3  p-2">
                     <label>Payroll Approver</label>
-                    <select name="" class="form-control" id="">
-                        <option value="">Select Approver</option>
-                        <option value=""></option>
+                    <select class="form-control" formControlName="payrollApprovar" id="payrollApprovar">
+                        <option disabled value="undefined">Select Approver</option>
+                        <option [value]="approver?.id" *ngFor="let approver of approvers">{{approver?.name}}</option>
                     </select>
                 </div>
             </div>
-
-            <div class="form-group mt-3  p-2">
-                <div class="col-10">
+            <div class="row">
+                <div class="form-group col-md-6 mt-3  p-2">
                     <label>Attendance Cycle?</label>
                     <div class="d-flex">
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" id="flexRadioDefault1" required [value]="true">
-                            <label class="form-check-label" for="flexRadioDefault1">
+                            <input formControlName="attendanceCycle" class="form-check-input" type="radio"
+                                id="dayOfMonthToStartAttendanceCycle1" required value="Customize">
+                            <label class="form-check-label" for="dayOfMonthToStartAttendanceCycle1">
                                 Customize
                             </label>
                         </div>
                         <div class="form-check ms-2">
-                            <input class="form-check-input" type="radio" id="canEmployeeApplyFalse" required
-                                [value]="false">
-                            <label class="form-check-label" for="canEmployeeApplyFalse">
+                            <input formControlName="attendanceCycle" class="form-check-input" type="radio"
+                                id="dayOfMonthToStartAttendanceCycle2" required value="Non-Customize">
+                            <label class="form-check-label" for="dayOfMonthToStartAttendanceCycle2">
                                 Non-Customize
                             </label>
                         </div>
                     </div>
                 </div>
-
-            </div>
-            <div class=" mt-3  p-2">
-                <div class="form-group">
+                <div class="form-group col-md-6 mt-3  p-2">
                     <label>On What day of the month does your attendance cycle begin?</label>
-                    <input type="number" class="form-control">
+                    <input type="number" class="form-control" formControlName="dayOfMonthToStartAttendanceCycle">
                 </div>
-
             </div>
-
-            <div class="mt-3  p-2">
-                <div class="form-group">
+            <div class="mt-3 row  p-2">
+                <div class="form-group col-md-6">
                     <label>Do you want to keep password for salary register or not?</label>
                     <div class="d-flex">
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" id="flexRadioDefault1" required [value]="true">
-                            <label class="form-check-label" for="flexRadioDefault1">
+                            <input class="form-check-input" formControlName="isPasswordForSalaryRegister" type="radio"
+                                id="isPasswordForSalaryRegister1" required [value]="true">
+                            <label class="form-check-label" for="isPasswordForSalaryRegister1">
                                 Yes
                             </label>
                         </div>
                         <div class="form-check ms-2">
-                            <input class="form-check-input" type="radio" id="canEmployeeApplyFalse" required
-                                [value]="false">
-                            <label class="form-check-label" for="canEmployeeApplyFalse">
+                            <input class="form-check-input" formControlName="isPasswordForSalaryRegister" type="radio"
+                                id="isPasswordForSalaryRegister2" required [value]="false">
+                            <label class="form-check-label" for="isPasswordForSalaryRegister2">
                                 No
                             </label>
                         </div>
                     </div>
                 </div>
 
-            </div>
-            <!-- if( Do you want to keep password for salary register or not?) is yes -->
-            <div class="form-group mt-3">
-                <label for="">Password for salary register</label>
-                <input type="password" class="form-control">
+
+                <!-- if( Do you want to keep password for salary register or not?) is yes -->
+                <div class="form-group col-md-6 mt-3"
+                    *ngIf="generalSettingForm.get('isPasswordForSalaryRegister').value===true">
+                    <label for="">Password for salary register</label>
+                    <input type="password" formControlName="password" class="form-control">
+                </div>
             </div>
             <!-- end -->
 
@@ -89,15 +91,16 @@
                     <label>Is Company eligible for Gratuity?</label>
                     <div class="d-flex">
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" id="flexRadioDefault1" required [value]="true">
-                            <label class="form-check-label" for="flexRadioDefault1">
+                            <input class="form-check-input" type="radio" formControlName="isGraduityEligible"
+                                id="isGraduityEligible1" required [value]="true">
+                            <label class="form-check-label" for="isGraduityEligible1">
                                 Yes
                             </label>
                         </div>
                         <div class="form-check ms-2">
-                            <input class="form-check-input" type="radio" id="canEmployeeApplyFalse" required
-                                [value]="false">
-                            <label class="form-check-label" for="canEmployeeApplyFalse">
+                            <input class="form-check-input" type="radio" formControlName="isGraduityEligible"
+                                id="isGraduityEligible2" required [value]="false">
+                            <label class="form-check-label" for="isGraduityEligible2">
                                 No
                             </label>
                         </div>
@@ -106,18 +109,18 @@
 
             </div>
             <!-- start if  (Is Company eligible for Gratuity) is yes-->
-            <div>
-                <div class="mt-3 form-group">
+            <div class="row p-2" *ngIf="generalSettingForm.get('isGraduityEligible').value===true">
+                <div class="mt-3 col-md-6 form-group">
                     <label for="">Percentage for Gratuity</label>
-                    <input type="text" class="form-control">
+                    <input type="text" formControlName="percentageForGraduity" class="form-control">
                 </div>
 
-                <div class="form-group mt-3">
+                <div class="form-group col-md-6 mt-3">
                     <mat-form-field appearance="outline" class="w-100">
                         <mat-label>Components on which Gratuity is calculated</mat-label>
-                        <mat-select multiple>
-                            <mat-option>
-                                <!-- {{categories?.label}} -->
+                        <mat-select multiple formControlName="graduityComponentsGraduitycalculation">
+                            <mat-option *ngFor="let fa of fixedAllowance" [value]="fa?._id">
+                                {{fa?.label}}
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
@@ -125,153 +128,163 @@
             </div>
             <!-- end if  (Is Company eligible for Gratuity) is yes-->
 
-            <div class=" mt-3  p-2">
+            <div class="row mt-3  p-2">
 
-                <mat-form-field appearance="outline" class="w-100">
+                <mat-form-field appearance="outline" class="col-md-6">
                     <mat-label>How would you like to calculate Leave Encashment?</mat-label>
-                    <mat-select multiple>
-                        <mat-option>
-                            <!-- {{categories?.label}} -->
+                    <mat-select multiple formControlName="leaveEncashment">
+                        <mat-option *ngFor="let fa of fixedAllowance" [value]="fa?._id">
+                            {{fa?.label}}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
 
-            </div>
-
-            <div class="mt-3  p-2">
-                <div class="form-group">
+                <div class="form-group col-md-6">
                     <label>What is the denominator for calculating the Encashment?</label>
-                    <input type="number" class="form-control">
-                </div>
+                    <select id="denominatorForCalculatingTheNoticeRecovery"
+                        formControlName="denominatorForCalculatingTheEncashment">
+                        <option value="26">26</option>
+                        <option value="30">30</option>
 
-            </div>
-
-            <div class=" mt-3  p-2">
-                <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>In which month do you wish to pay out rollover leave encashment for
-                        employees?</mat-label>
-                    <mat-select multiple>
-                        <mat-option>
-                            <!-- {{all months}} -->
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
-
-            <div class=" mt-3  p-2">
-                <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>How would you like to calculate Leave Recovery?</mat-label>
-                    <mat-select multiple>
-                        <mat-option>
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-
-            </div>
-            <div class=" mt-3  p-2">
-                <div class="col-10">
-                    <label>What is the denominator for calculating the Leave Recovery?</label>
-                    <select name="" id="">
-                        <option value=""></option>
                     </select>
                 </div>
 
             </div>
-            <div class=" mt-3  p-2">
-                <mat-form-field appearance="outline" class="w-100">
+
+            <div class="row mt-3  p-2">
+                <mat-form-field appearance="outline" class="col-md-6">
+                    <mat-label>In which month do you wish to pay out rollover leave encashment for
+                        employees?</mat-label>
+                    <mat-select multiple formControlName="payoutRolloverLeaveEncashmentForEmployees">
+                        <mat-option *ngFor="let m of months" value="{{m}}">{{m}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+
+
+                <mat-form-field appearance="outline" class="col-md-6">
+                    <mat-label>How would you like to calculate Leave Recovery?</mat-label>
+                    <mat-select multiple formControlName="calculateLeaveRecovery">
+                        <mat-option *ngFor="let fa of fixedAllowance" [value]="fa?._id">
+                            {{fa?.label}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+            </div>
+            <div class="row mt-3  p-2">
+                <div class="col-md-6">
+                    <label>What is the denominator for calculating the Leave Recovery?</label>
+                    <select name="" id="" formControlName="denominatorForCalculatingTheLeaveRecovery">
+                        <option value="26">26</option>
+                        <option value="30">30</option>
+                    </select>
+                </div>
+
+
+                <mat-form-field appearance="outline" class="w-100 col-md-6">
                     <mat-label>When do you want to recover outstanding income tax of employees?</mat-label>
-                    <mat-select multiple>
-                        <mat-option>
+                    <mat-select multiple formControlName="recoverOutstandingIncomeTaxOfEmployees">
+                        <mat-option *ngFor="let m of months" value="{{m}}">
+                            {{m}}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>
+            <div class="row p-2">
+                <div class="form-group col-md-6 mt-3">
 
-            <div class="form-group mt-3  p-2">
-
-                <label>Is Notice Period Recovery applicable?</label>
-                <div class="d-flex">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" id="flexRadioDefault1" required [value]="true">
-                        <label class="form-check-label" for="flexRadioDefault1">
-                            Yes
-                        </label>
+                    <label>Is Notice Period Recovery applicable?</label>
+                    <div class="d-flex">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio"
+                                formControlName="isNoticePeriodRecoveryApplicable"
+                                id="isNoticePeriodRecoveryApplicable1" required [value]="true">
+                            <label class="form-check-label" for="isNoticePeriodRecoveryApplicable1">
+                                Yes
+                            </label>
+                        </div>
+                        <div class="form-check ms-2">
+                            <input class="form-check-input" type="radio"
+                                formControlName="isNoticePeriodRecoveryApplicable"
+                                id="isNoticePeriodRecoveryApplicable2" required [value]="false">
+                            <label class="form-check-label" for="isNoticePeriodRecoveryApplicable2">
+                                No
+                            </label>
+                        </div>
                     </div>
-                    <div class="form-check ms-2">
-                        <input class="form-check-input" type="radio" id="canEmployeeApplyFalse" required
-                            [value]="false">
-                        <label class="form-check-label" for="canEmployeeApplyFalse">
-                            No
-                        </label>
+                </div>
+
+                <!-- if (Is Notice Period Recovery applicable?) field is yes -->
+
+                <div class="form-group col-md-6 mt-3  p-2"
+                    *ngIf="generalSettingForm.get('isNoticePeriodRecoveryApplicable').value===true">
+                    <label>What is the denominator for calculating the Notice Recovery?</label>
+                    <select id="denominatorForCalculatingTheNoticeRecovery"
+                        formControlName="denominatorForCalculatingTheNoticeRecovery">
+                        <option value="26">26</option>
+                        <option value="30">30</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row p-2">
+                <div class="form-group col-md-6 mt-3">
+                    <label>Do you wish to calculate your TDS from ProH2R?</label>
+                    <div class="d-flex">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" formControlName="isAllowTDSFromProH2R"
+                                id="isAllowTDSFromProH2R1" required [value]="true">
+                            <label class="form-check-label" for="isAllowTDSFromProH2R1">
+                                Yes
+                            </label>
+                        </div>
+                        <div class="form-check ms-2">
+                            <input class="form-check-input" type="radio" id="isAllowTDSFromProH2R2" required
+                                [value]="false">
+                            <label class="form-check-label" for="isAllowTDSFromProH2R2">
+                                No
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="form-group col-md-6 mt-3  p-2">
+
+                    <label>Is Ncp Days Applicable in PF?</label>
+                    <div class="d-flex">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" id="isAllowNcpDaysApplicableInPF1"
+                                formControlName="isAllowNcpDaysApplicableInPF" required [value]="true">
+                            <label class="form-check-label" for="isAllowNcpDaysApplicableInPF1">
+                                Yes
+                            </label>
+                        </div>
+                        <div class="form-check ms-2">
+                            <input class="form-check-input" type="radio" id="isAllowNcpDaysApplicableInPF2"
+                                formControlName="isAllowNcpDaysApplicableInPF" required [value]="false">
+                            <label class="form-check-label" for="isAllowNcpDaysApplicableInPF2">
+                                No
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <!-- if (Is Notice Period Recovery applicable?) field is yes -->
-
             <div class="form-group mt-3  p-2">
-
-                <label>What is the denominator for calculating the Notice Recovery?</label>
-                <select name="" id="">
-                    <option value=""></option>
-                </select>
-            </div>
-
-            <div class="form-group mt-3  p-2">
-
-                <label>Do you wish to calculate your TDS from ProH2R?</label>
-                <div class="d-flex">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" id="flexRadioDefault1" required [value]="true">
-                        <label class="form-check-label" for="flexRadioDefault1">
-                            Yes
-                        </label>
-                    </div>
-                    <div class="form-check ms-2">
-                        <input class="form-check-input" type="radio" id="canEmployeeApplyFalse" required
-                            [value]="false">
-                        <label class="form-check-label" for="canEmployeeApplyFalse">
-                            No
-                        </label>
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="form-group mt-3  p-2">
-
-                <label>Is Ncp Days Applicable in PF?</label>
-                <div class="d-flex">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" id="flexRadioDefault1" required [value]="true">
-                        <label class="form-check-label" for="flexRadioDefault1">
-                            Yes
-                        </label>
-                    </div>
-                    <div class="form-check ms-2">
-                        <input class="form-check-input" type="radio" id="canEmployeeApplyFalse" required
-                            [value]="false">
-                        <label class="form-check-label" for="canEmployeeApplyFalse">
-                            No
-                        </label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group mt-3  p-2">
-
                 <label>Do you wish to calculate overtime from ProH2r?</label>
                 <div class="d-flex">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" id="flexRadioDefault1" required [value]="true">
-                        <label class="form-check-label" for="flexRadioDefault1">
+                        <input class="form-check-input" type="radio" formControlName="isAllowToCalculateOvertime"
+                            id="isAllowToCalculateOvertime1" required [value]="true">
+                        <label class="form-check-label" for="isAllowToCalculateOvertime1">
                             Yes
                         </label>
                     </div>
                     <div class="form-check ms-2">
-                        <input class="form-check-input" type="radio" id="canEmployeeApplyFalse" required
-                            [value]="false">
-                        <label class="form-check-label" for="canEmployeeApplyFalse">
+                        <input class="form-check-input" type="radio" formControlName="isAllowToCalculateOvertime"
+                            id="isAllowToCalculateOvertime2" required [value]="false">
+                        <label class="form-check-label" for="isAllowToCalculateOvertime2">
                             No
                         </label>
                     </div>
@@ -300,37 +313,66 @@
             <div class="tab-content pt-0">
                 <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabRoundingRules'}" id="tabRoundingRules">
                     <div class="d-flex justify-content-between align-items-center">
-                        <div class=""><label>({{regularization?.length}}) Records found</label></div>
                         <div class="">
                             <button class="btn addBtn"
-                                (click)="open(addModal); clearForm(); isEdit= false">Add&nbsp;Reason</button>
+                                (click)="open(rounding); clearForm(); isEdit= false">Add</button>
                         </div>
                     </div>
                     <div class="mt-2 bg-white tableContainer">
-                        <!-- <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
-                [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
-                (recordsPerPageChange)="onRecordsPerPageChange($event)">
-              </app-pagination> -->
+                      <div class="d-flex justify-content-between">
+                        <button class="btn addBtn"
+                        (click)="open(rounding); clearForm(); isEdit= false">Add</button>
+                        <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
+                            [recordsPerPage]="recordsPerPage" [currentPage]="currentPage"
+                            (pageChange)="onPageChange($event)" (recordsPerPageChange)="onRecordsPerPageChange($event)">
+                        </app-pagination>
+                    </div>
                         <table>
                             <thead>
-                                <th>Reason</th>
-                                <th>Visible To</th>
-                                <th>Action</th>
+                                <th>Statutory Name</th>
+                                <th>Round Up</th>
+                                <th>Round Off</th>
+                                <th>Round Down</th>
+                                <th>Actions</th>
                             </thead>
                             <tbody>
-                                <tr *ngFor="let reason of regularization ">
-                                    <td>{{reason?.label}}</td>
-                                    <td>{{reason?.applicableEmployee | titlecase}}</td>
+                                <tr *ngFor="let roundingRule of roundingRules">
+                                    <td>{{roundingRule?.name}}</td>
                                     <td>
+                                        <span *ngIf="roundingRule?.roundingType=='Rounding_Up' else roundingType">
+                                            <mat-icon style="color: green;">check</mat-icon>
+                                        </span>
+                                        <ng-template #roundingType>
+                                            <mat-icon style="color: red;">close</mat-icon>
+                                        </ng-template>
+                                    </td>
+                                    <td>
+                                        <span *ngIf="roundingRule?.roundingType=='Rounding_Off' else roundingType">
+                                            <mat-icon style="color: green;">check</mat-icon>
+                                        </span>
+                                        <ng-template #roundingType>
+                                            <mat-icon style="color: red;">close</mat-icon>
+                                        </ng-template>
+                                    </td>
+                                    <td>
+                                        <span *ngIf="roundingRule?.roundingType=='Rounding_Down' else roundingType">
+                                            <mat-icon style="color: green;">check</mat-icon>
+                                        </span>
+                                        <ng-template #roundingType>
+                                            <mat-icon style="color: red;">close</mat-icon>
+                                        </ng-template>
+                                    </td>
+                                    <td>
+                                       
                                         <button class="actions" mat-mini-fab matTooltip="Edit"
-                                            matTooltipPosition="before"
-                                            aria-label="Example icon button with a menu icon"
-                                            (click)="selectedRecord = reason; isEdit= true; editReason(); open(addModal); ">
+                                            matTooltipPosition="before"   data-bs-toggle="modal"
+                                            data-bs-target="#rounding"
+                                            (click)=" open(rounding); selectedRecord = roundingRule;  isEdit= true; editReason();">
                                             <i class="bi bi-pencil-fill"></i>
                                         </button>
                                         <button class="actions ms-2" mat-mini-fab matTooltip="Delete"
                                             matTooltipPosition="after" aria-label="Example icon button with a menu icon"
-                                            (click)="deleteDialog(reason?._id)">
+                                            (click)="deleteDialog(roundingRule?._id)">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </td>
@@ -343,8 +385,8 @@
                 <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabPFTemplate'}" id="tabPFTemplate">
                     <div>
                         <div class="text-end">
-                            <button class="btn addBtn"
-                                (click)="open(addDutyModal); clearForm() ;isEdit= false">On&nbsp;Duty&nbsp;Reason</button>
+                            <!-- <button class="btn addBtn"
+                                (click)="open(addDutyModal); clearForm() ;isEdit= false">On&nbsp;Duty&nbsp;Reason</button> -->
                         </div>
                     </div>
                     <div class="mt-2 bg-white tableContainer">
@@ -355,8 +397,8 @@
 
                         <table>
                             <thead>
-                                <th>Reason</th>
-                                <th>Visible To</th>
+                                <th>Template Name</th>
+                                <th>Allowances Applicable</th>
                                 <th>Action</th>
                             </thead>
                             <tbody>
@@ -384,20 +426,20 @@
                     id="tabGratuityTemplates">
                     <div>
                         <div class="text-end">
-                            <button class="btn addBtn"
-                                (click)="open(addDutyModal); clearForm() ;isEdit= false">On&nbsp;Duty&nbsp;Reason</button>
+                            <!-- <button class="btn addBtn"
+                                (click)="open(addDutyModal); clearForm() ;isEdit= false">On&nbsp;Duty&nbsp;Reason</button> -->
                         </div>
                     </div>
                     <div class="mt-2 bg-white tableContainer">
-                        <!-- <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
-                [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
-                (recordsPerPageChange)="onRecordsPerPageChange($event)">
-              </app-pagination> -->
+                        <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
+                            [recordsPerPage]="recordsPerPage" [currentPage]="currentPage"
+                            (pageChange)="onPageChange($event)" (recordsPerPageChange)="onRecordsPerPageChange($event)">
+                        </app-pagination>
 
                         <table>
                             <thead>
-                                <th>Reason</th>
-                                <th>Visible To</th>
+                                <th>Template Name</th>
+                                <th>Allowances Applicable</th>
                                 <th>Action</th>
                             </thead>
                             <tbody>
@@ -426,143 +468,8 @@
     </div>
 </div>
 
-<ng-template #addModal let-modal>
-    <div class="modal-header border-bottom mb-2 pt-0">
-        <div>
-            <h1 class="modal-title text-muted mb-0">{{isEdit? 'Update': 'Add'}} Regularization Reason
-            </h1>
-        </div>
-        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
-                (click)="modal.close('Escape clicked')"></button>
-        </div>
-    </div>
 
-    <!-- <form action="" [formGroup]="regularizationForm" (ngSubmit)="isEdit ? updateRegularization() :  addRegularization()">
-  
-      <div class="form-group">
-        <label for="">Label for Regularization Reason</label>
-        <input type="text" class="form-control" placeholder="Enter Label" formControlName="label">
-      </div>
-  
-      <div class="form-check form-switch ps-0 mt-2 d-flex justify-content-between">
-        <label for="isFrequecyRestriction">Frequency Restriction</label>
-        <input class="form-check-input" type="checkbox" role="switch" formControlName="isFrequecyRestriction"
-          id="isFrequecyRestriction" checked>
-      </div>
-  
-      <div *ngIf="regularizationForm.get('isFrequecyRestriction').value == true">
-        <p>An Employee can apply Maximum</p>
-        <div class="form-group">
-          <label for="">Limit</label>
-          <input type="number" class="form-control" placeholder="Limit" formControlName="limit">
-        </div>
-  
-        <div class="form-group mt-2">
-          <select name="" id="" formControlName="frequency">
-            <option value="week">Week</option>
-            <option value="calendar-month">Calendar Month</option>
-            <option value="annual-cycle">Annual Cycle</option>
-          </select>
-        </div>
-      </div>
-  
-  
-      <div class="form-group mt-2">
-        <label for="">Which Employees Does this Reason Apply to?</label>
-        <div class="d-flex">
-          <div class="form-check">
-            <input class="form-check-input" type="radio" id="all-employees" value="all-employees" required
-              formControlName="applicableEmployee">
-            <label class="form-check-label" for="all-employees">
-              All Employees
-            </label>
-          </div>
-          <div class="form-check ms-4">
-            <input class="form-check-input" type="radio" id="specific-employees" required value="specific-employees"
-              formControlName="applicableEmployee">
-            <label class="form-check-label" for="specific-employees">
-              Specific Employees
-            </label>
-          </div>
-        </div>
-      </div>
-      <div class="form-group mt-2" *ngIf="regularizationForm.get('applicableEmployee').value === 'specific-employees'">
-        <mat-form-field appearance="outline" class="w-100 mx-1">
-          <mat-label>Select Employee</mat-label>
-          <mat-select name="users" multiple formControlName="users">
-            <mat-option *ngFor="let member of members" [value]="member.id">
-              {{member?.firstName | titlecase}}&nbsp;{{member?.lastName}}
-            </mat-option>
-          </mat-select>
-  
-  
-        </mat-form-field>
-      </div>
-      <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
-        <button mat-raised-button type="button">Cancel</button>
-        <button mat-raised-button class="addBtn" type="submit">{{isEdit?
-          'Update': 'Add'}}</button>
-  
-      </div>
-    </form> -->
 
-</ng-template>
-
-<ng-template #addDutyModal let-dutyModal>
-    <div class="modal-header border-bottom mb-2 pt-0">
-        <div>
-            <h1 class="modal-title text-muted mb-0">{{isEdit? 'Update': 'Add'}} On Duty Reason
-            </h1>
-        </div>
-        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
-                (click)="dutyModal.close('Escape clicked')"></button>
-        </div>
-    </div>
-
-    <!-- <form action="" [formGroup]="dutyReasonForm" (ngSubmit)="isEdit ? updateDutyReason() :  addDutyReason()">
-  
-      <div class="form-group">
-        <label for="">Label for On Duty Reason</label>
-        <input type="text" class="form-control" placeholder="Enter Label" formControlName="label">
-      </div>
-  
-      <div class="form-group mt-2">
-        <label for="">Which Employees Does this Reason Apply to?</label>
-        <div class="d-flex">
-          <div class="form-check">
-            <input class="form-check-input" type="radio" id="all-employees" value="all-employees" required
-              formControlName="applicableEmployee">
-            <label class="form-check-label" for="all-employees">
-              All Employees
-            </label>
-          </div>
-          <div class="form-check ms-4">
-            <input class="form-check-input" type="radio" id="specific-employees" required value="specific-employees"
-              formControlName="applicableEmployee">
-            <label class="form-check-label" for="specific-employees">
-              Specific Employees
-            </label>
-          </div>
-        </div>
-      </div>
-      <div class="form-group mt-2" *ngIf="dutyReasonForm.get('applicableEmployee').value === 'specific-employees'">
-        <mat-form-field appearance="outline" class="w-100 mx-1">
-          <mat-label>Select Employee</mat-label>
-          <mat-select name="users" multiple formControlName="users">
-            <mat-option *ngFor="let member of members" [value]="member.id">
-              {{member?.firstName | titlecase}}&nbsp;{{member?.lastName}}
-            </mat-option>
-          </mat-select>
-  
-  
-        </mat-form-field>
-      </div>
-      <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
-        <button mat-raised-button type="button">Cancel</button>
-        <button mat-raised-button class="addBtn" type="submit">{{isEdit?
-          'Update': 'Add'}}</button>
-  
-      </div>
-    </form> -->
-
+<ng-template id="rounding" #rounding let-modal>
+    <app-rounding-rules (close)="onClose($event)" [changeMode]="isEdit" [roundingRule]="selectedRecord"></app-rounding-rules>
 </ng-template>
