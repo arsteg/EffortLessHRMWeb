@@ -275,10 +275,10 @@ export class EditTaskComponent implements OnInit {
         queryParams: { taskId: taskId }
       };
       if (p_Id) {
-        this.router.navigate(['/SubTask', task.taskNumber], navigationExtras);
+        this.router.navigate(['/SubTask'], navigationExtras);
       }
       else {
-        this.router.navigate(['/edit-task', task.taskNumber], navigationExtras);
+        this.router.navigate(['/edit-task'], navigationExtras);
       }
       this.tasks = task;
       this.getTaskAttachments();

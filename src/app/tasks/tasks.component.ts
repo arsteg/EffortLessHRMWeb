@@ -150,6 +150,7 @@ export class TasksComponent implements OnInit {
 
   }
   ngOnInit(): void {
+    this.onLoad();
     this.commonservice.getCurrentUserRole().subscribe((role: any) => {
       this.role = role;
     })
@@ -558,6 +559,14 @@ export class TasksComponent implements OnInit {
         this.projectList = this.projectList.filter(project => project !== null);
       });
     }
+    this.addForm.patchValue({
+      startDate: moment().format('YYYY-MM-DD'),
+      endDate: moment().format('YYYY-MM-DD'),
+      taskAttachments: [],
+      project: undefined,
+      user: undefined,
+      estimate: 8
+    });
   }
 
   onFileSelect(event) {
@@ -927,7 +936,7 @@ export class TasksComponent implements OnInit {
   domain: string;
 
   @HostListener('window:load', ['$event'])
-  onLoad(event: Event): void {
+  onLoad(): void {
     const hostname = window.location.hostname;
     const port = window.location.port;
 
@@ -939,28 +948,50 @@ export class TasksComponent implements OnInit {
 
   }
 
+  // copyTask(task) {
+  //   const taskID = task.id;
+  //   const p_Id = task.parentTask;
+  //   const tempInput = document.createElement('input');
+
+  //   if (p_Id && taskID) {
+  //     tempInput.value = `http://${this.domain}/#/SubTask/taskId=${taskID}`;
+  //     document.body.appendChild(tempInput);
+  //     tempInput.select();
+  //     document.execCommand('copy');
+  //     document.body.removeChild(tempInput);
+  //   }
+  //   if (taskID && !p_Id) {
+  //     tempInput.value = `http://${this.domain}/#/edit-task/taskId=${taskID}`;
+  //     document.body.appendChild(tempInput);
+  //     tempInput.select();
+  //     document.execCommand('copy');
+  //     document.body.removeChild(tempInput);
+  //   }
+  //   this.snackBar.open('Task is copied to clipboard', 'Dismiss', { duration: 4000 });
+  // }
   copyTask(task) {
+
+    const hostname = window.location.hostname;
+    const port = window.location.port;
+
+    if (hostname === 'localhost') 
+      this.domain = `${hostname}:${port}`;
+     else 
+      this.domain = hostname;
+    
+
     const taskID = task.id;
     const p_Id = task.parentTask;
-    const tempInput = document.createElement('input');
-
-    if (p_Id && taskID) {
-      tempInput.value = `http://${this.domain}/#/SubTask/${task.taskNumber}?taskId=${taskID}`;
-      document.body.appendChild(tempInput);
-      tempInput.select();
-      document.execCommand('copy');
-      document.body.removeChild(tempInput);
-    }
-    if (taskID && !p_Id) {
-      tempInput.value = `http://${this.domain}/#/edit-task/${task.taskNumber}?taskId=${taskID}`;
-      document.body.appendChild(tempInput);
-      tempInput.select();
-      document.execCommand('copy');
-      document.body.removeChild(tempInput);
-    }
-    this.snackBar.open('Task is copied to clipboard', 'Dismiss', { duration: 4000 });
+    const url = p_Id
+      ? `http://${this.domain}/#/SubTask?taskId=${taskID}`
+      : `http://${this.domain}/#/edit-task?taskId=${taskID}`;
+  
+    navigator.clipboard.writeText(url).then(() => {
+      this.snackBar.open('Task is copied to clipboard', 'Dismiss', { duration: 4000 });
+    }).catch((error) => {
+      console.error('Error copying to clipboard:', error);
+    });
   }
-
 }
 
 
