@@ -1,0 +1,23 @@
+<div class="dropdown ">
+    <img width="25" height="25" src="https://img.icons8.com/ios/50/FFFFFF/appointment-reminders--v1.png"
+        alt="appointment-reminders--v1" id="notificationDropdown" (click)="toggleDropdown()" />
+    <ul class="dropdown-menu dropdown-menu-default drpLog shadow mt-1 px-3" [class.show]="dropdownOpen"
+        aria-labelledby="notificationDropdown">
+        <div class="arrow up"></div>
+        <li *ngFor="let notification of todaysNotifications"
+            class="border-bottom align-content-center text-muted  py-3">
+            <div class="d-flex">
+                <i [ngClass]="getIcon(notification.notificationType?.name)"></i>
+                <label class="ms-2">{{ notification?.description }}</label>
+                <i class="fa fa-times-circle ms-auto text-danger"></i>
+            </div>
+            <small class="ps-4 notificationDate">{{notification?.date | date: 'mediumDate'}}</small>
+        </li>
+        <li style="width: 325px; height: 35px; cursor: pointer; color: #76bc21;" class="mt-2">
+            <a style="margin-left: 20px;" (click)="getAllNotifications()">
+                <i class="bi bi-hand-index-thumb-fill me-2"></i><b class="">See all notifications</b>
+            </a>
+            <span *ngIf="loading" class="spinner-border spinner-border-sm ms-2"></span>
+        </li>
+    </ul>
+</div>

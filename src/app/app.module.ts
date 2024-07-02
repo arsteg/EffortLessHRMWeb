@@ -86,6 +86,7 @@ import { FormsModule } from '@angular/forms';
 import { BrowserHistoryModule } from './browserHistory/browserHistory.module';
 import { LiveScreenComponent } from './realtime/live-screen/live-screen.component';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
+import { NotificationComponent } from './home/notification/notification.component';
 
 const config: SocketIoConfig = { url: 'http://localhost:8090', options: {} };
 
@@ -133,6 +134,7 @@ const config: SocketIoConfig = { url: 'http://localhost:8090', options: {} };
     SettingsComponent,
     UserTaxDeclarationComponent,
     LiveScreenComponent,
+    NotificationComponent,
   ],
   imports: [
     BrowserModule,
