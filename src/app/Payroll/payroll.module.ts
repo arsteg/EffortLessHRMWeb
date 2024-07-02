@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PayrollComponent } from './payroll.component';
 import { SettingsComponent } from './settings/settings.component';
@@ -19,6 +19,9 @@ import { PayslipsComponent } from './payslips/payslips.component';
 import { FnfPayslipsComponent } from './fnf-payslips/fnf-payslips.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.Module';
+import { RoundingRulesComponent } from './settings/general-settings/rounding-rules/rounding-rules.component';
+import { PfTemplateComponent } from './settings/general-settings/pf-template/pf-template.component';
+import { GratuityTemplateComponent } from './settings/general-settings/gratuity-template/gratuity-template.component';
 
 
 
@@ -40,7 +43,10 @@ import { SharedModule } from '../shared/shared.Module';
     LopReversalComponent,
     RunPayrollComponent,
     PayslipsComponent,
-    FnfPayslipsComponent
+    FnfPayslipsComponent,
+    RoundingRulesComponent,
+    PfTemplateComponent,
+    GratuityTemplateComponent
   ],
   imports: [
     CommonModule, 
@@ -48,6 +54,7 @@ import { SharedModule } from '../shared/shared.Module';
     ReactiveFormsModule,
     SharedModule,
     CommonModule
-  ]
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class PayrollModule { }
