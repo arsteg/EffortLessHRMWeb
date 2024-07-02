@@ -5,6 +5,10 @@ import { ToastrService } from 'ngx-toastr';
 import { MatrixData } from '../model/timesheet';
 import { ProjectService } from 'src/app/_services/project.service';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+import { ExportService } from 'src/app/_services/export.service';
+import { AuthenticationService } from 'src/app/_services/authentication.service';
 
 
 @Component({
@@ -24,7 +28,7 @@ export class UserTimesheetComponent implements OnInit {
   timesheetTotals:any[]=[];
   projectList:any[]=[];
   @ViewChild('toDateRef') toDateRef: ElementRef;
-
+  currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
   fromDateControl = new FormControl('', [
     Validators.required,
@@ -39,7 +43,8 @@ export class UserTimesheetComponent implements OnInit {
 
 
   constructor(private datePipe:DatePipe,private timeLogService:TimeLogService, private toast:ToastrService,
-    private projectService:ProjectService, private fb: FormBuilder) { }
+    private projectService:ProjectService, private fb: FormBuilder, private exportService: ExportService,
+  private auth: AuthenticationService) { }
 
   ngOnInit(): void {
     this.getFirstDayOfWeek();
@@ -58,10 +63,9 @@ a
 
   populateTimesheet(){
     this.timesheetTotals=[];
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     const fromDt= this.formatDate(this.fromDate);
     const toDt= this.formatDate(this.toDate);
-    this.timeLogService.getUserTimeSheet(currentUser.id, fromDt,toDt ).toPromise()
+    this.timeLogService.getUserTimeSheet(this.currentUser.id, fromDt,toDt ).toPromise()
     .then(response => {
       this.timeLogs = response.data;
       if(this.timeLogs.matrix.length>0){
@@ -82,16 +86,62 @@ a
   filterData(){
     this.populateTimesheet();
   }
-  exportToCsv(){
+ 
+  exportToCsv() {
+    const csvContent = this.generateTableContent('csv');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    saveAs(blob, 'user_timesheet.csv');
   }
-  exportToExcel(){
-
+  getSelectedUserNames(){
+    const user = this.currentUser.id;
+    this.auth.GetMe(user).subscribe((res: any)=>{
+      console.log(res)
+    })
   }
+  generateTableContent(format: 'csv' | 'xls'): any {
+    const tableId = 'userTimeSheet';
+    const table = document.getElementById(tableId);
+    if (!table) {
+      console.error(`Table with ID '${tableId}' not found.`);
+      return;
+    }
+    let content: any = [];
+    content.push([`From Date: ${this.fromDate || ''}`]);
+    content.push([`To Date: ${this.toDate || ''}`]);
+    content.push([`Selected Users: ${this.getSelectedUserNames()}`]);
+    content.push([]);
+    const headers = table.querySelectorAll('thead tr th');
+    const headerArray = Array.from(headers).map(header => header.textContent?.trim() || '');
+    content.push(headerArray);
+    const rows = table.querySelectorAll('tbody tr');
+    rows.forEach(row => {
+      const cells = row.querySelectorAll('td');
+      const cellArray = Array.from(cells).map(cell => cell.textContent?.trim() || '');
+      content.push(cellArray);
+    });
 
-  exportToPdf(){
-
+    if (format === 'csv') {
+      return content.map(row => row.join(',')).join('\n');
+    } else if (format === 'xls') {
+      return content;
+    }
   }
-
+  
+  exportToXlsx() {
+    const xlsxContent = this.generateTableContent('xls');
+    console.log(xlsxContent); 
+    const worksheet = XLSX.utils.aoa_to_sheet(xlsxContent);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+    const xlsxBlob = XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' });
+    const xlsxFile = new Blob([xlsxBlob], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    saveAs(xlsxFile, 'user_TimeSheet.xlsx');
+  }
+ 
+  @ViewChild('userTimeSheet') content!: ElementRef
+  exportToPdf() {
+    this.exportService.exportToPdf('user Timesheet', this.content.nativeElement)
+  }
   formatDate(dateVal) {
     var newDate = new Date(dateVal);
     var sMonth = this.padValue(newDate.getMonth() + 1);

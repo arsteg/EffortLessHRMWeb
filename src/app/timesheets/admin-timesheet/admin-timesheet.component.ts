@@ -5,11 +5,10 @@ import { ToastrService } from 'ngx-toastr';
 import { ProjectService } from 'src/app/_services/project.service';
 import { TimeLogService } from 'src/app/_services/timeLogService';
 import { MatrixData } from '../model/timesheet';
-import { Attendance } from 'src/app/reports/model/productivityModel';
 import { ExportService } from 'src/app/_services/export.service';
-import { milliseconds } from 'date-fns';
 import { CommonService } from 'src/app/_services/common.Service';
-
+import { saveAs } from 'file-saver';
+import * as XLSX from 'xlsx';
 @Component({
   selector: 'app-admin-timesheet',
   templateUrl: './admin-timesheet.component.html',
@@ -45,15 +44,17 @@ export class AdminTimesheetComponent implements OnInit {
   ]);
 
 
-  constructor(private datePipe: DatePipe, private timeLogService: TimeLogService, private toast: ToastrService,
-    private projectService: ProjectService, private fb: FormBuilder, private exportService: ExportService, public commonService: CommonService) { }
+  constructor(private datePipe: DatePipe,
+    private timeLogService: TimeLogService,
+    private projectService: ProjectService,
+    private exportService: ExportService,
+    public commonService: CommonService,
+   ) { }
 
   ngOnInit(): void {
-
     this.getAllProjects();
     this.populateUsers();
     this.getFirstDayOfMonth();
-
   }
 
   populateTimesheet() {
@@ -61,7 +62,6 @@ export class AdminTimesheetComponent implements OnInit {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     const fromDt = this.formatDate(this.fromDate);
     const toDt = this.formatDate(this.toDate);
-
     if (this.selectedUser.length === 0) {
       this.timesheetAllTotals = {};
       return;
@@ -104,7 +104,19 @@ export class AdminTimesheetComponent implements OnInit {
     }
     this.populateTimesheet();
   }
-  exportToExcel() {
+  exportToCsv() {
+    const csvContent = this.generateTableContent('csv');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    saveAs(blob, 'admin_timesheet.csv');
+  }
+
+  getSelectedUserNames(): string[] {
+    return this.members
+      .filter(member => this.selectedUser.includes(member.id))
+      .map(member => member.name);
+  }
+
+  generateTableContent(format: 'csv' | 'xls'): any {
     const tableId = 'adminTimeSheet';
     const table = document.getElementById(tableId);
 
@@ -113,32 +125,45 @@ export class AdminTimesheetComponent implements OnInit {
       return;
     }
 
-    console.log('Table found:', table);
+    let content: any = [];
 
-    try {
-      this.exportService.export('Admin Timesheet', tableId, 'xls');
-    } catch (error) {
-      console.error('Error exporting to xls:', error);
+    // Add filters as a heading
+    content.push([`From Date: ${this.fromDate || ''}`]);
+    content.push([`To Date: ${this.toDate || ''}`]);
+    content.push([`Selected Users: ${this.getSelectedUserNames().join(', ')}`]);
+    content.push([]);
+
+    // Get table headers
+    const headers = table.querySelectorAll('thead tr th');
+    const headerArray = Array.from(headers).map(header => header.textContent?.trim() || '');
+    content.push(headerArray);
+
+    // Get table rows
+    const rows = table.querySelectorAll('tbody tr');
+    rows.forEach(row => {
+      const cells = row.querySelectorAll('td');
+      const cellArray = Array.from(cells).map(cell => cell.textContent?.trim() || '');
+      content.push(cellArray);
+    });
+
+    if (format === 'csv') {
+      return content.map(row => row.join(',')).join('\n');
+    } else if (format === 'xls') {
+      return content;
     }
   }
-  exportToCsv() {
-    const tableId = 'adminTimeSheet';
-    const table = document.getElementById(tableId);
 
-    if (!table) {
-      console.error(`Table with ID '${tableId}' not found.`);
-      return;
-    }
-
-    console.log('Table found:', table);
-
-    try {
-      this.exportService.export('Admin Timesheet', tableId, 'csv');
-    } catch (error) {
-      console.error('Error exporting to CSV:', error);
-    }
-   }
-
+  exportToXlsx() {
+    const xlsxContent = this.generateTableContent('xls');
+    console.log(xlsxContent); 
+    const worksheet = XLSX.utils.aoa_to_sheet(xlsxContent);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+    const xlsxBlob = XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' });
+    const xlsxFile = new Blob([xlsxBlob], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    saveAs(xlsxFile, 'admin_timesheet.xlsx');
+  }
+ 
   @ViewChild('adminTimeSheet') content!: ElementRef
   exportToPdf() {
     this.exportService.exportToPdf('Admin Timesheet', this.content.nativeElement)
