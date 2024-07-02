@@ -9,3 +9,9 @@
     font-weight: 500;
     color: #878686 !important;
 }
+.notification{
+    color: #76bc21 !important;
+}
+.content{
+    font-size: smaller;
+}

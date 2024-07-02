@@ -26,6 +26,9 @@ export class NotificationComponent {
   getNotificationsofToday() {
     this.notificationService.getNotificationsofToday().subscribe((response: any) => {
       this.todaysNotifications = response.data;
+      this.todaysNotifications.forEach(notification => {
+        this.getNotificationType(notification);
+      });
     });
   }
 
@@ -42,9 +45,15 @@ export class NotificationComponent {
 
   getNotificationType(notification: any) {
     this.notificationService.getNotificationsTypeById(notification.eventNotificationType).subscribe((response: any) => {
-      notification.notificationType = response.data; // Store the notification type in the notification object
+      notification.notificationType = response.data;
     });
   }
+  deleteNotification(notification: string) {
+    this.notificationService.deleteEventNotification(notification).subscribe((response: any) => {
+      this.todaysNotifications = this.todaysNotifications.filter(item => item._id !== notification);
+    });
+  }
+
   getIcon(type: string): string {
     switch (type) {
       case 'Birthday':

@@ -7,11 +7,12 @@
         <li *ngFor="let notification of todaysNotifications"
             class="border-bottom align-content-center text-muted  py-3">
             <div class="d-flex">
-                <i [ngClass]="getIcon(notification.notificationType?.name)"></i>
-                <label class="ms-2">{{ notification?.description }}</label>
-                <i class="fa fa-times-circle ms-auto text-danger"></i>
+                <i [ngClass]="getIcon(notification.notificationType?.name)" class="me-2"></i>
+                <span class="content" *ngIf="notification.notificationType?.name === 'Appraisal'">Congratulations&nbsp;</span>
+                <label class="notification">{{ notification?.description }}</label>
+                <i class="fa fa-times-circle ms-auto text-danger" (click)="deleteNotification(notification?._id)"></i>
             </div>
-            <small class="ps-4 notificationDate">{{notification?.date | date: 'mediumDate'}}</small>
+            <small class="ps-4 notificationDate" >{{notification?.date | date: 'mediumDate'}}</small>
         </li>
         <li style="width: 325px; height: 35px; cursor: pointer; color: #76bc21;" class="mt-2">
             <a style="margin-left: 20px;" (click)="getAllNotifications()">
