@@ -88,17 +88,33 @@ a
   }
  
   exportToCsv() {
-    const csvContent = this.generateTableContent('csv');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    saveAs(blob, 'user_timesheet.csv');
+    this.generateTableContent('csv').then(csvContent => {
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      saveAs(blob, 'user_timesheet.csv');
+    });
   }
-  getSelectedUserNames(){
-    const user = this.currentUser.id;
-    this.auth.GetMe(user).subscribe((res: any)=>{
-      console.log(res)
-    })
-  }
-  generateTableContent(format: 'csv' | 'xls'): any {
+  // getSelectedUserNames(){
+  //   const user = this.currentUser.id;
+  //   this.auth.GetMe(user).subscribe((res: any)=>{
+  //     const response = res.data.users;
+  //     console.log(`${response.firstName+' '+ response.lastName}`)
+  //     return `${response.firstName+' '+ response.lastName}`
+  //   })
+  // }
+  
+getSelectedUserNames(): Promise<string> {
+  const user = this.currentUser.id;
+  return new Promise((resolve, reject) => {
+    this.auth.GetMe(user).subscribe((res: any) => {
+      const response = res.data.users;
+      console.log(`${response.firstName} ${response.lastName}`);
+      resolve(`${response.firstName} ${response.lastName}`);
+    }, (error) => {
+      reject(error);
+    });
+  });
+}
+  async generateTableContent(format: 'csv' | 'xls'): Promise<any> {
     const tableId = 'userTimeSheet';
     const table = document.getElementById(tableId);
     if (!table) {
@@ -108,7 +124,8 @@ a
     let content: any = [];
     content.push([`From Date: ${this.fromDate || ''}`]);
     content.push([`To Date: ${this.toDate || ''}`]);
-    content.push([`Selected Users: ${this.getSelectedUserNames()}`]);
+    const userName = await this.getSelectedUserNames();
+    content.push([`User: ${userName}`]);
     content.push([]);
     const headers = table.querySelectorAll('thead tr th');
     const headerArray = Array.from(headers).map(header => header.textContent?.trim() || '');
@@ -127,9 +144,8 @@ a
     }
   }
   
-  exportToXlsx() {
-    const xlsxContent = this.generateTableContent('xls');
-    console.log(xlsxContent); 
+  async exportToXlsx() {
+    const xlsxContent = await this.generateTableContent('xls');
     const worksheet = XLSX.utils.aoa_to_sheet(xlsxContent);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
