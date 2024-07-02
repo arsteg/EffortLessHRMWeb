@@ -162,7 +162,7 @@ export class CommonService extends baseService {
   getUserUiState(key: string): Observable<any> {
     const token = this.getToken();
     this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
-    return this.http.get<any>(`${environment.apiUrlDotNet}/common/UserUIState/`, this.httpOptions);
+    return this.http.get<any>(`${environment.apiUrlDotNet}/common/UserUIState/${key}`, this.httpOptions);
   }
 
 }

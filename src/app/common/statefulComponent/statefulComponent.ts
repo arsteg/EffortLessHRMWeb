@@ -1,13 +1,15 @@
 import { OnInit, OnDestroy, Directive } from '@angular/core'
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonService } from 'src/app/_services/common.Service';
 
 @Directive()
 export abstract class StatefulComponent implements OnInit, OnDestroy {
   abstract userId: string;
-  abstract componentName: string; // Add componentName as an abstract property
+  componentName: string; // Add componentName as an abstract property
   state: any;
 
-  constructor(protected commonService: CommonService) {}
+  constructor(protected commonService: CommonService,private activatedRoute: ActivatedRoute,
+    private router: Router) {}
 
   ngOnInit(): void {
     const key = this.generateUniqueKey();
@@ -28,6 +30,10 @@ export abstract class StatefulComponent implements OnInit, OnDestroy {
     this.saveState();
   }
 
+  generateUniqueKey(): string {
+    return `${this.userId}-${this.componentName}`;
+  }
+
   saveState(): void {
     const key = this.generateUniqueKey();
     const state = this.captureState();
@@ -41,8 +47,13 @@ export abstract class StatefulComponent implements OnInit, OnDestroy {
     );
   }
 
-  generateUniqueKey(): string {
-    return `${this.userId}-${this.componentName}`;
+  getCurrentComponentName(): string {
+    let route = this.activatedRoute;
+    while (route.firstChild) {
+      route = route.firstChild;
+    }
+    const component = route.snapshot.routeConfig?.component;
+    return component ? component.name : 'UnknownComponent';
   }
 
   abstract captureState(): any;

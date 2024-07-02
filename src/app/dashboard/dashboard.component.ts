@@ -13,6 +13,7 @@ import { Observable, Subscription } from 'rxjs';
 import { User } from '../models/user';
 import { SocketService } from '../_services/socket.Service';
 import { StatefulComponent } from '../common/statefulComponent/statefulComponent';
+import { ActivatedRoute, Router } from '@angular/router';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -21,13 +22,11 @@ import { StatefulComponent } from '../common/statefulComponent/statefulComponent
 export class DashboardComponent extends StatefulComponent implements OnInit {
 
 
-  componentName = 'adminDashboardComponent'; // Provide a unique name for the component
-
   //region Event notification related code
   users$: Observable<User[]>;
   private usersOnlineSubscription: Subscription;
   userId: string;
-
+  projectwiseTimeSelectedMember:string;
   //end region
 
   selectedManager: any;
@@ -60,12 +59,13 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
     private toastr: ToastrService,
     private socketService : SocketService,
     protected override commonService: CommonService,
+    activatedRoute: ActivatedRoute,
+    router: Router
   ) {
-    super(commonService);
+    super(commonService,activatedRoute,router);
   }
   // selectedUser: any;
   override ngOnInit(): void {
-    super.ngOnInit();
     //region event notifications
     // Register the user when the component initializes
     this.userId = JSON.parse(localStorage.getItem('currentUser')).id
@@ -175,7 +175,7 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
         this.toastr.error(err, 'ERROR!')
       });
     // }
-
+    super.ngOnInit();
   }
   filterDate() {
     this.ngOnInit();
@@ -330,13 +330,13 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
   }
   captureState(): any {
     return {
-      selectedDate: this.selectedDate,
+      projectwiseTimeSelectedMember: this.projectwiseTimeSelectedMember,
     };
   }
 
   restoreState(state: any): void {
-    if (state.pageSize) {
-      this.selectedDate = state.selectedDate;
+    if (state.projectwiseTimeSelectedMember) {
+      this.projectwiseTimeSelectedMember = state.projectwiseTimeSelectedMember;
     }
   }
 }
