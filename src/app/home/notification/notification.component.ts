@@ -26,7 +26,7 @@ export class NotificationComponent {
   getNotificationsofToday() {
     this.notificationService.getNotificationsofToday().subscribe((response: any) => {
       this.todaysNotifications = response.data;
-      this.todaysNotifications.forEach(notification => {
+       this.todaysNotifications.forEach(notification => {
         this.getNotificationType(notification);
       });
     });
@@ -36,7 +36,7 @@ export class NotificationComponent {
     this.loading = true;
     this.notificationService.getAllNotificationsofLoggedInUser().subscribe((response: any) => {
       this.loading = false;
-      this.todaysNotifications = [...this.todaysNotifications, ...response.data];
+      this.todaysNotifications = response.data;
       this.todaysNotifications.forEach(notification => {
         this.getNotificationType(notification);
       });
@@ -48,6 +48,7 @@ export class NotificationComponent {
       notification.notificationType = response.data;
     });
   }
+
   deleteNotification(notification: string) {
     this.notificationService.deleteEventNotification(notification).subscribe((response: any) => {
       this.todaysNotifications = this.todaysNotifications.filter(item => item._id !== notification);
@@ -70,6 +71,5 @@ export class NotificationComponent {
         return '';
     }
   }
-
 
 }
