@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'app-rejected',
+  selector: 'app-rejected-list',
   templateUrl: './rejected.component.html',
   styleUrl: './rejected.component.css'
 })

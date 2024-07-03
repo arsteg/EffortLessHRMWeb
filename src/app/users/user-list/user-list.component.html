@@ -142,13 +142,13 @@
                                     </div>
                                 </div>
 
-                                <div class="row mt-3">
+                                <div class="row mt-2">
                                     <div class="col-md-6">
                                         <label for="role" class="text-start">Role<span
                                                 class="text-danger">*</span></label>
 
 
-                                        <select class="custom-select mb-3 p-2" formControlName="role">
+                                        <select class="custom-select p-2" formControlName="role">
                                             <option value="">Choose Any Role</option>
                                             <option *ngFor="let role of roleName" [value]="role.id">
                                                 {{ role.Name}}
@@ -177,7 +177,7 @@
                                     </div>
                                 </div>
 
-                                <div class="row mt-3">
+                                <div class="row mt-2">
                                     <div class="col-md-6">
                                         <label for="password" class="text-start">Password<span
                                                 class="text-danger">*</span></label>

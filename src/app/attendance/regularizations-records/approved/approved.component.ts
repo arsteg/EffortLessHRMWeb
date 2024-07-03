@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'app-approved',
+  selector: 'app-approved-list',
   templateUrl: './approved.component.html',
   styleUrl: './approved.component.css'
 })

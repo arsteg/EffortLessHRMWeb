@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'app-pending',
+  selector: 'app-pending-list',
   templateUrl: './pending.component.html',
   styleUrl: './pending.component.css'
 })

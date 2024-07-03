@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'app-cancel',
+  selector: 'app-cancel-list',
   templateUrl: './cancel.component.html',
   styleUrl: './cancel.component.css'
 })
