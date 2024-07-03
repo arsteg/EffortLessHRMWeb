@@ -31,7 +31,8 @@ export class GeneralSettingsComponent {
   recordsPerPage: number = 10;
   currentPage: number = 1;
   roundingRules: any;
-  roundingRulesForm: FormGroup;
+  pfTemplate: any;
+  gratuityTemplate: any;
 
   constructor(private fb: FormBuilder,
     private modalService: NgbModal,
@@ -48,6 +49,8 @@ export class GeneralSettingsComponent {
       isPasswordForSalaryRegister: [true],
       isGraduityEligible: [true],
       percentageForGraduity: [''],
+      attendanceCycle: [''],
+      graduityComponentsGraduitycalculation: [''],
       leaveEncashment: [
         []
       ],
@@ -108,6 +111,8 @@ export class GeneralSettingsComponent {
           isPasswordForSalaryRegister: this.generalSettings.isPasswordForSalaryRegister,
           isGraduityEligible: this.generalSettings.isGraduityEligible,
           percentageForGraduity: this.generalSettings.percentageForGraduity,
+          attendanceCycle: this.generalSettings.attendanceCycle,
+          graduityComponentsGraduitycalculation: this.generalSettings.graduityComponentsGraduitycalculation,
           leaveEncashment: this.generalSettings.leaveEncashment,
           denominatorForCalculatingTheEncashment: this.generalSettings.denominatorForCalculatingTheEncashment,
           payoutRolloverLeaveEncashmentForEmployees: this.generalSettings.payoutRolloverLeaveEncashmentForEmployees,
@@ -126,6 +131,7 @@ export class GeneralSettingsComponent {
 
   selectTab(tabId: string) {
     this.activeTab = tabId;
+    console.log(this.activeTab)
   }
 
   saveGeneralSettings() {
@@ -133,9 +139,8 @@ export class GeneralSettingsComponent {
       this.payroll.addGeneralSettings(this.generalSettingForm.value).subscribe((res: any) => {
         this.generalSettings = res.data;
       });
-    else {
+    else if(this.isEdit) {
       const company = this.fixedAllowance[0].company;
-      console.log(company);
       this.payroll.updateGeneralSettings(company, this.generalSettingForm.value).subscribe((res: any) => {
         this.generalSettings = res.data;
         this.toast.success('General Settings Updated Successfully');
@@ -149,7 +154,6 @@ export class GeneralSettingsComponent {
     if (this.isEdit) {
       this.payroll.data.next(this.selectedRecord);
       this.payroll.generalSettings.next(this.generalSettings)
-      console.log(this.generalSettings)
     }
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
@@ -203,16 +207,16 @@ export class GeneralSettingsComponent {
       //   })
     }
     else if (this.activeTab === 'tabGratuityTemplates') {
-    //   this.payroll.deleteGeneralSettings(_id).subscribe((res: any) => {
-    //     const index = this.generalSettings.findIndex(temp => temp._id === _id);
-    //     if (index!== -1) {
-    //       this.generalSettings.splice(index, 1);
-    //     }
-    //     this.toast.success('Successfully Deleted!!!', 'General Settings');
-    //   },
-    //     (err) => {
-    //       this.toast.error('This Can not be delete as it is already used in the system', 'General Settings');
-    //     })
+      //   this.payroll.deleteGeneralSettings(_id).subscribe((res: any) => {
+      //     const index = this.generalSettings.findIndex(temp => temp._id === _id);
+      //     if (index!== -1) {
+      //       this.generalSettings.splice(index, 1);
+      //     }
+      //     this.toast.success('Successfully Deleted!!!', 'General Settings');
+      //   },
+      //     (err) => {
+      //       this.toast.error('This Can not be delete as it is already used in the system', 'General Settings');
+      //     })
     }
   }
 
@@ -262,10 +266,16 @@ export class GeneralSettingsComponent {
       });
     }
     else if (this.activeTab == 'tabPFTemplate') {
-
+      this.payroll.getPfTemplate(pagination).subscribe((res: any) => {
+        this.pfTemplate = res.data;
+        this.totalRecords = res.total;
+      });
     }
     else if (this.activeTab == 'tabGratuityTemplates') {
-
+      this.payroll.getGratuityTemplate(pagination).subscribe((res: any) => {
+        this.gratuityTemplate = res.data;
+        this.totalRecords = res.total;
+      });
     }
   }
 

@@ -1,1 +1,387 @@
-<p>fixed-allowance works!</p>
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="tableContainer bg-white">
+            <div class="d-flex align-items-center px-2">
+                <p class="mb-0 me-auto">({{fixedAllowance?.length}}) Records Found</p>
+                <div class="d-flex align-items-center">
+
+                    <span class="bi bi-search searchIcon"></span>
+
+                    <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
+                        name="searchText" aria-label="default input example">
+
+                    <button class="addBtn mx-2" mat-raised-button (click)="open(modal); isEdit= false; clearForm()">Add</button>
+
+                    <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
+                        [recordsPerPage]="recordsPerPage" [currentPage]="currentPage"
+                        (pageChange)="onPageChange($event)" (recordsPerPageChange)="onRecordsPerPageChange($event)">
+                    </app-pagination>
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <th>Allowance Name</th>
+                    <th>PF</th>
+                    <th>ESIC</th>
+                    <th>LWF</th>
+                    <th>PT</th>
+                    <th>TDS</th>
+                    <th>Gratuity</th>
+                    <th>Exemption Type</th>
+                    <th>Actions</th>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let fa of fixedAllowance">
+                        <td>{{fa?.label}}</td>
+                        <td>
+                            <span *ngIf="fa?.isProvidentFundAffected==true else fixed">
+                                <mat-icon style="color: green;">check</mat-icon>
+                            </span>
+                            <ng-template #fixed>
+                                <mat-icon style="color: red;">close</mat-icon>
+                            </ng-template>
+                        </td>
+                        <td>
+                            <span *ngIf="fa?.isESICAffected==true else fixed">
+                                <mat-icon style="color: green;">check</mat-icon>
+                            </span>
+                            <ng-template #fixed>
+                                <mat-icon style="color: red;">close</mat-icon>
+                            </ng-template>
+                        </td>
+                        <td>
+                            <span *ngIf="fa?.isLWFAffected==true else fixed">
+                                <mat-icon style="color: green;">check</mat-icon>
+                            </span>
+                            <ng-template #fixed>
+                                <mat-icon style="color: red;">close</mat-icon>
+                            </ng-template>
+                        </td>
+
+                        <td>
+                            <span *ngIf="fa?.isProfessionalTaxAffected==true else fixed">
+                                <mat-icon style="color: green;">check</mat-icon>
+                            </span>
+                            <ng-template #fixed>
+                                <mat-icon style="color: red;">close</mat-icon>
+                            </ng-template>
+                        </td>
+
+                        <td>
+                            <span *ngIf="fa?.isTDSAffected==true else fixed">
+                                <mat-icon style="color: green;">check</mat-icon>
+                            </span>
+                            <ng-template #fixed>
+                                <mat-icon style="color: red;">close</mat-icon>
+                            </ng-template>
+                        </td>
+
+                        <td>
+                            <span *ngIf="fa?.isGratuityFundAffected==true else fixed">
+                                <mat-icon style="color: green;">check</mat-icon>
+                            </span>
+                            <ng-template #fixed>
+                                <mat-icon style="color: red;">close</mat-icon>
+                            </ng-template>
+                        </td>
+                        <td>
+                            {{fa?.type}}
+                        </td>
+
+                        <td> <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before"
+                                data-bs-toggle="modal" data-bs-target="#modal"
+                                (click)=" open(modal); selectedRecord = fa;  isEdit= true; editRecord();">
+                                <i class="bi bi-pencil-fill"></i>
+                            </button>
+                            <button class="actions ms-2" mat-mini-fab matTooltip="Delete" matTooltipPosition="after"
+                                aria-label="Example icon button with a menu icon" (click)="deleteDialog(fa?._id)">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <ng-template #modal let-modal>
+        <div class="modal-header border-bottom mb-2 pt-0">
+            <div>
+                <h1 class="modal-title text-muted mb-0">{{isEdit? 'Update': 'Add'}} Fixed Allowance</h1>
+            </div>
+            <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
+                    (click)="closeModal()"></button>
+            </div>
+        </div>
+
+        <form [formGroup]="fixedAllowanceForm" (ngSubmit)="onSubmission()">
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="">What is the label of this Fixed Allowance <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" formControlName="label">
+                    <div *ngIf="fixedAllowanceForm.get('label').invalid && (fixedAllowanceForm.get('label').dirty || fixedAllowanceForm.get('label').touched)">
+                        <small class="text-danger" *ngIf="fixedAllowanceForm.get('label')['errors']['required']">Label is required</small>
+                      </div>
+                </div>
+
+                <div class="form-group my-2 col-md-6">
+                    <label for="">Allowance Type <span class="text-danger">*</span></label>
+                    <div class="d-flex">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" id="Forecast" formControlName="type" required
+                                value="Forecast">
+                            <label class="form-check-label" for="Forecast">
+                                Forecast
+                            </label>
+                        </div>
+
+
+                        <div class="form-check ms-3">
+                            <input class="form-check-input" type="radio" formControlName="type" id="Prorate" required
+                                value="Prorate">
+                            <label class="form-check-label" for="Prorate">
+                                Prorate
+                            </label>
+                        </div>
+
+                        <div class="form-check ms-3">
+                            <input class="form-check-input" type="radio" formControlName="type" id="none" required
+                                value="None">
+                            <label class="form-check-label" for="none">
+                                None
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group my-2 col-md-6">
+                    <label for="">Does this Allowance affect Arrears? <span class="text-danger">*</span></label>
+                    <div class="d-flex">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" id="arrears-yes"
+                                formControlName="isArrearsAffect" required [value]="true">
+                            <label class="form-check-label" for="arrears-yes">
+                                Yes
+                            </label>
+                        </div>
+
+
+                        <div class="form-check ms-3">
+                            <input class="form-check-input" type="radio" formControlName="isArrearsAffect"
+                                id="arrears-no" required [value]="false">
+                            <label class="form-check-label" for="arrears-no">
+                                No
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group my-2 col-md-6">
+                    <label for="">How do you want arrears to be calculated? <span class="text-danger">*</span></label>
+                    <div class="d-flex">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" id="monthly" formControlName="calculatedBy"
+                                required value="Monthly">
+                            <label class="form-check-label" for="monthly">
+                                Monthly
+                            </label>
+                        </div>
+
+
+                        <div class="form-check ms-3">
+                            <input class="form-check-input" type="radio" formControlName="calculatedBy" id="payable"
+                                required value="Based on Payabale Days">
+                            <label class="form-check-label" for="payable">
+                                Based on Payabale Days
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group my-2 col-md-6">
+                    <label for="">Is this Allowance One Time Tax enable? <span class="text-danger">*</span></label>
+                    <div class="d-flex">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" id="tax-yes" formControlName="isTaxEnabledOnce"
+                                required [value]="true">
+                            <label class="form-check-label" for="tax-yes">
+                                Yes
+                            </label>
+                        </div>
+
+
+                        <div class="form-check ms-3">
+                            <input class="form-check-input" type="radio" formControlName="isTaxEnabledOnce" id="tax-no"
+                                required [value]="false">
+                            <label class="form-check-label" for="tax-no">
+                                No
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group my-2 col-md-6">
+                    <label for="">Does this Allowance affect Provident Fund? <span class="text-danger">*</span></label>
+                    <div class="d-flex">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" id="Provident-yes"
+                                formControlName="isProvidentFundAffected" required [value]="true">
+                            <label class="form-check-label" for="Provident-yes">
+                                Yes
+                            </label>
+                        </div>
+
+
+                        <div class="form-check ms-3">
+                            <input class="form-check-input" type="radio" formControlName="isProvidentFundAffected"
+                                id="Provident-no" required [value]="false">
+                            <label class="form-check-label" for="Provident-no">
+                                No
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+
+                <div class="form-group my-2 col-md-6">
+                    <label for="">Does this Allowance affect ESIC? <span class="text-danger">*</span></label>
+                    <div class="d-flex">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" id="esic-yes" formControlName="isESICAffected"
+                                required [value]="true">
+                            <label class="form-check-label" for="esic-yes">
+                                Yes
+                            </label>
+                        </div>
+
+
+                        <div class="form-check ms-3">
+                            <input class="form-check-input" type="radio" formControlName="isESICAffected" id="esic-no"
+                                required [value]="false">
+                            <label class="form-check-label" for="esic-no">
+                                No
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group my-2 col-md-6">
+                    <label for="">Does this Allowance affect Gratuity fund? <span class="text-danger">*</span></label>
+                    <div class="d-flex">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" id="Gratuity-yes"
+                                formControlName="isGratuityFundAffected" required [value]="true">
+                            <label class="form-check-label" for="Gratuity-yes">
+                                Yes
+                            </label>
+                        </div>
+
+
+                        <div class="form-check ms-3">
+                            <input class="form-check-input" type="radio" formControlName="isGratuityFundAffected"
+                                id="Gratuity-no" required [value]="false">
+                            <label class="form-check-label" for="Gratuity-no">
+                                No
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group my-2 col-md-6">
+                    <label for="">Does this Allowance affect LWF? <span class="text-danger">*</span></label>
+                    <div class="d-flex">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" id="lwf-yes" formControlName="isLWFAffected"
+                                required [value]="true">
+                            <label class="form-check-label" for="lwf-yes">
+                                Yes
+                            </label>
+                        </div>
+
+
+                        <div class="form-check ms-3">
+                            <input class="form-check-input" type="radio" formControlName="isLWFAffected" id="lwf-no"
+                                required [value]="false">
+                            <label class="form-check-label" for="lwf-no">
+                                No
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group my-2 col-md-6">
+                    <label for="">Does this Allowance affect Professional Tax? <span class="text-danger">*</span></label>
+                    <div class="d-flex">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" id="Professional-yes"
+                                formControlName="isProfessionalTaxAffected" required [value]="true">
+                            <label class="form-check-label" for="Professional-yes">
+                                Yes
+                            </label>
+                        </div>
+
+
+                        <div class="form-check ms-3">
+                            <input class="form-check-input" type="radio" formControlName="isProfessionalTaxAffected"
+                                id="Professional-no" required [value]="false">
+                            <label class="form-check-label" for="Professional-no">
+                                No
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group my-2 col-md-6">
+                    <label for="">Does this Allowance affect TDS? <span class="text-danger">*</span></label>
+                    <div class="d-flex">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" id="tds-yes" formControlName="isTDSAffected"
+                                required [value]="true">
+                            <label class="form-check-label" for="tds-yes">
+                                Yes
+                            </label>
+                        </div>
+
+
+                        <div class="form-check ms-3">
+                            <input class="form-check-input" type="radio" formControlName="isTDSAffected" id="tds-no"
+                                required [value]="false">
+                            <label class="form-check-label" for="tds-no">
+                                No
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group my-2 col-md-6">
+                    <label for="">Do you want attendance to effect the eligibility? <span class="text-danger">*</span></label>
+                    <div class="d-flex">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" id="eligibility-yes"
+                                formControlName="isAttendanceToEffectTheEligibility" required [value]="true">
+                            <label class="form-check-label" for="eligibility-yes">
+                                Yes
+                            </label>
+                        </div>
+
+
+                        <div class="form-check ms-3">
+                            <input class="form-check-input" type="radio"
+                                formControlName="isAttendanceToEffectTheEligibility" id="eligibility-no" required
+                                [value]="false">
+                            <label class="form-check-label" for="eligibility-no">
+                                No
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex border-top mt-2 py-2 justify-content-between">
+                <button mat-raised-button type="reset">Cancel</button>
+                <button mat-raised-button type="submit" class="addBtn">Submit</button>
+            </div>
+        </form>
+    </ng-template>

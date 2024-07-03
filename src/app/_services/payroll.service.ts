@@ -64,8 +64,53 @@ export class PayrollService {
     var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll/rounding-rules/${id}`, this.httpOptions);
     return response;
   }
-  
-  // Fixed Allowance CRUD
+  // PF templates CRUD
+  addPFTemplate(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/pf-templates`, payload, this.httpOptions);
+    return response;
+  }
+  getPfTemplate(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/pf-templates-list`, payload, this.httpOptions);
+    return response;
+  }
+  updatePFTemplate(id: string, payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/pf-templates/${id}`, payload, this.httpOptions);
+    return response;
+  }
+  deletePFTemplate(id: string): Observable<any> {
+    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll/pf-templates/${id}`, this.httpOptions);
+    return response;
+  }
+  // Gratuity Templates CRUD
+  addGratuityTemplate(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/gratuity-templates`, payload, this.httpOptions);
+    return response;
+  }
+  updateGratuityTemplate(id: string, payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/gratuity-templates/${id}`, payload, this.httpOptions);
+    return response;
+  }
+  deleteGrauityTemplate(id: string): Observable<any> {
+    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll/gratuity-templates/${id}`, this.httpOptions);
+    return response;
+  }
+  getGratuityTemplate(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/gratuity-templates-list`, payload, this.httpOptions);
+    return response;
+  }
+  // Fixed Allowance Templates CRUD
+  addAllowanceTemplate(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/fixed-allowances`, payload, this.httpOptions);
+    return response;
+  }
+  updateAllowanceTemplate(id: string, payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/fixed-allowances/${id}`, payload, this.httpOptions);
+    return response;
+  }
+  deleteAllowanceTemplate(id: string): Observable<any> {
+    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll/fixed-allowances/${id}`, this.httpOptions);
+    return response;
+  }
   getFixedAllowance(payload: any): Observable<any> {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/fixed-allowances-list`, payload, this.httpOptions);
     return response;
