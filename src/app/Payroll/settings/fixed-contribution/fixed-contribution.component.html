@@ -1,1 +1,56 @@
-<p>fixed-contribution works!</p>
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="tableContainer bg-white">
+            <div class="d-flex align-items-center px-2 py-1">
+                <p class="mb-0 me-auto">({{fixedContribution?.length}}) Records Found</p>
+                <div class="d-flex align-items-center">
+
+                    <span class="bi bi-search searchIcon"></span>
+
+                    <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
+                        name="searchText" aria-label="default input example">
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <th>Label Name</th>
+                    <th>Action</th>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let fc of fixedContribution">
+                        <td>{{fc?.label}} ({{fc?.shortName}})</td>
+                        <td>
+                            <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before"
+                                data-bs-toggle="offcanvas" data-bs-target="#demo"
+                                (click)="selectedRecord = fc; isEdit = true">
+                                <!-- (click)="openDrawer(fc); selectedRecord = fc; isEdit = true" -->
+                                <i class="bi bi-pencil-fill"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+    <div class="offcanvas offcanvas-end w-75" id="demo">
+        <div class="offcanvas-body">
+            <div class="container p-0">
+                <ng-container *ngIf="selectedRecord?.shortName === 'LWF'; else esicTemplate">
+                    <app-lwf [selectedRecord]="selectedRecord" [isEdit]="isEdit"></app-lwf>
+                </ng-container>
+                <ng-template #esicTemplate>
+                    <ng-container *ngIf="selectedRecord?.shortName === 'ESIC'; else ptTemplate">
+                        <app-esic [selectedRecord]="selectedRecord" [isEdit]="isEdit"></app-esic>
+                    </ng-container>
+                </ng-template>
+                <ng-template #ptTemplate>
+                    <ng-container *ngIf="selectedRecord?.shortName === 'PT'; else ptTemplate">
+                        <app-pt [selectedRecord]="selectedRecord" [isEdit]="isEdit"></app-pt>
+                    </ng-container>
+                </ng-template>
+            </div>
+        </div>
+    </div>

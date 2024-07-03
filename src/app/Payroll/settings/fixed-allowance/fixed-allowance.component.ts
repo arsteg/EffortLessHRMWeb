@@ -23,10 +23,10 @@ export class FixedAllowanceComponent {
   fixedAllowanceForm: FormGroup;
 
   constructor(private payroll: PayrollService,
-    private dialog: MatDialog,
     private modalService: NgbModal,
     private toast: ToastrService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private dialog: MatDialog
   ) {
     this.fixedAllowanceForm = this.fb.group({
       label: ['', Validators.required],
@@ -47,6 +47,7 @@ export class FixedAllowanceComponent {
   ngOnInit() {
     this.getFixedAllowance();
   }
+  
   onPageChange(page: number) {
     this.currentPage = page;
     this.getFixedAllowance();
@@ -64,6 +65,7 @@ export class FixedAllowanceComponent {
     };
     this.payroll.getFixedAllowance(pagination).subscribe((res: any) => {
       this.fixedAllowance = res.data;
+      this.totalRecords = res.total;
     });
   }
 

@@ -22,6 +22,7 @@ export class PayrollService {
   data: any = new BehaviorSubject('');
   addResponse: any = new BehaviorSubject('');
   generalSettings: any = new BehaviorSubject('');
+  fixedAllowance: any = new BehaviorSubject('');
 
   constructor(private http: HttpClient) { }
   public getToken() {
@@ -115,6 +116,39 @@ export class PayrollService {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/fixed-allowances-list`, payload, this.httpOptions);
     return response;
   }
+  // fixed contribution
+  addFixedContribution(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/fixed-contribution`, payload, this.httpOptions);
+    return response;
+  }
+  updateFixedContribution(id: string, payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/fixed-contribution/${id}`, payload, this.httpOptions);
+    return response;
+  }
+  deleteFixedContribution(id: string): Observable<any> {
+    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll/fixed-contribution/${id}`, this.httpOptions);
+    return response;
+  }
+  getFixedContribution(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/fixed-contribution-list`, payload, this.httpOptions);
+    return response;
+  }
 
-
+  // PT-Slab Crud
+  addPTSlab(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/pt-slabs`, payload, this.httpOptions);
+    return response;
+  }
+  updatePTSlab(id: string, payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/pt-slabs/${id}`, payload, this.httpOptions);
+    return response;
+  }
+  deletePTSlab(id: string): Observable<any> {
+    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll/pt-slabs/${id}`, this.httpOptions);
+    return response;
+  }
+  getPTSlab(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/pt-slabs-list`, payload, this.httpOptions);
+    return response;
+  }
 }

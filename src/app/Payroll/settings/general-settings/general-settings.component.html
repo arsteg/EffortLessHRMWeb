@@ -437,18 +437,9 @@
                 </div>
                 <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabGratuityTemplates'}"
                     id="tabGratuityTemplates">
-                    <div>
-                        <div class="text-end">
-                            <!-- <button class="btn addBtn"
-                                (click)="open(addDutyModal); clearForm() ;isEdit= false">On&nbsp;Duty&nbsp;Reason</button> -->
-                        </div>
-                    </div>
+                   
                     <div class="mt-2 bg-white tableContainer">
-                        <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
-                            [recordsPerPage]="recordsPerPage" [currentPage]="currentPage"
-                            (pageChange)="onPageChange($event)" (recordsPerPageChange)="onRecordsPerPageChange($event)">
-                        </app-pagination>
-
+                        
                         <table>
                             <thead>
                                 <th>Template Name</th>

@@ -139,7 +139,7 @@ export class GeneralSettingsComponent {
       this.payroll.addGeneralSettings(this.generalSettingForm.value).subscribe((res: any) => {
         this.generalSettings = res.data;
       });
-    else if(this.isEdit) {
+    else if (this.isEdit) {
       const company = this.fixedAllowance[0].company;
       this.payroll.updateGeneralSettings(company, this.generalSettingForm.value).subscribe((res: any) => {
         this.generalSettings = res.data;
@@ -150,10 +150,13 @@ export class GeneralSettingsComponent {
   }
 
   open(content: any) {
-    this.payroll.generalSettings.next(this.generalSettings)
+    this.payroll.generalSettings.next(this.generalSettings);
+    this.payroll.fixedAllowance.next(this.fixedAllowance);
+    console.log(this.fixedAllowance);
+    
     if (this.isEdit) {
       this.payroll.data.next(this.selectedRecord);
-      this.payroll.generalSettings.next(this.generalSettings)
+      this.payroll.generalSettings.next(this.generalSettings);
     }
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;

@@ -22,6 +22,20 @@ import { SharedModule } from '../shared/shared.Module';
 import { RoundingRulesComponent } from './settings/general-settings/rounding-rules/rounding-rules.component';
 import { PfTemplateComponent } from './settings/general-settings/pf-template/pf-template.component';
 import { GratuityTemplateComponent } from './settings/general-settings/gratuity-template/gratuity-template.component';
+import { LwfComponent } from './settings/fixed-contribution/lwf/lwf.component';
+import { LwfSlabComponent } from './settings/fixed-contribution/lwf/lwf-slab/lwf-slab.component';
+import { PtComponent } from './settings/fixed-contribution/pt/pt.component';
+import { EligibleStatesComponent } from './settings/fixed-contribution/pt/eligible-states/eligible-states.component';
+import { PtDeductionComponent } from './settings/fixed-contribution/pt/pt-deduction/pt-deduction.component';
+import { EsicComponent } from './settings/fixed-contribution/esic/esic.component';
+import { CeilingAmountComponent } from './settings/fixed-contribution/esic/ceiling-amount/ceiling-amount.component';
+import { ContributionComponent } from './settings/fixed-contribution/esic/contribution/contribution.component';
+import { DeductionComponent } from './settings/fixed-contribution/lwf/deduction/deduction.component';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatButtonModule } from '@angular/material/button';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserModule } from '@angular/platform-browser';
+import { PtSlabComponent } from './settings/fixed-contribution/pt/pt-slab/pt-slab.component';
 
 
 
@@ -46,14 +60,29 @@ import { GratuityTemplateComponent } from './settings/general-settings/gratuity-
     FnfPayslipsComponent,
     RoundingRulesComponent,
     PfTemplateComponent,
-    GratuityTemplateComponent
+    GratuityTemplateComponent,
+    LwfComponent,
+    LwfSlabComponent,
+    PtComponent,
+    EligibleStatesComponent,
+    PtDeductionComponent,
+    PtSlabComponent,
+    EsicComponent,
+    CeilingAmountComponent,
+    ContributionComponent,
+    DeductionComponent
+
   ],
   imports: [
     CommonModule, 
     FormsModule,
     ReactiveFormsModule,
     SharedModule,
-    CommonModule
+    CommonModule,
+    MatSidenavModule,
+    MatButtonModule,
+    BrowserAnimationsModule,
+    BrowserModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
