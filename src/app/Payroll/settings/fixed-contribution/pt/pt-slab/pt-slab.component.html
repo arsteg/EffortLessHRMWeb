@@ -28,7 +28,7 @@
 
         </thead>
         <tbody>
-            <tr *ngFor="let data of ptSlab">
+            <tr *ngFor="let data of ptSlab | search:searchText">
                 <td>{{data?.fromAmount}}</td>
                 <td>{{data?.toAmount}}</td>
                 <td>{{data?.employeePercentage}}</td>
@@ -86,7 +86,7 @@
         <div class="row">
             <div class="form-group col-md-6 mt-2">
                 <label for="">Employee Percentage</label>
-                <input type="number" class="form-control"  formControlName="employeePercentage">
+                <input type="number" class="form-control" formControlName="employeePercentage">
                 <div
                     *ngIf="ptSlabForm.get('employeePercentage').invalid && (ptSlabForm.get('employeePercentage').dirty || ptSlabForm.get('employeePercentage').touched)">
                     <small class="text-danger" *ngIf="ptSlabForm.get('employeePercentage')['errors']['required']">Field
@@ -121,7 +121,7 @@
 
             <div class="form-group col-md-6 mt-2">
                 <label for="">12th Month Amount</label>
-                <input type="number" class="form-control"  formControlName="twelfthMonthAmount">
+                <input type="number" class="form-control" formControlName="twelfthMonthAmount">
                 <div
                     *ngIf="ptSlabForm.get('twelfthMonthAmount').invalid && (ptSlabForm.get('twelfthMonthAmount').dirty || ptSlabForm.get('twelfthMonthAmount').touched)">
                     <small class="text-danger" *ngIf="ptSlabForm.get('twelfthMonthAmount')['errors']['required']">Field
