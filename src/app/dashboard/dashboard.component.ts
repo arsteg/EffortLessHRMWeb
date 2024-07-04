@@ -75,8 +75,12 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
     this.socketService.emitUser(this.currentUser.id);
 
     //Subscribe to get the list of users online
-    this.socketService.getUsersOnline().subscribe((message) => {
-      console.log(`This is the message from web socket as a notification: ${message.message}`);
+    this.socketService.getUsersOnline().subscribe((response) => {
+      if(response.status=='success'){
+        console.log(`This is the message from web socket as a notification: ${response.data}`);
+      }
+      else{
+      }
     });
 
     //end region
