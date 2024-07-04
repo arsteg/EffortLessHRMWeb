@@ -95,10 +95,10 @@ export class PtSlabComponent {
       if (index !== -1) {
         this.ptSlab.splice(index, 1);
       }
-      this.toast.success('Successfully Deleted!!!', 'Rounding Rules');
+      this.toast.success('Successfully Deleted!!!', 'PT Slab');
     },
       (err) => {
-        this.toast.error('This Can not be delete as it is already used in the system', 'Rounding Rules');
+        this.toast.error('PT Slab can not be deleted', 'Error');
       })
 
   }

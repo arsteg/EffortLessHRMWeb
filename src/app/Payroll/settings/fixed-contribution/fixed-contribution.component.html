@@ -17,7 +17,7 @@
                     <th>Action</th>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let fc of fixedContribution">
+                    <tr *ngFor="let fc of fixedContribution | search:searchText">
                         <td>{{fc?.label}} ({{fc?.shortName}})</td>
                         <td>
                             <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before"
