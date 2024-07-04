@@ -87,8 +87,9 @@ import { BrowserHistoryModule } from './browserHistory/browserHistory.module';
 import { LiveScreenComponent } from './realtime/live-screen/live-screen.component';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { NotificationComponent } from './home/notification/notification.component';
+import { environment } from '../environments/environment'; // Import the environment configuration
 
-const config: SocketIoConfig = { url: 'http://localhost:8090', options: {} };
+const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
 
 @NgModule({
   declarations: [
