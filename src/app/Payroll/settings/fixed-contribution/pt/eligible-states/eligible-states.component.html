@@ -1,1 +1,32 @@
-<p>eligible-states works!</p>
+<div class="tableContainer bg-white">
+    <div class="d-flex align-items-center px-2">
+        <div class="d-flex align-items-center">
+            <button class="addBtn mx-2" mat-raised-button (click)="open(modal); isEdit= false; clearForm()">Configure
+                States</button>
+            <button class="addBtn mx-2" mat-raised-button>Update
+            </button>
+        </div>
+    </div>
+
+    <ul class="users" type="none" class="">
+        <div class="">
+            <li *ngFor="let es of eligibleStates">
+                <label>
+                    <mat-checkbox  [checked]="es.state['isChecked']">
+                        {{es.state}}</mat-checkbox>
+                </label>
+            </li>
+        </div>
+    </ul>
+
+
+    <ng-template #modal let-modal>
+        <div class="modal-header border-bottom mb-2 pt-0">
+            <div>
+                <h1 class="modal-title text-muted mb-0">{{isEdit? 'Update': 'Add'}} Eligible States</h1>
+            </div>
+            <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
+                    (click)="closeModal()"></button>
+            </div>
+        </div>
+    </ng-template>

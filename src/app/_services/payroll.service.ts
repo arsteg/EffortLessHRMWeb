@@ -151,4 +151,44 @@ export class PayrollService {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/pt-slabs-list`, payload, this.httpOptions);
     return response;
   }
+
+  // Eligible states CRUD
+  addEligibleState(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/pt-eligible-states`, payload, this.httpOptions);
+    return response;
+  }
+
+  updateEligibleState(id: string, payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/pt-eligible-states/${id}`, payload, this.httpOptions);
+    return response;
+  }
+
+  deleteEligibleState(id: string): Observable<any> {
+    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll/pt-eligible-states/${id}`, this.httpOptions);
+    return response;
+  }
+
+  getEligibleStates(): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/pt-eligible-states`, this.httpOptions);
+    return response;
+  }
+
+  // pt-deduction month CRUD
+
+  addDeductionMonth(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/pt-deduction-months`, payload, this.httpOptions);
+    return response;
+  }
+  updateDeductionMonth(id: string, payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/pt-deduction-months/${id}`, payload, this.httpOptions);
+    return response;
+  }
+  deleteDeductionMonth(id: string): Observable<any> {
+    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll/pt-deduction-months/${id}`, this.httpOptions);
+    return response;
+  }
+  getDeductionMonth(): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/pt-deduction-months-list`, this.httpOptions);
+    return response;
+  }
 }
