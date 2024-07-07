@@ -64,7 +64,7 @@
     <form [formGroup]="ptSlabForm" (ngSubmit)="onSubmission()">
         <div class="row">
             <div class="form-group col-md-6">
-                <label for="">From Amount</label>
+                <label for="">From Amount <span class="text-danger">*</span></label>
                 <input type="number" class="form-control" formControlName="fromAmount">
                 <div
                     *ngIf="ptSlabForm.get('fromAmount').invalid && (ptSlabForm.get('fromAmount').dirty || ptSlabForm.get('fromAmount').touched)">
@@ -74,7 +74,7 @@
             </div>
 
             <div class="form-group col-md-6 mt-2">
-                <label for="">To Amount</label>
+                <label for="">To Amount <span class="text-danger">*</span></label>
                 <input type="number" class="form-control" formControlName="toAmount">
                 <div
                     *ngIf="ptSlabForm.get('toAmount').invalid && (ptSlabForm.get('toAmount').dirty || ptSlabForm.get('toAmount').touched)">
@@ -85,7 +85,7 @@
         </div>
         <div class="row">
             <div class="form-group col-md-6 mt-2">
-                <label for="">Employee Percentage</label>
+                <label for="">Employee Percentage <span class="text-danger">*</span></label>
                 <input type="number" class="form-control" formControlName="employeePercentage">
                 <div
                     *ngIf="ptSlabForm.get('employeePercentage').invalid && (ptSlabForm.get('employeePercentage').dirty || ptSlabForm.get('employeePercentage').touched)">
@@ -96,7 +96,7 @@
             </div>
 
             <div class="form-group col-md-6 mt-2">
-                <label for="">Employee Amount</label>
+                <label for="">Employee Amount <span class="text-danger">*</span></label>
                 <input type="number" class="form-control" formControlName="employeeAmount">
                 <div
                     *ngIf="ptSlabForm.get('employeeAmount').invalid && (ptSlabForm.get('employeeAmount').dirty || ptSlabForm.get('employeeAmount').touched)">
@@ -109,7 +109,7 @@
         <div class="row">
 
             <div class="form-group col-md-6 mt-2">
-                <label for="">12th Month Value</label>
+                <label for="">12th Month Value <span class="text-danger">*</span></label>
                 <input type="number" class="form-control" formControlName="twelfthMonthValue">
                 <div
                     *ngIf="ptSlabForm.get('twelfthMonthValue').invalid && (ptSlabForm.get('twelfthMonthValue').dirty || ptSlabForm.get('twelfthMonthValue').touched)">
@@ -120,7 +120,7 @@
             </div>
 
             <div class="form-group col-md-6 mt-2">
-                <label for="">12th Month Amount</label>
+                <label for="">12th Month Amount <span class="text-danger">*</span></label>
                 <input type="number" class="form-control" formControlName="twelfthMonthAmount">
                 <div
                     *ngIf="ptSlabForm.get('twelfthMonthAmount').invalid && (ptSlabForm.get('twelfthMonthAmount').dirty || ptSlabForm.get('twelfthMonthAmount').touched)">

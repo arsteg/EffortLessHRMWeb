@@ -188,7 +188,76 @@ export class PayrollService {
     return response;
   }
   getDeductionMonth(): Observable<any> {
-    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/pt-deduction-months-list`, this.httpOptions);
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/pt-deduction-months`, this.httpOptions);
     return response;
   }
+
+  // LWF CRUD
+  addLWF(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/lwf-fixed-contribution-slabs`, payload, this.httpOptions);
+    return response;
+  }
+  updateLWF(id: string, payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/lwf-fixed-contribution-slabs/${id}`, payload, this.httpOptions);
+    return response;
+  }
+  deleteLWF(id: string): Observable<any> {
+    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll/lwf-fixed-contribution-slabs/${id}`, this.httpOptions);
+    return response;
+  }
+  getLWF(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/lwf-fixed-contribution-slabs-list`, payload, this.httpOptions);
+    return response;
+  }
+  // ESIC Ceiling amount CRUD
+  addESICCeiling(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/esic-ceilingAmounts`, payload, this.httpOptions);
+    return response;
+  }
+  updateESICCeiling(id: string, payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/esic-ceilingAmounts/${id}`, payload, this.httpOptions);
+    return response;
+  }
+  getESICCeiling(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/esic-ceilingAmounts-by-company`, payload, this.httpOptions);
+    return response;
+  }
+  deleteESICCeiling(id: string): Observable<any> {
+    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll/esic-ceilingAmounts/${id}`, this.httpOptions);
+    return response;
+  }
+  // Contribution CRUD
+  addContribution(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/esicContributions`, payload, this.httpOptions);
+    return response;
+  }
+  updateContribution(id: string, payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/esicContributions/${id}`, payload, this.httpOptions);
+    return response;
+  }
+  getContribution(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/esicContributions-by-company`, payload, this.httpOptions);
+    return response;
+  }
+  deleteContribution(id: string): Observable<any> {
+    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll/esicContributions/${id}`, this.httpOptions);
+    return response;
+  }
+  // Variable Allowances CRUD
+addVariableAllowance(payload: any): Observable<any> {
+  var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/variable-allowances`, payload, this.httpOptions);
+  return response;
+}
+updateVariableAllowance(id: string, payload: any): Observable<any> {
+  var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/variable-allowances/${id}`, payload, this.httpOptions);
+  return response;
+}
+deleteVariableAllowance(id: string): Observable<any> {
+  var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll/variable-allowances/${id}`, this.httpOptions);
+  return response;
+}
+getVariableAllowance(payload: any): Observable<any> {
+  var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/variable-allowances-by-company`, payload, this.httpOptions);
+  return response;
+}
 }

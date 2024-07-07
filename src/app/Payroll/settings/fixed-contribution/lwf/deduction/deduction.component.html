@@ -1,1 +1,27 @@
-<p>deduction works!</p>
+<div class="tableContainer bg-white">
+    <div class="d-flex justify-content-end mb-3">
+        <button class="addBtn mx-2" mat-raised-button>Update</button>
+    </div>
+    <form action="">
+        <div class="row">
+            <div class="col-md-6 border-end" *ngFor="let month of months">
+                <div class="d-flex justify-content-between"><label for="" class="me-2">{{ month }}</label>
+                    <div class="d-flex">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" [id]="month + '-yes'" required [value]="true">
+                            <label class="form-check-label" [for]="month + '-yes'">
+                                Yes
+                            </label>
+                        </div>
+                        <div class="form-check ms-3">
+                            <input class="form-check-input" type="radio" [id]="month + '-no'" required [value]="false">
+                            <label class="form-check-label" [for]="month + '-no'">
+                                No
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

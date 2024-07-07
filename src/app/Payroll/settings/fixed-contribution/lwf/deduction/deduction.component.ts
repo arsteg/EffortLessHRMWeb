@@ -6,5 +6,9 @@ import { Component } from '@angular/core';
   styleUrl: './deduction.component.css'
 })
 export class DeductionComponent {
-
+  months = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  deductionMonth: any;
+ngOnInit(){
+  console.log('testing...')
+}
 }

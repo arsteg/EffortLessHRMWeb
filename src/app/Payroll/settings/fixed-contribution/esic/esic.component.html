@@ -1,1 +1,24 @@
-<p>esic works!</p>
+<h2>Employees State Insurance Corporation</h2>
+<hr>
+
+
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabCeilingAmount'}"
+            (click)="selectTab('tabCeilingAmount')">Ceiling Amount</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabContribution'}"
+            (click)="selectTab('tabContribution')">
+            Contribution</a>
+    </li>
+</ul>
+
+<div class="tab-content pt-0">
+    <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabCeilingAmount'}" id="tabCeilingAmount">
+        <app-ceiling-amount [selectedReport]="selectedRecord"></app-ceiling-amount>
+    </div>
+    <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabContribution'}" id="tabContribution">
+        <app-contribution></app-contribution>
+    </div>
+</div>
