@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSelectChange } from '@angular/material/select';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
+import { CommonService } from 'src/app/_services/common.Service';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 
@@ -21,15 +23,18 @@ export class VariableAllowanceComponent {
   totalRecords: number
   recordsPerPage: number = 10;
   currentPage: number = 1;
-  variableAllwances: any;
-  variableAllwancesForm: FormGroup;
+  variableAllowanceForm: FormGroup;
+  members: any[];
+  months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  years: number[] = [];
 
   constructor(private payroll: PayrollService,
     private modalService: NgbModal,
     private toast: ToastrService,
     private fb: FormBuilder,
-    private dialog: MatDialog) {
-    this.VariableAllowanceForm = this.fb.group({
+    private dialog: MatDialog,
+    private commonService: CommonService) {
+    this.variableAllowanceForm = this.fb.group({
       label: ['', Validators.required],
       allowanceRatePerDay: [0, Validators.required],
       isPayrollEditable: [true, Validators.required],
@@ -47,7 +52,7 @@ export class VariableAllowanceComponent {
       allowanceStopMonth: ['', Validators.required],
       allowanceStopYear: ['', Validators.required],
       amountEnterForThisVariableAllowance: ['', Validators.required],
-      amount: [0, Validators.required],
+      amount: [0, Validators.required], //------------
       percentage: [0, Validators.required],
       isAttandanceToAffectEligibility: [true, Validators.required],
       variableAllowanceApplicableEmployee: [
@@ -60,6 +65,13 @@ export class VariableAllowanceComponent {
 
   ngOnInit(): void {
     this.getVariableAllowances();
+    this.commonService.populateUsers().subscribe((res: any) => {
+      this.members = res.data.data;
+    });
+    const currentYear = new Date().getFullYear();
+    for (let year = currentYear - 2; year <= currentYear + 1; year++) {
+      this.years.push(year);
+    }
   }
 
   onPageChange(page: number) {
@@ -78,7 +90,7 @@ export class VariableAllowanceComponent {
       next: this.recordsPerPage.toString()
     };
     this.payroll.getVariableAllowance(pagination).subscribe(res => {
-      this.variableAllwances = res.data;
+      this.variableAllowances = res.data;
       this.totalRecords = res.total;
     })
   }
@@ -107,9 +119,14 @@ export class VariableAllowanceComponent {
   }
 
   onSubmission() {
+    const formValue = this.variableAllowanceForm.value;
+    formValue.variableAllowanceApplicableEmployee = formValue.variableAllowanceApplicableEmployee.map(item => ({
+      employee: item
+    }));
+    console.log(formValue);
     if (!this.isEdit) {
-      this.payroll.addVariableAllowance(this.variableAllwancesForm.value).subscribe((res: any) => {
-        this.variableAllwances.push(res.data);
+      this.payroll.addVariableAllowance(formValue).subscribe((res: any) => {
+        this.variableAllowances.push(res.data);
         this.toast.success('Successfully Added!!!', 'Variable Allwance');
         this.clearForm();
       },
@@ -118,10 +135,10 @@ export class VariableAllowanceComponent {
         })
     }
     else {
-      this.payroll.updateVariableAllowance(this.selectedRecord._id, this.variableAllwancesForm.value).subscribe((res: any) => {
-        const index = this.variableAllwances.findIndex(item => item._id === this.selectedRecord._id);
+      this.payroll.updateVariableAllowance(this.selectedRecord._id, formValue).subscribe((res: any) => {
+        const index = this.variableAllowances.findIndex(item => item._id === this.selectedRecord._id);
         if (index !== -1) {
-          this.variableAllwances[index] = res.data;
+          this.variableAllowances[index] = res.data;
         }
         this.toast.success('Successfully Updated!!!', 'Variable Allwance');
         this.clearForm();
@@ -133,11 +150,11 @@ export class VariableAllowanceComponent {
   }
 
   editRecord() {
-    this.variableAllwancesForm.patchValue(this.selectedRecord);
+    this.variableAllowanceForm.patchValue(this.selectedRecord);
   }
 
   clearForm() {
-    this.variableAllwancesForm.patchValue({
+    this.variableAllowanceForm.patchValue({
       fromAmount: 0,
       toAmount: 0,
       employeePercentage: 0,
@@ -147,9 +164,10 @@ export class VariableAllowanceComponent {
 
   deleteRecord(_id: string) {
     this.payroll.deleteVariableAllowance(_id).subscribe((res: any) => {
-      const index = this.variableAllwances.findIndex(res => res._id === _id);
+      const index = this.variableAllowances.findIndex(res => res._id === _id);
       if (index !== -1) {
-        this.variableAllwances.splice(index, 1);
+        this.variableAllowances.splice(index, 1);
+        this.totalRecords--; 
       }
       this.toast.success('Successfully Deleted!!!', 'Variable Allwance');
     },

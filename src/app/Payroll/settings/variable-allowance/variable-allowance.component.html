@@ -2,21 +2,22 @@
     <div class="container-fluid">
         <div class="tableContainer bg-white">
             <div class="d-flex align-items-center px-2 py-1">
-                <p class="mb-0 me-auto">({{variableAllwances?.length}}) Records Found</p>
+                <p class="mb-0 me-auto">({{variableAllowances?.length}}) Records Found</p>
                 <div class="d-flex align-items-center">
 
                     <span class="bi bi-search searchIcon"></span>
 
                     <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
                         name="searchText" aria-label="default input example">
-                        <div class="d-flex align-items-center">
-                            <button class="addBtn mx-2" mat-raised-button (click)="open(modal); isEdit= false; clearForm()">Add</button>
-                
-                            <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
-                                [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
-                                (recordsPerPageChange)="onRecordsPerPageChange($event)">
-                            </app-pagination>
-                        </div>
+                    <div class="d-flex align-items-center">
+                        <button class="addBtn mx-2" mat-raised-button
+                            (click)="open(modal); isEdit= false; clearForm()">Add</button>
+
+                        <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
+                            [recordsPerPage]="recordsPerPage" [currentPage]="currentPage"
+                            (pageChange)="onPageChange($event)" (recordsPerPageChange)="onRecordsPerPageChange($event)">
+                        </app-pagination>
+                    </div>
                 </div>
             </div>
             <table>
@@ -33,22 +34,57 @@
                 <tbody>
                     <tr *ngFor="let va of variableAllowances | search:searchText">
                         <td>{{va?.label}}</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td>
+                            <span *ngIf="va?.isProvidentFundAffected==true else fixed">
+                                <mat-icon style="color: green;">check</mat-icon>
+                            </span>
+                            <ng-template #fixed>
+                                <mat-icon style="color: red;">close</mat-icon>
+                            </ng-template>
+                        </td>
+                        <td>
+                            <span *ngIf="va?.isESICAffected==true else fixed">
+                                <mat-icon style="color: green;">check</mat-icon>
+                            </span>
+                            <ng-template #fixed>
+                                <mat-icon style="color: red;">close</mat-icon>
+                            </ng-template>
+                        </td>
+                        <td>
+                            <span *ngIf="va?.isTDSAffected==true else fixed">
+                                <mat-icon style="color: green;">check</mat-icon>
+                            </span>
+                            <ng-template #fixed>
+                                <mat-icon style="color: red;">close</mat-icon>
+                            </ng-template>
+                        </td>
+                        <td>
+                            <!-- <span *ngIf="va?.isLWFAffected==true else fixed">
+                                <mat-icon style="color: green;">check</mat-icon>
+                            </span>
+                            <ng-template #fixed>
+                                <mat-icon style="color: red;">close</mat-icon>
+                            </ng-template> -->
+                        </td>
+                        <td>
+                            <span *ngIf="va?.isIncomeTaxAffected==true else fixed">
+                                <mat-icon style="color: green;">check</mat-icon>
+                            </span>
+                            <ng-template #fixed>
+                                <mat-icon style="color: red;">close</mat-icon>
+                            </ng-template>
+                        </td>
+                        <td>{{va?.paidAllowanceFrequently}}</td>
                         <td>
                             <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before"
-                            data-bs-toggle="modal" data-bs-target="#modal"
-                            (click)=" open(modal); selectedRecord = va;  isEdit= true; editRecord();">
-                            <i class="bi bi-pencil-fill"></i>
-                        </button>
-                        <button class="actions ms-2" mat-mini-fab matTooltip="Delete" matTooltipPosition="after"
-                            aria-label="Example icon button with a menu icon" (click)="deleteDialog(va?._id)">
-                            <i class="bi bi-trash"></i>
-                        </button>
+                                data-bs-toggle="modal" data-bs-target="#modal"
+                                (click)=" open(modal); selectedRecord = va;  isEdit= true; editRecord();">
+                                <i class="bi bi-pencil-fill"></i>
+                            </button>
+                            <button class="actions ms-2" mat-mini-fab matTooltip="Delete" matTooltipPosition="after"
+                                aria-label="Example icon button with a menu icon" (click)="deleteDialog(va?._id)">
+                                <i class="bi bi-trash"></i>
+                            </button>
                         </td>
                     </tr>
                 </tbody>
@@ -65,27 +101,337 @@
                     (click)="closeModal()"></button>
             </div>
         </div>
-        <form [formGroup]="variableAllwancesForm" (ngSubmit)="onSubmission()">
+        <form [formGroup]="variableAllowanceForm" (ngSubmit)="onSubmission()">
             <div class="form-group">
-                <label for="">Default Value <span class="text-danger">*</span></label>
-                <input type="number" class="form-control" formControlName="defaultValue">
-                <div
+                <label for="">What is the label of this variable allowance? <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" formControlName="label">
+                <!-- <div
                     *ngIf="variableAllwancesForm.get('defaultValue').invalid && (variableAllwancesForm.get('defaultValue').dirty || variableAllwancesForm.get('defaultValue').touched)">
                     <small class="text-danger" *ngIf="variableAllwancesForm.get('defaultValue')['errors']['required']">Field is
                         required</small>
-                </div>
+                </div> -->
             </div>
-    
             <div class="form-group">
-                <label for="">Max Amount <span class="text-danger">*</span></label>
-                <input type="number" class="form-control" formControlName="maxAmount">
-                <div
-                    *ngIf="variableAllwancesForm.get('maxAmount').invalid && (variableAllwancesForm.get('maxAmount').dirty || variableAllwancesForm.get('maxAmount').touched)">
-                    <small class="text-danger" *ngIf="variableAllwancesForm.get('maxAmount')['errors']['required']">Field is
+                <label for="">What is the allowance rate per day ? <span class="text-danger">*</span></label>
+                <input type="number" class="form-control" formControlName="allowanceRatePerDay">
+                <!-- <div
+                    *ngIf="variableAllwancesForm.get('defaultValue').invalid && (variableAllwancesForm.get('defaultValue').dirty || variableAllwancesForm.get('defaultValue').touched)">
+                    <small class="text-danger" *ngIf="variableAllwancesForm.get('defaultValue')['errors']['required']">Field is
                         required</small>
+                </div> -->
+            </div>
+
+            <div class="form-group my-2 col-md-6">
+                <label for="">Does this allowance affect Provident Fund? <span class="text-danger">*</span></label>
+                <div class="d-flex">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="isProvidentFundAffected-yes"
+                            formControlName="isProvidentFundAffected" required [value]="true">
+                        <label class="form-check-label" for="isProvidentFundAffected-yes">
+                            Yes
+                        </label>
+                    </div>
+
+
+                    <div class="form-check ms-3">
+                        <input class="form-check-input" type="radio" id="isProvidentFundAffected-no" required
+                            [value]="false">
+                        <label class="form-check-label" for="isProvidentFundAffected-no">
+                            No
+                        </label>
+                    </div>
                 </div>
             </div>
-    
+
+            <div class="form-group my-2 col-md-6">
+                <label for="">Does this allowance affect ESIC? <span class="text-danger">*</span></label>
+                <div class="d-flex">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="isESICAffected-yes" required
+                            formControlName="isESICAffected" [value]="true">
+                        <label class="form-check-label" for="isESICAffected-yes">
+                            Yes
+                        </label>
+                    </div>
+
+
+                    <div class="form-check ms-3">
+                        <input class="form-check-input" type="radio" id="isESICAffected-no" required
+                            formControlName="isESICAffected" [value]="false">
+                        <label class="form-check-label" for="isESICAffected-no">
+                            No
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group my-2 col-md-6">
+                <label for="">Is variable allowance editable in payroll ? <span class="text-danger">*</span></label>
+                <div class="d-flex">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="isPayrollEditable-yes" required
+                            formControlName="isPayrollEditable" [value]="true">
+                        <label class="form-check-label" for="isPayrollEditable-yes">
+                            Yes
+                        </label>
+                    </div>
+
+
+                    <div class="form-check ms-3">
+                        <input class="form-check-input" type="radio" id="isPayrollEditable-no" required
+                            formControlName="isPayrollEditable" [value]="false">
+                        <label class="form-check-label" for="isPayrollEditable-no">
+                            No
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group my-2 col-md-6">
+                <label for="">Does this allowance affect LWF? <span class="text-danger">*</span></label>
+                <div class="d-flex">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="isLWFAffected-yes" required
+                            formControlName="isLWFAffected" [value]="true">
+                        <label class="form-check-label" for="isLWFAffected-yes">
+                            Yes
+                        </label>
+                    </div>
+
+
+                    <div class="form-check ms-3">
+                        <input class="form-check-input" type="radio" id="isLWFAffected-no" required
+                            formControlName="isLWFAffected" [value]="false">
+                        <label class="form-check-label" for="isLWFAffected-no">
+                            No
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group my-2 col-md-6">
+                <label for="">Does this allowance affect Professional Tax? <span class="text-danger">*</span></label>
+                <div class="d-flex">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="testyes" required formControlName=""
+                            [value]="true">
+                        <label class="form-check-label" for="testyes">
+                            Yes
+                        </label>
+                    </div>
+
+                    <div class="form-check ms-3">
+                        <input class="form-check-input" type="radio" id="test-no" required formControlName=""
+                            [value]="false">
+                        <label class="form-check-label" for="test-no">
+                            No
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group my-2 col-md-6">
+                <label for="">Does this allowance affect Income Tax? <span class="text-danger">*</span></label>
+                <div class="d-flex">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="isIncomeTaxAffected-yes"
+                            formControlName="isIncomeTaxAffected" required [value]="true">
+                        <label class="form-check-label" for="isIncomeTaxAffected-yes">
+                            Yes
+                        </label>
+                    </div>
+                    <div class="form-check ms-3">
+                        <input class="form-check-input" type="radio" id="isIncomeTaxAffected-no"
+                            formControlName="isIncomeTaxAffected" required [value]="false">
+                        <label class="form-check-label" for="isIncomeTaxAffected-no">
+                            No
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row" *ngIf="variableAllowanceForm.get('isIncomeTaxAffected').value === true">
+                <div class="form-group my-2 col-md-6">
+                    <label for="">If applicable how would you want to deduct Income Tax on this Variable Allowance?<span
+                            class="text-danger">*</span></label>
+                    <div class="d-flex">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" id="deductIncomeTaxAllowance-yes"
+                                formControlName="deductIncomeTaxAllowance" required [value]="true">
+                            <label class="form-check-label" for="deductIncomeTaxAllowance-yes">
+                                Deduct as per Annual Calculations(Pro-Rate)
+                            </label>
+                        </div>
+
+                        <div class="form-check ms-3">
+                            <input class="form-check-input" type="radio" id="deductIncomeTaxAllowance-no"
+                                formControlName="deductIncomeTaxAllowance" required [value]="false">
+                            <label class="form-check-label" for="deductIncomeTaxAllowance-no">
+                                Deduct Upfront
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group mt-2">
+                    <mat-form-field appearance="outline" class="w-100 mx-1">
+                        <mat-label>For which Tax Regimes will the Income Tax be calculated?</mat-label>
+                        <!-- for single selection, pass a sstring -->
+                        <mat-select formControlName="taxRegime">
+                            <mat-option value="New regime"> New regime</mat-option>
+                            <mat-option value="Old regime"> Old regime</mat-option>
+                        </mat-select>
+
+                        <!-- for multiple selection, pass as array -->
+                        <!-- <mat-select multiple formControlName="taxRegime">
+                            <mat-option value="New regime"> New regime</mat-option>
+                            <mat-option value="Old regime"> Old regime</mat-option>
+                        </mat-select> -->
+
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <div class="form-group my-2 col-md-6">
+                <label for="">Is this allowance only for CTC Calculation (Will not appear on Pay Roll)? <span
+                        class="text-danger">*</span></label>
+                <div class="d-flex">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="isShowInCTCStructure-yes" required
+                            formControlName="isShowInCTCStructure" [value]="true">
+                        <label class="form-check-label" for="isShowInCTCStructure-yes">
+                            Yes
+                        </label>
+                    </div>
+
+
+                    <div class="form-check ms-3">
+                        <input class="form-check-input" type="radio" id="isShowInCTCStructure-no" required
+                            formControlName="isShowInCTCStructure" [value]="false">
+                        <label class="form-check-label" for="isShowInCTCStructure-no">
+                            No
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group mt-2">
+                <label for="">How frequently does the Employee get paid this variable allowance?</label>
+                <select id="" formControlName="paidAllowanceFrequently">
+                    <option value="Monthly">Monthly</option>
+                    <option value="Quaterly">Quaterly</option>
+                    <option value="Half Yearly">Half Yearly</option>
+                    <option value="Annually">Annually</option>
+                </select>
+            </div>
+            <div class="form-group my-2">
+                <label for="">From what period is this variable allowance effective? <span
+                        class="text-danger">*</span></label>
+                <div class="d-flex justify-content-between">
+                    <select id="" formControlName="allowanceEffectiveFromMonth">
+                        <option value="" selected disabled>Select Month</option>
+                        <option value="m" *ngFor="let m of months">{{m}}</option>
+                    </select>
+
+                    <select id="" formControlName="allowanceEffectiveFromYear">
+                        <option value="" selected [disabled]>Select Year </option>
+                        <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group my-2 col-md-6">
+                <label for="">Does this variable allowance have an ending period? <span
+                        class="text-danger">*</span></label>
+                <div class="d-flex">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="isEndingPeriod-yes"
+                            formControlName="isEndingPeriod" required [value]="true">
+                        <label class="form-check-label" for="isEndingPeriod-yes">
+                            Yes, It has an End Period
+                        </label>
+                    </div>
+
+
+                    <div class="form-check ms-3">
+                        <input class="form-check-input" type="radio" id="isEndingPeriod-no"
+                            formControlName="isEndingPeriod" required [value]="false">
+                        <label class="form-check-label" for="isEndingPeriod-no">
+                            No, It is Continual
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group mt-2" *ngIf="variableAllowanceForm.get('isEndingPeriod').value === true">
+                <label for="">From when do you wish to stop applying this variable allowance?</label>
+                <div class="d-flex justify-content-between">
+                    <select id="" formControlName="allowanceStopMonth">
+                        <option value="" selected [disabled]>Select Month</option>
+                        <option value="m" *ngFor="let m of months">{{m}}</option>
+                    </select>
+                    <select id="" formControlName="allowanceStopYear">
+                        <option value="" selected [disabled]>Select Year</option>
+                        <option *ngFor="let year of years" [value]="year">{{ year }} </option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group mt-2">
+                <label for="">How would you like to enter the amount for this variable allowance?</label>
+                <select id="" formControlName="amountEnterForThisVariableAllowance">
+                    <option value="Manually at the time of running payroll">Manually at the time of running payroll
+                    </option>
+                    <option value="Fixed Amount">Fixed Amount</option>
+                    <option value="Percentage of (Basic + DA) paid or (Basic + DA is not applicable)">Percentage of
+                        (Basic + DA) paid or (Basic + DA is not applicable)</option>
+                    <option value="Percentage of Gross salary paid">Percentage of Gross salary paid</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="">Percentage of gross salary paid <span class="text-danger">*</span></label>
+                <input type="number" class="form-control" formControlName="percentage">
+                <!-- <div
+                    *ngIf="variableAllwancesForm.get('defaultValue').invalid && (variableAllwancesForm.get('defaultValue').dirty || variableAllwancesForm.get('defaultValue').touched)">
+                    <small class="text-danger" *ngIf="variableAllwancesForm.get('defaultValue')['errors']['required']">Field is
+                        required</small>
+                </div> -->
+            </div>
+
+            <div class="form-group mt-2">
+                <mat-form-field appearance="outline" class="w-100 mx-1">
+                    <mat-label>Select Employee</mat-label>
+                    <mat-select multiple formControlName="variableAllowanceApplicableEmployee">
+                        <mat-option *ngFor="let member of members" [value]="member.id">
+                            {{member?.firstName | titlecase}}&nbsp;{{member?.lastName}}
+                        </mat-option>
+                    </mat-select>
+
+
+                </mat-form-field>
+
+            </div>
+            <div class="form-group my-2 col-md-6">
+                <label for="">Do you want attendance to effect the eligibility? <span
+                        class="text-danger">*</span></label>
+                <div class="d-flex">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="isAttandanceToAffectEligibility-yes" required
+                            formControlName="isAttandanceToAffectEligibility" [value]="true">
+                        <label class="form-check-label" for="isAttandanceToAffectEligibility-yes">
+                            Yes
+                        </label>
+                    </div>
+
+
+                    <div class="form-check ms-3">
+                        <input class="form-check-input" type="radio" id="isAttandanceToAffectEligibility-no" required
+                            formControlName="isAttandanceToAffectEligibility" [value]="false">
+                        <label class="form-check-label" for="isAttandanceToAffectEligibility-no">
+                            No
+                        </label>
+                    </div>
+                </div>
+            </div>
+
             <div class="d-flex border-top mt-2 py-2 justify-content-between">
                 <button mat-raised-button type="button">Cancel</button>
                 <button mat-raised-button type="submit" class="addBtn">Submit</button>
