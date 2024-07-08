@@ -209,6 +209,21 @@ export class PayrollService {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/lwf-fixed-contribution-slabs-list`, payload, this.httpOptions);
     return response;
   }
+
+  // LWF_deduction month CRUD
+  addLWFDeductionMonth(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/lwf-fixed-contribution-months`, payload, this.httpOptions);
+    return response;
+  }
+  updateLWFDeductionMonth(id: string, payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/lwf-fixed-contribution-months/${id}`, payload, this.httpOptions);
+    return response;
+  }
+  getLWFDeductionMonth(): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/lwf-fixed-contribution-months-list`, this.httpOptions);
+    return response;
+  }
+
   // ESIC Ceiling amount CRUD
   addESICCeiling(payload: any): Observable<any> {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/esic-ceilingAmounts`, payload, this.httpOptions);
@@ -244,20 +259,20 @@ export class PayrollService {
     return response;
   }
   // Variable Allowances CRUD
-addVariableAllowance(payload: any): Observable<any> {
-  var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/variable-allowances`, payload, this.httpOptions);
-  return response;
-}
-updateVariableAllowance(id: string, payload: any): Observable<any> {
-  var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/variable-allowances/${id}`, payload, this.httpOptions);
-  return response;
-}
-deleteVariableAllowance(id: string): Observable<any> {
-  var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll/variable-allowances/${id}`, this.httpOptions);
-  return response;
-}
-getVariableAllowance(payload: any): Observable<any> {
-  var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/variable-allowances-by-company`, payload, this.httpOptions);
-  return response;
-}
+  addVariableAllowance(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/variable-allowances`, payload, this.httpOptions);
+    return response;
+  }
+  updateVariableAllowance(id: string, payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/variable-allowances/${id}`, payload, this.httpOptions);
+    return response;
+  }
+  deleteVariableAllowance(id: string): Observable<any> {
+    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll/variable-allowances/${id}`, this.httpOptions);
+    return response;
+  }
+  getVariableAllowance(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/variable-allowances-by-company`, payload, this.httpOptions);
+    return response;
+  }
 }

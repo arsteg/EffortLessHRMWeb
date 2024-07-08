@@ -13,7 +13,6 @@ export class LwfComponent {
   states: any;
 
   ngOnInit() {
-    console.log(this.selectedRecord);
     this.payrollService.getEligibleStates().subscribe((res: any) => {
       this.states = res.data;
     });

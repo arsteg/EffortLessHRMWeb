@@ -6,7 +6,7 @@ import { Component } from '@angular/core';
   styleUrl: './settings.component.css'
 })
 export class SettingsComponent {
-  selectedTab = 4;
+  selectedTab = 3;
 
   constructor() { }
 

@@ -42,7 +42,6 @@ export class LwfSlabComponent {
   }
 
   ngOnInit() {
-    console.log(this.selectedRecord);
     this.payrollService.getEligibleStates().subscribe((res: any) => {
       this.states = res.data;
     });
