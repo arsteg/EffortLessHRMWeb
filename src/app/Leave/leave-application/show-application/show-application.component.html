@@ -63,7 +63,7 @@
 
                         <ul class="dropdown-menu py-0">
                             <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
-                                *ngIf="actionOptions.approve" data-bs-target="#statusUpdate"
+                                *ngIf="actionOptions.approve && checkForApproval(leave)" data-bs-target="#statusUpdate"
                                 (click)="openStatusModal(leave, 'Approved')">
                                 <i class="fas fa-check-circle dropdown-item w-25"></i><span
                                     class="pt-1 text-muted">Approve</span>

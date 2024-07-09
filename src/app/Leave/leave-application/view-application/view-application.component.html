@@ -38,6 +38,10 @@
                     <th class="w-50">Reason</th>
                     <td>{{this.leaveService?.leave?.getValue()?.comment}}</td>
                 </tr>
+                <tr *ngIf="this.leaveService.leave.getValue()?.documentLink">
+                    <th class="w-50">Document</th>
+                    <td><a [href]="this.leaveService.leave.getValue()?.documentLink">Download document</a></td>
+                </tr>
 
                
             </table>

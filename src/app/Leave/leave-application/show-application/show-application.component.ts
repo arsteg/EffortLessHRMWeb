@@ -223,4 +223,8 @@ export class ShowApplicationComponent {
       }
     });
   }
+
+  checkForApproval(leavecategory: any){
+    return true;
+  }
 }

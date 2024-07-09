@@ -22,11 +22,13 @@ export class ShowStatusComponent {
   leaveGrant: any;
   allAssignee: any;
   @Input() status: string;
-  p: number = 1;
   @Input() tab: number;
   portalView = localStorage.getItem('adminView');
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   public sortOrder: string = '';
+  totalRecords: number = 0 // example total records
+  recordsPerPage: number = 10;
+  currentPage: number = 1;
 
   constructor(private modalService: NgbModal,
     private leaveService: LeaveService,
@@ -42,11 +44,28 @@ export class ShowStatusComponent {
     this.getLeaveGrant();
   }
 
+  onPageChange(page: number) {
+    this.currentPage = page;
+    this.getLeaveGrant();
+  }
+
+  onRecordsPerPageChange(recordsPerPage: number) {
+    this.recordsPerPage = recordsPerPage;
+    this.getLeaveGrant();
+  }
+
   getLeaveGrant() {
+    const requestBody = {
+      "skip": ((this.currentPage - 1) * this.recordsPerPage).toString(),
+      "next": this.recordsPerPage.toString(),
+      "status": this.status };
     if (this.portalView === 'admin') {
       console.log(this.portalView)
-      this.leaveService.getLeaveGrant().subscribe((res: any) => {
-        this.leaveGrant = res.data.filter(leave => leave.status === this.status);
+      this.leaveService.getLeaveGrant(requestBody).subscribe((res: any) => {
+        if(res.status == 'success') {
+          this.totalRecords = res.total;
+          this.leaveGrant = res.data;
+        }
       });
     }
     if (this.portalView === 'user') {
@@ -56,8 +75,11 @@ export class ShowStatusComponent {
           this.leaveGrant = res.data.filter(leave => leave.status === this.status);
         })
       } else if (this.tab === 7) {
-        this.leaveService.getLeaveGrantByTeam().subscribe((res: any) => {
-          this.leaveGrant = res.data.filter(leave => leave.status === this.status);
+        this.leaveService.getLeaveGrantByTeam(requestBody).subscribe((res: any) => {
+          if(res.status == 'success') {
+            this.totalRecords = res.total;
+            this.leaveGrant = res.data;
+          }
         })
       }
     }
@@ -85,14 +107,38 @@ export class ShowStatusComponent {
   }
 
   refreshLeaveGrantTable() {
-    this.leaveService.getLeaveGrant().subscribe(
-      (res) => {
-        this.leaveGrant = res.data.filter(leave => leave.status === this.status);
-      },
-      (error) => {
-        console.error('Error refreshing leave grant table:', error);
+    const requestBody = {
+      "skip": ((this.currentPage - 1) * this.recordsPerPage).toString(),
+      "next": this.recordsPerPage.toString(),
+      "status": this.status };
+    if (this.portalView === 'admin') {
+      this.leaveService.getLeaveGrant(requestBody).subscribe(
+        (res) => {
+          if(res.status == 'success') {
+            this.totalRecords = res.total;
+            this.leaveGrant = res.data;
+          }
+        },
+        (error) => {
+          console.error('Error refreshing leave grant table:', error);
+        }
+      );
+    }
+    if (this.portalView === 'user') {
+      console.log(this.portalView, this.tab)
+      if (this.tab === 4) {
+        this.leaveService.getLeaveGrantByUser(this.currentUser?.id).subscribe((res: any) => {
+          this.leaveGrant = res.data.filter(leave => leave.status === this.status);
+        })
+      } else if (this.tab === 7) {
+        this.leaveService.getLeaveGrantByTeam(requestBody).subscribe((res: any) => {
+          if(res.status == 'success') {
+            this.totalRecords = res.total;
+            this.leaveGrant = res.data;
+          }
+        })
       }
-    );
+    }
   }
 
   exportToCsv() {

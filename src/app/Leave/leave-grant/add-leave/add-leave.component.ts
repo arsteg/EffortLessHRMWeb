@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LeaveService } from 'src/app/_services/leave.service';
 import { TimeLogService } from 'src/app/_services/timeLogService';
 import { CommonService } from 'src/app/_services/common.Service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-add-leave',
@@ -26,7 +27,8 @@ export class AddLeaveComponent {
   constructor(private commonService: CommonService,
     private fb: FormBuilder,
     private leaveService: LeaveService,
-    private timeLogService: TimeLogService) {
+    private timeLogService: TimeLogService,
+    private toast: ToastrService) {
     this.leaveGrant = this.fb.group({
       users: [[], Validators.required],
       status: [''],
@@ -80,6 +82,14 @@ export class AddLeaveComponent {
   }
 
   onSubmission() {
+    const today = new Date();
+    const leaveDate = new Date(this.leaveGrant.value.date);
+
+    if (leaveDate > today) {
+      this.toast.error('Can not apply leave for future date.');
+      return;
+    }
+
     let payload = {
       date: this.leaveGrant.value.date,
       status: 'Pending',
@@ -87,14 +97,19 @@ export class AddLeaveComponent {
       users: this.leaveGrant.value.users.map(user => ({ user: user }))
     }
     if (this.portalView == 'user') {
+      let users:any[]=[];
       if (this.tab === 4) {
-        payload.users = this.currentUser?.id;
+        users.push(this.currentUser?.id);
+        payload.users = users.map(id => ({ user: id }));
       } else if (this.tab === 7) {
-        payload.users = this.member?.id;
+        users.push(this.member?.id);
+        payload.users = this.leaveGrant.value.users.map(user => ({ user: user }));
       }
     }
     this.leaveService.addLeaveGrant(payload).subscribe((res: any) => {
       this.leaveGrantRefreshed.emit();
+      this.leaveGrant.reset();
+      this.close.emit(true);
     })
   }
 }
