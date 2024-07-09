@@ -41,7 +41,7 @@
                 <div class=" d-flex bg-white subMenu w-100">
                     <button class="btn rounded-pill submenuTab" (click)="selectTab(1)"
                         [class.active]="selectedTab === 1">My Application</button>
-                    <button class="btn rounded-pill submenuTab" (click)="selectTab(2)"
+                    <button class="btn rounded-pill submenuTab" (click)="selectTab(2)" *ngIf="enableDisableApprovalButton"
                         [class.active]="selectedTab === 2">
                         Team Leave Balances</button>
                     <button class="btn rounded-pill submenuTab" (click)="selectTab(3)"
@@ -50,12 +50,12 @@
                     <button class="btn rounded-pill submenuTab" (click)="selectTab(4)"
                         [class.active]="selectedTab === 4">
                         My Leave Grant</button>
-                    <button class="btn rounded-pill submenuTab" (click)="selectTab(5)"
+                    <button class="btn rounded-pill submenuTab" (click)="selectTab(5)" *ngIf="enableDisableApprovalButton"
                         [class.active]="selectedTab === 5">Team Application
                     </button>
-                    <button class="btn rounded-pill submenuTab" (click)="selectTab(6)"
+                    <button class="btn rounded-pill submenuTab" (click)="selectTab(6)" *ngIf="enableDisableApprovalButton"
                         [class.active]="selectedTab === 6">Team Short Leave</button>
-                    <button class="btn rounded-pill submenuTab" (click)="selectTab(7)"
+                    <button class="btn rounded-pill submenuTab" (click)="selectTab(7)" *ngIf="enableDisableApprovalButton"
                         [class.active]="selectedTab === 7">
                         Team Leave Grant</button>
                     <button class="btn rounded-pill submenuTab" (click)="selectTab(8)"
@@ -68,7 +68,7 @@
                 <div *ngIf="selectedTab === 1" class="tab-content">
                     <app-leave-Application [tab]="selectedTab"></app-leave-Application>
                 </div>
-                <div *ngIf="selectedTab === 2" class="tab-content">
+                <div *ngIf="selectedTab === 2 && enableDisableApprovalButton" class="tab-content">
                     <app-leave-balance [tab]="selectedTab"></app-leave-balance>
                 </div>
                 <div *ngIf="selectedTab === 3" class="tab-content">
@@ -77,13 +77,13 @@
                 <div *ngIf="selectedTab === 4" class="tab-content">
                     <app-leave-grant [tab]="selectedTab"></app-leave-grant>
                 </div>
-                <div *ngIf="selectedTab === 5" class="tab-content">
+                <div *ngIf="selectedTab === 5 && enableDisableApprovalButton" class="tab-content">
                     <app-leave-Application [tab]="selectedTab"></app-leave-Application>
                 </div>
-                <div *ngIf="selectedTab === 6" class="tab-content">
+                <div *ngIf="selectedTab === 6 && enableDisableApprovalButton" class="tab-content">
                     <app-short-leave [tab]="selectedTab"></app-short-leave>
                 </div>
-                <div *ngIf="selectedTab === 7" class="tab-content">
+                <div *ngIf="selectedTab === 7 && enableDisableApprovalButton" class="tab-content">
                     <app-leave-grant [tab]="selectedTab"></app-leave-grant>
                 </div>
                 <div *ngIf="selectedTab === 8" class="tab-content">

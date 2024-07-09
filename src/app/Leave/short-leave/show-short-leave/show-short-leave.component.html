@@ -19,7 +19,7 @@
         </div>
     </div>
 
-    <app-pagination [recordsPerPageOptions]="[2, 5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
+    <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
               [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
               (recordsPerPageChange)="onRecordsPerPageChange($event)">
     </app-pagination>

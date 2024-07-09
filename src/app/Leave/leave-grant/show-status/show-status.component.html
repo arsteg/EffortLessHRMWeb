@@ -16,6 +16,11 @@
         </div>
     </div>
 
+    <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
+              [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
+              (recordsPerPageChange)="onRecordsPerPageChange($event)">
+    </app-pagination>
+
     <table class="mt-2">
         <thead>
             <th [appSort]="leaveGrant" data-name="employee"
@@ -41,7 +46,7 @@
             <th>Actions</th>
         </thead>
         <tbody>
-            <tr *ngFor="let leave of leaveGrant | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
+            <tr *ngFor="let leave of leaveGrant | search: searchText">
                 <td>{{getUser(leave?.employee)}}</td>
                 <td>{{leave?.appliedOn | date: 'mediumDate'}}</td>
                 <td>{{leave?.date | date: 'mediumDate'}}</td>
@@ -85,7 +90,6 @@
             </tr>
         </tbody>
     </table>
-    <pagination-controls (pageChange)="p = $event" class="pagination d-flex justify-content-end"></pagination-controls>
 </div>
 
 <ng-template #addModal let-modal>
