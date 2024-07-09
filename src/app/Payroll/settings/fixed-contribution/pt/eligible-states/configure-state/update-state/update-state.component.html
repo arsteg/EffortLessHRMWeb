@@ -1,0 +1,31 @@
+<div class="modal-header border-bottom mb-2 pt-0">
+    <div class="d-flex justify-content-between">
+        <h1 class="modal-title text-muted mb-0"> State</h1>
+    </div>
+    <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
+            (click)="closeModal()"></button>
+    </div>
+</div>
+<div class="modal-body">
+<form [formGroup]="addStateForm" (ngSubmit)="onSubmission()">
+    <div class="form-group">
+        <label>State Name</label>
+        <input type="text" class="form-control" formControlName="state">
+    </div>
+    
+    <div class="form-group mt-2">
+        <label>Frequency</label>
+        <select   formControlName="frequency">
+            <option value="" selected [disabled]>Select Frequency</option>
+            <option value="Monthly">Monthly</option>
+            <option value="Half Yearly">Half Yearly</option>
+            <option value="Yearly">Yearly</option>
+        </select>
+    </div>
+
+    <div class="d-flex border-top mt-2 py-2 justify-content-between">
+        <button mat-raised-button type="reset">Cancel</button>
+        <button mat-raised-button type="submit" class="addBtn">Submit</button>
+    </div>
+</form>
+</div>

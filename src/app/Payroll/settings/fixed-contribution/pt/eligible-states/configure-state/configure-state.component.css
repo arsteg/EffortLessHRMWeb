@@ -1,0 +1,6 @@
+.modal-container {
+    z-index: 1000;
+  }
+  .modal-backdrop {
+    pointer-events: none;
+  }

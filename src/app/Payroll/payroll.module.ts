@@ -36,8 +36,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
 import { PtSlabComponent } from './settings/fixed-contribution/pt/pt-slab/pt-slab.component';
-
-
+import { ConfigureStateComponent } from './settings/fixed-contribution/pt/eligible-states/configure-state/configure-state.component';
+import { UpdateStateComponent } from './settings/fixed-contribution/pt/eligible-states/configure-state/update-state/update-state.component';
+import { OverlayModule } from '@angular/cdk/overlay';
 
 @NgModule({
   declarations: [
@@ -70,19 +71,20 @@ import { PtSlabComponent } from './settings/fixed-contribution/pt/pt-slab/pt-sla
     EsicComponent,
     CeilingAmountComponent,
     ContributionComponent,
-    DeductionComponent
-
+    DeductionComponent,
+    ConfigureStateComponent,
+    UpdateStateComponent,
   ],
   imports: [
     CommonModule, 
     FormsModule,
     ReactiveFormsModule,
     SharedModule,
-    CommonModule,
     MatSidenavModule,
     MatButtonModule,
     BrowserAnimationsModule,
-    BrowserModule
+    BrowserModule,
+    OverlayModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

@@ -1,32 +1,38 @@
 <div class="tableContainer bg-white">
     <div class="d-flex align-items-center px-2">
-        <div class="d-flex align-items-center">
-            <button class="addBtn mx-2" mat-raised-button (click)="open(modal); isEdit= false; clearForm()">Configure
-                States</button>
-            <button class="addBtn mx-2" mat-raised-button>Update
-            </button>
+        <button class="addBtn mx-2" mat-raised-button (click)="open(modal); isEdit= false; clearForm()">Configure
+            States</button>
+        <button class="addBtn mx-2" mat-raised-button (click)="onSubmission()">Update
+        </button>
+
+        <div class="align-items-center d-flex ms-auto">
+            <label for="state-pt">State</label>
+            <select class="w-100 ms-1" id="state-pt">
+                <option *ngFor="let state of eleState" [value]="getMatchingState(state?._id)">
+                    {{getMatchingState(state?.state)}}</option>
+            </select>
         </div>
     </div>
+    <hr>
+    <div class="tableContainer px-3">
+        <label for="">Check or uncheck to Update the Eligible States</label>
+        <table>
+            <ul class="users" type="none" class=" w-50">
+                <li *ngFor="let state of states; let i = index">
+                    <label>
+                        <mat-checkbox (change)="onStateChange($event, state?._id, i)"
+                            [checked]="isStateEligible(state._id)">
+                            {{ state.state }}
+                        </mat-checkbox>
+                    </label>
+                </li>
+            </ul>
+        </table>
+    </div>
 
-    <ul class="users" type="none" class="">
-        <div class="">
-            <li *ngFor="let es of eligibleStates">
-                <label>
-                    <mat-checkbox  [checked]="es.state['isChecked']">
-                        {{es.state}}</mat-checkbox>
-                </label>
-            </li>
-        </div>
-    </ul>
-
-
-    <ng-template #modal let-modal>
-        <div class="modal-header border-bottom mb-2 pt-0">
-            <div>
-                <h1 class="modal-title text-muted mb-0">{{isEdit? 'Update': 'Add'}} Eligible States</h1>
-            </div>
-            <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
-                    (click)="closeModal()"></button>
-            </div>
-        </div>
-    </ng-template>
+</div>
+<ng-template #modal let-modal>
+    <div cdkOverlayBackdrop cdkOverlay cdkFocusTrap>
+        <app-configure-state></app-configure-state>
+    </div>
+</ng-template>

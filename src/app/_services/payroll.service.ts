@@ -23,6 +23,7 @@ export class PayrollService {
   addResponse: any = new BehaviorSubject('');
   generalSettings: any = new BehaviorSubject('');
   fixedAllowance: any = new BehaviorSubject('');
+  configureState: any = new BehaviorSubject('');
 
   constructor(private http: HttpClient) { }
   public getToken() {
@@ -158,8 +159,8 @@ export class PayrollService {
     return response;
   }
 
-  updateEligibleState(id: string, payload: any): Observable<any> {
-    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/pt-eligible-states/${id}`, payload, this.httpOptions);
+  updateEligibleState( payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/pt-eligible-states`, payload, this.httpOptions);
     return response;
   }
 
@@ -172,7 +173,24 @@ export class PayrollService {
     var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/pt-eligible-states`, this.httpOptions);
     return response;
   }
-
+  //  pt-configured State CRUD
+  addConfiguredState(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/pt-configure-states`, payload, this.httpOptions);
+    return response;
+  }
+  updateConfiguredState(id: string, payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/pt-configure-states/${id}`, payload, this.httpOptions);
+    return response;
+  }
+  deleteConfiguredState(id: string): Observable<any> {
+    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll/pt-configure-states/${id}`, this.httpOptions);
+    return response;
+  }
+  getAllConfiguredStates(): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/pt-configure-states-by-company`, this.httpOptions);
+    return response;
+  }
+  
   // pt-deduction month CRUD
 
   addDeductionMonth(payload: any): Observable<any> {

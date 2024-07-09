@@ -4,9 +4,7 @@
             <div class="d-flex align-items-center px-2 py-1">
                 <p class="mb-0 me-auto">({{fixedContribution?.length}}) Records Found</p>
                 <div class="d-flex align-items-center">
-
                     <span class="bi bi-search searchIcon"></span>
-
                     <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
                         name="searchText" aria-label="default input example">
                 </div>
@@ -23,7 +21,6 @@
                             <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before"
                                 data-bs-toggle="offcanvas" data-bs-target="#demo"
                                 (click)="selectedRecord = fc; isEdit = true">
-                                <!-- (click)="openDrawer(fc); selectedRecord = fc; isEdit = true" -->
                                 <i class="bi bi-pencil-fill"></i>
                             </button>
                         </td>
@@ -32,8 +29,6 @@
             </table>
         </div>
     </div>
-
-
 
     <div class="offcanvas offcanvas-end w-75" id="demo">
         <div class="offcanvas-body">

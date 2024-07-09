@@ -1,5 +1,4 @@
 import { Component, ViewChild } from '@angular/core';
-import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { MatDrawer } from '@angular/material/sidenav';
 @Component({
@@ -13,18 +12,15 @@ export class FixedContributionComponent {
   closeResult: string = '';
   selectedRecord: any;
   isEdit: boolean = false;
-  @ViewChild('drawer') drawer: MatDrawer;
-  showFiller = false;
+  // @ViewChild('drawer') drawer: MatDrawer;
 
-  constructor(private payroll: PayrollService,
-    private modalService: NgbModal
-  ){}
+  constructor(private payroll: PayrollService  ) { }
 
-  ngOnInit(){
+  ngOnInit() {
     this.getFixedContribution();
   }
-  getFixedContribution(){
-    let payload ={
+  getFixedContribution() {
+    let payload = {
       skip: '',
       next: ''
     }
@@ -33,29 +29,9 @@ export class FixedContributionComponent {
     });
   }
 
-  // open(content: any) {
-  //   this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
-  //     this.closeResult = `Closed with: ${result}`;
-
-  //   }, (reason) => {
-
-  //     this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-  //   });
+  // openDrawer(fc: any) {
+  //   this.selectedRecord = fc;
+  //   this.isEdit = true;
+  //   this.drawer.open();
   // }
-
-  // private getDismissReason(reason: any): string {
-  //   if (reason === ModalDismissReasons.ESC) {
-  //     return 'by pressing ESC';
-  //   } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-  //     return 'by clicking on a backdrop';
-  //   } else {
-  //     return `with: ${reason}`;
-  //   }
-  // }
-
-  openDrawer(fc: any) {
-    this.selectedRecord = fc;
-    this.isEdit = true;
-    this.drawer.open();
-  }
 }
