@@ -1,1 +1,90 @@
-<p>fixed-deduction works!</p>
+<div class="main-content">
+    <div class="container">
+        <div class="tableContainer bg-white py-2">
+            <div class="d-flex align-items-center px-2 py-1">
+                <p class="mb-0 me-auto">({{fixedContributions?.length}}) Records Found</p>
+                <div class="d-flex align-items-center">
+
+                    <span class="bi bi-search searchIcon"></span>
+
+                    <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
+                        name="searchText" aria-label="default input example">
+                    <div class="d-flex align-items-center">
+                        <button class="addBtn mx-2" mat-raised-button
+                            (click)="open(modal); isEdit= false; clearForm()">Add</button>
+
+                        <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
+                            [recordsPerPage]="recordsPerPage" [currentPage]="currentPage"
+                            (pageChange)="onPageChange($event)" (recordsPerPageChange)="onRecordsPerPageChange($event)">
+                        </app-pagination>
+                    </div>
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <th>Deduction Name</th>
+                    <th>Actions</th>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let fixedContribution of fixedContributions | search:searchText">
+                        <td>{{fixedContribution?.label}}</td>
+                        <td>
+                            <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before"
+                                data-bs-toggle="modal" data-bs-target="#modal"
+                                (click)=" open(modal); selectedRecord = fixedContribution;  isEdit= true; editRecord();">
+                                <i class="bi bi-pencil-fill"></i>
+                            </button>
+                            <button class="actions ms-2" mat-mini-fab matTooltip="Delete" matTooltipPosition="after"
+                                aria-label="Example icon button with a menu icon" (click)="deleteDialog(fixedContribution?._id)">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<ng-template #modal let-modal>
+    <div class="modal-header border-bottom mb-2 pt-0">
+        <div>
+            <h1 class="modal-title text-muted mb-0">{{isEdit? 'Update': 'Add'}} Fixed Deduction</h1>
+        </div>
+        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
+                (click)="closeModal()"></button>
+        </div>
+    </div>
+    <form [formGroup]="fixedContributionForm" (ngSubmit)="onSubmission()">
+        <div class="form-group">
+            <label for="">What would you want to call this deduction? <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" formControlName="label" placeholder="Deduction Name" />
+        </div>
+
+        <div class="form-group mt-2">
+            <label for="">Do you want attendance effect the eligibility? <span class="text-danger">*</span></label>
+            <div class="d-flex">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" id="isProvidentFundAffected-yes"
+                        formControlName="isEffectAttendanceOnEligibility" required [value]="true">
+                    <label class="form-check-label" for="isProvidentFundAffected-yes">
+                        Yes
+                    </label>
+                </div>
+
+
+                <div class="form-check ms-3">
+                    <input class="form-check-input" type="radio" id="isProvidentFundAffected-no" required
+                    formControlName="isEffectAttendanceOnEligibility" [value]="false">
+                    <label class="form-check-label" for="isProvidentFundAffected-no">
+                        No
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex border-top mt-2 py-2 justify-content-between">
+            <button mat-raised-button type="button">Cancel</button>
+            <button mat-raised-button type="submit" class="addBtn">Submit</button>
+        </div>
+    </form>
+</ng-template>

@@ -293,4 +293,22 @@ export class PayrollService {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/variable-allowances-by-company`, payload, this.httpOptions);
     return response;
   }
+
+  // Fixed Deduction CRUD
+  addFixedDeduction(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/fixed-deductions`, payload, this.httpOptions);
+    return response;
+  }
+  updateFixedDeduction(id: string, payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/fixed-deductions/${id}`, payload, this.httpOptions);
+    return response;
+  }
+  deleteFixedDeduction(id: string): Observable<any> {
+    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll/fixed-deductions/${id}`, this.httpOptions);
+    return response;
+  }
+  getFixedDeduction(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/fixed-deductions-by-company`, payload, this.httpOptions);
+    return response;
+  }
 }
