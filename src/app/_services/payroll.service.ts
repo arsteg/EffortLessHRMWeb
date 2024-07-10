@@ -364,4 +364,21 @@ export class PayrollService {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/loan-advances-category-by-company`, payload, this.httpOptions);
     return response;
   }
+  //  Flexi Benefits CRUD
+  addFlexiBenefits(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/flexi-benefits-category`, payload, this.httpOptions);
+    return response;
+  }
+  updateFlexiBenefits(id: string, payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/flexi-benefits-category/${id}`, payload, this.httpOptions);
+    return response;
+  }
+  deleteFlexiBenefits(id: string): Observable<any> {
+    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll/flexi-benefits-category/${id}`, this.httpOptions);
+    return response;
+  }
+  getFlexiBenefits(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/flexi-benefits-category-by-company`, payload, this.httpOptions);
+    return response;
+  }
 }
