@@ -1,47 +1,4 @@
-<!-- <div class="tableContainer bg-white">
-   
-    <form [formGroup]="deductionForm" (ngSubmit)="onSubmit()">
-        <div class="d-flex justify-content-end mb-3">
-            <button class="addBtn mx-2" mat-raised-button type="submit">Update</button>
-        </div>
-        <div class="row">
-          <div class="col-md-6 border-end" *ngFor="let month of months">
-            <div class="d-flex justify-content-between">
-              <label for="" class="me-2">{{ month }}</label>
-              <div class="d-flex">
-                <div class="form-check">
-                  <input 
-                    class="form-check-input" 
-                    type="radio" 
-                    [id]="month + '-yes'" 
-                    (change)="onSelectionChange(month, true)" 
-                    [checked]="isSelected(month)"
-                    value="{{true}}"
-                    >
-                  <label class="form-check-label" [for]="month + '-yes'">
-                    Yes
-                  </label>
-                </div>
-                <div class="form-check ms-3">
-                  <input 
-                    class="form-check-input" 
-                    type="radio" 
-                    [id]="month + '-no'" 
-                    (change)="onSelectionChange(month, false)" 
-                    [checked]="isSelected(month)"
-                    value="{{false}}"
-                    >
-                  <label class="form-check-label" [for]="month + '-no'">
-                    No
-                  </label>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </form>
-      
- </div> -->
+<!-- 
  <div class="tableContainer bg-white">
     <form [formGroup]="deductionForm" (ngSubmit)="onSubmit()">
       <div class="d-flex justify-content-end mb-3">
@@ -84,4 +41,46 @@
       </div>
     </form>
   </div>
+   -->
+   <div class="tableContainer bg-white">
+    <form [formGroup]="deductionForm" (ngSubmit)="onSubmit()">
+      <div class="d-flex justify-content-end mb-3">
+        <button class="addBtn mx-2" mat-raised-button type="submit">Update</button>
+      </div>
+      <div class="row">
+        <div class="col-md-6 border-end" *ngFor="let month of monthsArray; let i = index">
+          <div class="d-flex justify-content-between">
+            <label for="" class="me-2">{{ month.value.paymentMonth }}</label>
+            <div class="d-flex">
+              <div class="form-check">
+                <input 
+                  class="form-check-input" 
+                  type="radio" 
+                  [id]="month.value.paymentMonth + '-yes'" 
+                  (change)="onSelectionChange(month.value.paymentMonth, true)" 
+                  [checked]="month.value.processMonth"
+                  >
+                <label class="form-check-label" [for]="month.value.paymentMonth + '-yes'">
+                  Yes
+                </label>
+              </div>
+              <div class="form-check ms-3">
+                <input 
+                  class="form-check-input" 
+                  type="radio" 
+                  [id]="month.value.paymentMonth + '-no'" 
+                  (change)="onSelectionChange(month.value.paymentMonth, false)" 
+                  [checked]="!month.value.processMonth"
+                  >
+                <label class="form-check-label" [for]="month.value.paymentMonth + '-no'">
+                  No
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  
   

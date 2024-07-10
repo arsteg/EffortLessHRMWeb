@@ -1,12 +1,7 @@
 <h2>Labour Welfare Fund</h2>
 <hr>
 
-<div class="align-items-center d-flex justify-content-end">
-    <label for="">State</label>
-    <select class="w-50 ms-1" id="">
-        <option value="" *ngFor="let state of states" value="{{state._id}}">{{state?.state}}</option>
-    </select>
-</div>
+
 <ul class="nav nav-tabs">
     <li class="nav-item">
         <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tablwfSlab'}" (click)="selectTab('tablwfSlab')">LWF

@@ -6,7 +6,7 @@
         </button>
 
         <div class="align-items-center d-flex ms-auto">
-            <label for="state-pt">State</label>
+            <label for="state-pt">Eligible&nbsp;States</label>
             <select class="w-100 ms-1" id="state-pt">
                 <option *ngFor="let state of eleState" [value]="getMatchingState(state?._id)">
                     {{getMatchingState(state?.state)}}</option>
@@ -33,6 +33,6 @@
 </div>
 <ng-template #modal let-modal>
     <div cdkOverlayBackdrop cdkOverlay cdkFocusTrap>
-        <app-configure-state></app-configure-state>
+        <app-configure-state (updateList)="refreshList()"></app-configure-state>
     </div>
 </ng-template>

@@ -88,10 +88,10 @@ export class EligibleStatesComponent implements OnInit {
         ...state,
         isEligible: state.isEligible
       }));
-  
+
       this.eleState = this.eligibleStates.filter(state => state.isEligible);
-  
-  
+
+
       this.eligibleStateForm = this.fb.group({
         states: this.fb.array(this.eligibleStates.map(state =>
           this.fb.group({
@@ -100,33 +100,36 @@ export class EligibleStatesComponent implements OnInit {
           })
         ))
       });
-  
+
     });
   }
-getMatchingState(stateID: string) {
-  const matchingState = this.states?.find(rec => rec._id === stateID);
-  return matchingState ? matchingState?.state : '';
-}
+  getMatchingState(stateID: string) {
+    const matchingState = this.states?.find(rec => rec._id === stateID);
+    return matchingState ? matchingState?.state : '';
+  }
 
 
-onSubmission() {
-  this.payroll.updateEligibleState(this.eligibleStateForm.value).subscribe((data: any) => {
-    this.eligibleStates = data.data;
-    this.getEligibleStates();
-  });
-}
-
-getState() {
-  this.payroll.getAllConfiguredStates().subscribe((data: any) => {
-    this.states = data.data;
-    this.states.forEach((state) => {
-      (this.eligibleStateForm.get('states') as FormArray).push(
-        this.fb.group({
-          state: [state._id],
-          isEligible: [false]
-        })
-      );
+  onSubmission() {
+    this.payroll.updateEligibleState(this.eligibleStateForm.value).subscribe((data: any) => {
+      this.eligibleStates = data.data;
+      this.getEligibleStates();
     });
-  });
-}
+  }
+
+  getState() {
+    this.payroll.getAllConfiguredStates().subscribe((data: any) => {
+      this.states = data.data;
+      this.states.forEach((state) => {
+        (this.eligibleStateForm.get('states') as FormArray).push(
+          this.fb.group({
+            state: [state._id],
+            isEligible: [false]
+          })
+        );
+      });
+    });
+  }
+
+  refreshList() { this.getState(); }
+
 }

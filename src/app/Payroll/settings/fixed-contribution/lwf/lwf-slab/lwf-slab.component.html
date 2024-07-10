@@ -1,6 +1,11 @@
 <div class="tableContainer bg-white py-2">
     <div class=" d-flex justify-content-end mb-2">
-        
+        <div class="align-items-center d-flex justify-content-end">
+            <label for="">State</label>
+            <select class="w-50 ms-1" id="">
+                <option value="" *ngFor="let state of eligibleStates" value="{{getMatchingState(state?.state)}}">{{getMatchingState(state?.state)}}</option>
+            </select>
+        </div>
         <button mat-raised-button class="addBtn" (click)="open(modal); isEdit=false; clearForm()">Add</button>
     </div>
     <table>

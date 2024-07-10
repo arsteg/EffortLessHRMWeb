@@ -42,6 +42,7 @@ export class UpdateStateComponent implements OnInit {
       this.payroll.addConfiguredState(this.addStateForm.value).subscribe((res: any) => {
         this.toast.success('Successfully', 'Configured State Added');
         this.payroll.configureState.next(res.data);
+        this.addStateForm.reset();
       })
     else {
       this.payroll.updateConfiguredState(this.data._id, this.addStateForm.value).subscribe((res: any) => {

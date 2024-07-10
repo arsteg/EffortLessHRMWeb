@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
@@ -16,6 +16,7 @@ export class ConfigureStateComponent {
   configuredState: any;
   selectedData: any;
   searchText: string = '';
+  @Output() updateList: EventEmitter<void> = new EventEmitter<void>();
 
   constructor(
     private modalService: NgbModal,
@@ -61,11 +62,12 @@ export class ConfigureStateComponent {
       const index = this.configuredState.findIndex(res => res._id === _id);
       if (index !== -1) {
         this.configuredState.splice(index, 1);
+        this.updateList.emit();
       }
-      this.toast.success('Successfully Deleted!!!', 'LWF Slab');
+      this.toast.success('Successfully Deleted!!!', 'Configured State');
     },
       (err) => {
-        this.toast.error('LWF Slab can not be deleted', 'LWF Slab');
+        this.toast.error('Configured State can not be deleted', 'Configured State');
       })
 
   }
@@ -84,6 +86,7 @@ export class ConfigureStateComponent {
 
   closeUpdateStateModal(modal) {
     this.getState();
+    this.updateList.emit();
     modal.close();
   }
 }

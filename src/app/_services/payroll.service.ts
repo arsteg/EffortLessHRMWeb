@@ -197,8 +197,8 @@ export class PayrollService {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/pt-deduction-months`, payload, this.httpOptions);
     return response;
   }
-  updateDeductionMonth(id: string, payload: any): Observable<any> {
-    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/pt-deduction-months/${id}`, payload, this.httpOptions);
+  updateDeductionMonth(payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/pt-deduction-months`, payload, this.httpOptions);
     return response;
   }
   deleteDeductionMonth(id: string): Observable<any> {
@@ -233,12 +233,12 @@ export class PayrollService {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/lwf-fixed-contribution-months`, payload, this.httpOptions);
     return response;
   }
-  updateLWFDeductionMonth(id: string, payload: any): Observable<any> {
-    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/lwf-fixed-contribution-months/${id}`, payload, this.httpOptions);
+  updateLWFDeductionMonth(payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/lwf-fixed-contribution-months-update`, payload, this.httpOptions);
     return response;
   }
   getLWFDeductionMonth(): Observable<any> {
-    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/lwf-fixed-contribution-months-list`, this.httpOptions);
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/lwf-fixed-contribution-months`, this.httpOptions);
     return response;
   }
 

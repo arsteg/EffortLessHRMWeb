@@ -23,7 +23,7 @@ export class LwfSlabComponent {
   currentPage: number = 1;
   searchText: string = '';
   @Input() selectedRecord: any;
-
+  eligibleStates: any;
   constructor(private payrollService: PayrollService,
     private fb: FormBuilder,
     private modalService: NgbModal,
@@ -43,6 +43,9 @@ export class LwfSlabComponent {
 
   ngOnInit() {
     this.payrollService.getEligibleStates().subscribe((res: any) => {
+      this.eligibleStates = res.data;
+    });
+    this.payrollService.getAllConfiguredStates().subscribe((res: any) => {
       this.states = res.data;
     });
     this.getLwfSlab();
@@ -102,7 +105,7 @@ export class LwfSlabComponent {
       )
     }
     else {
-      this.payrollService.updateLWF(this.selectedData._id,this.lwfSLabForm.value).subscribe((res) => {
+      this.payrollService.updateLWF(this.selectedData._id, this.lwfSLabForm.value).subscribe((res) => {
         this.lwfSlabs.push(res.data);
         this.lwfSLabForm.reset();
         this.toast.success('Successfully Updated!!!', 'LWF Slab');
@@ -158,6 +161,10 @@ export class LwfSlabComponent {
     } else {
       return `with: ${reason}`;
     }
+  }
+  getMatchingState(stateID: string) {
+    const matchingState = this.states?.find(rec => rec._id === stateID);
+    return matchingState ? matchingState?.state : '';
   }
 
 }
