@@ -95,7 +95,7 @@
     <ng-template #modal let-modal>
         <div class="modal-header border-bottom mb-2 pt-0">
             <div>
-                <h1 class="modal-title text-muted mb-0">{{isEdit? 'Update': 'Add'}} ESIC Ceiling Amount</h1>
+                <h1 class="modal-title text-muted mb-0">{{isEdit? 'Update': 'Add'}} Variable Allowance</h1>
             </div>
             <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
                     (click)="closeModal()"></button>
@@ -386,8 +386,11 @@
                     <option value="Percentage of Gross salary paid">Percentage of Gross salary paid</option>
                 </select>
             </div>
-
-            <div class="form-group">
+            <div class="form-group mt-2" *ngIf="variableAllowanceForm.get('amountEnterForThisVariableAllowance').value=='Fixed Amount'">
+                <label for="">Provide the Amount</label>
+                <input type="number" class="form-control" formControlName="amount">
+            </div>
+            <div class="form-group" *ngIf="variableAllowanceForm.get('amountEnterForThisVariableAllowance').value == 'Percentage of (Basic + DA) paid or (Basic + DA is not applicable)'|| 'Percentage of Gross salary paid'">
                 <label for="">Percentage of gross salary paid <span class="text-danger">*</span></label>
                 <input type="number" class="form-control" formControlName="percentage">
                 <!-- <div

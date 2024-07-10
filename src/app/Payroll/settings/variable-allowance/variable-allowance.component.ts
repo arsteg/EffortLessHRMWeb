@@ -15,7 +15,6 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 })
 export class VariableAllowanceComponent {
   variableAllowances: any;
-  VariableAllowanceForm: FormGroup;
   searchText: string = '';
   selectedRecord: any;
   isEdit: boolean = false;
@@ -52,7 +51,7 @@ export class VariableAllowanceComponent {
       allowanceStopMonth: ['', Validators.required],
       allowanceStopYear: ['', Validators.required],
       amountEnterForThisVariableAllowance: ['', Validators.required],
-      amount: [0, Validators.required], //------------
+      amount: [0, Validators.required],
       percentage: [0, Validators.required],
       isAttandanceToAffectEligibility: [true, Validators.required],
       variableAllowanceApplicableEmployee: [
