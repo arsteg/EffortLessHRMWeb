@@ -347,4 +347,21 @@ export class PayrollService {
     var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll/other-benefits/${id}`, this.httpOptions);
     return response;
   }
+  // Loans/Advances CRUD
+  addLoans(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/loan-advances-category`, payload, this.httpOptions);
+    return response;
+  }
+  updateLoans(id: string, payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/loan-advances-category/${id}`, payload, this.httpOptions);
+    return response;
+  }
+  deleteLoans(id: string): Observable<any> {
+    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll/loan-advances-category/${id}`, this.httpOptions);
+    return response;
+  }
+  getLoans(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/loan-advances-category-by-company`, payload, this.httpOptions);
+    return response;
+  }
 }
