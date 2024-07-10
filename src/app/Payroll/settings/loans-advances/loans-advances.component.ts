@@ -44,8 +44,7 @@ export class LoansAdvancesComponent {
 
   clearForm() {
     this.loansAdvancesForm.patchValue({
-     label: '',
-      isEffectAttendanceOnEligibility: true 
+     name: ''
     })
   }
   open(content: any) {

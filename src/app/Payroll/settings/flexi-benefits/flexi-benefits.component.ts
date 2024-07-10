@@ -44,8 +44,7 @@ export class FlexiBenefitsComponent {
 
   clearForm() {
     this.flexiBenefitsForm.patchValue({
-     label: '',
-      isEffectAttendanceOnEligibility: true 
+     name: ''
     })
   }
   open(content: any) {
