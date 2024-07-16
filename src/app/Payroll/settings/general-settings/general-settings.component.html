@@ -8,8 +8,7 @@
                         (click)="toggleEdit()">Edit</button>
                     <button mat-raised-button *ngIf="isEdit" (click)="resetSettings()" type="button"
                         class="me-3">Cancel</button>
-                    <button mat-raised-button class="addBtn" type="submit" *ngIf="isEdit"
-                       >Save</button>
+                    <button mat-raised-button class="addBtn" type="submit" *ngIf="isEdit">Save</button>
                 </div>
             </div>
             <div class="row p-2">
@@ -324,7 +323,7 @@
 
                     </div>
                     <div class="mt-2 bg-white tableContainer">
-                       
+
                         <table>
                             <thead>
                                 <th>Statutory Name</th>
@@ -364,7 +363,7 @@
 
                                         <button class="actions" mat-mini-fab matTooltip="Edit"
                                             matTooltipPosition="before" data-bs-toggle="modal" data-bs-target="#modal"
-                                            (click)=" open(activeTab); selectedRecord = roundingRule;  isEdit= true; editReason();">
+                                            (click)="isEdit= true; selectedRecord = roundingRule; open(modal);">
                                             <i class="bi bi-pencil-fill"></i>
                                         </button>
                                         <button class="actions ms-2" mat-mini-fab matTooltip="Delete"
@@ -380,9 +379,9 @@
                     </div>
                 </div>
                 <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabPFTemplate'}" id="tabPFTemplate">
-                    
+
                     <div class="mt-2 bg-white tableContainer">
-                       
+
                         <table>
                             <thead>
                                 <th>Template Name</th>
@@ -390,42 +389,18 @@
                                 <th>Action</th>
                             </thead>
                             <tbody>
-                                <tr *ngFor="let roundingRule of roundingRules">
-                                    <td>{{roundingRule?.name}}</td>
+                                <tr *ngFor="let pfTemplate of pfTemplates">
+                                    <td>{{pfTemplate?.templateName}}</td>
+                                    <td>{{pfTemplate?.allowanceApplicable?.length}}</td>
                                     <td>
-                                        <span *ngIf="roundingRule?.roundingType=='Rounding_Up' else roundingType">
-                                            <mat-icon style="color: green;">check</mat-icon>
-                                        </span>
-                                        <ng-template #roundingType>
-                                            <mat-icon style="color: red;">close</mat-icon>
-                                        </ng-template>
-                                    </td>
-                                    <td>
-                                        <span *ngIf="roundingRule?.roundingType=='Rounding_Off' else roundingType">
-                                            <mat-icon style="color: green;">check</mat-icon>
-                                        </span>
-                                        <ng-template #roundingType>
-                                            <mat-icon style="color: red;">close</mat-icon>
-                                        </ng-template>
-                                    </td>
-                                    <td>
-                                        <span *ngIf="roundingRule?.roundingType=='Rounding_Down' else roundingType">
-                                            <mat-icon style="color: green;">check</mat-icon>
-                                        </span>
-                                        <ng-template #roundingType>
-                                            <mat-icon style="color: red;">close</mat-icon>
-                                        </ng-template>
-                                    </td>
-                                    <td>
-
                                         <button class="actions" mat-mini-fab matTooltip="Edit"
                                             matTooltipPosition="before" data-bs-toggle="modal" data-bs-target="#modal"
-                                            (click)=" open(activeTab); selectedRecord = roundingRule;  isEdit= true; editReason();">
+                                            (click)="isEdit= true; selectedRecord = pfTemplate; open(modal); ">
                                             <i class="bi bi-pencil-fill"></i>
                                         </button>
                                         <button class="actions ms-2" mat-mini-fab matTooltip="Delete"
                                             matTooltipPosition="after" aria-label="Example icon button with a menu icon"
-                                            (click)="deleteDialog(roundingRule?._id)">
+                                            (click)="deleteDialog(pfTemplate?._id)">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </td>
@@ -437,9 +412,9 @@
                 </div>
                 <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabGratuityTemplates'}"
                     id="tabGratuityTemplates">
-                   
+
                     <div class="mt-2 bg-white tableContainer">
-                        
+
                         <table>
                             <thead>
                                 <th>Template Name</th>
@@ -475,12 +450,13 @@
 
 <ng-template #modal let-modal>
     <ng-container *ngIf="activeTab === 'tabRoundingRules'">
-      <app-rounding-rules (close)="onClose($event)" [changeMode]="isEdit" [roundingRule]="selectedRecord"></app-rounding-rules>
+        <app-rounding-rules (close)="onClose($event)" [changeMode]="isEdit"
+            [roundingRule]="selectedRecord"></app-rounding-rules>
     </ng-container>
     <ng-container *ngIf="activeTab === 'tabPFTemplate'">
-      <app-pf-template (close)="onClose($event)" [changeMode]="isEdit"></app-pf-template>
+        <app-pf-template (close)="onClose($event)" [changeMode]="isEdit"></app-pf-template>
     </ng-container>
     <ng-container *ngIf="activeTab === 'tabGratuityTemplates'">
-      <app-gratuity-template (close)="onClose($event)" [changeMode]="isEdit"></app-gratuity-template>
+        <app-gratuity-template (close)="onClose($event)" [changeMode]="isEdit"></app-gratuity-template>
     </ng-container>
-  </ng-template>
+</ng-template>

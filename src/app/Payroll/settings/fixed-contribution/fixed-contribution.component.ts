@@ -12,7 +12,6 @@ export class FixedContributionComponent {
   closeResult: string = '';
   selectedRecord: any;
   isEdit: boolean = false;
-  // @ViewChild('drawer') drawer: MatDrawer;
 
   constructor(private payroll: PayrollService  ) { }
 
@@ -22,7 +21,7 @@ export class FixedContributionComponent {
   getFixedContribution() {
     let payload = {
       skip: '',
-      next: ''
+      next: '10'
     }
     this.payroll.getFixedContribution(payload).subscribe(data => {
       this.fixedContribution = data.data;

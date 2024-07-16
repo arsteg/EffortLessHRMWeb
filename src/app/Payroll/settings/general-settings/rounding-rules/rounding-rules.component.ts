@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ToastrService } from 'ngx-toastr';
 import { PayrollService } from 'src/app/_services/payroll.service';
 
 @Component({
@@ -9,12 +10,12 @@ import { PayrollService } from 'src/app/_services/payroll.service';
   styleUrl: './rounding-rules.component.css'
 })
 export class RoundingRulesComponent {
-  @Input() roundingRule: any;
   @Output() close: any = new EventEmitter();
-  @Input() changeMode: boolean = false;
+  @Input() changeMode: boolean ;
   roundingRulesForm: FormGroup;
+  roundingRule: any;
 
-  constructor(private modalService: NgbModal,
+  constructor(private toaster: ToastrService,
     private fb: FormBuilder,
     private payroll: PayrollService
   ) {
@@ -26,13 +27,14 @@ export class RoundingRulesComponent {
   }
 
   ngOnInit() {
-    console.log(this.payroll.generalSettings.getValue());
-    if(this.changeMode){
+    if (this.changeMode) {
+      this.payroll.data.subscribe(res =>{
       this.roundingRulesForm.patchValue({
         generalSetting: this.payroll.generalSettings.getValue()._id,
-        name: this.roundingRule.name,
-        roundingType: this.roundingRule.roundingType
+        name: res.name,
+        roundingType: res.roundingType
       })
+    })
     }
   }
 
@@ -47,16 +49,26 @@ export class RoundingRulesComponent {
       this.payroll.addRoundingRules(this.roundingRulesForm.value).subscribe((res: any) => {
         this.roundingRule = res.data;
         this.payroll.addResponse.next(this.roundingRule);
+        this.roundingRulesForm.reset();
+        this.toaster.success('Rounding Rules Added Successfully');
         this.closeModal();
+      },
+      err =>{
+        this.toaster.error('Rounding Rules Add Failed');
       })
     }
     else {
-      this.payroll.updateRoundingRules(this.roundingRule._id, this.roundingRulesForm.value).subscribe((res: any) => {
+      this.payroll.updateRoundingRules(this.payroll.data.getValue()._id, this.roundingRulesForm.value).subscribe((res: any) => {
         this.roundingRule = res.data;
         this.payroll.addResponse.next(this.roundingRule);
+        this.toaster.success('Rounding Rules Updated Successfully');
+
         this.closeModal();
+      },
+    err =>{
+      this.toaster.error('Rounding Rules Update Failed');
     })
+    }
   }
-}
 
 }

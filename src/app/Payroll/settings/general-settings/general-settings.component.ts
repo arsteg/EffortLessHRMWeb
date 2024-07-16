@@ -31,7 +31,7 @@ export class GeneralSettingsComponent {
   recordsPerPage: number = 10;
   currentPage: number = 1;
   roundingRules: any;
-  pfTemplate: any;
+  pfTemplates: any;
   gratuityTemplate: any;
 
   constructor(private fb: FormBuilder,
@@ -131,7 +131,8 @@ export class GeneralSettingsComponent {
 
   selectTab(tabId: string) {
     this.activeTab = tabId;
-    console.log(this.activeTab)
+    console.log(this.activeTab);
+    this.loadRecords();
   }
 
   saveGeneralSettings() {
@@ -153,9 +154,10 @@ export class GeneralSettingsComponent {
     this.payroll.generalSettings.next(this.generalSettings);
     this.payroll.fixedAllowance.next(this.fixedAllowance);
     console.log(this.fixedAllowance);
-    
+    console.log(this.isEdit)
     if (this.isEdit) {
       this.payroll.data.next(this.selectedRecord);
+      console.log(this.selectedRecord)
       this.payroll.generalSettings.next(this.generalSettings);
     }
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
@@ -179,7 +181,7 @@ export class GeneralSettingsComponent {
       return `with: ${reason}`;
     }
   }
-  editReason() { }
+ 
 
   clearForm() { }
 
@@ -269,8 +271,9 @@ export class GeneralSettingsComponent {
       });
     }
     else if (this.activeTab == 'tabPFTemplate') {
-      this.payroll.getPfTemplate(pagination).subscribe((res: any) => {
-        this.pfTemplate = res.data;
+      console.log(this.activeTab)
+      this.payroll.getPfTemplate().subscribe((res: any) => {
+        this.pfTemplates = res.data;
         this.totalRecords = res.total;
       });
     }

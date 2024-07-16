@@ -59,12 +59,12 @@
                             </ng-template>
                         </td>
                         <td>
-                            <!-- <span *ngIf="va?.isLWFAffected==true else fixed">
+                            <span *ngIf="va?.isProfessionalTaxAffected==true else fixed">
                                 <mat-icon style="color: green;">check</mat-icon>
                             </span>
                             <ng-template #fixed>
                                 <mat-icon style="color: red;">close</mat-icon>
-                            </ng-template> -->
+                            </ng-template>
                         </td>
                         <td>
                             <span *ngIf="va?.isIncomeTaxAffected==true else fixed">
@@ -213,7 +213,7 @@
                 <label for="">Does this allowance affect Professional Tax? <span class="text-danger">*</span></label>
                 <div class="d-flex">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" id="testyes" required formControlName=""
+                        <input class="form-check-input" type="radio" id="testyes" required formControlName="isProfessionalTaxAffected"
                             [value]="true">
                         <label class="form-check-label" for="testyes">
                             Yes
@@ -221,7 +221,7 @@
                     </div>
 
                     <div class="form-check ms-3">
-                        <input class="form-check-input" type="radio" id="test-no" required formControlName=""
+                        <input class="form-check-input" type="radio" id="test-no" required formControlName="isProfessionalTaxAffected"
                             [value]="false">
                         <label class="form-check-label" for="test-no">
                             No

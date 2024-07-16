@@ -53,6 +53,7 @@ export class VariableAllowanceComponent {
       amountEnterForThisVariableAllowance: ['', Validators.required],
       amount: [0, Validators.required],
       percentage: [0, Validators.required],
+      isProfessionalTaxAffected: [true, Validators.required],
       isAttandanceToAffectEligibility: [true, Validators.required],
       variableAllowanceApplicableEmployee: [
         {
@@ -123,7 +124,9 @@ export class VariableAllowanceComponent {
       employee: item
     }));
     console.log(formValue);
-    if (!this.isEdit) {
+    if (this.isEdit == false) {
+    console.log(formValue);
+
       this.payroll.addVariableAllowance(formValue).subscribe((res: any) => {
         this.variableAllowances.push(res.data);
         this.toast.success('Successfully Added!!!', 'Variable Allwance');

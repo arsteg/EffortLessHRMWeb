@@ -24,7 +24,7 @@
     border-bottom-right-radius: 50px;
     border-top-right-radius: 50px;
     background: linear-gradient(90deg, #FF920B 0, #F35C17 90%);
-    color: white
+    color: white !important
 }
 
 .sidebar-sublinks {

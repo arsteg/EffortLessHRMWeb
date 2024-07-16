@@ -73,10 +73,14 @@ export class PayrollService {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/pf-templates`, payload, this.httpOptions);
     return response;
   }
-  getPfTemplate(payload: any): Observable<any> {
-    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/pf-templates-list`, payload, this.httpOptions);
+  getPfTemplate(): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/pf-templates-by-company`,  this.httpOptions);
     return response;
   }
+  // getPfTemplate(payload: any): Observable<any> {
+  //   var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/pf-templates-by-company`, payload, this.httpOptions);
+  //   return response;
+  // }
   updatePFTemplate(id: string, payload: any): Observable<any> {
     var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/pf-templates/${id}`, payload, this.httpOptions);
     return response;
@@ -98,8 +102,9 @@ export class PayrollService {
     var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll/gratuity-templates/${id}`, this.httpOptions);
     return response;
   }
+  
   getGratuityTemplate(payload: any): Observable<any> {
-    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/gratuity-templates-list`, payload, this.httpOptions);
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/gratuity-templates-by-company`, payload, this.httpOptions);
     return response;
   }
   // Fixed Allowance Templates CRUD
@@ -232,15 +237,15 @@ export class PayrollService {
 
   // LWF_deduction month CRUD
   addLWFDeductionMonth(payload: any): Observable<any> {
-    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/lwf-fixed-contribution-months`, payload, this.httpOptions);
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/lwf-fixed-deduction-months`, payload, this.httpOptions);
     return response;
   }
   updateLWFDeductionMonth(payload: any): Observable<any> {
-    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/lwf-fixed-contribution-months-update`, payload, this.httpOptions);
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/lwf-fixed-deduction-months-update`, payload, this.httpOptions);
     return response;
   }
   getLWFDeductionMonth(): Observable<any> {
-    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/lwf-fixed-contribution-months`, this.httpOptions);
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/lwf-fixed-deduction-months`, this.httpOptions);
     return response;
   }
 

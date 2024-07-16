@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./payroll.component.css']
 })
 export class PayrollComponent implements OnInit {
-  selectedTab: number = 2;
+  selectedTab: number = 1;
   constructor(
     ) { }
 
@@ -15,5 +15,4 @@ export class PayrollComponent implements OnInit {
   selectTab(tabIndex: number) {
     this.selectedTab = tabIndex;
   }
-
 }

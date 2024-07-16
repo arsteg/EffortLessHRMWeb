@@ -11,13 +11,13 @@
     <form [formGroup]="pfTemplateForm" (ngSubmit)="onSubmission()">
         <div class="form-group">
             <label for="">Template Name</label>
-            <input type="text" class="form-control" formControlName="">
+            <input type="text" class="form-control" formControlName="templateName">
         </div>
 
         <div class="form-group mt-3">
             <mat-form-field appearance="outline" class="w-100">
                 <mat-label>Allowance Applicable</mat-label>
-                <mat-select multiple formControlName="">
+                <mat-select multiple formControlName="allowanceApplicable">
                     <mat-option *ngFor="let fa of fixedAllowance" [value]="fa?._id">
                         {{fa?.label}}
                     </mat-option>
