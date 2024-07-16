@@ -49,6 +49,7 @@ export class RequestManualTimeComponent implements OnInit {
   recordsPerPage: number = 10;
   currentPage: number = 1;
   isEdit: boolean = false;
+  view = localStorage.getItem('adminView');
 
   constructor(private modalService: NgbModal, private formBuilder: FormBuilder,
     private authenticationService: AuthenticationService,
@@ -106,6 +107,11 @@ export class RequestManualTimeComponent implements OnInit {
 
     this.fetchManualTimeRequests();
   }
+
+    toggleView() {
+    this.view = this.view === 'user' ? 'admin' : 'user';
+  }
+
   onChange(newId: number) {
     console.log(`Selected item with id: ${newId}`);
   }
