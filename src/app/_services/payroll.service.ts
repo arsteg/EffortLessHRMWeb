@@ -24,6 +24,8 @@ export class PayrollService {
   generalSettings: any = new BehaviorSubject('');
   fixedAllowance: any = new BehaviorSubject('');
   configureState: any = new BehaviorSubject('');
+  assignedTemplates: any = new BehaviorSubject('');
+  ctcTempData: any = new BehaviorSubject('');
 
   constructor(private http: HttpClient) { }
   public getToken() {
@@ -379,6 +381,30 @@ export class PayrollService {
   }
   getFlexiBenefits(payload: any): Observable<any> {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/flexi-benefits-category-by-company`, payload, this.httpOptions);
+    return response;
+  }
+  // PF charges
+
+  getAllPFCharges(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/pf-charge-by-company`, payload, this.httpOptions);
+    return response;
+  }
+
+  // CTC Template CRUD
+ getCTCTemplate(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/ctc-templates-by-company`, payload, this.httpOptions);
+    return response;
+  }
+  deleteCTCTemplate(id: string): Observable<any> {
+    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll/ctc-templates/${id}`, this.httpOptions);
+    return response;
+  }
+  updateCTCTemplate(id: string, payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/ctc-templates/${id}`, payload, this.httpOptions);
+    return response;
+  }
+  addCTCTemplate(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/ctc-templates`, payload, this.httpOptions);
     return response;
   }
 }

@@ -1,1 +1,28 @@
-<p>pf-charges works!</p>
+<div class="main-content">
+    <div class="container">
+        <div class="tableContainer bg-white py-2">
+            <div class="d-flex align-items-center px-2 py-1">
+                <div class="d-flex align-items-center">
+
+                    <span class="bi bi-search searchIcon"></span>
+
+                    <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
+                        name="searchText" aria-label="default input example">
+
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <th>PF Charges Name</th>
+                    <th>Frequency</th>
+                    <th>Percentage</th>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let pf of pfCharges">
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

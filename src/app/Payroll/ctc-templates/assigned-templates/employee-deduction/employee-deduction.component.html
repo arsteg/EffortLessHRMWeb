@@ -1,0 +1,14 @@
+<div class="tableContainer py-2">
+    <table>
+        <thead>
+            <th>Category</th>
+            <th>Value</th>
+        </thead>
+        <tbody>
+            <tr *ngFor="let ed of this.data.ctcTemplateEmployeeDeduction">
+                 <td>{{getEmpDeduction(ed)}}</td>
+                <td>As per Statutory Norms</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

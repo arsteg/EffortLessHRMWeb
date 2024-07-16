@@ -39,6 +39,13 @@ import { PtSlabComponent } from './settings/fixed-contribution/pt/pt-slab/pt-sla
 import { ConfigureStateComponent } from './settings/fixed-contribution/pt/eligible-states/configure-state/configure-state.component';
 import { UpdateStateComponent } from './settings/fixed-contribution/pt/eligible-states/configure-state/update-state/update-state.component';
 import { OverlayModule } from '@angular/cdk/overlay';
+import { UpdateCTCTemplateComponent } from './ctc-templates/update-ctctemplate/update-ctctemplate.component';
+import { AssignedTemplatesComponent } from './ctc-templates/assigned-templates/assigned-templates.component';
+import { EmployeeDeductionComponent } from './ctc-templates/assigned-templates/employee-deduction/employee-deduction.component';
+import { OtherBenefitComponent } from './ctc-templates/assigned-templates/other-benefit/other-benefit.component';
+import { AssignedFixedAllowanceComponent } from './ctc-templates/assigned-templates/fixed-allowance/fixed-allowance.component';
+import { AssignedFixedContributionComponent } from './ctc-templates/assigned-templates/fixed-contribution/fixed-contribution.component';
+import { AssignedFixedDeductionComponent } from './ctc-templates/assigned-templates/fixed-deduction/fixed-deduction.component';
 
 @NgModule({
   declarations: [
@@ -74,6 +81,13 @@ import { OverlayModule } from '@angular/cdk/overlay';
     DeductionComponent,
     ConfigureStateComponent,
     UpdateStateComponent,
+    UpdateCTCTemplateComponent,
+    AssignedTemplatesComponent,
+    EmployeeDeductionComponent,
+    OtherBenefitComponent,
+    AssignedFixedAllowanceComponent,
+    AssignedFixedContributionComponent,
+    AssignedFixedDeductionComponent
   ],
   imports: [
     CommonModule, 

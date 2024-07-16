@@ -1,0 +1,37 @@
+<div class="tableContainer">
+    <form [formGroup]="fixedDeductionForm">
+        <table>
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Criteria</th>
+                    <th>Value</th>
+                    <th>Minimum Amount</th>
+                </tr>
+            </thead>
+            <tbody formArrayName="fixedDeduction" *ngIf="this.data.ctcTemplateFixedDeduction.length && this.data.ctcTemplateFixedDeduction.length > 0">
+                <tr *ngFor="let allowance of allowances; let i = index" [formGroupName]="i" >
+                    <td>{{getAllowance(allowance.get('fixedDeduction').value)}}</td>
+                    <td>
+                        <select formControlName="criteria">
+                            <option value="Amount">Amount</option>
+                            <option value="Percentage">Percentage</option>
+                        </select>
+                    </td>
+                    <td>
+                        <ng-container [ngSwitch]="allowance?.get('criteria').value">
+                            <input *ngSwitchCase="'Amount'" type="number" formControlName="value" class="form-control"
+                                placeholder="Enter Amount">
+                            <input *ngSwitchCase="'Percentage'" type="number" formControlName="value"
+                                class="form-control" placeholder="Enter Percentage">
+                        </ng-container>
+                    </td>
+                    <td>
+                        <input type="number" formControlName="minimumAmount" class="form-control"
+                            placeholder="Blank for No Amount">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+</div>

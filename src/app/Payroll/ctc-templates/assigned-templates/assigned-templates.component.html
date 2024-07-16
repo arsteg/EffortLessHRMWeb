@@ -1,0 +1,42 @@
+<div class="d-flex justify-content-end mb-2"><button mat-raised-button class="addBtn" (click)="onSubmission()">Save</button></div>
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabFixedAllowance'}"
+            (click)="selectTab('tabFixedAllowance')" >Fixed Allowances</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabFixedDeduction'}"
+            (click)="selectTab('tabFixedDeduction')">
+            Fixed Deductions</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabEmployerContribution'}"
+            (click)="selectTab('tabEmployerContribution')">Employer Contribution</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabOtherBenefit'}"
+            (click)="selectTab('tabOtherBenefit')">Other Benefits</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabEmployeeDeduction'}"
+            (click)="selectTab('tabEmployeeDeduction')">Employee Deduction</a>
+    </li>
+</ul>
+
+<div class="tab-content pt-0">
+    <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabFixedAllowance'}" id="tabFixedAllowance">
+        <app-assigned-fixed-allowance [data]="data" (formDataChange)="onFixedAllowanceDataChange($event)" [selectedRecord]="selectedRecord" [isEdit]="isEdit"></app-assigned-fixed-allowance>
+    </div>
+    <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabFixedDeduction'}" id="tabFixedDeduction">
+        <app-assigned-fixed-deduction [data]="data"  (formDataChange)="onFixedDeductionDataChange($event)"></app-assigned-fixed-deduction>
+    </div>
+    <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabEmployerContribution'}" id="tabEmployerContribution">
+        <app-assigned-fixed-contribution [data]="data"></app-assigned-fixed-contribution>
+    </div>
+    <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabOtherBenefit'}" id="tabOtherBenefit">
+        <app-other-benefit [data]="data"></app-other-benefit>
+    </div>
+    <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabEmployeeDeduction'}" id="tabEmployeeDeduction">
+        <app-employee-deduction [data]="data"></app-employee-deduction>
+    </div>
+</div>
