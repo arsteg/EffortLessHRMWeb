@@ -1,0 +1,43 @@
+.mat-expansion-panel-header {
+    background: #fc880d !important;
+}
+
+.mat-expansion-panel-header-title {
+    color: white !important;
+}
+
+.mat-expansion-indicator::after {
+    color: white !important
+}
+
+.panelTable {
+    background: none;
+}
+
+.mat-expansion-panel-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+}
+
+.mat-expansion-panel-header .mat-expansion-indicator {
+    order: 1 !important;
+}
+
+.panelTable th,
+.contentTable td {
+    text-align: left;
+}
+
+.contentField {
+    padding-left: 110px;
+    width: 20%;
+}
+
+.contentField2 {
+    padding-left: 110px;
+}
+
+.panelHeading {
+    width: 60%;
+}

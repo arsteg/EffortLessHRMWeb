@@ -1,0 +1,212 @@
+<mat-accordion class="example-headers-align">
+  <mat-expansion-panel hideToggle>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Appointment Details
+      </mat-panel-title>
+      <mat-panel-description>
+        <mat-icon>account_circle</mat-icon>
+        &nbsp;{{selectedUser?.firstName | titlecase}}&nbsp;{{selectedUser?.lastName | titlecase}}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <form>
+      <div class="d-flex justify-content-end mb-2">
+        <button mat-raised-button class="addBtn">Save</button>
+      </div>
+      <div class="row">
+        <mat-form-field appearance="outline" class="col-md-6">
+          <mat-label>What is the Employee ID/Code</mat-label>
+          <input matInput>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="col-md-6">
+          <mat-label>How is the Employee Salary Paid?</mat-label>
+          <mat-select [disabled]="disableSelect.value">
+            <mat-option value="Bank Transfer">Bank Transfer</mat-option>
+            <mat-option value="Salary Accounts">Salary Accounts</mat-option>
+            <mat-option value="Digital Wallets">Digital Wallets</mat-option>
+            <mat-option value="Electronic Funds Transfer (EFT)">Electronic Funds Transfer (EFT)</mat-option>
+            <mat-option value="Checks">Checks</mat-option>
+            <mat-option value="Direct Deposit">Direct Deposit</mat-option>
+            <mat-option value="Cash">Cash</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="col-md-6">
+          <mat-label>What is the Employee's joining Date</mat-label>
+          <input matInput [matDatepicker]="joiningDatePicker" (focus)="joiningDatePicker.open()" readonly>
+          <mat-datepicker #joiningDatePicker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="col-md-6">
+          <mat-label>What is the Employee's confirmation Date</mat-label>
+          <input matInput [matDatepicker]="confirmationDatePicker" (focus)="confirmationDatePicker.open()" readonly>
+          <mat-datepicker #confirmationDatePicker></mat-datepicker>
+        </mat-form-field>
+      </div>
+    </form>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel hideToggle>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Job Information
+      </mat-panel-title>
+      <mat-panel-description>
+
+        <mat-icon>info</mat-icon>
+        &nbsp;{{selectedUser?.firstName | titlecase}}&nbsp;{{selectedUser?.lastName | titlecase}}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <form>
+
+      <div class="d-flex justify-content-end mb-2">
+        <button mat-raised-button class="addBtn">Save</button>
+      </div>
+      <div class="row">
+        <mat-form-field appearance="outline" class="col-md-6">
+          <mat-label>Effective From</mat-label>
+          <input matInput [matDatepicker]="joiningDatePicker2" (focus)="joiningDatePicker2.open()" readonly>
+          <mat-datepicker #joiningDatePicker2></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="col-md-6">
+          <mat-label>Location</mat-label>
+          <input matInput>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="col-md-6">
+          <mat-label>Designation</mat-label>
+          <mat-select [disabled]="disableSelect.value">
+            <mat-option value="Team Lead">Team Lead</mat-option>
+            <mat-option value="Project Manager">Project Manager</mat-option>
+            <mat-option value="HR">HR</mat-option>
+            <mat-option value="Junior Software Developer">Junior Software Developer</mat-option>
+            <mat-option value="Senior Software Developer">Senior Software Developer</mat-option>
+            <mat-option value="CEO">CEO</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="col-md-6">
+          <mat-label>Employment Type</mat-label>
+          <mat-select [disabled]="disableSelect.value">
+            <mat-option value="Team Lead">Team Lead</mat-option>
+            <mat-option value="Project Manager">Project Manager</mat-option>
+            <mat-option value="HR">HR</mat-option>
+            <mat-option value="Junior Software Developer">Junior Software Developer</mat-option>
+            <mat-option value="Senior Software Developer">Senior Software Developer</mat-option>
+            <mat-option value="CEO">CEO</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="col-md-6">
+          <mat-label>Reporting Supervisor</mat-label>
+          <mat-select [disabled]="disableSelect.value">
+            <mat-option value="Team Lead">Team Lead</mat-option>
+            <mat-option value="Project Manager">Project Manager</mat-option>
+            <mat-option value="HR">HR</mat-option>
+            <mat-option value="Junior Software Developer">Junior Software Developer</mat-option>
+            <mat-option value="Senior Software Developer">Senior Software Developer</mat-option>
+            <mat-option value="CEO">CEO</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="col-md-6">
+          <mat-label>Department</mat-label>
+          <mat-select [disabled]="disableSelect.value">
+            <mat-option value="Team Lead">Team Lead</mat-option>
+            <mat-option value="Project Manager">Project Manager</mat-option>
+            <mat-option value="HR">HR</mat-option>
+            <mat-option value="Junior Software Developer">Junior Software Developer</mat-option>
+            <mat-option value="Senior Software Developer">Senior Software Developer</mat-option>
+            <mat-option value="CEO">CEO</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="col-md-6">
+          <mat-label>Band</mat-label>
+          <mat-select [disabled]="disableSelect.value">
+            <mat-option value="Team Lead">Team Lead</mat-option>
+            <mat-option value="Project Manager">Project Manager</mat-option>
+            <mat-option value="HR">HR</mat-option>
+            <mat-option value="Junior Software Developer">Junior Software Developer</mat-option>
+            <mat-option value="Senior Software Developer">Senior Software Developer</mat-option>
+            <mat-option value="CEO">CEO</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="col-md-6">
+          <mat-label>Sub-Department</mat-label>
+          <mat-select [disabled]="disableSelect.value">
+            <mat-option value="Team Lead">Team Lead</mat-option>
+            <mat-option value="Project Manager">Project Manager</mat-option>
+            <mat-option value="HR">HR</mat-option>
+            <mat-option value="Junior Software Developer">Junior Software Developer</mat-option>
+            <mat-option value="Senior Software Developer">Senior Software Developer</mat-option>
+            <mat-option value="CEO">CEO</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="col-md-6">
+          <mat-label>Employment Status Effective From</mat-label>
+          <input matInput [matDatepicker]="joiningDatePicker3" (focus)="joiningDatePicker3.open()" readonly>
+          <mat-datepicker #joiningDatePicker3></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="col-md-6">
+          <mat-label>Employment Status</mat-label>
+          <mat-select [disabled]="disableSelect.value">
+            <mat-option value="Team Lead">Team Lead</mat-option>
+            <mat-option value="Project Manager">Project Manager</mat-option>
+            <mat-option value="HR">HR</mat-option>
+            <mat-option value="Junior Software Developer">Junior Software Developer</mat-option>
+            <mat-option value="Senior Software Developer">Senior Software Developer</mat-option>
+            <mat-option value="CEO">CEO</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="col-md-6">
+          <mat-label>Organization</mat-label>
+          <mat-select [disabled]="disableSelect.value">
+            <mat-option value="Team Lead">Team Lead</mat-option>
+            <mat-option value="Project Manager">Project Manager</mat-option>
+            <mat-option value="HR">HR</mat-option>
+            <mat-option value="Junior Software Developer">Junior Software Developer</mat-option>
+            <mat-option value="Senior Software Developer">Senior Software Developer</mat-option>
+            <mat-option value="CEO">CEO</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="col-md-6">
+          <mat-label>Zone</mat-label>
+          <mat-select [disabled]="disableSelect.value">
+            <mat-option value="Team Lead">Team Lead</mat-option>
+            <mat-option value="Project Manager">Project Manager</mat-option>
+            <mat-option value="HR">HR</mat-option>
+            <mat-option value="Junior Software Developer">Junior Software Developer</mat-option>
+            <mat-option value="Senior Software Developer">Senior Software Developer</mat-option>
+            <mat-option value="CEO">CEO</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="col-md-6">
+          <mat-label>Biometric Employee Code</mat-label>
+          <input matInput>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="col-md-6">
+          <mat-label>Previous Experience (Months)</mat-label>
+          <input matInput>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="col-md-6">
+          <mat-label>Notice Period</mat-label>
+          <input matInput>
+        </mat-form-field>
+      </div>
+    </form>
+
+  </mat-expansion-panel>
+</mat-accordion>

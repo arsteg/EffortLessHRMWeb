@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { SubordinateSelectionComponent } from "./subordinateSelection/subordinateSelection.component";
 import { CRUDComponent } from './crud/crud.component';
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { MatIconModule } from "@angular/material/icon";
 
 @NgModule({
     declarations:[SubordinateSelectionComponent, CRUDComponent],
@@ -26,7 +27,8 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
       MatRippleModule,
       NgxChartsModule,
       FormsModule,
-      BrowserAnimationsModule
+      BrowserAnimationsModule,
+      MatIconModule,
     ],
     schemas: [
       CUSTOM_ELEMENTS_SCHEMA,

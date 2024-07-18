@@ -1,0 +1,256 @@
+<div class="p-2">
+    <form>
+        <div class="d-flex">
+            <button mat-raised-button class="addBtn ms-auto">Save</button>
+        </div>
+        <div class="row">
+            <div class="form-group col-md-6 mb-2">
+                <label for="">Is this employee eligible for Provident Fund Deduction?</label>
+                <div class="d-flex">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-Yes" required
+                            [value]="true">
+                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-Yes">Yes</label>
+                    </div>
+                    <div class="form-check ms-3">
+                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-No" required
+                            [value]="false">
+                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-No">No</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group col-md-6 mb-2">
+                <label for="">Will this Employee's Provident Fund contribution be capped at the provident Fund Ceiling?
+                    (Rs
+                    15,000)</label>
+                <div class="d-flex">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-Yes" required
+                            [value]="true">
+                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-Yes">Yes</label>
+                    </div>
+                    <div class="form-check ms-3">
+                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-No" required
+                            [value]="false">
+                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-No">No</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group col-md-6 mb-2">
+                <label for="">Will this Employer's Provident Fund contribution be capped at the provident Fund Ceiling?
+                    (Rs
+                    15,000)</label>
+                <div class="d-flex">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-Yes" required
+                            [value]="true">
+                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-Yes">Yes</label>
+                    </div>
+                    <div class="form-check ms-3">
+                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-No" required
+                            [value]="false">
+                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-No">No</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group col-md-6 mb-2">
+                <label for="">What will the Employee's Provident Fund Joining Date?</label>
+                <input placeholder="YYYY-MM-DD" class="form-control" #datepickerYMD="bsDatepicker" bsDatepicker
+                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }">
+            </div>
+
+            <div class="form-group col-md-6 mb-2">
+                <label for="">What is the Employee's Provident Number?</label>
+                <input class="form-control" tyep="text" placeholder="Enter PF Number">
+            </div>
+
+            <div class="form-group col-md-6 mb-2">
+                <label for="">What is the Employee's UAN Number?</label>
+                <input class="form-control" tyep="text" placeholder="Enter UAN Number">
+            </div>
+
+            <div class="form-group col-md-6 mb-2">
+                <label for="">Would you like to set a fixed amount for your Provident Fund Wage?</label>
+                <input class="form-control" tyep="text" placeholder="Enter PF Wage">
+            </div>
+
+            <div class="form-group col-md-6 mb-2">
+                <label for="">What additional contribution % would this employee voluntarily contribute, above and
+                    beyond and mandate 12%?</label>
+                <input class="form-control" tyep="text" placeholder="Enter PF Wage">
+            </div>
+
+            <div class="form-group col-md-6 mb-2">
+                <label for="">Is found eligible, would this employee have ESIC deducted from his/her salary?</label>
+                <div class="d-flex">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-Yes" required
+                            [value]="true">
+                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-Yes">Yes</label>
+                    </div>
+                    <div class="form-check ms-3">
+                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-No" required
+                            [value]="false">
+                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-No">No</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group col-md-6 mb-2">
+                <label for="">What is the Employee's ESIC Number?</label>
+                <input class="form-control" tyep="text" placeholder="Enter ESIC Number">
+            </div>
+
+            <div class="form-group col-md-6 mb-2">
+                <label for="">Should Professional Tax be deducted from his employee's payslip (if applicable for his/her
+                    branch location)?</label>
+                <div class="d-flex">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-Yes" required
+                            [value]="true">
+                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-Yes">Yes</label>
+                    </div>
+                    <div class="form-check ms-3">
+                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-No" required
+                            [value]="false">
+                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-No">No</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group col-md-6 mb-2">
+                <label for="">Should LWF be deducted from his employee's payslip (if applicable for his/her branch
+                    location)?</label>
+                <div class="d-flex">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-Yes" required
+                            [value]="true">
+                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-Yes">Yes</label>
+                    </div>
+                    <div class="form-check ms-3">
+                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-No" required
+                            [value]="false">
+                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-No">No</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group col-md-6 mb-2">
+                <label for="">If applicable, Should Income Tax be deducted from the employee's salary?</label>
+                <div class="d-flex">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-Yes" required
+                            [value]="true">
+                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-Yes">Yes</label>
+                    </div>
+                    <div class="form-check ms-3">
+                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-No" required
+                            [value]="false">
+                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-No">No</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group col-md-6 mb-2">
+                <label for="">Is this employee eligible for Gratuity?</label>
+                <div class="d-flex">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-Yes" required
+                            [value]="true">
+                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-Yes">Yes</label>
+                    </div>
+                    <div class="form-check ms-3">
+                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-No" required
+                            [value]="false">
+                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-No">No</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group col-md-6 mb-2">
+                <label for="">Is this employee comes under Gratuity act?</label>
+                <div class="d-flex">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-Yes" required
+                            [value]="true">
+                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-Yes">Yes</label>
+                    </div>
+                    <div class="form-check ms-3">
+                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-No" required
+                            [value]="false">
+                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-No">No</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group col-md-6 mb-2">
+                <label for="">What is the Employee's tax Regime?</label>
+                <select name="" id="">
+                    <option value=""></option>
+                </select>
+            </div>
+
+            <div class="form-group col-md-6 mb-2">
+                <label for="">When was the tax Regime Updated?</label>
+                <input type="text" class="form-control">
+            </div>
+
+
+            <div class="form-group col-md-6 mb-2">
+                <label for="">Who updated the tax Regime?</label>
+                <input type="text" class="form-control">
+            </div>
+
+            <div class="form-group col-md-6 mb-2">
+                <label for="">Is the Round Off applicable for this employee?</label>
+                <div class="d-flex">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-Yes" required
+                            [value]="true">
+                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-Yes">Yes</label>
+                    </div>
+                    <div class="form-check ms-3">
+                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-No" required
+                            [value]="false">
+                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-No">No</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group col-md-6 mb-2">
+                <label for="">Is daily wage applicable for this employee?</label>
+                <div class="d-flex">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-Yes" required
+                            [value]="true">
+                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-Yes">Yes</label>
+                    </div>
+                    <div class="form-check ms-3">
+                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-No" required
+                            [value]="false">
+                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-No">No</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group col-md-6 mb-2">
+                <label for="">Is this employee eligible for Overtime?</label>
+                <div class="d-flex">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-Yes" required
+                            [value]="true">
+                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-Yes">Yes</label>
+                    </div>
+                    <div class="form-check ms-3">
+                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-No" required
+                            [value]="false">
+                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-No">No</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

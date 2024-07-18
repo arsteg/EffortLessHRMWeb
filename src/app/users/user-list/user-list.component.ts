@@ -30,7 +30,9 @@ export class UserListComponent implements OnInit {
   firstLetter: string;
   color: string;
   public sortOrder: string = '';
-
+  showEmployeeDetails = false;
+  selectedEmployee: any;
+  
   constructor(
     private UserService: UserService,
     private fb: FormBuilder,
@@ -151,5 +153,13 @@ export class UserListComponent implements OnInit {
   clearForm() {
     this.addForm.reset();
   }
+
+  toggleView() {
+    this.showEmployeeDetails = !this.showEmployeeDetails;
+  }
+  goBackToUserView() {
+    this.showEmployeeDetails = false;
+  }
+
 }
 

@@ -1,0 +1,465 @@
+<div class="p-2">
+    <form>
+        <div class="d-flex justify-content-between">
+            <button class="btn rounded-pill submenuTab active mb-2" (click)="backToSalaryDetails.emit()">
+                <i class="bi bi-arrow-left"></i> Salary Details</button>
+            <button class="addBtn mb-2 ms-auto" mat-raised-button>Save</button>
+        </div>
+        <div class="row">
+            <mat-form-field appearance="outline" class="col-md-6 my-2 border-bottom">
+                <mat-label>Select Payroll Effective Date</mat-label>
+                <input matInput [matDatepicker]="joiningDatePicker1" (focus)="joiningDatePicker1.open()" readonly>
+                <mat-datepicker #joiningDatePicker1></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="col-md-6 my-2 border-bottom">
+                <mat-label>Select Actual Effective Date</mat-label>
+                <input matInput [matDatepicker]="joiningDatePicker2" (focus)="joiningDatePicker2.open()" readonly>
+                <mat-datepicker #joiningDatePicker2></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="col-md-6 my-2 border-bottom">
+                <mat-label>For what frequency would you like to enter the CTC amount?</mat-label>
+                <mat-select [disabled]="disableSelect.value">
+                    <mat-option value="Monthly">Monthly</mat-option>
+                    <mat-option value="Quaterly">Quaterly</mat-option>
+                    <mat-option value="Half Yearly">Half Yearly</mat-option>
+                    <mat-option value="Yearly">Yearly</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="col-md-6 my-2 border-bottom">
+                <mat-label>Select CTC Template</mat-label>
+                <mat-select [disabled]="disableSelect.value">
+                    <!-- <mat-option value="Monthly">Monthly</mat-option>
+              <mat-option value="Quaterly">Quaterly</mat-option>
+              <mat-option value="Half Yearly">Half Yearly</mat-option>
+              <mat-option value="Yearly">Yearly</mat-option> -->
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="col-md-6 my-2 border-bottom">
+                <mat-label>How are you entering the amount?</mat-label>
+                <mat-select [disabled]="disableSelect.value">
+                    <!-- <mat-option value="Monthly">Monthly</mat-option>
+              <mat-option value="Quaterly">Quaterly</mat-option>
+              <mat-option value="Half Yearly">Half Yearly</mat-option>
+              <mat-option value="Yearly">Yearly</mat-option> -->
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="col-md-6 my-2 border-bottom">
+                <mat-label>Enter Monthly Gross Amount</mat-label>
+                <input matInput type="number">
+            </mat-form-field>
+
+            <mat-label>Is employer part Inclusive in salary structure</mat-label>
+            <mat-radio-group>
+                <mat-radio-button class="example-margin" value="after">Yes</mat-radio-button>
+                <mat-radio-button class="example-margin" value="before">No</mat-radio-button>
+            </mat-radio-group>
+        </div>
+
+
+        <mat-accordion class="example-headers-align">
+
+            <mat-expansion-panel>
+                <mat-expansion-panel-header class="header">
+                    <mat-panel-title>
+                        Tax and Statutory Settings
+                    </mat-panel-title>
+
+                </mat-expansion-panel-header>
+                <div class="row">
+                    <div class="col-md-6 my-2 border-bottom">
+                        <mat-label>Variable Allowance is a part of CTC</mat-label>
+                        <mat-radio-group>
+                            <mat-radio-button class="example-margin" value="after">Yes</mat-radio-button>
+                            <mat-radio-button class="example-margin" value="before">No</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+
+                    <div class="col-md-6 my-2 border-bottom">
+                        <mat-label>PF Deduction</mat-label>
+                        <mat-radio-group>
+                            <mat-radio-button class="example-margin" value="after">Yes</mat-radio-button>
+                            <mat-radio-button class="example-margin" value="before">No</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+
+                    <div class="col-md-6 my-2 border-bottom">
+                        <mat-label>Provident Pension Deduction</mat-label>
+                        <mat-radio-group>
+                            <mat-radio-button class="example-margin" value="after">Yes</mat-radio-button>
+                            <mat-radio-button class="example-margin" value="before">No</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+
+                    <div class="col-md-6 my-2 border-bottom">
+                        <mat-label>Employee's Provident Fund Contribution Capped at the PF Ceiling</mat-label>
+                        <mat-radio-group>
+                            <mat-radio-button class="example-margin" value="after">Yes</mat-radio-button>
+                            <mat-radio-button class="example-margin" value="before">No</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+
+                    <div class="col-md-6 my-2 border-bottom">
+                        <mat-label>Employer's Provident Fund Contribution Capped at the PF
+                            Ceiling</mat-label>
+                        <mat-radio-group>
+                            <mat-radio-button class="example-margin" value="after">Yes</mat-radio-button>
+                            <mat-radio-button class="example-margin" value="before">No</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+
+                    <mat-form-field appearance="outline" class="col-md-6 my-2 border-bottom">
+                        <mat-label>Would you like to set a fixed amount for your provident fund
+                            wage?</mat-label>
+                        <input type="number" matInput>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="col-md-6 my-2 border-bottom">
+                        <mat-label>PF Template</mat-label>
+                        <mat-select [disabled]="disableSelect.value">
+                            <mat-option value="Team Lead">Team Lead</mat-option>
+                            <mat-option value="Project Manager">Project Manager</mat-option>
+                            <mat-option value="HR">HR</mat-option>
+                            <mat-option value="Junior Software Developer">Junior Software Developer</mat-option>
+                            <mat-option value="Senior Software Developer">Senior Software Developer</mat-option>
+                            <mat-option value="CEO">CEO</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <div class="col-md-6 my-2 border-bottom">
+                        <mat-label>ESIC Deduction</mat-label>
+                        <mat-radio-group>
+                            <mat-radio-button class="example-margin" value="after">Yes</mat-radio-button>
+                            <mat-radio-button class="example-margin" value="before">No</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+
+                    <div class="col-md-6 my-2 border-bottom">
+                        <mat-label>PT Deduction</mat-label>
+                        <mat-radio-group>
+                            <mat-radio-button class="example-margin" value="after">Yes</mat-radio-button>
+                            <mat-radio-button class="example-margin" value="before">No</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+
+                    <div class="col-md-6 my-2 border-bottom">
+                        <mat-label>LWF Deduction</mat-label>
+                        <mat-radio-group>
+                            <mat-radio-button class="example-margin" value="after">Yes</mat-radio-button>
+                            <mat-radio-button class="example-margin" value="before">No</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+
+                    <div class="col-md-6 my-2 border-bottom">
+                        <mat-label>Gratuity Applicable</mat-label>
+                        <mat-radio-group>
+                            <mat-radio-button class="example-margin" value="after">Yes</mat-radio-button>
+                            <mat-radio-button class="example-margin" value="before">No</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+
+                    <mat-form-field appearance="outline" class="col-md-6 my-2 border-bottom">
+                        <mat-label>Gratuity Template</mat-label>
+                        <mat-select [disabled]="disableSelect.value">
+                            <mat-option value="Team Lead">Team Lead</mat-option>
+                            <mat-option value="Project Manager">Project Manager</mat-option>
+                            <mat-option value="HR">HR</mat-option>
+                            <mat-option value="Junior Software Developer">Junior Software Developer</mat-option>
+                            <mat-option value="Senior Software Developer">Senior Software Developer</mat-option>
+                            <mat-option value="CEO">CEO</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <div class="col-md-6 my-2 border-bottom">
+                        <mat-label>Income Tax Deduction</mat-label>
+                        <mat-radio-group>
+                            <mat-radio-button class="example-margin" value="after">Yes</mat-radio-button>
+                            <mat-radio-button class="example-margin" value="before">No</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+
+                    <div class="col-md-6 my-2 border-bottom">
+                        <mat-label>Is PF Charges Applicable</mat-label>
+                        <mat-radio-group>
+                            <mat-radio-button class="example-margin" value="after">Yes</mat-radio-button>
+                            <mat-radio-button class="example-margin" value="before">No</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+
+                    <div class="col-md-6 my-2 border-bottom">
+                        <mat-label>Is the Round Off Applicable for this Employee?</mat-label>
+                        <mat-radio-group>
+                            <mat-radio-button class="example-margin" value="after">Yes</mat-radio-button>
+                            <mat-radio-button class="example-margin" value="before">No</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                </div>
+            </mat-expansion-panel>
+            <table class="panelTable">
+                <th>CTC Components</th>
+                <th>Monthly</th>
+                <th>Yearly</th>
+            </table>
+            <mat-expansion-panel>
+
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <table class="panelTable">
+                            <thead>
+                                <tr>
+                                    <th class=" text-white panelHeading">Fixed Allowances</th>
+                                    <th class=" text-white"><i class="bi bi-currency-rupee"></i>0.00</th>
+                                    <th class=" text-white"><i class="bi bi-currency-rupee"></i>0.00</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <!-- based on ctc template selection -->
+                <table class="contentTable bg-white">
+                    <tbody>
+                    <tr>
+                        <td class="w-50">Enter the amount of Uniform Allowance</td>
+                        <td class="contentField">0.00</td>
+                        <td class="contentField2">0.00</td>
+                    </tr>
+                    <tr>
+                        <td>Enter the amount of Medical Allowance</td>
+                        <td class="contentField">0.00</td>
+                        <td class="contentField2">0.00</td>
+                    </tr>
+                    <tr>
+                        <td>Enter the amount of Special Allowance</td>
+                        <td class="contentField">0.00</td>
+                        <td class="contentField2">0.00</td>
+                    </tr>
+                </tbody>
+                </table>
+            </mat-expansion-panel>
+
+            <mat-expansion-panel>
+                <mat-expansion-panel-header class="header">
+                    <mat-panel-title>
+                        <table class="panelTable">
+                            <thead>
+                                <tr>
+                                    <th class=" text-white panelHeading">Other Benefit</th>
+                                    <th class=" text-white"><i class="bi bi-currency-rupee"></i>0.00</th>
+                                    <th class=" text-white"><i class="bi bi-currency-rupee"></i>0.00</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </mat-panel-title>
+
+                </mat-expansion-panel-header>
+                <table class="contentTable bg-white">
+                    <tbody>
+                    <tr>
+                        <td class="w-50">Enter the amount of Uniform Allowance</td>
+                        <td class="contentField">0.00</td>
+                        <td class="contentField2">0.00</td>
+                    </tr>
+                    <tr>
+                        <td>Enter the amount of Medical Allowance</td>
+                        <td class="contentField">0.00</td>
+                        <td class="contentField2">0.00</td>
+                    </tr>
+                    <tr>
+                        <td>Enter the amount of Special Allowance</td>
+                        <td class="contentField">0.00</td>
+                        <td class="contentField2">0.00</td>
+                    </tr>
+                </tbody>
+                </table>
+
+            </mat-expansion-panel>
+
+            <mat-expansion-panel>
+                <mat-expansion-panel-header class="header">
+                    <mat-panel-title>
+                        
+                        <table class="panelTable">
+                            <thead>
+                                <tr>
+                                    <th class=" text-white panelHeading">Total Employer Statutory Contributions</th>
+                                    <th class=" text-white"><i class="bi bi-currency-rupee"></i>0.00</th>
+                                    <th class=" text-white"><i class="bi bi-currency-rupee"></i>0.00</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <table class="contentTable bg-white">
+                    <tbody>
+                    <tr>
+                        <td class="w-50">Enter the amount of Uniform Allowance</td>
+                        <td class="contentField">0.00</td>
+                        <td class="contentField2">0.00</td>
+                    </tr>
+                    <tr>
+                        <td>Enter the amount of Medical Allowance</td>
+                        <td class="contentField">0.00</td>
+                        <td class="contentField2">0.00</td>
+                    </tr>
+                    <tr>
+                        <td>Enter the amount of Special Allowance</td>
+                        <td class="contentField">0.00</td>
+                        <td class="contentField2">0.00</td>
+                    </tr>
+                </tbody>
+                </table>
+            </mat-expansion-panel>
+
+            <mat-expansion-panel>
+                <mat-expansion-panel-header class="header">
+                    <mat-panel-title>
+                        
+                        <table class="panelTable">
+                            <thead>
+                                <tr>
+                                    <th class=" text-white panelHeading">Fixed Deductions</th>
+                                    <th class=" text-white"><i class="bi bi-currency-rupee"></i>0.00</th>
+                                    <th class=" text-white"><i class="bi bi-currency-rupee"></i>0.00</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </mat-panel-title>
+
+                </mat-expansion-panel-header>
+
+                <table class="contentTable bg-white">
+                    <tbody>
+                    <tr>
+                        <td class="w-50">Enter the amount of Uniform Allowance</td>
+                        <td class="contentField">0.00</td>
+                        <td class="contentField2">0.00</td>
+                    </tr>
+                    <tr>
+                        <td>Enter the amount of Medical Allowance</td>
+                        <td class="contentField">0.00</td>
+                        <td class="contentField2">0.00</td>
+                    </tr>
+                    <tr>
+                        <td>Enter the amount of Special Allowance</td>
+                        <td class="contentField">0.00</td>
+                        <td class="contentField2">0.00</td>
+                    </tr>
+                </tbody>
+                </table>
+
+            </mat-expansion-panel>
+
+            <mat-expansion-panel>
+                <mat-expansion-panel-header class="header">
+                    <mat-panel-title>
+                        
+                        <table class="panelTable">
+                            <thead>
+                                <tr>
+                                    <th class=" text-white panelHeading">Variable Allowances</th>
+                                    <th class=" text-white"><i class="bi bi-currency-rupee"></i>0.00</th>
+                                    <th class=" text-white"><i class="bi bi-currency-rupee"></i>0.00</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <button class="btn submenuTab active rounded-pill my-2">Add</button>
+                <div class="d-flex justify-content-between">
+                    <select id="" class="w-50"><option value="">Variable Allowances</option></select>
+                    <input type="number" placeholder="Enter the amount">
+                    <button><i class="bi bi-trash"></i></button>
+                </div>
+            </mat-expansion-panel>
+
+            <mat-expansion-panel>
+                <mat-expansion-panel-header class="header">
+                    <mat-panel-title>
+                        <table class="panelTable">
+                            <thead>
+                                <tr>
+                                    <th class=" text-white panelHeading">Variable Deductions</th>
+                                    <th class=" text-white"><i class="bi bi-currency-rupee"></i>0.00</th>
+                                    <th class=" text-white"><i class="bi bi-currency-rupee"></i>0.00</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <button class="btn submenuTab active rounded-pill my-2">Add</button>
+                <div class="d-flex justify-content-between">
+                    <select id="" class="w-50"><option value="">Variable Deduction</option></select>
+                    <input type="number" placeholder="Enter the amount">
+                    <button><i class="bi bi-trash"></i></button>
+                </div>
+            </mat-expansion-panel>
+
+            <mat-expansion-panel>
+                <mat-expansion-panel-header class="header">
+                    <mat-panel-title>
+                        <table class="panelTable">
+                            <thead>
+                                <tr>
+                                    <th class=" text-white panelHeading">PF Charges</th>
+                                    <th class=" text-white"><i class="bi bi-currency-rupee"></i>0.00</th>
+                                    <th class=" text-white"><i class="bi bi-currency-rupee"></i>0.00</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <table class="contentTable bg-white">
+                    <tbody>
+                    <tr>
+                        <td class="w-50">Enter the amount of Uniform Allowance</td>
+                        <td class="contentField">0.00</td>
+                        <td class="contentField2">0.00</td>
+                    </tr>
+                    <tr>
+                        <td>Enter the amount of Medical Allowance</td>
+                        <td class="contentField">0.00</td>
+                        <td class="contentField2">0.00</td>
+                    </tr>
+                    <tr>
+                        <td>Enter the amount of Special Allowance</td>
+                        <td class="contentField">0.00</td>
+                        <td class="contentField2">0.00</td>
+                    </tr>
+                </tbody>
+                </table>
+            </mat-expansion-panel>
+
+
+            <mat-expansion-panel>
+                <mat-expansion-panel-header class="header">
+                    <mat-panel-title>
+                        <table class="panelTable">
+                            <th>Consolidated Output</th>
+                            <th>Monthly</th>
+                            <th>Yearly</th>
+                        </table>
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <table class="contentTable bg-white">
+                    <tbody>
+                    <tr>
+                        <td class="w-50">Total CTC (Excluding Variable & Other Benefits)</td>
+                        <td class="contentField">0.00</td>
+                        <td class="contentField2">0.00</td>
+                    </tr>
+                    <tr>
+                        <td>Total CTC (Including Variable)</td>
+                        <td class="contentField">0.00</td>
+                        <td class="contentField2">0.00</td>
+                    </tr>
+                </tbody>
+                </table>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </form>
+</div>

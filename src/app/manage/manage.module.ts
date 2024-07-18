@@ -14,20 +14,41 @@ import { RequestManualTimeComponent } from '../manualTime/request-manual-time/re
 import { TeammembersComponent } from './teammembers/teammembers.component';
 import { EmailTemplateComponent } from '../email-template/email-template.component';
 import { taskModule } from '../tasks/task.Module';
-
+import { EmployeeSettingsComponent } from '../users/employee-settings/employee-settings.component';
+import { EmploymentDetailsComponent } from '../users/employee-settings/employment-details/employment-details.component';
+import { SalaryDetailsComponent } from '../users/employee-settings/salary-details/salary-details.component';
+import { StatutoryDetailsComponent } from '../users/employee-settings/statutory-details/statutory-details.component';
+import { UserLoansAdvancesComponent } from '../users/employee-settings/loans-advances/loans-advances.component';
+import { TaxComponent } from '../users/employee-settings/tax/tax.component';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { ViewSalaryDetailsComponent } from '../users/employee-settings/salary-details/view-salary-details/view-salary-details.component';
+import { AddSalaryDetailsComponent } from '../users/employee-settings/salary-details/add-salary-details/add-salary-details.component';
 
 @NgModule({
   declarations: [
     ManageComponent, UserListComponent, ProjectListComponent, RequestManualTimeComponent,
-    TeammembersComponent, EmailTemplateComponent
+    TeammembersComponent, EmailTemplateComponent, EmployeeSettingsComponent, EmploymentDetailsComponent,
+    SalaryDetailsComponent,
+    StatutoryDetailsComponent,
+    UserLoansAdvancesComponent,
+    ViewSalaryDetailsComponent,
+    TaxComponent, 
+    AddSalaryDetailsComponent
+
   ],
   imports: [
     CommonModule,
     MatRadioModule,
-    MatCheckboxModule, CommonComponentsModule, SharedModule, taskModule, CommonComponentsModule
+    MatCheckboxModule, CommonComponentsModule, SharedModule, taskModule, CommonComponentsModule, MatExpansionModule
   ],
-  exports: [UserListComponent, ProjectListComponent,  RequestManualTimeComponent,
-    TeammembersComponent, EmailTemplateComponent],
+  exports: [UserListComponent, ProjectListComponent, RequestManualTimeComponent,
+    TeammembersComponent, EmailTemplateComponent, EmployeeSettingsComponent, EmploymentDetailsComponent,
+    SalaryDetailsComponent,
+    StatutoryDetailsComponent,
+    UserLoansAdvancesComponent,
+    ViewSalaryDetailsComponent,
+    AddSalaryDetailsComponent,
+    TaxComponent,],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,
     NO_ERRORS_SCHEMA

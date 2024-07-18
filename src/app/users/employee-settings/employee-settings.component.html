@@ -1,0 +1,59 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="d-flex">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabEmploymentDetails'}"
+                        (click)="selectTab('tabEmploymentDetails')">Employment Details</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabSalaryDetails'}"
+                        (click)="selectTab('tabSalaryDetails')">Salary Details</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabStatutoryDetails'}"
+                        (click)="selectTab('tabStatutoryDetails')">Statutory Details</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabLoansAdvances'}"
+                        (click)="selectTab('tabLoansAdvances')">Loans/Advances</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabTax'}"
+                        (click)="selectTab('tabTax')">Tax</a>
+                </li>
+            </ul>
+            <button mat-raised-button class="ms-auto" (click)="backToUserView.emit()">Back</button>
+        </div>
+        <div class="tab-content pt-0">
+
+            <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabEmploymentDetails'}"
+                id="tabEmploymentDetails">
+                <div class="mt-2 bg-white tableContainer">
+                    <app-employment-details [selectedUser]=selectedUser></app-employment-details>
+                </div>
+            </div>
+
+            <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabSalaryDetails'}" id="tabSalaryDetails">
+                <div class="mt-2 bg-white tableContainer">
+                    <app-salary-details></app-salary-details>
+                </div>
+            </div>
+            <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabStatutoryDetails'}" id="tabStatutoryDetails">
+                <div class="mt-2 bg-white tableContainer">
+                    <app-statutory-details></app-statutory-details>
+                </div>
+            </div>
+            <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabLoansAdvances'}" id="tabLoansAdvances">
+                <div class="mt-2 bg-white tableContainer">
+                    <app-loans-advances></app-loans-advances>
+                </div>
+            </div>
+            <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabTax'}" id="tabTax">
+                <div class="mt-2 bg-white tableContainer">
+                    <app-tax></app-tax>
+                </div>
+            </div>
+
+        </div>
+    </div>

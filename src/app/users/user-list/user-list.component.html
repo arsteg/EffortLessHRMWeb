@@ -1,4 +1,4 @@
-<div class="main-content">
+<div class="main-content" *ngIf="!showEmployeeDetails">
     <div class="container-fluid">
 
         <div class="container-fluid py-2 px-0 bg-white tableContainer">
@@ -68,6 +68,7 @@
                         <td><span class="badge rounded-pill table-button  bg-success text-light px-4 py-2"
                                 *ngIf="data.status=='Active'">{{data.status}}</span></td>
                         <td>
+                            <button (click)=" selectedEmployee = data; toggleView();">Details</button>
                             <button class="actions" mat-mini-fab title="Update User" data-bs-toggle="modal"
                                 data-bs-target="#updateModal" (click)="selectedUser=data"
                                 aria-label="Example icon button with a menu icon">
@@ -90,7 +91,7 @@
 
     </div>
 </div>
-
+<app-employee-settings *ngIf="showEmployeeDetails" [selectedUser]="selectedEmployee" (backToUserView)="goBackToUserView()"></app-employee-settings>
 <!-- Add -->
 <div class="modal" id="addModal">
     <div class="modal-dialog modal-dialog-centered">
