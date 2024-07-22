@@ -24,6 +24,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { ViewSalaryDetailsComponent } from '../users/employee-settings/salary-details/view-salary-details/view-salary-details.component';
 import { AddSalaryDetailsComponent } from '../users/employee-settings/salary-details/add-salary-details/add-salary-details.component';
 import { ViewLoansAdvancesComponent } from '../users/employee-settings/loans-advances/view-loans-advances/view-loans-advances.component';
+import {  NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { ViewLoansAdvancesComponent } from '../users/employee-settings/loans-adv
   imports: [
     CommonModule,
     MatRadioModule,
-    MatCheckboxModule, CommonComponentsModule, SharedModule, taskModule, CommonComponentsModule, MatExpansionModule
+    MatCheckboxModule, CommonComponentsModule, SharedModule, taskModule, CommonComponentsModule, MatExpansionModule,
+    NgbModule
   ],
   exports: [UserListComponent, ProjectListComponent, RequestManualTimeComponent,
     TeammembersComponent, EmailTemplateComponent, EmployeeSettingsComponent, EmploymentDetailsComponent,
