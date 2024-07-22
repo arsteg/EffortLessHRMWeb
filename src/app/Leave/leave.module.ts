@@ -48,6 +48,8 @@ import { ViewShortLeaveComponent } from './short-leave/view-short-leave/view-sho
 import { SupervisorsComponent } from './general-information/supervisors/supervisors.component';
 import { HolidaysComponent } from './general-information/holidays/holidays.component';
 import { GeneralComponent } from './general-information/general/general.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 @NgModule({
   declarations: [LeaveApplicationComponent,
     LeaveSettingComponent,
@@ -101,12 +103,13 @@ import { GeneralComponent } from './general-information/general/general.componen
     MatRippleModule,
     NgxChartsModule,
     FormsModule,
-    CommonComponentsModule  ],
-  
+    CommonComponentsModule,
+    NgbModule],
+
   exports: [LeaveApplicationComponent,
     LeaveSettingComponent,
     LeaveAssignmentComponent,
     LeaveCategoryComponent],
-    schemas: [NO_ERRORS_SCHEMA]
+  schemas: [NO_ERRORS_SCHEMA]
 })
 export class LeaveModule { }
