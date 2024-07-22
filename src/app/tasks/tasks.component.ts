@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnInit, Output, HostListener } from '@angular/core';
 import { Task, TaskAttachment, TaskBoard, attachments, taskAttachments } from './task';
 import { TasksService } from '../_services/tasks.service';
-import { Validators, FormGroup, FormBuilder } from '@angular/forms';
+import { Validators, FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { response } from '../models/response';
 import { ToastrService } from 'ngx-toastr';
 import { project } from '../Project/model/project';
@@ -96,6 +96,12 @@ export class TasksComponent implements OnInit {
   selectedPriority: any;
   selectedStatus: string = '';
   storedFilters: any;
+
+  status = new FormControl([]);
+
+  toppingList: string[] = ['ToDo', 'In-Progress', 'Done', 'Close'];
+
+
   constructor(
     private tasksService: TasksService,
     private fb: FormBuilder,
@@ -147,6 +153,7 @@ export class TasksComponent implements OnInit {
       estimate: [0],
       timeTaken: [0],
     });
+    this.status = new FormControl(this.statusList.filter(item => item.isChecked).map(item => item.name));
 
   }
   ngOnInit(): void {
@@ -199,7 +206,20 @@ export class TasksComponent implements OnInit {
     this.route.queryParamMap.subscribe((params: ParamMap) => {
       this.isListView = params.get('view') === 'list';
     });
+    this.status.valueChanges.subscribe(value => {
+      this.statusList.forEach(item => {
+        item.isChecked = value.includes(item.name);
+      });
+    });
+  }
+  onStatusChange(statusItem: any): void {
+    const currentStatusValues = this.status.value || [];
 
+    if (statusItem.isChecked) {
+      this.status.setValue([...currentStatusValues, statusItem.name]);
+    } else {
+      this.status.setValue(currentStatusValues.filter(value => value !== statusItem.name));
+    }
   }
   getCurrentUsersTasks() {
     if (this.currentProfile.id) {
@@ -547,6 +567,7 @@ export class TasksComponent implements OnInit {
       }
     });
   }
+
   clearForm() {
     this.addForm.reset();
     if (this.view == 'admin') {
@@ -586,7 +607,6 @@ export class TasksComponent implements OnInit {
     }
   }
 
-
   deleteTask() {
     if (!this.selectedTask.project) {
       this.toast.error('Task Cannot be Deleted: Please update Project', 'Error!');
@@ -604,13 +624,9 @@ export class TasksComponent implements OnInit {
       });
   }
 
-
   selectTask(selectedTask) {
     this.selectedTask = selectedTask
   }
-
-
-
 
   onProjectSelectionChange() {
     if(this.projectId){

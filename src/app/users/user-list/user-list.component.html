@@ -68,13 +68,13 @@
                         <td><span class="badge rounded-pill table-button  bg-success text-light px-4 py-2"
                                 *ngIf="data.status=='Active'">{{data.status}}</span></td>
                         <td>
-                            <button (click)=" selectedEmployee = data; toggleView();">Details</button>
-                            <button class="actions" mat-mini-fab title="Update User" data-bs-toggle="modal"
+                            <button  class="actions" mat-mini-fab  (click)=" selectedEmployee = data; toggleView();"><i class="bi bi-gear"></i></button>
+                            <button class="actions mx-2" mat-mini-fab title="Update User" data-bs-toggle="modal"
                                 data-bs-target="#updateModal" (click)="selectedUser=data"
                                 aria-label="Example icon button with a menu icon">
                                 <i class="bi bi-pencil-fill"></i>
                             </button>
-                            <button class="actions ms-2" title="Delete User" mat-mini-fab data-bs-toggle="modal"
+                            <button class="actions" title="Delete User" mat-mini-fab data-bs-toggle="modal"
                                 data-bs-target="#deleteModal" (click)="selectedUser = data"
                                 aria-label="Example icon button with a menu icon">
                                 <i class="bi bi-trash"></i>
@@ -86,9 +86,7 @@
             </table>
             <pagination-controls (pageChange)="p = $event"
                 class="pagination d-flex justify-content-end"></pagination-controls>
-
         </div>
-
     </div>
 </div>
 <app-employee-settings *ngIf="showEmployeeDetails" [selectedUser]="selectedEmployee" (backToUserView)="goBackToUserView()"></app-employee-settings>

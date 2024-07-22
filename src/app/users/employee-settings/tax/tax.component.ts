@@ -6,5 +6,5 @@ import { Component } from '@angular/core';
   styleUrl: './tax.component.css'
 })
 export class TaxComponent {
-
+  searchText: string = '';
 }

@@ -15,10 +15,14 @@ import { EditTaskComponent } from "./edit-task/edit-task.component";
 import { SubtaskComponent } from "./subtask/subtask.component";
 import { QuillModule } from "ngx-quill";
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 @NgModule({
     declarations:[TasksComponent,TagComponent,TaskCommentComponent,TaskCommentListComponent, ConfirmationDialogComponent, EditTaskComponent, SubtaskComponent],
     exports:[TasksComponent,TagComponent,TaskCommentComponent,TaskCommentListComponent, SubtaskComponent ],
-    imports:[SharedModule,ReactiveFormsModule, RouterModule, TooltipModule, MatDialogModule, MatButtonModule, CommonModule, QuillModule.forRoot(),MatSnackBarModule],
+    imports:[SharedModule,ReactiveFormsModule, RouterModule, TooltipModule, MatDialogModule, MatButtonModule, 
+      CommonModule, QuillModule.forRoot(),MatSnackBarModule,
+      NgbModule, BsDropdownModule],
     schemas: [
       CUSTOM_ELEMENTS_SCHEMA,
       NO_ERRORS_SCHEMA

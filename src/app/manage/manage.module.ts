@@ -23,6 +23,7 @@ import { TaxComponent } from '../users/employee-settings/tax/tax.component';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { ViewSalaryDetailsComponent } from '../users/employee-settings/salary-details/view-salary-details/view-salary-details.component';
 import { AddSalaryDetailsComponent } from '../users/employee-settings/salary-details/add-salary-details/add-salary-details.component';
+import { ViewLoansAdvancesComponent } from '../users/employee-settings/loans-advances/view-loans-advances/view-loans-advances.component';
 
 @NgModule({
   declarations: [
@@ -33,8 +34,8 @@ import { AddSalaryDetailsComponent } from '../users/employee-settings/salary-det
     UserLoansAdvancesComponent,
     ViewSalaryDetailsComponent,
     TaxComponent, 
-    AddSalaryDetailsComponent
-
+    AddSalaryDetailsComponent,
+    ViewLoansAdvancesComponent
   ],
   imports: [
     CommonModule,
@@ -48,7 +49,8 @@ import { AddSalaryDetailsComponent } from '../users/employee-settings/salary-det
     UserLoansAdvancesComponent,
     ViewSalaryDetailsComponent,
     AddSalaryDetailsComponent,
-    TaxComponent,],
+    ViewLoansAdvancesComponent,
+    TaxComponent, ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,
     NO_ERRORS_SCHEMA
