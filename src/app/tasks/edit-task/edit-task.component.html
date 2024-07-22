@@ -91,110 +91,86 @@
                                 <div class="sub-header mt-3 py-3 px-3 align-self-center w-100 rounded">
                                     <div class="d-flex  align-items-center">
 
-                                        <div class="dropdown">
-                                            <button class="btn dropdown-toggle status" type="button"
-                                                id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true"
-                                                aria-expanded="false" [ngClass]="{
-                                                    'bg-warning text-white!important': (selectedStatus || tasks?.data?.task?.status) === 'In Progress',
-                                                    'bg-success text-white!important': (selectedStatus || tasks?.data?.task?.status) === 'Done',
-                                                    'bg-danger text-white!important': (selectedStatus || tasks?.data?.task?.status) === 'ToDo',
-                                                    'bg-secondary text-white!important': (selectedStatus || tasks?.data?.task?.status) === 'Closed'                                                    
-                                                }">
+                                        <div ngbDropdown class="d-inline-block">
+                                            <button class="btn dropdown-toggle status" id="dropdownMenuButton"
+                                                ngbDropdownToggle [ngClass]="{
+                                                'bg-warning text-white': (selectedStatus || tasks?.data?.task?.status) === 'In Progress',
+                                                'bg-success text-white': (selectedStatus || tasks?.data?.task?.status) === 'Done',
+                                                'bg-danger text-white': (selectedStatus || tasks?.data?.task?.status) === 'ToDo',
+                                                'bg-secondary text-white': (selectedStatus || tasks?.data?.task?.status) === 'Closed'
+                                            }">
                                                 <i class="fa fa-tasks"></i>
                                                 {{ selectedStatus || currentTaskProject?.status }}
                                             </button>
-                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                <button *ngFor="let s of statusList" type="button" tabindex="0"
-                                                    role="menuitem" class="dropdown-item"
-                                                    (click)="updateTaskStatus(task,s.name)">
+                                            <div ngbDropdownMenu aria-labelledby="dropdownMenuButton">
+                                                <button ngbDropdownItem *ngFor="let s of statusList"
+                                                    (click)="updateTaskStatus(task, s.name)">
                                                     <span class="d-flex align-items-center">
-                                                        <span>{{s?.name}}</span>
+                                                        <span>{{ s?.name }}</span>
                                                     </span>
                                                 </button>
-                                                <button type="button" tabindex="0" role="menuitem" class="dropdown-item"
-                                                    (click)="updateTaskStatus(task,'')">
+                                                <button ngbDropdownItem (click)="updateTaskStatus(task, '')">
                                                     <span class="d-flex align-items-center"><span>Remove
                                                             Status</span></span>
                                                 </button>
                                             </div>
                                         </div>
 
-
-                                        <div class="dropdown">
-                                            <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton"
-                                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <div ngbDropdown class="d-inline-block">
+                                            <button class="btn dropdown-toggle" id="dropdownMenuButton2"
+                                                ngbDropdownToggle>
                                                 <img class="align-self-center"
                                                     [src]="selectedPriority ? selectedPriority.url : getTaskPriorityUrl(currentTaskProject?.priority)"
                                                     [title]="tasks?.priority" height="24" width="24">
                                             </button>
-                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                <button *ngFor="let priority of priorityList" type="button" tabindex="0"
-                                                    role="menuitem" class="dropdown-item"
-                                                    (click)="updateTaskPriority(task,priority.name)">
+                                            <div ngbDropdownMenu aria-labelledby="dropdownMenuButton2">
+                                                <button ngbDropdownItem *ngFor="let priority of priorityList"
+                                                    (click)="updateTaskPriority(task, priority.name)">
                                                     <span class="d-flex align-items-center">
                                                         <img [src]="priority?.url" class="me-3" height="18" width="18">
-                                                        <span>{{priority?.name}}</span>
+                                                        <span>{{ priority?.name }}</span>
                                                     </span>
                                                 </button>
-                                                <button type="button" tabindex="0" role="menuitem" class="dropdown-item"
-                                                    (click)="updateTaskPriority(task,'')">
+                                                <button ngbDropdownItem (click)="updateTaskPriority(task, '')">
                                                     <span class="d-flex align-items-center"><span>Remove
                                                             Priority</span></span>
                                                 </button>
                                             </div>
                                         </div>
 
-                                        <!-- Example single danger button -->
-                                         
-                                        <div class="dropdown">
-                                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                              Dropdown button
-                                            </button>
-                                            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton1">
-                                              <li><a class="dropdown-item active" href="#">Action</a></li>
-                                              <li><a class="dropdown-item" href="#">Another action</a></li>
-                                              <li><a class="dropdown-item" href="#">Something else here</a></li>
-                                              <li><hr class="dropdown-divider"></li>
-                                              <li><a class="dropdown-item" href="#">Separated link</a></li>
-                                            </ul>
-                                          </div>
-                                        <!-- ------------------ -->
-
-                                        <div class="me-2 mt-2">
+                                        <!-- -------------------- -->
+                                        <div ngbDropdown class="d-inline-block">
                                             <ng-container *ngIf="assignee && assignee.length === 0;">
-                                                <div>
-                                                    <span type="button"
-                                                        class="btn btn-sm rounded-pill btn-primary px-2 dropdown-toggle dropdown-toggle-no-caret"
-                                                        data-bs-toggle="dropdown" aria-expanded="false">Assignee <i
-                                                            class="bi bi-chevron-down"></i></span>
-                                                    <ul class="dropdown-menu" style="width: 225px; transform: translate3d(-29px, 40px, 0px) !important; height: 200px;
-     overflow-y: scroll;">
-                                                        <li *ngFor="let assignee of projectUser" class="border-left "
-                                                            [value]="assignee?.user?.id">
-                                                            <p *ngIf="assignee.user != null" class="ps-4 py-2 mb-1"
-                                                                style="font-size: 13px;"
-                                                                (click)="addUserToTask(tasks?.data?.task?.id, assignee.user.id)">
-                                                                <span class="letter p-1 rounded text-light"
-                                                                    style="font-size: 12px;"
-                                                                    [tooltip]="(assignee?.user?.firstName | titlecase) + ' ' + (assignee?.user?.lastName | titlecase)"
-                                                                    [style.background-color]="commonService.getRandomColor(assignee?.user?.firstName?.charAt(0) | uppercase)">
-                                                                    {{ assignee?.user?.firstName?.charAt(0) | uppercase
-                                                                    }}
-                                                                    {{ assignee?.user?.lastName?.charAt(0) | uppercase
-                                                                    }}
-                                                                </span> &nbsp;{{assignee?.user?.firstName | titlecase}}
-                                                                {{assignee?.user?.lastName | titlecase}}
-                                                            </p>
-                                                        </li>
-                                                    </ul>
+                                                <button type="button" class="btn btn-outline-primary"
+                                                    id="dropdownBasic1" ngbDropdownToggle>
+                                                    Toggle dropdown
+                                                </button>
+                                                <span type="button"
+                                                    class="btn btn-sm rounded-pill btn-primary px-2 dropdown-toggle dropdown-toggle-no-caret"
+                                                    ngbDropdownToggle>Assignee <i class="bi bi-chevron-down"></i></span>
+                                                <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+                                                    <button ngbDropdownItem *ngFor="let assignee of projectUser"
+                                                        [value]="assignee?.user?.id">
+                                                        <p *ngIf="assignee.user != null" class="ps-4 py-2 mb-1"
+                                                            style="font-size: 13px;"
+                                                            (click)="addUserToTask(tasks?.data?.task?.id, assignee.user.id)">
+                                                            <span class="letter p-1 rounded text-light"
+                                                                style="font-size: 12px;"
+                                                                [tooltip]="(assignee?.user?.firstName | titlecase) + ' ' + (assignee?.user?.lastName | titlecase)"
+                                                                [style.background-color]="commonService.getRandomColor(assignee?.user?.firstName?.charAt(0) | uppercase)">
+                                                                {{ assignee?.user?.firstName?.charAt(0) | uppercase }}
+                                                                {{ assignee?.user?.lastName?.charAt(0) | uppercase }}
+                                                            </span>
+                                                            &nbsp;{{ assignee?.user?.firstName | titlecase }}
+                                                            {{ assignee?.user?.lastName | titlecase }}
+                                                        </p>
+                                                    </button>
                                                 </div>
-
                                             </ng-container>
 
                                             <div class="user-container btn-group align-items-center"
-                                                *ngFor="let user of assignee;">
-
-                                                <span class="letters  p-1 rounded text-light"
+                                                *ngFor="let user of assignee;" id="dropdownBasic2" ngbDropdown>
+                                                <span class="letters p-1 rounded text-light"
                                                     [tooltip]="(user?.user?.firstName | titlecase) + ' ' + (user?.user?.lastName | titlecase)"
                                                     [style.background-color]="commonService.getRandomColor(user?.user?.firstName?.charAt(0) | uppercase)">
                                                     {{ user?.user?.firstName?.charAt(0) | uppercase }}&nbsp;{{
@@ -203,51 +179,39 @@
 
                                                 <button type="button"
                                                     class="btn dropdown-toggle dropdown-toggle-no-caret"
-                                                    data-bs-toggle="dropdown" aria-expanded="false">
-
-                                                    <span class="text-muted">
-                                                        {{ user?.user?.firstName }} {{ user?.user?.lastName
-                                                        }}
-                                                    </span>
+                                                    ngbDropdownToggle>
+                                                    <span class="text-muted">{{ user?.user?.firstName }} {{
+                                                        user?.user?.lastName }}</span>
                                                 </button>
 
-
-                                                <ul class="dropdown-menu" style="width: 225px; transform: translate3d(-29px, 40px, 0px) !important; max-height: 200px;
-                                                overflow-y: scroll;">
-                                                    <li class="border-left py-1"
+                                                <div ngbDropdownMenu aria-labelledby="dropdownBasic2">
+                                                    <button ngbDropdownItem (click)="removeAssignee()"
                                                         *ngIf="assignee.length === 1 && assignee[0]?.id">
-                                                        <span (click)="removeAssignee()" class="ps-2 py-2 mb-1"
-                                                            style="font-size: 13px;"><i
-                                                                class="bi bi-person-circle me-3 text-secondary"
+                                                        <span class="ps-2 py-2 mb-1" style="font-size: 13px;">
+                                                            <i class="bi bi-person-circle me-3 text-secondary"
                                                                 style="font-size: 20px"></i>
-                                                            Unassigned</span>
-                                                    </li>
-                                                    <li *ngFor="let assignee of projectUser" class="border-left "
+                                                            Unassigned
+                                                        </span>
+                                                    </button>
+                                                    <button ngbDropdownItem *ngFor="let assignee of projectUser"
                                                         [value]="assignee?.user?.id">
                                                         <p *ngIf="assignee.user != null" class="ps-2 py-2 mb-1"
                                                             style="font-size: 13px;"
                                                             (click)="addUserToTask(tasks?.data?.task?.id, assignee.user.id)">
-
                                                             <span class="letters p-1 rounded text-light"
                                                                 style="font-size: 12px;"
                                                                 [tooltip]="(assignee?.user?.firstName | titlecase) + ' ' + (assignee?.user?.lastName | titlecase)"
                                                                 [style.background-color]="commonService.getRandomColor(assignee?.user?.firstName?.charAt(0) | uppercase)">
-                                                                {{ assignee?.user?.firstName?.charAt(0) |uppercase
+                                                                {{ assignee?.user?.firstName?.charAt(0) | uppercase
                                                                 }}&nbsp;{{ assignee?.user?.lastName?.charAt(0) |
                                                                 uppercase }}
-                                                            </span>&nbsp;{{assignee?.user?.firstName |
-                                                            titlecase}}&nbsp;{{assignee?.user?.lastName | titlecase}}
+                                                            </span>&nbsp;{{ assignee?.user?.firstName | titlecase
+                                                            }}&nbsp;{{ assignee?.user?.lastName | titlecase }}
                                                         </p>
-                                                    </li>
-                                                </ul>
-
+                                                    </button>
+                                                </div>
                                             </div>
-
                                         </div>
-
-
-
-
 
 
                                         <!-- Update project -->

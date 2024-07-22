@@ -322,6 +322,7 @@ export class EditTaskComponent implements OnInit {
   }
 
   updateTaskPriority(selectedTask: any, priority: string) {
+    selectedTask = this.tasks.data.task;
     const payload = {
       "priority": priority,
       taskName: selectedTask.taskName,
@@ -337,7 +338,9 @@ export class EditTaskComponent implements OnInit {
       timeTaken: selectedTask.timeTaken,
     }
     payload.priority = priority;
+    console.log(payload)
     this.tasksService.updatetaskFlex(this.tasks.data.task.id, payload).subscribe(response => {
+      this.tasks.data.task.priority = priority;
       this.toast.success('Task priority updated successfully', `Task Number: ${this.tasks.data.task.taskNumber}`)
     },
       err => {
