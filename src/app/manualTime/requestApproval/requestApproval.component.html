@@ -2,13 +2,13 @@
     <div class="container-fluid">
         <div class="tableContainer bg-white py-2 mx-2">
             <div class="d-flex justify-content-between align-items-center mb-2 px-3">
-                <p class="mb-0">({{manualTimeRequests?.length}}) Records Found</p>
+                <p class="mb-0">({{manualTimeRequestFiltered?.length}}) Records Found</p>
                 <div>
                     <span class="d-flex">
                         <label for="member" class="pt-2 pe-3">Member:</label>
                         <select id="member" name="member" class="form-control" aria-label=".form-select-sm example"
                             #member (change)="onMemberSelectionChange(member)">
-                            <option>Select User</option>
+                            <option value="">All Members</option>
                             <option *ngFor="let m of members" value="{{m|json}}">{{m.name | titlecase}}</option>
                         </select>
                     </span>
@@ -28,32 +28,31 @@
             <table class=" mt-2">
                 <thead>
                     <tr>
-                        <th class="ps-2" [appSort]="manualTimeRequests" data-order="{{ sortOrder }}" data-name="date"
-                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Date&nbsp;
+                        <th class="ps-2" [appSort]="manualTimeRequestFiltered" data-order="{{ sortOrder }}"
+                            data-name="date" (click)="sortData('date')">Date&nbsp;
                             <i
                                 [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                         </th>
-                        <th [appSort]="manualTimeRequests" data-order="{{ sortOrder }}" data-name="user"
-                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Requested by&nbsp;
+                        <th [appSort]="manualTimeRequestFiltered" data-order="{{ sortOrder }}" data-name="user"
+                            (click)="sortData('user')">Requested by&nbsp;
                             <i
                                 [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                         </th>
-                        <th [appSort]="manualTimeRequests" data-order="{{ sortOrder }}" data-name="project?.projectName"
-                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Project&nbsp;
+                        <th [appSort]="manualTimeRequestFiltered" data-order="{{ sortOrder }}" data-name="project"
+                            (click)="sortData('project')">Project&nbsp;
                             <i
                                 [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                         </th>
-                        <th [appSort]="manualTimeRequests" data-order="{{ sortOrder }}" data-name="fromDate"
-                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">From Date&nbsp;
+                        <th [appSort]="manualTimeRequestFiltered" data-order="{{ sortOrder }}" data-name="fromDate"
+                            (click)="sortData('fromDate')">From Date&nbsp;
                             <i
                                 [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                         </th>
-                        <th [appSort]="manualTimeRequests" data-order="{{ sortOrder }}" data-name="toDate"
-                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">To Date&nbsp;
+                        <th [appSort]="manualTimeRequestFiltered" data-order="{{ sortOrder }}" data-name="toDate"
+                            (click)="sortData('toDate')">To Date&nbsp;
                             <i
                                 [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                         </th>
-
                         <th>Reason</th>
                         <th>Status</th>
                         <th>Action</th>
@@ -88,7 +87,7 @@
                                         (click)="selectedRequest = record;rejectRequest()"></i></span>
                             </div>
                         </td>
-                        
+
                     </tr>
                 </tbody>
             </table>

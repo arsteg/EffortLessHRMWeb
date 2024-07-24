@@ -30,6 +30,8 @@ export class RequestApprovalComponent implements OnInit {
   roleName = localStorage.getItem('roleName');
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   public sortOrder: string = ''; // 'asc' or 'desc'
+  sortColumn: string = '';
+  selectedMember: any = null;
 
   constructor(private modalService: NgbModal, private formBuilder: FormBuilder,
     private authenticationService: AuthenticationService,
@@ -47,6 +49,15 @@ export class RequestApprovalComponent implements OnInit {
   filterData() {
     this.fetchManualTimeRequests();
   }
+  onMemberSelectionChange(member: any) {
+    if (member.value === '') {
+      this.selectedMember = null;
+      this.manualTimeRequestFiltered = this.manualTimeRequests;
+    } else {
+      this.selectedMember = JSON.parse(member.value);
+      this.filterManualTimeRequests();
+    }
+  }
 
   fetchManualTimeRequests() {
     this.manualTimeRequestService.getManualTimeRequestsForApprovalByUser(this.id).pipe(first())
@@ -55,11 +66,22 @@ export class RequestApprovalComponent implements OnInit {
         res.data.forEach(r => {
           this.manualTimeRequests.push(r);
         });
-        this.manualTimeRequestFiltered = this.manualTimeRequests;
+        this.filterManualTimeRequests();
       },
         err => {
+          console.error('Error fetching manual time requests:', err);
         });
   }
+
+  filterManualTimeRequests() {
+    if (this.selectedMember) {
+      this.manualTimeRequestFiltered = this.manualTimeRequests.filter(req => req.user.email === this.selectedMember.email);
+    } else {
+      this.manualTimeRequestFiltered = this.manualTimeRequests;
+    }
+  }
+  
+
   approveRequest() {
     let request = this.selectedRequest;
     request.id = this.selectedRequest._id;
@@ -83,11 +105,7 @@ export class RequestApprovalComponent implements OnInit {
         this.notifyService.showError(err.message, "Error")
       });
   }
-  onMemberSelectionChange(member: any) {
-    this.member = JSON.parse(member.value);
-    this.manualTimeRequestFiltered = this.manualTimeRequests.filter(req=>{ return req.user.email==this.member.email})
-  }
-
+  
   populateMembers() {
     this.members = [];
     let currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -113,4 +131,51 @@ export class RequestApprovalComponent implements OnInit {
       }
     });
   }
+
+  sortData(column: string) {
+    if (this.sortColumn === column) {
+      this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortColumn = column;
+      this.sortOrder = 'asc';
+    }
+
+    this.manualTimeRequestFiltered.sort((a, b) => {
+      let aValue = this.getColumnValue(a, column);
+      let bValue = this.getColumnValue(b, column);
+
+      if (aValue < bValue) {
+        return this.sortOrder === 'asc' ? -1 : 1;
+      } else if (aValue > bValue) {
+        return this.sortOrder === 'asc' ? 1 : -1;
+      } else {
+        return 0;
+      }
+    });
+  }
+
+  getColumnValue(record: any, column: string) {
+    switch (column) {
+      case 'user':
+        return `${record?.user?.firstName} ${record?.user?.lastName}`.toLowerCase();
+      case 'project':
+        return record?.project?.projectName.toLowerCase();
+      case 'fromDate':
+      case 'toDate':
+      case 'date':
+        return new Date(record[column]);
+      default:
+        return record[column];
+    }
+  }
+
+  getSortIcon(column: string) {
+    return this.sortColumn === column
+      ? this.sortOrder === 'asc'
+        ? 'bi bi-arrow-up sort-asc'
+        : 'bi bi-arrow-down sort-desc'
+      : '';
+  }
+
+
 }
