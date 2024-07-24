@@ -6,5 +6,12 @@ import { Component } from '@angular/core';
   styleUrl: './run-payroll.component.css'
 })
 export class RunPayrollComponent {
+  selectedTab: number = 1;
+  constructor() { }
 
+  ngOnInit(): void {  
+  }
+  selectTab(tabIndex: number) {
+    this.selectedTab = tabIndex;
+  }
 }

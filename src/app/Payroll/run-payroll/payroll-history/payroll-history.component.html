@@ -1,0 +1,81 @@
+<div class="main-content" *ngIf="!isAllEmployees">
+    <div class="container-fluid">
+        <div class="tableContainer">
+            <h2>Payroll History</h2>
+            <table>
+                <thead>
+                    <th>Payroll Period</th>
+                    <th>Date</th>
+                    <th>Payroll Details</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>data</td>
+                        <td>date</td>
+                        <td>
+                            <ul type="none" class="ps-0">
+                                <li>No. of Processed Employees: </li>
+                                <li>No. of Active Employees: </li>
+                                <li>No. of On-Hold Employees: </li>
+                            </ul>
+                        </td>
+                        <td>Pending</td>
+                        <td>
+                            <div ngbDropdown class="dropdown-center">
+                                <button class="actions ms-2" mat-mini-fab ngbDropdownToggle aria-expanded="false"
+                                    aria-label="Example icon button with a menu icon">
+                                    <i class="bi bi-send"></i>
+                                </button>
+                                <ul ngbDropdownMenu class="dropdown-menu py-0">
+                                    <li class="d-flex border-bottom action-list">
+                                        <i class="bi bi-download dropdown-item w-25"></i><span
+                                            class="pt-1 text-muted">Download Register</span>
+                                    </li>
+                                    <li class="d-flex border-bottom action-list">
+                                        <i class="bi bi-clipboard-check dropdown-item w-25"></i><span
+                                            class="pt-1 text-muted">Tax Register</span>
+                                    </li>
+                                    <li class="d-flex border-bottom action-list" (click)="open(modal)">
+                                        <i class="bi bi-pencil dropdown-item w-25"></i><span
+                                            class="pt-1 text-muted">Edit</span>
+                                    </li>
+                                    <li class="d-flex border-bottom action-list">
+                                        <i class="bi bi-trash dropdown-item w-25"></i><span
+                                            class="pt-1 text-muted">Delete</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<ng-template #modal let-modal>
+    <div class="modal-header border-bottom justify-content-between d-flex mb-2 pt-0">
+        <div>
+            <h1 class="modal-title text-muted mb-0">How do you want to Edit Payroll?</h1>
+        </div>
+        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
+                (click)="modal.close('Escape clicked')"></button>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="">Option 1: Edit Payroll for All Employees</label>
+        <button type="button" class="submenuTab active rounded-pill" (click)="isAllEmployees = true; modal.close('Escape clicked')"
+            data-bs-dismiss="modal"><i class="bi bi-people"></i> All
+            Employees</button>
+    </div>
+
+    <div class="form-group mt-2">
+        <label for="">Option 2: Edit Payroll for Selected Employees</label>
+        <button class="submenuTab active rounded-pill"><i class="bi bi-people"></i> Selected Employees</button>
+    </div>
+</ng-template>
+
+<app-payroll-steps *ngIf="isAllEmployees"></app-payroll-steps>

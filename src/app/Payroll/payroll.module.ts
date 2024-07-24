@@ -46,6 +46,19 @@ import { OtherBenefitComponent } from './ctc-templates/assigned-templates/other-
 import { AssignedFixedAllowanceComponent } from './ctc-templates/assigned-templates/fixed-allowance/fixed-allowance.component';
 import { AssignedFixedContributionComponent } from './ctc-templates/assigned-templates/fixed-contribution/fixed-contribution.component';
 import { AssignedFixedDeductionComponent } from './ctc-templates/assigned-templates/fixed-deduction/fixed-deduction.component';
+import { PayrollHistoryComponent } from './run-payroll/payroll-history/payroll-history.component';
+import { RunFnfPayrollComponent } from './run-payroll/run-fnf-payroll/run-fnf-payroll.component';
+import { NgbDropdown, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import { PayrollStepsComponent } from './run-payroll/payroll-steps/payroll-steps.component';
+import { Step1Component } from './run-payroll/payroll-steps/step-1/step-1.component';
+import { Step2Component } from './run-payroll/payroll-steps/step-2/step-2.component';
+import { Step3Component } from './run-payroll/payroll-steps/step-3/step-3.component';
+import { Step4Component } from './run-payroll/payroll-steps/step-4/step-4.component';
+import { Step5Component } from './run-payroll/payroll-steps/step-5/step-5.component';
+import { Step6Component } from './run-payroll/payroll-steps/step-6/step-6.component';
+import { Step7Component } from './run-payroll/payroll-steps/step-7/step-7.component';
+import { Step8Component } from './run-payroll/payroll-steps/step-8/step-8.component';
+import { Step9Component } from './run-payroll/payroll-steps/step-9/step-9.component';
 
 @NgModule({
   declarations: [
@@ -87,7 +100,19 @@ import { AssignedFixedDeductionComponent } from './ctc-templates/assigned-templa
     OtherBenefitComponent,
     AssignedFixedAllowanceComponent,
     AssignedFixedContributionComponent,
-    AssignedFixedDeductionComponent
+    AssignedFixedDeductionComponent,
+    PayrollHistoryComponent,
+    RunFnfPayrollComponent,
+    PayrollStepsComponent,
+    Step1Component,
+    Step2Component,
+    Step3Component,
+    Step4Component,
+    Step5Component,
+    Step6Component,
+    Step7Component,
+    Step8Component,
+    Step9Component
   ],
   imports: [
     CommonModule, 
@@ -98,7 +123,8 @@ import { AssignedFixedDeductionComponent } from './ctc-templates/assigned-templa
     MatButtonModule,
     BrowserAnimationsModule,
     BrowserModule,
-    OverlayModule
+    OverlayModule,
+    NgbDropdownModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

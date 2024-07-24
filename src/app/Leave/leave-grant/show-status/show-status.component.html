@@ -17,8 +17,8 @@
     </div>
 
     <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
-              [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
-              (recordsPerPageChange)="onRecordsPerPageChange($event)">
+        [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
+        (recordsPerPageChange)="onRecordsPerPageChange($event)">
     </app-pagination>
 
     <table class="mt-2">
@@ -27,17 +27,17 @@
                 (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Employee Name
                 <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
             </th>
-            <th  [appSort]="leaveGrant" data-name="appliedOn"
-            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Applied On
-            <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-        </th>
-            <th  [appSort]="leaveGrant" data-name="date"
-            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Applied For
+            <th [appSort]="leaveGrant" data-name="appliedOn"
+                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Applied On
+                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+            </th>
+            <th [appSort]="leaveGrant" data-name="date" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                Applied For
                 <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
 
             </th>
-            <th  [appSort]="leaveGrant" data-name="usedOn"
-            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Used On
+            <th [appSort]="leaveGrant" data-name="usedOn" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                Used On
                 <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
 
             </th>
@@ -55,57 +55,33 @@
                 <td>{{leave?.status}}</td>
                 <td>
                     <div ngbDropdown class="dropdown-center">
-                        <button class="actions ms-2" mat-mini-fab ngbDropdownToggle aria-expanded="false" aria-label="Example icon button with a menu icon">
-                          <i class="bi bi-send"></i>
-                        </button>
-                        <ul ngbDropdownMenu class="dropdown-menu py-0">
-                          <li class="d-flex border-bottom action-list" *ngIf="actionOptions.approve" (click)="openStatusModal(leave, 'Approved')">
-                            <i class="fas fa-check-circle dropdown-item w-25"></i><span class="pt-1 text-muted">Approve</span>
-                          </li>
-                          <li class="d-flex border-bottom action-list" *ngIf="actionOptions.reject" (click)="openStatusModal(leave, 'Rejected')">
-                            <i class="bi bi-person-dash dropdown-item w-25"></i><span class="pt-1 text-muted">Reject</span>
-                          </li>
-                          <li class="d-flex border-bottom action-list" *ngIf="actionOptions.delete" (click)="deleteDialog(leave?._id)">
-                            <i class="bi bi-person-dash dropdown-item w-25"></i><span class="pt-1 text-muted">Delete</span>
-                          </li>
-                          <li class="d-flex border-bottom action-list" *ngIf="actionOptions.view" (click)="openSecondModal(leave)">
-                            <i class="fas fa-eye dropdown-item w-25"></i><span class="pt-1 text-muted">View</span>
-                          </li>
-                        </ul>
-                      </div>
-                      
-                    <!-- <div class="dropdown-center">
-                        <button class="actions ms-2" mat-mini-fab data-bs-toggle="dropdown" aria-expanded="false"
+                        <button class="actions ms-2" mat-mini-fab ngbDropdownToggle aria-expanded="false"
                             aria-label="Example icon button with a menu icon">
                             <i class="bi bi-send"></i>
                         </button>
-
-                        <ul class="dropdown-menu py-0">
-                            <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
-                                *ngIf="actionOptions.approve" data-bs-target="#statusUpdate"
+                        <ul ngbDropdownMenu class="dropdown-menu py-0">
+                            <li class="d-flex border-bottom action-list" *ngIf="actionOptions.approve"
                                 (click)="openStatusModal(leave, 'Approved')">
                                 <i class="fas fa-check-circle dropdown-item w-25"></i><span
                                     class="pt-1 text-muted">Approve</span>
                             </li>
-                            <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
-                                *ngIf="actionOptions.reject" data-bs-target="#statusUpdate"
+                            <li class="d-flex border-bottom action-list" *ngIf="actionOptions.reject"
                                 (click)="openStatusModal(leave, 'Rejected')">
                                 <i class="bi bi-person-dash dropdown-item w-25"></i><span
                                     class="pt-1 text-muted">Reject</span>
                             </li>
-
                             <li class="d-flex border-bottom action-list" *ngIf="actionOptions.delete"
                                 (click)="deleteDialog(leave?._id)">
                                 <i class="bi bi-person-dash dropdown-item w-25"></i><span
                                     class="pt-1 text-muted">Delete</span>
                             </li>
-
-                            <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
-                                *ngIf="actionOptions.view" data-bs-target="#viewModal" (click)="openSecondModal(leave)">
+                            <li class="d-flex border-bottom action-list" *ngIf="actionOptions.view"
+                                (click)="openSecondModal(leave)">
                                 <i class="fas fa-eye dropdown-item w-25"></i><span class="pt-1 text-muted">View</span>
                             </li>
                         </ul>
-                    </div> -->
+                    </div>
+
                 </td>
             </tr>
         </tbody>
