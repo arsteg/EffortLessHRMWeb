@@ -59,6 +59,7 @@ import { Step6Component } from './run-payroll/payroll-steps/step-6/step-6.compon
 import { Step7Component } from './run-payroll/payroll-steps/step-7/step-7.component';
 import { Step8Component } from './run-payroll/payroll-steps/step-8/step-8.component';
 import { Step9Component } from './run-payroll/payroll-steps/step-9/step-9.component';
+import { ViewPayslipComponent } from './run-payroll/payroll-steps/step-9/view-payslip/view-payslip.component';
 
 @NgModule({
   declarations: [
@@ -112,7 +113,8 @@ import { Step9Component } from './run-payroll/payroll-steps/step-9/step-9.compon
     Step6Component,
     Step7Component,
     Step8Component,
-    Step9Component
+    Step9Component,
+    ViewPayslipComponent
   ],
   imports: [
     CommonModule, 

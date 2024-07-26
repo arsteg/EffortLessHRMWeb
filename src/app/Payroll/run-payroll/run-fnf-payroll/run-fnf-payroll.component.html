@@ -1,1 +1,65 @@
-<p>run-fnf-payroll works!</p>
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="tableContainer">
+            <div class="d-flex align-items-center px-2 py-1">
+                <p class="mb-0 me-auto">Full and Final History</p>
+                <div class="d-flex align-items-center">
+                    <span class="bi bi-search searchIcon"></span>
+                    <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
+                        name="searchText" aria-label="default input example">
+                    <button class="addBtn ms-2" mat-raised-button (click)="open(modal)">Run Full & Final</button>
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <th>Full & Final Period</th>
+                    <th>Date</th>
+                    <th>Full & Final Details</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<ng-template #modal let-modal>
+    <div class="modal-header border-bottom justify-content-between d-flex mb-2 pt-0">
+        <div>
+            <h1 class="modal-title text-muted mb-0">View Payslip</h1>
+        </div>
+        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
+                (click)="modal.close('Escape clicked')"></button>
+        </div>
+    </div>
+    <div class="modal-body">
+        <form>
+            <div class="form-group">
+                <label for="">Enter month and Year</label>
+            </div>
+            <div class="form-group my-2">
+                <label for="">Full and Final Month</label>
+                <select class="form-control" name="" id="">
+                    <option value="{{months}}" *ngFor="let months of fnfMonths">{{months}}</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="year" class="pt-2 pe-3">Full and Final Year</label>
+                <select id="year" name="year" class="form-control" [(ngModel)]="selectedYear"
+                    (change)="onYearChange($event)">
+                    <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+                </select>
+            </div>
+        </form>
+    </div>
+</ng-template>

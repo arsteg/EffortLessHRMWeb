@@ -1,3 +1,45 @@
 <div class="main-content">
-    <p>FnF Payslips</p>
+    <div class="container-fluid">
+        <div class="tableContainer">
+            <div class="d-flex align-items-center px-2 py-1">
+                <p class="mb-0 me-auto">Full and Final Payslips</p>
+                <div class="d-flex align-items-center">
+                    <span class="bi bi-search searchIcon"></span>
+                    <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
+                        name="searchText" aria-label="default input example">
+                    <button class="addBtn ms-2" mat-raised-button>Refresh</button>
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <th>Month-Year</th>
+                    <th>Total Payslips</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
+
+<ng-template #modal let-modal>
+    <div class="modal-header border-bottom justify-content-between d-flex mb-2 pt-0">
+        <div>
+            <h1 class="modal-title text-muted mb-0">View Payslip</h1>
+        </div>
+        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
+                (click)="modal.close('Escape clicked')"></button>
+        </div>
+    </div>
+    <div class="modal-body">
+        
+    </div>
+</ng-template>

@@ -73,14 +73,11 @@ export class PayrollService {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/pf-templates`, payload, this.httpOptions);
     return response;
   }
-  getPfTemplate(): Observable<any> {
-    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/pf-templates-by-company`,  this.httpOptions);
+  getPfTemplate(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/pf-templates-by-company`, payload,  this.httpOptions);
     return response;
   }
-  // getPfTemplate(payload: any): Observable<any> {
-  //   var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/pf-templates-by-company`, payload, this.httpOptions);
-  //   return response;
-  // }
+ 
   updatePFTemplate(id: string, payload: any): Observable<any> {
     var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/pf-templates/${id}`, payload, this.httpOptions);
     return response;

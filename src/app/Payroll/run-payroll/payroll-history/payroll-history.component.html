@@ -1,7 +1,15 @@
 <div class="main-content" *ngIf="!isAllEmployees">
     <div class="container-fluid">
         <div class="tableContainer">
-            <h2>Payroll History</h2>
+            <div class="d-flex align-items-center px-2 py-1">
+                <p class="mb-0 me-auto">Payroll History</p>
+                <div class="d-flex align-items-center">
+                    <span class="bi bi-search searchIcon"></span>
+                    <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
+                        name="searchText" aria-label="default input example">
+                    <button class="addBtn ms-2" mat-raised-button>Run Payroll</button>
+                </div>
+            </div>
             <table>
                 <thead>
                     <th>Payroll Period</th>

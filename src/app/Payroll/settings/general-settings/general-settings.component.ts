@@ -181,7 +181,6 @@ export class GeneralSettingsComponent {
       return `with: ${reason}`;
     }
   }
- 
 
   clearForm() { }
 
@@ -225,7 +224,6 @@ export class GeneralSettingsComponent {
     }
   }
 
-
   deleteDialog(id: string): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '400px',
@@ -258,7 +256,6 @@ export class GeneralSettingsComponent {
     this.loadRecords();
   }
 
-
   loadRecords() {
     const pagination = {
       skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
@@ -272,7 +269,7 @@ export class GeneralSettingsComponent {
     }
     else if (this.activeTab == 'tabPFTemplate') {
       console.log(this.activeTab)
-      this.payroll.getPfTemplate().subscribe((res: any) => {
+      this.payroll.getPfTemplate(pagination).subscribe((res: any) => {
         this.pfTemplates = res.data;
         this.totalRecords = res.total;
       });

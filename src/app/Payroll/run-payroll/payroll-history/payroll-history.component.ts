@@ -9,7 +9,8 @@ import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 export class PayrollHistoryComponent {
   closeResult: string = '';
   isAllEmployees: boolean;
-
+  searchText: string = '';
+  
   constructor(private modalService: NgbModal) { }
 
   private getDismissReason(reason: any): string {

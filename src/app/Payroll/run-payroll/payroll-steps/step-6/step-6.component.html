@@ -1,1 +1,53 @@
-<p>step-6 works!</p>
+<div class="tableContainer">
+    <div class="d-flex align-items-center justify-content-between">
+        <span class="bi bi-search searchIcon"></span>
+        <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
+            name="searchText" aria-label="default input example">
+        <div>
+            <button mat-raised-button class="addBtn" (click)="open(modal);">Download</button>
+            <button mat-raised-button class="ms-2 addBtn" (click)="open(modal);">Upload Professional Tax</button>
+            <button mat-raised-button class="ms-2 addBtn" (click)="open(modal);">Upload Flexi Benefits</button>
+        </div>
+    </div>
+    <table>
+        <thead>
+            <th>Employee Code</th>
+            <th>Employee Name</th>
+            <th>Total Flexi Benefit</th>
+            <th>Professional tax</th>
+            <th>Actions</th>
+        </thead>
+        <tbody>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <button class="actions" mat-mini-fab matTooltip="Place Selected Employees On Hold"
+                        matTooltipPosition="before" (click)="open(modal)"><i class="bi bi-pencil"></i></button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<ng-template #modal let-modal>
+    <div class="modal-header border-bottom justify-content-between d-flex mb-2 pt-0">
+        <div>
+            <h1 class="modal-title text-muted mb-0">Update Professional Tax</h1>
+        </div>
+        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
+                (click)="modal.close('Escape clicked')"></button>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="">Professional Tax Overwrite Amount</label>
+        <input type="text" class="form-control">
+    </div>
+    <div class="d-flex justify-content-between">
+        <button mat-raised-button type="button">Cancel</button>
+        <button mat-raised-button type="submit" class="addBtn">Save</button>
+    </div>
+</ng-template>

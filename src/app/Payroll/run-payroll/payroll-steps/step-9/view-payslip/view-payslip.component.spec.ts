@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Step9Component } from './step-9.component';
+import { ViewPayslipComponent } from './view-payslip.component';
 
-describe('Step9Component', () => {
-  let component: Step9Component;
-  let fixture: ComponentFixture<Step9Component>;
+describe('ViewPayslipComponent', () => {
+  let component: ViewPayslipComponent;
+  let fixture: ComponentFixture<ViewPayslipComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [Step9Component]
+      declarations: [ViewPayslipComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(Step9Component);
+    fixture = TestBed.createComponent(ViewPayslipComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

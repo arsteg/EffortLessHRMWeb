@@ -4,7 +4,6 @@
         <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
             name="searchText" aria-label="default input example">
         <div><button mat-raised-button class="addBtn" (click)="open(modal);">Download</button>
-            <button mat-raised-button class="addBtn ms-2" (click)="open(modal);">Upload</button>
         </div>
     </div>
     <table>
@@ -53,8 +52,8 @@
         <label for="">Amount</label>
         <input type="text" class="form-control">
     </div>
-<div class="d-flex justify-content-between">
-    <button mat-raised-button type="button">Cancel</button>
-    <button mat-raised-button type="submit" class="addBtn">Save</button>
-</div>
+    <div class="d-flex justify-content-between">
+        <button mat-raised-button type="button">Cancel</button>
+        <button mat-raised-button type="submit" class="addBtn">Save</button>
+    </div>
 </ng-template>

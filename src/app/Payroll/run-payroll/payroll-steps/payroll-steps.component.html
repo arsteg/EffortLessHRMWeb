@@ -52,51 +52,66 @@
     <mat-step [stepControl]="firstFormGroup">
         <form [formGroup]="firstFormGroup">
             <ng-template matStepLabel>Step 5</ng-template>
-            <h3>Step 5: Arrears</h3>
-            <div>
-                <button mat-button matStepperPrevious>Back</button>
-                <button mat-raised-button matStepperNext>Next</button>
+            <div class="d-flex justify-content-between">
+                <h3>Step 5: Arrears</h3>
+                <div>
+                    <button mat-button matStepperPrevious>Back</button>
+                    <button mat-raised-button matStepperNext>Next</button>
+                </div>
             </div>
+            <app-step-5></app-step-5>
         </form>
     </mat-step>
     <mat-step [stepControl]="firstFormGroup">
         <form [formGroup]="firstFormGroup">
             <ng-template matStepLabel>Step 6</ng-template>
-            <h3>Step 6: Flexi Benefits & Professional Tax</h3>
-            <div>
-                <button mat-button matStepperPrevious>Back</button>
-                <button mat-raised-button matStepperNext>Next</button>
+            <div class="d-flex justify-content-between">
+                <h3>Step 6: Flexi Benefits & Professional Tax</h3>
+                <div>
+                    <button mat-button matStepperPrevious>Back</button>
+                    <button mat-raised-button matStepperNext>Next</button>
+                </div>
             </div>
+            <app-step-6></app-step-6>
         </form>
     </mat-step>
     <mat-step [stepControl]="firstFormGroup">
         <form [formGroup]="firstFormGroup">
             <ng-template matStepLabel>Step 7</ng-template>
-            <h3>Step 7: Overtime</h3>
-            <div>
-                <button mat-button matStepperPrevious>Back</button>
-                <button mat-raised-button matStepperNext>Next</button>
+            <div class="d-flex justify-content-between">
+                <h3>Step 7: Overtime</h3>
+                <div>
+                    <button mat-button matStepperPrevious>Back</button>
+                    <button mat-raised-button matStepperNext>Next</button>
+                </div>
             </div>
+            <app-step-7></app-step-7>
         </form>
     </mat-step>
     <mat-step [stepControl]="firstFormGroup">
         <form [formGroup]="firstFormGroup">
             <ng-template matStepLabel>Step 8</ng-template>
-            <h3>Step 8: Income Tax Overwrite</h3>
-            <div>
-                <button mat-button matStepperPrevious>Back</button>
-                <button mat-raised-button matStepperNext>Next</button>
+            <div class="d-flex justify-content-between">
+                <h3>Step 8: Income Tax Overwrite</h3>
+                <div>
+                    <button mat-button matStepperPrevious>Back</button>
+                    <button mat-raised-button matStepperNext>Next</button>
+                </div>
             </div>
+            <app-step-8></app-step-8>
         </form>
     </mat-step>
     <mat-step [stepControl]="firstFormGroup">
         <form [formGroup]="firstFormGroup">
             <ng-template matStepLabel>Step 9</ng-template>
-            <h3>Step 9: Salary Register</h3>
-            <div>
-                <button mat-button matStepperPrevious>Back</button>
-                <button mat-raised-button matStepperNext>Next</button>
+            <div class="d-flex justify-content-between">
+                <h3>Step 9: Salary Register</h3>
+                <div>
+                    <button mat-button matStepperPrevious>Back</button>
+                    <button mat-raised-button matStepperNext>Next</button>
+                </div>
             </div>
+            <app-step-9></app-step-9>
         </form>
     </mat-step>
 </mat-stepper>
