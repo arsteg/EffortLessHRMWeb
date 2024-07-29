@@ -26,7 +26,9 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
   users$: Observable<User[]>;
   private usersOnlineSubscription: Subscription;
   userId: string;
+  projectwiseTimeSelectedMemberofAllTasks:string;
   projectwiseTimeSelectedMember:string;
+
   //end region
 
   selectedManager: any;
@@ -270,7 +272,6 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
     this.getDayWorkStatusByUser(this.member.id);
   }
 
-
   populateMembers() {
     this.members = [];
     let currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -335,12 +336,33 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
   captureState(): any {
     return {
       projectwiseTimeSelectedMember: this.projectwiseTimeSelectedMember,
+      projectwiseTimeSelectedMemberofAllTasks: this.projectwiseTimeSelectedMemberofAllTasks,
+      projectTasks: this.projectTasks,
+      dayWorkStatusByUser: this.dayWorkStatusByUser
     };
   }
 
   restoreState(state: any): void {
-    if (state.projectwiseTimeSelectedMember) {
-      this.projectwiseTimeSelectedMember = state.projectwiseTimeSelectedMember;
+    if (state) {
+      if (state.projectwiseTimeSelectedMember) {
+        this.projectwiseTimeSelectedMember = state.projectwiseTimeSelectedMember;
+      }
+      if (state.projectwiseTimeSelectedMemberofAllTasks) {
+        this.projectwiseTimeSelectedMemberofAllTasks = state.projectwiseTimeSelectedMemberofAllTasks;
+        const member = JSON.parse(state.projectwiseTimeSelectedMemberofAllTasks);
+        this.populateTaskwiseHours(member.id);
+      }
+      if(state.projectwiseTimeSelectedMember){
+        this.projectwiseTimeSelectedMember = state.projectwiseTimeSelectedMember;
+        const member = JSON.parse(state.projectwiseTimeSelectedMember);
+        this.getDayWorkStatusByUser(member.id);
+      }
+      if (state.projectTasks) {
+        this.projectTasks = state.projectTasks;
+      }
+      if(state.dayWorkStatusByUser){
+        this.dayWorkStatusByUser = state.dayWorkStatusByUser;
+      }
     }
   }
 }
