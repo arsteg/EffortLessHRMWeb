@@ -88,6 +88,7 @@ import { LiveScreenComponent } from './realtime/live-screen/live-screen.componen
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { NotificationComponent } from './home/notification/notification.component';
 import { environment } from '../environments/environment';
+import { ZoneComponent } from './oraganization/setup/zone/zone.component';
 
 const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
 
@@ -133,6 +134,7 @@ const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
     UserTaxDeclarationComponent,
     LiveScreenComponent,
     NotificationComponent,
+    ZoneComponent,
    
   ],
   imports: [

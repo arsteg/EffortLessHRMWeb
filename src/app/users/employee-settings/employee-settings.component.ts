@@ -15,7 +15,6 @@ export class EmployeeSettingsComponent {
   }
   selectTab(tabId: string) {
     this.activeTab = tabId;
-    console.log(this.activeTab);
   }
 
 }

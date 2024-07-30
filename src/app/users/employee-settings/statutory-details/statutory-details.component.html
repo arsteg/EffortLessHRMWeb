@@ -1,21 +1,24 @@
 <div class="p-2">
-    <form>
+    <form [formGroup]="statutoryDetailsForm" (ngSubmit)="onSubmission()">
         <div class="d-flex">
-            <button mat-raised-button class="addBtn ms-auto my-2">Save</button>
+            <button mat-raised-button class="addBtn ms-auto my-2" type="submit">Save</button>
         </div>
         <div class="row p-2">
             <div class="form-group col-md-6 mb-2">
                 <label for="">Is this employee eligible for Provident Fund Deduction?</label>
                 <div class="d-flex">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-Yes" required
-                            [value]="true">
-                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-Yes">Yes</label>
+                        <input class="form-check-input" type="radio"
+                            formControlName="isEmployeeEligibleForProvidentFundDeduction"
+                            id="isEmployeeEligibleForProvidentFundDeduction-Yes" required [value]="true">
+                        <label class="form-check-label"
+                            for="isEmployeeEligibleForProvidentFundDeduction-Yes">Yes</label>
                     </div>
                     <div class="form-check ms-3">
-                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-No" required
-                            [value]="false">
-                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-No">No</label>
+                        <input class="form-check-input" type="radio"
+                            formControlName="isEmployeeEligibleForProvidentFundDeduction"
+                            id="isEmployeeEligibleForProvidentFundDeduction-No" required [value]="false">
+                        <label class="form-check-label" for="isEmployeeEligibleForProvidentFundDeduction-No">No</label>
                     </div>
                 </div>
             </div>
@@ -26,14 +29,20 @@
                     15,000)</label>
                 <div class="d-flex">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-Yes" required
+                        <input class="form-check-input" type="radio"
+                            formControlName="willEmployeeProvidentFundContributionCappedAtProvidentFundCeiling"
+                            id="willEmployeeProvidentFundContributionCappedAtProvidentFundCeiling-Yes" required
                             [value]="true">
-                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-Yes">Yes</label>
+                        <label class="form-check-label"
+                            for="willEmployeeProvidentFundContributionCappedAtProvidentFundCeiling-Yes">Yes</label>
                     </div>
                     <div class="form-check ms-3">
-                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-No" required
+                        <input class="form-check-input" type="radio"
+                            formControlName="willEmployeeProvidentFundContributionCappedAtProvidentFundCeiling"
+                            id="willEmployeeProvidentFundContributionCappedAtProvidentFundCeiling-No" required
                             [value]="false">
-                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-No">No</label>
+                        <label class="form-check-label"
+                            for="willEmployeeProvidentFundContributionCappedAtProvidentFundCeiling-No">No</label>
                     </div>
                 </div>
             </div>
@@ -44,14 +53,20 @@
                     15,000)</label>
                 <div class="d-flex">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-Yes" required
+                        <input class="form-check-input" type="radio"
+                            formControlName="willEmployerProvidentFundContributionBeCappedAtProvidentFundCeiling"
+                            id="willEmployerProvidentFundContributionBeCappedAtProvidentFundCeiling-Yes" required
                             [value]="true">
-                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-Yes">Yes</label>
+                        <label class="form-check-label"
+                            for="willEmployerProvidentFundContributionBeCappedAtProvidentFundCeiling-Yes">Yes</label>
                     </div>
                     <div class="form-check ms-3">
-                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-No" required
+                        <input class="form-check-input" type="radio"
+                            formControlName="willEmployerProvidentFundContributionBeCappedAtProvidentFundCeiling"
+                            id="willEmployerProvidentFundContributionBeCappedAtProvidentFundCeiling-No" required
                             [value]="false">
-                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-No">No</label>
+                        <label class="form-check-label"
+                            for="willEmployerProvidentFundContributionBeCappedAtProvidentFundCeiling-No">No</label>
                     </div>
                 </div>
             </div>
@@ -59,49 +74,52 @@
             <div class="form-group col-md-6 mb-2">
                 <label for="">What will the Employee's Provident Fund Joining Date?</label>
                 <input placeholder="YYYY-MM-DD" class="form-control" #datepickerYMD="bsDatepicker" bsDatepicker
-                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }">
+                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="providentFundJoiningDate">
             </div>
 
             <div class="form-group col-md-6 mb-2">
                 <label for="">What is the Employee's Provident Number?</label>
-                <input class="form-control" tyep="text" placeholder="Enter PF Number">
+                <input class="form-control" tyep="text" placeholder="Enter PF Number"
+                    formControlName="providentFundNumber">
             </div>
 
             <div class="form-group col-md-6 mb-2">
                 <label for="">What is the Employee's UAN Number?</label>
-                <input class="form-control" tyep="text" placeholder="Enter UAN Number">
+                <input class="form-control" tyep="text" placeholder="Enter UAN Number" formControlName="UANNumber">
             </div>
 
             <div class="form-group col-md-6 mb-2">
                 <label for="">Would you like to set a fixed amount for your Provident Fund Wage?</label>
-                <input class="form-control" tyep="text" placeholder="Enter PF Wage">
+                <input class="form-control" tyep="text" formControlName="fixedAmountForYourProvidentFundWage"
+                    placeholder="Enter PF Wage">
             </div>
 
             <div class="form-group col-md-6 mb-2">
                 <label for="">What additional contribution % would this employee voluntarily contribute, above and
                     beyond and mandate 12%?</label>
-                <input class="form-control" tyep="text" placeholder="Enter PF Wage">
+                <input class="form-control" tyep="text" placeholder="Enter PF Wage"
+                    formControlName="additionalPFContributionInPercentage">
             </div>
 
             <div class="form-group col-md-6 mb-2">
                 <label for="">Is found eligible, would this employee have ESIC deducted from his/her salary?</label>
                 <div class="d-flex">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-Yes" required
-                            [value]="true">
-                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-Yes">Yes</label>
+                        <input class="form-check-input" type="radio" formControlName="isESICDeductedFromSalary"
+                            id="isESICDeductedFromSalary-Yes" required [value]="true">
+                        <label class="form-check-label" for="isESICDeductedFromSalary-Yes">Yes</label>
                     </div>
                     <div class="form-check ms-3">
-                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-No" required
-                            [value]="false">
-                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-No">No</label>
+                        <input class="form-check-input" type="radio" formControlName="isESICDeductedFromSalary"
+                            id="isESICDeductedFromSalary-No" required [value]="false">
+                        <label class="form-check-label" for="isESICDeductedFromSalary-No">No</label>
                     </div>
                 </div>
             </div>
 
             <div class="form-group col-md-6 mb-2">
                 <label for="">What is the Employee's ESIC Number?</label>
-                <input class="form-control" tyep="text" placeholder="Enter ESIC Number">
+                <input class="form-control" tyep="text" placeholder="Enter ESIC Number" formControlName="ESICNumber">
             </div>
 
             <div class="form-group col-md-6 mb-2">
@@ -109,14 +127,14 @@
                     branch location)?</label>
                 <div class="d-flex">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-Yes" required
-                            [value]="true">
-                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-Yes">Yes</label>
+                        <input class="form-check-input" type="radio" formControlName="isTaxDeductedFromPlayslip"
+                            id="isTaxDeductedFromPlayslip-Yes" required [value]="true">
+                        <label class="form-check-label" for="isTaxDeductedFromPlayslip-Yes">Yes</label>
                     </div>
                     <div class="form-check ms-3">
-                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-No" required
-                            [value]="false">
-                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-No">No</label>
+                        <input class="form-check-input" type="radio" formControlName="isTaxDeductedFromPlayslip"
+                            id="isTaxDeductedFromPlayslip-No" required [value]="false">
+                        <label class="form-check-label" for="isTaxDeductedFromPlayslip-No">No</label>
                     </div>
                 </div>
             </div>
@@ -126,14 +144,14 @@
                     location)?</label>
                 <div class="d-flex">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-Yes" required
-                            [value]="true">
-                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-Yes">Yes</label>
+                        <input class="form-check-input" type="radio" formControlName="isLWFDeductedFromPlayslip"
+                            id="isLWFDeductedFromPlayslip-Yes" required [value]="true">
+                        <label class="form-check-label" for="isLWFDeductedFromPlayslip-Yes">Yes</label>
                     </div>
                     <div class="form-check ms-3">
-                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-No" required
-                            [value]="false">
-                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-No">No</label>
+                        <input class="form-check-input" type="radio" formControlName="isLWFDeductedFromPlayslip"
+                            id="isLWFDeductedFromPlayslip-No" required [value]="false">
+                        <label class="form-check-label" for="isLWFDeductedFromPlayslip-No">No</label>
                     </div>
                 </div>
             </div>
@@ -142,14 +160,14 @@
                 <label for="">If applicable, Should Income Tax be deducted from the employee's salary?</label>
                 <div class="d-flex">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-Yes" required
-                            [value]="true">
-                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-Yes">Yes</label>
+                        <input class="form-check-input" type="radio" formControlName="isIncomeTaxDeducted"
+                            id="isIncomeTaxDeducted-Yes" required [value]="true">
+                        <label class="form-check-label" for="isIncomeTaxDeducted-Yes">Yes</label>
                     </div>
                     <div class="form-check ms-3">
-                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-No" required
-                            [value]="false">
-                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-No">No</label>
+                        <input class="form-check-input" type="radio" formControlName="isIncomeTaxDeducted"
+                            id="isIncomeTaxDeducted-No" required [value]="false">
+                        <label class="form-check-label" for="isIncomeTaxDeducted-No">No</label>
                     </div>
                 </div>
             </div>
@@ -158,14 +176,14 @@
                 <label for="">Is this employee eligible for Gratuity?</label>
                 <div class="d-flex">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-Yes" required
-                            [value]="true">
-                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-Yes">Yes</label>
+                        <input class="form-check-input" type="radio" formControlName="isGratuityEligible"
+                            id="isGratuityEligible-Yes" required [value]="true">
+                        <label class="form-check-label" for="isGratuityEligible-Yes">Yes</label>
                     </div>
                     <div class="form-check ms-3">
-                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-No" required
-                            [value]="false">
-                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-No">No</label>
+                        <input class="form-check-input" type="radio" formControlName="isGratuityEligible"
+                            id="isGratuityEligible-No" required [value]="false">
+                        <label class="form-check-label" for="isGratuityEligible-No">No</label>
                     </div>
                 </div>
             </div>
@@ -174,48 +192,57 @@
                 <label for="">Is this employee comes under Gratuity act?</label>
                 <div class="d-flex">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-Yes" required
-                            [value]="true">
-                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-Yes">Yes</label>
+                        <input class="form-check-input" type="radio" formControlName="isComeUnderGratuityPaymentAct"
+                            id="isComeUnderGratuityPaymentAct-Yes" required [value]="true">
+                        <label class="form-check-label" for="isComeUnderGratuityPaymentAct-Yes">Yes</label>
                     </div>
                     <div class="form-check ms-3">
-                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-No" required
-                            [value]="false">
-                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-No">No</label>
+                        <input class="form-check-input" type="radio" formControlName="isComeUnderGratuityPaymentAct"
+                            id="isComeUnderGratuityPaymentAct-No" required [value]="false">
+                        <label class="form-check-label" for="isComeUnderGratuityPaymentAct-No">No</label>
                     </div>
                 </div>
             </div>
 
             <div class="form-group col-md-6 mb-2">
                 <label for="">What is the Employee's tax Regime?</label>
-                <select name="" id="">
-                    <option value=""></option>
-                </select>
+                <div class="d-flex">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" formControlName="taxRegime" id="taxRegime-Yes"
+                            required [value]="true">
+                        <label class="form-check-label" for="taxRegime-Yes">Yes</label>
+                    </div>
+                    <div class="form-check ms-3">
+                        <input class="form-check-input" type="radio" formControlName="taxRegime" id="taxRegime-No"
+                            required [value]="false">
+                        <label class="form-check-label" for="taxRegime-No">No</label>
+                    </div>
+                </div>
             </div>
 
-            <div class="form-group col-md-6 mb-2">
+            <div class="form-group">
                 <label for="">When was the tax Regime Updated?</label>
-                <input type="text" class="form-control">
+                <input placeholder="YYYY-MM-DD" class="form-control" #datepickerYMD="bsDatepicker" bsDatepicker
+                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="taxRegimeUpdated">
             </div>
-
 
             <div class="form-group col-md-6 mb-2">
                 <label for="">Who updated the tax Regime?</label>
-                <input type="text" class="form-control">
+                <input type="text" class="form-control" formControlName="taxRegimeUpdatedBy">
             </div>
 
             <div class="form-group col-md-6 mb-2">
                 <label for="">Is the Round Off applicable for this employee?</label>
                 <div class="d-flex">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-Yes" required
-                            [value]="true">
-                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-Yes">Yes</label>
+                        <input class="form-check-input" type="radio" formControlName="roundOffApplicable"
+                            id="roundOffApplicable-Yes" required [value]="true">
+                        <label class="form-check-label" for="roundOffApplicable-Yes">Yes</label>
                     </div>
                     <div class="form-check ms-3">
-                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-No" required
-                            [value]="false">
-                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-No">No</label>
+                        <input class="form-check-input" type="radio" formControlName="roundOffApplicable"
+                            id="roundOffApplicable-No" required [value]="false">
+                        <label class="form-check-label" for="roundOffApplicable-No">No</label>
                     </div>
                 </div>
             </div>
@@ -224,14 +251,14 @@
                 <label for="">Is daily wage applicable for this employee?</label>
                 <div class="d-flex">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-Yes" required
-                            [value]="true">
-                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-Yes">Yes</label>
+                        <input class="form-check-input" type="radio" formControlName="dailyWageApplicable"
+                            id="dailyWageApplicable-Yes" required [value]="true">
+                        <label class="form-check-label" for="dailyWageApplicable-Yes">Yes</label>
                     </div>
                     <div class="form-check ms-3">
-                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-No" required
-                            [value]="false">
-                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-No">No</label>
+                        <input class="form-check-input" type="radio" formControlName="dailyWageApplicable"
+                            id="dailyWageApplicable-No" required [value]="false">
+                        <label class="form-check-label" for="dailyWageApplicable-No">No</label>
                     </div>
                 </div>
             </div>
@@ -240,14 +267,14 @@
                 <label for="">Is this employee eligible for Overtime?</label>
                 <div class="d-flex">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-Yes" required
-                            [value]="true">
-                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-Yes">Yes</label>
+                        <input class="form-check-input" type="radio" formControlName="eligibleForOvertime"
+                            id="eligibleForOvertime-Yes" required [value]="true">
+                        <label class="form-check-label" for="eligibleForOvertime-Yes">Yes</label>
                     </div>
                     <div class="form-check ms-3">
-                        <input class="form-check-input" type="radio" id="canEmpRegularizeOwnAttendance-No" required
-                            [value]="false">
-                        <label class="form-check-label" for="canEmpRegularizeOwnAttendance-No">No</label>
+                        <input class="form-check-input" type="radio" formControlName="eligibleForOvertime"
+                            id="eligibleForOvertime-No" required [value]="false">
+                        <label class="form-check-label" for="eligibleForOvertime-No">No</label>
                     </div>
                 </div>
             </div>

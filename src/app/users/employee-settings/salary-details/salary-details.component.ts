@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -15,7 +15,7 @@ export class SalaryDetailsComponent {
   closeResult: string;
   showViewSalaryDetails: boolean = false;
   showAddSalaryDetails: boolean = false;
-
+  @Input() selectedUser: any;
   constructor(private modalService: NgbModal) { }
 
   private getDismissReason(reason: any): string {

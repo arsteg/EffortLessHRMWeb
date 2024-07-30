@@ -41,7 +41,7 @@
     </table>
 </div>
 <!-- <ng-template *ngIf="!showViewSalaryDetails"> -->
-    <app-add-salary-details *ngIf="showAddSalaryDetails"
+    <app-add-salary-details *ngIf="showAddSalaryDetails"  [selectedUser]=selectedUser
         (backToSalaryDetails)="goBackToSalaryDetails()"></app-add-salary-details>
 <!-- </ng-template> -->
 <!-- <app-view-salary-details *ngIf="showViewSalaryDetails"

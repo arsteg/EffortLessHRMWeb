@@ -7,12 +7,36 @@ import { AssetsModule } from '../AssetsManagement/assetManagement.module';
 import { AssetManagerComponent } from '../AssetsManagement/assetAssetManager/asset.component';
 import { DocumentManagementModule } from '../documentManager/documentManager.module';
 import { DocumentManagerComponent } from '../documentManager/documentManager.component';
+import { SetupComponent } from './setup/setup.component';
+import { EmployeeFieldsComponent } from './employee-fields/employee-fields.component';
+import { EmployeeTreeComponent } from './employee-tree/employee-tree.component';
+import { ProfileComponent } from './setup/profile/profile.component';
+import { ZoneComponent } from './setup/zone/zone.component';
+import { LocationComponent } from './setup/location/location.component';
+import { DepartmentComponent } from './setup/department/department.component';
+import { SubDepartmentComponent } from './setup/sub-department/sub-department.component';
+import { DesignationComponent } from './setup/designation/designation.component';
+import { BandComponent } from './setup/band/band.component';
+import { SignatoryDetailsComponent } from './setup/signatory-details/signatory-details.component';
+import { HolidaysComponent } from './setup/holidays/holidays.component';
 
 
 
 @NgModule({
   declarations: [
-    OrganizationComponent
+    OrganizationComponent,
+    SetupComponent,
+    EmployeeFieldsComponent,
+    EmployeeTreeComponent,
+    ProfileComponent,
+    ZoneComponent,
+    LocationComponent,
+    DepartmentComponent,
+    SubDepartmentComponent,
+    DesignationComponent,
+    BandComponent,
+    SignatoryDetailsComponent,
+    HolidaysComponent
   ],
   exports: [AssetManagerComponent, DocumentManagerComponent],
   imports: [

@@ -155,4 +155,21 @@ updateUser(id , updateUser): Observable<updateUser>{
   return this.http.patch<updateUser>(`${environment.apiUrlDotNet}/users/updateUser/${id}`, updateUser, this.httpOptions);
 }
 
+// Employement Details
+
+addAppointmentDetails(payload: any): Observable<any> {
+  return this.http.post<any>(`${environment.apiUrlDotNet}/users/user-employment`, payload, this.httpOptions);
+}
+
+// Salary Details
+
+addSalaryDetails(payload: any): Observable<any> {
+  return this.http.post<any>(`${environment.apiUrlDotNet}/users/salary-details`, payload, this.httpOptions);
+}
+
+// statutory details
+
+addStatutoryDetails(payload: any): Observable<any> {
+  return this.http.post<any>(`${environment.apiUrlDotNet}/users/employee-salutatory-details`, payload, this.httpOptions);
+}
 }
