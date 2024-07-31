@@ -34,7 +34,7 @@ export class TimelineComponent implements OnInit {
   selectedTask: any = [];
   roleName = localStorage.getItem('adminView');
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
-  public sortOrder: string = ''; // 'asc' or 'desc'
+  public sortOrder: string = '';
   daysOfWeek: any = [];
   allComplete: boolean = false;
   selectedDate: any = this.datepipe.transform(new Date(), "yyyy-MM-dd");

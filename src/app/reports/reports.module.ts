@@ -4,22 +4,44 @@ import { CommonComponentsModule } from '../common/commonComponents.module';
 import { SharedModule } from '../shared/shared.Module';
 import { ReportsComponent } from './reports.component';
 import { BrowserHistoryModule } from '../browserHistory/browserHistory.module';
-import { BrowserHistoryComponent } from '../browserHistory/browserHistory.component';
 import { AppAndWebsiteUsageComponent } from './app-and-website-usage/app-and-website-usage.component';
 import { ProductivityReportComponent } from './productivity-report/productivity-report.component';
 import { LeaveReportComponent } from './leave-report/leave-report.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonService } from 'src/app/_services/common.Service';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { ActivityDescriptionComponent } from './activity-description/activity-description.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { BrowserModule } from '@angular/platform-browser';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
+import { TimelineComponent } from './timeline/timeline.component';
 
 @NgModule({
-  declarations: [],
+  declarations: [
+    ReportsComponent,
+    TimelineComponent,
+    ProductivityReportComponent,
+    LeaveReportComponent,
+    AppAndWebsiteUsageComponent,
+    ActivityDescriptionComponent,
+  ],
   imports: [
     CommonModule,
     CommonComponentsModule,
     SharedModule,
-    FormsModule
+    FormsModule,
+    MatTooltipModule,
+    BrowserHistoryModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatTooltipModule,
+    BrowserModule,
+    MatInputModule,
+    MatSelectModule,
+    MatOptionModule,
   ],
-  exports: [],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,
     NO_ERRORS_SCHEMA

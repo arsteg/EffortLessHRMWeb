@@ -12,6 +12,8 @@ import { SubordinateSelectionComponent } from "./subordinateSelection/subordinat
 import { CRUDComponent } from './crud/crud.component';
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MatIconModule } from "@angular/material/icon";
+import { MatTooltip, MatTooltipModule } from "@angular/material/tooltip";
+import { MatSelectModule } from "@angular/material/select";
 
 @NgModule({
     declarations:[SubordinateSelectionComponent, CRUDComponent],
@@ -29,6 +31,8 @@ import { MatIconModule } from "@angular/material/icon";
       FormsModule,
       BrowserAnimationsModule,
       MatIconModule,
+      MatTooltipModule,
+      MatSelectModule
     ],
     schemas: [
       CUSTOM_ELEMENTS_SCHEMA,

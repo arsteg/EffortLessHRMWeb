@@ -37,7 +37,7 @@
             <div *ngIf="settingsByCategory && settingsByCategory.length > 0" class="row">
                 <div *ngFor="let settingData of settingsByCategory" class="col-md-4 mt-4">
                     <div *ngIf="settingData && (settingData.ControlType=='number' || settingData.ControlType=='text' || settingData.ControlType=='email' || settingData.ControlType=='date' || settingData.ControlType=='time')" class="form-group">
-                        <label class="form-label" [tooltip] ="settingData.ToolTip">{{settingData.ControlLabel}}</label>
+                        <label class="form-label" [matTooltip] ="settingData.ToolTip">{{settingData.ControlLabel}}</label>
                         <input class="form-control" [type]="settingData.ControlType" [(ngModel)]="settingData.Value" name="{{settingData.FieldName}}" />
                     </div>
                     
@@ -58,7 +58,7 @@
 
                     <div *ngIf="settingData && settingData.ControlType=='multiselectlist'" class="form-group">
                         <mat-form-field appearance="outline" class="w-100 mx-1">
-                            <mat-label [tooltip]="settingData.ToolTip">{{settingData.ControlLabel}}</mat-label>
+                            <mat-label [matTooltip]="settingData.ToolTip" matTooltipPosition="before">{{settingData.ControlLabel}}</mat-label>
                             <mat-select multiple [(ngModel)]="settingData.Value" name="{{settingData.FieldName}}">
                                 <mat-option *ngFor="let listValue of settingData.ListData" [value]="listValue.key">
                                     {{listValue.value | titlecase}}

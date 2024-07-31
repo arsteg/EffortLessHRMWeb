@@ -6,5 +6,13 @@ import { Component } from '@angular/core';
   styleUrl: './setup.component.css'
 })
 export class SetupComponent {
+  selectedTab = 1;
 
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+  selectTab(tabIndex: number) {
+    this.selectedTab = tabIndex;
+  }
 }

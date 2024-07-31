@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OrganizationComponent } from './organization/organization.component';
 import { SharedModule } from '../shared/shared.Module';
@@ -19,8 +19,7 @@ import { DesignationComponent } from './setup/designation/designation.component'
 import { BandComponent } from './setup/band/band.component';
 import { SignatoryDetailsComponent } from './setup/signatory-details/signatory-details.component';
 import { HolidaysComponent } from './setup/holidays/holidays.component';
-
-
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -38,9 +37,20 @@ import { HolidaysComponent } from './setup/holidays/holidays.component';
     SignatoryDetailsComponent,
     HolidaysComponent
   ],
-  exports: [AssetManagerComponent, DocumentManagerComponent],
+  exports: [AssetManagerComponent,
+    DocumentManagerComponent],
   imports: [
-    CommonModule, SharedModule, CommonComponentsModule, AssetsModule, DocumentManagementModule
+    CommonModule,
+    SharedModule,
+    CommonComponentsModule,
+    AssetsModule,
+    DocumentManagementModule,
+    FormsModule,
+    ReactiveFormsModule
+  ],
+  schemas: [
+    CUSTOM_ELEMENTS_SCHEMA,
+    NO_ERRORS_SCHEMA
   ]
 })
 export class OragnizationModule { }
