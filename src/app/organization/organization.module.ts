@@ -20,6 +20,8 @@ import { BandComponent } from './setup/band/band.component';
 import { SignatoryDetailsComponent } from './setup/signatory-details/signatory-details.component';
 import { HolidaysComponent } from './setup/holidays/holidays.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -46,7 +48,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     AssetsModule,
     DocumentManagementModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ToastrModule.forRoot({
+      timeOut: 3000, // Duration of the notification
+      positionClass: 'toast-top-right', // Position of the notification
+      preventDuplicates: true,
+    }),
+    BrowserAnimationsModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

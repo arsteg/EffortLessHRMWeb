@@ -1,1 +1,74 @@
-<p>sub-department works!</p>
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="tableContainer bg-white py-2">
+            <div class="d-flex justify-content-between align-items-center mb-2 px-3">
+                <p class="mb-0">({{subDepartments?.length}}) Records Found</p>
+                <div class="d-flex align-items-center">
+                    <span class="bi bi-search searchIcon"></span>
+
+                    <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
+                        name="searchText" aria-label="default input example">
+                    <button mat-raised-button class="addBtn rounded-pill ms-3"
+                        (click)="clearselectedRequest(); isEdit=false; open(addModal)">Add New</button>
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <th>Sub Department Code</th>
+                    <th>Sub Department Name</th>
+                    <th>Actions</th>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let subDepartment of subDepartments | search : searchText; let i = index">
+                        <td>{{subDepartment?.subDepartmentName}}</td>
+                        <td>{{subDepartment?.subDepartmentCode}}</td>
+
+                        <td>
+                            <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before"
+                                aria-label="Example icon button with a menu icon"
+                                (click)="selectedRecord = subDepartment; isEdit= true; edit(subDepartment); open(addModal)">
+                                <i class="bi bi-pencil-fill"></i>
+                            </button>
+                            <button class="actions ms-2" mat-mini-fab matTooltip="Delete" matTooltipPosition="after"
+                                aria-label="Example icon button with a menu icon"
+                                (click)="deleteDialog(subDepartment?._id)">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- add company -->
+<ng-template #addModal let-modal>
+    <div class="modal-header d-flex justify-content-between border-bottom mb-2 pt-0">
+        <div>
+            <h1 class="modal-title text-muted mb-0">{{isEdit? 'Update': 'Add'}} Sub Department</h1>
+        </div>
+        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
+                (click)="modal.close('Escape clicked')"></button>
+        </div>
+    </div>
+
+    <form [formGroup]="subDepartmentForm" (ngSubmit)="onSubmission()">
+
+        <div class="form-group mt-2">
+            <label for="">Sub Department Name</label>
+            <input type="text" class="form-control" placeholder="Enter Department Name"
+                formControlName="subDepartmentName">
+        </div>
+        <div class="form-group mt-2">
+            <label for="">Sub Department Code</label>
+            <input type="text" class="form-control" placeholder="Enter Department Code"
+                formControlName="subDepartmentCode">
+        </div>
+
+        <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
+            <button mat-raised-button type="reset">Cancel</button>
+            <button mat-raised-button class="addBtn" type="submit" [disabled]="!subDepartmentForm.valid">Submit</button>
+        </div>
+    </form>
+</ng-template>

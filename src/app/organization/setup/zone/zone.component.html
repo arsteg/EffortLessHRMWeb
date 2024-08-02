@@ -1,1 +1,110 @@
-<p>zone works!</p>
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="tableContainer bg-white py-2">
+            <div class="d-flex justify-content-between align-items-center mb-2 px-3">
+                <p class="mb-0">({{zones?.length}}) Records Found</p>
+                <div class="d-flex align-items-center">
+                    <span class="bi bi-search searchIcon"></span>
+
+                    <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
+                        name="searchText" aria-label="default input example">
+                    <button mat-raised-button class="addBtn rounded-pill ms-3"
+                        (click)="clearselectedRequest(); isEdit=false; open(addModal)">Add New</button>
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <th>Start Date</th>
+                    <th>Zone Code</th>
+                    <th>Zone Name</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let zone of zones | search : searchText; let i = index">
+                        <td>{{zone?.startDate | date: 'mediumDate'}}</td>
+                        <td>{{zone?.zoneCode}}</td>
+                        <td>{{zone?.zoneName}}</td>
+                        <td>{{zone?.description}}</td>
+                        <td>{{zone?.status}}</td>
+                        <td>
+                            <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before"
+                                aria-label="Example icon button with a menu icon"
+                                (click)="selectedZone = zone; isEdit= true; edit(zone); open(addModal)">
+                                <i class="bi bi-pencil-fill"></i>
+                            </button>
+                            <button class="actions ms-2" mat-mini-fab matTooltip="Delete" matTooltipPosition="after"
+                                aria-label="Example icon button with a menu icon"
+                                (click)="deleteDialog(zone?._id)">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- add company -->
+<ng-template #addModal let-modal>
+    <div class="modal-header d-flex justify-content-between border-bottom mb-2 pt-0">
+        <div>
+            <h1 class="modal-title text-muted mb-0">{{isEdit? 'Update': 'Add'}} Zone</h1>
+        </div>
+        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
+                (click)="modal.close('Escape clicked')"></button>
+        </div>
+    </div>
+
+    <form [formGroup]="zoneForm" (ngSubmit)="onSubmission()">
+
+        <div class="form-group">
+            <label for="">Start Date</label>
+            <input placeholder="YYYY-MM-DD" class="form-control" #datepickerYMD="bsDatepicker" bsDatepicker
+                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="startDate">
+        </div>
+
+        <div class="form-group mt-2">
+            <label for="">Zone Code</label>
+            <input class="form-control" formControlName="zoneCode">
+        </div>
+
+        <div class="form-group mt-2">
+            <label for="">Zone Name</label>
+            <input class="form-control" formControlName="zoneName">
+        </div>
+
+        <div class="form-group mt-2">
+            <label for="">Description</label>
+            <textarea class="form-control" formControlName="description" placeholder="Add Description"
+                row="2"></textarea>
+        </div>
+
+        <div class="form-group mt-2">
+            <label for="">Status</label>
+            <div class="d-flex">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" formControlName="status" id="flexRadioDefault-Yes"
+                        required value="Active">
+                    <label class="form-check-label" for="flexRadioDefault-Yes">
+                        Active
+                    </label>
+                </div>
+                <div class="form-check ms-3">
+                    <input class="form-check-input" type="radio" formControlName="status" id="flexRadioDefault-No"
+                        required value="Inactive">
+                    <label class="form-check-label" for="flexRadioDefault-No">
+                        Inactive
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
+            <button mat-raised-button type="reset">Cancel</button>
+            <button mat-raised-button class="addBtn" type="submit" [disabled]="!zoneForm.valid">Submit</button>
+        </div>
+    </form>
+</ng-template>

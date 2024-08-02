@@ -22,22 +22,134 @@ export class CompanyService {
   public getToken() {
     return localStorage.getItem('jwtToken');
   }
+// band Crud
+
+  addBand(payload: any): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrlDotNet}/company/bands`, payload, this.httpOptions);
+  }
+  updateBand(id: string, payload: any): Observable<any> {
+    return this.http.put<any>(`${environment.apiUrlDotNet}/company/bands/${id}`, payload, this.httpOptions);
+  }
+
+  deleteBand(id: string): Observable<any> {
+    return this.http.delete<any>(`${environment.apiUrlDotNet}/company/bands/${id}`, this.httpOptions);
+  }
   getBand(): Observable<any> {
     return this.http.get<any>(`${environment.apiUrlDotNet}/company/bands-by-company`, this.httpOptions);
+  }
+  // Zone Crud
+  addZone(payload: any): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrlDotNet}/company/zones`, payload, this.httpOptions);
+  }
+  updateZone(id: string, payload: any): Observable<any> {
+    return this.http.put<any>(`${environment.apiUrlDotNet}/company/zones/${id}`, payload, this.httpOptions);
   }
   getZones(): Observable<any> {
     return this.http.get<any>(`${environment.apiUrlDotNet}/company/zones`, this.httpOptions);
   }
+  deleteZone(id: string): Observable<any> {
+    return this.http.delete<any>(`${environment.apiUrlDotNet}/company/zones/${id}`, this.httpOptions);
+  }
+
+  // sub departments Crud
+
+  addSubDepartments(payload: any): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrlDotNet}/company/subDepartments`, payload, this.httpOptions);
+  }
+
+  updateSubDepartments(id: string, payload: any): Observable<any> {
+    return this.http.put<any>(`${environment.apiUrlDotNet}/company/subDepartments/${id}`, payload, this.httpOptions);
+  }
+
+  deleteSubDepartments(id: string): Observable<any> {
+    return this.http.delete<any>(`${environment.apiUrlDotNet}/company/subDepartments/${id}`, this.httpOptions);
+  }
+
   getSubDepartments(): Observable<any> {
     return this.http.get<any>(`${environment.apiUrlDotNet}/company/subDepartments`, this.httpOptions);
   }
+
+  // departments Crud
+  addDepartments(payload: any): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrlDotNet}/company/departments`, payload, this.httpOptions);
+  }
+
+  updateDepartments(id: string, payload: any): Observable<any> {
+    return this.http.put<any>(`${environment.apiUrlDotNet}/company/departments/${id}`, payload, this.httpOptions);
+  }
+
+  deleteDepartments(id: string): Observable<any> {
+    return this.http.delete<any>(`${environment.apiUrlDotNet}/company/departments/${id}`, this.httpOptions);
+  }
+
   getDepartments(): Observable<any> {
     return this.http.get<any>(`${environment.apiUrlDotNet}/company/departments-by-company`, this.httpOptions);
   }
+
+  // designation Crud
     getDesignations(): Observable<any> {
     return this.http.get<any>(`${environment.apiUrlDotNet}/company/designations-by-company`, this.httpOptions);
   }
+
+  addDesignations(payload: any): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrlDotNet}/company/designations`, payload, this.httpOptions);
+  }
+
+  updateDesignations(id: string, payload: any): Observable<any> {
+    return this.http.put<any>(`${environment.apiUrlDotNet}/company/designations/${id}`, payload, this.httpOptions);
+  }
+
+  deleteDesignations(id: string): Observable<any> {
+    return this.http.delete<any>(`${environment.apiUrlDotNet}/company/designations/${id}`, this.httpOptions);
+  }
+
+  // location Crud
   getLocations(): Observable<any> {
     return this.http.get<any>(`${environment.apiUrlDotNet}/company/locations-by-company`, this.httpOptions);
+  }
+  addLocation(payload: any): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrlDotNet}/company/locations`, payload, this.httpOptions);
+  }
+  updateLocation(id: string, payload: any): Observable<any> {
+    return this.http.put<any>(`${environment.apiUrlDotNet}/company/locations/${id}`, payload, this.httpOptions);
+  }
+  deleteLocation(id: string): Observable<any> {
+    return this.http.delete<any>(`${environment.apiUrlDotNet}/company/locations/${id}`, this.httpOptions);
+  }
+
+  // Signatory Details Crud
+
+  getSignatoryDetails(): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrlDotNet}/company/signatories-by-company`, this.httpOptions);
+  }
+
+  addSignatoryDetails(payload: any): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrlDotNet}/company/signatories`, payload, this.httpOptions);
+  }
+
+  updateSignatoryDetails(id: string, payload: any): Observable<any> {
+    return this.http.put<any>(`${environment.apiUrlDotNet}/company/signatories/${id}`, payload, this.httpOptions);
+  }
+
+  deleteSignatoryDetails(id: string): Observable<any> {
+    return this.http.delete<any>(`${environment.apiUrlDotNet}/company/signatories/${id}`, this.httpOptions);
+  }
+
+  // Holidays Crud
+
+  getHolidays(payload: any): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrlDotNet}/company/holiday-by-year`, payload , this.httpOptions);
+  }
+
+  addHolidays(payload: any): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrlDotNet}/company/holiday`, payload, this.httpOptions);
+  }
+
+  updateHolidays(id: string, payload: any): Observable<any> {
+    return this.http.put<any>(`${environment.apiUrlDotNet}/company/holiday/${id}`, payload, this.httpOptions);
+  }
+
+  deleteHolidays(id: string): Observable<any> {
+    return this.http.delete<any>(`${environment.apiUrlDotNet}/company/holiday/${id}`, this.httpOptions);
   }
 }

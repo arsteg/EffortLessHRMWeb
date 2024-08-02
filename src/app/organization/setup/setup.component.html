@@ -1,6 +1,6 @@
-<div class="main-content pt-2">
+<div class="main-content">
     <div class="container-fluid">
-        <div class="tabs">
+        <div class="tabs mt-0 pt-0">
             <button (click)="selectTab(1)" [class.active]="selectedTab === 1">Organization Profile
                 </button>
             <button (click)="selectTab(2)" [class.active]="selectedTab === 2">Zone
@@ -44,7 +44,7 @@
             <app-signatory-details></app-signatory-details>
         </div>
         <div *ngIf="selectedTab === 9" class="tab-content  p-0">
-            <app-holiday></app-holiday>
+            <app-holidays></app-holidays>
         </div>
     </div>
 </div>

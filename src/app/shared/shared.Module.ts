@@ -53,7 +53,7 @@ import { PaginationComponent } from '../pagination/pagination.component';
     MatTooltipModule,
     MatSortModule,
     TooltipModule,
-    ToastrModule,
+    ToastrModule.forRoot(),
     MatDatepickerModule,
     MatNativeDateModule,
     MatRippleModule,

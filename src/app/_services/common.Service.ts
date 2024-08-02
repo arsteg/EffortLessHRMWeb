@@ -28,6 +28,7 @@ export class CommonService extends baseService {
   selectedTab$ = this.selectedTabSubject.asObservable();
   private weekDatesSubject = new BehaviorSubject<{ day: string, date: string }[]>([]);
   weekDates$ = this.weekDatesSubject.asObservable();
+  private apiUrl = 'https://restcountries.com/v3.1/all';
 
   private readonly httpOptions = {
     headers: new HttpHeaders({
@@ -151,7 +152,7 @@ export class CommonService extends baseService {
     this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
     return this.http.post<any>(`${environment.apiUrlDotNet}/zoom/createmeetingsingture`, signatureData, this.httpOptions);
   }
-//zoom meeting api's
+  //zoom meeting api's
 
   setUserUiState(data: any): Observable<any> {
     const token = this.getToken();
@@ -165,4 +166,31 @@ export class CommonService extends baseService {
     return this.http.get<any>(`${environment.apiUrlDotNet}/common/UserUIState/${key}`, this.httpOptions);
   }
 
+
+  // getCountries(): Observable<any[]> {
+  //   return this.http.get<any[]>(this.apiUrl );
+  // }
+  private countries = [
+    { name: 'USA', states: [{ name: 'California', cities: ['Los Angeles', 'San Francisco'] }] },
+    { name: 'India', states: [{ name: 'Maharashtra', cities: ['Mumbai', 'Pune'] }] },
+    // Add more countries, states, and cities as needed
+  ];
+  getCountries() {
+    return this.countries.map(country => country.name);
+  }
+
+  getStates(countryName: string) {
+    const country = this.countries.find(c => c.name === countryName);
+    return country ? country.states.map(state => state.name) : [];
+  }
+
+  getCities(countryName: string, stateName: string) {
+    const country = this.countries.find(c => c.name === countryName);
+    if (country) {
+      const state = country.states.find(s => s.name === stateName);
+      return state ? state.cities : [];
+    }
+    return [];
+  }
+ 
 }
