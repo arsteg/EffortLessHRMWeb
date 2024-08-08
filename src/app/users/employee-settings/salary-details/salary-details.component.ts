@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { UserService } from 'src/app/_services/users.service';
 
 @Component({
   selector: 'app-salary-details',
@@ -16,8 +17,17 @@ export class SalaryDetailsComponent {
   showViewSalaryDetails: boolean = false;
   showAddSalaryDetails: boolean = false;
   @Input() selectedUser: any;
-  constructor(private modalService: NgbModal) { }
+  
+  constructor(private modalService: NgbModal, 
+    private userService: UserService
+  ) { }
 
+  ngOnInit(): void {
+    this.userService.getSalaryByUserId(this.selectedUser.id).subscribe((res: any) => {
+      this.salaryDetails = res.data;
+      this.showViewSalaryDetails = true;
+    })
+  }
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
@@ -67,5 +77,14 @@ export class SalaryDetailsComponent {
   goBackToSalaryDetails() {
     this.showViewSalaryDetails = false;
     this.showAddSalaryDetails = false;
+    this.getSalaryDetails();
+
+  }
+
+  getSalaryDetails() {
+    this.userService.getSalaryByUserId(this.selectedUser.id).subscribe((res: any) => {
+      this.salaryDetails = res.data;
+      this.showViewSalaryDetails = true;
+    })
   }
 }

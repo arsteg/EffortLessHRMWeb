@@ -18,14 +18,14 @@
             <th>Action</th>
         </thead>
         <tbody>
-            <tr>
-                <!-- *ngFor="let data of salaryDetails | search:searchText" -->
-                <td>data</td>
-                <td></td>
-                <td></td>
-                <td></td>
+            <tr *ngFor="let data of salaryDetails | search:searchText">
+                <td>{{data?.frequencyToEnterCTC}}</td>
+                <td>{{data?.payrollEffectiveFrom | date: 'mediumDate'}}</td>
+                <td>{{data?.actualEffectiveDate | date: 'mediumDate'}}</td>
+                <td>{{data?.Amount}}</td>
                 <td>
-                    <button class="actions" mat-mini-fab title="View" (click)="showAddSalaryDetails = true;"
+                    <button class="actions" mat-mini-fab title="View"
+                        (click)="isEdit = true ; selectedRecord = data; showAddSalaryDetails = true;"
                         aria-label="Example icon button with a menu icon">
                         <i class="bi bi-eye"></i>
                     </button>
@@ -41,8 +41,8 @@
     </table>
 </div>
 <!-- <ng-template *ngIf="!showViewSalaryDetails"> -->
-    <app-add-salary-details *ngIf="showAddSalaryDetails"  [selectedUser]=selectedUser
-        (backToSalaryDetails)="goBackToSalaryDetails()"></app-add-salary-details>
+<app-add-salary-details *ngIf="showAddSalaryDetails" [edit]=isEdit [selectedSalaryDetail]="selectedRecord"  [selectedUser]=selectedUser
+    (backToSalaryDetails)="goBackToSalaryDetails()"></app-add-salary-details>
 <!-- </ng-template> -->
 <!-- <app-view-salary-details *ngIf="showViewSalaryDetails"
     (backToSalaryDetails)="goBackToSalaryDetails()"></app-view-salary-details> -->

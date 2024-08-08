@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { ToastrService } from 'ngx-toastr';
 import { CompanyService } from 'src/app/_services/company.service';
 import { UserService } from 'src/app/_services/users.service';
 @Component({
@@ -25,7 +26,8 @@ export class EmploymentDetailsComponent {
 
   constructor(private userService: UserService,
     private companyService: CompanyService,
-    private fb: FormBuilder) {
+    private fb: FormBuilder,
+    private toast: ToastrService) {
     this.jobInformationForm = this.fb.group({
       user: [''],
       effectiveFrom: [],
@@ -65,14 +67,28 @@ export class EmploymentDetailsComponent {
     })
   }
   onSubmissionJobInformation() {
-    this.jobInformationForm.value.user = this.selectedUser.id;
-    this.jobInformationForm.value.organization = this.selectedUser.company.id;
-    console.log(this.selectedUser.id)
-    this.userService.addAppointmentDetails(this.jobInformationForm.value).subscribe((res: any) => {
-      console.log(res.data);
+    this.userService.getJobInformationByUserId(this.selectedUser.id).subscribe((res: any) => {
+      if (res.data.length < 0) {
+        this.jobInformationForm.value.user = this.selectedUser.id;
+        this.userService.addJobInformation(this.jobInformationForm.value).subscribe((res: any) => {
+          this.toast.success('Job Information Added Successfully');
+        },
+      err=>{this.toast.error('Job Information Not Added', 'Error');})
+      }
+      else {
+        this.userService.updateJobInformation(res.data[0]._id, this.jobInformationForm.value).subscribe((res: any) => {
+          this.userService.getJobInformationByUserId(this.selectedUser.id).subscribe((res: any) => {
+            this.jobInformationForm.patchValue(res.data[0]);
+          })
+        })
+      }
     })
   }
+  
   getData() {
+    this.userService.getJobInformationByUserId(this.selectedUser.id).subscribe((res: any) => {
+      this.jobInformationForm.patchValue(res.data[0]);
+    })
     this.userService.getUserList().subscribe((res: any) => {
       this.supervisors = res.data;
     })
@@ -91,7 +107,7 @@ export class EmploymentDetailsComponent {
     this.companyService.getDesignations().subscribe((res: any) => {
       this.designations = res.data;
     })
-    this.companyService.getLocations().subscribe((res: any)=>{
+    this.companyService.getLocations().subscribe((res: any) => {
       this.locations = res.data;
     })
   }

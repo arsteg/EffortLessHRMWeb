@@ -24,88 +24,88 @@ export class UserService {
 
   static getQuestions: any;
   constructor(private http: HttpClient) {
-   }
-   
+  }
+
   public getToken() {
     return localStorage.getItem('jwtToken');
   }
   // TODO: get from a remote source of question metadata
- public getQuestions(user:signup): Observable<Base<any>[]> {
+  public getQuestions(user: signup): Observable<Base<any>[]> {
     const controls: Base<string>[] = [
       new Textbox({
         key: 'firstName',
         label: 'First name',
         required: true,
-        rowclass:true,
-        rowend:false,
-        class:"col-md-12",
+        rowclass: true,
+        rowend: false,
+        class: "col-md-12",
         order: 1
       }),
       new Textbox({
         key: 'lastName',
         label: 'Last name',
-        value:user.lastName,
+        value: user.lastName,
         required: true,
-        rowclass:false,
-        rowend:true,
-        class:"col-md-12",
+        rowclass: false,
+        rowend: true,
+        class: "col-md-12",
         order: 2
       }),
       new Textbox({
         key: 'jobTitle',
         label: 'Job Title',
-        class:"col-md-12",
-        rowclass:false,
+        class: "col-md-12",
+        rowclass: false,
         order: 3
       }),
       new Textbox({
         key: 'address',
         label: 'Address',
-        class:"col-md-12",
-        rowclass:false,
-        rows:3,
+        class: "col-md-12",
+        rowclass: false,
+        rows: 3,
         order: 4
       }),
       new Textbox({
         key: 'city',
         label: 'City',
-        class:"col-md-12",
-        rowclass:false,
+        class: "col-md-12",
+        rowclass: false,
         order: 5
       }),
       new Textbox({
         key: 'state',
         label: 'State',
-        class:"col-md-12",
-        rowclass:false,
+        class: "col-md-12",
+        rowclass: false,
         order: 6
       }),
       new Dropdown({
         key: 'country',
         label: 'Country',
         options: [
-          {key: 'solid',  value: 'Solid'},
-          {key: 'great',  value: 'Great'},
-          {key: 'good',   value: 'Good'},
-          {key: 'unproven', value: 'Unproven'}
+          { key: 'solid', value: 'Solid' },
+          { key: 'great', value: 'Great' },
+          { key: 'good', value: 'Good' },
+          { key: 'unproven', value: 'Unproven' }
         ],
-        class:"col-md-12",
-        rowclass:true,
+        class: "col-md-12",
+        rowclass: true,
         order: 7
       }),
       new Textbox({
         key: 'pincode',
         label: 'Pin Code',
-         class:"col-md-12",
-         rowclass:true,
+        class: "col-md-12",
+        rowclass: true,
         order: 8
       }),
       new Textbox({
         key: 'phone',
         label: 'Phone',
         required: true,
-        class:"col-md-12",
-        rowclass:true,
+        class: "col-md-12",
+        rowclass: true,
         order: 9
       }),
       new Textbox({
@@ -113,63 +113,95 @@ export class UserService {
         label: 'Email',
         type: 'email',
         required: true,
-        readonly:'readonly',
-        rowclass:true,
-        class:"col-md-12",
+        readonly: 'readonly',
+        rowclass: true,
+        class: "col-md-12",
         order: 10
       }),
       new Textbox({
         key: 'extraDetails',
         label: 'Extra Details',
-        class:"col-md-12",
-        rowclass:true,
-        rows:3,
+        class: "col-md-12",
+        rowclass: true,
+        rows: 3,
         order: 11
       })
     ];
     return of(controls.sort((a, b) => a.order - b.order));
   }
-GetMe(id:string): Observable<signup[]> {
+  GetMe(id: string): Observable<signup[]> {
     return this.http.get<any>(`${environment.apiUrlDotNet}/users/${id}`, this.httpOptions)
-}
-updateMe(user: signup): Observable<signup> {
-  return this.http.patch<any>(`${environment.apiUrlDotNet}/users/${user.id}`, user, {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json'
-    })
-  });
-}
-getUserList(): Observable<any> {
-return this.http.get<any>(`${environment.apiUrlDotNet}/users`, this.httpOptions);
-}
+  }
+  updateMe(user: signup): Observable<signup> {
+    return this.http.patch<any>(`${environment.apiUrlDotNet}/users/${user.id}`, user, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    });
+  }
+  getUserList(): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrlDotNet}/users`, this.httpOptions);
+  }
 
-addUser(newUser: newUser): Observable<newUser> {
-  return this.http.post<newUser>(`${environment.apiUrlDotNet}/users/inviteUser`, newUser, this.httpOptions);
-}
+  addUser(newUser: newUser): Observable<newUser> {
+    return this.http.post<newUser>(`${environment.apiUrlDotNet}/users/inviteUser`, newUser, this.httpOptions);
+  }
 
-deleteUser(id){
- return this.http.delete<User>(`${environment.apiUrlDotNet}/users/deleteuser/${id}`,  this.httpOptions);
-}
+  deleteUser(id) {
+    return this.http.delete<User>(`${environment.apiUrlDotNet}/users/deleteuser/${id}`, this.httpOptions);
+  }
 
-updateUser(id , updateUser): Observable<updateUser>{
-  return this.http.patch<updateUser>(`${environment.apiUrlDotNet}/users/updateUser/${id}`, updateUser, this.httpOptions);
-}
+  updateUser(id, updateUser): Observable<updateUser> {
+    return this.http.patch<updateUser>(`${environment.apiUrlDotNet}/users/updateUser/${id}`, updateUser, this.httpOptions);
+  }
 
-// Employement Details
+  // Employement Details
 
-addAppointmentDetails(payload: any): Observable<any> {
-  return this.http.post<any>(`${environment.apiUrlDotNet}/users/user-employment`, payload, this.httpOptions);
-}
+  addJobInformation(payload: any): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrlDotNet}/users/user-employment`, payload, this.httpOptions);
+  }
 
-// Salary Details
+  getJobInformationByUserId(id: string): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrlDotNet}/users/user-employment-by-userId/${id}`, this.httpOptions);
+  }
 
-addSalaryDetails(payload: any): Observable<any> {
-  return this.http.post<any>(`${environment.apiUrlDotNet}/users/salary-details`, payload, this.httpOptions);
-}
+  updateJobInformation(id, payload): Observable<any> {
+    return this.http.put<any>(`${environment.apiUrlDotNet}/users/user-employment/${id}`, payload, this.httpOptions);
+  }
 
-// statutory details
+  // Salary Details
 
-addStatutoryDetails(payload: any): Observable<any> {
-  return this.http.post<any>(`${environment.apiUrlDotNet}/users/employee-salutatory-details`, payload, this.httpOptions);
-}
+  addSalaryDetails(payload: any): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrlDotNet}/users/salary-details`, payload, this.httpOptions);
+  }
+
+  getSalaryByUserId(id: string): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrlDotNet}/users/salary-details-by-userId/${id}`, this.httpOptions);
+  }
+
+  getSalaryDetailsById(id: string): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrlDotNet}/users/salary-details/${id}`, this.httpOptions);
+  }
+
+  // statutory details
+  addStatutoryDetails(payload: any): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrlDotNet}/users/employee-salutatory-details`, payload, this.httpOptions);
+  }
+
+  // Loans Advances
+  addLoansAdvances(payload: any): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrlDotNet}/users/employee-loan-advance`, payload, this.httpOptions);
+  }
+
+  getLoansAdvancesByUserId(userId: string, payload: any): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrlDotNet}/users/employee-loan-advance-by-user/${userId}`, payload, this.httpOptions);
+  }
+
+  updateLoansAdvances(id, payload: any): Observable<any> {
+    return this.http.put<any>(`${environment.apiUrlDotNet}/users/employee-loan-advance/${id}`, payload, this.httpOptions);
+  }
+
+  deleteLoansAdvances(id: string): Observable<any> {
+    return this.http.delete<any>(`${environment.apiUrlDotNet}/users/employee-loan-advance/${id}`, this.httpOptions);
+  }
 }
