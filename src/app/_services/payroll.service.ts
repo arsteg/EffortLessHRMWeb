@@ -409,4 +409,9 @@ export class PayrollService {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/ctc-templates`, payload, this.httpOptions);
     return response;
   }
+
+  getCTCTemplateById(id: string): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/ctc-templates/${id}`, this.httpOptions);
+    return response;
+  }
 }

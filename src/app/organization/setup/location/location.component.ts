@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
@@ -53,6 +53,7 @@ export class LocationComponent {
     "Uttarakhand",
     "West Bengal"
   ];
+  public sortOrder: string = '';
 
   constructor(private companyService: CompanyService,
     private modalService: NgbModal,
@@ -61,11 +62,11 @@ export class LocationComponent {
     private toast: ToastrService,
     private http: HttpClient) {
     this.locationForm = this.fb.group({
-      locationCode: [''],
-      country: [''],
-      state: [''],
-      city: [''],
-      organization: [''],
+      locationCode: ['', Validators.required],
+      country: ['', Validators.required],
+      state: ['', Validators.required],
+      city: ['', Validators.required],
+      organization: ['', Validators.required],
       providentFundRegistrationCode: [''],
       esicRegistrationCode: [''],
       professionalTaxRegistrationCode: [''],

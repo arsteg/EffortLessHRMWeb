@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
@@ -18,6 +18,7 @@ export class ZoneComponent {
   isEdit: boolean = false;
   searchText: string = '';
   selectedZone: any;
+  public sortOrder: string = '';
 
   constructor(private companyService: CompanyService,
     private modalService: NgbModal,
@@ -25,11 +26,11 @@ export class ZoneComponent {
     private dialog: MatDialog,
     private toast: ToastrService) {
     this.zoneForm = this.fb.group({
-      startDate: [],
-      zoneCode: [''],
-      zoneName: [''],
+      startDate: ['', Validators.required],
+      zoneCode: ['', Validators.required],
+      zoneName: ['', Validators.required],
       description: [''],
-      status: ['']
+      status: ['', Validators.required]
     })
   }
 

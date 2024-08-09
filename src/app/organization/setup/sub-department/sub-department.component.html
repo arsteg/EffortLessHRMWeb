@@ -14,10 +14,17 @@
             </div>
             <table>
                 <thead>
-                    <th>Sub Department Code</th>
-                    <th>Sub Department Name</th>
+                    <th [appSort]="subDepartments" data-name="subDepartmentName"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Sub Department Code
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th [appSort]="subDepartments" data-name="subDepartmentCode"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Sub Department Name
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
                     <th>Actions</th>
                 </thead>
+
                 <tbody>
                     <tr *ngFor="let subDepartment of subDepartments | search : searchText; let i = index">
                         <td>{{subDepartment?.subDepartmentName}}</td>
@@ -56,19 +63,31 @@
     <form [formGroup]="subDepartmentForm" (ngSubmit)="onSubmission()">
 
         <div class="form-group mt-2">
-            <label for="">Sub Department Name</label>
-            <input type="text" class="form-control" placeholder="Enter Department Name"
+            <label for="subDepartmentName">Sub Department Name <span class="text-danger">*</span></label>
+            <input id="subDepartmentName" type="text" class="form-control" placeholder="Enter Sub Department Name"
                 formControlName="subDepartmentName">
+            <div
+                *ngIf="subDepartmentForm.get('subDepartmentName').invalid && 
+                      (subDepartmentForm.get('subDepartmentName').dirty || subDepartmentForm.get('subDepartmentName').touched)">
+                <small class="text-danger">Sub Department Name is required.</small>
+            </div>
         </div>
+
         <div class="form-group mt-2">
-            <label for="">Sub Department Code</label>
-            <input type="text" class="form-control" placeholder="Enter Department Code"
+            <label for="subDepartmentCode">Sub Department Code <span class="text-danger">*</span></label>
+            <input id="subDepartmentCode" type="text" class="form-control" placeholder="Enter Sub Department Code"
                 formControlName="subDepartmentCode">
+            <div
+                *ngIf="subDepartmentForm.get('subDepartmentCode').invalid && 
+                      (subDepartmentForm.get('subDepartmentCode').dirty || subDepartmentForm.get('subDepartmentCode').touched)">
+                <small class="text-danger">Sub Department Code is required.</small>
+            </div>
         </div>
 
         <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
-            <button mat-raised-button type="reset">Cancel</button>
+            <button mat-raised-button type="button" (click)="clearselectedRequest()">Cancel</button>
             <button mat-raised-button class="addBtn" type="submit" [disabled]="!subDepartmentForm.valid">Submit</button>
         </div>
     </form>
+
 </ng-template>

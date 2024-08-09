@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
@@ -18,7 +18,7 @@ export class BandComponent {
   isEdit: boolean = false;
   searchText: string = '';
   selectedRecord: any;
-  
+  public sortOrder: string = '';
 
   constructor(private companyService: CompanyService,
     private modalService: NgbModal,
@@ -27,7 +27,7 @@ export class BandComponent {
     private toast: ToastrService,
     ) {
     this.bandForm = this.fb.group({
-      band: [''],
+      band: ['', Validators.required],
     });
   }
 
@@ -43,6 +43,7 @@ export class BandComponent {
 
   onSubmission() {
     // add Department
+    if (this.bandForm.valid) {
     if (!this.isEdit) {
       this.companyService.addBand(this.bandForm.value).subscribe(res => {
         this.bands.push(res.data);
@@ -66,6 +67,10 @@ export class BandComponent {
         err => { this.toast.error('Band Can not be Updated', 'Error') }
       );
     }
+  }
+  else{
+    this.bandForm.markAllAsTouched();
+  }
   }
 
   edit(data: any) {

@@ -25,13 +25,29 @@
             </app-pagination>
             <table>
                 <thead>
-                    <th>Holiday Name</th>
-                    <th>Date</th>
-                    <th>Type of Holiday</th>
-                    <th>Reoccur Every Year</th>
-                    <th>Apply To</th>
+                    <th [appSort]="holidays" data-name="label"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Holiday Name
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th [appSort]="holidays" data-name="date"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Date
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th [appSort]="holidays" data-name="isMandatoryForFlexiHoliday"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Type of Holiday
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th [appSort]="holidays" data-name="isHolidayOccurEveryYearOnSameDay"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Reoccur Every Year
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th [appSort]="holidays" data-name="holidaysAppliesFor"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Apply To
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
                     <th>Actions</th>
                 </thead>
+                
                 <tbody>
                     <tr *ngFor="let holiday of holidays | search : searchText; let i = index">
                         <td>{{holiday?.label}}</td>
@@ -77,18 +93,26 @@
     <form [formGroup]="holidayForm" (ngSubmit)="onSubmission()">
 
         <div class="form-group mt-2">
-            <label for="">Please Provide a Label for this Holiday</label>
+            <label for="">Please Provide a Label for this Holiday <span class="text-danger">*</span></label>
             <input type="text" class="form-control" placeholder="Enter Label for The Holiday" formControlName="label">
+            <div *ngIf="holidayForm.get('label').invalid && (holidayForm.get('label').dirty || holidayForm.get('label').touched)"
+                 class="invalid-feedback">
+                <small class="text-danger">Label is required.</small>
+            </div>
         </div>
-
+    
         <div class="form-group mt-2">
-            <label for="">Select Date</label>
+            <label for="">Select Date <span class="text-danger">*</span></label>
             <input placeholder="YYYY-MM-DD" class="form-control" #datepickerYMD="bsDatepicker" bsDatepicker
                 [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="date">
+            <div *ngIf="holidayForm.get('date').invalid && (holidayForm.get('date').dirty || holidayForm.get('date').touched)"
+                 class="invalid-feedback">
+                <small class="text-danger">Date is required.</small>
+            </div>
         </div>
-
+    
         <div class="form-group mt-2">
-            <label for="">Does this Holiday Reoccur on the Same Date Every Year?</label>
+            <label for="">Does this Holiday Reoccur on the Same Date Every Year? <span class="text-danger">*</span></label>
             <div class="d-flex">
                 <div class="form-check">
                     <input class="form-check-input" type="radio" id="reoccur-Yes"
@@ -97,7 +121,7 @@
                         Yes
                     </label>
                 </div>
-
+    
                 <div class="form-check ms-3">
                     <input class="form-check-input" type="radio" id="reoccur-No"
                         formControlName="isHolidayOccurEveryYearOnSameDay" required [value]="false">
@@ -106,10 +130,14 @@
                     </label>
                 </div>
             </div>
+            <div *ngIf="holidayForm.get('isHolidayOccurEveryYearOnSameDay').invalid && (holidayForm.get('isHolidayOccurEveryYearOnSameDay').dirty || holidayForm.get('isHolidayOccurEveryYearOnSameDay').touched)"
+                 class="invalid-feedback">
+                <small class="text-danger">Please select if the holiday reoccurs every year.</small>
+            </div>
         </div>
-
+    
         <div class="form-group mt-2">
-            <label for="">Is this a mandatory or a Flexi Holiday?</label>
+            <label for="">Is this a mandatory or a Flexi Holiday? <span class="text-danger">*</span></label>
             <div class="d-flex">
                 <div class="form-check">
                     <input class="form-check-input" type="radio" id="isMandatoryForFlexiHoliday-Yes"
@@ -118,7 +146,7 @@
                         Mandatory
                     </label>
                 </div>
-
+    
                 <div class="form-check ms-3">
                     <input class="form-check-input" type="radio" id="isMandatoryForFlexiHoliday-No"
                         formControlName="isMandatoryForFlexiHoliday" required [value]="false">
@@ -127,10 +155,14 @@
                     </label>
                 </div>
             </div>
+            <div *ngIf="holidayForm.get('isMandatoryForFlexiHoliday').invalid && (holidayForm.get('isMandatoryForFlexiHoliday').dirty || holidayForm.get('isMandatoryForFlexiHoliday').touched)"
+                 class="invalid-feedback">
+                <small class="text-danger">Please select if the holiday is mandatory or flexi.</small>
+            </div>
         </div>
-
+    
         <div class="form-group mt-2">
-            <label for="">Which Employees Does this Holiday Applies for?</label>
+            <label for="">Which Employees Does this Holiday Applies for? <span class="text-danger">*</span></label>
             <div class="d-flex">
                 <div class="form-check">
                     <input class="form-check-input" type="radio" id="holidaysAppliesFor-Yes"
@@ -139,7 +171,7 @@
                         All Employees
                     </label>
                 </div>
-
+    
                 <div class="form-check ms-3">
                     <input class="form-check-input" type="radio" id="holidaysAppliesFor-No"
                         formControlName="holidaysAppliesFor" required value="Specific-Employees">
@@ -148,8 +180,12 @@
                     </label>
                 </div>
             </div>
+            <div *ngIf="holidayForm.get('holidaysAppliesFor').invalid && (holidayForm.get('holidaysAppliesFor').dirty || holidayForm.get('holidaysAppliesFor').touched)"
+                 class="invalid-feedback">
+                <small class="text-danger">Please select for whom the holiday applies.</small>
+            </div>
         </div>
-
+    
         <mat-form-field appearance="outline" class="w-100"
             *ngIf="holidayForm.get('holidaysAppliesFor').value == 'Specific-Employees'">
             <mat-label>Select Employees</mat-label>
@@ -158,11 +194,15 @@
                     {{member?.firstName}} {{member?.lastName}}
                 </mat-option>
             </mat-select>
+            <mat-error *ngIf="holidayForm.get('users').invalid && (holidayForm.get('users').dirty || holidayForm.get('users').touched)">
+                <small class="text-danger">Please select at least one employee.</small>
+            </mat-error>
         </mat-form-field>
-
+    
         <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
-            <button mat-raised-button type="reset">Cancel</button>
+            <button mat-raised-button type="button" (click)="clearselectedRequest()">Cancel</button>
             <button mat-raised-button class="addBtn" type="submit" [disabled]="!holidayForm.valid">Submit</button>
         </div>
     </form>
+    
 </ng-template>

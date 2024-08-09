@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
@@ -18,7 +18,7 @@ export class DesignationComponent {
   isEdit: boolean = false;
   searchText: string = '';
   selectedRecord: any;
-  
+  public sortOrder: string = '';
 
   constructor(private companyService: CompanyService,
     private modalService: NgbModal,
@@ -27,7 +27,7 @@ export class DesignationComponent {
     private toast: ToastrService,
     ) {
     this.designationForm = this.fb.group({
-      designation: [''],
+      designation: ['', Validators.required],
     });
   }
 

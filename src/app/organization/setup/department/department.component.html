@@ -14,8 +14,14 @@
             </div>
             <table>
                 <thead>
-                    <th>Department Code</th>
-                    <th>Department Name</th>
+                    <th [appSort]="departments" data-name="departmentName"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Department Code
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th [appSort]="departments" data-name="departmentCode"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Department Name
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
                     <th>Actions</th>
                 </thead>
                 <tbody>
@@ -61,24 +67,32 @@
     <form [formGroup]="departmentForm" (ngSubmit)="onSubmission()">
 
         <div class="form-group mt-2">
-            <label for="">Department Name</label>
+            <label for="">Department Name <span class="text-danger">*</span></label>
             <input type="text" class="form-control" placeholder="Enter Department Name"
                 formControlName="departmentName">
+            <div
+                *ngIf="departmentForm.get('departmentName').invalid && (departmentForm.get('departmentName').dirty || departmentForm.get('departmentName').touched)">
+                <small class="text-danger">Department Name is required</small>
+            </div>
         </div>
+
         <div class="form-group mt-2">
-            <label for="">Department Code</label>
+            <label for="">Department Code <span class="text-danger">*</span></label>
             <input type="text" class="form-control" placeholder="Enter Department Code"
                 formControlName="departmentCode">
+            <div *ngIf="departmentForm.get('departmentCode').invalid && 
+                      (departmentForm.get('departmentCode').dirty || departmentForm.get('departmentCode').touched)">
+                <small class="text-danger">Department Code is required.</small>
+            </div>
         </div>
 
         <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
-            <button mat-raised-button type="reset">Cancel</button>
+            <button mat-raised-button type="button" (click)="clearselectedRequest()">Cancel</button>
             <button mat-raised-button class="addBtn" type="submit" [disabled]="!departmentForm.valid">Submit</button>
         </div>
 
-
-
     </form>
+
 
 </ng-template>
 
@@ -86,7 +100,7 @@
 <ng-template #subDepartment let-modal>
     <div class="modal-header d-flex justify-content-between border-bottom mb-2 pt-0">
         <div>
-            <h1 class="modal-title text-muted mb-0">{{isEdit? 'Update': 'Add'}} Department</h1>
+            <h1 class="modal-title text-muted mb-0">Assign Sub Department</h1>
         </div>
         <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
                 (click)="modal.close('Escape clicked')"></button>
@@ -101,7 +115,7 @@
             </select>
         </div>
         <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
-            <button mat-raised-button type="reset">Cancel</button>
+            <button mat-raised-button type="button" (click)="clearselectedRequest()">Cancel</button>
             <button mat-raised-button class="addBtn" type="submit">Submit</button>
         </div>
     </form>

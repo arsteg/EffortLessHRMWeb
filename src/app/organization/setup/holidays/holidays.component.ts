@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
@@ -25,6 +25,7 @@ export class HolidaysComponent {
   totalRecords: number
   recordsPerPage: number = 10;
   currentPage: number = 1;
+  public sortOrder: string = '';
 
   constructor(private companyService: CompanyService,
     private modalService: NgbModal,
@@ -34,13 +35,13 @@ export class HolidaysComponent {
     private commonService: CommonService
   ) {
     this.holidayForm = this.fb.group({
-      label: [''],
-      date: [],
-      isHolidayOccurEveryYearOnSameDay: [true],
-      isMandatoryForFlexiHoliday: [true],
-      holidaysAppliesFor: [''],
+      label: ['', Validators.required],
+      date: ['', Validators.required],
+      isHolidayOccurEveryYearOnSameDay: [true, Validators.required],
+      isMandatoryForFlexiHoliday: [true, Validators.required],
+      holidaysAppliesFor: ['', Validators.required],
       year: [''],
-      users: []
+      users: [[], Validators.required]
     });
     this.currentYear = new Date().getFullYear();
   }
@@ -123,20 +124,19 @@ export class HolidaysComponent {
 
   edit(data: any) {
     let users = [];
-  
-  if (data.holidaysAppliesFor === 'Specific-Employees') {
-    users = data.users.map(user => ({ user: user }));
-  }
+    if (data.holidaysAppliesFor === 'Specific-Employees') {
+      users = data.holidayapplicableEmployee.map(user => user.user);
+    }
 
-  this.holidayForm.patchValue({
-    label: data.label,
-    date: data.date,
-    isHolidayOccurEveryYearOnSameDay: data.isHolidayOccurEveryYearOnSameDay,
-    isMandatoryForFlexiHoliday: data.isMandatoryForFlexiHoliday,
-    holidaysAppliesFor: data.holidaysAppliesFor,
-    year: data.year,
-    users: users
-  });
+    this.holidayForm.patchValue({
+      label: data.label,
+      date: data.date,
+      isHolidayOccurEveryYearOnSameDay: data.isHolidayOccurEveryYearOnSameDay,
+      isMandatoryForFlexiHoliday: data.isMandatoryForFlexiHoliday,
+      holidaysAppliesFor: data.holidaysAppliesFor,
+      year: data.year,
+      users: users
+    });
   }
 
   clearselectedRequest() {
