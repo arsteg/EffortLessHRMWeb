@@ -1,9 +1,9 @@
 <div class="p-2">
     <form [formGroup]="salaryDetailsForm" (ngSubmit)="onSubmissionSalaryDetails()">
         <div class="d-flex justify-content-between">
-            <button class="btn rounded-pill submenuTab active mb-2" (click)="backToSalaryDetails.emit()">
+            <button class="btn rounded-pill submenuTab active mb-2" type="button" (click)="backToSalaryDetails.emit()">
                 <i class="bi bi-arrow-left"></i> Salary Details</button>
-            <button class="addBtn mb-2 ms-auto" mat-raised-button type="submit">Save</button>
+            <button *ngIf="!edit" class="addBtn mb-2 ms-auto" mat-raised-button type="submit">Save</button>
         </div>
         <div class="row">
             <mat-form-field appearance="outline" class="col-md-6 my-2 border-bottom">
@@ -22,7 +22,7 @@
 
             <mat-form-field appearance="outline" class="col-md-6 my-2 border-bottom">
                 <mat-label>For what frequency would you like to enter the CTC amount?</mat-label>
-                <mat-select [disabled]="disableSelect.value" formControlName="frequencyToEnterCTC">
+                <mat-select formControlName="frequencyToEnterCTC">
                     <mat-option value="Monthly">Monthly</mat-option>
                     <mat-option value="Quaterly">Quaterly</mat-option>
                     <mat-option value="Half Yearly">Half Yearly</mat-option>
@@ -32,15 +32,17 @@
 
             <mat-form-field appearance="outline" class="col-md-6 my-2 border-bottom">
                 <mat-label>Select CTC Template</mat-label>
-                <mat-select [disabled]="disableSelect.value" formControlName="CTCTemplate">
-                    <mat-option *ngFor="let ctcTemplate of ctcTemplates"
-                        [value]="ctcTemplate._id">{{ctcTemplate?.name}}</mat-option>
+                <mat-select formControlName="CTCTemplate">
+                    <mat-option *ngFor="let ctcTemplate of ctcTemplates" [value]="ctcTemplate._id"
+                        (click)="getCTCTemplateById(ctcTemplate?._id)">
+                        {{ctcTemplate.name}}
+                    </mat-option>
                 </mat-select>
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="col-md-6 my-2 border-bottom">
                 <mat-label>How are you entering the amount?</mat-label>
-                <mat-select [disabled]="disableSelect.value" formControlName="enteringAmount">
+                <mat-select formControlName="enteringAmount">
                     <mat-option value="Monthly">Monthly</mat-option>
                     <mat-option value="Quaterly">Quaterly</mat-option>
                     <mat-option value="Half Yearly">Half Yearly</mat-option>
@@ -53,419 +55,485 @@
                 <input matInput type="number" formControlName="Amount">
             </mat-form-field>
 
-            <mat-label>Is employer part Inclusive in salary structure</mat-label>
-            <mat-radio-group>
-                <mat-radio-button class="example-margin" [value]="true"
-                    formControlName="isEmployerPartInclusiveInSalaryStructure">Yes</mat-radio-button>
-                <mat-radio-button class="example-margin" [value]="false"
-                    formControlName="isEmployerPartInclusiveInSalaryStructure">No</mat-radio-button>
-            </mat-radio-group>
+            <div class="col-md-6 my-2 border-bottom">
+                <mat-label>Is employer part Inclusive in salary structure</mat-label>
+                <mat-radio-group formControlName="isEmployerPartInclusiveInSalaryStructure">
+                    <mat-radio-button class="example-margin" [value]="true">Yes</mat-radio-button>
+                    <mat-radio-button class="example-margin" [value]="false">No</mat-radio-button>
+                </mat-radio-group>
+            </div>
         </div>
+
+
+        <mat-accordion class="example-headers-align">
+            <mat-expansion-panel>
+                <mat-expansion-panel-header class="header">
+                    <mat-panel-title>
+                        Tax and Statutory Settings
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div formGroupName="employeeSalaryTaxAndStatutorySetting">
+                    <div class="row">
+                        <div class="col-md-6 my-2 border-bottom">
+                            <mat-label>Variable Allowance is a part of CTC</mat-label>
+                            <mat-radio-group formControlName="isVariableAllowancePartOfCTC">
+                                <mat-radio-button class="example-margin" [value]="true">Yes</mat-radio-button>
+                                <mat-radio-button class="example-margin" [value]="false">No</mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+
+                        <div class="col-md-6 my-2 border-bottom">
+                            <mat-label>PF Deduction</mat-label>
+                            <mat-radio-group formControlName="isPFDeduction">
+                                <mat-radio-button class="example-margin" [value]="true">Yes</mat-radio-button>
+                                <mat-radio-button class="example-margin" [value]="false">No</mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+
+                        <div class="col-md-6 my-2 border-bottom">
+                            <mat-label>Provident Pension Deduction</mat-label>
+                            <mat-radio-group formControlName="isProvidentPensionDeduction">
+                                <mat-radio-button class="example-margin" [value]="true">Yes</mat-radio-button>
+                                <mat-radio-button class="example-margin" [value]="false">No</mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+
+                        <div class="col-md-6 my-2 border-bottom">
+                            <mat-label>Employee Provident Fund Capped At PF Ceiling</mat-label>
+                            <mat-radio-group formControlName="isEmployeeProvidentFundCappedAtPFCeiling">
+                                <mat-radio-button class="example-margin" [value]="true">Yes</mat-radio-button>
+                                <mat-radio-button class="example-margin" [value]="false">No</mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+
+                        <div class="col-md-6 my-2 border-bottom">
+                            <mat-label>Employer Provident Fund Capped At PF Ceiling</mat-label>
+                            <mat-radio-group formControlName="isEmployerProvidentFundCappedAtPFCeiling">
+                                <mat-radio-button class="example-margin" [value]="true">Yes</mat-radio-button>
+                                <mat-radio-button class="example-margin" [value]="false">No</mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+
+                        <div class="col-md-6 my-2 border-bottom">
+                            <mat-form-field appearance="outline">
+                                <mat-label>Fixed Amount For Provident Fund Wage</mat-label>
+                                <input matInput type="number" formControlName="fixedAmountForProvidentFundWage">
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-md-6 my-2 border-bottom">
+                            <mat-form-field appearance="outline">
+                                <mat-label>PF Template</mat-label>
+                                <mat-select formControlName="pfTemplate">
+                                    <mat-option value="Template 1">Template 1</mat-option>
+                                    <mat-option value="Template 2">Template 2</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-md-6 my-2 border-bottom">
+                            <mat-label>ESIC Deduction</mat-label>
+                            <mat-radio-group formControlName="isESICDeduction">
+                                <mat-radio-button class="example-margin" [value]="true">Yes</mat-radio-button>
+                                <mat-radio-button class="example-margin" [value]="false">No</mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+
+                        <div class="col-md-6 my-2 border-bottom">
+                            <mat-label>PT Deduction</mat-label>
+                            <mat-radio-group formControlName="isPTDeduction">
+                                <mat-radio-button class="example-margin" [value]="true">Yes</mat-radio-button>
+                                <mat-radio-button class="example-margin" [value]="false">No</mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+
+                        <div class="col-md-6 my-2 border-bottom">
+                            <mat-label>LWF Deduction</mat-label>
+                            <mat-radio-group formControlName="isLWFDeduction">
+                                <mat-radio-button class="example-margin" [value]="true">Yes</mat-radio-button>
+                                <mat-radio-button class="example-margin" [value]="false">No</mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+
+                        <div class="col-md-6 my-2 border-bottom">
+                            <mat-label>Gratuity Applicable</mat-label>
+                            <mat-radio-group formControlName="isGratuityApplicable">
+                                <mat-radio-button class="example-margin" [value]="true">Yes</mat-radio-button>
+                                <mat-radio-button class="example-margin" [value]="false">No</mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+
+                        <div class="col-md-6 my-2 border-bottom">
+                            <mat-form-field appearance="outline">
+                                <mat-label>Gratuity Template</mat-label>
+                                <mat-select formControlName="gratuityTemplate">
+                                    <mat-option value="Template 1">Template 1</mat-option>
+                                    <mat-option value="Template 2">Template 2</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-md-6 my-2 border-bottom">
+                            <mat-label>Income Tax Deduction</mat-label>
+                            <mat-radio-group formControlName="isIncomeTaxDeduction">
+                                <mat-radio-button class="example-margin" [value]="true">Yes</mat-radio-button>
+                                <mat-radio-button class="example-margin" [value]="false">No</mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+
+                        <div class="col-md-6 my-2 border-bottom">
+                            <mat-label>PF Charges Applicable</mat-label>
+                            <mat-radio-group formControlName="isPFChargesApplicable">
+                                <mat-radio-button class="example-margin" [value]="true">Yes</mat-radio-button>
+                                <mat-radio-button class="example-margin" [value]="false">No</mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+
+                        <div class="col-md-6 my-2 border-bottom">
+                            <mat-label>Round Off Applicable</mat-label>
+                            <mat-radio-group formControlName="isRoundOffApplicable">
+                                <mat-radio-button class="example-margin" [value]="true">Yes</mat-radio-button>
+                                <mat-radio-button class="example-margin" [value]="false">No</mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+                    </div>
+                </div>
+            </mat-expansion-panel>
+
+            <mat-expansion-panel [expanded]="true">
+                <mat-expansion-panel-header class="header">
+                    <mat-panel-title>
+                        Salary Component Fixed Allowance
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div formArrayName="salaryComponentFixedAllowance" *ngIf="!edit">
+                    <div
+                        *ngFor="let allowance of salaryDetailsForm.get('salaryComponentFixedAllowance')['controls']; let i = index">
+                        <ng-container [formGroupName]="i">
+                            <div class="row">
+                                <mat-form-field appearance="outline" class="col-md-4 my-2 border-bottom">
+                                    <mat-label>Fixed Allowance</mat-label>
+                                    <mat-select formControlName="fixedAllowance">
+                                        <mat-option *ngFor="let fa of fixedAllowance"
+                                            [value]="fa._id">{{fa?.label}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <mat-form-field appearance="outline" class="col-md-4 my-2 border-bottom">
+                                    <mat-label>Monthly Amount</mat-label>
+                                    <input matInput type="number" formControlName="monthlyAmount">
+                                </mat-form-field>
+                                <mat-form-field appearance="outline" class="col-md-4 my-2 border-bottom">
+                                    <mat-label>Yearly Amount</mat-label>
+                                    <input matInput type="number" formControlName="yearlyAmount">
+                                </mat-form-field>
+                            </div>
+                        </ng-container>
+                    </div>
+                    <button *ngIf="!edit" mat-raised-button (click)="addFixedAllowance()">Add Other Benefit</button>
+
+                </div>
+
+                <div *ngIf="edit">
+                    <table>
+                        <thead>
+                            <th>Fixed Allowance</th>
+                            <th>Monthly Amount</th>
+                            <th>Yearly Amount</th>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let fixedAll of salaryDetails?.fixedAllowanceList">
+                                <td>{{getFixedAllowance(fixedAll?.fixedAllowance)}}</td>
+                                <td>{{fixedAll?.monthlyAmount}}</td>
+                                <td>{{fixedAll?.yearlyAmount}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </mat-expansion-panel>
+
+            <mat-expansion-panel [expanded]="true">
+                <mat-expansion-panel-header class="header">
+                    <mat-panel-title>
+                        Salary Component Other Benefits
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div formArrayName="salaryComponentOtherBenefits" *ngIf="!edit">
+                    <div
+                        *ngFor="let benefit of salaryDetailsForm.get('salaryComponentOtherBenefits')['controls']; let i = index">
+                        <ng-container [formGroupName]="i">
+                            <div class="row">
+
+                                <mat-form-field appearance="outline" class="col-md-4 my-2 border-bottom">
+                                    <mat-label>Other Benefit</mat-label>
+                                    <mat-select formControlName="otherBenefits">
+                                        <mat-option *ngFor="let ob of otherBenefits"
+                                            [value]="ob._id">{{ob?.label}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <mat-form-field appearance="outline" class="col-md-4 my-2 border-bottom">
+                                    <mat-label>Monthly Amount</mat-label>
+                                    <input matInput type="number" formControlName="monthlyAmount">
+                                </mat-form-field>
+                                <mat-form-field appearance="outline" class="col-md-4 my-2 border-bottom">
+                                    <mat-label>Yearly Amount</mat-label>
+                                    <input matInput type="number" formControlName="yearlyAmount">
+                                </mat-form-field>
+                            </div>
+                        </ng-container>
+                    </div>
+                    <button *ngIf="!edit" mat-raised-button (click)="addOtherBenefit()">Add Other Benefit</button>
+                </div>
+                <div *ngIf="edit">
+                    <table>
+                        <thead>
+                            <th>Other Benefits</th>
+                            <th>Monthly Amount</th>
+                            <th>Yearly Amount</th>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let fixedAll of salaryDetails?.otherBenefitList">
+                                <td>{{getOtherBenefits(fixedAll?.otherBenefits)}}</td>
+                                <td>{{fixedAll?.monthlyAmount}}</td>
+                                <td>{{fixedAll?.yearlyAmount}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </mat-expansion-panel>
+
+            <mat-expansion-panel [expanded]="true">
+                <mat-expansion-panel-header class="header">
+                    <mat-panel-title>
+                        Salary Component Employer Contribution
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div formArrayName="salaryComponentEmployerContribution" *ngIf="!edit">
+                    <div
+                        *ngFor="let contribution of salaryDetailsForm.get('salaryComponentEmployerContribution')['controls']; let i = index">
+                        <ng-container [formGroupName]="i">
+                            <div class="row">
+
+                                <mat-form-field appearance="outline" class="col-md-4 my-2 border-bottom">
+                                    <mat-label>Employer Contribution</mat-label>
+                                    <mat-select formControlName="employerContribution">
+                                        <mat-option *ngFor="let ec of employerContribution"
+                                            [value]="ec._id">{{ec?.label}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <mat-form-field appearance="outline" class="col-md-4 my-2 border-bottom">
+                                    <mat-label>Monthly Amount</mat-label>
+                                    <input matInput type="number" formControlName="monthlyAmount">
+                                </mat-form-field>
+                                <mat-form-field appearance="outline" class="col-md-4 my-2 border-bottom">
+                                    <mat-label>Yearly Amount</mat-label>
+                                    <input matInput type="number" formControlName="yearlyAmount">
+                                </mat-form-field>
+                            </div>
+                        </ng-container>
+                    </div>
+                    <button *ngIf="!edit" mat-raised-button (click)="addEmployerContribution()">Add Employer
+                        Contribution</button>
+                </div>
+                <div *ngIf="edit">
+                    <table>
+                        <thead>
+                            <th>Employer Contribution</th>
+                            <th>Monthly Amount</th>
+                            <th>Yearly Amount</th>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let fixedAll of salaryDetails?.employerContributionList">
+                                <td>{{getEmployerContribution(fixedAll?.employerContribution)}}</td>
+                                <td>{{fixedAll?.monthlyAmount}}</td>
+                                <td>{{fixedAll?.yearlyAmount}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </mat-expansion-panel>
+
+            <mat-expansion-panel [expanded]="true">
+                <mat-expansion-panel-header class="header">
+                    <mat-panel-title>
+                        Salary Component Fixed Deduction
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div formArrayName="salaryComponentFixedDeduction" *ngIf="!edit">
+                    <div
+                        *ngFor="let deduction of salaryDetailsForm.get('salaryComponentFixedDeduction')['controls']; let i = index">
+                        <ng-container [formGroupName]="i">
+                            <div class="row">
+                                <mat-form-field appearance="outline" class="col-md-4 my-2 border-bottom">
+                                    <mat-label>Fixed Deduction</mat-label>
+                                    <mat-select formControlName="fixedDeduction">
+                                        <mat-option *ngFor="let fd of fixedDeduction"
+                                            [value]="fd._id">{{fd?.label}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <mat-form-field appearance="outline" class="col-md-4 my-2 border-bottom">
+                                    <mat-label>Monthly Amount</mat-label>
+                                    <input matInput type="number" formControlName="monthlyAmount">
+                                </mat-form-field>
+                                <mat-form-field appearance="outline" class="col-md-4 my-2 border-bottom">
+                                    <mat-label>Yearly Amount</mat-label>
+                                    <input matInput type="number" formControlName="yearlyAmount">
+                                </mat-form-field>
+                            </div>
+                        </ng-container>
+                    </div>
+                    <button *ngIf="!edit" mat-raised-button (click)="addFixedDeduction()">Add Fixed Deduction</button>
+                </div>
+                <div *ngIf="edit">
+                    <table>
+                        <thead>
+                            <th>Fixed Deduction</th>
+                            <th>Monthly Amount</th>
+                            <th>Yearly Amount</th>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let fixedAll of salaryDetails?.fixedDeductionList">
+                                <td>{{getOtherBenefits(fixedAll?.fixedDeduction)}}</td>
+                                <td>{{fixedAll?.monthlyAmount}}</td>
+                                <td>{{fixedAll?.yearlyAmount}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </mat-expansion-panel>
+
+            <mat-expansion-panel [expanded]="true">
+                <mat-expansion-panel-header class="header">
+                    <mat-panel-title>
+                        Salary Component Variable Allowance
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div formArrayName="salaryComponentVariableAllowance" *ngIf="!edit">
+                    <div
+                        *ngFor="let allowance of salaryDetailsForm.get('salaryComponentVariableAllowance')['controls']; let i = index">
+                        <ng-container [formGroupName]="i">
+                            <div class="row">
+                                <mat-form-field appearance="outline" class="col-md-4 my-2 border-bottom">
+                                    <mat-label>Variable Allowance</mat-label>
+                                    <mat-select formControlName="variableAllowance">
+                                        <mat-option *ngFor="let va of variableAllowance"
+                                            [value]="va._id">{{va?.label}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <mat-form-field appearance="outline" class="col-md-4 my-2 border-bottom">
+                                    <mat-label>Monthly Amount</mat-label>
+                                    <input matInput type="number" formControlName="monthlyAmount">
+                                </mat-form-field>
+                                <mat-form-field appearance="outline" class="col-md-4 my-2 border-bottom">
+                                    <mat-label>Yearly Amount</mat-label>
+                                    <input matInput type="number" formControlName="yearlyAmount">
+                                </mat-form-field>
+                            </div>
+                        </ng-container>
+                    </div>
+                    <button *ngIf="!edit" mat-raised-button (click)="addVariableAllowance()">Add Variable
+                        Allowance</button>
+                </div>
+                <div *ngIf="edit">
+                    <table>
+                        <thead>
+                            <th>Variable Allowance</th>
+                            <th>Monthly Amount</th>
+                            <th>Yearly Amount</th>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let fixedAll of salaryDetails?.variableAllowanceList">
+                                <td>{{getOtherBenefits(fixedAll?.variableAllowance)}}</td>
+                                <td>{{fixedAll?.monthlyAmount}}</td>
+                                <td>{{fixedAll?.yearlyAmount}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </mat-expansion-panel>
+
+            <mat-expansion-panel [expanded]="true">
+                <mat-expansion-panel-header class="header">
+                    <mat-panel-title>
+                        Salary Component Variable Deduction
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div formArrayName="salaryComponentVariableDeduction" *ngIf="!edit">
+                    <div
+                        *ngFor="let allowance of salaryDetailsForm.get('salaryComponentVariableDeduction')['controls']; let i = index">
+                        <ng-container [formGroupName]="i">
+                            <div class="row">
+                                <mat-form-field appearance="outline" class="col-md-4 my-2 border-bottom">
+                                    <mat-label>Variable Deduction</mat-label>
+                                    <mat-select formControlName="variableDeduction">
+                                        <mat-option *ngFor="let va of variableDeduction"
+                                            [value]="va._id">{{va?.label}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <mat-form-field appearance="outline" class="col-md-4 my-2 border-bottom">
+                                    <mat-label>Monthly Amount</mat-label>
+                                    <input matInput type="number" formControlName="monthlyAmount">
+                                </mat-form-field>
+                                <mat-form-field appearance="outline" class="col-md-4 my-2 border-bottom">
+                                    <mat-label>Yearly Amount</mat-label>
+                                    <input matInput type="number" formControlName="yearlyAmount">
+                                </mat-form-field>
+                            </div>
+                        </ng-container>
+                    </div>
+                    <button *ngIf="!edit" mat-raised-button (click)="addVariableDeduction()">Add Variable
+                        Deduction</button>
+                </div>
+                <div *ngIf="edit">
+                    <table>
+                        <thead>
+                            <th>Variable Deduction</th>
+                            <th>Monthly Amount</th>
+                            <th>Yearly Amount</th>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let fixedAll of salaryDetails?.variableDeductionList">
+                                <td>{{getVariableDeduction(fixedAll?.variableDeduction)}}</td>
+                                <td>{{fixedAll?.monthlyAmount}}</td>
+                                <td>{{fixedAll?.yearlyAmount}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </mat-expansion-panel>
+
+            <mat-expansion-panel [expanded]="true">
+                <mat-expansion-panel-header class="header">
+                    <mat-panel-title>
+                        Salary Component PF Charge
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div formArrayName="salaryComponentPFCharge">
+                    <div
+                        *ngFor="let allowance of salaryDetailsForm.get('salaryComponentPFCharge')['controls']; let i = index">
+                        <ng-container [formGroupName]="i">
+                            <div class="row">
+
+                                <mat-form-field appearance="outline" class="col-md-4 my-2 border-bottom">
+                                    <mat-label>PF Charge</mat-label>
+                                    <mat-select formControlName="pfCharge">
+                                        <mat-option *ngFor="let va of pfCharge"
+                                            [value]="va._id">{{va?.label}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <mat-form-field appearance="outline" class="col-md-4 my-2 border-bottom">
+                                    <mat-label>Monthly Amount</mat-label>
+                                    <input matInput type="number" formControlName="monthlyAmount">
+                                </mat-form-field>
+                                <mat-form-field appearance="outline" class="col-md-4 my-2 border-bottom">
+                                    <mat-label>Yearly Amount</mat-label>
+                                    <input matInput type="number" formControlName="yearlyAmount">
+                                </mat-form-field>
+                            </div>
+                        </ng-container>
+                    </div>
+                    <button *ngIf="!edit" mat-raised-button (click)="addPFCharge()">Add PF Charge</button>
+                </div>
+            </mat-expansion-panel>
+        </mat-accordion>
     </form>
-
-    <mat-accordion class="example-headers-align">
-
-        <mat-expansion-panel>
-            <mat-expansion-panel-header class="header">
-                <mat-panel-title>
-                    Tax and Statutory Settings
-                </mat-panel-title>
-
-            </mat-expansion-panel-header>
-            <div class="row">
-                <div class="col-md-6 my-2 border-bottom">
-                    <mat-label>Variable Allowance is a part of CTC</mat-label>
-                    <mat-radio-group>
-                        <mat-radio-button class="example-margin" value="after">Yes</mat-radio-button>
-                        <mat-radio-button class="example-margin" value="before">No</mat-radio-button>
-                    </mat-radio-group>
-                </div>
-
-                <div class="col-md-6 my-2 border-bottom">
-                    <mat-label>PF Deduction</mat-label>
-                    <mat-radio-group>
-                        <mat-radio-button class="example-margin" value="after">Yes</mat-radio-button>
-                        <mat-radio-button class="example-margin" value="before">No</mat-radio-button>
-                    </mat-radio-group>
-                </div>
-
-                <div class="col-md-6 my-2 border-bottom">
-                    <mat-label>Provident Pension Deduction</mat-label>
-                    <mat-radio-group>
-                        <mat-radio-button class="example-margin" value="after">Yes</mat-radio-button>
-                        <mat-radio-button class="example-margin" value="before">No</mat-radio-button>
-                    </mat-radio-group>
-                </div>
-
-                <div class="col-md-6 my-2 border-bottom">
-                    <mat-label>Employee's Provident Fund Contribution Capped at the PF Ceiling</mat-label>
-                    <mat-radio-group>
-                        <mat-radio-button class="example-margin" value="after">Yes</mat-radio-button>
-                        <mat-radio-button class="example-margin" value="before">No</mat-radio-button>
-                    </mat-radio-group>
-                </div>
-
-                <div class="col-md-6 my-2 border-bottom">
-                    <mat-label>Employer's Provident Fund Contribution Capped at the PF
-                        Ceiling</mat-label>
-                    <mat-radio-group>
-                        <mat-radio-button class="example-margin" value="after">Yes</mat-radio-button>
-                        <mat-radio-button class="example-margin" value="before">No</mat-radio-button>
-                    </mat-radio-group>
-                </div>
-
-                <mat-form-field appearance="outline" class="col-md-6 my-2 border-bottom">
-                    <mat-label>Would you like to set a fixed amount for your provident fund
-                        wage?</mat-label>
-                    <input type="number" matInput>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline" class="col-md-6 my-2 border-bottom">
-                    <mat-label>PF Template</mat-label>
-                    <mat-select [disabled]="disableSelect.value">
-                        <mat-option value="Team Lead">Team Lead</mat-option>
-                        <mat-option value="Project Manager">Project Manager</mat-option>
-                        <mat-option value="HR">HR</mat-option>
-                        <mat-option value="Junior Software Developer">Junior Software Developer</mat-option>
-                        <mat-option value="Senior Software Developer">Senior Software Developer</mat-option>
-                        <mat-option value="CEO">CEO</mat-option>
-                    </mat-select>
-                </mat-form-field>
-
-                <div class="col-md-6 my-2 border-bottom">
-                    <mat-label>ESIC Deduction</mat-label>
-                    <mat-radio-group>
-                        <mat-radio-button class="example-margin" value="after">Yes</mat-radio-button>
-                        <mat-radio-button class="example-margin" value="before">No</mat-radio-button>
-                    </mat-radio-group>
-                </div>
-
-                <div class="col-md-6 my-2 border-bottom">
-                    <mat-label>PT Deduction</mat-label>
-                    <mat-radio-group>
-                        <mat-radio-button class="example-margin" value="after">Yes</mat-radio-button>
-                        <mat-radio-button class="example-margin" value="before">No</mat-radio-button>
-                    </mat-radio-group>
-                </div>
-
-                <div class="col-md-6 my-2 border-bottom">
-                    <mat-label>LWF Deduction</mat-label>
-                    <mat-radio-group>
-                        <mat-radio-button class="example-margin" value="after">Yes</mat-radio-button>
-                        <mat-radio-button class="example-margin" value="before">No</mat-radio-button>
-                    </mat-radio-group>
-                </div>
-
-                <div class="col-md-6 my-2 border-bottom">
-                    <mat-label>Gratuity Applicable</mat-label>
-                    <mat-radio-group>
-                        <mat-radio-button class="example-margin" value="after">Yes</mat-radio-button>
-                        <mat-radio-button class="example-margin" value="before">No</mat-radio-button>
-                    </mat-radio-group>
-                </div>
-
-                <mat-form-field appearance="outline" class="col-md-6 my-2 border-bottom">
-                    <mat-label>Gratuity Template</mat-label>
-                    <mat-select [disabled]="disableSelect.value">
-                        <mat-option value="Team Lead">Team Lead</mat-option>
-                        <mat-option value="Project Manager">Project Manager</mat-option>
-                        <mat-option value="HR">HR</mat-option>
-                        <mat-option value="Junior Software Developer">Junior Software Developer</mat-option>
-                        <mat-option value="Senior Software Developer">Senior Software Developer</mat-option>
-                        <mat-option value="CEO">CEO</mat-option>
-                    </mat-select>
-                </mat-form-field>
-
-                <div class="col-md-6 my-2 border-bottom">
-                    <mat-label>Income Tax Deduction</mat-label>
-                    <mat-radio-group>
-                        <mat-radio-button class="example-margin" value="after">Yes</mat-radio-button>
-                        <mat-radio-button class="example-margin" value="before">No</mat-radio-button>
-                    </mat-radio-group>
-                </div>
-
-                <div class="col-md-6 my-2 border-bottom">
-                    <mat-label>Is PF Charges Applicable</mat-label>
-                    <mat-radio-group>
-                        <mat-radio-button class="example-margin" value="after">Yes</mat-radio-button>
-                        <mat-radio-button class="example-margin" value="before">No</mat-radio-button>
-                    </mat-radio-group>
-                </div>
-
-                <div class="col-md-6 my-2 border-bottom">
-                    <mat-label>Is the Round Off Applicable for this Employee?</mat-label>
-                    <mat-radio-group>
-                        <mat-radio-button class="example-margin" value="after">Yes</mat-radio-button>
-                        <mat-radio-button class="example-margin" value="before">No</mat-radio-button>
-                    </mat-radio-group>
-                </div>
-            </div>
-        </mat-expansion-panel>
-        <table class="panelTable">
-            <th>CTC Components</th>
-            <th>Monthly</th>
-            <th>Yearly</th>
-        </table>
-        <mat-expansion-panel>
-
-            <mat-expansion-panel-header>
-                <mat-panel-title>
-                    <table class="panelTable">
-                        <thead>
-                            <tr>
-                                <th class=" text-white panelHeading">Fixed Allowances</th>
-                                <th class=" text-white"><i class="bi bi-currency-rupee"></i>0.00</th>
-                                <th class=" text-white"><i class="bi bi-currency-rupee"></i>0.00</th>
-                            </tr>
-                        </thead>
-                    </table>
-                </mat-panel-title>
-            </mat-expansion-panel-header>
-            <!-- based on ctc template selection -->
-            <table class="contentTable bg-white">
-                <tbody>
-                    <tr>
-                        <td class="w-50">Enter the amount of Uniform Allowance</td>
-                        <td class="contentField">0.00</td>
-                        <td class="contentField2">0.00</td>
-                    </tr>
-                    <tr>
-                        <td>Enter the amount of Medical Allowance</td>
-                        <td class="contentField">0.00</td>
-                        <td class="contentField2">0.00</td>
-                    </tr>
-                    <tr>
-                        <td>Enter the amount of Special Allowance</td>
-                        <td class="contentField">0.00</td>
-                        <td class="contentField2">0.00</td>
-                    </tr>
-                </tbody>
-            </table>
-        </mat-expansion-panel>
-
-        <mat-expansion-panel>
-            <mat-expansion-panel-header class="header">
-                <mat-panel-title>
-                    <table class="panelTable">
-                        <thead>
-                            <tr>
-                                <th class=" text-white panelHeading">Other Benefit</th>
-                                <th class=" text-white"><i class="bi bi-currency-rupee"></i>0.00</th>
-                                <th class=" text-white"><i class="bi bi-currency-rupee"></i>0.00</th>
-                            </tr>
-                        </thead>
-                    </table>
-                </mat-panel-title>
-
-            </mat-expansion-panel-header>
-            <table class="contentTable bg-white">
-                <tbody>
-                    <tr>
-                        <td class="w-50">Enter the amount of Uniform Allowance</td>
-                        <td class="contentField">0.00</td>
-                        <td class="contentField2">0.00</td>
-                    </tr>
-                    <tr>
-                        <td>Enter the amount of Medical Allowance</td>
-                        <td class="contentField">0.00</td>
-                        <td class="contentField2">0.00</td>
-                    </tr>
-                    <tr>
-                        <td>Enter the amount of Special Allowance</td>
-                        <td class="contentField">0.00</td>
-                        <td class="contentField2">0.00</td>
-                    </tr>
-                </tbody>
-            </table>
-
-        </mat-expansion-panel>
-
-        <mat-expansion-panel>
-            <mat-expansion-panel-header class="header">
-                <mat-panel-title>
-
-                    <table class="panelTable">
-                        <thead>
-                            <tr>
-                                <th class=" text-white panelHeading">Total Employer Statutory Contributions</th>
-                                <th class=" text-white"><i class="bi bi-currency-rupee"></i>0.00</th>
-                                <th class=" text-white"><i class="bi bi-currency-rupee"></i>0.00</th>
-                            </tr>
-                        </thead>
-                    </table>
-                </mat-panel-title>
-            </mat-expansion-panel-header>
-
-            <table class="contentTable bg-white">
-                <tbody>
-                    <tr>
-                        <td class="w-50">Enter the amount of Uniform Allowance</td>
-                        <td class="contentField">0.00</td>
-                        <td class="contentField2">0.00</td>
-                    </tr>
-                    <tr>
-                        <td>Enter the amount of Medical Allowance</td>
-                        <td class="contentField">0.00</td>
-                        <td class="contentField2">0.00</td>
-                    </tr>
-                    <tr>
-                        <td>Enter the amount of Special Allowance</td>
-                        <td class="contentField">0.00</td>
-                        <td class="contentField2">0.00</td>
-                    </tr>
-                </tbody>
-            </table>
-        </mat-expansion-panel>
-
-        <mat-expansion-panel>
-            <mat-expansion-panel-header class="header">
-                <mat-panel-title>
-
-                    <table class="panelTable">
-                        <thead>
-                            <tr>
-                                <th class=" text-white panelHeading">Fixed Deductions</th>
-                                <th class=" text-white"><i class="bi bi-currency-rupee"></i>0.00</th>
-                                <th class=" text-white"><i class="bi bi-currency-rupee"></i>0.00</th>
-                            </tr>
-                        </thead>
-                    </table>
-                </mat-panel-title>
-
-            </mat-expansion-panel-header>
-
-            <table class="contentTable bg-white">
-                <tbody>
-                    <tr>
-                        <td class="w-50">Enter the amount of Uniform Allowance</td>
-                        <td class="contentField">0.00</td>
-                        <td class="contentField2">0.00</td>
-                    </tr>
-                    <tr>
-                        <td>Enter the amount of Medical Allowance</td>
-                        <td class="contentField">0.00</td>
-                        <td class="contentField2">0.00</td>
-                    </tr>
-                    <tr>
-                        <td>Enter the amount of Special Allowance</td>
-                        <td class="contentField">0.00</td>
-                        <td class="contentField2">0.00</td>
-                    </tr>
-                </tbody>
-            </table>
-
-        </mat-expansion-panel>
-
-        <mat-expansion-panel>
-            <mat-expansion-panel-header class="header">
-                <mat-panel-title>
-
-                    <table class="panelTable">
-                        <thead>
-                            <tr>
-                                <th class=" text-white panelHeading">Variable Allowances</th>
-                                <th class=" text-white"><i class="bi bi-currency-rupee"></i>0.00</th>
-                                <th class=" text-white"><i class="bi bi-currency-rupee"></i>0.00</th>
-                            </tr>
-                        </thead>
-                    </table>
-                </mat-panel-title>
-            </mat-expansion-panel-header>
-            <button class="btn submenuTab active rounded-pill my-2">Add</button>
-            <div class="d-flex justify-content-between">
-                <select id="" class="w-50">
-                    <option value="">Variable Allowances</option>
-                </select>
-                <input type="number" placeholder="Enter the amount">
-                <button><i class="bi bi-trash"></i></button>
-            </div>
-        </mat-expansion-panel>
-
-        <mat-expansion-panel>
-            <mat-expansion-panel-header class="header">
-                <mat-panel-title>
-                    <table class="panelTable">
-                        <thead>
-                            <tr>
-                                <th class=" text-white panelHeading">Variable Deductions</th>
-                                <th class=" text-white"><i class="bi bi-currency-rupee"></i>0.00</th>
-                                <th class=" text-white"><i class="bi bi-currency-rupee"></i>0.00</th>
-                            </tr>
-                        </thead>
-                    </table>
-                </mat-panel-title>
-            </mat-expansion-panel-header>
-            <button class="btn submenuTab active rounded-pill my-2">Add</button>
-            <div class="d-flex justify-content-between">
-                <select id="" class="w-50">
-                    <option value="">Variable Deduction</option>
-                </select>
-                <input type="number" placeholder="Enter the amount">
-                <button><i class="bi bi-trash"></i></button>
-            </div>
-        </mat-expansion-panel>
-
-        <mat-expansion-panel>
-            <mat-expansion-panel-header class="header">
-                <mat-panel-title>
-                    <table class="panelTable">
-                        <thead>
-                            <tr>
-                                <th class=" text-white panelHeading">PF Charges</th>
-                                <th class=" text-white"><i class="bi bi-currency-rupee"></i>0.00</th>
-                                <th class=" text-white"><i class="bi bi-currency-rupee"></i>0.00</th>
-                            </tr>
-                        </thead>
-                    </table>
-                </mat-panel-title>
-            </mat-expansion-panel-header>
-            <table class="contentTable bg-white">
-                <tbody>
-                    <tr>
-                        <td class="w-50">Enter the amount of Uniform Allowance</td>
-                        <td class="contentField">0.00</td>
-                        <td class="contentField2">0.00</td>
-                    </tr>
-                    <tr>
-                        <td>Enter the amount of Medical Allowance</td>
-                        <td class="contentField">0.00</td>
-                        <td class="contentField2">0.00</td>
-                    </tr>
-                    <tr>
-                        <td>Enter the amount of Special Allowance</td>
-                        <td class="contentField">0.00</td>
-                        <td class="contentField2">0.00</td>
-                    </tr>
-                </tbody>
-            </table>
-        </mat-expansion-panel>
-
-
-        <mat-expansion-panel>
-            <mat-expansion-panel-header class="header">
-                <mat-panel-title>
-                    <table class="panelTable">
-                        <th>Consolidated Output</th>
-                        <th>Monthly</th>
-                        <th>Yearly</th>
-                    </table>
-                </mat-panel-title>
-            </mat-expansion-panel-header>
-            <table class="contentTable bg-white">
-                <tbody>
-                    <tr>
-                        <td class="w-50">Total CTC (Excluding Variable & Other Benefits)</td>
-                        <td class="contentField">0.00</td>
-                        <td class="contentField2">0.00</td>
-                    </tr>
-                    <tr>
-                        <td>Total CTC (Including Variable)</td>
-                        <td class="contentField">0.00</td>
-                        <td class="contentField2">0.00</td>
-                    </tr>
-                </tbody>
-            </table>
-        </mat-expansion-panel>
-    </mat-accordion>
-
 </div>
