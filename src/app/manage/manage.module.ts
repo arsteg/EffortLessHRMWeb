@@ -24,7 +24,8 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { ViewSalaryDetailsComponent } from '../users/employee-settings/salary-details/view-salary-details/view-salary-details.component';
 import { AddSalaryDetailsComponent } from '../users/employee-settings/salary-details/add-salary-details/add-salary-details.component';
 import { ViewLoansAdvancesComponent } from '../users/employee-settings/loans-advances/view-loans-advances/view-loans-advances.component';
-import {  NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { EmployeeProfileComponent } from '../users/employee-settings/employee-profile/employee-profile.component';
 
 @NgModule({
   declarations: [
@@ -34,9 +35,10 @@ import {  NgbModule } from '@ng-bootstrap/ng-bootstrap';
     StatutoryDetailsComponent,
     UserLoansAdvancesComponent,
     ViewSalaryDetailsComponent,
-    TaxComponent, 
+    TaxComponent,
     AddSalaryDetailsComponent,
-    ViewLoansAdvancesComponent
+    ViewLoansAdvancesComponent,
+    EmployeeProfileComponent
   ],
   imports: [
     CommonModule,
@@ -52,7 +54,8 @@ import {  NgbModule } from '@ng-bootstrap/ng-bootstrap';
     ViewSalaryDetailsComponent,
     AddSalaryDetailsComponent,
     ViewLoansAdvancesComponent,
-    TaxComponent, ],
+    TaxComponent,
+    EmployeeProfileComponent],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,
     NO_ERRORS_SCHEMA

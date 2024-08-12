@@ -34,7 +34,7 @@ export class UserLoansAdvancesComponent {
   ) {
     this.loansAdvancesForm = this.fb.group({
       user: ['', Validators.required],
-      category: ['', Validators.required],
+      loanAdvancesCategory: ['', Validators.required],
       amount: [0, Validators.required],
       repaymentFrequency: ['', Validators.required]
     })
@@ -77,6 +77,7 @@ export class UserLoansAdvancesComponent {
       return `with: ${reason}`;
     }
   }
+
   open(content: any) {
     let payload = {
       skip: '',
@@ -144,6 +145,18 @@ export class UserLoansAdvancesComponent {
     this.userService.getLoansAdvancesByUserId(this.selectedUser.id, pagination).subscribe((res: any) => {
       this.loansAdvances = res.data;
       this.totalRecords = res.total;
+    });
+    let payload = {
+      skip: '',
+      next: ''
+    }
+    this.payroll.getLoans(payload).subscribe((res: any) => {
+      this.loansAdvancesCategories = res.data;
     })
+  }
+
+  getRecord(categoryId: string) {
+    const matchingRecord = this.loansAdvancesCategories?.find(rec => rec._id === categoryId);
+    return matchingRecord.name;
   }
 }

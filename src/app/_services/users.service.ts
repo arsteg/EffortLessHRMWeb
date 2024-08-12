@@ -187,6 +187,12 @@ export class UserService {
   addStatutoryDetails(payload: any): Observable<any> {
     return this.http.post<any>(`${environment.apiUrlDotNet}/users/employee-salutatory-details`, payload, this.httpOptions);
   }
+  updateStatutoryDetails(id, payload): Observable<any> {
+    return this.http.put<any>(`${environment.apiUrlDotNet}/users/employee-salutatory-details/${id}`, payload, this.httpOptions);
+  }
+  getStatutoryByUserId(id: string): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrlDotNet}/users/employee-salutatory-details-by-user/${id}`, this.httpOptions);
+  }
 
   // Loans Advances
   addLoansAdvances(payload: any): Observable<any> {

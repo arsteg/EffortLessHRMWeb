@@ -22,7 +22,7 @@
 
         <mat-form-field appearance="outline" class="col-md-6">
           <mat-label>How is the Employee Salary Paid?</mat-label>
-          <mat-select [disabled]="disableSelect.value">
+          <mat-select>
             <mat-option value="Bank Transfer">Bank Transfer</mat-option>
             <mat-option value="Salary Accounts">Salary Accounts</mat-option>
             <mat-option value="Digital Wallets">Digital Wallets</mat-option>
@@ -75,15 +75,15 @@
 
         <mat-form-field appearance="outline" class="col-md-6">
           <mat-label>Location</mat-label>
-          <mat-select [disabled]="disableSelect.value" formControlName="location">
-            <mat-option *ngFor="let location of locations"
-              value="{{location?._id}}">{{location?.locationCode}}, {{location?.city}}, {{location?.state}}, {{location?.country}} </mat-option>
+          <mat-select formControlName="location">
+            <mat-option *ngFor="let location of locations" value="{{location?._id}}">{{location?.locationCode}},
+              {{location?.city}}, {{location?.state}}, {{location?.country}} </mat-option>
           </mat-select>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="col-md-6">
           <mat-label>Designation</mat-label>
-          <mat-select [disabled]="disableSelect.value" formControlName="designation">
+          <mat-select formControlName="designation">
             <mat-option *ngFor="let designation of designations"
               value="{{designation?._id}}">{{designation?.designation}}</mat-option>
             <!-- <mat-option value="Team Lead">Team Lead</mat-option>
@@ -97,7 +97,7 @@
 
         <mat-form-field appearance="outline" class="col-md-6">
           <mat-label>Employment Type</mat-label>
-          <mat-select [disabled]="disableSelect.value" formControlName="employmentType">
+          <mat-select formControlName="employmentType">
             <mat-option value="Full-time employment">Full-time employment</mat-option>
             <mat-option value="Part-time employment"> Part-time employment</mat-option>
             <mat-option value="Apprenticeship">Apprenticeship</mat-option>
@@ -113,66 +113,32 @@
 
         <mat-form-field appearance="outline" class="col-md-6">
           <mat-label>Reporting Supervisor</mat-label>
-          <mat-select [disabled]="disableSelect.value" formControlName="reportingSupervisor">
-            <mat-option *ngFor="let supervisor of supervisors.data" value="{{supervisor?.id}}">{{supervisor?.firstName}}
+          <mat-select formControlName="reportingSupervisor">
+            <mat-option *ngFor="let supervisor of supervisors" value="{{supervisor?.id}}">{{supervisor?.firstName}}
               {{supervisor?.lastName}}</mat-option>
-
-            <!-- <mat-option value="Team Lead">Team Lead</mat-option>
-            <mat-option value="Project Manager">Project Manager</mat-option>
-            <mat-option value="HR">HR</mat-option>
-            <mat-option value="Junior Software Developer">Junior Software Developer</mat-option>
-            <mat-option value="Senior Software Developer">Senior Software Developer</mat-option>
-            <mat-option value="CEO">CEO</mat-option> -->
           </mat-select>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="col-md-6">
           <mat-label>Department</mat-label>
-          <mat-select [disabled]="disableSelect.value" formControlName="department">
+          <mat-select formControlName="department">
             <mat-option *ngFor="let department of departments"
               value="{{department?._id}}">{{department?.departmentName}}</mat-option>
-            <!-- <mat-option value="CEO">CEO</mat-option>
-            <mat-option value="CTO">CTO</mat-option>
-            <mat-option value="CIO/Chief Digital Officer/Chief Innovation Officer">CIO/Chief Digital Officer/Chief Innovation Officer</mat-option>
-            <mat-option value="VP of Product Management/Head of Product">VP of Product Management/Head of Product</mat-option>
-            <mat-option value="Product Manager">Product Manager</mat-option>
-            <mat-option value="VP of Marketing">VP of Marketing</mat-option>
-            <mat-option value="VP of Engineering/Director of Engineering">VP of Engineering/Director of Engineering</mat-option>
-            <mat-option value="Technical Lead/Engineering Lead/Team Lead">Technical Lead/Engineering Lead/Team Lead</mat-option>
-            <mat-option value="Intern Software Developer">Intern Software Developer</mat-option>
-            <mat-option value="Software Engineer">Software Engineer</mat-option>
-            <mat-option value="Junior Software Developer">Junior Software Developer</mat-option>
-            <mat-option value="Senior Software Developer">Senior Software Developer</mat-option>
-            <mat-option value="CEO">CEO</mat-option> -->
           </mat-select>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="col-md-6">
           <mat-label>Band</mat-label>
-          <mat-select [disabled]="disableSelect.value" formControlName="band">
+          <mat-select formControlName="band">
             <mat-option *ngFor="let band of bands" value="{{band?._id}}">{{band?.band}}</mat-option>
-
-            <!-- <mat-option value="Team Lead">Team Lead</mat-option>
-            <mat-option value="Project Manager">Project Manager</mat-option>
-            <mat-option value="HR">HR</mat-option>
-            <mat-option value="Junior Software Developer">Junior Software Developer</mat-option>
-            <mat-option value="Senior Software Developer">Senior Software Developer</mat-option>
-            <mat-option value="CEO">CEO</mat-option> -->
           </mat-select>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="col-md-6">
           <mat-label>Sub-Department</mat-label>
-          <mat-select [disabled]="disableSelect.value" formControlName="subDepartments">
+          <mat-select formControlName="subDepartments">
             <mat-option *ngFor="let subDepartment of subDepartments"
               value="{{subDepartment?._id}}">{{subDepartment?.subDepartmentName}}</mat-option>
-
-            <!-- <mat-option value="Team Lead">Team Lead</mat-option>
-            <mat-option value="Project Manager">Project Manager</mat-option>
-            <mat-option value="HR">HR</mat-option>
-            <mat-option value="Junior Software Developer">Junior Software Developer</mat-option>
-            <mat-option value="Senior Software Developer">Senior Software Developer</mat-option>
-            <mat-option value="CEO">CEO</mat-option> -->
           </mat-select>
         </mat-form-field>
 
@@ -185,7 +151,7 @@
 
         <mat-form-field appearance="outline" class="col-md-6">
           <mat-label>Employment Status</mat-label>
-          <mat-select [disabled]="disableSelect.value">
+          <mat-select>
             <mat-option value="Team Lead">Team Lead</mat-option>
             <mat-option value="Project Manager">Project Manager</mat-option>
             <mat-option value="HR">HR</mat-option>
@@ -196,20 +162,13 @@
         </mat-form-field>
         <mat-form-field appearance="outline" class="col-md-6">
           <mat-label>Organization</mat-label>
-          <input type="text" matInput formControlName="organization" [value]="this.selectedUser?.company?.companyName">
+          <input type="text" matInput [value]="this.selectedUser?.company?.companyName">
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="col-md-6">
           <mat-label>Zone</mat-label>
-          <mat-select [disabled]="disableSelect.value" formControlName="zone">
+          <mat-select formControlName="zone">
             <mat-option *ngFor="let zone of zones" value="{{zone?._id}}">{{zone?.zoneName}}</mat-option>
-
-            <!-- <mat-option value="Team Lead">Team Lead</mat-option>
-            <mat-option value="Project Manager">Project Manager</mat-option>
-            <mat-option value="HR">HR</mat-option>
-            <mat-option value="Junior Software Developer">Junior Software Developer</mat-option>
-            <mat-option value="Senior Software Developer">Senior Software Developer</mat-option>
-            <mat-option value="CEO">CEO</mat-option> -->
           </mat-select>
         </mat-form-field>
 

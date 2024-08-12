@@ -17,20 +17,16 @@
             <th>Category</th>
             <th>Repayment Frequency</th>
             <th>Disbursed Amount</th>
-
             <th>Actions</th>
         </thead>
         <tbody>
             <tr *ngFor="let data of loansAdvances | search:searchText">
-                <td>{{data?.category}}</td>
+                <td>{{getRecord(data?.loanAdvancesCategory)}}</td>
                 <td>{{data?.repaymentFrequency}}</td>
                 <td>{{data?.amount}}</td>
 
                 <td>
-                    <button class="actions" mat-mini-fab title="View" (click)="open(viewModal)"
-                        aria-label="Example icon button with a menu icon">
-                        <i class="bi bi-eye-fill"></i>
-                    </button>
+                    
                     <button class="actions mx-2" mat-mini-fab title="Edit"
                         (click)="isEdit = true; selectedRecord = data; edit(); open(modal)"
                         aria-label="Example icon button with a menu icon">
@@ -59,7 +55,7 @@
     <form [formGroup]="loansAdvancesForm" (ngSubmit)="onSubmission()">
         <div class="form-group">
             <label for="">Select Category</label>
-            <select name="" id="" formControlName="category">
+            <select name="" id="" formControlName="loanAdvancesCategory">
                 <option value="" disabled>Select Category</option>
                 <option [value]="loansAdvancesCatgeory?._id" *ngFor="let loansAdvancesCatgeory of loansAdvancesCategories">{{loansAdvancesCatgeory?.name}}</option>
             </select>

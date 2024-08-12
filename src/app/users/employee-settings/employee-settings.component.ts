@@ -7,12 +7,11 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 })
 export class EmployeeSettingsComponent {
   @Output() backToUserView = new EventEmitter<void>();
-  activeTab: string = 'tabEmploymentDetails';
+  activeTab: string = 'tabEmploymentProfile';
   @Input() selectedUser: any;
-  
-  ngOnInit() {
-    console.log('test', this.selectedUser);
-  }
+
+  ngOnInit() { }
+
   selectTab(tabId: string) {
     this.activeTab = tabId;
   }
