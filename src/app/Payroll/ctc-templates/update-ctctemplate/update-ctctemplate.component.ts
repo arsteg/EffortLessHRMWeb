@@ -16,6 +16,8 @@ export class UpdateCTCTemplateComponent {
   fixedDeduction: any;
   otherBenefits: any;
   fixedContribution: any;
+  variableAllowance: any;
+  variableDeduction: any;
   showAssignedTemplates = false;
   ctcTemplateForm: FormGroup;
 
@@ -101,6 +103,12 @@ export class UpdateCTCTemplateComponent {
     });
     this.payroll.getFixedContribution(payload).subscribe((res: any) => {
       this.fixedContribution = res.data;
+    });
+    this.payroll.getVariableAllowance(payload).subscribe((res: any) => {
+      this.variableAllowance = res.data.filter((item: any) => item.isShowInCTCStructure === true);
+    });
+    this.payroll.getVariableDeduction(payload).subscribe((res: any) => {
+      this.variableDeduction = res.data.filter((item: any) => item.isShowINCTCStructure === true);
     });
   }
 

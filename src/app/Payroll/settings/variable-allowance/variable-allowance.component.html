@@ -93,7 +93,7 @@
     </div>
 
     <ng-template #modal let-modal>
-        <div class="modal-header border-bottom mb-2 pt-0">
+        <div class="modal-header border-bottom d-flex justify-content-between mb-2 pt-0">
             <div>
                 <h1 class="modal-title text-muted mb-0">{{isEdit? 'Update': 'Add'}} Variable Allowance</h1>
             </div>
@@ -272,7 +272,7 @@
                     </div>
                 </div>
 
-                <div class="form-group mt-2">
+                <div class="form-check mt-2 col-md-6">
                     <mat-form-field appearance="outline" class="w-100 mx-1">
                         <mat-label>For which Tax Regimes will the Income Tax be calculated?</mat-label>
                         <!-- for single selection, pass a sstring -->
@@ -314,7 +314,7 @@
                 </div>
             </div>
 
-            <div class="form-group mt-2">
+            <div class="form-check mt-2 col-md-6">
                 <label for="">How frequently does the Employee get paid this variable allowance?</label>
                 <select id="" formControlName="paidAllowanceFrequently">
                     <option value="Monthly">Monthly</option>
@@ -361,7 +361,7 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group mt-2" *ngIf="variableAllowanceForm.get('isEndingPeriod').value === true">
+            <div class="form-check mt-2 col-md-6" *ngIf="variableAllowanceForm.get('isEndingPeriod').value === true">
                 <label for="">From when do you wish to stop applying this variable allowance?</label>
                 <div class="d-flex justify-content-between">
                     <select id="" formControlName="allowanceStopMonth">
@@ -375,7 +375,7 @@
                 </div>
             </div>
 
-            <div class="form-group mt-2">
+            <div class="form-check mt-2 col-md-6">
                 <label for="">How would you like to enter the amount for this variable allowance?</label>
                 <select id="" formControlName="amountEnterForThisVariableAllowance">
                     <option value="Manually at the time of running payroll">Manually at the time of running payroll
@@ -386,7 +386,7 @@
                     <option value="Percentage of Gross salary paid">Percentage of Gross salary paid</option>
                 </select>
             </div>
-            <div class="form-group mt-2" *ngIf="variableAllowanceForm.get('amountEnterForThisVariableAllowance').value=='Fixed Amount'">
+            <div class="form-check mt-2 col-md-6" *ngIf="variableAllowanceForm.get('amountEnterForThisVariableAllowance').value=='Fixed Amount'">
                 <label for="">Provide the Amount</label>
                 <input type="number" class="form-control" formControlName="amount">
             </div>
@@ -400,7 +400,7 @@
                 </div> -->
             </div>
 
-            <div class="form-group mt-2">
+            <div class="form-check mt-2 col-md-6">
                 <mat-form-field appearance="outline" class="w-100 mx-1">
                     <mat-label>Select Employee</mat-label>
                     <mat-select multiple formControlName="variableAllowanceApplicableEmployee">

@@ -15,6 +15,8 @@ export class AssignedTemplatesComponent {
   @Input() isEdit: boolean = false;
   fixedAllowanceData: any;
   fixedDeductionData: any;
+  variableAllowanceData: any;
+  variableDeductionData: any;9999
 
   constructor(private payroll: PayrollService,
     private fb: FormBuilder
@@ -43,11 +45,20 @@ export class AssignedTemplatesComponent {
     this.fixedDeductionData = data;
   }
 
+  onVariableAllowanceDataChange(data: any) {
+    this.variableAllowanceData = data;
+  }
+  onVariableDeductionDataChange(data: any) {
+    this.variableDeductionData = data;
+  }
+
   onSubmission() {
     let payload = {
       name: this.data.name,
       ctcTemplateFixedAllowance: this.fixedAllowanceData,
       ctcTemplateFixedDeduction: this.fixedDeductionData,
+      ctcTemplateVariableAllowance: this.variableAllowanceData,
+      ctcTemplateVariableDeduction: this.variableDeductionData,
       ctcTemplateEmployerContribution: this.data.ctcTemplateEmployerContribution.map(fixedContribution => ({ fixedContribution, value: 'As per the Norms' })),
       ctcTemplateOtherBenefitAllowance: this.data.ctcTemplateOtherBenefitAllowance.map(otherBenefit => ({ otherBenefit, value: 'As per the Norms' })),
       ctcTemplateEmployeeDeduction: this.data.ctcTemplateEmployeeDeduction.map(fixedDeduction => ({ fixedDeduction, value: 'As per the Norms' }))
@@ -56,7 +67,7 @@ export class AssignedTemplatesComponent {
       this.payroll.updateCTCTemplate(this.selectedRecord._id, payload).subscribe((res: any) => {
       })
     }
-    else{
+    else {
     }
   }
 

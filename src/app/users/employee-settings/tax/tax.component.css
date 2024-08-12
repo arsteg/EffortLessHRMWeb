@@ -1,0 +1,23 @@
+.text-reset {
+    position: fixed;
+    border-radius: 100%;
+    margin-top: 5%;
+    margin-left: -25px;
+    padding: 15px 20px;
+    cursor: pointer;
+    border: none;
+    opacity: 0.8;
+    background-color: #76bc21;
+}
+
+ul {
+    color: #647293;
+}
+
+li {
+    display: flex;
+}
+
+.offcanvas-header {
+    display: block !important;
+}

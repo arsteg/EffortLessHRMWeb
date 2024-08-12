@@ -26,6 +26,8 @@ import { AddSalaryDetailsComponent } from '../users/employee-settings/salary-det
 import { ViewLoansAdvancesComponent } from '../users/employee-settings/loans-advances/view-loans-advances/view-loans-advances.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { EmployeeProfileComponent } from '../users/employee-settings/employee-profile/employee-profile.component';
+import { TaxCalculatorComponent } from '../users/employee-settings/tax/tax-calculator/tax-calculator.component';
+import { EditTaxComponent } from '../users/employee-settings/tax/edit-tax/edit-tax.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +40,10 @@ import { EmployeeProfileComponent } from '../users/employee-settings/employee-pr
     TaxComponent,
     AddSalaryDetailsComponent,
     ViewLoansAdvancesComponent,
-    EmployeeProfileComponent
+    EmployeeProfileComponent,
+    TaxCalculatorComponent,
+    EditTaxComponent,
+
   ],
   imports: [
     CommonModule,
@@ -55,7 +60,10 @@ import { EmployeeProfileComponent } from '../users/employee-settings/employee-pr
     AddSalaryDetailsComponent,
     ViewLoansAdvancesComponent,
     TaxComponent,
-    EmployeeProfileComponent],
+    EmployeeProfileComponent,
+    TaxCalculatorComponent,
+    EditTaxComponent,
+  ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,
     NO_ERRORS_SCHEMA

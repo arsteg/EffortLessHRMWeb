@@ -60,6 +60,8 @@ import { Step7Component } from './run-payroll/payroll-steps/step-7/step-7.compon
 import { Step8Component } from './run-payroll/payroll-steps/step-8/step-8.component';
 import { Step9Component } from './run-payroll/payroll-steps/step-9/step-9.component';
 import { ViewPayslipComponent } from './run-payroll/payroll-steps/step-9/view-payslip/view-payslip.component';
+import { VarAllowanceComponent } from './ctc-templates/assigned-templates/var-allowance/var-allowance.component';
+import { VarDeductionComponent } from './ctc-templates/assigned-templates/var-deduction/var-deduction.component';
 
 @NgModule({
   declarations: [
@@ -114,7 +116,9 @@ import { ViewPayslipComponent } from './run-payroll/payroll-steps/step-9/view-pa
     Step7Component,
     Step8Component,
     Step9Component,
-    ViewPayslipComponent
+    ViewPayslipComponent,
+    VarAllowanceComponent,
+    VarDeductionComponent
   ],
   imports: [
     CommonModule, 

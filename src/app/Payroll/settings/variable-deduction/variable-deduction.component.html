@@ -48,7 +48,7 @@
 </div>
 
 <ng-template #modal let-modal>
-    <div class="modal-header border-bottom mb-2 pt-0">
+    <div class="modal-header d-flex justify-content-between border-bottom mb-2 pt-0">
         <div>
             <h1 class="modal-title text-muted mb-0">{{isEdit? 'Update': 'Add'}} Variable Deduction</h1>
         </div>
@@ -57,197 +57,211 @@
         </div>
     </div>
     <form [formGroup]="variableDeductionForm" (ngSubmit)="onSubmission()">
-        <div class="form-group">
-            <label for="">What is the label of this variable deduction? <span class="text-danger">*</span></label>
-            <input type="text" class="form-control" formControlName="label" placeholder="Deduction Name" />
-            <div
-                *ngIf="variableDeductionForm.get('label').invalid && (variableDeductionForm.get('label').dirty || variableDeductionForm.get('label').touched)">
-                <small class="text-danger" *ngIf="variableDeductionForm.get('label')['errors']['required']">Field is
-                    required</small>
-            </div>
-        </div>
-
-        <div class="form-group mt-2">
-            <label for="">Does this Variable deduction show up in CTC structure? <span
-                    class="text-danger">*</span></label>
-            <div class="d-flex">
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" id="isShowINCTCStructure-yes"
-                        formControlName="isShowINCTCStructure" required [value]="true">
-                    <label class="form-check-label" for="isShowINCTCStructure-yes">
-                        Yes
-                    </label>
-                </div>
-
-
-                <div class="form-check ms-3">
-                    <input class="form-check-input" type="radio" id="isShowINCTCStructure-no" required
-                        formControlName="isShowINCTCStructure" [value]="false">
-                    <label class="form-check-label" for="isShowINCTCStructure-no">
-                        No
-                    </label>
+        <div class="row">
+            <div class="form-group">
+                <label for="">What is the label of this variable deduction? <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" formControlName="label" placeholder="Deduction Name" />
+                <div
+                    *ngIf="variableDeductionForm.get('label').invalid && (variableDeductionForm.get('label').dirty || variableDeductionForm.get('label').touched)">
+                    <small class="text-danger" *ngIf="variableDeductionForm.get('label')['errors']['required']">Field is
+                        required</small>
                 </div>
             </div>
-            <div
-                *ngIf="variableDeductionForm.get('isShowINCTCStructure').invalid && (variableDeductionForm.get('isShowINCTCStructure').dirty || variableDeductionForm.get('isShowINCTCStructure').touched)">
-                <small class="text-danger" *ngIf="variableDeductionForm.get('isShowINCTCStructure')['errors']['required']">Field is
-                    required</small>
-            </div>
-        </div>
 
-        <div class="form-group mt-2">
-            <label for="">How frequently does employee pay this variable deduction?</label>
-            <select name="" id="" formControlName="paidDeductionFrequently" class="form-select">
-                <option value="Monthly">Monthly</option>
-                <option value="Quaterly">Quaterly</option>
-                <option value="Half Yearly">Half Yearly</option>
-                <option value="Yearly">Yearly</option>
-            </select>
-            <div
-                *ngIf="variableDeductionForm.get('paidDeductionFrequently').invalid && (variableDeductionForm.get('paidDeductionFrequently').dirty || variableDeductionForm.get('paidDeductionFrequently').touched)">
-                <small class="text-danger" *ngIf="variableDeductionForm.get('paidDeductionFrequently')['errors']['required']">Field is
-                    required</small>
-            </div>
-        </div>
+            <div class="form-check mt-2 col-md-6">
+                <label for="">Does this Variable deduction show up in CTC structure? <span
+                        class="text-danger">*</span></label>
+                <div class="d-flex">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="isShowINCTCStructure-yes"
+                            formControlName="isShowINCTCStructure" required [value]="true">
+                        <label class="form-check-label" for="isShowINCTCStructure-yes">
+                            Yes
+                        </label>
+                    </div>
 
-        <div class="form-group mt-2">
-            <label for="">From what period is the variable deduction effective?</label>
-            <div class="d-flex justify-content-between">
-                <select id="" formControlName="deductionEffectiveFromMonth">
-                    <option value="" selected disabled>Select Month</option>
-                    <option value="m" *ngFor="let m of months">{{m}}</option>
+
+                    <div class="form-check ms-3">
+                        <input class="form-check-input" type="radio" id="isShowINCTCStructure-no" required
+                            formControlName="isShowINCTCStructure" [value]="false">
+                        <label class="form-check-label" for="isShowINCTCStructure-no">
+                            No
+                        </label>
+                    </div>
+                </div>
+                <div
+                    *ngIf="variableDeductionForm.get('isShowINCTCStructure').invalid && (variableDeductionForm.get('isShowINCTCStructure').dirty || variableDeductionForm.get('isShowINCTCStructure').touched)">
+                    <small class="text-danger"
+                        *ngIf="variableDeductionForm.get('isShowINCTCStructure')['errors']['required']">Field is
+                        required</small>
+                </div>
+            </div>
+
+            <div class="form-check mt-2 col-md-6">
+                <label for="">How frequently does employee pay this variable deduction?</label>
+                <select name="" id="" formControlName="paidDeductionFrequently" class="form-select">
+                    <option value="Monthly">Monthly</option>
+                    <option value="Quaterly">Quaterly</option>
+                    <option value="Half Yearly">Half Yearly</option>
+                    <option value="Yearly">Yearly</option>
                 </select>
+                <div
+                    *ngIf="variableDeductionForm.get('paidDeductionFrequently').invalid && (variableDeductionForm.get('paidDeductionFrequently').dirty || variableDeductionForm.get('paidDeductionFrequently').touched)">
+                    <small class="text-danger"
+                        *ngIf="variableDeductionForm.get('paidDeductionFrequently')['errors']['required']">Field is
+                        required</small>
+                </div>
+            </div>
 
-                <select id="" formControlName="deductionEffectiveFromYear">
-                    <option value="" selected [disabled]>Select Year </option>
-                    <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+            <div class="form-check mt-2 col-md-6">
+                <label for="">From what period is the variable deduction effective?</label>
+                <div class="d-flex justify-content-between">
+                    <select id="" formControlName="deductionEffectiveFromMonth">
+                        <option value="" selected disabled>Select Month</option>
+                        <option value="m" *ngFor="let m of months">{{m}}</option>
+                    </select>
+
+                    <select id="" formControlName="deductionEffectiveFromYear">
+                        <option value="" selected [disabled]>Select Year </option>
+                        <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+                    </select>
+                </div>
+                <div
+                    *ngIf="variableDeductionForm.get('deductionEffectiveFromMonth').invalid && (variableDeductionForm.get('deductionEffectiveFromMonth').dirty || variableDeductionForm.get('deductionEffectiveFromMonth').touched)">
+                    <small class="text-danger"
+                        *ngIf="variableDeductionForm.get('deductionEffectiveFromMonth')['errors']['required']">Field is
+                        required</small>
+                </div>
+                <div
+                    *ngIf="variableDeductionForm.get('deductionEffectiveFromYear').invalid && (variableDeductionForm.get('deductionEffectiveFromYear').dirty || variableDeductionForm.get('deductionEffectiveFromYear').touched)">
+                    <small class="text-danger"
+                        *ngIf="variableDeductionForm.get('deductionEffectiveFromYear')['errors']['required']">Field is
+                        required</small>
+                </div>
+            </div>
+
+            <div class="form-check mt-2 col-md-6">
+                <label for="">Does this variable deduction have a ending period?</label>
+                <div class="d-flex">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="isEndingPeriod-yes"
+                            formControlName="isEndingPeriod" required [value]="true">
+                        <label class="form-check-label" for="isEndingPeriod-yes">
+                            Yes, It has an End Period
+                        </label>
+                    </div>
+
+                    <div class="form-check ms-3">
+                        <input class="form-check-input" type="radio" id="isEndingPeriod-no" required
+                            formControlName="isEndingPeriod" [value]="false">
+                        <label class="form-check-label" for="isEndingPeriod-no">
+                            No, It is Continual
+                        </label>
+                    </div>
+                </div>
+                <div
+                    *ngIf="variableDeductionForm.get('isEndingPeriod').invalid && (variableDeductionForm.get('isEndingPeriod').dirty || variableDeductionForm.get('isEndingPeriod').touched)">
+                    <small class="text-danger"
+                        *ngIf="variableDeductionForm.get('isEndingPeriod')['errors']['required']">Field is
+                        required</small>
+                </div>
+            </div>
+
+            <div class="form-check mt-2 col-md-6" *ngIf="variableDeductionForm.get('isEndingPeriod').value== true">
+                <label for="">From what period is the variable deduction effective?</label>
+                <div class="d-flex justify-content-between">
+                    <select id="" formControlName="deductionStopMonth">
+                        <option value="" selected disabled>Select Month</option>
+                        <option value="m" *ngFor="let m of months">{{m}}</option>
+                    </select>
+
+                    <select id="" formControlName="deductionStopYear">
+                        <option value="" selected [disabled]>Select Year </option>
+                        <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+                    </select>
+                </div>
+                <div
+                    *ngIf="variableDeductionForm.get('deductionStopMonth').invalid && (variableDeductionForm.get('deductionStopMonth').dirty || variableDeductionForm.get('deductionStopMonth').touched)">
+                    <small class="text-danger"
+                        *ngIf="variableDeductionForm.get('deductionStopMonth')['errors']['required']">Field is
+                        required</small>
+                </div>
+
+                <div
+                    *ngIf="variableDeductionForm.get('deductionStopYear').invalid && (variableDeductionForm.get('deductionStopYear').dirty || variableDeductionForm.get('deductionStopYear').touched)">
+                    <small class="text-danger"
+                        *ngIf="variableDeductionForm.get('deductionStopYear')['errors']['required']">Field is
+                        required</small>
+                </div>
+            </div>
+
+            <div class="form-check mt-2 col-md-6">
+                <label for="">How would you like to enter the amount for this variable deduction?</label>
+                <select name="" id="" formControlName="amountEnterForThisVariableDeduction">
+                    <option value="Manually at the time of running Payroll">Manually at the time of running Payroll
+                    </option>
+                    <option value="Fixed Amount">Fixed Amount</option>
+                    <option value="Percentage of gross salary paid">Percentage of gross salary paid</option>
+                    <option value="Percentage of(Basic + DA) paid (or Basic if DA is not applicable)">Percentage
+                        of(Basic +
+                        DA) paid (or Basic if DA is not applicable)</option>
                 </select>
-            </div>
-            <div
-                *ngIf="variableDeductionForm.get('deductionEffectiveFromMonth').invalid && (variableDeductionForm.get('deductionEffectiveFromMonth').dirty || variableDeductionForm.get('deductionEffectiveFromMonth').touched)">
-                <small class="text-danger" *ngIf="variableDeductionForm.get('deductionEffectiveFromMonth')['errors']['required']">Field is
-                    required</small>
-            </div>
-            <div
-                *ngIf="variableDeductionForm.get('deductionEffectiveFromYear').invalid && (variableDeductionForm.get('deductionEffectiveFromYear').dirty || variableDeductionForm.get('deductionEffectiveFromYear').touched)">
-                <small class="text-danger" *ngIf="variableDeductionForm.get('deductionEffectiveFromYear')['errors']['required']">Field is
-                    required</small>
-            </div>
-        </div>
-
-        <div class="form-group mt-2">
-            <label for="">Does this variable deduction have a ending period?</label>
-            <div class="d-flex">
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" id="isEndingPeriod-yes"
-                        formControlName="isEndingPeriod" required [value]="true">
-                    <label class="form-check-label" for="isEndingPeriod-yes">
-                        Yes, It has an End Period
-                    </label>
-                </div>
-
-                <div class="form-check ms-3">
-                    <input class="form-check-input" type="radio" id="isEndingPeriod-no" required
-                        formControlName="isEndingPeriod" [value]="false">
-                    <label class="form-check-label" for="isEndingPeriod-no">
-                        No, It is Continual
-                    </label>
+                <div
+                    *ngIf="variableDeductionForm.get('amountEnterForThisVariableDeduction').invalid && (variableDeductionForm.get('amountEnterForThisVariableDeduction').dirty || variableDeductionForm.get('amountEnterForThisVariableDeduction').touched)">
+                    <small class="text-danger"
+                        *ngIf="variableDeductionForm.get('amountEnterForThisVariableDeduction')['errors']['required']">Field
+                        is
+                        required</small>
                 </div>
             </div>
-            <div
-            *ngIf="variableDeductionForm.get('isEndingPeriod').invalid && (variableDeductionForm.get('isEndingPeriod').dirty || variableDeductionForm.get('isEndingPeriod').touched)">
-            <small class="text-danger" *ngIf="variableDeductionForm.get('isEndingPeriod')['errors']['required']">Field is
-                required</small>
-        </div>
-        </div>
 
-        <div class="form-group mt-2" *ngIf="variableDeductionForm.get('isEndingPeriod').value== true">
-            <label for="">From what period is the variable deduction effective?</label>
-            <div class="d-flex justify-content-between">
-                <select id="" formControlName="deductionStopMonth">
-                    <option value="" selected disabled>Select Month</option>
-                    <option value="m" *ngFor="let m of months">{{m}}</option>
-                </select>
-
-                <select id="" formControlName="deductionStopYear">
-                    <option value="" selected [disabled]>Select Year </option>
-                    <option *ngFor="let year of years" [value]="year">{{ year }}</option>
-                </select>
+            <div class="form-check mt-2 col-md-6"
+                *ngIf="variableDeductionForm.get('amountEnterForThisVariableDeduction').value=='Fixed Amount'">
+                <label for="">Provide the Amount</label>
+                <input type="number" class="form-control" formControlName="amount">
             </div>
-            <div
-            *ngIf="variableDeductionForm.get('deductionStopMonth').invalid && (variableDeductionForm.get('deductionStopMonth').dirty || variableDeductionForm.get('deductionStopMonth').touched)">
-            <small class="text-danger" *ngIf="variableDeductionForm.get('deductionStopMonth')['errors']['required']">Field is
-                required</small>
-        </div>
+            <div class="form-check mt-2 col-md-6" *ngIf="isPercentageSelected()">
+                <label for="">Provide the Percentage</label>
+                <input type="number" class="form-control" formControlName="percentage">
+            </div>
 
-        <div
-        *ngIf="variableDeductionForm.get('deductionStopYear').invalid && (variableDeductionForm.get('deductionStopYear').dirty || variableDeductionForm.get('deductionStopYear').touched)">
-        <small class="text-danger" *ngIf="variableDeductionForm.get('deductionStopYear')['errors']['required']">Field is
-            required</small>
-    </div>
-        </div>
-
-        <div class="form-group mt-2">
-            <label for="">How would you like to enter the amount for this variable deduction?</label>
-            <select name="" id="" formControlName="amountEnterForThisVariableDeduction">
-                <option value="Manually at the time of running Payroll">Manually at the time of running Payroll</option>
-                <option value="Fixed Amount">Fixed Amount</option>
-                <option value="Percentage of gross salary paid">Percentage of gross salary paid</option>
-                <option value="Percentage of(Basic + DA) paid (or Basic if DA is not applicable)">Percentage of(Basic +
-                    DA) paid (or Basic if DA is not applicable)</option>
-            </select>
-            <div
-        *ngIf="variableDeductionForm.get('amountEnterForThisVariableDeduction').invalid && (variableDeductionForm.get('amountEnterForThisVariableDeduction').dirty || variableDeductionForm.get('amountEnterForThisVariableDeduction').touched)">
-        <small class="text-danger" *ngIf="variableDeductionForm.get('amountEnterForThisVariableDeduction')['errors']['required']">Field is
-            required</small>
-    </div>
-        </div>
-
-        <div class="form-group mt-2"
-            *ngIf="variableDeductionForm.get('amountEnterForThisVariableDeduction').value=='Fixed Amount'">
-            <label for="">Provide the Amount</label>
-            <input type="number" class="form-control" formControlName="amount">
-        </div>
-        <div class="form-group mt-2" *ngIf="isPercentageSelected()">
-            <label for="">Provide the Percentage</label>
-            <input type="number" class="form-control" formControlName="percentage">
-        </div>
-
-        <div class="form-group mt-2">
-            <mat-form-field appearance="outline" class="w-100 mx-1">
-                <mat-label>Select Employee</mat-label>
-                <mat-select multiple formControlName="variableDeductionApplicableEmployee">
-                    <mat-option *ngFor="let member of members" [value]="member.id">
-                        {{member?.firstName | titlecase}}&nbsp;{{member?.lastName}}
-                    </mat-option>
-                </mat-select>
+            <div class="form-check mt-2 col-md-6">
+                <mat-form-field appearance="outline" class="w-100 mx-1">
+                    <mat-label>Select Employee</mat-label>
+                    <mat-select multiple formControlName="variableDeductionApplicableEmployee">
+                        <mat-option *ngFor="let member of members" [value]="member.id">
+                            {{member?.firstName | titlecase}}&nbsp;{{member?.lastName}}
+                        </mat-option>
+                    </mat-select>
 
 
-            </mat-form-field>
-        </div>
+                </mat-form-field>
+            </div>
 
-        <div class="form-group mt-2">
-            <label for="">Do you want attendance to effect the eligibility? <span class="text-danger">*</span></label>
-            <div class="d-flex">
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" id="isAttendanceToAffectEligibility-yes"
-                        formControlName="isAttendanceToAffectEligibility" required [value]="true">
-                    <label class="form-check-label" for="isAttendanceToAffectEligibility-yes">
-                        Yes
-                    </label>
-                </div>
+            <div class="form-check mt-2 col-md-6">
+                <label for="">Do you want attendance to effect the eligibility? <span
+                        class="text-danger">*</span></label>
+                <div class="d-flex">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="isAttendanceToAffectEligibility-yes"
+                            formControlName="isAttendanceToAffectEligibility" required [value]="true">
+                        <label class="form-check-label" for="isAttendanceToAffectEligibility-yes">
+                            Yes
+                        </label>
+                    </div>
 
-                <div class="form-check ms-3">
-                    <input class="form-check-input" type="radio" id="isAttendanceToAffectEligibility-no" required
-                        formControlName="isAttendanceToAffectEligibility" [value]="false">
-                    <label class="form-check-label" for="isAttendanceToAffectEligibility-no">
-                        No
-                    </label>
+                    <div class="form-check ms-3">
+                        <input class="form-check-input" type="radio" id="isAttendanceToAffectEligibility-no" required
+                            formControlName="isAttendanceToAffectEligibility" [value]="false">
+                        <label class="form-check-label" for="isAttendanceToAffectEligibility-no">
+                            No
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <div class="d-flex border-top mt-2 py-2 justify-content-between">
+        
+        <div class="d-flex border-top mt-2 pb-2 pt-3 justify-content-between">
             <button mat-raised-button type="button">Cancel</button>
             <button mat-raised-button type="submit" class="addBtn">Submit</button>
         </div>

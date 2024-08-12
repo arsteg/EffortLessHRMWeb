@@ -19,18 +19,69 @@
             <th>Actions</th>
         </thead>
         <tbody>
-            <!-- <tr *ngFor="let data of loansAdvances | search:searchText"> -->
-            <tr>
-                <td>data</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-               
-            </tr>
+            <!-- <tr *ngFor="let tax of taxList | search:searchText"> -->
+            <td>data</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="action text-center">
+                <div ngbDropdown class="dropdown-center">
+                    <button class="actions ms-2" mat-mini-fab ngbDropdownToggle aria-expanded="false"
+                        aria-label="Example icon button with a menu icon">
+                        <i class="bi bi-send"></i>
+                    </button>
+                    <ul ngbDropdownMenu class="dropdown-menu py-0">
+
+                        <li class="d-flex border-bottom action-list">
+                            <i class="bi bi-arrow-down text-danger dropdown-item w-25"></i>
+                            <span class="pt-1 text-muted">Download</span>
+                        </li>
+
+                        <li class="d-flex border-bottom action-list"
+                            (click)="selectedRecord = taxList; openOffcanvas(true, taxList);" data-bs-toggle="offcanvas"
+                            data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+                            <i class="bi bi-calculator text-primary dropdown-item w-25"></i>
+                            <span class="pt-1 text-muted">Tax Calculator</span>
+                        </li>
+
+                        <li class="d-flex action-list" data-bs-toggle="modal" data-bs-target="#updateModal">
+                            <i class="bi bi-pencil text-success dropdown-item w-25"></i>
+                            <span class="pt-1 text-muted">Edit</span>
+                        </li>
+                    </ul>
+                </div>
+
+            </td>
+
         </tbody>
     </table>
+</div>
+
+<div *ngIf="showOffcanvas" class="offcanvas offcanvas-end w-75" [ngClass]="{ 'show': showOffcanvas }" tabindex="-1"
+    id="offcanvasExample" aria-labelledby="offcanvasExampleLabel" style="overflow-x: hidden; overflow-y: auto;">
+
+    <div class="offcanvas-header">
+        <h2>Employee Tax Calculator</h2>
+        <div class="d-flex justify-content-between px-4">
+            <label for="">{{selectedUser?.firstName | titlecase}}&nbsp;{{selectedUser?.lastName | titlecase}}</label>
+
+            <ul type="none">
+                <li><label>Date of Joining:</label>&nbsp;{{selectedUser?.createdOn | date: 'mediumDate'}}</li>
+                <li><label>Date of Birth:</label> &nbsp;{{selectedUser?.DOB | date: 'mediumDate'}}</li>
+                <li><label>Gender:</label>&nbsp; {{selectedUser?.Gender}}</li>
+                <li><label>Pan:</label>&nbsp; {{selectedUser?.Pancard}}</li>
+                <li><label>Status:</label>&nbsp; {{selectedUser?.status}}</li>
+                <li><label>Age:</label>&nbsp; {{getAge(selectedUser?.DOB)}}</li>
+            </ul>
+        </div>
+    </div>
+    <hr>
+    <button type="button" class="text-reset" data-bs-dismiss="offcanvas" (click)="closeOffcanvas()" aria-label="Close"
+        [ngClass]="{ 'show': selectedRecord || !isEdit }"> <i class="bi bi-arrow-left text-white"></i></button>
+    <div #offcanvasContent class="p-3">
+        <app-tax-calculator [selectedRecord]="selectedRecord" [isEdit]="isEdit"></app-tax-calculator>
+    </div>
 </div>

@@ -4,7 +4,6 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
-import { Offcanvas } from 'bootstrap';
 import { UpdateCTCTemplateComponent } from './update-ctctemplate/update-ctctemplate.component';
 
 @Component({
