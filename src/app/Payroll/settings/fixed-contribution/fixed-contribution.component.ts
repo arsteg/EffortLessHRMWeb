@@ -1,10 +1,10 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, ViewContainerRef } from '@angular/core';
 import { PayrollService } from 'src/app/_services/payroll.service';
-import { MatDrawer } from '@angular/material/sidenav';
+import { Offcanvas } from 'bootstrap';
 @Component({
   selector: 'app-fixed-contribution',
   templateUrl: './fixed-contribution.component.html',
-  styleUrl: './fixed-contribution.component.css'
+  styleUrls: ['./fixed-contribution.component.css']
 })
 export class FixedContributionComponent {
   fixedContribution: any;
@@ -12,8 +12,12 @@ export class FixedContributionComponent {
   closeResult: string = '';
   selectedRecord: any;
   isEdit: boolean = false;
+  showOffcanvas: boolean = false;
+  @ViewChild('offcanvasContent', { read: ViewContainerRef }) offcanvasContent: ViewContainerRef;
+  offcanvasInstance: any;
 
-  constructor(private payroll: PayrollService  ) { }
+
+  constructor(private payroll: PayrollService) { }
 
   ngOnInit() {
     this.getFixedContribution();
@@ -23,14 +27,21 @@ export class FixedContributionComponent {
       skip: '',
       next: '10'
     }
-    this.payroll.getFixedContribution(payload).subscribe(data => {
+    this.payroll.getFixedContribution(payload).subscribe((data: any) => {
       this.fixedContribution = data.data;
     });
   }
 
-  // openDrawer(fc: any) {
-  //   this.selectedRecord = fc;
-  //   this.isEdit = true;
-  //   this.drawer.open();
-  // }
+  openOffcanvas(offcanvasId: string) {
+    this.showOffcanvas = true;
+    const offcanvasElement = document.getElementById(offcanvasId);
+    if (!this.offcanvasInstance) {
+      this.offcanvasInstance = new Offcanvas(offcanvasElement);
+    }
+    this.offcanvasInstance.show();
+  }
+  
+  closeOffcanvas() {
+    this.showOffcanvas = false;
+  }
 }

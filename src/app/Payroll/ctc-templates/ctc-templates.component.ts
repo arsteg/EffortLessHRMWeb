@@ -119,10 +119,5 @@ export class CtcTemplatesComponent {
     this.isEdit = false;
     this.selectedRecord = null;
   }
-  // openOffcanvas() {
-  //   const componentFactory = this.componentFactoryResolver.resolveComponentFactory(UpdateCTCTemplateComponent);
-  //   const componentRef = this.offcanvasContent.createComponent(componentFactory);
-  //   componentRef.instance.selectedRecord = this.selectedRecord;
-  //   componentRef.instance.isEdit = this.isEdit;
-  // }
+  
 }
