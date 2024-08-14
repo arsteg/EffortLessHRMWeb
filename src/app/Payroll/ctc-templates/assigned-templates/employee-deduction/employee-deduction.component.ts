@@ -28,7 +28,8 @@ export class EmployeeDeductionComponent {
   }
 
   getEmpDeduction(empContribution: string) {
-    const matchingContribution = this.employeeDeduction?.find(res => res._id === empContribution);
+    const matchingContribution = this.employeeDeduction?.find(res => res?._id === empContribution);
+    console.log(matchingContribution ? matchingContribution.label : '');
     return matchingContribution ? matchingContribution.label : '';
   }
 }

@@ -1,16 +1,20 @@
-<div class="main-content">
+<div class="main-content mt-2">
     <div class="container-fluid">
         <div class="tableContainer bg-white">
             <div class="d-flex align-items-center px-2 py-1">
-                <p class="mb-0 me-auto">({{ctcTemplate?.length}}) Records Found</p>
+                <p class="mb-0 me-auto">({{totalRecords}}) Records Found</p>
                 <div class="d-flex align-items-center">
                     <span class="bi bi-search searchIcon"></span>
                     <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
                         name="searchText" aria-label="default input example">
-                    <button class="addBtn" mat-raised-button
+                    <button class="addBtn ms-2" mat-raised-button
                         (click)="isEdit = false; openOffcanvas(false);">Add</button>
                 </div>
             </div>
+            <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
+                [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
+                (recordsPerPageChange)="onRecordsPerPageChange($event)">
+            </app-pagination>
             <table>
                 <thead>
                     <th>Template Name</th>
@@ -47,9 +51,8 @@
         </div>
     </div>
 
-    <div *ngIf="showOffcanvas" class="offcanvas offcanvas-end w-75" [ngClass]="{ 'show': showOffcanvas }"
-        tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel"
-        style="overflow-x: hidden; overflow-y: auto;">
+    <div *ngIf="showOffcanvas" class="offcanvas offcanvas-end w-75" [ngClass]="{ 'show': showOffcanvas }" tabindex="-1"
+        id="offcanvasExample" aria-labelledby="offcanvasExampleLabel" style="overflow-x: hidden; overflow-y: auto;">
 
         <div class="offcanvas-header">
             <h2>{{isEdit? 'Update' : 'Add'}} CTC Template</h2>

@@ -4,9 +4,8 @@
             <th>Category</th>
             <th>Value</th>
         </thead>
-        <tbody>
+        <tbody   *ngIf="this.data.ctcTemplateOtherBenefitAllowance.length && this.data.ctcTemplateOtherBenefitAllowance.length > 0">
             <tr *ngFor="let ob of this.data.ctcTemplateOtherBenefitAllowance">
-                <!-- <td>{{getOtherBenefit(ob)}}</td> -->
                  <td>{{getOtherBenefit(ob)}}</td>
                 <td>As per Statutory Norms</td>
             </tr>

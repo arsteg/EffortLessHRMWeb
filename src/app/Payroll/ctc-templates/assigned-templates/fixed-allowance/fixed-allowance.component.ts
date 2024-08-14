@@ -26,6 +26,9 @@ export class AssignedFixedAllowanceComponent {
   ngOnInit() {
     this.getFixedAllowances();
     this.initForm();
+    if (this.isEdit && this.selectedRecord) {
+      this.patchFormValues();
+    }
   }
 
   initForm() {
@@ -46,30 +49,24 @@ export class AssignedFixedAllowanceComponent {
       this.formDataChange.emit(this.fixedAllowanceForm.value.fixedAllowance);
     });
   }
-  // initForm() {
-  //   const allowancesControl = this.fixedAllowanceForm.get('fixedAllowance') as FormArray;
+  patchFormValues() {
+    const allowancesControl = this.fixedAllowanceForm.get('fixedAllowance') as FormArray;
 
-  //   // Check if isEdit is false (update mode)
-  //   if (this.isEdit && this.selectedRecord && this.selectedRecord.ctcTemplateFixedAllowances) {
-  //     this.fixedAllowances = this.selectedRecord.ctcTemplateFixedAllowances;
-  //   } else {
-  //     this.fixedAllowances = this.data.ctcTemplateFixedAllowance || [];
-  //   }
+    // Clear existing controls if any
+    allowancesControl.clear();
 
-  //   this.fixedAllowances.forEach(fa => {
-  //     allowancesControl.push(this.fb.group({
-  //       fixedAllowance: [fa.fixedAllowance || ''],
-  //       criteria: [fa.criteria || 'Amount'],
-  //       value: [fa.value || ''],
-  //       valueType: [fa.valueType || 0],
-  //       minimumAmount: [fa.minimumAmount || '']
-  //     }));
-  //   });
+    this.selectedRecord.ctcTemplateFixedAllowances.forEach((item: any) => {
+      allowancesControl.push(this.fb.group({
+        fixedAllowance: [item.fixedAllowance || ''],
+        criteria: [item.criteria || 'Amount'],
+        value: [item.value || ''],
+        valueType: item.valueType || '',
+        minimumAmount: [item.minimumAmount || '']
+      }));
+    });
 
-  //   this.fixedAllowanceForm.valueChanges.subscribe(() => {
-  //     this.formDataChange.emit(this.fixedAllowanceForm.value.fixedAllowance);
-  //   });
-  // }
+    console.log(this.fixedAllowanceForm.value);
+  }
   get allowances() {
     return (this.fixedAllowanceForm.get('fixedAllowance') as FormArray).controls;
   }

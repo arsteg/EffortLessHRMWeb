@@ -26,12 +26,14 @@ export class VarAllowanceComponent {
   ngOnInit() {
     this.getVariableAllowances();
     this.initForm();
+    if (this.isEdit && this.selectedRecord) {
+      this.patchFormValues();
+    }
   }
 
   initForm() {
     const allowancesControl = this.variableAllowanceForm.get('variableAllowance') as FormArray;
-    this.variableAllowances = this.data.ctcTemplateFixedAllowance || [];
-
+    this.variableAllowances = this.data.ctcTemplateVariableAllowance || [];
     this.variableAllowances.forEach(fa => {
       allowancesControl.push(this.fb.group({
         variableAllowance: [fa],
@@ -41,11 +43,26 @@ export class VarAllowanceComponent {
         minimumAmount: ['']
       }));
     });
-
     this.variableAllowanceForm.valueChanges.subscribe(() => {
-      this.formDataChange.emit(this.variableAllowanceForm.value.fixedAllowance);
+      this.formDataChange.emit(this.variableAllowanceForm.value.variableAllowance);
     });
   }
+
+  patchFormValues() {
+    const allowancesControl = this.variableAllowanceForm.get('variableAllowance') as FormArray;
+    allowancesControl.clear();
+    this.selectedRecord.ctcTemplateVariableAllowances.forEach((item: any) => {
+      allowancesControl.push(this.fb.group({
+        variableAllowance: [item.variableAllowance || ''],
+        criteria: [item.criteria || 'Amount'],
+        value: [item.value || ''],
+        valueType: item.valueType || '',
+        minimumAmount: [item.minimumAmount || '']
+      }));
+    });
+    console.log(this.variableAllowanceForm.value);
+  }
+
   get allowances() {
     return (this.variableAllowanceForm.get('variableAllowance') as FormArray).controls;
   }

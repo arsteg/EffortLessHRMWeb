@@ -38,7 +38,7 @@
             [selectedRecord]="selectedRecord" [isEdit]="isEdit"></app-assigned-fixed-allowance>
     </div>
     <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabFixedDeduction'}" id="tabFixedDeduction">
-        <app-assigned-fixed-deduction [data]="data"
+        <app-assigned-fixed-deduction [data]="data" [isEdit]="isEdit" [selectedRecord]="selectedRecord"
             (formDataChange)="onFixedDeductionDataChange($event)"></app-assigned-fixed-deduction>
     </div>
     <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabEmployerContribution'}" id="tabEmployerContribution">

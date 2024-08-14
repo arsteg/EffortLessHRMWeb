@@ -59,7 +59,7 @@
     <div class="form-group mt-2">
         <mat-form-field appearance="outline" class="w-100 mx-1">
             <mat-label>Variable Allowance</mat-label>
-            <mat-select multiple formControlName="ctcTemplateEmployeeDeduction">
+            <mat-select multiple formControlName="ctcTemplateVariableAllowance">
                 <mat-option *ngFor="let va of variableAllowance" [value]="va?._id">
                    {{va?.label}}
                 </mat-option>
@@ -70,7 +70,7 @@
     <div class="form-group mt-2">
         <mat-form-field appearance="outline" class="w-100 mx-1">
             <mat-label>Variable Deductions</mat-label>
-            <mat-select multiple formControlName="ctcTemplateEmployeeDeduction">
+            <mat-select multiple formControlName="ctcTemplateVariableDeduction">
                 <mat-option *ngFor="let vd of variableDeduction" [value]="vd?._id">
                    {{vd?.label}}
                 </mat-option>

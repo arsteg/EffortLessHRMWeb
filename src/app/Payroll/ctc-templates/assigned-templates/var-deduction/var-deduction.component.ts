@@ -27,12 +27,14 @@ export class VarDeductionComponent {
   ngOnInit() {
     this.getVariableDeduction();
     this.initForm();
+    if (this.isEdit && this.selectedRecord) {
+      this.patchFormValues();
+    }
   }
 
   initForm() {
     const allowancesControl = this.variableDeductionForm.get('variableDeduction') as FormArray;
-    this.variableDeductions = this.data.ctcTemplateFixedAllowance || [];
-
+    this.variableDeductions = this.data.ctcTemplateVariableDeduction || [];
     this.variableDeductions.forEach(fa => {
       allowancesControl.push(this.fb.group({
         variableDeduction: [fa],
@@ -47,6 +49,21 @@ export class VarDeductionComponent {
       this.formDataChange.emit(this.variableDeductionForm.value.variableDeduction);
     });
   }
+
+  patchFormValues() {
+    const allowancesControl = this.variableDeductionForm.get('variableDeduction') as FormArray;
+    allowancesControl.clear();
+    this.selectedRecord.ctcTemplateVariableDeductions.forEach((item: any) => {
+      allowancesControl.push(this.fb.group({
+        variableDeduction: [item.variableDeduction || ''],
+        criteria: [item.criteria || 'Amount'],
+        value: [item.value || ''],
+        valueType: item.valueType || '',
+        minimumAmount: [item.minimumAmount || '']
+      }));
+    });
+  }
+
   get allowances() {
     return (this.variableDeductionForm.get('variableDeduction') as FormArray).controls;
   }

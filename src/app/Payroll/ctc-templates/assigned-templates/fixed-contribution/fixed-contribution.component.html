@@ -4,7 +4,7 @@
             <th>Category</th>
             <th>Value</th>
         </thead>
-        <tbody>
+        <tbody  *ngIf="this.data.ctcTemplateEmployerContribution.length && this.data.ctcTemplateEmployerContribution.length > 0">
             <tr *ngFor="let empContibutions of this.data.ctcTemplateEmployerContribution">
                 <td>{{getContribution(empContibutions)}}</td>
                 <td>As per Statutory Norms</td>

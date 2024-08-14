@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 import { PayrollService } from 'src/app/_services/payroll.service';
 
 @Component({
@@ -16,24 +17,34 @@ export class AssignedTemplatesComponent {
   fixedAllowanceData: any;
   fixedDeductionData: any;
   variableAllowanceData: any;
-  variableDeductionData: any;9999
+  variableDeductionData: any;
+  form: any;
 
   constructor(private payroll: PayrollService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private toast: ToastrService
   ) {
-    // this.ctcTemplateForm = this.fb.group({
-    //   name: [''],
-    //   ctcTemplateFixedAllowance: [[]],
-    //   ctcTemplateFixedDeduction: [[]],
-    //   ctcTemplateEmployerContribution: [[]],
-    //   ctcTemplateOtherBenefitAllowance: [[]],
-    //   ctcTemplateEmployeeDeduction: [[]]
-    // })
+
   }
+
 
   ngOnInit() {
+    console.log(this.selectedRecord);
+    console.log(this.isEdit);
+
+    console.log(this.payroll.assignedTemplates.getValue())
+    this.payroll.assignedTemplates.subscribe(res => {
+      console.log(res);
+      this.form = res;
+      Object.entries(this.form).forEach(([key, value]) => {
+        if (Array.isArray(value) && value.length === 0) {
+          this.form[key] = [];
+        }
+      });
+    })
   }
 
+  
   selectTab(tabId: string) {
     this.activeTab = tabId;
   }
@@ -55,19 +66,29 @@ export class AssignedTemplatesComponent {
   onSubmission() {
     let payload = {
       name: this.data.name,
-      ctcTemplateFixedAllowance: this.fixedAllowanceData,
-      ctcTemplateFixedDeduction: this.fixedDeductionData,
-      ctcTemplateVariableAllowance: this.variableAllowanceData,
-      ctcTemplateVariableDeduction: this.variableDeductionData,
-      ctcTemplateEmployerContribution: this.data.ctcTemplateEmployerContribution.map(fixedContribution => ({ fixedContribution, value: 'As per the Norms' })),
-      ctcTemplateOtherBenefitAllowance: this.data.ctcTemplateOtherBenefitAllowance.map(otherBenefit => ({ otherBenefit, value: 'As per the Norms' })),
-      ctcTemplateEmployeeDeduction: this.data.ctcTemplateEmployeeDeduction.map(fixedDeduction => ({ fixedDeduction, value: 'As per the Norms' }))
+      ctcTemplateFixedAllowance: this.fixedAllowanceData || [],
+      ctcTemplateFixedDeduction: this.fixedDeductionData || [],
+      ctcTemplateVariableAllowance: this.variableAllowanceData || [],
+      ctcTemplateVariableDeduction: this.variableDeductionData || [],
+      ctcTemplateEmployerContribution: this.data.ctcTemplateEmployerContribution.filter(Boolean).map(fixedContribution => ({ fixedContribution, value: 'As per the Norms' })) || [],
+      ctcTemplateOtherBenefitAllowance: this.data.ctcTemplateOtherBenefitAllowance.filter(Boolean).map(otherBenefit => ({ otherBenefit, value: 'As per the Norms' })) || [],
+      ctcTemplateEmployeeDeduction: this.data.ctcTemplateEmployeeDeduction.filter(Boolean).map(fixedDeduction => ({ fixedDeduction, value: 'As per the Norms' })) || [],
     };
     if (this.isEdit) {
       this.payroll.updateCTCTemplate(this.selectedRecord._id, payload).subscribe((res: any) => {
-      })
+        this.toast.success('CTC Template updated successfully');
+      },
+        err => {
+          this.toast.error('CTC Template update failed');
+        })
     }
     else {
+      this.payroll.addCTCTemplate(payload).subscribe((res: any) => {
+        this.toast.success('CTC Template added successfully');
+      },
+        err => {
+          this.toast.error('CTC Template add failed');
+        })
     }
   }
 

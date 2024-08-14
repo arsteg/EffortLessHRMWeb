@@ -9,9 +9,9 @@
                     <th>Minimum Amount</th>
                 </tr>
             </thead>
-            <tbody formArrayName="fixedAllowance">
+            <tbody formArrayName="variableAllowance">
                 <tr *ngFor="let allowance of allowances; let i = index" [formGroupName]="i">
-                    <td>{{getAllowance(allowance.get('fixedAllowance').value)}}</td>
+                    <td>{{getAllowance(allowance.get('variableAllowance').value)}}</td>
                     <td>
                         <select formControlName="criteria">
                             <option value="Amount">Amount</option>

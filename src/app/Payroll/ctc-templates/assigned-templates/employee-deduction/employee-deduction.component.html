@@ -4,9 +4,10 @@
             <th>Category</th>
             <th>Value</th>
         </thead>
-        <tbody>
+        <tbody
+            *ngIf="this.data.ctcTemplateEmployeeDeduction.length && this.data.ctcTemplateEmployeeDeduction.length > 0">
             <tr *ngFor="let ed of this.data.ctcTemplateEmployeeDeduction">
-                 <td>{{getEmpDeduction(ed)}}</td>
+                <td>{{getEmpDeduction(ed)}}</td>
                 <td>As per Statutory Norms</td>
             </tr>
         </tbody>

@@ -13,6 +13,8 @@ export class AssignedFixedDeductionComponent {
   fixedDeduction: any[] = [];
   fixedDeductionForm: FormGroup;
   @Output() formDataChange = new EventEmitter<any>();
+  @Input() isEdit: boolean;
+  @Input() selectedRecord: any;
 
   constructor(private payroll: PayrollService,
     private fb: FormBuilder
@@ -24,7 +26,12 @@ export class AssignedFixedDeductionComponent {
 
   ngOnInit() {
     this.getFixedDeduction();
-    this.initForm() 
+    this.initForm();
+    console.log(this.selectedRecord, this.isEdit);
+    if (this.isEdit && this.selectedRecord) {
+      console.log(this.selectedRecord)
+      this.patchFormValues();
+    }
   }
   initForm() {
     const allowancesControl = this.fixedDeductionForm.get('fixedDeduction') as FormArray;
@@ -43,7 +50,20 @@ export class AssignedFixedDeductionComponent {
       this.formDataChange.emit(this.fixedDeductionForm.value.fixedDeduction);
     });
   }
-
+  patchFormValues() {
+    const allowancesControl = this.fixedDeductionForm.get('fixedDeduction') as FormArray;
+    allowancesControl.clear();
+    this.selectedRecord.ctcTemplateFixedDeductions.forEach((item: any) => {
+      allowancesControl.push(this.fb.group({
+        fixedDeduction: [item.fixedDeduction || ''],
+        criteria: [item.criteria || 'Amount'],
+        value: [item.value || ''],
+        valueType: item.valueType || '0',
+        minimumAmount: [item.minimumAmount || '']
+      }));
+    });
+    console.log(this.fixedDeductionForm.value);
+  }
   get allowances() {
     return (this.fixedDeductionForm.get('fixedDeduction') as FormArray).controls;
   }

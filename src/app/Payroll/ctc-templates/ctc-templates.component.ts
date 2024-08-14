@@ -19,7 +19,10 @@ export class CtcTemplatesComponent {
   showAssignedTemplates = false;
   isEdit: boolean = false;
   @ViewChild('offcanvasContent', { read: ViewContainerRef }) offcanvasContent: ViewContainerRef;
-
+  totalRecords: number
+  recordsPerPage: number = 10;
+  currentPage: number = 1;
+  offcanvasData = 'Initial data';
 
   constructor(private modalService: NgbModal,
     private payroll: PayrollService,
@@ -29,16 +32,24 @@ export class CtcTemplatesComponent {
   ngOnInit() {
     this.getCTCTemplate();
   }
-  offcanvasData = 'Initial data';
+  onPageChange(page: number) {
+    this.currentPage = page;
+    this.getCTCTemplate();
+  }
 
+  onRecordsPerPageChange(recordsPerPage: number) {
+    this.recordsPerPage = recordsPerPage;
+    this.getCTCTemplate();
+  }
 
   getCTCTemplate() {
-    let payload = {
-      skip: '',
-      next: ''
-    }
-    this.payroll.getCTCTemplate(payload).subscribe(data => {
+    const pagination = {
+      skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
+      next: this.recordsPerPage.toString()
+    };
+    this.payroll.getCTCTemplate(pagination).subscribe(data => {
       this.ctcTemplate = data.data;
+      this.totalRecords = data.total;
     });
   }
   deleteRecord(_id: string) {
@@ -47,10 +58,10 @@ export class CtcTemplatesComponent {
       if (index !== -1) {
         this.ctcTemplate.splice(index, 1);
       }
-      this.toast.success('Successfully Deleted!!!', 'PT Slab');
+      this.toast.success('Successfully Deleted!!!', 'CTC Template');
     },
       (err) => {
-        this.toast.error('PT Slab can not be deleted', 'Error');
+        this.toast.error('CTC Template can not be deleted', 'Error');
       })
 
   }
@@ -72,7 +83,7 @@ export class CtcTemplatesComponent {
   //   const offcanvas = new Offcanvas(offcanvasElement);
   //   offcanvas.show();
   // }
- 
+
   // openOffcanvas(action: string) {
   //   console.log(this.selectedRecord);
   //   this.payroll.ctcTempData.next(this.selectedRecord);
@@ -87,7 +98,7 @@ export class CtcTemplatesComponent {
   // }
   showOffcanvas: boolean = false;
 
-  openOffcanvas(isEdit: boolean, record: any= null) {
+  openOffcanvas(isEdit: boolean, record: any = null) {
     this.isEdit = isEdit;
     this.selectedRecord = record;
     this.showOffcanvas = true;
