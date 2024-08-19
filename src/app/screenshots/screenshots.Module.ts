@@ -8,7 +8,7 @@ import { CommonComponentsModule } from "../common/commonComponents.module";
 import { FormsModule } from "@angular/forms";
 
 @NgModule({
-  declarations: [ScreenshotsComponent],
+  // declarations: [ScreenshotsComponent],
   exports: [],
   imports: [SharedModule,
     MatTooltipModule,

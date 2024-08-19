@@ -197,7 +197,7 @@
   dependencies:
     tslib "^2.3.0"
 
-"@angular/core@^13.0.0", "@angular/core@^16.0.0", "@angular/core@^17.0.0", "@angular/core@^17.0.0 || ^18.0.0", "@angular/core@^17.1.0", "@angular/core@^18.0.0", "@angular/core@>=12.0.0", "@angular/core@>=16.0.0-0", "@angular/core@12 - 17", "@angular/core@17.1.0", "@angular/core@17.3.12":
+"@angular/core@^13.0.0", "@angular/core@^17.0.0", "@angular/core@^17.0.0 || ^18.0.0", "@angular/core@^17.1.0", "@angular/core@^18.0.0", "@angular/core@>=12.0.0", "@angular/core@>=16.0.0-0", "@angular/core@12 - 17", "@angular/core@17.1.0", "@angular/core@17.3.12":
   version "17.1.0"
   resolved "https://registry.npmjs.org/@angular/core/-/core-17.1.0.tgz"
   integrity sha512-9OvRRZq+46S+ICZLRYIGVU2pknuPz23B+5V3jz7cDA5V43GVcMnfmAbMClPQxm7kRGnqtQ+yzBjn+HubCerE6g==
@@ -6073,10 +6073,10 @@ ngx-color@^9.0.0:
     material-colors "^1.2.6"
     tslib "^2.3.0"
 
-ngx-quill@^23.0.2:
-  version "23.0.2"
-  resolved "https://registry.npmjs.org/ngx-quill/-/ngx-quill-23.0.2.tgz"
-  integrity sha512-6NoO/J7JWMdUdFRHwLVzyYWvihilrl9zEYUp8rRBm0bNdgMPTBUmoHnMbto8ln/eNu+APOfVq+DboTx8vO1PeA==
+ngx-quill@^24.0.4:
+  version "24.0.4"
+  resolved "https://registry.npmjs.org/ngx-quill/-/ngx-quill-24.0.4.tgz"
+  integrity sha512-/kQUjsNMU3K74Wq+OkAEMBam/ttNpQ7cKA1QAoPAyeFeHf1eBD1AR+xr+bHP6mdNGUHznWhvLs/ZqEdTJjW/eA==
   dependencies:
     tslib "^2.3.0"
 
