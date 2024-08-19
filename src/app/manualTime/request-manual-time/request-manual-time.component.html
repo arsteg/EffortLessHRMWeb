@@ -53,7 +53,7 @@
 
         <tbody>
           <tr
-            *ngFor="let record of filteredManualTimeRequests | search: searchText |  paginate: { itemsPerPage: 20, currentPage: p }">
+            *ngFor="let record of filteredManualTimeRequests | search: searchText ">
             <td class="ps-3">
               <div>{{record?.date | date: 'MM/dd/yyyy'}}</div>
             </td>

@@ -2,7 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { NgModule } from "@angular/core";
 import { SortDirective } from "../directive/sort.directive";
 import { CdkTableModule } from '@angular/cdk/table';
-import { NgxPaginationModule } from 'ngx-pagination';
+
 import { SearchPipe } from "./search.pipe";
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';
@@ -67,7 +67,7 @@ import { PaginationComponent } from '../pagination/pagination.component';
   exports: [
     SortDirective,
     CdkTableModule,
-    NgxPaginationModule,
+    
     MatToolbarModule,
     MatButtonModule,
     MatSidenavModule,

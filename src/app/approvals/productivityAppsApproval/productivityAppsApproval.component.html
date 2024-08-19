@@ -51,7 +51,7 @@
                 </thead>
                 <tbody>
                     <tr
-                        *ngFor="let record of productivityAppsFiltered | search: searchText |  paginate: { itemsPerPage: 20, currentPage: p }">
+                        *ngFor="let record of productivityAppsFiltered | search: searchText ">
 
                         <td><span>{{record?.key }}</span> </td>
                         <td><span>{{record.name}}</span> </td>
@@ -75,8 +75,7 @@
                     </tr>
                 </tbody>
             </table>
-            <pagination-controls (pageChange)="p = $event"
-            class="pagination d-flex justify-content-end"></pagination-controls>
+           
         </div>
     </div>
 </div>

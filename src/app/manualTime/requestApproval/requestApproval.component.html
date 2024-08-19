@@ -60,7 +60,7 @@
                 </thead>
                 <tbody>
                     <tr
-                        *ngFor="let record of manualTimeRequestFiltered | search: searchText |  paginate: { itemsPerPage: 10, currentPage: p }">
+                        *ngFor="let record of manualTimeRequestFiltered | search: searchText ">
                         <td class="ps-2">
                             <div>{{record.date | date: 'MM/dd/yyyy'}}</div>
                         </td>
@@ -91,8 +91,7 @@
                     </tr>
                 </tbody>
             </table>
-            <pagination-controls (pageChange)="p = $event"
-                class="pagination d-flex justify-content-end"></pagination-controls>
+            
         </div>
     </div>
 </div>

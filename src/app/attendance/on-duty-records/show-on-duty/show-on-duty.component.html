@@ -47,7 +47,7 @@
                 <th>Actions</th>
             </thead>
             <tbody>
-                <tr *ngFor="let data of onDutyRequest| search: searchText | paginate: { itemsPerPage: 5, currentPage: p };">
+                <tr *ngFor="let data of onDutyRequest| search: searchText ;">
                     <td>{{getUser(data?.user)}}</td>
                     <td>{{data?.startDate | date: 'mediumDate'}}</td>
                     <td>{{data?.endDate | date: 'mediumDate'}}</td>
@@ -94,8 +94,7 @@
                 </tr>
             </tbody>
         </table>
-        <pagination-controls *ngIf="portalView === 'admin'" (pageChange)="p = $event"
-            class="pagination d-flex justify-content-end"></pagination-controls>
+        
 
         <table *ngIf="portalView === 'user'">
             <thead>
@@ -108,7 +107,7 @@
                 <th>Actions</th>
             </thead>
             <tbody>
-                <tr *ngFor="let request of onDutyRequest | search : searchText |  paginate: { itemsPerPage: 5, currentPage: p }" [ngClass]="{ 'd-none': !isStatusChecked(request.status) }">
+                <tr *ngFor="let request of onDutyRequest | search : searchText " [ngClass]="{ 'd-none': !isStatusChecked(request.status) }">
                     <td>{{request?.startDate | date: 'mediumDate'}}</td>
                     <td>{{request?.endDate | date: 'mediumDate'}}</td>
                     <td>{{getReason(request?.onDutyReason)}}</td>
@@ -145,8 +144,7 @@
                 </tr>
             </tbody>
         </table>
-        <pagination-controls *ngIf="portalView === 'user'" (pageChange)="p = $event"
-            class="pagination d-flex justify-content-end"></pagination-controls>
+        
     </div>
 </div>
 

@@ -65,15 +65,14 @@
                 </thead>
                 <tbody>
                     <tr
-                        *ngFor="let data of leaveList | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
+                        *ngFor="let data of leaveList | search: searchText ">
                         <td> {{data?.firstName | titlecase}} {{data?.lastName | titlecase}}</td>
                         <td>{{ data.name }}</td>
                         <td>{{ data.count }} {{ data.count > 1 ? 'days' : 'day' }}</td>
                     </tr>
                 </tbody>
             </table>
-            <pagination-controls (pageChange)="p = $event"
-                class="pagination d-flex justify-content-end"></pagination-controls>
+            
         </div>
     </div>
 </div>

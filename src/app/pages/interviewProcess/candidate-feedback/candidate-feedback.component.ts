@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, FormsModule, Validators } from '@angular/forms';
-import { NgxPaginationModule } from 'ngx-pagination';
+
 import { SharedModule } from 'src/app/shared/shared.Module';
 import { InterviewProcessService } from 'src/app/_services/interviewProcess.service';
 import { ToastrService } from 'ngx-toastr';
@@ -12,7 +12,7 @@ import { candidate, candidateFeedback, feedbackField } from 'src/app/models/inte
 @Component({
   selector: 'app-candidate-feedback',
   standalone: true,
-  imports: [CommonModule,FormsModule,NgxPaginationModule,SharedModule],
+  imports: [CommonModule,FormsModule,SharedModule],
   templateUrl: './candidate-feedback.component.html',
   styleUrl: './candidate-feedback.component.css'
 })

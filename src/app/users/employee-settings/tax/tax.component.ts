@@ -1,5 +1,6 @@
-import { Component,  ComponentFactoryResolver,  Input,  ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ComponentFactoryResolver, Input, ViewChild, ViewContainerRef } from '@angular/core';
 import { TaxCalculatorComponent } from './tax-calculator/tax-calculator.component';
+import { UserService } from 'src/app/_services/users.service';
 @Component({
   selector: 'app-tax',
   templateUrl: './tax.component.html',
@@ -14,10 +15,22 @@ export class TaxComponent {
   isEdit: boolean = false;
   @ViewChild('offcanvasContent', { read: ViewContainerRef }) offcanvasContent: ViewContainerRef;
   @Input() selectedUser: any;
+  taxView: boolean;
+  totalRecords: number
+  recordsPerPage: number = 10;
+  currentPage: number = 1;
+  uniqueFinancialYears: string[];
+  uniqueSections: string[];
 
-constructor(private componentFactoryResolver: ComponentFactoryResolver){}
+  constructor(private componentFactoryResolver: ComponentFactoryResolver,
+    private userService: UserService
+  ) { }
 
-  openOffcanvas(isEdit: boolean, record: any= null) {
+  ngOnInit() {
+    this.getTaxDeclaration();
+  }
+
+  openOffcanvas(isEdit: boolean, record: any = null) {
     this.isEdit = isEdit;
     this.selectedRecord = record;
     this.showOffcanvas = true;
@@ -48,5 +61,59 @@ constructor(private componentFactoryResolver: ComponentFactoryResolver){}
       age--;
     }
     return age;
+  }
+
+  goBackToSalaryDetails() {
+    this.taxView = false;
+    this.taxView = false;
+
+  }
+  onPageChange(page: number) {
+    this.currentPage = page;
+    this.getTaxDeclaration();
+  }
+
+  onRecordsPerPageChange(recordsPerPage: number) {
+    this.recordsPerPage = recordsPerPage;
+    this.getTaxDeclaration();
+  }
+
+
+  getTaxDeclaration() {
+    const pagination = {
+      skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
+      next: this.recordsPerPage.toString()
+    };
+    this.userService.getTaxDeclarationByUserId(this.selectedUser.id, pagination).subscribe((res: any) => {
+      this.taxList = res.data;
+      this.uniqueFinancialYears = this.getUniqueFinancialYears(this.taxList);
+      this.uniqueSections = this.extractSectionsFromTaxList(this.taxList);
+    })
+  }
+  getUniqueFinancialYears(taxList: any[]): string[] {
+    const financialYearsSet = new Set<string>();
+
+    taxList.forEach(item => {
+      if (item.financialYear) {
+        financialYearsSet.add(item.financialYear);
+      }
+    });
+    return Array.from(financialYearsSet);
+  }
+
+  extractSectionsFromTaxList(taxList: any[]): string[] {
+    const allSections: string[] = [];
+
+    taxList.forEach(item => {
+      if (item.incomeTaxDeclarationComponent) {
+        item.incomeTaxDeclarationComponent.forEach(component => {
+          if (component.section) {
+            allSections.push(component.section);
+          }
+        });
+      }
+    });
+    console.log(allSections);
+    return allSections;
   }
 }

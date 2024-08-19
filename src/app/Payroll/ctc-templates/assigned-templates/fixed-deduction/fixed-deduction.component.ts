@@ -58,7 +58,7 @@ export class AssignedFixedDeductionComponent {
         fixedDeduction: [item.fixedDeduction || ''],
         criteria: [item.criteria || 'Amount'],
         value: [item.value || ''],
-        valueType: item.valueType || '0',
+        valueType: item.valueType || 0,
         minimumAmount: [item.minimumAmount || '']
       }));
     });

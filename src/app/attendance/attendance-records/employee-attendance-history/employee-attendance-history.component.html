@@ -32,11 +32,10 @@
                 <th>Late Coming Remarks</th>
             </thead>
             <tbody>
-                <tr *ngFor="let data of attendanceHistory |  paginate: { itemsPerPage: 5, currentPage: p }"></tr>
+                <tr *ngFor="let data of attendanceHistory "></tr>
             </tbody>
         </table>
-        <pagination-controls (pageChange)="p = $event"
-            class="pagination d-flex justify-content-end"></pagination-controls>
+        
     </div>
     <div class="tableContainer mt-2 bg-white">
         <div class="d-flex my-2 align-items-center">
@@ -58,7 +57,7 @@
                 <th>Total Payable Days</th>
             </thead>
             <tbody>
-                <tr *ngFor="let data of attendanceHistory |  paginate: { itemsPerPage: 5, currentPage: p }">
+                <tr *ngFor="let data of attendanceHistory ">
                     <td></td>
                     <td></td>
                     <td></td>

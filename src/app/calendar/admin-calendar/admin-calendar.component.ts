@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit, ElementRef, Renderer2 } from '@angular/core';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import { Calendar } from '@fullcalendar/core';
+// import dayGridPlugin from '@fullcalendar/daygrid';
+// import { Calendar } from '@fullcalendar/core';
 import { CalendarService } from 'src/app/_services/calendar.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
@@ -13,7 +13,7 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./admin-calendar.component.css']
 })
 export class AdminCalendarComponent {
-  calendarPlugins = [dayGridPlugin];
+  // calendarPlugins = [dayGridPlugin];
   searchText: string = '';
   showAddMilestone: boolean = false;
   events: any[] = [];
@@ -21,7 +21,7 @@ export class AdminCalendarComponent {
   selectedEvent: any;
   isEdit: boolean = false;
   milestoneData;
-  calendar: Calendar;
+  // calendar: Calendar;
 tab: boolean = false;
 calendarEvents= [
   {
@@ -63,16 +63,16 @@ calendarEvents= [
 
       const calendarEl: HTMLElement = this.elementRef.nativeElement.querySelector('#calendar');
 
-      this.calendar = new Calendar(calendarEl, {
-        headerToolbar: {
-          left: 'prev today next',
-          center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay'
-        },
-        events: this.calendarEvents,
-        eventClick: (info) => this.toggleMilestoneView(info.event)
-        });
-      this.calendar.render();
+      // this.calendar = new Calendar(calendarEl, {
+      //   headerToolbar: {
+      //     left: 'prev today next',
+      //     center: 'title',
+      //     right: 'dayGridMonth,timeGridWeek,timeGridDay'
+      //   },
+      //   events: this.calendarEvents,
+      //   eventClick: (info) => this.toggleMilestoneView(info.event)
+      //   });
+      // this.calendar.render();
     }, 0);
   }
 
@@ -103,11 +103,11 @@ calendarEvents= [
     this.events.push(newMilestoneEvent);
   
     // Update the calendar with the new event
-    this.calendar.addEvent(newMilestoneEvent);
+    // this.calendar.addEvent(newMilestoneEvent);
   
-    // Refetch events to update the calendar
-    this.calendar.refetchEvents();
-    this.calendar.render();
+    // // Refetch events to update the calendar
+    // this.calendar.refetchEvents();
+    // this.calendar.render();
   
     this.calendarEventForm.reset();
     this.showAddMilestone = false;

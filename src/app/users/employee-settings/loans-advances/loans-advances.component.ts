@@ -157,6 +157,6 @@ export class UserLoansAdvancesComponent {
 
   getRecord(categoryId: string) {
     const matchingRecord = this.loansAdvancesCategories?.find(rec => rec._id === categoryId);
-    return matchingRecord.name;
+    return matchingRecord?.name;
   }
 }

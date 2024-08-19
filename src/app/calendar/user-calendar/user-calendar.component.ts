@@ -1,13 +1,13 @@
 import { Component, OnInit, AfterViewInit, ElementRef, Renderer2 } from '@angular/core';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import { Calendar } from 'fullcalendar'; 
+// import dayGridPlugin from '@fullcalendar/daygrid';
+// import { Calendar } from 'fullcalendar'; 
 @Component({
   selector: 'app-user-calendar',
   templateUrl: './user-calendar.component.html',
   styleUrls: ['./user-calendar.component.css']
 })
 export class UserCalendarComponent {
-  calendarPlugins = [dayGridPlugin];
+  // calendarPlugins = [dayGridPlugin];
   calendarEvents= [
     {
       title: 'Today',
@@ -30,16 +30,16 @@ export class UserCalendarComponent {
   ngAfterViewInit(): void {
     const calendarEl: HTMLElement = this.elementRef.nativeElement.querySelector('#calendar');
 
-    const calendar = new Calendar(calendarEl, {
-      headerToolbar: {
-        left: 'prev today next',
-        center: 'title',
-        right: 'dayGridMonth,timeGridWeek,timeGridDay'
-      },
-      events: this.calendarEvents
-    });
+    // const calendar = new Calendar(calendarEl, {
+    //   headerToolbar: {
+    //     left: 'prev today next',
+    //     center: 'title',
+    //     right: 'dayGridMonth,timeGridWeek,timeGridDay'
+    //   },
+    //   events: this.calendarEvents
+    // });
 
-    calendar.render();
+    // calendar.render();
   }
 
 }

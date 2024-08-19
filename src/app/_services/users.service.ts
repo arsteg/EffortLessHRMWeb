@@ -210,4 +210,9 @@ export class UserService {
   deleteLoansAdvances(id: string): Observable<any> {
     return this.http.delete<any>(`${environment.apiUrlDotNet}/users/employee-loan-advance/${id}`, this.httpOptions);
   }
+
+  // Tax Decalaration
+  getTaxDeclarationByUserId(userId: string, payload: any): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrlDotNet}/users/employee-income-tax-declarations-by-user/${userId}`, payload, this.httpOptions);
+  }
 }

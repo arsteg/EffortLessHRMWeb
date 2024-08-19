@@ -23,7 +23,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let status of filteredList | search: searchText | paginate: { itemsPerPage: 10, currentPage: p }">
+              <tr *ngFor="let status of filteredList | search: searchText">
                 <td class="col-10 ps-3">{{ status.name}}</td>
 
                 <td>
@@ -42,8 +42,7 @@
           </table>
         </div>
         <div class="d-flex justify-content-center">
-          <pagination-controls (pageChange)="p = $event"
-          class="pagination d-flex justify-content-end"></pagination-controls>
+            
         </div>
       </div>
       <div class="col-md-4">

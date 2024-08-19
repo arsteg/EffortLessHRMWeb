@@ -18,7 +18,7 @@
             <th>Is this Holiday Mandatory</th>
         </thead>
         <tbody>
-            <tr *ngFor="let holiday of holidays |  paginate: { itemsPerPage: 5, currentPage: p };">
+            <tr *ngFor="let holiday of holidays ;">
                 <td>{{holiday?.date | date: 'mediumDate'}}</td>
                 <td>{{holiday?.label}}</td>
                 <td>
@@ -28,6 +28,5 @@
             </tr>
         </tbody>
     </table>
-    <pagination-controls (pageChange)="p = $event" class="pagination d-flex justify-content-end"></pagination-controls>
 
 </div>

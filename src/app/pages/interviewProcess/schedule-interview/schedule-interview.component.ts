@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, FormsModule, Validators } from '@angular/forms';
-import { NgxPaginationModule } from 'ngx-pagination';
+
 import { SharedModule } from 'src/app/shared/shared.Module';
 import { InterviewProcessService } from 'src/app/_services/interviewProcess.service';
 import { ToastrService } from 'ngx-toastr';
@@ -17,7 +17,7 @@ import { CommonService } from 'src/app/_services/common.Service';
 @Component({
   selector: 'app-schedule-interview',
   standalone: true,
-  imports: [CommonModule,FormsModule,NgxPaginationModule,SharedModule, EditInterviewerDialogComponent],
+  imports: [CommonModule,FormsModule,SharedModule, EditInterviewerDialogComponent],
   templateUrl: './schedule-interview.component.html',
   styleUrl: './schedule-interview.component.css'
 })

@@ -30,7 +30,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let asset of filteredAssets | paginate: { itemsPerPage: 10, currentPage: p }">
+          <tr *ngFor="let asset of filteredAssets">
             <td>{{ asset.assetName }}</td>
             <td>{{ asset.purchaseDate | date }}</td>
             <td>{{ asset.warrantyExpiry | date }}</td>
@@ -53,8 +53,7 @@
         </tbody>
       </table>
       <div class="d-flex justify-content-center">
-        <pagination-controls (pageChange)="p = $event"
-            class="pagination d-flex justify-content-end"></pagination-controls>
+        
       </div>
     </div>
     <div class="col-md-4 border-start">

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, FormsModule, Validators } from '@angular/forms';
-import { NgxPaginationModule } from 'ngx-pagination';
+
 import { SharedModule } from 'src/app/shared/shared.Module';
 import { InterviewProcessService } from 'src/app/_services/interviewProcess.service';
 import { ToastrService } from 'ngx-toastr';
@@ -11,7 +11,7 @@ import { candidate } from 'src/app/models/interviewProcess/candidate';
 @Component({
   selector: 'app-candidates',
   standalone: true,
-  imports: [CommonModule,FormsModule,NgxPaginationModule,SharedModule],
+  imports: [CommonModule,FormsModule,SharedModule],
   templateUrl: './candidates.component.html',
   styleUrl: './candidates.component.css'
 })

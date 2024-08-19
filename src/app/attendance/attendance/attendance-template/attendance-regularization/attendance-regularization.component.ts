@@ -7,7 +7,6 @@ import { ToastrService } from 'ngx-toastr';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
-// import { GoogleMap, MapInfoWindow, MapMarker } from '@angular/google-maps';
 import {  GoogleMap } from '@angular/google-maps';
 interface Marker {
   lat: number;

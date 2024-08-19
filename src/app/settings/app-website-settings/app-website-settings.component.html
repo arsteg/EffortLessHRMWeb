@@ -35,7 +35,7 @@
                         </thead>
                         <tbody>
                             <tr
-                                *ngFor="let application of applications | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
+                                *ngFor="let application of applications | search: searchText ">
                                 <td class="highlight">
                                     <div></div>
                                 </td>
@@ -74,8 +74,7 @@
                             </tr>
                         </tbody>
                     </table>
-                    <pagination-controls (pageChange)="p = $event"
-                        class="pagination d-flex justify-content-end"></pagination-controls>
+                            
 
                 </div>
             </div>

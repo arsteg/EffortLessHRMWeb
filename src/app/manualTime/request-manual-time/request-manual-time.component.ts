@@ -13,7 +13,6 @@ import { CommonService } from 'src/app/_services/common.Service';
 import { TasksService } from 'src/app/_services/tasks.service';
 import * as moment from 'moment';
 import { ToastrService } from 'ngx-toastr';
-import { mergeMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-request-manual-time',
@@ -40,7 +39,7 @@ export class RequestManualTimeComponent implements OnInit {
   selectedProject: string = 'undefined';
   selectedManager: string = 'undefined';
   selectedTask: string = 'undefined';
-  public sortOrder: string = ''; // 'asc' or 'desc'
+  public sortOrder: string = '';
   firstLetter: string;
   color: string;
   dateMismatchError: boolean = false;

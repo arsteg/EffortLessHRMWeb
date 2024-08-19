@@ -36,7 +36,7 @@
                     <th>Actions</th>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let data of attendanceRecords  |  paginate: { itemsPerPage: 5, currentPage: p }">
+                    <tr *ngFor="let data of attendanceRecords  ">
                         <td></td>
                         <td></td>
                         <td></td>
@@ -53,8 +53,7 @@
                     </tr>
                 </tbody>
             </table>
-            <pagination-controls (pageChange)="p = $event"
-                class="pagination d-flex justify-content-end"></pagination-controls>
+            
         </div>
     </div>
 </div>

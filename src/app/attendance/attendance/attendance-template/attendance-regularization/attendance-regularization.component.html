@@ -320,7 +320,7 @@
                 </thead>
                 <tbody>
                     <tr
-                        *ngFor="let location of location | paginate: { itemsPerPage: 5, currentPage: p }, let i = index ">
+                        *ngFor="let location of location , let i = index ">
                         <td>{{location?.Location}}</td>
                         <td>{{location?.Longitude}}</td>
                         <td>{{location?.Latitude}}</td>
@@ -342,8 +342,7 @@
                     </tr>
                 </tbody>
             </table>
-            <pagination-controls (pageChange)="p = $event"
-                class="pagination d-flex justify-content-end"></pagination-controls>
+            
         </div>
     </div>
 

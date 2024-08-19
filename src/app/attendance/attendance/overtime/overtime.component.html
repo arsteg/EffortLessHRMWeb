@@ -50,7 +50,7 @@
                         </thead>
                         <tbody>
                             <tr
-                                *ngFor="let roundingInfo of rounding| search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
+                                *ngFor="let roundingInfo of rounding| search: searchText ">
                                 <td>{{roundingInfo?.roundingPatternCode}}</td>
                                 <td>{{roundingInfo?.roundingPatternName}}</td>
                                 <td>{{roundingInfo?.shift}}</td>
@@ -73,8 +73,7 @@
                             </tr>
                         </tbody>
                     </table>
-                    <!-- <pagination-controls (pageChange)="p = $event"
-                        class="pagination d-flex justify-content-end"></pagination-controls> -->
+                    <!--          -->
                 </div>
 
                 <div class="tab-pane" [ngClass]="{'active': activeTab === 'overTime'}" id="overTime">
@@ -114,7 +113,7 @@
                         </thead>
                         <tbody>
                             <tr
-                                *ngFor="let overtime of overTimeRecord| search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
+                                *ngFor="let overtime of overTimeRecord| search: searchText ">
                                 <td>{{overtime?.Name}}</td>
                                 <td>{{overtime?.BaseType}}</td>
                                 <td>{{overtime?.AttandanceShift}}</td>
@@ -140,8 +139,7 @@
                             </tr>
                         </tbody>
                     </table>
-                    <pagination-controls (pageChange)="p = $event"
-                        class="pagination d-flex justify-content-end"></pagination-controls>
+                            
                 </div>
             </div>
         </div>

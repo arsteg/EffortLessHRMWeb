@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { applicationStatus } from 'src/app/models/interviewProcess/applicationStatus';
 import { FormBuilder, FormGroup, Validators,FormsModule,ReactiveFormsModule } from '@angular/forms';
-import { NgxPaginationModule } from 'ngx-pagination';
+
 import { ToastrService } from 'ngx-toastr';
 import { InterviewProcessService } from 'src/app/_services/interviewProcess.service';
 import { SharedModule } from 'src/app/shared/shared.Module';

@@ -1,4 +1,4 @@
-<div>
+<div *ngIf="!taxView">
     <div class="d-flex align-items-center px-2 py-1">
         <p class="mb-0 me-auto">() Records Found</p>
         <div class="d-flex align-items-center">
@@ -7,6 +7,10 @@
                 name="searchText" aria-label="default input example">
         </div>
     </div>
+    <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
+        [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
+        (recordsPerPageChange)="onRecordsPerPageChange($event)">
+    </app-pagination>
     <table>
         <thead>
             <th>Financial Year</th>
@@ -20,42 +24,42 @@
         </thead>
         <tbody>
             <!-- <tr *ngFor="let tax of taxList | search:searchText"> -->
-            <td>data</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td class="action text-center">
-                <div ngbDropdown class="dropdown-center">
-                    <button class="actions ms-2" mat-mini-fab ngbDropdownToggle aria-expanded="false"
-                        aria-label="Example icon button with a menu icon">
-                        <i class="bi bi-send"></i>
-                    </button>
-                    <ul ngbDropdownMenu class="dropdown-menu py-0">
+                <td>{{uniqueFinancialYears}}</td>
+                <td>{{uniqueSections?.length}}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td class="action text-center">
+                    <div ngbDropdown class="dropdown-center">
+                        <button class="actions ms-2" mat-mini-fab ngbDropdownToggle aria-expanded="false"
+                            aria-label="Example icon button with a menu icon">
+                            <i class="bi bi-send"></i>
+                        </button>
+                        <ul ngbDropdownMenu class="dropdown-menu py-0">
 
-                        <li class="d-flex border-bottom action-list">
-                            <i class="bi bi-arrow-down text-danger dropdown-item w-25"></i>
-                            <span class="pt-1 text-muted">Download</span>
-                        </li>
+                            <li class="d-flex border-bottom action-list">
+                                <i class="bi bi-arrow-down text-danger dropdown-item w-25"></i>
+                                <span class="pt-1 text-muted">Download</span>
+                            </li>
 
-                        <li class="d-flex border-bottom action-list"
-                            (click)="selectedRecord = taxList; openOffcanvas(true, taxList);" data-bs-toggle="offcanvas"
-                            data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
-                            <i class="bi bi-calculator text-primary dropdown-item w-25"></i>
-                            <span class="pt-1 text-muted">Tax Calculator</span>
-                        </li>
+                            <!-- <li class="d-flex border-bottom action-list"
+                                (click)="selectedRecord = tax; openOffcanvas(true, tax);" data-bs-toggle="offcanvas"
+                                data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+                                <i class="bi bi-calculator text-primary dropdown-item w-25"></i>
+                                <span class="pt-1 text-muted">Tax Calculator</span>
+                            </li> -->
 
-                        <li class="d-flex action-list" data-bs-toggle="modal" data-bs-target="#updateModal">
-                            <i class="bi bi-pencil text-success dropdown-item w-25"></i>
-                            <span class="pt-1 text-muted">Edit</span>
-                        </li>
-                    </ul>
-                </div>
+                            <li class="d-flex action-list" (click)="taxView = true;">
+                                <i class="bi bi-pencil text-success dropdown-item w-25"></i>
+                                <span class="pt-1 text-muted">Edit</span>
+                            </li>
+                        </ul>
+                    </div>
 
-            </td>
-
+                </td>
+            <!-- </tr> -->
         </tbody>
     </table>
 </div>
@@ -85,3 +89,6 @@
         <app-tax-calculator [selectedRecord]="selectedRecord" [isEdit]="isEdit"></app-tax-calculator>
     </div>
 </div>
+
+<app-edit-tax *ngIf="taxView" [edit]=isEdit [selectedSalaryDetail]="selectedRecord" [selectedUser]=selectedUser
+    (backToSalaryDetails)="goBackToSalaryDetails()"></app-edit-tax>

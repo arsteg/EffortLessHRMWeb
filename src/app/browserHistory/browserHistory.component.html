@@ -44,7 +44,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let history of browserHistory |  paginate: { itemsPerPage: 10, currentPage: p }">
+          <tr *ngFor="let history of browserHistory ">
             <td style="width: 5%;">
               <span *ngIf="history.browser==1" title="Edge"> <img src="assets/Browser/internet_explorer.png" alt=""
                   height="25"></span>
@@ -62,7 +62,6 @@
           </tr>
         </tbody>
       </table>
-        <pagination-controls (pageChange)="p = $event" class="pagination d-flex justify-content-end mt-2"></pagination-controls>
       </div>
     </div>
 </div>

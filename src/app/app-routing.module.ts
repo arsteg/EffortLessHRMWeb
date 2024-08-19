@@ -15,26 +15,17 @@ import { HomeComponent } from './home/home.component';
 import { RolesComponent } from './manage/roles/roles/roles.component';
 import { PermissionModelComponent } from './manage/permissonModel/permission-model/permission-model.component';
 import { ProfileComponent } from './profile/profile.component';
-// import { TimelineComponent } from './reports/timeline/timeline.component';
-// import { UserListComponent } from './users/user-list/user-list.component';
-// import { AttendanceComponent } from './reports/attendance/attendance.component';
 import { RealtimeComponent } from './realtime/realtime.component';
 import { MainComponent } from './main/main.component';
-import { changeUserPassword } from './models/user';
 import { TasksComponent } from './tasks/tasks.component';
 import { RequestManualTimeComponent } from './manualTime/request-manual-time/request-manual-time.component';
 import { RequestApprovalComponent } from './manualTime/requestApproval/requestApproval.component';
 import { AddManualTimeComponent } from './manualTime/addManualTime/add-manual-time.component';
 import { ActivityDescriptionComponent } from './reports/activity-description/activity-description.component';
 import { AppAndWebsiteUsageComponent } from './reports/app-and-website-usage/app-and-website-usage.component';
-// import { LeaveReportComponent } from './reports/leave-report/leave-report.component';
-// import { ProductivityReportComponent } from './reports/productivity-report/productivity-report.component';
-// import { AppWebsiteSettingsComponent } from './settings/app-website-settings/app-website-settings.component';
-
 import { PermissionsComponent } from './permissions/permissions.component';
 import { RolePermissionComponent } from './role-permission/role-permission.component';
 import { ResetPasswordComponent } from './login/reset-password/reset-password.component';
-// import { TimesheetsComponent } from './timesheets/timesheets.component';
 import { ProfileSettingsComponent } from './settings/profile-settings/profile-settings.component';
 import { WorkspaceSettingsComponent } from './settings/workspace-settings/workspace-settings.component';
 import { FeaturesSettingsComponent } from './settings/features-settings/features-settings.component';
@@ -49,14 +40,11 @@ import { ViewLiveScreenComponent } from './viewLiveScreen/view-live-screen/view-
 import { UserDashboardComponent } from './dashboard/user-dashboard/user-dashboard.component';
 import { EmailTemplateComponent } from './email-template/email-template.component';
 import { SubtaskComponent } from './tasks/subtask/subtask.component';
-import { productivityAppsApprovalComponent } from './approvals/productivityAppsApproval/productivityAppsApproval.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
-// import { UserPreferencesComponent } from './settings/userPreferences/userPreferences.Component';
 import { AdminCalendarComponent } from './calendar/admin-calendar/admin-calendar.component';
 import { UserCalendarComponent } from './calendar/user-calendar/user-calendar.component';
 import { AssetManagerComponent } from './AssetsManagement/assetAssetManager/asset.component';
 import { DocumentManagerComponent } from './documentManager/documentManager.component';
-import { UserAssetAssignmentComponent } from './AssetsManagement/user-asset-assignment/user-asset-assignment.component';
 import { LeaveManagementComponent } from './Leave/leave-grant/leave-grant.component';
 import { ManageComponent } from './manage/manage/manage.component';
 import { OrganizationComponent } from './organization/organization/organization.component';
@@ -75,9 +63,6 @@ import { ExpenseCategorySettingsComponent } from './Expenses/settings/expense-ca
 import { InterviewProcessMainComponent } from './pages/interviewProcess/interview-process-main/interview-process-main.component';
 import { AttendanceManagementComponent } from './attendance/attendance-management/attendance-management.component';
 const routes: Routes = [
-  // {path:'',component:LayoutComponentComponent, canActivate: [AuthGuard]},
-
-
   { path: '', component: MainComponent },
   { path: 'main', component: MainComponent },
   { path: 'login', component: LoginComponent },
@@ -98,10 +83,7 @@ const routes: Routes = [
       { path: 'roles', component: RolesComponent },
       { path: 'permissionModel', component: PermissionModelComponent },
       { path: 'Profile', component: ProfileComponent },
-      // { path: 'timeline', component: TimelineComponent },
       { path: 'project', component: ProjectListComponent },
-      // { path: 'employees', component: UserListComponent },
-      // { path: 'attendance', component: AttendanceComponent },
       { path: 'realtime', component: RealtimeComponent },
       { path: 'tasks', component: TasksComponent },
       { path: 'tags', component: TagComponent },
@@ -110,15 +92,10 @@ const routes: Routes = [
       { path: 'AddManualTime', component: AddManualTimeComponent },
       { path: 'activityDescription', component: ActivityDescriptionComponent },
       { path: 'applicationusages', component: AppAndWebsiteUsageComponent },
-      // { path: 'leaveReport', component: LeaveReportComponent },
-      // { path: 'productivity', component: ProductivityReportComponent },
-      // { path: 'appwebsitesettings', component: AppWebsiteSettingsComponent },
       { path: 'permissions', component: PermissionsComponent },
       { path: 'rolePermission', component: RolePermissionComponent },
-      // { path: 'timesheets', component: TimesheetsComponent },
       { path: 'adminTimesheets', component: AdminTimesheetComponent },
       { path: 'userTimesheet', component: UserTimesheetComponent },
-      // { path: 'profileSettings', component: ProfileSettingsComponent },
       { path: 'workspace', component: WorkspaceSettingsComponent },
       { path: 'features', component: FeaturesSettingsComponent },
       { path: 'leavesettings', component: LeaveSettingsComponent },
@@ -128,14 +105,10 @@ const routes: Routes = [
       { path: 'viewLiveScreen', component: ViewLiveScreenComponent },
       { path: 'emailtemplate', component: EmailTemplateComponent },
       { path: 'SubTask', component: SubtaskComponent },
-      // { path: 'productivityAppsApproval', component: productivityAppsApprovalComponent },
-      // { path: 'browserHistory', component: BrowserHistoryComponent },
-      // { path: 'userPreferences', component: UserPreferencesComponent },
       { path: 'assetsManagement', component: AssetManagerComponent },
       { path: 'AdminCalendar', component: AdminCalendarComponent },
       { path: 'UserCalendar', component: UserCalendarComponent },
       { path: 'documentManager', component: DocumentManagerComponent },
-      // { path: 'Assets', component: UserAssetAssignmentComponent },
       { path: 'leave', component: LeaveManagementComponent },
       { path: 'manage', component: ManageComponent },
       { path: 'organization', component: OrganizationComponent },

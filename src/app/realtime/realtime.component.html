@@ -102,7 +102,7 @@
                 </thead>
                 <tbody>
                     <tr
-                        *ngFor="let data of realtime?.onlineUsers | search: searchText |  paginate: { itemsPerPage: 10, currentPage: p }">
+                        *ngFor="let data of realtime?.onlineUsers | search: searchText">
                         <td>
                             <span class="letter ms-2"
                                 [style.background-color]="commonService.getRandomColor(data?.user?.lastName)">
@@ -119,8 +119,7 @@
                     </tr>
                 </tbody>
             </table>
-            <pagination-controls (pageChange)="p = $event"
-                class="pagination d-flex justify-content-end"></pagination-controls>
+            
         </div>
     </div>
 </div>

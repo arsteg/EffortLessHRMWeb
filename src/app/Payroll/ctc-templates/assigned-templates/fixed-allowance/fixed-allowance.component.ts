@@ -60,7 +60,7 @@ export class AssignedFixedAllowanceComponent {
         fixedAllowance: [item.fixedAllowance || ''],
         criteria: [item.criteria || 'Amount'],
         value: [item.value || ''],
-        valueType: item.valueType || '',
+        valueType: item.valueType || 0,
         minimumAmount: [item.minimumAmount || '']
       }));
     });

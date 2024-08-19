@@ -28,6 +28,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { EmployeeProfileComponent } from '../users/employee-settings/employee-profile/employee-profile.component';
 import { TaxCalculatorComponent } from '../users/employee-settings/tax/tax-calculator/tax-calculator.component';
 import { EditTaxComponent } from '../users/employee-settings/tax/edit-tax/edit-tax.component';
+import { TaxComponentsComponent } from '../users/employee-settings/tax/edit-tax/tax-components/tax-components.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,7 @@ import { EditTaxComponent } from '../users/employee-settings/tax/edit-tax/edit-t
     EmployeeProfileComponent,
     TaxCalculatorComponent,
     EditTaxComponent,
-
+    TaxComponentsComponent
   ],
   imports: [
     CommonModule,
@@ -62,6 +63,7 @@ import { EditTaxComponent } from '../users/employee-settings/tax/edit-tax/edit-t
     TaxComponent,
     EmployeeProfileComponent,
     TaxCalculatorComponent,
+    TaxComponentsComponent,
     EditTaxComponent,
   ],
   schemas: [

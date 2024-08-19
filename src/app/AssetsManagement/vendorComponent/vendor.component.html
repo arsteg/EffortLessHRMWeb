@@ -20,7 +20,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let vendor of filteredVendors | paginate: { itemsPerPage: 10, currentPage: p }">
+                    <tr *ngFor="let vendor of filteredVendors">
                         <td>{{ vendor.vendorId }}</td>
                         <td>{{ vendor.vendorName }}</td>
                         <td>{{ vendor.email }}</td>
@@ -41,8 +41,7 @@
             </table>
 
             <div class="d-flex justify-content-center mt-3">
-                <pagination-controls (pageChange)="p = $event"
-                class="pagination d-flex justify-content-end"></pagination-controls>
+               
             </div>
         </div>
 

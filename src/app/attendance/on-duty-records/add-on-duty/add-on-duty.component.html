@@ -64,7 +64,7 @@
                     </tr>
                 </thead>
                 <tbody formArrayName="onDutyShift">
-                    <tr *ngFor="let shifts of onDutyShiftForm.get('onDutyShift')['controls'] | paginate: { itemsPerPage: 5, currentPage: p }; let i = index"
+                    <tr *ngFor="let shifts of onDutyShiftForm.get('onDutyShift')['controls'] ; let i = index"
                         [formGroupName]="i">
                         <td><input placeholder="YYYY-MM-DD" class="form-control formTable" formControlName="date"
                                 readonly></td>
@@ -95,8 +95,7 @@
                 </tbody>
             </table>
         </div>
-        <pagination-controls (pageChange)="p = $event"
-            class="pagination d-flex justify-content-end"></pagination-controls>
+        
 
         <div class="form-group my-2">
             <label for="">Leave a Comment</label>

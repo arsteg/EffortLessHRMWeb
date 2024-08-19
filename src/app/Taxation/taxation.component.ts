@@ -6,14 +6,15 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./taxation.component.css']
 })
 export class TaxationComponent implements OnInit {
-  selectedTab: number = 1;
+  selectedTab: number = 3;
   view = localStorage.getItem('adminView');
 
   constructor(
-    ) { }
+  ) { }
 
-  ngOnInit(): void {  
+  ngOnInit(): void {
   }
+
   selectTab(tabIndex: number) {
     this.selectedTab = tabIndex;
   }

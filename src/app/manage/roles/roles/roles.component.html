@@ -40,7 +40,7 @@
             </thead>
             <tbody>
                 <tr
-                    *ngFor="let item of allRoles |  search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
+                    *ngFor="let item of allRoles |  search: searchText ">
                    
                     <td>{{ item?.Name }}</td>
                     <td>{{item?.createdOn | date}}</td>
@@ -61,8 +61,7 @@
             </tbody>
         </table>
               
-        <pagination-controls (pageChange)="p = $event"
-        class="pagination d-flex justify-content-end"></pagination-controls>
+        
 
     </div>
 </div>

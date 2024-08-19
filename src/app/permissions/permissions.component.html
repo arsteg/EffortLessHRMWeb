@@ -36,7 +36,7 @@
                 </thead>
                 <tbody>
                     <tr
-                        *ngFor="let permission of allPermissions | search: searchText |  paginate: { itemsPerPage: 5, currentPage: p }">
+                        *ngFor="let permission of allPermissions | search: searchText ">
 
 
                         <td>{{permission.permissionName}}</td>
@@ -59,8 +59,7 @@
                 </tbody>
             </table>
 
-            <pagination-controls (pageChange)="p = $event"
-                class="pagination d-flex justify-content-end"></pagination-controls>
+            
 
         </div>
 
