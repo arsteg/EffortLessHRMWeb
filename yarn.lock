@@ -1422,10 +1422,10 @@
   dependencies:
     tslib "^2.3.0"
 
-"@fullcalendar/core@~6.1.10":
-  version "6.1.10"
-  resolved "https://registry.npmjs.org/@fullcalendar/core/-/core-6.1.10.tgz"
-  integrity sha512-oTXGJSAGpCf1oY+CKp5qYjMHkJCPBkJ3SHitl63n8Q6xKeiwQ4EF6Au451euUovREwJpLmD1AyZrCnWmtB9AVg==
+"@fullcalendar/core@^6.1.15":
+  version "6.1.15"
+  resolved "https://registry.npmjs.org/@fullcalendar/core/-/core-6.1.15.tgz"
+  integrity sha512-BuX7o6ALpLb84cMw1FCB9/cSgF4JbVO894cjJZ6kP74jzbUZNjtwffwRdA+Id8rrLjT30d/7TrkW90k4zbXB5Q==
   dependencies:
     preact "~10.12.1"
 

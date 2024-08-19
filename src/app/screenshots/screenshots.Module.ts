@@ -6,6 +6,7 @@ import { MatTooltipModule } from "@angular/material/tooltip";
 import { CommonModule } from "@angular/common";
 import { CommonComponentsModule } from "../common/commonComponents.module";
 import { FormsModule } from "@angular/forms";
+import { ReactiveFormsModule } from "@angular/forms";
 
 @NgModule({
   // declarations: [ScreenshotsComponent],
@@ -14,7 +15,8 @@ import { FormsModule } from "@angular/forms";
     MatTooltipModule,
     CommonModule,
     CommonComponentsModule,
-    FormsModule],
+    FormsModule,
+  ReactiveFormsModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
 })
 export class ScreenshotsModule {
