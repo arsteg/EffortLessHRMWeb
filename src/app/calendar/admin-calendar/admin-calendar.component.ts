@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit, ElementRef, Renderer2 } from '@angular/core';
 // import dayGridPlugin from '@fullcalendar/daygrid';
-// import { Calendar } from '@fullcalendar/core';
+
 import { CalendarService } from 'src/app/_services/calendar.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
