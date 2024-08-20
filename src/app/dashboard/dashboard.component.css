@@ -29,3 +29,25 @@ input {
 ::-webkit-scrollbar{
     width: 0.3rem !important;
 }
+
+.user-image {
+    width: 100px;
+    height: auto;
+}
+
+.about__title {
+    flex-direction: column;
+    align-items: center;
+}
+
+.content__title .title-hidden {
+    font-size: 30px !important;
+}
+
+.activity__summary ul {
+    margin-bottom: 0;
+}
+
+.activity__summary li {
+    font-size: 15px;
+}
