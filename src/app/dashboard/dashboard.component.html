@@ -12,6 +12,7 @@
         </div>
       </mat-form-field>
     </div>
+
     <div class="row d-block justify-content-evenly container-fluid ms-2 mt-5">
       <div class="col-12">
         <div class="py-4 bg-white" style="border-radius: 1.2rem">
@@ -51,88 +52,92 @@
         </div>
       </div>
     </div>
-    <div class="row my-3 justify-content-evenly">
-      <div class="col-md-4  dash-boxes p-3 bg-white">
+
+    <div class="my-3 mx-auto row row-cols-1 row-cols-md-3 g-4 justify-content-evenly container-fluid">
+      <div class="col-md-4 dash-boxes p-3 bg-white">
         <div class="about__top ">
-          <div class="about__title">
+          <div class="about__title d-lg-block d-flex">
             <p class="content__title me-3">Today</p>
             <h1 class="title-hidden time mb-0">{{ formatMillisecondsToTime(hoursWorked?.today)}}</h1>
           </div>
-          <div class="top-text d-flex">
+
+          <div class="top-text d-flex mt-lg-0 mt-4">
             <p class="text mb-0 me-2">
               <span style="color: rgb(255, 190, 91)" [style.color]="hoursWorked?.changeColor">{{
                 hoursWorked?.changeDisplay}}% </span><span class="text-dark"> Yesterday </span>
             </p>
+
             <div class="hours"><span class="p-2 py-3 text-light">{{formatMillisecondsToTime(hoursWorked?.previousDay)
                 }}</span></div>
 
-            <span class="ms-auto">
+            <span class="ms-auto d-lg-block d-none">
               <img *ngIf="hoursWorked?.increased==true" src="../assets/images/graph-up-green.svg" height="80"
                 width="100" alt="Profile Picture">
               <img *ngIf="hoursWorked?.increased==false" src="../assets/images/graph-down-red.svg" height="80"
                 width="100" alt="Profile Picture">
             </span>
-
           </div>
-
         </div>
       </div>
 
-      <div class="col-md-4  dash-boxes p-3 bg-white">
-        <div class="about__top ">
-          <div class="about__title">
+      <div class="col-md-4 dash-boxes p-3 bg-white">
+        <div class="about__top">
+          <div class="about__title d-lg-block d-flex">
             <p class="content__title me-3">This week</p>
             <h1 class="title-hidden time mb-0">{{formatHoursAndMinutes(weeklySummary?.currentWeek) }}</h1>
           </div>
-          <div class="top-text">
+
+          <div class="top-text d-flex mt-lg-0 mt-4">
             <p class="text mb-0 me-2">
               <span style="color: rgb(255, 190, 91)"
                 [style.color]="weeklySummary?.changeColor">{{weeklySummary?.changeDisplay}}% </span><span
                 class="text-dark"> last week </span>
             </p>
+
             <div class="hours"><span class="p-2 py-3 text-light">{{formatHoursAndMinutes(weeklySummary?.previousWeek)
                 }}</span></div>
-            <div class="d-flex justify-content-between ms-auto">
+
+            <span class="ms-auto d-lg-block d-none">
               <img *ngIf="weeklySummary?.increased==true" src="../assets/images/graph-up-green.svg" height="80"
                 width="100" alt="Profile Picture">
               <img *ngIf="weeklySummary?.increased==false" src="../assets/images/graph-down-red.svg" height="80"
                 width="100" alt="Profile Picture">
-            </div>
+            </span>
           </div>
-
         </div>
       </div>
 
-
-      <div class="col-md-4  dash-boxes p-3 bg-white">
+      <div class="col-md-4 dash-boxes p-3 bg-white">
         <div class="about__top">
-          <div class="about__title">
+          <div class="about__title d-lg-block d-flex">
             <p class="content__title me-3">This Month</p>
-            <h1 class="title-hidden time  mb-0">{{convertMinutesToHoursAndMinutes(monthlySummary?.currentMonth)}}</h1>
+            <h1 class="title-hidden time mb-0">{{convertMinutesToHoursAndMinutes(monthlySummary?.currentMonth)}}</h1>
           </div>
-          <div class="top-text d-flex">
+
+          <div class="top-text d-flex mt-lg-0 mt-4">
             <p class="text mb-0 me-2">
               <span style="color: rgb(255, 190, 91)"
                 [style.color]="monthlySummary?.changeColor">{{monthlySummary?.changeDisplay}}% </span><span
                 class="text-dark"> a week before </span>
             </p>
+
             <div class="hours"><span
                 class="p-2 py-3 text-light">{{convertMinutesToHoursAndMinutes(monthlySummary?.previousMonth)}}</span>
             </div>
-            <div class="d-flex justify-content-between  ms-auto">
+
+            <span class="ms-auto d-lg-block d-none">
               <img *ngIf="monthlySummary?.increased ==true" src="../assets/images/graph-up-green.svg" height="80"
                 alt="Profile Picture">
               <img *ngIf="monthlySummary?.increased ==false" src="../assets/images/graph-down-red.svg" height="80"
                 alt="Profile Picture">
-            </div>
+            </span>
           </div>
-
         </div>
       </div>
     </div>
 
-    <div class="row justify-content-evenly mb-4">
-      <div class="col-md-4   p-3 dash-report bg-white tableContainer">
+    <div class="my-3 mx-auto row row-cols-1 row-cols-md-3 g-4 justify-content-evenly container-fluid">
+      <div class="col-md-4 p-3 dash-report bg-white tableContainer">
         <div class="d-flex justify-content-between">
           <p class="content__title"><i class="bi bi-clock-fill me-2"></i>Project-wise time spent on each task</p>
         </div>
@@ -144,6 +149,7 @@
             <option *ngFor="let m of members" value="{{m|json}}">{{m.name | titlecase}}</option>
           </select>
         </div>
+
         <div class="taskReport mt-2 pe-2">
           <table class="mt-2 p-2 rounded">
             <tbody>
@@ -166,10 +172,11 @@
         </div>
       </div>
 
-      <div class="col-md-4   p-3 dash-report bg-white">
+      <div class="col-md-4 p-3 dash-report bg-white">
         <div class="d-flex justify-content-between">
-          <p class="content__title"> <i class="bi bi-pie-chart-fill me-2"></i> Productivity</p>
+          <p class="content__title"> <i class="bi bi-pie-chart-fill me-2"></i>Productivity</p>
         </div>
+
         <div class="d-flex justify-content-between">
           <label for="member" class="pt-2 pe-3">Member</label>
           <select id="member" name="member" class="form-control" class="form-select form-select-sm"
@@ -178,8 +185,9 @@
             <option *ngFor="let m of members" value="{{m|json}}">{{m.name | titlecase}}</option>
           </select>
         </div>
-        <div>
-          <ul type="square">
+
+        <div class="mt-4">
+          <ul class="activity__summary" type="square">
             <li *ngFor="let productivity of productivityData" [ngClass]="{
                   'prod': productivity.name === 'Productive',
                   'non-prod': productivity.name == 'Non-Productive',
@@ -191,10 +199,11 @@
         </div>
       </div>
 
-      <div class="col-md-4   p-3 dash-report bg-white">
+      <div class="col-md-4 p-3 dash-report bg-white">
         <div class="d-flex justify-content-between">
           <p class="content__title"><i class="bi bi-clipboard-data-fill me-2"></i>Task Summary</p>
         </div>
+
         <div class="d-flex justify-content-between">
           <label for="member" class="pt-2 pe-3">Member</label>
           <select id="member" name="member" class="form-control" class="form-select form-select-sm"
@@ -202,8 +211,9 @@
             <option *ngFor="let m of members" value="{{m|json}}">{{m.name | titlecase}}</option>
           </select>
         </div>
-        <div>
-          <ul type="square">
+
+        <div class="mt-4">
+          <ul class="activity__summary" type="square">
             <li *ngFor="let task of taskSummary" [ngClass]="{
                   'todo': task.name === 'To Do',
                   'inProgress': task.name == 'In Progress',
@@ -211,17 +221,15 @@
                   'closed': task.name=== 'Closed'
                 }">{{task.name}}</li>
           </ul>
-          <ngx-charts-pie-chart [results]="taskSummary">
+          <ngx-charts-pie-chart class="my-3" [results]="taskSummary">
           </ngx-charts-pie-chart>
         </div>
       </div>
-
     </div>
-
     <!-- =================== -->
 
-    <div class="row justify-content-evenly">
-      <div class="col-md-4   p-3 dash-report bg-white tableContainer">
+    <div class="my-3 mx-auto row row-cols-1 row-cols-md-3 g-4 justify-content-evenly container-fluid">
+      <div class="col-md-4 p-3 dash-report bg-white tableContainer">
         <div class="d-flex justify-content-between">
           <p class="content__title"> <i class="bi bi-clock-history me-2"></i>Project wise time on each task</p>
         </div>
@@ -234,13 +242,13 @@
             <option *ngFor="let m of members" value="{{m|json}}">{{m.name | titlecase}}</option>
           </select>
         </div>
+
         <table class="mt-2 p-2 rounded">
           <tbody>
             <th>Project</th>
             <th>Task</th>
             <th>Time</th>
             <ng-container *ngFor="let projectTask of dayWorkStatusByUser">
-
               <tr *ngFor="let task of projectTask.tasks;let i = index ">
                 <td>
                   {{i==0?projectTask?.projectName:''}}
@@ -250,7 +258,6 @@
                   <span class="dash-percent"> {{ ((task?.count*10)*60*1000) | milliSecondsToTime }} </span>
                 </td>
               </tr>
-
             </ng-container>
           </tbody>
         </table>

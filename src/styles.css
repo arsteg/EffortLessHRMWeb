@@ -252,7 +252,7 @@ select {
   font-family: Poppins, sans-serif;
   font-style: normal;
   font-weight: 500 !important;
-  font-size: 19px !important;
+  font-size: 17px !important;
   line-height: 24px;
   color: #64728c;
   margin-right: 20px;
@@ -280,15 +280,17 @@ select {
 }
 
 .top-text {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
   align-items: center;
+  justify-content: space-between;
   font-family: Poppins, sans-serif;
   font-style: normal;
   font-weight: 400;
   font-size: 13px;
   line-height: 19px;
+}
+
+.top-text p {
+  font-size: 15px;
 }
 
 .text {
@@ -303,7 +305,7 @@ select {
 .hours {
   height: 18px;
   background: #c0baff;
-
+  font-size: 15px;
   text-align: center;
   border-radius: 2px;
   padding: 0 2px;
@@ -498,7 +500,7 @@ select {
 }
 
 .dash-boxes {
-  width: 410px !important;
+  width: 365px !important;
   border-radius: 1.2rem
 }
 
@@ -506,7 +508,7 @@ select {
 
   .dash-boxes,
   .dash-report {
-    width: 365px !important;
+    width: 350px !important;
   }
 }
 
@@ -753,7 +755,7 @@ input {
 }
 
 label {
-  font-size: .85rem;
+  font-size: 15px;
   font-weight: 500;
   margin-bottom: 0.4rem;
   color: #64728c;
