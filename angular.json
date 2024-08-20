@@ -50,7 +50,8 @@
             "rfdc",
             "core-js/modules/es.array.iterator.js",
             "core-js/modules/web.dom-collections.iterator.js",
-            "raf", "rgbcolor"],
+            "raf", "rgbcolor",
+            "quill"],
             "styles": [
               "src/custom-theme.scss",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
@@ -61,9 +62,7 @@
              
             ],
             "scripts": [
-              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
-              
-            ]
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"]
           },
           "configurations": {
             "production": {
