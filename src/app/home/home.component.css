@@ -405,6 +405,10 @@ input {
     .sidebar-title.show {
         transform: none;
     }
+
+    .tracker__icon {
+        font-size: 25px;
+    }
 }
 
 @media (min-width: 992px) {
