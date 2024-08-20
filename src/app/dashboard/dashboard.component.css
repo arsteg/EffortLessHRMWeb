@@ -29,3 +29,8 @@ input {
 ::-webkit-scrollbar{
     width: 0.3rem !important;
 }
+
+.user-image {
+    width: 100px;
+    height: auto;
+}

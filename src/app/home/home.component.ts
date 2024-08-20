@@ -68,7 +68,6 @@ export class HomeComponent implements OnInit {
 
     });
 
-
     let currentUser = JSON.parse(localStorage.getItem('currentUser'))
     this.auth.GetMe(currentUser.id).subscribe((response: any) => {
       this.currentProfile = response && response.data.users;
@@ -76,9 +75,9 @@ export class HomeComponent implements OnInit {
       return this.currentProfile;
     })
     console.log(this.adminView)
+
+    this.showSidebar();
   }
-
-
 
   toggleDropdown() {
     this.dropdownOpen = this.dropdownOpen == false ? true : false
@@ -118,9 +117,20 @@ export class HomeComponent implements OnInit {
     });
 
   }
+
   clickEvent() {
-    this.isCollapsedMenu = !this.isCollapsedMenu;
-    localStorage.setItem('sidebar', JSON.stringify(this.isCollapsedMenu))
+      this.isCollapsedMenu = !this.isCollapsedMenu;
+      localStorage.setItem('sidebar', JSON.stringify(this.isCollapsedMenu))
+  }
+
+  showSidebar() {
+    if (window.innerWidth <= 768) {
+      this.isCollapsedMenu = true;
+    } else if (window.innerWidth >= 769) {
+      this.isCollapsedMenu = false;
+    } else {
+      this.isCollapsedMenu = !this.isCollapsedMenu;
+    }
   }
 
   filteredMenuItems() {
