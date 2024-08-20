@@ -6028,10 +6028,10 @@ ngx-color@^9.0.0:
     material-colors "^1.2.6"
     tslib "^2.3.0"
 
-ngx-quill@^24.0.4:
-  version "24.0.4"
-  resolved "https://registry.npmjs.org/ngx-quill/-/ngx-quill-24.0.4.tgz"
-  integrity sha512-/kQUjsNMU3K74Wq+OkAEMBam/ttNpQ7cKA1QAoPAyeFeHf1eBD1AR+xr+bHP6mdNGUHznWhvLs/ZqEdTJjW/eA==
+ngx-quill@^24.0.5:
+  version "24.0.5"
+  resolved "https://registry.npmjs.org/ngx-quill/-/ngx-quill-24.0.5.tgz"
+  integrity sha512-ajPXBWS6Oeql3pcQ6aEr4kqglrF30/ykKmm8bZ1z0C8eev8iXISl/gxoSCujtknbpHTMOJZFvS6F+Fk/gRcaDg==
   dependencies:
     tslib "^2.3.0"
 
