@@ -11,12 +11,11 @@ figure {
   display: flex;
   flex-flow: column;
   padding: 5px;
-  max-width: 220px;
+  /* max-width: 220px; */
   margin: auto;
 }
 
 .modal-dialog {
-
   border-radius: 5;
   background-color: lightgray;
 }
@@ -25,19 +24,25 @@ figure {
   background-color: transparent;
 }
 
-
 .modal-image {
   width: 100%;
-  /* or any custom size */
   height: 100%;
   object-fit: contain;
 }
 
+.select_member {
+  font-size: 18px;
+}
+
 label {
-  font-size: 13px;
+  font-size: 17px;
   font: sans-serif;
   padding: 3px;
   text-align: center;
+}
+
+.time_calculate {
+  font-size: 18px;
 }
 
 #date {
@@ -123,9 +128,9 @@ label {
   opacity: 0.9;
 }
 
-figure img {
+/* figure img {
   height: 120px;
-}
+} */
 
 .calendar {
   border-radius: 2px !important;
@@ -147,24 +152,27 @@ figure img {
 .header-icons {
   font-size: large;
 }
-.maximized-modal{
+
+.maximized-modal {
   max-width: inherit !important;
   margin: 0px;
 }
-.sizeImage{
+
+.sizeImage {
   position: absolute;
-    margin: 10px;
-    opacity: 0.8;
-    background: #08c9ff;
-}
-.screenshotImg:hover{
-  background-color: #f35c17;
-    color: white;
+  margin: 10px;
+  opacity: 0.8;
+  background: #08c9ff;
 }
 
-input{
+.screenshotImg:hover {
+  background-color: #f35c17;
+  color: white;
+}
+
+input {
   border-radius: 2px !important;
   padding: 5px !important;
-  min-height: 15px!important;
+  min-height: 15px !important;
   min-width: 15px !important;
 }
