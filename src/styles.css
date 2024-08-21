@@ -532,7 +532,7 @@ select {
 }
 
 .taskReport {
-  max-height: 700px;
+  max-height: 750px;
   overflow-y: scroll;
   overflow-x: clip;
 }
@@ -738,7 +738,7 @@ button.active {
 
 td:first-child,
 th:first-child {
-  padding-left: 15px;
+  padding-left: 10px;
 }
 
 .form-select-sm,

@@ -1,9 +1,8 @@
 <div class="main-content">
   <div class="container-fluid">
     <div class="col-2 ms-auto">
-      <mat-form-field appearance="outline" class="mt-1 d-flex" style="border-radius: 5px;
-            height: 49px;
-            margin: -20px 0 11px 0;">
+      <mat-form-field appearance="outline" class="mt-1 d-flex" style="border-radius: 5px; height: 49px;
+       margin: -20px 0 11px 0;">
         <mat-label class="">Select Date</mat-label>
         <div class="w-100 d-flex" style="margin: -15px 0;">
           <input matInput [matDatepicker]="picker1" [(ngModel)]="selectedDate" (dateChange)="onDateChange($event)">
@@ -55,7 +54,7 @@
 
     <div class="my-3 mx-auto row row-cols-1 row-cols-md-3 g-4 justify-content-evenly container-fluid">
       <div class="col-md-4 dash-boxes p-3 bg-white">
-        <div class="about__top ">
+        <div class="about__top">
           <div class="about__title d-lg-block d-flex">
             <p class="content__title me-3">Today</p>
             <h1 class="title-hidden time mb-0">{{ formatMillisecondsToTime(hoursWorked?.today)}}</h1>
@@ -71,10 +70,10 @@
                 }}</span></div>
 
             <span class="ms-auto d-lg-block d-none">
-              <img *ngIf="hoursWorked?.increased==true" src="../assets/images/graph-up-green.svg" height="80"
-                width="100" alt="Profile Picture">
-              <img *ngIf="hoursWorked?.increased==false" src="../assets/images/graph-down-red.svg" height="80"
-                width="100" alt="Profile Picture">
+              <img *ngIf="hoursWorked?.increased==true" src="../assets/images/graph-up-green.svg" height="70" width="90"
+                alt="Profile Picture">
+              <img *ngIf="hoursWorked?.increased==false" src="../assets/images/graph-down-red.svg" height="70"
+                width="90" alt="Profile Picture">
             </span>
           </div>
         </div>
@@ -98,10 +97,10 @@
                 }}</span></div>
 
             <span class="ms-auto d-lg-block d-none">
-              <img *ngIf="weeklySummary?.increased==true" src="../assets/images/graph-up-green.svg" height="80"
-                width="100" alt="Profile Picture">
-              <img *ngIf="weeklySummary?.increased==false" src="../assets/images/graph-down-red.svg" height="80"
-                width="100" alt="Profile Picture">
+              <img *ngIf="weeklySummary?.increased==true" src="../assets/images/graph-up-green.svg" height="70"
+                width="90" alt="Profile Picture">
+              <img *ngIf="weeklySummary?.increased==false" src="../assets/images/graph-down-red.svg" height="70"
+                width="90" alt="Profile Picture">
             </span>
           </div>
         </div>
@@ -126,10 +125,10 @@
             </div>
 
             <span class="ms-auto d-lg-block d-none">
-              <img *ngIf="monthlySummary?.increased ==true" src="../assets/images/graph-up-green.svg" height="80"
-                alt="Profile Picture">
-              <img *ngIf="monthlySummary?.increased ==false" src="../assets/images/graph-down-red.svg" height="80"
-                alt="Profile Picture">
+              <img *ngIf="monthlySummary?.increased ==true" src="../assets/images/graph-up-green.svg" height="70"
+                width="90" alt="Profile Picture">
+              <img *ngIf="monthlySummary?.increased ==false" src="../assets/images/graph-down-red.svg" height="70"
+                width="90" alt="Profile Picture">
             </span>
           </div>
         </div>
@@ -141,6 +140,7 @@
         <div class="d-flex justify-content-between">
           <p class="content__title"><i class="bi bi-clock-fill me-2"></i>Project-wise time spent on all tasks</p>
         </div>
+
         <div class="d-flex justify-content-between">
           <label for="member" class="pt-2 pe-3">Member</label>
           <select id="member" name="member" class="form-control" class="form-select form-select-sm"
@@ -150,7 +150,7 @@
           </select>
         </div>
 
-        <div class="taskReport mt-2 pe-2">
+        <div class="taskReport mt-2 pe-3">
           <table class="mt-2 p-2 rounded">
             <tbody>
               <th>Project</th>
@@ -194,8 +194,7 @@
                   'neutral': productivity.name === 'Neutral'
                 }">{{productivity.name}}</li>
           </ul>
-          <ngx-charts-pie-chart [results]="productivityData">
-          </ngx-charts-pie-chart>
+          <ngx-charts-pie-chart [results]="productivityData"></ngx-charts-pie-chart>
         </div>
       </div>
 
@@ -221,8 +220,7 @@
                   'closed': task.name=== 'Closed'
                 }">{{task.name}}</li>
           </ul>
-          <ngx-charts-pie-chart class="my-3" [results]="taskSummary">
-          </ngx-charts-pie-chart>
+          <ngx-charts-pie-chart [results]="taskSummary"></ngx-charts-pie-chart>
         </div>
       </div>
     </div>
@@ -233,6 +231,7 @@
         <div class="d-flex justify-content-between">
           <p class="content__title"> <i class="bi bi-clock-history me-2"></i>Project wise time on each task</p>
         </div>
+
         <div class="d-flex justify-content-between">
           <label for="member" class="pt-2 pe-3">Member</label>
           <select id="member" name="member" class="form-control" class="form-select form-select-sm"
@@ -263,15 +262,9 @@
         </table>
       </div>
 
-      <div class="col-md-4   p-3 dash-report bg-white">
+      <div class="col-md-4 p-3 dash-report bg-white"></div>
 
-      </div>
-
-      <div class="col-md-4   p-3 dash-report bg-white">
-
-      </div>
-
+      <div class="col-md-4 p-3 dash-report bg-white"></div>
     </div>
-
   </div>
 </div>
