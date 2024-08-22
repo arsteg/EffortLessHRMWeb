@@ -32,6 +32,9 @@ figure {
 
 .select_member {
   font-size: 18px;
+  width: 100%;
+  max-width: 240px;
+  box-sizing: border-box;
 }
 
 label {

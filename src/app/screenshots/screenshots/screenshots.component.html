@@ -52,9 +52,9 @@
     </div> -->
 
     <div class="d-block mt-5 pb-2">
-      <div class="d-flex col-lg-8 col-md-6 col-sm-6 pb-1">
+      <div class="d-flex flex-md-row flex-column col-lg-8 col-md-6 col-sm-6 pb-1">
         <!-- Datepicker -->
-        <div class="col-lg-6 col-md-8 col-sm-4 pt-lg-1 pb-1">
+        <div class="col-lg-5 col-md-8 col-sm-4 pt-lg-1 pb-1 order-md-0 order-2">
           <div class="input-group date-style">
             <span (click)="SetPreviousDay()" class="fa fa-angle-left fa-lg p-3"></span>
             <input type="date" name="date" id="date" class="form-control calendar" [(ngModel)]="selectedDate"
@@ -64,8 +64,7 @@
         </div>
 
         <!-- Member Selection -->
-        <div
-          class="col-lg-6 col-md-9 col-sm-4 pt-md-0 pt-lg-1 d-flex justify-content-center align-items-baseline text-center">
+        <div class="col-lg-6 col-md-9 col-sm-4 pt-md-0 pt-lg-1 mb-md-0 mb-3 order-md-0 order-1 d-flex justify-content-center align-items-baseline text-center">
           <label for="member" class="pt-2 pe-3">Member</label>
           <select id="member" name="member" class="form-control form-select form-select-sm select_member"
             aria-label=".form-select-sm example" #member (change)="onMemberSelectionChange(member)">
@@ -74,8 +73,8 @@
         </div>
 
         <!-- Refresh and Delete Button - desktop and tablet -->
-        <div class="d-flex justify-content-end col-lg-6 col-md-6 col-sm-6 pb-1 d-md-flex d-none">
-          <div class="col-lg-3 col-md-5 col-sm-6 pt-0 pt-md-2">
+        <div class="d-flex justify-content-end col-lg-7 col-md-6 col-sm-6 pb-1 d-md-flex d-none">
+          <div class="col-lg-2 col-md-5 col-sm-6 pt-0 pt-md-2">
             <div class="me-md-2">
               <button mat-raised-button id="btnRefresh" (click)="showScreenShots()">
                 <i class="bi bi-arrow-repeat header-icons contentHeading"></i>
@@ -156,7 +155,7 @@
 
             <img src="{{timeLog.col1.url}}" data-bs-toggle="modal" data-bs-target="#bigImageModal"
               (click)="setSelectedScreenshot($event)" />
-            <figcaption class="figure-caption text-center"
+            <figcaption class="figure-caption text-center mt-2"
               [tooltip]="'Clicks: ' + (timeLog.col1.clicks || 0) + ', Keyboard: '+ (timeLog.col1.keysPressed || 0) + ', Scroll: '+ (timeLog.col1.scrolls || 0)"
               [style.background-color]="getActivityColor(timeLog.col1.GetActivityLevel)">{{timeLog.col1.timeLabel}}
             </figcaption>
@@ -194,7 +193,7 @@
             </div>
             <img src="{{timeLog.col2.url}}" data-bs-toggle="modal" data-bs-target="#bigImageModal"
               (click)="setSelectedScreenshot($event)" />
-            <figcaption class="figure-caption text-center"
+            <figcaption class="figure-caption text-center mt-2"
               [tooltip]="'Clicks: ' + (timeLog.col2.clicks || 0) + ', Keyboard: '+ (timeLog.col2.keysPressed || 0) + ', Scroll: '+ (timeLog.col2.scrolls || 0)"
               [style.background-color]="getActivityColor(timeLog?.col2?.GetActivityLevel)">{{timeLog.col2.timeLabel}}
             </figcaption>
@@ -229,11 +228,11 @@
               </label>
               <span *ngIf="role == 'admin'"><mat-icon class="bg-white"
                   [tooltip]="timeLog.col3.allKeysPressed">keyboard</mat-icon></span>
-  
+
             </div>
             <img src="{{timeLog.col3.url}}" data-bs-toggle="modal" data-bs-target="#bigImageModal"
               (click)="setSelectedScreenshot($event)" />
-            <figcaption class="figure-caption text-center"
+            <figcaption class="figure-caption text-center mt-2"
               [tooltip]="'Clicks: ' + (timeLog.col3.clicks || 0) + ', Keyboard: '+ (timeLog.col3.keysPressed || 0) + ', Scroll: '+ (timeLog.col3.scrolls || 0)"
               [style.background-color]="getActivityColor(timeLog?.col3?.GetActivityLevel)">{{timeLog?.col3?.timeLabel}}
             </figcaption>
@@ -258,7 +257,7 @@
             </figcaption>
           </figure>
         </div>
-  
+
         <div class="col-lg-2 col-md-4 col-sm-2 pt-2" *ngIf="timeLog?.col4?.url">
           <figure>
             <div class="form-check check">
@@ -271,7 +270,7 @@
             </div>
             <img src="{{timeLog.col4.url}}" data-bs-toggle="modal" data-bs-target="#bigImageModal"
               (click)="setSelectedScreenshot($event)" />
-            <figcaption class="figure-caption text-center"
+            <figcaption class="figure-caption text-center mt-2"
               [tooltip]="'Clicks: ' + (timeLog.col4.clicks || 0) + ', Keyboard: '+ (timeLog.col4.keysPressed || 0) + ', Scroll: '+ (timeLog.col4.scrolls || 0)"
               [style.background-color]="getActivityColor(timeLog?.col4?.GetActivityLevel)">{{timeLog?.col4?.timeLabel}}
             </figcaption>
@@ -306,11 +305,11 @@
               </label>
               <span *ngIf="role == 'admin'"><mat-icon class="bg-white"
                   [tooltip]="timeLog.col5.allKeysPressed">keyboard</mat-icon></span>
-  
+
             </div>
             <img src="{{timeLog.col5.url}}" data-bs-toggle="modal" data-bs-target="#bigImageModal"
               (click)="setSelectedScreenshot($event)" />
-            <figcaption class="figure-caption text-center"
+            <figcaption class="figure-caption text-center mt-2"
               [tooltip]="'Clicks: ' + (timeLog.col5.clicks || 0) + ', Keyboard: '+ (timeLog.col5.keysPressed || 0) + ', Scroll: '+ (timeLog.col5.scrolls || 0)"
               [style.background-color]="getActivityColor(timeLog?.col5?.GetActivityLevel)">{{timeLog.col5.timeLabel}}
             </figcaption>
@@ -335,7 +334,7 @@
             </figcaption>
           </figure>
         </div>
-  
+
         <div class="col-lg-2 col-md-4 col-sm-2 pt-2" *ngIf="timeLog?.col6?.url">
           <figure>
             <div class="form-check check">
@@ -345,11 +344,11 @@
               </label>
               <span *ngIf="role == 'admin'"><mat-icon class="bg-white"
                   [tooltip]="timeLog.col6.allKeysPressed">keyboard</mat-icon></span>
-  
+
             </div>
             <img src="{{timeLog.col6.url}}" data-bs-toggle="modal" data-bs-target="#bigImageModal"
               (click)="setSelectedScreenshot($event)" />
-            <figcaption class="figure-caption text-center"
+            <figcaption class="figure-caption text-center mt-2"
               [tooltip]="'Clicks: ' + (timeLog.col6.clicks || 0) + ', Keyboard: '+ (timeLog.col6.keysPressed || 0) + ', Scroll: '+ (timeLog.col6.scrolls || 0)"
               [style.background-color]="getActivityColor(timeLog?.col6?.GetActivityLevel)">{{timeLog.col6.timeLabel}}
             </figcaption>
