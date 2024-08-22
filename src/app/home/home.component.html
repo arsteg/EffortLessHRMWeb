@@ -9,8 +9,10 @@
       <div class="text-right">
         <form class="d-flex">
           <div class=" d-flex align-items-center">
-            <button class="profile me-2 py-2 text-white d-lg-block d-none" (click)="openAddModal()" type="button"><i class="bi bi-clock tracker__icon"></i> &nbsp;Track Time</button>
-            <button class="profile me-2 py-2 text-white d-lg-none d-block" (click)="openAddModal()" type="button"><i class="bi bi-clock tracker__icon"></i></button>
+            <button class="profile me-2 py-2 text-white d-lg-block d-none" (click)="openAddModal()" type="button"><i
+                class="bi bi-clock tracker__icon"></i> &nbsp;Track Time</button>
+            <button class="profile me-2 py-2 text-white d-lg-none d-block" (click)="openAddModal()" type="button"><i
+                class="bi bi-clock tracker__icon"></i></button>
             <app-notification></app-notification>
             <!-- <div class="dropdown ">
               <img width="25" height="25" src="https://img.icons8.com/ios/50/FFFFFF/appointment-reminders--v1.png"
@@ -60,7 +62,8 @@
                     <button mat-icon-button aria-label="Example icon button with a menu icon">
                       <img src="assets/images/profile.png" height="35" alt="">
                     </button>
-                    <p class="text-white ps-2 d-lg-block d-none">{{currentProfile?.firstName}}&nbsp;{{currentProfile?.lastName}}</p>
+                    <p class="text-white ps-2 d-lg-block d-none">
+                      {{currentProfile?.firstName}}&nbsp;{{currentProfile?.lastName}}</p>
                     <i class="bi bi-caret-down-fill text-white ps-2 d-lg-block d-none"></i>
                     <i class="bi bi-caret-down-fill text-white ps-2 d-lg-none d-block"></i>
                   </div>
@@ -74,13 +77,14 @@
   </div>
 </nav>
 
+<!-- Sidebar - icons with text -->
 <div class="d-flex" id="wrapper">
   <mat-drawer-container class="example-container" [hasBackdrop]="hasBackdrop.value" style="display: none;">
-    <mat-drawer #drawer [mode]="mode.value" class=" drawer" [opened]="true">
+    <mat-drawer #drawer [mode]="mode.value" class="drawer" [opened]="true">
       <div class="bg-light sidebar-title border-right" id="sidebar-wrapper"
         [ngClass]="isCollapsedMenu ? 'collapsed-menu' : 'show'">
         <!--Expanded Menu-->
-        <div class="list-group list-group-flush">
+        <div class="list-group list-group-flush overflow-auto">
           <div class="d-flex">
             <input type="text" placeholder="Search">
             <mat-icon class="d-lg-block d-none" *ngIf="!isCollapsedMenu" (click)="clickEvent()"
@@ -159,7 +163,7 @@
     </mat-drawer-content>
   </mat-drawer-container>
 
-  <!-- Sidebar -->
+  <!-- Sidebar - only icons -->
   <div class="sidebar-title border-right" id="sidebar-wrapper" [ngClass]="isCollapsedMenu ? 'collapsed-menu' : 'show'">
     <div class="sidebar-heading pt-4 px-2" *ngIf="!isCollapsedMenu"><img src="assets/logo.png" width="170" alt=""></div>
     <div class="sidebar-heading py-4 ps-3" *ngIf="isCollapsedMenu"><img src="assets/CollapsedLogo.png" width="40"

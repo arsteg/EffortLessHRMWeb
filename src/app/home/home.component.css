@@ -12,6 +12,10 @@
     flex-grow: 1;
 }
 
+.list-group {
+    overflow-y: auto;
+}
+
 .menuitem,
 .sidebar-links {
     cursor: pointer;

@@ -54,7 +54,8 @@
     <div class="d-block mt-5 pb-2">
       <div class="d-flex flex-md-row flex-column col-lg-8 col-md-6 col-sm-6 pb-1">
         <!-- Datepicker -->
-        <div class="col-lg-5 col-md-8 col-sm-4 pt-lg-1 pb-1 order-md-0 order-2">
+        <div class="col-lg-5 col-md-9 col-sm-4 pt-md-1 pb-2 ms-md-3 ms-5 order-md-0 order-2 d-flex justify-content-center align-items-baseline text-center">
+          <label class="pt-2">Date</label>
           <div class="input-group date-style">
             <span (click)="SetPreviousDay()" class="fa fa-angle-left fa-lg p-3"></span>
             <input type="date" name="date" id="date" class="form-control calendar" [(ngModel)]="selectedDate"
@@ -73,8 +74,8 @@
         </div>
 
         <!-- Refresh and Delete Button - desktop and tablet -->
-        <div class="d-flex justify-content-end col-lg-7 col-md-6 col-sm-6 pb-1 d-md-flex d-none">
-          <div class="col-lg-2 col-md-5 col-sm-6 pt-0 pt-md-2">
+        <div class="d-flex justify-content-end col-lg-6 col-md-3 col-sm-6 pb-1 d-md-flex d-none">
+          <div class="col-lg-3 col-md-9 col-sm-6 pt-0 pt-md-2">
             <div class="me-md-2">
               <button mat-raised-button id="btnRefresh" (click)="showScreenShots()">
                 <i class="bi bi-arrow-repeat header-icons contentHeading"></i>
@@ -82,7 +83,7 @@
             </div>
           </div>
 
-          <div class="col-lg-2 col-sm-2 pt-0 pt-md-2">
+          <div class="col-lg-2 col-md-1 col-sm-2 pt-0 pt-md-2">
             <button mat-raised-button (click)="deleteScreenShot()">
               <i class="bi bi-trash header-icons text-danger"></i>
             </button>
