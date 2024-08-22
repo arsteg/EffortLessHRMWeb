@@ -6,12 +6,12 @@ import { CommonService } from 'src/app/_services/common.Service';
 import { MatDialog } from '@angular/material/dialog';
 import { AddTimeEntryComponent } from './add-time-entry/add-time-entry.component';
 
-
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
+
 export class HomeComponent implements OnInit {
   title = 'sideBarNav';
   isCollapsedMenu: boolean = false;
@@ -31,10 +31,11 @@ export class HomeComponent implements OnInit {
   constructor(private router: Router,
     private auth: AuthenticationService,
     private commonService: CommonService,
-    private dialog: MatDialog) {
-  }
+    private dialog: MatDialog) { }
 
   ngOnInit(): void {
+    this.showSidebar();
+
     let roleId = localStorage.getItem('roleId');
     this.adminView = localStorage.getItem('adminView');
     this.auth.getRole(roleId).subscribe((response: any) => {
@@ -65,7 +66,6 @@ export class HomeComponent implements OnInit {
         this.adminView = role?.toLowerCase();
       }
       this.portalType = role && role?.toLowerCase();
-
     });
 
     let currentUser = JSON.parse(localStorage.getItem('currentUser'))
@@ -75,14 +75,12 @@ export class HomeComponent implements OnInit {
       return this.currentProfile;
     })
     console.log(this.adminView)
-
-    this.showSidebar();
   }
 
   toggleDropdown() {
     this.dropdownOpen = this.dropdownOpen == false ? true : false
-
   }
+
   switchView(view: string) {
     this.adminView = view;
     localStorage.setItem('adminView', view);
@@ -94,6 +92,7 @@ export class HomeComponent implements OnInit {
       this.menuList = SideBarAdminMenu;
       this.router.navigate(['dashboard'])
     }
+    this.collapseSidebar();  // Automatically collapse the sidebar
   }
 
   onLogout() {
@@ -115,28 +114,37 @@ export class HomeComponent implements OnInit {
         element.show = !element.show;
       }
     });
-
+    this.collapseSidebar();  // Automatically collapse the sidebar
   }
 
   clickEvent() {
-      this.isCollapsedMenu = !this.isCollapsedMenu;
-      localStorage.setItem('sidebar', JSON.stringify(this.isCollapsedMenu))
+    this.isCollapsedMenu = !this.isCollapsedMenu;
+    localStorage.setItem('sidebar', JSON.stringify(this.isCollapsedMenu))
   }
 
   showSidebar() {
-    if (window.innerWidth <= 768) {
-      this.isCollapsedMenu = true;
-    } else if (window.innerWidth >= 769) {
-      this.isCollapsedMenu = false;
+    const screenWidth = window.innerWidth;
+
+    if (screenWidth <= 992) {
+      this.isCollapsedMenu = true; // Hide sidebar by default on mobile and tablet
     } else {
-      this.isCollapsedMenu = !this.isCollapsedMenu;
+      this.isCollapsedMenu = false; // Show sidebar on desktop
     }
+    localStorage.setItem('sidebar', JSON.stringify(this.isCollapsedMenu));
+  }
+
+  collapseSidebar() {
+    if (window.innerWidth <= 992) {
+      this.isCollapsedMenu = true;  // Collapse the sidebar
+    } else {
+      this.isCollapsedMenu = false; // Show sidebar on desktop
+    }
+    localStorage.setItem('sidebar', JSON.stringify(this.isCollapsedMenu));
   }
 
   filteredMenuItems() {
     const searchTerm = this.searchText.trim().toLowerCase();
     if (searchTerm === '') {
-
       this.menuList = SideBarAdminMenu;
     } else {
       const filtered = SideBarAdminMenu.filter(item =>
@@ -150,6 +158,7 @@ export class HomeComponent implements OnInit {
       this.menuList = SideBarAdminMenu;
     }
   }
+
   openAddModal(): void {
     const dialogRef = this.dialog.open(AddTimeEntryComponent, {
       width: '700px',
@@ -159,8 +168,6 @@ export class HomeComponent implements OnInit {
       console.log('The modal was closed');
     });
   }
-
-
 }
 
 export const SideBarAdminMenu = [
