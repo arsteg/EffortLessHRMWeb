@@ -21,6 +21,7 @@ export class TaxComponentsComponent {
   totalRecords: number
   recordsPerPage: number = 10;
   currentPage: number = 1;
+  sections: string[] = ['80C Deductions', 'Chapter VI Deductions', 'Rent Information', 'Interest on Home Loan', 'Previous Employment Information', 'Other Income Information'];
 
   constructor(private modalService: NgbModal,
     private taxService: TaxationService,
@@ -100,12 +101,12 @@ export class TaxComponentsComponent {
       skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
       next: this.recordsPerPage.toString()
     };
-    this.taxService.getAllTaxComponents(pagination).subscribe((res: any)=>{
+    this.taxService.getAllTaxComponents(pagination).subscribe((res: any) => {
       this.taxComponents = res.data;
       this.totalRecords = res.total;
     })
   }
-  setFormValues(data){
+  setFormValues(data) {
     this.taxComponentForm.patchValue(data);
   }
 

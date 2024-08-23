@@ -67,7 +67,9 @@
             </div>
             <div class="form-group mt-2">
                 <label for="">Section</label>
-                <input type="text" class="form-control" formControlName="section">
+                <select name="" id="" formControlName="section" class="form-control">
+                    <option value="section" *ngFor="let section of sections">{{section}}</option>
+                </select>
             </div>
             <div class="form-group mt-2">
                 <label for="">Enter Maximum Amount</label>

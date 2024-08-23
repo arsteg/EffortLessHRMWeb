@@ -22,6 +22,29 @@ export class TaxationService {
   public getToken() {
     return localStorage.getItem('jwtToken');
   }
+
+  // Tax Section CRUD
+  addTaxSection(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/common/income-tax-sections`, payload, this.httpOptions);
+    return response;
+  }
+  getTaxSection(companyId: string): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/common/income-tax-sections/${companyId}`, this.httpOptions);
+    return response;
+  }
+  getAllTaxSections(): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/common/income-tax-sections-by-company`,  this.httpOptions);
+    return response;
+  }
+  updateTaxSection(companyId: string, payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/common/income-tax-sections/${companyId}`, payload, this.httpOptions);
+    return response;
+  }
+  deleteTaxSection(companyId: string): Observable<any> {
+    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/common/income-tax-sections/${companyId}`, this.httpOptions);
+    return response;
+  }
+
   // Tax Components CRUD
   addTaxComponent(payload: any): Observable<any> {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/users/income-tax-componants`, payload, this.httpOptions);

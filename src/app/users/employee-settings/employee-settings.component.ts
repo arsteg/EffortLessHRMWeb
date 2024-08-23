@@ -9,6 +9,7 @@ export class EmployeeSettingsComponent {
   @Output() backToUserView = new EventEmitter<void>();
   activeTab: string = 'tabEmploymentProfile';
   @Input() selectedUser: any;
+  @Input() isEdit: boolean = false;
 
   ngOnInit() { }
 

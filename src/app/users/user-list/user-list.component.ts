@@ -32,6 +32,7 @@ export class UserListComponent implements OnInit {
   public sortOrder: string = '';
   showEmployeeDetails = false;
   selectedEmployee: any;
+  isEdit: boolean = false;
   
   constructor(
     private UserService: UserService,
@@ -81,6 +82,7 @@ export class UserListComponent implements OnInit {
   drop(event: CdkDragDrop<any[]>) {
     moveItemInArray(this.usersList, event.previousIndex, event.currentIndex);
   }
+
   getAllRoles() {
     this.roleService.getAllRole().subscribe(
       response => {

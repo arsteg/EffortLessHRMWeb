@@ -13,22 +13,18 @@
                     Tax Overrides</button>
                 <button class="btn rounded-pill submenuTab" (click)="selectTab(5)" [class.active]="selectedTab === 5">
                     eTDS</button>
-
-
             </div>
 
-            <div *ngIf="selectedTab === 1" class="tab-content">
+            <div *ngIf="selectedTab === 1" class="tab-content pt-0">
             </div>
-            <div *ngIf="selectedTab === 2" class="tab-content">
+            <div *ngIf="selectedTab === 2" class="tab-content pt-0">
             </div>
-            <div *ngIf="selectedTab === 3" class="tab-content">
-                <app-tax-components></app-tax-components>
+            <div *ngIf="selectedTab === 3" class="tab-content pt-0">
+                <app-tax-declaration></app-tax-declaration>
             </div>
-            <div *ngIf="selectedTab === 4" class="tab-content">
+            <div *ngIf="selectedTab === 4" class="tab-content pt-0">
             </div>
-            <div *ngIf="selectedTab === 5" class="tab-content">
+            <div *ngIf="selectedTab === 5" class="tab-content pt-0">
             </div>
-
-
         </div>
     </div>

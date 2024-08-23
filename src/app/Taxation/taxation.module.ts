@@ -5,6 +5,8 @@ import { TaxComponentsComponent } from './tax-components/tax-components.componen
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.Module';
 import { CommonComponentsModule } from '../common/commonComponents.module';
+import { TaxSectionComponent } from './tax-section/tax-section.component';
+import { TaxDeclarationComponent } from './tax-declaration/tax-declaration.component';
 
 
 
@@ -12,6 +14,8 @@ import { CommonComponentsModule } from '../common/commonComponents.module';
   declarations: [
     TaxationComponent,
     TaxComponentsComponent,
+    TaxSectionComponent,
+    TaxDeclarationComponent,
   ],
   imports: [
     CommonModule,

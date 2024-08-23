@@ -17,6 +17,23 @@
         </div>
 
         <div class="row">
+            <div class="form-group col-md-6 mt-2" *ngIf="!isEdit">
+                <label for="email">Email</label>
+                <input type="text" formControlName="email" class="form-control">
+            </div>
+            <div class="form-group col-md-6 mt-2" *ngIf="!isEdit">
+                <label for="password">Password</label>
+                <input type="text" formControlName="password" class="form-control">
+            </div>
+        </div>
+
+
+        <div class="form-group col-md-6 mt-2" *ngIf="!isEdit">
+            <label for="email">Confirm Password</label>
+            <input type="text" formControlName="passwordConfirm" class="form-control">
+        </div>
+
+        <div class="row">
             <div class="form-group col-md-6 mt-2">
                 <label for="jobTitle">Job Title</label>
                 <input formControlName="jobTitle" type="text" class="form-control" id="jobTitle"
@@ -95,7 +112,29 @@
 
             <div class="form-group col-md-6 mt-2">
                 <label for="Gender">Gender</label>
-                <input formControlName="Gender" type="text" class="form-control" id="Gender" placeholder="Enter Gender">
+                <div class="d-flex">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="gender-male" formControlName="Gender" required
+                            value="male">
+                        <label class="form-check-label" for="gender-male">
+                            Male
+                        </label>
+                    </div>
+                    <div class="form-check mx-3">
+                        <input class="form-check-input" type="radio" id="gender-female" formControlName="Gender"
+                            required value="female">
+                        <label class="form-check-label" for="gender-female">
+                            Female
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="other" formControlName="Gender" required
+                            value="other">
+                        <label class="form-check-label" for="other">
+                            Other
+                        </label>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -111,14 +150,14 @@
                 <div class="d-flex">
                     <div class="form-check">
                         <input class="form-check-input" type="radio" id="MaritalStatus-Yes"
-                            formControlName="MaritalStatus" required [value]="true">
+                            formControlName="MaritalStatus" required value="Married">
                         <label class="form-check-label" for="MaritalStatus-Yes">
                             Married
                         </label>
                     </div>
                     <div class="form-check ms-3">
                         <input class="form-check-input" type="radio" id="MaritalStatus-No"
-                            formControlName="MaritalStatus" required [value]="false">
+                            formControlName="MaritalStatus" required value="Unmarried">
                         <label class="form-check-label" for="MaritalStatus-No">
                             Unmarried
                         </label>
@@ -158,8 +197,23 @@
         <div class="row">
             <div class="form-group col-md-6 mt-2">
                 <label for="Disability">Disability</label>
-                <input formControlName="Disability" type="text" class="form-control" id="Disability"
-                    placeholder="Enter Disability Details">
+                
+                <div class="d-flex">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="Disability-Yes" formControlName="Disability"
+                            required value="yes">
+                        <label class="form-check-label" for="Disability-Yes">
+                            Yes
+                        </label>
+                    </div>
+                    <div class="form-check ms-3">
+                        <input class="form-check-input" type="radio" id="Disability-No" formControlName="Disability"
+                            required value="no">
+                        <label class="form-check-label" for="Disability-No">
+                            No
+                        </label>
+                    </div>
+                </div>
             </div>
 
             <div class="form-group col-md-6 mt-2">

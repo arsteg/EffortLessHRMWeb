@@ -34,7 +34,7 @@
             <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabEmploymentProfile'}"
                 id="tabEmploymentProfile">
                 <div class="mt-2 bg-white tableContainer">
-                    <app-employee-profile [selectedUser]=selectedUser></app-employee-profile>
+                    <app-employee-profile [isEdit]="isEdit" [selectedUser]=selectedUser></app-employee-profile>
                 </div>
             </div>
 
