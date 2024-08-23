@@ -54,7 +54,8 @@
     <div class="d-block mt-5 pb-2">
       <div class="d-flex flex-md-row flex-column col-lg-8 col-md-6 col-sm-6 pb-1">
         <!-- Datepicker -->
-        <div class="col-lg-5 col-md-9 col-sm-4 pt-md-1 pb-2 ms-md-3 ms-3 order-md-0 order-2 d-flex justify-content-center align-items-baseline text-center">
+        <div
+          class="col-lg-5 col-md-9 col-sm-4 pt-md-1 pb-2 ms-md-3 ms-3 order-md-0 order-2 d-flex justify-content-center align-items-baseline text-center">
           <label class="pt-2">Date</label>
           <div class="input-group date-style">
             <span (click)="SetPreviousDay()" class="fa fa-angle-left fa-lg p-3"></span>
@@ -65,7 +66,8 @@
         </div>
 
         <!-- Member Selection -->
-        <div class="col-lg-6 col-md-9 col-sm-4 pt-md-0 pt-lg-1 mb-md-0 mb-3 order-md-0 order-1 d-flex justify-content-center align-items-baseline text-center">
+        <div
+          class="col-lg-6 col-md-9 col-sm-4 pt-md-0 pt-lg-1 mb-md-0 mb-3 order-md-0 order-1 d-flex justify-content-center align-items-baseline text-center">
           <label for="member" class="pt-2 pe-3">Member</label>
           <select id="member" name="member" class="form-control form-select form-select-sm select_member"
             aria-label=".form-select-sm example" #member (change)="onMemberSelectionChange(member)">
@@ -92,25 +94,8 @@
       </div>
     </div>
 
-    <!-- Refresh and Delete Button - mobile -->
-    <div class="d-md-none d-flex justify-content-center">
-      <div class="me-3">
-        <div class="me-md-2">
-          <button mat-raised-button id="btnRefresh" (click)="showScreenShots()">
-            <i class="bi bi-arrow-repeat header-icons contentHeading"></i>
-          </button>
-        </div>
-      </div>
-
-      <div>
-        <button mat-raised-button (click)="deleteScreenShot()">
-          <i class="bi bi-trash header-icons text-danger"></i>
-        </button>
-      </div>
-    </div>
-
-    <!-- Time Calculation Data -->
-    <div class="d-md-flex justify-content-between d-block pt-lg-0 pt-3">
+    <!-- Time Calculation Data - desktop and tablet -->
+    <div class="d-md-flex justify-content-between d-none pt-lg-0 pt-3">
       <div class="col-lg-4 col-sm-4 pt-md-1 pt-lg-0">
         <div class="text-center pt-md-0 pt-lg-1 me-md-2">
           <label class="time_calculate">Total time: {{padValue(totalHours)}} h {{padValue(totalMinutes)}}&nbsp;m</label>
@@ -128,6 +113,45 @@
         <div class="pt-md-0 pt-lg-1 me-md-2">
           <label class="time_calculate">This month: {{padValue(currentMonthTotalHours)}} h
             {{padValue(currentMonthTotalMinutes)}}&nbsp;m</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center d-md-none d-block mb-2">
+      <!-- Time Calculation Data - mobile -->
+      <div class="d-md-flex justify-content-between d-block">
+        <div class="col-lg-4 col-sm-4 mb-1">
+          <label class="time_calculate text-start">Total time: {{padValue(totalHours)}} h
+            {{padValue(totalMinutes)}}&nbsp;m</label>
+        </div>
+
+        <div class="col-lg-4 col-sm-4 mb-1">
+          <div class="pt-md-0 pt-lg-1 me-md-2">
+            <label class="time_calculate text-start">This week: {{padValue(currentWeekTotalHours)}} h
+              {{padValue(currentWeekTotalMinutes)}}&nbsp;m</label>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-sm-4">
+          <div class="pt-md-0 pt-lg-1 me-md-2">
+            <label class="time_calculate text-start">This month: {{padValue(currentMonthTotalHours)}} h
+              {{padValue(currentMonthTotalMinutes)}}&nbsp;m</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Refresh and Delete Button - mobile -->
+      <div class="d-flex flex-column">
+        <div class="me-3 mb-2">
+          <button mat-raised-button id="btnRefresh" (click)="showScreenShots()">
+            <i class="bi bi-arrow-repeat header-icons contentHeading"></i>
+          </button>
+        </div>
+
+        <div class="me-3">
+          <button mat-raised-button (click)="deleteScreenShot()">
+            <i class="bi bi-trash header-icons text-danger"></i>
+          </button>
         </div>
       </div>
     </div>
