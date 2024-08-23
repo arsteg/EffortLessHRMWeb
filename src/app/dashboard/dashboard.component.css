@@ -1,12 +1,17 @@
 .date {
     box-shadow: 0 0px 20px 0 #dedbdb;
 }
+
 .header-letter {
     padding: 10px;
     height: 50px;
     min-width: 70px;
     font-size: 40px;
     max-width: 80px;
+}
+
+.date_selection {
+    padding-top: 90px;
 }
 
 .dash-select {
@@ -26,7 +31,8 @@ input {
     min-height: 0 !important;
     border: 0 !important;
 }
-::-webkit-scrollbar{
+
+::-webkit-scrollbar {
     width: 0.3rem !important;
 }
 

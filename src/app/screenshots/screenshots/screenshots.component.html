@@ -1,56 +1,5 @@
 <div class="main-content pt-5">
   <div class="container-fluid selectdate border-bottom">
-    <!-- <div class="d-flex flex-wrap justify-content-between mt-5 border-bottom pb-2">
-      <div class="col-lg-2 col-sm-6 pb-1">
-        <div class="input-group date-style">
-          <span (click)="SetPreviousDay()" class="fa fa-angle-left fa-lg p-3"></span>
-          <input type="date" name="date" id="date" class="form-control calendar" [(ngModel)]="selectedDate"
-            (change)="showScreenShots()" />
-          <span (click)="SetNextDay()" class="fa fa-angle-right fa-lg p-3"></span>
-        </div>
-      </div>
-      <div class="col-lg-2 col-sm-6 pt-md-1 pt-lg-0">
-        <div class="pt-md-0 pt-lg-1 d-flex justify-content-center text-center">
-          <label for="member" class="pt-2 pe-3">Member</label>
-          <select id="member" name="member" class="form-control form-select form-select-sm"
-            aria-label=".form-select-sm example" #member (change)="onMemberSelectionChange(member)">
-            <option *ngFor="let m of members" value="{{m|json}}">{{m.name | titlecase}}</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="col-lg-2 col-sm-4 pt-md-1 pt-lg-0">
-        <div class="text-center pt-md-0 pt-lg-1 me-md-2">
-          <label>Total time: {{padValue(totalHours)}} h {{padValue(totalMinutes)}}&nbsp;m</label>
-        </div>
-      </div>
-      <div class="col-lg-2 col-sm-4 pt-md-1 pt-lg-0">
-        <div class="pt-md-0 pt-lg-1 me-md-2">
-          <label>This week: {{padValue(currentWeekTotalHours)}} h {{padValue(currentWeekTotalMinutes)}}&nbsp;m</label>
-        </div>
-      </div>
-      <div class="col-lg-2 col-sm-4 pt-md-1 pt-lg-0">
-        <div class="pt-md-0 pt-lg-1 me-md-2">
-          <label>This month: {{padValue(currentMonthTotalHours)}} h
-            {{padValue(currentMonthTotalMinutes)}}&nbsp;m</label>
-        </div>
-      </div>
-      <div class="col-lg-1 col-6 pt-md-1 pt-lg-0">
-        <div class="me-md-2">
-          <button mat-raised-button id="btnRefresh" (click)="showScreenShots()">
-            <i class="bi bi-arrow-repeat header-icons contentHeading"></i>
-          </button>
-        </div>
-      </div>
-      <div class="col-lg-1 col-sm-6 pt-md-1 pt-lg-0">
-        <div>
-          <button mat-raised-button (click)="deleteScreenShot()">
-            <i class="bi bi-trash header-icons text-danger"></i>
-          </button>
-        </div>
-      </div>
-    </div> -->
-
     <div class="d-block mt-5 pb-2">
       <div class="d-flex flex-md-row flex-column col-lg-8 col-md-6 col-sm-6 pb-1">
         <!-- Datepicker -->
@@ -117,8 +66,8 @@
       </div>
     </div>
 
+    <!-- Time Calculation Data and Refresh/Delete Button - mobile -->
     <div class="d-flex justify-content-between align-items-center d-md-none d-block mb-2">
-      <!-- Time Calculation Data - mobile -->
       <div class="d-md-flex justify-content-between d-block">
         <div class="col-lg-4 col-sm-4 mb-1">
           <label class="time_calculate text-start">Total time: {{padValue(totalHours)}} h
@@ -140,7 +89,6 @@
         </div>
       </div>
 
-      <!-- Refresh and Delete Button - mobile -->
       <div class="d-flex flex-column">
         <div class="me-3 mb-2">
           <button mat-raised-button id="btnRefresh" (click)="showScreenShots()">

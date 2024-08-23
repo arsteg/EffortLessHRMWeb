@@ -16,6 +16,15 @@
     overflow-y: auto;
 }
 
+.timers {
+    padding: 14px;
+}
+
+.tracker__icon {
+    font-size: 20px;
+    margin-right: 10px;
+}
+
 .menuitem,
 .sidebar-links {
     cursor: pointer;
@@ -411,7 +420,7 @@ input {
     }
 
     .tracker__icon {
-        font-size: 25px;
+        font-size: 23px;
     }
 }
 
