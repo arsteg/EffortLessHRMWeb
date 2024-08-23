@@ -241,9 +241,11 @@
     <div class="offcanvas-body">
       <div class="container p-0">
         <div class="profile py-2">
-          <div class="d-flex justify-content-end">
+          <div class="d-flex justify-content-end align-items-baseline">
             <span class="fa fa-edit fa-lg edit" [routerLink]="['userProfile']"></span>
+            <button type="button" class="btn-close text-reset times" data-bs-dismiss="offcanvas" aria-label="Close"></button>
           </div>
+          
           <div class="text-center">
             <img src="../assets/profile-image.png" class="profile-img mb-5" alt="Profile Picture">
             <p class="employee-id">{{currentProfile?.firstName}} {{currentProfile?.lastName}} - 01</p>
