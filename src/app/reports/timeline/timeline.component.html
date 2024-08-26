@@ -2,15 +2,24 @@
   <div class="container-fluid">
     <!-- <div class="d-flex pt-4 w-50">
       <div class="ms-5 ps-4 pt-2">
-
         <button class=" rounded-pill mx-3 py-1"  [class.active]="showProjectsColumn" [class.shadow]="showProjectsColumn"  (click)="toggleColumns('projects')">Project</button>
         <button class=" rounded-pill py-1" [class.active]="showMembersColumn" [class.shadow]="showMembersColumn" (click)="toggleColumns('members')">Members</button>
-
       </div>
     </div> -->
-    <div class="d-flex mt-4">
 
-      <span class="pt-3 text-muted me-3">Filter&nbsp;by: </span>
+    <!-- date selection -->
+    <div class="col-lg-9 col-md-4 d-flex align-items-baseline">
+      <label class="pt-2">Date</label>
+      <span (click)="SetPreviousDay()" class="fa fa-angle-left fa-lg p-3"></span>
+      <input type="date" name="fromDate" class="form-control calendar mx-1" id="fromDate" (change)="filterData()"
+        [(ngModel)]="selectedDate" />
+      <span (click)="SetNextDay()" class="fa fa-angle-right fa-lg p-3"></span>
+    </div>
+
+    <!-- filters -->
+    <div class="d-flex mt-4">
+      <label class="pt-3 text-muted me-3">Filter&nbsp;by: </label>
+      <!-- select user -->
       <mat-form-field appearance="outline" class="w-25 mx-1">
         <mat-label>Select User</mat-label>
         <mat-select multiple [(ngModel)]="selectedUser">
@@ -21,6 +30,7 @@
         </mat-select>
       </mat-form-field>
 
+      <!-- select project -->
       <mat-form-field appearance="outline" class="w-25 mx-1">
         <mat-label>Select Project</mat-label>
         <mat-select multiple [(ngModel)]="selectedProject">
@@ -30,24 +40,60 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <div class="input-group date-style w-25">
-        <span (click)="SetPreviousDay()" class="fa fa-angle-left fa-lg p-3"></span>
-        <input type="date" name="fromDate" id="fromDate" (change)="filterData()" [(ngModel)]="selectedDate"
-          class="form-control w-25 calendar mb-4 mx-1 " />
-        <span (click)="SetNextDay()" class="fa fa-angle-right fa-lg p-3"></span>
-      </div>
-      <div class="d-flex align-items-baseline mt-2 mx-2">
-        <button class=" rounded-pill mx-3 py-1" [class.active]="showProjectsColumn" [class.shadow]="showProjectsColumn"
+
+      <!-- project/members toggle option -->
+      <div class="d-flex align-items-baseline mt-1 mx-2">
+        <button class=" rounded-pill mx-3 py-2" [class.active]="showProjectsColumn" [class.shadow]="showProjectsColumn"
           (click)="toggleColumns('projects')">Project</button>
-        <button class=" rounded-pill py-1" [class.active]="showMembersColumn" [class.shadow]="showMembersColumn"
+        <button class=" rounded-pill py-2" [class.active]="showMembersColumn" [class.shadow]="showMembersColumn"
           (click)="toggleColumns('members')">Members</button>
       </div>
+
+      <!-- refersh button -->
       <div class="ms-auto">
         <button mat-raised-button id="btnRefresh" class="mt-2 bi bi-arrow-repeat header-icons contentHeading"
           title="Refresh Timeline" (click)="refresh()"></button>
       </div>
+    </div>
 
-      <div class="align-items-start flex-wrap gap-3 ms-auto d-none">
+    <div class="d-flex">
+      <!-- Legends -->
+      <div class="col-sm-8 d-flex gap-3 color-bgs">
+        <div class="mb-3 d-flex align-items-center gap-1">
+          <label class="type-tracked">
+            <input type="checkbox" checked="" value="tracked" (change)="toggleLogsVisibility('tracked')">
+            <span class="type-tracked__control tracked"></span>
+            <span class="type-tracked__label">Tracked</span>
+          </label>
+        </div>
+
+        <div class="mb-3 d-flex align-items-center gap-1">
+          <label class="type-tracked">
+            <input type="checkbox" checked="" value="manual" (change)="toggleLogsVisibility('manual')">
+            <span class="type-tracked__control manual"></span>
+            <span class="type-tracked__label ">Manual </span>
+          </label>
+        </div>
+
+        <div class="mb-3 d-flex align-items-center gap-1">
+          <label class="type-tracked">
+            <input type="checkbox" checked="" value="medium" (change)="toggleLogsVisibility('medium')">
+            <span class="type-tracked__control medium"></span>
+            <span class="type-tracked__label ">Medium Activity </span>
+          </label>
+        </div>
+
+        <div class="mb-3 d-flex align-items-center gap-1">
+          <label class="type-tracked">
+            <input type="checkbox" checked="" value="low" (change)="toggleLogsVisibility('low')">
+            <span class="type-tracked__control low"></span>
+            <span class="type-tracked__label ">Low Activity </span>
+          </label>
+        </div>
+      </div>
+
+      <!-- export button -->
+      <div class="align-items-start flex-wrap gap-3 ms-auto">
         <div class="dropdown order-first order-sm-last d-flex">
           <button class="export-btn dropdown-toggle formrow-inputState form-select select-styled active" type="button"
             id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -61,40 +107,9 @@
         </div>
       </div>
     </div>
-    <div class="d-flex justify-content-between">
-      <div class="col-sm-8 d-flex gap-3 color-bgs">
-        <div class="mb-3 d-flex align-items-center gap-1">
-          <label class="type-tracked">
-            <input type="checkbox" checked="" value="tracked" (change)="toggleLogsVisibility('tracked')">
-            <span class="type-tracked__control tracked"></span>
-            <span class="type-tracked__label">Tracked</span>
-          </label>
-        </div>
-        <div class="mb-3 d-flex align-items-center gap-1">
-          <label class="type-tracked">
-            <input type="checkbox" checked="" value="manual" (change)="toggleLogsVisibility('manual')">
-            <span class="type-tracked__control manual"></span>
-            <span class="type-tracked__label ">Manual </span>
-          </label>
-        </div>
-        <div class="mb-3 d-flex align-items-center gap-1">
-          <label class="type-tracked">
-            <input type="checkbox" checked="" value="medium" (change)="toggleLogsVisibility('medium')">
-            <span class="type-tracked__control medium"></span>
-            <span class="type-tracked__label ">Medium Activity </span>
-          </label>
-        </div>
-        <div class="mb-3 d-flex align-items-center gap-1">
-          <label class="type-tracked">
-            <input type="checkbox" checked="" value="low" (change)="toggleLogsVisibility('low')">
-            <span class="type-tracked__control low"></span>
-            <span class="type-tracked__label ">Low Activity </span>
-          </label>
-        </div>
 
-      </div>
 
-    </div>
+    <!-- Table Reports Data -->
     <div class="tableContainer">
       <table class="p-2 rounded" id="timeSheet" #timeSheet>
         <thead>
