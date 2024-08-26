@@ -16,15 +16,6 @@
     overflow-y: auto;
 }
 
-.timers {
-    padding: 14px;
-}
-
-.tracker__icon {
-    font-size: 20px;
-    margin-right: 10px;
-}
-
 .menuitem,
 .sidebar-links {
     cursor: pointer;
@@ -423,10 +414,6 @@ input {
 
     .sidebar-title.show {
         transform: none;
-    }
-
-    .tracker__icon {
-        font-size: 23px;
     }
 }
 

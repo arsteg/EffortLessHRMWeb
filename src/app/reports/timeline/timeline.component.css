@@ -1,12 +1,12 @@
-.bi{
-    font-size:large;
+.bi {
+    font-size: large;
 }
 
 .type-tracked input {
     display: none;
 }
+
 .type-tracked__control {
-   
     border-radius: 3px;
     display: inline-block;
     height: 15px;
@@ -15,8 +15,8 @@
     vertical-align: middle;
     width: 15px;
 }
+
 .type-tracked input:checked+.type-tracked__control:after {
-   
     border-radius: 2px;
     content: "";
     display: block;
@@ -26,66 +26,91 @@
     top: 2px;
     width: 9px;
 }
-.tracked{
+
+.tracked {
     border: 1px solid #2ECD6F;
 }
-.tracked:after{
+
+.tracked:after {
     background-color: #2ECD6F;
 }
-.manual{
+
+.manual {
     border: 1px solid #f87a3b;
 }
-.manual:after{
+
+.manual:after {
     background-color: #f87a3b;
 }
-.mobile{
+
+.mobile {
     border: 1px solid #6385FD;
 }
-.mobile:after{
+
+.mobile:after {
     background-color: #6385FD;
 }
-.web{
+
+.web {
     border: 1px solid #0cc6f8;
 }
-.web:after{
+
+.web:after {
     background-color: #0cc6f8;
 }
-.extension{
+
+.extension {
     border: 1px solid #8276FF;
 }
-.extension:after{
+
+.extension:after {
     background-color: #8276FF;
 }
-.idle{
+
+.idle {
     border: 1px solid #C8CCDE;
 }
-.idle:after{
+
+.idle:after {
     background-color: #C8CCDE;
 }
-.medium{
+
+.medium {
     border: 1px solid #FFC107;
 }
-.medium:after{
+
+.medium:after {
     background-color: #FFC107;
 }
-.low{
+
+.low {
     border: 1px solid red;
 }
-.low:after{
+
+.low:after {
     background-color: red;
 }
 
-  .hour{
-    max-width:60px;
+.hour {
+    max-width: 60px;
     height: 40px;
-  }
+}
 
-  .hour-container{
+.hour-container {
     display: inline-flex;
     margin-top: -20px;
     position: absolute;
-  }
-  .gap {
+}
+
+.gap {
     position: absolute;
-  }
-  
+}
+
+.export_btn {
+    padding: 0 20px;
+}
+
+.report_time {
+    position: relative;
+    z-index: 1;
+}
