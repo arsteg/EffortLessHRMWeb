@@ -114,3 +114,11 @@
     position: relative;
     z-index: 1;
 }
+
+.type-tracked {
+    font-size: 11.9px;
+}
+
+.table-responsive::-webkit-scrollbar {
+    display: none;
+}

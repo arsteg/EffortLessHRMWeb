@@ -16,7 +16,7 @@
       <span (click)="SetNextDay()" class="fa fa-angle-right fa-lg p-3"></span>
     </div>
 
-    <!-- filters - Desktop and Tablet -->
+    <!-- filters option - Desktop and Tablet -->
     <div class="d-md-flex d-none col-lg-12 col-md-11 mt-4">
       <label class="pt-3 text-muted me-3">Filter&nbsp;by: </label>
       <!-- select user -->
@@ -56,9 +56,9 @@
       </div>
     </div>
 
-    <!-- filters - mobile device -->
+    <!-- filters option - mobile device -->
     <div class="d-block d-md-none col-lg-12 col-md-11 mt-2 mb-4">
-      <label class="pt-3 text-muted me-3">Filter&nbsp;by: </label>
+      <label class="pt-3 text-muted mb-2">Filter&nbsp;by: </label>
       <div class="d-flex">
         <!-- select user -->
         <mat-form-field appearance="outline" class="mx-1 flex-row">
@@ -180,7 +180,7 @@
             </th>
           </tr>
         </thead>
-        
+
         <tbody>
           <tr *ngFor="let data of timeline;  let i = index;">
             <td *ngIf="showMembersColumn">
@@ -213,7 +213,7 @@
       </table>
     </div>
 
-    <!-- Table Reports Data - Mobile -->
+    <!-- Table Reports Data - Mobile device -->
     <div class="table-responsive">
       <div class="tableContainer d-md-none d-block">
         <table class="p-2 rounded" id="timeSheet" #timeSheet>
