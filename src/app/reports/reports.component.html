@@ -36,29 +36,29 @@
             </div>
 
             <div *ngIf="view=== 'user'">
-                <div class=" d-flex bg-white subMenu w-100">
-                    <button class="btn rounded-pill submenuTab" (click)="selectTab(1)"
+                <div class="d-flex align-items-center mt-5 pt-lg-4 pt-5 pb-2 ps-lg-4 ps-2 bg-white w-100 reports_panel">
+                    <button class="btn rounded-pill submenuTab reports_btn" (click)="selectTab(1)"
                         [class.active]="selectedTab === 1">General Reports</button>
-                    <button class="btn rounded-pill submenuTab" (click)="selectTab(2)"
+                    <button class="btn rounded-pill submenuTab reports_btn" (click)="selectTab(2)"
                         [class.active]="selectedTab === 2">
                         My Reports</button>
-                    <button class="btn rounded-pill submenuTab" (click)="selectTab(3)"
+                    <button class="btn rounded-pill submenuTab reports_btn" (click)="selectTab(3)"
                         [class.active]="selectedTab === 3">
                         Timeline</button>
-                    <button class="btn rounded-pill submenuTab" (click)="selectTab(4)"
+                    <button class="btn rounded-pill submenuTab reports_btn" (click)="selectTab(4)"
                         [class.active]="selectedTab === 4">Attendance</button>
-                    <button class="btn rounded-pill submenuTab" (click)="selectTab(5)"
+                    <button class="btn rounded-pill submenuTab reports_btn" (click)="selectTab(5)"
                         [class.active]="selectedTab === 5">
                         Statistics</button>
-                    <button class="btn rounded-pill submenuTab" (click)="selectTab(6)"
+                    <button class="btn rounded-pill submenuTab reports_btn" (click)="selectTab(6)"
                         [class.active]="selectedTab === 6">
                         Browser History</button>
-                    <button class="btn rounded-pill submenuTab" (click)="selectTab(7)"
+                    <button class="btn rounded-pill submenuTab reports_btn" (click)="selectTab(7)"
                         [class.active]="selectedTab === 7">
                         Apps and Websites</button>
-                    <button class="btn rounded-pill submenuTab" (click)="selectTab(8)"
+                    <button class="btn rounded-pill submenuTab reports_btn" (click)="selectTab(8)"
                         [class.active]="selectedTab === 8">Productivity</button>
-                    <button class="btn rounded-pill submenuTab" (click)="selectTab(9)"
+                    <button class="btn rounded-pill submenuTab reports_btn" (click)="selectTab(9)"
                         [class.active]="selectedTab === 9">
                         Leave</button>
                 </div>

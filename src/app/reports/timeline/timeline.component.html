@@ -83,14 +83,29 @@
         </mat-form-field>
       </div>
 
+      <!-- project/members toggle option -->
       <div class="d-flex">
-        <!-- project/members toggle option -->
         <div class="d-flex align-items-baseline mt-1 mx-2">
-          <button class=" rounded-pill me-1 py-2" [class.active]="showProjectsColumn"
-            [class.shadow]="showProjectsColumn" (click)="toggleColumns('projects')">Project</button>
+          <button class="rounded-pill me-1 py-2" [class.active]="showProjectsColumn" [class.shadow]="showProjectsColumn"
+            (click)="toggleColumns('projects')">Project</button>
           <button class=" rounded-pill py-2" [class.active]="showMembersColumn" [class.shadow]="showMembersColumn"
             (click)="toggleColumns('members')">Members</button>
         </div>
+
+        <!-- export button -->
+        <!-- <div class="align-items-start flex-wrap gap-3 ms-auto">
+          <div class="dropdown order-first order-sm-last d-flex">
+            <button class="export-btn dropdown-toggle formrow-inputState form-select select-styled active export_btn"
+              type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+              <p class="mb-0 py-2 text-muted"> Export </p>
+            </button>
+            <ul class="dropdown-menu p-0" aria-labelledby="dropdownMenuButton1" id="dropdown-export">
+              <li><a class="export-button" (click)="exportToCsv()">CSV</a></li>
+              <li><a class="export-button" (click)="exportToExcel()">XLS</a></li>
+              <li><a class="export-button" (click)="exportToPdf()">PDF</a></li>
+            </ul>
+          </div>
+        </div> -->
 
         <!-- refersh button -->
         <div class="ms-auto">
@@ -102,7 +117,7 @@
 
     <!-- Legends -->
     <div class="d-md-flex d-block mb-3">
-      <div class="col-sm-8 d-flex gap-md-3 gap-1 color-bgs">
+      <div class="col-md-10 d-flex flex-wrap gap-md-3 gap-1">
         <div class="d-flex align-items-center gap-1">
           <label class="type-tracked d-flex align-items-center">
             <input type="checkbox" checked="" value="tracked" (change)="toggleLogsVisibility('tracked')">
@@ -137,7 +152,7 @@
       </div>
 
       <!-- export button -->
-      <div class="align-items-start flex-wrap gap-3 ms-auto">
+      <div class="align-items-start flex-wrap gap-3 ms-auto d-md-block d-none">
         <div class="dropdown order-first order-sm-last d-flex">
           <button class="export-btn dropdown-toggle formrow-inputState form-select select-styled active export_btn"
             type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -152,30 +167,30 @@
       </div>
     </div>
 
-    <!-- Table Reports Data - Desktop and Tablet -->
-    <div class="tableContainer d-md-block d-none">
+    <!-- Table Reports Data -->
+    <div class="tableContainer table-responsive">
       <table class="p-2 rounded" id="timeSheet" #timeSheet>
         <thead>
           <tr>
-            <th scope="col" *ngIf="showMembersColumn" [appSort]="timeline" data-order="{{ sortOrder }}"
+            <th class="pe-lg-0 pe-5" scope="col" *ngIf="showMembersColumn" [appSort]="timeline" data-order="{{ sortOrder }}"
               data-name="users?.user" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-              Users &nbsp;
+              Users&nbsp;
               <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
             </th>
 
-            <th scope="col" *ngIf="showProjectsColumn" [appSort]="timeline" data-order="{{ sortOrder }}"
+            <th class="pe-lg-0 pe-5" scope="col" *ngIf="showProjectsColumn" [appSort]="timeline" data-order="{{ sortOrder }}"
               data-name="users?.user" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-              Projects &nbsp;
+              Projects&nbsp;
               <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
             </th>
 
-            <th scope="col" [appSort]="timeline" data-order="{{ sortOrder }}" data-name="users?.user"
+            <th class="pe-lg-0 pe-5" scope="col" [appSort]="timeline" data-order="{{ sortOrder }}" data-name="users?.user"
               (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-              Time &nbsp;
+              Time&nbsp;
               <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
             </th>
 
-            <th *ngFor="let hour of hours" scope="col" width="60" class="px-0">
+            <th class="pe-lg-0 pe-2" *ngFor="let hour of hours" scope="col" width="60" class="px-0">
               {{ formattedStartTimeHour(hour) }}
             </th>
           </tr>
@@ -184,18 +199,19 @@
         <tbody>
           <tr *ngFor="let data of timeline;  let i = index;">
             <td *ngIf="showMembersColumn">
-              <span class="letter ms-2"
+              <span class="letter d-lg-inline d-none mx-1"
                 [style.background-color]="commonservice.getRandomColor(data?.logs[0]?.user?.lastName)">{{data?.logs[0]?.user?.firstName.slice(0,1)
                 | uppercase}}{{data?.logs[0]?.user?.lastName.slice(0,1) | uppercase}}</span>
               {{data?.logs[0]?.user?.firstName | titlecase}} {{data?.logs[0]?.user?.lastName | titlecase}}
             </td>
 
             <td *ngIf="showProjectsColumn">{{data?.logs[0]?.project?.projectName}}</td>
+
             <td>
               {{ minutesToTime(data?.logs.length * 10) }}
             </td>
 
-            <td *ngFor="let hour of hours" [style.padding]="0" class="hour">
+            <td *ngFor="let hour of hours" [style.padding]="0" class="hour report_time">
               <ng-container *ngFor="let log of data.logs">
                 <div class="hour-container" *ngIf="isLogInHour(log, startTime.getHours() + hour) &&
                   ((trackedChecked && getLogColor(log) === '#2ECD6F') ||
@@ -211,68 +227,6 @@
           </tr>
         </tbody>
       </table>
-    </div>
-
-    <!-- Table Reports Data - Mobile device -->
-    <div class="table-responsive">
-      <div class="tableContainer d-md-none d-block">
-        <table class="p-2 rounded" id="timeSheet" #timeSheet>
-          <thead>
-            <tr>
-              <th class="pe-5" scope="col" *ngIf="showMembersColumn" [appSort]="timeline" data-order="{{ sortOrder }}"
-                data-name="users?.user" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-                Users &nbsp;
-                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-              </th>
-
-              <th class="pe-5" scope="col" *ngIf="showProjectsColumn" [appSort]="timeline" data-order="{{ sortOrder }}"
-                data-name="users?.user" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-                Projects &nbsp;
-                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-              </th>
-
-              <th class="pe-5" scope="col" [appSort]="timeline" data-order="{{ sortOrder }}" data-name="users?.user"
-                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-                Time &nbsp;
-                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-              </th>
-
-              <th class="pe-2" *ngFor="let hour of hours" scope="col" width="60">
-                {{ formattedStartTimeHour(hour) }}
-              </th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr *ngFor="let data of timeline;  let i = index;">
-              <td *ngIf="showMembersColumn">
-                <span class="letter ms-2 d-none"
-                  [style.background-color]="commonservice.getRandomColor(data?.logs[0]?.user?.lastName)">{{data?.logs[0]?.user?.firstName.slice(0,1)
-                  | uppercase}}{{data?.logs[0]?.user?.lastName.slice(0,1) | uppercase}}</span>
-                {{data?.logs[0]?.user?.firstName | titlecase}} {{data?.logs[0]?.user?.lastName | titlecase}}
-              </td>
-
-              <td *ngIf="showProjectsColumn">{{data?.logs[0]?.project?.projectName}}</td>
-
-              <td>{{ minutesToTime(data?.logs.length * 10) }}</td>
-
-              <td *ngFor="let hour of hours" [style.padding]="0" class="hour report_time">
-                <ng-container *ngFor="let log of data.logs">
-                  <div class="hour-container" *ngIf="isLogInHour(log, startTime.getHours() + hour) &&
-                         ((trackedChecked && getLogColor(log) === '#2ECD6F') ||
-                           (mediumChecked && getLogColor(log) === '#FFC107') ||
-                           (lowChecked && getLogColor(log) === '#ff0000') ||
-                           (manualChecked && getLogColor(log) === '#f87a3b'))" [style.height.px]="40"
-                    [style.width.px]="getLogWidth(log)" [style.background-color]="getLogColor(log)"
-                    [tooltip]="getLogTitle(log)" [style.margin-left.px]="getLogMarginLeft(log)"
-                    [style.background-color]="getLogColor(log)">
-                  </div>
-                </ng-container>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
     </div>
   </div>
 </div>
