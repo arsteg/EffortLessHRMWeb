@@ -98,7 +98,7 @@
 
 .hour-container {
     display: inline-flex;
-    margin-top: -20px;
+    margin-top: -17px;
     position: absolute;
 }
 
@@ -107,7 +107,7 @@
 }
 
 .export_btn {
-    padding: 0 20px;
+    padding: 6px 8px;
 }
 
 .report_time {
@@ -115,9 +115,9 @@
     z-index: 1;
 }
 
-.table-responsive::-webkit-scrollbar {
+/* .table-responsive::-webkit-scrollbar {
     display: none;
-}
+} */
 
 td:last-child, th:last-child {
     padding-right: 10px;

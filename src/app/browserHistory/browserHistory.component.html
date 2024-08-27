@@ -1,67 +1,87 @@
 <div class="main-content">
-
-  <div class="row m-2">
-    <div class="tableContainer py-2 px-0  bg-white">
-      <div class="d-flex  align-items-center px-1">
-        <p class="mb-0">({{browserHistory?.length}})&nbsp;Records&nbsp;Found</p>
-
-        <div class="d-flex justify-content-between ms-auto align-items-center">
-
-          <div class="">
-            <subordinateSelection (selectedUsersChange)="selectedUsersChanged($event)"></subordinateSelection>
+  <div class="container-fluid mt-3 px-lg-4 px-2">
+    <div class="tableContainer py-2 bg-white">
+      <div class="d-lg-flex d-md-block col-lg-12 col-md-12 px-2">
+        <div class="col-lg-9 col-md-6 d-lg-flex d-md-block align-items-center">
+          <div class="col-lg-4 mb-lg-0 mb-3">
+            <subordinateSelection class="" (selectedUsersChange)="selectedUsersChanged($event)"></subordinateSelection>
           </div>
 
-          <div class="ms-5 mx-1 mt-4">
-            <i class="fa fa-calendar mt-2  contentHeading"></i>
-          </div>
-          <div class="ms-2 me-2 mt-4">
+          <!-- date selection - for desktop and tablet -->
+          <div class="col-lg-8 d-md-flex d-none align-items-baseline">
+            <div class="ms-lg-4 ms-0 mx-1">
+              <label for="member">Date </label>
+              <!-- <i class="fa fa-calendar mt-2 contentHeading"></i> -->
+            </div>
 
-            <input type="date" id="startDate" class="form-control" [(ngModel)]="startDate"
-              (ngModelChange)="onStartDateChange($event)" />
-          </div>
-          <div class="mx-1 mt-4">
-            <i class="fa fa-long-arrow-right mt-2 contentHeading"></i>
-          </div>
-          <div class=" ms-2  mt-4">
+            <div class="col-lg-4 col-md-8 ms-2 me-2">
+              <input type="date" id="startDate" class="form-control" [(ngModel)]="startDate"
+                (ngModelChange)="onStartDateChange($event)" />
+            </div>
 
-            <input type="date" id="endDate" class="form-control " [(ngModel)]="endDate"
-              (ngModelChange)="onEndDateChange($event)" />
+            <i class="fa fa-long-arrow-right mx-1 contentHeading"></i>
+
+            <div class="col-lg-4 col-md-8 ms-2">
+              <input type="date" id="endDate" class="form-control " [(ngModel)]="endDate"
+                (ngModelChange)="onEndDateChange($event)" />
+            </div>
           </div>
+
+          <!-- date selection - mobile -->
+          <div class="col-lg-8 col-md-8 d-md-none d-flex align-items-baseline justify-content-between">
+            <label class="me-4 pe-2" for="member">Date </label>
+            <div class="d-flex flex-column gap-3">
+              <input type="date" id="startDate" class="form-control" [(ngModel)]="startDate"
+                (ngModelChange)="onStartDateChange($event)" style="width: 71.5vw;" />
+
+              <input type="date" id="endDate" class="form-control " [(ngModel)]="endDate"
+                (ngModelChange)="onEndDateChange($event)" style="width: 71.5vw;" />
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-3 mt-lg-0 mt-4 d-flex justify-content-end align-items-center">
+          <p class="me-2 mb-0">({{browserHistory?.length}})&nbsp;Records&nbsp;Found</p>
+
           <div class="ms-2">
-            <button mat-raised-button id="btnRefresh" class="mt-4 bi bi-arrow-repeat header-icons contentHeading"
+            <button mat-raised-button id="btnRefresh" class="bi bi-arrow-repeat header-icons contentHeading"
               title="Refresh Browser History" (click)="getBrowserHistory()"></button>
           </div>
         </div>
       </div>
-      <table class="mt-2 px-2">
-        <thead>
-          <tr>
-            <th style="width: 5%;">Browser</th>
-            <th style="width: 30%;">Title</th>
-            <th style="width: 45%;">URL</th>
-            <th style="width: 10%;">Visit Time</th>
-            <th style="width: 10%;">Visit Count</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let history of browserHistory ">
-            <td style="width: 5%;">
-              <span *ngIf="history.browser==1" title="Edge"> <img src="assets/Browser/internet_explorer.png" alt=""
-                  height="25"></span>
-              <span *ngIf="history.browser==2" title="Firefox"> <img src="assets/Browser/firefox_browser.png" alt=""
-                  height="25"> </span>
-              <span *ngIf="history.browser==4" title="Chrome"> <img src="assets/Browser/google_chrome.png" alt=""
-                  height="25"></span>
-              <span *ngIf="history.browser==8" title="Safari"> <img src="assets/Browser/safari.png" alt=""
-                  height="25"></span>
-            </td>
-            <td style="width: 30%;" [title]="history.title">{{truncateString(history.title,50)}}</td>
-            <td style="width: 45%;" [title]="history.uri">{{truncateString(history.uri,75)}}</td>
-            <td style="width: 10%;">{{truncateDate(history.lastVisitTime,10)}}</td>
-            <td style="width: 10%;">{{history.visitCount}}</td>
-          </tr>
-        </tbody>
-      </table>
+
+      <div class="table-responsive">
+        <table class="mt-2 px-2">
+          <thead>
+            <tr>
+              <th class="pe-2">Browser</th>
+              <th class="pe-2">Title</th>
+              <th class="pe-2">URL</th>
+              <th class="pe-2">Visit&nbsp;Time</th>
+              <th class="pe-2">Visit&nbsp;Count</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let history of browserHistory ">
+              <td>
+                <span *ngIf="history.browser==1" title="Edge"> <img src="assets/Browser/internet_explorer.png" alt=""
+                    height="25"></span>
+                <span *ngIf="history.browser==2" title="Firefox"> <img src="assets/Browser/firefox_browser.png" alt=""
+                    height="25"> </span>
+                <span *ngIf="history.browser==4" title="Chrome"> <img src="assets/Browser/google_chrome.png" alt=""
+                    height="25"></span>
+                <span *ngIf="history.browser==8" title="Safari"> <img src="assets/Browser/safari.png" alt=""
+                    height="25"></span>
+              </td>
+              <td [title]="history.title">{{truncateString(history.title,50)}}</td>
+              <td [title]="history.uri">{{truncateString(history.uri,75)}}</td>
+              <td>{{truncateDate(history.lastVisitTime,10)}}</td>
+              <td>{{history.visitCount}}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
+  </div>
 </div>

@@ -1,5 +1,5 @@
 <div class="main-content">
-  <div class="container-fluid mt-2 ps-2">
+  <div class="container-fluid mt-3 px-lg-4 px-2">
     <!-- <div class="d-flex pt-4 w-50">
       <div class="ms-5 ps-4 pt-2">
         <button class=" rounded-pill mx-3 py-1"  [class.active]="showProjectsColumn" [class.shadow]="showProjectsColumn"  (click)="toggleColumns('projects')">Project</button>
@@ -92,21 +92,6 @@
             (click)="toggleColumns('members')">Members</button>
         </div>
 
-        <!-- export button -->
-        <!-- <div class="align-items-start flex-wrap gap-3 ms-auto">
-          <div class="dropdown order-first order-sm-last d-flex">
-            <button class="export-btn dropdown-toggle formrow-inputState form-select select-styled active export_btn"
-              type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-              <p class="mb-0 py-2 text-muted"> Export </p>
-            </button>
-            <ul class="dropdown-menu p-0" aria-labelledby="dropdownMenuButton1" id="dropdown-export">
-              <li><a class="export-button" (click)="exportToCsv()">CSV</a></li>
-              <li><a class="export-button" (click)="exportToExcel()">XLS</a></li>
-              <li><a class="export-button" (click)="exportToPdf()">PDF</a></li>
-            </ul>
-          </div>
-        </div> -->
-
         <!-- refersh button -->
         <div class="ms-auto">
           <button mat-raised-button id="btnRefresh" class="mt-2 bi bi-arrow-repeat header-icons contentHeading"
@@ -156,7 +141,7 @@
         <div class="dropdown order-first order-sm-last d-flex">
           <button class="export-btn dropdown-toggle formrow-inputState form-select select-styled active export_btn"
             type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-            <p class="mb-0 py-2 text-muted"> Export </p>
+            <p class="mb-0 text-muted"> Export </p>
           </button>
           <ul class="dropdown-menu p-0" aria-labelledby="dropdownMenuButton1" id="dropdown-export">
             <li><a class="export-button" (click)="exportToCsv()">CSV</a></li>
@@ -174,20 +159,17 @@
           <tr>
             <th class="pe-lg-0 pe-5" scope="col" *ngIf="showMembersColumn" [appSort]="timeline" data-order="{{ sortOrder }}"
               data-name="users?.user" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-              Users&nbsp;
-              <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+              Users&nbsp;<i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
             </th>
 
             <th class="pe-lg-0 pe-5" scope="col" *ngIf="showProjectsColumn" [appSort]="timeline" data-order="{{ sortOrder }}"
               data-name="users?.user" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-              Projects&nbsp;
-              <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+              Projects&nbsp;<i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
             </th>
 
             <th class="pe-lg-0 pe-5" scope="col" [appSort]="timeline" data-order="{{ sortOrder }}" data-name="users?.user"
               (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-              Time&nbsp;
-              <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+              Time&nbsp;<i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
             </th>
 
             <th class="pe-lg-0 pe-4 text-center" *ngFor="let hour of hours" scope="col" width="60">
@@ -202,7 +184,7 @@
               <span class="letter d-lg-inline d-none mx-1"
                 [style.background-color]="commonservice.getRandomColor(data?.logs[0]?.user?.lastName)">{{data?.logs[0]?.user?.firstName.slice(0,1)
                 | uppercase}}{{data?.logs[0]?.user?.lastName.slice(0,1) | uppercase}}</span>
-              {{data?.logs[0]?.user?.firstName | titlecase}} {{data?.logs[0]?.user?.lastName | titlecase}}
+              {{data?.logs[0]?.user?.firstName | titlecase}}&nbsp;{{data?.logs[0]?.user?.lastName | titlecase}}
             </td>
 
             <td *ngIf="showProjectsColumn">{{data?.logs[0]?.project?.projectName}}</td>
@@ -217,7 +199,7 @@
                   ((trackedChecked && getLogColor(log) === '#2ECD6F') ||
                     (mediumChecked && getLogColor(log) === '#FFC107') ||
                     (lowChecked && getLogColor(log) === '#ff0000') ||
-                    (manualChecked && getLogColor(log) === '#f87a3b'))" [style.height.px]="40"
+                    (manualChecked && getLogColor(log) === '#f87a3b'))" [style.height.px]="35"
                   [style.width.px]="getLogWidth(log)" [style.background-color]="getLogColor(log)"
                   [tooltip]="getLogTitle(log)" [style.margin-left.px]="getLogMarginLeft(log)"
                   [style.background-color]="getLogColor(log)">
