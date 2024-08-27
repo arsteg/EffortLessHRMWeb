@@ -190,7 +190,7 @@
               <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
             </th>
 
-            <th class="pe-lg-0 pe-2" *ngFor="let hour of hours" scope="col" width="60" class="px-0">
+            <th class="pe-lg-0 pe-4 text-center" *ngFor="let hour of hours" scope="col" width="60">
               {{ formattedStartTimeHour(hour) }}
             </th>
           </tr>
