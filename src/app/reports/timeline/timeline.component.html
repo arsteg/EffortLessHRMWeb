@@ -116,21 +116,13 @@
     </div>
 
     <!-- Legends -->
-    <div class="d-md-flex d-block mb-3">
+    <div class="d-flex mb-3">
       <div class="col-md-10 d-flex flex-wrap gap-md-3 gap-1">
         <div class="d-flex align-items-center gap-1">
           <label class="type-tracked d-flex align-items-center">
             <input type="checkbox" checked="" value="tracked" (change)="toggleLogsVisibility('tracked')">
             <span class="type-tracked__control tracked"></span>
             <span class="type-tracked__label">Tracked</span>
-          </label>
-        </div>
-
-        <div class="d-flex align-items-center gap-1">
-          <label class="type-tracked d-flex align-items-center">
-            <input type="checkbox" checked="" value="manual" (change)="toggleLogsVisibility('manual')">
-            <span class="type-tracked__control manual"></span>
-            <span class="type-tracked__label ">Manual </span>
           </label>
         </div>
 
@@ -144,6 +136,14 @@
 
         <div class="d-flex align-items-center gap-1">
           <label class="type-tracked d-flex align-items-center">
+            <input type="checkbox" checked="" value="manual" (change)="toggleLogsVisibility('manual')">
+            <span class="type-tracked__control manual"></span>
+            <span class="type-tracked__label ">Manual </span>
+          </label>
+        </div>
+
+        <div class="d-flex align-items-center gap-1">
+          <label class="type-tracked d-flex align-items-center">
             <input type="checkbox" checked="" value="low" (change)="toggleLogsVisibility('low')">
             <span class="type-tracked__control low"></span>
             <span class="type-tracked__label ">Low Activity </span>
@@ -152,7 +152,7 @@
       </div>
 
       <!-- export button -->
-      <div class="align-items-start flex-wrap gap-3 ms-auto d-md-block d-none">
+      <div class="ms-auto">
         <div class="dropdown order-first order-sm-last d-flex">
           <button class="export-btn dropdown-toggle formrow-inputState form-select select-styled active export_btn"
             type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
