@@ -35,13 +35,12 @@ export class ProjectListComponent implements OnInit {
   color: string;
   selectedUser: any;
   selectedUsers = [];
-  formDate = new FormGroup({
-    dateYMD: new FormControl(new Date()),
-
-  });
+  formDate = new FormGroup({ dateYMD: new FormControl(new Date()) });
   public sortOrder: string = '';
   bsValue = new Date();
-
+  totalRecords: number // example total records
+  recordsPerPage: number = 10;
+  currentPage: number = 1;
 
   constructor(
     private projectService: ProjectService,
@@ -56,7 +55,6 @@ export class ProjectListComponent implements OnInit {
       estimatedTime: [0, Validators.required],
       notes: ['', Validators.required]
     });
-
 
     this.updateForm = this.fb.group({
       projectName: ['', Validators.required],
@@ -73,19 +71,39 @@ export class ProjectListComponent implements OnInit {
         lastName: ['', Validators.required]
       }
     });
-
   }
 
   ngOnInit(): void {
     this.isChecked = true;
-    this.commonservice.getProjectList().subscribe(response => {
-      this.projectList = response && response.data && response.data['projectList'];
-    });
+    this.getProjectList();
+
     this.commonservice.populateUsers().subscribe(result => {
       this.allAssignee = result && result.data && result.data.data;
     });
     this.firstLetter = this.commonservice.firstletter;
   }
+
+  onPageChange(page: number) {
+    this.currentPage = page;
+    this.getProjectList();
+  }
+
+  onRecordsPerPageChange(recordsPerPage: number) {
+    this.recordsPerPage = recordsPerPage;
+    this.getProjectList();
+  }
+
+  getProjectList() {
+    const pagination = {
+      skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
+      next: this.recordsPerPage.toString()
+    };
+    this.projectService.getprojects(pagination.skip, pagination.next).subscribe(((response: any) => {
+      this.projectList = response && response.data && response.data['projectList'];
+      this.totalRecords = response.data.projectCount;
+    }));
+  }
+
   dateValidator(control: AbstractControl): { [key: string]: any } | null {
     const pattern = /^\d{4}-\d{2}-\d{2}$/;
     const value = control.value;
@@ -94,10 +112,10 @@ export class ProjectListComponent implements OnInit {
     }
     return null;
   }
+
   drop(event: CdkDragDrop<any[]>) {
     moveItemInArray(this.projectList, event.previousIndex, event.currentIndex);
   }
-
 
   getProjectsByUser() {
     this.projectService.getProjectByUserId(this.userId).subscribe(response => {
@@ -108,99 +126,93 @@ export class ProjectListComponent implements OnInit {
   onMemberSelectionChange(user) {
     this.getProjectsByUser();
   }
+
   addProject() {
-    if(this.form.valid){
-    this.projectService.addproject(this.form.value).subscribe((result: any) => {
-      const projects = result && result.data && result.data.newProject;
-      this.projectList.push(projects);
-      this.toastr.success('New Project', 'Successfully Added!');
-      this.form.reset();
-    },
-      err => {
+    if (this.form.valid) {
+      this.projectService.addproject(this.form.value).subscribe((result: any) => {
+        const projects = result && result.data && result.data.newProject;
+        this.projectList.push(projects);
+        this.toastr.success('New Project', 'Successfully Added!');
+        this.form.reset();
+      }, err => {
         this.toastr.error('Can not be Added', 'ERROR!')
       })
-    }
-    else {
+    } else {
       this.markFormGroupTouched(this.form);
-  }
-}
-
-markFormGroupTouched(formGroup: FormGroup) {
-  Object.values(formGroup.controls).forEach(control => {
-    control.markAsTouched();
-
-    if (control instanceof FormGroup) {
-      this.markFormGroupTouched(control);
     }
-  });
-}
-deleteProject() {
-  this.projectService.deleteproject(this.selectedProject._id)
-    .subscribe(response => {
-      this.ngOnInit();
-      this.toastr.success('Successfully Deleted!')
-    },
-      err => {
+  }
+
+  markFormGroupTouched(formGroup: FormGroup) {
+    Object.values(formGroup.controls).forEach(control => {
+      control.markAsTouched();
+      if (control instanceof FormGroup) {
+        this.markFormGroupTouched(control);
+      }
+    });
+  }
+
+  deleteProject() {
+    this.projectService.deleteproject(this.selectedProject._id)
+      .subscribe(response => {
+        this.ngOnInit();
+        this.toastr.success('Successfully Deleted!')
+      }, err => {
         this.toastr.error('Can not be Deleted', 'ERROR!')
       })
-}
+  }
 
-updateProject(updateForm) {
-  if (updateForm.valid) {
-    this.projectService.updateproject(this.selectedProject._id, updateForm).subscribe(response => {
-      this.ngOnInit();
-      this.toastr.success('Existing Project Updated', 'Successfully Updated!')
-    },
-      err => {
+  updateProject(updateForm) {
+    if (updateForm.valid) {
+      this.projectService.updateproject(this.selectedProject._id, updateForm).subscribe(response => {
+        this.ngOnInit();
+        this.toastr.success('Existing Project Updated', 'Successfully Updated!')
+      }, err => {
         this.toastr.error('Can not be Updated', 'ERROR!')
       })
+    } else {
+      this.markFormGroupTouched(this.form);
+    }
   }
-  else {
-    this.markFormGroupTouched(this.form);
-  }
-}
 
-
-addUserToProject(addUserForm) {
-  let selectedUsers = this.addUserForm.get('userName').value;
-  let newUsers = selectedUsers.filter(id => !this.projectUserList.find(user => user.user.id === id));
-  let project_Users = newUsers.map((id) => { return { user: id } });
-  if (project_Users.length > 0) {
-    this.projectService.addUserToProject(this.selectedProject.id, project_Users).subscribe(result => {
-      this.ngOnInit();
-      this.toastr.success('New Member Added', 'Successfully Added!')
-    },
-      err => {
+  addUserToProject(addUserForm) {
+    let selectedUsers = this.addUserForm.get('userName').value;
+    let newUsers = selectedUsers.filter(id => !this.projectUserList.find(user => user.user.id === id));
+    let project_Users = newUsers.map((id) => { return { user: id } });
+    if (project_Users.length > 0) {
+      this.projectService.addUserToProject(this.selectedProject.id, project_Users).subscribe(result => {
+        this.ngOnInit();
+        this.toastr.success('New Member Added', 'Successfully Added!')
+      }, err => {
         this.toastr.error('Member Already Exist', 'ERROR!')
       })
-  } else {
-    this.toastr.error('All selected users already exist', 'ERROR!')
-  }
-}
-
-getProjectUser(id) {
-  this.projectService.getprojectUser(id).subscribe(response => {
-    this.projectUserList = response && response.data && response.data['projectUserList'];
-    if (this.projectUserList) {
-      this.projectUserList = this.projectUserList.filter(user => user.user != null);
-      this.selectedUser = this.projectUserList.map(user => user.user.id);
+    } else {
+      this.toastr.error('All selected users already exist', 'ERROR!')
     }
-  });
-}
+  }
 
-onModelChange(projectUserList) {
-  let index = this.projectUserList.findIndex(user => user.id === projectUserList.id);
-  console.log(projectUserList.id)
-  this.projectService.deleteprojectUser(projectUserList.id).subscribe(response => {
-    this.projectUserList.splice(index, 1);
-    this.ngOnInit();
-    this.toastr.success(projectUserList.user.firstName.toUpperCase(), 'Successfully Removed!')
-  },
-    err => {
+  getProjectUser(id) {
+    this.projectService.getprojectUser(id).subscribe(response => {
+      this.projectUserList = response && response.data && response.data['projectUserList'];
+      if (this.projectUserList) {
+        this.projectUserList = this.projectUserList.filter(user => user.user != null);
+        this.selectedUser = this.projectUserList.map(user => user.user.id);
+      }
+    });
+  }
+
+  onModelChange(projectUserList) {
+    let index = this.projectUserList.findIndex(user => user.id === projectUserList.id);
+    console.log(projectUserList.id)
+    this.projectService.deleteprojectUser(projectUserList.id).subscribe(response => {
+      this.projectUserList.splice(index, 1);
+      this.ngOnInit();
+      this.toastr.success(projectUserList.user.firstName.toUpperCase(), 'Successfully Removed!')
+    }, err => {
       this.toastr.error(projectUserList.user.firstName.toUpperCase(), 'ERROR! Can not be Removed')
     })
-}
-clearForm(){
-  this.form.reset();
-}
+  }
+
+  clearForm() {
+    this.form.reset();
+  }
 }

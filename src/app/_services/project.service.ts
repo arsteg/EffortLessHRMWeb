@@ -8,7 +8,7 @@ import { baseService } from './base';
 
 @Injectable({ providedIn: 'root' })
 
-export class ProjectService  {
+export class ProjectService {
   private readonly token = this.getToken();
   private readonly apiUrl = environment.apiUrlDotNet;
   private readonly httpOptions = {
@@ -19,48 +19,50 @@ export class ProjectService  {
     }),
     withCredentials: true
   };
-    constructor(private http: HttpClient) {
+  constructor(private http: HttpClient) {
 
-    }
-    public getToken() {
-      return localStorage.getItem('jwtToken');
-    }
+  }
+  public getToken() {
+    return localStorage.getItem('jwtToken');
+  }
 
-  getprojectlist() : Observable<any>{
+  getprojectlist(): Observable<any> {
     var response = this.http.get<any>(`${environment.apiUrlDotNet}/project/projectlist`, this.httpOptions);
     return response;
   }
-  getprojects(skip: string, next: string) : Observable<any>{
-    var response = this.http.post<any>(`${environment.apiUrlDotNet}/project/projectlist`, {skip, next},this.httpOptions);
+
+  getprojects(skip: string, next: string): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/project/projectlist`, { skip, next }, this.httpOptions);
     return response;
   }
+  
   addproject(project: project): Observable<project> {
-  var response =  this.http.post<project>(`${environment.apiUrlDotNet}/project/newproject`, project,  this.httpOptions);
+    var response = this.http.post<project>(`${environment.apiUrlDotNet}/project/newproject`, project, this.httpOptions);
     return response;
   }
 
-  deleteproject(id){
+  deleteproject(id) {
     return this.http.delete<project>(`${environment.apiUrlDotNet}/project/${id}`, this.httpOptions);
   }
 
-  updateproject(id, project):Observable<project>{
-    return this.http.patch<project>(`${environment.apiUrlDotNet}/project/${id}`, project ,  this.httpOptions);
+  updateproject(id, project): Observable<project> {
+    return this.http.patch<project>(`${environment.apiUrlDotNet}/project/${id}`, project, this.httpOptions);
   }
 
- getProjectByUserId(userId: string): Observable<any> {
-  return this.http.post<project>(`${environment.apiUrlDotNet}/project/projectlistbyuser`, {userId},  this.httpOptions);
+  getProjectByUserId(userId: string): Observable<any> {
+    return this.http.post<project>(`${environment.apiUrlDotNet}/project/projectlistbyuser`, { userId }, this.httpOptions);
   }
 
   addUserToProject(projectId, projectUsers): Observable<any> {
-    return this.http.post<any>(`${environment.apiUrlDotNet}/project/newprojectuser`, {projectId, projectUsers},  this.httpOptions);
+    return this.http.post<any>(`${environment.apiUrlDotNet}/project/newprojectuser`, { projectId, projectUsers }, this.httpOptions);
   }
 
-  getprojectUser(id: string) : Observable<any>{
-   var response = this.http.get<any>(`${environment.apiUrlDotNet}/project/getprojectuserslist/${id}`, this.httpOptions);
+  getprojectUser(id: string): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/project/getprojectuserslist/${id}`, this.httpOptions);
     return response;
   }
 
-  deleteprojectUser(id: string): Observable<any>{
-   return this.http.delete<any>(`${environment.apiUrlDotNet}/project/projectuser/${id}`, this.httpOptions);
+  deleteprojectUser(id: string): Observable<any> {
+    return this.http.delete<any>(`${environment.apiUrlDotNet}/project/projectuser/${id}`, this.httpOptions);
   }
 }
