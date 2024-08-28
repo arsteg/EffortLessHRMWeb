@@ -7,7 +7,7 @@
             <subordinateSelection class="" (selectedUsersChange)="selectedUsersChanged($event)"></subordinateSelection>
           </div>
 
-          <!-- date selection - for desktop and tablet -->
+          <!-- date selection - for desktop and tablet device -->
           <div class="col-lg-8 d-md-flex d-none align-items-baseline">
             <div class="ms-lg-4 ms-0 mx-1">
               <label for="member">Date </label>
@@ -27,7 +27,7 @@
             </div>
           </div>
 
-          <!-- date selection - mobile -->
+          <!-- date selection - mobile device -->
           <div class="col-lg-8 col-md-8 d-md-none d-flex align-items-baseline justify-content-between">
             <label class="me-4 pe-2" for="member">Date </label>
             <div class="d-flex flex-column gap-3">
@@ -54,11 +54,11 @@
         <table class="mt-2 px-2">
           <thead>
             <tr>
-              <th class="pe-2">Browser</th>
-              <th class="pe-2">Title</th>
-              <th class="pe-2">URL</th>
-              <th class="pe-2">Visit&nbsp;Time</th>
-              <th class="pe-2">Visit&nbsp;Count</th>
+              <th class="pe-2"><i class="fa fa-solid fa-globe fs-4 ms-1"></i></th>
+              <th>Title</th>
+              <th>URL</th>
+              <th class="pe-2 text-center">Visit&nbsp;Time</th>
+              <th class="pe-2 text-center">Visit&nbsp;Count</th>
             </tr>
           </thead>
 
@@ -76,8 +76,8 @@
               </td>
               <td [title]="history.title">{{truncateString(history.title,50)}}</td>
               <td [title]="history.uri">{{truncateString(history.uri,75)}}</td>
-              <td>{{truncateDate(history.lastVisitTime,10)}}</td>
-              <td>{{history.visitCount}}</td>
+              <td class="text-center">{{truncateDate(history.lastVisitTime,10)}}</td>
+              <td class="text-center">{{history.visitCount}}</td>
             </tr>
           </tbody>
         </table>

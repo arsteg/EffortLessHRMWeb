@@ -116,7 +116,7 @@ export class AppAndWebsiteUsageComponent implements OnInit {
     const seconds = Math.floor(ms / 1000) % 60;
     const minutes = Math.floor(ms / (1000 * 60)) % 60;
     const hours = Math.floor(ms / (1000 * 60 * 60));
-    return hours + ' hr ' + minutes + ' m ' + seconds + ' s';
+    return `${hours}\u00A0hr\u00A0${minutes}\u00A0m\u00A0${seconds}\u00A0s`;
   }
 
   minutesToTime(input) {

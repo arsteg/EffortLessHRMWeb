@@ -83,7 +83,7 @@
         </mat-form-field>
       </div>
 
-      <!-- project/members toggle option -->
+      <!-- project/members toggle option & refersh button -->
       <div class="d-flex">
         <div class="d-flex align-items-baseline mt-1 mx-2">
           <button class="rounded-pill me-1 py-2" [class.active]="showProjectsColumn" [class.shadow]="showProjectsColumn"
@@ -92,7 +92,6 @@
             (click)="toggleColumns('members')">Members</button>
         </div>
 
-        <!-- refersh button -->
         <div class="ms-auto">
           <button mat-raised-button id="btnRefresh" class="mt-2 bi bi-arrow-repeat header-icons contentHeading"
             title="Refresh Timeline" (click)="refresh()"></button>
@@ -139,7 +138,7 @@
       <!-- export button -->
       <div class="ms-auto">
         <div class="dropdown order-first order-sm-last d-flex">
-          <button class="export-btn dropdown-toggle formrow-inputState form-select select-styled active export_btn"
+          <button class="dropdown-toggle formrow-inputState form-select select-styled active export_btn"
             type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
             <p class="mb-0 text-muted"> Export </p>
           </button>
