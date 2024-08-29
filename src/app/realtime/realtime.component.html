@@ -1,125 +1,117 @@
-<div class="main-content">
-    <div class="container-fluid">
-        <div class="d-flex justify-content-between">
-            <h1 class="pt-4">Realtime Monitoring</h1>
+<div class="main-content py-5 px-lg-2 px-0">
+    <div class="container-fluid pt-lg-2 pt-4">
+        <div class="d-flex justify-content-between align-items-baseline px-2">
+            <h1 class="pt-4 mb-0">Realtime Monitoring</h1>
+
+            <div class="dropdown mb-2">
+                <button class="dropdown-toggle formrow-inputState form-select select-styled active" type="button"
+                    id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                    <p class="mb-0 text-muted"> Export </p>
+                </button>
+                <ul class="dropdown-menu p-0" aria-labelledby="dropdownMenuButton1" id="dropdown-export">
+                    <li><a class="export-button" (click)="exportToCsv()">CSV</a></li>
+                    <li><a class="export-button" (click)="exportToExcel()">XLS</a></li>
+                    <li><a class="export-button" (click)="exportToPdf()">PDF</a></li>
+                </ul>
+            </div>
         </div>
         <hr class="mt-0">
-        <div class="row">
-            <div class="col-4 ">
-                <div class="d-flex  justify-content-between p-4 bg-white common">
+
+        <div class="row col-lg-12 col-md-12 mx-auto">
+            <div class="col-lg-4 col-md-4 mb-md-0 mb-4">
+                <div class="d-flex justify-content-between p-4 bg-white common">
                     <div>
                         <p class="text-muted"> Number of Members</p>
                         <h3 class="mb-0">{{realtime?.totalMember}}</h3>
                     </div>
-                    <b class="bi bi-people people"></b>
+                    <b class="bi bi-people people pt-1"></b>
                 </div>
             </div>
-            <div class="col-4 ">
-                <div class="d-flex bg-white justify-content-between p-4 common">
-                    <div>
+
+            <div class="col-lg-4 col-md-4 mb-md-0 mb-4">
+                <div class="d-flex justify-content-between p-4 bg-white common">
+                    <div class="mb-lg-0 mb-md-3">
                         <p class="text-muted">Working Now</p>
                         <h3 class="mb-0">{{realtime?.activeMember}}</h3>
                     </div>
-                    <i class="bi bi-clock clock "></i>
+                    <i class="bi bi-clock clock pt-1"></i>
                 </div>
             </div>
 
-            <div class="col-4 ">
-                <div class="d-flex bg-white justify-content-between p-4 common">
-
+            <div class="col-lg-4 col-md-4">
+                <div class="d-flex justify-content-between p-4 bg-white common">
                     <div>
                         <p class="text-muted">Currently Non-Productive</p>
                         <h3 class="mb-0">{{realtime?.totalNonProductiveMember}}</h3>
                     </div>
-                    <i class="bi bi-graph-down-arrow graph"></i>
+                    <i class="bi bi-graph-down-arrow graph pt-1"></i>
                 </div>
             </div>
         </div>
 
-        <div class="d-flex mt-4 px-2" style="height: 50px;">
-
-            <span class="pt-3 text-muted me-3">Filter&nbsp;by: </span>
-            <ng-container>
-                <mat-form-field appearance="outline" class="w-25 mx-1">
-                    <mat-label>Select User</mat-label>
-                    <mat-select multiple [(ngModel)]="selectedUser">
-                        <mat-option *ngFor="let member of members" [value]="member.id" (click)="filterData()"
-                            [selected]="selectedUser?.includes(member?.id)">
-                            {{member.name | titlecase}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </ng-container>
-
-
-            <div class="d-flex align-items-center">
+        <!-- Filter options/Live screen modal/Export button -->
+        <div class="d-md-flex d-block align-items-baseline mt-4 px-2">
+            <div class="col-lg-3 d-flex align-items-center justify-content-end order-md-2 mb-md-0 mb-3">
                 <span class="bi bi-search searchIcon"></span>
-                <input class="form-control  search" type="text" placeholder="Search..."
-                    [(ngModel)]="searchText" name="searchText" aria-label="default input example"
-                   >
+                <input class="form-control" type="text" placeholder="Search..." [(ngModel)]="searchText"
+                    name="searchText" aria-label="default input example">
             </div>
 
+            <div class="col-lg-3 d-flex align-item-baseline order-md-1 ms-md-0 ms-1">
+                <label class="pt-3 text-muted me-3">Filter&nbsp;by: </label>
+                <ng-container>
+                    <mat-form-field appearance="outline" class="mx-1">
+                        <mat-label>Select User</mat-label>
+                        <mat-select multiple [(ngModel)]="selectedUser">
+                            <mat-option *ngFor="let member of members" [value]="member.id" (click)="filterData()"
+                                [selected]="selectedUser?.includes(member?.id)">
+                                {{member.name | titlecase}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </ng-container>
+            </div>
 
-            <div class="d-flex align-items-start flex-wrap gap-3 ms-auto">
-                <div class="d-flex" style="display: none;">
-                    <button mat-raised-button *ngIf="showAllUserLiveButton" class="rounded-pill addBtn" (click)="multipleUserLiveScreen()">All User Live Screen</button>
-                </div>
-                <div class="dropdown order-first order-sm-last d-flex">
-                    <button class="export-btn dropdown-toggle formrow-inputState form-select select-styled active"
-                        type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                        <p class="mb-0 text-muted"> Export </p>
-                    </button>
-                    <ul class="dropdown-menu p-0" aria-labelledby="dropdownMenuButton1" id="dropdown-export">
-                        <li><a class="export-button" (click)="exportToCsv()">CSV</a></li>
-                        <li><a class="export-button" (click)="exportToExcel()">XLS</a></li>
-                        <li><a class="export-button" (click)="exportToPdf()">PDF</a></li>
-                    </ul>
+            <div class="d-flex align-items-baseline justify-content-end gap-3 ms-auto order-md-3">
+                <div class="d-flex">
+                    <button mat-raised-button *ngIf="showAllUserLiveButton" class="rounded-pill addBtn"
+                        (click)="multipleUserLiveScreen()">All User Live Screen</button>
                 </div>
             </div>
         </div>
-        <div class="tableContainer py-2 mt-3 bg-white">
+
+        <!-- Table data -->
+        <div class="table-responsive tableContainer py-2 mt-md-0 mt-3 bg-white">
             <table class="mt-4" id="realTime" #realTime>
                 <thead>
                     <tr>
-                        <th scope="col">
-                            Online User &nbsp;
-                            <i class="bi bi-arrow-up sort "></i>
-                        </th>
-                        <th scope="col">Project
-                            &nbsp;
-                            <i class="bi bi-arrow-up sort "></i>
-                        </th>
-                        <th scope="col">
-                            Task &nbsp;
-                            <i class="bi bi-arrow-up sort "></i>
-                        </th>
-                        <th scope="col">Apps/Websites &nbsp;
-                            <i class="bi bi-arrow-up sort "></i>
-                        </th>
-
+                        <th scope="col">Online&nbsp;User&nbsp;<i class="bi bi-arrow-up sort"></i></th>
+                        <th scope="col">Project&nbsp;<i class="bi bi-arrow-up sort "></i></th>
+                        <th scope="col">Task&nbsp;<i class="bi bi-arrow-up sort "></i></th>
+                        <th scope="col">Apps/Websites&nbsp;<i class="bi bi-arrow-up sort"></i></th>
                         <th></th>
                     </tr>
                 </thead>
+
                 <tbody>
-                    <tr
-                        *ngFor="let data of realtime?.onlineUsers | search: searchText">
+                    <tr *ngFor="let data of realtime?.onlineUsers | search: searchText">
                         <td>
-                            <span class="letter ms-2"
+                            <span class="letter d-lg-inline d-none ms-2"
                                 [style.background-color]="commonService.getRandomColor(data?.user?.lastName)">
                                 {{data.user.firstName.slice(0,1) |
                                 uppercase}}{{data.user.lastName.slice(0,1) | uppercase}}</span>
-                            {{data.user.firstName |titlecase}} {{data.user.lastName |titlecase}}
+                            {{data.user.firstName |titlecase}}&nbsp;{{data.user.lastName |titlecase}}
                         </td>
                         <td>{{data?.project}}</td>
                         <td>{{data?.task}}</td>
                         <td></td>
-                        <td>
-                            <button mat-raised-button class="rounded-pill addBtn" (click)="singleUserLiveScreen(data.user.id)">Live Screen</button>
+                        <td class="pe-lg-0 pe-2 livescreen_btn">
+                            <button mat-raised-button class="rounded-pill addBtn"
+                                (click)="singleUserLiveScreen(data.user.id)">Live&nbsp;Screen</button>
                         </td>
                     </tr>
                 </tbody>
             </table>
-            
         </div>
     </div>
 </div>
