@@ -9,6 +9,7 @@ import AOS from 'aos';
 export class MainComponent implements OnInit {
   isHovered: boolean = false;
   isDropdownOpen: boolean = false;
+  isDownloadDropdownOpen: boolean = false;
   @ViewChild('aboutUsSection', { static: true }) aboutUsSection: ElementRef;
   @ViewChild('ttFeatures', { static: false }) ttFeatures: ElementRef;
   @ViewChild('hrmFeatures', { static: false }) hrmFeatures: ElementRef;
@@ -18,26 +19,67 @@ export class MainComponent implements OnInit {
   ngOnInit(): void {
     AOS.init({ disable: 'mobile' });
     AOS.refresh();
-
     window.addEventListener('scroll', this.scroll, true)
   }
+
   ngAfterViewInit() {
     console.log(this.hrmFeatures);
   }
 
   toggleDropdown(event: MouseEvent): void {
-    this.isDropdownOpen = !this.isDropdownOpen;
     event.stopPropagation();
+    // Close the download dropdown if it's open
+    if (this.isDownloadDropdownOpen) {
+      this.isDownloadDropdownOpen = false;
+    }
+
+    this.isDropdownOpen = !this.isDropdownOpen;
   }
+
+  toggleDownloadDropdown(event: MouseEvent): void {
+    event.stopPropagation();
+    // Close the features dropdown if it's open
+    if (this.isDropdownOpen) {
+      this.isDropdownOpen = false;
+    }
+
+    this.isDownloadDropdownOpen = !this.isDownloadDropdownOpen;
+  }
+
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
     const clickedElement = event.target as HTMLElement;
-    const dropdown = document.querySelector('.navigation__dropdown-popup') as HTMLElement;
+    // const featuresDropdown = document.querySelector('.navigation_list-item--features .navigation__dropdown-popup') as HTMLElement;
+    // const downloadDropdown = document.querySelector('.navigation_list-item--features .navigation__dropdown-popup') as HTMLElement;
 
-    // Check if the clicked element is not within the dropdown
-    if (!dropdown.contains(clickedElement)) {
-      this.isDropdownOpen = false; // Close the dropdown
+    // // Check if the clicked element is not within the dropdown
+    // if (this.isDropdownOpen && featuresDropdown && !featuresDropdown.contains(clickedElement)) {
+    //   this.isDropdownOpen = false; // Close the dropdown
+    // }
+
+    // if (this.isDownloadDropdownOpen && downloadDropdown && !downloadDropdown.contains(clickedElement)) {
+    //   this.isDownloadDropdownOpen = false; // Close the dropdown
+    // }
+
+    if (this.isDropdownOpen) {
+      const featuresDropdown = document.querySelector('.navigation_list-item--features .navigation__dropdown-popup') as HTMLElement;
+      if (featuresDropdown && !featuresDropdown.contains(clickedElement)) {
+        this.isDropdownOpen = false;
+      }
     }
+    
+    // Close download dropdown if open and click outside
+    if (this.isDownloadDropdownOpen) {
+      const downloadDropdown = document.querySelector('.navigation_list-item--download .navigation__dropdown-popup') as HTMLElement;
+      if (downloadDropdown && !downloadDropdown.contains(clickedElement)) {
+        this.isDownloadDropdownOpen = false;
+      }
+    }
+  }
+
+  downloadWindowsInstaller() {
+    const downloadUrl = 'https://github.com/arsteg/ARSTEG.EffortlessHRM.TimeTracker/releases/download/1.0.0/TimeTracker.Setup.msi';
+    window.location.href = downloadUrl;
   }
 
   scrollToAboutUs() {
@@ -48,7 +90,10 @@ export class MainComponent implements OnInit {
     }
   }
 
-  scrollTottFeatures() {
+  scrollTottFeatures(event: MouseEvent): void {
+    event.stopPropagation(); // Prevent the click from triggering other elements
+    this.isDropdownOpen = false; // Close the features dropdown
+
     if (this.ttFeatures && this.ttFeatures.nativeElement) {
       this.ttFeatures.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } else {
@@ -56,17 +101,25 @@ export class MainComponent implements OnInit {
     }
   }
 
-  scrollToHRMFeatures() {
+  scrollToHRMFeatures(event: MouseEvent): void {
+    event.stopPropagation(); // Prevent the click from triggering other elements
+    this.isDropdownOpen = false; // Close the features dropdown
+
     if (this.hrmFeatures && this.hrmFeatures.nativeElement) {
       this.hrmFeatures.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } else {
       console.error('HRM Features section not found or not yet initialized.');
     }
   }
+
   scroll = (): void => {
+    // Automatically close dropdowns on scroll
+    if (this.isDropdownOpen || this.isDownloadDropdownOpen) {
+      this.isDropdownOpen = false;
+      this.isDownloadDropdownOpen = false;
+    }
 
     let scrollHeigth;
-
     if (window.innerWidth < 350) {
       scrollHeigth = 100;
     } else if (window.innerWidth < 500 && window.innerWidth > 350) {
@@ -90,6 +143,7 @@ export class MainComponent implements OnInit {
       document.body.style.setProperty('--navbar-scroll-shadow', "none");
     }
   }
+
   isMenuOpen: boolean = false;
 
   toggleMenu() {

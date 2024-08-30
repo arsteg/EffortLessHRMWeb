@@ -1,24 +1,23 @@
 <header id="header" class="header container-fluid">
     <div class="header__wrapper">
-
         <div class="header__logo">
             <!-- <h3>EffortLessHRM </h3> -->
             <img src="assets/logo.png" alt="effortlessHRM" height="70">
         </div>
+
         <nav class="navigation">
             <ul id="navigation" class="navigation__list" [class.show]="isMenuOpen">
-
                 <li class="loginButton"><a routerLink="/login" class="top__login  main-font-semibold"
-                        style=" color: #76bc21 !important;">Log
-                        in</a></li>
+                        style=" color: #76bc21 !important;">Log in</a></li>
+
                 <li class="navigation__list-item navigation__list-item--products" (click)="scrollToAboutUs()">
                     <button class="navigation__link" type="button" aria-haspopup="true" aria-expanded="false"
                         style="height: 70px">
                         <span class="navigation__link-child">About us</span>
-
                     </button>
                 </li>
 
+                <!-- plans -->
                 <li class="navigation__list-item navigation__list-item--products">
                     <button class="navigation__link" type="button" aria-haspopup="true" aria-expanded="false"
                         style="height: 70px">
@@ -33,6 +32,7 @@
                     </button>
                 </li>
 
+                <!-- features -->
                 <li class="navigation__list-item navigation__list-item--features" (click)="toggleDropdown($event)">
                     <button class="navigation__link" type="button" aria-haspopup="true" aria-expanded="false"
                         style="height: 70px">
@@ -48,23 +48,55 @@
 
                     <div class="navigation__dropdown-popup" [ngClass]="{ 'show': isDropdownOpen }">
                         <div class="navigation__dropdown-section">
-                            <ul>
-                                <li (click)="scrollTottFeatures()" class="py-3">Time Tracking Features</li>
-                                <li (click)="scrollToHRMFeatures()">HRM Features</li>
+                            <ul class="navigation__dropdown-grid">
+                                <li class="navigation__dropdown-item py-3" (click)="scrollTottFeatures($event)">
+                                    <span><i class="bi bi-clock me-2"></i></span>Time Tracking Features
+                                </li>
+                                <li class="navigation__dropdown-item py-3" (click)="scrollToHRMFeatures($event)">
+                                    <i class="bi bi-card-checklist me-2"></i>HRM Features
+                                </li>
                             </ul>
-
                         </div>
                     </div>
                 </li>
 
-                <li class="navigation__list-item navigation__list-item--price">
-                    <a class="navigation__link" href=""
-                        style="height: 70px; display: flex; justify-content: center; align-items: center">
-                        Download
-                        <span class="header-discount-badge" style="display: none">-90%</span>
-                    </a>
-                </li>
+                <!-- download -->
+                <li class="navigation__list-item navigation__list-item--download"
+                    (click)="toggleDownloadDropdown($event)">
+                    <button class="navigation__link" type="button" aria-haspopup="true" aria-expanded="false"
+                        style="height: 70px;">
+                        <span class="navigation__link-child">Download</span>
+                        <span class="navigation__arrow blur-arrow">
+                            <svg width="13" height="7" viewBox="0 0 13 7" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M1.25 0.875L6.5 6.125L11.75 0.875" stroke="#3B3C4E" stroke-width="1.2"
+                                    stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </span>
+                    </button>
 
+                    <div class="navigation__dropdown-popup download-popup"
+                        [ngClass]="{ 'show': isDownloadDropdownOpen }">
+                        <div class="navigation__dropdown-popup--top">
+                            <div class="navigation__dropdown-section">
+                                <div class="navigation__dropdown-title mb-3">
+                                    Desktop <span>
+                                        <i class="bi bi-arrow-right"></i>
+                                    </span>
+                                </div>
+
+                                <ul class="navigation__dropdown-grid">
+                                    <li class="navigation__dropdown-item py-3">
+                                        <a href="#" (click)="downloadWindowsInstaller()">
+                                            <span class="navigation-icon"><i class="bi bi-windows me-2"></i></span>
+                                            <span class="navigation__dropdown-text">Windows</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </li>
             </ul>
         </nav>
 
@@ -76,17 +108,16 @@
         <div class="burger" (click)="toggleMenu()">
             <i class="bi bi-list"></i>
         </div>
-
     </div>
 </header>
-<main class="main-homepage">
 
+<main class="main-homepage">
     <div class="hero_bg">
         <img src="assets/main/bg-effect.png" alt="">
     </div>
+
     <section class="hero">
         <div class="section-container">
-
             <div class="row">
                 <div class="col-md-6">
                     <h1 class="hero__title">Time Tracker And <span>HRM
@@ -96,9 +127,8 @@
                         It's a complete software solution made to fit today's businesses. EffortlessHRM has lots of cool
                         features to make work easier, like helping with tasks, making people more productive, and making
                         sure everyone has a good work experience. </p>
-
-
                 </div>
+
                 <div class="col-md-6" style="height: 500px">
                     <div class="row ps-3 bannerImg">
                         <div class="col-6 ">
@@ -115,15 +145,9 @@
                         </div>
                     </div>
                 </div>
-
-
-
-
             </div>
-
         </div>
     </section>
-
 
     <section class="monitor-employeespb-0 mt-5 manage aos-init" #aboutUsSection id="aboutUsSection" data-aos="fade-up">
         <div class="section-container">
@@ -131,7 +155,6 @@
                 <h2 class="monitor-employees__title pt-5  pb-2">About Us</h2>
             </div>
             <div class="monitor-employees__wrapper p-3 rounded bg-white">
-
                 <div class="row w-100">
                     <div class="col-md-6">
                         <p>From attendance monitoring to payroll management, EffortlessHRM provides automated solutions
@@ -157,8 +180,6 @@
             </div>
         </div>
     </section>
-
-
 
     <!-- Add new secton-->
     <section class="manage ttFeatures pt-5 mt-5" data-aos="fade-up" #ttFeatures id="ttFeatures">
@@ -191,6 +212,7 @@
                                 style="color: transparent;"></div>
                     </div>
                 </div>
+
                 <div class="col-xl-8 col-lg-8 col-md-8 wow ">
                     <div class="row ms-5 justify-content-evenly">
                         <div class="col-md-4 col-sm-8 feature_col mb-2">
@@ -350,6 +372,7 @@
         </div>
     </section>
     <!-- End of hrm features -->
+
     <section class="manage pt-5">
         <div class="section-container">
             <div class="manage__head aos-init" data-aos="fade-up">
@@ -367,14 +390,9 @@
                     </div>
                     <img src="assets/main/screen-04.png" class="manage__item_img"
                         alt="Project Management | EffortLessHRM Tracker"
-                        title="Manage projects with EffortLessHRM Time Tracker" style="
-                    height: 200px;
-    width: auto;
-    border-radius: 15px;
-                ">
-
+                        title="Manage projects with EffortLessHRM Time Tracker"
+                        style="height: 200px; width: auto; border-radius: 15px;">
                 </div>
-
 
                 <div class="manage__row py-5">
                     <div class="manage__item manage__item-2 aos-init" data-aos="fade-up">
@@ -384,6 +402,7 @@
                                 EffortLessHRM has a chat that makes <span>communication</span> faster thus making
                                 collaboration between team members easier.</p>
                         </div>
+
                         <picture>
                             <source media="(min-width:1080px)"
                                 srcset="https://www.webwork-tracker.com/images/time-tracker/home/team-chat-webwork.webp">
@@ -393,7 +412,6 @@
                                 class="manage__item_img" alt="Team Chat | EffortLessHRM features"
                                 title="Team Chat as a communication tool in EffortLessHRM Time Tracker">
                         </picture>
-
                     </div>
 
 
@@ -412,15 +430,9 @@
                     </div>
 
                 </div>
-
             </div>
         </div>
     </section>
-
-
-
-
-
 
     <!-- new -->
     <div class="elementor-element elementor-element-b0b0a00 e-con-boxed e-con ce-animation-start" data-id="b0b0a00"
@@ -429,13 +441,13 @@
             <div class="p-5 section-container elementor-element elementor-element-7e206f0 e-con-full e-con ce-animation-start"
                 data-id="7e206f0" data-element_type="container"
                 data-settings="{&quot;background_background&quot;:&quot;classic&quot;,&quot;content_width&quot;:&quot;full&quot;}">
-
                 <div class="elementor-element elementor-element-85685b8 elementor-widget__width-initial elementor-widget elementor-widget-heading ce-animation-start"
                     data-id="85685b8" data-element_type="widget" data-widget_type="heading.default">
                     <div class="elementor-widget-container">
                         <h2 class="expand__title aos-init" data-aos="fade-up">Expand Your Workspace Potential</h2>
                     </div>
                 </div>
+
                 <div class="elementor-element elementor-element-581a553 section-container e-con-boxed e-con ce-animation-start"
                     data-id="581a553" data-element_type="container"
                     data-settings="{&quot;content_width&quot;:&quot;boxed&quot;}">
@@ -481,7 +493,6 @@
                                             <p>Manage projects, assign tasks and track time.</p>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                         </div>
@@ -491,6 +502,7 @@
         </div>
     </div>
     <!-- end new -->
+
     <section class="free-trial aos-init" data-aos="fade-up">
         <div class="section-container">
             <div class="free-trial__wrapper">
@@ -503,7 +515,6 @@
             <img class="free-trial__img me-5" src="assets/activity.png" alt="EffortLessHRM Time Tracker"
                 title="EffortLessHRM Time Tracking Software with Screenshots">
         </div>
-
     </section>
 
     <div class="video-overlay">
@@ -512,11 +523,10 @@
             <div class="close">×</div>
         </div>
     </div>
-
 </main>
+
 <footer class="footer">
     <div class="footer__wrapper">
-
         <div class="footer__bottom d-flex justify-content-between">
             <a href="#"> <img class="footer__logo--resp" src="" alt="EffortLessHRM Tracker"></a>
             <div class="social-links">
@@ -529,16 +539,13 @@
                     <span class="bi bi-facebook social-icons"></span>
                 </a>
 
-
                 <a href="https://www.linkedin.com/company/effortlesshrm/" target="_blank" class="social-link">
                     <span class="bi bi-linkedin social-icons"></span>
                 </a>
 
-
                 <a href="https://www.instagram.com/effortlesshrm" target="_blank" class="social-link">
                     <span class="bi bi-instagram social-icons"></span>
                 </a>
-
 
                 <a href="https://twitter.com/i/flow/login?redirect_after_login=%2FEffortlessHRM" target="_blank"
                     class="social-link">
@@ -547,18 +554,15 @@
 
                 <a href="https://www.youtube.com/@EffortlessHRM" target="_blank" class="social-link">
                     <span class="bi bi-youtube social-icons"></span>
-
                 </a>
-
             </div>
 
             <div>
                 <img src="assets/main/app-store.png" alt="app-store" class="app-store">
                 <img src="assets/main/play-store.png" alt="play store" class="play-store">
             </div>
-
         </div>
-        <!--  -->
+
         <section
             class="elementor-section elementor-top-section elementor-element elementor-element-44f16a43 elementor-section-content-middle elementor-section-boxed elementor-section-height-default elementor-section-height-default"
             data-id="44f16a43" data-element_type="section"
@@ -575,6 +579,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="elementor-column elementor-col-50 elementor-top-column elementor-element elementor-element-57cce325 ot-flex-column-vertical"
                     data-id="57cce325" data-element_type="column">
                     <div class="elementor-widget-wrap elementor-element-populated">
@@ -584,7 +589,6 @@
                                 <ul class="elementor-icon-list-items elementor-inline-items d-flex justify-content-end">
                                     <li class="elementor-icon-list-item elementor-inline-item">
                                         <a href="#">
-
                                             <span class="elementor-icon-list-text">Security<span
                                                     class="mx-3">|</span></span>
                                         </a>
@@ -592,14 +596,13 @@
 
                                     <li class="elementor-icon-list-item elementor-inline-item">
                                         <a href="#">
-
                                             <span class="elementor-icon-list-text">Terms of Services<span
                                                     class="mx-3">|</span></span>
                                         </a>
                                     </li>
+
                                     <li class="elementor-icon-list-item elementor-inline-item">
                                         <a href="#">
-
                                             <span class="elementor-icon-list-text">Privacy Policy</span>
                                         </a>
                                     </li>
@@ -610,6 +613,5 @@
                 </div>
             </div>
         </section>
-        <!--  -->
     </div>
 </footer>
