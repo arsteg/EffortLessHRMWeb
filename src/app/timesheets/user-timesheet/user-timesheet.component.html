@@ -1,64 +1,95 @@
-<div class="main-content">
-  <div class="container-fluid">
-  <h3 class="mb-sm-0 font-size-18 text-capitalize">Timesheet</h3>
-  <div class="row">
-    <form (ngSubmit)="onSubmit()" #timesheetForm="ngForm">
-    <div class="d-flex mt-2">
-    <span  class="mt-2">Between</span>
-    <div>
-    <input type="date" name="fromDate" id="fromDate" (change)="filterData()" [(ngModel)]="fromDate"
-        class="form-control calendar mb-4 mx-1" [formControl]="fromDateControl"/>
-        <div *ngIf="fromDateControl.invalid && (fromDateControl.dirty || fromDateControl.touched)" class="text-danger">
-          <div *ngIf="fromDateControl.errors">Invalid start or end date</div>
-        </div>
-      </div>
-    <div class="m-2">
-        <span>and</span>
-    </div>
-<div>
-    <input type="date" name="toDate" id="toDate" (change)="filterData()" [(ngModel)]="toDate" #toDateRef
-        class="form-control calendar mb-4 mx-1"  [formControl]="toDateControl"/>
-        <div *ngIf="toDateControl.invalid && (toDateControl.dirty || toDateControl.touched)" class="text-danger">
-          <div *ngIf="fromDateControl.errors">Invalid start or end date</div>
+<div class="main-content pt-5">
+  <div class="container-fluid mt-5 px-lg-4 px-2">
+    <!-- export button -->
+    <div class="d-flex mb-2">
+      <div class="dropdown ms-auto order-first order-sm-last d-flex">
+        <button class="dropdown-toggle formrow-inputState form-select select-styled active" type="button"
+          id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+          <p class="mb-0 text-muted"> Export </p>
+        </button>
+        <ul class="dropdown-menu p-0" aria-labelledby="dropdownMenuButton1" id="dropdown-export">
+          <li><a class="export-button" (click)="exportToCsv()">CSV</a></li>
+          <li><a class="export-button" (click)="exportToXlsx()">XLS</a></li>
+          <li><a class="export-button" (click)="exportToPdf()">PDF</a></li>
+        </ul>
       </div>
     </div>
-      <div class="align-items-start flex-wrap gap-3 ms-auto">
-        <div class="dropdown order-first order-sm-last d-flex">
-            <button class="export-btn dropdown-toggle formrow-inputState form-select select-styled active"
-                type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                <p class="mb-0 text-muted"> Export </p>
-            </button>
-            <ul class="dropdown-menu p-0" aria-labelledby="dropdownMenuButton1" id="dropdown-export">
-                <li><a class="export-button" (click)="exportToCsv()">CSV</a></li>
-                <li><a class="export-button" (click)="exportToXlsx()">XLS</a></li>
-                <li><a class="export-button" (click)="exportToPdf()">PDF</a></li>
-            </ul>
+    <!-- <h3 class="mb-sm-0 font-size-18 text-capitalize">Timesheet</h3> -->
+
+    <!-- table data -->
+    <div class="tableContainer bg-white py-2">
+      <form class="d-lg-flex d-md-block col-lg-12 col-md-10 px-2" (ngSubmit)="onSubmit()" #timesheetForm="ngForm">
+        <!-- date selection - for desktop and tablet device -->
+        <div class="col-lg-12 col-md-12 d-md-flex d-none align-items-baseline ms-md-0 ms-5 mb-3">
+          <label class="mx-1" for="member">Date </label>
+
+          <div class="col-lg-2 col-md-4 ms-2 me-3">
+            <input type="date" name="fromDate" id="fromDate" (change)="filterData()" [(ngModel)]="fromDate"
+              class="form-control mx-1" [formControl]="fromDateControl" />
+            <div *ngIf="fromDateControl.invalid && (fromDateControl.dirty || fromDateControl.touched)"
+              class="text-danger">
+              <div *ngIf="fromDateControl.errors">Invalid start or end date</div>
+            </div>
+          </div>
+
+          <i class="fa fa-long-arrow-right contentHeading"></i>
+
+          <div class="col-lg-2 col-md-4 ms-2">
+            <input type="date" name="toDate" id="toDate" (change)="filterData()" [(ngModel)]="toDate" #toDateRef
+              class="form-control mx-1" [formControl]="toDateControl" />
+            <div *ngIf="toDateControl.invalid && (toDateControl.dirty || toDateControl.touched)" class="text-danger">
+              <div *ngIf="fromDateControl.errors">Invalid start or end date</div>
+            </div>
+          </div>
         </div>
+
+        <!-- date selection - mobile device -->
+        <div class="col-md-8 d-md-none d-flex align-items-baseline justify-content-between mb-md-0 mb-3">
+          <label class="me-4 pe-2" for="member">Date </label>
+
+          <div class="d-flex flex-column gap-3">
+            <input type="date" name="fromDate" id="fromDate" (change)="filterData()" [(ngModel)]="fromDate"
+              class="form-control mx-1" [formControl]="fromDateControl" style="width: 71.5vw;" />
+            <div *ngIf="fromDateControl.invalid && (fromDateControl.dirty || fromDateControl.touched)"
+              class="text-danger">
+              <div *ngIf="fromDateControl.errors">Invalid start or end date</div>
+            </div>
+
+            <input type="date" name="toDate" id="toDate" (change)="filterData()" [(ngModel)]="toDate" #toDateRef
+              class="form-control mx-1" [formControl]="toDateControl" style="width: 71.5vw;" />
+            <div *ngIf="toDateControl.invalid && (toDateControl.dirty || toDateControl.touched)" class="text-danger">
+              <div *ngIf="fromDateControl.errors">Invalid start or end date</div>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <div class="table-responsive">
+        <table class="mx-2 px-2" id="userTimeSheet" #userTimeSheet>
+          <thead>
+            <tr>
+              <th class="ps-2">Project</th>
+              <th class="pe-lg-2 pe-4 text-center" *ngFor="let date of timeLogs?.columns|slice:1">{{ date | date:
+                'dd-MMM' }}</th>
+              <th class="pe-lg-2 pe-4 text-center">Total</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let row of timeLogs?.matrix">
+              <td class="pe-4"> {{ getProjectName(row[0]) }}</td>
+              <td class="pe-lg-1 pe-4 text-center" *ngFor="let cell of row|slice:1">{{+cell | milliSecondsToTime}}</td>
+              <td class="pe-lg-1 pe-4 text-center">{{getTotalHours(row.slice(1)) | milliSecondsToTime}}</td>
+            </tr>
+            
+            <tr *ngIf="this.timeLogs?.matrix.length>0">
+              <td class="p-2">Total</td>
+              <td class="pe-lg-1 pe-4 text-center" *ngFor="let cell of timesheetTotals|slice:1">{{+cell |
+                milliSecondsToTime}}</td>
+              <td class="pe-lg-1 pe-4 text-center">{{getTotalHours(timesheetTotals)|milliSecondsToTime}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-</div>
-</form>
-<div class="tableContainer bg-white py-3 px-2">
-  <table class="rounded p-2"  id="userTimeSheet" #userTimeSheet>
-    <thead>
-      <tr>
-        <th class="ps-2">Project</th>
-        <th *ngFor="let date of timeLogs?.columns|slice:1">{{ date | date: 'dd-MMM' }}</th>
-        <th>Total</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let row of timeLogs?.matrix">
-        <td class="p-2"> {{ getProjectName(row[0]) }}</td>
-        <td *ngFor="let cell of row|slice:1">{{+cell | milliSecondsToTime}}</td>
-        <td>{{getTotalHours(row.slice(1)) | milliSecondsToTime}}</td>
-      </tr>
-      <tr *ngIf="this.timeLogs?.matrix.length>0">
-        <td class="p-2">Total</td>
-        <td *ngFor="let cell of timesheetTotals|slice:1">{{+cell | milliSecondsToTime}}</td>
-        <td >{{getTotalHours(timesheetTotals)|milliSecondsToTime}}</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-</div>
-</div>
+  </div>
