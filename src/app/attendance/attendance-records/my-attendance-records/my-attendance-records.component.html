@@ -1,16 +1,7 @@
-<div class="mainContent mt-5">
-    <div class="">
-        <div class="py-2 px-0 bg-white tableContainer">
-
-            <div class="d-flex justify-content-between align-items-baseline mb-2 px-3">
-                <p class="mb-0">({{attendanceRecords?.length}}) Records Found</p>
-                
-                <div class="d-flex ms-auto align-items-center">
-                    <span class="bi bi-search searchIcon"></span>
-                    <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
-                        name="searchText" aria-label="default input example">
-                </div>
-
+<div class="mainContent mt-3">
+    <div class="container-fluid">
+        <div class="py-2 px-2 bg-white tableContainer">
+            <div class="d-flex justify-content-between align-items-baseline px-2">
                 <mat-form-field appearance="outline" class="">
                     <mat-select placeholder="Select Month" [(ngModel)]="selectedMonth">
                         <mat-option *ngFor="let month of months" [value]="month.value">
@@ -18,42 +9,55 @@
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
+
+                <div class="d-flex align-items-baseline ms-auto">
+                    <p class="mb-0 me-3">({{attendanceRecords?.length}}) Records Found</p>
+    
+                    <div class="d-flex ms-auto align-items-center">
+                        <span class="bi bi-search searchIcon"></span>
+                        <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
+                            name="searchText" aria-label="default input example">
+                    </div>
+                </div>
             </div>
-            <table>
-                <thead>
-                    <th>Date</th>
-                    <th>CheckIn </th>
-                    <th>CheckOut</th>
-                    <th>Working Hours</th>
-                    <th>OD Hours</th>
-                    <th>SL Hours</th>
-                    <th>Status</th>
-                    <th>After Processing</th>
-                    <th>Early/Late Status</th>
-                    <th>Deviation Hours</th>
-                    <th>Shift Timings</th>
-                    <th>Late Coming Remarks</th>
-                    <th>Actions</th>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let data of attendanceRecords  ">
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                </tbody>
-            </table>
-            
+
+            <div class="tableContainer table-responsive">
+                <table>
+                    <thead>
+                        <th>Date</th>
+                        <th>CheckIn </th>
+                        <th>CheckOut</th>
+                        <th>Working Hours</th>
+                        <th>OD Hours</th>
+                        <th>SL Hours</th>
+                        <th>Status</th>
+                        <th>After Processing</th>
+                        <th>Early/Late Status</th>
+                        <th>Deviation Hours</th>
+                        <th>Shift Timings</th>
+                        <th>Late Coming Remarks</th>
+                        <th>Actions</th>
+                    </thead>
+
+                    <tbody>
+                        <tr *ngFor="let data of attendanceRecords  ">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

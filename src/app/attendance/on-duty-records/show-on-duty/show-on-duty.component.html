@@ -1,150 +1,149 @@
-<div class="main-content pt-2">
-    <div class=" bg-white tableContainer">
-        <div class="d-flex justify-content-between bg-white tableContainer align-items-center mb-2 px-3">
-            <p class="mb-0">({{onDutyRequest?.length}}) Records Found</p>
-            <div class="d-flex align-items-center">
-                <span class="bi bi-search searchIcon"></span>
-
-                <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
-                    name="searchText" aria-label="default input example">
-                    <div class="dropdown mx-2" *ngIf="portalView === 'user'">
-                        <button class="mt-2 dropdown-toggle " type="button" id="dropdownMenuButton1"
-                            data-bs-toggle="dropdown" aria-expanded="false" mat-raised-button style="color: #647299;">
-                            <i class="fa fa-eye"></i> Status
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                            <div tabindex="-1" role="menu" aria-hidden="false" class="dropdown-menu show"
-                                data-popper-placement="bottom-start" style="position: absolute; inset: 0px auto auto 0px;">
-                                <span tabindex="-1" class="dropdown-item-text status-filter border-left"
-                                    *ngFor="let statusItem of statusList">
-                                    <div class="form-check form-switch switch-left">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" type="checkbox" role="switch"
-                                                [(ngModel)]="statusItem.isChecked">
-                                            {{statusItem.name}}
-                                        </label>
-                                    </div>
-                                </span>
+<div class="main-content mt-3">
+    <div class="container-fluid">
+        <div class=" bg-white tableContainer">
+            <div class="d-flex justify-content-between align-items-center p-2">
+                <p class="mb-0">({{onDutyRequest?.length}}) Records Found</p>
+                <div class="d-flex align-items-center">
+                    <span class="bi bi-search searchIcon"></span>
+                    <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
+                        name="searchText" aria-label="default input example">
+                        <div class="dropdown mx-2" *ngIf="portalView === 'user'">
+                            <button class="mt-2 dropdown-toggle " type="button" id="dropdownMenuButton1"
+                                data-bs-toggle="dropdown" aria-expanded="false" mat-raised-button style="color: #647299;">
+                                <i class="fa fa-eye"></i> Status
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                <div tabindex="-1" role="menu" aria-hidden="false" class="dropdown-menu show"
+                                    data-popper-placement="bottom-start" style="position: absolute; inset: 0px auto auto 0px;">
+                                    <span tabindex="-1" class="dropdown-item-text status-filter border-left"
+                                        *ngFor="let statusItem of statusList">
+                                        <div class="form-check form-switch switch-left">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="checkbox" role="switch"
+                                                    [(ngModel)]="statusItem.isChecked">
+                                                {{statusItem.name}}
+                                            </label>
+                                        </div>
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                <button class="submenuTab active mx-2 rounded-pill" (click)="exportToCsv()"> <i
-                        class="bi bi-download downloadBtn pe-2"></i>
-                    Download</button>
-                <button class="addBtn" (click)="openAddModal()" mat-raised-button type="button">Add Request</button>
+                    <button class="submenuTab active mx-2 rounded-pill" (click)="exportToCsv()"> <i
+                            class="bi bi-download downloadBtn pe-2"></i>
+                        Download</button>
+                    <button class="addBtn" (click)="openAddModal()" mat-raised-button type="button">Add Request</button>
+                </div>
+    
             </div>
-
+    
+            <table *ngIf="portalView === 'admin'">
+                <thead>
+                    <th>Employee</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Reason</th>
+                    <th>Comments</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of onDutyRequest| search: searchText ;">
+                        <td>{{getUser(data?.user)}}</td>
+                        <td>{{data?.startDate | date: 'mediumDate'}}</td>
+                        <td>{{data?.endDate | date: 'mediumDate'}}</td>
+                        <td>{{getReason(data?.onDutyReason)}}</td>
+                        <td>{{data?.comment}}</td>
+                        <td>{{data?.status}}</td>
+                        <td>
+                            <div class="dropdown-center">
+                                <button class="actions ms-2" mat-mini-fab data-bs-toggle="dropdown" aria-expanded="false"
+                                    aria-label="Example icon button with a menu icon">
+                                    <i class="bi bi-send"></i>
+                                </button>
+    
+                                <ul class="dropdown-menu py-0">
+                                    <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
+                                        *ngIf="actionOptions.approve" data-bs-target="#statusUpdate"
+                                        (click)="openStatusModal(data, 'Approved')">
+                                        <i class="fas fa-check-circle dropdown-item w-25"></i><span
+                                            class="pt-1 text-muted">Approve</span>
+                                    </li>
+                                    <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
+                                        *ngIf="actionOptions.reject" data-bs-target="#statusUpdate"
+                                        (click)="openStatusModal(data, 'Rejected')">
+                                        <i class="bi bi-person-dash dropdown-item w-25"></i><span
+                                            class="pt-1 text-muted">Reject</span>
+                                    </li>
+    
+                                    <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
+                                        *ngIf="actionOptions.cancel" data-bs-target="#statusUpdate"
+                                        (click)="openStatusModal(data, 'Cancelled')">
+                                        <i class="bi bi-person-dash dropdown-item w-25"></i><span
+                                            class="pt-1 text-muted">Reject</span>
+                                    </li>
+    
+                                    <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
+                                        *ngIf="actionOptions.view" data-bs-target="#viewModal"
+                                        (click)="openSecondModal(data)">
+                                        <i class="fas fa-eye dropdown-item w-25"></i><span
+                                            class="pt-1 text-muted">View</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <table *ngIf="portalView === 'user'">
+                <thead>
+    
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Reason</th>
+                    <th>Comments</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let request of onDutyRequest | search : searchText " [ngClass]="{ 'd-none': !isStatusChecked(request.status) }">
+                        <td>{{request?.startDate | date: 'mediumDate'}}</td>
+                        <td>{{request?.endDate | date: 'mediumDate'}}</td>
+                        <td>{{getReason(request?.onDutyReason)}}</td>
+                        <td>{{request?.comment}}</td>
+                        <td> <button mat-mini-fab *ngIf="request?.status == 'Pending'" matTooltip="Pending"
+                            matTooltipPosition="before"><mat-icon>history</mat-icon></button>
+                        <button mat-mini-fab *ngIf="request?.status == 'Approved'" matTooltip="Approved"
+                            matTooltipPosition="before"><mat-icon>check_circle_outline</mat-icon></button>
+                        <button mat-mini-fab *ngIf="request?.status == 'Cancelled'" matTooltip="Cancelled"
+                            matTooltipPosition="before"><mat-icon>close</mat-icon></button>
+                        <button mat-mini-fab *ngIf="request?.status == 'Rejected'" matTooltip="Rejected"
+                            matTooltipPosition="before"><mat-icon>thumb_down</mat-icon></button></td>
+                        <td>
+                            <div class="dropdown-center">
+                                <button class="actions ms-2" mat-mini-fab data-bs-toggle="dropdown" aria-expanded="false"
+                                    aria-label="Example icon button with a menu icon">
+                                    <i class="bi bi-send"></i>
+                                </button>
+    
+                                <ul class="dropdown-menu py-0">
+                                    <li class="d-flex border-bottom action-list" (click)="deleteDialog(request?._id)">
+                                        <i class="bi bi-trash dropdown-item w-25"></i><span
+                                            class="pt-1 text-muted">Cancel</span>
+                                    </li>
+                                    <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
+                                         data-bs-target="#viewModal"
+                                        (click)="openSecondModal(request)">
+                                        <i class="fas fa-eye dropdown-item w-25"></i><span
+                                            class="pt-1 text-muted">View</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-
-        <table *ngIf="portalView === 'admin'">
-            <thead>
-                <th>Employee</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>Reason</th>
-                <th>Comments</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </thead>
-            <tbody>
-                <tr *ngFor="let data of onDutyRequest| search: searchText ;">
-                    <td>{{getUser(data?.user)}}</td>
-                    <td>{{data?.startDate | date: 'mediumDate'}}</td>
-                    <td>{{data?.endDate | date: 'mediumDate'}}</td>
-                    <td>{{getReason(data?.onDutyReason)}}</td>
-                    <td>{{data?.comment}}</td>
-                    <td>{{data?.status}}</td>
-                    <td>
-                        <div class="dropdown-center">
-                            <button class="actions ms-2" mat-mini-fab data-bs-toggle="dropdown" aria-expanded="false"
-                                aria-label="Example icon button with a menu icon">
-                                <i class="bi bi-send"></i>
-                            </button>
-
-                            <ul class="dropdown-menu py-0">
-                                <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
-                                    *ngIf="actionOptions.approve" data-bs-target="#statusUpdate"
-                                    (click)="openStatusModal(data, 'Approved')">
-                                    <i class="fas fa-check-circle dropdown-item w-25"></i><span
-                                        class="pt-1 text-muted">Approve</span>
-                                </li>
-                                <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
-                                    *ngIf="actionOptions.reject" data-bs-target="#statusUpdate"
-                                    (click)="openStatusModal(data, 'Rejected')">
-                                    <i class="bi bi-person-dash dropdown-item w-25"></i><span
-                                        class="pt-1 text-muted">Reject</span>
-                                </li>
-
-                                <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
-                                    *ngIf="actionOptions.cancel" data-bs-target="#statusUpdate"
-                                    (click)="openStatusModal(data, 'Cancelled')">
-                                    <i class="bi bi-person-dash dropdown-item w-25"></i><span
-                                        class="pt-1 text-muted">Reject</span>
-                                </li>
-
-                                <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
-                                    *ngIf="actionOptions.view" data-bs-target="#viewModal"
-                                    (click)="openSecondModal(data)">
-                                    <i class="fas fa-eye dropdown-item w-25"></i><span
-                                        class="pt-1 text-muted">View</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        
-
-        <table *ngIf="portalView === 'user'">
-            <thead>
-
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>Reason</th>
-                <th>Comments</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </thead>
-            <tbody>
-                <tr *ngFor="let request of onDutyRequest | search : searchText " [ngClass]="{ 'd-none': !isStatusChecked(request.status) }">
-                    <td>{{request?.startDate | date: 'mediumDate'}}</td>
-                    <td>{{request?.endDate | date: 'mediumDate'}}</td>
-                    <td>{{getReason(request?.onDutyReason)}}</td>
-                    <td>{{request?.comment}}</td>
-                    <td> <button mat-mini-fab *ngIf="request?.status == 'Pending'" matTooltip="Pending"
-                        matTooltipPosition="before"><mat-icon>history</mat-icon></button>
-                    <button mat-mini-fab *ngIf="request?.status == 'Approved'" matTooltip="Approved"
-                        matTooltipPosition="before"><mat-icon>check_circle_outline</mat-icon></button>
-                    <button mat-mini-fab *ngIf="request?.status == 'Cancelled'" matTooltip="Cancelled"
-                        matTooltipPosition="before"><mat-icon>close</mat-icon></button>
-                    <button mat-mini-fab *ngIf="request?.status == 'Rejected'" matTooltip="Rejected"
-                        matTooltipPosition="before"><mat-icon>thumb_down</mat-icon></button></td>
-                    <td>
-                        <div class="dropdown-center">
-                            <button class="actions ms-2" mat-mini-fab data-bs-toggle="dropdown" aria-expanded="false"
-                                aria-label="Example icon button with a menu icon">
-                                <i class="bi bi-send"></i>
-                            </button>
-
-                            <ul class="dropdown-menu py-0">
-                                <li class="d-flex border-bottom action-list" (click)="deleteDialog(request?._id)">
-                                    <i class="bi bi-trash dropdown-item w-25"></i><span
-                                        class="pt-1 text-muted">Cancel</span>
-                                </li>
-                                <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
-                                     data-bs-target="#viewModal"
-                                    (click)="openSecondModal(request)">
-                                    <i class="fas fa-eye dropdown-item w-25"></i><span
-                                        class="pt-1 text-muted">View</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        
     </div>
 </div>
 

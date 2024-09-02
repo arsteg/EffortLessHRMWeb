@@ -1,0 +1,12 @@
+.attendance_panel {
+    overflow-x: scroll;
+}
+
+.attendance_panel::-webkit-scrollbar {
+    display: none;
+}
+
+.attendance_btn {
+    display: block;
+    min-width: 125px;
+}
