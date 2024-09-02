@@ -61,35 +61,28 @@
                     <button class="btn rounded-pill submenuTab" (click)="selectTab(1)"
                         [class.active]="selectedTab === 1">My Attendance Records</button>
                     <button class="btn rounded-pill submenuTab" (click)="selectTab(2)"
-                        [class.active]="selectedTab === 2">My Regularization Requests</button>
+                        [class.active]="selectedTab === 2">OnDuty Requests
+                    </button>
                     <button class="btn rounded-pill submenuTab" (click)="selectTab(3)"
-                        [class.active]="selectedTab === 3">OnDuty Requests
+                        [class.active]="selectedTab === 3">My Roaster Records
                     </button>
                     <button class="btn rounded-pill submenuTab" (click)="selectTab(4)"
-                        [class.active]="selectedTab === 4">My Roaster Records
+                        [class.active]="selectedTab === 4">OverTime Records
                     </button>
-                    <button class="btn rounded-pill submenuTab" (click)="selectTab(5)"
-                        [class.active]="selectedTab === 5">OverTime Records
-                    </button>
-
                 </div>
 
                 <div *ngIf="selectedTab === 1" class="tab-content">
                     <app-my-attendance-records></app-my-attendance-records>
                 </div>
                 <div *ngIf="selectedTab === 2" class="tab-content">
-                    <app-regularizations-records></app-regularizations-records>
-                </div>
-                <div *ngIf="selectedTab === 3" class="tab-content">
                     <app-show-on-duty></app-show-on-duty>
                 </div>
-                <div *ngIf="selectedTab === 4" class="tab-content">
+                <div *ngIf="selectedTab === 3" class="tab-content">
                     <!-- <app-request-manual-time></app-request-manual-time> -->
                 </div>
-                <div *ngIf="selectedTab === 5" class="tab-content">
+                <div *ngIf="selectedTab === 4" class="tab-content">
                     <app-overtime-records></app-overtime-records>
                 </div>
-
             </div>
         </ng-container>
     </div>

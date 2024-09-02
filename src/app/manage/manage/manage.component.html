@@ -1,20 +1,20 @@
-<div class="main-content contentData py-0">
+<div class="main-content">
     <div class="container-fluid px-0">
-        <div class=" d-flex bg-white subMenu w-100">
-            <button class="btn rounded-pill submenuTab" (click)="selectTab(1)"
+        <div class="d-flex align-items-center mt-5 pt-lg-4 pt-5 pb-2 ps-lg-4 ps-2 bg-white w-100 manage_panel">
+            <button class="btn rounded-pill submenuTab manage_btn" (click)="selectTab(1)"
                 [class.active]="selectedTab === 1">Employees</button>
             <button class="btn rounded-pill submenuTab" (click)="selectTab(2)"
                 [class.active]="selectedTab === 2">Projects</button>
-            <button class="btn rounded-pill submenuTab" (click)="selectTab(3)" [class.active]="selectedTab === 3"
-               >Tasks</button>
-            <button class="btn rounded-pill submenuTab" (click)="selectTab(4)" [class.active]="selectedTab === 4">Manual
-                Time</button>
-            <button class="btn rounded-pill submenuTab" (click)="selectTab(5)" [class.active]="selectedTab === 5">Team
-                Members</button>
-            <button class="btn rounded-pill submenuTab" (click)="selectTab(6)"
+            <button class="btn rounded-pill submenuTab manage_btn" (click)="selectTab(3)"
+                [class.active]="selectedTab === 3">Tasks</button>
+            <button class="btn rounded-pill submenuTab manage_btn" (click)="selectTab(4)"
+                [class.active]="selectedTab === 4">Manual Time</button>
+            <button class="btn rounded-pill submenuTab manage_btn" (click)="selectTab(5)"
+                [class.active]="selectedTab === 5">Team Members</button>
+            <button class="btn rounded-pill submenuTab manage_btn" (click)="selectTab(6)"
                 [class.active]="selectedTab === 6">Tags</button>
-            <button class="btn rounded-pill submenuTab" (click)="selectTab(7)" [class.active]="selectedTab === 7">E-Mail
-                Template</button>
+            <button class="btn rounded-pill submenuTab manage_btn" (click)="selectTab(7)"
+                [class.active]="selectedTab === 7">E-Mail Template</button>
             <!-- <button class="btn rounded-pill submenuTab" (click)="selectTab(8)" [class.active]="selectedTab === 8">
                 CRUD Component Testing</button> -->
         </div>
@@ -22,7 +22,7 @@
         <div *ngIf="selectedTab === 1" class="tab-content pt-0">
             <app-user-list></app-user-list>
         </div>
-        <div *ngIf="selectedTab === 2" class="tab-content">
+        <div *ngIf="selectedTab === 2">
             <app-project-list></app-project-list>
         </div>
         <div *ngIf="selectedTab === 3" class="tab-content">

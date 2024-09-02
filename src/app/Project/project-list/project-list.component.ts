@@ -161,17 +161,22 @@ export class ProjectListComponent implements OnInit {
       })
   }
 
-  updateProject(updateForm) {
-    if (updateForm.valid) {
-      this.projectService.updateproject(this.selectedProject._id, updateForm).subscribe(response => {
-        this.ngOnInit();
-        this.toastr.success('Existing Project Updated', 'Successfully Updated!')
+  updateProject(updateForm: FormGroup) {
+    // if (this.updateForm.valid) {
+      const updatedProjectData = this.updateForm.value;
+
+      this.projectService.updateproject(this.selectedProject._id, updatedProjectData).subscribe(response => {
+        this.toastr.success('Existing Project Updated', 'Successfully Updated!');
+
+        // Delay the ngOnInit() call to ensure the toast message is displayed
+        setTimeout(() => {
+          this.getProjectList();
+          this.selectedProject = this.projectList.find(p => p._id === this.selectedProject._id);
+        }, 500);
       }, err => {
+        console.error('Error updating project:', err); // Debugging
         this.toastr.error('Can not be Updated', 'ERROR!')
       })
-    } else {
-      this.markFormGroupTouched(this.form);
-    }
   }
 
   addUserToProject(addUserForm) {
