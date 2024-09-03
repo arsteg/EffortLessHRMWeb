@@ -1,5 +1,18 @@
 .tab-content {
-    padding: 20px;
-    /* border: 1px solid #ccc; */
-    margin-top: 10px;
-  }
+  padding: 20px;
+  /* border: 1px solid #ccc; */
+  margin-top: 10px;
+}
+
+.manage_panel {
+  overflow-x: scroll;
+}
+
+.manage_panel::-webkit-scrollbar {
+  display: none;
+}
+
+.manage_btn {
+  display: block;
+  min-width: 125px;
+}
