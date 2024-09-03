@@ -11,7 +11,9 @@ export class EmployeeSettingsComponent {
   @Input() selectedUser: any;
   @Input() isEdit: boolean = false;
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.selectTab('tabEmploymentProfile');
+   }
 
   selectTab(tabId: string) {
     this.activeTab = tabId;

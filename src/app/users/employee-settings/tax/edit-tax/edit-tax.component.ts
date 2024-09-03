@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { TaxationService } from 'src/app/_services/taxation.service';
 
 @Component({
@@ -8,19 +9,33 @@ import { TaxationService } from 'src/app/_services/taxation.service';
 })
 export class EditTaxComponent {
   @Output() backToUserView = new EventEmitter<void>();
-  activeTab: number = 1;
+  activeTab: string;
+  activeTabName: string;
   @Input() selectedUser: any;
-  taxComponents: any;
+  taxSections: any;
   @Output() backToSalaryDetails = new EventEmitter<void>();
+  sectionComponents: any;
+  activeSection: string = '';
+  @Input() selectedRecord: any;
+  @Input() edit: boolean = false;
+  taxDeclarationForm: FormGroup;
 
-  constructor(private taxService: TaxationService) { }
+  constructor(private taxService: TaxationService,
+    private fb: FormBuilder
+  ) {  }
 
   ngOnInit() {
-    this.getAllTaxComponents();
-   }
+    this.getAllSections();
+    if(this.taxSections?.length){
+      console.log(this.taxSections);
+      const sectionId = this.taxSections[0]?._id;
+      this.selectTab(sectionId);
+    }
+  }
 
-  selectTab(tabId: number) {
+  selectTab(tabId: string) {
     this.activeTab = tabId;
+    this.activeTabName = this.taxSections.find((section: any) => section._id === tabId)?.section;
   }
 
   getAllTaxComponents() {
@@ -28,11 +43,20 @@ export class EditTaxComponent {
       skip: '',
       next: ''
     }
-    this.taxService.getAllTaxComponents(payload).subscribe((res: any)=>{
-      this.taxComponents = res.data;
-      if (this.taxComponents.length > 0) {
-        this.activeTab = this.taxComponents[0].order;
+    this.taxService.getAllTaxComponents(payload).subscribe((res: any) => {
+      this.sectionComponents = res.data;
+    })
+  }
+  getAllSections() {
+    this.taxService.getAllTaxSections().subscribe((res: any) => {
+      this.taxSections = res.data;
+      if (this.taxSections.length > 0) {
+        this.activeTab = this.taxSections[0]._id;
       }
     })
   }
+  onTabSelected(tabId: string) {
+    this.activeTab = tabId;
+  }
+ 
 }

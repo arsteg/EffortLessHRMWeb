@@ -1,6 +1,10 @@
 import { Component, ComponentFactoryResolver, Input, ViewChild, ViewContainerRef } from '@angular/core';
 import { TaxCalculatorComponent } from './tax-calculator/tax-calculator.component';
 import { UserService } from 'src/app/_services/users.service';
+import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { TaxationService } from 'src/app/_services/taxation.service';
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-tax',
   templateUrl: './tax.component.html',
@@ -21,10 +25,29 @@ export class TaxComponent {
   currentPage: number = 1;
   uniqueFinancialYears: string[];
   uniqueSections: string[];
+  closeResult: string = '';
+  taxDeclarationForm: FormGroup;
+  years: string[] = [];
 
   constructor(private componentFactoryResolver: ComponentFactoryResolver,
-    private userService: UserService
-  ) { }
+    private userService: UserService,
+    private modalService: NgbModal,
+    private fb: FormBuilder,
+    private taxService: TaxationService,
+    private toastr: ToastrService
+  ) {
+    this.taxDeclarationForm = this.fb.group({
+      financialYear: [''],
+      user: [''],
+      employeeIncomeTaxDeclarationComponent: [],
+      employeeIncomeTaxDeclarationHRA: []
+    });
+    const currentYear = new Date().getFullYear();
+    for (let i = -1; i <= 1; i++) {
+      const year = currentYear + i;
+      this.years.push(`${year}-${year + 1}`);
+    }
+  }
 
   ngOnInit() {
     this.getTaxDeclaration();
@@ -65,8 +88,6 @@ export class TaxComponent {
 
   goBackToSalaryDetails() {
     this.taxView = false;
-    this.taxView = false;
-
   }
   onPageChange(page: number) {
     this.currentPage = page;
@@ -78,7 +99,6 @@ export class TaxComponent {
     this.getTaxDeclaration();
   }
 
-
   getTaxDeclaration() {
     const pagination = {
       skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
@@ -88,6 +108,7 @@ export class TaxComponent {
       this.taxList = res.data;
       this.uniqueFinancialYears = this.getUniqueFinancialYears(this.taxList);
       this.uniqueSections = this.extractSectionsFromTaxList(this.taxList);
+      this.taxService.taxByUser.next(res.data);
     })
   }
   getUniqueFinancialYears(taxList: any[]): string[] {
@@ -113,7 +134,41 @@ export class TaxComponent {
         });
       }
     });
-    console.log(allSections);
     return allSections;
   }
+
+  private getDismissReason(reason: any): string {
+    if (reason === ModalDismissReasons.ESC) {
+      return 'by pressing ESC';
+    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+      return 'by clicking on a backdrop';
+    } else {
+      return `with: ${reason}`;
+    }
+  }
+
+  open(content: any) {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
+  }
+
+  taxDeclaration() {
+    let payload = {
+      financialYear: this.taxDeclarationForm.value.financialYear,
+      user: this.selectedUser.id,
+      employeeIncomeTaxDeclarationComponent: [],
+      employeeIncomeTaxDeclarationHRA: []
+    }
+    this.taxService.addIncomeTax(payload).subscribe((res: any) => {
+      this.taxList.push(res.data);
+      this.toastr.success('Tax Declaration Added Successfully');
+    },
+      err => {
+        this.toastr.error('Something went wrong');
+      })
+  }
+
 }

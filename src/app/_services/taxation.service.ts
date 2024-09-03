@@ -18,6 +18,8 @@ export class TaxationService {
     withCredentials: true
   };
 
+  taxByUser = new BehaviorSubject<any>(null);
+
   constructor(private http: HttpClient) { }
   public getToken() {
     return localStorage.getItem('jwtToken');
@@ -47,27 +49,27 @@ export class TaxationService {
 
   // Tax Components CRUD
   addTaxComponent(payload: any): Observable<any> {
-    var response = this.http.post<any>(`${environment.apiUrlDotNet}/users/income-tax-componants`, payload, this.httpOptions);
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/common/income-tax-componants`, payload, this.httpOptions);
     return response;
   }
 
   getTaxComponent(companyId: string): Observable<any> {
-    var response = this.http.get<any>(`${environment.apiUrlDotNet}/users/income-tax-componants/${companyId}`, this.httpOptions);
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/common/income-tax-componants/${companyId}`, this.httpOptions);
     return response;
   }
 
   getAllTaxComponents(payload: any): Observable<any> {
-    var response = this.http.post<any>(`${environment.apiUrlDotNet}/users/income-tax-componants-list`, payload, this.httpOptions);
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/common/income-tax-componants-list`, payload, this.httpOptions);
     return response;
   }
 
   updateTaxComponent(companyId: string, payload: any): Observable<any> {
-    var response = this.http.put<any>(`${environment.apiUrlDotNet}/users/income-tax-componants/${companyId}`, payload, this.httpOptions);
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/common/income-tax-componants/${companyId}`, payload, this.httpOptions);
     return response;
   }
 
   deleteTaxComponent(id: string): Observable<any> {
-    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/users/income-tax-componants/${id}`, this.httpOptions);
+    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/common/income-tax-componants/${id}`, this.httpOptions);
     return response;
   }
 
@@ -89,6 +91,16 @@ export class TaxationService {
 
   getIncomeTax(payload: any): Observable<any> {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/users/employee-income-tax-declarations-by-company`, payload, this.httpOptions);
+    return response;
+  }
+
+  getIncomeTaxByUserId(userId: string, payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/users/employee-income-tax-declarations-by-user/${userId}`, payload, this.httpOptions);
+    return response;
+  }
+
+  getIncomeTaxById(id: string): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/users/employee-income-tax-declarations/${id}`, this.httpOptions);
     return response;
   }
 }

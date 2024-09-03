@@ -30,41 +30,51 @@
             <button mat-raised-button class="ms-auto" (click)="backToUserView.emit()">Back</button>
         </div>
         <div class="tab-content pt-0 px-0">
-
-            <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabEmploymentProfile'}"
-                id="tabEmploymentProfile">
-                <div class="mt-2 bg-white tableContainer">
-                    <app-employee-profile [isEdit]="isEdit" [selectedUser]=selectedUser></app-employee-profile>
-                </div>
-            </div>
-
-            <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabEmploymentDetails'}"
-                id="tabEmploymentDetails">
-                <div class="mt-2 bg-white tableContainer">
-                    <app-employment-details [selectedUser]=selectedUser></app-employment-details>
-                </div>
-            </div>
-
-            <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabSalaryDetails'}" id="tabSalaryDetails">
-                <div class="mt-2 bg-white tableContainer">
-                    <app-salary-details  [selectedUser]=selectedUser></app-salary-details>
-                </div>
-            </div>
-            <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabStatutoryDetails'}" id="tabStatutoryDetails">
-                <div class="mt-2 bg-white tableContainer">
-                    <app-statutory-details  [selectedUser]=selectedUser></app-statutory-details>
-                </div>
-            </div>
-            <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabLoansAdvances'}" id="tabLoansAdvances">
-                <div class="mt-2 bg-white tableContainer">
-                    <app-loans-advances  [selectedUser]=selectedUser></app-loans-advances>
-                </div>
-            </div>
-            <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabTax'}" id="tabTax">
-                <div class="mt-2 bg-white tableContainer">
-                    <app-tax  [selectedUser]=selectedUser></app-tax>
-                </div>
-            </div>
+            @switch (activeTab) {
+                @case ('tabEmploymentProfile'){
+                    <div class="tab-pane active"
+                        id="tabEmploymentProfile">
+                        <div class="mt-2 bg-white tableContainer">
+                            <app-employee-profile [isEdit]="isEdit" [selectedUser]=selectedUser></app-employee-profile>
+                        </div>
+                    </div>
+                }
+                @case ('tabEmploymentDetails'){
+                    <div class="tab-pane active" id="tabEmploymentDetails">
+                        <div class="mt-2 bg-white tableContainer">
+                            <app-employment-details [selectedUser]=selectedUser></app-employment-details>
+                        </div>
+                    </div>
+                }
+                @case ('tabSalaryDetails'){
+                    <div class="tab-pane active" id="tabSalaryDetails">
+                        <div class="mt-2 bg-white tableContainer">
+                            <app-salary-details  [selectedUser]=selectedUser></app-salary-details>
+                        </div>
+                    </div>
+                }
+                @case ('tabStatutoryDetails'){
+                    <div class="tab-pane active" id="tabStatutoryDetails">
+                        <div class="mt-2 bg-white tableContainer">
+                            <app-statutory-details  [selectedUser]=selectedUser></app-statutory-details>
+                        </div>
+                    </div>
+                }
+                @case ('tabLoansAdvances'){
+                    <div class="tab-pane active" id="tabLoansAdvances">
+                        <div class="mt-2 bg-white tableContainer">
+                            <app-loans-advances  [selectedUser]=selectedUser></app-loans-advances>
+                        </div>
+                    </div>
+                }
+                @case ('tabTax'){
+                    <div class="tab-pane active" id="tabTax">
+                        <div class="mt-2 bg-white tableContainer">
+                            <app-tax  [selectedUser]=selectedUser></app-tax>
+                        </div>
+                    </div>
+                }
+            }
 
         </div>
     </div>

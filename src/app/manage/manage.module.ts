@@ -29,6 +29,8 @@ import { EmployeeProfileComponent } from '../users/employee-settings/employee-pr
 import { TaxCalculatorComponent } from '../users/employee-settings/tax/tax-calculator/tax-calculator.component';
 import { EditTaxComponent } from '../users/employee-settings/tax/edit-tax/edit-tax.component';
 import { TaxComponentsComponent } from '../users/employee-settings/tax/edit-tax/tax-components/tax-components.component';
+import { RentInformationComponent } from '../users/employee-settings/tax/edit-tax/rent-information/rent-information.component';
+import { ManageRoutingModule } from './manage-routing.module';
 
 @NgModule({
   declarations: [
@@ -44,13 +46,14 @@ import { TaxComponentsComponent } from '../users/employee-settings/tax/edit-tax/
     EmployeeProfileComponent,
     TaxCalculatorComponent,
     EditTaxComponent,
-    TaxComponentsComponent
+    TaxComponentsComponent,
+    RentInformationComponent
   ],
   imports: [
     CommonModule,
     MatRadioModule,
     MatCheckboxModule, CommonComponentsModule, SharedModule, taskModule, CommonComponentsModule, MatExpansionModule,
-    NgbModule
+    NgbModule, ManageRoutingModule
   ],
   exports: [UserListComponent, ProjectListComponent, RequestManualTimeComponent,
     TeammembersComponent, EmailTemplateComponent, EmployeeSettingsComponent, EmploymentDetailsComponent,
@@ -65,6 +68,7 @@ import { TaxComponentsComponent } from '../users/employee-settings/tax/edit-tax/
     TaxCalculatorComponent,
     TaxComponentsComponent,
     EditTaxComponent,
+    RentInformationComponent
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

@@ -25,7 +25,7 @@
             <tbody>
                 <tr *ngFor="let tax of taxComponents">
                     <td>{{tax?.componantName}}</td>
-                    <td>{{tax?.section}}</td>
+                    <td>{{getSection(tax?.section)}}</td>
                     <td>{{tax?.maximumAmount}}</td>
                     <td>{{tax?.type}}</td>
                     <td>{{tax?.order}}</td>
@@ -68,7 +68,7 @@
             <div class="form-group mt-2">
                 <label for="">Section</label>
                 <select name="" id="" formControlName="section" class="form-control">
-                    <option value="section" *ngFor="let section of sections">{{section}}</option>
+                    <option [value]="section?._id" *ngFor="let section of sections">{{section?.section}}</option>
                 </select>
             </div>
             <div class="form-group mt-2">

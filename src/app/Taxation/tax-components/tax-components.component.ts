@@ -21,7 +21,7 @@ export class TaxComponentsComponent {
   totalRecords: number
   recordsPerPage: number = 10;
   currentPage: number = 1;
-  sections: string[] = ['80C Deductions', 'Chapter VI Deductions', 'Rent Information', 'Interest on Home Loan', 'Previous Employment Information', 'Other Income Information'];
+  sections: any;
 
   constructor(private modalService: NgbModal,
     private taxService: TaxationService,
@@ -39,6 +39,7 @@ export class TaxComponentsComponent {
 
   ngOnInit() {
     this.getTaxComponents();
+    this.getAllSections();
   }
 
   private getDismissReason(reason: any): string {
@@ -71,7 +72,7 @@ export class TaxComponentsComponent {
         })
     }
     else if (this.edit) {
-      this.taxService.updateTaxComponent(this.selectedRecord.id, this.taxComponentForm.value).subscribe((res: any) => {
+      this.taxService.updateTaxComponent(this.selectedRecord._id, this.taxComponentForm.value).subscribe((res: any) => {
         const index = this.taxComponents.findIndex(item => item._id === this.selectedRecord._id);
         if (index !== -1) {
           this.taxComponents[index] = res.data;
@@ -133,5 +134,15 @@ export class TaxComponentsComponent {
         this.toast.error('Can not be Deleted', 'Error!')
       }
     });
+  }
+
+  getAllSections(){
+    this.taxService.getAllTaxSections().subscribe((res: any) => {
+      this.sections = res.data;
+    })
+  }
+  getSection(sectionId: string) {
+    const section = this.sections.find((section: any) => section._id === sectionId);
+    return section ? section.section : '--';
   }
 }

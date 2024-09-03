@@ -1,0 +1,139 @@
+<div>
+    <form class="d-flex justify-content-between p-2" [formGroup]="formGroup" (ngSubmit)="onSubmission()">
+        <input type="number" class="form-control" placeholder="Per Month Rent" formControlName="rentDeclared">
+
+        <select id="" class="mx-2 form-control" placeholder="City Type" formControlName="cityType">
+            <option value="" disabled selected>Select City Type -</option>
+            <option value="Metro">Metro</option>
+            <option value="Non-Metro">Non-Metro</option>
+        </select>
+
+        <input type="text" class="form-control" placeholder="Landlord Name" formControlName="landlordName">
+
+        <input type="text" class="form-control mx-2" placeholder="Landlord PAN Number" formControlName="landlordPan">
+
+        <input type="text" class="form-control" placeholder="Landlord Address" formControlName="landlordAddress">
+
+        <input type="text" class="form-control mx-2" placeholder="Remarks" formControlName="approvalStatus">
+
+        <button mat-raised-button class="addBtn w-50" type="submit">Apply&nbsp;to&nbsp;All</button>
+
+    </form>
+    <form [formGroup]="rentInformationForm" (ngSubmit)="onSubmission()">
+        <table>
+            <thead>
+                <th>Month</th>
+                <th>Rent Declared</th>
+                <th>Verified Amount(In Rs.)</th>
+                <th>City Type</th>
+                <th>Landlord Name</th>
+                <th>Landlord PAN</th>
+                <th>Landlord Address</th>
+                <th>Approval Status</th>
+                <th>Remarks</th>
+                <th>Attachment</th>
+                <th>Actions</th>
+            </thead>
+            <tbody formArrayName="employeeIncomeTaxDeclarationHRA">
+                <tr *ngFor="let month of getMonthsArray(); let rent of rentInformationForm?.get('employeeIncomeTaxDeclarationHRA')['controls']; let i = index"
+                    [formGroupName]="i">
+                    <td>
+                        <div class="month">
+                            {{ getMonthName(month) }}
+                        </div>
+                    </td>
+                    <td>
+                        <ng-container *ngIf="isEdit; else rentDeclared">
+                            <input type="number" class="form-control" formControlName="rentDeclared" />
+                        </ng-container>
+                        <ng-template #rentDeclared>
+                            {{
+                            rentInformationForm?.get('employeeIncomeTaxDeclarationHRA')['controls'][i]?.get('rentDeclared').value
+                            }}
+                        </ng-template>
+                    </td>
+                    <td>
+
+                    </td>
+                    <td>
+                        <ng-container *ngIf="isEdit; else cityType">
+                            <select id="" class="form-control" formControlName="cityType">
+                                <option value="" disbaled selected>Select City Type</option>
+                                <option value="Metro">Metro</option>
+                                <option value="Non-Metro">Non-Metro</option>
+
+                            </select>
+                        </ng-container>
+                        <ng-template #cityType>
+                            {{
+                            rentInformationForm?.get('employeeIncomeTaxDeclarationHRA')['controls'][i]?.get('cityType').value
+                            }}
+                        </ng-template>
+                    </td>
+                    <td>
+                        
+                        <ng-container *ngIf="isEdit; else landlordName">
+                            <input type="text" class="form-control" formControlName="landlordName" />
+                        </ng-container>
+                        <ng-template #landlordName>
+                            {{
+                            rentInformationForm?.get('employeeIncomeTaxDeclarationHRA')['controls'][i]?.get('landlordName').value
+                            }}
+                        </ng-template>
+                    </td>
+                    <td>
+                        
+                        <ng-container *ngIf="isEdit; else landlordPAN">
+                            <input type="text" class="form-control" formControlName="landlordPan" />
+                        </ng-container>
+                        <ng-template #landlordPAN>
+                            {{
+                            rentInformationForm?.get('employeeIncomeTaxDeclarationHRA')['controls'][i]?.get('landlordPan').value
+                            }}
+                        </ng-template>
+                    </td>
+                    <td>
+                        
+                        <ng-container *ngIf="isEdit; else landlordAddress">
+                            <input type="text" class="form-control" formControlName="landlordAddress" />
+                        </ng-container>
+                        <ng-template #landlordAddress>
+                            {{
+                            rentInformationForm?.get('employeeIncomeTaxDeclarationHRA')['controls'][i]?.get('landlordAddress').value
+                            }}
+                        </ng-template>
+                    </td>
+                    <td>
+
+                    </td>
+                    <td>
+                        
+                        <ng-container *ngIf="isEdit; else remarksDisplay">
+                            <input type="text" class="form-control" formControlName="approvalStatus" />
+                        </ng-container>
+                        <ng-template #remarksDisplay>
+                            {{
+                            rentInformationForm?.get('employeeIncomeTaxDeclarationHRA')['controls'][i]?.get('approvalStatus').value
+                            }}
+                        </ng-template>
+                    </td>
+                    
+                    <td class="text-center">
+                        <div class="attachment-container">
+                          <label for="attachment-{{i}}" mat-mini-fab matTooltip="Add Attachment File"
+                          matTooltipPosition="before">
+                            <i class="bi bi-paperclip"></i>
+                            
+                          </label>
+                          <input type="file" id="attachment-{{i}}" (change)="uploadAttachment($event, i)" style="display: none;" />
+                        </div>
+                      </td>
+                    <td>
+                        <button mat-raised-button type="submit" *ngIf="isEdit">Apply</button>
+                        <button mat-raised-button type="button" (click)="isEdit = true" *ngIf="!isEdit">Edit</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+</div>

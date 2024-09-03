@@ -15,13 +15,13 @@ export class EmploymentDetailsComponent {
   disableSelect = new FormControl(false);
   jobInformationForm: FormGroup;
   supervisors: any;
-  bands: any;
-  zones: any;
-  subDepartments: any;
-  departments: any;
+  bands: any = [];
+  zones: any = [];
+  subDepartments: any = [];
+  departments: any = [];
   employmentStatus: any;
-  designations: any;
-  locations: any;
+  designations: any = [];
+  locations: any = [];
 
 
   constructor(private userService: UserService,
@@ -90,7 +90,7 @@ export class EmploymentDetailsComponent {
       this.jobInformationForm.patchValue(res.data[0]);
     })
     this.userService.getUserList().subscribe((res: any) => {
-      this.supervisors = res.data;
+      this.supervisors = res.data.data;
     })
     this.companyService.getBand().subscribe((res: any) => {
       this.bands = res.data;

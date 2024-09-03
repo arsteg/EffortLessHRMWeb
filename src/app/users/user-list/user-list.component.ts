@@ -9,6 +9,7 @@ import { TransitionCheckState } from '@angular/material/checkbox';
 import { ToastrService } from 'ngx-toastr';
 import { CommonService } from 'src/app/_services/common.Service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-user-list',
@@ -34,7 +35,7 @@ export class UserListComponent implements OnInit {
   selectedEmployee: any;
   isEdit: boolean = false;
   
-  constructor(
+  constructor(private router: Router, private route: ActivatedRoute,
     private UserService: UserService,
     private fb: FormBuilder,
     private auth: AuthenticationService,
@@ -159,6 +160,7 @@ export class UserListComponent implements OnInit {
   toggleView() {
     this.showEmployeeDetails = !this.showEmployeeDetails;
   }
+
   goBackToUserView() {
     this.showEmployeeDetails = false;
   }

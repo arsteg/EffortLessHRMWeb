@@ -213,7 +213,7 @@ export const SideBarAdminMenu = [
     title: 'Manage',
     icon: 'assets/Sidenav-Icons/manage.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/manage.png',
-    url: '/manage'
+    url: '/manage/employees'
 
   },
   {

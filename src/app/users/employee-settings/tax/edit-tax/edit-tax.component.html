@@ -2,10 +2,10 @@
     <div class="container-fluid px-0">
         <div class="d-flex">
             <ul class="nav nav-tabs">
-                <li class="nav-item" *ngFor="let component of taxComponents">
-                    <a class="nav-link" [ngClass]="{'activeTab': activeTab === component?.order}"
-                        (click)="selectTab(component?.order)">
-                        {{ component?.section }}
+                <li class="nav-item" *ngFor="let section of taxSections">
+                    <a class="nav-link" [ngClass]="{'activeTab': activeTab === section?._id}"
+                        (click)="selectTab(section?._id)">
+                        {{ section?.section }}
                     </a>
                 </li>
             </ul>
@@ -13,12 +13,20 @@
                     class="bi bi-arrow-left"></i></button>
         </div>
         <div class="tab-content pt-0 px-0">
-            <div class="tab-pane" [ngClass]="{'active': activeTab === component?.order}"
-                *ngFor="let component of taxComponents" [id]="component?.section">
+            <div class="tab-pane active">
+
+                <h3 class="mb-0"><p class="mb-0">Financial Year: {{selectedRecord?.financialYear}}</p></h3>
+                <p>{{selectedUser?.firstName | titlecase}}&nbsp;{{selectedUser?.lastName | titlecase}}</p>
+                
                 <div class="mt-2 bg-white tableContainer">
-                    <ng-container [ngSwitch]="component?.componantName">
-                        <app-tax-components></app-tax-components>
-                    </ng-container>
+                    @if(activeTabName !== 'Rent Information'){
+                    <app-tax-components [sectionId]="activeTab" [actionType]="edit" [selectedData]="selectedRecord"
+                        [selectedUser]="selectedUser" (tabSelected)="selectTab($event)">
+                    </app-tax-components>
+                    } @else {
+                    <app-rent-information [selectedRecord]="selectedRecord" [actionType]="edit"
+                        [selectedUser]="selectedUser"></app-rent-information>
+                    }
                 </div>
             </div>
         </div>

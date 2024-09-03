@@ -6,7 +6,9 @@
             <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
                 name="searchText" aria-label="default input example">
         </div>
+        <button class="addBtn" mat-raised-button (click)="isEdit= false; open(addModal)">Add</button>
     </div>
+
     <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
         [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
         (recordsPerPageChange)="onRecordsPerPageChange($event)">
@@ -23,8 +25,8 @@
             <th>Actions</th>
         </thead>
         <tbody>
-            <!-- <tr *ngFor="let tax of taxList | search:searchText"> -->
-                <td>{{uniqueFinancialYears}}</td>
+            <tr *ngFor="let tax of taxList | search:searchText">
+                <td>{{tax?.financialYear}}</td>
                 <td>{{uniqueSections?.length}}</td>
                 <td></td>
                 <td></td>
@@ -44,14 +46,15 @@
                                 <span class="pt-1 text-muted">Download</span>
                             </li>
 
-                            <!-- <li class="d-flex border-bottom action-list"
-                                (click)="selectedRecord = tax; openOffcanvas(true, tax);" data-bs-toggle="offcanvas"
+                            <li class="d-flex border-bottom action-list" data-bs-toggle="offcanvas"
+                                (click)="selectedRecord = tax; openOffcanvas(true, tax);"
                                 data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
                                 <i class="bi bi-calculator text-primary dropdown-item w-25"></i>
                                 <span class="pt-1 text-muted">Tax Calculator</span>
-                            </li> -->
+                            </li>
 
-                            <li class="d-flex action-list" (click)="taxView = true;">
+                            <li class="d-flex action-list"
+                                (click)="selectedRecord = tax; isEdit= true; taxView = true;">
                                 <i class="bi bi-pencil text-success dropdown-item w-25"></i>
                                 <span class="pt-1 text-muted">Edit</span>
                             </li>
@@ -59,7 +62,7 @@
                     </div>
 
                 </td>
-            <!-- </tr> -->
+            </tr>
         </tbody>
     </table>
 </div>
@@ -90,5 +93,33 @@
     </div>
 </div>
 
-<app-edit-tax *ngIf="taxView" [edit]=isEdit [selectedSalaryDetail]="selectedRecord" [selectedUser]=selectedUser
+<app-edit-tax *ngIf="taxView" [edit]=isEdit [selectedRecord]="selectedRecord" [selectedUser]=selectedUser
     (backToSalaryDetails)="goBackToSalaryDetails()"></app-edit-tax>
+
+<ng-template #addModal let-modal>
+    <div class="modal-header border-bottom mb-2 pt-0 d-flex justify-content-between">
+        <div>
+            <h1 class="modal-title text-muted mb-0">{{isEdit == true ? 'Update': 'Add'}} Attendance Regularizations
+                Settings
+            </h1>
+        </div>
+        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
+        </div>
+    </div>
+    <form [formGroup]="taxDeclarationForm" (ngSubmit)="taxDeclaration()">
+
+        <div class="form-group">
+            <label for="year">Financial Years</label>
+            <select id="year" formControlName="financialYear">
+                <option value="" disabled selected> Select Years</option>
+                <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+            </select>
+        </div>
+
+        <div class="d-flex justify-content-between mt-3">
+            <button type="reset" mat-raised-button>Cancel</button>
+            <button type="submit" class="addBtn" mat-raised-button>Submit</button>
+        </div>
+
+    </form>
+</ng-template>
