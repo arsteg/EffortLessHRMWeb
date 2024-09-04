@@ -29,11 +29,12 @@ export class TasksService {
     return localStorage.getItem('jwtToken');
   }
 
-  getAllTasks(skip:string, next: string): Observable<Task[]> {
-    return this.http.post<Task[]>(`${this.apiUrl}/task/tasklist`,{skip, next}, this.httpOptions);
+  getAllTasks(skip: string, next: string): Observable<Task[]> {
+    return this.http.post<Task[]>(`${this.apiUrl}/task/tasklist`, { skip, next }, this.httpOptions);
   }
-  getTasklistbyTeam(skip:string, next: string): Observable<Task[]> {
-    return this.http.post<Task[]>(`${this.apiUrl}/task/tasklistbyteam`,{skip, next}, this.httpOptions);
+
+  getTasklistbyTeam(skip: string, next: string): Observable<Task[]> {
+    return this.http.post<Task[]>(`${this.apiUrl}/task/tasklistbyteam`, { skip, next }, this.httpOptions);
   }
 
   addTask(task): Observable<Task> {
@@ -52,8 +53,8 @@ export class TasksService {
     return this.http.post<any>(`${this.apiUrl}/task/newtaskuser`, { task, user }, this.httpOptions);
   }
 
-  getTasksByProjectId(projectId: string, skip:string, next: string): Observable<any[]> {
-    return this.http.post<any[]>(`${this.apiUrl}/task/tasklistbyproject/${projectId}`, {skip, next}, this.httpOptions);
+  getTasksByProjectId(projectId: string, skip: string, next: string): Observable<any[]> {
+    return this.http.post<any[]>(`${this.apiUrl}/task/tasklistbyproject/${projectId}`, { skip, next }, this.httpOptions);
   }
 
   deleteTaskUser(id: string): Observable<void> {
@@ -69,8 +70,9 @@ export class TasksService {
   }
 
   getTaskByUserAndProject(payload: any): Observable<Task[]> {
-    return this.http.post<Task[]>(`${this.apiUrl}/task/getUserTaskListByProject`,  payload , this.httpOptions);
+    return this.http.post<Task[]>(`${this.apiUrl}/task/getUserTaskListByProject`, payload, this.httpOptions);
   }
+
   getAllTags(): Observable<Tag[]> {
     return this.http.get<Tag[]>(`${this.apiUrl}/task/tags/0`, this.httpOptions);
   }
@@ -78,16 +80,19 @@ export class TasksService {
   addTag(tag: Tag): Observable<Tag> {
     return this.http.post<Tag>(`${this.apiUrl}/task/tag/add`, tag, this.httpOptions);
   }
+
   updatetaskFlex(id, task: any): Observable<Task> {
     return this.http.put<Task>(`${environment.apiUrlDotNet}/task/update/${id}`, task, this.httpOptions);
   }
 
   getTaskByUser(userId: string, skip: string, next: string): Observable<any> {
-    return this.http.post<any>(`${environment.apiUrlDotNet}/task/tasklistbyuser`, { userId , skip, next},  this.httpOptions);
+    return this.http.post<any>(`${environment.apiUrlDotNet}/task/tasklistbyuser`, { userId, skip, next }, this.httpOptions);
   }
+
   updateTag(tag: Tag): Observable<Tag> {
     return this.http.post<Tag>(`${environment.apiUrlDotNet}/task/tag/update`, tag, this.httpOptions);
   }
+
   deleteTag(tagId: string): Observable<Tag> {
     return this.http.delete<Tag>(`${environment.apiUrlDotNet}/task/tag/${tagId}`, this.httpOptions);
   }
@@ -95,7 +100,7 @@ export class TasksService {
   getTaskById(taskId: string): Observable<any> {
     return this.http.get<any>(`${environment.apiUrlDotNet}/task/${taskId}`, this.httpOptions);
   }
-  
+
   getComments(taskId: string): Observable<any> {
     return this.http.get<any>(`${environment.apiUrlDotNet}/task/comments/${taskId}`, this.httpOptions);
   }
@@ -104,24 +109,27 @@ export class TasksService {
     return this.http.post<any>(`${environment.apiUrlDotNet}/task/comment`, comment, this.httpOptions);
   }
 
-  updateComment(commentId,comment: taskComment): Observable<taskComment> {
-    return this.http.put<taskComment>(`${environment.apiUrlDotNet}/task/Comment/${commentId}`, comment,  this.httpOptions);
+  updateComment(commentId, comment: taskComment): Observable<taskComment> {
+    return this.http.put<taskComment>(`${environment.apiUrlDotNet}/task/Comment/${commentId}`, comment, this.httpOptions);
   }
+
   deleteComment(commentId: string): Observable<any> {
     return this.http.delete<any>(`${environment.apiUrlDotNet}/task/Comment/${commentId}`, this.httpOptions);
   }
-  
-  addTaskAttachment( taskAttachment): Observable<any> {
+
+  addTaskAttachment(taskAttachment): Observable<any> {
     return this.http.post<any>(`${environment.apiUrlDotNet}/task/new/taskattachment`, taskAttachment, this.httpOptions);
   }
-  getTaskAttachment(taskId: string):Observable<any>{
+
+  getTaskAttachment(taskId: string): Observable<any> {
     return this.http.get<any>(`${environment.apiUrlDotNet}/task/gettaskattachmentslist/${taskId}`, this.httpOptions);
   }
-  deleteTaskAttachment(attachmentId: string):Observable<any>{
+
+  deleteTaskAttachment(attachmentId: string): Observable<any> {
     return this.http.delete<any>(`${environment.apiUrlDotNet}/task/taskattachment/${attachmentId}`, this.httpOptions);
   }
-  
-  getSubTask(taskId: string):Observable<any>{
+
+  getSubTask(taskId: string): Observable<any> {
     return this.http.get<any>(`${environment.apiUrlDotNet}/task/tasklistbyparenttask/${taskId}`, this.httpOptions);
   }
 }

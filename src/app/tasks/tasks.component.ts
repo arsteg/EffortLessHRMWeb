@@ -96,11 +96,8 @@ export class TasksComponent implements OnInit {
   selectedPriority: any;
   selectedStatus: string = '';
   storedFilters: any;
-
   status = new FormControl([]);
-
   toppingList: string[] = ['ToDo', 'In-Progress', 'Done', 'Close'];
-
 
   constructor(
     private tasksService: TasksService,
@@ -154,8 +151,8 @@ export class TasksComponent implements OnInit {
       timeTaken: [0],
     });
     this.status = new FormControl(this.statusList.filter(item => item.isChecked).map(item => item.name));
-
   }
+
   ngOnInit(): void {
     this.onLoad();
     this.commonservice.getCurrentUserRole().subscribe((role: any) => {
@@ -173,8 +170,6 @@ export class TasksComponent implements OnInit {
     }
 
     this.getCurrentUser().subscribe(() => {
-
-
       this.getprojects();
       this.populateUsers();
 
@@ -194,9 +189,7 @@ export class TasksComponent implements OnInit {
               this.tasks = response.taskList;
               this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
             });
-
-        }
-        else {
+        } else {
           this.getTasks();
         }
       }
@@ -212,6 +205,7 @@ export class TasksComponent implements OnInit {
       });
     });
   }
+
   onStatusChange(statusItem: any): void {
     const currentStatusValues = this.status.value || [];
 
@@ -221,6 +215,7 @@ export class TasksComponent implements OnInit {
       this.status.setValue(currentStatusValues.filter(value => value !== statusItem.name));
     }
   }
+
   getCurrentUsersTasks() {
     if (this.currentProfile.id) {
       this.tasksService.getTaskByUser(this.currentProfile.id, this.skip, this.next).subscribe(response => {
@@ -231,6 +226,7 @@ export class TasksComponent implements OnInit {
       });
     }
   }
+
   getCurrentUser() {
     return this.commonservice.getCurrentUser().pipe(
       switchMap((profile: any) => {
@@ -242,7 +238,6 @@ export class TasksComponent implements OnInit {
       })
     );
   }
-
 
   populateUsers() {
     this.members = [];
@@ -268,13 +263,9 @@ export class TasksComponent implements OnInit {
                 this.members.push({ id: user.id, name: `${user.firstName} ${user.lastName}`, email: user.email });
               }
             })
-          },
-          error: error => {
-          }
+          }, error: error => { }
         });
-      },
-      error: error => {
-      }
+      }, error: error => { }
     });
   }
 
@@ -293,8 +284,7 @@ export class TasksComponent implements OnInit {
     };
     if (p_Id) {
       this.router.navigate(['/SubTask'], navigationExtras);
-    }
-    else {
+    } else {
       this.router.navigate(['/edit-task'], navigationExtras);
     }
   }
@@ -310,8 +300,8 @@ export class TasksComponent implements OnInit {
       this.tasks = response && response.data && response.data['taskList'];
       this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
     });
-
   }
+
   getTasksbyTeam() {
     this.tasksService.getTasklistbyTeam(this.skip, this.next).subscribe((response: any) => {
       this.totalRecords = response && response.data
@@ -325,24 +315,19 @@ export class TasksComponent implements OnInit {
     if ((!this.userId || !this.currentProfile.id) && !this.projectId) {
       if ((this.view === 'admin') && (this.role?.toLowerCase() === 'admin' || this.role == null) || (this.role?.toLowerCase() === 'admin' && this.view == null)) {
         this.listAllTasks();
-      }
-      else {
+      } else {
         this.getTasksbyTeam();
       }
-    }
-    else if (this.projectId && this.userId) {
+    } else if (this.projectId && this.userId) {
       this.authService.getUserTaskListByProject(this.userId, this.projectId, this.skip, this.next).subscribe(
         (response: any) => {
           this.totalRecords = response;
           this.tasks = response.taskList;
           this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
         });
-    }
-    else if (this.userId) {
-
+    } else if (this.userId) {
       this.getTaskByIds();
-    }
-    else if (this.projectId) {
+    } else if (this.projectId) {
       this.getTasksByProject();
     }
   }
@@ -362,6 +347,7 @@ export class TasksComponent implements OnInit {
       this.paginateTasks();
     }
   }
+
   firstPagePagination() {
     if (this.currentPage !== 1) {
       this.currentPage = 1;
@@ -370,6 +356,7 @@ export class TasksComponent implements OnInit {
       this.paginateTasks();
     }
   }
+
   lastPagePagination() {
     const totalPages = this.getTotalPages();
     if (this.currentPage !== totalPages) {
@@ -378,6 +365,7 @@ export class TasksComponent implements OnInit {
       this.paginateTasks();
     }
   }
+
   updateSkip() {
     const newSkip = (this.currentPage - 1) * this.recordsPerPage;
     this.skip = newSkip.toString();
@@ -390,12 +378,14 @@ export class TasksComponent implements OnInit {
   isPreviousButtonDisabled(): boolean {
     return this.skip === '0' || this.currentPage === 1;
   }
+
   updateRecordsPerPage() {
     this.currentPage = 1;
     this.skip = '0';
     this.next = this.recordsPerPage.toString();
     this.paginateTasks();
   }
+
   getTotalPages(): number {
     if (this.totalRecords && this.totalRecords.taskCount) {
       const totalCount = this.totalRecords.taskCount;
@@ -415,23 +405,18 @@ export class TasksComponent implements OnInit {
             this.tasks = response.data.taskList;
           }
           this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
-        },
-        (error: any) => {
-        }
+        }, (error: any) => { }
       );
-    }
-    else {
+    } else {
       this.authService.getUserTaskListByProject(this.userId, this.projectId, this.skip, this.next).subscribe(
         (response: any) => {
           this.totalRecords = response;
           this.tasks = response.taskList;
           this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
         });
-    }
-
-    (error: any) => {
-    }
+    } (error: any) => { }
   }
+
   getUsersByProject() {
     const selectedProject = this.createTask_Board.value.project;
     this.projectService.getprojectUser(selectedProject).subscribe((res: any) => {
@@ -501,8 +486,7 @@ export class TasksComponent implements OnInit {
                   newTask.taskAttachments = [];
                   if (this.userId && this.projectId) {
                     this.getTasksByProject()
-                  }
-                  else {
+                  } else {
                     this.getTaskByIds();
                   }
                   this.addForm.reset({
@@ -512,8 +496,7 @@ export class TasksComponent implements OnInit {
                   });
                   this.selectedFiles = [];
                   this.toast.success('New Task Successfully Created!', `Task Number: ${newTask.newTask.taskNumber}`);
-                },
-                (err) => {
+                }, (err) => {
                   this.toast.error('Task Can not be Created', 'Error!');
                 }
               );
@@ -529,14 +512,10 @@ export class TasksComponent implements OnInit {
             this.tasks.push(newTask);
             if (this.userId && this.projectId) {
               this.getTasksByProject()
-            }
-            else if
+            } else if
               (!this.userId && !this.projectId) {
-
               this.listAllTasks();
-            }
-            else {
-
+            } else {
               this.getTaskByIds();
             }
             this.addForm.reset({
@@ -546,14 +525,12 @@ export class TasksComponent implements OnInit {
             });
             this.selectedFiles = [];
             this.toast.success('New Task Successfully Created!', `Task Number: ${newTask.newTask.taskNumber}`);
-          },
-          (err) => {
+          }, (err) => {
             this.toast.error('Choose a different, unique title for your task', 'Error!');
           }
         );
       }
-    }
-    else {
+    } else {
       this.markFormGroupTouched(this.addForm);
     }
   }
@@ -561,7 +538,6 @@ export class TasksComponent implements OnInit {
   markFormGroupTouched(formGroup: FormGroup) {
     Object.values(formGroup.controls).forEach(control => {
       control.markAsTouched();
-
       if (control instanceof FormGroup) {
         this.markFormGroupTouched(control);
       }
@@ -572,8 +548,7 @@ export class TasksComponent implements OnInit {
     this.addForm.reset();
     if (this.view == 'admin') {
       this.getprojects();
-    }
-    else if (this.view == 'user') {
+    } else if (this.view == 'user') {
       const currentUser = JSON.parse(localStorage.getItem('currentUser'))
       this.projectService.getProjectByUserId(currentUser.id).subscribe(response => {
         this.projectList = response && response.data && response.data['projectList'];
@@ -601,6 +576,7 @@ export class TasksComponent implements OnInit {
       }
     }
   }
+
   removeFile(index: number) {
     if (index !== -1) {
       this.selectedFiles.splice(index, 1);
@@ -618,10 +594,9 @@ export class TasksComponent implements OnInit {
         this.tasks.splice(index, 1);
       }
       this.toast.success('New Task Successfully Deleted!', `Task Number: ${this.selectedTask.taskNumber}`);
-    },
-      err => {
-        this.toast.error('Task Cannot be Deleted', 'Error!');
-      });
+    }, err => {
+      this.toast.error('Task Cannot be Deleted', 'Error!');
+    });
   }
 
   selectTask(selectedTask) {
@@ -629,7 +604,7 @@ export class TasksComponent implements OnInit {
   }
 
   onProjectSelectionChange() {
-    if(this.projectId){
+    if (this.projectId) {
       this.getTasksByProject();
     }
 
@@ -638,12 +613,10 @@ export class TasksComponent implements OnInit {
     } else if (this.projectId !== 'ALL') {
       this.skip = '0';
       this.getTasksByProject();
-    }
-    else if (this.userId) {
+    } else if (this.userId) {
       this.skip = '0';
       this.getTaskByIds();
-    }
-    else {
+    } else {
       if (this.view !== 'admin') {
         this.projectService.getProjectByUserId(this.currentProfile.id).subscribe(response => {
           this.projectList = response && response.data && response.data['projectList'];
@@ -656,13 +629,9 @@ export class TasksComponent implements OnInit {
           this.tasks = this.tasks.filter(task => task !== null);
 
         });
-      }
-      else this.getTasks();
-
-
+      } else this.getTasks();
     }
   }
-
 
   async getTaskByIds() {
     this.tasksService.getTaskByUser(this.userId, this.skip, this.next).subscribe(response => {
@@ -685,18 +654,13 @@ export class TasksComponent implements OnInit {
       this.skip = '0';
       if (this.view === 'user') {
         this.getTasksbyTeam();
-      }
-      else if (this.view === 'admin' || this.role?.toLowerCase() === 'admin') {
-
+      } else if (this.view === 'admin' || this.role?.toLowerCase() === 'admin') {
         this.listAllTasks();
       }
-
-    }
-    else {
+    } else {
       this.skip = '0';
       this.getTaskByIds();
     }
-
   }
 
   getTaskPriorityUrl(currentPriority) {
@@ -722,10 +686,9 @@ export class TasksComponent implements OnInit {
     selectedTask.priority = priority;
     this.tasksService.updatetaskFlex(selectedTask._id, payload).subscribe(response => {
       this.toast.success('Task priority updated successfully', `Task Number: ${selectedTask.taskNumber}`)
-    },
-      err => {
-        this.toast.error('Task could not be updated', 'ERROR!')
-      })
+    }, err => {
+      this.toast.error('Task could not be updated', 'ERROR!')
+    })
   }
 
   updateTaskStatus(selectedTask, status: string) {
@@ -749,29 +712,30 @@ export class TasksComponent implements OnInit {
       const updatedTaskStatus = response && response.data && response.data.data;
       const index = this.tasks.findIndex(task => task._id === updatedTaskStatus._id);
       if (index !== -1) {
-        this.tasks[index] = updatedTaskStatus;
+        this.tasks[index] = {
+          ...updatedTaskStatus,
+          TaskUsers: selectedTask.TaskUsers
+        };
         selectedTask.status = status;
       }
-
-
       this.toast.success('Task status updated successfully', `Task Number: ${selectedTask.taskNumber}`)
-    }
-      ,
-      err => {
-        this.toast.error('Task could not be updated', 'ERROR!')
-      }
-    )
+    }, err => {
+      this.toast.error('Task could not be updated', 'ERROR!')
+    })
   }
+
   getTaskById(id: string): void {
     this.tasksService.getTaskById(id).subscribe(task => {
       this.tasks = task;
     });
   }
+
   setDefaultViewMode() {
     const queryParams = this.route.snapshot.queryParamMap;
     this.isListView = queryParams.get('view') !== 'board';
     this.updateViewModeQueryParam(this.isListView);
   }
+
   toggleViewMode() {
     this.isListView = !this.isListView;
     this.updateViewModeQueryParam(this.isListView);
@@ -794,18 +758,22 @@ export class TasksComponent implements OnInit {
     this.showToDoTask = !this.showToDoTask;
     this.newTask = {};
   }
+
   toggleInProgressTask() {
     this.showInProgressTask = !this.showInProgressTask;
     this.newTask = {};
   }
+
   toggleDoneTask() {
     this.showDoneTask = !this.showDoneTask;
     this.newTask = {};
   }
+
   toggleClosedTask() {
     this.showClosedTask = !this.showClosedTask;
     this.newTask = {};
   }
+
   addTaskToDo() {
     const id: '' = this.currentProfile.id
     const taskFromBoard = {
@@ -821,7 +789,6 @@ export class TasksComponent implements OnInit {
     this.tasksService.addTask(taskFromBoard).subscribe(response => {
       this.task = response;
       this.tasks.push(taskFromBoard);
-
       this.ngOnInit();
       this.createTask_Board.reset();
       this.toggleToDoTask();
@@ -843,7 +810,6 @@ export class TasksComponent implements OnInit {
     this.tasksService.addTask(taskFromBoard).subscribe(response => {
       this.task = response;
       this.tasks.push(taskFromBoard);
-
       this.ngOnInit();
       this.createTask_Board.reset();
       this.toggleInProgressTask();
@@ -871,6 +837,7 @@ export class TasksComponent implements OnInit {
       this.toggleDoneTask();
     })
   }
+
   addTaskClosed() {
     const id: '' = this.currentProfile.id
     const taskFromBoard = {
@@ -886,12 +853,12 @@ export class TasksComponent implements OnInit {
     this.tasksService.addTask(taskFromBoard).subscribe(response => {
       this.task = response;
       this.tasks.push(taskFromBoard);
-
       this.ngOnInit();
       this.createTask_Board.reset();
       this.toggleClosedTask();
     })
   }
+
   getProjectNameInitials(taskName: string): string {
     if (taskName) {
       const words = taskName.split(' ');
@@ -912,7 +879,6 @@ export class TasksComponent implements OnInit {
     if ((!this.storedFilters.userId && !this.storedFilters.projectId) && (this.view === 'admin') && (this.role?.toLowerCase() === 'admin' || this.role == null) || (this.role?.toLowerCase() === 'admin' && this.view == null)) {
       this.listAllTasks();
     }
-
     if (this.view === 'user' || this.role?.toLowerCase() === 'user') {
       this.getTasksbyTeam();
     }
@@ -920,7 +886,6 @@ export class TasksComponent implements OnInit {
       this.getCurrentUsersTasks();
     }
   }
-
 
   getprojects() {
     if (this.view === 'admin') {
@@ -934,6 +899,7 @@ export class TasksComponent implements OnInit {
       });
     }
   }
+
   getColor(status: string): string {
     if (status === 'In Progress') {
       return 'blue';
@@ -949,9 +915,10 @@ export class TasksComponent implements OnInit {
   onInputClick() {
     this.showEditor = true;
   }
-  domain: string;
 
+  domain: string;
   @HostListener('window:load', ['$event'])
+
   onLoad(): void {
     const hostname = window.location.hostname;
     const port = window.location.port;
@@ -961,7 +928,6 @@ export class TasksComponent implements OnInit {
     } else {
       this.domain = hostname;
     }
-
   }
 
   // copyTask(task) {
@@ -985,23 +951,22 @@ export class TasksComponent implements OnInit {
   //   }
   //   this.snackBar.open('Task is copied to clipboard', 'Dismiss', { duration: 4000 });
   // }
-  copyTask(task) {
 
+  copyTask(task) {
     const hostname = window.location.hostname;
     const port = window.location.port;
 
-    if (hostname === 'localhost') 
+    if (hostname === 'localhost')
       this.domain = `${hostname}:${port}`;
-     else 
+    else
       this.domain = hostname;
-    
 
     const taskID = task.id;
     const p_Id = task.parentTask;
     const url = p_Id
       ? `http://${this.domain}/#/SubTask?taskId=${taskID}`
       : `http://${this.domain}/#/edit-task?taskId=${taskID}`;
-  
+
     navigator.clipboard.writeText(url).then(() => {
       this.snackBar.open('Task is copied to clipboard', 'Dismiss', { duration: 4000 });
     }).catch((error) => {
@@ -1009,8 +974,6 @@ export class TasksComponent implements OnInit {
     });
   }
 }
-
-
 interface priority {
   name: string,
   url: string

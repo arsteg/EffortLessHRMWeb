@@ -1,26 +1,23 @@
 <div class="main-content">
     <div class="container-fluid px-0">
-        <div class=" d-flex bg-white subMenu w-100">
-            <button class="btn rounded-pill submenuTab" routerLink="employees" routerLinkActive="active"
+        <div class="d-flex align-items-center mt-5 pt-lg-4 pt-5 pb-2 ps-lg-4 ps-2 bg-white w-100 manage_panel">
+            <button class="btn rounded-pill submenuTab manage_btn" routerLink="employees" routerLinkActive="active"
                 >Employees</button>
-            <button class="btn rounded-pill submenuTab" routerLink="projects"
+            <button class="btn rounded-pill submenuTab manage_btn" routerLink="projects"
                 routerLinkActive="active">Projects</button>
-            <button class="btn rounded-pill submenuTab" routerLink="tasks"
+            <button class="btn rounded-pill submenuTab manage_btn" routerLink="tasks"
                 routerLinkActive="active">Tasks</button>
-            <button class="btn rounded-pill submenuTab" routerLink="manual-time-requests"
+            <button class="btn rounded-pill submenuTab manage_btn" routerLink="manual-time-requests"
                 routerLinkActive="active">Manual
                 Time</button>
-            <button class="btn rounded-pill submenuTab" routerLink="team-members" routerLinkActive="active">Team
+            <button class="btn rounded-pill submenuTab manage_btn" routerLink="team-members" routerLinkActive="active">Team
                 Members</button>
-            <button class="btn rounded-pill submenuTab" routerLink="tags" routerLinkActive="active">Tags</button>
-            <button class="btn rounded-pill submenuTab" routerLink="email-templates"
+            <button class="btn rounded-pill submenuTab manage_btn" routerLink="tags" routerLinkActive="active">Tags</button>
+            <button class="btn rounded-pill submenuTab manage_btn" routerLink="email-templates"
                 routerLinkActive="active">E-Mail
                 Template</button>
         </div>
 
-        <div class="tab-content">
-            <router-outlet></router-outlet>
-        </div>
-        
+        <div><router-outlet></router-outlet></div>
     </div>
 </div>

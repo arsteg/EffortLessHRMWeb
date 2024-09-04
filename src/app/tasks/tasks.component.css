@@ -34,7 +34,7 @@
   font-size: 16px;
   font-weight: 500;
   padding: 8px;
-  border: 1px solid #e8eaef; 
+  border: 1px solid #e8eaef;
   border-radius: 9px;
   text-align: center;
   cursor: pointer;
@@ -116,25 +116,36 @@
   cursor: pointer;
 }
 
-
-@media (min-width: 576px) {
-  .modal-dialog {
-    min-width:60vw !important;
-    /* max-width: 764px !important; */
-  }
-}
-
-.attach{
+.attach {
   cursor: pointer;
 }
-.btn-outline-primary{
+
+.btn-outline-primary {
   color: #76bc21 !important;
   border: 0px !important
 }
-.taskFormBody{
+
+.taskFormBody {
   overflow-y: scroll;
   height: 50vh;
 }
-.mdc-button .mdc-button__label{
+
+.mdc-button .mdc-button__label {
   display: flex !important;
+}
+
+.togglelist_btn {
+  color: #647299;
+  padding: 23px 15px;
+}
+
+.search_btn {
+  position: relative;
+  top: -5px;
+}
+
+@media (min-width: 576px) {
+  .modal-dialog {
+    min-width: 60vw !important;
+  }
 }
