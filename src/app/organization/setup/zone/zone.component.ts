@@ -86,10 +86,16 @@ export class ZoneComponent {
   }
 
   clearselectedRequest() {
-    this.isEdit = false;
-    this.zoneForm.get('zoneCode').enable();
-    this.zoneForm.get('zoneName').enable();
-    this.zoneForm.reset();
+    const data = this.selectedZone;
+    this.zoneForm.patchValue({
+      startDate: data.startDate,
+      zoneCode: data.zoneCode,
+      zoneName: data.zoneName,
+      description: data.description,
+      status: data.status
+    })
+    this.zoneForm.get('zoneCode').disable();
+    this.zoneForm.get('zoneName').disable();
   }
 
   private getDismissReason(reason: any): string {

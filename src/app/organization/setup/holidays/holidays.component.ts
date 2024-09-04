@@ -110,9 +110,11 @@ export class HolidaysComponent {
     else if (this.isEdit) {
       this.companyService.updateHolidays(this.selectedRecord._id, this.holidayForm.value).subscribe(res => {
         this.toast.success('Holiday updated successfully', 'Success');
-        const index = this.holidays.findIndex(z => z._id === this.selectedRecord._id);
+        // const index = this.holidays.findIndex(z => z._id === this.selectedRecord._id);
+        const index = this.holidays.findIndex((z) => z._id === this.selectedRecord._id);
         if (index !== -1) {
-          this.holidays[index] = { ...this.selectedRecord, ...this.holidayForm.value };
+          this.holidays[index] = { ...res.data }; 
+          // this.holidays[index] = { ...this.selectedRecord, ...this.holidayForm.value };
         }
         this.holidayForm.reset();
         this.isEdit = false;
