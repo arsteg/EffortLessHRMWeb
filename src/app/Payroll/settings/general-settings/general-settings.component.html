@@ -229,19 +229,19 @@
             </div>
             <div class="row p-2">
                 <div class="form-group col-md-6 mt-3">
-                    <label>Do you wish to calculate your TDS from ProH2R?</label>
+                    <label>Do you wish to calculate your TDS from EffortlessHRM?</label>
                     <div class="d-flex">
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" formControlName="isAllowTDSFromProH2R"
-                                id="isAllowTDSFromProH2R1" required [value]="true">
-                            <label class="form-check-label" for="isAllowTDSFromProH2R1">
+                            <input class="form-check-input" type="radio" formControlName="isAllowTDSFromEffortlessHRM"
+                                id="isAllowTDSFromEffortlessHRM1" required [value]="true">
+                            <label class="form-check-label" for="isAllowTDSFromEffortlessHRM1">
                                 Yes
                             </label>
                         </div>
                         <div class="form-check ms-2">
-                            <input class="form-check-input" type="radio" id="isAllowTDSFromProH2R2" required
-                                [value]="false">
-                            <label class="form-check-label" for="isAllowTDSFromProH2R2">
+                            <input class="form-check-input" type="radio" id="isAllowTDSFromEffortlessHRM12"
+                                formControlName="isAllowTDSFromEffortlessHRM" required [value]="false">
+                            <label class="form-check-label" for="isAllowTDSFromEffortlessHRM12">
                                 No
                             </label>
                         </div>
@@ -271,7 +271,7 @@
                 </div>
             </div>
             <div class="form-group mt-3  p-2">
-                <label>Do you wish to calculate overtime from ProH2r?</label>
+                <label>Do you wish to calculate overtime from EffortlessHRM?</label>
                 <div class="d-flex">
                     <div class="form-check">
                         <input class="form-check-input" type="radio" formControlName="isAllowToCalculateOvertime"

@@ -31,7 +31,7 @@
                     <th>Actions</th>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let fa of fixedAllowance">
+                    <tr *ngFor="let fa of fixedAllowance | search: searchText">
                         <td>{{fa?.label}}</td>
                         <td>
                             <span *ngIf="fa?.isProvidentFundAffected==true else fixed">
@@ -105,7 +105,7 @@
     </div>
 
     <ng-template #modal let-modal>
-        <div class="modal-header border-bottom mb-2 pt-0">
+        <div class="modal-header d-flex justify-content-between border-bottom mb-2 pt-0">
             <div>
                 <h1 class="modal-title text-muted mb-0">{{isEdit? 'Update': 'Add'}} Fixed Allowance</h1>
             </div>
@@ -197,6 +197,9 @@
                             </label>
                         </div>
                     </div>
+                    <div *ngIf="fixedAllowanceForm.get('label').invalid && (fixedAllowanceForm.get('calculatedBy').dirty || fixedAllowanceForm.get('calculatedBy').touched)">
+                        <small class="text-danger" *ngIf="fixedAllowanceForm.get('calculatedBy')['errors']['required']">Label is required</small>
+                      </div>
                 </div>
             </div>
             <div class="row">

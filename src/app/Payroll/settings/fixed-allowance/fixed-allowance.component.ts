@@ -31,16 +31,18 @@ export class FixedAllowanceComponent {
     this.fixedAllowanceForm = this.fb.group({
       label: ['', Validators.required],
       type: ['None', Validators.required],
-      isArrearsAffect: [false, Validators.required],
+      isArrearsAffect: [false],
       calculatedBy: ['Monthly', Validators.required],
-      isTaxEnabledOnce: [false, Validators.required],
-      isProvidentFundAffected: [false, Validators.required],
-      isESICAffected: [false, Validators.required],
-      isGratuityFundAffected: [false, Validators.required],
-      isLWFAffected: [false, Validators.required],
-      isProfessionalTaxAffected: [false, Validators.required],
-      isTDSAffected: [false, Validators.required],
-      isAttendanceToEffectTheEligibility: [false, Validators.required]
+      isTaxEnabledOnce: [false],
+      isProvidentFundAffected: [false],
+      isESICAffected: [false],
+      isGratuityFundAffected: [false],
+      isLWFAffected: [false],
+      isProfessionalTaxAffected: [false],
+      isTDSAffected: [false],
+      isAttendanceToEffectTheEligibility: [false
+        
+      ]
     })
   }
 
@@ -93,7 +95,7 @@ export class FixedAllowanceComponent {
   }
 
   onSubmission() {
-    if (!this.isEdit) {
+    if (this.fixedAllowanceForm.valid) { if (!this.isEdit) {
       this.payroll.addAllowanceTemplate(this.fixedAllowanceForm.value).subscribe((res: any) => {
         this.fixedAllowance.push(res.data);
         this.toast.success('Successfully Added!!!', 'Fixed Allowance');
@@ -115,8 +117,21 @@ export class FixedAllowanceComponent {
         (err) => {
           this.toast.error('This Can not be Updated as it is already used in the system', 'Fixed Allowance');
         })
+    }}
+    else {
+      this.markFormGroupTouched(this.fixedAllowanceForm);
     }
   }
+
+  markFormGroupTouched(formGroup: FormGroup) {
+    Object.values(formGroup.controls).forEach(control => {
+      control.markAsTouched();
+      if (control instanceof FormGroup) {
+        this.markFormGroupTouched(control);
+      }
+    });
+  }
+
 
   editRecord() {
     this.selectedRecord.isTaxEnabledOnce = this.fixedAllowanceForm.value.isTaxEnabledOnce;

@@ -64,7 +64,18 @@ export class VariableDeductionComponent {
   clearForm() {
     this.variableDeductionForm.patchValue({
       label: '',
-      isEffectAttendanceOnEligibility: true
+      isShowINCTCStructure: true,
+      paidDeductionFrequently: '',
+      deductionEffectiveFromMonth: '',
+      deductionEffectiveFromYear: '',
+      isEndingPeriod: true,
+      deductionStopMonth: '',
+      deductionStopYear: '',
+      amountEnterForThisVariableDeduction: '',
+      amount: 0,
+      percentage: 0,
+      isAttendanceToAffectEligibility: true,
+      variableDeductionApplicableEmployee: []
     })
   }
   open(content: any) {
@@ -95,7 +106,7 @@ export class VariableDeductionComponent {
       variableDeductionApplicableEmployee: formValue.variableDeductionApplicableEmployee.map(employee => ({ employee }))
     };
     console.log(payload)
-    if (!this.isEdit) {
+    if(this.variableDeductionForm.valid){if (!this.isEdit) {
       this.payroll.addVariableDeduction(payload).subscribe((res: any) => {
         this.variableDeduction.push(res.data);
         this.toast.success('Successfully Added!!!', 'Variable Deduction');
@@ -116,7 +127,18 @@ export class VariableDeductionComponent {
         (err) => {
           this.toast.error('Variable Deduction Can not be Updated', 'Variable Deduction');
         })
+    }}
+    else {
+      this.markFormGroupTouched(this.variableDeductionForm);
     }
+  }
+  markFormGroupTouched(formGroup: FormGroup) {
+    Object.values(formGroup.controls).forEach(control => {
+      control.markAsTouched();
+      if (control instanceof FormGroup) {
+        this.markFormGroupTouched(control);
+      }
+    });
   }
   isPercentageSelected(): boolean {
     const value = this.variableDeductionForm.get('amountEnterForThisVariableDeduction').value;

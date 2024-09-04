@@ -11,7 +11,7 @@
                         name="searchText" aria-label="default input example">
                     <div class="d-flex align-items-center">
                         <button class="addBtn mx-2" mat-raised-button
-                            (click)="open(modal); isEdit= false; clearForm()">Add</button>
+                            (click)="onCancel(); isEdit= false; open(modal)">Add</button>
 
                         <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
                             [recordsPerPage]="recordsPerPage" [currentPage]="currentPage"
@@ -105,11 +105,11 @@
             <div class="form-group">
                 <label for="">What is the label of this variable allowance? <span class="text-danger">*</span></label>
                 <input type="text" class="form-control" formControlName="label">
-                <!-- <div
-                    *ngIf="variableAllwancesForm.get('defaultValue').invalid && (variableAllwancesForm.get('defaultValue').dirty || variableAllwancesForm.get('defaultValue').touched)">
-                    <small class="text-danger" *ngIf="variableAllwancesForm.get('defaultValue')['errors']['required']">Field is
+                <div
+                    *ngIf="variableAllowanceForm.get('label').invalid && (variableAllowanceForm.get('label').dirty || variableAllowanceForm.get('label').touched)">
+                    <small class="text-danger" *ngIf="variableAllowanceForm.get('label')['errors']['required']">Label is
                         required</small>
-                </div> -->
+                </div>
             </div>
             <div class="form-group">
                 <label for="">What is the allowance rate per day ? <span class="text-danger">*</span></label>
@@ -135,8 +135,7 @@
 
                     <div class="form-check ms-3">
                         <input class="form-check-input" type="radio" id="isProvidentFundAffected-no"
-                        formControlName="isProvidentFundAffected" required
-                            [value]="false">
+                            formControlName="isProvidentFundAffected" required [value]="false">
                         <label class="form-check-label" for="isProvidentFundAffected-no">
                             No
                         </label>
@@ -213,16 +212,16 @@
                 <label for="">Does this allowance affect Professional Tax? <span class="text-danger">*</span></label>
                 <div class="d-flex">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" id="testyes" required formControlName="isProfessionalTaxAffected"
-                            [value]="true">
+                        <input class="form-check-input" type="radio" id="testyes" required
+                            formControlName="isProfessionalTaxAffected" [value]="true">
                         <label class="form-check-label" for="testyes">
                             Yes
                         </label>
                     </div>
 
                     <div class="form-check ms-3">
-                        <input class="form-check-input" type="radio" id="test-no" required formControlName="isProfessionalTaxAffected"
-                            [value]="false">
+                        <input class="form-check-input" type="radio" id="test-no" required
+                            formControlName="isProfessionalTaxAffected" [value]="false">
                         <label class="form-check-label" for="test-no">
                             No
                         </label>
@@ -269,6 +268,12 @@
                                 Deduct Upfront
                             </label>
                         </div>
+                    </div>
+                    <div
+                        *ngIf="variableAllowanceForm.get('deductIncomeTaxAllowance').invalid && (variableAllowanceForm.get('deductIncomeTaxAllowance').dirty || variableAllowanceForm.get('deductIncomeTaxAllowance').touched)">
+                        <small class="text-danger"
+                            *ngIf="variableAllowanceForm.get('deductIncomeTaxAllowance')['errors']['required']">This
+                            field is required</small>
                     </div>
                 </div>
 
@@ -322,6 +327,12 @@
                     <option value="Half Yearly">Half Yearly</option>
                     <option value="Annually">Annually</option>
                 </select>
+                <div
+                    *ngIf="variableAllowanceForm.get('paidAllowanceFrequently').invalid && (variableAllowanceForm.get('paidAllowanceFrequently').dirty || variableAllowanceForm.get('paidAllowanceFrequently').touched)">
+                    <small class="text-danger"
+                        *ngIf="variableAllowanceForm.get('paidAllowanceFrequently')['errors']['required']">This field is
+                        required</small>
+                </div>
             </div>
             <div class="form-group my-2">
                 <label for="">From what period is this variable allowance effective? <span
@@ -331,11 +342,23 @@
                         <option value="" selected disabled>Select Month</option>
                         <option value="m" *ngFor="let m of months">{{m}}</option>
                     </select>
+                    <div
+                        *ngIf="variableAllowanceForm.get('allowanceEffectiveFromMonth').invalid && (variableAllowanceForm.get('allowanceEffectiveFromMonth').dirty || variableAllowanceForm.get('allowanceEffectiveFromMonth').touched)">
+                        <small class="text-danger"
+                            *ngIf="variableAllowanceForm.get('allowanceEffectiveFromMonth')['errors']['required']">Effective
+                            Month is required</small>
+                    </div>
 
                     <select id="" formControlName="allowanceEffectiveFromYear">
                         <option value="" selected [disabled]>Select Year </option>
                         <option *ngFor="let year of years" [value]="year">{{ year }}</option>
                     </select>
+                    <div
+                        *ngIf="variableAllowanceForm.get('allowanceEffectiveFromYear').invalid && (variableAllowanceForm.get('allowanceEffectiveFromYear').dirty || variableAllowanceForm.get('allowanceEffectiveFromYear').touched)">
+                        <small class="text-danger"
+                            *ngIf="variableAllowanceForm.get('allowanceEffectiveFromYear')['errors']['required']">Effective
+                            Year is required</small>
+                    </div>
                 </div>
             </div>
 
@@ -385,12 +408,20 @@
                         (Basic + DA) paid or (Basic + DA is not applicable)</option>
                     <option value="Percentage of Gross salary paid">Percentage of Gross salary paid</option>
                 </select>
+                <div
+                    *ngIf="variableAllowanceForm.get('amountEnterForThisVariableAllowance').invalid && (variableAllowanceForm.get('amountEnterForThisVariableAllowance').dirty || variableAllowanceForm.get('amountEnterForThisVariableAllowance').touched)">
+                    <small class="text-danger"
+                        *ngIf="variableAllowanceForm.get('amountEnterForThisVariableAllowance')['errors']['required']">Please
+                        Enter Amount!</small>
+                </div>
             </div>
-            <div class="form-check mt-2 col-md-6" *ngIf="variableAllowanceForm.get('amountEnterForThisVariableAllowance').value=='Fixed Amount'">
+            <div class="form-check mt-2 col-md-6"
+                *ngIf="variableAllowanceForm.get('amountEnterForThisVariableAllowance').value=='Fixed Amount'">
                 <label for="">Provide the Amount</label>
                 <input type="number" class="form-control" formControlName="amount">
             </div>
-            <div class="form-group" *ngIf="variableAllowanceForm.get('amountEnterForThisVariableAllowance').value == 'Percentage of (Basic + DA) paid or (Basic + DA is not applicable)'|| 'Percentage of Gross salary paid'">
+            <div class="form-group"
+                *ngIf="variableAllowanceForm.get('amountEnterForThisVariableAllowance').value == 'Percentage of (Basic + DA) paid or (Basic + DA is not applicable)'|| 'Percentage of Gross salary paid'">
                 <label for="">Percentage of gross salary paid <span class="text-danger">*</span></label>
                 <input type="number" class="form-control" formControlName="percentage">
                 <!-- <div
@@ -437,7 +468,7 @@
             </div>
 
             <div class="d-flex border-top mt-2 py-2 justify-content-between">
-                <button mat-raised-button type="button">Cancel</button>
+                <button mat-raised-button type="button" (click)="onCancel()">Cancel</button>
                 <button mat-raised-button type="submit" class="addBtn">Submit</button>
             </div>
         </form>

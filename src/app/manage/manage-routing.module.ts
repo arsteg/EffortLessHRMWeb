@@ -29,18 +29,18 @@ const routes: Routes = [
           {
             path: 'employees', component: UserListComponent,
             children: [
-              {
-                path: 'employee-settings', component: EmployeeSettingsComponent, canActivate: [AuthGuard],
-                children: [
-                  { path: 'employee-settings', redirectTo: 'employee-profile', pathMatch: 'full' },
-                  { path: 'employee-profile', component: EmployeeProfileComponent },
-                  { path: 'employment-details', component: EmploymentDetailsComponent },
-                  { path: 'salary-details', component: SalaryDetailsComponent },
-                  { path: 'statutory-details', component: StatutoryDetailsComponent },
-                  { path: 'loans-advances', component: LoansAdvancesComponent },
-                  { path: 'tax', component: TaxComponent },
-                ]
-              }
+              // {
+              //   path: 'employee-settings', component: EmployeeSettingsComponent, canActivate: [AuthGuard],
+              //   children: [
+              //     { path: 'employee-settings', redirectTo: 'employee-profile', pathMatch: 'full' },
+              //     { path: 'employee-profile', component: EmployeeProfileComponent },
+              //     { path: 'employment-details', component: EmploymentDetailsComponent },
+              //     { path: 'salary-details', component: SalaryDetailsComponent },
+              //     { path: 'statutory-details', component: StatutoryDetailsComponent },
+              //     { path: 'loans-advances', component: LoansAdvancesComponent },
+              //     { path: 'tax', component: TaxComponent },
+              //   ]
+              // }
             ]
           },
           { path: 'projects', component: ProjectListComponent },

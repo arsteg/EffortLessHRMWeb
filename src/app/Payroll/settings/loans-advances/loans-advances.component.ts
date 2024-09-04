@@ -84,12 +84,13 @@ export class LoansAdvancesComponent {
     }
     else {
       this.payroll.updateLoans(this.selectedRecord._id, this.loansAdvancesForm.value).subscribe((res: any) => {
-        this.toast.success('Successfully Updated!!!', 'Loans/Advances');
         const reason = res.data;
         const index = this.loans.findIndex(reas => reas._id === reason._id);
         if (index !== -1) {
           this.loans[index] = reason;
         }
+        this.toast.success('Successfully Updated!!!', 'Loans/Advances');
+        this.loansAdvancesForm.reset();
       },
         (err) => {
           this.toast.error('Loans/Advances Can not be Updated', 'Loans/Advances');

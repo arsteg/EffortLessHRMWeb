@@ -69,7 +69,7 @@ export class GeneralSettingsComponent {
       ],
       isNoticePeriodRecoveryApplicable: [true],
       denominatorForCalculatingTheNoticeRecovery: [''],
-      isAllowTDSFromProH2R: [true],
+      isAllowTDSFromEffortlessHRM: [true],
       isAllowNcpDaysApplicableInPF: [true],
       isAllowToCalculateOvertime: [true]
     });
@@ -121,7 +121,7 @@ export class GeneralSettingsComponent {
           recoverOutstandingIncomeTaxOfEmployees: this.generalSettings.recoverOutstandingIncomeTaxOfEmployees,
           isNoticePeriodRecoveryApplicable: this.generalSettings.isNoticePeriodRecoveryApplicable,
           denominatorForCalculatingTheNoticeRecovery: this.generalSettings.denominatorForCalculatingTheNoticeRecovery,
-          isAllowTDSFromProH2R: this.generalSettings.isAllowTDSFromProH2R,
+          isAllowTDSFromEffortlessHRM: this.generalSettings.isAllowTDSFromEffortlessHRM,
           isAllowNcpDaysApplicableInPF: this.generalSettings.isAllowNcpDaysApplicableInPF,
           isAllowToCalculateOvertime: this.generalSettings.isAllowToCalculateOvertime
         })
@@ -135,6 +135,33 @@ export class GeneralSettingsComponent {
     this.loadRecords();
   }
 
+  onCancel(){
+    this.payroll.getGeneralSettings(this.fixedAllowance[0].company).subscribe((res: any) => {
+      this.generalSettings = res.data;
+      this.generalSettingForm.patchValue({
+        dayOfMonthToRunPayroll: this.generalSettings.dayOfMonthToRunPayroll,
+        payrollApprovar: this.generalSettings.payrollApprovar,
+        dayOfMonthToStartAttendanceCycle: this.generalSettings.dayOfMonthToStartAttendanceCycle,
+        password: this.generalSettings.password,
+        isPasswordForSalaryRegister: this.generalSettings.isPasswordForSalaryRegister,
+        isGraduityEligible: this.generalSettings.isGraduityEligible,
+        percentageForGraduity: this.generalSettings.percentageForGraduity,
+        attendanceCycle: this.generalSettings.attendanceCycle,
+        graduityComponentsGraduitycalculation: this.generalSettings.graduityComponentsGraduitycalculation,
+        leaveEncashment: this.generalSettings.leaveEncashment,
+        denominatorForCalculatingTheEncashment: this.generalSettings.denominatorForCalculatingTheEncashment,
+        payoutRolloverLeaveEncashmentForEmployees: this.generalSettings.payoutRolloverLeaveEncashmentForEmployees,
+        calculateLeaveRecovery: this.generalSettings.calculateLeaveRecovery,
+        denominatorForCalculatingTheLeaveRecovery: this.generalSettings.denominatorForCalculatingTheLeaveRecovery,
+        recoverOutstandingIncomeTaxOfEmployees: this.generalSettings.recoverOutstandingIncomeTaxOfEmployees,
+        isNoticePeriodRecoveryApplicable: this.generalSettings.isNoticePeriodRecoveryApplicable,
+        denominatorForCalculatingTheNoticeRecovery: this.generalSettings.denominatorForCalculatingTheNoticeRecovery,
+        isAllowTDSFromEffortlessHRM: this.generalSettings.isAllowTDSFromEffortlessHRM,
+        isAllowNcpDaysApplicableInPF: this.generalSettings.isAllowNcpDaysApplicableInPF,
+        isAllowToCalculateOvertime: this.generalSettings.isAllowToCalculateOvertime
+      })
+    })
+  }
   saveGeneralSettings() {
     if (!this.isEdit)
       this.payroll.addGeneralSettings(this.generalSettingForm.value).subscribe((res: any) => {
@@ -240,6 +267,7 @@ export class GeneralSettingsComponent {
     if (this.isEdit) {
       this.generalSettingForm.enable();
     } else {
+      this.onCancel();
       this.generalSettingForm.disable();
     }
   }

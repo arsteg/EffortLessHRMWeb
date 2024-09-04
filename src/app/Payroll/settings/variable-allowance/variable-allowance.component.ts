@@ -35,29 +35,29 @@ export class VariableAllowanceComponent {
     private commonService: CommonService) {
     this.variableAllowanceForm = this.fb.group({
       label: ['', Validators.required],
-      allowanceRatePerDay: [0, Validators.required],
-      isPayrollEditable: [true, Validators.required],
-      isProvidentFundAffected: [true, Validators.required],
-      isESICAffected: [true, Validators.required],
-      isLWFAffected: [true, Validators.required],
-      isIncomeTaxAffected: [true, Validators.required],
+      allowanceRatePerDay: [0],
+      isPayrollEditable: [true],
+      isProvidentFundAffected: [true],
+      isESICAffected: [true],
+      isLWFAffected: [true],
+      isIncomeTaxAffected: [true],
       deductIncomeTaxAllowance: ['', Validators.required],
-      taxRegime: ['', Validators.required],
-      isShowInCTCStructure: [true, Validators.required],
+      taxRegime: [''],
+      isShowInCTCStructure: [true],
       paidAllowanceFrequently: ['', Validators.required],
       allowanceEffectiveFromMonth: ['', Validators.required],
       allowanceEffectiveFromYear: ['', Validators.required],
-      isEndingPeriod: [true, Validators.required],
-      allowanceStopMonth: ['', Validators.required],
-      allowanceStopYear: ['', Validators.required],
+      isEndingPeriod: [true],
+      allowanceStopMonth: [''],
+      allowanceStopYear: [''],
       amountEnterForThisVariableAllowance: ['', Validators.required],
-      amount: [0, Validators.required],
-      percentage: [0, Validators.required],
-      isProfessionalTaxAffected: [true, Validators.required],
-      isAttandanceToAffectEligibility: [true, Validators.required],
+      amount: [0],
+      percentage: [0],
+      isProfessionalTaxAffected: [true],
+      isAttandanceToAffectEligibility: [true],
       variableAllowanceApplicableEmployee: [
         {
-          employee: ['', Validators.required],
+          employee: [''],
         }
       ]
     });
@@ -124,43 +124,75 @@ export class VariableAllowanceComponent {
       employee: item
     }));
     console.log(formValue);
-    if (this.isEdit == false) {
-    console.log(formValue);
+    if (this.variableAllowanceForm.valid) {
+      if (this.isEdit == false) {
+        console.log(formValue);
 
-      this.payroll.addVariableAllowance(formValue).subscribe((res: any) => {
-        this.variableAllowances.push(res.data);
-        this.toast.success('Successfully Added!!!', 'Variable Allwance');
-        this.clearForm();
-      },
-        (err) => {
-          this.toast.error('Variable Allwance Can not be Added', 'Variable Allwance');
-        })
+        this.payroll.addVariableAllowance(formValue).subscribe((res: any) => {
+          this.variableAllowances.push(res.data);
+          this.onCancel();
+          this.toast.success('Successfully Added!!!', 'Variable Allowance');
+        },
+          (err) => {
+            this.toast.error('Variable Allowance Can not be Added', 'Variable Allowance');
+          })
+      }
+      else {
+        this.payroll.updateVariableAllowance(this.selectedRecord._id, formValue).subscribe((res: any) => {
+          const index = this.variableAllowances.findIndex(item => item._id === this.selectedRecord._id);
+          if (index !== -1) {
+            this.variableAllowances[index] = res.data;
+          }
+          this.onCancel();
+          this.toast.success('Successfully Updated!!!', 'Variable Allowance');
+        },
+          (err) => {
+            this.toast.error('Variable Allowance Can not be Updated', 'Variable Allowance');
+          })
+      }
     }
     else {
-      this.payroll.updateVariableAllowance(this.selectedRecord._id, formValue).subscribe((res: any) => {
-        const index = this.variableAllowances.findIndex(item => item._id === this.selectedRecord._id);
-        if (index !== -1) {
-          this.variableAllowances[index] = res.data;
-        }
-        this.toast.success('Successfully Updated!!!', 'Variable Allwance');
-        this.clearForm();
-      },
-        (err) => {
-          this.toast.error('Variable Allwance Can not be Updated', 'Variable Allwance');
-        })
+      this.markFormGroupTouched(this.variableAllowanceForm);
     }
   }
-
+  markFormGroupTouched(formGroup: FormGroup) {
+    Object.values(formGroup.controls).forEach(control => {
+      control.markAsTouched();
+      if (control instanceof FormGroup) {
+        this.markFormGroupTouched(control);
+      }
+    });
+  }
   editRecord() {
     this.variableAllowanceForm.patchValue(this.selectedRecord);
   }
 
-  clearForm() {
+  
+
+  onCancel() {
     this.variableAllowanceForm.patchValue({
-      fromAmount: 0,
-      toAmount: 0,
-      employeePercentage: 0,
-      employerPercentage: 0,
+      label: '',
+      allowanceRatePerDay: 0,
+      isPayrollEditable: true,
+      isProvidentFundAffected: true,
+      isESICAffected: true,
+      isLWFAffected: true,
+      isIncomeTaxAffected: true,
+      deductIncomeTaxAllowance: '',
+      taxRegime: '',
+      isShowInCTCStructure: true,
+      paidAllowanceFrequently: '',
+      allowanceEffectiveFromMonth: '',
+      allowanceEffectiveFromYear: '',
+      isEndingPeriod: true,
+      allowanceStopMonth: '',
+      allowanceStopYear: '',
+      amountEnterForThisVariableAllowance: '',
+      amount: 0,
+      percentage: 0,
+      isProfessionalTaxAffected: true,
+      isAttandanceToAffectEligibility: true,
+      variableAllowanceApplicableEmployee: []
     })
   }
 
@@ -169,12 +201,12 @@ export class VariableAllowanceComponent {
       const index = this.variableAllowances.findIndex(res => res._id === _id);
       if (index !== -1) {
         this.variableAllowances.splice(index, 1);
-        this.totalRecords--; 
+        this.totalRecords--;
       }
-      this.toast.success('Successfully Deleted!!!', 'Variable Allwance');
+      this.toast.success('Successfully Deleted!!!', 'Variable Allowance');
     },
       (err) => {
-        this.toast.error('Variable Allwance Can not be deleted', 'Variable Allwance');
+        this.toast.error('Variable Allowance Can not be deleted', 'Variable Allowance');
       })
   }
 
