@@ -77,25 +77,7 @@ export class CtcTemplatesComponent {
       }
     });
   }
-  // openOffcanvas(offcanvasId: string) {
-  //   this.showAssignedTemplates = true;
-  //   const offcanvasElement = document.getElementById(offcanvasId);
-  //   const offcanvas = new Offcanvas(offcanvasElement);
-  //   offcanvas.show();
-  // }
-
-  // openOffcanvas(action: string) {
-  //   console.log(this.selectedRecord);
-  //   this.payroll.ctcTempData.next(this.selectedRecord);
-  //   if (action === 'update') {
-  //     this.showAssignedTemplates = false;
-  //     const offcanvasElement = document.getElementById(action);
-  //     const offcanvas = new Offcanvas(offcanvasElement);
-  //     offcanvas.show();
-  //     this.showAssignedTemplates = true;
-  //     this.cdr.detectChanges();
-  //   }
-  // }
+  
   showOffcanvas: boolean = false;
 
   openOffcanvas(isEdit: boolean, record: any = null) {
@@ -120,4 +102,7 @@ export class CtcTemplatesComponent {
     this.selectedRecord = null;
   }
   
+  handleRecordUpdate(updatedRecord: any) {
+    this.getCTCTemplate();
+  }
 }

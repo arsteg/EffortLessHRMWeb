@@ -24,6 +24,7 @@ export class AssignedFixedAllowanceComponent {
   }
 
   ngOnInit() {
+    console.log(this.data);
     this.getFixedAllowances();
     this.initForm();
     if (this.isEdit && this.selectedRecord) {
@@ -41,11 +42,12 @@ export class AssignedFixedAllowanceComponent {
         criteria: ['Amount'],
         value: [''],
         valueType: [0],
-        minimumAmount: ['']
+        minimumAmount: [0]
       }));
     });
 
     this.fixedAllowanceForm.valueChanges.subscribe(() => {
+      console.log(this.fixedAllowanceForm.value);
       this.formDataChange.emit(this.fixedAllowanceForm.value.fixedAllowance);
     });
   }
@@ -54,14 +56,14 @@ export class AssignedFixedAllowanceComponent {
 
     // Clear existing controls if any
     allowancesControl.clear();
-
+    console.log(this.selectedRecord.ctcTemplateFixedAllowances);
     this.selectedRecord.ctcTemplateFixedAllowances.forEach((item: any) => {
       allowancesControl.push(this.fb.group({
         fixedAllowance: [item.fixedAllowance || ''],
         criteria: [item.criteria || 'Amount'],
         value: [item.value || ''],
         valueType: item.valueType || 0,
-        minimumAmount: [item.minimumAmount || '']
+        minimumAmount: [item.minimumAmount || 0]
       }));
     });
 

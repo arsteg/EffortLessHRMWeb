@@ -41,7 +41,7 @@ export class VarDeductionComponent {
         criteria: ['Amount'],
         value: [''],
         valueType: [0],
-        minimumAmount: ['']
+        minimumAmount: [0]
       }));
     });
 
@@ -59,7 +59,7 @@ export class VarDeductionComponent {
         criteria: [item.criteria || 'Amount'],
         value: [item.value || ''],
         valueType: item.valueType || '',
-        minimumAmount: [item.minimumAmount || '']
+        minimumAmount: [item.minimumAmount || 0]
       }));
     });
   }

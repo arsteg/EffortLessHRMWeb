@@ -28,7 +28,7 @@ const routes: Routes = [
           { path: 'manage', redirectTo: 'employees', pathMatch: 'full' },
           {
             path: 'employees', component: UserListComponent,
-            children: [
+            // children: [
               // {
               //   path: 'employee-settings', component: EmployeeSettingsComponent, canActivate: [AuthGuard],
               //   children: [
@@ -41,7 +41,7 @@ const routes: Routes = [
               //     { path: 'tax', component: TaxComponent },
               //   ]
               // }
-            ]
+            // ]
           },
           { path: 'projects', component: ProjectListComponent },
           { path: 'tasks', component: TasksComponent },

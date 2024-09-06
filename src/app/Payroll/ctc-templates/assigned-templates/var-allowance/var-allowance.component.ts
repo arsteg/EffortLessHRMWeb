@@ -40,7 +40,7 @@ export class VarAllowanceComponent {
         criteria: ['Amount'],
         value: [''],
         valueType: [0],
-        minimumAmount: ['']
+        minimumAmount: [0]
       }));
     });
     this.variableAllowanceForm.valueChanges.subscribe(() => {
@@ -57,7 +57,7 @@ export class VarAllowanceComponent {
         criteria: [item.criteria || 'Amount'],
         value: [item.value || ''],
         valueType: item.valueType || '',
-        minimumAmount: [item.minimumAmount || '']
+        minimumAmount: [item.minimumAmount || 0]
       }));
     });
     console.log(this.variableAllowanceForm.value);

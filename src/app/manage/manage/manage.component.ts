@@ -14,13 +14,11 @@ export class ManageComponent implements OnInit {
     private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.route.fragment.subscribe(fragment => {
-      // Check if the fragment is 'tab3', then set selectedTab to 3
-      if (fragment === 'tab3') {
-          this.selectedTab = 3;
-      }
-      // Add conditions for other tabs if needed
-  });
+  //   this.route.fragment.subscribe(fragment => {
+  //     if (fragment === 'tab3') {
+  //         this.selectedTab = 3;
+  //     }
+  // });
   }
   selectTab(tabIndex: number) {
     this.commonService.setSelectedTab(tabIndex);

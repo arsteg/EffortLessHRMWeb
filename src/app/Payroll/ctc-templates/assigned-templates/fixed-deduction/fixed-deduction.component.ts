@@ -43,7 +43,7 @@ export class AssignedFixedDeductionComponent {
         criteria: ['Amount'],
         value: [''],
         valueType: [0],
-        minimumAmount: ['']
+        minimumAmount: [0]
       }));
     });
     this.fixedDeductionForm.valueChanges.subscribe(() => {
@@ -59,7 +59,7 @@ export class AssignedFixedDeductionComponent {
         criteria: [item.criteria || 'Amount'],
         value: [item.value || ''],
         valueType: item.valueType || 0,
-        minimumAmount: [item.minimumAmount || '']
+        minimumAmount: [item.minimumAmount || 0]
       }));
     });
     console.log(this.fixedDeductionForm.value);

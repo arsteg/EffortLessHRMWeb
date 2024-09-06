@@ -1,5 +1,5 @@
 
-<form [formGroup]="ctcTemplateForm" (ngSubmit)="onSubmission()">
+<form [formGroup]="ctcTemplateForm">
     <div class="form-group">
         <label for="">Enter the Label for CTC Template</label>
         <input type="text" class="form-control" formControlName="name" placeholder="CTC Template...">
@@ -80,7 +80,7 @@
     
     <div class="d-flex border-top mt-2 py-2 justify-content-between">
         <button mat-raised-button type="reset">Cancel</button>
-        <button mat-raised-button type="submit" class="addBtn"  (click)="openOffcanvas('AssignedTemp')" >Proceed</button>
+        <button mat-raised-button type="button" class="addBtn"  (click)="openOffcanvas('AssignedTemp')" >Proceed</button>
     </div>
 </form>
 
@@ -89,7 +89,7 @@
     <div class="offcanvas-body">
         <div class="container p-0">
             <ng-container *ngIf="showAssignedTemplates">
-            <app-assigned-templates [data]="ctcTemplateForm.value" [selectedRecord]="selectedRecord" [isEdit]="isEdit"></app-assigned-templates>
+            <app-assigned-templates (recordUpdated)="handleRecordUpdate($event)" [data]="ctcTemplateForm.value" [selectedRecord]="selectedRecord" [isEdit]="isEdit"></app-assigned-templates>
             </ng-container>
         </div>
     </div>

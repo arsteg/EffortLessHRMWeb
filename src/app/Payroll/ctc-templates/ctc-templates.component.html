@@ -62,6 +62,6 @@
             aria-label="Close" [ngClass]="{ 'show': selectedRecord || !isEdit }"> <i
                 class="bi bi-arrow-left text-white"></i></button>
         <div #offcanvasContent class="p-3">
-            <app-update-ctctemplate [selectedRecord]="selectedRecord" [isEdit]="isEdit"></app-update-ctctemplate>
+            <app-update-ctctemplate [selectedRecord]="selectedRecord" [isEdit]="isEdit" (recordUpdatedFromAssigned)="handleRecordUpdate($event)"></app-update-ctctemplate>
         </div>
     </div>

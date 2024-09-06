@@ -66,7 +66,7 @@
 
                                 <ol class="breadcrumb bg-transparent align-self-center ms-auto m-0 p-0">
                                     <ng-container>
-                                        <button *ngIf="view==='admin'" href="" (click)="goBack()"
+                                        <button *ngIf="view==='admin'" [routerLink]="['/manage/tasks']"
                                             class="btn  submenuTab active rounded-pill"><span class="bi bi-arrow-left ">
                                                 Back</span></button>
                                         <a href="" *ngIf="view==='user'" [routerLink]="['/tasks']"
@@ -786,7 +786,7 @@
 
     <div *ngIf="tasks?.data?.task === null " class="d-flex justify-content-center mt-5">
         <ng-container>
-            <button *ngIf="view==='admin'" href="" (click)="goBack()" class="btn submenuTab active rounded-pill"><span
+            <button *ngIf="view==='admin'" [routerLink]="['/manage/tasks']" class="btn submenuTab active rounded-pill"><span
                     class="bi bi-arrow-left ">
                     Back</span></button>
             <a href="" *ngIf="view==='user'" [routerLink]="['/tasks']"> <button
