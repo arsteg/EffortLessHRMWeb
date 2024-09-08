@@ -1,4 +1,4 @@
-<div class="main-content">
+<div class="main-content mt-5 pt-2">
     <div class="container bg-white p-3">
         <div class="row" *ngIf="subTaskDetail != null">
             <span (click)="gotoParentTask(parentTask)" class="text-end"> <button
@@ -7,11 +7,11 @@
             <div class="child-issue col-md-9 border-end">
                 <form [formGroup]="updateForm" (ngSubmit)="updateTask()">
                     <div class="d-flex border-end">
-                        <button mat-raised-button  class="me-3 addBtn" type="submit" *ngIf="formDirty"> Save
+                        <button mat-raised-button class="me-3 addBtn" type="submit" *ngIf="formDirty"> Save
                         </button>
                         <button class="btn btn-outline-primary rounded btn-sm" type="button" *ngIf="formDirty"> Cancel
                         </button>
-                        <button mat-raised-button  class="ms-auto addBtn" type="button" data-bs-toggle="modal"
+                        <button mat-raised-button class="ms-auto addBtn" type="button" data-bs-toggle="modal"
                             data-bs-target="#deleteModal"> Delete </button>
                     </div>
 
@@ -216,65 +216,62 @@
                         </div>
                     </ng-container>
                 </div>
-<h3 class="border-bottom">Comments</h3>
+                <h3 class="border-bottom">Comments</h3>
                 <!-- Starts Comments -->
                 <app-task-comment-list *ngIf="subTaskDetail != null"></app-task-comment-list>
-                <!-- Ends Comment -->
             </div>
 
             <div class="col-md-3">
+
                 <div class="issue-details d-flex">
-                    <div class="dropdown">
-                        <button class="btn dropdown-toggle text-white status" type="button" id="dropdownMenuButton"
-                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" [ngClass]="{
-                'bg-warning text-white!important': (selectedStatus || subtask?.task?.status) === 'In Progress',
-                'bg-success text-white!important': (selectedStatus || subtask?.task?.status) === 'Done',
-                'bg-danger text-white!important': (selectedStatus || subtask?.task?.status) === 'ToDo',
-                'bg-secondary text-white!important': (selectedStatus || subtask?.task?.status) === 'Closed'
-                
-            }">
-                            <i class="fa fa-tasks"></i> {{ selectedStatus ||
-                            subtask?.task?.status
-                            }}
+                    <div ngbDropdown class="d-inline-block">
+                        <button class="btn dropdown-toggle status" [title]="subtask?.task?.status" id="dropdownMenuButton" ngbDropdownToggle [ngClass]="{
+                            'bg-warning text-white': (selectedStatus || subtask?.task?.status) === 'In Progress',
+                            'bg-success text-white': (selectedStatus || subtask?.task?.status) === 'Done',
+                            'bg-danger text-white': (selectedStatus || subtask?.task?.status) === 'ToDo',
+                            'bg-secondary text-white': (selectedStatus || subtask?.task?.status) === 'Closed'
+                        }">
+                            <i class="fa fa-tasks"></i>
+                            {{ selectedStatus || currentTaskProject?.status }}
                         </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <button *ngFor="let s of statusList" type="button" tabindex="0" role="menuitem"
-                                class="dropdown-item" (click)="updatesubTaskStatus(subtask,s.name)">
+
+                        <div ngbDropdownMenu aria-labelledby="dropdownMenuButton">
+                            <button ngbDropdownItem *ngFor="let s of statusList"
+                                (click)="updateTaskStatus(task, s.name)">
                                 <span class="d-flex align-items-center">
-                                    <span>{{s?.name}}</span>
+                                    <span>{{ s?.name }}</span>
                                 </span>
                             </button>
-                            <button type="button" tabindex="0" role="menuitem" class="dropdown-item"
-                                (click)="updatesubTaskStatus(subtask,'')">
+                            <button ngbDropdownItem (click)="updateTaskStatus(task, '')">
                                 <span class="d-flex align-items-center"><span>Remove
                                         Status</span></span>
                             </button>
                         </div>
                     </div>
 
-                    <div class="dropdown mx-2">
-                        <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton"
-                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+                    <div ngbDropdown class="d-inline-block">
+                        <button class="btn dropdown-toggle" id="dropdownMenuButton2" ngbDropdownToggle>
                             <img class="align-self-center"
-                                [src]="selectedPriority ? selectedPriority.url : getTaskPriorityUrl(subtask?.task?.priority)"
-                                [title]="selectedPriority ? selectedPriority.name : getTaskPriorityUrl(subtask?.task?.priority)"
-                                height="24" width="24">
+                                [src]="selectedPriority ? selectedPriority?.url : getTaskPriorityUrl(subtask?.task?.priority)"
+                                [title]="subtask?.task?.priority" height="24" width="24">
                         </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <button *ngFor="let priority of priorityList" type="button" tabindex="0" role="menuitem"
-                                class="dropdown-item" (click)="updatesubTaskPriority(subtask,priority.name)">
+
+                        <div ngbDropdownMenu aria-labelledby="dropdownMenuButton2">
+                            <button ngbDropdownItem *ngFor="let priority of priorityList"
+                                (click)="updateTaskPriority(subtask, priority.name)">
                                 <span class="d-flex align-items-center">
                                     <img [src]="priority?.url" class="me-3" height="18" width="18">
-                                    <span>{{priority?.name}}</span>
+                                    <span>{{ priority?.name }}</span>
                                 </span>
                             </button>
-                            <button type="button" tabindex="0" role="menuitem" class="dropdown-item"
-                                (click)="updatesubTaskPriority(subtask,'')">
+                            <button ngbDropdownItem (click)="updateTaskPriority(task, '')">
                                 <span class="d-flex align-items-center"><span>Remove
                                         Priority</span></span>
                             </button>
                         </div>
                     </div>
+
                 </div>
 
 
@@ -302,8 +299,96 @@
                                                 <td class="pt-0">Assignee:</td>
                                                 <td class="pt-0">
 
+                                                    <div ngbDropdown class="d-inline-block">
+                                                        <ng-container *ngIf="assignee && assignee.length === 0;">
+                                                            <button type="button" class="btn btn-outline-primary"
+                                                                id="dropdownBasic1" ngbDropdownToggle>
+                                                                Toggle dropdown
+                                                            </button>
+                                                            <span type="button"
+                                                                class="btn btn-sm rounded-pill btn-primary px-2 dropdown-toggle dropdown-toggle-no-caret"
+                                                                ngbDropdownToggle>Assignee <i
+                                                                    class="bi bi-chevron-down"></i></span>
 
-                                                    <div class="ms-2 mt-2">
+                                                            <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+                                                                <button ngbDropdownItem
+                                                                    *ngFor="let assignee of projectUser"
+                                                                    [value]="assignee?.user?.id">
+                                                                    <p *ngIf="assignee.user != null"
+                                                                        class="ps-4 py-2 mb-1" style="font-size: 13px;"
+                                                                        (click)="addUserToTask(subtask?.task?.id, assignee.user.id)">
+                                                                        <span class="letter p-1 rounded text-light"
+                                                                            style="font-size: 12px;"
+                                                                            [tooltip]="(assignee?.user?.firstName | titlecase) + ' ' + (assignee?.user?.lastName | titlecase)"
+                                                                            [style.background-color]="commonservice.getRandomColor(assignee?.user?.firstName?.charAt(0) | uppercase)">
+                                                                            {{ assignee?.user?.firstName?.charAt(0) |
+                                                                            uppercase }}
+                                                                            {{ assignee?.user?.lastName?.charAt(0) |
+                                                                            uppercase }}
+                                                                        </span>
+                                                                        &nbsp;{{ assignee?.user?.firstName | titlecase
+                                                                        }}
+                                                                        {{ assignee?.user?.lastName | titlecase }}
+                                                                    </p>
+                                                                </button>
+                                                            </div>
+                                                        </ng-container>
+
+                                                        <div class="user-container btn-group align-items-center"
+                                                            *ngFor="let user of assignee;" id="dropdownBasic2"
+                                                            ngbDropdown>
+                                                            <span class="letters p-1 rounded text-light"
+                                                                [tooltip]="(user?.user?.firstName | titlecase) + ' ' + (user?.user?.lastName | titlecase)"
+                                                                [style.background-color]="commonservice.getRandomColor(user?.user?.firstName?.charAt(0) | uppercase)">
+                                                                {{ user?.user?.firstName?.charAt(0) | uppercase
+                                                                }}&nbsp;{{
+                                                                user?.user?.lastName?.charAt(0) | uppercase }}
+                                                            </span>
+
+                                                            <button type="button"
+                                                                class="btn dropdown-toggle dropdown-toggle-no-caret"
+                                                                ngbDropdownToggle>
+                                                                <span class="text-muted">{{ user?.user?.firstName }} {{
+                                                                    user?.user?.lastName }}</span>
+                                                            </button>
+
+                                                            <div ngbDropdownMenu aria-labelledby="dropdownBasic2">
+                                                                <button ngbDropdownItem (click)="removeAssignee()"
+                                                                    *ngIf="assignee.length === 1 && assignee[0]?.id">
+                                                                    <span class="ps-2 py-2 mb-1"
+                                                                        style="font-size: 13px;">
+                                                                        <i class="bi bi-person-circle me-3 text-secondary"
+                                                                            style="font-size: 20px"></i>
+                                                                        Unassigned
+                                                                    </span>
+                                                                </button>
+
+                                                                <button ngbDropdownItem
+                                                                    *ngFor="let assignee of projectUser"
+                                                                    [value]="assignee?.user?.id">
+                                                                    <p *ngIf="assignee.user != null"
+                                                                        class="ps-2 py-2 mb-1" style="font-size: 13px;"
+                                                                        (click)="addUserToTask(subtask?.task?.id, assignee.user.id)">
+                                                                        <span class="letters p-1 rounded text-light"
+                                                                            style="font-size: 12px;"
+                                                                            [tooltip]="(assignee?.user?.firstName | titlecase) + ' ' + (assignee?.user?.lastName | titlecase)"
+                                                                            [style.background-color]="commonservice.getRandomColor(assignee?.user?.firstName?.charAt(0) | uppercase)">
+                                                                            {{ assignee?.user?.firstName?.charAt(0) |
+                                                                            uppercase
+                                                                            }}&nbsp;{{
+                                                                            assignee?.user?.lastName?.charAt(0) |
+                                                                            uppercase }}
+                                                                        </span>&nbsp;{{ assignee?.user?.firstName |
+                                                                        titlecase
+                                                                        }}&nbsp;{{ assignee?.user?.lastName | titlecase
+                                                                        }}
+                                                                    </p>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- <div class="ms-2 mt-2">
                                                         <ng-container *ngIf="assignee.length === 0">
                                                             <div>
                                                                 <span type="button"
@@ -391,7 +476,7 @@
 
                                                         </div>
 
-                                                    </div>
+                                                    </div> -->
 
                                                 </td>
                                             </tr>
@@ -449,8 +534,8 @@
                         <button mat-raised-button class="mx-2" data-bs-dismiss="modal" type="button">Cancel</button>
                     </div>
                     <div>
-                        <button mat-raised-button class=" addBtn" (click)="deleteTask()"
-                            data-bs-dismiss="modal" type="submit">Delete</button>
+                        <button mat-raised-button class=" addBtn" (click)="deleteTask()" data-bs-dismiss="modal"
+                            type="submit">Delete</button>
                     </div>
                 </div>
             </div>

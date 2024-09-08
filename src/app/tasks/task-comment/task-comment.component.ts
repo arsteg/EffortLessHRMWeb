@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { TaskAttachment, taskComment } from 'src/app/models/task/taskComment';
 import { TasksService } from '../../_services/tasks.service';
 import { UserService } from 'src/app/_services/users.service';
@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { ToastrService } from 'ngx-toastr';
 import { CommonService } from 'src/app/_services/common.Service';
+import { QuillEditorComponent } from 'ngx-quill';
 
 @Component({
   selector: 'app-task-comment',
@@ -27,9 +28,7 @@ export class TaskCommentComponent implements OnInit {
   showEditor: boolean = false;
 
   constructor(
-    private taskService: TasksService,
-    private userService: UserService,
-    private dialog: MatDialog,
+   private dialog: MatDialog,
     private toastmsg: ToastrService,
     public commonService: CommonService
     ){
@@ -81,10 +80,18 @@ export class TaskCommentComponent implements OnInit {
     }
     this.showEditor = true;
     this.isEditMode = !this.isEditMode;
+    setTimeout(() => {
+      if (this.quillEditor && this.quillEditor.quillEditor) {
+        this.quillEditor.quillEditor.focus();
+      }
+    }, 0);
   }
   cancelEditMode() {
     this.isEditMode = false;
     this.showEditor = false;
     this.tempComment = { ...this.editedComment };
   }
+  @ViewChild(QuillEditorComponent, { static: false }) quillEditor: QuillEditorComponent;
+
+  
 }

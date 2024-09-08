@@ -29,31 +29,52 @@ export class TaxComponentsComponent {
 
   taxForm: FormGroup;
 
+  incomeTaxDecComponentForm: FormGroup;
+
   constructor(private taxService: TaxationService,
     private fb: FormBuilder,
     private toast: ToastrService
   ) {
     this.taxForm = this.fb.group({
       incomeTaxComponents: this.fb.array([])
+    });
+    this.incomeTaxDecComponentForm = this.fb.group({
+      employeeIncomeTaxDeclaration: [''],
+      incomeTaxComponent: [''],
+      section: [''],
+      maximumAmount: [0],
+      appliedAmount: [0],
+      approvedAmount: [0],
+      approvalStatus: [''],
+      remark: [''],
+      documentLink: [''],
+      employeeIncomeTaxDeclarationAttachments: [
+        {
+          "attachmentType": null,
+          "attachmentName": null,
+          "attachmentSize": null,
+          "extention": null,
+          "file": null
+        }
+      ]
     })
   }
 
-  createFormGroup(component: any): FormGroup {
-    return this.fb.group({
-      incomeTaxComponent: [component?._id || ''],
-      section: [component?.section || ''],
-      maximumAmount: [component?.maximumAmount],
-      appliedAmount: [component?.appliedAmount, Validators.required],
-      approvedAmount: [component?.approvedAmount, Validators.required],
-      approvalStatus: [component?.approvalStatus || ''],
-      remark: [component?.remark || ''],
-      isEditable: [false],
-      employeeIncomeTaxDeclarationAttachments: [[]]
-    });
-  }
+  // createFormGroup(component: any): FormGroup {
+  //   return this.fb.group({
+  //     incomeTaxComponent: [component?._id || ''],
+  //     section: [component?.section || ''],
+  //     maximumAmount: [component?.maximumAmount],
+  //     appliedAmount: [component?.appliedAmount, Validators.required],
+  //     approvedAmount: [component?.approvedAmount, Validators.required],
+  //     approvalStatus: [component?.approvalStatus || ''],
+  //     remark: [component?.remark || ''],
+  //     isEditable: [false],
+  //     employeeIncomeTaxDeclarationAttachments: [[]]
+  //   });
+  // }
 
   ngOnInit() {
-    console.log(this.selectedUser)
     this.getAllTaxDecalarationByUser();
     this.getSections();
     this.fetchAndMatchTaxComponents();
@@ -73,7 +94,6 @@ export class TaxComponentsComponent {
       skip: '',
       next: ''
     };
-    // Fetch all tax components
     this.taxService.getAllTaxComponents(pagination).subscribe((res: any) => {
       this.taxComponents = res.data.filter((taxComponent: any) => {
         return taxComponent.section === this.sectionId;
@@ -90,8 +110,8 @@ export class TaxComponentsComponent {
           })
         }
       }
-      const formArray = this.fb.array(this.taxComponents.map(component => this.createFormGroup(component)));
-      this.taxForm.setControl('incomeTaxComponents', formArray);
+      // const formArray = this.fb.array(this.taxComponents.map(component => this.createFormGroup(component)));
+      // this.taxForm.setControl('incomeTaxComponents', formArray);
     }, (error) => {
       console.error('Error fetching all tax components:', error);
     });
@@ -106,21 +126,30 @@ export class TaxComponentsComponent {
     });
   }
 
-  updateRow(i) {
-    const rowData = this.taxForm.get(`incomeTaxComponents.${i}`).value;
-    
-    const payload = {
-      financialYear: this.selectedData?.financialYear,
-      employeeIncomeTaxDeclarationComponent: [rowData],
-      employeeIncomeTaxDeclarationHRA: []
-    }
-    console.log(payload);
-    this.taxService.updateIncomeTax(this.selectedData._id, payload).subscribe((res: any) => {
+  onSubmission() {
+    // handle single records
+    this.taxService.updateIncTaxDecComponent(this.selectedData._id, this.taxForm.value).subscribe((res: any) => {
+      this.taxComponentsSaved.emit(res.data);
       this.toast.success('Tax Component Updated Successfully', 'Success!');
-      this.cancelEditing(i);
     },
       (error) => { this.toast.error('Can not be Updated', 'Error!') })
   }
+
+  // updateRow(i) {
+  //   const rowData = this.taxForm.get(`incomeTaxComponents.${i}`).value;
+
+  //   const payload = {
+  //     financialYear: this.selectedData?.financialYear,
+  //     employeeIncomeTaxDeclarationComponent: [rowData],
+  //     employeeIncomeTaxDeclarationHRA: []
+  //   }
+  //   console.log(payload);
+  //   this.taxService.updateIncomeTax(this.selectedData._id, payload).subscribe((res: any) => {
+  //     this.toast.success('Tax Component Updated Successfully', 'Success!');
+  //     this.cancelEditing(i);
+  //   },
+  //     (error) => { this.toast.error('Can not be Updated', 'Error!') })
+  // }
 
   cancelEditing(i) {
     const control = this.taxForm.get(`incomeTaxComponents.${i}`) as FormGroup;

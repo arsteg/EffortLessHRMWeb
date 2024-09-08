@@ -35,7 +35,7 @@ export class TaxationService {
     return response;
   }
   getAllTaxSections(): Observable<any> {
-    var response = this.http.get<any>(`${environment.apiUrlDotNet}/common/income-tax-sections-by-company`,  this.httpOptions);
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/common/income-tax-sections-by-company`, this.httpOptions);
     return response;
   }
   updateTaxSection(companyId: string, payload: any): Observable<any> {
@@ -101,6 +101,16 @@ export class TaxationService {
 
   getIncomeTaxById(id: string): Observable<any> {
     var response = this.http.get<any>(`${environment.apiUrlDotNet}/users/employee-income-tax-declarations/${id}`, this.httpOptions);
+    return response;
+  }
+
+  updateIncTaxDecComponent(id: string, payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/users/employee-income-tax-declarations-componant-by-id/${id}`, payload, this.httpOptions);
+    return response;
+  }
+
+  updateIncTaxDecHRA(id: string, payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/users/employee-income-tax-declarations-hra-by-id/${id}`, payload, this.httpOptions);
     return response;
   }
 }

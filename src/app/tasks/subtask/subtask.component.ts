@@ -48,6 +48,9 @@ export class SubtaskComponent implements OnInit {
   formDirty = false;
   projectUser: any;
   showEditor: boolean = false;
+  task: any = [];
+  currentTaskProject: any;
+
   constructor(
     private route: ActivatedRoute,
     private tasksService: TasksService,
@@ -86,7 +89,7 @@ assignee: any;
           this.tasksService.getTaskById(this.subTaskDetail.parentTask).subscribe((result: any) => {
             this.parentTask = result.data.task;
             const currentTaskProject = this.parentTask;
-
+            
             this.projectService.getprojectUser(currentTaskProject.project.id).subscribe((res: any) => {
               this.projectUser = res && res.data && res.data['projectUserList'];
             });
@@ -107,6 +110,58 @@ assignee: any;
 
     this.firstLetter = this.commonservice.firstletter;
     this.getTaskAttachments();
+  }
+
+  updateTaskStatus(selectedTask, status: string) {
+    selectedTask = this.subtask.task;
+    const payload = {
+      "status": status,
+      taskName: selectedTask.taskName,
+      startDate: selectedTask.startDate,
+      endDate: selectedTask.endDate,
+      startTime: selectedTask.startTime,
+      description: selectedTask.description,
+      comment: selectedTask.comment,
+      priority: selectedTask.priority,
+      project: selectedTask.project,
+      title: selectedTask.ttitle,
+      parentTask: selectedTask.parentTask,
+      estimate: selectedTask.estimate,
+      timeTaken: selectedTask.timeTaken,
+    }
+    payload.status = status
+    this.tasksService.updatetaskFlex(this.subtask.task.id, payload).subscribe(response => {
+      this.showEditor = false;
+      this.subtask.task.status = status;
+      this.toastmsg.success('Task status updated successfully', `Task Number: ${this.subtask.task.taskNumber}`)
+    }, err => {
+      this.toastmsg.error('Task could not be updated', 'ERROR!')
+    })
+  }
+  updateTaskPriority(selectedTask: any, priority: string) {
+    selectedTask = this.subtask.task;
+    const payload = {
+      "priority": priority,
+      taskName: selectedTask.taskName,
+      startDate: selectedTask.startDate,
+      endDate: selectedTask.endDate,
+      startTime: selectedTask.startTime,
+      description: selectedTask.description,
+      comment: selectedTask.comment,
+      project: selectedTask.project,
+      title: selectedTask.ttitle,
+      parentTask: selectedTask.parentTask,
+      estimate: selectedTask.estimate,
+      timeTaken: selectedTask.timeTaken,
+    }
+    payload.priority = priority;
+    console.log(payload)
+    this.tasksService.updatetaskFlex(this.subtask.task.id, payload).subscribe(response => {
+      this.subtask.task.priority = priority;
+      this.toastmsg.success('Task priority updated successfully', `Task Number: ${this.subtask.task.taskNumber}`)
+    }, err => {
+      this.toastmsg.error('Task could not be updated', 'ERROR!')
+    })
   }
   addUserToTask(taskId: string, user: string): void {
     this.tasksService.addUserToTask(taskId, user).subscribe((response: any) => {
@@ -176,7 +231,7 @@ assignee: any;
       taskName: this.updateForm.value.taskName,
       description: this.updateForm.value?.description,
       priority: this.subTaskDetail.priority,
-      project: this.updateForm.value.project?.id,
+      project: this.subTaskDetail?.project?.id,
       title: this.updateForm.value.taskName,
       status: this.subTaskDetail.status,
       comment: this.updateForm.value.comment

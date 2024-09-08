@@ -246,7 +246,7 @@ export class TasksComponent implements OnInit {
     // Add "Me" by default
     this.members.push({ id: this.member?.id, name: "Me", email: this.member?.email });
 
-    this.timelog.getTeamMembers(this.member.id).subscribe({
+    this.timelog.getTeamMembers(this.member?.id).subscribe({
       next: (response: { data: any; }) => {
         const hasSubordinates = response.data && response.data.length > 0;
 
@@ -288,6 +288,8 @@ export class TasksComponent implements OnInit {
       this.router.navigate(['/edit-task'], navigationExtras);
     }
   }
+ 
+  
 
   isStatusChecked(status: string): boolean {
     const statusItem = this.statusList.find(item => item.name === status);
@@ -296,6 +298,8 @@ export class TasksComponent implements OnInit {
 
   async listAllTasks() {
     this.tasksService.getAllTasks(this.skip, this.next).subscribe((response: any) => {
+
+      // this.tasksService.getTasklistbyTeam(this.skip, this.next).subscribe((response: any) => {
       this.totalRecords = response && response.data
       this.tasks = response && response.data && response.data['taskList'];
       this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;

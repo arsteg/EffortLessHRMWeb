@@ -40,8 +40,8 @@
                         (click)="onRowEdit(i)"> <i class="bi bi-pencil"></i></button>
                     } @else {
                     <button class="actions" mat-mini-fab matTooltip="Update" matTooltipPosition="before" type="button"
-                        (click)="updateRow(i)"> <i class="bi bi-check"></i></button>
-
+                        > <i class="bi bi-check"></i></button>
+                        <!-- (click)="updateRow(i)" -->
                     <button class="actions" mat-mini-fab matTooltip="Close" matTooltipPosition="after" type="button"
                         (click)="cancelEditing(i)"> <i class="bi bi-x"></i></button>
                     }
