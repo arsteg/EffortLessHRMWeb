@@ -1,6 +1,6 @@
 <div *ngIf="!taxView">
     <div class="d-flex align-items-center px-2 py-1">
-        <p class="mb-0 me-auto">() Records Found</p>
+        <p class="mb-0 me-auto">({{totalRecords}}) Records Found</p>
         <div class="d-flex align-items-center">
             <span class="bi bi-search searchIcon"></span>
             <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"

@@ -1,4 +1,4 @@
-<form [formGroup]="taxForm">
+<form [formGroup]="incomeTaxDecComponentForm">
     <table>
         <thead>
             <th style="width:12%">Component Name</th>
@@ -9,40 +9,56 @@
             <th>Approval Status</th>
             <th>Remarks</th>
             <th>Attachment</th>
-            <th>Actions</th>
+            <th class="text-center">Actions</th>
         </thead>
-        <tbody formArrayName="incomeTaxComponents">
-            <tr *ngFor="let group of taxForm.get('incomeTaxComponents')['controls']; let i = index" [formGroupName]="i">
+        <tbody formArrayName="incomeTaxComponent">
+            <tr *ngFor="let group of incomeTaxDecComponentForm.get('incomeTaxComponent')['controls']; let i = index"
+                [formGroupName]="i">
                 <td>{{ taxComponents[i]?.componantName }}</td>
                 <td>{{ getSection(taxComponents[i]?.section) }}</td>
-                <td>{{ taxComponents[i]?.maximumAmount }}</td>
                 <td>
-                    <input formControlName="appliedAmount" type="number" [readonly]="!group.get('isEditable').value" />
+                    <input formControlName="maximumAmount" type="number" [readonly]="!group.get('isEditable')?.value" />
                 </td>
                 <td>
-                    <input formControlName="approvedAmount" type="number" [readonly]="!group.get('isEditable').value" />
+                    <input formControlName="appliedAmount" type="number" [readonly]="!group.get('isEditable')?.value" />
                 </td>
                 <td>
-                    <input formControlName="approvalStatus" type="text" [readonly]="!group.get('isEditable').value" />
+                    <input formControlName="approvedAmount" type="number"
+                        [readonly]="!group.get('isEditable')?.value" />
                 </td>
                 <td>
-                    <input formControlName="remark" type="text" [readonly]="!group.get('isEditable').value" />
+                    <select formControlName="approvalStatus" [readonly]="!group.get('isEditable')?.value">
+                        <option value="Pending">Pending</option>
+                        <option value="Approved">Approved</option>
+                        <option value="Rejected">Rejected</option>
+                    </select>
                 </td>
                 <td>
-                    <ng-container *ngIf="taxComponents[i]?.matchedData">
-                        <i class="bi bi-paperclip" matTooltip="{{'Upload'}}" matTooltipPosition="below"></i>
-                    </ng-container>
+                    <input formControlName="remark" type="text" [readonly]="!group.get('isEditable')?.value" />
                 </td>
+                <td class="text-center">
+                    <div class="attachment-container">
+                        <label for="attachment-{{i}}">
+                            <i class="bi bi-paperclip"
+                                matTooltip="{{ group.get('documentLink')?.value ? group.get('documentLink')?.value.split('/').pop().split('.').slice(0, -1).join('.') : 'Add Attachment File' }}"
+                                matTooltipPosition="below"></i>
+                        </label>
+                        <input type="file" id="attachment-{{i}}" [readonly]="!group.get('isEditable')?.value"
+                            formControlName="employeeIncomeTaxDeclarationAttachments"
+                            (change)="uploadAttachment($event, i)" style="display: none;" />
+                    </div>
+                </td>
+                <td>
 
                 <td>
-                    @if(!group.get('isEditable').value){
+                    @if(!group.get('isEditable')?.value){
                     <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before" type="button"
                         (click)="onRowEdit(i)"> <i class="bi bi-pencil"></i></button>
                     } @else {
-                    <button class="actions" mat-mini-fab matTooltip="Update" matTooltipPosition="before" type="button"
-                        > <i class="bi bi-check"></i></button>
-                        <!-- (click)="updateRow(i)" -->
-                    <button class="actions" mat-mini-fab matTooltip="Close" matTooltipPosition="after" type="button"
+                    <button class="actions" mat-mini-fab matTooltip="Update" matTooltipPosition="below" type="button"
+                        (click)="selectedComponent = taxComponents[i]?._id; updateRow(i)"> <i
+                            class="bi bi-check"></i></button>
+                    <button class="actions" mat-mini-fab matTooltip="Close" matTooltipPosition="below" type="button"
                         (click)="cancelEditing(i)"> <i class="bi bi-x"></i></button>
                     }
                 </td>

@@ -69,7 +69,6 @@ export class EmployeeProfileComponent {
           DOB: formattedDOB,
           MarraigeAniversary: formattedMarriageAniversary
         });
-        console.log(this.userForm.value)
       })
     }
     this.getRoles();

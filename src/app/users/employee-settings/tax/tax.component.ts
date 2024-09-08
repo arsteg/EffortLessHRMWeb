@@ -106,6 +106,7 @@ export class TaxComponent {
     };
     this.userService.getTaxDeclarationByUserId(this.selectedUser.id, pagination).subscribe((res: any) => {
       this.taxList = res.data;
+      this.totalRecords = res.total;
       this.uniqueFinancialYears = this.getUniqueFinancialYears(this.taxList);
       this.uniqueSections = this.extractSectionsFromTaxList(this.taxList);
       this.taxService.taxByUser.next(res.data);
