@@ -10,46 +10,6 @@
         <form class="d-flex">
           <div class=" d-flex align-items-center">
             <app-notification></app-notification>
-            <!-- <div class="dropdown ">
-              <img width="25" height="25" src="https://img.icons8.com/ios/50/FFFFFF/appointment-reminders--v1.png"
-                alt="appointment-reminders--v1" id="notificationDropdown" (click)="toggleDropdown()" />
-
-              <ul class="dropdown-menu dropdown-menu-default drpLog" [class.show]="dropdownOpen"
-                aria-labelledby="notificationDropdown" style="margin-top: 14px; box-shadow: 0 0px 30px 0 #dedbdb;">
-                <div class="arrow up"></div>
-                <li style=" width: 355px;
-                height: 75px; border-bottom: 1px solid lightgray;">
-                  <i class="fa fa-handshake-o" style="margin-right: 8px; margin-left: 8px;"></i>
-                  <a style="margin-left: 46px;
-                  margin-top: -22px; ">
-                    You spent 7 connects on the availability
-                  </a>
-                </li>
-                <li style=" width: 355px;
-                height: 75px; border-bottom: 1px solid lightgray;">
-                  <i class="fa fa-plus-circle" style="margin-right: 8px; margin-left: 8px;"></i>
-                  <a style="margin-left: 46px;
-                  margin-top: -22px; ">
-                    the work week has ended, and your weekly summary is available for review
-                  </a>
-                </li>
-                <li style=" width: 355px;
-                height: 75px; border-bottom: 1px solid lightgray;">
-                  <i class="fa fa-fighter-jet" style="margin-right: 8px; margin-left: 8px;"></i>
-                  <a style="margin-left: 46px;
-                  margin-top: -22px; ">
-                    Your proposal to job
-                  </a>
-
-                </li>
-                <li style=" width: 325px;height: 35px;">
-                  <a href="#" style="margin-left: 20px;">
-                    <i></i><b>See all notification</b>
-                  </a>
-                </li>
-
-              </ul>
-            </div> -->
 
             <span data-bs-toggle="offcanvas" data-bs-target="#demo">
               <section>
@@ -161,9 +121,10 @@
 
   <!-- Sidebar - only icons -->
   <div class="sidebar-title border-right" id="sidebar-wrapper" [ngClass]="isCollapsedMenu ? 'collapsed-menu' : 'show'">
-    <div class="sidebar-heading pt-4 px-2" *ngIf="!isCollapsedMenu"><img src="assets/logo.png" width="170" alt=""></div>
-    <div class="sidebar-heading py-4 ps-3" *ngIf="isCollapsedMenu"><img src="assets/CollapsedLogo.png" width="40"
-        alt=""></div>
+    <div class="sidebar-heading pt-4 px-2" *ngIf="!isCollapsedMenu"><img src="assets/logo/expanded-logo.svg" width="170"
+        alt="expanded logo"></div>
+    <div class="sidebar-heading py-3 ps-2" *ngIf="isCollapsedMenu"><img src="assets/logo/collapsed-logo.svg" width="55"
+        alt="collapsed logo"></div>
     <div>
       <mat-icon *ngIf="!isCollapsedMenu" (click)="clickEvent()" (click)="drawer.toggle()" class="exp-col expanded"
         data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -239,9 +200,10 @@
         <div class="profile py-2">
           <div class="d-flex justify-content-end align-items-baseline">
             <span class="fa fa-edit fa-lg edit" [routerLink]="['userProfile']"></span>
-            <button type="button" class="btn-close text-reset times" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            <button type="button" class="btn-close text-reset times" data-bs-dismiss="offcanvas"
+              aria-label="Close"></button>
           </div>
-          
+
           <div class="text-center">
             <img src="../assets/profile-image.png" class="profile-img mb-5" alt="Profile Picture">
             <p class="employee-id">{{currentProfile?.firstName}} {{currentProfile?.lastName}} - 01</p>
