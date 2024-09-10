@@ -109,8 +109,8 @@ export class TaxationService {
     return response;
   }
 
-  updateIncTaxDecHRA(id: string, payload: any): Observable<any> {
-    var response = this.http.put<any>(`${environment.apiUrlDotNet}/users/employee-income-tax-declarations-hra-by-id/${id}`, payload, this.httpOptions);
+  updateIncTaxDecHRA(payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/users/employee-income-tax-declarations-hra`, payload, this.httpOptions);
     return response;
   }
 }

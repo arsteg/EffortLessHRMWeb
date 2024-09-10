@@ -19,7 +19,7 @@
         <button mat-raised-button class="addBtn w-50" type="submit">Apply&nbsp;to&nbsp;All</button>
 
     </form>
-    <form [formGroup]="rentInformationForm" (ngSubmit)="onSubmission()">
+    <form [formGroup]="formGroup">
         <table>
             <thead>
                 <th>Month</th>
@@ -30,107 +30,73 @@
                 <th>Landlord PAN</th>
                 <th>Landlord Address</th>
                 <th>Approval Status</th>
-                <th>Remarks</th>
                 <th>Attachment</th>
                 <th>Actions</th>
             </thead>
             <tbody formArrayName="employeeIncomeTaxDeclarationHRA">
-                <tr *ngFor="let month of getMonthsArray(); let rent of rentInformationForm?.get('employeeIncomeTaxDeclarationHRA')['controls']; let i = index"
+                <tr *ngFor="let group of formGroup?.get('employeeIncomeTaxDeclarationHRA')['controls'];  let i = index"
                     [formGroupName]="i">
                     <td>
                         <div class="month">
-                            {{ getMonthName(month) }}
+                            {{ getMonthsArray()[i] }}
                         </div>
                     </td>
                     <td>
-                        <ng-container *ngIf="isEdit; else rentDeclared">
-                            <input type="number" class="form-control" formControlName="rentDeclared" />
-                        </ng-container>
-                        <ng-template #rentDeclared>
-                            {{
-                            rentInformationForm?.get('employeeIncomeTaxDeclarationHRA')['controls'][i]?.get('rentDeclared').value
-                            }}
-                        </ng-template>
+                        <input type="number" class="form-control" formControlName="rentDeclared"
+                            [readonly]="!group.get('isEditable')?.value" />
+                    </td>
+                    <td><input type="number" class="form-control" formControlName="verifiedAmount"
+                            [readonly]="!group.get('isEditable')?.value" /></td>
+                    <td>
+                        <select id="" class="form-control" formControlName="cityType"
+                            [readonly]="!group.get('isEditable')?.value">
+                            <option value="" disabled selected>Select City Type</option>
+                            <option value="Metro">Metro</option>
+                            <option value="Non-Metro">Non-Metro</option>
+                        </select>
                     </td>
                     <td>
+                        <input type="text" class="form-control" formControlName="landlordName"
+                            [readonly]="!group.get('isEditable')?.value" />
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" formControlName="landlordPan"
+                            [readonly]="!group.get('isEditable')?.value" />
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" formControlName="landlordAddress"
+                            [readonly]="!group.get('isEditable')?.value" />
+                    </td>
+                    <td>
+                        {{group.get('approvalStatus')?.value}}
+                    </td>
 
-                    </td>
-                    <td>
-                        <ng-container *ngIf="isEdit; else cityType">
-                            <select id="" class="form-control" formControlName="cityType">
-                                <option value="" disbaled selected>Select City Type</option>
-                                <option value="Metro">Metro</option>
-                                <option value="Non-Metro">Non-Metro</option>
-
-                            </select>
-                        </ng-container>
-                        <ng-template #cityType>
-                            {{
-                            rentInformationForm?.get('employeeIncomeTaxDeclarationHRA')['controls'][i]?.get('cityType').value
-                            }}
-                        </ng-template>
-                    </td>
-                    <td>
-                        
-                        <ng-container *ngIf="isEdit; else landlordName">
-                            <input type="text" class="form-control" formControlName="landlordName" />
-                        </ng-container>
-                        <ng-template #landlordName>
-                            {{
-                            rentInformationForm?.get('employeeIncomeTaxDeclarationHRA')['controls'][i]?.get('landlordName').value
-                            }}
-                        </ng-template>
-                    </td>
-                    <td>
-                        
-                        <ng-container *ngIf="isEdit; else landlordPAN">
-                            <input type="text" class="form-control" formControlName="landlordPan" />
-                        </ng-container>
-                        <ng-template #landlordPAN>
-                            {{
-                            rentInformationForm?.get('employeeIncomeTaxDeclarationHRA')['controls'][i]?.get('landlordPan').value
-                            }}
-                        </ng-template>
-                    </td>
-                    <td>
-                        
-                        <ng-container *ngIf="isEdit; else landlordAddress">
-                            <input type="text" class="form-control" formControlName="landlordAddress" />
-                        </ng-container>
-                        <ng-template #landlordAddress>
-                            {{
-                            rentInformationForm?.get('employeeIncomeTaxDeclarationHRA')['controls'][i]?.get('landlordAddress').value
-                            }}
-                        </ng-template>
-                    </td>
-                    <td>
-
-                    </td>
-                    <td>
-                        
-                        <ng-container *ngIf="isEdit; else remarksDisplay">
-                            <input type="text" class="form-control" formControlName="approvalStatus" />
-                        </ng-container>
-                        <ng-template #remarksDisplay>
-                            {{
-                            rentInformationForm?.get('employeeIncomeTaxDeclarationHRA')['controls'][i]?.get('approvalStatus').value
-                            }}
-                        </ng-template>
-                    </td>
-                    
                     <td class="text-center">
+                       
                         <div class="attachment-container">
-                          <label for="attachment-{{i}}" mat-mini-fab matTooltip="Add Attachment File"
-                          matTooltipPosition="before">
-                            <i class="bi bi-paperclip"></i>
-                            
-                          </label>
-                          <input type="file" id="attachment-{{i}}" (change)="uploadAttachment($event, i)" style="display: none;" />
+                            <label for="attachment-{{i}}">
+                                <i class="bi bi-paperclip"
+                                    matTooltip="{{ group.get('documentLink')?.value ? group.get('documentLink')?.value.split('/').pop().split('.').slice(0, -1).join('.') : 'Add Attachment File' }}"
+                                    matTooltipPosition="below"></i>
+                            </label>
+                            <input type="file" id="attachment-{{i}}" [readonly]="!group.get('isEditable')?.value"
+                                formControlName="employeeIncomeTaxDeclarationAttachments"
+                                (change)="uploadAttachment($event, i)" style="display: none;" />
                         </div>
-                      </td>
+                        <span>{{formGroup.get('documentLink').value}}</span>
+                    </td>
                     <td>
-                        <button mat-raised-button type="submit" *ngIf="isEdit">Apply</button>
-                        <button mat-raised-button type="button" (click)="isEdit = true" *ngIf="!isEdit">Edit</button>
+                        @if(!group.get('isEditable')?.value){
+                        <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before" type="button"
+                            (click)="selectRow(i)"> <i class="bi bi-pencil"></i></button>
+                        } @else {
+                        <div class="d-flex">
+                            <button class="actions" mat-mini-fab matTooltip="Update" matTooltipPosition="below"
+                                type="button" (click)="onSubmissionRowData(i)"> <i class="bi bi-check"></i></button>
+                            <button class="actions" mat-mini-fab matTooltip="Close" matTooltipPosition="below"
+                                type="button" (click)="cancelEditing(i)"> <i class="bi bi-x"></i></button>
+                        </div>
+                        }
                     </td>
                 </tr>
             </tbody>
