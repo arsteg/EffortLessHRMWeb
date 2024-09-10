@@ -72,7 +72,6 @@
                     </td>
 
                     <td class="text-center">
-                       
                         <div class="attachment-container">
                             <label for="attachment-{{i}}">
                                 <i class="bi bi-paperclip"
@@ -80,11 +79,10 @@
                                     matTooltipPosition="below"></i>
                             </label>
                             <input type="file" id="attachment-{{i}}" [readonly]="!group.get('isEditable')?.value"
-                                formControlName="employeeIncomeTaxDeclarationAttachments"
                                 (change)="uploadAttachment($event, i)" style="display: none;" />
                         </div>
-                        <span>{{formGroup.get('documentLink').value}}</span>
                     </td>
+
                     <td>
                         @if(!group.get('isEditable')?.value){
                         <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before" type="button"

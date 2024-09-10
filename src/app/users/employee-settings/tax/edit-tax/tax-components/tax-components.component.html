@@ -44,7 +44,6 @@
                                 matTooltipPosition="below"></i>
                         </label>
                         <input type="file" id="attachment-{{i}}" [readonly]="!group.get('isEditable')?.value"
-                            formControlName="employeeIncomeTaxDeclarationAttachments"
                             (change)="uploadAttachment($event, i)" style="display: none;" />
                     </div>
                 </td>
