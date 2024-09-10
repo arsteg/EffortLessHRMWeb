@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { TaxationService } from 'src/app/_services/taxation.service';
@@ -23,7 +23,6 @@ export class TaxComponentsComponent {
 
   @Input() sectionId: string;
   @Input() selectedUser: any;
-  @Input() actionType: boolean;
   @Input() selectedData: any;
   @Output() tabSelected = new EventEmitter<string>();
   @Output() taxComponentsSaved = new EventEmitter<any>();
@@ -47,7 +46,12 @@ export class TaxComponentsComponent {
       employeeIncomeTaxDeclarationAttachments: this.fb.array([])
     })
   }
-
+  ngOnChanges(changes: SimpleChanges) {
+    // Detect changes to the sectionId or selectedData inputs
+    if (changes['sectionId'] || changes['selectedData']) {
+      this.fetchAndMatchTaxComponents();
+    }
+  }
   ngOnInit() {
     this.getAllTaxDecalarationByUser();
     this.getSections();
@@ -71,6 +75,7 @@ export class TaxComponentsComponent {
     this.taxService.getAllTaxComponents(pagination).subscribe((res: any) => {
       this.taxComponents = res.data.filter((taxComponent: any) => {
         return taxComponent.section === this.sectionId;
+        
       });
       this.totalRecords = res.total;
 

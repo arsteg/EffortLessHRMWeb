@@ -13,6 +13,7 @@
         [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
         (recordsPerPageChange)="onRecordsPerPageChange($event)">
     </app-pagination>
+    <pre>Total Components in Use: {{totalIncomeTaxComponentsLength}}</pre>
     <table>
         <thead>
             <th>Financial Year</th>
@@ -27,7 +28,7 @@
         <tbody>
             <tr *ngFor="let tax of taxList | search:searchText">
                 <td>{{tax?.financialYear}}</td>
-                <td>{{uniqueSections?.length}}</td>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>

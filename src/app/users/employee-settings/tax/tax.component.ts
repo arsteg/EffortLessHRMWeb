@@ -28,6 +28,7 @@ export class TaxComponent {
   closeResult: string = '';
   taxDeclarationForm: FormGroup;
   years: string[] = [];
+  totalIncomeTaxComponentsLength: any;
 
   constructor(private componentFactoryResolver: ComponentFactoryResolver,
     private userService: UserService,
@@ -106,9 +107,14 @@ export class TaxComponent {
     };
     this.userService.getTaxDeclarationByUserId(this.selectedUser.id, pagination).subscribe((res: any) => {
       this.taxList = res.data;
+     this.totalIncomeTaxComponentsLength = this.taxList.reduce((acc, current) => {
+        return acc + current.incomeTaxDeclarationComponent.length;
+      }, 0);
+      console.log(this.totalIncomeTaxComponentsLength);
+
       this.totalRecords = res.total;
       this.uniqueFinancialYears = this.getUniqueFinancialYears(this.taxList);
-      this.uniqueSections = this.extractSectionsFromTaxList(this.taxList);
+     
       this.taxService.taxByUser.next(res.data);
     })
   }

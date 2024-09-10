@@ -21,15 +21,16 @@
                 </h3>
 
                 <div class="mt-2 bg-white tableContainer">
-                    @if(activeTabName !== 'Rent Information'){
-                    <app-tax-components [sectionId]="activeTab" [actionType]="edit" [selectedData]="selectedRecord"
-                        [selectedUser]="selectedUser" (tabSelected)="selectTab($event)">
-                    </app-tax-components>
-                    } @else {
-                    <app-rent-information [selectedRecord]="selectedRecord" [actionType]="edit"
-                        [selectedUser]="selectedUser"></app-rent-information>
-                    }
+                        @if(activeTabName !== 'Rent Information'){
+                        <app-tax-components [sectionId]="activeTab" [selectedData]="selectedRecord"
+                            [selectedUser]="selectedUser" (tabSelected)="selectTab($event)">
+                        </app-tax-components>
+                        } @else {
+                        <app-rent-information [selectedRecord]="selectedRecord"
+                            [selectedUser]="selectedUser"></app-rent-information>
+                        }
                 </div>
+
             </div>
         </div>
     </div>
