@@ -2,8 +2,7 @@
     <div class="d-flex align-items-center px-2">
         <button class="addBtn mx-2" mat-raised-button (click)="open(modal); isEdit= false; clearForm()">Configure
             States</button>
-        <button class="addBtn mx-2" mat-raised-button (click)="onSubmission()">Update
-        </button>
+        
 
         <div class="align-items-center d-flex ms-auto">
             <label for="state-pt">Eligible&nbsp;States</label>
@@ -17,6 +16,10 @@
     <div class="tableContainer px-3">
         <label for="">Check or uncheck to Update the Eligible States</label>
         <table>
+            <div class="d-flex">
+                <button class="addBtn ms-auto" mat-raised-button (click)="onSubmission()">Update
+                </button>
+            </div>
             <ul class="users" type="none" class=" w-50">
                 <li *ngFor="let state of states; let i = index">
                     <label>

@@ -23,12 +23,10 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { UserListComponent } from '../user-list/user-list.component';
 
 
 @NgModule({
   declarations: [
-    // UserListComponent,
     EmployeeSettingsComponent,
     EmploymentDetailsComponent,
     SalaryDetailsComponent,

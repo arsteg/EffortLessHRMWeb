@@ -71,6 +71,11 @@ export class CeilingAmountComponent {
 
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
     });
+    const modalElement = document.querySelector('#modal');
+  const focusableElement = modalElement.querySelector('input, button, select, textarea');
+  if (focusableElement) {
+    (focusableElement as HTMLElement).focus();
+  }
   }
 
   private getDismissReason(reason: any): string {
