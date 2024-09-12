@@ -27,11 +27,14 @@ export class CtcTemplatesComponent {
   constructor(private modalService: NgbModal,
     private payroll: PayrollService,
     private toast: ToastrService,
-    private dialog: MatDialog, private cdr: ChangeDetectorRef, private componentFactoryResolver: ComponentFactoryResolver) { }
+    private dialog: MatDialog,
+    private cdr: ChangeDetectorRef,
+    private componentFactoryResolver: ComponentFactoryResolver) { }
 
   ngOnInit() {
     this.getCTCTemplate();
   }
+
   onPageChange(page: number) {
     this.currentPage = page;
     this.getCTCTemplate();
@@ -52,6 +55,7 @@ export class CtcTemplatesComponent {
       this.totalRecords = data.total;
     });
   }
+
   deleteRecord(_id: string) {
     this.payroll.deleteCTCTemplate(_id).subscribe((res: any) => {
       const index = this.ctcTemplate.findIndex(res => res._id === _id);
@@ -59,13 +63,10 @@ export class CtcTemplatesComponent {
         this.ctcTemplate.splice(index, 1);
       }
       this.toast.success('Successfully Deleted!!!', 'CTC Template');
-    },
-      (err) => {
-        this.toast.error('CTC Template can not be deleted', 'Error');
-      })
-
+    }, (err) => {
+      this.toast.error('CTC Template can not be deleted', 'Error');
+    })
   }
-
 
   deleteDialog(id: string): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
@@ -77,14 +78,12 @@ export class CtcTemplatesComponent {
       }
     });
   }
-  
-  showOffcanvas: boolean = false;
 
+  showOffcanvas: boolean = false;
   openOffcanvas(isEdit: boolean, record: any = null) {
     this.isEdit = isEdit;
     this.selectedRecord = record;
     this.showOffcanvas = true;
-
     this.offcanvasContent.clear();
 
     // Create the component factory
@@ -94,6 +93,11 @@ export class CtcTemplatesComponent {
     const componentRef = this.offcanvasContent.createComponent(componentFactory);
     componentRef.instance.selectedRecord = this.selectedRecord;
     componentRef.instance.isEdit = this.isEdit;
+
+    // Listen to the recordUpdatedFromAssigned event
+    componentRef.instance.recordUpdatedFromAssigned.subscribe((updatedRecord: any) => {
+      this.handleRecordUpdate(updatedRecord); // Refresh the list on update
+    });
   }
 
   closeOffcanvas() {
@@ -101,8 +105,9 @@ export class CtcTemplatesComponent {
     this.isEdit = false;
     this.selectedRecord = null;
   }
-  
+
   handleRecordUpdate(updatedRecord: any) {
     this.getCTCTemplate();
+    this.cdr.detectChanges();
   }
 }

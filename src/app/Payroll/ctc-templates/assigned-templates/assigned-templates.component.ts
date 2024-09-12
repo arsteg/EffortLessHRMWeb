@@ -21,42 +21,41 @@ export class AssignedTemplatesComponent {
   form: any;
   @Output() recordUpdated: EventEmitter<any> = new EventEmitter<any>();
 
-  constructor(private payroll: PayrollService,
+  constructor(
+    private payroll: PayrollService,
     private fb: FormBuilder,
     private toast: ToastrService
   ) { }
 
   ngOnInit() {
+    this.updateForm();
+  }
+
+  updateForm() {
+    // Subscribe to the assignedTemplates observable
     this.payroll.assignedTemplates.subscribe(res => {
-      console.log(res);
+      console.log('res...........: assignedTemplates', res);
       this.form = res;
-      Object.entries(this.form).forEach(([key, value]) => {
-        if (Array.isArray(value) && value.length === 0) {
-          this.form[key] = [];
-        }
-      });
+
+      // Update the component's data with the new values
+      this.fixedAllowanceData = res.ctcTemplateFixedAllowance || [];
+      this.fixedDeductionData = res.ctcTemplateFixedDeduction || [];
+      this.variableAllowanceData = res.ctcTemplateVariableAllowance || [];
+      this.variableDeductionData = res.ctcTemplateVariableDeduction || [];
     });
-    // this.payroll.assignedTemplates.subscribe(res => {
-    //   console.log(res);
-    //   const fixedAllowances = res.ctcTemplateFixedAllowance;
-    //   const fixedAllowanceValues = fixedAllowances.map(obj => obj.fixedAllowance);
-    //   this.data = fixedAllowanceValues;
-    //   console.log(this.data);
-    // });
   }
 
   selectTab(tabId: string) {
     if (tabId === 'tabFixedAllowance') {
       this.payroll.assignedTemplates.subscribe(res => {
-        console.log(res);
+        console.log('res 2...........: assignedTemplates', res);
         const fixedAllowances = res.ctcTemplateFixedAllowance;
         const fixedAllowanceValues = fixedAllowances.map(obj => obj.fixedAllowance);
         this.data = fixedAllowanceValues;
-        console.log(this.data);
+        console.log('data...........: assignedTemplates', res);
       });
     }
     this.activeTab = tabId;
-
   }
 
   onFixedAllowanceDataChange(data: any) {
@@ -73,6 +72,7 @@ export class AssignedTemplatesComponent {
   onVariableDeductionDataChange(data: any) {
     this.variableDeductionData = data;
   }
+
   onSubmission() {
     let payload = {
       name: this.data.name,
@@ -88,19 +88,16 @@ export class AssignedTemplatesComponent {
       this.payroll.updateCTCTemplate(this.selectedRecord._id, payload).subscribe((res: any) => {
         this.recordUpdated.emit(res.data);
         this.toast.success('CTC Template updated successfully');
-      },
-        err => {
-          this.toast.error('CTC Template update failed');
-        })
-    }
-    else {
+      }, err => {
+        this.toast.error('CTC Template update failed');
+      })
+    } else {
       this.payroll.addCTCTemplate(payload).subscribe((res: any) => {
+        this.recordUpdated.emit(res.data);
         this.toast.success('CTC Template added successfully');
-      },
-        err => {
-          this.toast.error('CTC Template add failed');
-        })
+      }, err => {
+        this.toast.error('CTC Template add failed');
+      })
     }
   }
-
 }

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { skip } from 'rxjs';
 import { PayrollService } from 'src/app/_services/payroll.service';
@@ -12,6 +12,7 @@ import { Offcanvas } from 'bootstrap';
 export class UpdateCTCTemplateComponent {
   @Input() isEdit: boolean;
   @Input() selectedRecord: any = null;
+  @Output() recordUpdatedFromAssigned: EventEmitter<any> = new EventEmitter<any>();
   fixedAllowances: any;
   fixedDeduction: any;
   otherBenefits: any;
@@ -21,10 +22,11 @@ export class UpdateCTCTemplateComponent {
   showAssignedTemplates = false;
   ctcTemplateForm: FormGroup;
 
-  constructor(private fb: FormBuilder,
-    private payroll: PayrollService
+  constructor(
+    private fb: FormBuilder,
+    private payroll: PayrollService,
+    private cdr: ChangeDetectorRef
   ) {
-
     this.ctcTemplateForm = this.fb.group({
       name: [''],
       ctcTemplateFixedAllowance: [[]],
@@ -52,30 +54,19 @@ export class UpdateCTCTemplateComponent {
       });
     }
   }
-  @Output() recordUpdatedFromAssigned: EventEmitter<any> = new EventEmitter<any>();
 
   handleRecordUpdate(updatedRecord: any) {
     // Pass the event further up to the parent component
-    console.log(updatedRecord);
+    console.log("updatedRecord..........: upload-ctctemplate", updatedRecord);
     this.recordUpdatedFromAssigned.emit(updatedRecord);
   }
+
   getDataOfAllPayrollSettings() {
-    let payload = {
-      next: '',
-      skip: ''
-    }
-    this.payroll.getFixedAllowance(payload).subscribe((res: any) => {
-      this.fixedAllowances = res.data;
-    });
-    this.payroll.getFixedDeduction(payload).subscribe((res: any) => {
-      this.fixedDeduction = res.data;
-    });
-    this.payroll.getOtherBenefits(payload).subscribe((res: any) => {
-      this.otherBenefits = res.data;
-    });
-    this.payroll.getFixedContribution(payload).subscribe((res: any) => {
-      this.fixedContribution = res.data;
-    });
+    let payload = { next: '', skip: '' }
+    this.payroll.getFixedAllowance(payload).subscribe((res: any) => { this.fixedAllowances = res.data; });
+    this.payroll.getFixedDeduction(payload).subscribe((res: any) => { this.fixedDeduction = res.data; });
+    this.payroll.getOtherBenefits(payload).subscribe((res: any) => { this.otherBenefits = res.data; });
+    this.payroll.getFixedContribution(payload).subscribe((res: any) => { this.fixedContribution = res.data; });
     this.payroll.getVariableAllowance(payload).subscribe((res: any) => {
       this.variableAllowance = res.data.filter((item: any) => item.isShowInCTCStructure === true);
     });
@@ -95,9 +86,10 @@ export class UpdateCTCTemplateComponent {
       ctcTemplateVariableAllowance: (this.ctcTemplateForm.value.ctcTemplateVariableAllowance || []).filter(Boolean).map(variableAllowance => ({ variableAllowance })),
       ctcTemplateVariableDeduction: (this.ctcTemplateForm.value.ctcTemplateVariableDeduction || []).filter(Boolean).map(variableDeduction => ({ variableDeduction }))
     };
-    console.log(payload);
+    console.log("payload..........: upload-ctctemplate", payload);
     this.payroll.assignedTemplates.next(payload);
   }
+
   openOffcanvas(offcanvasId: string) {
     let payload = {
       name: this.ctcTemplateForm.value.name,
@@ -109,12 +101,11 @@ export class UpdateCTCTemplateComponent {
       ctcTemplateVariableAllowance: (this.ctcTemplateForm.value.ctcTemplateVariableAllowance || []).filter(Boolean).map(variableAllowance => ({ variableAllowance })),
       ctcTemplateVariableDeduction: (this.ctcTemplateForm.value.ctcTemplateVariableDeduction || []).filter(Boolean).map(variableDeduction => ({ variableDeduction }))
     };
-    console.log(payload);
+    console.log("payload 2..........: upload-ctctemplate", payload);
     this.payroll.assignedTemplates.next(payload);
     this.showAssignedTemplates = true;
     const offcanvasElement = document.getElementById(offcanvasId);
     const offcanvas = new Offcanvas(offcanvasElement);
     offcanvas.show();
   }
-
 }

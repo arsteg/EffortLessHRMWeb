@@ -17,7 +17,9 @@ export class AssignedFixedAllowanceComponent {
   combinedDataChange: any;
   @Input() selectedRecord: any;
 
-  constructor(private payroll: PayrollService, private fb: FormBuilder) {
+  constructor(
+    private payroll: PayrollService,
+    private fb: FormBuilder) {
     this.fixedAllowanceForm = this.fb.group({
       fixedAllowance: this.fb.array([])
     });
@@ -51,6 +53,7 @@ export class AssignedFixedAllowanceComponent {
       this.formDataChange.emit(this.fixedAllowanceForm.value.fixedAllowance);
     });
   }
+
   patchFormValues() {
     const allowancesControl = this.fixedAllowanceForm.get('fixedAllowance') as FormArray;
 
@@ -66,18 +69,15 @@ export class AssignedFixedAllowanceComponent {
         minimumAmount: [item.minimumAmount || 0]
       }));
     });
-
     console.log(this.fixedAllowanceForm.value);
   }
+
   get allowances() {
     return (this.fixedAllowanceForm.get('fixedAllowance') as FormArray).controls;
   }
 
   getFixedAllowances() {
-    let payload = {
-      next: '',
-      skip: ''
-    }
+    let payload = { next: '', skip: '' }
     this.payroll.getFixedAllowance(payload).subscribe((res: any) => {
       this.allfixedAllowances = res.data;
     });
@@ -87,5 +87,4 @@ export class AssignedFixedAllowanceComponent {
     const matchingAllowance = this.allfixedAllowances?.find(res => res._id === allowance);
     return matchingAllowance ? matchingAllowance.label : '';
   }
-
 }
