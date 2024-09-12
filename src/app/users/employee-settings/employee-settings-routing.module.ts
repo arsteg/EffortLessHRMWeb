@@ -11,6 +11,7 @@ import { LoansAdvancesComponent } from 'src/app/Payroll/settings/loans-advances/
 import { TaxComponent } from './tax/tax.component';
 import { ManageComponent } from 'src/app/manage/manage/manage.component';
 import { HomeComponent } from 'src/app/home/home.component';
+import { UserLoansAdvancesComponent } from './loans-advances/loans-advances.component';
 
 
 const routes: Routes = [
@@ -28,7 +29,7 @@ const routes: Routes = [
               { path: 'employment-details', component: EmploymentDetailsComponent },
               { path: 'salary-details', component: SalaryDetailsComponent },
               { path: 'statutory-details', component: StatutoryDetailsComponent },
-              { path: 'loans-advances', component: LoansAdvancesComponent },
+              { path: 'loans-advances', component: UserLoansAdvancesComponent },
               { path: 'tax', component: TaxComponent },
             ]
           }

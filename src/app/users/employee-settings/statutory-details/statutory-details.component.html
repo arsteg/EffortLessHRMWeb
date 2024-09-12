@@ -1,4 +1,6 @@
 <div class="p-2">
+    <label  class="me-auto">{{selectedUser?.firstName | titlecase}}&nbsp;{{selectedUser?.lastName | titlecase}} | Statutory Details</label>
+
     <form [formGroup]="statutoryDetailsForm" (ngSubmit)="onSubmission()">
         <div class="d-flex">
             <button mat-raised-button class="addBtn ms-auto my-2" type="submit">Save</button>

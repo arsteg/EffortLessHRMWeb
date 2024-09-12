@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { PayrollService } from 'src/app/_services/payroll.service';
@@ -20,8 +20,8 @@ export class UpdateStateComponent implements OnInit {
     private toast: ToastrService
   ) {
     this.addStateForm = this.fb.group({
-      state: [''],
-      frequency: ['']
+      state: ['', Validators.required],
+      frequency: ['', Validators.required]
     })
   }
 

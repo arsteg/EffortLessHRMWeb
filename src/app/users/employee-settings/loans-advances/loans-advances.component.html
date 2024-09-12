@@ -1,6 +1,8 @@
-<div>
+<div class="tableContainer bg-white">
     <div class="d-flex align-items-center px-2 py-1">
-        <p class="mb-0 me-auto">({{totalRecords}}) Records Found</p>
+        <p class="mb-0 me-2">({{totalRecords}}) Records Found</p> <span>&nbsp; | &nbsp;</span>
+        <label  class="me-auto">{{selectedUser?.firstName | titlecase}}&nbsp;{{selectedUser?.lastName | titlecase}}</label>
+
         <div class="d-flex align-items-center">
             <span class="bi bi-search searchIcon"></span>
             <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
