@@ -18,7 +18,7 @@ export class UserLoansAdvancesComponent {
   loansAdvances: any;
   closeResult: string = '';
   loansAdvancesForm: FormGroup;
-  @Input() selectedUser: any;
+  selectedUser = this.userService.getData();
   totalRecords: number
   recordsPerPage: number = 10;
   currentPage: number = 1;

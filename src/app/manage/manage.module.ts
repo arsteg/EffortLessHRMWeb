@@ -31,44 +31,51 @@ import { EditTaxComponent } from '../users/employee-settings/tax/edit-tax/edit-t
 import { TaxComponentsComponent } from '../users/employee-settings/tax/edit-tax/tax-components/tax-components.component';
 import { RentInformationComponent } from '../users/employee-settings/tax/edit-tax/rent-information/rent-information.component';
 import { ManageRoutingModule } from './manage-routing.module';
+import { EmployeeSettingsModule } from '../users/employee-settings/employee-settings.module';
 
 @NgModule({
   declarations: [
-    ManageComponent, UserListComponent, ProjectListComponent, RequestManualTimeComponent,
-    TeammembersComponent, EmailTemplateComponent, EmployeeSettingsComponent, EmploymentDetailsComponent,
-    SalaryDetailsComponent,
-    StatutoryDetailsComponent,
-    UserLoansAdvancesComponent,
-    ViewSalaryDetailsComponent,
-    TaxComponent,
-    AddSalaryDetailsComponent,
-    ViewLoansAdvancesComponent,
-    EmployeeProfileComponent,
-    TaxCalculatorComponent,
-    EditTaxComponent,
-    TaxComponentsComponent,
-    RentInformationComponent
+    ManageComponent, 
+    ProjectListComponent, RequestManualTimeComponent,
+    TeammembersComponent, EmailTemplateComponent,
+    UserListComponent
+    //  EmployeeSettingsComponent, EmploymentDetailsComponent,
+    // SalaryDetailsComponent,
+    // StatutoryDetailsComponent,
+    // UserLoansAdvancesComponent,
+    // ViewSalaryDetailsComponent,
+    // TaxComponent,
+    // AddSalaryDetailsComponent,
+    // ViewLoansAdvancesComponent,
+    // EmployeeProfileComponent,
+    // TaxCalculatorComponent,
+    // EditTaxComponent,
+    // TaxComponentsComponent,
+    // RentInformationComponent
   ],
   imports: [
     CommonModule,
     MatRadioModule,
     MatCheckboxModule, CommonComponentsModule, SharedModule, taskModule, CommonComponentsModule, MatExpansionModule,
-    NgbModule, ManageRoutingModule
+    NgbModule, ManageRoutingModule, EmployeeSettingsModule
   ],
-  exports: [UserListComponent, ProjectListComponent, RequestManualTimeComponent,
-    TeammembersComponent, EmailTemplateComponent, EmployeeSettingsComponent, EmploymentDetailsComponent,
-    SalaryDetailsComponent,
-    StatutoryDetailsComponent,
-    UserLoansAdvancesComponent,
-    ViewSalaryDetailsComponent,
-    AddSalaryDetailsComponent,
-    ViewLoansAdvancesComponent,
-    TaxComponent,
-    EmployeeProfileComponent,
-    TaxCalculatorComponent,
-    TaxComponentsComponent,
-    EditTaxComponent,
-    RentInformationComponent
+  exports: [ ProjectListComponent, RequestManualTimeComponent,
+    TeammembersComponent, EmailTemplateComponent,
+    UserListComponent
+    // EmployeeSettingsComponent, 
+    // EmploymentDetailsComponent,
+    // SalaryDetailsComponent,
+    // StatutoryDetailsComponent,
+    // UserLoansAdvancesComponent,
+    // ViewSalaryDetailsComponent,
+    // AddSalaryDetailsComponent,
+    // ViewLoansAdvancesComponent,
+    // TaxComponent,
+    // EmployeeProfileComponent,
+    // TaxCalculatorComponent,
+    // TaxComponentsComponent,
+    // EditTaxComponent,
+    // RentInformationComponent
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

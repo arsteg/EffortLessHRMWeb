@@ -891,7 +891,11 @@ h2 {
   background: #76bc21 !important;
 }
 .nav-link.activeTab {
-  background-color: #ff7b1d; 
+  background-color: #ff7b1d !important; 
+  color: #fff !important; 
+}
+.nav-tabs .nav-link.active{
+  background-color: #ff7b1d !important; 
   color: #fff !important; 
 }
 .nav-link{

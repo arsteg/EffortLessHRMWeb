@@ -11,7 +11,7 @@ import { UserService } from 'src/app/_services/users.service';
 })
 export class EmploymentDetailsComponent {
   step = 0;
-  @Input() selectedUser: any;
+  selectedUser = this.userService.getData();
   disableSelect = new FormControl(false);
   jobInformationForm: FormGroup;
   supervisors: any;

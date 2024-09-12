@@ -11,7 +11,7 @@ import { UserService } from 'src/app/_services/users.service';
 })
 export class StatutoryDetailsComponent {
   statutoryDetailsForm: FormGroup;
-  @Input() selectedUser: any;
+  selectedUser = this.userService.getData();
 
   constructor(private fb: FormBuilder,
     private userService: UserService,

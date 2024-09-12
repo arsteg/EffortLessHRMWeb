@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { UserService } from 'src/app/_services/users.service';
 
@@ -12,7 +13,7 @@ export class AddSalaryDetailsComponent {
   @Output() backToSalaryDetails = new EventEmitter<void>();
   disableSelect = new FormControl(false);
   salaryDetailsForm: FormGroup;
-  @Input() selectedUser: any;
+  selectedUser = this.userService.getData();
   ctcTemplates: any;
   taxStatutoryForm: FormGroup;
   pfTemplates: any;
@@ -26,10 +27,12 @@ export class AddSalaryDetailsComponent {
   @Input() edit: boolean = false;
   @Input() selectedSalaryDetail: any;
   salaryDetails: any;
+  payrollCTCTemplates: any;
 
   constructor(private fb: FormBuilder,
     private userService: UserService,
     private payrollService: PayrollService,
+    private toast: ToastrService
   ) {
     this.salaryDetailsForm = this.fb.group({
       user: '',
@@ -244,10 +247,87 @@ export class AddSalaryDetailsComponent {
   getCTCTemplateById(id: string): void {
     this.payrollService.getCTCTemplateById(id).subscribe(
       (ctcTemplate: any) => {
-        // this.ctcTemplates = ctcTemplate.data;
+        // CTC template fixed allowances
+        const fixedAllowanceArray = this.salaryDetailsForm.get('salaryComponentFixedAllowance') as FormArray;
+        fixedAllowanceArray.clear();
+        ctcTemplate.data.ctcTemplateFixedAllowances.forEach((fixedAllowance: any) => {
+          const allowanceGroup = this.fb.group({
+            fixedAllowance: [fixedAllowance.fixedAllowance],
+            monthlyAmount: [fixedAllowance.value],
+            yearlyAmount: [fixedAllowance.value * 12]
+          });
+          fixedAllowanceArray.push(allowanceGroup);
+          console.log(fixedAllowanceArray.value);
+        });
+
+        // // CTC template other benefits
+        const otherBenefitsArray = this.salaryDetailsForm.get('salaryComponentOtherBenefits') as FormArray;
+        otherBenefitsArray.clear();
+
+        ctcTemplate.data.ctcTemplateOtherBenefitAllowances.forEach((otherBenefit: any) => {
+          const benefitGroup = this.fb.group({
+            otherBenefits: [otherBenefit.otherBenefits],  // Bind other benefit
+            monthlyAmount: [otherBenefit.value],
+            yearlyAmount: [otherBenefit.value * 12]
+          });
+          otherBenefitsArray.push(benefitGroup);
+          console.log(otherBenefitsArray.value);
+        });
+
+        // ctc template employer contributions
+        const employerContributionArray = this.salaryDetailsForm.get('salaryComponentEmployerContribution') as FormArray;
+        employerContributionArray.clear();
+        ctcTemplate.data.ctcTemplateEmployerContributions.forEach((fixedContribution: any) => {
+          const employerContributionGroup = this.fb.group({
+            employerContribution: [fixedContribution.fixedContribution],
+            monthlyAmount: [fixedContribution.value],
+            yearlyAmount: [fixedContribution.value * 12]
+          });
+          employerContributionArray.push(employerContributionGroup);
+          console.log(employerContributionArray.value);
+        });
+
+        // // ctc template fixed deductions
+        const fixedDeductionArray = this.salaryDetailsForm.get('salaryComponentFixedDeduction') as FormArray;
+        fixedDeductionArray.clear();
+        ctcTemplate.data.ctcTemplateFixedDeductions.forEach((fixedDeduction: any) => {
+          const deductionGroup = this.fb.group({
+            fixedDeduction: [fixedDeduction.fixedDeduction],  // Bind fixed deduction
+            monthlyAmount: [fixedDeduction.value],
+            yearlyAmount: [fixedDeduction.value * 12]
+          });
+          fixedDeductionArray.push(deductionGroup);
+          console.log(fixedDeductionArray.value);
+        });
+        // ctc template variable allowances
+
+        const variableAllowanceArray = this.salaryDetailsForm.get('salaryComponentVariableAllowance') as FormArray;
+        variableAllowanceArray.clear();
+        ctcTemplate.data.ctcTemplateVariableAllowances.forEach((variableAllowance: any) => {
+          const allowanceGroup = this.fb.group({
+            variableAllowance: [variableAllowance.variableAllowance],  // Bind variable allowance
+            monthlyAmount: [variableAllowance.value],
+            yearlyAmount: [variableAllowance.value * 12]
+          });
+          variableAllowanceArray.push(allowanceGroup);
+          console.log(variableAllowanceArray.value);
+        });
+
+        // ctc template variable deductions
+        const variableDeductionArray = this.salaryDetailsForm.get('salaryComponentVariableDeduction') as FormArray;
+        variableDeductionArray.clear();
+        ctcTemplate.data.ctcTemplateVariableDeductions.forEach((variableDeduction: any) => {
+          const deductionGroup = this.fb.group({
+            variableDeduction: [variableDeduction.variableDeduction],
+            monthlyAmount: [variableDeduction.value],
+            yearlyAmount: [variableDeduction.value * 12]
+          });
+          variableDeductionArray.push(deductionGroup);
+          console.log(variableDeductionArray.value);
+        });
       },
       (error: any) => {
-        console.error('Error fetching CTC template:', error);
+        this.toast.error('Error fetching CTC template:', 'ERror');
       }
     );
   }
@@ -376,5 +456,7 @@ export class AddSalaryDetailsComponent {
     const matchingRecord = this.variableDeduction?.find(rec => rec._id === data);
     return matchingRecord?.label;
   }
+
+
 
 }

@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { TaxationService } from 'src/app/_services/taxation.service';
+import { UserService } from 'src/app/_services/users.service';
 
 @Component({
   selector: 'app-tax-components',
@@ -22,7 +23,7 @@ export class TaxComponentsComponent {
   selectedComponent: string;
 
   @Input() sectionId: string;
-  @Input() selectedUser: any;
+  selectedUser = this.userService.getData();
   @Input() selectedData: any;
   @Output() tabSelected = new EventEmitter<string>();
   @Output() taxComponentsSaved = new EventEmitter<any>();
@@ -31,7 +32,8 @@ export class TaxComponentsComponent {
 
   constructor(private taxService: TaxationService,
     private fb: FormBuilder,
-    private toast: ToastrService
+    private toast: ToastrService,
+    private userService: UserService
   ) {
     this.incomeTaxDecComponentForm = this.fb.group({
       employeeIncomeTaxDeclaration: [''],

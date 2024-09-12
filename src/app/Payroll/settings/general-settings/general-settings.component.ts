@@ -135,7 +135,7 @@ export class GeneralSettingsComponent {
     this.loadRecords();
   }
 
-  onCancel(){
+  onCancel() {
     this.payroll.getGeneralSettings(this.fixedAllowance[0].company).subscribe((res: any) => {
       this.generalSettings = res.data;
       this.generalSettingForm.patchValue({
@@ -163,20 +163,28 @@ export class GeneralSettingsComponent {
     })
   }
   saveGeneralSettings() {
-    if (!this.isEdit)
-      this.payroll.addGeneralSettings(this.generalSettingForm.value).subscribe((res: any) => {
-        this.generalSettings = res.data;
-      });
-    else if (this.isEdit) {
-      const company = this.fixedAllowance[0].company;
-      this.payroll.updateGeneralSettings(company, this.generalSettingForm.value).subscribe((res: any) => {
-        this.generalSettings = res.data;
-        this.toast.success('General Settings Updated Successfully');
-        this.resetSettings();
-      })
-    }
-  }
+    this.payroll.getGeneralSettings(this.fixedAllowance[0]?.company).subscribe((res: any) => {
+      const response = res.data;
+      console.log(response)
+      if (response.length === 0) {
+        console.log(this.isEdit);
+        this.payroll.addGeneralSettings(this.generalSettingForm.value).subscribe((res: any) => {
+          this.generalSettings = res.data;
+          this.toast.success('General Settings Added Successfully');
+          this.resetSettings();
+        });
+      }
+      else {
+        const company = this.fixedAllowance[0].company;
+        this.payroll.updateGeneralSettings(company, this.generalSettingForm.value).subscribe((res: any) => {
+          this.generalSettings = res.data;
+          this.toast.success('General Settings Updated Successfully');
+          this.resetSettings();
+        });
+      }
 
+    });
+  }
   open(content: any) {
     this.payroll.generalSettings.next(this.generalSettings);
     this.payroll.fixedAllowance.next(this.fixedAllowance);
@@ -274,6 +282,7 @@ export class GeneralSettingsComponent {
   resetSettings() {
     this.toggleEdit();
   }
+  
   onPageChange(page: number) {
     this.currentPage = page;
     this.loadRecords();

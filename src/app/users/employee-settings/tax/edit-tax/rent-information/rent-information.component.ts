@@ -2,6 +2,7 @@ import { Component, EventEmitter, input, Input, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { TaxationService } from 'src/app/_services/taxation.service';
+import { UserService } from 'src/app/_services/users.service';
 
 @Component({
   selector: 'app-rent-information',
@@ -9,7 +10,7 @@ import { TaxationService } from 'src/app/_services/taxation.service';
   styleUrls: ['./rent-information.component.css']
 })
 export class RentInformationComponent {
-  @Input() selectedUser: any;
+  selectedUser = this.userService.getData();
   incomeTaxDeclaration: any;
   isEdit: boolean = false;
   monthsArray: number[];
@@ -22,7 +23,8 @@ export class RentInformationComponent {
 
   constructor(private fb: FormBuilder,
     private taxService: TaxationService,
-    private toast: ToastrService
+    private toast: ToastrService,
+    private userService: UserService
   ) {
     this.formGroup = this.fb.group({
       employeeIncomeTaxDeclaration: [''],

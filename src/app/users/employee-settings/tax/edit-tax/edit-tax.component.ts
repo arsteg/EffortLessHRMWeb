@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { TaxationService } from 'src/app/_services/taxation.service';
+import { UserService } from 'src/app/_services/users.service';
 
 @Component({
   selector: 'app-edit-tax',
@@ -11,12 +12,13 @@ export class EditTaxComponent {
   @Output() backToUserView = new EventEmitter<void>();
   activeTab: string;
   activeTabName: string;
-  @Input() selectedUser: any;
+  selectedUser = this.userService.getData();
   taxSections: any;
   @Output() backToSalaryDetails = new EventEmitter<void>();
   @Input() selectedRecord: any;
 
   constructor(private taxService: TaxationService,
+    private userService: UserService,
     private fb: FormBuilder
   ) { }
 

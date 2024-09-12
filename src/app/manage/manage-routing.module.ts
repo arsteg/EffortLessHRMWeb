@@ -27,21 +27,14 @@ const routes: Routes = [
         children: [
           { path: 'manage', redirectTo: 'employees', pathMatch: 'full' },
           {
-            path: 'employees', component: UserListComponent,
-            // children: [
-              // {
-              //   path: 'employee-settings', component: EmployeeSettingsComponent, canActivate: [AuthGuard],
-              //   children: [
-              //     { path: 'employee-settings', redirectTo: 'employee-profile', pathMatch: 'full' },
-              //     { path: 'employee-profile', component: EmployeeProfileComponent },
-              //     { path: 'employment-details', component: EmploymentDetailsComponent },
-              //     { path: 'salary-details', component: SalaryDetailsComponent },
-              //     { path: 'statutory-details', component: StatutoryDetailsComponent },
-              //     { path: 'loans-advances', component: LoansAdvancesComponent },
-              //     { path: 'tax', component: TaxComponent },
-              //   ]
-              // }
-            // ]
+            path: 'employees',
+            component: UserListComponent,
+            children: [
+              {
+                path: 'employee-settings',
+                loadChildren: () => import('../users/employee-settings/employee-settings-routing.module').then(m => m.EmployeeSettingsRoutingModule)
+              }
+            ]
           },
           { path: 'projects', component: ProjectListComponent },
           { path: 'tasks', component: TasksComponent },
@@ -49,11 +42,9 @@ const routes: Routes = [
           { path: 'email-templates', component: EmailTemplateComponent },
           { path: 'tags', component: TagComponent },
           { path: 'manual-time-requests', component: RequestManualTimeComponent },
-
         ]
       }
     ]
-
   }
 ];
 @NgModule({

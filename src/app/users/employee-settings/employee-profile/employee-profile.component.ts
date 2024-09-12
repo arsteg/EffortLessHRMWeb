@@ -13,9 +13,10 @@ import { UserService } from 'src/app/_services/users.service';
 })
 export class EmployeeProfileComponent {
   userForm: FormGroup;
-  @Input() selectedUser: any;
   roles: any;
-  @Input() isEdit: boolean = false;
+
+  selectedUser = this.userService.getData();
+  isEdit = this.userService.getIsEdit();
 
   constructor(private fb: FormBuilder,
     private userService: UserService,

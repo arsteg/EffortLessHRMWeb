@@ -29,7 +29,6 @@
                         aria-label="Example icon button with a menu icon">
                         <i class="bi bi-eye"></i>
                     </button>
-                    <!-- (click)="selectedRecord=data" -->
                     <button class="actions ms-2" title="Delete User" mat-mini-fab
                         (click)="deleteAdvancecate(selectedRecord?._id)"
                         aria-label="Example icon button with a menu icon">
@@ -40,9 +39,5 @@
         </tbody>
     </table>
 </div>
-<!-- <ng-template *ngIf="!showViewSalaryDetails"> -->
-<app-add-salary-details *ngIf="showAddSalaryDetails" [edit]=isEdit [selectedSalaryDetail]="selectedRecord"  [selectedUser]=selectedUser
+<app-add-salary-details *ngIf="showAddSalaryDetails" [edit]=isEdit [selectedSalaryDetail]="selectedRecord" [selectedUser]=selectedUser
     (backToSalaryDetails)="goBackToSalaryDetails()"></app-add-salary-details>
-<!-- </ng-template> -->
-<!-- <app-view-salary-details *ngIf="showViewSalaryDetails"
-    (backToSalaryDetails)="goBackToSalaryDetails()"></app-view-salary-details> -->

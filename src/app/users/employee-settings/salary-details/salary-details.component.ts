@@ -16,8 +16,8 @@ export class SalaryDetailsComponent {
   closeResult: string;
   showViewSalaryDetails: boolean = false;
   showAddSalaryDetails: boolean = false;
-  @Input() selectedUser: any;
-  
+  selectedUser = this.userService.getData();
+   
   constructor(private modalService: NgbModal, 
     private userService: UserService
   ) { }

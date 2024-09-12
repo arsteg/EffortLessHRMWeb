@@ -66,7 +66,7 @@
                         <td><span class="badge rounded-pill table-button  bg-success text-light px-4 py-2"
                                 *ngIf="data.status=='Active'">{{data.status}}</span></td>
                         <td>
-                            <button class="actions" mat-mini-fab  (click)=" selectedEmployee = data; isEdit= true; toggleView();"><i
+                            <button class="actions" mat-mini-fab (click)=" toggleView(data);"><i
                                     class="bi bi-gear"></i></button>
                             
                             <button class="actions ms-2" title="Delete User" mat-mini-fab data-bs-toggle="modal"
@@ -83,9 +83,7 @@
         </div>
     </div>
 </div>
-<app-employee-settings *ngIf="showEmployeeDetails" [isEdit]="isEdit" [selectedUser]="selectedEmployee"
-    (backToUserView)="goBackToUserView()" ></app-employee-settings>
-<!-- Add -->
+
 <div class="modal" id="addModal">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -98,124 +96,7 @@
                     </div>
                 </div>
                     <app-employee-profile ></app-employee-profile>
-                    <!-- <form class="pt-2" [formGroup]="addForm" (ngSubmit)="addUser(addForm.value)">
-                        <div class="row d-flex justify-content-center">
-                            <div class="col-md-12">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label for="firstName" class="text-start">First Name<span
-                                                class="text-danger">*</span></label>
-
-                                        <input type="text" name="firstName" id="firstName" class="form-control input "
-                                            formControlName="firstName" required>
-                                        <div *ngIf="addForm.controls['firstName'].invalid && addForm.controls['firstName'].touched"
-                                            class="alert alert-danger error">
-                                            <div *ngIf="addForm.controls['firstName'].errors['required']">
-                                                First Name is required.
-                                            </div>
-                                            <div *ngIf="addForm.controls['firstName'].errors['pattern']">
-                                                Only Alphabets are allowed.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="lastName" class="text-start">Last Name<span
-                                                class="text-danger">*</span></label>
-
-                                        <input type="text" name="lastName" id="lastName" class="form-control input"
-                                            formControlName="lastName" required>
-                                        <div *ngIf="addForm.controls['lastName'].invalid && addForm.controls['lastName'].touched"
-                                            class="alert alert-danger error">
-                                            <div *ngIf="addForm.controls['lastName'].errors['required']">
-                                                Last Name is required.
-                                            </div>
-                                            <div *ngIf="addForm.controls['lastName'].errors['pattern']">
-                                                Only Alphabets are allowed.
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row mt-2">
-                                    <div class="col-md-6">
-                                        <label for="role" class="text-start">Role<span
-                                                class="text-danger">*</span></label>
-
-                                        <select class="custom-select p-2" formControlName="role">
-                                            <option value="">Choose Any Role</option>
-                                            <option *ngFor="let role of roleName" [value]="role.id">
-                                                {{ role.Name}}
-                                            </option>
-                                        </select>
-                                        <div *ngIf="addForm.controls['role'].invalid && addForm.controls['role'].touched"
-                                            class="alert alert-danger error">
-                                            <div *ngIf="addForm.controls['role'].errors['required']">
-                                                Role is required.
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <label for="email" class="text-start">E-mail<span
-                                                class="text-danger">*</span></label>
-
-                                        <input type="text" name="email" id="email" class="form-control input"
-                                            formControlName="email" required>
-                                        <div *ngIf="addForm.controls['email'].invalid && addForm.controls['email'].touched"
-                                            class="alert alert-danger error">
-                                            <div *ngIf="addForm.controls['email'].errors['required']">
-                                                E-Mail is required!
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row mt-2">
-                                    <div class="col-md-6">
-                                        <label for="password" class="text-start">Password<span
-                                                class="text-danger">*</span></label>
-
-                                        <input type="password" name="password" id="password" class="form-control input"
-                                            formControlName="password" required>
-                                        <div *ngIf="addForm.controls['password'].invalid && addForm.controls['password'].touched"
-                                            class="alert alert-danger error">
-                                            <div *ngIf="addForm.controls['password'].errors['required']">
-                                                Password is required.
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <label for="passwordConfirm" class="text-start">Confirm Password<span
-                                                class="text-danger">*</span></label>
-                                        <input type="password" name="passwordConfirm" id="passwordConfirm"
-                                            class="form-control input" formControlName="passwordConfirm" required>
-
-                                        <div *ngIf="addForm.get('passwordConfirm').hasError('required') && addForm.get('passwordConfirm').touched"
-                                            class="text-danger">
-                                            Confirm Password is required.
-                                        </div>
-                                        <div *ngIf="addForm.get('passwordConfirm').hasError('mismatch')"
-                                            class="text-danger">
-                                            Passwords do not match.
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-between my-3 border-top pt-3">
-
-                            <div>
-                                <button mat-raised-button class="mx-2" type="reset">Cancel</button>
-                            </div>
-                            <div>
-                                <button mat-raised-button class="addBtn" type="submit">Add</button>
-                            </div>
-
-                        </div>
-                    </form> -->
-            </div>
+                    </div>
         </div>
     </div>
 </div>

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Dropdown } from '../controls/dropdown';
 import { Base } from '../controls/base';
 import { Textbox } from '../controls/textbox';
-import { map, Observable, of } from 'rxjs';
+import { BehaviorSubject, map, Observable, of } from 'rxjs';
 import { newUser, signup, User, updateUser } from '../models/user';
 import { environment } from 'src/environments/environment';
 import { HttpHeaders, HttpClient, HttpParams } from '@angular/common/http';
@@ -23,7 +23,25 @@ export class UserService {
 
 
   static getQuestions: any;
+  editMode = new BehaviorSubject(false);
+  selectedEmployee: any = new BehaviorSubject('');
+  private data: any;
+  private isEdit: boolean;
+
   constructor(private http: HttpClient) {
+  }
+
+  setData(data: any, isEdit: boolean): void {
+    this.data = data;
+    this.isEdit = isEdit;
+  }
+
+  getData(): any {
+    return this.data;
+  }
+
+  getIsEdit(): boolean {
+    return this.isEdit;
   }
 
   public getToken() {

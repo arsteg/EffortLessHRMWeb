@@ -18,7 +18,7 @@ export class TaxComponent {
   showOffcanvas: boolean = false;
   isEdit: boolean = false;
   @ViewChild('offcanvasContent', { read: ViewContainerRef }) offcanvasContent: ViewContainerRef;
-  @Input() selectedUser: any;
+  selectedUser = this.userService.getData();
   taxView: boolean;
   totalRecords: number
   recordsPerPage: number = 10;

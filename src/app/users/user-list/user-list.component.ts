@@ -34,7 +34,7 @@ export class UserListComponent implements OnInit {
   showEmployeeDetails = false;
   selectedEmployee: any;
   isEdit: boolean = false;
-  
+
   constructor(private router: Router, private route: ActivatedRoute,
     private UserService: UserService,
     private fb: FormBuilder,
@@ -157,12 +157,17 @@ export class UserListComponent implements OnInit {
     this.addForm.reset();
   }
 
-  toggleView() {
+  toggleView(data: any) {
+    this.isEdit = true;
+    this.UserService.setData(data, this.isEdit);
+    this.router.navigate(['/manage/employee-settings']);
     this.showEmployeeDetails = !this.showEmployeeDetails;
   }
 
   goBackToUserView() {
     this.showEmployeeDetails = false;
   }
+
+
 
 }
