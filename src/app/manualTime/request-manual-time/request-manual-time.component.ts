@@ -13,7 +13,6 @@ import { CommonService } from 'src/app/_services/common.Service';
 import { TasksService } from 'src/app/_services/tasks.service';
 import * as moment from 'moment';
 import { ToastrService } from 'ngx-toastr';
-
 @Component({
   selector: 'app-request-manual-time',
   templateUrl: './request-manual-time.component.html',
@@ -88,9 +87,7 @@ export class RequestManualTimeComponent implements OnInit {
         res.data.forEach(element => {
           this.managers.push(element);
         });
-      },
-        err => {
-        });
+      }, err => { });
 
     this.authenticationService.getUserProjects(this.id).pipe(first())
       .subscribe((res: any) => {
@@ -99,15 +96,12 @@ export class RequestManualTimeComponent implements OnInit {
             this.projects.push({ id: p?.id, projectName: p?.projectName });
           }
         });
-      },
-        err => {
-        });
-
+      }, err => { });
 
     this.fetchManualTimeRequests();
   }
 
-    toggleView() {
+  toggleView() {
     this.view = this.view === 'user' ? 'admin' : 'user';
   }
 
@@ -133,20 +127,17 @@ export class RequestManualTimeComponent implements OnInit {
     const projectId = event.value;
     if (projectId) {
       this.getUserTaskListByProject(projectId).subscribe();
-    }
-    else {
+    } else {
       this.tasks = [];
     }
   }
 
   getUserTaskListByProject(projectId: string): Observable<any> {
     return this.authenticationService.getUserTaskListByProject(this.id, projectId, '', '')
-      .pipe(
-        tap(res => {
-          this.tasks = res && res['taskList'];
-          console.log(this.tasks);
-        })
-      );
+      .pipe(tap(res => {
+        this.tasks = res && res['taskList'];
+        console.log(this.tasks);
+      }));
   }
 
   open(content: any) {
@@ -157,11 +148,9 @@ export class RequestManualTimeComponent implements OnInit {
     });
   }
 
-
   validateStartDate(control: FormControl) {
     const fromDate = control.value;
     const toDate = control.parent?.get('toDate').value;
-
     if (toDate && fromDate && fromDate > toDate) {
       return { 'endDateBeforeStartDate': true };
     }
@@ -177,8 +166,6 @@ export class RequestManualTimeComponent implements OnInit {
     return null;
   }
 
-
-
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
@@ -188,6 +175,7 @@ export class RequestManualTimeComponent implements OnInit {
       return `with: ${reason}`;
     }
   }
+
   onSubmit() {
     var currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
@@ -198,10 +186,9 @@ export class RequestManualTimeComponent implements OnInit {
       task: this.addRequestForm.value.task,
       reason: this.addRequestForm.value.reason,
       user: currentUser?.id,
-      requestId: null,
+      requestId: this.selectedRequest?._id,
       fromDate: this.utilsService.convertToUTC(this.addRequestForm.value.fromDate),
       toDate: this.utilsService.convertToUTC(this.addRequestForm.value.toDate)
-
     }
 
     const fromDate = new Date(this.addRequestForm.value.fromDate).toLocaleDateString('en-GB');
@@ -221,22 +208,20 @@ export class RequestManualTimeComponent implements OnInit {
           this.addRequestForm.reset();
           this.fetchManualTimeRequests();
         }, 30);
-      },
-        err => {
-          this.toastService.error(err.message, "Error")
-        });
-    }
-    else {
-      request.requestId = this.selectedRequest.requestId;
+      }, err => {
+        this.toastService.error(err.message, "Error")
+      });
+    } else {
+      request.requestId = this.selectedRequest._id;
+      console.log("selectedRequest..........update", this.selectedRequest._id);
       this.manualTimeRequestService.updateManualTimeRequest(request).subscribe((res: any) => {
         this.changeMode = 'Add';
         this.toastService.success("Manual time request updated successfully", "success");
         this.addRequestForm.reset();
         this.fetchManualTimeRequests();
-      },
-        err => {
-          this.toastService.error(err.message, "Error")
-        });
+      }, err => {
+        this.toastService.error(err.message, "Error")
+      });
     }
   }
 
@@ -264,10 +249,10 @@ export class RequestManualTimeComponent implements OnInit {
       .subscribe((res: any) => {
         this.toastService.success("Manual time request has been deleted successfully!", "success");
         this.fetchManualTimeRequests();
-      },
-        err => {
-        });
+      }, err => {
+      });
   }
+
   onPageChange(page: number) {
     this.currentPage = page;
     this.fetchManualTimeRequests();
@@ -277,6 +262,7 @@ export class RequestManualTimeComponent implements OnInit {
     this.recordsPerPage = recordsPerPage;
     this.fetchManualTimeRequests();
   }
+
   fetchManualTimeRequests() {
     let pagination = {
       skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
@@ -289,7 +275,6 @@ export class RequestManualTimeComponent implements OnInit {
     });
   }
 
-
   transformRecords(rawRecords: any) {
     this.manualTimeRequests = rawRecords.map(record => ({
       ...record,
@@ -299,7 +284,6 @@ export class RequestManualTimeComponent implements OnInit {
     }));
     this.filteredManualTimeRequests = [...this.manualTimeRequests];
   }
-
 
   filterRecords() {
     const searchWords = this.searchText.toLowerCase().split(' ').filter(word => word);

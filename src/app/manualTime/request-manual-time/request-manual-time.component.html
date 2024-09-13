@@ -13,10 +13,12 @@
             Request</button>
         </div>
       </div>
+
       <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
         [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
         (recordsPerPageChange)="onRecordsPerPageChange($event)">
       </app-pagination>
+
       <table class="px-4 mx-2 rounded">
         <thead>
           <tr>
@@ -52,8 +54,7 @@
         </thead>
 
         <tbody>
-          <tr
-            *ngFor="let record of filteredManualTimeRequests | search: searchText ">
+          <tr *ngFor="let record of filteredManualTimeRequests | search: searchText ">
             <td class="ps-3">
               <div>{{record?.date | date: 'MM/dd/yyyy'}}</div>
             </td>
@@ -91,18 +92,14 @@
                 <i class="bi bi-trash"></i>
               </button>
             </td>
-
           </tr>
         </tbody>
       </table>
-
     </div>
   </div>
 </div>
 
 <div class="modal" id="requestModal">
-
-
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header pb-0">
@@ -112,128 +109,119 @@
         <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
         </div>
       </div>
+
       <div class="modal-body">
         <form [formGroup]="addRequestForm" (ngSubmit)="onSubmit()">
+          <div class="row d-flex justify-content-center">
+            <div class="row">
+              <div class="col-md-6">
+                <label for="project" class="text-start">
+                  Project <span class="text-danger">*</span>
+                </label>
+                <select class="custom-select p-2" formControlName="project" (change)="onProjectChange($event.target)">
+                  <option disabled selected value="undefined">Choose Any Project</option>
+                  <option *ngFor="let project of projects" [value]="project.id">
+                    {{project.projectName}}
+                  </option>
+                </select>
+                <div *ngIf="addRequestForm.controls['project'].invalid && addRequestForm.controls['project'].touched"
+                  class="alert alert-danger error">
+                  <div *ngIf="addRequestForm.controls['project'].errors['required']">
+                    Project is required.
+                  </div>
+                </div>
+              </div>
 
-        <div class="row d-flex justify-content-center">
-
-          <div class="row">
-            <div class="col-md-6">
-              <label for="project" class="text-start">
-                Project <span class="text-danger">*</span>
-              </label>
-              <select class="custom-select p-2" formControlName="project" (change)="onProjectChange($event.target)">
-                <option disabled selected value="undefined">Choose Any Project</option>
-                <option *ngFor="let project of projects" [value]="project.id">
-                  {{project.projectName}}
-                </option>
-              </select>
-              <div *ngIf="addRequestForm.controls['project'].invalid && addRequestForm.controls['project'].touched"
-                class="alert alert-danger error">
-                <div *ngIf="addRequestForm.controls['project'].errors['required']">
-                  Project is required.
+              <div class="col-md-6">
+                <label for="manager" class="text-start">Manager<span class="text-danger">*</span></label>
+                <select class="custom-select p-2" formControlName="manager">
+                  <option disabled selected value="undefined">Choose Any Manager</option>
+                  <option *ngFor="let manager of managers" [value]="manager?.id">
+                    {{manager.name}}
+                  </option>
+                </select>
+                <div *ngIf="addRequestForm.controls['manager'].invalid && addRequestForm.controls['manager'].touched"
+                  class="alert alert-danger error">
+                  <div *ngIf="addRequestForm.controls['manager'].errors['required']">
+                    Manager is required.
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div class="col-md-6">
-              <label for="manager" class="text-start">Manager<span class="text-danger">*</span></label>
-
-              <select class="custom-select p-2" formControlName="manager">
-                <option disabled selected value="undefined">Choose Any Manager</option>
-                <option *ngFor="let manager of managers" [value]="manager?.id">
-                  {{manager.name}}
-                </option>
-              </select>
-              <div *ngIf="addRequestForm.controls['manager'].invalid && addRequestForm.controls['manager'].touched"
-                class="alert alert-danger error">
-                <div *ngIf="addRequestForm.controls['manager'].errors['required']">
-                  Manager is required.
-                </div>
-              </div>
+            <div class="row mt-3">
+              <label for="task" class="text-start">Task<span class="text-danger">*</span></label>
             </div>
-          </div>
-          <div class="row mt-3">
-            <label for="task" class="text-start">Task<span class="text-danger">*</span></label>
-          </div>
-          <select class="custom-select p-2" formControlName="task" [disabled]="changeMode === 'update'">
-            <option selected value="undefined" disabled>Choose Any Task</option>
-            <option *ngFor="let task of tasks" [value]="task?.id">
-              {{task.taskName}}
-            </option>
-          </select>
-          <div *ngIf="addRequestForm.controls['task'].invalid && addRequestForm.controls['task'].touched"
-            class="alert alert-danger error">
-            <div *ngIf="addRequestForm.controls['task'].errors['required']">
-              Task is required.
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-md-6">
-              <label for="fromDate" class="text-start">Start Date<span class="text-danger">*</span></label>
-              <input type="datetime-local" id="fromDate" class="form-control" formControlName="fromDate" required
-                [max]="today">
-
-              <div *ngIf="addRequestForm.controls['fromDate'].invalid && addRequestForm.controls['fromDate'].touched"
-                class="alert alert-danger error">
-                <div *ngIf="addRequestForm.controls['fromDate'].errors['required']">
-                  Start Date is required.
-                </div>
-                <div *ngIf="addRequestForm.get('fromDate').hasError('endDateBeforeStartDate')">
-                  End Date must be after Start Date.
-                </div>
-              </div>
-
-            </div>
-
-            <div class="col-md-6">
-              <label for="toDate" class="text-start">End Date<span class="text-danger">*</span></label>
-              <input matInput type="datetime-local" name="toDate" id="toDate" placeholder="end date"
-                formControlName="toDate" class="form-control input pt-0" [max]="today">
-
-              <div *ngIf="addRequestForm.controls['toDate'].invalid && addRequestForm.controls['toDate'].touched"
-                class="alert alert-danger error">
-                <div *ngIf="addRequestForm.controls['toDate'].errors['required']">
-                  End Date is required.
-                </div>
-                <div *ngIf="addRequestForm.get('toDate').hasError('endDateBeforeStartDate')">
-                  The end date cannot be earlier than the start date.
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-12">
-            <label for="reason" class="text-start">Reason <span class="text-danger">*</span></label>
-            <input type="text" class="form-control" formControlName="reason" id="reason" rows="4" />
-            <div *ngIf="addRequestForm.controls['reason'].invalid && addRequestForm.controls['reason'].touched"
+            <select class="custom-select p-2" formControlName="task" [disabled]="changeMode === 'update'">
+              <option selected value="undefined" disabled>Choose Any Task</option>
+              <option *ngFor="let task of tasks" [value]="task?.id">
+                {{task.taskName}}
+              </option>
+            </select>
+            <div *ngIf="addRequestForm.controls['task'].invalid && addRequestForm.controls['task'].touched"
               class="alert alert-danger error">
-              <div *ngIf="addRequestForm.controls['reason'].errors['required']">Reason is required.</div>
+              <div *ngIf="addRequestForm.controls['task'].errors['required']">
+                Task is required.
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <label for="fromDate" class="text-start">Start Date<span class="text-danger">*</span></label>
+                <input type="datetime-local" id="fromDate" class="form-control" formControlName="fromDate" required
+                  [max]="today">
+                <div *ngIf="addRequestForm.controls['fromDate'].invalid && addRequestForm.controls['fromDate'].touched"
+                  class="alert alert-danger error">
+                  <div *ngIf="addRequestForm.controls['fromDate'].errors['required']">
+                    Start Date is required.
+                  </div>
+                  <div *ngIf="addRequestForm.get('fromDate').hasError('endDateBeforeStartDate')">
+                    End Date must be after Start Date.
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <label for="toDate" class="text-start">End Date<span class="text-danger">*</span></label>
+                <input matInput type="datetime-local" name="toDate" id="toDate" placeholder="end date"
+                  formControlName="toDate" class="form-control input pt-0" [max]="today">
+                <div *ngIf="addRequestForm.controls['toDate'].invalid && addRequestForm.controls['toDate'].touched"
+                  class="alert alert-danger error">
+                  <div *ngIf="addRequestForm.controls['toDate'].errors['required']">
+                    End Date is required.
+                  </div>
+                  <div *ngIf="addRequestForm.get('toDate').hasError('endDateBeforeStartDate')">
+                    The end date cannot be earlier than the start date.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-12">
+              <label for="reason" class="text-start">Reason <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" formControlName="reason" id="reason" rows="4" />
+              <div *ngIf="addRequestForm.controls['reason'].invalid && addRequestForm.controls['reason'].touched"
+                class="alert alert-danger error">
+                <div *ngIf="addRequestForm.controls['reason'].errors['required']">Reason is required.</div>
+              </div>
             </div>
           </div>
-        </div>
 
-
-        <div *ngIf="dateMismatchError" class="alert alert-danger error text-end pe-4">
-          Start Date and End Date should be Similar!
-        </div>
-        <div class="modal-footer mt-2 d-flex justify-content-between">
-          <button mat-raised-button class="mx-2" type="button" *ngIf="changeMode == 'Add'"
-            (click)="clearselectedRequest()">Cancel</button>
-          <button mat-raised-button class="mx-2" type="button" *ngIf="changeMode == 'Update'"
-            (click)="getManualById()">Cancel</button>
-
-          <button mat-raised-button class="addBtn" type="submit">{{changeMode}} Request</button>
-
-        </div>
+          <div *ngIf="dateMismatchError" class="alert alert-danger error text-end pe-4">
+            Start Date and End Date should be Similar!
+          </div>
+          <div class="modal-footer mt-2 d-flex justify-content-between">
+            <button mat-raised-button class="mx-2" type="button" *ngIf="changeMode == 'Add'"
+              (click)="clearselectedRequest()">Cancel</button>
+            <button mat-raised-button class="mx-2" type="button" *ngIf="changeMode == 'Update'"
+              (click)="getManualById()">Cancel</button>
+            <button mat-raised-button class="addBtn" type="submit">{{changeMode}} Request</button>
+          </div>
         </form>
       </div>
     </div>
   </div>
-
 </div>
-
 
 <!-- Delete -->
 <div class="modal" id="deleteModal">
