@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { signup, webSignup } from '../../models/user'
 import { NotificationService } from '../../_services/notification.service'
@@ -13,27 +13,31 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 export class RegisterComponent implements OnInit {
   loading = false;
-  user: webSignup = new webSignup();
-  @ViewChild('f') registerForm: NgForm;
+  registerNewUser: FormGroup;
+
   constructor(private authenticationService: AuthenticationService, private router: Router,
-    private notifyService: NotificationService) { }
+    private notifyService: NotificationService,
+    private fb: FormBuilder) {
+    this.registerNewUser = this.fb.group({
+      firstName: ['', Validators.required],
+      lastName: [''],
+      email: [''],
+      password: [''],
+      passwordConfirm: [''],
+      companyName: ['']
+    })
+  }
 
   ngOnInit(): void {
   }
 
   onSubmit() {
     this.loading = true;
-    this.user.firstName = this.registerForm.value.firstName;
-    this.user.lastName = this.registerForm.value.lastName;
-    this.user.email = this.registerForm.value.email;
-    this.user.password = this.registerForm.value.password;
-    this.user.passwordConfirm = this.registerForm.value.passwordConfirm;
-    this.user.companyName = this.registerForm.value.companyName;
-    if (this.user.password !== this.user.passwordConfirm) {
-      this.notifyService.showWarning("Passwords don't match", "warning");
+    if (this.registerNewUser.value.password !== this.registerNewUser.value.passwordConfirm) {
+      this.notifyService.showWarning("Passwords don't match", "Warning");
       return;
     }
-    this.authenticationService.webSignup(this.user).subscribe(
+    this.authenticationService.webSignup(this.registerNewUser.value).subscribe(
       data => {
         setTimeout(() => {
           this.notifyService.showSuccess("User Created Successfully", "Success")
