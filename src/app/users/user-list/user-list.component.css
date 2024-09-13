@@ -3,3 +3,9 @@
   border: transparent !important;
   border-radius: 20px !important;
 }
+
+.addForm {
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 50vh;
+}
