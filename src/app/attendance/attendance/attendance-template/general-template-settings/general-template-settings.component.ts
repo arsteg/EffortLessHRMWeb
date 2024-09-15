@@ -62,7 +62,6 @@ export class GeneralTemplateSettingsComponent {
   }
 
   ngOnInit() {
-    console.log(this.isEdit);
     this.getModes();
 
     this.getAllUsers();
@@ -70,7 +69,6 @@ export class GeneralTemplateSettingsComponent {
     if (this.isEdit) {
       this.attendanceService.selectedTemplate.subscribe(res => {
         if (res._id) {
-          console.log(res)
           this.setFormValues(res)
         }
       })
@@ -127,7 +125,6 @@ export class GeneralTemplateSettingsComponent {
     this.selectedAlternateWeekDays = templateData?.daysForAlternateWeekOffRoutine;
     this.selectedCategory = templateData?.leveCategoryHierarchyForAbsentHalfDay;
     this.capturingAttendance = templateData?.attendanceMode;
-    console.log(this.capturingAttendance);
   }
 
   isWeeklyDays(days) {

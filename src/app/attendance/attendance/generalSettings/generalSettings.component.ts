@@ -61,8 +61,8 @@ export class GeneralSettingsComponent implements OnInit {
       users: [[]]
     });
     this.dutyReasonForm = this.fb.group({
-      label: [''],
-      applicableEmployee: [''],
+      label: ['', Validators.required],
+      applicableEmployee: ['', Validators.required],
       users: [[]]
     })
   }
@@ -265,11 +265,18 @@ export class GeneralSettingsComponent implements OnInit {
   }
 
   addDutyReason() {
-    const formattedUsers = this.dutyReasonForm.value.users.map((user: any) => ({ user: user }));
-    this.dutyReasonForm.value.users = formattedUsers;
+    if (this.dutyReasonForm.value.applicableEmployee === 'specific-employees' &&
+      (!this.dutyReasonForm.value.users || this.dutyReasonForm.value.users.length === 0)) {
+      this.dutyReasonForm.get('users').setErrors({ required: true });  // Set 'required' error manually
+      return;
+    }
+    if (this.dutyReasonForm.value.applicableEmployee != 'all-employees') {
+      const formattedUsers = this.dutyReasonForm.value.users.map(user => ({ user: user }));
+      this.dutyReasonForm.value.users = formattedUsers;
+    }
+    else this.dutyReasonForm.value.users = [];
     this.attendanceService.addDutyReason(this.dutyReasonForm.value).subscribe((res: any) => {
-      this.dutyReason = res.data;
-      // this.getDutyReason();
+      this.dutyReason.push(res.data);
       this.dutyReasonForm.reset();
       this.toast.success('On Duty Reason Created', 'Successfully!!!');
     })

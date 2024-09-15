@@ -28,7 +28,7 @@
                         [class.active]="selectedTab === 9">Reconciliation</button>
                 </div>
 
-                <div *ngIf="selectedTab === 1" class="tab-content">
+                <div *ngIf="selectedTab === 1" class="tab-content mt-0 pt-0">
                     <app-attendance-management-settings></app-attendance-management-settings>
                 </div>
                 <div *ngIf="selectedTab === 2" class="tab-content">
@@ -40,17 +40,16 @@
                 <div *ngIf="selectedTab === 4" class="tab-content">
                     <app-overtime-records></app-overtime-records>
                 </div>
-                <div *ngIf="selectedTab === 5" class="tab-content">
+                <div *ngIf="selectedTab === 5" class="tab-content pt-0 mt-0">
                     <app-regularizations-records></app-regularizations-records>
                 </div>
-                <div *ngIf="selectedTab === 6" class="tab-content">
+                <div *ngIf="selectedTab === 6" class="tab-content pt-0 mt-0">
                     <app-on-duty-records></app-on-duty-records>
                 </div>
                 <div *ngIf="selectedTab === 7" class="tab-content">
-                    <!-- <app-shift></app-shift> -->
+                    
                 </div>
                 <div *ngIf="selectedTab === 8" class="tab-content">
-                    <!-- <app-shift-assignments></app-shift-assignments> -->
                 </div>
             </div>
 

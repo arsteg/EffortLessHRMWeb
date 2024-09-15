@@ -7,11 +7,11 @@ import { ToastrService } from 'ngx-toastr';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
-import {  GoogleMap } from '@angular/google-maps';
+import { GoogleMap } from '@angular/google-maps';
 interface Marker {
   lat: number;
   lng: number;
-  label?: string; // Optional label for the marker
+  label?: string;
 }
 
 @Component({
@@ -33,16 +33,15 @@ export class AttendanceRegularizationComponent {
   locationForm: FormGroup;
   display: any;
   center: google.maps.LatLngLiteral;
-  // zoom = 16;
   ipAddress: string;
   markerPosition: google.maps.LatLngLiteral;
+  @Output() expenseTemplateReportRefreshed: any = new EventEmitter();
 
   @ViewChild(GoogleMap, { static: false }) map: GoogleMap | undefined;
-  // center: any = { lat: 30.3753, lng: 76.7881 }; // Default center coordinates (Ambala, Haryana)
   zoom = 15;
   markers: Marker[] = [];
   currentLocation: Marker | undefined;
-  radius: number; // Initial radius in meters
+  radius: number;
 
   constructor(private fb: FormBuilder,
     private modalService: NgbModal,
@@ -94,7 +93,6 @@ export class AttendanceRegularizationComponent {
     const formArray: FormArray = this.regularisationForm.get('whoReceiveWeeklyEmailNotification') as FormArray;
     if (event.target.checked) {
       formArray.push(new FormControl(event.target.value));
-      console.log(formArray)
     } else {
       let i: number = 0;
       formArray.controls.forEach((ctrl: FormControl) => {
@@ -171,7 +169,6 @@ export class AttendanceRegularizationComponent {
     this.attendanceService.getRegularizationByTemplateId(templateId).subscribe((res: any) => {
       const data = res.data;
       this.regularizationId = data._id
-      console.log(data);
       this.attendanceService.getLocation(this.regularizationId).subscribe((res: any) => {
         this.location = res.data;
       })
@@ -209,7 +206,6 @@ export class AttendanceRegularizationComponent {
         attendanceTemplate: data.attendanceTemplate
       });
 
-      console.log(this.regularisationForm.value);
     });
   }
 
@@ -230,12 +226,11 @@ export class AttendanceRegularizationComponent {
         });
     }
     else {
-      console.log(this.regularisationForm.value);
       this.attendanceService.getRegularizationByTemplateId(templateId).subscribe((res: any) => {
         const data = res.data;
         this.attendanceService.updateRegularizations(data._id, this.regularisationForm.value).subscribe((res: any) => {
           this.toast.success('Attendance Regularization Updated', 'Successfully!')
-
+          this.expenseTemplateReportRefreshed.emit(res.data);
         },
           err => {
             this.toast.error('Attendance Regularization can not be updated', 'Error!')
@@ -280,15 +275,12 @@ export class AttendanceRegularizationComponent {
             lat: position.coords.latitude,
             lng: position.coords.longitude
           };
-          console.log(position)
         },
         () => {
-          console.log('Location access denied.');
           this.center = { lat: 22.2736308, lng: 70.7512555 };
         }
       );
     } else {
-      console.log('Geolocation is not supported by this browser.');
       this.center = { lat: 22.2736308, lng: 70.7512555 };
     }
   }
@@ -306,24 +298,21 @@ export class AttendanceRegularizationComponent {
   // }
 
   onSubmissionMap() {
-    console.log(this.display);
     this.locationForm.value.Latitude = this.display.lat,
       this.locationForm.value.Longitude = this.display.lng,
       this.locationForm.value.attendanceRegularization = this.regularizationId
-    console.log(this.locationForm.value)
 
     this.attendanceService.addLocation(this.locationForm.value).subscribe((res: any) => {
       const newLocation = res.data;
       this.location.push(newLocation);
     })
   }
-  
+
   geolocationSuccess(position: GeolocationPosition) {
     const { latitude, longitude } = position.coords;
     this.center = { lat: latitude, lng: longitude };
     this.currentLocation = { lat: latitude, lng: longitude, label: 'Your Location' };
     this.markers?.push(this.currentLocation);
-    console.log(this.markers)
   }
 
   geolocationError(error: GeolocationPositionError) {
@@ -333,7 +322,6 @@ export class AttendanceRegularizationComponent {
   // Call geolocation API to get user's location
   getUserLocation() {
     if (navigator.geolocation) {
-      console.log(navigator.geolocation.getCurrentPosition(this.geolocationSuccess.bind(this), this.geolocationError.bind(this)));
       navigator.geolocation.getCurrentPosition(this.geolocationSuccess.bind(this), this.geolocationError.bind(this));
     } else {
       console.error("Geolocation is not supported by this browser.");
@@ -346,6 +334,5 @@ export class AttendanceRegularizationComponent {
     const newLng = event.latLng.lng();
     this.center = { lat: newLat, lng: newLng };
     this.currentLocation = { lat: newLat, lng: newLng, label: 'Your Location' };
-    console.log(this.currentLocation)
   }
 }

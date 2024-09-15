@@ -100,7 +100,6 @@ export class AttendanceTemplateComponent {
 
   onChangeStep(event) {
     this.step = event;
-    console.log(this.step)
   }
 
   onChangeMode(event) {
@@ -116,6 +115,7 @@ export class AttendanceTemplateComponent {
   }
 
   refreshExpenseReportTable() {
+    console.log('refreshExpenseReportTable');
     this.loadRecords();
   }
 

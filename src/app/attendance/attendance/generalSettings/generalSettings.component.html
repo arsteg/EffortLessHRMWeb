@@ -241,7 +241,7 @@
 </ng-template>
 
 <ng-template #addDutyModal let-dutyModal>
-  <div class="modal-header border-bottom mb-2 pt-0">
+  <div class="modal-header border-bottom mb-2 pt-0 d-flex justify-content-between">
     <div>
       <h1 class="modal-title text-muted mb-0">{{isEdit? 'Update': 'Add'}} On Duty Reason
       </h1>
@@ -256,6 +256,9 @@
     <div class="form-group">
       <label for="">Label for On Duty Reason</label>
       <input type="text" class="form-control" placeholder="Enter Label" formControlName="label">
+      <div *ngIf="dutyReasonForm.get('label').invalid && dutyReasonForm.get('label').touched"  class="text-danger error">
+        Label is required.
+      </div>
     </div>
 
     <div class="form-group mt-2">
@@ -276,6 +279,9 @@
           </label>
         </div>
       </div>
+      <div *ngIf="dutyReasonForm.get('applicableEmployee').invalid && dutyReasonForm.get('applicableEmployee').touched"  class="text-danger error">
+        This Field is required.
+      </div>
     </div>
     <div class="form-group mt-2" *ngIf="dutyReasonForm.get('applicableEmployee').value === 'specific-employees'">
       <mat-form-field appearance="outline" class="w-100 mx-1">
@@ -285,9 +291,10 @@
             {{member?.firstName | titlecase}}&nbsp;{{member?.lastName}}
           </mat-option>
         </mat-select>
-
-
       </mat-form-field>
+      <div *ngIf="dutyReasonForm.get('users').invalid && dutyReasonForm.get('users').touched"  class="text-danger error">
+        Please select at least one employee.
+      </div>
     </div>
     <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
       <button mat-raised-button type="button">Cancel</button>
