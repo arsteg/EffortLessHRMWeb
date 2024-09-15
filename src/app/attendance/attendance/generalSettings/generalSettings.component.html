@@ -104,7 +104,7 @@
                 </tr>
               </tbody>
             </table>
-            
+
           </div>
         </div>
         <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabOnDutyReason'}" id="tabOnDutyReason">
@@ -144,7 +144,7 @@
                 </tr>
               </tbody>
             </table>
-            
+
           </div>
         </div>
       </div>
@@ -153,7 +153,7 @@
 </div>
 
 <ng-template #addModal let-modal>
-  <div class="modal-header border-bottom mb-2 pt-0">
+  <div class="modal-header border-bottom mb-2 pt-0 d-flex justify-content-between">
     <div>
       <h1 class="modal-title text-muted mb-0">{{isEdit? 'Update': 'Add'}} Regularization Reason
       </h1>
@@ -162,76 +162,82 @@
         (click)="modal.close('Escape clicked')"></button>
     </div>
   </div>
-
-  <form action="" [formGroup]="regularizationForm" (ngSubmit)="isEdit ? updateRegularization() :  addRegularization()">
-
+  <form [formGroup]="regularizationForm" (ngSubmit)="isEdit ? updateRegularization() : addRegularization()">
     <div class="form-group">
-      <label for="">Label for Regularization Reason</label>
+      <label for="">Label for Regularization Reason <span class="text-danger">*</span></label>
       <input type="text" class="form-control" placeholder="Enter Label" formControlName="label">
-    </div>
-
-    <div class="form-check form-switch ps-0 mt-2 d-flex justify-content-between">
-      <label for="isFrequecyRestriction">Frequency Restriction</label>
-      <input class="form-check-input" type="checkbox" role="switch" formControlName="isFrequecyRestriction"
-        id="isFrequecyRestriction" checked>
-    </div>
-
-    <div *ngIf="regularizationForm.get('isFrequecyRestriction').value == true">
-      <p>An Employee can apply Maximum</p>
-      <div class="form-group">
-        <label for="">Limit</label>
-        <input type="number" class="form-control" placeholder="Limit" formControlName="limit">
-      </div>
-
-      <div class="form-group mt-2">
-        <select name="" id="" formControlName="frequency">
-          <option value="week">Week</option>
-          <option value="calendar-month">Calendar Month</option>
-          <option value="annual-cycle">Annual Cycle</option>
-        </select>
+      <div  *ngIf="regularizationForm.get('label').invalid && regularizationForm.get('label').touched"
+      class="text-danger error">Label is required.
       </div>
     </div>
-
-
+  
+    <div class="form-check form-switch ps-0 mt-2 d-flex">
+      <label for="isFrequecyRestriction">Frequency Restriction <span class="text-danger">*</span></label>
+      <input class="form-check-input ms-4" type="checkbox" formControlName="isFrequecyRestriction" id="isFrequecyRestriction">
+    </div>
+  
+    <div *ngIf="regularizationForm.get('isFrequecyRestriction').value">
+      <strong><small>An Employee can apply Maximum</small></strong>
+      <div class="d-flex align-items-center justify-content-between">
+        <div class="form-group w-100">
+          <label for="">Limit <span class="text-danger">*</span></label>
+          <input type="number" class="w-75 form-control" placeholder="Limit" formControlName="limit">
+          <div *ngIf="regularizationForm.get('limit').invalid && regularizationForm.get('limit').touched"  class="text-danger error">
+           Limit is required and must be greater than 0.
+          </div>
+        </div>
+  
+        <div class="form-group w-100 mt-4">
+          <select class="form-control w-75" formControlName="frequency">
+            <option value="week">Week</option>
+            <option value="calendar-month">Calendar Month</option>
+            <option value="annual-cycle">Annual Cycle</option>
+          </select>
+          <div *ngIf="regularizationForm.get('frequency').invalid && regularizationForm.get('frequency').touched"  class="text-danger error">
+            Frequency is required.
+          </div>
+        </div>
+      </div>
+    </div>
+  
     <div class="form-group mt-2">
-      <label for="">Which Employees Does this Reason Apply to?</label>
+      <label for="">Which Employees Does this Reason Apply to? <span class="text-danger">*</span></label>
       <div class="d-flex">
         <div class="form-check">
-          <input class="form-check-input" type="radio" id="all-employees" value="all-employees" required
-            formControlName="applicableEmployee">
-          <label class="form-check-label" for="all-employees">
-            All Employees
-          </label>
+          <input class="form-check-input" id="all1" type="radio" value="all-employees" formControlName="applicableEmployee">
+          <label class="form-check-label" for="all1">All Employees</label>
         </div>
         <div class="form-check ms-4">
-          <input class="form-check-input" type="radio" id="specific-employees" required value="specific-employees"
-            formControlName="applicableEmployee">
-          <label class="form-check-label" for="specific-employees">
-            Specific Employees
-          </label>
+          <input class="form-check-input" id="specific2" type="radio" value="specific-employees" formControlName="applicableEmployee">
+          <label class="form-check-label" for="specific2">Specific Employees</label>
         </div>
       </div>
+      <div *ngIf="regularizationForm.get('applicableEmployee').invalid && regularizationForm.get('applicableEmployee').touched"  class="text-danger error">
+        Please select an applicable employee option.
+      </div>
     </div>
+  
     <div class="form-group mt-2" *ngIf="regularizationForm.get('applicableEmployee').value === 'specific-employees'">
       <mat-form-field appearance="outline" class="w-100 mx-1">
         <mat-label>Select Employee</mat-label>
-        <mat-select name="users" multiple formControlName="users">
+        <mat-select multiple formControlName="users">
           <mat-option *ngFor="let member of members" [value]="member.id">
-            {{member?.firstName | titlecase}}&nbsp;{{member?.lastName}}
+            {{member?.firstName}} {{member?.lastName}}
           </mat-option>
         </mat-select>
-
-
       </mat-form-field>
+      <div *ngIf="regularizationForm.get('users').invalid && regularizationForm.get('users').touched"  class="text-danger error">
+        Please select at least one employee.
+      </div>
     </div>
+  
     <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
       <button mat-raised-button type="button">Cancel</button>
-      <button mat-raised-button class="addBtn" type="submit">{{isEdit?
-        'Update': 'Add'}}</button>
-
+      <button mat-raised-button class="addBtn" type="submit">{{isEdit ? 'Update' : 'Add'}}</button>
     </div>
   </form>
-
+  
+ 
 </ng-template>
 
 <ng-template #addDutyModal let-dutyModal>

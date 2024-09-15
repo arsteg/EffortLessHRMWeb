@@ -5,7 +5,7 @@ import { DatePipe, NgIf } from '@angular/common';
 import { ReportsService } from 'src/app/_services/reports.service';
 import { ExportService } from 'src/app/_services/export.service';
 import { AttendanceService } from 'src/app/_services/attendance.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { ToastrService } from 'ngx-toastr';
@@ -25,7 +25,7 @@ export class GeneralSettingsComponent implements OnInit {
   generalSettings: any;
   closeResult: string = '';
   isEdit = false;
-  regularization: any;
+  regularization: any[];
   members: any = [];
   activeTab: string = 'tabRegularizationReason';
   p: number = 1;
@@ -45,7 +45,6 @@ export class GeneralSettingsComponent implements OnInit {
     private modalService: NgbModal,
     private dialog: MatDialog,
     private toast: ToastrService,
-    private paginationService: PaginationService
   ) {
     this.generalSettingForm = this.fb.group({
       canSelectRegularizationReason: [false],
@@ -54,11 +53,11 @@ export class GeneralSettingsComponent implements OnInit {
       IsRegularizationandLeaveBlockedForUser: [false]
     });
     this.regularizationForm = this.fb.group({
-      label: [''],
-      isFrequecyRestriction: [false],
-      limit: [0],
+      label: ['', Validators.required],
+      isFrequecyRestriction: [false, Validators.required],
+      limit: [1, [Validators.required, Validators.min(1)]],
       frequency: [''],
-      applicableEmployee: [''],
+      applicableEmployee: ['', Validators.required],
       users: [[]]
     });
     this.dutyReasonForm = this.fb.group({
@@ -75,8 +74,6 @@ export class GeneralSettingsComponent implements OnInit {
     });
     this.loadRecords()
   }
-
-
 
   onPageChange(page: number) {
     this.currentPage = page;
@@ -99,7 +96,7 @@ export class GeneralSettingsComponent implements OnInit {
         this.totalRecords = res.total;
       });
     }
-    else if(this.activeTab == 'tabOnDutyReason'){
+    else if (this.activeTab == 'tabOnDutyReason') {
       console.log('on dutyReason')
       this.attendanceService.getDutyReason(pagination).subscribe((res: any) => {
         this.dutyReason = res.data;
@@ -167,13 +164,24 @@ export class GeneralSettingsComponent implements OnInit {
   }
 
   addRegularization() {
-    const formattedUsers = this.regularizationForm.value.users.map((user: any) => ({ user: user }));
-    this.regularizationForm.value.users = formattedUsers;
-    this.attendanceService.addRegularizationReason(this.regularizationForm.value).subscribe((res: any) => {
-      this.regularization = res.data;
-      this.toast.success('Regularization Reason Added', 'Successfully!!!');
 
-      // this.getRegularizationReason();
+    // Check if 'specific-employees' is selected and users array is empty
+    if (this.regularizationForm.value.applicableEmployee === 'specific-employees' &&
+      (!this.regularizationForm.value.users || this.regularizationForm.value.users.length === 0)) {
+      this.regularizationForm.get('users').setErrors({ required: true });  // Set 'required' error manually
+      return;
+    }
+
+    if (this.regularizationForm.value.applicableEmployee != 'all-employees') {
+      const formattedUsers = this.regularizationForm.value.users.map(user => ({ user: user }));
+      this.regularizationForm.value.users = formattedUsers;
+    }
+    else this.regularizationForm.value.users = [];
+    console.log(this.regularizationForm.value);
+
+    this.attendanceService.addRegularizationReason(this.regularizationForm.value).subscribe((res: any) => {
+      this.toast.success('Regularization Reason Added', 'Successfully!!!');
+      this.regularization.push(res.data);
       this.regularizationForm.reset();
     })
   }
