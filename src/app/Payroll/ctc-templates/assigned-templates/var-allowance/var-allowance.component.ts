@@ -17,7 +17,10 @@ export class VarAllowanceComponent {
   combinedDataChange: any;
   @Input() selectedRecord: any;
 
-  constructor(private payroll: PayrollService, private fb: FormBuilder) {
+  constructor(
+    private payroll: PayrollService,
+    private fb: FormBuilder
+  ) {
     this.variableAllowanceForm = this.fb.group({
       variableAllowance: this.fb.array([])
     });
@@ -26,6 +29,7 @@ export class VarAllowanceComponent {
   ngOnInit() {
     this.getVariableAllowances();
     this.initForm();
+
     if (this.isEdit && this.selectedRecord) {
       this.patchFormValues();
     }
@@ -34,6 +38,7 @@ export class VarAllowanceComponent {
   initForm() {
     const allowancesControl = this.variableAllowanceForm.get('variableAllowance') as FormArray;
     this.variableAllowances = this.data.ctcTemplateVariableAllowance || [];
+
     this.variableAllowances.forEach(fa => {
       allowancesControl.push(this.fb.group({
         variableAllowance: [fa],
@@ -43,15 +48,21 @@ export class VarAllowanceComponent {
         minimumAmount: [0]
       }));
     });
+
     this.variableAllowanceForm.valueChanges.subscribe(() => {
-      this.formDataChange.emit(this.variableAllowanceForm.value.variableAllowance);
+      if (this.variableAllowanceForm.valid) {
+        this.formDataChange.emit(this.variableAllowanceForm.value.variableAllowances);
+      } else {
+        console.log("Form is invalid or incomplete");
+      }
     });
   }
 
   patchFormValues() {
     const allowancesControl = this.variableAllowanceForm.get('variableAllowance') as FormArray;
     allowancesControl.clear();
-    this.selectedRecord.ctcTemplateVariableAllowances.forEach((item: any) => {
+
+    this.selectedRecord.ctcTemplateVariableAllowances.forEach((item: any, index: number) => {
       allowancesControl.push(this.fb.group({
         variableAllowance: [item.variableAllowance || ''],
         criteria: [item.criteria || 'Amount'],
@@ -60,7 +71,6 @@ export class VarAllowanceComponent {
         minimumAmount: [item.minimumAmount || 0]
       }));
     });
-    console.log(this.variableAllowanceForm.value);
   }
 
   get allowances() {
@@ -68,10 +78,7 @@ export class VarAllowanceComponent {
   }
 
   getVariableAllowances() {
-    let payload = {
-      next: '',
-      skip: ''
-    }
+    let payload = { next: '', skip: '' }
     this.payroll.getVariableAllowance(payload).subscribe((res: any) => {
       this.allfixedAllowances = res.data;
     });
@@ -81,5 +88,4 @@ export class VarAllowanceComponent {
     const matchingAllowance = this.allfixedAllowances?.find(res => res._id === allowance);
     return matchingAllowance ? matchingAllowance.label : '';
   }
-
 }

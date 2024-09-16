@@ -1,6 +1,5 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ChangeDetectorRef } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { skip } from 'rxjs';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { Offcanvas } from 'bootstrap';
 
@@ -55,9 +54,135 @@ export class UpdateCTCTemplateComponent {
     }
   }
 
+  onDropdownChange(event: any, type: string) {
+    const selectedValues = event.value;
+    switch (type) {
+      case 'fixedAllowance':
+        // Filter out the deselected options
+        this.selectedRecord.ctcTemplateFixedAllowances = this.selectedRecord.ctcTemplateFixedAllowances.filter(allowance =>
+          selectedValues.includes(allowance.fixedAllowance));
+
+        // Add newly selected options
+        selectedValues.forEach(value => {
+          if (!this.selectedRecord.ctcTemplateFixedAllowances.find(allowance => allowance.fixedAllowance === value)) {
+            this.selectedRecord.ctcTemplateFixedAllowances.push({
+              fixedAllowance: value,
+              value: '',
+              criteria: '',
+              minAmount: ''
+            })
+          }
+        });
+        break;
+
+      case 'fixedDeduction':
+        // Filter out the deselected options
+        this.selectedRecord.ctcTemplateFixedDeductions = this.selectedRecord.ctcTemplateFixedDeductions.filter(deduction =>
+          selectedValues.includes(deduction.fixedDeduction));
+
+        // Add newly selected options
+        selectedValues.forEach(value => {
+          if (!this.selectedRecord.ctcTemplateFixedDeductions.find(deduction => deduction.fixedDeduction === value)) {
+            this.selectedRecord.ctcTemplateFixedDeductions.push({
+              fixedDeduction: value,
+              value: '',
+              criteria: '',
+              minAmount: ''
+            })
+          }
+        });
+        break;
+
+      case 'fixedContribution':
+        // Filter out the deselected options
+        this.selectedRecord.ctcTemplateEmployerContributions = this.selectedRecord.ctcTemplateEmployerContributions.filter(contribution => selectedValues.includes(contribution.fixedContribution));
+
+        // Add newly selected options
+        selectedValues.forEach(value => {
+          if (!this.selectedRecord.ctcTemplateEmployerContributions.find(contribution => contribution.fixedContribution === value)) {
+            this.selectedRecord.ctcTemplateEmployerContributions.push({
+              fixedContribution: value,
+              value: '',
+              criteria: '',
+              minAmount: ''
+            })
+          }
+        });
+        break;
+
+      case 'otherBenefit':
+        // Filter out the deselected options
+        this.selectedRecord.ctcTemplateOtherBenefitAllowances = this.selectedRecord.ctcTemplateOtherBenefitAllowances.filter(otherbenefits => selectedValues.includes(otherbenefits.otherBenefit));
+
+        // Add newly selected options
+        selectedValues.forEach(value => {
+          if (!this.selectedRecord.ctcTemplateOtherBenefitAllowances.find(otherbenefits => otherbenefits.otherBenefit === value)) {
+            this.selectedRecord.ctcTemplateOtherBenefitAllowances.push({
+              otherBenefit: value,
+              value: '',
+              criteria: '',
+              minAmount: ''
+            })
+          }
+        });
+        break;
+
+      case 'employeeDeduction':
+        // Filter out the deselected options
+        this.selectedRecord.ctcTemplateEmployeeDeductions = this.selectedRecord.ctcTemplateEmployeeDeductions.filter(empDeduction => selectedValues.includes(empDeduction.employeeDeduction));
+
+        // Add newly selected options
+        selectedValues.forEach(value => {
+          if (!this.selectedRecord.ctcTemplateEmployeeDeductions.find(empDeduction => empDeduction.otherBenefit === value)) {
+            this.selectedRecord.ctcTemplateEmployeeDeductions.push({
+              employeeDeduction: value,
+              value: '',
+              criteria: '',
+              minAmount: ''
+            })
+          }
+        });
+        break;
+
+      case 'variableAllowance':
+        // Filter out the deselected options
+        this.selectedRecord.ctcTemplateVariableAllowances = this.selectedRecord.ctcTemplateVariableAllowances.filter(varallowance => selectedValues.includes(varallowance.variableAllowance));
+
+        // Add newly selected options
+        selectedValues.forEach(value => {
+          if (!this.selectedRecord.ctcTemplateVariableAllowances.find(varallowance => varallowance.variableAllowance === value)) {
+            this.selectedRecord.ctcTemplateVariableAllowances.push({
+              variableAllowance: value,
+              value: '',
+              criteria: '',
+              minAmount: ''
+            })
+          }
+        });
+        break;
+
+      case 'variableDeduction':
+        // Filter out the deselected options
+        this.selectedRecord.ctcTemplateVariableDeductions = this.selectedRecord.ctcTemplateVariableDeductions.filter(vardeduction => selectedValues.includes(vardeduction.variableDeduction));
+
+        // Add newly selected options
+        selectedValues.forEach(value => {
+          if (!this.selectedRecord.ctcTemplateVariableDeductions.find(vardeduction => vardeduction.variableDeduction === value)) {
+            this.selectedRecord.ctcTemplateVariableDeductions.push({
+              variableDeduction: value,
+              value: '',
+              criteria: '',
+              minAmount: ''
+            })
+          }
+        });
+        break;
+      default:
+        console.error(`Unknown type: ${type}`);
+    }
+  }
+
   handleRecordUpdate(updatedRecord: any) {
-    // Pass the event further up to the parent component
-    console.log("updatedRecord..........: upload-ctctemplate", updatedRecord);
     this.recordUpdatedFromAssigned.emit(updatedRecord);
   }
 
@@ -86,26 +211,16 @@ export class UpdateCTCTemplateComponent {
       ctcTemplateVariableAllowance: (this.ctcTemplateForm.value.ctcTemplateVariableAllowance || []).filter(Boolean).map(variableAllowance => ({ variableAllowance })),
       ctcTemplateVariableDeduction: (this.ctcTemplateForm.value.ctcTemplateVariableDeduction || []).filter(Boolean).map(variableDeduction => ({ variableDeduction }))
     };
-    console.log("payload..........: upload-ctctemplate", payload);
     this.payroll.assignedTemplates.next(payload);
   }
 
   openOffcanvas(offcanvasId: string) {
-    let payload = {
-      name: this.ctcTemplateForm.value.name,
-      ctcTemplateFixedAllowance: (this.ctcTemplateForm.value.ctcTemplateFixedAllowance || []).filter(Boolean).map(fixedAllowance => ({ fixedAllowance })),
-      ctcTemplateFixedDeduction: (this.ctcTemplateForm.value.ctcTemplateFixedDeduction || []).filter(Boolean).map(fixedDeduction => ({ fixedDeduction })),
-      ctcTemplateEmployerContribution: (this.ctcTemplateForm.value.ctcTemplateEmployerContribution || []).filter(Boolean).map(fixedContribution => ({ fixedContribution })),
-      ctcTemplateOtherBenefitAllowance: (this.ctcTemplateForm.value.ctcTemplateOtherBenefitAllowance || []).filter(Boolean).map(otherBenefit => ({ otherBenefit })),
-      ctcTemplateEmployeeDeduction: (this.ctcTemplateForm.value.ctcTemplateEmployeeDeduction || []).filter(Boolean).map(employeeDeduction => ({ employeeDeduction })),
-      ctcTemplateVariableAllowance: (this.ctcTemplateForm.value.ctcTemplateVariableAllowance || []).filter(Boolean).map(variableAllowance => ({ variableAllowance })),
-      ctcTemplateVariableDeduction: (this.ctcTemplateForm.value.ctcTemplateVariableDeduction || []).filter(Boolean).map(variableDeduction => ({ variableDeduction }))
-    };
-    console.log("payload 2..........: upload-ctctemplate", payload);
-    this.payroll.assignedTemplates.next(payload);
+    this.onSubmission(); // Call the onSubmission function to save the data before opening the off-canvas
     this.showAssignedTemplates = true;
     const offcanvasElement = document.getElementById(offcanvasId);
-    const offcanvas = new Offcanvas(offcanvasElement);
-    offcanvas.show();
+    if (offcanvasElement) {
+      const offcanvas = new Offcanvas(offcanvasElement);
+      offcanvas.show();
+    }
   }
 }

@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { PayrollService } from 'src/app/_services/payroll.service';
-
 @Component({
   selector: 'app-assigned-fixed-allowance',
   templateUrl: './fixed-allowance.component.html',
@@ -19,16 +18,17 @@ export class AssignedFixedAllowanceComponent {
 
   constructor(
     private payroll: PayrollService,
-    private fb: FormBuilder) {
+    private fb: FormBuilder
+  ) {
     this.fixedAllowanceForm = this.fb.group({
       fixedAllowance: this.fb.array([])
     });
   }
 
   ngOnInit() {
-    console.log(this.data);
     this.getFixedAllowances();
     this.initForm();
+
     if (this.isEdit && this.selectedRecord) {
       this.patchFormValues();
     }
@@ -49,18 +49,19 @@ export class AssignedFixedAllowanceComponent {
     });
 
     this.fixedAllowanceForm.valueChanges.subscribe(() => {
-      console.log(this.fixedAllowanceForm.value);
-      this.formDataChange.emit(this.fixedAllowanceForm.value.fixedAllowance);
+      if (this.fixedAllowanceForm.valid) {
+        this.formDataChange.emit(this.fixedAllowanceForm.value.fixedAllowance);
+      } else {
+        console.log("Form is invalid or incomplete");
+      }
     });
   }
 
   patchFormValues() {
     const allowancesControl = this.fixedAllowanceForm.get('fixedAllowance') as FormArray;
+    allowancesControl.clear(); // Clear existing controls if any
 
-    // Clear existing controls if any
-    allowancesControl.clear();
-    console.log(this.selectedRecord.ctcTemplateFixedAllowances);
-    this.selectedRecord.ctcTemplateFixedAllowances.forEach((item: any) => {
+    this.selectedRecord.ctcTemplateFixedAllowances.forEach((item: any, index: number) => {
       allowancesControl.push(this.fb.group({
         fixedAllowance: [item.fixedAllowance || ''],
         criteria: [item.criteria || 'Amount'],
@@ -69,7 +70,6 @@ export class AssignedFixedAllowanceComponent {
         minimumAmount: [item.minimumAmount || 0]
       }));
     });
-    console.log(this.fixedAllowanceForm.value);
   }
 
   get allowances() {

@@ -1,4 +1,3 @@
-
 <form [formGroup]="ctcTemplateForm">
     <div class="form-group">
         <label for="">Enter the Label for CTC Template</label>
@@ -8,9 +7,10 @@
     <div class="form-group mt-2">
         <mat-form-field appearance="outline" class="w-100 mx-1">
             <mat-label>Fixed Allowances</mat-label>
-            <mat-select multiple formControlName="ctcTemplateFixedAllowance">
+            <mat-select multiple formControlName="ctcTemplateFixedAllowance"
+                (selectionChange)="onDropdownChange($event, 'fixedAllowance')">
                 <mat-option *ngFor="let fa of fixedAllowances" [value]="fa?._id">
-                   {{fa?.label}}
+                    {{fa?.label}}
                 </mat-option>
             </mat-select>
         </mat-form-field>
@@ -18,9 +18,10 @@
     <div class="form-group mt-2">
         <mat-form-field appearance="outline" class="w-100 mx-1">
             <mat-label>Fixed Deductions</mat-label>
-            <mat-select multiple formControlName="ctcTemplateFixedDeduction">
+            <mat-select multiple formControlName="ctcTemplateFixedDeduction"
+                (selectionChange)="onDropdownChange($event, 'fixedDeduction')">
                 <mat-option *ngFor="let fa of fixedDeduction" [value]="fa._id">
-                   {{fa?.label}}
+                    {{fa?.label}}
                 </mat-option>
             </mat-select>
         </mat-form-field>
@@ -28,9 +29,10 @@
     <div class="form-group mt-2">
         <mat-form-field appearance="outline" class="w-100 mx-1">
             <mat-label>Employer Contributions</mat-label>
-            <mat-select multiple formControlName="ctcTemplateEmployerContribution">
+            <mat-select multiple formControlName="ctcTemplateEmployerContribution"
+                (selectionChange)="onDropdownChange($event, 'fixedContribution')">
                 <mat-option *ngFor="let fa of fixedContribution" [value]="fa._id">
-                   {{fa?.label}}
+                    {{fa?.label}}
                 </mat-option>
             </mat-select>
         </mat-form-field>
@@ -38,9 +40,10 @@
     <div class="form-group mt-2">
         <mat-form-field appearance="outline" class="w-100 mx-1">
             <mat-label>Other Benefits Allowances</mat-label>
-            <mat-select multiple formControlName="ctcTemplateOtherBenefitAllowance">
+            <mat-select multiple formControlName="ctcTemplateOtherBenefitAllowance"
+                (selectionChange)="onDropdownChange($event, 'otherBenefit')">
                 <mat-option *ngFor="let fa of otherBenefits" [value]="fa._id">
-                   {{fa?.label}}
+                    {{fa?.label}}
                 </mat-option>
             </mat-select>
         </mat-form-field>
@@ -48,9 +51,10 @@
     <div class="form-group mt-2">
         <mat-form-field appearance="outline" class="w-100 mx-1">
             <mat-label>Employee Deductions</mat-label>
-            <mat-select multiple formControlName="ctcTemplateEmployeeDeduction">
+            <mat-select multiple formControlName="ctcTemplateEmployeeDeduction"
+                (selectionChange)="onDropdownChange($event, 'employeeDeduction')">
                 <mat-option *ngFor="let fa of fixedContribution" [value]="fa._id">
-                   {{fa?.label}}
+                    {{fa?.label}}
                 </mat-option>
             </mat-select>
         </mat-form-field>
@@ -59,9 +63,10 @@
     <div class="form-group mt-2">
         <mat-form-field appearance="outline" class="w-100 mx-1">
             <mat-label>Variable Allowance</mat-label>
-            <mat-select multiple formControlName="ctcTemplateVariableAllowance">
+            <mat-select multiple formControlName="ctcTemplateVariableAllowance"
+                (selectionChange)="onDropdownChange($event, 'variableAllowance')">
                 <mat-option *ngFor="let va of variableAllowance" [value]="va?._id">
-                   {{va?.label}}
+                    {{va?.label}}
                 </mat-option>
             </mat-select>
         </mat-form-field>
@@ -70,17 +75,18 @@
     <div class="form-group mt-2">
         <mat-form-field appearance="outline" class="w-100 mx-1">
             <mat-label>Variable Deductions</mat-label>
-            <mat-select multiple formControlName="ctcTemplateVariableDeduction">
+            <mat-select multiple formControlName="ctcTemplateVariableDeduction"
+                (selectionChange)="onDropdownChange($event, 'variableDeduction')">
                 <mat-option *ngFor="let vd of variableDeduction" [value]="vd?._id">
-                   {{vd?.label}}
+                    {{vd?.label}}
                 </mat-option>
             </mat-select>
         </mat-form-field>
     </div>
-    
+
     <div class="d-flex border-top mt-2 py-2 justify-content-between">
         <button mat-raised-button type="reset">Cancel</button>
-        <button mat-raised-button type="button" class="addBtn"  (click)="openOffcanvas('AssignedTemp')" >Proceed</button>
+        <button mat-raised-button type="button" class="addBtn" (click)="openOffcanvas('AssignedTemp')">Proceed</button>
     </div>
 </form>
 
@@ -89,7 +95,8 @@
     <div class="offcanvas-body">
         <div class="container p-0">
             <ng-container *ngIf="showAssignedTemplates">
-            <app-assigned-templates (recordUpdated)="handleRecordUpdate($event)" [data]="ctcTemplateForm.value" [selectedRecord]="selectedRecord" [isEdit]="isEdit"></app-assigned-templates>
+                <app-assigned-templates (recordUpdated)="handleRecordUpdate($event)" [data]="ctcTemplateForm.value"
+                    [selectedRecord]="selectedRecord" [isEdit]="isEdit"></app-assigned-templates>
             </ng-container>
         </div>
     </div>

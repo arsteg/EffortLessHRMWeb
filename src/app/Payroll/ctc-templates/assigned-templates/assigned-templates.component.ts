@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { PayrollService } from 'src/app/_services/payroll.service';
-
 @Component({
   selector: 'app-assigned-templates',
   templateUrl: './assigned-templates.component.html',
@@ -34,7 +33,6 @@ export class AssignedTemplatesComponent {
   updateForm() {
     // Subscribe to the assignedTemplates observable
     this.payroll.assignedTemplates.subscribe(res => {
-      console.log('res...........: assignedTemplates', res);
       this.form = res;
 
       // Update the component's data with the new values
@@ -48,11 +46,9 @@ export class AssignedTemplatesComponent {
   selectTab(tabId: string) {
     if (tabId === 'tabFixedAllowance') {
       this.payroll.assignedTemplates.subscribe(res => {
-        console.log('res 2...........: assignedTemplates', res);
         const fixedAllowances = res.ctcTemplateFixedAllowance;
         const fixedAllowanceValues = fixedAllowances.map(obj => obj.fixedAllowance);
         this.data = fixedAllowanceValues;
-        console.log('data...........: assignedTemplates', res);
       });
     }
     this.activeTab = tabId;
@@ -60,17 +56,21 @@ export class AssignedTemplatesComponent {
 
   onFixedAllowanceDataChange(data: any) {
     this.fixedAllowanceData = data;
+    this.data.ctcTemplateFixedAllowance = data; // Assign it to `this.data` so it reflects in the table
   }
 
   onFixedDeductionDataChange(data: any) {
     this.fixedDeductionData = data;
+    this.data.ctcTemplateFixedDeduction = data;
   }
 
   onVariableAllowanceDataChange(data: any) {
     this.variableAllowanceData = data;
+    this.data.ctcTemplateVariableAllowance = data;
   }
   onVariableDeductionDataChange(data: any) {
     this.variableDeductionData = data;
+    this.data.ctcTemplateVariableDeduction = data;
   }
 
   onSubmission() {

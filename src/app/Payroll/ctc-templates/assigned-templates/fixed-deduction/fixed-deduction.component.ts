@@ -16,7 +16,8 @@ export class AssignedFixedDeductionComponent {
   @Input() isEdit: boolean;
   @Input() selectedRecord: any;
 
-  constructor(private payroll: PayrollService,
+  constructor(
+    private payroll: PayrollService,
     private fb: FormBuilder
   ) {
     this.fixedDeductionForm = this.fb.group({
@@ -27,16 +28,16 @@ export class AssignedFixedDeductionComponent {
   ngOnInit() {
     this.getFixedDeduction();
     this.initForm();
-    console.log(this.selectedRecord, this.isEdit);
+
     if (this.isEdit && this.selectedRecord) {
-      console.log(this.selectedRecord)
       this.patchFormValues();
     }
   }
+
   initForm() {
     const allowancesControl = this.fixedDeductionForm.get('fixedDeduction') as FormArray;
     this.fixedDeduction = this.data.ctcTemplateFixedDeduction;
-    console.log(this.fixedDeduction);
+
     this.fixedDeduction.forEach(fd => {
       allowancesControl.push(this.fb.group({
         fixedDeduction: [fd],
@@ -46,14 +47,21 @@ export class AssignedFixedDeductionComponent {
         minimumAmount: [0]
       }));
     });
+
     this.fixedDeductionForm.valueChanges.subscribe(() => {
-      this.formDataChange.emit(this.fixedDeductionForm.value.fixedDeduction);
+      if (this.fixedDeductionForm.valid) {
+        this.formDataChange.emit(this.fixedDeductionForm.value.fixedDeduction);
+      } else {
+        console.log("Form is invalid or incomplete");
+      }
     });
   }
+
   patchFormValues() {
     const allowancesControl = this.fixedDeductionForm.get('fixedDeduction') as FormArray;
     allowancesControl.clear();
-    this.selectedRecord.ctcTemplateFixedDeductions.forEach((item: any) => {
+
+    this.selectedRecord.ctcTemplateFixedDeductions.forEach((item: any, index: number) => {
       allowancesControl.push(this.fb.group({
         fixedDeduction: [item.fixedDeduction || ''],
         criteria: [item.criteria || 'Amount'],
@@ -62,21 +70,19 @@ export class AssignedFixedDeductionComponent {
         minimumAmount: [item.minimumAmount || 0]
       }));
     });
-    console.log(this.fixedDeductionForm.value);
   }
+
   get allowances() {
     return (this.fixedDeductionForm.get('fixedDeduction') as FormArray).controls;
   }
 
   getFixedDeduction() {
-    let payload = {
-      next: '',
-      skip: ''
-    }
+    let payload = { next: '', skip: '' }
     this.payroll.getFixedDeduction(payload).subscribe((res: any) => {
       this.allfixedDeduction = res.data;
     });
   }
+
   getAllowance(allowance: string) {
     const matchingAllowance = this.allfixedDeduction?.find(res => res._id === allowance);
     return matchingAllowance ? matchingAllowance.label : '';

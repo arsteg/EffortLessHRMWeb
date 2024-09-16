@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { PayrollService } from 'src/app/_services/payroll.service';
 
-
 @Component({
   selector: 'app-var-deduction',
   templateUrl: './var-deduction.component.html',
@@ -18,7 +17,10 @@ export class VarDeductionComponent {
   combinedDataChange: any;
   @Input() selectedRecord: any;
 
-  constructor(private payroll: PayrollService, private fb: FormBuilder) {
+  constructor(
+    private payroll: PayrollService,
+    private fb: FormBuilder
+  ) {
     this.variableDeductionForm = this.fb.group({
       variableDeduction: this.fb.array([])
     });
@@ -27,6 +29,7 @@ export class VarDeductionComponent {
   ngOnInit() {
     this.getVariableDeduction();
     this.initForm();
+
     if (this.isEdit && this.selectedRecord) {
       this.patchFormValues();
     }
@@ -35,6 +38,7 @@ export class VarDeductionComponent {
   initForm() {
     const allowancesControl = this.variableDeductionForm.get('variableDeduction') as FormArray;
     this.variableDeductions = this.data.ctcTemplateVariableDeduction || [];
+
     this.variableDeductions.forEach(fa => {
       allowancesControl.push(this.fb.group({
         variableDeduction: [fa],
@@ -46,14 +50,19 @@ export class VarDeductionComponent {
     });
 
     this.variableDeductionForm.valueChanges.subscribe(() => {
-      this.formDataChange.emit(this.variableDeductionForm.value.variableDeduction);
+      if (this.variableDeductionForm.valid) {
+        this.formDataChange.emit(this.variableDeductionForm.value.variableDeduction);
+      } else {
+        console.log("Form is invalid or incomplete");
+      }
     });
   }
 
   patchFormValues() {
     const allowancesControl = this.variableDeductionForm.get('variableDeduction') as FormArray;
     allowancesControl.clear();
-    this.selectedRecord.ctcTemplateVariableDeductions.forEach((item: any) => {
+
+    this.selectedRecord.ctcTemplateVariableDeductions.forEach((item: any, index: number) => {
       allowancesControl.push(this.fb.group({
         variableDeduction: [item.variableDeduction || ''],
         criteria: [item.criteria || 'Amount'],
