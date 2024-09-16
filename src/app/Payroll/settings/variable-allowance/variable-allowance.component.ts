@@ -170,6 +170,7 @@ export class VariableAllowanceComponent {
   
 
   onCancel() {
+    this.isEdit = false;
     this.variableAllowanceForm.patchValue({
       label: '',
       allowanceRatePerDay: 0,

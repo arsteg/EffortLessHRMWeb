@@ -41,7 +41,6 @@ export class FixedAllowanceComponent {
       isProfessionalTaxAffected: [false],
       isTDSAffected: [false],
       isAttendanceToEffectTheEligibility: [false
-        
       ]
     })
   }
@@ -49,7 +48,7 @@ export class FixedAllowanceComponent {
   ngOnInit() {
     this.getFixedAllowance();
   }
-  
+
   onPageChange(page: number) {
     this.currentPage = page;
     this.getFixedAllowance();
@@ -94,30 +93,51 @@ export class FixedAllowanceComponent {
     this.modalService.dismissAll();
   }
 
+  onCancel() {
+    this.isEdit = false;
+    this.fixedAllowanceForm.patchValue({
+      label: '',
+      type: 'None',
+      isArrearsAffect: false,
+      calculatedBy: 'Monthly',
+      isTaxEnabledOnce: false,
+      isProvidentFundAffected: false,
+      isESICAffected: false,
+      isGratuityFundAffected: false,
+      isLWFAffected: false,
+      isProfessionalTaxAffected: false,
+      isTDSAffected: false,
+      isAttendanceToEffectTheEligibility: false
+    })
+
+  }
+
   onSubmission() {
-    if (this.fixedAllowanceForm.valid) { if (!this.isEdit) {
-      this.payroll.addAllowanceTemplate(this.fixedAllowanceForm.value).subscribe((res: any) => {
-        this.fixedAllowance.push(res.data);
-        this.toast.success('Successfully Added!!!', 'Fixed Allowance');
-        this.closeModal();
-      },
-        (err) => {
-          this.toast.error('This Can not be Added as it is already used in the system', 'Fixed Allowance');
-        })
+    if (this.fixedAllowanceForm.valid) {
+      if (!this.isEdit) {
+        this.payroll.addAllowanceTemplate(this.fixedAllowanceForm.value).subscribe((res: any) => {
+          this.fixedAllowance.push(res.data);
+          this.toast.success('Successfully Added!!!', 'Fixed Allowance');
+          this.closeModal();
+        },
+          (err) => {
+            this.toast.error('This Can not be Added as it is already used in the system', 'Fixed Allowance');
+          })
+      }
+      else {
+        this.payroll.updateAllowanceTemplate(this.selectedRecord._id, this.fixedAllowanceForm.value).subscribe((res: any) => {
+          const index = this.fixedAllowance.findIndex(item => item._id === this.selectedRecord._id);
+          if (index !== -1) {
+            this.fixedAllowance[index] = res.data;
+          }
+          this.toast.success('Successfully Updated!!!', 'Fixed Allowance');
+          this.closeModal();
+        },
+          (err) => {
+            this.toast.error('This Can not be Updated as it is already used in the system', 'Fixed Allowance');
+          })
+      }
     }
-    else {
-      this.payroll.updateAllowanceTemplate(this.selectedRecord._id, this.fixedAllowanceForm.value).subscribe((res: any) => {
-        const index = this.fixedAllowance.findIndex(item => item._id === this.selectedRecord._id);
-        if (index !== -1) {
-          this.fixedAllowance[index] = res.data;
-        }
-        this.toast.success('Successfully Updated!!!', 'Fixed Allowance');
-        this.closeModal();
-      },
-        (err) => {
-          this.toast.error('This Can not be Updated as it is already used in the system', 'Fixed Allowance');
-        })
-    }}
     else {
       this.markFormGroupTouched(this.fixedAllowanceForm);
     }
@@ -134,14 +154,6 @@ export class FixedAllowanceComponent {
 
 
   editRecord() {
-    this.selectedRecord.isTaxEnabledOnce = this.fixedAllowanceForm.value.isTaxEnabledOnce;
-    this.selectedRecord.isProvidentFundAffected = this.fixedAllowanceForm.value.isProvidentFundAffected;
-    this.selectedRecord.isESICAffected = this.fixedAllowanceForm.value.isESICAffected;
-    this.selectedRecord.isGratuityFundAffected = this.fixedAllowanceForm.value.isGratuityFundAffected;
-    this.selectedRecord.isLWFAffected = this.fixedAllowanceForm.value.isLWFAffected;
-    this.selectedRecord.isProfessionalTaxAffected = this.fixedAllowanceForm.value.isProfessionalTaxAffected;
-    this.selectedRecord.isTDSAffected = this.fixedAllowanceForm.value.isTDSAffected;
-    this.selectedRecord.isAttendanceToEffectTheEligibility = this.fixedAllowanceForm.value.isAttendanceToEffectTheEligibility;
     this.fixedAllowanceForm.patchValue(this.selectedRecord);
   }
 
