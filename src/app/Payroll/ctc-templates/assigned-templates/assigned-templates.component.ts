@@ -68,6 +68,7 @@ export class AssignedTemplatesComponent {
     this.variableAllowanceData = data;
     this.data.ctcTemplateVariableAllowance = data;
   }
+
   onVariableDeductionDataChange(data: any) {
     this.variableDeductionData = data;
     this.data.ctcTemplateVariableDeduction = data;

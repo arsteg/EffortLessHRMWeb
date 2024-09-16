@@ -51,7 +51,7 @@ export class VarAllowanceComponent {
 
     this.variableAllowanceForm.valueChanges.subscribe(() => {
       if (this.variableAllowanceForm.valid) {
-        this.formDataChange.emit(this.variableAllowanceForm.value.variableAllowances);
+        this.formDataChange.emit(this.variableAllowanceForm.value.variableAllowance);
       } else {
         console.log("Form is invalid or incomplete");
       }

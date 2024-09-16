@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, ChangeDetectorRef } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { Offcanvas } from 'bootstrap';
@@ -23,8 +23,7 @@ export class UpdateCTCTemplateComponent {
 
   constructor(
     private fb: FormBuilder,
-    private payroll: PayrollService,
-    private cdr: ChangeDetectorRef
+    private payroll: PayrollService
   ) {
     this.ctcTemplateForm = this.fb.group({
       name: [''],
