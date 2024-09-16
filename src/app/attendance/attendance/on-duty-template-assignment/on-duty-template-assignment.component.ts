@@ -110,7 +110,7 @@ export class OnDutyTemplateAssignmentComponent {
   }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
@@ -199,7 +199,7 @@ export class OnDutyTemplateAssignmentComponent {
   onSubmission() {
     this.onDutyTempAssignForm.get('primaryApprovar').enable();
     this.onDutyTempAssignForm.get('secondaryApprovar').enable();
-    let payload ={
+    let payload = {
       user: this.onDutyTempAssignForm.value.user,
       onDutyTemplate: this.onDutyTempAssignForm.value.onDutyTemplate,
       effectiveFrom: this.onDutyTempAssignForm.value.effectiveFrom,

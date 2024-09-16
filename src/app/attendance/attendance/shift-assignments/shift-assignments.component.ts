@@ -67,7 +67,7 @@ export class ShiftAssignmentsComponent {
     };
     this.attendanceService.getShiftAssignment(pagination.skip, pagination.next).subscribe((res: any) => {
       this.shiftAssigments = res.data;
-    this.totalRecords = res.total;
+      this.totalRecords = res.total;
     })
 
   }
@@ -84,7 +84,7 @@ export class ShiftAssignmentsComponent {
 
 
   getshift() {
-    this.attendanceService.getShift('','').subscribe((res: any) => {
+    this.attendanceService.getShift('', '').subscribe((res: any) => {
       this.shift = res.data;
     })
   }
@@ -106,7 +106,7 @@ export class ShiftAssignmentsComponent {
   }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;

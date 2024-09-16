@@ -108,7 +108,7 @@ export class OvertimeComponent {
       skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
       next: this.recordsPerPage.toString()
     };
-   if(this.activeTab == 'overTime') {
+    if (this.activeTab == 'overTime') {
       this.attendanceService.getOverTime(pagination.skip, pagination.next).subscribe((res: any) => {
         this.overTimeRecord = res.data;
         this.totalRecords = res.total;
@@ -134,7 +134,7 @@ export class OvertimeComponent {
   }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
