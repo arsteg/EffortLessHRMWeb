@@ -81,22 +81,28 @@ roleName = localStorage.getItem('adminView')
     this.member = JSON.parse(member.value);
     this.showScreenShots();
   }
-
   populateMembers() {
     this.members = [];
     let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  
     this.members.push({ id: currentUser.id, name: "Me", email: currentUser.email });
     this.member = currentUser;
+  
     this.timeLogService.getTeamMembers(this.member.id).subscribe({
       next: response => {
         this.timeLogService.getusers(response.data).subscribe({
           next: result => {
+            let otherMembers = [];
+  
             result.data.forEach(user => {
-              if (user.id != currentUser.id) {
-                this.members.push({ id: user.id, name: `${user.firstName} ${user.lastName}`, email: user.email });
-                this.members.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
+              if (user.id !== currentUser.id) {
+                otherMembers.push({ id: user.id, name: `${user.firstName} ${user.lastName}`, email: user.email });
               }
-            })
+            });
+  
+            otherMembers.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
+  
+            this.members = [this.members[0], ...otherMembers];
           },
           error: error => {
             console.log('There was an error!', error);
@@ -108,6 +114,7 @@ roleName = localStorage.getItem('adminView')
       }
     });
   }
+  
 data:any = [];
   showScreenShots() {
     let currentUser = JSON.parse(localStorage.getItem('currentUser'));
