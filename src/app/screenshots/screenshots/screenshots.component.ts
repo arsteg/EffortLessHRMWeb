@@ -94,6 +94,7 @@ roleName = localStorage.getItem('adminView')
             result.data.forEach(user => {
               if (user.id != currentUser.id) {
                 this.members.push({ id: user.id, name: `${user.firstName} ${user.lastName}`, email: user.email });
+                this.members.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
               }
             })
           },
