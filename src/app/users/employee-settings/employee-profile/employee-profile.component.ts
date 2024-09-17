@@ -14,11 +14,11 @@ import { UserService } from 'src/app/_services/users.service';
 export class EmployeeProfileComponent {
   userForm: FormGroup;
   roles: any;
-
   selectedUser = this.userService.getData();
   isEdit = this.userService.getIsEdit();
 
-  constructor(private fb: FormBuilder,
+  constructor(
+    private fb: FormBuilder,
     private userService: UserService,
     private toast: ToastrService,
     private timelogService: TimeLogService,
@@ -81,13 +81,11 @@ export class EmployeeProfileComponent {
       if (this.userForm.valid) {
         this.userService.updateUser(this.selectedUser.id, this.userForm.value).subscribe((res: any) => {
           this.toast.success('User Updated Successfully');
-        },
-          err => {
-            this.toast.error('User Update Failed');
-          })
+        }, err => {
+          this.toast.error('User Update Failed');
+        })
       }
-    }
-    else {
+    } else {
       this.userService.addUser(this.userForm.value).subscribe((res: any) => {
         this.toast.success('User Created Successfully');
       })

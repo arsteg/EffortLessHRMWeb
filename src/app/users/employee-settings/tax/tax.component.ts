@@ -30,7 +30,8 @@ export class TaxComponent {
   years: string[] = [];
   totalIncomeTaxComponentsLength: any;
 
-  constructor(private componentFactoryResolver: ComponentFactoryResolver,
+  constructor(
+    private componentFactoryResolver: ComponentFactoryResolver,
     private userService: UserService,
     private modalService: NgbModal,
     private fb: FormBuilder,
@@ -58,7 +59,6 @@ export class TaxComponent {
     this.isEdit = isEdit;
     this.selectedRecord = record;
     this.showOffcanvas = true;
-
     this.offcanvasContent.clear();
 
     // Create the component factory
@@ -90,6 +90,7 @@ export class TaxComponent {
   goBackToSalaryDetails() {
     this.taxView = false;
   }
+
   onPageChange(page: number) {
     this.currentPage = page;
     this.getTaxDeclaration();
@@ -107,17 +108,17 @@ export class TaxComponent {
     };
     this.userService.getTaxDeclarationByUserId(this.selectedUser.id, pagination).subscribe((res: any) => {
       this.taxList = res.data;
-     this.totalIncomeTaxComponentsLength = this.taxList.reduce((acc, current) => {
+      this.totalIncomeTaxComponentsLength = this.taxList.reduce((acc, current) => {
         return acc + current.incomeTaxDeclarationComponent.length;
       }, 0);
       console.log(this.totalIncomeTaxComponentsLength);
 
       this.totalRecords = res.total;
       this.uniqueFinancialYears = this.getUniqueFinancialYears(this.taxList);
-     
       this.taxService.taxByUser.next(res.data);
     })
   }
+
   getUniqueFinancialYears(taxList: any[]): string[] {
     const financialYearsSet = new Set<string>();
 
@@ -172,10 +173,8 @@ export class TaxComponent {
     this.taxService.addIncomeTax(payload).subscribe((res: any) => {
       this.taxList.push(res.data);
       this.toastr.success('Tax Declaration Added Successfully');
-    },
-      err => {
-        this.toastr.error('Something went wrong');
-      })
+    }, err => {
+      this.toastr.error('Something went wrong');
+    })
   }
-
 }

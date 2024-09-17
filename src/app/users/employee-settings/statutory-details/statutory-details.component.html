@@ -1,10 +1,12 @@
 <div class="p-2">
-    <label  class="me-auto">{{selectedUser?.firstName | titlecase}}&nbsp;{{selectedUser?.lastName | titlecase}} | Statutory Details</label>
+    <label class="me-auto">{{selectedUser?.firstName | titlecase}}&nbsp;{{selectedUser?.lastName | titlecase}} |
+        Statutory Details</label>
 
     <form [formGroup]="statutoryDetailsForm" (ngSubmit)="onSubmission()">
         <div class="d-flex">
             <button mat-raised-button class="addBtn ms-auto my-2" type="submit">Save</button>
         </div>
+
         <div class="row p-2">
             <div class="form-group col-md-6 mb-2">
                 <label for="">Is this employee eligible for Provident Fund Deduction?</label>
@@ -27,8 +29,7 @@
 
             <div class="form-group col-md-6 mb-2">
                 <label for="">Will this Employee's Provident Fund contribution be capped at the provident Fund Ceiling?
-                    (Rs
-                    15,000)</label>
+                    (Rs 15,000)</label>
                 <div class="d-flex">
                     <div class="form-check">
                         <input class="form-check-input" type="radio"
@@ -51,8 +52,7 @@
 
             <div class="form-group col-md-6 mb-2">
                 <label for="">Will this Employer's Provident Fund contribution be capped at the provident Fund Ceiling?
-                    (Rs
-                    15,000)</label>
+                    (Rs 15,000)</label>
                 <div class="d-flex">
                     <div class="form-check">
                         <input class="form-check-input" type="radio"

@@ -25,7 +25,8 @@ export class UserLoansAdvancesComponent {
   selectedRecord: any;
   loansAdvancesCategories: any;
 
-  constructor(private modalService: NgbModal,
+  constructor(
+    private modalService: NgbModal,
     private fb: FormBuilder,
     private userService: UserService,
     private payroll: PayrollService,
@@ -47,25 +48,24 @@ export class UserLoansAdvancesComponent {
   deleteLoansAdvances(id: string): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '400px',
-
     });
+
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'delete') {
         this.deleteLoansAdvance(id);
-      }
-      err => {
+      } err => {
         this.toast.error('Can not be Deleted', 'Error!')
       }
     });
   }
+
   deleteLoansAdvance(id: string) {
     this.userService.deleteLoansAdvances(id).subscribe((res: any) => {
       this.loadRecords();
       this.toast.success('Successfully Deleted!!!', 'Loan/Advance')
-    },
-      (err) => {
-        this.toast.error('This Loan/Advance Can not be deleted!', 'Error!')
-      })
+    }, (err) => {
+      this.toast.error('This Loan/Advance Can not be deleted!', 'Error!')
+    })
   }
 
   private getDismissReason(reason: any): string {
@@ -79,10 +79,7 @@ export class UserLoansAdvancesComponent {
   }
 
   open(content: any) {
-    let payload = {
-      skip: '',
-      next: ''
-    }
+    let payload = { skip: '', next: '' }
     this.payroll.getLoans(payload).subscribe((res: any) => {
       this.loansAdvancesCategories = res.data;
     })
@@ -106,12 +103,10 @@ export class UserLoansAdvancesComponent {
         this.loansAdvances.push(res.data);
         this.loansAdvancesForm.reset();
         this.toast.success('Successfully Added!!!', 'Loan/Advance')
-      },
-        err => {
-          this.toast.error('This Loan/Advance Can not be added!', 'Error!')
-        })
-    }
-    else if (this.isEdit) {
+      }, err => {
+        this.toast.error('This Loan/Advance Can not be added!', 'Error!')
+      })
+    } else if (this.isEdit) {
       this.userService.updateLoansAdvances(this.selectedRecord._id, this.loansAdvancesForm.value).subscribe((res: any) => {
         const index = this.loansAdvances.findIndex(z => z._id === this.selectedRecord._id);
         if (index !== -1) {
@@ -120,10 +115,9 @@ export class UserLoansAdvancesComponent {
         this.isEdit = false;
         this.loansAdvancesForm.reset();
         this.toast.success('Successfully Updated!!!', 'Loan/Advance')
-      },
-        err => {
-          this.toast.error('This Loan/Advance Can not be Updated!', 'Error!')
-        })
+      }, err => {
+        this.toast.error('This Loan/Advance Can not be Updated!', 'Error!')
+      })
     }
   }
 
@@ -146,10 +140,8 @@ export class UserLoansAdvancesComponent {
       this.loansAdvances = res.data;
       this.totalRecords = res.total;
     });
-    let payload = {
-      skip: '',
-      next: ''
-    }
+
+    let payload = { skip: '', next: '' }
     this.payroll.getLoans(payload).subscribe((res: any) => {
       this.loansAdvancesCategories = res.data;
     })

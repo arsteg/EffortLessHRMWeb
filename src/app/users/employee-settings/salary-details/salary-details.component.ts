@@ -7,7 +7,6 @@ import { UserService } from 'src/app/_services/users.service';
   templateUrl: './salary-details.component.html',
   styleUrl: './salary-details.component.css'
 })
-
 export class SalaryDetailsComponent {
   searchText: string = '';
   isEdit: boolean = false;
@@ -17,8 +16,9 @@ export class SalaryDetailsComponent {
   showViewSalaryDetails: boolean = false;
   showAddSalaryDetails: boolean = false;
   selectedUser = this.userService.getData();
-   
-  constructor(private modalService: NgbModal, 
+
+  constructor(
+    private modalService: NgbModal,
     private userService: UserService
   ) { }
 
@@ -28,6 +28,7 @@ export class SalaryDetailsComponent {
       this.showViewSalaryDetails = true;
     })
   }
+
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
@@ -37,8 +38,8 @@ export class SalaryDetailsComponent {
       return `with: ${reason}`;
     }
   }
-  open(content: any) {
 
+  open(content: any) {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
@@ -60,6 +61,7 @@ export class SalaryDetailsComponent {
     //   }
     // });
   }
+
   deleteAdvanceCategory(id: string) {
     // this.expenseService.deleteAdvanceCategory(id).subscribe((res: any) => {
     //   this.getAllAdvanceCategories();
@@ -71,14 +73,14 @@ export class SalaryDetailsComponent {
     //   })
   }
 
-  toggleToViewSalaryDetails(){
+  toggleToViewSalaryDetails() {
     this.showViewSalaryDetails = !this.showViewSalaryDetails;
   }
+
   goBackToSalaryDetails() {
     this.showViewSalaryDetails = false;
     this.showAddSalaryDetails = false;
     this.getSalaryDetails();
-
   }
 
   getSalaryDetails() {

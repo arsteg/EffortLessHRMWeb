@@ -23,11 +23,12 @@ export class EmploymentDetailsComponent {
   designations: any = [];
   locations: any = [];
 
-
-  constructor(private userService: UserService,
+  constructor(
+    private userService: UserService,
     private companyService: CompanyService,
     private fb: FormBuilder,
-    private toast: ToastrService) {
+    private toast: ToastrService
+  ) {
     this.jobInformationForm = this.fb.group({
       user: [''],
       effectiveFrom: [],
@@ -42,7 +43,6 @@ export class EmploymentDetailsComponent {
       zone: [''],
       noticePeriod: ['']
     })
-
   }
 
   ngOnInit() {
@@ -66,16 +66,15 @@ export class EmploymentDetailsComponent {
       this.supervisors = res.data;
     })
   }
+
   onSubmissionJobInformation() {
     this.userService.getJobInformationByUserId(this.selectedUser.id).subscribe((res: any) => {
       if (res.data.length < 0) {
         this.jobInformationForm.value.user = this.selectedUser.id;
         this.userService.addJobInformation(this.jobInformationForm.value).subscribe((res: any) => {
           this.toast.success('Job Information Added Successfully');
-        },
-      err=>{this.toast.error('Job Information Not Added', 'Error');})
-      }
-      else {
+        }, err => { this.toast.error('Job Information Not Added', 'Error'); })
+      } else {
         this.userService.updateJobInformation(res.data[0]._id, this.jobInformationForm.value).subscribe((res: any) => {
           this.userService.getJobInformationByUserId(this.selectedUser.id).subscribe((res: any) => {
             this.jobInformationForm.patchValue(res.data[0]);
@@ -84,7 +83,7 @@ export class EmploymentDetailsComponent {
       }
     })
   }
-  
+
   getData() {
     this.userService.getJobInformationByUserId(this.selectedUser.id).subscribe((res: any) => {
       this.jobInformationForm.patchValue(res.data[0]);

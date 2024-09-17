@@ -20,13 +20,9 @@ export class EmployeeSettingsComponent {
     this.selectTab('tabEmploymentProfile');
     this.data = this.userService.getData();
     this.isEdit = this.userService.getIsEdit();
-    console.log(this.data);
-    console.log(this.isEdit);
   }
 
-  
   selectTab(tabId: string) {
     this.activeTab = tabId;
   }
-
 }

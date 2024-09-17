@@ -1,0 +1,12 @@
+.employees_panel {
+    overflow-x: scroll;
+}
+
+.employees_panel::-webkit-scrollbar {
+    display: none;
+}
+
+.employees_btn {
+    display: block;
+    min-width: 165px;
+}
