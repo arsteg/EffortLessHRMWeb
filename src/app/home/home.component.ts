@@ -266,7 +266,7 @@ export const SideBarAdminMenu = [
     title: 'Payroll',
     icon: 'assets/Sidenav-Icons/payroll.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/payroll.png',
-    url: 'payroll'
+    url: '/payroll/settings'
   },
   {
     id: '13',

@@ -1,40 +1,17 @@
 <div class="main-content contentData">
     <div class="container-fluid px-0">
-        <div class=" d-flex bg-white subMenu w-100">
-            <button class="btn rounded-pill submenuTab" (click)="selectTab(1)"
-                [class.active]="selectedTab === 1">Settings</button>
-            <button class="btn rounded-pill submenuTab" (click)="selectTab(2)" [class.active]="selectedTab === 2">
-                CTC Template</button>
-            <button class="btn rounded-pill submenuTab" (click)="selectTab(3)" [class.active]="selectedTab === 3">
-                LOP Reversal</button>
-            <button class="btn rounded-pill submenuTab" (click)="selectTab(4)" [class.active]="selectedTab === 4">
-                Run Payroll</button>
-            <button class="btn rounded-pill submenuTab" (click)="selectTab(5)" [class.active]="selectedTab === 5">
-                Payslips</button>
-            <button class="btn rounded-pill submenuTab" (click)="selectTab(6)" [class.active]="selectedTab === 6">
-                Full and Final</button>
-
-        </div>
-
-        <div *ngIf="selectedTab === 1" class="tab-content p-0 mt-0">
-            <app-settings></app-settings>
-        </div>
-        <div *ngIf="selectedTab === 2" class="tab-content p-0 mt-0">
-            <app-ctc-templates></app-ctc-templates>
-        </div>
-        <div *ngIf="selectedTab === 3" class="tab-content p-0 mt-0">
-            <app-lop-reversal></app-lop-reversal>
-        </div>
-        <div *ngIf="selectedTab === 4" class="tab-content p-0 mt-0">
-            <app-run-payroll></app-run-payroll>
-        </div>
-        <div *ngIf="selectedTab === 5" class="tab-content p-0 mt-0">
-            <app-payslips></app-payslips>
-        </div>
-        <div *ngIf="selectedTab === 6" class="tab-content p-0 mt-0">
-            <app-fnf-payslips></app-fnf-payslips>
-        </div>
-
-
+      <div class="d-flex bg-white subMenu w-100">
+        <button class="btn rounded-pill submenuTab" routerLink="/payroll/settings" routerLinkActive="active">Settings</button>
+        <button class="btn rounded-pill submenuTab" routerLink="/payroll/ctc-template" routerLinkActive="active">CTC Template</button>
+        <button class="btn rounded-pill submenuTab" routerLink="/payroll/lop-reversal" routerLinkActive="active">LOP Reversal</button>
+        <button class="btn rounded-pill submenuTab" routerLink="/payroll/run-payroll" routerLinkActive="active">Run Payroll</button>
+        <button class="btn rounded-pill submenuTab" routerLink="/payroll/payslips" routerLinkActive="active">Payslips</button>
+        <button class="btn rounded-pill submenuTab" routerLink="/payroll/fnf-payslips" routerLinkActive="active">Full and Final</button>
+      </div>
+  
+      <div class="tab-content p-0 mt-0">
+        <router-outlet></router-outlet>
+      </div>
     </div>
-</div>
+  </div>
+  

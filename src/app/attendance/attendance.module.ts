@@ -28,15 +28,6 @@ import { RosterRecordsComponent } from './roster-records/roster-records.componen
 import { UploadRosterRecordComponent } from './roster-records/upload-roster-record/upload-roster-record.component';
 import { OvertimeRecordsComponent } from './overtime-records/overtime-records.component';
 import { DateRangeComponent } from './date-range/date-range.component';
-import { RegularizationsRecordsComponent } from './regularizations-records/regularizations-records.component';
-import { PendingComponent } from './regularizations-records/pending/pending.component';
-import { ApprovedComponent } from './regularizations-records/approved/approved.component';
-import { CancelComponent } from './regularizations-records/cancel/cancel.component';
-import { RejectedComponent } from './regularizations-records/rejected/rejected.component';
-import { UpdateRecordComponent } from './regularizations-records/update-record/update-record.component';
-import { ViewRecordComponent } from './regularizations-records/view-record/view-record.component';
-import { ShowRecordComponent } from './regularizations-records/show-record/show-record.component';
-import { AddRecordComponent } from './regularizations-records/add-record/add-record.component';
 import { OnDutyRecordsComponent } from './on-duty-records/on-duty-records.component';
 import { CancelledOnDutyComponent } from './on-duty-records/cancelled/cancelled.component';
 import { PendingOnDutyComponent } from './on-duty-records/pending/pending.component';
@@ -71,15 +62,6 @@ import { AddTimeEntryComponent } from '../home/add-time-entry/add-time-entry.com
     UploadRosterRecordComponent,
     OvertimeRecordsComponent,
     DateRangeComponent,
-    RegularizationsRecordsComponent,
-    PendingComponent,
-    ApprovedComponent,
-    CancelComponent,
-    RejectedComponent,
-    UpdateRecordComponent,
-    ViewRecordComponent,
-    ShowRecordComponent,
-    AddRecordComponent,
     OnDutyRecordsComponent,
     CancelledOnDutyComponent,
     AddOnDutyComponent,

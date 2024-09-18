@@ -10,13 +10,6 @@ import { ManageComponent } from './manage/manage.component';
 import { HomeComponent } from '../home/home.component';
 import { AuthGuard } from '../auth.guard';
 import { RequestManualTimeComponent } from '../manualTime/request-manual-time/request-manual-time.component';
-import { EmployeeProfileComponent } from '../users/employee-settings/employee-profile/employee-profile.component';
-import { EmploymentDetailsComponent } from '../users/employee-settings/employment-details/employment-details.component';
-import { EmployeeSettingsComponent } from '../users/employee-settings/employee-settings.component';
-import { SalaryDetailsComponent } from '../users/employee-settings/salary-details/salary-details.component';
-import { TaxComponent } from '../users/employee-settings/tax/tax.component';
-import { LoansAdvancesComponent } from '../Payroll/settings/loans-advances/loans-advances.component';
-import { StatutoryDetailsComponent } from '../users/employee-settings/statutory-details/statutory-details.component';
 
 const routes: Routes = [
   {

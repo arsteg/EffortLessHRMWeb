@@ -18,7 +18,6 @@
             <table>
                 <thead>
                     <th>Template Name</th>
-                    <th>Employees Covered</th>
                     <th>Fixed Allowance</th>
                     <th>Fixed Deduction</th>
                     <th>Other Allowances</th>
@@ -27,14 +26,10 @@
                 <tbody>
                     <tr *ngFor="let ctc of ctcTemplate | search:searchText">
                         <td>{{ctc?.name}}</td>
-                        <td>
-                            <!-- length of the employees to whome the ctc template covered -->
-                        </td>
                         <td>{{ctc?.ctcTemplateFixedAllowances?.length}}</td>
                         <td>{{ctc?.ctcTemplateFixedDeductions?.length}}</td>
                         <td>{{ctc?.ctcTemplateOtherBenefitAllowances?.length}}</td>
                         <td>
-
                             <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before"
                                 (click)="selectedRecord = ctc; openOffcanvas(true, ctc);" data-bs-toggle="offcanvas"
                                 data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
@@ -62,6 +57,7 @@
             aria-label="Close" [ngClass]="{ 'show': selectedRecord || !isEdit }"> <i
                 class="bi bi-arrow-left text-white"></i></button>
         <div #offcanvasContent class="p-3">
-            <app-update-ctctemplate [selectedRecord]="selectedRecord" [isEdit]="isEdit" (recordUpdatedFromAssigned)="handleRecordUpdate($event)"></app-update-ctctemplate>
+            <app-update-ctctemplate [selectedRecord]="selectedRecord" [isEdit]="isEdit"
+                (recordUpdatedFromAssigned)="handleRecordUpdate($event)"></app-update-ctctemplate>
         </div>
     </div>

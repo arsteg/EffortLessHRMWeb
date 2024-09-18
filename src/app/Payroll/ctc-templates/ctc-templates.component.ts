@@ -23,6 +23,7 @@ export class CtcTemplatesComponent {
   recordsPerPage: number = 10;
   currentPage: number = 1;
   offcanvasData = 'Initial data';
+  showOffcanvas: boolean = false;
 
   constructor(private modalService: NgbModal,
     private payroll: PayrollService,
@@ -79,7 +80,6 @@ export class CtcTemplatesComponent {
     });
   }
 
-  showOffcanvas: boolean = false;
   openOffcanvas(isEdit: boolean, record: any = null) {
     this.isEdit = isEdit;
     this.selectedRecord = record;

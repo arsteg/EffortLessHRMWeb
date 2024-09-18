@@ -63,6 +63,7 @@ import { ViewPayslipComponent } from './run-payroll/payroll-steps/step-9/view-pa
 import { VarAllowanceComponent } from './ctc-templates/assigned-templates/var-allowance/var-allowance.component';
 import { VarDeductionComponent } from './ctc-templates/assigned-templates/var-deduction/var-deduction.component';
 import { CommonComponentsModule } from '../common/commonComponents.module';
+import { PayrollRoutingModule } from './payroll-routing.module';
 
 @NgModule({
   declarations: [
@@ -132,7 +133,8 @@ import { CommonComponentsModule } from '../common/commonComponents.module';
     BrowserModule,
     OverlayModule,
     NgbDropdownModule,
-    CommonComponentsModule
+    CommonComponentsModule,
+    PayrollRoutingModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

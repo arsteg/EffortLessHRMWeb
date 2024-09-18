@@ -13,19 +13,17 @@
                     <button class="btn rounded-pill submenuTab" (click)="selectTab(4)"
                         [class.active]="selectedTab === 4">Overtime Records
                     </button>
+                   
                     <button class="btn rounded-pill submenuTab" (click)="selectTab(5)"
-                        [class.active]="selectedTab === 5">Regularization Requests
+                        [class.active]="selectedTab === 5">OnDuty Requests
                     </button>
                     <button class="btn rounded-pill submenuTab" (click)="selectTab(6)"
-                        [class.active]="selectedTab === 6">OnDuty Requests
+                        [class.active]="selectedTab === 6">Attendance Audit
                     </button>
                     <button class="btn rounded-pill submenuTab" (click)="selectTab(7)"
-                        [class.active]="selectedTab === 7">Attendance Audit
-                    </button>
+                        [class.active]="selectedTab === 7">Attendance Process</button>
                     <button class="btn rounded-pill submenuTab" (click)="selectTab(8)"
-                        [class.active]="selectedTab === 8">Attendance Process</button>
-                    <button class="btn rounded-pill submenuTab" (click)="selectTab(9)"
-                        [class.active]="selectedTab === 9">Reconciliation</button>
+                        [class.active]="selectedTab === 8">Reconciliation</button>
                 </div>
 
                 <div *ngIf="selectedTab === 1" class="tab-content mt-0 pt-0">
@@ -40,16 +38,14 @@
                 <div *ngIf="selectedTab === 4" class="tab-content">
                     <app-overtime-records></app-overtime-records>
                 </div>
+                
                 <div *ngIf="selectedTab === 5" class="tab-content pt-0 mt-0">
-                    <app-regularizations-records></app-regularizations-records>
-                </div>
-                <div *ngIf="selectedTab === 6" class="tab-content pt-0 mt-0">
                     <app-on-duty-records></app-on-duty-records>
                 </div>
-                <div *ngIf="selectedTab === 7" class="tab-content">
+                <div *ngIf="selectedTab === 6" class="tab-content">
                     
                 </div>
-                <div *ngIf="selectedTab === 8" class="tab-content">
+                <div *ngIf="selectedTab === 7" class="tab-content">
                 </div>
             </div>
 

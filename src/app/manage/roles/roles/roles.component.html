@@ -1,4 +1,4 @@
-<div class="main-content px-3">
+<div class="main-content px-3 mt-5 pt-5">
     <div class="tableContainer bg-white py-2 mx-2">
         <div class="d-flex justify-content-between mb-2 px-3  align-items-center">
             <p class="mb-0">({{allRoles?.length}}) Records Found</p>
@@ -7,8 +7,7 @@
                 <span class="bi bi-search searchIcon mt-2"></span>
 
                 <input class="form-control search" type="text" placeholder="search..." [(ngModel)]="searchText"
-                    name="searchText" aria-label="default input example"
-                   >
+                    name="searchText" aria-label="default input example">
 
                 <button mat-raised-button class="ms-5 addBtn rounded-pill"  data-bs-toggle="modal" data-bs-target="#addModal">Add New</button>
             </div>
