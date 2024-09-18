@@ -923,9 +923,16 @@ h2 {
 .mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-line-ripple::after {
   border-bottom-color: transparent !important;
 }
-
+.mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-text-field__input {
+  background: white;
+}
 .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled) .mdc-list-item__primary-text,
 .mat-pseudo-checkbox-minimal.mat-pseudo-checkbox-checked::after,
 .mat-pseudo-checkbox-minimal.mat-pseudo-checkbox-indeterminate::after {
   color: #76bc21 !important;
+}
+
+.mdc-text-field--filled:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-floating-label,
+.mdc-text-field--filled:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-floating-label--float-above {
+    color: #2d2d2c !important;
 }
