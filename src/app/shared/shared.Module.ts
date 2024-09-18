@@ -30,6 +30,7 @@ import { MilliSecondsToTimePipe } from '../pipes/SecondsToTimePipe';
 import { MatStepperModule }  from '@angular/material/stepper';
 import { MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle } from '@angular/material/dialog';
 import { PaginationComponent } from '../pagination/pagination.component';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
 
 @NgModule({
   declarations: [SortDirective, SearchPipe, MilliSecondsToTimePipe, PaginationComponent],
@@ -63,6 +64,7 @@ import { PaginationComponent } from '../pagination/pagination.component';
     MatDialogContent,
     MatDialogTitle,
     MatTooltipModule,
+    MatAutocompleteModule
   ],
   exports: [
     SortDirective,
@@ -100,7 +102,8 @@ import { PaginationComponent } from '../pagination/pagination.component';
     MatDialogTitle,
     TooltipModule,
     MatTooltipModule,
-    PaginationComponent
+    PaginationComponent,
+    MatAutocompleteModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

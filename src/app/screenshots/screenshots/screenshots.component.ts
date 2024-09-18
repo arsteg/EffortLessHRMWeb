@@ -4,7 +4,7 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 
 import { TimeLogService } from 'src/app/_services/timeLogService';
 import { ActivatedRoute, Router } from '@angular/router';
-import { first } from 'rxjs/operators';
+import { first, map, startWith } from 'rxjs/operators';
 import { timeLog, screenshotRow, screenShotCell, ActivityLevel } from 'src/app/models/timeLog';
 import { DatePipe } from '@angular/common';
 import * as moment from 'moment'; // import moment.
@@ -42,18 +42,19 @@ export class ScreenshotsComponent implements OnInit {
   selectedTimelog: any = [];
   logs = [];
   selectAllChecked: false;
-roleName = localStorage.getItem('adminView')
+  roleName = localStorage.getItem('adminView')
   intervalId: any;
   intervalDuration = 300000;
   role: any;
-
+  myControl = new FormControl();
+  filteredMembers: Observable<teamMember[]>;
 
   constructor(
     private timeLogService: TimeLogService,
     private route: ActivatedRoute,
     private router: Router,
     private datePipe: DatePipe,
-    private fb: FormBuilder, private renderer: Renderer2, 
+    private fb: FormBuilder, private renderer: Renderer2,
     private auth: AuthenticationService) {
     this.route.params.subscribe(params => {
       this.resetToken = params['token'];
@@ -61,8 +62,15 @@ roleName = localStorage.getItem('adminView')
   }
 
   ngOnInit(): void {
-    this.members = [];
-    this.populateMembers();
+    this.populateMembers().then(() => {
+      let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      this.myControl.setValue(this.members.find(member => member.id === currentUser.id));
+  
+      this.filteredMembers = this.myControl.valueChanges.pipe(
+        startWith(''),
+        map(value => value ? this.filterMembers(value) : this.members)
+      );
+    });
     this.showScreenShots();
     this.subscription = this.timeLogService.currentMessage.subscribe((message: any) => this.message = message);
 
@@ -77,62 +85,125 @@ roleName = localStorage.getItem('adminView')
     clearInterval(this.intervalId);
   }
 
+
+  displayFn(member: teamMember): string {
+    return member ? member.name : '';
+  }
+
+  // filterMembers(value: any): teamMember[] {
+  //   if (value === '') { // Check if the input field is being clicked
+  //     this.onMemberSelectionChange(null); // Reset the selected member
+  //     console.log(this.members);
+  //     return this.members; // Return all members
+  //   }
+
+  //   if (typeof value === 'string') { // Check if value is a string
+  //     const filterValue = value.toLowerCase();
+  //     console.log(this.members);
+
+  //     return this.members.filter(member => {
+  //       return member.name.toLowerCase().includes(filterValue) ||
+  //         member.id.toLowerCase().includes(filterValue) ||
+  //         member.email.toLowerCase().includes(filterValue);
+  //     });
+  //   } else {
+  //     this.onMemberSelectionChange(value)
+  //     const filterValue = value?.name?.toLowerCase();
+  //     if (!filterValue) { // If filterValue is null or undefined, return all members
+  //       console.log(this.members);
+  //       return this.members;
+
+  //     }
+  //     console.log(this.members);
+
+  //     return this.members.filter(member => {
+  //       return member.name.toLowerCase().includes(filterValue) ||
+  //         member.id.toLowerCase().includes(filterValue) ||
+  //         member.email.toLowerCase().includes(filterValue);
+  //     });
+  //   }
+  // }
+  filterMembers(value: any): teamMember[] {
+    // Return all members when the input is empty (for initial click or reset)
+    if (value === '') {
+      return this.members;
+    }
+  
+    // If the user selects from the dropdown, the value will be an object, not a string
+    if (typeof value === 'string') {
+      const filterValue = value.toLowerCase();
+  
+      // Filter the members list based on name, id, or email
+      return this.members.filter(member => {
+        return member.name.toLowerCase().includes(filterValue) ||
+               member.id.toLowerCase().includes(filterValue) ||
+               member.email.toLowerCase().includes(filterValue);
+      });
+    }
+  
+    // If a member object is selected (not during filtering), trigger the change
+    if (value && typeof value === 'object') {
+      this.onMemberSelectionChange(value); // Now only trigger when the user selects
+    }
+  
+    return this.members; // Always return the full list for display
+  }
+  
   onMemberSelectionChange(member: any) {
-    this.member = JSON.parse(member.value);
+    this.member = member;
     this.showScreenShots();
   }
-  populateMembers() {
-    this.members = [];
-    let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-  
-    this.members.push({ id: currentUser.id, name: "Me", email: currentUser.email });
-    this.member = currentUser;
-  
-    this.timeLogService.getTeamMembers(this.member.id).subscribe({
-      next: response => {
-        this.timeLogService.getusers(response.data).subscribe({
-          next: result => {
-            let otherMembers = [];
-  
-            result.data.forEach(user => {
-              if (user.id !== currentUser.id) {
-                otherMembers.push({ id: user.id, name: `${user.firstName} ${user.lastName}`, email: user.email });
-              }
-            });
-  
-            otherMembers.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
-  
-            this.members = [this.members[0], ...otherMembers];
-          },
-          error: error => {
-            console.log('There was an error!', error);
-          }
-        });
-      },
-      error: error => {
-        console.log('There was an error!', error);
-      }
+  populateMembers(): Promise<void> {
+    return new Promise(resolve => {
+      let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      this.members = [];
+      this.members.push({ id: currentUser.id, name: "Me", email: currentUser.email });
+      this.member = currentUser;
+
+      this.timeLogService.getTeamMembers(this.member.id).subscribe({
+        next: response => {
+          this.timeLogService.getusers(response.data).subscribe({
+            next: result => {
+              let otherMembers = [];
+
+              result.data.forEach(user => {
+                if (user.id !== currentUser.id) {
+                  otherMembers.push({ id: user.id, name: `${user.firstName} ${user.lastName}`, email: user.email });
+                }
+              });
+
+              otherMembers.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
+
+              this.members = [...this.members, ...otherMembers];
+              resolve();
+            },
+            error: error => {
+              console.log('There was an error!', error);
+            }
+          });
+        },
+        error: error => {
+          console.log('There was an error!', error);
+        }
+      });
     });
   }
-  
-data:any = [];
+
+  data: any = [];
   showScreenShots() {
     let currentUser = JSON.parse(localStorage.getItem('currentUser'));
     let formattedDate = this.formatDate(this.selectedDate);
     var result = this.timeLogService.getLogsWithImages(this.member.id, formattedDate);
-    result.subscribe(res =>{
-      this.data= res.data;
-        this.screenshotRows = [];
-        this.selectedTimelog = [];
-        this.populateScreenShots(this.data);
-      // ,
-      // error: error => {
-      //   console.log('There was an error!', error);
-      // }
+    result.subscribe(res => {
+      this.data = res.data;
+      this.screenshotRows = [];
+      this.selectedTimelog = [];
+      this.populateScreenShots(this.data);
+
     });
 
     const startDate = this.getMonday(new Date());
-    const  endDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + 6); // Add 6 days to get the following Sunday
+    const endDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + 6); // Add 6 days to get the following Sunday
 
 
     this.timeLogService.getCurrentWeekTotalTime(this.member.id, this.formatDate(startDate), this.formatDate(endDate)).subscribe({
@@ -177,8 +248,8 @@ data:any = [];
     this.screenshotRows[index]['isRowSelected'] =
       (this.screenshotRows[index].col1['isSelected'] || (!this.screenshotRows[index].col1['isSelected'] && !this.screenshotRows[index].col1.url)) &&
       (this.screenshotRows[index].col2['isSelected'] || (!this.screenshotRows[index].col2['isSelected'] && !this.screenshotRows[index].col2.url)) &&
-      (this.screenshotRows[index].col3['isSelected'] || (!this.screenshotRows[index].col3['isSelected'] && !this.screenshotRows[index].col3.url))  &&
-      (this.screenshotRows[index].col4['isSelected'] || (!this.screenshotRows[index].col4['isSelected'] && !this.screenshotRows[index].col4.url))  &&
+      (this.screenshotRows[index].col3['isSelected'] || (!this.screenshotRows[index].col3['isSelected'] && !this.screenshotRows[index].col3.url)) &&
+      (this.screenshotRows[index].col4['isSelected'] || (!this.screenshotRows[index].col4['isSelected'] && !this.screenshotRows[index].col4.url)) &&
       (this.screenshotRows[index].col5['isSelected'] || (!this.screenshotRows[index].col5['isSelected'] && !this.screenshotRows[index].col5.url)) &&
       (this.screenshotRows[index].col6['isSelected'] || (!this.screenshotRows[index].col6['isSelected'] && !this.screenshotRows[index].col6.url));
     if (event.target.checked) {
@@ -202,19 +273,19 @@ data:any = [];
       if (this.screenshotRows[index].col1.url || this.screenshotRows[index].col1.isManualTime) {
         this.selectedTimelog.push(this.screenshotRows[index].col1._id);
       }
-      if (this.screenshotRows[index].col2.url  || this.screenshotRows[index].col2.isManualTime) {
+      if (this.screenshotRows[index].col2.url || this.screenshotRows[index].col2.isManualTime) {
         this.selectedTimelog.push(this.screenshotRows[index].col2._id);
       }
-      if (this.screenshotRows[index].col3.url  || this.screenshotRows[index].col3.isManualTime) {
+      if (this.screenshotRows[index].col3.url || this.screenshotRows[index].col3.isManualTime) {
         this.selectedTimelog.push(this.screenshotRows[index].col3._id);
       }
-      if (this.screenshotRows[index].col4.url  || this.screenshotRows[index].col4.isManualTime) {
+      if (this.screenshotRows[index].col4.url || this.screenshotRows[index].col4.isManualTime) {
         this.selectedTimelog.push(this.screenshotRows[index].col4._id);
       }
-      if (this.screenshotRows[index].col5.url  || this.screenshotRows[index].col5.isManualTime) {
+      if (this.screenshotRows[index].col5.url || this.screenshotRows[index].col5.isManualTime) {
         this.selectedTimelog.push(this.screenshotRows[index].col5._id);
       }
-      if (this.screenshotRows[index].col6.url  || this.screenshotRows[index].col6.isManualTime) {
+      if (this.screenshotRows[index].col6.url || this.screenshotRows[index].col6.isManualTime) {
         this.selectedTimelog.push(this.screenshotRows[index].col6._id);
       }
     }
@@ -371,7 +442,7 @@ data:any = [];
         if (hh == r && mm <= (c * 10 + 9) && mm >= (c * 10)) {
           mm = this.padValue(mm - (mm % 10));
           if (timeLogs[i].isManualTime) {
-            result = new screenShotCell(`${hh}:${mm}`, '', 0, 0, 0, '', timeLogs[i]._id, true, false,'',  true);
+            result = new screenShotCell(`${hh}:${mm}`, '', 0, 0, 0, '', timeLogs[i]._id, true, false, '', true);
             console.log(result);
           } else {
             result = new screenShotCell(`${hh}:${mm}`, timeLogs[i].fileString, timeLogs[i].clicks, timeLogs[i].keysPressed, timeLogs[i].scrolls, timeLogs[i].url, timeLogs[i]._id, false, false, timeLogs[i].allKeysPressed, true);
@@ -534,9 +605,9 @@ data:any = [];
       this.SetNextScreen();
     }
   }
-  
+
   isMaximized: boolean = false; // Track the image size state
- 
+
   getModalClass() {
     return this.isMaximized ? 'maximized-modal' : 'normal-modal';
   }

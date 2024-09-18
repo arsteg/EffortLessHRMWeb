@@ -86,6 +86,7 @@ export class AuthenticationService {
     queryHeaders.append('Access-Control-Allow-Origin', '*');
     return this.http.patch<any>(`${environment.apiUrlDotNet}/users/resetPassword/${token}`, { password: password, passwordConfirm: confirm_password }, { headers: queryHeaders });
   }
+  
   login(user) {
     const httpOptions = this.defaultHttpOptions();
     const loginTime = new Date().getTime();
