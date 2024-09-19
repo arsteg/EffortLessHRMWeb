@@ -228,7 +228,7 @@ export const SideBarAdminMenu = [
     title: 'Attendance',
     icon: 'assets/Sidenav-Icons/attendance.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/attendance.png',
-    url: 'attendance'
+    url: '/attendance/settings'
 
   },
   {
@@ -408,7 +408,7 @@ export const SideBarUserMenu = [
     title: 'Attendance',
     icon: 'assets/Sidenav-Icons/attendance.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/attendance.png',
-    url: 'attendance'
+    url: '/attendance/my-attendance-records'
   },
   {
     id: '9',

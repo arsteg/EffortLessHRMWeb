@@ -5,7 +5,6 @@ import { SharedModule } from '../shared/shared.Module';
 import { AttendanceManagementComponent } from './attendance-management/attendance-management.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';
-import { AttendanceComponent } from './attendance/attendance.component';
 import { GeneralSettingsComponent } from './attendance/generalSettings/generalSettings.component';
 import { AttendanceRegularizationComponent } from './attendance/attendance-template/attendance-regularization/attendance-regularization.component';
 import { AttendanceTemplateComponent } from './attendance/attendance-template/attendance-template.component';
@@ -39,10 +38,10 @@ import { UpdateOnDutyComponent } from './on-duty-records/update-on-duty/update-o
 import { ShowOnDutyComponent } from './on-duty-records/show-on-duty/show-on-duty.component';
 import { MyAttendanceRecordsComponent } from './attendance-records/my-attendance-records/my-attendance-records.component';
 import { AddTimeEntryComponent } from '../home/add-time-entry/add-time-entry.component';
+import { AttendanceRoutingModule } from './attendance-routing.module';
 
 @NgModule({
   declarations: [
-    AttendanceComponent,
     GeneralSettingsComponent,
     AttendanceRegularizationComponent,
     AttendanceTemplateComponent,
@@ -85,10 +84,10 @@ import { AddTimeEntryComponent } from '../home/add-time-entry/add-time-entry.com
     FormsModule,
     ReactiveFormsModule,
     ColorChromeModule,
+    AttendanceRoutingModule
   ],
   exports: [
     AttendanceManagementComponent,
-    AttendanceComponent,
     GeneralSettingsComponent,
     CommonModule
   ],

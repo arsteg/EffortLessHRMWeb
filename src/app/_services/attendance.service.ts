@@ -3,11 +3,12 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { response } from '../models/response';
+import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AttendanceService {
+export class AttendanceService implements CanActivate{
   private readonly token = this.getToken();
   private readonly apiUrl = environment.apiUrlDotNet;
   private readonly httpOptions = {
@@ -22,11 +23,25 @@ export class AttendanceService {
   selectedTemplate: any = new BehaviorSubject('');
   status: any = new BehaviorSubject('');
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+    private router: Router
+  ) {
   }
 
   public getToken() {
     return localStorage.getItem('jwtToken');
+  }
+  canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
+    const userRole = localStorage.getItem('adminView'); // get user role from local storage or any other storage
+
+    if (userRole === 'user') {
+      console.log(userRole)
+      this.router.navigate(['/attendance/my-attendance-records']);
+      return true;
+    } else {
+      this.router.navigate(['/attendance/settings']);
+      return true;
+    }
   }
 
   addGeneralSettings(generalSettingForm: any): Observable<response<any>> {

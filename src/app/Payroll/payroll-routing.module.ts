@@ -27,15 +27,6 @@ const routes: Routes = [
       {
         path: 'payroll', component: PayrollComponent, canActivate: [AuthGuard],
         children: [
-          // { path: 'payroll', redirectTo: 'settings', pathMatch: 'full' },
-          // {
-          //   path: 'settings', component: SettingsComponent, canActivate: [AuthGuard],
-          //   children: [
-          //     {path: 'settings', redirectTo: 'general-settings', pathMatch: 'full'},
-          //     {path: 'general-settings', component: GeneralSettingsComponent},
-          //     {path: 'fixed-allowances', component: FixedAllowanceComponent}
-          //   ]
-          // },
           { path: '', redirectTo: 'settings', pathMatch: 'full' },
           {
             path: 'settings', component: SettingsComponent, canActivate: [AuthGuard],
