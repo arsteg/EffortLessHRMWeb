@@ -115,7 +115,6 @@ export class AttendanceTemplateComponent {
   }
 
   refreshExpenseReportTable() {
-    console.log('refreshExpenseReportTable');
     this.loadRecords();
   }
 
@@ -123,18 +122,6 @@ export class AttendanceTemplateComponent {
     const dataToExport = this.attendanceTemplate;
     this.exportService.exportToCSV('attendance-template', 'attendance-template', dataToExport);
   }
-
-  // getAttendanceTemplate() {
-  //   this.attendanceService.getAttendanceTemplate().subscribe((res: any) => {
-  //     this.attendanceTemplate = res.data;
-  //   })
-  // }
-
-  // getAttendanceTemplateAssignment() {
-  //   this.attendanceService.getAttendanceAssignment().subscribe((res: any) => {
-  //     this.attendanceAssignment = res.data;
-  //   })
-  // }
 
   setFormValues(templateData: any) {
     this.attendanceService.selectedTemplate.next(templateData);
@@ -170,6 +157,4 @@ export class AttendanceTemplateComponent {
       this.regularizations = res.data;
     })
   }
-
-
 }

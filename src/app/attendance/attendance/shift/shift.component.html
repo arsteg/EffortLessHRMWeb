@@ -3,7 +3,6 @@
         <div class="py-2 px-0 bg-white tableContainer">
 
             <div class="d-flex justify-content-between align-items-center mb-2 px-3">
-                <p class="mb-0">({{shift?.length}}) Records Found</p>
                 <div class="d-flex align-items-center">
                     <span class="bi bi-search searchIcon"></span>
 
@@ -19,11 +18,12 @@
                         Download</button>
 
                 </div>
+
+                <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
+                    [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
+                    (recordsPerPageChange)="onRecordsPerPageChange($event)">
+                </app-pagination>
             </div>
-            <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
-            [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
-            (recordsPerPageChange)="onRecordsPerPageChange($event)">
-            </app-pagination>
             <table class="px-4">
                 <thead>
                     <tr>
@@ -35,8 +35,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr
-                        *ngFor="let shift of shift| search: searchText">
+                    <tr *ngFor="let shift of shift| search: searchText">
                         <td>{{shift?.name}}</td>
                         <td><span
                                 *ngIf="shift?.startTimeHour != null">{{shift?.startTimeHour}}:{{shift?.startTimeMinutes}}</span>
@@ -48,7 +47,7 @@
                         </td>
 
                         <td class="text-center">
-                            <button class="actions" mat-mini-fab  matTooltip="Edit" matTooltipPosition="before" (click)="changeMode=='Update';
+                            <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before" (click)="changeMode=='Update';
                                 open(addModal);
                                 isEdit= true;
                                 selectedShift=shift._id;
@@ -64,7 +63,7 @@
                     </tr>
                 </tbody>
             </table>
-           
+
         </div>
     </div>
 </div>
@@ -328,7 +327,7 @@
                 <input type="time" formControlName="minHoursPerDayToGetCreditForFullDay"
                     class="form-control formTable" />
             </div>
-            
+
             <!-- if fixed duration selected -->
             <div *ngIf="shiftForm.get('shiftType').value == 'fixed duration'">
                 <div class="form-group my-2">

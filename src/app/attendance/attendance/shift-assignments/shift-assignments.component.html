@@ -3,7 +3,6 @@
         <div class="py-2 px-0 bg-white tableContainer">
 
             <div class="d-flex justify-content-between align-items-center mb-2 px-3">
-                <p class="mb-0">({{shift?.length}}) Records Found</p>
                 <div class="d-flex align-items-center">
                     <span class="bi bi-search searchIcon"></span>
 
@@ -19,11 +18,12 @@
                         Download</button>
 
                 </div>
+
+                <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
+                    [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
+                    (recordsPerPageChange)="onRecordsPerPageChange($event)">
+                </app-pagination>
             </div>
-            <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
-            [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
-            (recordsPerPageChange)="onRecordsPerPageChange($event)">
-            </app-pagination>
             <table class="px-4">
                 <thead>
                     <tr>
@@ -35,14 +35,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr
-                        *ngFor="let shift of shiftAssigments| search: searchText">
+                    <tr *ngFor="let shift of shiftAssigments| search: searchText">
                         <td>{{getUser(shift?.user) | titlecase}}</td>
                         <td>{{getShiftTemplateName(shift?.template)}}</td>
                         <td>{{shift?.startDate | date: 'mediumDate'}}</td>
 
                         <td class="text-center">
-                            <button class="actions" mat-mini-fab  matTooltip="Edit" matTooltipPosition="before" (click)="changeMode=='Update';
+                            <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before" (click)="changeMode=='Update';
                                 open(addModal);
                                 isEdit= true;
                                 selectedShift=shift._id;
@@ -92,23 +91,24 @@
 
         <div class="form-group my-2">
             <label for="">Select Template<span class="text-danger">*</span></label>
-            <select id="attendanceTemplate" class="form-control"
-                formControlName="template" name="attendanceTemp" class="form-select form-select-sm"
-                aria-label=".form-select-sm example">
+            <select id="attendanceTemplate" class="form-control" formControlName="template" name="attendanceTemp"
+                class="form-select form-select-sm" aria-label=".form-select-sm example">
                 <option *ngFor="let template of shift" [value]="template?._id">
                     {{template?.name}}
                 </option>
             </select>
-            <div *ngIf="shiftForm.get('template').invalid && shiftForm.get('template').touched" class="text-danger error">
+            <div *ngIf="shiftForm.get('template').invalid && shiftForm.get('template').touched"
+                class="text-danger error">
                 Please Select Shift Template!
             </div>
         </div>
 
         <div class="form-group my-2">
             <label for="">Select an Start Date<span class="text-danger">*</span></label>
-                <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
-                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="startDate" />
-            <div *ngIf="shiftForm.get('startDate').invalid && shiftForm.get('startDate').touched" class="text-danger error">
+            <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
+                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="startDate" />
+            <div *ngIf="shiftForm.get('startDate').invalid && shiftForm.get('startDate').touched"
+                class="text-danger error">
                 Please Select Start Date!
             </div>
         </div>

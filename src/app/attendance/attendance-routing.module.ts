@@ -19,44 +19,6 @@ import { OnDutyRecordsComponent } from './on-duty-records/on-duty-records.compon
 import { MyAttendanceRecordsComponent } from './attendance-records/my-attendance-records/my-attendance-records.component';
 import { AttendanceService } from '../_services/attendance.service';
 
-// const routes: Routes = [
-//   {
-//     path: '', component: HomeComponent, canActivate: [AuthGuard],
-//     children: [
-//       {
-//         path: 'attendance', component: AttendanceManagementComponent, canActivate: [AuthGuard],
-//         children: [
-//           { path: '', redirectTo: 'settings', pathMatch: 'full' },
-//           {
-//             path: 'settings', component: AttendanceManagementSettingsComponent, canActivate: [AuthGuard],
-//             children: [
-//               { path: '', redirectTo: 'general-settings', pathMatch: 'full' },
-//               { path: 'general-settings', component: GeneralSettingsComponent },
-//               { path: 'attendance-templates', component: AttendanceTemplateComponent },
-//               { path: 'attendance-template-assignment', component: AttendanceTemplateAssignmentComponent },
-//               { path: 'over-time', component: OvertimeComponent },
-//               { path: 'on-duty-template', component: OnDutyTemplatesComponent },
-//               { path: 'on-duty-template-assignment', component: OnDutyTemplateAssignmentComponent },
-//               { path: 'shift', component: ShiftComponent },
-//               { path: 'shift-assignment', component: ShiftAssignmentsComponent }
-//             ]
-//           },
-//           { path: 'attendance-records', component: AttendanceRecordsComponent },
-//           { path: 'roster-records', component: RosterRecordsComponent },
-//           { path: 'overtime-records', component: OvertimeRecordsComponent },
-//           { path: 'on-duty-request', component: OnDutyRecordsComponent },
-//           { path: 'attendance-audit', component: OnDutyRecordsComponent },
-//           { path: 'attendance-process', component: OnDutyRecordsComponent },
-//           { path: 'reconcilation', component: OnDutyRecordsComponent },
-
-//           { path: 'my-attendance-records', component: MyAttendanceRecordsComponent }
-//         ],
-//       },
-
-
-// ]
-//   }
-// ];
 const routes: Routes = [
   {
     path: '', component: HomeComponent, canActivate: [AuthGuard],
@@ -65,7 +27,6 @@ const routes: Routes = [
         path: 'attendance', component: AttendanceManagementComponent, canActivate: [AuthGuard],
         children: [
           // User Routes
-          // Default redirection for user view
           {
             path: '',
             redirectTo: (localStorage.getItem('adminView') === 'user') ? 'my-attendance-records' : 'settings',
@@ -75,7 +36,7 @@ const routes: Routes = [
           { path: 'my-roster-records', component: RosterRecordsComponent },
           { path: 'my-on-duty-request', component: OnDutyRecordsComponent },
           { path: 'my-overtime-records', component: OvertimeRecordsComponent },
-          
+
           // Admin Routes
           {
             path: 'settings', component: AttendanceManagementSettingsComponent,
@@ -98,12 +59,9 @@ const routes: Routes = [
           { path: 'attendance-audit', component: OnDutyRecordsComponent },
           { path: 'attendance-process', component: OnDutyRecordsComponent },
           { path: 'reconcilation', component: OnDutyRecordsComponent },
-
-
-
         ]
       },
-      
+
     ]
   }
 ];

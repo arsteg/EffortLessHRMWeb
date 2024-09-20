@@ -106,7 +106,6 @@ export class GeneralSettingsComponent implements OnInit {
   }
 
   selectTab(tabId: string) {
-
     this.activeTab = tabId;
     console.log(this.activeTab);
     this.loadRecords();
@@ -209,6 +208,7 @@ export class GeneralSettingsComponent implements OnInit {
         this.regularization[index] = reason;
         this.toast.success('Regularization Reason Updated', 'Successfully!!!');
         this.regularizationForm.reset();
+        this.isEdit = false;
       }
     })
   }
@@ -307,6 +307,7 @@ export class GeneralSettingsComponent implements OnInit {
         this.dutyReason[index] = reason;
         this.toast.success('On Duty Reason Updated', 'Successfully!!!');
         this.dutyReasonForm.reset();
+        this.isEdit = false;
       }
     })
   }

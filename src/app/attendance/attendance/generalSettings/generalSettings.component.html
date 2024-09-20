@@ -69,17 +69,16 @@
       <div class="tab-content pt-0">
         <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabRegularizationReason'}"
           id="tabRegularizationReason">
-          <div class="d-flex justify-content-between align-items-center">
-            <div class=""><label>({{regularization?.length}}) Records found</label></div>
-            <div class="">
-              <button class="btn addBtn" (click)="open(addModal); clearForm(); isEdit= false">Add&nbsp;Reason</button>
-            </div>
-          </div>
+
           <div class="mt-2 bg-white tableContainer">
-            <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
-              [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
-              (recordsPerPageChange)="onRecordsPerPageChange($event)">
-            </app-pagination>
+            <div class="d-flex align-items-center justify-content-between">
+              <button class="btn addBtn" (click)="open(addModal); clearForm(); isEdit= false">Add&nbsp;Reason</button>
+
+              <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
+                [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
+                (recordsPerPageChange)="onRecordsPerPageChange($event)">
+              </app-pagination>
+            </div>
             <table>
               <thead>
                 <th>Reason</th>
@@ -108,18 +107,16 @@
           </div>
         </div>
         <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabOnDutyReason'}" id="tabOnDutyReason">
-          <div>
-            <div class="text-end">
+
+          <div class="mt-2 bg-white tableContainer">
+            <div class="d-flex align-items-center justify-content-between">
               <button class="btn addBtn"
                 (click)="open(addDutyModal); clearForm() ;isEdit= false">On&nbsp;Duty&nbsp;Reason</button>
+              <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
+                [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
+                (recordsPerPageChange)="onRecordsPerPageChange($event)">
+              </app-pagination>
             </div>
-          </div>
-          <div class="mt-2 bg-white tableContainer">
-            <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
-              [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
-              (recordsPerPageChange)="onRecordsPerPageChange($event)">
-            </app-pagination>
-
             <table>
               <thead>
                 <th>Reason</th>
@@ -166,57 +163,64 @@
     <div class="form-group">
       <label for="">Label for Regularization Reason <span class="text-danger">*</span></label>
       <input type="text" class="form-control" placeholder="Enter Label" formControlName="label">
-      <div  *ngIf="regularizationForm.get('label').invalid && regularizationForm.get('label').touched"
-      class="text-danger error">Label is required.
+      <div *ngIf="regularizationForm.get('label').invalid && regularizationForm.get('label').touched"
+        class="text-danger error">Label is required.
       </div>
     </div>
-  
+
     <div class="form-check form-switch ps-0 mt-2 d-flex">
       <label for="isFrequecyRestriction">Frequency Restriction <span class="text-danger">*</span></label>
-      <input class="form-check-input ms-4" type="checkbox" formControlName="isFrequecyRestriction" id="isFrequecyRestriction">
+      <input class="form-check-input ms-4" type="checkbox" formControlName="isFrequecyRestriction"
+        id="isFrequecyRestriction">
     </div>
-  
+
     <div *ngIf="regularizationForm.get('isFrequecyRestriction').value">
       <strong><small>An Employee can apply Maximum</small></strong>
       <div class="d-flex align-items-center justify-content-between">
         <div class="form-group w-100">
           <label for="">Limit <span class="text-danger">*</span></label>
           <input type="number" class="w-75 form-control" placeholder="Limit" formControlName="limit">
-          <div *ngIf="regularizationForm.get('limit').invalid && regularizationForm.get('limit').touched"  class="text-danger error">
-           Limit is required and must be greater than 0.
+          <div *ngIf="regularizationForm.get('limit').invalid && regularizationForm.get('limit').touched"
+            class="text-danger error">
+            Limit is required and must be greater than 0.
           </div>
         </div>
-  
+
         <div class="form-group w-100 mt-4">
           <select class="form-control w-75" formControlName="frequency">
             <option value="week">Week</option>
             <option value="calendar-month">Calendar Month</option>
             <option value="annual-cycle">Annual Cycle</option>
           </select>
-          <div *ngIf="regularizationForm.get('frequency').invalid && regularizationForm.get('frequency').touched"  class="text-danger error">
+          <div *ngIf="regularizationForm.get('frequency').invalid && regularizationForm.get('frequency').touched"
+            class="text-danger error">
             Frequency is required.
           </div>
         </div>
       </div>
     </div>
-  
+
     <div class="form-group mt-2">
       <label for="">Which Employees Does this Reason Apply to? <span class="text-danger">*</span></label>
       <div class="d-flex">
         <div class="form-check">
-          <input class="form-check-input" id="all1" type="radio" value="all-employees" formControlName="applicableEmployee">
+          <input class="form-check-input" id="all1" type="radio" value="all-employees"
+            formControlName="applicableEmployee">
           <label class="form-check-label" for="all1">All Employees</label>
         </div>
         <div class="form-check ms-4">
-          <input class="form-check-input" id="specific2" type="radio" value="specific-employees" formControlName="applicableEmployee">
+          <input class="form-check-input" id="specific2" type="radio" value="specific-employees"
+            formControlName="applicableEmployee">
           <label class="form-check-label" for="specific2">Specific Employees</label>
         </div>
       </div>
-      <div *ngIf="regularizationForm.get('applicableEmployee').invalid && regularizationForm.get('applicableEmployee').touched"  class="text-danger error">
+      <div
+        *ngIf="regularizationForm.get('applicableEmployee').invalid && regularizationForm.get('applicableEmployee').touched"
+        class="text-danger error">
         Please select an applicable employee option.
       </div>
     </div>
-  
+
     <div class="form-group mt-2" *ngIf="regularizationForm.get('applicableEmployee').value === 'specific-employees'">
       <mat-form-field appearance="outline" class="w-100 mx-1">
         <mat-label>Select Employee</mat-label>
@@ -226,18 +230,17 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <div *ngIf="regularizationForm.get('users').invalid && regularizationForm.get('users').touched"  class="text-danger error">
+      <div *ngIf="regularizationForm.get('users').invalid && regularizationForm.get('users').touched"
+        class="text-danger error">
         Please select at least one employee.
       </div>
     </div>
-  
+
     <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
       <button mat-raised-button type="button">Cancel</button>
       <button mat-raised-button class="addBtn" type="submit">{{isEdit ? 'Update' : 'Add'}}</button>
     </div>
   </form>
-  
- 
 </ng-template>
 
 <ng-template #addDutyModal let-dutyModal>
@@ -256,7 +259,7 @@
     <div class="form-group">
       <label for="">Label for On Duty Reason</label>
       <input type="text" class="form-control" placeholder="Enter Label" formControlName="label">
-      <div *ngIf="dutyReasonForm.get('label').invalid && dutyReasonForm.get('label').touched"  class="text-danger error">
+      <div *ngIf="dutyReasonForm.get('label').invalid && dutyReasonForm.get('label').touched" class="text-danger error">
         Label is required.
       </div>
     </div>
@@ -279,7 +282,8 @@
           </label>
         </div>
       </div>
-      <div *ngIf="dutyReasonForm.get('applicableEmployee').invalid && dutyReasonForm.get('applicableEmployee').touched"  class="text-danger error">
+      <div *ngIf="dutyReasonForm.get('applicableEmployee').invalid && dutyReasonForm.get('applicableEmployee').touched"
+        class="text-danger error">
         This Field is required.
       </div>
     </div>
@@ -292,7 +296,7 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <div *ngIf="dutyReasonForm.get('users').invalid && dutyReasonForm.get('users').touched"  class="text-danger error">
+      <div *ngIf="dutyReasonForm.get('users').invalid && dutyReasonForm.get('users').touched" class="text-danger error">
         Please select at least one employee.
       </div>
     </div>

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
@@ -42,17 +42,15 @@ export class AttendanceTemplateAssignmentComponent {
     private toast: ToastrService
   ) {
     this.attendanceTemplateAssignmentForm = this.fb.group({
-      employee: [''],
-      attandanceTemplate: [''],
-      effectiveFrom: [],
-      primaryApprover: [''],
-      secondaryApprover: ['']
-      // primaryApprover: [{ value: '', disabled: true }],
-      // secondaryApprover: [{ value: '', disabled: true }]
+      employee: ['', Validators.required],
+      attandanceTemplate: ['', Validators.required],
+      effectiveFrom: [, Validators.required],
+      primaryApprover: ['', Validators.required],
+      secondaryApprover: ['', Validators.required]
     });
     this.updateTemplateAssignForm = this.fb.group({
-      primaryApprovar: [{ value: '', disabled: true }],
-      secondaryApprovar: [{ value: '', disabled: true }]
+      primaryApprovar: [{ value: '', disabled: true }, Validators.required],
+      secondaryApprovar: [{ value: '', disabled: true }, Validators.required]
     })
   }
 
@@ -249,42 +247,58 @@ export class AttendanceTemplateAssignmentComponent {
 
 
   onCreate() {
-    console.log(this.selectedTemp)
-    this.attendanceService.getAttendanceTemplateById(this.selectedTemp).subscribe((res: any) => {
-      this.templateById = res.data;
-      let payload = {
-        employee: this.attendanceTemplateAssignmentForm.value.employee,
-        attandanceTemplate: this.attendanceTemplateAssignmentForm.value.attandanceTemplate,
-        effectiveFrom: this.attendanceTemplateAssignmentForm.value.effectiveFrom,
-        primaryApprover: this.attendanceTemplateAssignmentForm.value.primaryApprover,
-        secondaryApprover: this.attendanceTemplateAssignmentForm.value.secondaryApprover
-      }
-      if (this.templateById.approversType == 'template-wise' && this.templateById.approvalLevel == '2') {
-        payload.primaryApprover = this.templateById.primaryApprover,
-          payload.secondaryApprover = this.templateById.secondaryApprover
-      }
-      else if (this.templateById.approversType == 'template-wise' && this.templateById.approvalLevel == '1') {
-        payload.primaryApprover = this.templateById.primaryApprover,
-          payload.secondaryApprover = null
-      }
-      this.attendanceService.addAttendanceAssignment(payload).subscribe((res: any) => {
-        this.loadRecords();
-        this.toast.success('Attendance Template Assigned', 'Successfully');
-        this.attendanceTemplateAssignmentForm.reset();
+    if (this.attendanceTemplateAssignmentForm.valid) {
+      this.attendanceService.getAttendanceTemplateById(this.selectedTemp).subscribe((res: any) => {
+        this.templateById = res.data;
+        let payload = {
+          employee: this.attendanceTemplateAssignmentForm.value.employee,
+          attandanceTemplate: this.attendanceTemplateAssignmentForm.value.attandanceTemplate,
+          effectiveFrom: this.attendanceTemplateAssignmentForm.value.effectiveFrom,
+          primaryApprover: this.attendanceTemplateAssignmentForm.value.primaryApprover,
+          secondaryApprover: this.attendanceTemplateAssignmentForm.value.secondaryApprover
+        }
+        if (this.templateById.approversType == 'template-wise' && this.templateById.approvalLevel == '2') {
+          payload.primaryApprover = this.templateById.primaryApprover,
+            payload.secondaryApprover = this.templateById.secondaryApprover
+        }
+        else if (this.templateById.approversType == 'template-wise' && this.templateById.approvalLevel == '1') {
+          payload.primaryApprover = this.templateById.primaryApprover,
+            payload.secondaryApprover = null
+        }
+        this.attendanceService.addAttendanceAssignment(payload).subscribe((res: any) => {
+          this.loadRecords();
+          this.toast.success('Attendance Template Assigned', 'Successfully');
+          this.attendanceTemplateAssignmentForm.reset();
+        });
       });
+    }
+    else {
+      this.markFormGroupTouched(this.attendanceTemplateAssignmentForm);
+    }
+  }
+
+  markFormGroupTouched(formGroup: FormGroup) {
+    Object.values(formGroup.controls).forEach(control => {
+      control.markAsTouched();
+      if (control instanceof FormGroup) {
+        this.markFormGroupTouched(control);
+      }
     });
   }
 
   onUpdate() {
     console.log(this.selectedTemplate);
-    let payload = {
+   if(this.updateTemplateAssignForm.valid){ let payload = {
       primaryApprovar: this.updateTemplateAssignForm.value.primaryApprovar,
       secondaryApprovar: this.updateTemplateAssignForm.value.secondaryApprovar
     }
     console.log(payload);
     this.attendanceService.updateAttendanceAssignment(this.selectedTemplate._id, payload).subscribe((res: any) => {
       this.loadRecords();
-    })
+    })}
+    else {
+      this.markFormGroupTouched(this.updateTemplateAssignForm);
+    }
   }
 
   deleteTempAssignment(id: string) {

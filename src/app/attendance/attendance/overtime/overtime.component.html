@@ -16,12 +16,11 @@
             <div class="tab-content pt-0">
                 <div class="tab-pane" [ngClass]="{'active': activeTab === 'rounding'}" id="rounding">
                     <div class="d-flex justify-content-between align-items-center mb-2 px-3">
-                        <p class="mb-0">({{rounding?.length}}) Records Found</p>
                         <div class="d-flex align-items-center">
                             <span class="bi bi-search searchIcon"></span>
 
-                            <input class="form-control search" type="text"  [(ngModel)]="searchText" placeholder="Search..." name="searchText"
-                                aria-label="default input example">
+                            <input class="form-control search" type="text" [(ngModel)]="searchText"
+                                placeholder="Search..." name="searchText" aria-label="default input example">
 
                             <button mat-raised-button
                                 (click)="open(addModal); clearForm(); changeMode = 'Add'; isEdit= false;"
@@ -33,11 +32,12 @@
                                 Download</button>
 
                         </div>
+
+                        <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
+                            [recordsPerPage]="recordsPerPage" [currentPage]="currentPage"
+                            (pageChange)="onPageChange($event)" (recordsPerPageChange)="onRecordsPerPageChange($event)">
+                        </app-pagination>
                     </div>
-                    <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
-            [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
-            (recordsPerPageChange)="onRecordsPerPageChange($event)">
-            </app-pagination>
                     <table class="px-4">
                         <thead>
                             <tr>
@@ -49,14 +49,14 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr
-                                *ngFor="let roundingInfo of rounding| search: searchText ">
+                            <tr *ngFor="let roundingInfo of rounding| search: searchText ">
                                 <td>{{roundingInfo?.roundingPatternCode}}</td>
                                 <td>{{roundingInfo?.roundingPatternName}}</td>
                                 <td>{{roundingInfo?.shift}}</td>
                                 <td>{{roundingInfo?.roundingPattern}}</td>
                                 <td class="text-center">
-                                    <button class="actions" mat-mini-fab  matTooltip="Edit" matTooltipPosition="before" (click)="open(addModal);
+                                    <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before"
+                                        (click)="open(addModal);
                                 isEdit= true;
                                 changeMode = 'Update';
                                 selectedRecord=roundingInfo;
@@ -78,12 +78,11 @@
 
                 <div class="tab-pane" [ngClass]="{'active': activeTab === 'overTime'}" id="overTime">
                     <div class="d-flex justify-content-between align-items-center mb-2 px-3">
-                        <p class="mb-0">({{overTimeRecord?.length}}) Records Found</p>
                         <div class="d-flex align-items-center">
                             <span class="bi bi-search searchIcon"></span>
 
-                            <input class="form-control search" type="text" [(ngModel)]="searchText" placeholder="Search..." name="searchText"
-                                aria-label="default input example">
+                            <input class="form-control search" type="text" [(ngModel)]="searchText"
+                                placeholder="Search..." name="searchText" aria-label="default input example">
 
                             <button mat-raised-button
                                 (click)="open(addOverTimeModal); clearOvertimeForm(); changeMode = 'Add'; isEdit= false;"
@@ -95,11 +94,12 @@
                                 Download</button>
 
                         </div>
+
+                        <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
+                            [recordsPerPage]="recordsPerPage" [currentPage]="currentPage"
+                            (pageChange)="onPageChange($event)" (recordsPerPageChange)="onRecordsPerPageChange($event)">
+                        </app-pagination>
                     </div>
-                    <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
-            [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
-            (recordsPerPageChange)="onRecordsPerPageChange($event)">
-            </app-pagination>
                     <table class="px-4">
                         <thead>
                             <tr>
@@ -112,8 +112,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr
-                                *ngFor="let overtime of overTimeRecord| search: searchText ">
+                            <tr *ngFor="let overtime of overTimeRecord| search: searchText ">
                                 <td>{{overtime?.Name}}</td>
                                 <td>{{overtime?.BaseType}}</td>
                                 <td>{{overtime?.AttandanceShift}}</td>
@@ -122,7 +121,8 @@
                                 <td>{{overtime?.ToTimeHour}}:{{overtime?.ToTimeMinutes}} {{overtime?.ToTimeTT |
                                     uppercase}}</td>
                                 <td class="text-center">
-                                    <button class="actions" mat-mini-fab  matTooltip="Edit" matTooltipPosition="before" (click)="open(addOverTimeModal);
+                                    <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before"
+                                        (click)="open(addOverTimeModal);
                                 isEdit= true;
                                 changeMode = 'Update';
                                 selectedOverTime=overtime;
@@ -139,7 +139,7 @@
                             </tr>
                         </tbody>
                     </table>
-                            
+
                 </div>
             </div>
         </div>
@@ -159,28 +159,39 @@
         <form [formGroup]="roundingForm" (ngSubmit)="onSubmission()">
 
             <div class="form-group">
-                <label for="">Rounding Pattern Name</label>
+                <label for="">Rounding Pattern Name <span class="text-danger">*</span></label>
                 <input type="text" class="form-control" formControlName="roundingPatternName">
+                <div class="text-danger"
+                    *ngIf="roundingForm.get('roundingPatternName').hasError('required') && roundingForm.get('roundingPatternName').touched">
+                    Rounding Pattern Name is required
+                </div>
             </div>
 
             <div class="form-group my-2">
-                <label for="">Rounding Pattern Code</label>
+                <label for="">Rounding Pattern Code <span class="text-danger">*</span></label>
                 <input type="text" class="form-control" formControlName="roundingPatternCode">
+                <div class="text-danger"
+                    *ngIf="roundingForm.get('roundingPatternCode').hasError('required') && roundingForm.get('roundingPatternCode').touched">
+                    Rounding Pattern Code Name is required
+                </div>
             </div>
 
 
             <div class="form-group my-2">
-                <label for="">Please Select Attendance Shift</label>
+                <label for="">Please Select Attendance Shift <span class="text-danger">*</span></label>
                 <select id="attendanceTemplate" class="form-control" formControlName="shift" name="attendanceTemp"
                     class="form-select form-select-sm" aria-label=".form-select-sm example">
                     <option value="default-shift">Default shift</option>
                     <option value="general-shift">General Shift</option>
-
                 </select>
+                <div class="text-danger"
+                    *ngIf="roundingForm.get('shift').hasError('required') && roundingForm.get('shift').touched">
+                    Shift is required
+                </div>
             </div>
 
             <div class="form-group my-2">
-                <label for="">Rounding Pattern Method</label>
+                <label for="">Rounding Pattern Method <span class="text-danger">*</span></label>
                 <div class="d-flex">
                     <div class="form-check">
                         <input class="form-check-input" formControlName="roundingPatternMethod" type="radio"
@@ -198,65 +209,121 @@
                         </label>
                     </div>
                 </div>
+                <div class="text-danger"
+                    *ngIf="roundingForm.get('roundingPatternMethod').hasError('required') && roundingForm.get('roundingPatternMethod').touched">
+                    Rounding Pattern Method is required
+                </div>
             </div>
 
             <div class="form-group my-2">
-                <label for="">Please Select Default Rounding Pattern</label>
+                <label for="">Please Select Default Rounding Pattern <span class="text-danger">*</span></label>
                 <select id="attendanceTemplate" class="form-control" formControlName="roundingPattern"
                     name="attendanceTemp" class="form-select form-select-sm" aria-label=".form-select-sm example">
                     <option value="nearest value">Nearest Value</option>
                 </select>
+                <div class="text-danger"
+                    *ngIf="roundingForm.get('roundingPattern').hasError('required') && roundingForm.get('roundingPattern').touched">
+                    Rounding Pattern is required
+                </div>
             </div>
 
             <div class="form-group my-2">
-                <label for="">Rounding Value</label>
+                <label for="">Rounding Value <span class="text-danger">*</span></label>
                 <input type="number" class="form-control" formControlName="roundingValue">
+                <div class="text-danger"
+                    *ngIf="roundingForm.get('roundingValue').hasError('required') && roundingForm.get('roundingValue').touched">
+                    Rounding Value is required
+                </div>
             </div>
 
             <div class="form-group my-2">
-                <label for="">Which OT type is applicable?</label>
+                <label for="">Which OT type is applicable? <span class="text-danger">*</span></label>
                 <div class="d-flex">
                     <input class="form-check-input checks me-2" value="preOT" type="checkbox"
                         formControlName="OTtypeApplicablePreOT">
-                    <label>Pre OT</label>
+                    <label>Pre OT <span class="text-danger">*</span></label>
                 </div>
 
                 <div *ngIf="roundingForm.get('OTtypeApplicablePreOT').value" class="d-flex my-2">
-                    <div class="w-100 me-2"> <label for="preOTHours" class="me-2">Hours:</label>
+                    <div class="w-100 me-2">
+                        <label for="preOTHours" class="me-2">Hours:</label>
                         <input id="preOTHours" type="number" class="form-control me-2" formControlName="PreOTValueHour"
                             min="0">
+                        <div class="text-danger"
+                            *ngIf="roundingForm.get('PreOTValueHour').hasError('required') && roundingForm.get('PreOTValueHour').touched">
+                            Hours is required
+                        </div>
+                        <div class="text-danger"
+                            *ngIf="roundingForm.get('PreOTValueHour').hasError('min') && roundingForm.get('PreOTValueHour').touched">
+                            Hours should be a positive number
+                        </div>
                     </div>
                     <div class="w-100">
                         <label for="preOTMinutes" class="me-2">Minutes:</label>
                         <input id="preOTMinutes" type="number" class="form-control" formControlName="PreOTValueMinutes"
                             min="0" max="59">
+                        <div class="text-danger"
+                            *ngIf="roundingForm.get('PreOTValueMinutes').hasError('required') && roundingForm.get('PreOTValueMinutes').touched">
+                            Minutes is required
+                        </div>
+                        <div class="text-danger"
+                            *ngIf="roundingForm.get('PreOTValueMinutes').hasError('min') && roundingForm.get('PreOTValueMinutes').touched">
+                            Minutes should be between 0 and 59
+                        </div>
+                        <div class="text-danger"
+                            *ngIf="roundingForm.get('PreOTValueMinutes').hasError('max') && roundingForm.get('PreOTValueMinutes').touched">
+                            Minutes should be between 0 and 59
+                        </div>
                     </div>
                 </div>
 
                 <div class="d-flex">
                     <input class="form-check-input checks me-2" value="postOT" type="checkbox"
                         formControlName="OTtypeApplicablePostOT">
-                    <label>Post OT</label>
+                    <label>Post OT <span class="text-danger">*</span></label>
                 </div>
-
                 <div *ngIf="roundingForm.get('OTtypeApplicablePostOT').value" class="d-flex my-2">
-                    <div class="w-100 me-2"> <label for="postOTHours" class="me-2">Hours:</label>
+                    <div class="w-100 me-2">
+                        <label for="postOTHours" class="me-2">Hours:</label>
                         <input id="postOTHours" type="number" class="form-control me-2"
                             formControlName="PostOTValueHour" min="0">
+                        <div class="text-danger"
+                            *ngIf="roundingForm.get('PostOTValueHour').hasError('required') && roundingForm.get('PostOTValueHour').touched">
+                            Hours is required
+                        </div>
+                        <div class="text-danger"
+                            *ngIf="roundingForm.get('PostOTValueHour').hasError('min') && roundingForm.get('PostOTValueHour').touched">
+                            Hours should be a positive number
+                        </div>
                     </div>
                     <div class="w-100">
                         <label for="postOTMinutes" class="me-2">Minutes:</label>
                         <input id="postOTMinutes" type="number" class="form-control"
                             formControlName="PostOTValueMinutes" min="0" max="59">
+                        <div class="text-danger"
+                            *ngIf="roundingForm.get('PostOTValueMinutes').hasError('required') && roundingForm.get('PostOTValueMinutes').touched">
+                            Minutes is required
+                        </div>
+                        <div class="text-danger"
+                            *ngIf="roundingForm.get('PostOTValueMinutes').hasError('min') && roundingForm.get('PostOTValueMinutes').touched">
+                            Minutes should be between 0 and 59
+                        </div>
+                        <div class="text-danger"
+                            *ngIf="roundingForm.get('PostOTValueMinutes').hasError('max') && roundingForm.get('PostOTValueMinutes').touched">
+                            Minutes should be between 0 and 59
+                        </div>
                     </div>
                 </div>
 
                 <div class="d-flex">
                     <input class="form-check-input checks me-2" type="checkbox"
                         formControlName="OTtypeApplicableWeekOFf" value="week">
-                    <label>Week Off</label>
+                    <label>Week Off <span class="text-danger">*</span></label>
                 </div>
-
+                <div class="text-danger"
+                    *ngIf="roundingForm.hasError('atLeastOneOTTypeSelected') && roundingForm.touched">
+                    At least one OT type should be selected
+                </div>
             </div>
 
             <div class="d-flex border-top mt-2 py-2 justify-content-between">
@@ -286,14 +353,14 @@
             <div class="form-group my-2">
                 <label for="">Please Select Default Rounding Pattern</label>
                 <select id="attendanceTemplate" class="form-control" formControlName="OvertimeInformation"
-                    name="attendanceTemp" class="form-select form-select-sm"
-                    aria-label=".form-select-sm example" (change)="onRoundingPatternChange($event)">
+                    name="attendanceTemp" class="form-select form-select-sm" aria-label=".form-select-sm example"
+                    (change)="onRoundingPatternChange($event)">
                     <option [value]="rounding?.roundingPatternName" *ngFor="let rounding of rounding">
                         {{rounding?.roundingPatternName}}</option>
                 </select>
             </div>
 
-            <div class="form-group my-2"  *ngIf="changeMode == 'Add'">
+            <div class="form-group my-2" *ngIf="changeMode == 'Add'">
                 <label for="">Please Select Base Type</label>
                 <select id="baseType" class="form-control" formControlName="BaseType" name="baseType"
                     class="form-select form-select-sm" aria-label=".form-select-sm example">
@@ -361,11 +428,19 @@
                     <div class="w-100"> <label for="postOTHours" class="me-2">From Hours</label>
                         <input id="postOTHours" type="number" class="form-control me-2" formControlName="FromTimeHour"
                             min="0">
+                        <div class="text-danger"
+                            *ngIf="overTimeForm.get('FromTimeHour').hasError('FromTimeHour') && overTimeForm.get('FromTimeHour').touched">
+                            From Hours should be between 0 and 23
+                        </div>
                     </div>
                     <div class="w-100 mx-2">
                         <label for="postOTMinutes" class="mx-2">From Minutes</label>
                         <input id="postOTMinutes" type="number" class="form-control" formControlName="FromTimeMinutes"
                             min="0" max="59">
+                        <div class="text-danger"
+                            *ngIf="overTimeForm.get('FromTimeMinutes').hasError('minute') && overTimeForm.get('FromTimeMinutes').touched">
+                            From Minutes should be between 0 and 59
+                        </div>
                     </div>
                     <div class="w-100">
                         <label for="">From Meridiem </label>
@@ -380,11 +455,17 @@
                     <div class="w-100"> <label for="postOTHours" class="me-2">To Hours</label>
                         <input id="postOTHours" type="number" class="form-control me-2" formControlName="ToTimeHour"
                             min="0">
+                        <div class="text-danger"
+                            *ngIf="overTimeForm.get('ToTimeHour').hasError('hour') && overTimeForm.get('ToTimeHour').touched">
+                            To Hours should be between 0 and 23
+                        </div>
                     </div>
                     <div class="w-100 mx-2">
                         <label for="postOTMinutes" class="mx-2">To Minutes</label>
-                        <input id="postOTMinutes" type="number" class="form-control" formControlName="ToTimeMinutes"
-                            min="0" max="59">
+                        <div class="text-danger"
+                            *ngIf="overTimeForm.get('ToTimeMinutes').hasError('minute') && overTimeForm.get('ToTimeMinutes').touched">
+                            To Minutes should be between 0 and 59
+                        </div>
                     </div>
                     <div class="w-100">
                         <label for="">To Meridiem </label>

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
@@ -7,6 +7,21 @@ import { AttendanceService } from 'src/app/_services/attendance.service';
 import { ExportService } from 'src/app/_services/export.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 
+export function timeValidator(controlName: string): ValidatorFn {
+  return (control: FormControl) => {
+    const value = control.value;
+    if (controlName === 'FromTimeHour' || controlName === 'ToTimeHour') {
+      if (value < 0 || value > 23) {
+        return { hour: true };
+      }
+    } else if (controlName === 'FromTimeMinutes' || controlName === 'ToTimeMinutes') {
+      if (value < 0 || value > 59) {
+        return { minute: true };
+      }
+    }
+    return null;
+  };
+}
 @Component({
   selector: 'app-overtime',
   templateUrl: './overtime.component.html',
@@ -39,20 +54,20 @@ export class OvertimeComponent {
     private exportService: ExportService
   ) {
     this.roundingForm = this.fb.group({
-      roundingPatternName: [''],
-      roundingPatternCode: [''],
-      shift: [''],
-      roundingPatternMethod: [''],
-      roundingPattern: [''],
-      roundingValue: [0],
+      roundingPatternName: ['', Validators.required],
+      roundingPatternCode: ['', Validators.required],
+      shift: ['', Validators.required],
+      roundingPatternMethod: ['', Validators.required],
+      roundingPattern: ['', Validators.required],
+      roundingValue: [0, Validators.required],
       OTtypeApplicable: [''],
-      OTtypeApplicablePreOT: [''],
-      PreOTValueMinutes: [''],
-      PreOTValueHour: [''],
-      OTtypeApplicablePostOT: [''],
-      PostOTValueHour: [''],
-      PostOTValueMinutes: [''],
-      OTtypeApplicableWeekOFf: ['']
+      OTtypeApplicablePreOT: ['', Validators.required],
+      PreOTValueMinutes: ['0', Validators.required],
+      PreOTValueHour: ['0', Validators.required],
+      OTtypeApplicablePostOT: ['', Validators.required],
+      PostOTValueHour: ['0', Validators.required],
+      PostOTValueMinutes: ['0', Validators.required],
+      OTtypeApplicableWeekOFf: ['', Validators.required]
     });
     this.roundingForm.get('OTtypeApplicablePreOT').valueChanges.subscribe(value => {
       if (value) {
@@ -72,18 +87,17 @@ export class OvertimeComponent {
         this.roundingForm.get('PostOTValueMinutes').disable();
       }
     });
-
     this.overTimeForm = this.fb.group({
-      Name: [''],
-      OvertimeInformation: [''],
-      BaseType: [''],
+      Name: ['', Validators.required],
+      OvertimeInformation: ['', Validators.required],
+      BaseType: ['', Validators.required],
       AttandanceShift: [''],
-      FromTimeHour: [''],
-      FromTimeMinutes: [''],
-      FromTimeTT: [''],
-      ToTimeTT: [''],
-      ToTimeHour: [''],
-      ToTimeMinutes: [''],
+      FromTimeHour: ['', [Validators.required, timeValidator('FromTimeHour')]],
+      FromTimeMinutes: ['', [Validators.required, timeValidator('FromTimeMinutes')]],
+      FromTimeTT: ['', Validators.required],
+      ToTimeTT: ['', Validators.required],
+      ToTimeHour: ['', [Validators.required, timeValidator('ToTimeHour')]],
+      ToTimeMinutes: ['', [Validators.required, timeValidator('ToTimeMinutes')]],
       CutomMultiplier: [0],
       CalculationType: ['']
     })
@@ -175,26 +189,57 @@ export class OvertimeComponent {
   }
 
   onSubmission() {
-    if (this.changeMode == 'Add') {
-      this.attendanceService.addRounding(this.roundingForm.value).subscribe((res: any) => {
-        this.loadRecords();
-        this.roundingForm.reset();
-        this.toast.success('Rounding Information Created', 'Successfully')
-      },
-        err => {
-          this.toast.error('Rounding Information can not be created', 'Error')
-        })
+    let payload = {
+      roundingPatternName: this.roundingForm.value.roundingPatternName,
+      roundingPatternCode: this.roundingForm.value.roundingPatternCode,
+      shift: this.roundingForm.value.shift,
+      roundingPatternMethod: this.roundingForm.value.roundingPatternMethod,
+      roundingPattern: this.roundingForm.value.roundingPattern,
+      roundingValue: this.roundingForm.value.roundingValue,
+      OTtypeApplicable: this.roundingForm.value.OTtypeApplicable,
+      OTtypeApplicablePreOT: this.roundingForm.value.OTtypeApplicablePreOT,
+      PreOTValueMinutes: this.roundingForm.value.PreOTValueMinutes,
+      PreOTValueHour: this.roundingForm.value.PreOTValueHour,
+      OTtypeApplicablePostOT: this.roundingForm.value.OTtypeApplicablePostOT,
+      PostOTValueHour: this.roundingForm.value.PostOTValueHour,
+      PostOTValueMinutes: this.roundingForm.value.PostOTValueMinutes,
+      OTtypeApplicableWeekOFf: this.roundingForm.value.OTtypeApplicableWeekOFf
+    }
+    console.log(payload);
+    if (this.roundingForm.valid) {
+      if (this.changeMode == 'Add') {
+        this.attendanceService.addRounding(payload).subscribe((res: any) => {
+          this.loadRecords();
+          this.roundingForm.reset();
+          this.toast.success('Rounding Information Created', 'Successfully')
+        },
+          err => {
+            this.toast.error('Rounding Information can not be created', 'Error')
+          })
+      }
+      else {
+        this.attendanceService.updateRounding(this.selectedRecord._id, payload).subscribe((res: any) => {
+          this.loadRecords();
+          this.roundingForm.reset();
+          this.changeMode = 'Add';
+          this.toast.success('Rounding Information Updated', 'Successfully')
+        },
+          err => {
+            this.toast.error('Rounding Information can not be Updated', 'Error')
+          })
+      }
     }
     else {
-      this.attendanceService.updateRounding(this.selectedRecord._id, this.roundingForm.value).subscribe((res: any) => {
-        this.loadRecords();
-        this.roundingForm.reset();
-        this.toast.success('Rounding Information Updated', 'Successfully')
-      },
-        err => {
-          this.toast.error('Rounding Information can not be Updated', 'Error')
-        })
+      this.markFormGroupTouched(this.roundingForm);
     }
+  }
+  markFormGroupTouched(formGroup: FormGroup) {
+    Object.values(formGroup.controls).forEach(control => {
+      control.markAsTouched();
+      if (control instanceof FormGroup) {
+        this.markFormGroupTouched(control);
+      }
+    });
   }
 
   onRoundingPatternChange(event) {
@@ -239,12 +284,8 @@ export class OvertimeComponent {
     this.exportService.exportToCSV('Overtime-Information', 'Overtime-Information', dataToExport);
   }
 
-
-
-
   onOverTimeSubmission() {
     if (!this.isEdit) {
-      console.log(this.overTimeForm.value)
       this.attendanceService.addOverTime(this.overTimeForm.value).subscribe((res: any) => {
         this.loadRecords();
         this.overTimeForm.reset();

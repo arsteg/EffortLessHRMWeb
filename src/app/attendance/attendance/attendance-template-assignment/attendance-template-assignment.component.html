@@ -3,12 +3,11 @@
         <div class="py-2 px-0 bg-white tableContainer">
 
             <div class="d-flex justify-content-between align-items-center mb-2 px-3">
-                <p class="mb-0">({{attendanceTemplateAssignment?.length}}) Records Found</p>
                 <div class="d-flex align-items-center">
                     <span class="bi bi-search searchIcon"></span>
 
-                    <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText" name="searchText"
-                        aria-label="default input example">
+                    <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
+                        name="searchText" aria-label="default input example">
 
                     <button mat-raised-button (click)="open(addModal); changeMode = 'Update'; isEdit= false;"
                         class="addBtn rounded-pill mx-3">Assign
@@ -19,11 +18,12 @@
                         Download</button>
 
                 </div>
+
+                <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
+                    [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
+                    (recordsPerPageChange)="onRecordsPerPageChange($event)">
+                </app-pagination>
             </div>
-            <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
-            [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
-            (recordsPerPageChange)="onRecordsPerPageChange($event)">
-            </app-pagination>
             <table class="px-4">
                 <thead>
                     <tr>
@@ -36,15 +36,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr
-                        *ngFor="let template of attendanceTemplateAssignment| search: searchText">
+                    <tr *ngFor="let template of attendanceTemplateAssignment| search: searchText">
                         <td>{{getUser(template?.employee) | titlecase}}</td>
                         <td>{{getTemplate(template?.attandanceTemplate) | titlecase}}</td>
                         <td>{{getUser(template?.primaryApprover) | titlecase}}</td>
                         <td>{{getUser(template?.secondaryApprover) | titlecase}}</td>
                         <td>{{template?.effectiveFrom | date: 'mediumDate'}}</td>
                         <td class="text-center">
-                            <button class="actions" mat-mini-fab  matTooltip="Edit" matTooltipPosition="before" (click)="open(editModal);
+                            <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before" (click)="open(editModal);
                                 isEdit= true;
                                 selectedTemplate=template;
                                 setFormValues(template)" aria-label="Example icon button with a menu icon">
@@ -59,7 +58,7 @@
                     </tr>
                 </tbody>
             </table>
-           
+
         </div>
     </div>
 </div>
@@ -78,17 +77,21 @@
     <form [formGroup]="attendanceTemplateAssignmentForm" (ngSubmit)="onCreate()">
 
         <div class="form-group">
-            <label for="">Select An Employee for Template Assignment</label>
+            <label for="">Select An Employee for Template Assignment <span class="text-danger">*</span></label>
             <select id="member" name="member" class="form-control" [attr.disabled]="changeMode === 'Update'"
                 formControlName="employee" class="form-select form-select-sm" aria-label="form-select-sm example">
                 <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
                     {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
                 </option>
             </select>
+            <div class="text-danger"
+                *ngIf="attendanceTemplateAssignmentForm.get('employee').hasError('required') && attendanceTemplateAssignmentForm.get('employee').touched">
+                Employee is required!
+            </div>
         </div>
 
         <div class="form-group my-2">
-            <label for="">Select Template</label>
+            <label for="">Select Template <span class="text-danger">*</span></label>
             <select id="attendanceTemplate" class="form-control" [attr.disabled]="isEdit === true"
                 formControlName="attandanceTemplate" name="attendanceTemp" class="form-select form-select-sm"
                 aria-label=".form-select-sm example" (change)="onTemplateSelectionChange($event)">
@@ -96,35 +99,51 @@
                     {{template?.label}}
                 </option>
             </select>
+            <div class="text-danger"
+                *ngIf="attendanceTemplateAssignmentForm.get('attandanceTemplate').hasError('required') && attendanceTemplateAssignmentForm.get('attandanceTemplate').touched">
+                Attendance Template is required!
+            </div>
         </div>
 
 
         <div class="form-group my-2">
-            <label for="">Select an Effective Date</label>
+            <label for="">Select an Effective Date <span class="text-danger">*</span></label>
             <div class=" col-12 form-group mb-3">
                 <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
                     [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="effectiveFrom" />
+                <div class="text-danger"
+                    *ngIf="attendanceTemplateAssignmentForm.get('effectiveFrom').hasError('required') && attendanceTemplateAssignmentForm.get('effectiveFrom').touched">
+                    Effective Date is required!
+                </div>
             </div>
         </div>
 
         <div class="form-group my-2">
-            <label for="">Choose Primary Approver</label>
+            <label for="">Choose Primary Approver <span class="text-danger">*</span></label>
             <select id="member" name="primary" class="form-control" formControlName="primaryApprover"
                 class="form-select form-select-sm" aria-label=".form-select-sm example">
                 <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
                     {{assignee?.firstName | titlecase}} {{assignee?.lastName | titlecase}}
                 </option>
             </select>
+            <div class="text-danger"
+                *ngIf="attendanceTemplateAssignmentForm.get('primaryApprover').hasError('required') && attendanceTemplateAssignmentForm.get('primaryApprover').touched">
+                Primary Approver is required!
+            </div>
         </div>
 
         <div class="form-group my-2">
-            <label for="">Choose Secondary Approver</label>
+            <label for="">Choose Secondary Approver <span class="text-danger">*</span></label>
             <select id="member" name="secondary" class="form-control" formControlName="secondaryApprover"
                 class="form-select form-select-sm" aria-label="form-select-sm example">
                 <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
                     {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
                 </option>
             </select>
+            <div class="text-danger"
+                *ngIf="attendanceTemplateAssignmentForm.get('secondaryApprover').hasError('required') && attendanceTemplateAssignmentForm.get('secondaryApprover').touched">
+                Secondary Approver is required!
+            </div>
         </div>
         <div class="d-flex border-top mt-2 py-2 justify-content-between">
             <button mat-raised-button type="reset">Cancel</button>
@@ -157,6 +176,10 @@
                         {{assignee?.firstName | titlecase}} {{assignee?.lastName | titlecase}}
                     </option>
                 </select>
+                <div class="text-danger"
+                    *ngIf="updateTemplateAssignForm.get('primaryApprovar').hasError('required') && updateTemplateAssignForm.get('primaryApprovar').touched">
+                    Primary Approver is required!
+                </div>
             </div>
 
             <div class="form-group my-2">
@@ -167,6 +190,10 @@
                         {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
                     </option>
                 </select>
+                <div class="text-danger"
+                    *ngIf="updateTemplateAssignForm.get('secondaryApprovar').hasError('required') && updateTemplateAssignForm.get('secondaryApprovar').touched">
+                    Secondary Approver is required!
+                </div>
             </div>
         </div>
 
@@ -180,6 +207,10 @@
                         {{assignee?.firstName | titlecase}} {{assignee?.lastName | titlecase}}
                     </option>
                 </select>
+                <div class="text-danger"
+                    *ngIf="updateTemplateAssignForm.get('primaryApprovar').hasError('required') && updateTemplateAssignForm.get('primaryApprovar').touched">
+                    Primary Approver is required!
+                </div>
             </div>
         </div>
 
@@ -192,6 +223,10 @@
                         {{assignee?.firstName | titlecase}} {{assignee?.lastName | titlecase}}
                     </option>
                 </select>
+                <div class="text-danger"
+                    *ngIf="updateTemplateAssignForm.get('primaryApprovar').hasError('required') && updateTemplateAssignForm.get('primaryApprovar').touched">
+                    Primary Approver is required!
+                </div>
             </div>
 
             <div class="form-group my-2">
@@ -202,6 +237,10 @@
                         {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
                     </option>
                 </select>
+                <div class="text-danger"
+                    *ngIf="updateTemplateAssignForm.get('secondaryApprovar').hasError('required') && updateTemplateAssignForm.get('secondaryApprovar').touched">
+                    Secondary Approver is required!
+                </div>
             </div>
         </div>
 

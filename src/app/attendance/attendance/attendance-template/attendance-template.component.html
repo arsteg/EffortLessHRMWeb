@@ -3,12 +3,11 @@
         <div class="py-2 px-0 bg-white tableContainer">
 
             <div class="d-flex justify-content-between align-items-center mb-2 px-3">
-                <p class="mb-0">({{attendanceTemplate?.length}}) Records Found</p>
                 <div class="d-flex align-items-center">
                     <span class="bi bi-search searchIcon"></span>
 
-                    <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText" name="searchText"
-                        aria-label="default input example">
+                    <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
+                        name="searchText" aria-label="default input example">
 
                     <button mat-raised-button (click)="open(addModal); isEdit= false; step=1"
                         class="addBtn rounded-pill mx-3">Add
@@ -17,13 +16,13 @@
                     <button class="submenuTab active  rounded-pill" (click)="exportToCsv()"> <i
                             class="bi bi-download downloadBtn pe-2"></i>
                         Download</button>
-
                 </div>
-            </div>
+            
             <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
-            [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
-            (recordsPerPageChange)="onRecordsPerPageChange($event)">
+                [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
+                (recordsPerPageChange)="onRecordsPerPageChange($event)">
             </app-pagination>
+        </div>
             <table class="px-4">
                 <thead>
                     <tr>
@@ -33,12 +32,12 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr
-                        *ngFor="let template of attendanceTemplate| search: searchText">
+                    <tr *ngFor="let template of attendanceTemplate| search: searchText">
                         <td>{{template?.label}}</td>
                         <td>{{ templateAssignmentCount[template?._id] || 0 }}</td>
                         <td class="text-center">
-                            <button class="actions" mat-mini-fab  matTooltip="Edit" matTooltipPosition="before" (click)="changeMode='Next';
+                            <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before" (click)="changeMode='Next';
+                            step = 1;
                                 open(addModal);
                                 isEdit= true;
                                 selectedTemplateId=template._id;
@@ -47,8 +46,7 @@
                             </button>
 
                             <button class="actions ms-2" mat-mini-fab title="Delete"
-                                aria-label="Example icon button with a menu icon"
-                                (click)="deleteDialog(template?._id)">
+                                aria-label="Example icon button with a menu icon" (click)="deleteDialog(template?._id)">
                                 <i class="bi bi-trash"></i>
                             </button>
 
@@ -57,7 +55,7 @@
                     </tr>
                 </tbody>
             </table>
-            
+
         </div>
     </div>
 </div>

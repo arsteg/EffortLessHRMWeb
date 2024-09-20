@@ -46,7 +46,9 @@ export class OnDutyTemplateAssignmentComponent {
       onDutyTemplate: [''],
       effectiveFrom: [],
       primaryApprovar: [null],
-      secondaryApprovar: [null]
+      secondaryApprovar: [null],
+      skip: [''],
+      next: ['']
     })
   }
 

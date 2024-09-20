@@ -217,8 +217,9 @@ export class AttendanceRegularizationComponent {
     this.regularisationForm.value.restrictLocationDetails = []
     if (!this.isEdit) {
       this.attendanceService.addRegularizations(this.regularisationForm.value).subscribe((res: any) => {
-        this.getRegularizations();
-        this.toast.success('Attendance Regularization Created', 'Successfully!')
+        this.expenseTemplateReportRefreshed.emit(res.data);
+        this.toast.success('Attendance Regularization Created', 'Successfully!');
+        this.closeModal();
       },
         err => {
           this.toast.error('Attendance Regularization can not be Created', 'Error!')
@@ -229,12 +230,12 @@ export class AttendanceRegularizationComponent {
       this.attendanceService.getRegularizationByTemplateId(templateId).subscribe((res: any) => {
         const data = res.data;
         this.attendanceService.updateRegularizations(data._id, this.regularisationForm.value).subscribe((res: any) => {
-          this.toast.success('Attendance Regularization Updated', 'Successfully!')
           this.expenseTemplateReportRefreshed.emit(res.data);
+          this.toast.success('Attendance Regularization Updated', 'Successfully!');
+          this.closeModal();
         },
           err => {
             this.toast.error('Attendance Regularization can not be updated', 'Error!')
-
           });
       })
     }
@@ -292,10 +293,6 @@ export class AttendanceRegularizationComponent {
   move(event: google.maps.MapMouseEvent) {
     if (event.latLng != null) this.display = event.latLng.toJSON();
   }
-
-  // closeModal() {
-  //   this.closeMap.emit(true);
-  // }
 
   onSubmissionMap() {
     this.locationForm.value.Latitude = this.display.lat,
