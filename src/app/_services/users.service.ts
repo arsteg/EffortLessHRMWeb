@@ -201,6 +201,10 @@ export class UserService {
     return this.http.get<any>(`${environment.apiUrlDotNet}/users/salary-details/${id}`, this.httpOptions);
   }
 
+  deleteSalaryDetails(id: string): Observable<any> {
+    return this.http.delete<any>(`${environment.apiUrlDotNet}/users/salary-details/${id}`, this.httpOptions);
+  }
+  
   // statutory details
   addStatutoryDetails(payload: any): Observable<any> {
     return this.http.post<any>(`${environment.apiUrlDotNet}/users/employee-salutatory-details`, payload, this.httpOptions);

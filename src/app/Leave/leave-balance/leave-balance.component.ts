@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LeaveService } from 'src/app/_services/leave.service';
 import { TimeLogService } from 'src/app/_services/timeLogService';
@@ -22,8 +22,24 @@ export class LeaveBalanceComponent {
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   users: any = [];
   user: any;
-  defaultCatSkip="0";
-  defaultCatNext="100000";
+  defaultCatSkip = "0";
+  defaultCatNext = "100000";
+  years = []; months = [
+    'JANUARY',
+    'FEBRUARY',
+    'MARCH',
+    'APRIL',
+    'MAY',
+    'JUNE',
+    'JULY',
+    'AUGUST',
+    'SEPTEMBER',
+    'OCTOBER',
+    'NOVEMBER',
+    'DECEMBER'
+  ];
+
+
 
   constructor(private leaveService: LeaveService,
     private fb: FormBuilder,
@@ -44,11 +60,31 @@ export class LeaveBalanceComponent {
     this.populateMembers();
     this.getCategoriesByCurrentUser();
 
-    this.leaveBalanceForm.get('category').valueChanges.subscribe(employee => {
-      this.getLeaveBalance();
+    const currentYear = new Date().getFullYear();
+    const previousYear = currentYear - 1;
+    const nextYear = currentYear + 1;
+
+    this.years = [
+      { label: `JANUARY_${previousYear}-DECEMBER_${previousYear}` },
+      { label: `JANUARY_${currentYear}-DECEMBER_${currentYear}` },
+      { label: `JANUARY_${nextYear}-DECEMBER_${nextYear}` },
+    ];
+
+    this.leaveBalanceForm.valueChanges.subscribe(() => {
+      if (this.leaveBalanceForm.valid) {
+        this.getLeaveBalance();
+      }
     });
   }
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['leaveBalanceForm'] && this.leaveBalanceForm.valid) {
+      this.getLeaveBalance();
+    }
+  }
 
+  getMonthName(monthNumber: number): string {
+    return this.months[monthNumber - 1];
+  }
 
   populateMembers() {
     this.users = [];
@@ -79,8 +115,10 @@ export class LeaveBalanceComponent {
     this.member = JSON.parse(member.value);
   }
 
+  getLeaveBalanceOfAllUsers() {
+    // levae balance of all users
+  }
   getLeaveBalance() {
-    this.leaveBalanceForm.get('user').setValue(this.member);
     if (this.leaveBalanceForm.valid) {
       let payload = {
         user: this.leaveBalanceForm.value.user,
@@ -112,7 +150,7 @@ export class LeaveBalanceComponent {
   selecteduser(user) {
     this.member = user;
     this.leaveService.getLeaveCategoriesByUserv1(user).subscribe((res: any) => {
-      if(res.status == 'success'){
+      if (res.status == 'success') {
         this.leaveCategories = res.data;
       }
     })
@@ -121,7 +159,7 @@ export class LeaveBalanceComponent {
   getCategoriesByUser() {
     this.member = this.selectedUser;
     this.leaveService.getLeaveCategoriesByUserv1(this.selectedUser).subscribe((res: any) => {
-      if(res.status == 'success'){
+      if (res.status == 'success') {
         this.leaveCategories = res.data;
       }
     })
@@ -131,7 +169,7 @@ export class LeaveBalanceComponent {
     const user = this.currentUser?.id;
     this.member = user;
     this.leaveService.getLeaveCategoriesByUserv1(user).subscribe((res: any) => {
-      if(res.status == 'success'){
+      if (res.status == 'success') {
         this.leaveCategories = res.data;
       }
     })

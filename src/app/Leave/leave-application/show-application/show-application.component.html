@@ -48,7 +48,7 @@
         <tbody>
             <tr
                 *ngFor="let leave of leaveApplication  | search: searchText">
-                <td *ngIf="portalView == 'admin'|| portalView== 'user' && tab == 5">{{getUser(leave?.employee)}}</td>
+                <td *ngIf="portalView == 'admin'|| portalView== 'user' && tab == 5">{{getUser(leave?.employee) | titlecase}}</td>
                 <td>{{getCategory(leave?.leaveCategory)}}</td>
                 <td>{{leave?.startDate | date: 'mediumDate'}}</td>
                 <td>{{leave?.endDate | date: 'mediumDate'}}</td>

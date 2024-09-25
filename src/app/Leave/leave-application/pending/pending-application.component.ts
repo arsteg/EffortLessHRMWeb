@@ -18,7 +18,6 @@ export class PendingApplicationComponent {
  @Input() selectedTab: number;
 
  ngOnInit(){
-  console.log(this.selectedTab)
  }
 
 }

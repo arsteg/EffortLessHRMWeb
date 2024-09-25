@@ -44,7 +44,6 @@ export class ShowShortLeaveComponent {
   }
 
   getShortLeaves() {
-    debugger;
     const requestBody = {
       "skip": ((this.currentPage - 1) * this.recordsPerPage).toString(),
       "next": this.recordsPerPage.toString(),

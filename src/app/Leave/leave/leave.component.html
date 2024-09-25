@@ -20,19 +20,19 @@
 
                 </div>
 
-                <div *ngIf="selectedTab === 1" class="tab-content">
+                <div *ngIf="selectedTab === 1" class="tab-content pt-0 mt-0">
                     <app-leave-Setting></app-leave-Setting>
                 </div>
-                <div *ngIf="selectedTab === 2" class="tab-content">
+                <div *ngIf="selectedTab === 2" class="tab-content  pt-0 mt-0">
                     <app-leave-grant></app-leave-grant>
                 </div>
-                <div *ngIf="selectedTab === 3" class="tab-content">
+                <div *ngIf="selectedTab === 3" class="tab-content pt-0 mt-0">
                     <app-leave-balance></app-leave-balance>
                 </div>
-                <div *ngIf="selectedTab === 4" class="tab-content">
+                <div *ngIf="selectedTab === 4" class="tab-content pt-0 mt-0">
                     <app-leave-Application></app-leave-Application>
                 </div>
-                <div *ngIf="selectedTab === 5" class="tab-content">
+                <div *ngIf="selectedTab === 5" class="tab-content pt-0 mt-0">
                     <app-short-leave></app-short-leave>
                 </div>
             </div>
@@ -65,28 +65,28 @@
 
                 </div>
 
-                <div *ngIf="selectedTab === 1" class="tab-content">
+                <div *ngIf="selectedTab === 1" class="tab-content pt-0 mt-0">
                     <app-leave-Application [tab]="selectedTab"></app-leave-Application>
                 </div>
-                <div *ngIf="selectedTab === 2 && enableDisableApprovalButton" class="tab-content">
+                <div *ngIf="selectedTab === 2 && enableDisableApprovalButton" class="tab-content pt-0 mt-0">
                     <app-leave-balance [tab]="selectedTab"></app-leave-balance>
                 </div>
-                <div *ngIf="selectedTab === 3" class="tab-content">
+                <div *ngIf="selectedTab === 3" class="tab-content pt-0 mt-0">
                     <app-leave-balance [tab]="selectedTab"></app-leave-balance>
                 </div>
-                <div *ngIf="selectedTab === 4" class="tab-content">
+                <div *ngIf="selectedTab === 4" class="tab-content pt-0 mt-0">
                     <app-leave-grant [tab]="selectedTab"></app-leave-grant>
                 </div>
-                <div *ngIf="selectedTab === 5 && enableDisableApprovalButton" class="tab-content">
+                <div *ngIf="selectedTab === 5 && enableDisableApprovalButton" class="tab-content pt-0 mt-0">
                     <app-leave-Application [tab]="selectedTab"></app-leave-Application>
                 </div>
-                <div *ngIf="selectedTab === 6 && enableDisableApprovalButton" class="tab-content">
+                <div *ngIf="selectedTab === 6 && enableDisableApprovalButton" class="tab-content pt-0 mt-0">
                     <app-short-leave [tab]="selectedTab"></app-short-leave>
                 </div>
-                <div *ngIf="selectedTab === 7 && enableDisableApprovalButton" class="tab-content">
+                <div *ngIf="selectedTab === 7 && enableDisableApprovalButton" class="tab-content pt-0 mt-0">
                     <app-leave-grant [tab]="selectedTab"></app-leave-grant>
                 </div>
-                <div *ngIf="selectedTab === 8" class="tab-content">
+                <div *ngIf="selectedTab === 8" class="tab-content pt-0 mt-0">
                     <app-general></app-general>
                 </div>
             </div>

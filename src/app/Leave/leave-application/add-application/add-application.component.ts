@@ -2,9 +2,7 @@ import { Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angu
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LeaveService } from 'src/app/_services/leave.service';
 import { CommonService } from 'src/app/_services/common.Service';
-import * as moment from 'moment';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
-import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { TimeLogService } from 'src/app/_services/timeLogService';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { ToastrService } from 'ngx-toastr';
@@ -31,9 +29,8 @@ export class AddApplicationComponent {
   members: any[] = [];
   member: any;
   @Input() tab: number;
-  defaultCatSkip="0";
-  defaultCatNext="100000";
-  bsConfig: Partial<BsDatepickerConfig>;
+  defaultCatSkip = "0";
+  defaultCatNext = "100000";
   bsConfigEnd: Partial<BsDatepickerConfig>;
   minStartDate: Date;
   maxStartDate: Date;
@@ -49,13 +46,18 @@ export class AddApplicationComponent {
   holidayCount: number;
   leaveDocumentUpload: boolean = false;
   selectedFile: File | null = null;
+  bsConfig = {
+    dateInputFormat: 'DD-MM-YYYY',
+    showWeekNumbers: false
+  };
+  isSubmitClicked = false;
 
   constructor(private fb: FormBuilder,
     private commonService: CommonService,
     private leaveService: LeaveService,
     private timeLogService: TimeLogService,
     private toast: ToastrService,
-    private holidayService: HolidaysService
+    private holidayService: HolidaysService,
   ) {
     this.leaveApplication = this.fb.group({
       employee: ['', Validators.required],
@@ -67,21 +69,10 @@ export class AddApplicationComponent {
       comment: [''],
       status: [''],
       isHalfDayOption: [false],
-      haldDays: this.fb.array([]),
+      halfDays: this.fb.array([]),
       leaveApplicationAttachments: this.fb.array([])
     });
 
-    this.bsConfig = {
-      dateInputFormat: 'YYYY-MM-DD',
-      minDate: this.minStartDate,
-      maxDate: this.maxStartDate
-    };
-
-    this.bsConfigEnd = {
-      dateInputFormat: 'YYYY-MM-DD',
-      minDate: this.minEndDate,
-      maxDate: this.maxEndDate
-    };
   }
 
   createAttachment(data: any = {}): FormGroup {
@@ -101,36 +92,62 @@ export class AddApplicationComponent {
     this.getleaveCatgeoriesByUser();
     this.populateMembers();
 
-    this.leaveApplication.get('startDate').valueChanges.subscribe(selectedDate => {
-      this.onStartDateChange(selectedDate);
-      this.getHoliydaysCountBetweenAppliedLeave();
-    });
-    this.leaveApplication.get('endDate').valueChanges.subscribe(selectedDate => {
-      this.onEndDateChange(selectedDate);
-      this.getHoliydaysCountBetweenAppliedLeave();
-    });
     this.leaveApplication.get('leaveCategory').valueChanges.subscribe(leaveCategory => {
-      this.tempLeaveCategory = this.leaveCategories.find(l=>l.leaveCategory._id === leaveCategory);
-      console.log(this.tempLeaveCategory);
+      this.tempLeaveCategory = this.leaveCategories.find(l => l.leaveCategory._id === leaveCategory);
       this.leaveDocumentUpload = this.tempLeaveCategory.leaveCategory.isDocumentRequired
       this.updateValidators();
       this.handleLeaveCategoryChange();
     });
     this.leaveApplication.get('employee').valueChanges.subscribe(employee => {
-      this.leaveService.getLeaveCategoriesByUserv1(employee.id).subscribe((res: any) => {
+      this.leaveService.getLeaveCategoriesByUserv1(employee).subscribe((res: any) => {
         this.leaveCategories = res.data;
       });
     });
     this.getattendanceTemplatesByUser();
+
+    this.leaveApplication.get('employee')?.valueChanges.subscribe(() => this.checkForDuplicateLeave());
+    this.leaveApplication.get('leaveCategory')?.valueChanges.subscribe(() => this.checkForDuplicateLeave());
+    this.leaveApplication.get('startDate')?.valueChanges.subscribe(() => this.checkForDuplicateLeave());
+    this.leaveApplication.get('endDate')?.valueChanges.subscribe(() => this.checkForDuplicateLeave());
   }
 
   ngOnChanges() {
     this.handleLeaveCategoryChange();
   }
+  checkForDuplicateLeave() {
+    const employeeId = this.leaveApplication.get('employee')?.value;
+    const leaveCategory = this.leaveApplication.get('leaveCategory')?.value;
+    const startDate = this.leaveApplication.get('startDate')?.value;
+    const endDate = this.leaveApplication.get('endDate')?.value;
+
+    if (!employeeId || !leaveCategory || !startDate || !endDate) {
+      return;
+    }
+
+    let payload = { skip: '', next: '' };
+    this.leaveService.getLeaveApplicationbyUser(payload, employeeId).subscribe((res: any) => {
+      this.existingLeaves = res.data;
+      const formattedStartDate = this.stripTime(new Date(startDate));
+      const formattedEndDate = this.stripTime(new Date(endDate));
+
+      const isDuplicate = this.existingLeaves.some((leave: any) =>
+        leave.employee === employeeId &&
+        leave.leaveCategory === leaveCategory &&
+        this.stripTime(new Date(leave.startDate)) === formattedStartDate &&
+        this.stripTime(new Date(leave.endDate)) === formattedEndDate
+      );
+
+      if (isDuplicate) {
+        this.leaveApplication.setErrors({ duplicateLeave: true });
+      } else {
+        this.leaveApplication.setErrors(null);
+      }
+    });
+  }
+  
 
   handleLeaveCategoryChange() {
     if (!this.tempLeaveCategory || !this.tab) {
-      // Exit if tempLeaveCategory or tab is not set yet
       return;
     }
 
@@ -147,14 +164,24 @@ export class AddApplicationComponent {
   }
 
   addHalfDayEntry() {
-    this.haldDays.push(this.fb.group({
+    this.halfDays.push(this.fb.group({
       date: [''],
       dayHalf: ['']
     }));
   }
 
-  get haldDays() {
-    return this.leaveApplication.get('haldDays') as FormArray;
+  get halfDays() {
+    return this.leaveApplication.get('halfDays') as FormArray;
+  }
+
+  getAllLeaveCategories() {
+    let payload = {
+      skip: '',
+      next: ''
+    }
+    this.leaveService.getAllLeaveCategories(payload).subscribe((res: any) => {
+      this.leaveCategories = res.data;
+    })
   }
 
   getleaveCatgeoriesByUser() {
@@ -163,9 +190,9 @@ export class AddApplicationComponent {
     });
   }
 
-  getattendanceTemplatesByUser(){
+  getattendanceTemplatesByUser() {
     this.leaveService.getattendanceTemplatesByUser(this.currentUser.id).subscribe((res: any) => {
-      if(res.status == "success"){
+      if (res.status == "success") {
         let attandanceData = res.data;
         attandanceData.weeklyOfDays.forEach(day => {
           if (day != "false") {
@@ -205,80 +232,72 @@ export class AddApplicationComponent {
     this.member = JSON.parse(member.value);
   }
 
-  onSubmission() {
-    if(this.leaveApplication.invalid){
-      this.toast.error('Please enter valid data');
+  existingLeaves: any[] = [];
+
+  getLeaveApplicationByUser() {
+    let payload = {
+      skip: '',
+      next: ''
     }
-
-    if (this.leaveApplication.valid) {
-      let finalLeaveApplied = 0;
-      this.leaveApplication.value.status = 'Pending';
-
-      console.log(this.leaveApplication.value);
-
-      //Check duplicate leave applied
-      const dateArray = this.getDatesInRange(
-        new Date(this.leaveApplication.get('startDate').value),
-        new Date(this.leaveApplication.get('endDate').value));
-      for (const date of dateArray) {
-        const applyDate = new Date(date);
-        if(this.checkDuplicateLeaveApplied(applyDate)){
-          this.toast.error(`Already a leave applied with ${new Date(applyDate.getFullYear(), applyDate.getMonth(), applyDate.getDate())} date`, 'Error!');
-          return;
-        }
-      }
-
-      // Check for submit the leave before days
-      const submitBefore = this.tempLeaveCategory.leaveCategory.submitBefore;
-      const calculateBeforeCount = this.calculateDaysDifference(new Date(this.leaveApplication.get('startDate').value));
-      if (submitBefore && submitBefore > 0 && calculateBeforeCount < submitBefore) {
-        this.toast.error(`You should apply this leave before ${submitBefore} days`, 'Error!');
-        return;
-      }
-
-      // check for number of times leave applied for this category
-      if(this.tempLeaveCategory.limitNumberOfTimesApply){
-        if(this.tempLeaveCategory.maximumNumbersEmployeeCanApply <= this.numberOfLeaveAppliedForSelectedCategory){
-          this.toast.error('You have crossed maximum limit with this leave category.', 'Error!');
-          return;
-        }
-      }
-
-      if(!this.tempLeaveCategory.isAnnualHolidayLeavePartOfNumberOfDaysTaken){
-        finalLeaveApplied = this.totalLeaveApplied - this.holidayCount;
-      }
-
-      if(!this.tempLeaveCategory.isWeeklyOffLeavePartOfNumberOfDaysTaken){
-        finalLeaveApplied = finalLeaveApplied - this.weekOffCount;
-      }
-
-      // Check for minimum number of consecutive leave days allowed
-      const minConsecutiveLeaveDays = this.tempLeaveCategory.leaveCategory.minimumNumberOfDaysAllowed;
-      if (minConsecutiveLeaveDays && minConsecutiveLeaveDays > 0 && finalLeaveApplied > minConsecutiveLeaveDays) {
-        this.toast.error(`Please apply minumum ${this.tempLeaveCategory.leaveCategory.minimumNumberOfDaysAllowed} day leave`, 'Error!');
-        return;
-      }
-
-      // Check for maximum number of consecutive leave days allowed
-      const maxConsecutiveLeaveDays = this.tempLeaveCategory.leaveCategory.maximumNumberConsecutiveLeaveDaysAllowed;
-      if (maxConsecutiveLeaveDays && maxConsecutiveLeaveDays > 0 && finalLeaveApplied > maxConsecutiveLeaveDays) {
-        this.toast.error(`You can't apply more than ${maxConsecutiveLeaveDays} consecutive leave days`, 'Error!');
-        return;
-      }
-
-      this.leaveService.addLeaveApplication(this.leaveApplication.value).subscribe((res: any) => {
-        this.closeModal();
-        this.leaveApplicationRefreshed.emit();
+    const employeeId = this.leaveApplication.get('employee')?.value;
+    if (employeeId) {
+      this.leaveService.getLeaveApplicationbyUser(payload, employeeId).subscribe((res: any) => {
+        this.existingLeaves = res.data;
+        console.log(this.leaveApplication.updateValueAndValidity());
+        this.leaveApplication.updateValueAndValidity();
       });
-
     }
   }
 
+  stripTime(date: Date): string {
+    date.setUTCHours(0, 0, 0, 0);
+    return date.toISOString();
+  }
+
+  onSubmission() {
+    const employeeId = this.leaveApplication.get('employee')?.value;
+    const leaveCategory = this.leaveApplication.get('leaveCategory')?.value;
+    let startDate = this.leaveApplication.get('startDate')?.value;
+    let endDate = this.leaveApplication.get('endDate')?.value;
+    startDate = this.stripTime(new Date(startDate));
+    endDate = this.stripTime(new Date(endDate));
+
+    this.leaveApplication.patchValue({
+      startDate: startDate,
+      endDate: endDate
+    });
+
+    this.leaveApplication.value.status = 'Level 1 Approval Pending';
+    let payload = { skip: '', next: '' }
+    console.log(this.leaveApplication.value);
+    this.leaveService.getLeaveApplicationbyUser(payload, employeeId).subscribe((res: any) => {
+      console.log(res.data)
+      this.existingLeaves = res.data;
+      const isDuplicate = this.existingLeaves.some((leave: any) =>
+        leave.employee === employeeId &&
+        leave.leaveCategory === leaveCategory &&
+        leave.startDate === startDate &&
+        leave.endDate === endDate
+      );
+      console.log(isDuplicate);
+      if (isDuplicate) {
+        this.toast.error('A leave application with the same details already Exists.', 'Error');
+        return;
+      }
+      else {
+        this.leaveService.addLeaveApplication(this.leaveApplication.value).subscribe((res: any) => {
+          this.leaveApplicationRefreshed.emit();
+          this.leaveApplication.reset();
+          this.toast.success('Leave Application Added Successfully');
+        });
+      }
+    })
+  }
+ 
   closeModal() {
     this.leaveApplication.reset();
     this.close.emit(true);
   }
-  // multiple date selection code
 
   addEvent(type: string, event: MatDatepickerInputEvent<Date>) {
     const selectedDate = event.value;
@@ -287,48 +306,15 @@ export class AddApplicationComponent {
     }
   }
 
-  onStartDateChange(selectedDate: Date): void {
-    this.minEndDate = new Date(selectedDate);
-    this.bsConfig = {
-      ...this.bsConfig,
-      minDate: this.minStartDate,
-      maxDate: this.maxStartDate
-    };
-
-    this.bsConfigEnd = {
-      ...this.bsConfig,
-      minDate: this.minEndDate,
-      maxDate: this.maxEndDate
-    };
-
-    this.weeklyCount();
-  }
-
-  onEndDateChange(selectedDate: Date): void {
-    this.maxStartDate = new Date(selectedDate);
-    this.bsConfig = {
-      ...this.bsConfig,
-      minDate: this.minStartDate,
-      maxDate: this.maxStartDate
-    };
-
-    this.bsConfigEnd = {
-      ...this.bsConfig,
-      minDate: this.minEndDate,
-      maxDate: this.maxEndDate
-    };
-
-    this.weeklyCount();
-  }
-
+ 
   getDayName(date) {
     return date.toLocaleString('en-US', { weekday: 'short' });
   }
 
-  weeklyCount(){
+  weeklyCount() {
     this.weekOffCount = 0;
     this.totalLeaveApplied = 0;
-    if(this.leaveApplication.get('startDate').value !='' && this.leaveApplication.get('endDate').value != ''){
+    if (this.leaveApplication.get('startDate').value != '' && this.leaveApplication.get('endDate').value != '') {
       let start = this.leaveApplication.get('startDate').value;
       let end = this.leaveApplication.get('endDate').value;
       for (let date = new Date(start); (date.setUTCHours(0, 0, 0, 0)) <= (end.setUTCHours(0, 0, 0, 0)); date.setDate(date.getDate() + 1)) {
@@ -338,15 +324,14 @@ export class AddApplicationComponent {
           this.weekOffCount++;
         }
       }
-      console.log(this.weekOffCount);
-   }
+    }
   }
 
-  getAppliedLeaveCount(userId: string, category: string){
+  getAppliedLeaveCount(userId: string, category: string) {
     const requestBody = { "skip": "0", "next": "500" };
     const currentYear = new Date().getFullYear();
     this.leaveService.getAppliedLeaveCount(userId, requestBody).subscribe((res: any) => {
-      if(res.status == "success"){
+      if (res.status == "success") {
         this.appliedLeave = res.data;
         this.numberOfLeaveAppliedForSelectedCategory = this.appliedLeave.filter((leave: any) => leave.leaveCategory == category && new Date(leave.addedBy).getFullYear() === currentYear).length;
       }
@@ -355,7 +340,7 @@ export class AddApplicationComponent {
 
   checkDuplicateLeaveApplied(applyDate: Date): boolean {
     const applyDateOnly = new Date(applyDate.getFullYear(), applyDate.getMonth(), applyDate.getDate());
-
+    console.log(this.appliedLeave);
     let leaveAppliedCountForSameDate = this.appliedLeave.filter((leave: any) => {
       const startDate = new Date(leave.startDate);
       const endDate = new Date(leave.endDate);
@@ -391,15 +376,15 @@ export class AddApplicationComponent {
     return daysDifference;
   }
 
-  getHoliydaysCountBetweenAppliedLeave(){
-    if(this.leaveApplication.get('startDate').value === "" || this.leaveApplication.get('endDate').value === ""){
+  getHoliydaysCountBetweenAppliedLeave() {
+    if (this.leaveApplication.get('startDate').value === "" || this.leaveApplication.get('endDate').value === "") {
       return;
     }
     let startDate = new Date(this.leaveApplication.get('startDate').value);
     let endDate = new Date(this.leaveApplication.get('endDate').value);
 
     const holidayYears = [startDate.getFullYear(), endDate.getFullYear()];
-    const requestBody = {"skip": 0, "next": 500, "years": holidayYears };
+    const requestBody = { "skip": 0, "next": 500, "years": holidayYears };
     this.holidayService.getHolidaysOfYear(requestBody).subscribe((res: any) => {
       if (res && res.data) {
         const holidays = res.data;
@@ -449,12 +434,11 @@ export class AddApplicationComponent {
     }
   }
 
-  updateValidators(){
-    if(this.leaveDocumentUpload)
-    {
+  updateValidators() {
+    if (this.leaveDocumentUpload) {
       this.leaveApplication.get('leaveApplicationAttachments')?.setValidators(Validators.required);
     }
-    else{
+    else {
       this.leaveApplication.get('leaveApplicationAttachments')?.clearValidators();
     }
     this.leaveApplication.get('leaveApplicationAttachments')?.updateValueAndValidity();

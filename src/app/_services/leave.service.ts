@@ -71,6 +71,12 @@ export class LeaveService extends baseService {
     return this.http.get<any>(`${environment.apiUrlDotNet}/leave/general-settings-by-company`, this.httpOptions);
   }
 
+  public addGeneralSettings(generalSettings: any): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.post<any>(`${environment.apiUrlDotNet}/leave/general-settings`, generalSettings, this.httpOptions);
+  }
+  
   public updateGeneralSettings(generalSettingsId: string, generalSettings: any): any {
     const token = this.getToken();
     this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
@@ -210,10 +216,10 @@ export class LeaveService extends baseService {
     return this.http.post<any>(`${environment.apiUrlDotNet}/Leave/employee-leave-application-list`, requestBody, this.httpOptions);
   }
 
-  public getLeaveApplicationbyUser(userId: string): any {
+  public getLeaveApplicationbyUser(payload: any, userId: string): any {
     const token = this.getToken();
     this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
-    return this.http.get<any>(`${environment.apiUrlDotNet}/Leave/employee-leave-application-by-user/${userId}`, this.httpOptions);
+    return this.http.post<any>(`${environment.apiUrlDotNet}/Leave/employee-leave-application-by-user/${userId}`, payload, this.httpOptions);
   }
 
   public getLeaveApplicationByTeam(): any {

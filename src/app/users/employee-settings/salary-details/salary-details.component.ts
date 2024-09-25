@@ -1,6 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { ToastrService } from 'ngx-toastr';
 import { UserService } from 'src/app/_services/users.service';
+import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-salary-details',
@@ -19,7 +22,9 @@ export class SalaryDetailsComponent {
 
   constructor(
     private modalService: NgbModal,
-    private userService: UserService
+    private userService: UserService,
+    private toast: ToastrService,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -47,30 +52,31 @@ export class SalaryDetailsComponent {
     });
   }
 
-  deleteAdvancecate(id: string): void {
-    // const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-    //   width: '400px',
+  deleteSalaryDetail(id: string): void {
+    console.log(id);
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '400px',
 
-    // });
-    // dialogRef.afterClosed().subscribe(result => {
-    //   if (result === 'delete') {
-    //     this.deleteAdvanceCategory(id);
-    //   }
-    //   err => {
-    //     this.toast.error('Can not be Deleted', 'Error!')
-    //   }
-    // });
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'delete') {
+        this.deleteSalary(id);
+      }
+      err => {
+        this.toast.error('Can not be Deleted', 'Error!')
+      }
+    });
   }
 
-  deleteAdvanceCategory(id: string) {
-    // this.expenseService.deleteAdvanceCategory(id).subscribe((res: any) => {
-    //   this.getAllAdvanceCategories();
-    //   this.toast.success('Successfully Deleted!!!', 'Advance Category')
-    // },
-    //   (err) => {
-    //     this.toast.error('This category is already being used in an expense template!'
-    //       , 'Advance Category, Can not be deleted!')
-    //   })
+  deleteSalary(id: string) {
+    this.userService.deleteSalaryDetails(id).subscribe((res: any) => {
+      this.getSalaryDetails();
+      this.toast.success('Successfully Deleted!!!', 'Salary Details')
+    },
+      (err) => {
+        this.toast.error('This Salary Details is already being used!'
+          , 'Salary Details, Can not be deleted!')
+      })
   }
 
   toggleToViewSalaryDetails() {

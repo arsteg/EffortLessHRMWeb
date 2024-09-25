@@ -31,10 +31,9 @@ export class ShowApplicationComponent {
   public sortOrder: string = '';
   defaultCatSkip="0";
   defaultCatNext="100000";
-  totalRecords: number = 0 // example total records
+  totalRecords: number = 0
   recordsPerPage: number = 10;
   currentPage: number = 1;
-
 
   constructor(private modalService: NgbModal,
     private leaveService: LeaveService,
@@ -85,7 +84,7 @@ export class ShowApplicationComponent {
     const requestBody = { "status": this.status, "skip": ((this.currentPage - 1) * this.recordsPerPage).toString(), "next": this.recordsPerPage.toString() };
     this.leaveService.getLeaveApplication(requestBody).subscribe(
       (res) => {
-        this.leaveApplication = res.data;//.filter(leave => leave.status === this.status);
+        this.leaveApplication = res.data;
       },
       (error) => {
         console.error('Error refreshing leave application table:', error);
@@ -133,7 +132,6 @@ export class ShowApplicationComponent {
     })
   }
   getUser(employeeId: string) {
-    console.log(employeeId)
     const matchingUser = this.allAssignee?.find(user => user._id === employeeId);
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : '';
   }
