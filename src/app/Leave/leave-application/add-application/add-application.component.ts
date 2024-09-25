@@ -94,8 +94,8 @@ export class AddApplicationComponent {
 
     this.leaveApplication.get('leaveCategory').valueChanges.subscribe(leaveCategory => {
       this.tempLeaveCategory = this.leaveCategories.find(l => l.leaveCategory._id === leaveCategory);
-      this.leaveDocumentUpload = this.tempLeaveCategory.leaveCategory.isDocumentRequired
-      this.updateValidators();
+      this.leaveDocumentUpload = this.tempLeaveCategory.leaveCategory
+      // this.updateValidators();
       this.handleLeaveCategoryChange();
     });
     this.leaveApplication.get('employee').valueChanges.subscribe(employee => {
