@@ -69,7 +69,7 @@
         <label for="">Select End Date <span class="text-danger">*</span></label>
         <div class=" col-12 form-group mb-3">
             <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
-                [bsConfig]="bsConfigEnd" formControlName="endDate" required />
+                [bsConfig]="bsConfig" formControlName="endDate" required />
             <div *ngIf="leaveApplication.get('endDate').invalid && leaveApplication.get('endDate').touched"
                 class="text-danger error">
                 Add a Valid End date
