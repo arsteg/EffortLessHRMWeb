@@ -195,7 +195,7 @@ export class GeneralSettingsComponent {
       console.log(this.selectedRecord)
       this.payroll.generalSettings.next(this.generalSettings);
     }
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
 
     }, (reason) => {

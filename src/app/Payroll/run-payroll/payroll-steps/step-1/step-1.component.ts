@@ -17,7 +17,7 @@ export class Step1Component {
   }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
 
     }, (reason) => {
