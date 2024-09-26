@@ -67,7 +67,7 @@ export class ShowTeamExpensesComponent {
   }
   open(content: any) {
     this.expenseService.expenseReportExpense.next(this.selectedReport);
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
