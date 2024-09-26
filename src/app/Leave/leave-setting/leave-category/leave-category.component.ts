@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
@@ -24,7 +24,7 @@ export class LeaveCategoryComponent implements OnInit {
   public sortOrder: string = ''; // 'asc' or 'desc'
   recordsPerPageOptions: number[] = [5, 10, 25, 50, 100]; // Add the available options for records per page
   recordsPerPage: number = 10; // Default records per page
-  totalRecords: number=0; // Total number of records
+  totalRecords: number = 0; // Total number of records
   currentPage: number = 1;
   skip: string = '0';
   next = '10';
@@ -36,14 +36,14 @@ export class LeaveCategoryComponent implements OnInit {
     private toast: ToastrService,
     private exportService: ExportService) {
     this.categoryForm = this.fb.group({
-      leaveType: [''],
-      label: [''],
-      abbreviation: [''],
-      canEmployeeApply: [true],
-      isHalfDayTypeOfLeave: [true],
-      submitBefore: [0],
-      displayLeaveBalanceInPayslip: [true],
-      leaveAccrualPeriod: [''],
+      leaveType: ['', Validators.required],
+      label: ['', Validators.required],
+      abbreviation: ['', Validators.required],
+      canEmployeeApply: [true, Validators.required],
+      isHalfDayTypeOfLeave: [true, Validators.required],
+      submitBefore: [0, Validators.required],
+      displayLeaveBalanceInPayslip: [true, Validators.required],
+      leaveAccrualPeriod: ['', Validators.required],
       isAnnualHolidayLeavePartOfNumberOfDaysTaken: [true],
       isWeeklyOffLeavePartOfNumberOfDaysTaken: [true],
       isEligibleForLeaveEncashmentDuringRollover: [true],
@@ -73,7 +73,7 @@ export class LeaveCategoryComponent implements OnInit {
     this.categoryForm.reset();
   }
   open(content: any) {
-    this.modalService.open(content, { windowClass: 'custom-modal-lg' }).result.then((result) => {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
@@ -99,33 +99,37 @@ export class LeaveCategoryComponent implements OnInit {
   }
 
   onSubmission() {
-    if (!this.isEdit) {
-      this.leaveService.addLeaveCategory(this.categoryForm.value).subscribe((res: any) => {
-        const leaveCategory = res.data;
-        this.leaveCategory.push(leaveCategory);
-        this.toast.success('Leave Category Created', 'Successfully!!!');
-        this.categoryForm.reset();
-      },
-        err => {
-          this.toast.error('Leave Category Can not be Created', 'Error!!!')
-        });
-    }
-    else {
-      const id = this.selectedLeaveCategory._id
-      this.leaveService.updateLeaveCategory(id, this.categoryForm.value).subscribe((res: any) => {
-        const updatedLeaveCategory = res.data;
-        const index = this.leaveCategory.findIndex(category => category._id === updatedLeaveCategory._id);
-        if (index !== -1) {
-          this.leaveCategory[index] = updatedLeaveCategory;
-          this.toast.success('Leave Category Updated', 'Successfully!!!');
+    if (this.categoryForm.valid) {
+      if (!this.isEdit) {
+        this.leaveService.addLeaveCategory(this.categoryForm.value).subscribe((res: any) => {
+          const leaveCategory = res.data;
+          this.leaveCategory.push(leaveCategory);
+          this.toast.success('Leave Category Created', 'Successfully!!!');
           this.categoryForm.reset();
-        }
-      },
-        err => {
-          this.toast.error('Leave Category Can not be updated', 'Error!!!')
-        });
+        },
+          err => {
+            this.toast.error('Leave Category Can not be Created', 'Error!!!')
+          });
+      }
+      else {
+        const id = this.selectedLeaveCategory._id
+        this.leaveService.updateLeaveCategory(id, this.categoryForm.value).subscribe((res: any) => {
+          const updatedLeaveCategory = res.data;
+          const index = this.leaveCategory.findIndex(category => category._id === updatedLeaveCategory._id);
+          if (index !== -1) {
+            this.leaveCategory[index] = updatedLeaveCategory;
+            this.toast.success('Leave Category Updated', 'Successfully!!!');
+            this.categoryForm.reset();
+          }
+        },
+          err => {
+            this.toast.error('Leave Category Can not be updated', 'Error!!!')
+          });
+      }
     }
-    this.categoryForm.reset();
+    else { 
+      this.categoryForm.markAllAsTouched();
+    }
   }
   editCategory(leaveCategory) {
     this.isEdit = true;

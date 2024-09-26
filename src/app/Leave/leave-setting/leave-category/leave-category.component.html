@@ -7,12 +7,14 @@
                     <span class="bi bi-search searchIcon"></span>
 
                     <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
-                    name="searchText" aria-label="default input example">
+                        name="searchText" aria-label="default input example">
 
-                    <button mat-raised-button (click)="open(addModal); isEdit === false; reset()" class="addBtn rounded-pill mx-3">
-                       Add</button>
+                    <button mat-raised-button (click)="open(addModal); isEdit === false; reset()"
+                        class="addBtn rounded-pill mx-3">
+                        Add</button>
 
-                    <button class="submenuTab active rounded-pill"  (click)="exportToCsv()"><i class="bi bi-download downloadBtn pe-2"></i>
+                    <button class="submenuTab active rounded-pill" (click)="exportToCsv()"><i
+                            class="bi bi-download downloadBtn pe-2"></i>
                         Download</button>
 
                 </div>
@@ -23,8 +25,7 @@
                     <select style="width: 80px;" class="page form-select form-select-sm mx-2"
                         [(ngModel)]="recordsPerPage" (ngModelChange)="updateRecordsPerPage()">
                         <option class="page" *ngFor="let option of recordsPerPageOptions" [value]="option">
-                            {{
-                            option }}
+                            {{ option }}
                         </option>
                     </select>
 
@@ -32,60 +33,58 @@
                         totalRecords
                         }}</span>
                     <!-- previous page -->
-                    <span (click)="firstPagePagination()"
-                        class="page bi bi-chevron-bar-left btn-lg btn-outline-primary" title="First Page"
-                        [class.disabled]="skip === '0' || currentPage === 1"></span>
+                    <span (click)="firstPagePagination()" class="page bi bi-chevron-bar-left btn-lg btn-outline-primary"
+                        title="First Page" [class.disabled]="skip === '0' || currentPage === 1"></span>
 
-                    <span (click)="previousPagination()"
-                        class="page bi bi-chevron-left btn-lg btn-outline-primary" title="Previous Page"
-                        [class.disabled]="skip === '0' || currentPage === 1"></span>
+                    <span (click)="previousPagination()" class="page bi bi-chevron-left btn-lg btn-outline-primary"
+                        title="Previous Page" [class.disabled]="skip === '0' || currentPage === 1"></span>
                     <!-- next page -->
                     <span (click)="nextPagination()" class="page bi bi-chevron-right btn-lg btn-outline-primary"
                         title="Next Page" [class.disabled]="currentPage === getTotalPages()"></span>
 
-                    <span (click)="lastPagePagination()"
-                        class="page bi bi-chevron-bar-right btn-lg btn-outline-primary" title="Last Page"
-                        [class.disabled]="currentPage === getTotalPages()"></span>
+                    <span (click)="lastPagePagination()" class="page bi bi-chevron-bar-right btn-lg btn-outline-primary"
+                        title="Last Page" [class.disabled]="currentPage === getTotalPages()"></span>
                 </div>
             </ng-container>
             <table class="p-2 rounded mt-2">
                 <thead>
                     <tr>
                         <th [appSort]="leaveCategory" data-name="label"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Leave Label
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-              
-                    </th>
-                        <th [appSort]="leaveCategory" data-name="leaveType"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Leave Type
-                        <i
-                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-              </th>
-                        <th [appSort]="leaveCategory" data-name="leaveAccrualPeriod"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Frequency of Accrual
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Leave Label
                             <i
-                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-              
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+
+                        </th>
+                        <th [appSort]="leaveCategory" data-name="leaveType"
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Leave Type
+                            <i
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                        </th>
+                        <th [appSort]="leaveCategory" data-name="leaveAccrualPeriod"
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Frequency of Accrual
+                            <i
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+
                         </th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     <!-- <tr *ngFor="let category of leaveCategory | search: searchText ; let i = index"> -->
-                        <tr *ngFor="let category of leaveCategory; let i = index">
+                    <tr *ngFor="let category of leaveCategory; let i = index">
                         <td>{{category?.label}}</td>
                         <td>{{category?.leaveType}}</td>
                         <td>{{category?.leaveAccrualPeriod}}</td>
                         <td>
-                            <button class="actions" mat-mini-fab  matTooltip="Edit" matTooltipPosition="before"
+                            <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before"
                                 aria-label="Example icon button with a menu icon"
                                 (click)="open(addModal); selectedLeaveCategory = category; editCategory(category)">
                                 <i class="bi bi-pencil-fill"></i>
                             </button>
                             <button class="actions ms-2" mat-mini-fab matTooltip="Delete" matTooltipPosition="after"
-                            aria-label="Example icon button with a menu icon" (click)="deleteDialog(category?._id)">
-                            <i class="bi bi-trash"></i>
-                        </button>
+                                aria-label="Example icon button with a menu icon" (click)="deleteDialog(category?._id)">
+                                <i class="bi bi-trash"></i>
+                            </button>
                     </tr>
                 </tbody>
             </table>
@@ -102,7 +101,8 @@
             <div class="">
                 <h4 class="modal-title text-start">{{!isEdit ? 'Add' : 'Update'}} Leave Category</h4>
             </div>
-            <div class=""><button type="button" (click)="modal.dismiss('Cross click')" data-bs-dismiss="modal" class="btn-close text-end"></button>
+            <div class=""><button type="button" (click)="modal.dismiss('Cross click')" data-bs-dismiss="modal"
+                    class="btn-close text-end"></button>
             </div>
         </div>
         <hr class="mt-0">
@@ -118,6 +118,10 @@
                                     <option value="general-leave">General Leave</option>
                                     <option value="annual-non-accural-leave">Annual Non-Accrual Leave</option>
                                 </select>
+                                <div *ngIf="categoryForm.get('leaveType').invalid && categoryForm.get('leaveType').touched"
+                                    class="text-danger error">
+                                    Please Select Leave Type.
+                                </div>
                             </div>
 
                             <div class="col-sm-12 col-md-6 my-2">
@@ -125,6 +129,10 @@
                                         class="text-danger">*</span></label>
                                 <input type="text" placeholder="Leave category name" formControlName="label"
                                     class="form-control">
+                                <div *ngIf="categoryForm.get('label').invalid && categoryForm.get('label').touched"
+                                    class="text-danger error">
+                                    Please Enter label For Leave Category.
+                                </div>
                             </div>
 
                             <div class="col-sm-12 col-md-6 my-2">
@@ -132,6 +140,10 @@
                                         class="text-danger">*</span></label>
                                 <input type="text" placeholder="Abbreviation Label" formControlName="abbreviation"
                                     class="form-control">
+                                <div *ngIf="categoryForm.get('abbreviation').invalid && categoryForm.get('abbreviation').touched"
+                                    class="text-danger error">
+                                    Please Enter Abbreviation for Leave Category.
+                                </div>
                             </div>
 
                             <div class="col-sm-12 col-md-6 my-2">
@@ -154,6 +166,10 @@
                                         </label>
                                     </div>
                                 </div>
+                                <div *ngIf="categoryForm.get('canEmployeeApply').invalid && categoryForm.get('canEmployeeApply').touched"
+                                    class="text-danger error">
+                                    Please Choose Can Employee Apply.
+                                </div>
                             </div>
 
                             <div class="col-sm-12 col-md-6 my-2">
@@ -175,6 +191,10 @@
                                         </label>
                                     </div>
                                 </div>
+                                <div *ngIf="categoryForm.get('isHalfDayTypeOfLeave').invalid && categoryForm.get('isHalfDayTypeOfLeave').touched"
+                                    class="text-danger error">
+                                    Please Choose Half Day Type Of Leave.
+                                </div>
                             </div>
 
                             <div class="col-sm-12 col-md-6 my-2">
@@ -191,21 +211,26 @@
                                 </label>
                                 <div class="d-flex">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" id="displayLeaveBalanceInPayslip-yes"
+                                        <input class="form-check-input" type="radio"
+                                            id="displayLeaveBalanceInPayslip-yes"
                                             formControlName="displayLeaveBalanceInPayslip" required [value]="true">
                                         <label class="form-check-label" for="displayLeaveBalanceInPayslip-yes">
                                             Yes
                                         </label>
                                     </div>
                                     <div class="form-check ms-2">
-                                        <input class="form-check-input" type="radio" id="displayLeaveBalanceInPayslip-no"
+                                        <input class="form-check-input" type="radio"
+                                            id="displayLeaveBalanceInPayslip-no"
                                             formControlName="displayLeaveBalanceInPayslip" required [value]="false">
                                         <label class="form-check-label" for="displayLeaveBalanceInPayslip-no">
                                             No
                                         </label>
                                     </div>
                                 </div>
-
+                                <div *ngIf="categoryForm.get('displayLeaveBalanceInPayslip').invalid && categoryForm.get('displayLeaveBalanceInPayslip').touched"
+                                    class="text-danger error">
+                                    Please Choose Leave Balance In Payslip.
+                                </div>
                             </div>
 
                             <!-- If leave type is general leave -->
@@ -219,6 +244,10 @@
                                         <option value="Bi-Monthly">Bi-Monthly</option>
                                         <option value="Monthly">Monthly</option>
                                     </select>
+                                    <div *ngIf="categoryForm.get('leaveAccrualPeriod').invalid && categoryForm.get('leaveAccrualPeriod').touched"
+                                    class="text-danger error">
+                                    Please Choose Leave Accural Period.
+                                </div>
                                 </div>
                                 <div class="col-sm-12 col-md-6 my-2">
                                     <label for="">
@@ -226,15 +255,19 @@
                                     </label>
                                     <div class="d-flex">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" id="isEmployeeAccrualLeaveInAdvanceTrue"
-                                                formControlName="isEmployeeAccrualLeaveInAdvance" required [value]="true">
+                                            <input class="form-check-input" type="radio"
+                                                id="isEmployeeAccrualLeaveInAdvanceTrue"
+                                                formControlName="isEmployeeAccrualLeaveInAdvance" required
+                                                [value]="true">
                                             <label class="form-check-label" for="isEmployeeAccrualLeaveInAdvanceTrue">
                                                 Yes
                                             </label>
                                         </div>
                                         <div class="form-check ms-2">
-                                            <input class="form-check-input" type="radio" id="isEmployeeAccrualLeaveInAdvanceFalse"
-                                                formControlName="isEmployeeAccrualLeaveInAdvance" required [value]="false">
+                                            <input class="form-check-input" type="radio"
+                                                id="isEmployeeAccrualLeaveInAdvanceFalse"
+                                                formControlName="isEmployeeAccrualLeaveInAdvance" required
+                                                [value]="false">
                                             <label class="form-check-label" for="isEmployeeAccrualLeaveInAdvanceFalse">
                                                 No
                                             </label>
@@ -252,7 +285,8 @@
                                             <input class="form-check-input" type="radio"
                                                 formControlName="isWeeklyOffLeavePartOfNumberOfDaysTaken" required
                                                 [value]="true" id="isWeeklyOffLeavePartOfNumberOfDaysTakenTrue">
-                                            <label class="form-check-label" for="isWeeklyOffLeavePartOfNumberOfDaysTakenTrue">
+                                            <label class="form-check-label"
+                                                for="isWeeklyOffLeavePartOfNumberOfDaysTakenTrue">
                                                 Yes
                                             </label>
                                         </div>
@@ -260,7 +294,8 @@
                                             <input class="form-check-input" type="radio"
                                                 formControlName="isWeeklyOffLeavePartOfNumberOfDaysTaken" required
                                                 [value]="false" id="isWeeklyOffLeavePartOfNumberOfDaysTakenFalse">
-                                            <label class="form-check-label" for="isWeeklyOffLeavePartOfNumberOfDaysTakenFalse">
+                                            <label class="form-check-label"
+                                                for="isWeeklyOffLeavePartOfNumberOfDaysTakenFalse">
                                                 No
                                             </label>
                                         </div>
@@ -304,18 +339,22 @@
                                         rollover?</label>
                                     <div class="d-flex">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" id="isEligibleForLeaveEncashmentDuringRolloverTrue"
+                                            <input class="form-check-input" type="radio"
+                                                id="isEligibleForLeaveEncashmentDuringRolloverTrue"
                                                 formControlName="isEligibleForLeaveEncashmentDuringRollover" required
                                                 [value]="true">
-                                            <label class="form-check-label" for="isEligibleForLeaveEncashmentDuringRolloverTrue">
+                                            <label class="form-check-label"
+                                                for="isEligibleForLeaveEncashmentDuringRolloverTrue">
                                                 Yes
                                             </label>
                                         </div>
                                         <div class="form-check ms-2">
-                                            <input class="form-check-input" type="radio" id="isEligibleForLeaveEncashmentDuringRolloverFalse"
+                                            <input class="form-check-input" type="radio"
+                                                id="isEligibleForLeaveEncashmentDuringRolloverFalse"
                                                 formControlName="isEligibleForLeaveEncashmentDuringRollover" required
                                                 [value]="false">
-                                            <label class="form-check-label" for="isEligibleForLeaveEncashmentDuringRolloverFalse">
+                                            <label class="form-check-label"
+                                                for="isEligibleForLeaveEncashmentDuringRolloverFalse">
                                                 No
                                             </label>
                                         </div>
@@ -355,15 +394,18 @@
                                             <input class="form-check-input" type="radio"
                                                 formControlName="isEligibleForEncashmentRecoveryDuringFNF" required
                                                 [value]="true" id="isEligibleForEncashmentRecoveryDuringFNFTrue">
-                                            <label class="form-check-label" for="isEligibleForEncashmentRecoveryDuringFNFTrue">
+                                            <label class="form-check-label"
+                                                for="isEligibleForEncashmentRecoveryDuringFNFTrue">
                                                 Yes
                                             </label>
                                         </div>
                                         <div class="form-check ms-2">
                                             <input class="form-check-input" type="radio"
                                                 formControlName="isEligibleForEncashmentRecoveryDuringFNF" required
-                                                [value]="false" id="isEligibleForEncashmentRecoveryDuringFNFFalse" checked>
-                                            <label class="form-check-label" for="isEligibleForEncashmentRecoveryDuringFNFFalse">
+                                                [value]="false" id="isEligibleForEncashmentRecoveryDuringFNFFalse"
+                                                checked>
+                                            <label class="form-check-label"
+                                                for="isEligibleForEncashmentRecoveryDuringFNFFalse">
                                                 No
                                             </label>
                                         </div>
@@ -389,7 +431,8 @@
                                             <input class="form-check-input" type="radio"
                                                 formControlName="isEmployeesAllowedToNegativeLeaveBalance" required
                                                 [value]="true" id="isEmployeesAllowedToNegativeLeaveBalanceTrue">
-                                            <label class="form-check-label" for="isEmployeesAllowedToNegativeLeaveBalanceTrue">
+                                            <label class="form-check-label"
+                                                for="isEmployeesAllowedToNegativeLeaveBalanceTrue">
                                                 Yes
                                             </label>
                                         </div>
@@ -397,7 +440,8 @@
                                             <input class="form-check-input" type="radio"
                                                 formControlName="isEmployeesAllowedToNegativeLeaveBalance" required
                                                 [value]="false" id="isEmployeesAllowedToNegativeLeaveBalanceFalse">
-                                            <label class="form-check-label" for="isEmployeesAllowedToNegativeLeaveBalanceFalse">
+                                            <label class="form-check-label"
+                                                for="isEmployeesAllowedToNegativeLeaveBalanceFalse">
                                                 No
                                             </label>
                                         </div>
@@ -413,15 +457,17 @@
                                             <input class="form-check-input" type="radio"
                                                 formControlName="isRoundOffLeaveAccrualNearestPointFiveUnit" required
                                                 [value]="true" id="isRoundOffLeaveAccrualNearestPointFiveUnitTrue">
-                                            <label class="form-check-label" for="isRoundOffLeaveAccrualNearestPointFiveUnitTrue">
+                                            <label class="form-check-label"
+                                                for="isRoundOffLeaveAccrualNearestPointFiveUnitTrue">
                                                 Yes
                                             </label>
                                         </div>
                                         <div class="form-check ms-2">
                                             <input class="form-check-input" type="radio"
                                                 formControlName="isRoundOffLeaveAccrualNearestPointFiveUnit" required
-                                                [value]="false" id="isRoundOffLeaveAccrualNearestPointFiveUnitFalse" >
-                                            <label class="form-check-label" for="isRoundOffLeaveAccrualNearestPointFiveUnitFalse">
+                                                [value]="false" id="isRoundOffLeaveAccrualNearestPointFiveUnitFalse">
+                                            <label class="form-check-label"
+                                                for="isRoundOffLeaveAccrualNearestPointFiveUnitFalse">
                                                 No
                                             </label>
                                         </div>
@@ -435,15 +481,18 @@
                                             <input class="form-check-input" type="radio"
                                                 formControlName="isIntraCycleLapseApplicableForThisCategory" required
                                                 [value]="true" id="isIntraCycleLapseApplicableForThisCategoryTrue">
-                                            <label class="form-check-label" for="isIntraCycleLapseApplicableForThisCategoryTrue">
+                                            <label class="form-check-label"
+                                                for="isIntraCycleLapseApplicableForThisCategoryTrue">
                                                 Yes
                                             </label>
                                         </div>
                                         <div class="form-check ms-2">
                                             <input class="form-check-input" type="radio"
                                                 formControlName="isIntraCycleLapseApplicableForThisCategory" required
-                                                [value]="false" id="isIntraCycleLapseApplicableForThisCategoryFalse" checked>
-                                            <label class="form-check-label" for="isIntraCycleLapseApplicableForThisCategoryFalse">
+                                                [value]="false" id="isIntraCycleLapseApplicableForThisCategoryFalse"
+                                                checked>
+                                            <label class="form-check-label"
+                                                for="isIntraCycleLapseApplicableForThisCategoryFalse">
                                                 No
                                             </label>
                                         </div>
@@ -461,13 +510,16 @@
                                         joinees?</label>
                                     <select id="" formControlName="isProRateFirstMonthAccrualForNewJoinees">
                                         <option value="fixed">Fixed cut-off day of the month</option>
-                                        <option value="pro-ration">Pro Ration by joining date in the calendar month</option>
+                                        <option value="pro-ration">Pro Ration by joining date in the calendar month
+                                        </option>
                                     </select>
                                 </div>
 
                                 <div class="col-sm-12 col-md-6 my-2">
-                                    <label for=""> Maximum number of consecutive leave days allowed (leave blank for no limit)</label>
-                                    <input type="number" class="w-100" formControlName="maximumNumberConsecutiveLeaveDaysAllowed">
+                                    <label for=""> Maximum number of consecutive leave days allowed (leave blank for no
+                                        limit)</label>
+                                    <input type="number" class="w-100"
+                                        formControlName="maximumNumberConsecutiveLeaveDaysAllowed">
                                 </div>
 
                                 <div class="col-sm-12 col-md-6 my-2">
@@ -482,7 +534,7 @@
                                         </div>
                                         <div class="form-check ms-2">
                                             <input class="form-check-input" type="radio" formControlName="isPaidLeave"
-                                                required [value]="false" id="isPaidLeave2" >
+                                                required [value]="false" id="isPaidLeave2">
                                             <label class="form-check-label" for="isPaidLeave2">
                                                 No
                                             </label>
@@ -498,14 +550,20 @@
                                         be included in the number of days taken?</label>
                                     <div class="d-flex">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" formControlName="isAnnualHolidayLeavePartOfNumberOfDaysTaken" id="isAnnualHolidayLeavePartOfNumberOfDaysTaken" [value]="true">
-                                            <label class="form-check-label" for="isAnnualHolidayLeavePartOfNumberOfDaysTaken">
+                                            <input class="form-check-input" type="radio"
+                                                formControlName="isAnnualHolidayLeavePartOfNumberOfDaysTaken"
+                                                id="isAnnualHolidayLeavePartOfNumberOfDaysTaken" [value]="true">
+                                            <label class="form-check-label"
+                                                for="isAnnualHolidayLeavePartOfNumberOfDaysTaken">
                                                 Yes
                                             </label>
                                         </div>
                                         <div class="form-check ms-2">
-                                            <input class="form-check-input" type="radio" formControlName="isAnnualHolidayLeavePartOfNumberOfDaysTaken" id="isAnnualHolidayLeavePartOfNumberOfDaysTaken1" [value]="false">
-                                            <label class="form-check-label" for="isAnnualHolidayLeavePartOfNumberOfDaysTaken1">
+                                            <input class="form-check-input" type="radio"
+                                                formControlName="isAnnualHolidayLeavePartOfNumberOfDaysTaken"
+                                                id="isAnnualHolidayLeavePartOfNumberOfDaysTaken1" [value]="false">
+                                            <label class="form-check-label"
+                                                for="isAnnualHolidayLeavePartOfNumberOfDaysTaken1">
                                                 No
                                             </label>
                                         </div>
@@ -518,16 +576,21 @@
                                         the number of days taken?</label>
                                     <div class="d-flex">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" formControlName="isWeeklyOffLeavePartOfNumberOfDaysTaken"
-                                             id="isWeeklyOffLeavePartOfNumberOfDaysTaken" [value]="true">
-                                            <label class="form-check-label" for="isWeeklyOffLeavePartOfNumberOfDaysTaken">
+                                            <input class="form-check-input" type="radio"
+                                                formControlName="isWeeklyOffLeavePartOfNumberOfDaysTaken"
+                                                id="isWeeklyOffLeavePartOfNumberOfDaysTaken" [value]="true">
+                                            <label class="form-check-label"
+                                                for="isWeeklyOffLeavePartOfNumberOfDaysTaken">
                                                 Yes
                                             </label>
                                         </div>
                                         <div class="form-check ms-2">
-                                            <input class="form-check-input" type="radio" id="isWeeklyOffLeavePartOfNumberOfDaysTaken1" 
-                                            formControlName="isWeeklyOffLeavePartOfNumberOfDaysTaken" [value]="false">
-                                            <label class="form-check-label" for="isWeeklyOffLeavePartOfNumberOfDaysTaken1">
+                                            <input class="form-check-input" type="radio"
+                                                id="isWeeklyOffLeavePartOfNumberOfDaysTaken1"
+                                                formControlName="isWeeklyOffLeavePartOfNumberOfDaysTaken"
+                                                [value]="false">
+                                            <label class="form-check-label"
+                                                for="isWeeklyOffLeavePartOfNumberOfDaysTaken1">
                                                 No
                                             </label>
                                         </div>
@@ -540,18 +603,20 @@
                                     <div class="d-flex">
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio"
-                                            formControlName="isEligibleForLeaveEncashmentDuringRollover"
-                                            [value]="true"
-                                            id="isEligibleForLeaveEncashmentDuringRollover">
-                                            <label class="form-check-label" for="isEligibleForLeaveEncashmentDuringRollover">
+                                                formControlName="isEligibleForLeaveEncashmentDuringRollover"
+                                                [value]="true" id="isEligibleForLeaveEncashmentDuringRollover">
+                                            <label class="form-check-label"
+                                                for="isEligibleForLeaveEncashmentDuringRollover">
                                                 Yes
                                             </label>
                                         </div>
                                         <div class="form-check ms-2">
-                                            <input class="form-check-input" type="radio" id="isEligibleForLeaveEncashmentDuringRollover1"
-                                            formControlName="isEligibleForLeaveEncashmentDuringRollover"
-                                            [value]="false">
-                                            <label class="form-check-label" for="isEligibleForLeaveEncashmentDuringRollover1">
+                                            <input class="form-check-input" type="radio"
+                                                id="isEligibleForLeaveEncashmentDuringRollover1"
+                                                formControlName="isEligibleForLeaveEncashmentDuringRollover"
+                                                [value]="false">
+                                            <label class="form-check-label"
+                                                for="isEligibleForLeaveEncashmentDuringRollover1">
                                                 No
                                             </label>
                                         </div>
@@ -563,15 +628,16 @@
                                         category?</label>
                                     <div class="d-flex">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" formControlName="isDocumentRequired"
-                                            [value]="true" id="isDocumentRequired">
+                                            <input class="form-check-input" type="radio"
+                                                formControlName="isDocumentRequired" [value]="true"
+                                                id="isDocumentRequired">
                                             <label class="form-check-label" for="isDocumentRequired">
                                                 Yes
                                             </label>
                                         </div>
                                         <div class="form-check ms-2">
-                                            <input class="form-check-input" type="radio" id="isDocumentRequired1" 
-                                            formControlName="isDocumentRequired" [value]="false">
+                                            <input class="form-check-input" type="radio" id="isDocumentRequired1"
+                                                formControlName="isDocumentRequired" [value]="false">
                                             <label class="form-check-label" for="isDocumentRequired1">
                                                 No
                                             </label>
@@ -585,19 +651,21 @@
                                     </label>
                                     <div class="d-flex">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" 
-                                            formControlName="isEligibleForEncashmentRecoveryDuringFNF"
-                                            [value]="true"
-                                            id="isEligibleForEncashmentRecoveryDuringFNF">
-                                            <label class="form-check-label" for="isEligibleForEncashmentRecoveryDuringFNF">
+                                            <input class="form-check-input" type="radio"
+                                                formControlName="isEligibleForEncashmentRecoveryDuringFNF"
+                                                [value]="true" id="isEligibleForEncashmentRecoveryDuringFNF">
+                                            <label class="form-check-label"
+                                                for="isEligibleForEncashmentRecoveryDuringFNF">
                                                 Yes
                                             </label>
                                         </div>
                                         <div class="form-check ms-2">
-                                            <input class="form-check-input" type="radio" id="isEligibleForEncashmentRecoveryDuringFNF1"
-                                            formControlName="isEligibleForEncashmentRecoveryDuringFNF"
-                                            [value]="false">
-                                            <label class="form-check-label" for="isEligibleForEncashmentRecoveryDuringFNF1">
+                                            <input class="form-check-input" type="radio"
+                                                id="isEligibleForEncashmentRecoveryDuringFNF1"
+                                                formControlName="isEligibleForEncashmentRecoveryDuringFNF"
+                                                [value]="false">
+                                            <label class="form-check-label"
+                                                for="isEligibleForEncashmentRecoveryDuringFNF1">
                                                 No
                                             </label>
                                         </div>
@@ -609,16 +677,22 @@
                                         apply?</label>
                                     <div class="d-flex">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" id="isEmployeesAllowedToNegativeLeaveBalance"
-                                            formControlName="isEmployeesAllowedToNegativeLeaveBalance" [value]="true">
-                                            <label class="form-check-label" for="isEmployeesAllowedToNegativeLeaveBalance">
+                                            <input class="form-check-input" type="radio"
+                                                id="isEmployeesAllowedToNegativeLeaveBalance"
+                                                formControlName="isEmployeesAllowedToNegativeLeaveBalance"
+                                                [value]="true">
+                                            <label class="form-check-label"
+                                                for="isEmployeesAllowedToNegativeLeaveBalance">
                                                 Yes
                                             </label>
                                         </div>
                                         <div class="form-check ms-2">
-                                            <input class="form-check-input" type="radio" id="isEmployeesAllowedToNegativeLeaveBalance1" 
-                                            formControlName="isEmployeesAllowedToNegativeLeaveBalance" [value]="false">
-                                            <label class="form-check-label" for="isEmployeesAllowedToNegativeLeaveBalance1">
+                                            <input class="form-check-input" type="radio"
+                                                id="isEmployeesAllowedToNegativeLeaveBalance1"
+                                                formControlName="isEmployeesAllowedToNegativeLeaveBalance"
+                                                [value]="false">
+                                            <label class="form-check-label"
+                                                for="isEmployeesAllowedToNegativeLeaveBalance1">
                                                 No
                                             </label>
                                         </div>
@@ -630,14 +704,14 @@
                                     <div class="d-flex">
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" id="isPaidLeave"
-                                            formControlName="isPaidLeave" [value]="true">
+                                                formControlName="isPaidLeave" [value]="true">
                                             <label class="form-check-label" for="isPaidLeave">
                                                 Yes
                                             </label>
                                         </div>
                                         <div class="form-check ms-2">
-                                            <input class="form-check-input" type="radio" id="isPaidLeave1" 
-                                            formControlName="isPaidLeave" [value]="false">
+                                            <input class="form-check-input" type="radio" id="isPaidLeave1"
+                                                formControlName="isPaidLeave" [value]="false">
                                             <label class="form-check-label" for="isPaidLeave1">
                                                 No
                                             </label>
@@ -652,10 +726,12 @@
                     <div class="modal-footer d-flex justify-content-between mt-3">
 
                         <div>
-                            <button mat-raised-button class="mx-2" data-bs-dismiss="modal" (click)="modal.dismiss('Cancel click')" type="reset">Cancel</button>
+                            <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
+                                (click)="modal.dismiss('Cancel click')" type="reset">Cancel</button>
                         </div>
                         <div>
-                            <button mat-raised-button class="addBtn" type="submit">{{!isEdit ? 'Add' : 'Update'}}</button>
+                            <button mat-raised-button class="addBtn" type="submit">{{!isEdit ? 'Add' :
+                                'Update'}}</button>
                         </div>
 
                     </div>
