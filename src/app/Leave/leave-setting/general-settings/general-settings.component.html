@@ -4,8 +4,10 @@
             <form [ngClass]="{'editable-form': isEdit}" [formGroup]="leaveGeneralSettingForm">
                 <div class="d-flex pb-3">
                     <div class="ms-auto">
-                        <button mat-raised-button *ngIf="!isEdit" class="addBtn" type="button" (click)="toggleEdit()">Edit</button>
-                        <button mat-raised-button *ngIf="isEdit" (click)="resetSettings()" type="button" class="me-3">Cancel</button>
+                        <button mat-raised-button *ngIf="!isEdit" class="addBtn" type="button"
+                            (click)="toggleEdit()">Edit</button>
+                        <button mat-raised-button *ngIf="isEdit" (click)="resetSettings()" type="button"
+                            class="me-3">Cancel</button>
                         <button mat-raised-button class="addBtn" type="submit" *ngIf="isEdit"
                             (click)="onUpdate()">Save</button>
                     </div>
@@ -16,13 +18,16 @@
                             <div class="col-6">
                                 <label for="">
                                     What month of the year does your leave cycle start from?<span class="text-danger"
-                                        *ngIf="isEdit">&nbsp;*</span>
+                                        *ngIf="isEdit">*</span>
                                 </label>
                             </div>
                             <div class="col-6">
                                 <select id="" class="py-2 month" formControlName="leaveCycleStart">
                                     <option [value]="month" *ngFor="let month of months">{{month}}</option>
                                 </select>
+                                <div *ngIf="leaveGeneralSettingForm.get('leaveCycleStart').invalid && (leaveGeneralSettingForm.get('leaveCycleStart').dirty || leaveGeneralSettingForm.get('leaveCycleStart').touched)">
+                                    <small class="text-danger">Please choose a month.</small>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -32,7 +37,7 @@
                             <div class="col-6">
                                 <label for="">
                                     Are Admins Having Manage Access to Leave Module<br> Allowed To Approve/Reject Leave
-                                    Applications?<span class="text-danger" *ngIf="isEdit">&nbsp;*</span>
+                                    Applications?<span class="text-danger" *ngIf="isEdit"> *</span>
                                 </label>
                             </div>
                             <div class="col-6">
@@ -41,6 +46,9 @@
                                     <option [value]="false">No</option>
                                 </select>
                             </div>
+                        </div>
+                        <div *ngIf="leaveGeneralSettingForm.get('isAdminAccessLeaveApproveReject').invalid && (leaveGeneralSettingForm.get('isAdminAccessLeaveApproveReject').dirty || leaveGeneralSettingForm.get('isAdminAccessLeaveApproveReject').touched)">
+                            <small class="text-danger">Please choose an Option.</small>
                         </div>
                     </div>
                 </div>
@@ -52,7 +60,7 @@
                             <div class="col-6">
                                 <label for="">
                                     Can Supervisors add Leave Adjustments for subordinates?<span class="text-danger"
-                                        *ngIf="isEdit">&nbsp;*</span>
+                                        *ngIf="isEdit"> *</span>
                                 </label>
                             </div>
                             <div class="col-6">
@@ -62,6 +70,9 @@
                                 </select>
                             </div>
                         </div>
+                        <div *ngIf="leaveGeneralSettingForm.get('canSupervisorAddLeaveAdjustment').invalid && (leaveGeneralSettingForm.get('canSupervisorAddLeaveAdjustment').dirty || leaveGeneralSettingForm.get('canSupervisorAddLeaveAdjustment').touched)">
+                            <small class="text-danger">Please choose an Option.</small>
+                        </div>
                     </div>
 
                     <div class="col-md-6">
@@ -69,7 +80,7 @@
                             <div class="col-6">
                                 <label for="">
                                     Would you like to run daily leave accruals?<span class="text-danger"
-                                        *ngIf="isEdit">&nbsp;*</span>
+                                        *ngIf="isEdit"> *</span>
                                 </label>
                             </div>
                             <div class="col-6">
@@ -78,6 +89,9 @@
                                     <option [value]="false">No</option>
                                 </select>
                             </div>
+                        </div>
+                        <div *ngIf="leaveGeneralSettingForm.get('isDailyLeaveAccrualsRun').invalid && (leaveGeneralSettingForm.get('isDailyLeaveAccrualsRun').dirty || leaveGeneralSettingForm.get('isDailyLeaveAccrualsRun').touched)">
+                            <small class="text-danger">Please choose an Option.</small>
                         </div>
                     </div>
                 </div>
@@ -89,18 +103,21 @@
                             <div class="col-6">
                                 <label for="">
                                     What date were initial balances set ?<span class="text-danger"
-                                        *ngIf="isEdit">&nbsp;*</span>
+                                        *ngIf="isEdit"> *</span>
                                 </label>
                             </div>
                             <div class="form-group mb-3">
 
                                 <input type="text" formControlName="initialBalanceSetDate" class="form-control"
                                     #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
-                                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
-                                    formControlName="initialBalanceSetDate" />
+                                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" />
+                                    <div *ngIf="leaveGeneralSettingForm.get('initialBalanceSetDate').invalid && (leaveGeneralSettingForm.get('initialBalanceSetDate').dirty || leaveGeneralSettingForm.get('initialBalanceSetDate').touched)">
+                                        <small class="text-danger">Please choose a Date.</small>
+                                    </div>
                             </div>
 
                         </div>
+                        
                     </div>
 
                     <div class="col-md-6">
@@ -108,7 +125,7 @@
                             <div class="col-6">
                                 <label for="">
                                     Would you like to freeze Initial balances once first accrual is run?<span
-                                        class="text-danger" *ngIf="isEdit">&nbsp;*</span>
+                                        class="text-danger" *ngIf="isEdit"> *</span>
                                 </label>
                             </div>
                             <div class="col-6">
@@ -116,8 +133,13 @@
                                     <option [value]="true">Yes</option>
                                     <option [value]="false">No</option>
                                 </select>
+                                <div *ngIf="leaveGeneralSettingForm.get('isFreezeInitialBalancesOnceFirstAccrualRun').invalid && (leaveGeneralSettingForm.get('isFreezeInitialBalancesOnceFirstAccrualRun').dirty || leaveGeneralSettingForm.get('isFreezeInitialBalancesOnceFirstAccrualRun').touched)">
+                                    <small class="text-danger">Please choose an Option.</small>
+                                </div>
                             </div>
+
                         </div>
+                        
                     </div>
                 </div>
 
@@ -128,15 +150,18 @@
                             <div class="col-6">
                                 <label for="">
                                     What should be the short leave application limit?<span class="text-danger"
-                                        *ngIf="isEdit">&nbsp;*</span>
+                                        *ngIf="isEdit"> *</span>
                                 </label>
                             </div>
                             <div class="col-6">
                                 <input type="number" formControlName="shortLeaveApplicationLimit" class="form-control"
-                                    class="form-control" placeholder="Enter the Limit">
-
+                                    placeholder="Enter the Limit">
+                                    <div *ngIf="leaveGeneralSettingForm.get('shortLeaveApplicationLimit').invalid && (leaveGeneralSettingForm.get('shortLeaveApplicationLimit').dirty || leaveGeneralSettingForm.get('shortLeaveApplicationLimit').touched)">    
+                                        <small class="text-danger">Please Set a Limit.</small>
+                                    </div>
                             </div>
                         </div>
+                        
                     </div>
 
                     <div class="col-md-6">
@@ -144,16 +169,18 @@
                             <div class="col-6">
                                 <label for="">
                                     What should be the max duration for short leave application (in minutes)?<span
-                                        class="text-danger" *ngIf="isEdit">&nbsp;*</span>
+                                        class="text-danger" *ngIf="isEdit"> *</span>
                                 </label>
                             </div>
                             <div class="col-6">
-                                <input type="text" class="form-control"
-                                    formControlName="maxDurationForShortLeaveApplicationInMin" class="form-control"
-                                    placeholder="Enter the Duration">
-                            </div>
+                                <input type="text" formControlName="maxDurationForShortLeaveApplicationInMin"
+                                    class="form-control" placeholder="Enter the Duration">
+                                    <div *ngIf="leaveGeneralSettingForm.get('maxDurationForShortLeaveApplicationInMin').invalid && (leaveGeneralSettingForm.get('maxDurationForShortLeaveApplicationInMin').dirty || leaveGeneralSettingForm.get('maxDurationForShortLeaveApplicationInMin').touched)">    
+                                        <small class="text-danger">Please Set the Duration.</small>
+                                    </div>
+                                </div>
                         </div>
-                    </div>
+                                            </div>
                 </div>
 
                 <div class="row">
@@ -161,15 +188,19 @@
                         <div class="row">
                             <div class="col-6">
                                 <label for="">
-                                    Select Locations Departments Bands Designations or Employees for Short Leave
+                                    Select Band for Short Leave
                                 </label>
                             </div>
                             <div class="col-6">
-                                <input type="text" class="form-control" class="form-control"
-                                    placeholder="Enter the Limit" formControlName="band">
-
+                                <select name="" formControlName="band" id="">
+                                    <option [value]="band._id" *ngFor="let band of bands">{{band.band}}</option>
+                                </select>
+                                <div *ngIf="leaveGeneralSettingForm.get('band').invalid && (leaveGeneralSettingForm.get('band').dirty || leaveGeneralSettingForm.get('band').touched)">    
+                                    <small class="text-danger">Please Choose a Band.</small>
+                                </div>
                             </div>
                         </div>
+                       
                     </div>
 
                     <div class="col-md-6">
@@ -177,7 +208,7 @@
                             <div class="col-6">
                                 <label for="">
                                     What are the minimum hours per day that an employee should work to get credit for a
-                                    Full Day Comp Off?<span class="text-danger" *ngIf="isEdit">&nbsp;*</span>
+                                    Full Day Comp Off?<span class="text-danger" *ngIf="isEdit"> *</span>
                                 </label>
                             </div>
                             <div class="col-6">
@@ -193,8 +224,13 @@
                                             max="59" />
                                     </div>
                                 </div>
+                                <div *ngIf="leaveGeneralSettingForm.get('fullDayMinHour').invalid && (leaveGeneralSettingForm.get('fullDayMinHour').dirty || leaveGeneralSettingForm.get('fullDayMinHour').touched)">    
+                                    <small class="text-danger">Please Choose Full Day Minimum Hours.</small>
+                                </div>
                             </div>
+                           
                         </div>
+                        
                     </div>
                 </div>
 
@@ -204,14 +240,14 @@
                             <div class="col-6">
                                 <label for="">
                                     What are the minimum hours per day that an employee should work to get credit for a
-                                    Half Day Comp Off?<span class="text-danger" *ngIf="isEdit">&nbsp;*</span>
+                                    Half Day Comp Off?<span class="text-danger" *ngIf="isEdit"> *</span>
                                 </label>
                             </div>
                             <div class="col-6">
                                 <div class="time-picker-input d-flex align-items-baseline" style="margin-top: -20px;">
                                     <div style="display: grid;">
-                                        <input type="number" formControlName="halfDayMinHour" class="w-75"
-                                            [(ngModel)]="selectedHour" min="0" max="23" />
+                                        <input type="number" formControlName="halfDayMinHour" class="w-75" min="0"
+                                            max="23" />
                                     </div>
                                     <span class="mt-4 pt-3 me-4"> : </span>
                                     <div style="display: grid;">
@@ -220,11 +256,13 @@
                                             max="59" />
                                     </div>
                                 </div>
+                                <div *ngIf="leaveGeneralSettingForm.get('halfDayMinHour').invalid && (leaveGeneralSettingForm.get('halfDayMinHour').dirty || leaveGeneralSettingForm.get('halfDayMinHour').touched)">    
+                                    <small class="text-danger">Please Choose Half Day Minimum Hours.</small>
+                                </div>
                             </div>
                         </div>
+                        
                     </div>
-
-
                 </div>
             </form>
         </div>

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { CompanyService } from 'src/app/_services/company.service';
 import { LeaveService } from 'src/app/_services/leave.service';
 
 @Component({
@@ -19,26 +20,28 @@ export class GeneralSettingsComponent {
   bsValue = new Date();
   totalMinutes: number = 0;
   form: FormGroup;
+  bands: any;
 
   constructor(private leaveService: LeaveService,
-    private fb: FormBuilder, 
-    private toast: ToastrService) {
+    private fb: FormBuilder,
+    private toast: ToastrService,
+    private companySevice: CompanyService) {
     this.leaveGeneralSettingForm = this.fb.group({
       leaveCycleStart: ['', Validators.required],
       isAdminAccessLeaveApproveReject: [true, Validators.required],
       canSupervisorAddLeaveAdjustment: [true, Validators.required],
       isDailyLeaveAccrualsRun: [true, Validators.required],
-      initialBalanceSetDate: [],
+      initialBalanceSetDate: ['', Validators.required],
       isFreezeInitialBalancesOnceFirstAccrualRun: [true, Validators.required],
-      shortLeaveApplicationLimit: [0, Validators.required],
-      maxDurationForShortLeaveApplicationInMin: [0, Validators.required],
+      shortLeaveApplicationLimit: [, Validators.required],
+      maxDurationForShortLeaveApplicationInMin: [, Validators.required],
       band: ['', Validators.required],
-      fullDayMinHour: [0, Validators.required],
-      halfDayMinHour: [0, Validators.required],
-      fullDayMinMinutes: [0, Validators.required],
-      halfDayMinMinutes: [0, Validators.required]
+      fullDayMinHour: [, Validators.required],
+      halfDayMinHour: [, Validators.required],
+      fullDayMinMinutes: [0],
+      halfDayMinMinutes: [0]
     });
-    
+
 
     this.leaveGeneralSettingForm.disable();
   }
@@ -47,6 +50,7 @@ export class GeneralSettingsComponent {
     const currentTime = new Date();
     this.selectedHour = currentTime.getHours();
     this.selectedMinute = currentTime.getMinutes();
+    this.getBand();
     this.leaveService.getGeneralSettingsByCompany().subscribe((res: any) => {
       this.leaveGeneralSettings = res.data;
       this.leaveGeneralSettingForm.patchValue({
@@ -68,7 +72,7 @@ export class GeneralSettingsComponent {
   toggleEdit() {
     this.isEdit = !this.isEdit;
     if (this.isEdit) {
-      this.leaveGeneralSettingForm.enable(); 
+      this.leaveGeneralSettingForm.enable();
     } else {
       this.leaveGeneralSettingForm.disable();
     }
@@ -82,8 +86,6 @@ export class GeneralSettingsComponent {
   }
 
   onUpdate() {
-    this.isEdit = true;
-    let id = this.leaveGeneralSettings._id;
     const request = this.leaveGeneralSettingForm.value
     let payload = {
       leaveCycleStart: request.leaveCycleStart,
@@ -95,21 +97,46 @@ export class GeneralSettingsComponent {
       shortLeaveApplicationLimit: request.shortLeaveApplicationLimit,
       maxDurationForShortLeaveApplicationInMin: request.maxDurationForShortLeaveApplicationInMin,
       band: 'admin',
-      fullDayMinHour: this.totalMinutes,
+      fullDayMinHour: request.fullDayMinHour,
       halfDayMinHour: request.halfDayMinHour,
     }
-    this.leaveService.updateGeneralSettings(id, payload).subscribe((res: any) => {
-      this.leaveGeneralSettings = res.data;
-      this.toast.success('General Settings Updated', 'Succesfully!!!')
-    },
-    err=>{
-      this.toast.error('General Settings Can not be Updated', 'Error')
-    });
+    if (!this.leaveGeneralSettingForm.valid) {
+      this.leaveGeneralSettingForm.markAllAsTouched();
+    }
+    else {
+      if (this.leaveGeneralSettings?._id) {
+        let id = this.leaveGeneralSettings?._id;
+        this.leaveService.updateGeneralSettings(id, payload).subscribe((res: any) => {
+          this.leaveGeneralSettings = res.data;
+          this.toggleEdit();
+          this.toast.success('General Settings Updated', 'Succesfully!!!')
+        },
+          err => {
+            this.toast.error('General Settings Can not be Updated', 'Error')
+          });
+      }
+      else {
+
+        this.leaveService.addGeneralSettings(payload).subscribe((res: any) => {
+          this.leaveGeneralSettings = res.data;
+          this.toggleEdit();
+          this.toast.success('General Settings Added', 'Succesfully!!!')
+        },
+          err => {
+            this.toast.error('General Settings Can not be Added', 'Error')
+          });
+      }
+    }
+  }
+
+  resetSettings() {
+    this.ngOnInit();
     this.toggleEdit();
   }
 
-  resetSettings(){
-    this.ngOnInit();
-    this.toggleEdit();
+  getBand() {
+    this.companySevice.getBand().subscribe((res: any) => {
+      this.bands = res.data;
+    })
   }
 }
