@@ -20,10 +20,6 @@
         <mat-label>Please select the mode of capturing attendance</mat-label>
         <mat-select multiple  formControlName="attendanceMode">
             <mat-option  [value]="mode?.mode"  *ngFor="let mode of modes">{{mode?.mode}}</mat-option>
-            <!-- <mat-option value="web_check-in">Web Check-In</mat-option>
-            <mat-option value="manually-upload">Manually Upload</mat-option>
-            <mat-option value="mobile">Mobile</mat-option>
-            <mat-option value="biometric">Biometric</mat-option> -->
         </mat-select>
     </mat-form-field>
 
