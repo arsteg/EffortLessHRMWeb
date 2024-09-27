@@ -33,19 +33,32 @@ export class CreateLeaveComponent {
       clubbingRestrictions: [false, Validators.required],
       weeklyOffClubTogether: [true],
       holidayClubTogether: [true],
-      leaveCategories: new FormControl([]) ,
+      leaveCategories: [[], Validators.required],
       cubbingRestrictionCategories: this.fb.array([])
     })
   }
 
   ngOnInit() {
+    if (this.isEdit == false) {
+      this.addTemplateForm.patchValue({
+        label: '',
+        approvalLevel: '1-level',
+        approvalType: 'employee-wise',
+        primaryApprover: '',
+        secondaryApprover: '',
+        isCommentMandatory: true,
+        clubbingRestrictions: false,
+        weeklyOffClubTogether: true,
+        holidayClubTogether: true,
+        leaveCategories: [],
+        cubbingRestrictionCategories: []
+      })
+    }
+    else {
+      this.setFormValues();
+    }
     this.getAllUsers();
     this.getLeaveCatgeories();
-    this.leaveService.selectedTemplate.subscribe((template: any) => {
-      if (template._id) {
-        this.setFormValues(template)
-      }
-    });
 
     this.addTemplateForm.get('approvalLevel').valueChanges.subscribe((value: any) => {
       this.validateApprovers(this.addTemplateForm.get('approvalType').value, value)
@@ -70,22 +83,25 @@ export class CreateLeaveComponent {
     this.addTemplateForm.get('secondaryApprover').updateValueAndValidity();
   }
 
-  setFormValues(templateData: any) {
-    this.leaveService.getLeaveTemplateById(templateData._id).subscribe((res: any) => {
-      this.categoryList = res.data;
-      let leaveCategories = this.categoryList.applicableCategories.map(category => category?.leaveCategory);
-      this.addTemplateForm.patchValue({
-        label: templateData.label,
-        approvalLevel: templateData.approvalLevel,
-        approvalType: templateData.approvalType,
-        primaryApprover: templateData.primaryApprover,
-        secondaryApprover: templateData.secondaryApprover,
-        isCommentMandatory: templateData.isCommentMandatory,
-        clubbingRestrictions: templateData.clubbingRestrictions,
-        weeklyOffClubTogether: templateData.weeklyOffClubTogether,
-        holidayClubTogether: templateData.holidayClubTogether,
-        cubbingRestrictionCategories: templateData.cubbingRestrictionCategories,
-        leaveCategories: leaveCategories
+  setFormValues() {
+    this.leaveService.selectedTemplate.subscribe((template: any) => {
+
+      this.leaveService.getLeaveTemplateById(template._id).subscribe((res: any) => {
+        this.categoryList = res.data;
+        let leaveCategories = this.categoryList.applicableCategories.map(category => category?.leaveCategory);
+        this.addTemplateForm.patchValue({
+          label: template.label,
+          approvalLevel: template.approvalLevel,
+          approvalType: template.approvalType,
+          primaryApprover: template.primaryApprover,
+          secondaryApprover: template.secondaryApprover,
+          isCommentMandatory: template.isCommentMandatory,
+          clubbingRestrictions: template.clubbingRestrictions,
+          weeklyOffClubTogether: template.weeklyOffClubTogether,
+          holidayClubTogether: template.holidayClubTogether,
+          cubbingRestrictionCategories: template.cubbingRestrictionCategories,
+          leaveCategories: leaveCategories
+        });
       });
     });
   }
@@ -131,18 +147,23 @@ export class CreateLeaveComponent {
       cubbingRestrictionCategories: this.addTemplateForm.value.cubbingRestrictionCategories,
       leaveCategories: this.addTemplateForm.value.leaveCategories.map(category => ({ leaveCategory: category }))
     }
-    if (this.changeMode == 'Add') {
-      this.leaveService.addLeaveTemplate(payload).subscribe((res: any) => {
-        this.leaveService.selectedTemplate.next(res.data);
-        this.changeStep.emit(2);
-      })
+    if (this.addTemplateForm.valid) {
+      if (this.changeMode == 'Add') {
+        this.leaveService.addLeaveTemplate(payload).subscribe((res: any) => {
+          this.leaveService.selectedTemplate.next(res.data);
+          this.changeStep.emit(2);
+        })
+      }
+      else {
+        const id = this.leaveService.selectedTemplate.getValue()._id;
+        this.leaveService.updateLeaveTemplate(id, payload).subscribe((res: any) => {
+          this.changeStep.emit(2);
+        })
+
+      }
     }
     else {
-      const id = this.leaveService.selectedTemplate.getValue()._id;
-      this.leaveService.updateLeaveTemplate(id, payload).subscribe((res: any)=>{
-        this.changeStep.emit(2);
-      })
-
+      this.addTemplateForm.markAllAsTouched();
     }
   }
 

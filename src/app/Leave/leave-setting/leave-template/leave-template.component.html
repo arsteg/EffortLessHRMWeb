@@ -9,7 +9,7 @@
                     <input class="form-control search" type="text" placeholder="Search..." name="searchText"
                         aria-label="default input example" [(ngModel)]="searchText">
 
-                    <button mat-raised-button (click)="open(addModal); isEdit === false; changeMode='Add';"
+                    <button mat-raised-button (click)=" isEdit = false; changeMode='Add'; open(addModal);"
                         class="addBtn rounded-pill mx-3">Add
                         </button>
 
@@ -77,10 +77,11 @@
                         <td class="text-center">{{ calculateTotalEmployees(leaveTemp) }}</td>
                         <td class="text-center">{{leaveTemp?.applicableCategories?.length}}</td>
                         <td>
-                            <button class="actions" mat-mini-fab  matTooltip="Edit" matTooltipPosition="before" (click)="changeMode='Next'; isEdit === true;
-                            open(addModal);
-                            selectedTemplateId=leaveTemp._id;
-                            setFormValues(leaveTemp)" aria-label="Example icon button with a menu icon">
+                            <button class="actions" mat-mini-fab  matTooltip="Edit" matTooltipPosition="before" (click)="changeMode='Next'; 
+                            isEdit = true;
+                            selectedTemplateId=leaveTemp?._id;
+                            setFormValues(leaveTemp);
+                            open(addModal);" aria-label="Example icon button with a menu icon">
                                 <i class="bi bi-pencil-fill"></i>
                             </button>
                             <button class="actions ms-2" mat-mini-fab matTooltip="Delete" matTooltipPosition="after"
