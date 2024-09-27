@@ -8,6 +8,7 @@ import { CommonService } from 'src/app/_services/common.Service';
 import { UpdateShortLeaveComponent } from '../update-short-leave/update-short-leave.component';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { ViewShortLeaveComponent } from '../view-short-leave/view-short-leave.component';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-show-short-leave',
@@ -34,7 +35,8 @@ export class ShowShortLeaveComponent {
     private dialog: MatDialog,
     private exportService: ExportService,
     private commonService: CommonService,
-    private toast: ToastrService) { }
+    private toast: ToastrService,
+    private datePipe: DatePipe) { }
 
   ngOnInit() {
     this.commonService.populateUsers().subscribe(result => {
@@ -49,10 +51,17 @@ export class ShowShortLeaveComponent {
       "next": this.recordsPerPage.toString(),
       "status": this.status };
     this.leaveService.getShortLeave(requestBody).subscribe((res: any) => {
-      if(res.status==='success') {
-        this.shortLeave = res.data;
-        this.totalRecords = res.total;
-      }
+      
+      this.leaveService.getShortLeave(requestBody).subscribe((leaves) => {
+        this.totalRecords = leaves.total;
+        this.shortLeave = leaves.data.map((leave: any) => ({
+          ...leave,
+          employeeName: this.getUser(leave.employee),
+          date: this.datePipe.transform(leave.date, 'MMM d, yyyy'),
+          startTime: this.datePipe.transform(leave.startTime, 'h:mm a'), // Format startTime as '10:00 AM'
+          endTime: this.datePipe.transform(leave.endTime, 'h:mm a'),
+        }));
+      });
     })
   }
 

@@ -20,14 +20,14 @@
     </div>
 
     <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
-              [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
-              (recordsPerPageChange)="onRecordsPerPageChange($event)">
+        [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
+        (recordsPerPageChange)="onRecordsPerPageChange($event)">
     </app-pagination>
 
     <table class="mt-2">
         <thead>
-            <th [appSort]="shortLeave"
-                data-name="employee" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Employee Name
+            <th [appSort]="shortLeave" data-name="employee"
+                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Employee Name
                 <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
             </th>
             <th [appSort]="shortLeave" data-name="date" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
@@ -38,8 +38,8 @@
                 (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Start Time
                 <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
             </th>
-            <th [appSort]="shortLeave" data-name="endTime"
-                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">End Time
+            <th [appSort]="shortLeave" data-name="endTime" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                End Time
                 <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
             </th>
             <th [appSort]="shortLeave" data-name="durationInMinutes"
@@ -52,35 +52,43 @@
         </thead>
         <tbody>
             <tr *ngFor="let leave of shortLeave  | search: searchText">
-                <td>{{getUser(leave?.employee) || this.leaveService?.leave?.getValue()?.employee}}</td>
-                <td>{{leave?.date | date: 'mediumDate'}}</td>
-                <td>{{leave?.startTime | date: 'shortTime'}}</td>
-                <td>{{leave?.endTime | date: 'shortTime'}}</td>
-                <td>{{leave?.durationInMinutes}}</td>
-                <td> {{leave?.comments}}</td>
-                <td>{{leave?.status}}</td>
+                <td>{{ leave?.employeeName | titlecase }}</td>
+                <td>{{ leave?.date }}</td>
+                <td>{{ leave?.startTime }}</td>
+                <td>{{ leave?.endTime }}</td>
+                <td>{{ leave?.durationInMinutes }}</td>
+                <td>{{ leave?.comments }}</td>
+                <td>{{ leave?.status }}</td>
                 <td>
                     <div ngbDropdown class="dropdown-center d-inline-block">
-                        <button class="actions ms-2" mat-mini-fab ngbDropdownToggle aria-label="Example icon button with a menu icon">
-                          <i class="bi bi-send"></i>
+                        <button class="actions ms-2" mat-mini-fab ngbDropdownToggle
+                            aria-label="Example icon button with a menu icon">
+                            <i class="bi bi-send"></i>
                         </button>
-                      
+
                         <ul ngbDropdownMenu class="dropdown-menu py-0">
-                          <li class="d-flex border-bottom action-list" *ngIf="actionOptions.approve" (click)="openStatusModal(leave, 'Approved')">
-                            <i class="fas fa-check-circle dropdown-item w-25"></i><span class="pt-1 text-muted">Approve</span>
-                          </li>
-                          <li class="d-flex border-bottom action-list" *ngIf="actionOptions.reject" (click)="openStatusModal(leave, 'Rejected')">
-                            <i class="bi bi-person-dash dropdown-item w-25"></i><span class="pt-1 text-muted">Reject</span>
-                          </li>
-                          <li class="d-flex border-bottom action-list" *ngIf="actionOptions.delete" (click)="deleteDialog(leave?._id)">
-                            <i class="bi bi-person-dash dropdown-item w-25"></i><span class="pt-1 text-muted">Delete</span>
-                          </li>
-                          <li class="d-flex border-bottom action-list" *ngIf="actionOptions.view" (click)="openSecondModal(leave)">
-                            <i class="fas fa-eye dropdown-item w-25"></i><span class="pt-1 text-muted">View</span>
-                          </li>
+                            <li class="d-flex border-bottom action-list" *ngIf="actionOptions.approve"
+                                (click)="openStatusModal(leave, 'Approved')">
+                                <i class="fas fa-check-circle dropdown-item w-25"></i><span
+                                    class="pt-1 text-muted">Approve</span>
+                            </li>
+                            <li class="d-flex border-bottom action-list" *ngIf="actionOptions.reject"
+                                (click)="openStatusModal(leave, 'Rejected')">
+                                <i class="bi bi-person-dash dropdown-item w-25"></i><span
+                                    class="pt-1 text-muted">Reject</span>
+                            </li>
+                            <li class="d-flex border-bottom action-list" *ngIf="actionOptions.delete"
+                                (click)="deleteDialog(leave?._id)">
+                                <i class="bi bi-person-dash dropdown-item w-25"></i><span
+                                    class="pt-1 text-muted">Delete</span>
+                            </li>
+                            <li class="d-flex border-bottom action-list" *ngIf="actionOptions.view"
+                                (click)="openSecondModal(leave)">
+                                <i class="fas fa-eye dropdown-item w-25"></i><span class="pt-1 text-muted">View</span>
+                            </li>
                         </ul>
-                      </div>
-                      
+                    </div>
+
                 </td>
             </tr>
         </tbody>
