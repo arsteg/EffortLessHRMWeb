@@ -42,7 +42,7 @@
                 End Time
                 <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
             </th>
-            <th [appSort]="shortLeave" data-name="durationInMinutes"
+            <th [appSort]="shortLeave" data-name="durationInMinutes" class="text-center"
                 (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Total Duration(in minutes)
                 <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
             </th>
@@ -56,7 +56,7 @@
                 <td>{{ leave?.date }}</td>
                 <td>{{ leave?.startTime }}</td>
                 <td>{{ leave?.endTime }}</td>
-                <td>{{ leave?.durationInMinutes }}</td>
+                <td class="text-center">{{ leave?.durationInMinutes }}</td>
                 <td>{{ leave?.comments }}</td>
                 <td>{{ leave?.status }}</td>
                 <td>

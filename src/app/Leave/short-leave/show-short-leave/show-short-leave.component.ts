@@ -38,11 +38,11 @@ export class ShowShortLeaveComponent {
     private toast: ToastrService,
     private datePipe: DatePipe) { }
 
-  ngOnInit() {
-    this.commonService.populateUsers().subscribe(result => {
-      this.allAssignee = result && result.data && result.data.data;
-    });
-    this.getShortLeaves();
+    ngOnInit() {
+      this.commonService.populateUsers().subscribe(result => {
+        this.allAssignee = result && result.data && result.data.data;
+        this.getShortLeaves();
+      });
   }
 
   getShortLeaves() {
@@ -93,8 +93,14 @@ export class ShowShortLeaveComponent {
     const requestBody = { "status": this.status, "skip": ((this.currentPage - 1) * this.recordsPerPage).toString(), "next": this.recordsPerPage.toString() };
     this.leaveService.getShortLeave(requestBody).subscribe(
       (res) => {
-        this.shortLeave = res.data;
         this.totalRecords = res.total;
+        this.shortLeave = res.data.map((leave: any) => ({
+          ...leave,
+          employeeName: this.getUser(leave.employee),
+          date: this.datePipe.transform(leave.date, 'MMM d, yyyy'),
+          startTime: this.datePipe.transform(leave.startTime, 'h:mm a'),
+          endTime: this.datePipe.transform(leave.endTime, 'h:mm a'),
+        }));
       },
       (error) => {
         console.error('Error refreshing short leave table:', error);
