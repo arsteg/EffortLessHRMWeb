@@ -4,70 +4,91 @@
 </div>
 <div mat-dialog-content>
     <form [formGroup]="shortLeave" (ngSubmit)="onSubmission()">
-        <div *ngIf="portalView != 'user'">
-            <label for="member">Select an Employee for Short Leave</label>
+        <ng-container *ngIf="portalView != 'user'">
+            <label for="member">Select an Employee for Short Leave <span class="text-danger">*</span></label>
             <mat-form-field appearance="outline" class="w-100 mx-1">
                 <mat-select formControlName="employee">
                     <mat-option *ngFor="let member of allAssignee" [value]="member.id">
                         {{member?.firstName | titlecase}}&nbsp;{{member?.lastName}}
                     </mat-option>
                 </mat-select>
+
+                <div *ngIf="shortLeave.get('employee').invalid && shortLeave.get('employee').touched"
+                    class="text-danger error">
+                    Employee selection is required
+                </div>
             </mat-form-field>
-            <div *ngIf="shortLeave.get('employee').invalid && shortLeave.get('employee').touched" class="text-danger error">
-                Employee selection is required
-            </div>
-        </div>
+        </ng-container>
 
         <div *ngIf=" tab === 6" class="mb-2">
             <label for="member">Select an Employee for Short Leave <span class="text-danger">*</span></label>
             <mat-form-field appearance="outline" class="w-100 mx-1">
                 <mat-label>Select Employee</mat-label>
-                <mat-select name="users"  formControlName="employee" required>
+                <mat-select name="users" formControlName="employee" required>
                     <mat-option *ngFor="let member of members" [value]="member.id">
                         {{member?.name | titlecase}}
                     </mat-option>
                 </mat-select>
             </mat-form-field>
-            <div *ngIf="shortLeave.get('employee').invalid && shortLeave.get('employee').touched" class="text-danger error">
+            <div *ngIf="shortLeave.get('employee').invalid && shortLeave.get('employee').touched"
+                class="text-danger error">
                 Employee selection is required
             </div>
         </div>
 
-        <div class="mt-2">
-            <label for="">Select Date</label>
+        <div class="">
+            <label for="">Select Date <span class="text-danger">*</span></label>
             <div class=" col-12 form-group mb-3">
                 <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
-                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="date" (bsValueChange)="onDateSelected($event)" />
-                    <div *ngIf="shortLeave.get('date').invalid && shortLeave.get('date').touched" class="text-danger error">
-                        Please add a valid Date
-                    </div>
-            </div>
-        </div>
-
-        <div class="mt-2">
-            <label for="">Select Start Time</label>
-            <div class="form-group mb-3">
-                <input type="datetime-local" formControlName="startTime" class="w-100" id="meeting-time" name="meeting-time" value="" />
-                <div *ngIf="shortLeave.get('startTime').invalid && shortLeave.get('startTime').touched" class="text-danger error">
-                    Please add a valid Start Time
+                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="date"
+                    (bsValueChange)="onDateSelected($event)" />
+                <div *ngIf="shortLeave.get('date').invalid && shortLeave.get('date').touched" class="text-danger error">
+                    Please add a Valid Date!
+                </div>
+                <div *ngIf="shortLeave.errors?.['duplicateLeave']" class="text-danger error pt-0">
+                    A leave application with identical details already exists in our records.
+                    To avoid duplication, please verify the information and resubmit the application if necessary.
                 </div>
             </div>
         </div>
 
         <div class="mt-2">
-            <label for="">Select End Time</label>
+            <label for="">Select Start Time <span class="text-danger">*</span></label>
             <div class="form-group mb-3">
-                <input type="datetime-local"formControlName="endTime" class="w-100" id="meeting-time" name="meeting-time" value="" />
-                <div *ngIf="shortLeave.get('endTime').invalid && shortLeave.get('endTime').touched" class="text-danger error">
-                    Please add valid End Time
+                <input type="datetime-local" formControlName="startTime" class="w-100" id="meeting-time"
+                    name="meeting-time" value="" />
+                <div *ngIf="shortLeave.get('startTime').invalid && shortLeave.get('startTime').touched"
+                    class="text-danger error">
+                    Please add a valid Start Time!
                 </div>
             </div>
         </div>
+
+        <div class="mt-2">
+            <label for="">Select End Time <span class="text-danger">*</span></label>
+            <div class="form-group mb-3">
+                <input type="datetime-local" formControlName="endTime" class="w-100" id="meeting-time"
+                    name="meeting-time" value="" />
+                <div *ngIf="shortLeave.get('endTime').invalid && shortLeave.get('endTime').touched"
+                    class="text-danger error">
+                    Please add valid End Time!
+                </div>
+                <div *ngIf="shortLeave.errors?.['isDuplicateShortLeave']" class="text-danger error pt-0">
+                    A Short leave application with identical details already exists in our records.
+                    To avoid duplication, please verify the information and resubmit the application if necessary.
+                </div>
+            </div>
+        </div>
+
 
         <div class="mt-2">
             <label for="">Total Time (in minutes)</label>
             <div class="form-group mb-3">
-                <input type="text"formControlName="durationInMinutes" class="w-100" [disabled] />
+                <input type="text" formControlName="durationInMinutes" class="w-100" [disabled] />
+            </div>
+            <div *ngIf="shortLeave.errors?.['limitExceeded']" class="text-danger error pt-0">
+                You cannot apply for more than {{ leaveGeneralSettings?.maxDurationForShortLeaveApplicationInMin }}
+                minutes of short leave.
             </div>
         </div>
 
@@ -76,13 +97,15 @@
             <label for="exampleFormControlTextarea1" class="form-label">
                 Comment
             </label>
-            <textarea class="form-control" formControlName="comments" id="exampleFormControlTextarea1" 
+            <textarea class="form-control" formControlName="comments" id="exampleFormControlTextarea1"
                 rows="3"></textarea>
         </div>
 
+
         <div class="d-flex justify-content-between">
             <button mat-raised-button type="reset">Cancel</button>
-            <button mat-button class="addBtn" type="submit">Submit</button>
+            <button mat-button class="addBtn" type="submit"
+                [disabled]="submitButtonDisabled || shortLeave.invalid">Submit</button>
         </div>
     </form>
 </div>
