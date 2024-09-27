@@ -58,7 +58,7 @@ export class ShowShortLeaveComponent {
           ...leave,
           employeeName: this.getUser(leave.employee),
           date: this.datePipe.transform(leave.date, 'MMM d, yyyy'),
-          startTime: this.datePipe.transform(leave.startTime, 'h:mm a'), // Format startTime as '10:00 AM'
+          startTime: this.datePipe.transform(leave.startTime, 'h:mm a'),
           endTime: this.datePipe.transform(leave.endTime, 'h:mm a'),
         }));
       });

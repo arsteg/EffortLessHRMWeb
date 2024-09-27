@@ -70,8 +70,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- <tr *ngFor="let category of leaveCategory | search: searchText ; let i = index"> -->
-                    <tr *ngFor="let category of leaveCategory; let i = index">
+                    <tr *ngFor="let category of leaveCategory | search: searchText ; let i = index">
                         <td>{{category?.label}}</td>
                         <td>{{category?.leaveType}}</td>
                         <td>{{category?.leaveAccrualPeriod}}</td>
