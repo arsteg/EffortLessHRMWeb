@@ -50,8 +50,6 @@ export class ShowShortLeaveComponent {
       "skip": ((this.currentPage - 1) * this.recordsPerPage).toString(),
       "next": this.recordsPerPage.toString(),
       "status": this.status };
-    this.leaveService.getShortLeave(requestBody).subscribe((res: any) => {
-      
       this.leaveService.getShortLeave(requestBody).subscribe((leaves) => {
         this.totalRecords = leaves.total;
         this.shortLeave = leaves.data.map((leave: any) => ({
@@ -62,7 +60,6 @@ export class ShowShortLeaveComponent {
           endTime: this.datePipe.transform(leave.endTime, 'h:mm a'),
         }));
       });
-    })
   }
 
   onClose(event) {
