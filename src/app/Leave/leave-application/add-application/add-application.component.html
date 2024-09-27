@@ -49,9 +49,7 @@
                     Please Select Leave Category
                 </div>
             </mat-form-field>
-
         </div>
-
 
         <label for="">Select Start Date <span class="text-danger">*</span></label>
         <div class=" col-12 form-group mb-3">
@@ -61,10 +59,7 @@
                 class="text-danger error">
                 Add a Valid Start date
             </div>
-
-
         </div>
-
 
         <label for="">Select End Date <span class="text-danger">*</span></label>
         <div class=" col-12 form-group mb-3">
@@ -77,13 +72,13 @@
         </div>
 
         <div *ngIf="leaveApplication.errors?.['duplicateLeave']" class="text-danger error pt-0">
-            A Leave Application with the same details already exists!
+            A leave application with similar details has already been submitted. Please review your request and adjust
+            the dates as necessary.
         </div>
 
-        <div class="mt-2" *ngIf="leaveApplication.get('leaveCategory').value">
-            <label for="" class="">Do you want to provide a half-day option for this type of leave? <span
+        <div class="mt-2" *ngIf="leaveApplication.get('leaveCategory').value && showHalfDayOption">
+            <label for="" class="">Do you want to provide a half-day option for this type of leave?<span
                     class="text-danger">*</span></label>
-
             <div class="d-flex">
                 <div class="form-check">
                     <input class="form-check-input" type="radio" id="flexRadioDefault1"
@@ -100,10 +95,9 @@
                     </label>
                 </div>
             </div>
+
             <ng-container *ngIf="leaveApplication.get('isHalfDayOption').value === true">
-
                 <button type="button" mat-raised-button class="addBtn" (click)="addHalfDayEntry()">Add Half Day</button>
-
                 <div formArrayName="halfDays">
                     <div *ngFor="let halfDay of halfDays.controls; let i=index" [formGroupName]="i">
                         <div class="d-flex justify-content-between my-2">
@@ -126,11 +120,26 @@
                 </div>
             </ng-container>
         </div>
+
         <div class="my-3" *ngIf="leaveDocumentUpload">
             <label for="exampleFormControlUpload" class="form-label">
+                Upload document
+            </label>
+            <label for="fileUpload6" class="file-upload btn btn-outline-primary btn-block rounded-pill shadow">
+                <i class="fa fa-paperclip me-2"></i>Upload document<input id="fileUpload6" type="file"
+                    (change)="onFileSelected($event)" multiple style="display: none;">
+            </label>
+            <ul type="none" class="d-flex ps-0">
+                <li class="contentHeading p-2" *ngFor="let files of selectedFiles; let i = index"
+                    (click)="removeFile(i)">
+                    {{files.name}} <i class="bi bi-x-circle-fill text-danger deleteTaskAttachment"></i>
+                </li>
+            </ul>
+
+            <!-- <label for="exampleFormControlUpload" class="form-label">
                 Upload document 
             </label>
-            <input type="file" (change)="onFileSelected($event)" />
+            <input type="file" (change)="onFileSelected($event)" /> -->
         </div>
 
         <div class="my-3">
@@ -140,8 +149,6 @@
             <textarea class="form-control" id="exampleFormControlTextarea1" formControlName="comment"
                 rows="3"></textarea>
         </div>
-
-
 
         <div class="d-flex justify-content-between">
             <button mat-raised-button type="reset">Cancel</button>

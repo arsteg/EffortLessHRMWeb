@@ -17,9 +17,10 @@
     </div>
 
     <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
-              [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
-              (recordsPerPageChange)="onRecordsPerPageChange($event)">
+        [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
+        (recordsPerPageChange)="onRecordsPerPageChange($event)">
     </app-pagination>
+
     <table class="mt-2">
         <thead>
             <th *ngIf="portalView == 'admin'|| portalView== 'user' && tab == 5" [appSort]="leaveApplication"
@@ -45,10 +46,11 @@
             <th>Status</th>
             <th>Actions</th>
         </thead>
+
         <tbody>
-            <tr
-                *ngFor="let leave of leaveApplication  | search: searchText">
-                <td *ngIf="portalView == 'admin'|| portalView== 'user' && tab == 5">{{getUser(leave?.employee) | titlecase}}</td>
+            <tr *ngFor="let leave of leaveApplication  | search: searchText">
+                <td *ngIf="portalView == 'admin'|| portalView== 'user' && tab == 5">{{getUser(leave?.employee) |
+                    titlecase}}</td>
                 <td>{{getCategory(leave?.leaveCategory)}}</td>
                 <td>{{leave?.startDate | date: 'mediumDate'}}</td>
                 <td>{{leave?.endDate | date: 'mediumDate'}}</td>
@@ -56,26 +58,34 @@
                 <td>{{leave?.status}}</td>
                 <td>
                     <div ngbDropdown class="dropdown-center">
-                        <button class="actions ms-2" mat-mini-fab ngbDropdownToggle aria-label="Example icon button with a menu icon">
-                          <i class="bi bi-send"></i>
+                        <button class="actions ms-2" mat-mini-fab ngbDropdownToggle
+                            aria-label="Example icon button with a menu icon">
+                            <i class="bi bi-send"></i>
                         </button>
-                      
+
                         <ul ngbDropdownMenu class="dropdown-menu py-0">
-                          <li class="d-flex border-bottom action-list" *ngIf="actionOptions.approve && checkForApproval(leave)" (click)="openStatusModal(leave, 'Approved')">
-                            <i class="fas fa-check-circle dropdown-item w-25"></i><span class="pt-1 text-muted">Approve</span>
-                          </li>
-                          <li class="d-flex border-bottom action-list" *ngIf="actionOptions.reject" (click)="openStatusModal(leave, 'Rejected')">
-                            <i class="bi bi-person-dash dropdown-item w-25"></i><span class="pt-1 text-muted">Reject</span>
-                          </li>
-                          <li class="d-flex border-bottom action-list" *ngIf="actionOptions.delete" (click)="deleteDialog(leave?._id)">
-                            <i class="bi bi-person-dash dropdown-item w-25"></i><span class="pt-1 text-muted">Delete</span>
-                          </li>
-                          <li class="d-flex border-bottom action-list" *ngIf="actionOptions.view" (click)="openSecondModal(leave)">
-                            <i class="fas fa-eye dropdown-item w-25"></i><span class="pt-1 text-muted">View</span>
-                          </li>
+                            <li class="d-flex border-bottom action-list"
+                                *ngIf="actionOptions.approve && checkForApproval(leave)"
+                                (click)="openStatusModal(leave, 'Approved')">
+                                <i class="fas fa-check-circle dropdown-item w-25"></i><span
+                                    class="pt-1 text-muted">Approve</span>
+                            </li>
+                            <li class="d-flex border-bottom action-list" *ngIf="actionOptions.reject"
+                                (click)="openStatusModal(leave, 'Rejected')">
+                                <i class="bi bi-person-dash dropdown-item w-25"></i><span
+                                    class="pt-1 text-muted">Reject</span>
+                            </li>
+                            <li class="d-flex border-bottom action-list" *ngIf="actionOptions.delete"
+                                (click)="deleteDialog(leave?._id)">
+                                <i class="bi bi-person-dash dropdown-item w-25"></i><span
+                                    class="pt-1 text-muted">Delete</span>
+                            </li>
+                            <li class="d-flex border-bottom action-list" *ngIf="actionOptions.view"
+                                (click)="openSecondModal(leave)">
+                                <i class="fas fa-eye dropdown-item w-25"></i><span class="pt-1 text-muted">View</span>
+                            </li>
                         </ul>
-                      </div>
-                      
+                    </div>
                 </td>
             </tr>
         </tbody>
@@ -90,7 +100,6 @@
 <ng-template #statusUpdate let-modal>
     <app-update-status (leaveGrantRefreshed)="refreshLeaveApplicationTable()"></app-update-status>
 </ng-template>
-
 
 <ng-template #viewModal let-modal>
     <app-view-leave (close)="onClose($event)"></app-view-leave>

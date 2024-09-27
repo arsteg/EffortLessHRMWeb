@@ -51,6 +51,8 @@ export class AddApplicationComponent {
     showWeekNumbers: false
   };
   isSubmitClicked = false;
+  showHalfDayOption: boolean = true;
+  selectedFiles: any = [];
 
   constructor(private fb: FormBuilder,
     private commonService: CommonService,
@@ -72,7 +74,6 @@ export class AddApplicationComponent {
       halfDays: this.fb.array([]),
       leaveApplicationAttachments: this.fb.array([])
     });
-
   }
 
   createAttachment(data: any = {}): FormGroup {
@@ -114,6 +115,7 @@ export class AddApplicationComponent {
   ngOnChanges() {
     this.handleLeaveCategoryChange();
   }
+
   checkForDuplicateLeave() {
     const employeeId = this.leaveApplication.get('employee')?.value;
     const leaveCategory = this.leaveApplication.get('leaveCategory')?.value;
@@ -130,21 +132,23 @@ export class AddApplicationComponent {
       const formattedStartDate = this.stripTime(new Date(startDate));
       const formattedEndDate = this.stripTime(new Date(endDate));
 
-      const isDuplicate = this.existingLeaves.some((leave: any) =>
-        leave.employee === employeeId &&
-        leave.leaveCategory === leaveCategory &&
-        this.stripTime(new Date(leave.startDate)) === formattedStartDate &&
-        this.stripTime(new Date(leave.endDate)) === formattedEndDate
-      );
+      const isOverlappingLeave = this.existingLeaves.some((leave: any) => {
+        const leaveStartDate = this.stripTime(new Date(leave.startDate));
+        const leaveEndDate = this.stripTime(new Date(leave.endDate));
+        return leave.employee === employeeId &&
+          leave.leaveCategory === leaveCategory &&
+          (formattedStartDate <= leaveEndDate && formattedEndDate >= leaveStartDate);
+      });
 
-      if (isDuplicate) {
+      if (isOverlappingLeave) {
         this.leaveApplication.setErrors({ duplicateLeave: true });
+        this.showHalfDayOption = false;
       } else {
         this.leaveApplication.setErrors(null);
+        this.showHalfDayOption = true;
       }
     });
   }
-  
 
   handleLeaveCategoryChange() {
     if (!this.tempLeaveCategory || !this.tab) {
@@ -164,10 +168,7 @@ export class AddApplicationComponent {
   }
 
   addHalfDayEntry() {
-    this.halfDays.push(this.fb.group({
-      date: [''],
-      dayHalf: ['']
-    }));
+    this.halfDays.push(this.fb.group({ date: [''], dayHalf: [''] }));
   }
 
   get halfDays() {
@@ -175,10 +176,7 @@ export class AddApplicationComponent {
   }
 
   getAllLeaveCategories() {
-    let payload = {
-      skip: '',
-      next: ''
-    }
+    let payload = { skip: '', next: '' }
     this.leaveService.getAllLeaveCategories(payload).subscribe((res: any) => {
       this.leaveCategories = res.data;
     })
@@ -217,17 +215,16 @@ export class AddApplicationComponent {
                 this.members.push({ id: user.id, name: `${user.firstName} ${user.lastName}`, email: user.email });
               }
             })
-          },
-          error: error => {
+          }, error: error => {
             console.log('There was an error!', error);
           }
         });
-      },
-      error: error => {
+      }, error: error => {
         console.log('There was an error!', error);
       }
     });
   }
+
   onMemberSelectionChange(member: any) {
     this.member = JSON.parse(member.value);
   }
@@ -235,10 +232,7 @@ export class AddApplicationComponent {
   existingLeaves: any[] = [];
 
   getLeaveApplicationByUser() {
-    let payload = {
-      skip: '',
-      next: ''
-    }
+    let payload = { skip: '', next: '' }
     const employeeId = this.leaveApplication.get('employee')?.value;
     if (employeeId) {
       this.leaveService.getLeaveApplicationbyUser(payload, employeeId).subscribe((res: any) => {
@@ -262,11 +256,7 @@ export class AddApplicationComponent {
     startDate = this.stripTime(new Date(startDate));
     endDate = this.stripTime(new Date(endDate));
 
-    this.leaveApplication.patchValue({
-      startDate: startDate,
-      endDate: endDate
-    });
-
+    this.leaveApplication.patchValue({ startDate: startDate, endDate: endDate });
     this.leaveApplication.value.status = 'Level 1 Approval Pending';
     let payload = { skip: '', next: '' }
     console.log(this.leaveApplication.value);
@@ -283,8 +273,7 @@ export class AddApplicationComponent {
       if (isDuplicate) {
         this.toast.error('A leave application with the same details already Exists.', 'Error');
         return;
-      }
-      else {
+      } else {
         this.leaveService.addLeaveApplication(this.leaveApplication.value).subscribe((res: any) => {
           this.leaveApplicationRefreshed.emit();
           this.leaveApplication.reset();
@@ -293,7 +282,7 @@ export class AddApplicationComponent {
       }
     })
   }
- 
+
   closeModal() {
     this.leaveApplication.reset();
     this.close.emit(true);
@@ -306,7 +295,6 @@ export class AddApplicationComponent {
     }
   }
 
- 
   getDayName(date) {
     return date.toLocaleString('en-US', { weekday: 'short' });
   }
@@ -346,7 +334,6 @@ export class AddApplicationComponent {
       const endDate = new Date(leave.endDate);
       const startDateOnly = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
       const endDateOnly = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
-
       return applyDateOnly >= startDateOnly && applyDateOnly <= endDateOnly;
     }).length;
 
@@ -370,7 +357,6 @@ export class AddApplicationComponent {
     const currentDate = new Date();
     const startDateOnly = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
     const currentDateOnly = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
-
     const timeDifference = startDateOnly.getTime() - currentDateOnly.getTime();
     const daysDifference = Math.floor(timeDifference / (1000 * 3600 * 24));
     return daysDifference;
@@ -406,39 +392,28 @@ export class AddApplicationComponent {
     return this.leaveApplication.get('leaveApplicationAttachments') as FormArray;
   }
 
-  onFileSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.files?.length) {
-      this.selectedFile = input.files[0];
-      if (this.selectedFile) {
-        const reader = new FileReader();
-        reader.readAsDataURL(this.selectedFile);
-        reader.onloadend = (e) => {
-          if (e.target.readyState === FileReader.DONE) {
-            const staticAttachments = [
-              {
-                attachmentType: this.selectedFile.type,
-                attachmentName: this.selectedFile.name.split('.')[0],
-                attachmentSize: this.selectedFile.size.toString(),
-                extention: this.selectedFile.name.split('.')[1],
-                file: e.target.result as string
-              }
-            ];
-
-            staticAttachments.forEach(attachment => {
-              this.leaveApplicationAttachments.push(this.createAttachment(attachment));
-            });
-          }
-        };
+  onFileSelected(event) {
+    const files: FileList = event.target.files;
+    if (files) {
+      for (let i = 0; i < files.length; i++) {
+        const file: File = files.item(i);
+        if (file) {
+          this.selectedFiles.push(file);
+        }
       }
+    }
+  }
+
+  removeFile(index: number) {
+    if (index !== -1) {
+      this.selectedFiles.splice(index, 1);
     }
   }
 
   updateValidators() {
     if (this.leaveDocumentUpload) {
       this.leaveApplication.get('leaveApplicationAttachments')?.setValidators(Validators.required);
-    }
-    else {
+    } else {
       this.leaveApplication.get('leaveApplicationAttachments')?.clearValidators();
     }
     this.leaveApplication.get('leaveApplicationAttachments')?.updateValueAndValidity();
