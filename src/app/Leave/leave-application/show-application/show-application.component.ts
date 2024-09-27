@@ -9,6 +9,7 @@ import { CommonService } from 'src/app/_services/common.Service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { ToastrService } from 'ngx-toastr';
 import { FormControl } from '@angular/forms';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-show-application',
@@ -41,7 +42,8 @@ export class ShowApplicationComponent {
     private exportService: ExportService,
     private commonService: CommonService,
     private toast: ToastrService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private datePipe: DatePipe
   ) { }
 
   ngOnInit() {
@@ -157,14 +159,28 @@ export class ShowApplicationComponent {
 
   getLeaveApplication() {
     // if (this.portalView === 'admin') {
-    const requestBody = { "status": this.status, "skip": ((this.currentPage - 1) * this.recordsPerPage).toString(), "next": this.recordsPerPage.toString() };
+    const requestBody = {
+      "status": this.status,
+      "skip": ((this.currentPage - 1) * this.recordsPerPage).toString(),
+      "next": this.recordsPerPage.toString()
+    };
     this.leaveService.getLeaveApplication(requestBody).subscribe((res: any) => {
       this.leaveApplication = res.data;//.filter(leave => leave.status === this.status);
       this.totalLeaveDays = 0;
-      this.leaveApplication.forEach(leave => {
-        leave.totalLeaveDays = this.calculateTotalLeaveDays(leave);
-      });
+      // this.leaveApplication.forEach(leave => {
+      //   leave.totalLeaveDays = this.calculateTotalLeaveDays(leave);
+      // });
       this.totalRecords = res.total;
+      this.leaveApplication = res.data.map((leave: any) => {
+        leave.totalLeaveDays = this.calculateTotalLeaveDays(leave);
+
+        return {
+          ...leave,
+          employeeName: this.getUser(leave.employee),
+          startDate: this.datePipe.transform(leave.startDate, 'MMM d, yyyy'),
+          endDate: this.datePipe.transform(leave.endDate, 'MMM d, yyyy')
+        };
+      })
     });
     // }
     // if (this.portalView === 'user') {
