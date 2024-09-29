@@ -41,7 +41,7 @@ export class HolidaysComponent {
       isMandatoryForFlexiHoliday: [true, Validators.required],
       holidaysAppliesFor: ['', Validators.required],
       year: [''],
-      users: [[], Validators.required]
+      users: [[]]
     });
     this.currentYear = new Date().getFullYear();
   }
@@ -88,15 +88,22 @@ export class HolidaysComponent {
   }
 
   onSubmission() {
-    if (this.holidayForm.get('holidaysAppliesFor').value == 'Specific-Employees') {
-      const users = this.holidayForm.value.users.map(user => ({ user: user }));
-      this.holidayForm.value.users = users;
-    }
-    else {
-      this.holidayForm.value.users = [];
-    }
+    
+    if (this.holidayForm.value.holidaysAppliesFor === 'specific-employees' &&
+      (!this.holidayForm.value.users || this.holidayForm.value.users.length === 0)) {
+    this.holidayForm.get('users').setErrors({ required: true });  // Set 'required' error manually
+    return;
+  }
+  
+  if (this.holidayForm.value.holidaysAppliesFor !== 'all-employees') {
+    const formattedUsers = (this.holidayForm.value?.users || []).map(user => ({ user }));
+  
+    this.holidayForm.patchValue({ users: formattedUsers });
+  }
+  
     this.holidayForm.value.year = this.currentYear || this.selectedYear;
     console.log(this.holidayForm.value);
+   if(this.holidayForm.valid){
     if (!this.isEdit) {
       this.companyService.addHolidays(this.holidayForm.value).subscribe(res => {
         this.holidays.push(res.data);
@@ -106,15 +113,12 @@ export class HolidaysComponent {
         err => { this.toast.error('Holiday Can not be Added', 'Error') }
       );
     }
-    // updateZone
     else if (this.isEdit) {
       this.companyService.updateHolidays(this.selectedRecord._id, this.holidayForm.value).subscribe(res => {
         this.toast.success('Holiday updated successfully', 'Success');
-        // const index = this.holidays.findIndex(z => z._id === this.selectedRecord._id);
         const index = this.holidays.findIndex((z) => z._id === this.selectedRecord._id);
         if (index !== -1) {
-          this.holidays[index] = { ...res.data }; 
-          // this.holidays[index] = { ...this.selectedRecord, ...this.holidayForm.value };
+          this.holidays[index] = { ...res.data };
         }
         this.holidayForm.reset();
         this.isEdit = false;
@@ -122,6 +126,10 @@ export class HolidaysComponent {
         err => { this.toast.error('Holiday Can not be Updated', 'Error') }
       );
     }
+  }
+  else{
+    this.holidayForm.markAllAsTouched();
+  }
   }
 
   edit(data: any) {
@@ -158,7 +166,7 @@ export class HolidaysComponent {
 
   open(content: any) {
 
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;

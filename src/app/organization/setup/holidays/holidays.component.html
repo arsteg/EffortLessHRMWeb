@@ -96,7 +96,7 @@
             <label for="">Please Provide a Label for this Holiday <span class="text-danger">*</span></label>
             <input type="text" class="form-control" placeholder="Enter Label for The Holiday" formControlName="label">
             <div *ngIf="holidayForm.get('label').invalid && (holidayForm.get('label').dirty || holidayForm.get('label').touched)"
-                 class="invalid-feedback">
+                 class="error">
                 <small class="text-danger">Label is required.</small>
             </div>
         </div>
@@ -106,7 +106,7 @@
             <input placeholder="YYYY-MM-DD" class="form-control" #datepickerYMD="bsDatepicker" bsDatepicker
                 [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="date">
             <div *ngIf="holidayForm.get('date').invalid && (holidayForm.get('date').dirty || holidayForm.get('date').touched)"
-                 class="invalid-feedback">
+                 class="error">
                 <small class="text-danger">Date is required.</small>
             </div>
         </div>
@@ -131,7 +131,7 @@
                 </div>
             </div>
             <div *ngIf="holidayForm.get('isHolidayOccurEveryYearOnSameDay').invalid && (holidayForm.get('isHolidayOccurEveryYearOnSameDay').dirty || holidayForm.get('isHolidayOccurEveryYearOnSameDay').touched)"
-                 class="invalid-feedback">
+                 class="error">
                 <small class="text-danger">Please select if the holiday reoccurs every year.</small>
             </div>
         </div>
@@ -156,7 +156,7 @@
                 </div>
             </div>
             <div *ngIf="holidayForm.get('isMandatoryForFlexiHoliday').invalid && (holidayForm.get('isMandatoryForFlexiHoliday').dirty || holidayForm.get('isMandatoryForFlexiHoliday').touched)"
-                 class="invalid-feedback">
+                 class="error">
                 <small class="text-danger">Please select if the holiday is mandatory or flexi.</small>
             </div>
         </div>
@@ -181,7 +181,7 @@
                 </div>
             </div>
             <div *ngIf="holidayForm.get('holidaysAppliesFor').invalid && (holidayForm.get('holidaysAppliesFor').dirty || holidayForm.get('holidaysAppliesFor').touched)"
-                 class="invalid-feedback">
+                 class="error">
                 <small class="text-danger">Please select for whom the holiday applies.</small>
             </div>
         </div>
@@ -201,7 +201,7 @@
     
         <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
             <button mat-raised-button type="button" (click)="clearselectedRequest()">Cancel</button>
-            <button mat-raised-button class="addBtn" type="submit" [disabled]="!holidayForm.valid">Submit</button>
+            <button mat-raised-button class="addBtn" type="submit" >Submit</button>
         </div>
     </form>
     
