@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output, resolveForwardRef } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Location } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 import { LeaveService } from 'src/app/_services/leave.service';
@@ -72,20 +72,20 @@ export class AddCategoryLeaveComponent {
               const categoryId = matchingCategory._id;
 
               const leaveCategoryGroup = this._formBuilder.group({
-                leaveCategory: categoryId,
-                limitNumberOfTimesApply: true,
-                maximumNumbersEmployeeCanApply: 0,
-                maximumNumbersEmployeeCanApplyType: '',
-                dealWithNewlyJoinedEmployee: '',
-                daysToCompleteToBecomeEligibleForLeave: 0,
-                isEmployeeGetCreditedTheEntireAmount: true,
-                extendLeaveCategory: true,
-                extendMaximumDayNumber: 0,
-                extendFromCategory: '',
-                negativeBalanceCap: 0,
-                accrualRatePerPeriod: 0,
-                categoryApplicable: 'all-employees',
-                users: ''
+                leaveCategory: [categoryId, Validators.required],
+              limitNumberOfTimesApply: [true],
+              maximumNumbersEmployeeCanApply: [0, [Validators.min(0)]],
+              maximumNumbersEmployeeCanApplyType: [''],
+              dealWithNewlyJoinedEmployee: ['', Validators.required],
+              daysToCompleteToBecomeEligibleForLeave: [0, [Validators.min(0)]],
+              isEmployeeGetCreditedTheEntireAmount: [true],
+              extendLeaveCategory: [true],
+              extendMaximumDayNumber: [0, [Validators.min(0)]],
+              extendFromCategory: [''],
+              negativeBalanceCap: [0, [Validators.min(0)]],
+              accrualRatePerPeriod: [1, [Validators.required, Validators.min(1)]],  // Validation for accrual rate
+              categoryApplicable: ['all-employees'],
+              users: ['']
               });
               leaveCategoriesArray.push(leaveCategoryGroup);
             }
@@ -134,13 +134,11 @@ export class AddCategoryLeaveComponent {
     this.firstForm.value.leaveCategories.forEach((category: any) => {
       category.users = category.users.map((user: any) => ({ user }));
     });
-    //console.log(this.firstForm.value);
     this.leaveService.updateLeaveTemplateCategories(this.firstForm.value).subscribe((res: any) => {
       this.updateLeaveTemplateTable.emit();
       this.toast.success('Leave Template Categories Updated', 'Successfully');
       this.closeModal();
     });
-
   }
 
 }

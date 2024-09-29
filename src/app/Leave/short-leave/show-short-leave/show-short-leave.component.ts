@@ -25,10 +25,9 @@ export class ShowShortLeaveComponent {
   public sortOrder: string = '';
   @Input() tab: number;
   portalView = localStorage.getItem('adminView');
-  totalRecords: number = 0 // example total records
+  totalRecords: number = 0
   recordsPerPage: number = 10;
   currentPage: number = 1;
-
 
   constructor(private modalService: NgbModal,
     public leaveService: LeaveService,
@@ -117,7 +116,6 @@ export class ShowShortLeaveComponent {
       status: shortLeave.status,
       comments: shortLeave.comments,
     }));
-
     this.exportService.exportToCSV('Short-Leave', 'Short-Leave', dataToExport);
   }
 
@@ -128,6 +126,7 @@ export class ShowShortLeaveComponent {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
     });
   }
+  
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';

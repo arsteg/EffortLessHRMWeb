@@ -22,12 +22,12 @@ export class LeaveAssignmentComponent implements OnInit {
   users: any[] = [];
   templates: any;
   templateAssignment: any;
-  public sortOrder: string = ''; // 'asc' or 'desc',
-  defaultnext= "100000";
-  defaultskip= "0";
-  recordsPerPageOptions: number[] = [5, 10, 25, 50, 100]; // Add the available options for records per page
-  recordsPerPage: number = 10; // Default records per page
-  totalRecords: number=0; // Total number of records
+  public sortOrder: string = '';
+  defaultnext = "100000";
+  defaultskip = "0";
+  recordsPerPageOptions: number[] = [5, 10, 25, 50, 100];
+  recordsPerPage: number = 10;
+  totalRecords: number = 0;
   currentPage: number = 1;
   skip: string = '0';
   next = '10';
@@ -58,7 +58,7 @@ export class LeaveAssignmentComponent implements OnInit {
   }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
@@ -86,39 +86,44 @@ export class LeaveAssignmentComponent implements OnInit {
     let payload = {
       user: this.templateAssignmentForm.value.user,
       leaveTemplate: this.templateAssignmentForm.value.leaveTemplate,
-      primaryApprover: this.templateAssignmentForm.value.primaryApprover,
-      secondaryApprover: this.templateAssignmentForm.value.secondaryApprover
+      primaryApprover: this.templateAssignmentForm.value.primaryApprover || null,
+      secondaryApprover: this.templateAssignmentForm.value.secondaryApprover || null
     }
-    if (!this.isEdit) {
-      this.leaveService.addLeaveTemplateAssignment(payload).subscribe((res: any) => {
-        if(res.status == 'success'){
-          const templateAssignment = res.data;
-          this.templateAssignment.push(templateAssignment);
-          this.toast.success('Employee assigned to the Template', 'Successfully!!!');
-          this.templateAssignmentForm.reset();
-          this.modalService.dismissAll();
-        }
-      },
-        err => {
-          this.toast.error('Employee cannot be assigned to the Template', 'Error')
-        })
+    if (this.templateAssignmentForm.valid) {
+      if (!this.isEdit) {
+        this.leaveService.addLeaveTemplateAssignment(payload).subscribe((res: any) => {
+          if (res.status == 'success') {
+            const templateAssignment = res.data;
+            this.templateAssignment.push(templateAssignment);
+            this.toast.success('Employee assigned to the Template', 'Successfully!!!');
+            this.templateAssignmentForm.reset();
+            this.modalService.dismissAll();
+          }
+        },
+          err => {
+            this.toast.error('Employee cannot be assigned to the Template', 'Error')
+          })
+      }
+      else {
+        const id = this.selectedLeaveAssignment._id
+        this.leaveService.addLeaveTemplateAssignment(payload).subscribe((res: any) => {
+          if (res.status == 'success') {
+            const updatedLeaveAssignment = res.data;
+            const index = this.templateAssignment.findIndex(category => category._id === updatedLeaveAssignment._id);
+            if (index !== -1) {
+              this.templateAssignment[index] = updatedLeaveAssignment;
+            }
+            this.toast.success('Leave assignment Updated', 'Successfully!!!');
+            this.modalService.dismissAll();
+          }
+        },
+          err => {
+            this.toast.error('Leave Assignment can not be updated', 'Error!!!')
+          })
+      }
     }
     else{
-      const id = this.selectedLeaveAssignment._id
-      this.leaveService.addLeaveTemplateAssignment(payload).subscribe((res: any)=>{
-        if(res.status == 'success'){
-          const updatedLeaveAssignment = res.data;
-          const index = this.templateAssignment.findIndex(category => category._id === updatedLeaveAssignment._id);
-          if (index !== -1) {
-            this.templateAssignment[index] = updatedLeaveAssignment;
-          }
-          this.toast.success('Leave assignment Updated', 'Successfully!!!');
-          this.modalService.dismissAll();
-        }
-      },
-      err =>{
-        this.toast.error('Leave Assignment can not be updated', 'Error!!!')
-      })
+      this.templateAssignmentForm.markAllAsTouched();
     }
   }
 
@@ -138,7 +143,7 @@ export class LeaveAssignmentComponent implements OnInit {
   getTemplateAssignments() {
     const requestBody = { "skip": this.skip, "next": this.next };
     this.leaveService.getLeaveTemplateAssignment(requestBody).subscribe((res: any) => {
-      if(res.status == "success"){
+      if (res.status == "success") {
         this.templateAssignment = res.data;
         this.totalRecords = res.total;
         this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
@@ -173,7 +178,7 @@ export class LeaveAssignmentComponent implements OnInit {
     this.isEdit = true;
     console.log(templateAssignment)
     this.templateAssignmentForm.patchValue({
-      user:templateAssignment.user,
+      user: templateAssignment.user,
       leaveTemplate: templateAssignment.leaveTemplate,
       primaryApprover: templateAssignment.primaryApprover,
       secondaryApprover: templateAssignment.secondaryApprover

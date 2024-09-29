@@ -9,7 +9,7 @@
                     aria-label="default input example" [(ngModel)]="searchText">
 
                 <button mat-raised-button (click)="open(addModal)" class="addBtn rounded-pill mx-3">Add
-                    </button>
+                </button>
 
                 <button class="submenuTab active  rounded-pill"> <i class="bi bi-download downloadBtn pe-2"></i>
                     Download</button>
@@ -19,8 +19,8 @@
         <ng-container>
             <div class="d-flex justify-content-end align-items-center mt-2">
                 Items per page
-                <select style="width: 80px;" class="page form-select form-select-sm mx-2"
-                    [(ngModel)]="recordsPerPage" (ngModelChange)="updateRecordsPerPage()">
+                <select style="width: 80px;" class="page form-select form-select-sm mx-2" [(ngModel)]="recordsPerPage"
+                    (ngModelChange)="updateRecordsPerPage()">
                     <option class="page" *ngFor="let option of recordsPerPageOptions" [value]="option">
                         {{
                         option }}
@@ -31,20 +31,17 @@
                     totalRecords
                     }}</span>
                 <!-- previous page -->
-                <span (click)="firstPagePagination()"
-                    class="page bi bi-chevron-bar-left btn-lg btn-outline-primary" title="First Page"
-                    [class.disabled]="skip === '0' || currentPage === 1"></span>
+                <span (click)="firstPagePagination()" class="page bi bi-chevron-bar-left btn-lg btn-outline-primary"
+                    title="First Page" [class.disabled]="skip === '0' || currentPage === 1"></span>
 
-                <span (click)="previousPagination()"
-                    class="page bi bi-chevron-left btn-lg btn-outline-primary" title="Previous Page"
-                    [class.disabled]="skip === '0' || currentPage === 1"></span>
+                <span (click)="previousPagination()" class="page bi bi-chevron-left btn-lg btn-outline-primary"
+                    title="Previous Page" [class.disabled]="skip === '0' || currentPage === 1"></span>
                 <!-- next page -->
                 <span (click)="nextPagination()" class="page bi bi-chevron-right btn-lg btn-outline-primary"
                     title="Next Page" [class.disabled]="currentPage === getTotalPages()"></span>
 
-                <span (click)="lastPagePagination()"
-                    class="page bi bi-chevron-bar-right btn-lg btn-outline-primary" title="Last Page"
-                    [class.disabled]="currentPage === getTotalPages()"></span>
+                <span (click)="lastPagePagination()" class="page bi bi-chevron-bar-right btn-lg btn-outline-primary"
+                    title="Last Page" [class.disabled]="currentPage === getTotalPages()"></span>
             </div>
         </ng-container>
         <table class="p-2 rounded mt-2">
@@ -76,7 +73,7 @@
                     <td>{{getUser(tempAssignment?.primaryApprover)}}</td>
                     <td>{{getUser(tempAssignment?.secondaryApprover)}}</td>
                     <td>
-                        <button class="actions" mat-mini-fab  matTooltip="Edit" matTooltipPosition="before"
+                        <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before"
                             aria-label="Example icon button with a menu icon"
                             (click)="open(addModal); selectedLeaveAssignment = tempAssignment; editTemplateAssignment(tempAssignment)">
                             <i class="bi bi-pencil-fill"></i>
@@ -116,6 +113,10 @@
                             titlecase}} {{user.lastName | titlecase}}</option>
 
                     </select>
+                    <div *ngIf="templateAssignmentForm.get('user').invalid && templateAssignmentForm.get('user').touched"
+                        class="text-danger error">
+                        Please Choose an Employee to Assign the Leave Template!
+                    </div>
                 </div>
 
                 <div class="form-group mt-2">
@@ -125,6 +126,10 @@
                             {{temp?.label}}
                         </option>
                     </select>
+                    <div *ngIf="templateAssignmentForm.get('leaveTemplate').invalid && templateAssignmentForm.get('leaveTemplate').touched"
+                        class="text-danger error">
+                        Please Choose a Leave Template!
+                    </div>
                 </div>
 
                 <div class="form-group mt-2" *ngIf="showApprovers">
@@ -135,6 +140,10 @@
                             titlecase}} {{user.lastName | titlecase}}</option>
 
                     </select>
+                    <div *ngIf="templateAssignmentForm.get('primaryApprover').invalid && templateAssignmentForm.get('primaryApprover').touched"
+                        class="text-danger error">
+                        Please Choose a Primary Approver!
+                    </div>
                 </div>
 
                 <div class="form-group mt-2" *ngIf="showApprovers">
@@ -145,6 +154,10 @@
                             titlecase}} {{user.lastName | titlecase}}</option>
 
                     </select>
+                    <div *ngIf="templateAssignmentForm.get('secondaryApprover').invalid && templateAssignmentForm.get('secondaryApprover').touched"
+                        class="text-danger error">
+                        Please Choose a Secondary Approver!
+                    </div>
                 </div>
 
                 <div class="my-2">
@@ -152,7 +165,8 @@
                     <div class="modal-footer d-flex justify-content-between mt-3 pb-0">
 
                         <div>
-                            <button mat-raised-button class="mx-2" (click)="modal.dismiss('Cross click')" data-bs-dismiss="modal" type="reset">Cancel</button>
+                            <button mat-raised-button class="mx-2" (click)="modal.dismiss('Cross click')"
+                                data-bs-dismiss="modal" type="reset">Cancel</button>
                         </div>
                         <div>
                             <button mat-raised-button class="addBtn" type="submit">{{!isEdit ? 'Add' :
