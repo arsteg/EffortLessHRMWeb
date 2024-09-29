@@ -26,7 +26,7 @@ export class ShowStatusComponent {
   portalView = localStorage.getItem('adminView');
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   public sortOrder: string = '';
-  totalRecords: number = 0 // example total records
+  totalRecords: number = 0
   recordsPerPage: number = 10;
   currentPage: number = 1;
 
@@ -69,7 +69,6 @@ export class ShowStatusComponent {
       });
     }
     if (this.portalView === 'user') {
-      console.log(this.portalView, this.tab)
       if (this.tab === 4) {
         this.leaveService.getLeaveGrantByUser(this.currentUser?.id).subscribe((res: any) => {
           this.leaveGrant = res.data.filter(leave => leave.status === this.status);
@@ -83,7 +82,6 @@ export class ShowStatusComponent {
         })
       }
     }
-
   }
 
   onClose(event) {

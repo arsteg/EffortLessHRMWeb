@@ -34,12 +34,10 @@
             <th [appSort]="leaveGrant" data-name="date" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
                 Applied For
                 <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-
             </th>
             <th [appSort]="leaveGrant" data-name="usedOn" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
                 Used On
                 <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-
             </th>
             <th>Comment</th>
             <th>Status</th>

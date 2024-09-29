@@ -73,7 +73,7 @@ export class LeaveCategoryComponent implements OnInit {
     this.categoryForm.reset();
   }
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
@@ -127,11 +127,20 @@ export class LeaveCategoryComponent implements OnInit {
           });
       }
     }
-    else { 
+    else {
       this.categoryForm.markAllAsTouched();
     }
   }
-  editCategory(leaveCategory) {
+  getLeaveCategoryById() {
+    if (this.isEdit) {
+      this.leaveService.getLeaveCategorById(this.selectedLeaveCategory._id).subscribe((res: any) => {
+        this.categoryForm.patchValue(res.data)
+        console.log(this.categoryForm.value);
+      })
+    }
+  }
+  editCategory() {
+    const leaveCategory = this.selectedLeaveCategory;
     this.isEdit = true;
     this.categoryForm.patchValue({
       leaveType: leaveCategory.leaveType,

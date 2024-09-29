@@ -29,10 +29,10 @@ export class LeaveService extends baseService {
     return this.http.post<any>(`${environment.apiUrlDotNet}/leave/leave-categories-list`, requestBody, this.httpOptions);
   }
 
-  public getLeaveCategoriesByUser(userId: string): any {
+  public getLeaveCategorById(id: string): any {
     const token = this.getToken();
     this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
-    return this.http.get<any>(`${environment.apiUrlDotNet}/leave/leave-categories-by-user/${userId}`, this.httpOptions);
+    return this.http.get<any>(`${environment.apiUrlDotNet}/leave/leave-categories/${id}`, this.httpOptions);
   }
 
   public getLeaveCategoriesByUserv1(userId: string): any {
