@@ -164,9 +164,15 @@ export class AddApplicationComponent {
 
     if (this.portalView == 'user') {
       if (this.tab === 1) {
-        this.leaveApplication.patchValue({ employee: this.currentUser?.id });
+        if (!this.leaveApplication.get('employee')?.value) {
+          // Only set employee to currentUser.id if it's not already selected
+          this.leaveApplication.patchValue({ employee: this.currentUser?.id });
+        }
       } else if (this.tab === 5) {
-        this.leaveApplication.patchValue({ employee: this.member?.id });
+        if (!this.leaveApplication.get('employee')?.value) {
+          // Only set employee to currentUser.id if it's not already selected
+          this.leaveApplication.patchValue({ employee: this.currentUser?.id });
+        }
       }
     }
 
