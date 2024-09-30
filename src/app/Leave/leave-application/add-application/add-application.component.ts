@@ -105,6 +105,12 @@ export class AddApplicationComponent {
         this.checkStatus = res.status;
       });
     });
+    if (this.currentUser.id) {
+      this.leaveService.getLeaveCategoriesByUserv1(this.currentUser.id).subscribe((res: any) => {
+        this.leaveCategories = res.data;
+        this.checkStatus = res.status;
+      });
+    }
     this.getattendanceTemplatesByUser();
 
     this.leaveApplication.get('employee')?.valueChanges.subscribe(() => this.checkForDuplicateLeave());
@@ -257,12 +263,11 @@ export class AddApplicationComponent {
     startDate = this.stripTime(new Date(startDate));
     endDate = this.stripTime(new Date(endDate));
 
-    this.leaveApplication.patchValue({ startDate: startDate, endDate: endDate });
-    this.leaveApplication.value.status = 'Level 1 Approval Pending';
+    this.leaveApplication.patchValue({ startDate: startDate, endDate: endDate, status: 'Level 1 Approval Pending' });
+    // this.leaveApplication.value.status = 'Level 1 Approval Pending';
     let payload = { skip: '', next: '' }
-    console.log(this.leaveApplication.value);
     this.leaveService.getLeaveApplicationbyUser(payload, employeeId).subscribe((res: any) => {
-      console.log(res.data)
+      console.log('Response Data:', res.data)
       this.existingLeaves = res.data;
       const isDuplicate = this.existingLeaves.some((leave: any) =>
         leave.employee === employeeId &&
@@ -275,6 +280,7 @@ export class AddApplicationComponent {
         return;
       } else {
         this.leaveService.addLeaveApplication(this.leaveApplication.value).subscribe((res: any) => {
+          console.log('Leave Application Data - After submission:', this.leaveApplication.value);
           this.leaveApplicationRefreshed.emit(res.data);
           this.leaveApplication.reset();
           this.toast.success('Leave Application Added Successfully');
