@@ -53,6 +53,7 @@ export class AddApplicationComponent {
   isSubmitClicked = false;
   showHalfDayOption: boolean = true;
   selectedFiles: any = [];
+  checkStatus: any;
 
   constructor(private fb: FormBuilder,
     private commonService: CommonService,
@@ -96,12 +97,12 @@ export class AddApplicationComponent {
     this.leaveApplication.get('leaveCategory').valueChanges.subscribe(leaveCategory => {
       this.tempLeaveCategory = this.leaveCategories.find(l => l.leaveCategory._id === leaveCategory);
       this.leaveDocumentUpload = this.tempLeaveCategory.leaveCategory
-      // this.updateValidators();
       this.handleLeaveCategoryChange();
     });
     this.leaveApplication.get('employee').valueChanges.subscribe(employee => {
       this.leaveService.getLeaveCategoriesByUserv1(employee).subscribe((res: any) => {
         this.leaveCategories = res.data;
+        this.checkStatus = res.status;
       });
     });
     this.getattendanceTemplatesByUser();
@@ -269,13 +270,12 @@ export class AddApplicationComponent {
         leave.startDate === startDate &&
         leave.endDate === endDate
       );
-      console.log(isDuplicate);
       if (isDuplicate) {
         this.toast.error('A leave application with the same details already Exists.', 'Error');
         return;
       } else {
         this.leaveService.addLeaveApplication(this.leaveApplication.value).subscribe((res: any) => {
-          this.leaveApplicationRefreshed.emit();
+          this.leaveApplicationRefreshed.emit(res.data);
           this.leaveApplication.reset();
           this.toast.success('Leave Application Added Successfully');
         });

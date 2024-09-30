@@ -40,6 +40,7 @@
             <label for="member">Select Category <span class="text-danger">*</span></label>
             <mat-form-field appearance="outline" class="w-100 mx-1">
                 <mat-select formControlName="leaveCategory" required>
+                    <mat-option *ngIf="checkStatus == 'failure'" disabled>Template Applicable Category not Assigned</mat-option>
                     <mat-option *ngFor="let category of leaveCategories" [value]="category?.leaveCategory?._id">
                         {{category?.leaveCategory?.label | titlecase}}
                     </mat-option>
