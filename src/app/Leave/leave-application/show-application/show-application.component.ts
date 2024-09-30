@@ -154,23 +154,49 @@ export class ShowApplicationComponent {
       "skip": ((this.currentPage - 1) * this.recordsPerPage).toString(),
       "next": this.recordsPerPage.toString()
     };
-    this.leaveService.getLeaveApplication(requestBody).subscribe((res: any) => {
-      this.leaveApplication = res.data;
-      // this.totalLeaveDays = 0;
-      
-      this.totalRecords = res.total;
-      this.leaveApplication = res.data.map((leave: any) => {
-        leave.totalLeaveDays = this.calculateTotalLeaveDays(leave);
-
-        return {
-          ...leave,
-          employeeName: this.getUser(leave.employee),
-          startDate: this.datePipe.transform(leave.startDate, 'MMM d, yyyy'),
-          endDate: this.datePipe.transform(leave.endDate, 'MMM d, yyyy')
-        };
+    if (this.portalView === 'admin') {
+      this.leaveService.getLeaveApplication(requestBody).subscribe((res: any) => {
+        this.leaveApplication = res.data;
+        // this.totalLeaveDays = 0;
+        this.totalRecords = res.total;
+        this.leaveApplication = res.data.map((leave: any) => {
+          leave.totalLeaveDays = this.calculateTotalLeaveDays(leave);
+          return {
+            ...leave,
+            employeeName: this.getUser(leave.employee),
+            startDate: this.datePipe.transform(leave.startDate, 'MMM d, yyyy'),
+            endDate: this.datePipe.transform(leave.endDate, 'MMM d, yyyy')
+          };
+        })
+      });
+    } else if (this.portalView === 'user') {
+      const employeeId = this.currentUser.id;
+      this.leaveService.getLeaveApplicationbyUser(requestBody, employeeId).subscribe((res: any) => {
+        console.log("User Leave Applications:", res.data);
+        this.leaveApplication = res.data.filter(leave => leave.status === this.status);
+        console.log("Filtered User Leave Applications:", this.leaveApplication);
+        this.totalLeaveDays = 0;
+        this.leaveApplication.forEach(leave => {
+          const startDate = new Date(leave.startDate);
+          const endDate = new Date(leave.endDate);
+          const timeDifference = endDate.getTime() - startDate.getTime();
+          const dayDifference = timeDifference / (1000 * 3600 * 24);
+          leave.totalLeaveDays = Math.abs(Math.round(dayDifference));
+        });
+      });
+    } else if (this.tab === 5) {
+      this.leaveService.getLeaveApplicationByTeam().subscribe((res: any) => {
+        this.leaveApplication = res.data.filter(leave => leave.status === this.status);
+        this.totalLeaveDays = 0;
+        this.leaveApplication.forEach(leave => {
+          const startDate = new Date(leave.startDate);
+          const endDate = new Date(leave.endDate);
+          const timeDifference = endDate.getTime() - startDate.getTime();
+          const dayDifference = timeDifference / (1000 * 3600 * 24);
+          leave.totalLeaveDays = Math.abs(Math.round(dayDifference));
+        });
       })
-    });
-    // }
+    }
     // if (this.portalView === 'user') {
     //   console.log(this.portalView, this.tab)
     //   if (this.tab === 1) {
