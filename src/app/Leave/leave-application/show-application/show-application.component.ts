@@ -79,23 +79,13 @@ export class ShowApplicationComponent {
       data: { report }
     });
     dialogRef.afterClosed().subscribe(result => {
-      this.refreshLeaveApplicationTable();
+      this.refreshLeaveApplicationTable(result);
     });
   }
 
-  refreshLeaveApplicationTable() {
-    const requestBody = {
-      "status": this.status,
-      "skip": ((this.currentPage - 1) * this.recordsPerPage).toString(),
-      "next": this.recordsPerPage.toString()
-    };
-    this.leaveService.getLeaveApplication(requestBody).subscribe((res) => {
-      this.leaveApplication = res.data;
-      this.cdr.detectChanges();
-    }, (error) => {
-      console.error('Error refreshing leave application table:', error);
-    }
-    );
+  refreshLeaveApplicationTable(data: any) {
+    data.totalLeaveDays = this.calculateTotalLeaveDays(data);
+    this.leaveApplication.push(data);
   }
 
   exportToCsv() {
@@ -165,11 +155,9 @@ export class ShowApplicationComponent {
       "next": this.recordsPerPage.toString()
     };
     this.leaveService.getLeaveApplication(requestBody).subscribe((res: any) => {
-      this.leaveApplication = res.data;//.filter(leave => leave.status === this.status);
-      this.totalLeaveDays = 0;
-      // this.leaveApplication.forEach(leave => {
-      //   leave.totalLeaveDays = this.calculateTotalLeaveDays(leave);
-      // });
+      this.leaveApplication = res.data;
+      // this.totalLeaveDays = 0;
+      
       this.totalRecords = res.total;
       this.leaveApplication = res.data.map((leave: any) => {
         leave.totalLeaveDays = this.calculateTotalLeaveDays(leave);
