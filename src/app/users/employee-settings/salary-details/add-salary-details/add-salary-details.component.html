@@ -34,7 +34,7 @@
                 <mat-label>Select CTC Template</mat-label>
                 <mat-select formControlName="CTCTemplate">
                     <mat-option *ngFor="let ctcTemplate of ctcTemplates" [value]="ctcTemplate._id"
-                        (click)="getCTCTemplateById(ctcTemplate?._id)">
+                        (click)="addButtons = false; getCTCTemplateById(ctcTemplate?._id)">
                         {{ctcTemplate.name}}
                     </mat-option>
                 </mat-select>
@@ -229,8 +229,10 @@
                             </div>
                         </ng-container>
                     </div>
-                    <button *ngIf="!edit" mat-raised-button (click)="addFixedAllowance()" type="button">Add Fixed ALlowance</button>
-
+                    <ng-container *ngIf="addButtons === true">
+                    <button *ngIf="!edit" mat-raised-button (click)="addFixedAllowance()" type="button">Add Fixed
+                        ALlowance</button>
+</ng-container>
                 </div>
 
                 <div *ngIf="edit">
@@ -262,7 +264,6 @@
                         *ngFor="let benefit of salaryDetailsForm.get('salaryComponentOtherBenefits')['controls']; let i = index">
                         <ng-container [formGroupName]="i">
                             <div class="row">
-
                                 <mat-form-field appearance="outline" class="col-md-4 my-2 border-bottom">
                                     <mat-label>Other Benefit</mat-label>
                                     <mat-select formControlName="otherBenefits">
@@ -270,10 +271,12 @@
                                             [value]="ob._id">{{ob?.label}}</mat-option>
                                     </mat-select>
                                 </mat-form-field>
+
                                 <mat-form-field appearance="outline" class="col-md-4 my-2 border-bottom">
                                     <mat-label>Monthly Amount</mat-label>
                                     <input matInput type="number" formControlName="monthlyAmount">
                                 </mat-form-field>
+
                                 <mat-form-field appearance="outline" class="col-md-4 my-2 border-bottom">
                                     <mat-label>Yearly Amount</mat-label>
                                     <input matInput type="number" formControlName="yearlyAmount">
@@ -281,7 +284,10 @@
                             </div>
                         </ng-container>
                     </div>
-                    <button *ngIf="!edit" mat-raised-button (click)="addOtherBenefit()" type="button">Add Other Benefit</button>
+                    <ng-container *ngIf="addButtons === true">
+                    <button *ngIf="!edit" mat-raised-button (click)="addOtherBenefit()" type="button">Add Other
+                        Benefit</button>
+                        </ng-container>
                 </div>
                 <div *ngIf="edit">
                     <table>
@@ -331,8 +337,11 @@
                             </div>
                         </ng-container>
                     </div>
-                    <button *ngIf="!edit" mat-raised-button (click)="addEmployerContribution()" type="button">Add Employer
+                    <ng-container *ngIf="addButtons === true">
+                    <button *ngIf="!edit" mat-raised-button (click)="addEmployerContribution()" type="button">Add
+                        Employer
                         Contribution</button>
+                        </ng-container>
                 </div>
                 <div *ngIf="edit">
                     <table>
@@ -381,7 +390,10 @@
                             </div>
                         </ng-container>
                     </div>
-                    <button *ngIf="!edit" mat-raised-button (click)="addFixedDeduction()" type="button">Add Fixed Deduction</button>
+                    <ng-container *ngIf="addButtons === true">
+                        <button *ngIf="!edit" mat-raised-button (click)="addFixedDeduction()" type="button">Add Fixed
+                            Deduction</button>
+                    </ng-container>
                 </div>
                 <div *ngIf="edit">
                     <table>
@@ -392,7 +404,7 @@
                         </thead>
                         <tbody>
                             <tr *ngFor="let fixedAll of salaryDetails?.fixedDeductionList">
-                                <td>{{getOtherBenefits(fixedAll?.fixedDeduction)}}</td>
+                                <td>{{getFixedDeduction(fixedAll?.fixedDeduction)}}</td>
                                 <td>{{fixedAll?.monthlyAmount}}</td>
                                 <td>{{fixedAll?.yearlyAmount}}</td>
                             </tr>
@@ -430,8 +442,10 @@
                             </div>
                         </ng-container>
                     </div>
-                    <button *ngIf="!edit" mat-raised-button (click)="addVariableAllowance()" type="button">Add Variable
-                        Allowance</button>
+                    <ng-container *ngIf="addButtons === true">
+                        <button *ngIf="!edit" mat-raised-button (click)="addVariableAllowance()" type="button">Add
+                            Variable
+                            Allowance</button></ng-container>
                 </div>
                 <div *ngIf="edit">
                     <table>
@@ -442,7 +456,7 @@
                         </thead>
                         <tbody>
                             <tr *ngFor="let fixedAll of salaryDetails?.variableAllowanceList">
-                                <td>{{getOtherBenefits(fixedAll?.variableAllowance)}}</td>
+                                <td>{{getVariableAllowance(fixedAll?.variableAllowance)}}</td>
                                 <td>{{fixedAll?.monthlyAmount}}</td>
                                 <td>{{fixedAll?.yearlyAmount}}</td>
                             </tr>
@@ -480,8 +494,10 @@
                             </div>
                         </ng-container>
                     </div>
+                    <ng-container *ngIf="addButtons === true">
                     <button *ngIf="!edit" mat-raised-button (click)="addVariableDeduction()" type="button">Add Variable
                         Deduction</button>
+                        </ng-container>
                 </div>
                 <div *ngIf="edit">
                     <table>
@@ -531,6 +547,7 @@
                             </div>
                         </ng-container>
                     </div>
+                    <!-- <ng-container *ngIf="addButtons === true"></ng-container> -->
                     <button *ngIf="!edit" mat-raised-button (click)="addPFCharge()" type="button">Add PF Charge</button>
                 </div>
             </mat-expansion-panel>

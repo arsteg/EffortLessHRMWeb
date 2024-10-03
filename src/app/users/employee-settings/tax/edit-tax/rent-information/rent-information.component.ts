@@ -58,6 +58,7 @@ export class RentInformationComponent {
         formGroup.patchValue({
           month: month,
           rentDeclared: data.rentDeclared,
+          verifiedAmount: data.verifiedAmount,
           cityType: data.cityType,
           landlordName: data.landlordName,
           landlordPan: data.landlordPan,

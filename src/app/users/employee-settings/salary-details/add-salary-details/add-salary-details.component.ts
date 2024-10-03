@@ -28,6 +28,7 @@ export class AddSalaryDetailsComponent {
   @Input() selectedSalaryDetail: any;
   salaryDetails: any;
   payrollCTCTemplates: any;
+  addButtons: boolean = true;
 
   constructor(private fb: FormBuilder,
     private userService: UserService,
@@ -35,16 +36,16 @@ export class AddSalaryDetailsComponent {
     private toast: ToastrService
   ) {
     this.salaryDetailsForm = this.fb.group({
-      user: '',
-      payrollEffectiveFrom: '',
-      actualEffectiveDate: '',
-      frequencyToEnterCTC: '',
-      CTCTemplate: '',
-      isEmployerPartInclusiveInSalaryStructure: false,
-      enteringAmount: '',
-      Amount: 0,
-      totalCTCExcludingVariableAndOtherBenefits: 0,
-      totalCTCIncludingVariable: 0,
+      user: [''],
+      payrollEffectiveFrom: [''],
+      actualEffectiveDate: [''],
+      frequencyToEnterCTC: [''],
+      CTCTemplate: [''],
+      isEmployerPartInclusiveInSalaryStructure: [false],
+      enteringAmount: ['Monthly'],
+      Amount: [0],
+      totalCTCExcludingVariableAndOtherBenefits: [0],
+      totalCTCIncludingVariable: [0],
       employeeSalaryTaxAndStatutorySetting: this.fb.group({
         isVariableAllowancePartOfCTC: [false],
         isPFDeduction: [false],
@@ -85,7 +86,6 @@ export class AddSalaryDetailsComponent {
     if (this.edit) {
       this.getSalaryDetailsById();
       this.disableFormControls(this.salaryDetailsForm);
-
     }
   }
 
@@ -156,6 +156,35 @@ export class AddSalaryDetailsComponent {
     return this.salaryDetailsForm.get('salaryComponentPFCharge') as FormArray;
   }
 
+  handleMonthlyAmountChanges() {
+    const otherBenefitsArray = this.salaryDetailsForm.get('salaryComponentOtherBenefits') as FormArray;
+    const employerContributionArray = this.salaryDetailsForm.get('salaryComponentEmployerContribution') as FormArray;
+
+    otherBenefitsArray.controls.forEach((group: FormGroup) => {
+      const monthlyControl = group.get('monthlyAmount');
+      const yearlyControl = group.get('yearlyAmount');
+
+      if (monthlyControl && yearlyControl) {
+        monthlyControl.valueChanges.subscribe((monthlyAmount) => {
+          if (monthlyAmount && !isNaN(monthlyAmount)) {
+            yearlyControl.setValue(monthlyAmount * 12, { emitEvent: false });
+          }
+        });
+      }
+    });
+    employerContributionArray.controls.forEach((group: FormGroup) => {
+      const monthlyControl = group.get('monthlyAmount');
+      const yearlyControl = group.get('yearlyAmount');
+
+      if (monthlyControl && yearlyControl) {
+        monthlyControl.valueChanges.subscribe((monthlyAmount) => {
+          if (monthlyAmount && !isNaN(monthlyAmount)) {
+            yearlyControl.setValue(monthlyAmount * 12, { emitEvent: false });
+          }
+        });
+      }
+    });
+  }
 
   addFixedAllowance(): void {
     const allowanceGroup = this.fb.group({
@@ -231,7 +260,11 @@ export class AddSalaryDetailsComponent {
     payload.employeeSalaryTaxAndStatutorySetting = requests;
     payload.user = this.selectedUser.id;
     this.userService.addSalaryDetails(payload).subscribe((res: any) => {
-    })
+      this.toast.success('The salary details have been successfully added.')
+    },
+      err => {
+        this.toast.error('The salary details ca not be added', 'Error')
+      })
   }
 
   getCTCTemplates() {
@@ -257,7 +290,6 @@ export class AddSalaryDetailsComponent {
             yearlyAmount: [fixedAllowance.value * 12]
           });
           fixedAllowanceArray.push(allowanceGroup);
-          console.log(fixedAllowanceArray.value);
         });
 
         // // CTC template other benefits
@@ -266,12 +298,14 @@ export class AddSalaryDetailsComponent {
 
         ctcTemplate.data.ctcTemplateOtherBenefitAllowances.forEach((otherBenefit: any) => {
           const benefitGroup = this.fb.group({
-            otherBenefits: [otherBenefit.otherBenefits],  // Bind other benefit
+            otherBenefits: [otherBenefit.otherBenefit],  // Bind other benefit
             monthlyAmount: [otherBenefit.value],
             yearlyAmount: [otherBenefit.value * 12]
           });
           otherBenefitsArray.push(benefitGroup);
-          console.log(otherBenefitsArray.value);
+          console.log(otherBenefitsArray)
+          this.handleMonthlyAmountChanges();
+
         });
 
         // ctc template employer contributions
@@ -284,7 +318,8 @@ export class AddSalaryDetailsComponent {
             yearlyAmount: [fixedContribution.value * 12]
           });
           employerContributionArray.push(employerContributionGroup);
-          console.log(employerContributionArray.value);
+          this.handleMonthlyAmountChanges();
+
         });
 
         // // ctc template fixed deductions
@@ -297,7 +332,6 @@ export class AddSalaryDetailsComponent {
             yearlyAmount: [fixedDeduction.value * 12]
           });
           fixedDeductionArray.push(deductionGroup);
-          console.log(fixedDeductionArray.value);
         });
         // ctc template variable allowances
 
@@ -310,7 +344,6 @@ export class AddSalaryDetailsComponent {
             yearlyAmount: [variableAllowance.value * 12]
           });
           variableAllowanceArray.push(allowanceGroup);
-          console.log(variableAllowanceArray.value);
         });
 
         // ctc template variable deductions
@@ -323,7 +356,6 @@ export class AddSalaryDetailsComponent {
             yearlyAmount: [variableDeduction.value * 12]
           });
           variableDeductionArray.push(deductionGroup);
-          console.log(variableDeductionArray.value);
         });
       },
       (error: any) => {
@@ -438,7 +470,6 @@ export class AddSalaryDetailsComponent {
 
   getEmployerContribution(data: string) {
     const matchingRecord = this.employerContribution?.find(rec => rec._id === data);
-    console.log(matchingRecord, matchingRecord?.label);
     return matchingRecord?.label;
   }
 
@@ -457,6 +488,5 @@ export class AddSalaryDetailsComponent {
     return matchingRecord?.label;
   }
 
-
-
+ 
 }

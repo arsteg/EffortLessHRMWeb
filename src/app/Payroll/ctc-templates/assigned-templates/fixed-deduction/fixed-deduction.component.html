@@ -9,7 +9,7 @@
                     <th>Minimum Amount</th>
                 </tr>
             </thead>
-            <tbody formArrayName="fixedDeduction" *ngIf="this.data.ctcTemplateFixedDeduction.length && this.data.ctcTemplateFixedDeduction.length > 0">
+            <tbody formArrayName="fixedDeduction" *ngIf="this.data.ctcTemplateFixedDeduction?.length && this.data.ctcTemplateFixedDeduction?.length > 0">
                 <tr *ngFor="let allowance of allowances; let i = index" [formGroupName]="i" >
                     <td>{{getAllowance(allowance.get('fixedDeduction').value)}}</td>
                     <td>

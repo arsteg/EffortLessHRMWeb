@@ -270,7 +270,6 @@ export class AddShortLeaveComponent {
     }
     this.toast.success('Short leave application submitted successfully');
     this.leaveService.addShortLeave(payload).subscribe((res: any) => {
-      console.log(res.data);
       this.shortLeaveRefreshed.emit();
       this.shortLeave.reset();
     })

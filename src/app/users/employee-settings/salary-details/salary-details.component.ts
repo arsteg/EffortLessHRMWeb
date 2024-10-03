@@ -33,6 +33,16 @@ export class SalaryDetailsComponent {
       this.showViewSalaryDetails = true;
     })
   }
+  calculateTotalAmount(frequency: string, amount: number): number {
+    const frequencyMultiplier: { [key: string]: number } = {
+      'Monthly': 12,
+      'Quarterly': 4,
+      'Half Yearly': 2,
+      'Yearly': 1
+    };
+    const multiplier = frequencyMultiplier[frequency] || 0;
+    return amount * multiplier;
+  }
 
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
@@ -45,7 +55,7 @@ export class SalaryDetailsComponent {
   }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
