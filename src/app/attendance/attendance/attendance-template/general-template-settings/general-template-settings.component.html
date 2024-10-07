@@ -18,8 +18,8 @@
 
     <mat-form-field appearance="outline" class=" w-100 mx-1">
         <mat-label>Please select the mode of capturing attendance</mat-label>
-        <mat-select multiple  formControlName="attendanceMode">
-            <mat-option  [value]="mode?.mode"  *ngFor="let mode of modes">{{mode?.mode}}</mat-option>
+        <mat-select multiple formControlName="attendanceMode">
+            <mat-option [value]="mode?.mode" *ngFor="let mode of modes">{{mode?.mode}}</mat-option>
         </mat-select>
     </mat-form-field>
 
@@ -178,9 +178,10 @@
                 </label>
             </div>
         </div>
-        <div *ngIf="addTemplateForm.get('alternateWeekOffRoutine').invalid && addTemplateForm.get('alternateWeekOffRoutine').touched" class="text-danger">
+        <div *ngIf="addTemplateForm.get('alternateWeekOffRoutine').invalid && addTemplateForm.get('alternateWeekOffRoutine').touched"
+            class="text-danger">
             Alternative Week off Routine is required.
-         </div>
+        </div>
     </div>
     <div *ngIf="addTemplateForm.get('alternateWeekOffRoutine').value != 'none'">
         <div class="form-group my-3">
@@ -238,9 +239,10 @@
                 </label>
             </div>
         </div>
-        <div *ngIf="addTemplateForm.get('isCommentMandatoryForRegularisation').invalid && addTemplateForm.get('isCommentMandatoryForRegularisation').touched" class="text-danger">
-           Comment Mandatory For regularisation is required.
-         </div>
+        <div *ngIf="addTemplateForm.get('isCommentMandatoryForRegularisation').invalid && addTemplateForm.get('isCommentMandatoryForRegularisation').touched"
+            class="text-danger">
+            Comment Mandatory For regularisation is required.
+        </div>
     </div>
 
     <div class="form-group my-3">
@@ -327,13 +329,16 @@
                 </mat-form-field>
             </ng-container>
         </div>
-        <div *ngIf="addTemplateForm.get('leveCategoryHierarchyForAbsentHalfDay').invalid && addTemplateForm.get('leveCategoryHierarchyForAbsentHalfDay').touched" class="text-danger">
+        <div *ngIf="addTemplateForm.get('leveCategoryHierarchyForAbsentHalfDay').invalid && addTemplateForm.get('leveCategoryHierarchyForAbsentHalfDay').touched"
+            class="text-danger">
             Leave Categories for Absent Half day is required.
-          </div>
+        </div>
     </div>
-
+    <div *ngIf="addTemplateForm.invalid && (addTemplateForm.dirty || addTemplateForm.touched)" class="text-danger text-end">
+        Please fill out the Required Fields to Proceed!
+    </div>
     <div class="d-flex justify-content-between">
         <button type="reset" mat-raised-button>Cancel</button>
-        <button  type="submit" mat-raised-button class="addBtn">Next</button>
+        <button type="submit" mat-raised-button class="addBtn">Next</button>
     </div>
 </form>

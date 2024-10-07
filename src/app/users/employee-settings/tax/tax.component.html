@@ -109,7 +109,7 @@
             <h1 class="modal-title text-muted mb-0">{{isEdit == true ? 'Update': 'Add'}} Tax
             </h1>
         </div>
-        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
+        <div class=""><button type="button" (click)="modal.close('Escape clicked')" data-bs-dismiss="modal" class="btn-close text-end"></button>
         </div>
     </div>
 

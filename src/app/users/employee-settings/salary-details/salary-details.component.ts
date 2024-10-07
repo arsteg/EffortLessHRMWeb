@@ -65,8 +65,7 @@ export class SalaryDetailsComponent {
   deleteSalaryDetail(id: string): void {
     console.log(id);
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-      width: '400px',
-
+      width: '400px'
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'delete') {

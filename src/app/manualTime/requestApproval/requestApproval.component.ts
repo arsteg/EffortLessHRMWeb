@@ -80,7 +80,7 @@ export class RequestApprovalComponent implements OnInit {
       this.manualTimeRequestFiltered = this.manualTimeRequests;
     }
   }
-  
+
 
   approveRequest() {
     let request = this.selectedRequest;
@@ -95,7 +95,15 @@ export class RequestApprovalComponent implements OnInit {
     this.updateRequest(request);
   }
   updateRequest(request) {
-    this.manualTimeRequestService.updateManualTimeRequest(request).subscribe((res: any) => {
+    let payload = {
+      requestId: request._id,
+      user: request.user._id,
+      project: request.project._id,
+      manager: request.manager,
+      fromDate: request.fromDate,
+      toDate: request.toDate
+    }
+    this.manualTimeRequestService.updateManualTimeRequest(payload).subscribe((res: any) => {
       setTimeout(() => {
         this.notifyService.showSuccess("Request updated successfully", "success");
         this.fetchManualTimeRequests();
@@ -105,7 +113,7 @@ export class RequestApprovalComponent implements OnInit {
         this.notifyService.showError(err.message, "Error")
       });
   }
-  
+
   populateMembers() {
     this.members = [];
     let currentUser = JSON.parse(localStorage.getItem('currentUser'));

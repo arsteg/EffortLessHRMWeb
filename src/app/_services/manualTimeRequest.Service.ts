@@ -36,7 +36,6 @@ export class ManualTimeRequestService extends baseService {
   }
 
   updateManualTimeRequest(request: any): Observable<any> {
-    console.log("requestmanualtime............", request);
     return this.http.post(`${environment.apiUrlDotNet}/manualTime/updateManualTimeRequest`, request, this.httpOptions);
   }
 

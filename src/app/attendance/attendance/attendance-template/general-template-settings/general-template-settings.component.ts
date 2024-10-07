@@ -69,24 +69,24 @@ export class GeneralTemplateSettingsComponent {
     if (this.isEdit) {
       this.attendanceService.selectedTemplate.subscribe(res => {
         if (res._id) {
-          this.setFormValues(res)
+          this.setFormValues(res);
         }
       })
     }
     this.addTemplateForm.get('approvalLevel').valueChanges.subscribe((value: any) => {
-      this.validateApprovers(this.addTemplateForm.get('approvalType').value, value)
+      this.validateApprovers(this.addTemplateForm.get('approversType').value, value)
     });
-    this.addTemplateForm.get('approvalType').valueChanges.subscribe((value: any) => {
+    this.addTemplateForm.get('approversType').valueChanges.subscribe((value: any) => {
       this.validateApprovers(value, this.addTemplateForm.get('approvalLevel').value)
     });
     this.getModes();
   }
 
-  validateApprovers(approverType, approverLevel) {
-    if (approverLevel == 1 && approverType == 'template-wise') {
+  validateApprovers(approversType, approverLevel) {
+    if (approverLevel == 1 && approversType == 'template-wise') {
       this.addTemplateForm.get('firstApprovalEmployee').setValidators([Validators.required]);
       this.addTemplateForm.get('secondApprovalEmployee').clearValidators();
-    } else if (approverLevel == 2 && approverType == 'template-wise') {
+    } else if (approverLevel == 2 && approversType == 'template-wise') {
       this.addTemplateForm.get('firstApprovalEmployee').setValidators([Validators.required]);
       this.addTemplateForm.get('secondApprovalEmployee').setValidators([Validators.required]);
     } else {
@@ -96,7 +96,7 @@ export class GeneralTemplateSettingsComponent {
     this.addTemplateForm.get('firstApprovalEmployee').updateValueAndValidity();
     this.addTemplateForm.get('secondApprovalEmployee').updateValueAndValidity();
   }
-
+ 
   setFormValues(templateData: any) {
     this.addTemplateForm.patchValue({
       label: templateData?.label,
@@ -161,7 +161,6 @@ export class GeneralTemplateSettingsComponent {
     } else if (!event.target.checked && index !== -1) {
       selectedDays.splice(index, 1);
     }
-
   }
 
   getAllUsers() {
@@ -179,32 +178,37 @@ export class GeneralTemplateSettingsComponent {
   }
 
   onSubmission() {
+    // this.validateApprovers(this.addTemplateForm.value.approversType, this.addTemplateForm.value.approvalLevel);
+    if (this.addTemplateForm.valid) {
 
+      this.addTemplateForm.value.leveCategoryHierarchyForAbsentHalfDay = this.selectedCategory;
+      this.addTemplateForm.value.daysForAlternateWeekOffRoutine = this.selectedAlternateWeekDays;
+      this.addTemplateForm.value.weklyofHalfDay = this.selectedHalfDays;
+      this.addTemplateForm.value.weeklyOfDays = this.selectedWeeklyDays;
+      if (this.isEdit == false) {
+        this.attendanceService.addAttendanceTemplate(this.addTemplateForm.value).subscribe((res: any) => {
+          this.attendanceService.selectedTemplate.next(res.data);
+          this.toast.success('Attendance Template created', 'Successfully!!!');
+          this.changeStep.emit(2);
+        },
+          (err) => {
+            this.toast.error('Attendance Template can not be created', 'Error!!!')
+          })
+      }
+      else {
+        const templateId = this.attendanceService.selectedTemplate.getValue()._id;
+        this.attendanceService.updateAttendanceTemplate(templateId, this.addTemplateForm.value).subscribe((res: any) => {
+          this.toast.success('Attendance Template Updated', 'Successfully!');
+          this.changeStep.emit(2);
+        },
+          err => {
+            this.toast.error('Attendance Template can not be Updated', 'Error!')
 
-    this.addTemplateForm.value.leveCategoryHierarchyForAbsentHalfDay = this.selectedCategory;
-    this.addTemplateForm.value.daysForAlternateWeekOffRoutine = this.selectedAlternateWeekDays;
-    this.addTemplateForm.value.weklyofHalfDay = this.selectedHalfDays;
-    this.addTemplateForm.value.weeklyOfDays = this.selectedWeeklyDays;
-    if (this.isEdit == false) {
-      this.attendanceService.addAttendanceTemplate(this.addTemplateForm.value).subscribe((res: any) => {
-        this.attendanceService.selectedTemplate.next(res.data);
-        this.toast.success('Attendance Template created', 'Successfully!!!');
-        this.changeStep.emit(2);
-      },
-        (err) => {
-          this.toast.error('Attendance Template can not be created', 'Error!!!')
-        })
+          })
+      }
     }
     else {
-      const templateId = this.attendanceService.selectedTemplate.getValue()._id;
-      this.attendanceService.updateAttendanceTemplate(templateId, this.addTemplateForm.value).subscribe((res: any) => {
-        this.toast.success('Attendance Template Updated', 'Successfully!');
-        this.changeStep.emit(2);
-      },
-        err => {
-          this.toast.error('Attendance Template can not be Updated', 'Error!')
-
-        })
+      this.addTemplateForm.markAllAsTouched();
     }
   }
 

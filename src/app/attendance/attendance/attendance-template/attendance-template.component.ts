@@ -119,9 +119,45 @@ export class AttendanceTemplateComponent {
   }
 
   exportToCsv() {
-    const dataToExport = this.attendanceTemplate;
-    this.exportService.exportToCSV('attendance-template', 'attendance-template', dataToExport);
+    console.log(this.attendanceTemplate);
+    const headers = [
+      'Label',
+      'Alternate Week Off Routine',
+      'Approvers Type',
+      'Approval Level',
+      'Attendance Modes', 
+      'Leave Categories',
+      'Department Designations',
+      'Duration per Week'
+    ];
+
+    const dataToExport = this.attendanceTemplate.map(template => {
+      const attendanceModes = template.attendanceMode.join(', ');
+      const leveCategoryHierarchyForAbsentHalfDay = template.leveCategoryHierarchyForAbsentHalfDay.join(',');
+      const hours = template.minimumHoursRequiredPerWeek;
+      const minutes = template.minimumMinutesRequiredPerWeek;
+      const durationPerWeek = `${hours} Hr ${minutes} Mins`;
+  
+      return [
+        template.label,
+        template.alternateWeekOffRoutine,
+        template.approversType,
+        template.approvalLevel,
+        attendanceModes,
+        leveCategoryHierarchyForAbsentHalfDay,
+        template.departmentDesignations,
+        durationPerWeek
+      ];
+    });
+
+    
+    const combinedData = [headers, ...dataToExport];
+
+    // Call the export service with combined data
+    this.exportService.exportToCSV('attendance-template', 'attendance-template', combinedData);
   }
+
+
 
   setFormValues(templateData: any) {
     this.attendanceService.selectedTemplate.next(templateData);
