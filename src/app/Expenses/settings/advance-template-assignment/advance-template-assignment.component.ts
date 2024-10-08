@@ -243,16 +243,58 @@ export class AdvanceTemplateAssignmentComponent {
       });
     });
   }
-
+  // onSubmit() {
+  //   // Temporarily enable the disabled fields before capturing the form values
+  //   this.addTemplateAssignmentForm.get('primaryApprover')?.enable();
+  //   this.addTemplateAssignmentForm.get('secondaryApprover')?.enable();
+  
+  //   // Capture the form values
+  //   let payload = {
+  //     user: this.addTemplateAssignmentForm.value.user,
+  //     primaryApprover: this.addTemplateAssignmentForm.value.primaryApprover || null,
+  //     secondaryApprover: this.addTemplateAssignmentForm.value.secondaryApprover || null,
+  //     advanceTemplate: this.addTemplateAssignmentForm.value.advanceTemplate,
+  //     effectiveDate: this.addTemplateAssignmentForm.value.effectiveDate,
+  //   };
+  //   console.log(payload);
+  
+  //   // Re-disable the fields if they should remain disabled
+  //   if (this.templateById.approvalType === 'template-wise') {
+  //     this.addTemplateAssignmentForm.get('primaryApprover')?.disable();
+  //     this.addTemplateAssignmentForm.get('secondaryApprover')?.disable();
+  //   }
+  
+  //   // Proceed with further logic like form submission to the backend
+  // }
+  
   onSubmit() {
-    let payload = {
-      user: this.addTemplateAssignmentForm.value.user,
-      primaryApprover: this.addTemplateAssignmentForm.value.primaryApprover,
-      secondaryApprover: this.addTemplateAssignmentForm.value.secondaryApprover,
-      advanceTemplate: this.addTemplateAssignmentForm.value.advanceTemplate,
-      effectiveDate: this.addTemplateAssignmentForm.value.effectiveDate,
-    }
-    console.log(payload);
+    // let payload = {
+    //   user: this.addTemplateAssignmentForm.value.user,
+    //   primaryApprover: this.addTemplateAssignmentForm.value.primaryApprover || null,
+    //   secondaryApprover: this.addTemplateAssignmentForm.value.secondaryApprover || null,
+    //   advanceTemplate: this.addTemplateAssignmentForm.value.advanceTemplate,
+    //   effectiveDate: this.addTemplateAssignmentForm.value.effectiveDate,
+    // }
+    // console.log(payload);
+     // Temporarily enable the disabled fields before capturing the form values
+     this.addTemplateAssignmentForm.get('primaryApprover')?.enable();
+     this.addTemplateAssignmentForm.get('secondaryApprover')?.enable();
+   
+     // Capture the form values
+     let payload = {
+       user: this.addTemplateAssignmentForm.value.user,
+       primaryApprover: this.addTemplateAssignmentForm.value.primaryApprover || null,
+       secondaryApprover: this.addTemplateAssignmentForm.value.secondaryApprover || null,
+       advanceTemplate: this.addTemplateAssignmentForm.value.advanceTemplate,
+       effectiveDate: this.addTemplateAssignmentForm.value.effectiveDate,
+     };
+     console.log(payload);
+   
+     // Re-disable the fields if they should remain disabled
+     if (this.templateById.approvalType === 'template-wise') {
+       this.addTemplateAssignmentForm.get('primaryApprover')?.disable();
+       this.addTemplateAssignmentForm.get('secondaryApprover')?.disable();
+     }
     if (this.addTemplateAssignmentForm.valid) {
 
       if (this.isEdit == false) {
@@ -315,21 +357,11 @@ export class AdvanceTemplateAssignmentComponent {
     });
   }
 
-  // edit(templateAssignment, index) {
-  //   this.isEdit = true;
-  //   this.changeMode = 'Update';
-  //   this.addTemplateAssignmentForm.patchValue({
-  //     user: templateAssignment.user,
-  //     advanceTemplate: templateAssignment.advanceTemplate,
-  //     secondaryApprover: templateAssignment.secondaryApprover,
-  //     primaryApprover: templateAssignment.primaryApprover,
-  //     effectiveDate: templateAssignment.effectiveDate
-  //   });
-  //   console.log(this.addTemplateAssignmentForm.value);
-  // }
+  
   setFormValues(data) {
     this.showApproverFields = true;
-    this.expenseService.getAdvanceTemplateById(data.expenseTemplate).subscribe((res: any) => {
+    console.log(data);
+    this.expenseService.getAdvanceTemplateById(data.advanceTemplate).subscribe((res: any) => {
       this.templateById = res.data;
       this.expenseService.getTemplateAssignmentById(data.user).subscribe((res: any) => {
         const templateAssignment = res.data;
@@ -339,23 +371,23 @@ export class AdvanceTemplateAssignmentComponent {
               primaryApprover: templateAssignment[0].primaryApprover,
               secondaryApprover: null,
               user: data.user,
-              expenseTemplate: data.expenseTemplate,
+              advanceTemplate: data.advanceTemplate,
               effectiveDate: data.effectiveDate
             });
             this.addTemplateAssignmentForm.get('user').disable();
-            this.addTemplateAssignmentForm.get('expenseTemplate').disable();
+            this.addTemplateAssignmentForm.get('advanceTemplate').disable();
             this.addTemplateAssignmentForm.get('primaryApprover').disable();
           } else if (this.templateById.approvalLevel === '2') {
             this.addTemplateAssignmentForm.patchValue({
               primaryApprover: templateAssignment[0].primaryApprover,
               secondaryApprover: templateAssignment[0].secondaryApprover,
               user: data.user,
-              expenseTemplate: data.expenseTemplate,
+              advanceTemplate: data.advanceTemplate,
               effectiveDate: data.effectiveDate
             });
           }
           this.addTemplateAssignmentForm.get('user').disable();
-          this.addTemplateAssignmentForm.get('expenseTemplate').disable();
+          this.addTemplateAssignmentForm.get('advanceTemplate').disable();
           this.addTemplateAssignmentForm.get('primaryApprover').disable();
           this.addTemplateAssignmentForm.get('secondaryApprover').disable();
         }
@@ -364,11 +396,11 @@ export class AdvanceTemplateAssignmentComponent {
             primaryApprover: templateAssignment[0].primaryApprover,
             secondaryApprover: templateAssignment[0].secondaryApprover,
             user: data.user,
-            expenseTemplate: data.expenseTemplate,
+            advanceTemplate: data.advanceTemplate,
             effectiveDate: data.effectiveDate
           });
           this.addTemplateAssignmentForm.get('user').disable();
-          this.addTemplateAssignmentForm.get('expenseTemplate').disable();
+          this.addTemplateAssignmentForm.get('advanceTemplate').disable();
           this.addTemplateAssignmentForm.get('primaryApprover').enable();
           this.addTemplateAssignmentForm.get('secondaryApprover').enable();
         }
