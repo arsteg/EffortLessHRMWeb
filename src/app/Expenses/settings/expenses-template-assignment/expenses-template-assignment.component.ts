@@ -1,12 +1,9 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
-import * as moment from 'moment';
-import { UserService } from 'src/app/_services/users.service';
-import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { ToastrService } from 'ngx-toastr';
 
@@ -45,7 +42,6 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
     private dialog: MatDialog,
     private expenseService: ExpensesService,
     private fb: FormBuilder,
-    private authService: AuthenticationService,
     private commonService: CommonService,
     private toast: ToastrService) {
     this.templateAssignmentForm = this.fb.group({
@@ -118,37 +114,6 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
     })
   }
 
-  getTemplateById() {
-    this.expenseService.getTemplateById(this.selectedTemplateAssignmentId.expenseTemplate).subscribe((res: any) => {
-      this.templateById = res.data;
-      if (this.templateById.approvalType === 'template-wise') {
-        if (this.templateById.approvalLevel === '1') {
-          this.templateAssignmentForm.patchValue({
-            primaryApprover: this.templateById.primaryApprover,
-            secondaryApprover: null
-          });
-          this.templateAssignmentForm.get('primaryApprover').disable();
-        } else if (this.templateById.approvalLevel === '2') {
-          this.templateAssignmentForm.patchValue({
-            primaryApprover: this.templateById.primaryApprover,
-            secondaryApprover: this.templateById.secondaryApprover
-          });
-        }
-        this.templateAssignmentForm.get('primaryApprover').disable();
-        this.templateAssignmentForm.get('secondaryApprover').disable();
-      }
-      else if (this.templateById.approvalType === 'employee-wise') {
-        this.templateAssignmentForm.patchValue({
-          primaryApprover: this.templateById.primaryApprover,
-          secondaryApprover: this.templateById.secondaryApprover
-        });
-        this.templateAssignmentForm.get('primaryApprover').enable();
-        this.templateAssignmentForm.get('secondaryApprover').enable();
-      }
-    })
-  }
-
-
   onTemplateSelectionChange(event: any) {
     this.showApproverFields = true;
     const selectedTemplateId = event.target.value;
@@ -167,7 +132,6 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
           this.templateAssignmentForm.get('secondaryApprover').disable();
           this.templateAssignmentForm.get('secondaryApprover').updateValueAndValidity();
 
-          // Disable the fields
           this.primaryApproverField.nativeElement.disabled = true;
           this.secondaryApproverField.nativeElement.disabled = true;
 

@@ -26,7 +26,6 @@ export class AdvanceCategoriesComponent implements OnInit{
   changesMade: boolean =false;
   initialLabelValue:string;
   public sortOrder: string = '';
-  updateButtonClicked = false;
   totalRecords: number
   recordsPerPage: number = 10;
   currentPage: number = 1;
@@ -41,8 +40,6 @@ export class AdvanceCategoriesComponent implements OnInit{
           label: ['', Validators.required]
        
         }) 
-        // this.initialLabelValue = this.addCategory.get('label').value;
-  
   }
   ngOnInit(){
    this.getAllAdvanceCategories();
@@ -137,14 +134,12 @@ export class AdvanceCategoriesComponent implements OnInit{
   editAdvanceCategory(category, index) {
     this.isEdit = true;
     this.selectedCategory = category;
-    console.log(this.selectedCategory)
-   
+
       this.addCategory.patchValue({
         
         label: category.label,      
         expenseCategory: this.selectedCategory._id,
       });
-      console.log(this.addCategory.value)     
      this.changesMade=false;
   }
 
