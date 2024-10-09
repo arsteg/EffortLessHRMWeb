@@ -49,8 +49,7 @@ export class ShowTeamExpensesComponent {
   }
 
   ngOnInit() {
-    console.log(this.selectedTab)
-    this.getexpenseReport();
+    this.getExpenseReport();
     this.commonService.populateUsers().subscribe(result => {
       this.allAssignee = result && result.data && result.data.data;
     });
@@ -67,7 +66,7 @@ export class ShowTeamExpensesComponent {
   }
   open(content: any) {
     this.expenseService.expenseReportExpense.next(this.selectedReport);
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
@@ -99,26 +98,31 @@ export class ShowTeamExpensesComponent {
   }
   onPageChange(page: number) {
     this.currentPage = page;
-    this.getexpenseReport();
+    this.getExpenseReport();
   }
 
   onRecordsPerPageChange(recordsPerPage: number) {
     this.recordsPerPage = recordsPerPage;
-    this.getexpenseReport();
+    this.getExpenseReport();
   }
 
-
-  getexpenseReport() {
+  getExpenseReport() {
     let pagination = {
       skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
       next: this.recordsPerPage.toString(),
       status: this.status
     };
+
     this.expenseService.getExpenseReportByTeam(pagination).subscribe((res: any) => {
-      this.expenseReport = res.data;
+      this.expenseReport = res.data.map((report) => {
+        return {
+          ...report,
+          employeeName: this.getUser(report?.employee)
+        };
+      });
       this.totalAmount = this.expenseReport.reduce((total, report) => total + report.amount, 0);
-      this.totalRecords = res.total
-    })
+      this.totalRecords = res.total;
+    });
   }
 
   updateApprovedReport() {

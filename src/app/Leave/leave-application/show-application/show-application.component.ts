@@ -172,9 +172,7 @@ export class ShowApplicationComponent {
     } else if (this.portalView === 'user') {
       const employeeId = this.currentUser.id;
       this.leaveService.getLeaveApplicationbyUser(requestBody, employeeId).subscribe((res: any) => {
-        console.log("User Leave Applications:", res.data);
         this.leaveApplication = res.data.filter(leave => leave.status === this.status);
-        console.log("Filtered User Leave Applications:", this.leaveApplication);
         this.totalLeaveDays = 0;
         this.leaveApplication.forEach(leave => {
           const startDate = new Date(leave.startDate);
@@ -197,44 +195,6 @@ export class ShowApplicationComponent {
         });
       })
     }
-    // if (this.portalView === 'user') {
-    //   console.log(this.portalView, this.tab)
-    //   if (this.tab === 1) {
-    //     this.leaveService.getLeaveApplicationbyUser(this.currentUser?.id).subscribe((res: any) => {
-    //       this.leaveApplication = res.data.filter(leave => leave.status === this.status);
-    //       this.totalLeaveDays = 0;
-    //       this.leaveApplication.forEach(leave => {
-    //         const startDate = new Date(leave.startDate);
-    //         const endDate = new Date(leave.endDate);
-    //         const timeDifference = endDate.getTime() - startDate.getTime();
-    //         const dayDifference = timeDifference / (1000 * 3600 * 24);
-    //         leave.totalLeaveDays = Math.abs(Math.round(dayDifference));
-    //       });
-    //     })
-    //   } else if (this.tab === 5) {
-    //     this.leaveService.getLeaveApplicationByTeam().subscribe((res: any) => {
-    //       this.leaveApplication = res.data.filter(leave => leave.status === this.status);
-    //       this.totalLeaveDays = 0;
-    //       this.leaveApplication.forEach(leave => {
-    //         const startDate = new Date(leave.startDate);
-    //         const endDate = new Date(leave.endDate);
-    //         const timeDifference = endDate.getTime() - startDate.getTime();
-    //         const dayDifference = timeDifference / (1000 * 3600 * 24);
-    //         leave.totalLeaveDays = Math.abs(Math.round(dayDifference));
-    //       });
-    //     })
-    //   }
-    // }
-
-    // this.totalLeaveDays = 0;
-    // this.leaveApplication.forEach(leave => {
-    //   const startDate = new Date(leave.startDate);
-    //   const endDate = new Date(leave.endDate);
-    //   const timeDifference = endDate.getTime() - startDate.getTime();
-    //   const dayDifference = timeDifference / (1000 * 3600 * 24);
-    //   leave.totalLeaveDays = Math.abs(Math.round(dayDifference));
-    // });
-    // });
   }
 
   deleteLeaveApplication(_id: string) {

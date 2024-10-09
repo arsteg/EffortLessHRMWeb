@@ -48,11 +48,11 @@
                     <tr
                         *ngFor="let templateAssignment of templateAssignments | search: searchText; let i = index">
 
-                        <td>{{getUser(templateAssignment?.user)}}</td>
-                        <td>{{getTemplate(templateAssignment?.expenseTemplate)}}</td>
-                        <td>{{getUser(templateAssignment?.primaryApprover)}}</td>
-                        <td>{{getUser(templateAssignment?.secondaryApprover)}}</td>
-                        <td>{{templateAssignment?.effectiveDate | date:'mediumDate'}}</td>
+                        <td>{{templateAssignment?.employeeName}}</td>
+                        <td>{{templateAssignment?.expenseTemplate}}</td>
+                        <td>{{templateAssignment?.primaryApprover}}</td>
+                        <td>{{templateAssignment?.secondaryApprover}}</td>
+                        <td>{{templateAssignment?.date | date:'mediumDate'}}</td>
                         <td class="">
                             <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before" (click)="changeMode='Update';
                             showApproverFields = true;

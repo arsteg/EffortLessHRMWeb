@@ -39,13 +39,13 @@
                     </button>
                 </div>
 
-                <div *ngIf="selectedTab === 1" class="tab-content">
+                <div *ngIf="selectedTab === 1" class="tab-content mt-0 pt-0">
                     <app-show-my-expenses  [selectedTab]="selectedTab"></app-show-my-expenses>
                 </div>
-                <div *ngIf="selectedTab === 2" class="tab-content">
+                <div *ngIf="selectedTab === 2" class="tab-content mt-0 pt-0">
                     <app-team-expense  [selectedTab]="selectedTab"></app-team-expense>
                 </div>
-                <div *ngIf="selectedTab === 3" class="tab-content">
+                <div *ngIf="selectedTab === 3" class="tab-content mt-0 pt-0">
                     <app-general-information></app-general-information>
                 </div>
             </div>

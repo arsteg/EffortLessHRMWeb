@@ -6,6 +6,7 @@ import { ExpensesService } from 'src/app/_services/expenses.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { CommonService } from 'src/app/_services/common.Service';
 import { ToastrService } from 'ngx-toastr';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-expenses-template-assignment',
@@ -43,7 +44,8 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
     private expenseService: ExpensesService,
     private fb: FormBuilder,
     private commonService: CommonService,
-    private toast: ToastrService) {
+    private toast: ToastrService,
+    private datePipe: DatePipe) {
     this.templateAssignmentForm = this.fb.group({
       user: [''],
       primaryApprover: [''],
@@ -59,11 +61,14 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
 
   ngOnInit(): void {
     this.getAllTemplates();
-    this.getAssignments();
     this.commonService.populateUsers().subscribe(result => {
       this.allAssignee = result && result.data && result.data.data;
     });
+    setTimeout(() => {
+      this.getAssignments();
+    }, 1000)
   }
+
   setFormValues(data) {
     this.showApproverFields = true;
     this.expenseService.getTemplateById(data.expenseTemplate).subscribe((res: any) => {
@@ -182,7 +187,7 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
 
   getUser(employeeId: string) {
     const matchingUser = this.allAssignee?.find(user => user._id === employeeId);
-    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : '';
+    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'N/A';
   }
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
@@ -200,7 +205,7 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
     else {
       this.showApproverFields = true;
     }
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
@@ -250,7 +255,7 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
   }
 
   getTemplate(templateId: string) {
-    const template = this.templates?.find(user => user._id === templateId);
+    const template = this.templates?.find(template => template?._id === templateId);
     return template ? template.policyLabel : '';
   }
 
@@ -270,11 +275,19 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
       next: this.recordsPerPage.toString()
     };
     this.expenseService.getTemplateAssignment(pagination).subscribe((res: any) => {
-      this.templateAssignments = res.data;
+      this.templateAssignments = res.data.map((report) => {
+        return {
+          ...report,
+          employeeName: this.getUser(report?.user),
+          expenseTemplate: this.getTemplate(report?.expenseTemplate),
+          primaryApprover: this.getUser(report?.primaryApprover),
+          secondaryApprover: this.getUser(report?.secondaryApprover),
+          date: this.datePipe.transform(report.effectiveDate, 'MMM d, yyyy'),
+        };
+      });
       this.totalRecords = res.total;
     });
   }
-
 
   addOrUpdateAssignment() {
     let payload = {
