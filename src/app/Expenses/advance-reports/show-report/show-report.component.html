@@ -64,43 +64,40 @@
                 <td>{{getCategory(report?.category)}}</td>
                 <td>{{report?.primaryApprovalReason || report?.comment}}</td>
                 <td>{{report?.status}}</td>
-                <td>
-                    <div class="dropdown-center">
-                        <button class="actions ms-2" mat-mini-fab data-bs-toggle="dropdown" aria-expanded="false"
+                <td class="text-center pe-lg-1 pe-4">
+                    <div ngbDropdown class="d-inline-block dropdown-center">
+                        <button class="actions ms-2" mat-mini-fab ngbDropdownToggle aria-expanded="false"
                             aria-label="Example icon button with a menu icon">
                             <i class="bi bi-send"></i>
                         </button>
 
-                        <ul class="dropdown-menu py-0">
-                            <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
-                                *ngIf="actionOptions.approve" data-bs-target="#statusUpdate"
+                        <ul ngbDropdownMenu class="dropdown-menu">
+                            <li class="d-flex" *ngIf="actionOptions.approve"
                                 (click)="openStatusModal(report, 'Approved')">
-                                <i class="fas fa-check-circle dropdown-item w-25"></i><span
-                                    class="pt-1 text-muted">Approve</span>
+                                <i class="fas fa-check-circle dropdown-item w-25"></i>
+                                <span class="pt-1 text-muted">Approve</span>
                             </li>
-                            <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
-                                *ngIf="actionOptions.reject" data-bs-target="#cancelModal"
+                            <hr class="mx-2 my-0">
+                            <li class="d-flex" *ngIf="actionOptions.reject"
                                 (click)="openStatusModal(report, 'Rejected')">
-                                <i class="bi bi-person-dash dropdown-item w-25"></i><span
-                                    class="pt-1 text-muted">Reject</span>
+                                <i class="bi bi-person-dash dropdown-item w-25"></i>
+                                <span class="pt-1 text-muted">Reject</span>
                             </li>
-
-                            <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
-                                *ngIf="actionOptions.cancel" data-bs-target="#cancelModal"
+                            <hr class="mx-2 my-0">
+                            <li class="d-flex" *ngIf="actionOptions.cancel"
                                 (click)="openStatusModal(report, 'Cancelled')">
-                                <i class="bi bi-person-dash dropdown-item w-25"></i><span
-                                    class="pt-1 text-muted">Cancel</span>
+                                <i class="bi bi-person-dash text-danger dropdown-item w-25"></i>
+                                <span class="pt-1 text-muted">Cancel</span>
                             </li>
-                            <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
-                                *ngIf="actionOptions.view" data-bs-target="#viewModal"
-                                (click)="openSecondModal(report)">
-                                <i class="fas fa-eye dropdown-item w-25"></i><span class="pt-1 text-muted">View</span>
+                            <hr class="mx-2 my-0">
+                            <li class="d-flex" *ngIf="actionOptions.view" (click)="openSecondModal(report)">
+                                <i class="fas fa-eye dropdown-item w-25"></i>
+                                <span class="pt-1 text-muted">View</span>
                             </li>
-
                         </ul>
                     </div>
                 </td>
-
+                
             </tr>
         </tbody>
     </table>

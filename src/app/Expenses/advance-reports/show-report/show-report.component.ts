@@ -39,9 +39,9 @@ export class ShowReportComponent {
     private exportService: ExportService) { }
 
   ngOnInit(): void {
+    console.log(this.status);
     this.commonService.populateUsers().subscribe(result => {
       this.allAssignee = result && result.data && result.data.data;
-      console.log(this.allAssignee)
     });
     this.getAdvanceReports();
     let payload = {
@@ -71,10 +71,9 @@ export class ShowReportComponent {
     this.expenseService.getAdvanceReport(pagination).subscribe((res: any) => {
       const rawReports = res.data
       this.totalAmount = rawReports.reduce((total, report) => total + report.amount, 0);
-      this.advanceReport = res.data;
+      this.advanceReport = res.data.filter(leave => leave.status === this.status);
       this.totalRecords = res.total;
     });
-
   }
 
   getUser(employeeId: string) {

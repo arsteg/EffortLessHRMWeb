@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-advance-reports',
@@ -7,6 +7,8 @@ import { Component } from '@angular/core';
 })
 export class AdvanceReportsComponent {
   selectedTab = 1;
+  @Input() tab: number;
+
   selectTab(tabIndex: number) {
     this.selectedTab = tabIndex;
   }

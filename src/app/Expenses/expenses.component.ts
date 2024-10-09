@@ -11,13 +11,9 @@ export class ExpensesComponent implements OnInit {
   selectedTab = 1;
   view = localStorage.getItem('adminView');
 
-  constructor(private auth: AuthenticationService,
-    private router: Router,
-    private route: ActivatedRoute
-  ) {}
+  constructor() { }
 
   ngOnInit(): void {
-    console.log(this.selectedTab)
   }
 
   selectTab(tabIndex: number) {

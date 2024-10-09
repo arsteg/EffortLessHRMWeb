@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-advance-approved',
@@ -12,5 +12,9 @@ export class AdvanceApprovedComponent {
     view: true,
     cancel: true
   };
+  @Input() selectedTab: number;
 
+  ngOnInit() {
+    console.log(status);
+  }
 }

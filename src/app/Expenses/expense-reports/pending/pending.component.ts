@@ -2,13 +2,9 @@ import { Component, EventEmitter, Output, Input } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray, Validators, FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { isEqual } from 'date-fns';
 import { ToastrService } from 'ngx-toastr';
-import { of, forkJoin } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators'
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { CommonService } from 'src/app/_services/common.Service';
-import { ExpenseCategory, ExpenseCategoryField } from 'src/app/models/expenses';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { ExportService } from 'src/app/_services/export.service';
@@ -45,7 +41,6 @@ export class PendingComponent {
   constructor(private modalService: NgbModal,
     private expenseService: ExpensesService,
     private commonService: CommonService,
-    private authService: AuthenticationService,
     private dialog: MatDialog,
     private toast: ToastrService,
     private exportService: ExportService,

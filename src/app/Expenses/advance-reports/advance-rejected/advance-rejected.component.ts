@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-advance-rejected',
@@ -11,5 +11,7 @@ export class AdvanceRejectedComponent {
     reject: false,
     view: true,
     cancel: false
-  };
+  }
+  @Input() selectedTab: number;
+
 }
