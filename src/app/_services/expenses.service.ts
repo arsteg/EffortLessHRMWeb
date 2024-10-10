@@ -242,6 +242,7 @@ export class ExpensesService {
     return response;
   }
 
+  // advance template assignment
   addAdvanceTemplateAssignment(templateAssignment: any): Observable<response<any>> {
     var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/employee-advance-assignments`, templateAssignment, this.httpOptions);
     return response;
@@ -252,8 +253,8 @@ export class ExpensesService {
     return response;
   }
 
-  getAdvanceTemplateAssignmentByUser(userId: string): Observable<response<any>> {
-    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/employee-advance-assignments-by-user/${userId}`, this.httpOptions);
+  getAdvanceTemplateAssignmentByUser(userId: string, payload: any): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/employee-advance-assignments-by-user/${userId}`, payload,this.httpOptions);
     return response;
   }
 
