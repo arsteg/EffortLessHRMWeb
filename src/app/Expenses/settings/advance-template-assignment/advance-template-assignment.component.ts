@@ -18,7 +18,7 @@ import { MatDialog } from '@angular/material/dialog';
 export class AdvanceTemplateAssignmentComponent {
   searchText: '';
   isEdit = false;
-  changeMode: 'Add' | 'Update' = 'Add';
+  changeMode: 'Add' | 'View' = 'Add';
   addTemplateAssignmentForm: FormGroup;
   closeResult: string = '';
   advanceTemplates: any;
@@ -250,44 +250,11 @@ export class AdvanceTemplateAssignmentComponent {
       });
     });
   }
-  // onSubmit() {
-  //   // Temporarily enable the disabled fields before capturing the form values
-  //   this.addTemplateAssignmentForm.get('primaryApprover')?.enable();
-  //   this.addTemplateAssignmentForm.get('secondaryApprover')?.enable();
-
-  //   // Capture the form values
-  //   let payload = {
-  //     user: this.addTemplateAssignmentForm.value.user,
-  //     primaryApprover: this.addTemplateAssignmentForm.value.primaryApprover || null,
-  //     secondaryApprover: this.addTemplateAssignmentForm.value.secondaryApprover || null,
-  //     advanceTemplate: this.addTemplateAssignmentForm.value.advanceTemplate,
-  //     effectiveDate: this.addTemplateAssignmentForm.value.effectiveDate,
-  //   };
-  //   console.log(payload);
-
-  //   // Re-disable the fields if they should remain disabled
-  //   if (this.templateById.approvalType === 'template-wise') {
-  //     this.addTemplateAssignmentForm.get('primaryApprover')?.disable();
-  //     this.addTemplateAssignmentForm.get('secondaryApprover')?.disable();
-  //   }
-
-  //   // Proceed with further logic like form submission to the backend
-  // }
-
+  
   onSubmit() {
-    // let payload = {
-    //   user: this.addTemplateAssignmentForm.value.user,
-    //   primaryApprover: this.addTemplateAssignmentForm.value.primaryApprover || null,
-    //   secondaryApprover: this.addTemplateAssignmentForm.value.secondaryApprover || null,
-    //   advanceTemplate: this.addTemplateAssignmentForm.value.advanceTemplate,
-    //   effectiveDate: this.addTemplateAssignmentForm.value.effectiveDate,
-    // }
-    // console.log(payload);
-    // Temporarily enable the disabled fields before capturing the form values
+    
     this.addTemplateAssignmentForm.get('primaryApprover')?.enable();
     this.addTemplateAssignmentForm.get('secondaryApprover')?.enable();
-
-    // Capture the form values
     let payload = {
       user: this.addTemplateAssignmentForm.value.user,
       primaryApprover: this.addTemplateAssignmentForm.value.primaryApprover || null,
@@ -295,15 +262,11 @@ export class AdvanceTemplateAssignmentComponent {
       advanceTemplate: this.addTemplateAssignmentForm.value.advanceTemplate,
       effectiveDate: this.addTemplateAssignmentForm.value.effectiveDate,
     };
-    console.log(payload);
-
-    // Re-disable the fields if they should remain disabled
     if (this.templateById.approvalType === 'template-wise') {
       this.addTemplateAssignmentForm.get('primaryApprover')?.disable();
       this.addTemplateAssignmentForm.get('secondaryApprover')?.disable();
     }
     if (this.addTemplateAssignmentForm.valid) {
-
       if (this.isEdit == false) {
         const existingAssignment = this.templateAssignments.find(assignment => assignment.user === payload.user);
         if (existingAssignment) {
@@ -314,9 +277,11 @@ export class AdvanceTemplateAssignmentComponent {
             if (index !== -1) {
               this.templateAssignments[index] = updatedTemplateAssignment;
             }
+            this.showApproverFields = false;
+            this.updateTemplateAssignments();
           },
             (err) => {
-              this.toast.error('Advance Template Cannot be updated!', 'Error')
+              this.toast.error('Advance Template Cannot be Added!', 'Error')
             });
         } else {
           this.expenseService.addAdvanceTemplateAssignment(payload).subscribe((res: any) => {
@@ -324,35 +289,33 @@ export class AdvanceTemplateAssignmentComponent {
             this.templateAssignments.push(newTemplateAssignment);
             this.toast.success('Advance Template Assigned!', 'Successfully')
             this.addTemplateAssignmentForm.reset();
+            this.updateTemplateAssignments();
           },
             (err) => {
               this.toast.error('Advance Template Cannot be created!', 'Error')
             });
         }
       }
-      else if (this.isEdit == true) {
-        let user = this.selectedTemplateAssignment.user;
-        let advanceTemplate = this.selectedTemplateAssignment.advanceTemplate._id;
-        payload.user = user;
-        payload.advanceTemplate = advanceTemplate;
-        this.expenseService.addAdvanceTemplateAssignment(payload).subscribe((res: any) => {
-          const updatedTemplateAssign = res.data;
-          // this.getAssignments();
-          this.toast.success('Advance Template Assignment Updated!', 'Successfully')
-
-          const index = this.templateAssignments.findIndex(templateAssign => templateAssign._id === updatedTemplateAssign._id);
-          if (index !== -1) {
-            this.templateAssignments[index] = updatedTemplateAssign;
-          }
-        },
-          (err) => {
-            this.toast.error('Advance Template Cannot be Updated!', 'Error')
-          })
-      }
+     
     }
     else {
       this.markFormGroupTouched(this.addTemplateAssignmentForm);
     }
+  }
+  updateTemplateAssignments() {
+    this.expenseService.getAdvanceTemplateAssignment({}).subscribe((res: any) => {
+      this.templateAssignments = res.data.map((report) => {
+        return {
+          ...report,
+          employeeName: this.getUser(report?.user),
+          advanceTemplate: this.getAdvanceTemplate(report?.advanceTemplate),
+          primaryApprover: this.getUser(report?.primaryApprover),
+          secondaryApprover: this.getUser(report?.secondaryApprover),
+          date: this.datePipe.transform(report.effectiveDate, 'MMM d, yyyy'),
+        };
+      });
+      this.totalRecords = res.total
+    });
   }
   markFormGroupTouched(formGroup: FormGroup) {
     Object.values(formGroup.controls).forEach(control => {
@@ -365,10 +328,8 @@ export class AdvanceTemplateAssignmentComponent {
   }
 
   setFormValues(data) {
+    this.changeMode = 'View';
     this.showApproverFields = true;
-    
-    // this.expenseService.getAdvanceTemplateById(data._id).subscribe((res: any) => {
-    // this.templateById = res.data;
     let payload = { skip: '', next: '' }
     this.expenseService.getAdvanceTemplateAssignmentByUser(data.user, payload).subscribe((res: any) => {
       const templateAssignment = res.data[0];
@@ -389,22 +350,24 @@ export class AdvanceTemplateAssignmentComponent {
               secondaryApprover: null,
               user: templateAssignment.user,
               advanceTemplate: templateAssignment.advanceTemplate,
-              effectiveDate: data.effectiveDate
+              effectiveDate: templateAssignment.effectiveDate
             });
             console.log(this.addTemplateAssignmentForm.value)
             this.addTemplateAssignmentForm.get('user').disable();
+            this.addTemplateAssignmentForm.get('effectiveDate').disable();
             this.addTemplateAssignmentForm.get('advanceTemplate').disable();
             this.addTemplateAssignmentForm.get('primaryApprover').disable();
           } else if (this.templateById.approvalLevel === '2') {
             this.addTemplateAssignmentForm.patchValue({
-              primaryApprover: templateAssignment[0].primaryApprover,
-              secondaryApprover: templateAssignment[0].secondaryApprover,
-              user: data.user,
-              advanceTemplate: data.advanceTemplate,
-              effectiveDate: data.effectiveDate
+              primaryApprover: templateAssignment.primaryApprover,
+              secondaryApprover: templateAssignment.secondaryApprover,
+              user: templateAssignment.user,
+              advanceTemplate: templateAssignment.advanceTemplate,
+              effectiveDate: templateAssignment.effectiveDate
             });
           }
           this.addTemplateAssignmentForm.get('user').disable();
+          this.addTemplateAssignmentForm.get('effectiveDate').disable();
           this.addTemplateAssignmentForm.get('advanceTemplate').disable();
           this.addTemplateAssignmentForm.get('primaryApprover').disable();
           this.addTemplateAssignmentForm.get('secondaryApprover').disable();
@@ -412,20 +375,20 @@ export class AdvanceTemplateAssignmentComponent {
 
         else if (this.templateById.approvalType === 'employee-wise') {
           this.addTemplateAssignmentForm.patchValue({
-            primaryApprover: templateAssignment[0].primaryApprover,
-            secondaryApprover: templateAssignment[0].secondaryApprover,
-            user: data.user,
-            advanceTemplate: data.advanceTemplate,
-            effectiveDate: data.effectiveDate
+            primaryApprover: templateAssignment.primaryApprover,
+            secondaryApprover: templateAssignment.secondaryApprover,
+            user: templateAssignment.user,
+            advanceTemplate: templateAssignment.advanceTemplate,
+            effectiveDate: templateAssignment.effectiveDate
           });
           this.addTemplateAssignmentForm.get('user').disable();
+          this.addTemplateAssignmentForm.get('effectiveDate').disable();
           this.addTemplateAssignmentForm.get('advanceTemplate').disable();
           this.addTemplateAssignmentForm.get('primaryApprover').enable();
           this.addTemplateAssignmentForm.get('secondaryApprover').enable();
         }
       });
     });
-    // })
   }
   clearselectedRequest() {
     this.isEdit = false;

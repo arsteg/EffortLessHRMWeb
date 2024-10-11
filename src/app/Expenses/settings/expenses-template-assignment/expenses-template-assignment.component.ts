@@ -16,7 +16,7 @@ import { DatePipe } from '@angular/common';
 export class ExpensesTemplateAssignmentComponent implements OnInit {
   searchText: string = '';
   isEdit: boolean = false;
-  changeMode: 'Add' | 'Update' = 'Add';
+  changeMode: 'Add' | 'View' = 'Add';
   closeResult: string = '';
   templates: any[] = [];
   userId: string;
@@ -71,52 +71,65 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
 
   setFormValues(data) {
     this.showApproverFields = true;
-    this.expenseService.getTemplateById(data.expenseTemplate).subscribe((res: any) => {
-      this.templateById = res.data;
-      this.expenseService.getTemplateAssignmentById(data.user).subscribe((res: any) => {
-        const templateAssignment = res.data;
+    let payload = { skip: '', next: '' }
+    this.expenseService.getTemplateAssignmentById(data.user).subscribe((res: any) => {
+      const templateAssignment = res.data[0];
+      console.log(templateAssignment)
+      this.templateAssignmentForm.patchValue({
+        user: templateAssignment.user,
+        primaryApprover: templateAssignment.primaryApprover,
+        expenseTemplate: templateAssignment.expenseTemplate,
+        effectiveDate: templateAssignment.effectiveDate,
+        secondaryApprover: templateAssignment.secondaryApprover
+      });
+      this.expenseService.getTemplateById(templateAssignment.expenseTemplate).subscribe((res: any) => {
+        this.templateById = res.data;
         if (this.templateById.approvalType === 'template-wise') {
           if (this.templateById.approvalLevel === '1') {
             this.templateAssignmentForm.patchValue({
-              primaryApprover: templateAssignment[0].primaryApprover,
+              primaryApprover: templateAssignment?.primaryApprover,
               secondaryApprover: null,
-              user: data.user,
-              expenseTemplate: data.expenseTemplate,
+              user: templateAssignment.user,
+              expenseTemplate: templateAssignment.expenseTemplate,
               effectiveDate: data.effectiveDate
             });
+            console.log(this.templateAssignmentForm.value)
             this.templateAssignmentForm.get('user').disable();
+            this.templateAssignmentForm.get('effectiveDate').disable();
             this.templateAssignmentForm.get('expenseTemplate').disable();
             this.templateAssignmentForm.get('primaryApprover').disable();
           } else if (this.templateById.approvalLevel === '2') {
             this.templateAssignmentForm.patchValue({
-              primaryApprover: templateAssignment[0].primaryApprover,
-              secondaryApprover: templateAssignment[0].secondaryApprover,
-              user: data.user,
-              expenseTemplate: data.expenseTemplate,
-              effectiveDate: data.effectiveDate
+              primaryApprover: templateAssignment.primaryApprover,
+              secondaryApprover: templateAssignment.secondaryApprover,
+              user: templateAssignment.user,
+              expenseTemplate: templateAssignment.expenseTemplate,
+              effectiveDate: templateAssignment.effectiveDate
             });
           }
           this.templateAssignmentForm.get('user').disable();
-          this.templateAssignmentForm.get('expenseTemplate').disable();
+            this.templateAssignmentForm.get('effectiveDate').disable();
+            this.templateAssignmentForm.get('expenseTemplate').disable();
           this.templateAssignmentForm.get('primaryApprover').disable();
           this.templateAssignmentForm.get('secondaryApprover').disable();
         }
+
         else if (this.templateById.approvalType === 'employee-wise') {
           this.templateAssignmentForm.patchValue({
-            primaryApprover: templateAssignment[0].primaryApprover,
-            secondaryApprover: templateAssignment[0].secondaryApprover,
-            user: data.user,
-            expenseTemplate: data.expenseTemplate,
-            effectiveDate: data.effectiveDate
+            primaryApprover: templateAssignment.primaryApprover,
+            secondaryApprover: templateAssignment.secondaryApprover,
+            user: templateAssignment.user,
+            expenseTemplate: templateAssignment.expenseTemplate,
+            effectiveDate: templateAssignment.effectiveDate
           });
           this.templateAssignmentForm.get('user').disable();
-          this.templateAssignmentForm.get('expenseTemplate').disable();
+            this.templateAssignmentForm.get('effectiveDate').disable();
+            this.templateAssignmentForm.get('expenseTemplate').disable();
           this.templateAssignmentForm.get('primaryApprover').enable();
           this.templateAssignmentForm.get('secondaryApprover').enable();
         }
       });
-
-    })
+    });
   }
 
   onTemplateSelectionChange(event: any) {
@@ -312,35 +325,14 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
           this.toast.error('Advance Template Cannot be created!', 'Error')
         });
     }
-    else {
-      let user = this.selectedTemplateAssignmentId.user;
-      let expenseTemplate = this.selectedTemplateAssignmentId.expenseTemplate;
-      payload.user = user;
-      payload.expenseTemplate = expenseTemplate;
-      this.expenseService.addTemplateAssignment(payload).subscribe((res: any) => {
-        const updatedTemplateAssign = res.data;
-        this.toast.success('Advance Template Assignment Updated!', 'Successfully')
-        this.templateAssignmentForm.reset();
-        this.showApproverFields = false;
-
-        const index = this.templateAssignments.findIndex(templateAssign => templateAssign._id === updatedTemplateAssign._id);
-        if (index !== -1) {
-          this.templateAssignments[index] = updatedTemplateAssign;
-        }
-        this.getAssignments();
-      },
-        (err) => {
-          this.toast.error('Advance Template Cannot be Updated!', 'Error')
-        })
-
-    }
+   
   }
 
 
 
 
   editTemplateAssignment(templateAssignments, index: number) {
-    this.changeMode = 'Update';
+    this.changeMode = 'View';
     let templateAssignment = templateAssignments;
     const formValues = {
       user: templateAssignment.user,
