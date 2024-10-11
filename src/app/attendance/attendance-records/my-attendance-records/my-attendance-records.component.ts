@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import * as moment from 'moment';
 import { AttendanceService } from 'src/app/_services/attendance.service';
-import { AddTimeEntryComponent } from '../../../home/add-time-entry/add-time-entry.component';
 
 @Component({
   selector: 'app-my-attendance-records',

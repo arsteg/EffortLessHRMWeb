@@ -8,6 +8,7 @@ import { ExportService } from 'src/app/_services/export.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { EmployeeAttendanceHistoryComponent } from './employee-attendance-history/employee-attendance-history.component';
 import { UploadRecordsComponent } from './upload-records/upload-records.component';
+import { AttendanceService } from 'src/app/_services/attendance.service';
 
 @Component({
   selector: 'app-attendance-records',
@@ -24,7 +25,8 @@ export class AttendanceRecordsComponent {
   constructor(private modalService: NgbModal,
     private dialog: MatDialog,
     private toast: ToastrService,
-    private commonService: CommonService) {
+    private commonService: CommonService,
+    private attendanceService: AttendanceService) {
   }
 
   ngOnInit() {
@@ -51,7 +53,7 @@ export class AttendanceRecordsComponent {
   }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;

@@ -4,7 +4,6 @@ import { Spinkit } from 'ng-http-loader';
 import { AuthenticationService } from '../_services/authentication.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { MatDialog } from '@angular/material/dialog';
-import { AddTimeEntryComponent } from './add-time-entry/add-time-entry.component';
 
 @Component({
   selector: 'app-home',
@@ -159,15 +158,7 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  openAddModal(): void {
-    const dialogRef = this.dialog.open(AddTimeEntryComponent, {
-      width: '700px',
-      height: 'auto'
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The modal was closed');
-    });
-  }
+  
 }
 
 export const SideBarAdminMenu = [
