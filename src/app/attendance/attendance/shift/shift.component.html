@@ -37,14 +37,8 @@
                 <tbody>
                     <tr *ngFor="let shift of shift| search: searchText">
                         <td>{{shift?.name}}</td>
-                        <td><span
-                                *ngIf="shift?.startTimeHour != null">{{shift?.startTimeHour}}:{{shift?.startTimeMinutes}}</span>
-                            <span *ngIf="shift?.startTimeHour == null">N/A</span>
-                        </td>
-                        <td><span
-                                *ngIf="shift?.endTimeHour != null">{{shift?.endTimeHour}}:{{shift?.endTimeMinutes}}</span>
-                            <span *ngIf="shift?.endTimeHour == null">N/A</span>
-                        </td>
+                        <td>{{shift?.startTime}}</td>
+                        <td>{{shift?.endTime}}</td>
 
                         <td class="text-center">
                             <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before" (click)="changeMode=='Update';
@@ -108,267 +102,239 @@
             </div>
         </div>
 
+
+
         <div class="form-group my-2">
-            <label for="">Is this shift an Off-Shift? <span class="text-danger">*</span></label>
+            <label for="shiftType">Select Shift Type</label>
+            <select name="shiftType" formControlName="shiftType" id="shiftType">
+                <option value="fixed time"> Fixed Time</option>
+                <option value="fixed duration">Fixed Duration</option>
+                <option value="flexi">Flexi</option>
+            </select>
+        </div>
+
+        <div class="row">
+            <div class="form-group my-2 col-md-6">
+                <label for="">What is the shift start timing?</label>
+
+                <input type="time" formControlName="startTime" class="form-control formTable" />
+
+            </div>
+
+            <div class="form-group my-2 col-md-6">
+                <label for="">What is the shift end timing?</label>
+                <input type="time" formControlName="endTime" class="form-control formTable" />
+            </div>
+        </div>
+
+        <div class="form-group my-2">
+            <label for="">Is checkout time next Day?</label>
             <div class="d-flex">
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" formControlName="isOffShift" id="isOffShift" required
-                        [value]="true">
-                    <label class="form-check-label" for="isOffShift">
+                    <input class="form-check-input" type="radio" formControlName="isCheckoutTimeNextDay"
+                        id="isCheckoutTimeNextDay" required [value]="true">
+                    <label class="form-check-label" for="isCheckoutTimeNextDay">
                         Yes
                     </label>
                 </div>
 
 
                 <div class="form-check ms-3">
-                    <input class="form-check-input" type="radio" formControlName="isOffShift" id="isOffShift-No"
-                        required [value]="false">
-                    <label class="form-check-label" for="isOffShift-No">
+                    <input class="form-check-input" type="radio" formControlName="isCheckoutTimeNextDay"
+                        id="isCheckoutTimeNextDay-No" required [value]="false">
+                    <label class="form-check-label" for="isCheckoutTimeNextDay-No">
                         No
                     </label>
                 </div>
             </div>
-            <div *ngIf="shiftForm.get('isOffShift').invalid && shiftForm.get('isOffShift').touched"
-                class="text-danger error">
-                Please Select Shift!
-            </div>
         </div>
 
-        <div *ngIf="shiftForm.get('isOffShift').value == true">
+        <div class="form-group my-2">
+            <label for="firstHalfDuration">First Half Duration</label>
+            <input type="number" formControlName="firstHalfDuration" id="firstHalfDuration" class="form-control">
+        </div>
+        <div class="form-group my-2">
+            <label for="secondHalfDuration">Second Half Duration</label>
+            <input type="number" id="secondHalfDuration" formControlName="secondHalfDuration" class="form-control">
+        </div>
+
+        <div class="form-group my-2">
+            <label for="earliestArrival">Earliest Arrival</label>
+            <input type="number" formControlName="earliestArrival" id="earliestArrival" class="form-control">
+        </div>
+
+        <div class="form-group my-2">
+            <label for="latestDeparture">Latest Departure</label>
+            <input type="number" formControlName="latestDeparture" id="latestDeparture" class="form-control">
+        </div>
+
+
+
+        <!-- if fixed time selected -->
+        <div class="form-group my-2" *ngIf="shiftForm.get('shiftType').value == 'fixed time'">
+            <label for="">Is late comming allowed?</label>
+            <div class="d-flex">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" formControlName="isLateComingAllowed"
+                        id="isLateComingAllowed" required [value]="true">
+                    <label class="form-check-label" for="isLateComingAllowed">
+                        Yes
+                    </label>
+                </div>
+
+
+                <div class="form-check ms-3">
+                    <input class="form-check-input" type="radio" formControlName="isLateComingAllowed"
+                        id="isLateComingAllowed-No" required [value]="false">
+                    <label class="form-check-label" for="isLateComingAllowed-No">
+                        No
+                    </label>
+                </div>
+            </div>
+        </div>
+        <!-- if late coming is true -->
+        <div *ngIf="shiftForm.get('isLateComingAllowed').value == true">
             <div class="form-group my-2">
-                <label for="shiftType">Select Shift Type</label>
-                <select name="shiftType" formControlName="shiftType" id="shiftType">
-                    <option value="fixed time"> Fixed Time</option>
-                    <option value="fixed duration">Fixed Duration</option>
-                    <option value="flexi">Flexi</option>
+                <label for="noOfDaysLateComing">Enter Number Of Days For Late Coming</label>
+                <input type="number" id="noOfDaysLateComing" class="form-control" formControlName="noOfDaysLateComing"
+                    placeholder="Enter number of Days">
+            </div>
+
+            <div class="form-group my-2">
+                <label for="graceTimeLimitForLateComing">Grace Time Limit For Late Coming </label>
+                <input type="number" id="graceTimeLimitForLateComing" class="form-control"
+                    formControlName="graceTimeLimitForLateComing" placeholder="Enter grace time in Minutes">
+            </div>
+
+            <div class="form-group my-2">
+                <label for="">Will Late Coming Deduct from Present Days?</label>
+                <div class="d-flex">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio"
+                            formControlName="willLateComingDeductfromPresentDays"
+                            id="willLateComingDeductfromPresentDays" required [value]="true">
+                        <label class="form-check-label" for="willLateComingDeductfromPresentDays">
+                            Yes
+                        </label>
+                    </div>
+
+
+                    <div class="form-check ms-3">
+                        <input class="form-check-input" type="radio"
+                            formControlName="willLateComingDeductfromPresentDays"
+                            id="willLateComingDeductfromPresentDays-No" required [value]="false">
+                        <label class="form-check-label" for="willLateComingDeductfromPresentDays-No">
+                            No
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- if Late Coming Deduct from Present Days is selected to true -->
+        <div *ngIf="shiftForm.get('willLateComingDeductfromPresentDays').value == true">
+            <div class="form-group my-2">
+                <label for="numberOflateComingDaysAllowed">Number Of late Coming Days Allowed</label>
+                <input type="number" class="form-control" id="numberOflateComingDaysAllowed"
+                    formControlName="numberOflateComingDaysAllowed" placeholder="Number of Days">
+            </div>
+
+            <div class="form-group my-2">
+                <label for="numberOfDaysToBeDeducted">Number Of Days To Be Deducted</label>
+                <select name="" id="numberOfDaysToBeDeducted" formControlName="numberOfDaysToBeDeducted">
+                    <option value="half day">Half Day</option>
+                    <option value="full day">Full Day</option>
                 </select>
             </div>
+            <div class="form-group my-2">
+                <label for="maximumTimeLimitForLateComing">Maximum Time Limit For Late Coming?</label>
+                <input type="number" formControlName="maximumTimeLimitForLateComing" id="maximumTimeLimitForLateComing"
+                    placeholder="Number of Minutes" class="form-control">
+            </div>
+        </div>
+        <!-- end of if late coming is true -->
 
-            <div class="row">
-                <div class="form-group my-2 col-md-6">
-                    <label for="">What is the shift start timing?</label>
-
-                    <input type="time" formControlName="startTime" class="form-control formTable" />
-
+        <div class="form-group my-2">
+            <label for="">Is early going allowed?</label>
+            <div class="d-flex">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" formControlName="isEarlyGoingAllowed"
+                        id="isEarlyGoingAllowed" required [value]="true">
+                    <label class="form-check-label" for="isEarlyGoingAllowed">
+                        Yes
+                    </label>
                 </div>
 
-                <div class="form-group my-2 col-md-6">
-                    <label for="">What is the shift end timing?</label>
-                    <input type="time" formControlName="endTime" class="form-control formTable" />
+
+                <div class="form-check ms-3">
+                    <input class="form-check-input" type="radio" formControlName="isEarlyGoingAllowed"
+                        id="isEarlyGoingAllowed-No" required [value]="false">
+                    <label class="form-check-label" for="isEarlyGoingAllowed-No">
+                        No
+                    </label>
                 </div>
+            </div>
+        </div>
+        <!-- if early going is allowed to true -->
+        <div *ngIf="shiftForm.get('isEarlyGoingAllowed').value == true">
+            <div class="form-group my-2">
+                <label for="enterNumberOfDaysForEarlyGoing">Enter Number Of Days For Early Going </label>
+                <input type="number" id="enterNumberOfDaysForEarlyGoing" class="form-control"
+                    formControlName="enterNumberOfDaysForEarlyGoing" placeholder="Number of Days">
             </div>
 
             <div class="form-group my-2">
-                <label for="">Is checkout time next Day?</label>
+                <label for="graceTimeLimitForEarlyGoing">Grace Time Limit For Early Going</label>
+                <input type="number" id="graceTimeLimitForEarlyGoing" formControlName="graceTimeLimitForEarlyGoing"
+                    placeholder="Enter Grace Time in Minutes" class="form-control">
+            </div>
+        </div>
+        <!-- if fixed duration and flexi selected -->
+        <div class="form-group my-2"
+            *ngIf="shiftForm.get('shiftType').value == 'fixed duration' || shiftForm.get('shiftType').value == 'flexi'">
+            <label for="">What are the minimum hours per day that an employee should work to get credit for a Full
+                Day?</label>
+            <input type="time" formControlName="minHoursPerDayToGetCreditForFullDay" class="form-control formTable" />
+        </div>
+
+        <!-- if fixed duration selected -->
+        <div *ngIf="shiftForm.get('shiftType').value == 'fixed duration'">
+            <div class="form-group my-2">
+                <label for="">Is half day Applicable?</label>
                 <div class="d-flex">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" formControlName="isCheckoutTimeNextDay"
-                            id="isCheckoutTimeNextDay" required [value]="true">
-                        <label class="form-check-label" for="isCheckoutTimeNextDay">
+                        <input class="form-check-input" type="radio" formControlName="isHalfDayApplicable"
+                            id="isHalfDayApplicable" required value="true">
+                        <label class="form-check-label" for="isHalfDayApplicable">
                             Yes
                         </label>
                     </div>
 
 
                     <div class="form-check ms-3">
-                        <input class="form-check-input" type="radio" formControlName="isCheckoutTimeNextDay"
-                            id="isCheckoutTimeNextDay-No" required [value]="false">
-                        <label class="form-check-label" for="isCheckoutTimeNextDay-No">
+                        <input class="form-check-input" type="radio" formControlName="isHalfDayApplicable"
+                            id="isHalfDayApplicable-No" required value="false">
+                        <label class="form-check-label" for="isHalfDayApplicable-No">
                             No
                         </label>
                     </div>
                 </div>
             </div>
 
-            <div class="form-group my-2">
-                <label for="firstHalfDuration">First Half Duration</label>
-                <input type="number" formControlName="firstHalfDuration" id="firstHalfDuration" class="form-control">
-            </div>
-            <div class="form-group my-2">
-                <label for="secondHalfDuration">Second Half Duration</label>
-                <input type="number" id="secondHalfDuration" formControlName="secondHalfDuration" class="form-control">
-            </div>
 
             <div class="form-group my-2">
-                <label for="earliestArrival">Earliest Arrival</label>
-                <input type="number" formControlName="earliestArrival" id="earliestArrival" class="form-control">
-            </div>
+                <label for="">What are the minimum hours per day that an employee should work to get credit for a
+                    Half Day?</label>
 
-            <div class="form-group my-2">
-                <label for="latestDeparture">Latest Departure</label>
-                <input type="number" formControlName="latestDeparture" id="latestDeparture" class="form-control">
-            </div>
-
-
-
-            <!-- if fixed time selected -->
-            <div class="form-group my-2" *ngIf="shiftForm.get('shiftType').value == 'fixed time'">
-                <label for="">Is late comming allowed?</label>
-                <div class="d-flex">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" formControlName="isLateComingAllowed"
-                            id="isLateComingAllowed" required [value]="true">
-                        <label class="form-check-label" for="isLateComingAllowed">
-                            Yes
-                        </label>
-                    </div>
-
-
-                    <div class="form-check ms-3">
-                        <input class="form-check-input" type="radio" formControlName="isLateComingAllowed"
-                            id="isLateComingAllowed-No" required [value]="false">
-                        <label class="form-check-label" for="isLateComingAllowed-No">
-                            No
-                        </label>
-                    </div>
-                </div>
-            </div>
-            <!-- if late coming is true -->
-            <div *ngIf="shiftForm.get('isLateComingAllowed').value == true">
-                <div class="form-group my-2">
-                    <label for="noOfDaysLateComing">Enter Number Of Days For Late Coming</label>
-                    <input type="number" id="noOfDaysLateComing" class="form-control"
-                        formControlName="noOfDaysLateComing" placeholder="Enter number of Days">
-                </div>
-
-                <div class="form-group my-2">
-                    <label for="graceTimeLimitForLateComing">Grace Time Limit For Late Coming </label>
-                    <input type="number" id="graceTimeLimitForLateComing" class="form-control"
-                        formControlName="graceTimeLimitForLateComing" placeholder="Enter grace time in Minutes">
-                </div>
-
-                <div class="form-group my-2">
-                    <label for="">Will Late Coming Deduct from Present Days?</label>
-                    <div class="d-flex">
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio"
-                                formControlName="willLateComingDeductfromPresentDays"
-                                id="willLateComingDeductfromPresentDays" required [value]="true">
-                            <label class="form-check-label" for="willLateComingDeductfromPresentDays">
-                                Yes
-                            </label>
-                        </div>
-
-
-                        <div class="form-check ms-3">
-                            <input class="form-check-input" type="radio"
-                                formControlName="willLateComingDeductfromPresentDays"
-                                id="willLateComingDeductfromPresentDays-No" required [value]="false">
-                            <label class="form-check-label" for="willLateComingDeductfromPresentDays-No">
-                                No
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- if Late Coming Deduct from Present Days is selected to true -->
-            <div *ngIf="shiftForm.get('willLateComingDeductfromPresentDays').value == true">
-                <div class="form-group my-2">
-                    <label for="numberOflateComingDaysAllowed">Number Of late Coming Days Allowed</label>
-                    <input type="number" class="form-control" id="numberOflateComingDaysAllowed"
-                        formControlName="numberOflateComingDaysAllowed" placeholder="Number of Days">
-                </div>
-
-                <div class="form-group my-2">
-                    <label for="numberOfDaysToBeDeducted">Number Of Days To Be Deducted</label>
-                    <select name="" id="numberOfDaysToBeDeducted" formControlName="numberOfDaysToBeDeducted">
-                        <option value="half day">Half Day</option>
-                        <option value="full day">Full Day</option>
-                    </select>
-                </div>
-                <div class="form-group my-2">
-                    <label for="maximumTimeLimitForLateComing">Maximum Time Limit For Late Coming?</label>
-                    <input type="number" formControlName="maximumTimeLimitForLateComing"
-                        id="maximumTimeLimitForLateComing" placeholder="Number of Minutes" class="form-control">
-                </div>
-            </div>
-            <!-- end of if late coming is true -->
-
-            <div class="form-group my-2">
-                <label for="">Is early going allowed?</label>
-                <div class="d-flex">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" formControlName="isEarlyGoingAllowed"
-                            id="isEarlyGoingAllowed" required [value]="true">
-                        <label class="form-check-label" for="isEarlyGoingAllowed">
-                            Yes
-                        </label>
-                    </div>
-
-
-                    <div class="form-check ms-3">
-                        <input class="form-check-input" type="radio" formControlName="isEarlyGoingAllowed"
-                            id="isEarlyGoingAllowed-No" required [value]="false">
-                        <label class="form-check-label" for="isEarlyGoingAllowed-No">
-                            No
-                        </label>
-                    </div>
-                </div>
-            </div>
-            <!-- if early going is allowed to true -->
-            <div *ngIf="shiftForm.get('isEarlyGoingAllowed').value == true">
-                <div class="form-group my-2">
-                    <label for="enterNumberOfDaysForEarlyGoing">Enter Number Of Days For Early Going </label>
-                    <input type="number" id="enterNumberOfDaysForEarlyGoing" class="form-control"
-                        formControlName="enterNumberOfDaysForEarlyGoing" placeholder="Number of Days">
-                </div>
-
-                <div class="form-group my-2">
-                    <label for="graceTimeLimitForEarlyGoing">Grace Time Limit For Early Going</label>
-                    <input type="number" id="graceTimeLimitForEarlyGoing" formControlName="graceTimeLimitForEarlyGoing"
-                        placeholder="Enter Grace Time in Minutes" class="form-control">
-                </div>
-            </div>
-            <!-- if fixed duration and flexi selected -->
-            <div class="form-group my-2"
-                *ngIf="shiftForm.get('shiftType').value == 'fixed duration' || shiftForm.get('shiftType').value == 'flexi'">
-                <label for="">What are the minimum hours per day that an employee should work to get credit for a Full
-                    Day?</label>
-                <input type="time" formControlName="minHoursPerDayToGetCreditForFullDay"
+                <input type="time" formControlName="minHoursPerDayToGetCreditforHalfDay"
                     class="form-control formTable" />
-            </div>
-
-            <!-- if fixed duration selected -->
-            <div *ngIf="shiftForm.get('shiftType').value == 'fixed duration'">
-                <div class="form-group my-2">
-                    <label for="">Is half day Applicable?</label>
-                    <div class="d-flex">
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" formControlName="isHalfDayApplicable"
-                                id="isHalfDayApplicable" required value="true">
-                            <label class="form-check-label" for="isHalfDayApplicable">
-                                Yes
-                            </label>
-                        </div>
-
-
-                        <div class="form-check ms-3">
-                            <input class="form-check-input" type="radio" formControlName="isHalfDayApplicable"
-                                id="isHalfDayApplicable-No" required value="false">
-                            <label class="form-check-label" for="isHalfDayApplicable-No">
-                                No
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="form-group my-2">
-                    <label for="">What are the minimum hours per day that an employee should work to get credit for a
-                        Half Day?</label>
-
-                    <input type="time" formControlName="minHoursPerDayToGetCreditforHalfDay"
-                        class="form-control formTable" />
-
-                </div>
 
             </div>
-            <!-- if flexi selected -->
-            <div class="form-group my-2" *ngIf="shiftForm.get('shiftType').value == 'flexi'">
-                <label for="">Maximum Late Coming Allowed Minutes for First Half Attendance</label>
-                <input type="number" formControlName="maxLateComingAllowedMinutesFirstHalfAttendance"
-                    class="form-control">
-            </div>
+
+        </div>
+        <!-- if flexi selected -->
+        <div class="form-group my-2" *ngIf="shiftForm.get('shiftType').value == 'flexi'">
+            <label for="">Maximum Late Coming Allowed Minutes for First Half Attendance</label>
+            <input type="number" formControlName="maxLateComingAllowedMinutesFirstHalfAttendance" class="form-control">
         </div>
 
 
