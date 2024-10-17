@@ -1,42 +1,94 @@
-.present{
+.present {
     background: #64b53f;
     color: white;
 }
 
-.absent{
+.check {
+    color: #64b53f;
+}
+
+.absent {
     background: #f41e0c;
     color: white;
 }
-.in-out{
+
+.in-out {
     background: #9fe78c;
     color: white;
 }
 
-.incomplete-record{
+.incomplete-record {
     background: #f4b146;
     color: white;
 }
-
-.halfday{
+.incompleteIcon{
+    color: #f4b146;
+}
+.halfday {
     background: #46d1f4;
     color: white;
 }
-.weeklyOff{
+
+.halfDayIcon {
+    color: #46d1f4;
+}
+
+.weeklyOff {
     background: #159297;
     color: white;
 }
 
-.holiday{
+.holiday {
     background: #c247fc;
     color: white;
 }
-
-.leave{
+.holidayIcon{
+    color: #c247fc;
+}
+.leave {
     background: #fa6ec4;
     color: white;
 }
 
-.not-applicable{
+.leaveIcon {
+    color: #fa6ec4;
+}
+
+.not-applicable {
     background: #434240;
     color: white;
 }
+
+.table-wrapper {
+    overflow-x: auto; /* Enable horizontal scrolling for the date columns */
+    white-space: nowrap; /* Prevent wrapping of table content */
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th, td {
+    padding: 8px 16px;
+    text-align: left;
+  }
+  
+  /* Sticky employee (first column) */
+  th:first-child, td:first-child {
+    position: sticky;
+    left: 0;
+    background-color: white; /* Ensure background covers underlying content */
+    z-index: 1; /* Ensure sticky columns stay on top */
+    box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1); /* Add a shadow for better separation */
+  }
+  
+  /* Sticky action (last column) */
+  th:last-child, td:last-child {
+    position: sticky;
+    right: 0;
+    background-color: white; /* Ensure background covers underlying content */
+    z-index: 1; /* Ensure sticky columns stay on top */
+    box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.1); /* Add a shadow for better separation */
+  }
+  
