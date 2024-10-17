@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AttendanceService } from 'src/app/_services/attendance.service';
 import { ExportService } from 'src/app/_services/export.service';
 
 @Component({
@@ -10,8 +11,18 @@ export class EmployeeAttendanceHistoryComponent {
   searchText: string = '';
   attendanceHistory: any;
   p: number = 1;
+  attendanceRecord: any;
 
-  constructor(private exportService: ExportService) { }
+  constructor(private exportService: ExportService,
+    private attendanceService: AttendanceService
+  ) { }
+
+  ngOnInit() {
+    this.attendanceService.selectedAttendanceRecord.subscribe(res => {
+      this.attendanceRecord = res;
+      console.log(this.attendanceRecord)
+    })
+  }
 
   exportToCsv() {
     const dataToExport = this.attendanceHistory.map((data) => ({

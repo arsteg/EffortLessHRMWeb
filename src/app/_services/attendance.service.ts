@@ -8,7 +8,7 @@ import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from
 @Injectable({
   providedIn: 'root'
 })
-export class AttendanceService implements CanActivate{
+export class AttendanceService implements CanActivate {
   private readonly token = this.getToken();
   private readonly apiUrl = environment.apiUrlDotNet;
   private readonly httpOptions = {
@@ -21,6 +21,7 @@ export class AttendanceService implements CanActivate{
   };
 
   selectedTemplate: any = new BehaviorSubject('');
+  selectedAttendanceRecord: any = new BehaviorSubject('');
   status: any = new BehaviorSubject('');
 
   constructor(private http: HttpClient,
@@ -312,7 +313,7 @@ export class AttendanceService implements CanActivate{
   }
 
   getShiftAssignment(skip: string, next: string): Observable<response<any>> {
-    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/shift-template-assignments-by-company`,{skip, next}, this.httpOptions);
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/shift-template-assignments-by-company`, { skip, next }, this.httpOptions);
     return response;
   }
 
@@ -359,11 +360,11 @@ export class AttendanceService implements CanActivate{
   }
 
   getAllRegularization(skip: string, next: string, status: string): Observable<response<any>> {
-    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/regularizationRequests-by-company`,{skip, next, status}, this.httpOptions);
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/regularizationRequests-by-company`, { skip, next, status }, this.httpOptions);
     return response;
   }
   getRegularizationByUser(userId: string, payload: any): Observable<response<any>> {
-    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/regularizationRequests-by-user/${userId}`,payload, this.httpOptions);
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/regularizationRequests-by-user/${userId}`, payload, this.httpOptions);
     return response;
   }
 
@@ -389,40 +390,15 @@ export class AttendanceService implements CanActivate{
   }
 
   getAllOnDutyRequests(payload: any): Observable<response<any>> {
-    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/employee-duty-requests-by-company`,payload, this.httpOptions);
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/employee-duty-requests-by-company`, payload, this.httpOptions);
     return response;
   }
 
   getAllOnDutyRequestsByUser(userId: string, skip: string, next: string): Observable<response<any>> {
-    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/employee-duty-requests-by-user/${userId}`,{skip,next}, this.httpOptions);
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/employee-duty-requests-by-user/${userId}`, { skip, next }, this.httpOptions);
     return response;
   }
 
-  // Time entries (My Attendance Records)
-  addTimeEntry(onDuty: any): Observable<response<any>> {
-    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/time-entries`, onDuty, this.httpOptions);
-    return response;
-  }
-
-  updateTimeEntry(id: string, location: any): Observable<response<any>> {
-    var response = this.http.put<response<any>>(`${environment.apiUrlDotNet}/attendance/time-entries/${id}`, location, this.httpOptions);
-    return response;
-  }
-
-  deleteTimeEntry(id: string): Observable<response<any>> {
-    var response = this.http.delete<response<any>>(`${environment.apiUrlDotNet}/attendance/time-entries/${id}`, this.httpOptions);
-    return response;
-  }
-
-  getTimeEntryById(id: string): Observable<response<any>> {
-    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/time-entries/${id}`, this.httpOptions);
-    return response;
-  }
-
-  getTimeEntry(): Observable<response<any>> {
-    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/time-entries-by-company`, this.httpOptions);
-    return response;
-  }
 
   // Attendance modes
 
@@ -450,5 +426,9 @@ export class AttendanceService implements CanActivate{
     var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/attendance-modes`, this.httpOptions);
     return response;
   }
-
+  // Attendance records
+  getAttendanceRecordsByMonth(payload: any): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/get-attendance-by-month`, payload, this.httpOptions);
+    return response;
+  }
 }
