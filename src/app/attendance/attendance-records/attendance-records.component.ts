@@ -27,7 +27,6 @@ export class AttendanceRecordsComponent {
   selectedAttendanceRecord: any;
   filteredAttendanceRecords = [];
   groupedAttendanceRecords: any;
-  dates: any;
   selectedMonth: number = new Date().getMonth() + 1;
   currentMonthDates: Date[] = [];
   public sortOrder: string = '';
@@ -52,7 +51,6 @@ export class AttendanceRecordsComponent {
 
   years: number[] = [];
   selectedYear: number;
-  shiftDurationCache: any;
   processedUsers: Set<string> = new Set();
   leave: any;
   holidays: any;
@@ -84,9 +82,7 @@ export class AttendanceRecordsComponent {
     return date;
   };
 
-  getAttendanceForDate(user: any, date: Date): any {
-    return user.attendance.find((att: any) => new Date(att.date).toDateString() === date.toDateString());
-  }
+ 
 
 
   closeModal() {
@@ -119,45 +115,14 @@ export class AttendanceRecordsComponent {
     // this.exportService.exportToCSV('Shift-Assignment', 'Shift-Assignment', dataToExport);
   }
 
-  // viewHistory(user: any) {
-  //   const attendanceRecords = this.currentMonthDates.map(date => {
-  //     return {
-  //       status: this.getAttendanceStatus(user, date)
-  //     };
-  //   });
-  //   this.selectedAttendanceRecord = {
-  //     user: user.name,
-  //     month: this.selectedMonth,
-  //     year: this.selectedYear,
-  //     records: attendanceRecords,
-  //     name: this.getUser(user.name),
-  //     shift: this.getShift(user.name)
-  //   };
-  //   console.log(this.selectedAttendanceRecord);
 
-  //   this.dialog.open(EmployeeAttendanceHistoryComponent, {
-  //     data: this.selectedAttendanceRecord
-  //   });
-  // }
-
-  // getShift(user) {
-  //   this.attendanceService.getShiftByUser(user).subscribe((res: any) => {
-  //     const fullHours = parseInt(res.data.minHoursPerDayToGetCreditForFullDay.split(":")[0], 10);
-  //     const halfHours = parseInt(res.data.minHoursPerDayToGetCreditforHalfDay.split(":")[0], 10);
-  //     this.fullDayDuration = fullHours * 60;
-  //     this.halfDayDuration = halfHours * 60;
-  //     return this.fullDayDuration;
-  //   });
-  // }
   viewHistory(user: any) {
-    // Fetch attendance records for the current month
     const attendanceRecords = this.currentMonthDates.map(date => {
       return {
         status: this.getAttendanceStatus(user, date)
       };
     });
 
-    // Get shift details for the user
     this.attendanceService.getShiftByUser(user.name).subscribe((res: any) => {
       const fullHours = parseInt(res.data.minHoursPerDayToGetCreditForFullDay.split(":")[0], 10);
       const halfHours = parseInt(res.data.minHoursPerDayToGetCreditforHalfDay.split(":")[0], 10);

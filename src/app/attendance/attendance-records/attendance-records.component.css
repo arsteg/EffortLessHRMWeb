@@ -60,8 +60,8 @@
 }
 
 .table-wrapper {
-    overflow-x: auto; /* Enable horizontal scrolling for the date columns */
-    white-space: nowrap; /* Prevent wrapping of table content */
+    overflow-x: auto;
+    white-space: nowrap;
   }
   
   table {
@@ -74,21 +74,19 @@
     text-align: left;
   }
   
-  /* Sticky employee (first column) */
   th:first-child, td:first-child {
     position: sticky;
     left: 0;
-    background-color: white; /* Ensure background covers underlying content */
-    z-index: 1; /* Ensure sticky columns stay on top */
-    box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1); /* Add a shadow for better separation */
+    background-color: white; 
+    z-index: 1; 
+    box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1);
   }
   
-  /* Sticky action (last column) */
   th:last-child, td:last-child {
     position: sticky;
     right: 0;
-    background-color: white; /* Ensure background covers underlying content */
-    z-index: 1; /* Ensure sticky columns stay on top */
-    box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.1); /* Add a shadow for better separation */
+    background-color: white;
+    z-index: 1;
+    box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.1);
   }
   

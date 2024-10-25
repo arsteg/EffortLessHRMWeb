@@ -7,7 +7,6 @@ import { AttendanceManagementSettingsComponent } from './attendance-settings/att
 import { GeneralSettingsComponent } from './attendance/generalSettings/generalSettings.component';
 import { AttendanceTemplateComponent } from './attendance/attendance-template/attendance-template.component';
 import { AttendanceTemplateAssignmentComponent } from './attendance/attendance-template-assignment/attendance-template-assignment.component';
-import { OvertimeComponent } from './attendance/overtime/overtime.component';
 import { OnDutyTemplatesComponent } from './attendance/on-duty-templates/on-duty-templates.component';
 import { OnDutyTemplateAssignmentComponent } from './attendance/on-duty-template-assignment/on-duty-template-assignment.component';
 import { ShiftComponent } from './attendance/shift/shift.component';
@@ -45,7 +44,7 @@ const routes: Routes = [
               { path: 'general-settings', component: GeneralSettingsComponent },
               { path: 'attendance-templates', component: AttendanceTemplateComponent },
               { path: 'attendance-template-assignment', component: AttendanceTemplateAssignmentComponent },
-              { path: 'over-time', component: OvertimeComponent },
+              { path: 'overtime-records', component: OvertimeRecordsComponent },
               { path: 'on-duty-template', component: OnDutyTemplatesComponent },
               { path: 'on-duty-template-assignment', component: OnDutyTemplateAssignmentComponent },
               { path: 'shift', component: ShiftComponent },

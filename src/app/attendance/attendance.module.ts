@@ -12,7 +12,6 @@ import { GeneralTemplateSettingsComponent } from './attendance/attendance-templa
 import { RouterOutlet } from '@angular/router';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { AttendanceTemplateAssignmentComponent } from './attendance/attendance-template-assignment/attendance-template-assignment.component';
-import { OvertimeComponent } from './attendance/overtime/overtime.component';
 import { OnDutyTemplatesComponent } from './attendance/on-duty-templates/on-duty-templates.component';
 import { OnDutyTemplateAssignmentComponent } from './attendance/on-duty-template-assignment/on-duty-template-assignment.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -46,7 +45,6 @@ import { AttendanceRoutingModule } from './attendance-routing.module';
     AttendanceTemplateComponent,
     GeneralTemplateSettingsComponent,
     AttendanceTemplateAssignmentComponent,
-    OvertimeComponent,
     OnDutyTemplatesComponent,
     OnDutyTemplateAssignmentComponent,
     ShiftComponent,

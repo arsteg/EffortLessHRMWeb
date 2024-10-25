@@ -1,0 +1,30 @@
+.table-wrapper {
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th, td {
+    padding: 8px 16px;
+    text-align: left;
+  }
+  
+  th:first-child, td:first-child {
+    position: sticky;
+    left: 0;
+    background-color: white; 
+    z-index: 1; 
+    box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  th:last-child, td:last-child {
+    position: sticky;
+    right: 0;
+    background-color: white;
+    z-index: 1;
+    box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.1);
+  }
