@@ -1,5 +1,5 @@
 <div class="d-flex justify-content-between">
-    <h2 mat-dialog-title>Attendance Record for <span>{{attendanceRecord?.user | titlecase}}</span></h2>
+    <h2 mat-dialog-title>Attendance Record for <span>{{data.name}}</span></h2>
     <mat-dialog-actions>
         <button mat-button mat-dialog-close><mat-icon>close</mat-icon></button>
     </mat-dialog-actions>
@@ -32,12 +32,11 @@
                 <th>Late Coming Remarks</th>
             </thead>
             <tbody>
-                <!-- <tr *ngFor="let data of attendanceHistory "></tr> -->
-                 <tr>
+                <tr *ngFor="let attendanceRecord of attendanceRecords">
                     <td>{{attendanceRecord?.date | date: 'mediumDate'}}</td>
                     <td>{{attendanceRecord?.checkIn | date: 'shortTime'}}</td>
                     <td>{{attendanceRecord?.checkOut | date: 'shortTime'}}</td>
-                    <td>{{attendanceRecord?.duration/60}}</td>
+                    <td>{{attendanceRecord?.duration}}</td>
                     <td>{{attendanceRecord?.ODHours}}</td>
                     <td>{{attendanceRecord?.SSLHours}}</td>
                     <td>{{attendanceRecord?.beforeProcessing}}</td>
@@ -46,10 +45,10 @@
                     <td>{{attendanceRecord?.deviationHour}}</td>
                     <td>{{attendanceRecord?.shiftTiming}}</td>
                     <td>{{attendanceRecord?.lateComingRemarks}}</td>
-                 </tr>
+                </tr>
             </tbody>
         </table>
-        
+
     </div>
     <div class="tableContainer mt-2 bg-white">
         <div class="d-flex my-2 align-items-center">
@@ -71,25 +70,20 @@
                 <th>Total Payable Days</th>
             </thead>
             <tbody>
-                <tr *ngFor="let data of attendanceHistory ">
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-
+                <tr>
+                    <td>{{ data.name }}</td>
+                    <td class="text-center">{{ daysPresent }}</td>
+                    <td class="text-center">{{ daysAbsent }}</td>
+                    <td class="text-center">{{ leaveTaken }}</td>
+                    <td class="text-center">{{ weeklyOff }}</td>
+                    <td class="text-center">{{ holidays }}</td>
+                    <td class="text-center">{{ incompleteRecords }}</td>
+                    <td class="text-center">{{ totalDuration| number: '1.2-2' }}</td>
+                    <td class="text-center">{{ totalDeviationHours | number: '1.2-2' }}</td>
+                    <td class="text-center">{{ totalPayableDays }}</td>
                 </tr>
-
             </tbody>
         </table>
 
     </div>
 </mat-dialog-content>
-<mat-dialog-actions>
-    <button mat-button mat-dialog-close>Close</button>
-</mat-dialog-actions>

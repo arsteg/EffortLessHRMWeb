@@ -1,0 +1,24 @@
+.tableContainer {
+    height: 100%;
+    overflow-y: auto;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  thead, tbody tr {
+    display: block;
+  }
+  
+  tbody {
+    height: 60vh; 
+    overflow-y: auto; 
+    display: block;
+  }
+  
+  th, td {
+    width: 3%; 
+  }
+  

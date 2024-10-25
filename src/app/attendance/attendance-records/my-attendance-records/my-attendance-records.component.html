@@ -1,18 +1,24 @@
 <div class="mainContent mt-3">
     <div class="container-fluid">
-        <div class="py-2 px-2 bg-white tableContainer">
+        <div class="py-2 px-2 bg-white">
             <div class="d-flex justify-content-between align-items-baseline px-2">
-                <mat-form-field appearance="outline" class="">
-                    <mat-select placeholder="Select Month" [(ngModel)]="selectedMonth">
-                        <mat-option *ngFor="let month of months" [value]="month.value">
-                            {{ month.label }}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
+                <div>
+                    <label for="monthSelect">Select Month: </label>
+                    <select id="monthSelect" [(ngModel)]="selectedMonth" (change)="onMonthChange($event)">
+                      <option *ngFor="let month of months" [value]="month.value">{{ month.name }}</option>
+                    </select>
+                  </div>
+        
+                  <div class="form-group ms-2">
+                    <label for="year" class="pt-2 pe-3">Full and Final Year</label>
+                    <select id="year" name="year" class="form-control" [(ngModel)]="selectedYear"
+                      (change)="onYearChange($event)">
+                      <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+                    </select>
+                  </div>
 
                 <div class="d-flex align-items-baseline ms-auto">
                     <p class="mb-0 me-3">({{attendanceRecords?.length}}) Records Found</p>
-    
                     <div class="d-flex ms-auto align-items-center">
                         <span class="bi bi-search searchIcon"></span>
                         <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
@@ -36,24 +42,22 @@
                         <th>Deviation Hours</th>
                         <th>Shift Timings</th>
                         <th>Late Coming Remarks</th>
-                        <th>Actions</th>
                     </thead>
 
                     <tbody>
-                        <tr *ngFor="let data of attendanceRecords  ">
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                        <tr *ngFor="let data of attendanceRecords | search: searchText">
+                            <td>{{data?.date | date: 'mediumDate'}}</td>
+                            <td>{{data?.checkIn | date: 'shortTime'}}</td>
+                            <td>{{data?.checkOut | date: 'shortTime'}}</td>
+                            <td>{{data?.duration| number: '1.2-2'}}</td>
+                            <td>{{data?.ODHours}}</td>
+                            <td>{{data?.SSLHours}}</td>
+                            <td>{{data?.beforeProcessing}}</td>
+                            <td>{{data?.afterProcessing}}</td>
+                            <td>{{data?.earlyLateStatus}}</td>
+                            <td>{{data?.deviationHour}}</td>
+                            <td>{{data?.shiftTiming}}</td>
+                            <td>{{data?.lateComingRemarks}}</td>
                         </tr>
                     </tbody>
                 </table>

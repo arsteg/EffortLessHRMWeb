@@ -662,8 +662,8 @@ td:first-child {
 }
 
 td:last-child {
-  border-top-right-radius: 1.2rem;
-  border-bottom-right-radius: 1.2rem;
+  /* border-top-right-radius: 1.2rem;
+  border-bottom-right-radius: 1.2rem; */
 }
 
 th{

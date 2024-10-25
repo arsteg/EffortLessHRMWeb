@@ -399,7 +399,6 @@ export class AttendanceService implements CanActivate {
     return response;
   }
 
-
   // Attendance modes
 
   addModes(mode: any): Observable<response<any>> {
@@ -431,4 +430,21 @@ export class AttendanceService implements CanActivate {
     var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/get-attendance-by-month`, payload, this.httpOptions);
     return response;
   }
+
+  getAttendanceRecordsByMonthByUser(payload: any): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/get-attendance-by-month`, payload, this.httpOptions);
+    return response;
+  }
+
+  // Attendance Overtime
+
+  getAttendanceOvertimeByMonth(payload: any): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/get-overtime-by-month`, payload, this.httpOptions);
+    return response;
+  }
+  getAttendanceOvertimeByUser(payload: any): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/get-overtime-by-month-user`, payload, this.httpOptions);
+    return response;
+  }
+
 }
