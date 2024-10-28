@@ -1,7 +1,7 @@
 <div class="main-content">
     <div class="container-fluid">
         <ng-container>
-            <div class="" *ngIf="view === 'admin'">
+            <!-- <div class="" *ngIf="view === 'admin'"> -->
                 <div class="tabs">
                     <button (click)="selectTab(1)" [class.active]="selectedTab === 1">Pending
                     </button>
@@ -25,10 +25,10 @@
                 <div *ngIf="selectedTab === 4" class="tab-content">
                     <app-onDutyCancelled [selectedTab]="tab"></app-onDutyCancelled>
                 </div>
-            </div>
+            <!-- </div>
             <div *ngIf="view === 'user'">
                 <app-show-record></app-show-record>
-            </div>
+            </div> -->
         </ng-container>
     </div>
 </div>

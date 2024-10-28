@@ -37,6 +37,7 @@ import { UpdateOnDutyComponent } from './on-duty-records/update-on-duty/update-o
 import { ShowOnDutyComponent } from './on-duty-records/show-on-duty/show-on-duty.component';
 import { MyAttendanceRecordsComponent } from './attendance-records/my-attendance-records/my-attendance-records.component';
 import { AttendanceRoutingModule } from './attendance-routing.module';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -67,7 +68,7 @@ import { AttendanceRoutingModule } from './attendance-routing.module';
     PendingOnDutyComponent,
     RejectedOnDutyComponent,
     ApprovedOnDutyComponent,
-    MyAttendanceRecordsComponent,
+    MyAttendanceRecordsComponent
   ],
   imports: [
     MatRadioModule,
@@ -80,7 +81,8 @@ import { AttendanceRoutingModule } from './attendance-routing.module';
     FormsModule,
     ReactiveFormsModule,
     ColorChromeModule,
-    AttendanceRoutingModule
+    AttendanceRoutingModule,
+    NgbModule
   ],
   exports: [
     AttendanceManagementComponent,

@@ -16,7 +16,6 @@ import { RosterRecordsComponent } from './roster-records/roster-records.componen
 import { OvertimeRecordsComponent } from './overtime-records/overtime-records.component';
 import { OnDutyRecordsComponent } from './on-duty-records/on-duty-records.component';
 import { MyAttendanceRecordsComponent } from './attendance-records/my-attendance-records/my-attendance-records.component';
-import { AttendanceService } from '../_services/attendance.service';
 
 const routes: Routes = [
   {
@@ -25,7 +24,6 @@ const routes: Routes = [
       {
         path: 'attendance', component: AttendanceManagementComponent, canActivate: [AuthGuard],
         children: [
-          // User Routes
           {
             path: '',
             redirectTo: (localStorage.getItem('adminView') === 'user') ? 'my-attendance-records' : 'settings',
@@ -36,7 +34,6 @@ const routes: Routes = [
           { path: 'my-on-duty-request', component: OnDutyRecordsComponent },
           { path: 'my-overtime-records', component: OvertimeRecordsComponent },
 
-          // Admin Routes
           {
             path: 'settings', component: AttendanceManagementSettingsComponent,
             children: [

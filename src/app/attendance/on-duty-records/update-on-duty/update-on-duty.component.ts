@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Inject, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { AttendanceService } from 'src/app/_services/attendance.service';
 
@@ -12,12 +12,13 @@ import { AttendanceService } from 'src/app/_services/attendance.service';
 export class UpdateOnDutyComponent {
   onDutyShiftForm: FormGroup;
   @Output() onDutyRequest: EventEmitter<void> = new EventEmitter<void>();
-  private dialogRef: MatDialogRef<UpdateOnDutyComponent>;
   status: any;
 
   constructor(private fb: FormBuilder,
     private attendanceService: AttendanceService,
-    private toast:ToastrService
+    private toast:ToastrService,
+    public dialogRef: MatDialogRef<UpdateOnDutyComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: { report: any } 
   ) {
     this.onDutyShiftForm = this.fb.group({
       user: ['', Validators.required],
@@ -51,10 +52,16 @@ export class UpdateOnDutyComponent {
       secondaryApprovar: status.secondaryApprovar,
       secondaryApprovarComment: status.secondaryApprovarComment
     }
-    this.attendanceService.updateOnDutyRequest(status._id, payload).subscribe((res: any) => {
-      this.onDutyRequest.emit();
-      this.dialogRef.close();
-      this.toast.success('Status Updated', 'Successfully!' )
-    })
+    this.attendanceService.updateOnDutyRequest(status._id, payload).subscribe({
+      next: (res: any) => {
+        this.onDutyRequest.emit();
+        this.dialogRef.close();
+        this.toast.success('On Duty Request Updated', 'Successfully!');
+      },
+      error: (err) => {
+        console.error(err);
+        this.toast.error('Failed to update On Duty Request', 'Error');
+      }
+    });
   }
 }

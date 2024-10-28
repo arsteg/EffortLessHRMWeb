@@ -61,7 +61,6 @@ export class ShowOnDutyComponent {
     this.loadRecords();
   }
 
-
   loadRecords() {
     const pagination = {
       skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
@@ -115,7 +114,6 @@ export class ShowOnDutyComponent {
     });
     dialogRef.afterClosed().subscribe(result => {
       this.requestRefreshed();
-      console.log('The modal was closed');
     });
   }
 
@@ -127,7 +125,6 @@ export class ShowOnDutyComponent {
     });
     dialogRef.afterClosed().subscribe(result => {
       this.requestRefreshed();
-      console.log('The modal was closed');
     });
   }
 
