@@ -74,10 +74,10 @@ export class PayrollService {
     return response;
   }
   getPfTemplate(payload: any): Observable<any> {
-    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/pf-templates-by-company`, payload,  this.httpOptions);
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/pf-templates-by-company`, payload, this.httpOptions);
     return response;
   }
- 
+
   updatePFTemplate(id: string, payload: any): Observable<any> {
     var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/pf-templates/${id}`, payload, this.httpOptions);
     return response;
@@ -99,7 +99,7 @@ export class PayrollService {
     var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll/gratuity-templates/${id}`, this.httpOptions);
     return response;
   }
-  
+
   getGratuityTemplate(payload: any): Observable<any> {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/gratuity-templates-by-company`, payload, this.httpOptions);
     return response;
@@ -393,7 +393,7 @@ export class PayrollService {
   }
 
   // CTC Template CRUD
- getCTCTemplate(payload: any): Observable<any> {
+  getCTCTemplate(payload: any): Observable<any> {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/ctc-templates-by-company`, payload, this.httpOptions);
     return response;
   }
@@ -414,4 +414,97 @@ export class PayrollService {
     var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/ctc-templates/${id}`, this.httpOptions);
     return response;
   }
+
+  // Run payroll: Payroll history
+  addPayroll(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll`, payload, this.httpOptions);
+    return response;
+  }
+
+  getPayroll(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/payroll-by-company`, payload, this.httpOptions);
+    return response;
+  }
+
+  // Payroll Users
+
+  getPayrollUsers(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/users-by-payroll`, payload, this.httpOptions);
+    return response;
+  }
+
+  addPayrollUser(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/users`, payload, this.httpOptions);
+    return response;
+  }
+
+  updatePayrollUser(id: string, payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/users/${id}`, payload, this.httpOptions);
+    return response;
+  }
+
+  // Run Payroll: (Step-6) Flexi benefits CRUD
+  addFlexi(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/flexi-benefits-pf-tax`, payload, this.httpOptions);
+    return response;
+  }
+
+  getFlexiByUsers(payrollUser: string): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/flexi-benefits-pf-tax-by-payrolluser/${payrollUser}`, this.httpOptions);
+    return response;
+  }
+
+  deleteFlexi(id: string): Observable<any> {
+    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payrollflexi-benefits-pf-tax/${id}`, this.httpOptions);
+    return response;
+  }
+
+  updateFlexi(id: string, payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/flexi-benefits-pf-tax/${id}`, payload, this.httpOptions);
+    return response;
+  }
+
+  // Run Payroll: (Step-7) Overtime CRUD
+  addOvertime(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/overtime`, payload, this.httpOptions);
+    return response;
+  }
+
+  getOvertime(): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/overtime`, this.httpOptions);
+    return response;
+  }
+
+  deleteOvertime(id: string): Observable<any> {
+    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payrollOvertime/${id}`, this.httpOptions);
+    return response;
+  }
+
+  updateOvertime(id: string, payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/overtime/${id}`, payload, this.httpOptions);
+    return response;
+  }
+
+  // Run Payroll: (Step-8) Income tax CRUD
+  addIncomeTax(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll-incomeTax`, payload, this.httpOptions);
+    return response;
+  }
+
+  getIncomeTax(): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll-incomeTax`, this.httpOptions);
+    return response;
+  }
+
+  deleteIncomeTax(id: string): Observable<any> {
+    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll-incomeTax/${id}`, this.httpOptions);
+    return response;
+  }
+
+  updateIncomeTax(id: string, payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll-incomeTax/${id}`, payload, this.httpOptions);
+    return response;
+  }
+
+
 }

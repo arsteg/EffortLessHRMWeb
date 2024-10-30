@@ -14,6 +14,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MatIconModule } from "@angular/material/icon";
 import { MatTooltip, MatTooltipModule } from "@angular/material/tooltip";
 import { MatSelectModule } from "@angular/material/select";
+import { MatDialogModule } from "@angular/material/dialog";
 
 @NgModule({
     declarations:[SubordinateSelectionComponent, CRUDComponent],
@@ -32,7 +33,8 @@ import { MatSelectModule } from "@angular/material/select";
       BrowserAnimationsModule,
       MatIconModule,
       MatTooltipModule,
-      MatSelectModule
+      MatSelectModule,
+      MatDialogModule
     ],
     schemas: [
       CUSTOM_ELEMENTS_SCHEMA,

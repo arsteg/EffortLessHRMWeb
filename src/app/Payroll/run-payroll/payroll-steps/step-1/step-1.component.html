@@ -23,19 +23,18 @@
 
                 <table>
                     <thead>
-                        <th>Employee Code</th>
                         <th>Employee Name</th>
                         <th>Joining Date</th>
                         <th>Action</th>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                        <tr *ngFor="let data of activeUsers">
+                            <td>{{getUser(data?.user)}}</td>
+                            <td>{{selectedPayroll?.date | date: 'mediumDate'}}</td>
                             <td><button class="actions" mat-mini-fab matTooltip="Place Selected Employees On Hold"
-                                    matTooltipPosition="before" (click)="open(modal)"><i class="bi bi-arrow-right-circle"
-                                        style="font-size: x-large"></i></button></td>
+                                    matTooltipPosition="before"
+                                    (click)="status= 'OnHold'; selectedRecord = data; open(modal)"><i
+                                        class="bi bi-arrow-right-circle" style="font-size: x-large"></i></button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -48,20 +47,18 @@
 
                 <table>
                     <thead>
-                        <th>Employee Code</th>
                         <th>Employee Name</th>
                         <th>Joining Date</th>
                         <th>Action</th>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                        <tr *ngFor="let data of onHoldUsers">
+                            <td>{{getUser(data?.user)}}</td>
+                            <td>{{selectedPayroll?.date | date: 'mediumDate'}}</td>
                             <td><button class="actions" mat-mini-fab matTooltip="UnHold Selected Employees"
                                     matTooltipPosition="before"
-                                    (click)="open(modalUnHold)"><i class="bi bi-arrow-right-circle"
-                                        style="font-size: x-large"></i></button></td>
+                                    (click)="status= 'Processed'; selectedRecord = data; open(modal)"><i
+                                        class="bi bi-arrow-right-circle" style="font-size: x-large"></i></button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -73,19 +70,18 @@
 
                 <table>
                     <thead>
-                        <th>Employee Code</th>
                         <th>Employee Name</th>
                         <th>Joining Date</th>
                         <th>Action</th>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                        <tr *ngFor="let data of processedUsers">
+                            <td>{{getUser(data?.user)}}</td>
+                            <td>{{selectedPayroll?.date | date: 'mediumDate'}}</td>
                             <td><button class="actions" mat-mini-fab matTooltip="Re-Run Selected Employee"
-                                    matTooltipPosition="before" (click)="open(modalReRun)"><i class="bi bi-arrow-right-circle"
-                                        style="font-size: x-large"></i></button></td>
+                                    matTooltipPosition="before"
+                                    (click)="status= 'Active';  selectedRecord = data; open(modal)"><i
+                                        class="bi bi-arrow-right-circle" style="font-size: x-large"></i></button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -98,7 +94,7 @@
 <ng-template #modal let-modal>
     <div class="modal-header border-bottom justify-content-between d-flex mb-2 pt-0">
         <div>
-            <h1 class="modal-title text-muted mb-0">Do you want to put Selected Employee On Hold?</h1>
+            <h1 class="modal-title text-muted mb-0">Do you want to put Selected Employee {{status}}?</h1>
         </div>
         <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
                 (click)="modal.close('Escape clicked')"></button>
@@ -106,39 +102,7 @@
 
     </div>
     <div class="d-flex justify-content-between">
-        <button mat-raised-button type="button">No</button>
-        <button mat-raised-button type="submit" class="addBtn">Yes</button>
-    </div>
-</ng-template>
-
-<ng-template #modalUnHold let-modal>
-    <div class="modal-header border-bottom justify-content-between d-flex mb-2 pt-0">
-        <div>
-            <h1 class="modal-title text-muted mb-0">Do you want Selected Employee to UnHold?</h1>
-        </div>
-        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
-                (click)="modal.close('Escape clicked')"></button>
-        </div>
-
-    </div>
-    <div class="d-flex justify-content-between">
-        <button mat-raised-button type="button">No</button>
-        <button mat-raised-button type="submit" class="addBtn">Yes</button>
-    </div>
-</ng-template>
-
-<ng-template #modalReRun let-modal>
-    <div class="modal-header border-bottom justify-content-between d-flex mb-2 pt-0">
-        <div>
-            <h1 class="modal-title text-muted mb-0">Do you want to Re-Run for Selected Employee?</h1>
-        </div>
-        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
-                (click)="modal.close('Escape clicked')"></button>
-        </div>
-
-    </div>
-    <div class="d-flex justify-content-between">
-        <button mat-raised-button type="button">No</button>
-        <button mat-raised-button type="submit" class="addBtn">Yes</button>
+        <button mat-raised-button type="button" (click)="modal.close('Escape clicked')">No</button>
+        <button mat-raised-button (click)="onSubmission(modal)" type="submit" class="addBtn">Yes</button>
     </div>
 </ng-template>

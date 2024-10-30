@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -13,10 +13,12 @@ export class RunFnfPayrollComponent {
   years: number[] = [];
   selectedYear: number;
   
+  
   constructor(private modalService: NgbModal) { }
 
   ngOnInit() {
     this.generateYearList();
+    
   }
 
   generateYearList() {

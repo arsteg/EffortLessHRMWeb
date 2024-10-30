@@ -8,6 +8,7 @@
                     <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
                         name="searchText" aria-label="default input example">
                     <button class="addBtn ms-2" mat-raised-button>Run Payroll</button>
+                    <button class="addBtn ms-2" mat-raised-button (click)="open(addModal)">Add Payroll</button>
                 </div>
             </div>
             <table>
@@ -19,17 +20,18 @@
                     <th>Actions</th>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>data</td>
-                        <td>date</td>
+
+                    <tr *ngFor="let data of payroll">
+                        <td>{{data?.month}} - {{data?.year}}</td>
+                        <td>{{data?.date | date:'mediumDate'}}</td>
                         <td>
                             <ul type="none" class="ps-0">
-                                <li>No. of Processed Employees: </li>
-                                <li>No. of Active Employees: </li>
-                                <li>No. of On-Hold Employees: </li>
+                                <li>No. of Processed Employees: {{data?.processedCount}}</li>
+                                <li>No. of Active Employees: {{data?.activeCount}} </li>
+                                <li>No. of On-Hold Employees: {{data?.onHoldCount}} </li>
                             </ul>
                         </td>
-                        <td>Pending</td>
+                        <td>{{data?.status}}</td>
                         <td>
                             <div ngbDropdown class="dropdown-center">
                                 <button class="actions ms-2" mat-mini-fab ngbDropdownToggle aria-expanded="false"
@@ -45,7 +47,13 @@
                                         <i class="bi bi-clipboard-check dropdown-item w-25"></i><span
                                             class="pt-1 text-muted">Tax Register</span>
                                     </li>
-                                    <li class="d-flex border-bottom action-list" (click)="open(modal)">
+                                    <li class="d-flex border-bottom action-list"
+                                        (click)="selectedPayroll = data?._id; open(addUserModal)">
+                                        <i class="bi bi-plus-circle dropdown-item w-25"></i><span
+                                            class="pt-1 text-muted">Add Employee</span>
+                                    </li>
+                                    <li class="d-flex border-bottom action-list"
+                                        (click)="selectedPayroll = data; isAllEmployees = true;">
                                         <i class="bi bi-pencil dropdown-item w-25"></i><span
                                             class="pt-1 text-muted">Edit</span>
                                     </li>
@@ -63,6 +71,128 @@
     </div>
 </div>
 
+
+<ng-template #addModal let-addModal>
+    <div class="modal-header border-bottom justify-content-between d-flex mb-2 pt-0">
+        <div>
+            <h1 class="modal-title text-muted mb-0">Create Payroll</h1>
+        </div>
+        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
+                (click)="addModal.close('Escape clicked')"></button>
+        </div>
+
+    </div>
+    <form [formGroup]="payrollForm" (ngSubmit)="onSubmission()">
+        <div class="form-group my-2 col-md-6">
+            <label for="dateInput">Payroll Date</label>
+            <input type="date" id="dateInput" formControlName="date" class="form-control" />
+        </div>
+
+        <div class="form-group my-2 col-md-6">
+            <label for="statusInput">Payroll Status</label>
+            <select id="statusInput" formControlName="status" class="form-control">
+                <option value="" disabled selected>Select payroll status</option>
+                <option value="InProgress">In Progress</option>
+                <option value="Complete Approval Pending">Complete Approval Pending</option>
+                <option value="OnHold">On Hold</option>
+                <option value="Processed">Processed</option>
+            </select>
+        </div>
+
+        <div class="form-group my-2 col-md-6">
+            <label for="monthSelect">Payroll Month</label>
+            <select id="monthSelect" formControlName="month">
+                <option *ngFor="let month of months" [value]="month">{{ month }}</option>
+            </select>
+        </div>
+
+        <div class="form-group my-2 col-md-6">
+            <label for="yearInput">Payroll Year</label>
+            <select id="year" name="year" class="form-control" formControlName="year">
+                <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+            </select>
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <button mat-raised-button type="button">Cancel</button>
+            <button mat-raised-button type="submit" class="addBtn">Save</button>
+        </div>
+    </form>
+
+</ng-template>
+<ng-template #addUserModal let-addUserModal>
+    <div class="modal-header border-bottom justify-content-between d-flex mb-2 pt-0">
+        <div>
+            <h1 class="modal-title text-muted mb-0">Assign Payroll to Employees</h1>
+        </div>
+        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
+                (click)="addUserModal.close('Escape clicked')"></button>
+        </div>
+
+    </div>
+    <form [formGroup]="payrollUserForm" (ngSubmit)="updatePayrollUser()">
+
+
+        <div class="form-group">
+            <label for="" class="">Employee Selection for Payroll&nbsp;<span class="text-danger">*</span></label>
+            <select name="" id="" class="form-control" formControlName="user">
+                <option [value]="user?.id" *ngFor="let user of users; let i = index">{{user?.firstName |
+                    titlecase}} {{user.lastName | titlecase}}</option>
+
+            </select>
+            <div *ngIf="payrollUserForm.get('user').invalid && payrollUserForm.get('user').touched"
+                class="text-danger error">
+                Please Choose an Employee to Assign the Payroll!
+            </div>
+        </div>
+
+        <div class="form-group my-2 col-md-6">
+            <label for="totalHomeTakeInput">Total Home Take</label>
+            <input type="number" id="totalHomeTakeInput" formControlName="totalHomeTake" class="form-control"
+                placeholder="Enter Total Home Take" />
+        </div>
+
+        <div class="form-group my-2 col-md-6">
+            <label for="totalFlexiBenefitsInput">Total Flexi Benefits</label>
+            <input type="number" id="totalFlexiBenefitsInput" formControlName="totalFlexiBenefits" class="form-control"
+                placeholder="Enter Total Flexi Benefits" />
+        </div>
+
+        <div class="form-group my-2 col-md-6">
+            <label for="totalCTCInput">Total CTC</label>
+            <input type="number" id="totalCTCInput" formControlName="totalCTC" class="form-control"
+                placeholder="Enter Total CTC" />
+        </div>
+
+        <div class="form-group my-2 col-md-6">
+            <label for="totalGrossSalaryInput">Total Gross Salary</label>
+            <input type="number" id="totalGrossSalaryInput" formControlName="totalGrossSalary" class="form-control"
+                placeholder="Enter Total Gross Salary" />
+        </div>
+
+        <div class="form-group my-2 col-md-6">
+            <label for="totalTakeHomeInput">Total Take Home</label>
+            <input type="number" id="totalTakeHomeInput" formControlName="totalTakeHome" class="form-control"
+                placeholder="Enter Total Take Home" />
+        </div>
+
+        <div class="form-group my-2 col-md-6">
+            <label for="statusInput">Status</label>
+            <select id="statusInput" formControlName="status" class="form-control">
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+            </select>
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <button mat-raised-button type="button">Cancel</button>
+            <button mat-raised-button type="submit" class="addBtn">Save</button>
+        </div>
+    </form>
+
+
+</ng-template>
+
 <ng-template #modal let-modal>
     <div class="modal-header border-bottom justify-content-between d-flex mb-2 pt-0">
         <div>
@@ -75,8 +205,9 @@
 
     <div class="form-group">
         <label for="">Option 1: Edit Payroll for All Employees</label>
-        <button type="button" class="submenuTab active rounded-pill" (click)="isAllEmployees = true; modal.close('Escape clicked')"
-            data-bs-dismiss="modal"><i class="bi bi-people"></i> All
+        <button type="button" class="submenuTab active rounded-pill"
+            (click)="isAllEmployees = true; modal.close('Escape clicked')" data-bs-dismiss="modal"><i
+                class="bi bi-people"></i> All
             Employees</button>
     </div>
 
@@ -86,4 +217,5 @@
     </div>
 </ng-template>
 
-<app-payroll-steps *ngIf="isAllEmployees"></app-payroll-steps>
+<button *ngIf="isAllEmployees" (click)="isAllEmployees = false" mat-raised-button class="bi bi-arrow-left addBtn">Back</button>
+<app-payroll-steps [selectedPayroll]="selectedPayroll" *ngIf="isAllEmployees"></app-payroll-steps>

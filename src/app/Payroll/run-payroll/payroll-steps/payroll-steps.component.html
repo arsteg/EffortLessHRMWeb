@@ -6,7 +6,7 @@
                 <h3>Step 1: Employee Selection</h3>
                 <button mat-raised-button matStepperNext>Next</button>
             </div>
-            <app-step-1></app-step-1>
+            <app-step-1 [selectedPayroll]="selectedPayroll"></app-step-1>
         </form>
     </mat-step>
     <mat-step [stepControl]="firstFormGroup">
@@ -19,7 +19,7 @@
                     <button mat-raised-button matStepperNext>Next</button>
                 </div>
             </div>
-            <app-step-2></app-step-2>
+            <app-step-2 [selectedPayroll]="selectedPayroll"></app-step-2>
         </form>
     </mat-step>
     <mat-step [stepControl]="firstFormGroup">
@@ -33,7 +33,7 @@
                     <button mat-raised-button matStepperNext>Next</button>
                 </div>
             </div>
-            <app-step-3></app-step-3>
+            <app-step-3 [selectedPayroll]="selectedPayroll"></app-step-3>
         </form>
     </mat-step>
     <mat-step [stepControl]="firstFormGroup">
@@ -46,7 +46,7 @@
                     <button mat-raised-button matStepperNext>Next</button>
                 </div>
             </div>
-            <app-step-4></app-step-4>
+            <app-step-4 [selectedPayroll]="selectedPayroll"></app-step-4>
         </form>
     </mat-step>
     <mat-step [stepControl]="firstFormGroup">
@@ -59,7 +59,7 @@
                     <button mat-raised-button matStepperNext>Next</button>
                 </div>
             </div>
-            <app-step-5></app-step-5>
+            <app-step-5 [selectedPayroll]="selectedPayroll"></app-step-5>
         </form>
     </mat-step>
     <mat-step [stepControl]="firstFormGroup">
@@ -72,7 +72,7 @@
                     <button mat-raised-button matStepperNext>Next</button>
                 </div>
             </div>
-            <app-step-6></app-step-6>
+            <app-step-6 [selectedPayroll]="selectedPayroll"></app-step-6>
         </form>
     </mat-step>
     <mat-step [stepControl]="firstFormGroup">
@@ -85,7 +85,7 @@
                     <button mat-raised-button matStepperNext>Next</button>
                 </div>
             </div>
-            <app-step-7></app-step-7>
+            <app-step-7 [selectedPayroll]="selectedPayroll"></app-step-7>
         </form>
     </mat-step>
     <mat-step [stepControl]="firstFormGroup">
@@ -98,7 +98,7 @@
                     <button mat-raised-button matStepperNext>Next</button>
                 </div>
             </div>
-            <app-step-8></app-step-8>
+            <app-step-8 [selectedPayroll]="selectedPayroll"></app-step-8>
         </form>
     </mat-step>
     <mat-step [stepControl]="firstFormGroup">
@@ -111,7 +111,7 @@
                     <button mat-raised-button matStepperNext>Next</button>
                 </div>
             </div>
-            <app-step-9></app-step-9>
+            <app-step-9 [selectedPayroll]="selectedPayroll"></app-step-9>
         </form>
     </mat-step>
 </mat-stepper>

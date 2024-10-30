@@ -38,6 +38,7 @@ import { ShowOnDutyComponent } from './on-duty-records/show-on-duty/show-on-duty
 import { MyAttendanceRecordsComponent } from './attendance-records/my-attendance-records/my-attendance-records.component';
 import { AttendanceRoutingModule } from './attendance-routing.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { AttendanceProcessComponent } from './attendance-process/attendance-process.component';
 
 @NgModule({
   declarations: [
@@ -68,7 +69,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     PendingOnDutyComponent,
     RejectedOnDutyComponent,
     ApprovedOnDutyComponent,
-    MyAttendanceRecordsComponent
+    MyAttendanceRecordsComponent,
+    AttendanceProcessComponent
   ],
   imports: [
     MatRadioModule,

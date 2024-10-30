@@ -16,6 +16,7 @@ import { RosterRecordsComponent } from './roster-records/roster-records.componen
 import { OvertimeRecordsComponent } from './overtime-records/overtime-records.component';
 import { OnDutyRecordsComponent } from './on-duty-records/on-duty-records.component';
 import { MyAttendanceRecordsComponent } from './attendance-records/my-attendance-records/my-attendance-records.component';
+import { AttendanceProcessComponent } from './attendance-process/attendance-process.component';
 
 const routes: Routes = [
   {
@@ -53,7 +54,7 @@ const routes: Routes = [
           { path: 'overtime-records', component: OvertimeRecordsComponent },
           { path: 'on-duty-request', component: OnDutyRecordsComponent },
           { path: 'attendance-audit', component: OnDutyRecordsComponent },
-          { path: 'attendance-process', component: OnDutyRecordsComponent },
+          { path: 'attendance-process', component: AttendanceProcessComponent },
           { path: 'reconcilation', component: OnDutyRecordsComponent },
         ]
       },

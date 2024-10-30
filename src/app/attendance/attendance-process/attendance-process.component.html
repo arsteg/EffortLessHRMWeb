@@ -1,0 +1,59 @@
+<div class="main-content">
+    <div class="row">
+        <div class="col-12">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'attendanceProcess'}"
+                        (click)="selectTab('attendanceProcess')">Attendance Process</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'fnfattendanceProcess'}"
+                        (click)="selectTab('fnfattendanceProcess')">FnF Attendance Process</a>
+                </li>
+            </ul>
+            <div class="tab-content pt-0">
+                <div class="tab-pane" [ngClass]="{'active': activeTab === 'attendanceProcess'}" id="attendanceProcess">
+
+                    <div class="mt-2 bg-white tableContainer">
+                        <div class="d-flex justify-content-between border-bottom">
+                            <label for="">Do you want to process Attendance only for the employees assigned to the CTC
+                                Template?</label>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" formControlName="canSelectRegularizationReason"
+                                    type="checkbox" role="switch" id="canSelectRegularizationReason" checked>
+                            </div>
+                        </div>
+
+                        <div class="tableContainer">
+                            <div class="d-flex justify-content-between align-items-center mb-2 px-3">
+                                <div class="d-flex align-items-center">
+                                    <span class="bi bi-search searchIcon"></span>
+
+                                    <input class="form-control search" type="text" placeholder="Search..."
+                                        [(ngModel)]="searchText" name="searchText" aria-label="default input example">
+                                </div>
+                            </div>
+                            <table>
+                                <thead>
+                                    <th>Attendance Process Period</th>
+                                    <th>Run Date</th>
+                                    <th>Process Details</th>
+                                    <th>Export to Payroll</th>
+                                    <th>Actions</th>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" [ngClass]="{'active': activeTab === 'fnfattendanceProcess'}"
+                    id="fnfattendanceProcess">
+
+                    <div class="mt-2 bg-white tableContainer">
+                        <pre>FnF Attendance Process</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

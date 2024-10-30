@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 
 @Component({
@@ -14,6 +14,11 @@ export class PayrollStepsComponent {
     secondCtrl: ['', Validators.required],
   });
   isEditable = false;
+  @Input() selectedPayroll: any;
 
   constructor(private _formBuilder: FormBuilder) {}
+
+  
+  ngOnInit(){
+  }
 }
