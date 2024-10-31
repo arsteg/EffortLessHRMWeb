@@ -17,7 +17,7 @@ export class Step2Component {
   @Input() selectedPayroll: any;
   attendanceSummary: any;
   changeMode: 'Add' | 'Update' = 'Add';
-  selectedUserId: string | undefined;
+  selectedUserId: any;
   users: any;
 
   constructor(private payrollService: PayrollService,
@@ -35,7 +35,7 @@ export class Step2Component {
 
   ngOnInit() {
     this.getAllUsers();
-    this.getAttendanceSummary();
+    // this.getAttendanceSummary();
   }
 
   onUserSelectedFromChild(userId: string) {
@@ -73,7 +73,7 @@ export class Step2Component {
   }
   
   getAttendanceSummary() {
-    this.payrollService.getAttendanceSummary(this.selectedUserId).subscribe(
+    this.payrollService.getAttendanceSummary(this.selectedUserId._id).subscribe(
       (res: any) => {
         this.attendanceSummary = res.data;
         const userRequests = this.attendanceSummary.map((item: any) => {
@@ -102,7 +102,7 @@ export class Step2Component {
   }
 
   onSubmission() {
-    this.attendanceSummaryForm.value.payrollUser = this.selectedUserId;
+    this.attendanceSummaryForm.value.payrollUser = this.selectedUserId._id;
     this.payrollService.addAttendanceSummary(this.attendanceSummaryForm.value).subscribe((res: any) => {
       this.attendanceSummary.push(res.data);
       this.attendanceSummaryForm.patchValue({

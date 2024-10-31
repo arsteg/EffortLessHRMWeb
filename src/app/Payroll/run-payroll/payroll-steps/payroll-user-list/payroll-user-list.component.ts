@@ -11,6 +11,7 @@ export class PayrollUserListComponent {
   payrollUsers: any;
   users: any;
   selectedUserId: string | undefined;
+  selectedUser: any;
 
   @Input() selectedPayroll: any;
   @Output() userSelected = new EventEmitter<string>();
@@ -40,10 +41,9 @@ export class PayrollUserListComponent {
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'N/A';
   }
 
-
-  onUserSelect(event: Event) {
-    const userId = (event.target as HTMLSelectElement).value;
-    this.selectedUserId = userId;
-    this.userSelected.emit(userId);
+  onUserSelect(selectedUser: any) {
+    console.log(selectedUser.user)
+    this.userSelected.emit(selectedUser);
   }
+
 }

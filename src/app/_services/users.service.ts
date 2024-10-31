@@ -225,6 +225,10 @@ export class UserService {
     return this.http.post<any>(`${environment.apiUrlDotNet}/users/employee-loan-advance-by-user/${userId}`, payload, this.httpOptions);
   }
 
+  getLoansAdvancesByCompany(payload: any): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrlDotNet}/users/employee-loan-advance-by-company`, payload, this.httpOptions);
+  }
+
   updateLoansAdvances(id, payload: any): Observable<any> {
     return this.http.put<any>(`${environment.apiUrlDotNet}/users/employee-loan-advance/${id}`, payload, this.httpOptions);
   }

@@ -368,6 +368,7 @@ export class PayrollService {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/loan-advances-category-by-company`, payload, this.httpOptions);
     return response;
   }
+
   //  Flexi Benefits CRUD
   addFlexiBenefits(payload: any): Observable<any> {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/flexi-benefits-category`, payload, this.httpOptions);
@@ -449,7 +450,7 @@ export class PayrollService {
   }
 
 
-  // Run Payroll: (step-3) Attendance summary
+  // Run Payroll: (step-2) Attendance summary
   addAttendanceSummary(payload: any): Observable<any> {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/payrolluser-attendance-summary`, payload, this.httpOptions);
     return response;
@@ -465,6 +466,28 @@ export class PayrollService {
     return response;
   }
 
+  // Run Payroll: (step-4) loans/Advances
+  addLoanAdvance(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/payroll-loan-advance`, payload, this.httpOptions);
+    return response;
+  }
+
+  getLoanAdvance(payrollUser: string): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/payroll-loan-advance-by-payrolluser/${payrollUser}`, this.httpOptions);
+    return response;
+  }
+
+  deleteLoanAdvance(id: string): Observable<any> {
+    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll/payroll-loan-advance/${id}`, this.httpOptions);
+    return response;
+  }
+
+  updateLoanAdvance(id: string, payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/flexi-benefits-pf-tax/${id}`, payload, this.httpOptions);
+    return response;
+  }
+
+  
 
   // Run Payroll: (Step-6) Flexi benefits CRUD
   addFlexi(payload: any): Observable<any> {
