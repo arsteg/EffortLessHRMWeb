@@ -1,0 +1,7 @@
+<div class="form-group">
+    <label for="">Payroll User Selection <span class="text-danger">*</span></label>
+    <select name="" id="" (change)="onUserSelect($event)">
+        <option value="" selected disabled>Select Payroll User</option>
+        <option value="{{users?._id}}" *ngFor="let users of payrollUsers">{{getUser(users?.user)}}</option>
+    </select>
+</div>

@@ -37,7 +37,6 @@ export class Step6Component {
   }
 
   ngOnInit() {
-    console.log(this.selectedPayroll);
     this.getAllUsers();
     this.getFlexiBenefitsProfessionalTax();
   }

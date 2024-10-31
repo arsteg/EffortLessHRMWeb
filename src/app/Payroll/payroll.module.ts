@@ -64,6 +64,7 @@ import { VarAllowanceComponent } from './ctc-templates/assigned-templates/var-al
 import { VarDeductionComponent } from './ctc-templates/assigned-templates/var-deduction/var-deduction.component';
 import { CommonComponentsModule } from '../common/commonComponents.module';
 import { PayrollRoutingModule } from './payroll-routing.module';
+import { PayrollUserListComponent } from './run-payroll/payroll-steps/payroll-user-list/payroll-user-list.component';
 
 @NgModule({
   declarations: [
@@ -120,7 +121,8 @@ import { PayrollRoutingModule } from './payroll-routing.module';
     Step9Component,
     ViewPayslipComponent,
     VarAllowanceComponent,
-    VarDeductionComponent
+    VarDeductionComponent,
+    PayrollUserListComponent
   ],
   imports: [
     CommonModule, 

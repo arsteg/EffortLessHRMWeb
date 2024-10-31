@@ -426,7 +426,7 @@ export class PayrollService {
     return response;
   }
 
-  // Payroll Users
+  // Run Payroll: Payroll Users (Step-1)
 
   getPayrollUsers(payload: any): Observable<any> {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/users-by-payroll`, payload, this.httpOptions);
@@ -442,6 +442,29 @@ export class PayrollService {
     var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/users/${id}`, payload, this.httpOptions);
     return response;
   }
+
+  getPayrollUserById(payrollUser: string): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/users/${payrollUser}`, this.httpOptions);
+    return response;
+  }
+
+
+  // Run Payroll: (step-3) Attendance summary
+  addAttendanceSummary(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/payrolluser-attendance-summary`, payload, this.httpOptions);
+    return response;
+  }
+
+  getAttendanceSummary(payrollUser: string): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/payrolluser-attendance-summary-by-payrolluser/${payrollUser}`, this.httpOptions);
+    return response;
+  }
+
+  updateAttendanceSummary(id: string, payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/payrolluser-attendance-summary/${id}`, payload, this.httpOptions);
+    return response;
+  }
+
 
   // Run Payroll: (Step-6) Flexi benefits CRUD
   addFlexi(payload: any): Observable<any> {

@@ -1,20 +1,73 @@
 <div class="tableContainer">
-    <div class="d-flex align-items-center">
-        <span class="bi bi-search searchIcon"></span>
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+            <span class="bi bi-search searchIcon"></span>
 
-        <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
-            name="searchText" aria-label="default input example">
+            <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
+                name="searchText" aria-label="default input example">
+        </div>
+        <div class="d-flex align-items-center">
+            <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
+                [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
+            <button mat-raised-button class=" ms-2 addBtn" (click)="changeMode = 'Add'; open(modal);">Add</button>
+        </div>
+
     </div>
     <table>
         <thead>
-            <th>Employee Code</th>
             <th>Employee Name</th>
             <th>Total Days</th>
             <th>LOP Days</th>
             <th>Payable Days</th>
+            <th>Actions</th>
         </thead>
         <tbody>
-
+            <tr *ngFor="let data of attendanceSummary | search: searchText">
+                <td>{{data?.payrollUserDetails}}</td>
+                <td>{{data?.totalDays}}</td>
+                <td>{{data?.lopDays}}</td>
+                <td>{{data?.payableDays}}</td>
+                <td><button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before"
+                        aria-label="Example icon button with a menu icon" (click)="open(modal)">
+                        <i class="bi bi-pencil-fill"></i>
+                    </button></td>
+            </tr>
         </tbody>
     </table>
 </div>
+
+<ng-template #modal let-modal>
+    <div class="modal-header border-bottom justify-content-between d-flex mb-2 pt-0">
+        <div>
+            <h1 class="modal-title text-muted mb-0">{{changeMode}} Attendance Summary</h1>
+        </div>
+        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
+                (click)="modal.close('Escape clicked')"></button>
+        </div>
+    </div>
+    <form [formGroup]="attendanceSummaryForm" (ngSubmit)="onSubmission()">
+
+        <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
+            [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
+
+        <div class="form-group">
+            <label for="">Total Days</label>
+            <input type="number" class="form-control" formControlName="totalDays">
+        </div>
+
+        <div class="form-group">
+            <label for="">LOP Days</label>
+            <input type="number" class="form-control" formControlName="lopDays">
+        </div>
+
+        <div class="form-group">
+            <label for="">Payable Days</label>
+            <input type="number" class="form-control" formControlName="payableDays">
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <button mat-raised-button type="button">Cancel</button>
+            <button mat-raised-button type="submit" class="addBtn">Save</button>
+        </div>
+    </form>
+</ng-template>
