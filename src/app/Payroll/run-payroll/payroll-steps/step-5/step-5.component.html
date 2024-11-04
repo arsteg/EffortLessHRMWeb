@@ -16,6 +16,13 @@
     <div class="tab-content pt-0">
 
         <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabArrears'}" id="tabArrears">
+
+            <div class="d-flex justify-content-end align-items-center">
+                <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
+                    [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
+                <button mat-raised-button class=" ms-2 addBtn" (click)="changeMode = 'Add'; open(modal);">Add</button>
+            </div>
+
             <div class="d-flex justify-content-between">
                 <div class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" role="switch" id="first">
@@ -28,16 +35,13 @@
                     <label class="form-check-label" for="second">Do you want to disburse arrears in the month?</label>
                 </div>
             </div>
-            <div class="d-flex justify-content-end align-items-center">
-                <button mat-raised-button class="addBtn" (click)="open(modal);">Download</button>
-                <button mat-raised-button class="addBtn ms-2" (click)="open(modal);">Upload</button>
 
-            </div>
+
+
             <div class="mt-2 bg-white tableContainer">
 
                 <table>
                     <thead>
-                        <th>Employee Code</th>
                         <th>Employee Name</th>
                         <th>Manual Arrears</th>
                         <th>Arrear Days</th>
@@ -48,14 +52,14 @@
                         <th>Actions</th>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                        <tr *ngFor="let data of arrears">
+                            <td>{{data?.payrollUserDetails}}</td>
+                            <td>{{data?.manualArrears}}</td>
+                            <td>{{data?.arrearDays}}</td>
+                            <td>{{data?.lopReversalDays}}</td>
+                            <td>{{data?.salaryRevisionDays}}</td>
+                            <td>{{data?.lopReversalArrears}}</td>
+                            <td>{{data?.totalArrears}}</td>
                             <td>
                                 <div ngbDropdown class="dropdown-center">
                                     <button class="actions ms-2" mat-mini-fab ngbDropdownToggle aria-expanded="false"
@@ -64,11 +68,7 @@
                                     </button>
                                     <ul ngbDropdownMenu class="dropdown-menu py-0">
 
-                                        <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
-                                            data-bs-target="#deleteModal">
-                                            <i class="bi bi-pencil text-danger dropdown-item w-25"></i>
-                                            <span class="pt-1 text-muted">Edit</span>
-                                        </li>
+
 
                                         <li class="d-flex action-list" data-bs-toggle="modal"
                                             data-bs-target="#updateModal">
@@ -80,6 +80,16 @@
                                             data-bs-target="#updateModal">
                                             <i class="bi bi-eye-fill text-success dropdown-item w-25"></i>
                                             <span class="pt-1 text-muted">View LOP reversal arrears</span>
+                                        </li>
+
+                                        <li class="d-flex border-bottom action-list" (click)="changeMode = 'Update';
+                                        selectedRecord= data; open(modal);">
+                                            <i class="bi bi-pencil text-danger dropdown-item w-25"></i>
+                                            <span class="pt-1 text-muted">Edit</span>
+                                        </li>
+                                        <li class="d-flex border-bottom action-list" (click)="deleteDialog(data?._id)">
+                                            <i class="bi bi-trash text-danger dropdown-item w-25"></i>
+                                            <span class="pt-1 text-muted">Delete</span>
                                         </li>
                                     </ul>
                                 </div>
@@ -147,20 +157,65 @@
 <ng-template #modal let-modal>
     <div class="modal-header border-bottom justify-content-between d-flex mb-2 pt-0">
         <div>
-            <h1 class="modal-title text-muted mb-0">Update Manual Arrear</h1>
+            <h1 class="modal-title text-muted mb-0">{{changeMode}} Manual Arrear</h1>
         </div>
         <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
                 (click)="modal.close('Escape clicked')"></button>
         </div>
     </div>
-    <div class="form-group">
-        <label for="">Amount</label>
-        <input type="number" class="form-control">
-    </div>
-    <div class="d-flex justify-content-between">
-        <button mat-raised-button type="reset">Cancel</button>
-        <button mat-raised-button type="submit" class="addBtn">Save</button>
-    </div>
+    <form [formGroup]="arrearForm" (ngSubmit)="onSubmission()">
+        <div class="form-group" *ngIf="changeMode != 'Update'">
+            <app-payroll-user-list 
+                (userSelected)="onUserSelectedFromChild($event)"
+                [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
+        </div>
+
+        <div class="form-group" *ngIf="changeMode === 'Update'">
+            <label for="">Payroll User</label>
+            <input type="text" [disabled] formControlName="payrollUser" class="form-control">
+        </div>
+
+        <div class="form-group mt-2">
+            <label for="manualArrears">Manual Arrears</label>
+            <input type="number" id="manualArrears" formControlName="manualArrears" class="form-control"
+                placeholder="Enter Manual Arrears" />
+        </div>
+
+        <div class="form-group mt-2">
+            <label for="arrearDays">Arrear Days</label>
+            <input type="number" id="arrearDays" formControlName="arrearDays" class="form-control"
+                placeholder="Enter Arrear Days" />
+        </div>
+
+        <div class="form-group mt-2">
+            <label for="lopReversalDays">LOP Reversal Days</label>
+            <input type="number" id="lopReversalDays" formControlName="lopReversalDays" class="form-control"
+                placeholder="Enter LOP Reversal Days" />
+        </div>
+
+        <div class="form-group mt-2">
+            <label for="salaryRevisionDays">Salary Revision Days</label>
+            <input type="number" id="salaryRevisionDays" formControlName="salaryRevisionDays" class="form-control"
+                placeholder="Enter Salary Revision Days" />
+        </div>
+
+        <div class="form-group mt-2">
+            <label for="lopReversalArrears">LOP Reversal Arrears</label>
+            <input type="number" id="lopReversalArrears" formControlName="lopReversalArrears" class="form-control"
+                placeholder="Enter LOP Reversal Arrears" />
+        </div>
+
+        <div class="form-group mt-2">
+            <label for="totalArrears">Total Arrears</label>
+            <input type="number" id="totalArrears" formControlName="totalArrears" class="form-control"
+                placeholder="Enter Total Arrears" />
+        </div>
+
+        <div class="d-flex justify-content-between mt-2">
+            <button mat-raised-button type="reset">Cancel</button>
+            <button mat-raised-button type="submit" class="addBtn" [disabled]="arrearForm.invalid">Save</button>
+        </div>
+    </form>
 </ng-template>
 
 <ng-template #modalUnHold let-modal>
@@ -171,7 +226,6 @@
         <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
                 (click)="modal.close('Escape clicked')"></button>
         </div>
-
     </div>
     <div class="d-flex justify-content-between">
         <button mat-raised-button type="button">No</button>
@@ -187,7 +241,6 @@
         <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
                 (click)="modal.close('Escape clicked')"></button>
         </div>
-
     </div>
     <div class="d-flex justify-content-between">
         <button mat-raised-button type="button">No</button>

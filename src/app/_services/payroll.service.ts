@@ -487,7 +487,26 @@ export class PayrollService {
     return response;
   }
 
-  
+  // Run Payroll: (step-5) Arrears
+  addArrear(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/payroll-manual-arrears`, payload, this.httpOptions);
+    return response;
+  }
+
+  getArrear(payrollUser: string): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/payroll-manual-arrears-by-payrolluser/${payrollUser}`, this.httpOptions);
+    return response;
+  }
+
+  deleteArrear(id: string): Observable<any> {
+    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll/payroll-manual-arrears/${id}`, this.httpOptions);
+    return response;
+  }
+
+  updateArrear(id: string, payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/payroll-manual-arrears/${id}`, payload, this.httpOptions);
+    return response;
+  }
 
   // Run Payroll: (Step-6) Flexi benefits CRUD
   addFlexi(payload: any): Observable<any> {

@@ -32,7 +32,7 @@ export class Step8Component {
 
   ngOnInit() {
     this.getAllUsers();
-    this.getIncomeTax();
+    // this.getIncomeTax();
   }
 
   getAllUsers() {
