@@ -90,7 +90,6 @@ export class Step5Component {
   }
 
   onUserSelectedFromChild(user: any) {
-    this.arrearForm.patchValue({ payrollUser: user._id });
     this.selectedUserId = user;
     this.getArrears();
   }

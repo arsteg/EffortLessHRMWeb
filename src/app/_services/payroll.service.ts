@@ -520,7 +520,7 @@ export class PayrollService {
   }
 
   deleteFlexi(id: string): Observable<any> {
-    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payrollflexi-benefits-pf-tax/${id}`, this.httpOptions);
+    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll/flexi-benefits-pf-tax/${id}`, this.httpOptions);
     return response;
   }
 

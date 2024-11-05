@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
+import { forkJoin, map } from 'rxjs';
 import { CommonService } from 'src/app/_services/common.Service';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
@@ -21,6 +22,9 @@ export class Step6Component {
   changeMode: 'Add' | 'Update' = 'Add';
   users: any;
   @Input() selectedPayroll: any;
+  selectedUserId: any;
+  selectedRecord: any;
+  payrollUser: any;
 
   constructor(private modalService: NgbModal,
     private payrollService: PayrollService,
@@ -38,6 +42,10 @@ export class Step6Component {
 
   ngOnInit() {
     this.getAllUsers();
+  }
+
+  onUserSelectedFromChild(user: any) {
+    this.selectedUserId = user;
     this.getFlexiBenefitsProfessionalTax();
   }
 
@@ -47,22 +55,68 @@ export class Step6Component {
     })
   }
 
+  getUser(employeeId: string) {
+    const matchingUser = this.users?.find(user => user._id === employeeId);
+    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'N/A';
+  }
+
   getFlexiBenefitsProfessionalTax() {
-    this.payrollService.getFlexiByUsers(this.selectedPayroll).subscribe((res: any) => {
+    this.payrollService.getFlexiByUsers(this.selectedPayroll?._id).subscribe((res: any) => {
       this.flexiBenefits = res.data.records;
-      console.log(res.data);
-    })
+      const userRequests = this.flexiBenefits.map((item: any) => {
+        return this.payrollService.getPayrollUserById(item.PayrollUser).pipe(
+          map((userRes: any) => ({
+            ...item,
+            payrollUserDetails: this.getUser(userRes?.data.user)
+          }))
+        );
+      });
+      forkJoin(userRequests).subscribe(
+        (results: any[]) => {
+          this.flexiBenefits = results;
+        },
+        (error) => {
+          this.toast.error("Error fetching payroll user details:", error);
+        }
+      );
+    },
+      (error) => {
+        this.toast.error("Error fetching attendance summary:", error);
+      }
+    );
   }
 
   onSubmission() {
+    this.flexiBenefitsForm.value.PayrollUser = this.selectedUserId._id;
     if (this.changeMode == 'Add') {
       this.payrollService.addFlexi(this.flexiBenefitsForm.value).subscribe((res: any) => {
-        this.flexiBenefits = res.data;
-      })
+        this.getFlexiBenefitsProfessionalTax();
+        this.toast.success('Flexi Benefits and Professional Tax Created', 'Sccessfully!');
+      },
+        (err) => { this.toast.error('Flexi Benefits and Professional Tax can not be Added', 'Error!') }
+      )
+    }
+    if (this.changeMode == 'Update') {
+      this.payrollService.updateFlexi(this.selectedRecord._id, this.flexiBenefitsForm.value).subscribe((res: any) => {
+        this.getFlexiBenefitsProfessionalTax();
+        this.toast.success('Flexi Benefits and Professional Tax Updated', 'Successfully!')
+      },
+        err => { this.toast.error('Flexi Benefits and Professional Tax can not be Updated', 'Error!') })
     }
   }
-
   open(content: any) {
+    if (this.changeMode == 'Update') {
+      this.payrollService.getPayrollUserById(this.selectedRecord.PayrollUser).subscribe((res: any) => {
+        this.payrollUser = res.data;
+        const payrollUser = this.payrollUser?.user;
+        this.flexiBenefitsForm.patchValue({
+          PayrollUser: this.getUser(payrollUser),
+          TotalFlexiBenefitAmount: this.selectedRecord?.TotalFlexiBenefitAmount,
+          TotalProfessionalTaxAmount: this.selectedRecord?.TotalProfessionalTaxAmount
+        });
+        this.flexiBenefitsForm.get('PayrollUser').disable();
+      })
+    }
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
@@ -70,6 +124,18 @@ export class Step6Component {
     });
   }
 
+  reset() {
+    this.payrollService.getPayrollUserById(this.selectedRecord.PayrollUser).subscribe((res: any) => {
+      this.payrollUser = res.data;
+      const payrollUser = this.payrollUser?.user;
+      this.flexiBenefitsForm.patchValue({
+        PayrollUser: this.getUser(payrollUser),
+        TotalFlexiBenefitAmount: this.selectedRecord?.TotalFlexiBenefitAmount,
+        TotalProfessionalTaxAmount: this.selectedRecord?.TotalProfessionalTaxAmount
+      });
+      this.flexiBenefitsForm.get('PayrollUser').disable();
+    })
+  }
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
@@ -82,12 +148,7 @@ export class Step6Component {
 
   deleteTemplate(_id: string) {
     this.payrollService.deleteFlexi(_id).subscribe((res: any) => {
-      if (res != null) {
-        // const index = this.templates.findIndex(temp => temp._id === _id);
-        // if (index !== -1) {
-        // this.templates.splice(index, 1);
-        // }
-      }
+      this.getFlexiBenefitsProfessionalTax();
       this.toast.success('Successfully Deleted!!!', 'Flexi Benefits and Professional Tax')
     },
       (err) => {
@@ -105,5 +166,4 @@ export class Step6Component {
       }
     });
   }
-
 }
