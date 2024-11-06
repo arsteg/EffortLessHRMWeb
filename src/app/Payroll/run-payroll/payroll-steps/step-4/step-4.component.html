@@ -9,7 +9,8 @@
         <div class="d-flex align-items-center">
             <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
                 [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
-            <button mat-raised-button class=" ms-2 addBtn" (click)="changeMode = 'Add'; open(modal);">Add</button>
+            <button mat-raised-button class=" ms-2 addBtn"
+                (click)="changeMode = 'Add'; clearForm(); open(modal);">Add</button>
         </div>
 
     </div>
@@ -17,32 +18,27 @@
         <thead>
             <th>Employee Name</th>
             <th>Loan Category</th>
-            <th>Total EMI</th>
-            <th>Remaining EMI</th>
             <th>Amount</th>
-            <th>Type</th>
+            <th>Frequency</th>
             <th>Disbursed Amount</th>
             <th>Status</th>
             <th>Actions</th>
         </thead>
         <tbody>
-            <tr *ngFor="let data of loanAdvances">
-                <td>{{data?.payrollUserDetails}}</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+            <tr *ngFor="let data of matchedLoanAdvances">
+                <td>{{data?.payrollUserDetails | titlecase}}</td>
+                <td>{{getMatchingCategory(data?.loanAndAdvance)}}</td>
+                <td>{{data?.amount}}</td>
+                <td>{{data?.frequency}}</td>
+                <td>{{data?.disbursementAmount}}</td>
+                <td>{{data?.status}}</td>
                 <td>
-                    <button class="actions" mat-mini-fab matTooltip="Update"
-                        matTooltipPosition="before"
-                        (click)="selectedRecord = data; changeMode = 'Update';open(modal)"><i
+                    <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before"
+                        (click)="selectedRecord = data; changeMode = 'Update'; setFormValues(data); open(modal)"><i
                             class="bi bi-pencil"></i></button>
 
-                    <button class="actions" mat-mini-fab matTooltip="Delete"
-                        matTooltipPosition="after" (click)="deleteDialog(data?._id)"><i
-                            class="bi bi-trash"></i></button>
+                    <button class="actions ms-2" mat-mini-fab matTooltip="Delete" matTooltipPosition="after"
+                        (click)="deleteDialog(data?._id)"><i class="bi bi-trash"></i></button>
                 </td>
             </tr>
         </tbody>
@@ -59,18 +55,23 @@
         </div>
     </div>
     <form [formGroup]="loanAdvanceForm" (ngSubmit)="onSubmission()">
-        <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
-            [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
+        <div class="form-group" *ngIf="changeMode != 'Update'">
+            <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
+                [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
+        </div>
+
+        <div class="form-group" *ngIf="changeMode === 'Update'">
+            <label for="">Payroll User</label>
+            <input type="text" [disabled] formControlName="payrollUser" class="form-control">
+        </div>
 
         <div class="form-group">
             <label for="loanAdvance">Loans and Advances on the selection of Payroll User</label>
             <select name="" id="loanAdvance" formControlName="loanAndAdvance">
-                <option value="" *ngIf="userloanAdvances?.length <= 0">Loans/Advances not Assigned to the Selected User
+                <option [ngValue]="loanAdvance.loanAdvancesCategory" *ngFor="let loanAdvance of userloanAdvances"
+                    [disabled]="!loanAdvance.loanAdvancesCategory">
+                    {{ loanAdvance.name ? loanAdvance.name : getMatchingCategory(loanAdvance.loanAdvancesCategory) }}
                 </option>
-                <option value="" *ngIf="userloanAdvances?.length > 0" selected disabled>Select Loan/Advance Category
-                </option>
-                <option value="{{loanAdvance?.loanAdvancesCategory}}" *ngFor="let loanAdvance of userloanAdvances">
-                    {{this.getMatchingCategory(loanAdvance?.loanAdvancesCategory)}}</option>
             </select>
         </div>
 
@@ -92,6 +93,4 @@
             <button mat-raised-button type="submit" class="addBtn">Save</button>
         </div>
     </form>
-
-
 </ng-template>

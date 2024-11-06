@@ -3,11 +3,11 @@
         <span class="bi bi-search searchIcon"></span>
         <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
             name="searchText" aria-label="default input example">
-        <div>
-            <!-- <button mat-raised-button class="addBtn" (click)="open(modal);">Download</button>
-            <button mat-raised-button class="ms-2 addBtn" (click)="open(modal);">Upload</button> -->
-            <button mat-raised-button class="addBtn" (click)="changeMode = 'Add';open(modal);">Add</button>
-        </div>
+            <div class="d-flex justify-content-end align-items-center">
+                <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
+                    [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
+                <button mat-raised-button class=" ms-2 addBtn" (click)="changeMode = 'Add'; open(modal);">Add</button>
+            </div>
     </div>
     <table>
         <thead>
@@ -21,8 +21,8 @@
         </thead>
         <tbody>
             <tr>
-            <!-- <tr *ngFor="let data of overtime"> -->
-                <td>User</td>
+            <tr *ngFor="let data of overtime">
+                <td>{{data?.payrollUserDetails}}</td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -56,37 +56,39 @@
     </div>
 
     <form [formGroup]="overtimeForm" (ngSubmit)="onSubmission()">
-        <div class="form-group">
-            <label for="" class="">Employee Selection for Overtime&nbsp;<span class="text-danger">*</span></label>
-            <select name="" id="" class="form-control" formControlName="PayrollUser">
-                <option [value]="user?.id" *ngFor="let user of users; let i = index">{{user?.firstName |
-                    titlecase}} {{user.lastName | titlecase}}</option>
-
-            </select>
-            <div *ngIf="overtimeForm.get('PayrollUser').invalid && overtimeForm.get('PayrollUser').touched"
-                class="text-danger error">
-                Please Choose an Employee to Assign the OverTime!
-            </div>
+        <div class="form-group" *ngIf="changeMode != 'Update'">
+            <app-payroll-user-list 
+                (userSelected)="onUserSelectedFromChild($event)"
+                [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
         </div>
 
+        <div class="form-group" *ngIf="changeMode === 'Update'">
+            <label for="">Payroll User</label>
+            <input type="text" [disabled] formControlName="PayrollUser" class="form-control">
+        </div>
+
+
         <div class="form-group my-2 col-md-6">
-            <label for="">Overtime Hours</label>
-            <input type="text" formControlName="OverTime" class="form-control formTable" />
+            <label for="">Overtime Information</label>
+            <select type="text" formControlName="OverTime" class="form-control formTable">
+                <option value="" [disabled] [selected]>Select Overtime Information <span class="text-muted">(in hours)</span></option>
+                <option value="{{overtime?._id}}" *ngFor="let overtime of overtimeInformation">{{overtime?.OverTime}}</option>
+            </select>
         </div>
 
         <div class="form-group my-2 col-md-6">
             <label for="">Late Coming Hours</label>
-            <input type="text" formControlName="LateComing" class="form-control formTable" />
+            <input type="number" formControlName="LateComing" class="form-control formTable" />
         </div>
 
         <div class="form-group my-2 col-md-6">
             <label for="">Early Departure Hours</label>
-            <input type="text" formControlName="EarlyGoing" class="form-control formTable" />
+            <input type="number" formControlName="EarlyGoing" class="form-control formTable" />
         </div>
 
         <div class="form-group my-2 col-md-6">
             <label for="">Final Calculated Overtime</label>
-            <input type="text" formControlName="FinalOvertime" class="form-control formTable" />
+            <input type="number" formControlName="FinalOvertime" class="form-control formTable" />
         </div>
 
         <div class="d-flex justify-content-between">

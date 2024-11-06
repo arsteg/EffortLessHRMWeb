@@ -45,7 +45,6 @@ export class Step5Component {
 
   ngOnInit() {
     this.getAllUsers();
-    this.getPayrollUser();
   }
 
   selectTab(tabId: string) {
@@ -105,11 +104,7 @@ export class Step5Component {
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'N/A';
   }
 
-  getPayrollUser() {
-    this.payrollService.getPayrollUserById(this.selectedRecord?.payrollUser).subscribe((res: any) => {
-      this.payrollUser = res.data;
-    })
-  }
+  
   getArrears() {
     this.payrollService.getArrear(this.selectedUserId._id).subscribe((res: any) => {
       this.arrears = res.data;

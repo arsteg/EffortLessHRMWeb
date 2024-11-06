@@ -61,7 +61,7 @@ export class Step6Component {
   }
 
   getFlexiBenefitsProfessionalTax() {
-    this.payrollService.getFlexiByUsers(this.selectedPayroll?._id).subscribe((res: any) => {
+    this.payrollService.getFlexiByUsers(this.selectedUserId?._id).subscribe((res: any) => {
       this.flexiBenefits = res.data.records;
       const userRequests = this.flexiBenefits.map((item: any) => {
         return this.payrollService.getPayrollUserById(item.PayrollUser).pipe(

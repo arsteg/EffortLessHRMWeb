@@ -1,8 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ToastrService } from 'ngx-toastr';
+import { forkJoin, map } from 'rxjs';
 import { CommonService } from 'src/app/_services/common.Service';
 import { PayrollService } from 'src/app/_services/payroll.service';
+import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-step-8',
@@ -16,11 +20,15 @@ export class Step8Component {
   users: any;
   changeMode: 'Add' | 'Update' = 'Add';
   incomeTax: any;
+  selectedUserId: any;
+  @Input() selectedPayroll: any;
 
   constructor(private modalService: NgbModal,
     private fb: FormBuilder,
     private commonService: CommonService,
-    private payrollService: PayrollService
+    private payrollService: PayrollService,
+    private dialog: MatDialog,
+    private toast:ToastrService
   ) {
     this.taxForm = this.fb.group({
       PayrollUser: ['', Validators.required],
@@ -32,13 +40,17 @@ export class Step8Component {
 
   ngOnInit() {
     this.getAllUsers();
-    // this.getIncomeTax();
   }
 
   getAllUsers() {
     this.commonService.populateUsers().subscribe((res: any) => {
       this.users = res.data.data;
     })
+  }
+
+  getUser(employeeId: string) {
+    const matchingUser = this.users?.find(user => user._id === employeeId);
+    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'N/A';
   }
 
   onSubmission() {
@@ -49,10 +61,37 @@ export class Step8Component {
     }
   }
 
+  
+
+  onUserSelectedFromChild(user: any) {
+    this.selectedUserId = user;
+    this.getIncomeTax();
+  }
+
   getIncomeTax() {
-    this.payrollService.getIncomeTax().subscribe((res: any) => {
+    this.payrollService.getIncomeTax(this.selectedUserId?._id).subscribe((res: any) => {
       this.incomeTax = res.data;
-    })
+      const userRequests = this.incomeTax.map((item: any) => {
+        return this.payrollService.getPayrollUserById(item.PayrollUser).pipe(
+          map((userRes: any) => ({
+            ...item,
+            payrollUserDetails: this.getUser(userRes?.data.user)
+          }))
+        );
+      });
+      forkJoin(userRequests).subscribe(
+        (results: any[]) => {
+          this.incomeTax = results;
+        },
+        (error) => {
+          this.toast.error("Error fetching payroll user details:", error);
+        }
+      );
+    },
+      (error) => {
+        this.toast.error("Error fetching attendance summary:", error);
+      }
+    );
   }
 
   open(content: any) {
@@ -75,5 +114,25 @@ export class Step8Component {
     }
   }
 
+  deleteTemplate(_id: string) {
+    this.payrollService.deleteFlexi(_id).subscribe((res: any) => {
+      // this.getFlexiBenefitsProfessionalTax();
+      this.toast.success('Successfully Deleted!!!', 'Flexi Benefits and Professional Tax')
+    },
+      (err) => {
+        this.toast.error('This Flexi Benefits and Professional Tax Can not be deleted!')
+      })
+  }
+
+  deleteDialog(id: string): void {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '400px',
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result === 'delete') {
+        this.deleteTemplate(id);
+      }
+    });
+  }
 
 }

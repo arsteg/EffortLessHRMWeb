@@ -1,5 +1,5 @@
 <div class="container-fluid">
-    <ul class="nav nav-tabs">
+    <!-- <ul class="nav nav-tabs">
         <li class="nav-item">
             <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabArrears'}"
                 (click)="selectTab('tabArrears')">Arrears</a>
@@ -12,8 +12,77 @@
             <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabEarning'}"
                 (click)="selectTab('tabEarning')">Previous Month Earning</a>
         </li>
-    </ul>
-    <div class="tab-content pt-0">
+    </ul> -->
+
+    <div class="mt-2 bg-white tableContainer">
+        <div class="d-flex justify-content-end align-items-center">
+            <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
+                [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
+            <button mat-raised-button class=" ms-2 addBtn" (click)="changeMode = 'Add'; open(modal);">Add</button>
+        </div>
+
+        <table>
+            <thead>
+                <th>Employee Name</th>
+                <th>Manual Arrears</th>
+                <th>Arrear Days</th>
+                <th>LOP Reversal Days</th>
+                <th>Salary Revision Arrears</th>
+                <th>LOP Reversal Arrears</th>
+                <th>Total Arrears</th>
+                <th>Actions</th>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of arrears">
+                    <td>{{data?.payrollUserDetails}}</td>
+                    <td>{{data?.manualArrears}}</td>
+                    <td>{{data?.arrearDays}}</td>
+                    <td>{{data?.lopReversalDays}}</td>
+                    <td>{{data?.salaryRevisionDays}}</td>
+                    <td>{{data?.lopReversalArrears}}</td>
+                    <td>{{data?.totalArrears}}</td>
+                    <td>
+                        <div ngbDropdown class="dropdown-center">
+                            <button class="actions ms-2" mat-mini-fab ngbDropdownToggle aria-expanded="false"
+                                aria-label="Example icon button with a menu icon">
+                                <i class="bi bi-send"></i>
+                            </button>
+                            <ul ngbDropdownMenu class="dropdown-menu py-0">
+
+
+
+                                <li class="d-flex action-list" data-bs-toggle="modal"
+                                    data-bs-target="#updateModal">
+                                    <i class="bi bi-eye-fill text-success dropdown-item w-25"></i>
+                                    <span class="pt-1 text-muted">View salary revision arrears</span>
+                                </li>
+
+                                <li class="d-flex action-list" data-bs-toggle="modal"
+                                    data-bs-target="#updateModal">
+                                    <i class="bi bi-eye-fill text-success dropdown-item w-25"></i>
+                                    <span class="pt-1 text-muted">View LOP reversal arrears</span>
+                                </li>
+
+                                <li class="d-flex border-bottom action-list" (click)="changeMode = 'Update';
+                                selectedRecord= data; open(modal);">
+                                    <i class="bi bi-pencil text-danger dropdown-item w-25"></i>
+                                    <span class="pt-1 text-muted">Edit</span>
+                                </li>
+                                <li class="d-flex border-bottom action-list" (click)="deleteDialog(data?._id)">
+                                    <i class="bi bi-trash text-danger dropdown-item w-25"></i>
+                                    <span class="pt-1 text-muted">Delete</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+
+    <!-- <div class="tab-content pt-0">
 
         <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabArrears'}" id="tabArrears">
 
@@ -30,7 +99,6 @@
                 </div>
 
                 <div class="form-check form-switch">
-                    <!-- display if first toggle is check -->
                     <input class="form-check-input" type="checkbox" role="switch" id="second">
                     <label class="form-check-label" for="second">Do you want to disburse arrears in the month?</label>
                 </div>
@@ -100,7 +168,7 @@
 
             </div>
         </div>
-        <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabDeduction'}" id="tabDeduction">
+       <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabDeduction'}" id="tabDeduction">
 
             <div class="mt-2 bg-white tableContainer">
 
@@ -150,8 +218,8 @@
                 </table>
 
             </div>
-        </div>
-    </div>
+        </div> 
+    </div> -->
 </div>
 
 <ng-template #modal let-modal>

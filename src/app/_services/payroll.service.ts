@@ -483,7 +483,7 @@ export class PayrollService {
   }
 
   updateLoanAdvance(id: string, payload: any): Observable<any> {
-    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/flexi-benefits-pf-tax/${id}`, payload, this.httpOptions);
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/payroll-loan-advance/${id}`, payload, this.httpOptions);
     return response;
   }
 
@@ -535,8 +535,8 @@ export class PayrollService {
     return response;
   }
 
-  getOvertime(): Observable<any> {
-    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/overtime`, this.httpOptions);
+  getOvertime(payrollUser: string): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/overtime-by-payrollUser/${payrollUser}`, this.httpOptions);
     return response;
   }
 
@@ -556,8 +556,8 @@ export class PayrollService {
     return response;
   }
 
-  getIncomeTax(): Observable<any> {
-    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll-incomeTax`, this.httpOptions);
+  getIncomeTax(payrollUser: string): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll-incomeTax-by-payrollUser/${payrollUser}`, this.httpOptions);
     return response;
   }
 
