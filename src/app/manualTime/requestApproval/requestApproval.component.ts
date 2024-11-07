@@ -93,6 +93,7 @@ export class RequestApprovalComponent implements OnInit {
     request.status = 'rejected';
     this.updateRequest(request);
   }
+  
   updateRequest(request) {
     console.log(request)
     let payload = {
@@ -103,7 +104,8 @@ export class RequestApprovalComponent implements OnInit {
       fromDate: request.fromDate,
       toDate: request.toDate,
       task: request.task,
-      date: request.date
+      date: request.date,
+      status: request.status
     }
     this.manualTimeRequestService.updateManualTimeRequest(payload).subscribe((res: any) => {
       setTimeout(() => {
