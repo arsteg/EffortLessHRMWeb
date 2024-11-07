@@ -194,14 +194,14 @@
   </div>
 
   <!-- User Change option -->
-  <div class="offcanvas offcanvas-end" id="demo">
+  <div class="offcanvas offcanvas-end" id="demo" data-bs-backdrop="static">
     <div class="offcanvas-body">
       <div class="container p-0">
         <div class="profile py-2">
-          <div class="d-flex justify-content-end align-items-baseline">
-            <span class="fa fa-edit fa-lg edit" [routerLink]="['userProfile']"></span>
+          <div class="d-flex justify-content-between align-items-baseline">
             <button type="button" class="btn-close text-reset times" data-bs-dismiss="offcanvas"
-              aria-label="Close"></button>
+            aria-label="Close"></button>
+            <span class="fa fa-edit fa-lg edit" [routerLink]="['userProfile']"></span>
           </div>
 
           <div class="text-center">
