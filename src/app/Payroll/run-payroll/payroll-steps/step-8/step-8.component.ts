@@ -22,13 +22,14 @@ export class Step8Component {
   incomeTax: any;
   selectedUserId: any;
   @Input() selectedPayroll: any;
+  selectedRecord: any;
 
   constructor(private modalService: NgbModal,
     private fb: FormBuilder,
     private commonService: CommonService,
     private payrollService: PayrollService,
     private dialog: MatDialog,
-    private toast:ToastrService
+    private toast: ToastrService
   ) {
     this.taxForm = this.fb.group({
       PayrollUser: ['', Validators.required],
@@ -54,14 +55,29 @@ export class Step8Component {
   }
 
   onSubmission() {
+    this.taxForm.value.PayrollUser = this.selectedUserId?._id;
     if (this.changeMode == 'Add') {
       this.payrollService.addIncomeTax(this.taxForm.value).subscribe((res: any) => {
-        this.incomeTax = res.data;
-      })
+        this.getIncomeTax();
+        this.taxForm.reset();
+        this.toast.success('Income Tax Added', 'Successfully!');
+      },
+        err => {
+          this.toast.error('Income Tax Can not be Added', 'Error!')
+        })
+    }
+    if (this.changeMode == 'Update') {
+      this.payrollService.updateIncomeTax(this.selectedRecord._id, this.taxForm.value).subscribe((res: any) => {
+        this.getIncomeTax();
+        this.taxForm.reset();
+        this.changeMode = 'Add';
+        this.toast.success('Income Tax Updated', 'Successfully!');
+      },
+        err => {
+          this.toast.error('Income Tax Can not be Updated', 'Error!')
+        })
     }
   }
-
-  
 
   onUserSelectedFromChild(user: any) {
     this.selectedUserId = user;
@@ -116,7 +132,7 @@ export class Step8Component {
 
   deleteTemplate(_id: string) {
     this.payrollService.deleteFlexi(_id).subscribe((res: any) => {
-      // this.getFlexiBenefitsProfessionalTax();
+      this.getIncomeTax();
       this.toast.success('Successfully Deleted!!!', 'Flexi Benefits and Professional Tax')
     },
       (err) => {

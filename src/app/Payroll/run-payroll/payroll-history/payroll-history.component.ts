@@ -45,7 +45,7 @@ export class PayrollHistoryComponent {
     private commonService: CommonService
   ) {
     this.payrollForm = this.fb.group({
-      date: ["2024-10-30"],
+      date: [],
       status: [''],
       month: [''],
       year: ['']

@@ -134,38 +134,14 @@ export class Step4Component {
     })
   }
 
-  // onSubmission() {
-  //   this.loanAdvanceForm.value.payrollUser = this.selectedUserId?._id;
-  //   if (this.changeMode === 'Add') {
-  //     this.payrollService.addLoanAdvance(this.loanAdvanceForm.value).subscribe((res: any) => {
-  //       this.getLoanAdvances();
-  //       this.toast.success('Loan/Advance created', 'Successfully!')
-  //     },
-  //       err => {
-  //         this.toast.error('Loan/Advance can not be created', 'Error!')
-  //       })
-  //   }
-  //   if (this.changeMode === 'Update') {
-  //     this.payrollService.updateLoanAdvance(this.selectedRecord._id, this.loanAdvanceForm.value).subscribe((res: any) => {
-  //       this.getLoanAdvances();
-  //       this.toast.success('Loan/Advance Updated', 'Successfully');
-  //       this.loanAdvanceForm.reset();
-  //       this.selectedUserId = null;
-  //       this.userloanAdvances = null;
-  //       this.changeMode = 'Add';
-  //     },
-  //       (err) => {
-  //         this.toast.error('Loan/Advance can not be Updated', 'Error');
-  //       })
-  //   }
-  // }
+ 
   onSubmission() {
     this.loanAdvanceForm.value.payrollUser = this.selectedUserId?._id;
     
     if (this.changeMode === 'Add') {
       this.payrollService.addLoanAdvance(this.loanAdvanceForm.value).subscribe(
         (res: any) => {
-          this.getLoanAdvances();  // Refresh data after adding
+          this.getLoanAdvances();
           this.toast.success('Loan/Advance created', 'Successfully!');
         },
         (err) => {
@@ -177,12 +153,12 @@ export class Step4Component {
     if (this.changeMode === 'Update') {
       this.payrollService.updateLoanAdvance(this.selectedRecord._id, this.loanAdvanceForm.value).subscribe(
         (res: any) => {
-          this.getLoanAdvances();  // Refresh data after updating
+          this.getLoanAdvances();
           this.toast.success('Loan/Advance Updated', 'Successfully');
-          this.loanAdvanceForm.reset();  // Reset the form
-          this.selectedUserId = null;  // Reset selected user ID
-          this.userloanAdvances = null;  // Clear previous loan advances data
-          this.changeMode = 'Add';  // Switch back to Add mode
+          this.loanAdvanceForm.reset();
+          this.selectedUserId = null;
+          this.userloanAdvances = null;
+          this.changeMode = 'Add';
         },
         (err) => {
           this.toast.error('Loan/Advance cannot be Updated', 'Error');
@@ -192,17 +168,14 @@ export class Step4Component {
   }
   
   getLoanAdvances() {
-    // Step 1: Fetch user loan advances and loan advances concurrently
     forkJoin({
       userLoanAdvances: this.userService.getLoansAdvancesByUserId(this.selectedUserId?.user, { skip: '', next: '' }),
       loanAdvances: this.payrollService.getLoanAdvance(this.selectedUserId?._id)
     }).pipe(
-      // Step 2: Process the results and fetch additional payroll user details
       switchMap(({ userLoanAdvances, loanAdvances }) => {
         this.userloanAdvances = userLoanAdvances.data;
         this.loanAdvances = loanAdvances.data;
   
-        // Fetch details for each payroll user in loan advances
         const userRequests = this.loanAdvances.map((item: any) =>
           this.payrollService.getPayrollUserById(item.payrollUser).pipe(
             map((userRes: any) => ({
@@ -218,7 +191,6 @@ export class Step4Component {
       (detailedLoanAdvances) => {
         this.loanAdvances = detailedLoanAdvances;
   
-        // Step 3: Create matchedLoanAdvances array with amounts and frequencies
         this.matchedLoanAdvances = this.loanAdvances.reduce((acc: any[], loanAdvance) => {
           const matchingUserLoanAdvance = this.userloanAdvances.find(
             (userLoanAdvance) => userLoanAdvance.loanAdvancesCategory === loanAdvance.loanAndAdvance

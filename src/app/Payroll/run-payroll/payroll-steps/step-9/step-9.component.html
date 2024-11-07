@@ -24,22 +24,22 @@
             <th>Actions</th>
         </thead>
         <tbody>
-            <tr>
+            <tr *ngFor="let data of payrollUsers">
+                <td>{{getUser(data?.employee)}}</td>
+                <td>{{data?.totalFixedAllowance}}</td>
+                <td>{{data?.totalOtherBenefit}}</td>
                 <td></td>
                 <td></td>
+                <td>{{data?.totalFixedDeduction}}</td>
+                <td>{{data?.totalLoanAdvance}}</td>
                 <td></td>
                 <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>{{data?.yearlySalary}}</td>
+                <td>{{data?.monthlySalary}}</td>
                 <td></td>
                 <td>
-                    <button mat-mini-fab class="actions" matTooltip="View" (click)="open(modal)" matTooltipPosition="before"><i
-                            class="bi bi-eye"></i></button>
+                    <button mat-mini-fab class="actions" matTooltip="View" (click)="open(modal)"
+                        matTooltipPosition="before"><i class="bi bi-eye"></i></button>
                 </td>
             </tr>
         </tbody>
