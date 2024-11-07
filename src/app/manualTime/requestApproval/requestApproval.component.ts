@@ -84,7 +84,6 @@ export class RequestApprovalComponent implements OnInit {
 
   approveRequest() {
     let request = this.selectedRequest;
-    request.id = this.selectedRequest._id;
     request.status = 'approved';
     this.updateRequest(request);
   }
@@ -95,13 +94,16 @@ export class RequestApprovalComponent implements OnInit {
     this.updateRequest(request);
   }
   updateRequest(request) {
+    console.log(request)
     let payload = {
       requestId: request._id,
       user: request.user._id,
       project: request.project._id,
       manager: request.manager,
       fromDate: request.fromDate,
-      toDate: request.toDate
+      toDate: request.toDate,
+      task: request.task,
+      date: request.date
     }
     this.manualTimeRequestService.updateManualTimeRequest(payload).subscribe((res: any) => {
       setTimeout(() => {

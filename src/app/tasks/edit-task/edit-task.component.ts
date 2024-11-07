@@ -1,14 +1,13 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { TasksService } from '../../_services/tasks.service';
-import { Toast, ToastrService } from 'ngx-toastr';
+import { ToastrService } from 'ngx-toastr';
 import { project } from 'src/app/Project/model/project';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonService } from 'src/app/_services/common.Service';
 import { DatePipe } from '@angular/common';
 import { taskComment } from 'src/app/models/task/taskComment';
-import { taskAttachments, TaskAttachment, attachments, Task, SubTask, updateSubTask, updateTask } from '../task';
-import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
+import { taskAttachments, attachments } from '../task';
 import { NavigationExtras } from '@angular/router';
 import { GetTaskService } from 'src/app/_services/get-task.service';
 import { ProjectService } from 'src/app/_services/project.service';

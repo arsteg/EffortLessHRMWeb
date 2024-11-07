@@ -217,6 +217,10 @@ input:focus-visible {
     margin: auto !important;
     display: block !important;
 }
-.editorContent p img{
-       max-width: 100%;
+
+::ng-deep #description p img {
+    width: 97% !important;
+    height: auto;
+    max-width: 100%;
 }
+  

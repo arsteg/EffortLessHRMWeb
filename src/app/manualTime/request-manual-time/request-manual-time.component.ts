@@ -325,6 +325,7 @@ export class RequestManualTimeComponent implements OnInit {
 
 
   setUpdateMode(record): void {
+    console.log(record)
     this.getUserTaskListByProject(record.project.id).subscribe(() => {
       const formattedStartDate = moment(record.fromDate).format('YYYY-MM-DDTHH:mm');
       const formattedEndDate = moment(record.toDate).format('YYYY-MM-DDTHH:mm');
