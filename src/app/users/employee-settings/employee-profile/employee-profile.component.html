@@ -2,32 +2,54 @@
     <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
         <div class="row">
             <div class="form-group col-md-6 mt-2">
-                <label for="firstName">First Name</label>
+                <label for="firstName">First Name <span class="text-danger">*</span></label>
                 <input formControlName="firstName" type="text" class="form-control" id="firstName"
                     placeholder="Enter First Name">
+                <div *ngIf="userForm.get('firstName').invalid && userForm.get('firstName').touched" class="text-danger">
+                    <small *ngIf="userForm.get('firstName').errors?.['required']">First Name is
+                        required.</small>
+                    <small *ngIf="userForm.get('firstName').errors?.['pattern']">
+                        First Name should contain only alphabetic characters and be at least 2 characters long.
+                    </small>
+                </div>
             </div>
 
             <div class="form-group col-md-6 mt-2">
-                <label for="lastName">Last Name</label>
+                <label for="lastName">Last Name <span class="text-danger">*</span></label>
                 <input formControlName="lastName" type="text" class="form-control" id="lastName"
                     placeholder="Enter Last Name">
+                <div *ngIf="userForm.get('lastName').invalid && userForm.get('lastName').touched" class="text-danger">
+                    <small *ngIf="userForm.get('lastName').errors?.['required']">Last Name is
+                        required.</small>
+                    <small *ngIf="userForm.get('lastName').errors?.['pattern']">
+                        Last Name should contain only alphabetic characters and be at least 2 characters long.
+                    </small>
+                </div>
             </div>
         </div>
 
-        <div class="row">
-            <div class="form-group col-md-6 mt-2" *ngIf="!isEdit">
-                <label for="email">Email</label>
+        <div class="row" *ngIf="!isEdit">
+            <div class="form-group col-md-6 mt-2">
+                <label for="email">Email <span class="text-danger">*</span></label>
                 <input type="text" formControlName="email" class="form-control">
+                <div *ngIf="userForm.get('email').touched && userForm.get('email').invalid">
+                    {{ getErrorMessage('email') }}
+                </div>
             </div>
-            <div class="form-group col-md-6 mt-2" *ngIf="!isEdit">
-                <label for="password">Password</label>
+            <div class="form-group col-md-6 mt-2">
+                <label for="password">Password <span class="text-danger">*</span></label>
                 <input type="text" formControlName="password" class="form-control">
             </div>
         </div>
 
         <div class="form-group col-md-6 mt-2" *ngIf="!isEdit">
-            <label for="email">Confirm Password</label>
+            <label for="email">Confirm Password <span class="text-danger">*</span></label>
             <input type="text" formControlName="passwordConfirm" class="form-control">
+            <div *ngIf="userForm.errors?.['notMatching'] && userForm.get('passwordConfirm').touched"
+                class="text-danger">
+                <small>Passwords do not match.</small>
+            </div>
+
         </div>
 
         <div class="row">
@@ -61,12 +83,21 @@
                 <label for="pincode">Pincode</label>
                 <input formControlName="pincode" type="text" class="form-control" id="pincode"
                     placeholder="Enter Pincode">
+                <div *ngIf="userForm.get('pincode').touched && userForm.get('pincode').invalid">
+                    <span *ngIf="userForm.get('pincode').errors?.['pattern']">
+                        Please enter a valid 6-digit pincode.
+                    </span>
+                </div>
             </div>
 
             <div class="form-group col-md-6 mt-2">
                 <label for="phone">Phone</label>
                 <input formControlName="phone" type="text" class="form-control" id="phone"
                     placeholder="Enter Phone Number">
+                <div *ngIf="userForm.get('phone').touched && userForm.get('phone').invalid">
+                    {{ getErrorMessage('phone') }}
+                </div>
+
             </div>
         </div>
 
@@ -78,19 +109,25 @@
             </div>
 
             <div class="form-group col-md-6 mt-2">
-                <label for="role">Role</label>
+                <label for="role">Role <span class="text-danger">*</span></label>
                 <select name="" id="" formControlName="role">
                     <option value="" disabled>Select Role</option>
                     <option [value]="role._id" *ngFor="let role of roles">{{role?.Name}}</option>
                 </select>
+                <div *ngIf="userForm.get('role').invalid && userForm.get('role').touched" class="text-danger">
+                    <small *ngIf="userForm.get('role').errors?.['required']">Role is required.</small>
+                </div>
             </div>
         </div>
 
         <div class="row">
             <div class="form-group col-md-6 mt-2">
-                <label for="mobile">Mobile</label>
+                <label for="mobile">Mobile <span class="text-danger">*</span></label>
                 <input formControlName="mobile" type="text" class="form-control" id="mobile"
                     placeholder="Enter Mobile Number">
+                <div *ngIf="userForm.get('mobile').touched && userForm.get('mobile').invalid">
+                    {{ getErrorMessage('mobile') }}
+                </div>
             </div>
 
             <div class="form-group col-md-6 mt-2">
@@ -105,6 +142,10 @@
                 <label for="emergancyContactNumber">Emergency Contact Number</label>
                 <input formControlName="emergancyContactNumber" type="text" class="form-control"
                     id="emergancyContactNumber" placeholder="Enter Emergency Contact Number">
+                <div
+                    *ngIf="userForm.get('emergancyContactNumber').touched && userForm.get('emergancyContactNumber').invalid">
+                    {{ getErrorMessage('emergancyContactNumber') }}
+                </div>
             </div>
 
             <div class="form-group col-md-6 mt-2">
@@ -146,16 +187,16 @@
                 <label for="MaritalStatus">Marital Status</label>
                 <div class="d-flex">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" id="MaritalStatus-Yes"
+                        <input class="form-check-input" type="radio" id="maritalStatus-yes"
                             formControlName="MaritalStatus" required value="Married">
-                        <label class="form-check-label" for="MaritalStatus-Yes">
+                        <label class="form-check-label" for="maritalStatus-yes">
                             Married
                         </label>
                     </div>
                     <div class="form-check ms-3">
-                        <input class="form-check-input" type="radio" id="MaritalStatus-No"
+                        <input class="form-check-input" type="radio" id="maritalStatus-no"
                             formControlName="MaritalStatus" required value="Unmarried">
-                        <label class="form-check-label" for="MaritalStatus-No">
+                        <label class="form-check-label" for="maritalStatus-no">
                             Unmarried
                         </label>
                     </div>
@@ -197,16 +238,16 @@
 
                 <div class="d-flex">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" id="Disability-Yes" formControlName="Disability"
+                        <input class="form-check-input" type="radio" id="disability-yes" formControlName="Disability"
                             required value="yes">
-                        <label class="form-check-label" for="Disability-Yes">
+                        <label class="form-check-label" for="disability-Yes">
                             Yes
                         </label>
                     </div>
                     <div class="form-check ms-3">
-                        <input class="form-check-input" type="radio" id="Disability-No" formControlName="Disability"
+                        <input class="form-check-input" type="radio" id="disability-no" formControlName="Disability"
                             required value="no">
-                        <label class="form-check-label" for="Disability-No">
+                        <label class="form-check-label" for="disability-no">
                             No
                         </label>
                     </div>

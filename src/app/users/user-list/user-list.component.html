@@ -13,8 +13,11 @@
                 <div class="d-flex align-items-center justify-content-end">
                     <p class="mb-0">({{usersList?.length}}) Records Found</p>
 
-                    <button mat-raised-button class="addBtn rounded-pill ms-3" data-bs-toggle="modal"
-                        data-bs-target="#addModal" (click)="isEdit= false; clearForm()">Add New</button>
+
+                    <button mat-raised-button class="addBtn rounded-pill ms-3" data-bs-toggle="offcanvas"
+                        data-bs-target="#addUser">Add New</button>
+                    <!-- <button mat-raised-button class="addBtn rounded-pill ms-3" data-bs-toggle="modal"
+                        data-bs-target="#addModal" (click)="isEdit= false; clearForm()">Add New</button> -->
                 </div>
             </div>
 
@@ -72,12 +75,12 @@
                             <td><span class="badge rounded-pill table-button  bg-success text-light px-4 py-2"
                                     *ngIf="data.status=='Active'">{{data.status}}</span></td>
                             <td class="text-center">
-                                <button class="actions" (click)=" toggleView(data);"><i
-                                        class="bi bi-gear"></i></button>
+                                <button class="actions" mat-mini-fab matTooltip="Settings" matTooltipPosition="before"
+                                    (click)=" toggleView(data);"><i class="bi bi-gear"></i></button>
 
-                                <button class="actions" title="Delete User"  data-bs-toggle="modal"
-                                    data-bs-target="#deleteModal" (click)="selectedUser = data"
-                                    aria-label="Example icon button with a menu icon">
+                                <button class="actions ms-2" title="Delete User" mat-mini-fab matTooltip="Delete"
+                                    matTooltipPosition="below"  (click)="deleteEmployee(data?._id)"
+                                     aria-label="Example icon button with a menu icon">
                                     <i class="bi bi-trash"></i>
                                 </button>
                             </td>
@@ -89,293 +92,300 @@
     </div>
 </div>
 
-<!-- Modal - New Member -->
-<div class="modal" id="addModal">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content px-3">
-            <div class="modal-body px-0">
-                <div class="d-flex justify-content-between border-bottom">
-                    <div class="">
-                        <h4 class="modal-title text-start">Add New Member</h4>
+
+<div class="offcanvas offcanvas-end w-75" id="addUser" data-bs-backdrop="static">
+
+    <div class="offcanvas-header">
+        <h2>Create Employee</h2>
+    </div>
+    <hr class="pb-0 mb-0">
+    <button type="button" class="bi bi-arrow-left text-white text-reset times" data-bs-dismiss="offcanvas"
+        aria-label="Close">
+    </button>
+
+    <div class=" offcanvas-body px-3">
+        <div class="addForm">
+            <form [formGroup]="userForm" (ngSubmit)="addUser()">
+                <div class="row">
+                    <div class="form-group col-md-6 mt-2">
+                        <label for="firstName">First Name <span class="text-danger">*</span></label>
+                        <input formControlName="firstName" type="text" class="form-control" id="firstName"
+                            placeholder="Enter First Name">
                     </div>
-                    <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
+
+                    <div class="form-group col-md-6 mt-2">
+                        <label for="lastName">Last Name <span class="text-danger">*</span></label>
+                        <input formControlName="lastName" type="text" class="form-control" id="lastName"
+                            placeholder="Enter Last Name">
                     </div>
                 </div>
-                <!-- --------------- -->
-                <div class="addForm">
-                    <form [formGroup]="userForm" (ngSubmit)="addUser()">
-                        <div class="row">
-                            <div class="form-group col-md-6 mt-2">
-                                <label for="firstName">First Name <span class="text-danger">*</span></label>
-                                <input formControlName="firstName" type="text" class="form-control" id="firstName"
-                                    placeholder="Enter First Name">
-                            </div>
 
-                            <div class="form-group col-md-6 mt-2">
-                                <label for="lastName">Last Name <span class="text-danger">*</span></label>
-                                <input formControlName="lastName" type="text" class="form-control" id="lastName"
-                                    placeholder="Enter Last Name">
-                            </div>
-                        </div>
+                <div class="row">
+                    <div class="form-group col-md-6 mt-2">
+                        <label for="jobTitle">Job Title</label>
+                        <input formControlName="jobTitle" type="text" class="form-control" id="jobTitle"
+                            placeholder="Enter Job Title">
+                    </div>
 
-                        <div class="row">
-                            <div class="form-group col-md-6 mt-2">
-                                <label for="email">Email <span class="text-danger">*</span></label>
-                                <input type="text" formControlName="email" class="form-control">
-                            </div>
-                            <div class="form-group col-md-6 mt-2">
-                                <label for="password">Password <span class="text-danger">*</span></label>
-                                <input type="text" formControlName="password" class="form-control">
-                            </div>
-                        </div>
+                    <div class="form-group col-md-6 mt-2">
+                        <label for="email">Email <span class="text-danger">*</span></label>
+                        <input type="text" formControlName="email" class="form-control">
+                    </div>
 
-                        <div class="row">
-                            <div class="form-group col-md-6 mt-2">
-                                <label for="email">Confirm Password <span class="text-danger">*</span></label>
-                                <input type="text" formControlName="passwordConfirm" class="form-control">
-                            </div>
-                            <div class="form-group col-md-6 mt-2">
-                                <label for="role">Role <span class="text-danger">*</span></label>
-                                <select name="" id="" formControlName="role">
-                                    <option value="" disabled>Select Role</option>
-                                    <option [value]="role._id" *ngFor="let role of roles">{{role?.Name}}</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="form-group col-md-6 mt-2">
-                                <label for="jobTitle">Job Title</label>
-                                <input formControlName="jobTitle" type="text" class="form-control" id="jobTitle"
-                                    placeholder="Enter Job Title">
-                            </div>
-                            <div class="form-group col-md-6 mt-2">
-                                <label for="address">Address</label>
-                                <input formControlName="address" type="text" class="form-control" id="address"
-                                    placeholder="Enter Address">
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="form-group col-md-6 mt-2">
-                                <label for="city">City</label>
-                                <input formControlName="city" type="text" class="form-control" id="city"
-                                    placeholder="Enter City">
-                            </div>
-                            <div class="form-group col-md-6 mt-2">
-                                <label for="state">State</label>
-                                <input formControlName="state" type="text" class="form-control" id="state"
-                                    placeholder="Enter State">
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="form-group col-md-6 mt-2">
-                                <label for="pincode">Pincode</label>
-                                <input formControlName="pincode" type="text" class="form-control" id="pincode"
-                                    placeholder="Enter Pincode">
-                            </div>
-                            <div class="form-group col-md-6 mt-2">
-                                <label for="phone">Phone</label>
-                                <input formControlName="phone" type="text" class="form-control" id="phone"
-                                    placeholder="Enter Phone Number">
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="form-group col-md-6 mt-2">
-                                <label for="extraDetails">Extra Details</label>
-                                <input formControlName="extraDetails" type="text" class="form-control" id="extraDetails"
-                                    placeholder="Enter Extra Details">
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="form-group col-md-6 mt-2">
-                                <label for="mobile">Mobile</label>
-                                <input formControlName="mobile" type="text" class="form-control" id="mobile"
-                                    placeholder="Enter Mobile Number">
-                            </div>
-                            <div class="form-group col-md-6 mt-2">
-                                <label for="emergancyContactName">Emergency Contact Name</label>
-                                <input formControlName="emergancyContactName" type="text" class="form-control"
-                                    id="emergancyContactName" placeholder="Enter Emergency Contact Name">
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="form-group col-md-6 mt-2">
-                                <label for="emergancyContactNumber">Emergency Contact Number</label>
-                                <input formControlName="emergancyContactNumber" type="text" class="form-control"
-                                    id="emergancyContactNumber" placeholder="Enter Emergency Contact Number">
-                            </div>
-
-                            <div class="form-group col-md-6 mt-2">
-                                <label for="Gender">Gender</label>
-                                <div class="d-flex">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" id="gender-male"
-                                            formControlName="Gender" required value="male">
-                                        <label class="form-check-label" for="gender-male">
-                                            Male
-                                        </label>
-                                    </div>
-                                    <div class="form-check mx-3">
-                                        <input class="form-check-input" type="radio" id="gender-female"
-                                            formControlName="Gender" required value="female">
-                                        <label class="form-check-label" for="gender-female">
-                                            Female
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" id="other" formControlName="Gender"
-                                            required value="other">
-                                        <label class="form-check-label" for="other">
-                                            Other
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="form-group col-md-6 mt-2">
-                                <label for="DOB">Date of Birth</label>
-                                <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker
-                                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="DOB" />
-                            </div>
-
-                            <div class="form-group col-md-6 mt-2">
-                                <label for="MaritalStatus">Marital Status</label>
-                                <div class="d-flex">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" id="MaritalStatus-Yes"
-                                            formControlName="MaritalStatus" required value="Married">
-                                        <label class="form-check-label" for="MaritalStatus-Yes">
-                                            Married
-                                        </label>
-                                    </div>
-                                    <div class="form-check ms-3">
-                                        <input class="form-check-input" type="radio" id="MaritalStatus-No"
-                                            formControlName="MaritalStatus" required value="Unmarried">
-                                        <label class="form-check-label" for="MaritalStatus-No">
-                                            Unmarried
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="form-group col-md-6 mt-2">
-                                <label for="MarraigeAniversary">Marriage Anniversary</label>
-                                <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker
-                                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
-                                    formControlName="MarraigeAniversary" />
-                            </div>
-
-                            <div class="form-group col-md-6 mt-2">
-                                <label for="PassportDetails">Passport Details</label>
-                                <input formControlName="PassportDetails" type="text" class="form-control"
-                                    id="PassportDetails" placeholder="Enter Passport Details">
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="form-group col-md-6 mt-2">
-                                <label for="Pancard">PAN Card</label>
-                                <input formControlName="Pancard" type="text" class="form-control" id="Pancard"
-                                    placeholder="Enter PAN Card Number">
-                            </div>
-
-                            <div class="form-group col-md-6 mt-2">
-                                <label for="AadharNumber">Aadhar Number</label>
-                                <input formControlName="AadharNumber" type="text" class="form-control" id="AadharNumber"
-                                    placeholder="Enter Aadhar Number">
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="form-group col-md-6 mt-2">
-                                <label for="Disability">Disability</label>
-
-                                <div class="d-flex">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" id="Disability-Yes"
-                                            formControlName="Disability" required value="yes">
-                                        <label class="form-check-label" for="Disability-Yes">
-                                            Yes
-                                        </label>
-                                    </div>
-                                    <div class="form-check ms-3">
-                                        <input class="form-check-input" type="radio" id="Disability-No"
-                                            formControlName="Disability" required value="no">
-                                        <label class="form-check-label" for="Disability-No">
-                                            No
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group col-md-6 mt-2">
-                                <label for="FatherHusbandName">Father/Husband Name</label>
-                                <input formControlName="FatherHusbandName" type="text" class="form-control"
-                                    id="FatherHusbandName" placeholder="Enter Father/Husband Name">
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="form-group col-md-6 mt-2">
-                                <label for="NoOfChildren">Number of Children</label>
-                                <input formControlName="NoOfChildren" type="text" class="form-control" id="NoOfChildren"
-                                    placeholder="Enter Number of Children">
-                            </div>
-
-                            <div class="form-group col-md-6 mt-2">
-                                <label for="BankName">Bank Name</label>
-                                <input formControlName="BankName" type="text" class="form-control" id="BankName"
-                                    placeholder="Enter Bank Name">
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="form-group col-md-6 mt-2">
-                                <label for="BankAccountNumber">Bank Account Number</label>
-                                <input formControlName="BankAccountNumber" type="text" class="form-control"
-                                    id="BankAccountNumber" placeholder="Enter Bank Account Number">
-                            </div>
-
-                            <div class="form-group col-md-6 mt-2">
-                                <label for="BankIFSCCode">Bank IFSC Code</label>
-                                <input formControlName="BankIFSCCode" type="text" class="form-control" id="BankIFSCCode"
-                                    placeholder="Enter Bank IFSC Code">
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="form-group col-md-6 mt-2">
-                                <label for="BankBranch">Bank Branch</label>
-                                <input formControlName="BankBranch" type="text" class="form-control" id="BankBranch"
-                                    placeholder="Enter Bank Branch">
-                            </div>
-
-                            <div class="form-group col-md-6 mt-2">
-                                <label for="BankAddress">Bank Address</label>
-                                <input formControlName="BankAddress" type="text" class="form-control" id="BankAddress"
-                                    placeholder="Enter Bank Address">
-                            </div>
-                        </div>
-
-                        <div class="d-flex justify-content-between mt-2">
-                            <button type="reset" class="" mat-raised-button>Cancel</button>
-                            <button type="submit" class="addBtn" mat-raised-button>Submit</button>
-                        </div>
-                    </form>
                 </div>
-            </div>
+
+                <div class="row">
+
+                    <div class="form-group col-md-6 mt-2">
+                        <label for="password">Password <span class="text-danger">*</span></label>
+                        <input type="text" formControlName="password" class="form-control">
+                    </div>
+
+                    <div class="form-group col-md-6 mt-2">
+                        <label for="email">Confirm Password <span class="text-danger">*</span></label>
+                        <input type="text" formControlName="passwordConfirm" class="form-control">
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="form-group col-md-6 mt-2">
+                        <label for="role">Role <span class="text-danger">*</span></label>
+                        <select name="" id="" formControlName="role">
+                            <option value="" disabled>Select Role</option>
+                            <option [value]="role._id" *ngFor="let role of roles">{{role?.Name}}</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-6 mt-2">
+                        <label for="address">Address</label>
+                        <input formControlName="address" type="text" class="form-control" id="address"
+                            placeholder="Enter Address">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-6 mt-2">
+                        <label for="city">City</label>
+                        <input formControlName="city" type="text" class="form-control" id="city"
+                            placeholder="Enter City">
+                    </div>
+                    <div class="form-group col-md-6 mt-2">
+                        <label for="state">State</label>
+                        <input formControlName="state" type="text" class="form-control" id="state"
+                            placeholder="Enter State">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-6 mt-2">
+                        <label for="pincode">Pincode</label>
+                        <input formControlName="pincode" type="text" class="form-control" id="pincode"
+                            placeholder="Enter Pincode">
+                    </div>
+                    <div class="form-group col-md-6 mt-2">
+                        <label for="phone">Phone</label>
+                        <input formControlName="phone" type="text" class="form-control" id="phone"
+                            placeholder="Enter Phone Number">
+                    </div>
+                </div>
+
+
+
+                <div class="row">
+                    <div class="form-group col-md-6 mt-2">
+                        <label for="mobile">Mobile</label>
+                        <input formControlName="mobile" type="text" class="form-control" id="mobile"
+                            placeholder="Enter Mobile Number">
+                    </div>
+                    <div class="form-group col-md-6 mt-2">
+                        <label for="emergancyContactName">Emergency Contact Name</label>
+                        <input formControlName="emergancyContactName" type="text" class="form-control"
+                            id="emergancyContactName" placeholder="Enter Emergency Contact Name">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-6 mt-2">
+                        <label for="emergancyContactNumber">Emergency Contact Number</label>
+                        <input formControlName="emergancyContactNumber" type="text" class="form-control"
+                            id="emergancyContactNumber" placeholder="Enter Emergency Contact Number">
+                    </div>
+
+                    <div class="form-group col-md-6 mt-2">
+                        <label for="Gender">Gender</label>
+                        <div class="d-flex">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" id="gender-male" formControlName="Gender"
+                                    required value="male">
+                                <label class="form-check-label" for="gender-male">
+                                    Male
+                                </label>
+                            </div>
+                            <div class="form-check mx-3">
+                                <input class="form-check-input" type="radio" id="gender-female" formControlName="Gender"
+                                    required value="female">
+                                <label class="form-check-label" for="gender-female">
+                                    Female
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" id="other" formControlName="Gender"
+                                    required value="other">
+                                <label class="form-check-label" for="other">
+                                    Other
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-6 mt-2">
+                        <label for="DOB">Date of Birth</label>
+                        <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker
+                            [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="DOB" />
+                    </div>
+
+                    <div class="form-group col-md-6 mt-2">
+                        <label for="MaritalStatus">Marital Status</label>
+                        <div class="d-flex">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" id="MaritalStatus-Yes"
+                                    formControlName="MaritalStatus" required value="Married">
+                                <label class="form-check-label" for="MaritalStatus-Yes">
+                                    Married
+                                </label>
+                            </div>
+                            <div class="form-check ms-3">
+                                <input class="form-check-input" type="radio" id="MaritalStatus-No"
+                                    formControlName="MaritalStatus" required value="Unmarried">
+                                <label class="form-check-label" for="MaritalStatus-No">
+                                    Unmarried
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-6 mt-2">
+                        <label for="MarraigeAniversary">Marriage Anniversary</label>
+                        <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker
+                            [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="MarraigeAniversary" />
+                    </div>
+
+                    <div class="form-group col-md-6 mt-2">
+                        <label for="PassportDetails">Passport Details</label>
+                        <input formControlName="PassportDetails" type="text" class="form-control" id="PassportDetails"
+                            placeholder="Enter Passport Details">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-6 mt-2">
+                        <label for="Pancard">PAN Card</label>
+                        <input formControlName="Pancard" type="text" class="form-control" id="Pancard"
+                            placeholder="Enter PAN Card Number">
+                    </div>
+
+                    <div class="form-group col-md-6 mt-2">
+                        <label for="AadharNumber">Aadhar Number</label>
+                        <input formControlName="AadharNumber" type="text" class="form-control" id="AadharNumber"
+                            placeholder="Enter Aadhar Number">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-6 mt-2">
+                        <label for="Disability">Disability</label>
+
+                        <div class="d-flex">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" id="Disability-Yes"
+                                    formControlName="Disability" required value="yes">
+                                <label class="form-check-label" for="Disability-Yes">
+                                    Yes
+                                </label>
+                            </div>
+                            <div class="form-check ms-3">
+                                <input class="form-check-input" type="radio" id="Disability-No"
+                                    formControlName="Disability" required value="no">
+                                <label class="form-check-label" for="Disability-No">
+                                    No
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6 mt-2">
+                        <label for="FatherHusbandName">Father/Husband Name</label>
+                        <input formControlName="FatherHusbandName" type="text" class="form-control"
+                            id="FatherHusbandName" placeholder="Enter Father/Husband Name">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-6 mt-2">
+                        <label for="NoOfChildren">Number of Children</label>
+                        <input formControlName="NoOfChildren" type="text" class="form-control" id="NoOfChildren"
+                            placeholder="Enter Number of Children">
+                    </div>
+
+                    <div class="form-group col-md-6 mt-2">
+                        <label for="BankName">Bank Name</label>
+                        <input formControlName="BankName" type="text" class="form-control" id="BankName"
+                            placeholder="Enter Bank Name">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-6 mt-2">
+                        <label for="BankAccountNumber">Bank Account Number</label>
+                        <input formControlName="BankAccountNumber" type="text" class="form-control"
+                            id="BankAccountNumber" placeholder="Enter Bank Account Number">
+                    </div>
+
+                    <div class="form-group col-md-6 mt-2">
+                        <label for="BankIFSCCode">Bank IFSC Code</label>
+                        <input formControlName="BankIFSCCode" type="text" class="form-control" id="BankIFSCCode"
+                            placeholder="Enter Bank IFSC Code">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-6 mt-2">
+                        <label for="BankBranch">Bank Branch</label>
+                        <input formControlName="BankBranch" type="text" class="form-control" id="BankBranch"
+                            placeholder="Enter Bank Branch">
+                    </div>
+
+                    <div class="form-group col-md-6 mt-2">
+                        <label for="BankAddress">Bank Address</label>
+                        <input formControlName="BankAddress" type="text" class="form-control" id="BankAddress"
+                            placeholder="Enter Bank Address">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-6 mt-2">
+                        <label for="extraDetails">Extra Details</label>
+                        <input formControlName="extraDetails" type="text" class="form-control" id="extraDetails"
+                            placeholder="Enter Extra Details">
+                    </div>
+                </div>
+
+                <hr>
+                <div class="d-flex justify-content-between mt-2">
+                    <button type="reset" class="" mat-raised-button>Cancel</button>
+                    <button type="submit" class="addBtn" mat-raised-button>Submit</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
+
 
 <!-- Delete -->
 <div class="modal" id="deleteModal">

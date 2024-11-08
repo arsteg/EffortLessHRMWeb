@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ComponentFactoryResolver, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { signup, User } from 'src/app/models/user';
 import { ManageTeamService } from 'src/app/_services/manage-team.service';
 import { UserService } from '../../_services/users.service';
@@ -10,6 +10,8 @@ import { ToastrService } from 'ngx-toastr';
 import { CommonService } from 'src/app/_services/common.Service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-user-list',
@@ -44,7 +46,9 @@ export class UserListComponent implements OnInit {
     private auth: AuthenticationService,
     private roleService: RoleService,
     private toastrrr: ToastrService,
-    public commonservice: CommonService) {
+    public commonservice: CommonService,
+    private dialog: MatDialog,
+    private toast: ToastrService) {
     this.addForm = this.fb.group({
       firstName: ['', [Validators.required, Validators.pattern('[a-zA-Z ]*')]],
       lastName: ['', [Validators.required, Validators.pattern('[a-zA-Z ]*')]],
@@ -183,4 +187,43 @@ export class UserListComponent implements OnInit {
   goBackToUserView() {
     this.showEmployeeDetails = false;
   }
+
+  showOffcanvas: boolean;
+  @ViewChild('offcanvasContent', { read: ViewContainerRef }) offcanvasContent: ViewContainerRef;
+
+  openOffcanvas(isEdit: boolean) {
+    this.isEdit = isEdit;
+    this.showOffcanvas = true;
+  }
+
+  closeOffcanvas() {
+    this.showOffcanvas = false;
+    this.isEdit = false;
+  }
+
+  deleteEmployee(id: string): void {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '400px',
+
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'delete') {
+        this.delete(id);
+      }
+      err => {
+        this.toast.error('Can not be Deleted', 'Error!')
+      }
+    });
+  }
+
+  delete(id: string) {
+    this.UserService.deleteUser(id).subscribe((res: any) => {
+      this.toast.success('Employee record has been successfully deleted.', 'Action Complete');
+    },
+      (err) => {
+        this.toast.error('This Employee record Can not be deleted.'
+          , 'Error!')
+      })
+  }
+
 }

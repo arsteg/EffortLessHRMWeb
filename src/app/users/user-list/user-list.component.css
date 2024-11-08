@@ -1,11 +1,16 @@
-:host ::ng-deep .pagination .ngx-pagination .current {
-  background: #76bc21 !important;
-  border: transparent !important;
-  border-radius: 20px !important;
-}
-
-.addForm {
+/* .addForm {
   overflow-y: auto;
   overflow-x: hidden;
   height: 50vh;
+} */
+.text-reset{
+  position: fixed;
+  border-radius: 100%;
+  margin-top: 5%;
+  margin-left: -25px;
+  padding: 15px 20px;
+  cursor: pointer;
+  border: none;
+  opacity: 0.8;
+  background-color: #76bc21;
 }
