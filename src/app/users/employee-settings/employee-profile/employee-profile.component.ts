@@ -25,30 +25,30 @@ export class EmployeeProfileComponent {
     private roleService: RoleService,
   ) {
     this.userForm = this.fb.group({
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      email: [''],
-      password: [''],
-      passwordConfirm: [''],
+      firstName: ['', [Validators.required, Validators.pattern('^[A-Za-z]{2,}$')]],
+      lastName: ['', [Validators.required, Validators.pattern('^[A-Za-z]{2,}$')]],
       jobTitle: [''],
       address: [''],
       city: [''],
       state: [''],
-      pincode: [''],
-      phone: [''],
       extraDetails: [''],
       role: ['', Validators.required],
-      mobile: [''],
+      email: ['', Validators.email],
+      password: ['', Validators.minLength(6)],
+      passwordConfirm: [''],
+      phone: ['', [Validators.pattern('^[0-9]{10}$')]],
+      mobile: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
+      pincode: ['', [Validators.pattern('^[0-9]{6}$')]],
       emergancyContactName: [''],
       emergancyContactNumber: [''],
-      Gender: [''],
+      Gender: ['male'],
       DOB: [],
-      MaritalStatus: [''],
+      MaritalStatus: ['Unmarried'],
       MarraigeAniversary: [],
       PassportDetails: [''],
       Pancard: [''],
       AadharNumber: [''],
-      Disability: [''],
+      Disability: ['no'],
       FatherHusbandName: [''],
       NoOfChildren: [''],
       BankName: [''],
@@ -56,7 +56,7 @@ export class EmployeeProfileComponent {
       BankIFSCCode: [''],
       BankBranch: [''],
       BankAddress: ['']
-    });
+    }, { validator: this.passwordMatchValidator });
   }
 
   ngOnInit() {
@@ -70,27 +70,59 @@ export class EmployeeProfileComponent {
           DOB: formattedDOB,
           MarraigeAniversary: formattedMarriageAniversary
         });
+        if (this.isEdit) {
+          this.userForm.get('email').disable();
+        }
       })
     }
     this.getRoles();
   }
 
-  onSubmit() {
-    console.log(this.userForm.value);
-    if (this.isEdit) {
-      if (this.userForm.valid) {
-        this.userService.updateUser(this.selectedUser.id, this.userForm.value).subscribe((res: any) => {
-          this.toast.success('User Updated Successfully');
-        }, err => {
-          this.toast.error('User Update Failed');
-        })
-      }
-    } else {
-      this.userService.addUser(this.userForm.value).subscribe((res: any) => {
-        this.toast.success('User Created Successfully');
-      })
-    }
+  passwordMatchValidator(group: FormGroup) {
+    const password = group.get('password')?.value;
+    const confirmPassword = group.get('passwordConfirm')?.value;
+    return password === confirmPassword ? null : { notMatching: true };
   }
+  
+  getErrorMessage(field: string): string {
+    const control = this.userForm.get(field);
+    if (control?.hasError('required')) {
+      return `${field.charAt(0).toUpperCase() + field.slice(1)} is required.`;
+    }
+    if (control?.hasError('email')) {
+      return 'Please enter a valid email address.';
+    }
+    if (control?.hasError('pattern')) {
+      if (field === 'phone' || field === 'mobile') {
+        return 'Please enter a valid 10-digit number.';
+      }
+      if (field === 'pincode') {
+        return 'Please enter a valid 6-digit pincode.';
+      }
+    }
+    return '';
+  }
+
+  
+  onSubmit() {
+  console.log(this.userForm.valid);
+  if (this.userForm.valid) {
+    if (this.isEdit) {
+      this.userService.updateUser(this.selectedUser.id, this.userForm.value).subscribe(
+        (res: any) => this.toast.success('User Updated Successfully'),
+        err => this.toast.error('User Update Failed')
+      );
+    } else {
+      this.userService.addUser(this.userForm.value).subscribe(
+        (res: any) => this.toast.success('User Created Successfully')
+      );
+    }
+  } else {
+    this.userForm.markAllAsTouched();
+    this.toast.error('Form is invalid. Please fill out the required fields.', 'Error!');
+  }
+}
+
 
   getRoles() {
     this.roleService.getAllRole().subscribe((res: any) => {
