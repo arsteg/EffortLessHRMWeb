@@ -9,6 +9,19 @@
         <div style="height: 150px; width: 150px" class="col-md-2 me-3 mb-5 "
           *ngIf="attachment?.comment !== null && comment.id == attachment?.comment?.id">
 
+          <div class="card cardAttachment"
+            *ngIf="attachment?.attachmentType == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'">
+            <button type="button" class="bi bi-trash btn text-danger text-right deleteAttachment"
+              (click)="deleteCommentAttachment(attachment.id)"></button>
+            <a href="{{attachment.url}}" class="card-img-top">
+              <i class="bi bi-file-earmark-spreadsheet file"></i>
+              <div class="card-body py-0  border-top">
+                <small class="card-text">
+                  {{attachment?.attachmentName}}</small>
+              </div>
+            </a>
+          </div>
+
           <div class="card cardAttachment" *ngIf="attachment?.attachmentType == 'image/png'">
             <button type="button" class="bi bi-trash btn text-danger text-end deleteAttachment"
               (click)="deleteCommentAttachment(attachment.id)"></button>

@@ -447,4 +447,30 @@ export class AttendanceService implements CanActivate {
     return response;
   }
 
+
+  // Attendance process & LOPs
+
+  addProcessAttendanceLOP(payload: any): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/process-attendance-lop`, payload, this.httpOptions);
+    return response;
+  }
+
+  getProcessAttendanceLOPByMonth(payload: any): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/process-attendance-lop-by-month`, payload, this.httpOptions);
+    return response;
+  }
+
+  addProcessAttendance(payload: any): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/process-attendance`, payload, this.httpOptions);
+    return response;
+  }
+
+  deleteProcessAttendance(payload: any): Observable<response<any>> {
+    const options = {
+      ...this.httpOptions,
+      body: payload
+    };
+    return this.http.delete<response<any>>(`${environment.apiUrlDotNet}/attendance/process-attendance`, options);
+  }
+
 }

@@ -186,6 +186,7 @@ export class UserListComponent implements OnInit {
 
   goBackToUserView() {
     this.showEmployeeDetails = false;
+    
   }
 
   showOffcanvas: boolean;

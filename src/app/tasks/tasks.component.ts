@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnInit, Output, HostListener } from '@angular/core';
 import { Task, TaskAttachment, TaskBoard, attachments, taskAttachments } from './task';
 import { TasksService } from '../_services/tasks.service';
-import { Validators, FormGroup, FormBuilder, FormControl } from '@angular/forms';
+import { Validators, FormGroup, FormBuilder, FormControl, AbstractControl } from '@angular/forms';
 import { response } from '../models/response';
 import { ToastrService } from 'ngx-toastr';
 import { project } from '../Project/model/project';
@@ -127,7 +127,7 @@ export class TasksComponent implements OnInit {
       user: ['', Validators.required],
       project: ['', Validators.required],
       taskAttachments: [this.attachments]
-    });
+    }, { validators: this.dateValidator });
     this.createTask_Board = this.fb.group({
       taskName: [''],
       title: [''],
@@ -205,7 +205,17 @@ export class TasksComponent implements OnInit {
       });
     });
   }
-
+  dateValidator(group: AbstractControl) {
+    const startDate = group.get('startDate')?.value;
+    const endDate = group.get('endDate')?.value;
+    
+    // Only validate if both dates are present
+    if (startDate && endDate && moment(startDate).isAfter(moment(endDate))) {
+      return { dateRangeError: true };
+    }
+    return null;
+  }
+  
   onStatusChange(statusItem: any): void {
     const currentStatusValues = this.status.value || [];
 
@@ -251,9 +261,7 @@ export class TasksComponent implements OnInit {
         const hasSubordinates = response.data && response.data.length > 0;
 
         if (hasSubordinates) {
-          // Add "ALL Users" only if there are subordinates
           this.members.unshift({ id: '', name: 'ALL Users', email: '' });
-          // this.userId= ''
         }
 
         this.timelog.getusers(response.data).subscribe({
@@ -567,6 +575,7 @@ export class TasksComponent implements OnInit {
       user: undefined,
       estimate: 8
     });
+    this.selectedFiles = [];
   }
 
   onFileSelect(event) {

@@ -374,13 +374,13 @@ export class EditTaskComponent implements OnInit {
   }
 
   deleteTask() {
-    this.loading = true; // Set loading to true
+    this.loading = true;
     this.tasksService.deleteTask(this.taskId).subscribe(response => {
       this.ngOnInit();
       this.toast.success('Successfully Deleted!', `Task Number: ${this.tasks.data.task.taskNumber}`);
     }, err => {
       this.toast.error('Task Cannot Be Deleted', 'Error!');
-      this.loading = false; // Set loading back to false after failed deletion
+      this.loading = false;
     });
   }
 

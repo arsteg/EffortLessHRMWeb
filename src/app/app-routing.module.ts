@@ -62,6 +62,7 @@ import { UserTaxDeclarationComponent } from './Taxation/user-tax-declaration/use
 import { ExpenseCategorySettingsComponent } from './Expenses/settings/expense-category-settings/expense-category-settings.component';
 import { InterviewProcessMainComponent } from './pages/interviewProcess/interview-process-main/interview-process-main.component';
 import { AttendanceManagementComponent } from './attendance/attendance-management/attendance-management.component';
+
 const routes: Routes = [
   { path: '', component: MainComponent },
   { path: 'main', component: MainComponent },

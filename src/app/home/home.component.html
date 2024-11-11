@@ -56,7 +56,7 @@
             <li class="nav-item has-submenu">
               <a class="nav-link sidebar-links d-flex justify-content-between me-2"
                 [ngClass]="{'active': menu.url== ''}" [routerLink]="menu.url" routerLinkActive="active"
-                (click)="clickMenu(menu.id)">
+                (click)="clickMenu(menu.id)" [routerLinkActiveOptions]="{ exact: false }">
                 <span> <span [ngClass]="menu.icon" class=" pt-1 collapse-icons"> </span>
                   <span class="menu-title ps-1"> {{menu.title}}</span></span>
                 <span class="fa fa-caret-down pull-right mt-1" *ngIf="menu.subMenu && menu.subMenu.length"></span>
@@ -78,7 +78,7 @@
           <ul class="nav flex-column" id="nav_accordion" *ngFor="let menu of menuList">
             <li class="nav-item has-submenu" dropdown container="body" placement="right">
               <a class="nav-link sidebar-links" dropdownToggle [ngClass]="{'active': menu.url== ''}"
-                [routerLink]="menu.url" routerLinkActive="active" [tooltip]="menu.title">
+                [routerLink]="menu.url" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }" [tooltip]="menu.title">
                 <span [ngClass]="menu.icon" class="me-2 collapse-icons fa-lg"></span>
               </a>
 
@@ -156,7 +156,7 @@
         <ul class="nav flex-column" id="nav_accordion" *ngFor="let menu of menuList">
           <li class="nav-item has-submenu">
             <a class="nav-link sidebar-links ps-0" [ngClass]="{'active': menu.url== ''}" [routerLink]="menu.url"
-              routerLinkActive="active" (click)="clickMenu(menu.id)">
+              routerLinkActive="active" [routerLinkOptions]="{ exact: false }" (click)="clickMenu(menu.id)">
               <span [ngClass]="menu.icon" class="ms-3 collapse-icons"></span>
               <img [ngClass]="{'active': menu.url== ''}" class="item" [src]="menu.icon" height="25" alt="">
               <img [ngClass]="{'active': menu.url== ''}" class="item1" [src]="menu.lightIcon" height="25" alt="">
@@ -173,7 +173,7 @@
         <ul class="nav flex-column" id="nav_accordion" *ngFor="let menu of menuList">
           <li class="nav-item has-submenu" dropdown container="body" placement="right">
             <a class="nav-link sidebar-links" dropdownToggle [ngClass]="{'active': menu.url== ''}"
-              [routerLink]="menu.url" routerLinkActive="active" [tooltip]="menu.title" placement="left">
+              [routerLink]="menu.url" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }" [tooltip]="menu.title" placement="left">
               <span [ngClass]="menu.icon" class="ms-2 collapse-icons fa-lg"></span>
               <img [ngClass]="{'active': menu.url== ''}" class="item" [src]="menu.icon" height="25" alt="">
               <img [ngClass]="{'active': menu.url== ''}" class="item1" [src]="menu.lightIcon" height="25" alt="">

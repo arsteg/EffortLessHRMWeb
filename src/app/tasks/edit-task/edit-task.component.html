@@ -314,6 +314,21 @@
                                     <div class="d-flex row">
                                         <ng-container *ngFor="let attachment of taskAttachment; let i = index">
                                             <div class="col-md-2 mb-5" *ngIf="!attachment?.comment">
+
+                                                <div class="card cardAttachment"
+                                                    *ngIf="attachment?.attachmentType == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'">
+                                                    <button type="button"
+                                                        class="bi bi-trash btn text-danger text-right deleteAttachment"
+                                                        (click)="deleteTaskAttachment(attachment.id)"></button>
+                                                    <a href="{{attachment.url}}" class="card-img-top">
+                                                        <i class="bi bi-file-earmark-spreadsheet file"></i>
+                                                        <div class="card-body py-0  border-top">
+                                                            <small class="card-text">
+                                                                {{attachment?.attachmentName}}</small>
+                                                        </div>
+                                                    </a>
+                                                </div>
+
                                                 <div class="card cardAttachment"
                                                     *ngIf="attachment?.attachmentType == 'image/png'">
                                                     <button type="button"
@@ -786,8 +801,8 @@
 
     <div *ngIf="tasks?.data?.task === null " class="d-flex justify-content-center mt-5">
         <ng-container>
-            <button *ngIf="view==='admin'" [routerLink]="['/manage/tasks']" class="btn submenuTab active rounded-pill"><span
-                    class="bi bi-arrow-left ">
+            <button *ngIf="view==='admin'" [routerLink]="['/manage/tasks']"
+                class="btn submenuTab active rounded-pill"><span class="bi bi-arrow-left ">
                     Back</span></button>
             <a href="" *ngIf="view==='user'" [routerLink]="['/tasks']"> <button
                     class="btn btn-outline-primary rounded-pill"><span class="bi bi-arrow-left ">

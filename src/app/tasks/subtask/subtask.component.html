@@ -81,6 +81,18 @@
                     <ng-container *ngFor="let attachment of taskAttachment ; let i = index">
                         <div class="col-md-2 mb-5" *ngIf="!attachment?.comment">
 
+                            <div class="card cardAttachment"
+                                *ngIf="attachment?.attachmentType == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'">
+                                <button type="button" class="bi bi-trash btn text-danger text-right deleteAttachment"
+                                    (click)="deleteTaskAttachment(attachment.id)"></button>
+                                <a href="{{attachment.url}}" class="card-img-top">
+                                    <i class="bi bi-file-earmark-spreadsheet file"></i>
+                                    <div class="card-body py-0  border-top">
+                                        <small class="card-text">
+                                            {{attachment?.attachmentName}}</small>
+                                    </div>
+                                </a>
+                            </div>
 
                             <div class="card cardAttachment" *ngIf="attachment?.attachmentType == 'image/png'">
                                 <button type="button" class="bi bi-trash btn text-danger text-right deleteAttachment"
@@ -225,7 +237,8 @@
 
                 <div class="issue-details d-flex">
                     <div ngbDropdown class="d-inline-block">
-                        <button class="btn dropdown-toggle status" [title]="subtask?.task?.status" id="dropdownMenuButton" ngbDropdownToggle [ngClass]="{
+                        <button class="btn dropdown-toggle status" [title]="subtask?.task?.status"
+                            id="dropdownMenuButton" ngbDropdownToggle [ngClass]="{
                             'bg-warning text-white': (selectedStatus || subtask?.task?.status) === 'In Progress',
                             'bg-success text-white': (selectedStatus || subtask?.task?.status) === 'Done',
                             'bg-danger text-white': (selectedStatus || subtask?.task?.status) === 'ToDo',
