@@ -120,9 +120,10 @@ tr:hover td.highlight div {
 }
 
 
-thead tr{
+thead tr {
   box-shadow: none !important;
 }
+
 thead th {
   font-weight: 700;
   color: #64728c;
@@ -666,12 +667,13 @@ td:last-child {
   border-bottom-right-radius: 1.2rem; */
 }
 
-th{
+th {
   padding: 10px 5px;
 }
+
 tr {
   box-shadow: 0.02rem 0.02rem 0.2rem 0.2rem rgb(126 126 126 / 15%) !important;
-    border-radius: 2px;
+  border-radius: 2px;
 }
 
 .tableContainer {
@@ -679,7 +681,7 @@ tr {
 }
 
 .tableContainer table {
- 
+
   border-radius: 15px !important;
 }
 
@@ -694,7 +696,7 @@ tr {
 
 .actions {
   background: none;
-    color: #e46a28;
+  color: #e46a28;
 }
 
 .tabs {
@@ -927,9 +929,11 @@ h2 {
 .mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-line-ripple::after {
   border-bottom-color: transparent !important;
 }
+
 .mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-text-field__input {
   background: white;
 }
+
 .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled) .mdc-list-item__primary-text,
 .mat-pseudo-checkbox-minimal.mat-pseudo-checkbox-checked::after,
 .mat-pseudo-checkbox-minimal.mat-pseudo-checkbox-indeterminate::after {
@@ -938,5 +942,9 @@ h2 {
 
 .mdc-text-field--filled:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-floating-label,
 .mdc-text-field--filled:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-floating-label--float-above {
-    color: #2d2d2c !important;
+  color: #2d2d2c !important;
+}
+
+.action-list {
+  cursor: pointer;
 }

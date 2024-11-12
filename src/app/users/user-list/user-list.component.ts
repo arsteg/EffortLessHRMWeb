@@ -147,21 +147,10 @@ export class UserListComponent implements OnInit {
       this.toastrrr.error('User with this Email already Exists', 'Duplicate Email!')
     });
     this.userForm.reset();
-    // }
-    // else {
-    //   this.markFormGroupTouched(this.addForm);
-    // }
+    
   }
 
-  // markFormGroupTouched(formGroup: FormGroup) {
-  //   Object.values(formGroup.controls).forEach(control => {
-  //     control.markAsTouched();
-
-  //     if (control instanceof FormGroup) {
-  //       this.markFormGroupTouched(control);
-  //     }
-  //   });
-  // }
+ 
 
   deleteUser() {
     this.UserService.deleteUser(this.selectedUser._id)

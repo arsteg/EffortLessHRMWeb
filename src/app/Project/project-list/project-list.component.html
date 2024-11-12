@@ -7,7 +7,7 @@
                     <select id="member" name="member" class="form-control" class="form-select form-select-sm"
                         aria-label=".form-select-sm example" [(ngModel)]="userId"
                         (change)="onMemberSelectionChange(userId)">
-                        <option value="value" disabled selected>Select Member</option>
+                        <option value="All Projects">All Projects</option>
                         <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
                             {{assignee.firstName |titlecase}} {{assignee.lastName | titlecase}}
                         </option>
@@ -97,24 +97,27 @@
                                 </ng-container>
                             </td>
                             <td class="action text-center pe-2" *ngIf="data !== null">
+
+                                <!-- <button  data-bs-toggle="modal" data-bs-target="#manageUsersModal"
+                                 (click)="selectedProject= data; getProjectUser(data.id)">Manage user</button> -->
+
                                 <div ngbDropdown class="dropdown-center">
                                     <button class="actions ms-2" mat-mini-fab ngbDropdownToggle aria-expanded="false"
                                         aria-label="Example icon button with a menu icon">
                                         <i class="bi bi-send"></i>
                                     </button>
                                     <ul ngbDropdownMenu class="dropdown-menu py-0">
-                                        <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
-                                            data-bs-target="#addUserModal" (click)="getProjectUser(data.id)"
-                                            (click)="selectedProject=data" *ngIf="data !== null">
-                                            <i class="bi bi-person-plus contentHeading dropdown-item w-25"></i>
-                                            <span class="pt-1 text-muted">Add User</span>
+                                        <li class="d-flex border-bottom action-list" 
+                                        data-bs-toggle="modal" data-bs-target="#manageUsersModal"
+                                        (click)="selectedProject= data; getProjectUser(data.id)">
+                                            <i class="bi bi-person-gear text-primary dropdown-item w-25"></i>
+                                            <span class="pt-1 text-muted">Manage User</span>
                                         </li>
 
                                         <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
-                                            data-bs-target="#getUsers" (click)="getProjectUser(data.id)"
-                                            (click)="selectedProject=data" *ngIf="data !== null">
-                                            <i class="bi bi-person-dash text-danger dropdown-item w-25"></i>
-                                            <span class="pt-1 text-muted">Remove User</span>
+                                            data-bs-target="#updateModal" (click)="selectedProject=data">
+                                            <i class="bi bi-pencil text-success dropdown-item w-25"></i>
+                                            <span class="pt-1 text-muted">Edit Project</span>
                                         </li>
 
                                         <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
@@ -123,11 +126,7 @@
                                             <span class="pt-1 text-muted">Delete Project</span>
                                         </li>
 
-                                        <li class="d-flex action-list" data-bs-toggle="modal"
-                                            data-bs-target="#updateModal" (click)="selectedProject=data">
-                                            <i class="bi bi-pencil text-success dropdown-item w-25"></i>
-                                            <span class="pt-1 text-muted">Edit Project</span>
-                                        </li>
+                                        
                                     </ul>
                                 </div>
                             </td>
@@ -139,6 +138,44 @@
     </div>
 </div>
 
+
+<!-- Manage user modal -->
+<div class="modal" id="manageUsersModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body">
+          <div class="d-flex justify-content-between">
+            <h4 class="modal-title text-start">Manage Members</h4>
+            <button type="button" data-bs-dismiss="modal" class="btn-close"></button>
+          </div>
+          <hr class="mt-0">
+          <div class="row" *ngIf="selectedProject">
+            <form  (ngSubmit)="saveProjectUsers()">
+              <div class="row d-flex justify-content-center">
+                <div class="col-md-8">
+                  <div *ngFor="let assignee of allAssignee" class="mt-2">
+                    <mat-checkbox
+                      color="primary"
+                      [checked]="isUserSelected(assignee.id)"
+                      (change)="onCheckboxChange(assignee, $event.checked)"
+                    >
+                      {{ assignee.firstName | titlecase }} {{ assignee.lastName | titlecase }}
+                    </mat-checkbox>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex justify-content-between mt-3">
+                <button mat-raised-button class="mx-2" data-bs-dismiss="modal" type="button">Cancel</button>
+                <button mat-raised-button class="addBtn" type="submit">Save</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
 <!-- Add User -->
 <div class="modal" id="addUserModal">
     <div class="modal-dialog modal-dialog-centered">

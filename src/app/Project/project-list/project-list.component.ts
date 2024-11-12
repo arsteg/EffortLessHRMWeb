@@ -27,14 +27,14 @@ export class ProjectListComponent implements OnInit {
   addUserForm: FormGroup;
   allAssignee: any[];
   member: any;
-  userId: string;
+  userId: string = 'All Projects';
   addUser: addUser[] = [];
   projectUserList: any;
   isChecked: true;
   firstLetter: string;
   color: string;
   selectedUser: any;
-  selectedUsers = [];
+  // selectedUsers = [];
   formDate = new FormGroup({ dateYMD: new FormControl(new Date()) });
   public sortOrder: string = '';
   bsValue = new Date();
@@ -81,6 +81,9 @@ export class ProjectListComponent implements OnInit {
       this.allAssignee = result && result.data && result.data.data;
     });
     this.firstLetter = this.commonservice.firstletter;
+
+    this.manageUsersForm = this.fb.group({});
+    // this.getProjectUser(this.selectedProject.id);
   }
 
   onPageChange(page: number) {
@@ -124,7 +127,10 @@ export class ProjectListComponent implements OnInit {
   }
 
   onMemberSelectionChange(user) {
-    this.getProjectsByUser();
+    if (this.userId == 'All Projects') {
+      this.getProjectList();
+    }
+    else { this.getProjectsByUser(); }
   }
 
   addProject() {
@@ -163,20 +169,20 @@ export class ProjectListComponent implements OnInit {
 
   updateProject(updateForm: FormGroup) {
     // if (this.updateForm.valid) {
-      const updatedProjectData = this.updateForm.value;
+    const updatedProjectData = this.updateForm.value;
 
-      this.projectService.updateproject(this.selectedProject._id, updatedProjectData).subscribe(response => {
-        this.toastr.success('Existing Project Updated', 'Successfully Updated!');
+    this.projectService.updateproject(this.selectedProject._id, updatedProjectData).subscribe(response => {
+      this.toastr.success('Existing Project Updated', 'Successfully Updated!');
 
-        // Delay the ngOnInit() call to ensure the toast message is displayed
-        setTimeout(() => {
-          this.getProjectList();
-          this.selectedProject = this.projectList.find(p => p._id === this.selectedProject._id);
-        }, 500);
-      }, err => {
-        console.error('Error updating project:', err); // Debugging
-        this.toastr.error('Can not be Updated', 'ERROR!')
-      })
+      // Delay the ngOnInit() call to ensure the toast message is displayed
+      setTimeout(() => {
+        this.getProjectList();
+        this.selectedProject = this.projectList.find(p => p._id === this.selectedProject._id);
+      }, 500);
+    }, err => {
+      console.error('Error updating project:', err); // Debugging
+      this.toastr.error('Can not be Updated', 'ERROR!')
+    })
   }
 
   addUserToProject(addUserForm) {
@@ -195,15 +201,15 @@ export class ProjectListComponent implements OnInit {
     }
   }
 
-  getProjectUser(id) {
-    this.projectService.getprojectUser(id).subscribe(response => {
-      this.projectUserList = response && response.data && response.data['projectUserList'];
-      if (this.projectUserList) {
-        this.projectUserList = this.projectUserList.filter(user => user.user != null);
-        this.selectedUser = this.projectUserList.map(user => user.user.id);
-      }
-    });
-  }
+  // getProjectUser(id) {
+  //   this.projectService.getprojectUser(id).subscribe(response => {
+  //     this.projectUserList = response && response.data && response.data['projectUserList'];
+  //     if (this.projectUserList) {
+  //       this.projectUserList = this.projectUserList.filter(user => user.user != null);
+  //       this.selectedUser = this.projectUserList.map(user => user.user.id);
+  //     }
+  //   });
+  // }
 
   onModelChange(projectUserList) {
     let index = this.projectUserList.findIndex(user => user.id === projectUserList.id);
@@ -220,4 +226,68 @@ export class ProjectListComponent implements OnInit {
   clearForm() {
     this.form.reset();
   }
+
+  //--------- new implementation ----------
+
+  manageUsersForm: FormGroup;
+  selectedUsers: Set<string> = new Set(); // To manage selected user IDs
+
+  // Check if the user is already selected
+  isUserSelected(userId: string): boolean {
+    return this.selectedUsers.has(userId);
+  }
+
+  // Handle checkbox change
+  onCheckboxChange(assignee: any, isChecked: boolean): void {
+    if (isChecked) {
+      console.log(assignee.id)
+      this.selectedUsers.add(assignee.id); // Add user ID to the selected list
+    } else {
+      console.log(assignee.id)
+      this.selectedUsers.delete(assignee.id); // Remove user ID from the selected list
+    }
+  }
+
+  // Fetch assigned users for the selected project
+  getProjectUser(projectId: string): void {
+    this.projectService.getprojectUser(projectId).subscribe((response) => {
+      this.projectUserList = response.data.projectUserList.filter((user) => user.user != null);
+      this.selectedUsers = new Set(this.projectUserList.map((user) => user.user.id)); // Initialize selected users
+    });
+  }
+
+  // Save users for the project
+  saveProjectUsers() {
+    console.log('method called');
+    const currentUsers = this.projectUserList.map((user) => user.user.id); // Current users in the project
+    const usersToAdd = Array.from(this.selectedUsers).filter((id) => !currentUsers.includes(id));
+    const usersToRemove = currentUsers.filter((id) => !this.selectedUsers.has(id));
+
+    // Add new users
+    if (usersToAdd.length > 0) {
+      const newUsers = usersToAdd.map((id) => ({ user: id }));
+      this.projectService.addUserToProject(this.selectedProject.id, newUsers).subscribe(
+        () => {
+          this.toastr.success('New Members Added', 'Success');
+          this.getProjectUser(this.selectedProject.id);
+        },
+        (error) => this.toastr.error('Error Adding Members', 'Error')
+      );
+    }
+
+    // Remove users
+    usersToRemove.forEach((id) => {
+      const user = this.projectUserList.find((u) => u.user.id === id);
+      if (user) {
+        this.projectService.deleteprojectUser(user.id).subscribe(
+          () => {
+            this.toastr.success(`${user.user.firstName} Removed`, 'Success');
+            this.getProjectUser(this.selectedProject.id);
+          },
+          (error) => this.toastr.error('Error Removing Member', 'Error')
+        );
+      }
+    });
+  }
+
 }

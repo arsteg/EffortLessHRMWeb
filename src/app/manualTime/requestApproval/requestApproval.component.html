@@ -33,7 +33,7 @@
                             <i
                                 [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                         </th>
-                        <th [appSort]="manualTimeRequestFiltered" data-order="{{ sortOrder }}" data-name="user"
+                        <th class="text-center" [appSort]="manualTimeRequestFiltered" data-order="{{ sortOrder }}" data-name="user"
                             (click)="sortData('user')">Requested by&nbsp;
                             <i
                                 [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
