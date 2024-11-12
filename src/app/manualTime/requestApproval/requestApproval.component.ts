@@ -9,6 +9,7 @@ import { manualTimeRequest } from 'src/app/models/manualTime/manualTimeRequest';
 import { NotificationService } from 'src/app/_services/notification.service';
 import { ManualTimeRequestService } from 'src/app/_services/manualTimeRequest.Service';
 import { FormsModule } from '@angular/forms';
+import { CommonService } from 'src/app/_services/common.Service';
 
 
 @Component({
@@ -29,7 +30,7 @@ export class RequestApprovalComponent implements OnInit {
   manualTimeRequests1: any;
   roleName = localStorage.getItem('roleName');
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
-  public sortOrder: string = ''; // 'asc' or 'desc'
+  public sortOrder: string = '';
   sortColumn: string = '';
   selectedMember: any = null;
 
@@ -37,12 +38,12 @@ export class RequestApprovalComponent implements OnInit {
     private authenticationService: AuthenticationService,
     private timeLogService: TimeLogService,
     private notifyService: NotificationService,
-    private manualTimeRequestService: ManualTimeRequestService) {
+    private manualTimeRequestService: ManualTimeRequestService,
+    public commonservice: CommonService) {
   }
 
   ngOnInit(): void {
     this.id = this.authenticationService.currentUserValue.id;
-    console.log(this.id)
     this.fetchManualTimeRequests();
     this.populateMembers();
   }
@@ -93,7 +94,7 @@ export class RequestApprovalComponent implements OnInit {
     request.status = 'rejected';
     this.updateRequest(request);
   }
-  
+
   updateRequest(request) {
     console.log(request)
     let payload = {

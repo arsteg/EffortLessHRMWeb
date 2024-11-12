@@ -73,7 +73,7 @@
                                 data-bs-target="#addModal" (click)="clearForm()">Create</button>
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
 
@@ -267,9 +267,12 @@
 
                                 <!-- Assignee -->
                                 <td class="pe-lg-1 pe-4">
+
                                     <div class="d-flex flex-nowrap users">
                                         <span *ngFor="let users of task?.TaskUsers">
-                                            <span class="letter text-light d-lg-inline-block d-none"
+                                            <span *ngIf="users?.user?.firstName == null">N/A</span>
+
+                                            <span *ngIf="users?.user?.firstName != null" class="letter text-light d-lg-inline-block d-none"
                                                 [tooltip]="(users?.user?.firstName| titlecase) + (' ') +( users?.user?.lastName | titlecase)"
                                                 [style.background-color]="commonservice.getRandomColor(users?.user?.firstName)">
                                                 {{users?.user?.firstName.charAt(0) | uppercase}}
@@ -282,7 +285,9 @@
 
                                 <!-- Reporter -->
                                 <td class="pe-lg-1 pe-4">
-                                    <span class="letter text-light d-lg-inline-block d-none"
+                                    <span *ngIf="task?.createdBy?.firstName == null">N/A</span>
+
+                                    <span  *ngIf="task?.createdBy?.firstName != null" class="letter text-light d-lg-inline-block d-none"
                                         [tooltip]="(task?.createdBy?.firstName| titlecase) + (' ') +( task?.createdBy?.lastName | titlecase)"
                                         [style.background-color]="commonservice.getRandomColor(task?.createdBy?.firstName)">
                                         {{task?.createdBy?.firstName.charAt(0) | uppercase}}
@@ -1094,41 +1099,41 @@
 
                             <div class="row">
                                 <div class="col-6">
-                                  <div class="row mt-3">
-                                    <label for="startDate" class="text-start">Start Date</label>
-                                  </div>
-                                  <div class="row">
-                                    <div class="col-12 form-group mb-3">
-                                      <input placeholder="YYYY-MM-DD" class="form-control" 
-                                             #datepickerYMD="bsDatepicker" bsDatepicker 
-                                             [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" 
-                                             formControlName="startDate">
+                                    <div class="row mt-3">
+                                        <label for="startDate" class="text-start">Start Date</label>
                                     </div>
-                                  </div>
+                                    <div class="row">
+                                        <div class="col-12 form-group mb-3">
+                                            <input placeholder="YYYY-MM-DD" class="form-control"
+                                                #datepickerYMD="bsDatepicker" bsDatepicker
+                                                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
+                                                formControlName="startDate">
+                                        </div>
+                                    </div>
                                 </div>
-                              
+
                                 <div class="col-6">
-                                  <div class="row mt-3">
-                                    <label for="endDate" class="text-start">End Date</label>
-                                  </div>
-                                  <div class="row">
-                                    <div class="col-12 form-group mb-3">
-                                      <input placeholder="YYYY-MM-DD" class="form-control" 
-                                             #datepickerYMD="bsDatepicker" bsDatepicker 
-                                             [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" 
-                                             formControlName="endDate">
+                                    <div class="row mt-3">
+                                        <label for="endDate" class="text-start">End Date</label>
                                     </div>
-                                  </div>
+                                    <div class="row">
+                                        <div class="col-12 form-group mb-3">
+                                            <input placeholder="YYYY-MM-DD" class="form-control"
+                                                #datepickerYMD="bsDatepicker" bsDatepicker
+                                                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
+                                                formControlName="endDate">
+                                        </div>
+                                    </div>
                                 </div>
-                              </div>
-                              
-                              <!-- Error message for date range validation -->
-                              <div *ngIf="addForm.errors?.['dateRangeError']" class="text-danger mt-2">
+                            </div>
+
+                            <!-- Error message for date range validation -->
+                            <div *ngIf="addForm.errors?.['dateRangeError']" class="text-danger mt-2">
                                 Start date should not be greater than end date.
-                              </div>
-                              
-                            
-                              
+                            </div>
+
+
+
                             <div class="d-flex row">
                                 <div class="col-6">
                                     <div class="row mt-3">
@@ -1192,7 +1197,8 @@
                             <div class="d-flex justify-content-between mt-3">
 
                                 <div>
-                                    <button mat-raised-button class="mx-2" type="button" (click)="clearForm()">Cancel</button>
+                                    <button mat-raised-button class="mx-2" type="button"
+                                        (click)="clearForm()">Cancel</button>
                                 </div>
                                 <div>
                                     <button mat-raised-button class="addBtn" type="submit">Add</button>

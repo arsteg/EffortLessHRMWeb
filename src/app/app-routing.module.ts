@@ -18,7 +18,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { RealtimeComponent } from './realtime/realtime.component';
 import { MainComponent } from './main/main.component';
 import { TasksComponent } from './tasks/tasks.component';
-import { RequestManualTimeComponent } from './manualTime/request-manual-time/request-manual-time.component';
+// import { RequestManualTimeComponent } from './manualTime/request-manual-time/request-manual-time.component';
 import { RequestApprovalComponent } from './manualTime/requestApproval/requestApproval.component';
 import { AddManualTimeComponent } from './manualTime/addManualTime/add-manual-time.component';
 import { ActivityDescriptionComponent } from './reports/activity-description/activity-description.component';
@@ -88,7 +88,7 @@ const routes: Routes = [
       { path: 'realtime', component: RealtimeComponent },
       { path: 'tasks', component: TasksComponent },
       { path: 'tags', component: TagComponent },
-      { path: 'requestManualTime', component: RequestManualTimeComponent },
+      // { path: 'requestManualTime', component: RequestManualTimeComponent },
       { path: 'ManualTimeRequestApproval', component: RequestApprovalComponent },
       { path: 'AddManualTime', component: AddManualTimeComponent },
       { path: 'activityDescription', component: ActivityDescriptionComponent },

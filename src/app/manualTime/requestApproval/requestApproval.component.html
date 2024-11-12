@@ -59,16 +59,20 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr
-                        *ngFor="let record of manualTimeRequestFiltered | search: searchText ">
-                        <td class="ps-2">
-                            <div>{{record.date | date: 'MM/dd/yyyy'}}</div>
+                    <tr *ngFor="let record of manualTimeRequestFiltered | search: searchText ">
+                        <td>{{record.date | date: 'short'}}</td>
+                        <td class="text-center">
+                            <span *ngIf="record?.user.firstName == null">N/A</span>
+                            <span *ngIf="record?.user?.firstName != null" class="letter text-light d-lg-inline-block"
+                                [tooltip]="(record?.user?.firstName| titlecase) + (' ') +( record?.user?.lastName | titlecase)"
+                                [style.background-color]="commonservice.getRandomColor(record?.user?.firstName)">
+                                {{record?.user?.firstName.charAt(0) | uppercase}}
+                            </span>
                         </td>
-                        <td><span>{{record?.user?.firstName +' '+ record?.user?.lastName }}</span> </td>
                         <td><span>{{record?.project?.projectName | uppercase}}</span> </td>
-                        <td>{{ record.fromDate | date: 'MM/dd/yyyy'}} {{ record.fromDate | date: 'shortTime'}}</td>
-                        <td>{{ record.toDate | date: 'MM/dd/yyyy'}} {{ record.toDate | date: 'shortTime'}}</td>
-                        <td>{{ record.reason}}</td>
+                        <td>{{ record.fromDate | date: 'short'}}</td>
+                        <td>{{ record.toDate | date: 'short'}}</td>
+                        <td class="w-25">{{ record.reason}}</td>
                         <td> <span>
                                 <i *ngIf="record.status=='approved'" class="bi bi-hand-thumbs-up-fill"
                                     style="color:green" [title]="record.status"></i>
@@ -91,7 +95,7 @@
                     </tr>
                 </tbody>
             </table>
-            
+
         </div>
     </div>
 </div>
