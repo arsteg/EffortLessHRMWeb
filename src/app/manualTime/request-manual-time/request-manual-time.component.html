@@ -60,6 +60,7 @@
             </td>
             <td>{{record?.projectName}}</td>
             <td>
+
               <span class="letter ms-2"
                 [tooltip]="(record?.manager?.firstName | titlecase)+ ' ' + (record?.manager?.lastName) "
                 [style.background-color]="commonservice.getRandomColor(record?.manager?.firstName)">{{record?.manager?.firstName.slice(0,1)

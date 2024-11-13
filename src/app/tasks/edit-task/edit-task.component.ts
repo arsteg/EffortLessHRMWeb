@@ -31,10 +31,11 @@ export class EditTaskComponent implements OnInit {
   unKnownImage = "assets/images/icon-unknown.svg";
   firstLetter: string;
   taskList: any = [];
-  statusList: status[] = [{ name: 'ToDo', faclass: "" },
-  { name: 'In Progress', faclass: "" },
-  { name: 'Done', faclass: "" },
-  { name: 'Closed', faclass: "" },
+  statusList: status[] = [
+    { name: 'ToDo', faclass: "fa-tasks" },
+    { name: 'In Progress', faclass: "fa-indent" },
+    { name: 'Done', faclass: "fa-check-square-o" },
+    { name: 'Closed', faclass: "fa-window-close-o" }
   ];
 
   selectedStatus: string = '';
@@ -630,6 +631,12 @@ export class EditTaskComponent implements OnInit {
   goBack() {
     this.router.navigate(['/manage'], { fragment: 'tab3' });
   }
+  getFaclass(status: string): string {
+    const statusItem = this.statusList.find(item => item.name === status);
+    console.log(statusItem)
+    return statusItem ? statusItem.faclass : ''; // Return the appropriate class or an empty string
+}
+
 }
 interface priority {
   name: string,

@@ -86,15 +86,18 @@
                                 <div class="sub-header mt-3 py-3 px-3 align-self-center w-100 rounded">
                                     <div class="d-flex  align-items-center">
                                         <div ngbDropdown class="d-inline-block">
+
                                             <button class="btn dropdown-toggle status" id="dropdownMenuButton"
                                                 ngbDropdownToggle [ngClass]="{
-                                                'bg-warning text-white': (selectedStatus || tasks?.data?.task?.status) === 'In Progress',
-                                                'bg-success text-white': (selectedStatus || tasks?.data?.task?.status) === 'Done',
-                                                'bg-danger text-white': (selectedStatus || tasks?.data?.task?.status) === 'ToDo',
-                                                'bg-secondary text-white': (selectedStatus || tasks?.data?.task?.status) === 'Closed'
-                                            }">
-                                                <i class="fa fa-tasks"></i>
-                                                {{ selectedStatus || currentTaskProject?.status }}
+'bg-warning text-white': (selectedStatus || tasks?.data?.task?.status) === 'In Progress',
+'bg-success text-white': (selectedStatus || tasks?.data?.task?.status) === 'Done',
+'bg-danger text-white': (selectedStatus || tasks?.data?.task?.status) === 'ToDo',
+'bg-secondary text-white': (selectedStatus || tasks?.data?.task?.status) === 'Closed',
+'bg-primary text-white': (selectedStatus || tasks?.data?.task?.status) === 'Active'
+}">
+                                                <i class="fa"
+                                                    [ngClass]="getFaclass(selectedStatus || tasks?.data?.task?.status)"></i>
+                                                {{ selectedStatus || tasks?.data?.task?.status }}
                                             </button>
 
                                             <div ngbDropdownMenu aria-labelledby="dropdownMenuButton">
@@ -518,9 +521,9 @@
                                                 </p>
 
                                                 <div class="dropdown ms-auto">
-                                                    <button class="btn dropdown-toggle sub_btn  status" type="button"
-                                                        id="dropdownMenuButton" data-bs-toggle="dropdown"
-                                                        aria-haspopup="true" aria-expanded="false" [ngClass]="{
+                                                    <button id="dropdownMenuButtonSub" ngbDropdownToggle
+                                                        class="btn dropdown-toggle sub_btn status" type="button"
+                                                        [ngClass]="{
                                                             'bg-warning text-white!important': (selectedStatus || subTask?.status) === 'In Progress',
                                                             'bg-success text-white!important': (selectedStatus || subTask?.status) === 'Done',
                                                             'bg-danger text-white!important': (selectedStatus || subTask?.status) === 'ToDo',
@@ -531,7 +534,9 @@
                                                         subTask?.status
                                                         }}
                                                     </button>
-                                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+
+
+                                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButtonSub">
                                                         <button *ngFor="let s of statusList" type="button" tabindex="0"
                                                             role="menuitem" class="sub_btn dropdown-item"
                                                             (click)="updatesubTaskStatus(subTask,s.name)">

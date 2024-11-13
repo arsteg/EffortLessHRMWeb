@@ -51,10 +51,10 @@ export class TasksComponent implements OnInit {
   { name: 'Normal', url: "assets/images/icon-normal.svg" }];
 
   statusList: status[] = [
-    { name: 'ToDo', faclass: "", isChecked: true },
-    { name: 'In Progress', faclass: "", isChecked: true },
-    { name: 'Done', faclass: "", isChecked: true },
-    { name: 'Closed', faclass: "", isChecked: true }
+    { name: 'ToDo', faclass: "fa-tasks", isChecked: true },
+    { name: 'In Progress', faclass: "fa-indent", isChecked: true },
+    { name: 'Done', faclass: "fa-check-square-o", isChecked: true },
+    { name: 'Closed', faclass: "fa-window-close-o", isChecked: true }
   ];
 
   unKnownImage = "assets/images/icon-unknown.svg";
@@ -104,16 +104,12 @@ export class TasksComponent implements OnInit {
     private fb: FormBuilder,
     private toast: ToastrService,
     private projectService: ProjectService,
-    private tost: ToastrService,
     public commonservice: CommonService,
     private router: Router,
     private authService: AuthenticationService,
-    private getTaskId: GetTaskService,
     private timelog: TimeLogService,
-    private auth: AuthenticationService,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
-    private location: Location
   ) {
     this.addForm = this.fb.group({
       taskName: [''],
@@ -986,6 +982,12 @@ export class TasksComponent implements OnInit {
       console.error('Error copying to clipboard:', error);
     });
   }
+
+  getFaclass(status: string): string {
+    const statusItem = this.statusList.find(item => item.name === status);
+    return statusItem ? statusItem.faclass : '';
+}
+
 }
 interface priority {
   name: string,
