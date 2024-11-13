@@ -78,7 +78,7 @@ export class MainComponent implements OnInit {
   }
 
   downloadWindowsInstaller() {
-    const downloadUrl = 'https://github.com/arsteg/ARSTEG.EffortlessHRM.TimeTracker/releases/download/1.0.0/TimeTracker.Setup.msi';
+    const downloadUrl = 'https://github.com/arsteg/ARSTEG.EffortlessHRM.TimeTracker/releases/download/1.0.1/TimeTracker_v1.0.0.0.msi';
     window.location.href = downloadUrl;
   }
 
