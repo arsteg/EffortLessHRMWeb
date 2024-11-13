@@ -111,13 +111,29 @@
                         <label for="firstName">First Name <span class="text-danger">*</span></label>
                         <input formControlName="firstName" type="text" class="form-control" id="firstName"
                             placeholder="Enter First Name">
+                            <div *ngIf="userForm.get('firstName')?.touched && userForm.get('firstName')?.invalid">
+                                <small class="text-danger" *ngIf="userForm.get('firstName')?.errors?.['required']">
+                                  First Name is required.
+                                </small>
+                                <small class="text-danger" *ngIf="userForm.get('firstName')?.errors?.['pattern']">
+                                  Must contain at least 2 alphabetic characters.
+                                </small>
+                              </div>
                     </div>
 
                     <div class="form-group col-md-6 mt-2">
                         <label for="lastName">Last Name <span class="text-danger">*</span></label>
                         <input formControlName="lastName" type="text" class="form-control" id="lastName"
                             placeholder="Enter Last Name">
-                    </div>
+                            <div *ngIf="userForm.get('lastName')?.touched && userForm.get('lastName')?.invalid">
+                                <small class="text-danger" *ngIf="userForm.get('lastName')?.errors?.['required']">
+                                  Last Name is required.
+                                </small>
+                                <small class="text-danger" *ngIf="userForm.get('lastName')?.errors?.['pattern']">
+                                  Must contain at least 2 alphabetic characters.
+                                </small>
+                              </div>
+                            </div>
                 </div>
 
                 <div class="row">
@@ -130,6 +146,14 @@
                     <div class="form-group col-md-6 mt-2">
                         <label for="email">Email <span class="text-danger">*</span></label>
                         <input type="text" formControlName="email" class="form-control">
+                        <div *ngIf="userForm.get('email')?.touched && userForm.get('email')?.invalid">
+                            <small class="text-danger" *ngIf="userForm.get('email')?.errors?.['required']">
+                              Email is required.
+                            </small>
+                            <small class="text-danger" *ngIf="userForm.get('email')?.errors?.['email']">
+                              Enter a valid email address.
+                            </small>
+                          </div>
                     </div>
 
                 </div>
@@ -139,11 +163,24 @@
                     <div class="form-group col-md-6 mt-2">
                         <label for="password">Password <span class="text-danger">*</span></label>
                         <input type="text" formControlName="password" class="form-control">
+                        <div *ngIf="userForm.get('password')?.touched && userForm.get('password')?.invalid">
+                            <small class="text-danger" *ngIf="userForm.get('password')?.errors?.['required']">
+                              Password is required.
+                            </small>
+                            <small class="text-danger" *ngIf="userForm.get('password')?.errors?.['minlength']">
+                              Password must be at least 8 characters long.
+                            </small>
+                          </div>
                     </div>
 
                     <div class="form-group col-md-6 mt-2">
                         <label for="email">Confirm Password <span class="text-danger">*</span></label>
                         <input type="text" formControlName="passwordConfirm" class="form-control">
+                        <div *ngIf="userForm.get('passwordConfirm')?.touched && userForm.hasError('notMatching')">
+                            <small class="text-danger">
+                              Password and Confirm Password must match.
+                            </small>
+                          </div>
                     </div>
 
                 </div>
@@ -156,230 +193,35 @@
                             <option value="" disabled>Select Role</option>
                             <option [value]="role._id" *ngFor="let role of roles">{{role?.Name}}</option>
                         </select>
+                        <div *ngIf="userForm.get('role')?.touched && userForm.get('role')?.invalid">
+                            <small class="text-danger">Role is required.</small>
+                          </div>
                     </div>
 
-                    <div class="form-group col-md-6 mt-2">
-                        <label for="address">Address</label>
-                        <input formControlName="address" type="text" class="form-control" id="address"
-                            placeholder="Enter Address">
-                    </div>
+                    
                 </div>
 
-                <div class="row">
-                    <div class="form-group col-md-6 mt-2">
-                        <label for="city">City</label>
-                        <input formControlName="city" type="text" class="form-control" id="city"
-                            placeholder="Enter City">
-                    </div>
-                    <div class="form-group col-md-6 mt-2">
-                        <label for="state">State</label>
-                        <input formControlName="state" type="text" class="form-control" id="state"
-                            placeholder="Enter State">
-                    </div>
-                </div>
+                
 
                 <div class="row">
-                    <div class="form-group col-md-6 mt-2">
-                        <label for="pincode">Pincode</label>
-                        <input formControlName="pincode" type="text" class="form-control" id="pincode"
-                            placeholder="Enter Pincode">
-                    </div>
+                   
                     <div class="form-group col-md-6 mt-2">
                         <label for="phone">Phone</label>
                         <input formControlName="phone" type="text" class="form-control" id="phone"
                             placeholder="Enter Phone Number">
+                            <div *ngIf="userForm.get('phone')?.touched && userForm.get('phone')?.invalid">
+                                <small class="text-danger" *ngIf="userForm.get('phone')?.errors?.['pattern']">
+                                  Phone number must be 10 digits.
+                                </small>
+                              </div>
                     </div>
                 </div>
 
-
-
-                <div class="row">
-                    <div class="form-group col-md-6 mt-2">
-                        <label for="mobile">Mobile</label>
-                        <input formControlName="mobile" type="text" class="form-control" id="mobile"
-                            placeholder="Enter Mobile Number">
-                    </div>
-                    <div class="form-group col-md-6 mt-2">
-                        <label for="emergancyContactName">Emergency Contact Name</label>
-                        <input formControlName="emergancyContactName" type="text" class="form-control"
-                            id="emergancyContactName" placeholder="Enter Emergency Contact Name">
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="form-group col-md-6 mt-2">
-                        <label for="emergancyContactNumber">Emergency Contact Number</label>
-                        <input formControlName="emergancyContactNumber" type="text" class="form-control"
-                            id="emergancyContactNumber" placeholder="Enter Emergency Contact Number">
-                    </div>
-
-                    <div class="form-group col-md-6 mt-2">
-                        <label for="Gender">Gender</label>
-                        <div class="d-flex">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" id="gender-male" formControlName="Gender"
-                                    required value="male">
-                                <label class="form-check-label" for="gender-male">
-                                    Male
-                                </label>
-                            </div>
-                            <div class="form-check mx-3">
-                                <input class="form-check-input" type="radio" id="gender-female" formControlName="Gender"
-                                    required value="female">
-                                <label class="form-check-label" for="gender-female">
-                                    Female
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" id="other" formControlName="Gender"
-                                    required value="other">
-                                <label class="form-check-label" for="other">
-                                    Other
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="form-group col-md-6 mt-2">
-                        <label for="DOB">Date of Birth</label>
-                        <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker
-                            [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="DOB" />
-                    </div>
-
-                    <div class="form-group col-md-6 mt-2">
-                        <label for="MaritalStatus">Marital Status</label>
-                        <div class="d-flex">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" id="MaritalStatus-Yes"
-                                    formControlName="MaritalStatus" required value="Married">
-                                <label class="form-check-label" for="MaritalStatus-Yes">
-                                    Married
-                                </label>
-                            </div>
-                            <div class="form-check ms-3">
-                                <input class="form-check-input" type="radio" id="MaritalStatus-No"
-                                    formControlName="MaritalStatus" required value="Unmarried">
-                                <label class="form-check-label" for="MaritalStatus-No">
-                                    Unmarried
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="form-group col-md-6 mt-2">
-                        <label for="MarraigeAniversary">Marriage Anniversary</label>
-                        <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker
-                            [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="MarraigeAniversary" />
-                    </div>
-
-                    <div class="form-group col-md-6 mt-2">
-                        <label for="PassportDetails">Passport Details</label>
-                        <input formControlName="PassportDetails" type="text" class="form-control" id="PassportDetails"
-                            placeholder="Enter Passport Details">
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="form-group col-md-6 mt-2">
-                        <label for="Pancard">PAN Card</label>
-                        <input formControlName="Pancard" type="text" class="form-control" id="Pancard"
-                            placeholder="Enter PAN Card Number">
-                    </div>
-
-                    <div class="form-group col-md-6 mt-2">
-                        <label for="AadharNumber">Aadhar Number</label>
-                        <input formControlName="AadharNumber" type="text" class="form-control" id="AadharNumber"
-                            placeholder="Enter Aadhar Number">
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="form-group col-md-6 mt-2">
-                        <label for="Disability">Disability</label>
-
-                        <div class="d-flex">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" id="Disability-Yes"
-                                    formControlName="Disability" required value="yes">
-                                <label class="form-check-label" for="Disability-Yes">
-                                    Yes
-                                </label>
-                            </div>
-                            <div class="form-check ms-3">
-                                <input class="form-check-input" type="radio" id="Disability-No"
-                                    formControlName="Disability" required value="no">
-                                <label class="form-check-label" for="Disability-No">
-                                    No
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group col-md-6 mt-2">
-                        <label for="FatherHusbandName">Father/Husband Name</label>
-                        <input formControlName="FatherHusbandName" type="text" class="form-control"
-                            id="FatherHusbandName" placeholder="Enter Father/Husband Name">
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="form-group col-md-6 mt-2">
-                        <label for="NoOfChildren">Number of Children</label>
-                        <input formControlName="NoOfChildren" type="text" class="form-control" id="NoOfChildren"
-                            placeholder="Enter Number of Children">
-                    </div>
-
-                    <div class="form-group col-md-6 mt-2">
-                        <label for="BankName">Bank Name</label>
-                        <input formControlName="BankName" type="text" class="form-control" id="BankName"
-                            placeholder="Enter Bank Name">
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="form-group col-md-6 mt-2">
-                        <label for="BankAccountNumber">Bank Account Number</label>
-                        <input formControlName="BankAccountNumber" type="text" class="form-control"
-                            id="BankAccountNumber" placeholder="Enter Bank Account Number">
-                    </div>
-
-                    <div class="form-group col-md-6 mt-2">
-                        <label for="BankIFSCCode">Bank IFSC Code</label>
-                        <input formControlName="BankIFSCCode" type="text" class="form-control" id="BankIFSCCode"
-                            placeholder="Enter Bank IFSC Code">
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="form-group col-md-6 mt-2">
-                        <label for="BankBranch">Bank Branch</label>
-                        <input formControlName="BankBranch" type="text" class="form-control" id="BankBranch"
-                            placeholder="Enter Bank Branch">
-                    </div>
-
-                    <div class="form-group col-md-6 mt-2">
-                        <label for="BankAddress">Bank Address</label>
-                        <input formControlName="BankAddress" type="text" class="form-control" id="BankAddress"
-                            placeholder="Enter Bank Address">
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="form-group col-md-6 mt-2">
-                        <label for="extraDetails">Extra Details</label>
-                        <input formControlName="extraDetails" type="text" class="form-control" id="extraDetails"
-                            placeholder="Enter Extra Details">
-                    </div>
-                </div>
 
                 <hr>
                 <div class="d-flex justify-content-between mt-2">
                     <button type="reset" class="" mat-raised-button>Cancel</button>
-                    <button type="submit" class="addBtn" mat-raised-button>Submit</button>
+                    <button type="submit" class="addBtn" [disabled]="!userForm.valid" mat-raised-button>Submit</button>
                 </div>
             </form>
         </div>

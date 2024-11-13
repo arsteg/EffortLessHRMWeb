@@ -49,49 +49,21 @@ export class UserListComponent implements OnInit {
     public commonservice: CommonService,
     private dialog: MatDialog,
     private toast: ToastrService) {
-    this.addForm = this.fb.group({
-      firstName: ['', [Validators.required, Validators.pattern('[a-zA-Z ]*')]],
-      lastName: ['', [Validators.required, Validators.pattern('[a-zA-Z ]*')]],
-      role: ['', Validators.required],
-      email: ['', Validators.required],
-      password: ['', Validators.required],
-      passwordConfirm: ['', Validators.required],
-    },
-      { validator: this.passwordMatchValidator }
-    );
-    this.userForm = this.fb.group({
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      email: [''],
-      password: [''],
-      passwordConfirm: [''],
-      jobTitle: [''],
-      address: [''],
-      city: [''],
-      state: [''],
-      pincode: [''],
-      phone: [''],
-      extraDetails: [''],
-      role: ['', Validators.required],
-      mobile: [''],
-      emergancyContactName: [''],
-      emergancyContactNumber: [''],
-      Gender: [''],
-      DOB: [],
-      MaritalStatus: [''],
-      MarraigeAniversary: [],
-      PassportDetails: [''],
-      Pancard: [''],
-      AadharNumber: [''],
-      Disability: [''],
-      FatherHusbandName: [''],
-      NoOfChildren: [''],
-      BankName: [''],
-      BankAccountNumber: [''],
-      BankIFSCCode: [''],
-      BankBranch: [''],
-      BankAddress: ['']
-    });
+    
+      this.userForm = this.fb.group(
+        {
+          firstName: ['', [Validators.required, Validators.pattern('^[A-Za-z]{2,}$')]], // At least 2 characters, letters only
+          lastName: ['', [Validators.required, Validators.pattern('^[A-Za-z]{2,}$')]], // At least 2 characters, letters only
+          email: ['', [Validators.required, Validators.email]], // Required valid email
+          password: ['', [Validators.required, Validators.minLength(8)]], // Required, min length 8
+          passwordConfirm: ['', Validators.required], // Required, confirmed in custom validator
+          jobTitle: [''], // Optional field
+          phone: ['', [Validators.pattern('^[0-9]{10}$')]], // Optional, 10-digit number
+          role: ['', Validators.required], // Required field
+        },
+        { validator: this.passwordMatchValidator } // Custom validator to ensure password match
+      );
+      
   }
 
   ngOnInit() {
@@ -103,17 +75,11 @@ export class UserListComponent implements OnInit {
     this.firstLetter = this.commonservice.firstletter;
   }
 
-  passwordMatchValidator(formGroup: FormGroup) {
-    const passwordControl = formGroup.get('password');
-    const confirmPasswordControl = formGroup.get('passwordConfirm');
-
-    if (passwordControl.value === confirmPasswordControl.value) {
-      confirmPasswordControl.setErrors(null);
-    } else {
-      confirmPasswordControl.setErrors({ mismatch: true });
-    }
+  passwordMatchValidator(group: FormGroup) {
+    const password = group.get('password')?.value;
+    const confirmPassword = group.get('passwordConfirm')?.value;
+    return password === confirmPassword ? null : { notMatching: true };
   }
-
   drop(event: CdkDragDrop<any[]>) {
     moveItemInArray(this.usersList, event.previousIndex, event.currentIndex);
   }
@@ -147,15 +113,15 @@ export class UserListComponent implements OnInit {
       this.toastrrr.error('User with this Email already Exists', 'Duplicate Email!')
     });
     this.userForm.reset();
-    
+
   }
 
- 
+
 
   deleteUser() {
     this.UserService.deleteUser(this.selectedUser._id)
       .subscribe(response => {
-        this.ngOnInit();
+        this.usersList = this.usersList.filter(user => user._id !== this.selectedUser._id);
         this.toastrrr.success('Existing User Deleted', 'Successfully Deleted!')
       }, err => {
         this.toastrrr.error('Can not be Deleted', 'ERROR!')
@@ -175,7 +141,7 @@ export class UserListComponent implements OnInit {
 
   goBackToUserView() {
     this.showEmployeeDetails = false;
-    
+
   }
 
   showOffcanvas: boolean;
@@ -208,6 +174,7 @@ export class UserListComponent implements OnInit {
 
   delete(id: string) {
     this.UserService.deleteUser(id).subscribe((res: any) => {
+      this.usersList = this.usersList.filter(user => user?._id !== id);
       this.toast.success('Employee record has been successfully deleted.', 'Action Complete');
     },
       (err) => {

@@ -34,14 +34,12 @@ export class EmployeeProfileComponent {
       extraDetails: [''],
       role: ['', Validators.required],
       email: ['', Validators.email],
-      password: ['', Validators.minLength(6)],
-      passwordConfirm: [''],
       phone: ['', [Validators.pattern('^[0-9]{10}$')]],
-      mobile: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
+      mobile: ['', [Validators.pattern('^[0-9]{10}$')]],
       pincode: ['', [Validators.pattern('^[0-9]{6}$')]],
       emergancyContactName: [''],
       emergancyContactNumber: [''],
-      Gender: ['male'],
+      Gender: [''],
       DOB: [],
       MaritalStatus: ['Unmarried'],
       MarraigeAniversary: [],
@@ -57,6 +55,7 @@ export class EmployeeProfileComponent {
       BankBranch: [''],
       BankAddress: ['']
     }, { validator: this.passwordMatchValidator });
+    this.userForm.get('email').disable();
   }
 
   ngOnInit() {

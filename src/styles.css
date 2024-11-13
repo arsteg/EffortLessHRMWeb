@@ -948,3 +948,10 @@ h2 {
 .action-list {
   cursor: pointer;
 }
+
+.formHeading{
+  font-weight: 500;
+  font-size: 14px;
+  text-decoration: underline;
+  color: #ff7b1d;
+}

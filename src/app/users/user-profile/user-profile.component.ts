@@ -63,15 +63,8 @@ export class UserProfileComponent {
 
   ngOnInit() {
     this.getRoles();
-    // this.getAllRoles();
     this.getUserById();
   }
-
-  // getAllRoles() {
-  //   this.roleService.getAllRole().subscribe(response => {
-  //     this.roleName = response.data;
-  //   })
-  // }
 
   getRoles() {
     this.roleService.getAllRole().subscribe((res: any) => {
