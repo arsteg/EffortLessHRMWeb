@@ -23,8 +23,8 @@ export class SettingsService extends baseService {
   getPreferenCategories(): Observable<preferenceCategory[]> {
     return this.http.get<preferenceCategory[]>(environment.apiUrlDotNet+'/userPreferences/preference-categories');
   }
-  getUserPreference(userId:string, categoryId:string): Observable<userPreference[]> {
-    return this.http.get<userPreference[]>(environment.apiUrlDotNet+`/userPreferences/preferences/${userId}/${categoryId}`);
+  getUserPreference(categoryId:string): Observable<userPreference[]> {
+    return this.http.get<userPreference[]>(environment.apiUrlDotNet+`/userPreferences/preferences/${categoryId}`);
   }
 
   updateUserPreference(id:string, preference:Preference): Observable<userPreference> {

@@ -37,7 +37,7 @@ export class UserPreferencesComponent implements OnInit {
   OnCategoryChange(event: MatTabChangeEvent){
     this.selectedCategory = this.preferenceCategories[event.index];
     this.userPreferences=[];
-    this.settingsService.getUserPreference(this.currentUser.id,this.selectedCategory._id).pipe(first()).subscribe((res: any) => {
+    this.settingsService.getUserPreference(this.selectedCategory._id).pipe(first()).subscribe((res: any) => {
       this.userPreferences = res.data;
 },
 err => {
