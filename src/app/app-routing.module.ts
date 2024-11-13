@@ -8,7 +8,7 @@ import { ProjectListComponent } from './Project/project-list/project-list.compon
 import { AuthGuard } from './auth.guard';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ChangePasswordComponent } from './login/change-password/change-password.component';
-import { UserProfileComponent } from './users/user-profile/user-profile.component';
+// import { UserProfileComponent } from './users/user-profile/user-profile.component';
 import { ScreenshotsComponent } from './screenshots/screenshots/screenshots.component';
 import { TeammembersComponent } from './manage/teammembers/teammembers.component';
 import { HomeComponent } from './home/home.component';
@@ -78,7 +78,7 @@ const routes: Routes = [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'userDashboard', component: UserDashboardComponent },
       { path: 'logout', component: LoginComponent },
-      { path: 'userProfile', component: UserProfileComponent },
+      // { path: 'userProfile', component: UserProfileComponent },
       { path: 'screenshots', component: ScreenshotsComponent },
       { path: 'teamMembers', component: TeammembersComponent },
       { path: 'roles', component: RolesComponent },

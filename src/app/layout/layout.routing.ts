@@ -4,7 +4,7 @@ import { ChangePasswordComponent } from '../login/change-password/change-passwor
 import { User } from '../models/user';
 import { ProjectListComponent } from '../Project/project-list/project-list.component';
 import { UserListComponent } from '../users/user-list/user-list.component';
-import { UserProfileComponent } from '../users/user-profile/user-profile.component';
+// import { UserProfileComponent } from '../users/user-profile/user-profile.component';
 import { ScreenshotsComponent } from '../screenshots/screenshots/screenshots.component';
 import { Role } from '../models/role.model';
 import { AuthGuard } from '../_helpers/auth.guard';
@@ -16,7 +16,7 @@ export const LayoutRoutes: Routes = [
     { path: 'changePassword',      component: ChangePasswordComponent },
     { path: 'users',      component: UserListComponent },
     { path: 'teamMembers',      component: TeammembersComponent },
-    {path:'user-profile',component: UserProfileComponent},
+    // {path:'user-profile',component: UserProfileComponent},
     {
       path:'screenshots',
       component: ScreenshotsComponent,

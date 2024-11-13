@@ -35,27 +35,10 @@
 
 <!-- Sidebar - icons with text -->
 <div class="d-flex" id="wrapper">
- <!-- <mat-drawer-container class="example-container" [hasBackdrop]="hasBackdrop.value" style="display: none;"> -->
-    <mat-drawer #drawer  class="drawer" [opened]="true">
-     
-    </mat-drawer>
+  <mat-drawer #drawer class="drawer" [opened]="true">
 
-    <!-- <mat-drawer-content>
-      <mat-form-field appearance="fill" style="display: none;">
-        <mat-label>Sidenav mode</mat-label>
-        <mat-select #mode value="side">
-          <mat-option value="side">Side</mat-option>
-        </mat-select>
-      </mat-form-field>
+  </mat-drawer>
 
-      <mat-form-field appearance="fill" style="display: none;">
-        <mat-label>Has backdrop</mat-label>
-        <mat-select #hasBackdrop>
-          <mat-option [value]="false">False</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </mat-drawer-content> -->
-  <!-- </mat-drawer-container>  -->
 
   <!-- Sidebar - only icons -->
   <div class="sidebar-title border-right" id="sidebar-wrapper" [ngClass]="isCollapsedMenu ? 'collapsed-menu' : 'show'">
@@ -132,7 +115,7 @@
           <div class="d-flex justify-content-between align-items-baseline">
             <button type="button" class="btn-close text-reset times" data-bs-dismiss="offcanvas"
               aria-label="Close"></button>
-            <span class="fa fa-edit fa-lg edit" [routerLink]="['userProfile']"></span>
+            <span (click)="isEdit = true" class="fa fa-edit fa-lg edit" (click)="openOffcanvas('updateUser')"></span>
           </div>
 
           <div class="text-center">
@@ -155,9 +138,26 @@
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
 
+<!-- User profile -->
+<div *ngIf="isEdit == true" class="offcanvas offcanvas-end w-75" id="updateUser">
+  <div class="offcanvas-body">
+    <div class="container p-0">
+      <div class="profile py-2">
+        <div class="d-flex justify-content-between align-items-baseline">
+          <button type="button" class="btn-close text-reset times" data-bs-dismiss="offcanvas"
+            aria-label="Close"></button>
+        </div>
+        <!-- Embed the app-user-profile component -->
+        <app-user-profile [currentProfile]="currentProfile"></app-user-profile>
 
       </div>
     </div>
   </div>
 </div>
+
+<!-- <app-user-profile [currentProfile]="currentProfile"></app-user-profile> -->

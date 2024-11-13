@@ -160,7 +160,9 @@ export class UserService {
   getUserList(): Observable<any> {
     return this.http.get<any>(`${environment.apiUrlDotNet}/users`, this.httpOptions);
   }
-
+  getUserById(userId: any): Observable<newUser> {
+    return this.http.post<newUser>(`${environment.apiUrlDotNet}/users/getusers`, userId, this.httpOptions);
+  }
   addUser(newUser: newUser): Observable<newUser> {
     return this.http.post<newUser>(`${environment.apiUrlDotNet}/users/inviteUser`, newUser, this.httpOptions);
   }

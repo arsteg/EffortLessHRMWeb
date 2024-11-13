@@ -4,6 +4,7 @@ import { Spinkit } from 'ng-http-loader';
 import { AuthenticationService } from '../_services/authentication.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { MatDialog } from '@angular/material/dialog';
+import { Offcanvas } from 'bootstrap';
 
 @Component({
   selector: 'app-home',
@@ -26,6 +27,8 @@ export class HomeComponent implements OnInit {
     'The work week has ended, and your weekly summary is available for summary',
     'Your Proposal to job'];
   sideBarMenu = SideBarAdminMenu;
+
+  isEdit: boolean = false;
 
   constructor(private router: Router,
     private auth: AuthenticationService,
@@ -73,7 +76,6 @@ export class HomeComponent implements OnInit {
       this.commonService.setCurrentUser(this.currentProfile);
       return this.currentProfile;
     })
-    console.log(this.adminView)
   }
 
   toggleDropdown() {
@@ -113,7 +115,7 @@ export class HomeComponent implements OnInit {
         element.show = !element.show;
       }
     });
-    this.collapseSidebar();  // Automatically collapse the sidebar
+    this.collapseSidebar();
   }
 
   clickEvent() {
@@ -125,18 +127,18 @@ export class HomeComponent implements OnInit {
     const screenWidth = window.innerWidth;
 
     if (screenWidth <= 992) {
-      this.isCollapsedMenu = true; // Hide sidebar by default on mobile and tablet
+      this.isCollapsedMenu = true;
     } else {
-      this.isCollapsedMenu = false; // Show sidebar on desktop
+      this.isCollapsedMenu = false;
     }
     localStorage.setItem('sidebar', JSON.stringify(this.isCollapsedMenu));
   }
 
   collapseSidebar() {
     if (window.innerWidth <= 992) {
-      this.isCollapsedMenu = true;  // Collapse the sidebar
+      this.isCollapsedMenu = true;
     } else {
-      this.isCollapsedMenu = false; // Show sidebar on desktop
+      this.isCollapsedMenu = false;
     }
     localStorage.setItem('sidebar', JSON.stringify(this.isCollapsedMenu));
   }
@@ -152,13 +154,21 @@ export class HomeComponent implements OnInit {
       console.log('filteredMenuItems:', filtered);
       this.menuList = filtered;
     }
-
     if (this.searchText === '') {
       this.menuList = SideBarAdminMenu;
     }
   }
 
-  
+  openOffcanvas(offcanvasId: string) {
+    // this.onSubmission(); // Call the onSubmission function to save the data before opening the off-canvas
+    // this.showAssignedTemplates = true;
+    const offcanvasElement = document.getElementById(offcanvasId);
+    if (offcanvasElement) {
+      const offcanvas = new Offcanvas(offcanvasElement);
+      offcanvas.show();
+    }
+  }
+
 }
 
 export const SideBarAdminMenu = [
