@@ -52,16 +52,16 @@ export class UserListComponent implements OnInit {
     
       this.userForm = this.fb.group(
         {
-          firstName: ['', [Validators.required, Validators.pattern('^[A-Za-z]{2,}$')]], // At least 2 characters, letters only
-          lastName: ['', [Validators.required, Validators.pattern('^[A-Za-z]{2,}$')]], // At least 2 characters, letters only
-          email: ['', [Validators.required, Validators.email]], // Required valid email
-          password: ['', [Validators.required, Validators.minLength(8)]], // Required, min length 8
-          passwordConfirm: ['', Validators.required], // Required, confirmed in custom validator
-          jobTitle: [''], // Optional field
-          phone: ['', [Validators.pattern('^[0-9]{10}$')]], // Optional, 10-digit number
-          role: ['', Validators.required], // Required field
+          firstName: ['', [Validators.required, Validators.pattern('^[A-Za-z]{2,}$')]],
+          lastName: ['', [Validators.required, Validators.pattern('^[A-Za-z]{2,}$')]],
+          email: ['', [Validators.required, Validators.email]],
+          password: ['', [Validators.required, Validators.minLength(8)]],
+          passwordConfirm: ['', Validators.required],
+          jobTitle: [''],
+          phone: ['', [Validators.pattern('^[0-9]{10}$')]],
+          role: ['', Validators.required],
         },
-        { validator: this.passwordMatchValidator } // Custom validator to ensure password match
+        { validator: this.passwordMatchValidator }
       );
       
   }
