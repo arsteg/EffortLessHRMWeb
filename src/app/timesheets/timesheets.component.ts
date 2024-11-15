@@ -8,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 
 export class TimesheetsComponent implements OnInit {
-  selectedTab: number = 1;
+  selectedTab: number = 4;
   view = localStorage.getItem('adminView');
 
   constructor(

@@ -237,7 +237,7 @@ export const SideBarAdminMenu = [
     title: 'Timesheets',
     icon: 'assets/Sidenav-Icons/timesheet.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/timesheet.png',
-    url: 'timesheet'
+    url: 'adminTimesheets'
 
   },
   {
