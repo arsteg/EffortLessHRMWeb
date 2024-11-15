@@ -52,32 +52,46 @@
             </mat-form-field>
         </div>
 
-        <label for="">Select Start Date <span class="text-danger">*</span></label>
-        <div class=" col-12 form-group mb-3">
-            <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
-                [bsConfig]="bsConfig" formControlName="startDate" required />
-            <div *ngIf="leaveApplication.get('startDate').invalid && leaveApplication.get('startDate').touched"
-                class="text-danger error">
-                Add a Valid Start date
+        <div class="row">
+            <div class="col-6">
+              <label for="">Select Start Date <span class="text-danger">*</span></label>
+              <div class="col-12 form-group mb-3">
+                <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD', minDate: today }" formControlName="startDate" required />
+                <div *ngIf="leaveApplication.get('startDate')?.hasError('pastDateError') && leaveApplication.get('startDate')?.touched" 
+                     class="text-danger error">
+                  Start date cannot be earlier than today.
+                </div>
+                <div *ngIf="leaveApplication.get('startDate')?.invalid && leaveApplication.get('startDate')?.touched && !leaveApplication.get('startDate')?.hasError('pastDateError')" 
+                     class="text-danger error">
+                  Add a valid start date.
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-6">
+              <label for="">Select End Date <span class="text-danger">*</span></label>
+              <div class="col-12 form-group mb-3">
+                <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue" [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD', minDate: today }"
+                       formControlName="endDate" required 
+                       [minDate]="leaveApplication.get('startDate')?.value ? leaveApplication.get('startDate')?.value : null" />
+                <div *ngIf="leaveApplication.get('endDate').touched && leaveApplication.get('endDate').invalid && !leaveApplication.get('endDate').hasError('dateRangeError')" 
+                     class="text-danger error">
+                  Add a Valid End Date.
+                </div>
+                
+                <div *ngIf="leaveApplication.get('endDate').hasError('dateRangeError')" class="text-danger">
+                  End date should not be less than start date.
+                </div>
+              </div>
             </div>
         </div>
-
-        <label for="">Select End Date <span class="text-danger">*</span></label>
-        <div class=" col-12 form-group mb-3">
-            <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
-                [bsConfig]="bsConfig" formControlName="endDate" required />
-            <div *ngIf="leaveApplication.get('endDate').invalid && leaveApplication.get('endDate').touched"
-                class="text-danger error">
-                Add a Valid End date
-            </div>
-        </div>
-
+       
         <div *ngIf="leaveApplication.errors?.['duplicateLeave']" class="text-danger error pt-0">
             A leave application with similar details has already been submitted. Please review your request and adjust
             the dates as necessary.
         </div>
 
-        <div class="mt-2" *ngIf="leaveApplication.get('leaveCategory').value && showHalfDayOption">
+        <div class="mt-2" *ngIf="showHalfDayOption">
             <label for="" class="">Do you want to provide a half-day option for this type of leave?<span
                     class="text-danger">*</span></label>
             <div class="d-flex">
@@ -105,10 +119,9 @@
                             <div>
                                 <label>Date:</label>
                                 <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker
-                                    [bsValue]="bsValue" [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
-                                    formControlName="date" />
+                                    [bsValue]="bsValue" [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD', minDate: today }" formControlName="date" />
                             </div>
-
+                            
                             <div class="w-50">
                                 <label>Day Half:</label>
                                 <select name="" id="" class="form-control" formControlName="dayHalf">
@@ -154,7 +167,7 @@
         <div class="d-flex justify-content-between">
             <button mat-raised-button type="reset">Cancel</button>
             <button mat-button class="addBtn" type="submit"
-                [disabled]="leaveApplication.invalid || leaveApplication.errors?.['duplicateLeave']">Submit</button>
+                [disabled]="!leaveApplication.valid || leaveApplication.errors?.['duplicateLeave']">Submit</button>
         </div>
     </form>
 </div>
