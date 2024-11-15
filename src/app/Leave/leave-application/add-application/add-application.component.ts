@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LeaveService } from 'src/app/_services/leave.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
@@ -7,6 +7,7 @@ import { TimeLogService } from 'src/app/_services/timeLogService';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { ToastrService } from 'ngx-toastr';
 import { HolidaysService } from 'src/app/_services/holidays.service';
+import * as moment from 'moment';
 
 
 @Component({
@@ -50,10 +51,14 @@ export class AddApplicationComponent {
     dateInputFormat: 'DD-MM-YYYY',
     showWeekNumbers: false
   };
+  today: Date = new Date();
   isSubmitClicked = false;
   showHalfDayOption: boolean = true;
   selectedFiles: any = [];
   checkStatus: any;
+  DateConfig: {
+    minDate: Date; // Minimum date set kartoy
+  };
 
   constructor(private fb: FormBuilder,
     private commonService: CommonService,
@@ -74,9 +79,10 @@ export class AddApplicationComponent {
       isHalfDayOption: [false],
       halfDays: this.fb.array([]),
       leaveApplicationAttachments: this.fb.array([])
-    });
+      
+    }, { validators: this.dateValidator });
   }
-
+ 
   createAttachment(data: any = {}): FormGroup {
     return this.fb.group({
       attachmentType: [data.attachmentType || null],
@@ -85,6 +91,16 @@ export class AddApplicationComponent {
       extention: [data.extention || null],
       file: [data.file || null]
     });
+  }
+
+  dateValidator(group: AbstractControl) {
+    const startDate = group.get('startDate')?.value;
+    const endDate = group.get('endDate')?.value;
+  
+    if (startDate && endDate && moment(startDate).isAfter(moment(endDate))) {
+      group.get('endDate')?.setErrors({ dateRangeError: true });
+    } 
+    return null;
   }
 
   ngOnInit() {
@@ -96,7 +112,7 @@ export class AddApplicationComponent {
 
     this.leaveApplication.get('leaveCategory').valueChanges.subscribe(leaveCategory => {
       this.tempLeaveCategory = this.leaveCategories.find(l => l.leaveCategory._id === leaveCategory);
-      this.leaveDocumentUpload = this.tempLeaveCategory.leaveCategory
+      this.leaveDocumentUpload = this.tempLeaveCategory?.leaveCategory
       this.handleLeaveCategoryChange();
     });
     this.leaveApplication.get('employee').valueChanges.subscribe(employee => {
@@ -273,7 +289,6 @@ export class AddApplicationComponent {
     // this.leaveApplication.value.status = 'Level 1 Approval Pending';
     let payload = { skip: '', next: '' }
     this.leaveService.getLeaveApplicationbyUser(payload, employeeId).subscribe((res: any) => {
-      console.log('Response Data:', res.data)
       this.existingLeaves = res.data;
       const isDuplicate = this.existingLeaves.some((leave: any) =>
         leave.employee === employeeId &&
@@ -285,10 +300,11 @@ export class AddApplicationComponent {
         this.toast.error('A leave application with the same details already Exists.', 'Error');
         return;
       } else {
+        // console.log(this.leaveApplication.value)
         this.leaveService.addLeaveApplication(this.leaveApplication.value).subscribe((res: any) => {
           console.log('Leave Application Data - After submission:', this.leaveApplication.value);
           this.leaveApplicationRefreshed.emit(res.data);
-          this.leaveApplication.reset();
+          // this.leaveApplication.reset();
           this.toast.success('Leave Application Added Successfully');
         });
       }
@@ -404,12 +420,16 @@ export class AddApplicationComponent {
     return this.leaveApplication.get('leaveApplicationAttachments') as FormArray;
   }
 
-  onFileSelected(event) {
+  onFileSelected(event:any) {
     const files: FileList = event.target.files;
+    console.log('files',files);
+    
     if (files) {
       for (let i = 0; i < files.length; i++) {
         const file: File = files.item(i);
         if (file) {
+          console.log('file',file);
+          
           this.selectedFiles.push(file);
         }
       }
