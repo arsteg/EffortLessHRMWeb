@@ -1,10 +1,13 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { forkJoin, map } from 'rxjs';
 import { CommonService } from 'src/app/_services/common.Service';
 import { PayrollService } from 'src/app/_services/payroll.service';
+import { UserService } from 'src/app/_services/users.service';
+import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-step-3',
@@ -25,6 +28,7 @@ export class Step3Component {
   users: any;
   changeMode: 'Add' | 'Update' = 'Add';
   selectedRecord: any;
+  payrollUser: any;
 
   months = [
     { name: 'January', value: 1 },
@@ -45,7 +49,9 @@ export class Step3Component {
     private payrollService: PayrollService,
     private fb: FormBuilder,
     private toast: ToastrService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private dialog: MatDialog,
+    private userService: UserService
   ) {
     this.variablePayForm = this.fb.group({
       payrollUser: ['', Validators.required],
@@ -70,19 +76,24 @@ export class Step3Component {
     this.variablePayForm.value.year = currentYear;
 
   }
-
   open(content: any) {
     if (this.changeMode === 'Update') {
-      console.log(this.selectedRecord)
-      this.variablePayForm.patchValue({
-        payrollUser: this.selectedRecord?.payrollUser,
-        variableDeduction: this.selectedRecord?.variableDeduction,
-        variableAllowance: this.selectedRecord?.variableAllowance,
-        amount: this.selectedRecord?.amount,
-        month: this.selectedRecord?.month,
-        year: this.selectedRecord?.year
+      this.payrollService.getPayrollUserById(this.selectedRecord.payrollUser).subscribe((res: any) => {
+        this.payrollUser = res.data;
+
+        const payrollUser = this.payrollUser?.user;
+        console.log(this.selectedRecord)
+        this.variablePayForm.patchValue({
+          payrollUser: this.getUser(payrollUser),
+          variableDeduction: this.selectedRecord?.variableDeduction,
+          variableAllowance: this.selectedRecord?.variableAllowance,
+          amount: this.selectedRecord?.amount,
+          month: this.selectedRecord?.month,
+          year: this.selectedRecord?.year
+        });
+        this.variablePayForm.get('payrollUser').disable();
+        console.log(this.variablePayForm.value)
       });
-      console.log(this.variablePayForm.value)
     }
 
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
@@ -102,8 +113,18 @@ export class Step3Component {
     }
   }
 
+  salary: any;
+
+  getSalarydetails() {
+    this.selectedUserId
+    this.userService.getSalaryByUserId(this.selectedUserId?.user).subscribe((res: any) => {
+      this.salary = res.data;
+    })
+  }
+
   onUserSelectedFromChild(userId: string) {
     this.selectedUserId = userId;
+    this.getSalarydetails();
     this.getVariablePay();
   }
 
@@ -141,7 +162,6 @@ export class Step3Component {
   }
 
   onSubmit() {
-    console.log(this.variablePayForm.value);
     this.variablePayForm.value.payrollUser = this.selectedUserId._id;
     if (this.changeMode == 'Add') {
       this.payrollService.addVariablePay(this.variablePayForm.value).subscribe((res: any) => {
@@ -149,6 +169,7 @@ export class Step3Component {
         this.getVariablePay();
         this.variablePayForm.reset();
         this.toast.success('Variable Pay Added', 'Successfully!');
+        this.modalService.dismissAll();
       },
         err => {
           this.toast.error('Variable Pay can not be Added', 'Error!');
@@ -156,7 +177,39 @@ export class Step3Component {
     }
     if (this.changeMode == 'Update') {
       // Update API call
+      let id = this.selectedRecord._id;
+      this.payrollService.updateVariablePay(id, this.variablePayForm.value).subscribe((res: any) => {
+        this.getVariablePay();
+        this.variablePayForm.reset();
+        this.changeMode = 'Update';
+        this.toast.success('Variable Pay Updated', 'Successfully!');
+        this.modalService.dismissAll();
+      },
+        err => {
+          this.toast.error('Variable Pay can not be Updated', 'Error!');
+        });
     }
+  }
+
+  deleteTemplate(_id: string) {
+    this.payrollService.deleteVariablePay(_id).subscribe((res: any) => {
+      this.getVariablePay();
+      this.toast.success('Successfully Deleted!!!', 'Variable Pay')
+    },
+      (err) => {
+        this.toast.error('This Variable Pay Can not be deleted!')
+      })
+  }
+
+  deleteDialog(id: string): void {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '400px',
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result === 'delete') {
+        this.deleteTemplate(id);
+      }
+    });
   }
 
   getAllUsers() {
