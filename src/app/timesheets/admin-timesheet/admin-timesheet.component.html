@@ -1,16 +1,15 @@
-<div class="main-content">
-  <div class="container-fluid mt-3 px-lg-4 px-2">
+<div class="main-content mt-4 pt-4">
+  <div class="container-fluid mt-4 px-lg-4 px-2">
     <!-- export button -->
     <div class="d-flex mb-2">
-      <div class="dropdown ms-auto order-first order-sm-last d-flex">
-        <button class="dropdown-toggle formrow-inputState form-select select-styled active" type="button"
-          id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+      <div ngbDropdown class="d-inline-block dropdown-center ms-auto order-first order-sm-last d-flex">
+        <button ngbDropdownToggle aria-expanded="false" class="dropdown-toggle formrow-inputState form-select select-styled active">
           <p class="mb-0 text-muted"> Export </p>
         </button>
-        <ul class="dropdown-menu p-0" aria-labelledby="dropdownMenuButton1" id="dropdown-export">
-          <li><a class="export-button" (click)="exportToCsv()">CSV</a></li>
-          <li><a class="export-button" (click)="exportToXlsx()">XLS</a></li>
-          <li><a class="export-button" (click)="exportToPdf()">PDF</a></li>
+        <ul ngbDropdownMenu class="dropdown-menu p-0">
+          <li (click)="exportToCsv()">CSV</li>
+          <li (click)="exportToXlsx()">XLS</li>
+          <li (click)="exportToPdf()">PDF</li>
         </ul>
       </div>
     </div>

@@ -24,6 +24,7 @@ export class Step3Component {
   selectedYear: number;
   users: any;
   changeMode: 'Add' | 'Update' = 'Add';
+  selectedRecord: any;
 
   months = [
     { name: 'January', value: 1 },
@@ -58,7 +59,7 @@ export class Step3Component {
 
   ngOnInit() {
     this.generateYearList();
-
+    this.getAllUsers();
     this.getVariableDeductionAndAllowance();
   }
 
@@ -71,6 +72,19 @@ export class Step3Component {
   }
 
   open(content: any) {
+    if (this.changeMode === 'Update') {
+      console.log(this.selectedRecord)
+      this.variablePayForm.patchValue({
+        payrollUser: this.selectedRecord?.payrollUser,
+        variableDeduction: this.selectedRecord?.variableDeduction,
+        variableAllowance: this.selectedRecord?.variableAllowance,
+        amount: this.selectedRecord?.amount,
+        month: this.selectedRecord?.month,
+        year: this.selectedRecord?.year
+      });
+      console.log(this.variablePayForm.value)
+    }
+
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
@@ -98,7 +112,7 @@ export class Step3Component {
     this.payrollService.getVariablePay(this.selectedUserId?._id).subscribe((res: any) => {
       this.variablePay = res.data;
       const userRequests = this.variablePay.map((item: any) => {
-        return this.payrollService.getPayrollUserById(item.PayrollUser).pipe(
+        return this.payrollService.getPayrollUserById(item.payrollUser).pipe(
           map((userRes: any) => ({
             ...item,
             payrollUserDetails: this.getUser(userRes?.data.user)
@@ -152,7 +166,7 @@ export class Step3Component {
   }
 
   getUser(employeeId: string) {
-    const matchingUser = this.users?.find(user => user._id === employeeId);
+    const matchingUser = this.users?.find(user => user?._id === employeeId);
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'N/A';
   }
 
