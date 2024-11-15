@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { signup } from 'src/app/models/user';
 import { Base } from '../../controls/base';
@@ -24,14 +24,13 @@ export class UserProfileComponent {
   constructor(private fb: FormBuilder,
     private userService: UserService,
     private toast: ToastrService,
-    private roleService: RoleService
+    private roleService: RoleService,
+    private cdr: ChangeDetectorRef
   ) {
     this.userProfileForm = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       email: [''],
-      password: [''],
-      passwordConfirm: [''],
       jobTitle: [''],
       address: [''],
       city: [''],
@@ -45,12 +44,12 @@ export class UserProfileComponent {
       emergancyContactNumber: [''],
       Gender: [''],
       DOB: [],
-      MaritalStatus: [''],
+      MaritalStatus: ['Unmarried'],
       MarraigeAniversary: [],
       PassportDetails: [''],
       Pancard: [''],
       AadharNumber: [''],
-      Disability: [''],
+      Disability: ['No'],
       FatherHusbandName: [''],
       NoOfChildren: [''],
       BankName: [''],
@@ -62,6 +61,7 @@ export class UserProfileComponent {
   }
 
   ngOnInit() {
+    console.log(this.currentProfile);
     this.getRoles();
     this.getUserById();
   }
@@ -90,6 +90,7 @@ export class UserProfileComponent {
   }
 
   onUpdate() {
+    console.log(this.userProfileForm.value);
     this.userService.updateUser(this.currentProfile?.id, this.userProfileForm.value).subscribe((res: any) => {
       this.toast.success('Your profile has been updated successfully.', 'Update Successful');
     },

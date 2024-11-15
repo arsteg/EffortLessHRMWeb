@@ -5,6 +5,7 @@ import { AuthenticationService } from '../_services/authentication.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { MatDialog } from '@angular/material/dialog';
 import { Offcanvas } from 'bootstrap';
+declare var bootstrap: any;
 
 @Component({
   selector: 'app-home',
@@ -151,24 +152,30 @@ export class HomeComponent implements OnInit {
       const filtered = SideBarAdminMenu.filter(item =>
         item.title.toLowerCase().includes(searchTerm)
       );
-      console.log('filteredMenuItems:', filtered);
       this.menuList = filtered;
     }
     if (this.searchText === '') {
       this.menuList = SideBarAdminMenu;
     }
   }
-
-  openOffcanvas(offcanvasId: string) {
-    // this.onSubmission(); // Call the onSubmission function to save the data before opening the off-canvas
-    // this.showAssignedTemplates = true;
-    const offcanvasElement = document.getElementById(offcanvasId);
-    if (offcanvasElement) {
-      const offcanvas = new Offcanvas(offcanvasElement);
-      offcanvas.show();
-    }
+  openMainOffcanvas() {
+    const mainOffcanvasElement = document.getElementById('mainOffcanvas');
+    const mainOffcanvas = new bootstrap.Offcanvas(mainOffcanvasElement);
+    mainOffcanvas.show();
   }
 
+  openNestedOffcanvas() {
+    const mainOffcanvasElement = document.getElementById('mainOffcanvas');
+    const mainOffcanvas = bootstrap.Offcanvas.getInstance(mainOffcanvasElement);
+    if (mainOffcanvas) {
+        mainOffcanvas.hide(); 
+    }
+    this.isEdit = true;
+    
+    const nestedOffcanvasElement = document.getElementById('nestedOffcanvas');
+    const nestedOffcanvas = new bootstrap.Offcanvas(nestedOffcanvasElement);
+    nestedOffcanvas.show();
+}
 }
 
 export const SideBarAdminMenu = [

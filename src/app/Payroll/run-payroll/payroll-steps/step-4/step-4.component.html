@@ -25,7 +25,7 @@
             <th>Actions</th>
         </thead>
         <tbody>
-            <tr *ngFor="let data of matchedLoanAdvances">
+            <tr *ngFor="let data of matchedLoanAdvances | search: searchText">
                 <td>{{data?.payrollUserDetails | titlecase}}</td>
                 <td>{{getMatchingCategory(data?.loanAndAdvance)}}</td>
                 <td>{{data?.amount}}</td>

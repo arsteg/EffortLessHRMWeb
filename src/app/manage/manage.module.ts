@@ -17,6 +17,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ManageRoutingModule } from './manage-routing.module';
 import { EmployeeSettingsModule } from '../users/employee-settings/employee-settings.module';
 import { QuillModule } from "ngx-quill";
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,7 @@ import { QuillModule } from "ngx-quill";
     CommonModule,
     MatRadioModule,
     MatCheckboxModule, CommonComponentsModule, SharedModule, taskModule, MatExpansionModule,
-    NgbModule, ManageRoutingModule, EmployeeSettingsModule,
+    NgbModule, ManageRoutingModule, EmployeeSettingsModule, ReactiveFormsModule, FormsModule,
     QuillModule.forRoot()
   ],
   exports: [ ProjectListComponent, RequestManualTimeComponent,

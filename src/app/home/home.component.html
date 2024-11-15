@@ -10,8 +10,7 @@
         <form class="d-flex">
           <div class=" d-flex align-items-center">
             <app-notification></app-notification>
-
-            <span data-bs-toggle="offcanvas" data-bs-target="#demo">
+            <span (click)="openMainOffcanvas()">
               <section>
                 <div class="example-button-row ps-2">
                   <div class="example-flex-container profile pe-2 d-flex align-items-baseline">
@@ -108,14 +107,15 @@
   </div>
 
   <!-- User Change option -->
-  <div class="offcanvas offcanvas-end" id="demo" data-bs-backdrop="static">
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="mainOffcanvas" aria-labelledby="mainOffcanvasLabel">
+
     <div class="offcanvas-body">
       <div class="container p-0">
         <div class="profile py-2">
           <div class="d-flex justify-content-between align-items-baseline">
             <button type="button" class="btn-close text-reset times" data-bs-dismiss="offcanvas"
               aria-label="Close"></button>
-            <span (click)="isEdit = true" class="fa fa-edit fa-lg edit" (click)="openOffcanvas('updateUser')"></span>
+            <span class="fa fa-edit fa-lg edit" (click)="openNestedOffcanvas()"></span>
           </div>
 
           <div class="text-center">
@@ -141,23 +141,14 @@
       </div>
     </div>
   </div>
-</div>
 
 <!-- User profile -->
-<div *ngIf="isEdit == true" class="offcanvas offcanvas-end w-75" id="updateUser">
-  <div class="offcanvas-body">
-    <div class="container p-0">
-      <div class="profile py-2">
-        <div class="d-flex justify-content-between align-items-baseline">
-          <button type="button" class="btn-close text-reset times" data-bs-dismiss="offcanvas"
-            aria-label="Close"></button>
-        </div>
-        <!-- Embed the app-user-profile component -->
-        <app-user-profile [currentProfile]="currentProfile"></app-user-profile>
-
+  <div *ngIf="isEdit" class="offcanvas offcanvas-end w-75" tabindex="-1" id="nestedOffcanvas" aria-labelledby="nestedOffcanvasLabel"  [ngClass]="{'show': isEdit}" data-bs-backdrop="true">
+    <div class="offcanvas-body">
+      <div class="d-flex justify-content-between align-items-baseline">
+        <span class="btn-close text-reset times" (click)="isEdit = false"></span>
       </div>
+      <app-user-profile [currentProfile]="currentProfile"></app-user-profile>
     </div>
   </div>
 </div>
-
-<!-- <app-user-profile [currentProfile]="currentProfile"></app-user-profile> -->
