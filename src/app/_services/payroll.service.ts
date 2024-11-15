@@ -466,6 +466,27 @@ export class PayrollService {
     return response;
   }
 
+  // Run Payroll: (step-3) Variable pays
+  addVariablePay(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/payroll-variable-pay`, payload, this.httpOptions);
+    return response;
+  }
+
+  getVariablePay(payrollUser: string): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/payroll-variable-pay-by-payrolluser/${payrollUser}`, this.httpOptions);
+    return response;
+  }
+
+  updateVariablePay(id: string, payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/payroll-variable-pay/${id}`, payload, this.httpOptions);
+    return response;
+  }
+
+  deleteVariablePay(id: string): Observable<any> {
+    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll/payroll-variable-pay/${id}`, this.httpOptions);
+    return response;
+  }
+
   // Run Payroll: (step-4) loans/Advances
   addLoanAdvance(payload: any): Observable<any> {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/payroll-loan-advance`, payload, this.httpOptions);

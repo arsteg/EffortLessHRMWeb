@@ -13,6 +13,28 @@
             </ul>
             <div class="tab-content pt-0">
                 <div class="tab-pane" [ngClass]="{'active': activeTab === 'attendanceProcess'}" id="attendanceProcess">
+                    <div class="d-flex justify-content-end">
+
+                        <!-- <div class="d-flex justify-content-end align-items-baseline mb-3"> -->
+                            <div>
+                                <label for="monthSelect">Select Month: </label>
+                                <select id="monthSelect" [(ngModel)]="selectedMonth" (change)="onMonthChange($event)">
+                                    <option *ngFor="let month of months" [value]="month.name">{{ month.name }}</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group ms-2">
+                                <label for="year" class="pt-2 pe-3">Full and Final Year</label>
+                                <select id="year" name="year" class="form-control" [(ngModel)]="selectedYear"
+                                    (change)="onYearChange($event)">
+                                    <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+                                </select>
+                            </div>
+                        <!-- </div> -->
+
+                        <button mat-raised-button class="addBtn"
+                            (click)=" changeMode == 'Add'; open(addModal);">Add</button>
+                    </div>
 
                     <div class="mt-2 bg-white tableContainer">
                         <div class="d-flex justify-content-between border-bottom">
@@ -37,11 +59,24 @@
                                 <thead>
                                     <th>Attendance Process Period</th>
                                     <th>Run Date</th>
-                                    <th>Process Details</th>
                                     <th>Export to Payroll</th>
                                     <th>Actions</th>
                                 </thead>
-                                <tbody></tbody>
+                                <tbody>
+                                    <tr *ngFor="let data of processAttendance | search: searchText">
+                                        <td>{{data?.attendanceProcessPeriodMonth}}-{{data?.attendanceProcessPeriodYear}}</td>
+                                        <td>{{data?.runDate | date:'mediumDate'}}</td>
+                                        <td>{{data?.exportToPayroll}}</td>
+                                        <td>
+                                            <button class="actions ms-2" mat-mini-fab matTooltip="Delete"
+                                                matTooltipPosition="after"
+                                                aria-label="Example icon button with a menu icon"
+                                                (click)="deleteDialog(data?._id)">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -57,3 +92,94 @@
         </div>
     </div>
 </div>
+
+<ng-template #addModal let-modal>
+    <div class="modal-header border-bottom mb-2 pt-0 d-flex justify-content-between">
+        <div>
+            <h1 class="modal-title text-muted mb-0">{{changeMode}} Attendance Process
+            </h1>
+        </div>
+        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
+                (click)="modal.close('Escape clicked')"></button>
+        </div>
+    </div>
+
+
+
+    <form [formGroup]="attendanceProcessForm" (ngSubmit)="onSubmission()">
+
+        <div class="form-group ms-2">
+            <label for="year" class="pt-2 pe-3">Attendance Process Period Year</label>
+            <select id="year" name="year" class="form-control" formControlName="attendanceProcessPeriodYear">
+                <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+
+            <label for="monthSelect">Attendance Process Period Month</label>
+            <select id="monthSelect" formControlName="attendanceProcessPeriodMonth">
+                <option *ngFor="let month of months" [value]="month.name">{{ month.name }}</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="runDate">Run Date</label>
+            <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
+                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="runDate" />
+        </div>
+
+        <div class="form-group">
+            <label for="status">Status</label>
+            <select id="status" formControlName="status" class="form-control">
+                <option value="">Select Status</option>
+                <option value="Pending">Pending</option>
+                <option value="Processed">Processed</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="exportToPayroll">Export to Payroll</label>
+            <input type="checkbox" id="exportToPayroll" value="true" formControlName="exportToPayroll"
+                class="form-check-input"> Yes
+
+            <input type="checkbox" id="exportToPayroll" value="false" formControlName="exportToPayroll"
+                class="form-check-input"> No
+
+        </div>
+
+        <div formArrayName="users">
+            <div *ngFor="let user of attendanceProcessForm.get('users')['controls']; let i = index" [formGroupName]="i"
+                class="d-flex align-items-center mb-3">
+
+                <!-- Employee Selection -->
+                <div class="form-group flex-grow-1 mr-2">
+                    <label for="member">Select An Employee for Template Assignment <span
+                            class="text-danger">*</span></label>
+                    <select id="member" name="member" class="form-control" [attr.disabled]="changeMode === 'Update'"
+                        formControlName="user" aria-label="form-select-sm example">
+                        <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                            {{ assignee?.firstName | titlecase }} {{ assignee?.lastName | titlecase }}
+                        </option>
+                    </select>
+                </div>
+
+                <!-- Status Input -->
+                <div class="form-group flex-grow-1 mr-2">
+                    <label for="userStatus">Status</label>
+                    <input type="text" id="userStatus" formControlName="status" class="form-control">
+                </div>
+
+                <!-- Remove Button (Only shown if addUser has been clicked at least once) -->
+                <button *ngIf="showRemoveButton" type="button" (click)="removeUser(i)"
+                    class="btn btn-danger bi bi-x"></button>
+            </div>
+
+            <!-- Add User Button -->
+            <button type="button" (click)="addUser()" class="btn btn-primary mt-2 bi bi-plus"> Add User</button>
+        </div>
+
+
+        <button type="submit" class="btn btn-success mt-3">Submit</button>
+    </form>
+</ng-template>

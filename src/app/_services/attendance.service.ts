@@ -465,6 +465,11 @@ export class AttendanceService implements CanActivate {
     return response;
   }
 
+  getProcessAttendance(payload: any): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/process-attendance-by-month`, payload, this.httpOptions);
+    return response;
+  }
+  
   deleteProcessAttendance(payload: any): Observable<response<any>> {
     const options = {
       ...this.httpOptions,
