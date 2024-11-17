@@ -138,6 +138,35 @@ export class AuthenticationService {
 
   }
 
+  // Generate OTP
+  generateOTP(email: any): Observable<User> {
+    return this.http.post<any>(`${environment.apiUrlDotNet}/common/generate-otp`, email, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    });
+
+  }
+
+  verifyOTP(payload: any): Observable<User> {
+    return this.http.put<any>(`${environment.apiUrlDotNet}/common/verify-otp`, payload, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    });
+
+  }
+
+  cancelOTP(payload: any): Observable<User> {
+    return this.http.put<any>(`${environment.apiUrlDotNet}/common/cancel-otp`, payload, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    });
+
+  }
+
+
   GetMe(id: string): Observable<signup[]> {
     const httpOptions = this.getHttpOptions();
     return this.http.post<any>(`${environment.apiUrlDotNet}/users/me`, { id }, httpOptions);
