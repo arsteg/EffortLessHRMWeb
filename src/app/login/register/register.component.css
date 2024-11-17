@@ -49,3 +49,17 @@ label {
     justify-content: space-around !important;
   }
 }
+
+.hero_bg {
+  animation: mymove 10s infinite;
+}
+.hero_bg {
+  position: absolute;
+  top: -200px;
+  /* right: 50px; */
+}
+@keyframes mymove{
+  50% {
+      transform: rotate(180deg);
+  }
+}
