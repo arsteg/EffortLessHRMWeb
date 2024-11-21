@@ -193,13 +193,13 @@ export const SideBarAdminMenu = [
     lightIcon: 'assets/Sidenav-Icons/light-Icons/screenshots.png',
     url: '/screenshots',
   },
-  {
-    id: '19',
-    icon: 'assets/Sidenav-Icons/livescreen.png',
-    lightIcon: 'assets/Sidenav-Icons/light-Icons/liveScreen.png',
-    title: 'View Live Screen',
-    url: '/viewLiveScreen'
-  },
+  // {
+  //   id: '19',
+  //   icon: 'assets/Sidenav-Icons/livescreen.png',
+  //   lightIcon: 'assets/Sidenav-Icons/light-Icons/liveScreen.png',
+  //   title: 'View Live Screen',
+  //   url: '/viewLiveScreen'
+  // },
   {
     id: '3',
     title: 'RealTime',
@@ -359,13 +359,13 @@ export const SideBarUserMenu = [
     url: '/screenshots',
 
   },
-  {
-    id: '17',
-    title: 'View Live Screen',
-    icon: 'assets/Sidenav-Icons/livescreen.png',
-    lightIcon: 'assets/Sidenav-Icons/light-Icons/liveScreen.png',
-    url: '/viewLiveScreen'
-  },
+  // {
+  //   id: '17',
+  //   title: 'View Live Screen',
+  //   icon: 'assets/Sidenav-Icons/livescreen.png',
+  //   lightIcon: 'assets/Sidenav-Icons/light-Icons/liveScreen.png',
+  //   url: '/viewLiveScreen'
+  // },
   {
     id: '3',
     title: 'RealTime',

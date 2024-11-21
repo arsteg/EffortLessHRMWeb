@@ -1055,8 +1055,7 @@
                                         <option [value]="user?.user?.id" *ngFor="let user of usersByProject">
 
                                             {{user?.user?.firstName | titlecase}} {{user?.user?.lastName |
-                                            titlecase}}
-
+                                                titlecase}}
                                         </option>
                                     </select>
                                     <div *ngIf="addForm.controls['user'].invalid && addForm.controls['user'].touched"

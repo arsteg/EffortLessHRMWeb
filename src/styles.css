@@ -94,7 +94,7 @@ td.highlight div {
 }
 
 tr:hover {
-  color: #f35c17;
+  background-color: #ffdfc0;
 }
 
 tr:hover .data {
@@ -653,9 +653,14 @@ table {
 }
 
 td {
-  background: white;
+
   padding: 3px 0;
   text-align: left;
+}
+
+tr:hover td {
+  font-weight: 500;
+  color: black;
 }
 
 td:first-child {
@@ -671,11 +676,14 @@ th {
   padding: 10px 5px;
 }
 
-tr {
+/* tr {
   box-shadow: 0.02rem 0.02rem 0.2rem 0.2rem rgb(126 126 126 / 15%) !important;
   border-radius: 2px;
-}
+} */
 
+thead{
+  background: #ecffd5;
+}
 .tableContainer {
   border-radius: 20px;
 }
@@ -949,7 +957,7 @@ h2 {
   cursor: pointer;
 }
 
-.formHeading{
+.formHeading {
   font-weight: 500;
   font-size: 14px;
   text-decoration: underline;

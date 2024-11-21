@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
@@ -39,18 +39,18 @@ export class ShiftComponent {
   ) {
     this.shiftForm = this.fb.group({
       name: ['', Validators.required],
-      dashboardColor: ['', Validators.required],
-      isOffShift: [true, Validators.required],
-      shiftType: [''],
-      startTime: [''],
-      endTime: [''],
-      minHoursPerDayToGetCreditForFullDay: [''],
+      dashboardColor: [''],
+      // isOffShift: [true, Validators.required],
+      shiftType: ['', Validators.required],
+      startTime: ['', Validators.required],
+      endTime: ['', Validators.required],
+      minHoursPerDayToGetCreditForFullDay: ['', Validators.required],
       isCheckoutTimeNextDay: [true],
       // isLatestDepartureTimeNextDay: [true],
-      earliestArrival: [''],
-      latestDeparture: ["2024-05-21T11:20:19.901Z"],
-      firstHalfDuration: [''],
-      secondHalfDuration: [''],
+      earliestArrival: ['', Validators.required],
+      latestDeparture: ['', Validators.required],
+      firstHalfDuration: ['', Validators.required],
+      secondHalfDuration: ['', Validators.required],
       company: [''],
       isLateComingAllowed: [true],
       noOfDaysLateComing: [0],
@@ -63,13 +63,41 @@ export class ShiftComponent {
       enterNumberOfDaysForEarlyGoing: [0],
       graceTimeLimitForEarlyGoing: [0],
       isHalfDayApplicable: [true],
-      minHoursPerDayToGetCreditforHalfDay: [''],
+      minHoursPerDayToGetCreditforHalfDay: ['', this.minHoursValidator()],
       maxLateComingAllowedMinutesFirstHalfAttendance: [0],
     })
   }
 
   ngOnInit() {
     this.loadRecords();
+    this.setupShiftTypeListener();
+  }
+
+  minHoursValidator() {
+    return (control: AbstractControl): ValidationErrors | null => {
+      if (!control.value) {
+        return null; // If the field is empty, the 'required' validator will handle it
+      }
+      const [hours, minutes] = control.value.split(':').map(Number);
+      if (hours < 1 || hours > 8 || (hours === 8 && minutes > 0)) {
+        return { invalidTime: true };
+      }
+      return null;
+    };
+  }
+
+  setupShiftTypeListener() {
+    this.shiftForm.get('shiftType')?.valueChanges.subscribe((shiftType) => {
+      const minHoursControl = this.shiftForm.get('minHoursPerDayToGetCreditForFullDay');
+
+      if (shiftType === 'fixed duration' || shiftType === 'flexi') {
+        minHoursControl?.setValidators([Validators.required, this.minHoursValidator()]);
+      } else {
+        minHoursControl?.clearValidators();
+      }
+
+      minHoursControl?.updateValueAndValidity(); // Ensure validation updates
+    });
   }
 
   onPageChange(page: number) {
@@ -128,14 +156,11 @@ export class ShiftComponent {
     this.shiftForm.patchValue({
       name: data.name,
       dashboardColor: data.dashboardColor,
-      isOffShift: data.isOffShift,
       shiftType: data.shiftType,
-
       startTime: data.startTime,
       endTime: data.endTime,
       minHoursPerDayToGetCreditForFullDay: data.minHoursPerDayToGetCreditForFullDay,
       isCheckoutTimeNextDay: data.isCheckoutTimeNextDay,
-      // isLatestDepartureTimeNextDay: [true],
       earliestArrival: data.earliestArrival,
       latestDeparture: data.latestDeparture,
       firstHalfDuration: data.firstHalfDuration,
@@ -163,7 +188,6 @@ export class ShiftComponent {
   }
 
   onColorChange(color: string) {
-    // this.color = color;
     this.shiftForm.patchValue({
       dashboardColor: color
     });
@@ -174,12 +198,6 @@ export class ShiftComponent {
   }
 
   onSubmission() {
-    // this.shiftForm.patchValue({ dashboardColor: this.color });
-    const payload = this.fb.group({
-      name: this.shiftForm.value.name,
-      dashboardColor: this.shiftForm.value.dashboardColor,
-      isOffShift: this.shiftForm.value.isOffShift,
-    })
     if (this.shiftForm.valid) {
       if (!this.isEdit) {
         this.attendanceService.addShift(this.shiftForm.value).subscribe((res: any) => {
@@ -191,25 +209,18 @@ export class ShiftComponent {
       else {
         this.attendanceService.updateShift(this.selectedShift, this.shiftForm.value).subscribe((res: any) => {
           this.changeMode = 'Add';
+          this.isEdit = false;
           this.loadRecords();
           this.toast.success('Shift Updated', 'Successfully');
           this.shiftForm.reset();
         })
       }
-    } else {
-      this.toast.error('Please fill the required Fields')
-      this.markFormGroupTouched(payload);
+    } 
+    else {
+      this.shiftForm.markAllAsTouched();
     }
   }
-  markFormGroupTouched(formGroup: FormGroup) {
-    Object.values(formGroup.controls).forEach(control => {
-      if (control instanceof FormGroup) {
-        this.markFormGroupTouched(control);
-      } else {
-        control.markAsTouched();
-      }
-    });
-  }
+  
   deleteTemplate(id: string) {
     this.attendanceService.deleteShift(id).subscribe((res: any) => {
       this.loadRecords();

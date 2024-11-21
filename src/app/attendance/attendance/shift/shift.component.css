@@ -1,5 +1,4 @@
-:host ::ng-deep .pagination .ngx-pagination .current {
-    background: #76bc21 !important;
-    border: transparent !important;
-    border-radius: 20px !important;
-  }
+.colorPicker{
+    position: absolute;
+
+}
