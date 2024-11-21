@@ -27,10 +27,18 @@ export class ViewApplicationComponent {
       const startDate = new Date(leave.startDate);
       const endDate = new Date(leave.endDate);
       const timeDifference = endDate.getTime() - startDate.getTime();
-      const dayDifference = timeDifference / (1000 * 3600 * 24);
-      this.totalLeaveDays = Math.abs(Math.round(dayDifference));
+      let totalDays = Math.abs(Math.round(timeDifference / (1000 * 3600 * 24))) + 1;
+      if (leave.isHalfDayOption) {
+        if (startDate.toDateString() === endDate.toDateString()) {
+          totalDays = 0.5;
+        } else {
+          totalDays -= 0.5;
+        }
+      }
+      this.totalLeaveDays = totalDays; 
     }
   }
+  
   closeModal() {
     this.dialogRef.close();
   }

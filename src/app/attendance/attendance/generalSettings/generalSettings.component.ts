@@ -36,6 +36,7 @@ export class GeneralSettingsComponent implements OnInit {
   totalRecords: number // example total records
   recordsPerPage: number = 10;
   currentPage: number = 1;
+  public sortOrder: string = '';
 
   constructor(
     public commonService: CommonService,

@@ -74,6 +74,7 @@ import { environment } from '../environments/environment';
 import { SettingsModule } from './settings/settings.Module';
 import { ReportsModule } from './reports/reports.module';
 import { EditTaxComponent } from './users/employee-settings/tax/edit-tax/edit-tax.component';
+import { RequestManualTimeComponent } from './manualTime/request-manual-time/request-manual-time.component';
 
 const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
 
@@ -109,6 +110,7 @@ const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
     UserTaxDeclarationComponent,
     LiveScreenComponent,
     NotificationComponent,
+    RequestManualTimeComponent
    
   ],
   imports: [

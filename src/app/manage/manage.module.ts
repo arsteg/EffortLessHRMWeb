@@ -22,7 +22,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 @NgModule({
   declarations: [
     ManageComponent, 
-    ProjectListComponent, RequestManualTimeComponent,
+    ProjectListComponent,
+    //  RequestManualTimeComponent,
     TeammembersComponent, EmailTemplateComponent,
     UserListComponent
   ],
@@ -33,7 +34,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     NgbModule, ManageRoutingModule, EmployeeSettingsModule, ReactiveFormsModule, FormsModule,
     QuillModule.forRoot()
   ],
-  exports: [ ProjectListComponent, RequestManualTimeComponent,
+  exports: [ ProjectListComponent,
+    //  RequestManualTimeComponent,
     TeammembersComponent, EmailTemplateComponent,
     UserListComponent
   ],

@@ -300,8 +300,8 @@ export class AddApplicationComponent {
         this.toast.error('A leave application with the same details already Exists.', 'Error');
         return;
       } else {
-        // console.log(this.leaveApplication.value)
-        this.leaveService.addLeaveApplication(this.leaveApplication.value).subscribe((res: any) => {
+          console.log(this.leaveApplication.value)
+          this.leaveService.addLeaveApplication(this.leaveApplication.value).subscribe((res: any) => {
           console.log('Leave Application Data - After submission:', this.leaveApplication.value);
           this.leaveApplicationRefreshed.emit(res.data);
           // this.leaveApplication.reset();

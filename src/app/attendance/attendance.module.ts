@@ -39,6 +39,7 @@ import { MyAttendanceRecordsComponent } from './attendance-records/my-attendance
 import { AttendanceRoutingModule } from './attendance-routing.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AttendanceProcessComponent } from './attendance-process/attendance-process.component';
+import { OvertimeComponent } from './attendance/overtime/overtime.component';
 
 @NgModule({
   declarations: [
@@ -70,7 +71,8 @@ import { AttendanceProcessComponent } from './attendance-process/attendance-proc
     RejectedOnDutyComponent,
     ApprovedOnDutyComponent,
     MyAttendanceRecordsComponent,
-    AttendanceProcessComponent
+    AttendanceProcessComponent,
+    OvertimeComponent
   ],
   imports: [
     MatRadioModule,

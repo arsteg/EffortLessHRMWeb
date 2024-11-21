@@ -81,8 +81,16 @@
             </div>
             <table>
               <thead>
-                <th>Reason</th>
-                <th>Visible To</th>
+                <th [appSort]="regularization" data-name="label"
+                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Reason
+                <i
+                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+              </th>
+                <th [appSort]="regularization" data-name="label"
+                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Visible To
+                <i
+                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+              </th>
                 <th>Action</th>
               </thead>
               <tbody>
@@ -118,9 +126,18 @@
               </app-pagination>
             </div>
             <table>
-              <thead>
-                <th>Reason</th>
-                <th>Visible To</th>
+              <thead> 
+                <th [appSort]="dutyReason" data-name="label"
+                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Reason
+                <i
+                    [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                </th>
+               
+                <th [appSort]="dutyReason" data-name="label"
+                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Visible To
+                <i
+                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+              </th>
                 <th>Action</th>
               </thead>
               <tbody>
