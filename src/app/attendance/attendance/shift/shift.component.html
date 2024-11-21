@@ -9,7 +9,7 @@
                     <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
                         name="searchText" aria-label="default input example">
 
-                    <button mat-raised-button (click)="open(addModal); clearForm(); changeMode == 'Add'; isEdit= false;"
+                    <button mat-raised-button (click)="clearForm(); changeMode == 'Add'; isEdit= false; open(addModal);"
                         class="addBtn rounded-pill mx-3">Add
                     </button>
 
@@ -83,47 +83,57 @@
                 Please Add Name for shift!
             </div>
         </div>
-
-        <div class="form-group my-2">
-            <label for="">Dashboard Color Code <span class="text-danger">*</span></label>
-            <div>
-                <button (click)="toggleColorPicker()" type="button" class="rounded py-2 me-2 addBtn">Choose
-                    Color</button>
-                <i *ngIf="showColorPicker == true" class="bi bi-x border rounded p-2" (click)="closeColorPicker()"></i>
+        <div class="row form-group my-2">
+            <div class="col-md-6">
+                <label for="">Dashboard Color Code <span class="text-danger">*</span></label>
+                <div>
+                    <button (click)="toggleColorPicker()" type="button" class="rounded py-2 me-2 addBtn">Choose
+                        Color</button>
+                    <i *ngIf="showColorPicker == true" class="bi bi-x border rounded p-2"
+                        (click)="closeColorPicker()"></i>
+                </div>
+                <div *ngIf="showColorPicker" class="colorPicker">
+                    <color-chrome [color]="color" (onChangeComplete)="onColorChange($event.color.hex)"></color-chrome>
+                </div>
             </div>
-            <div *ngIf="showColorPicker">
-                <color-chrome [color]="color" (onChangeComplete)="onColorChange($event.color.hex)"></color-chrome>
-            </div>
-            <input class="form-control mt-2" type="text" formControlName="dashboardColor"
-                placeholder="Please Add a color code">
-            <div *ngIf="shiftForm.get('dashboardColor').invalid && shiftForm.get('dashboardColor').touched"
-                class="text-danger error">
-                Please Select Dashboard Color!
+            <div class="col-md-6">
+                <input class="form-control mt-2" type="text" formControlName="dashboardColor"
+                    placeholder="Please Add a color code">
             </div>
         </div>
 
 
-
         <div class="form-group my-2">
-            <label for="shiftType">Select Shift Type</label>
+            <label for="shiftType">Select Shift Type <span class="text-danger">*</span></label>
             <select name="shiftType" formControlName="shiftType" id="shiftType">
                 <option value="fixed time"> Fixed Time</option>
                 <option value="fixed duration">Fixed Duration</option>
                 <option value="flexi">Flexi</option>
             </select>
+            <div *ngIf="shiftForm.get('shiftType').invalid && shiftForm.get('shiftType').touched"
+                class="text-danger error">
+                Please Select Shift Type!
+            </div>
         </div>
 
         <div class="row">
             <div class="form-group my-2 col-md-6">
-                <label for="">What is the shift start timing?</label>
+                <label for="">What is the shift start timing? <span class="text-danger">*</span></label>
 
                 <input type="time" formControlName="startTime" class="form-control formTable" />
-
+                <div *ngIf="shiftForm.get('startTime').invalid && shiftForm.get('startTime').touched"
+                    class="text-danger error">
+                    Please Select Start Time!
+                </div>
             </div>
 
             <div class="form-group my-2 col-md-6">
-                <label for="">What is the shift end timing?</label>
+                <label for="">What is the shift end timing? <span class="text-danger">*</span></label>
                 <input type="time" formControlName="endTime" class="form-control formTable" />
+                <div *ngIf="shiftForm.get('endTime').invalid && shiftForm.get('endTime').touched"
+                    class="text-danger error">
+                    Please Select End Time!
+                </div>
             </div>
         </div>
 
@@ -141,33 +151,51 @@
 
                 <div class="form-check ms-3">
                     <input class="form-check-input" type="radio" formControlName="isCheckoutTimeNextDay"
-                        id="isCheckoutTimeNextDay-No" required [value]="false">
+                        id="isCheckoutTimeNextDay-No" required [checked] [value]="false">
                     <label class="form-check-label" for="isCheckoutTimeNextDay-No">
                         No
                     </label>
                 </div>
             </div>
         </div>
-
-        <div class="form-group my-2">
-            <label for="firstHalfDuration">First Half Duration</label>
-            <input type="number" formControlName="firstHalfDuration" id="firstHalfDuration" class="form-control">
+        <div class="row">
+            <div class="form-group my-2 col-md-6">
+                <label for="firstHalfDuration">First Half Duration <span class="text-danger">*</span></label>
+                <input type="number" formControlName="firstHalfDuration" id="firstHalfDuration" class="form-control">
+                <div *ngIf="shiftForm.get('firstHalfDuration').invalid && shiftForm.get('firstHalfDuration').touched"
+                    class="text-danger error">
+                    Please Add First Half Duration!
+                </div>
+            </div>
+            <div class="form-group my-2 col-md-6">
+                <label for="secondHalfDuration">Second Half Duration <span class="text-danger">*</span></label>
+                <input type="number" id="secondHalfDuration" formControlName="secondHalfDuration" class="form-control">
+                <div *ngIf="shiftForm.get('secondHalfDuration').invalid && shiftForm.get('secondHalfDuration').touched"
+                    class="text-danger error">
+                    Please Add Second Half Duration!
+                </div>
+            </div>
         </div>
-        <div class="form-group my-2">
-            <label for="secondHalfDuration">Second Half Duration</label>
-            <input type="number" id="secondHalfDuration" formControlName="secondHalfDuration" class="form-control">
-        </div>
+        <div class="row">
 
-        <div class="form-group my-2">
-            <label for="earliestArrival">Earliest Arrival</label>
-            <input type="number" formControlName="earliestArrival" id="earliestArrival" class="form-control">
-        </div>
+            <div class="form-group my-2 col-md-6">
+                <label for="earliestArrival">Earliest Arrival <span class="text-danger">*</span></label>
+                <input type="time" formControlName="earliestArrival" id="earliestArrival" class="form-control">
+                <div *ngIf="shiftForm.get('earliestArrival').invalid && shiftForm.get('earliestArrival').touched"
+                    class="text-danger error">
+                    Please select Earliest arrival Time!
+                </div>
+            </div>
 
-        <div class="form-group my-2">
-            <label for="latestDeparture">Latest Departure</label>
-            <input type="number" formControlName="latestDeparture" id="latestDeparture" class="form-control">
+            <div class="form-group my-2 col-md-6">
+                <label for="latestDeparture">Latest Departure <span class="text-danger">*</span></label>
+                <input type="time" formControlName="latestDeparture" id="latestDeparture" class="form-control">
+                <div *ngIf="shiftForm.get('latestDeparture').invalid && shiftForm.get('latestDeparture').touched"
+                    class="text-danger error">
+                    Please select Latest Departure Time!
+                </div>
+            </div>
         </div>
-
 
 
         <!-- if fixed time selected -->
@@ -182,10 +210,9 @@
                     </label>
                 </div>
 
-
                 <div class="form-check ms-3">
                     <input class="form-check-input" type="radio" formControlName="isLateComingAllowed"
-                        id="isLateComingAllowed-No" required [value]="false">
+                        id="isLateComingAllowed-No" required [checked] [value]="false">
                     <label class="form-check-label" for="isLateComingAllowed-No">
                         No
                     </label>
@@ -201,7 +228,7 @@
             </div>
 
             <div class="form-group my-2">
-                <label for="graceTimeLimitForLateComing">Grace Time Limit For Late Coming </label>
+                <label for="graceTimeLimitForLateComing">Grace Time Limit For Late Coming</label>
                 <input type="number" id="graceTimeLimitForLateComing" class="form-control"
                     formControlName="graceTimeLimitForLateComing" placeholder="Enter grace time in Minutes">
             </div>
@@ -267,7 +294,7 @@
 
                 <div class="form-check ms-3">
                     <input class="form-check-input" type="radio" formControlName="isEarlyGoingAllowed"
-                        id="isEarlyGoingAllowed-No" required [value]="false">
+                        id="isEarlyGoingAllowed-No" required [checked] [value]="false">
                     <label class="form-check-label" for="isEarlyGoingAllowed-No">
                         No
                     </label>
@@ -275,25 +302,42 @@
             </div>
         </div>
         <!-- if early going is allowed to true -->
-        <div *ngIf="shiftForm.get('isEarlyGoingAllowed').value == true">
-            <div class="form-group my-2">
+        <div *ngIf="shiftForm.get('isEarlyGoingAllowed').value == true" class="row">
+            <div class="form-group my-2 col-md-6">
                 <label for="enterNumberOfDaysForEarlyGoing">Enter Number Of Days For Early Going </label>
                 <input type="number" id="enterNumberOfDaysForEarlyGoing" class="form-control"
                     formControlName="enterNumberOfDaysForEarlyGoing" placeholder="Number of Days">
             </div>
 
-            <div class="form-group my-2">
+            <div class="form-group my-2 col-md-6">
                 <label for="graceTimeLimitForEarlyGoing">Grace Time Limit For Early Going</label>
                 <input type="number" id="graceTimeLimitForEarlyGoing" formControlName="graceTimeLimitForEarlyGoing"
                     placeholder="Enter Grace Time in Minutes" class="form-control">
             </div>
         </div>
         <!-- if fixed duration and flexi selected -->
-        <div class="form-group my-2"
-            *ngIf="shiftForm.get('shiftType').value == 'fixed duration' || shiftForm.get('shiftType').value == 'flexi'">
+
+        <div class="form-group my-2">
             <label for="">What are the minimum hours per day that an employee should work to get credit for a Full
-                Day?</label>
-            <input type="time" formControlName="minHoursPerDayToGetCreditForFullDay" class="form-control formTable" />
+                Day? <span class="text-danger">*</span></label>
+            <input type="number" formControlName="minHoursPerDayToGetCreditForFullDay" class="form-control formTable" />
+            <small *ngIf="shiftForm.get('minHoursPerDayToGetCreditForFullDay').invalid && shiftForm.get('minHoursPerDayToGetCreditForFullDay').touched"
+                class="text-danger error">
+                Please fill the minimum full day Hour!
+            </small>
+            <div *ngIf="shiftForm.get('minHoursPerDayToGetCreditForFullDay')?.touched 
+                && shiftForm.get('minHoursPerDayToGetCreditForFullDay')?.invalid">
+                <small class="text-danger"
+                    *ngIf="shiftForm.get('minHoursPerDayToGetCreditForFullDay')?.errors?.['required']">
+                    Minimum hours are required.
+                </small>
+                <small class="text-danger"
+                    *ngIf="shiftForm.get('minHoursPerDayToGetCreditForFullDay')?.errors?.['invalidTime']">
+                    Invalid time. The minimum should be at least 01:00 and at most 08:00.
+                </small>
+
+
+            </div>
         </div>
 
         <!-- if fixed duration selected -->
@@ -325,7 +369,7 @@
                 <label for="">What are the minimum hours per day that an employee should work to get credit for a
                     Half Day?</label>
 
-                <input type="time" formControlName="minHoursPerDayToGetCreditforHalfDay"
+                <input type="number" formControlName="minHoursPerDayToGetCreditforHalfDay"
                     class="form-control formTable" />
 
             </div>

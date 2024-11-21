@@ -436,8 +436,8 @@ export class TasksComponent implements OnInit {
   getUsersListByProject() {
     const selectedProject = this.addForm.value.project;
     this.projectService.getprojectUser(selectedProject).subscribe((res: any) => {
-      this.usersByProject = res?.data?.projectUserList;
-      this.usersByProject = this.usersByProject.filter(user => user !== null);
+     const usersByProject = res?.data?.projectUserList;
+      this.usersByProject = usersByProject.filter(user => user.user !== null);
     });
   }
 
