@@ -22,13 +22,34 @@
             </div>
             <table>
                 <thead>
-                    <th>Allowance Name</th>
-                    <th>PF</th>
-                    <th>ESIC</th>
-                    <th>LWF</th>
-                    <th>PT</th>
-                    <th>IT</th>
-                    <th>Frequency</th>
+                    <th [appSort]="variableAllowances" data-name="label"
+                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Allowance Name
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th [appSort]="variableAllowances" data-name="isProvidentFundAffected"
+                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">PF
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th [appSort]="variableAllowances" data-name="isESICAffected"
+                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">ESIC
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th [appSort]="variableAllowances" data-name="isTDSAffected"
+                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">LWF
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th [appSort]="variableAllowances" data-name="isProfessionalTaxAffected"
+                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">PT
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th [appSort]="variableAllowances" data-name="isIncomeTaxAffected"
+                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">IT
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th [appSort]="variableAllowances" data-name="paidAllowanceFrequently"
+                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Frequency
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
                     <th>Actions</th>
                 </thead>
                 <tbody>

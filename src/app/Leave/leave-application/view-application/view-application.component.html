@@ -23,13 +23,13 @@
                 </tr>
                 <tr>
                     <th class="w-50">Start Date</th>
-                    <td>{{this.leaveService?.leave?.getValue()?.startDate}}</td>
+                    <td>{{this.leaveService?.leave?.getValue()?.startDate| date: 'yyyy-MM-dd'}}</td>
                 </tr>
                 <tr>
                     <th class="w-50">End Date</th>
-                    <td>{{this.leaveService?.leave?.getValue()?.endDate}}</td>
+                    <td>{{this.leaveService?.leave?.getValue()?.endDate| date: 'yyyy-MM-dd'}}</td>
                 </tr>
-
+                
                 <tr>
                     <th class="w-50">Total Leave Days</th>
                     <td>{{totalLeaveDays}}</td>

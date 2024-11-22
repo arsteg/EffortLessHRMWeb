@@ -16,11 +16,30 @@
                 (recordsPerPageChange)="onRecordsPerPageChange($event)">
             </app-pagination>
             <table>
-                <thead>
+                <!-- <thead>
                     <th>Template Name</th>
                     <th>Fixed Allowance</th>
                     <th>Fixed Deduction</th>
                     <th>Other Allowances</th>
+                    <th>Actions</th>
+                </thead> -->
+                <thead>
+                    <th [appSort]="ctcTemplate" data-name="name"
+                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Template Name
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th [appSort]="ctcTemplate" data-name="ctcTemplateFixedAllowances"
+                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Fixed Allowance
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th [appSort]="ctcTemplate" data-name="ctcTemplateFixedDeductions"
+                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Fixed Deduction
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th [appSort]="ctcTemplate" data-name="ctcTemplateOtherBenefitAllowances"
+                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Other Allowances
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
                     <th>Actions</th>
                 </thead>
                 <tbody>

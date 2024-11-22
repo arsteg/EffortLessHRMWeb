@@ -326,10 +326,22 @@
 
                         <table>
                             <thead>
-                                <th>Statutory Name</th>
-                                <th>Round Up</th>
-                                <th>Round Off</th>
-                                <th>Round Down</th>
+                                <th [appSort]="roundingRules" data-name="name"
+                                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Statutory Name
+                                    <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                                </th>
+                                <th [appSort]="roundingRules" data-name="roundingType"
+                                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Round Up
+                                    <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                                </th>
+                                <th [appSort]="roundingRules" data-name="roundingType"
+                                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Round Off
+                                    <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                                </th>
+                                <th [appSort]="roundingRules" data-name="roundingType"
+                                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Round Down
+                                    <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                                </th>
                                 <th>Actions</th>
                             </thead>
                             <tbody>
@@ -384,8 +396,14 @@
 
                         <table>
                             <thead>
-                                <th>Template Name</th>
-                                <th>Allowances Applicable</th>
+                                <th [appSort]="pfTemplates" data-name="templateName"
+                                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Template Name
+                                    <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                                </th>
+                                <th [appSort]="pfTemplates" data-name="length"
+                                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Allowances Applicable
+                                    <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                                </th>
                                 <th>Action</th>
                             </thead>
                             <tbody>
@@ -417,8 +435,14 @@
 
                         <table>
                             <thead>
-                                <th>Template Name</th>
-                                <th>Allowances Applicable</th>
+                                <th [appSort]="" data-name="label"
+                                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Template Name
+                                    <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                                </th>
+                                <th [appSort]="" data-name="applicableEmployee"
+                                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Allowances Applicable
+                                    <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                                </th>
                                 <th>Action</th>
                             </thead>
                             <tbody>

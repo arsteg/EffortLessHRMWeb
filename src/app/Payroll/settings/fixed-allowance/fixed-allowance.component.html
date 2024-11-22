@@ -20,14 +20,38 @@
             </div>
             <table>
                 <thead>
-                    <th>Allowance Name</th>
-                    <th>PF</th>
-                    <th>ESIC</th>
-                    <th>LWF</th>
-                    <th>PT</th>
-                    <th>TDS</th>
-                    <th>Gratuity</th>
-                    <th>Exemption Type</th>
+                    <th [appSort]="fixedAllowance" data-name="label"
+                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Allowance Name
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th [appSort]="fixedAllowance" data-name="isProvidentFundAffected"
+                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">PF
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th [appSort]="fixedAllowance" data-name="isESICAffected"
+                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">ESIC
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th [appSort]="fixedAllowance" data-name="isLWFAffected"
+                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">LWF
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th [appSort]="fixedAllowance" data-name="isProfessionalTaxAffected"
+                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">PT
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th [appSort]="fixedAllowance" data-name="isTDSAffected"
+                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">TDS
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th [appSort]="fixedAllowance" data-name="isGratuityFundAffected"
+                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Gratuity
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th [appSort]="fixedAllowance" data-name="type"
+                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Exemption Type
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
                     <th>Actions</th>
                 </thead>
                 <tbody>

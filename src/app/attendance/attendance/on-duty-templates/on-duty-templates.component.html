@@ -27,8 +27,16 @@
             <table class="px-4">
                 <thead>
                     <tr>
-                        <th class="ps-2">Template Name</th>
-                        <th>Number of Employees Covered</th>
+                        <th class="ps-2" [appSort]="onDutyTemplate" data-name="name"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Template Name
+                        <i
+                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                        <th [appSort]="onDutyTemplate" data-name="_id"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Number of Employees Covered
+                        <i
+                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
                         <th scope="col" class="text-center">Actions</th>
                     </tr>
                 </thead>

@@ -27,11 +27,31 @@
             <table class="px-4">
                 <thead>
                     <tr>
-                        <th class="ps-2">Employee Name</th>
-                        <th>Assigned Attendance Template</th>
-                        <th>Primary Supervisor</th>
-                        <th>Secondary Supervisor</th>
-                        <th>Effective Date</th>
+                        <th class="ps-2" [appSort]="attendanceTemplateAssignment" data-name="employee"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Employee Name
+                        <i
+                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                        <th [appSort]="attendanceTemplateAssignment" data-name="attandanceTemplate"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Assigned Attendance Template
+                        <i
+                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                        <th [appSort]="attendanceTemplateAssignment" data-name="primaryApprover"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Primary Supervisor
+                            <i
+                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                        </th>
+                        <th [appSort]="attendanceTemplateAssignment" data-name="secondaryApprover"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Secondary Supervisor
+                            <i
+                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                        </th>
+                        <th [appSort]="attendanceTemplateAssignment" data-name="effectiveFrom"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Effective Date
+                            <i
+                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                        </th>
                         <th scope="col" class="text-center">Actions</th>
                     </tr>
                 </thead>

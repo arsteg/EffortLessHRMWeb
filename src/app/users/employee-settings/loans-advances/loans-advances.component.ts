@@ -24,7 +24,8 @@ export class UserLoansAdvancesComponent {
   currentPage: number = 1;
   selectedRecord: any;
   loansAdvancesCategories: any;
-
+  public sortOrder: string = '';
+  
   constructor(
     private modalService: NgbModal,
     private fb: FormBuilder,

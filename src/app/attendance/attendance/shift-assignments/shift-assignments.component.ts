@@ -28,6 +28,7 @@ export class ShiftAssignmentsComponent {
   totalRecords: number
   recordsPerPage: number = 10;
   currentPage: number = 1;
+  public sortOrder: string = '';
 
   constructor(private attendanceService: AttendanceService,
     private modalService: NgbModal,

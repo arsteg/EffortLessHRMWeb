@@ -157,16 +157,16 @@
         <thead>
           <tr>
             <th class="pe-lg-0 pe-5" scope="col" *ngIf="showMembersColumn" [appSort]="timeline" data-order="{{ sortOrder }}"
-              data-name="users?.user" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+              data-name="logs" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
               Users&nbsp;<i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
             </th>
 
             <th class="pe-lg-0 pe-5" scope="col" *ngIf="showProjectsColumn" [appSort]="timeline" data-order="{{ sortOrder }}"
-              data-name="users?.user" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+              data-name="logs" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
               Projects&nbsp;<i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
             </th>
 
-            <th class="pe-lg-0 pe-5" scope="col" [appSort]="timeline" data-order="{{ sortOrder }}" data-name="users?.user"
+            <th class="pe-lg-0 pe-5" scope="col" [appSort]="timeline" data-order="{{ sortOrder }}" data-name="logs"
               (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
               Time&nbsp;<i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
             </th>

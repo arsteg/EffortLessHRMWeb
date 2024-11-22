@@ -29,6 +29,7 @@ export class TaxComponent {
   taxDeclarationForm: FormGroup;
   years: string[] = [];
   totalIncomeTaxComponentsLength: any;
+  public sortOrder: string = '';
 
   constructor(
     private componentFactoryResolver: ComponentFactoryResolver,

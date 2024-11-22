@@ -28,6 +28,7 @@ export class OnDutyTemplatesComponent {
   totalRecords: number
   recordsPerPage: number = 10;
   currentPage: number = 1;
+  public sortOrder: string = '';
 
   constructor(private modalService: NgbModal,
     private dialog: MatDialog,

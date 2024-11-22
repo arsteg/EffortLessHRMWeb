@@ -27,11 +27,31 @@
             <table class="px-4">
                 <thead>
                     <tr>
-                        <th class="ps-2">Employee</th>
-                        <th>OnDuty Template</th>
-                        <th>Effective From</th>
-                        <th>Primary Approver</th>
-                        <th>Secondary Approver</th>
+                        <th class="ps-2" [appSort]="templateAssigments" data-name="user"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Employee
+                        <i
+                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                        <th [appSort]="templateAssigments" data-name="onDutyTemplate"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">OnDuty Template
+                        <i
+                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                        <th [appSort]="templateAssigments" data-name="effectiveFrom"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Effective From
+                        <i
+                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                        <th [appSort]="templateAssigments" data-name="primaryApprovar"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Primary Approver
+                        <i
+                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                        <th [appSort]="templateAssigments" data-name="secondaryApprovar"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Secondary Approver
+                        <i
+                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
                         <th scope="col" class="text-center">Actions</th>
                     </tr>
                 </thead>
