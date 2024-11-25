@@ -1,62 +1,34 @@
-.present {
-    background: #64b53f;
-    color: white;
-}
-
-.check {
+.checkIcon {
     color: #64b53f;
 }
 
-.absent {
-    background: #f41e0c;
-    color: white;
+.absentIcon {
+    color: #f41e0c;
 }
 
-.in-out {
-    background: #9fe78c;
-    color: white;
-}
-
-.incomplete-record {
-    background: #f4b146;
-    color: white;
+.in-outIcon {
+    color: #9fe78c;
 }
 .incompleteIcon{
     color: #f4b146;
-}
-.halfday {
-    background: #46d1f4;
-    color: white;
 }
 
 .halfDayIcon {
     color: #46d1f4;
 }
 
-.weeklyOff {
-    background: #159297;
-    color: white;
-}
-
-.holiday {
-    background: #c247fc;
-    color: white;
+.weeklyOffIcon {
+    color: #159297;
 }
 .holidayIcon{
     color: #c247fc;
-}
-.leave {
-    background: #fa6ec4;
-    color: white;
 }
 
 .leaveIcon {
     color: #fa6ec4;
 }
-
-.not-applicable {
-    background: #434240;
-    color: white;
+.not-applicableIcon {
+    color: #434240;
 }
 
 .table-wrapper {
@@ -89,4 +61,30 @@
     z-index: 1;
     box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.1);
   }
-  
+  .menu-row {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 10px;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    margin-right: 15px;
+    height: 40px;
+    line-height: 40px;
+}
+
+.menu-item mat-icon {
+    font-size: 18px;
+    vertical-align: middle;
+}
+
+.mat-icon {
+    display: inline-flex; 
+    align-items: center; 
+    justify-content: center;
+}
