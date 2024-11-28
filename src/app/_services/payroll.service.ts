@@ -573,24 +573,22 @@ export class PayrollService {
 
   // Run Payroll: (Step-8) Income tax CRUD
   addIncomeTax(payload: any): Observable<any> {
-    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll-incomeTax`, payload, this.httpOptions);
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/incomeTax`, payload, this.httpOptions);
     return response;
   }
 
   getIncomeTax(payrollUser: string): Observable<any> {
-    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll-incomeTax-by-payrollUser/${payrollUser}`, this.httpOptions);
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/incomeTax-by-payrollUser/${payrollUser}`, this.httpOptions);
     return response;
   }
 
   deleteIncomeTax(id: string): Observable<any> {
-    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll-incomeTax/${id}`, this.httpOptions);
+    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll/incomeTax/${id}`, this.httpOptions);
     return response;
   }
 
   updateIncomeTax(id: string, payload: any): Observable<any> {
-    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll-incomeTax/${id}`, payload, this.httpOptions);
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/incomeTax/${id}`, payload, this.httpOptions);
     return response;
   }
-
-
 }

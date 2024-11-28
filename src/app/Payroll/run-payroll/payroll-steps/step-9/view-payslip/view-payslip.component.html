@@ -1,1 +1,68 @@
-<p>view-payslip works!</p>
+<div class="tableContainer">
+    <div class="d-flex pb-3">
+        <div class="w-50 border-end pe-4">
+            <div class="d-flex justify-content-between"><label>Name of the employee:
+                </label><span>&nbsp;{{userProfile?.firstName | titlecase}}&nbsp;{{userProfile?.lastName | titlecase}}
+                </span></div>
+            <div class="d-flex justify-content-between"><label>Designation:
+                </label><span>&nbsp;{{userProfile?.jobTitle}}</span></div>
+            <div class="d-flex justify-content-between"><label>Month & year:
+                </label><span>&nbsp;{{selectedPayroll?.month}}-{{selectedPayroll?.year}}</span></div>
+        </div>
+
+        <div class="ms-auto">
+            <div class="d-flex justify-content-between">
+                <label for="">Loss Of Pay Days: </label><span>&nbsp;{{attendanceSummary[0]?.lopDays}}</span>
+            </div>
+            <div class="d-flex justify-content-between">
+                <label for="">Paid Days: </label><span>&nbsp;{{attendanceSummary[0]?.payableDays}}</span>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="d-flex justify-content-between orangeBackground p-3 rounded">
+        <label class="text-white">Earnings</label>
+        <label class="text-white">Deductions</label>
+    </div>
+    <table>
+        <tr>
+            <th>Total Fixed Allowances</th>
+            <td>{{viewPayroll?.totalFixedAllowance}}</td>
+            <th>Total Fixed Deductions</th>
+            <td>{{viewPayroll?.totalFixedDeduction}}</td>
+        </tr>
+
+        <tr>
+            <th>Total Flexi Benefits</th>
+            <td>{{viewPayroll?.totalFlexiBenefits}}</td>
+        </tr>
+
+        <tr>
+            <th>Total Other Benefits</th>
+            <td>{{viewPayroll?.totalOtherBenefit}}</td>
+        </tr>
+
+    </table>
+
+    <table>
+
+        <tr>
+            <th class="w-50">Total Loans/Advances</th>
+            <td>{{viewPayroll?.totalLoanAdvance}}</td>
+        </tr>
+
+        <tr>
+            <th class="w-50">Total Gross Salary</th>
+            <td>{{viewPayroll?.monthlySalary}}</td>
+        </tr>
+
+        <tr>
+            <th>Salary after LOP</th>
+            this.salaryAfterLOP = monthlySalary - lopSalary;
+            <td>{{salaryAfterLOP}}</td>
+        </tr>
+    </table>
+
+
+</div>

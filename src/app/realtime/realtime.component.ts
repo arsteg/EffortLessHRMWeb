@@ -132,17 +132,13 @@ export class RealtimeComponent implements OnInit {
 
 
   getRealtime() {
-    console.log(this.member.id)
     this.timelog.getTeamMembers(this.member.id).subscribe((response: any) => {
       this.teamUser = response.data;
-      console.log(this.teamUser)
 
       let realtime = new RealTime();
       realtime.projects = this.selectedProject;
       realtime.tasks = this.selectedTask;
       realtime.users = (this.role.toLowerCase() === "admin") ? this.selectedUser : [...this.teamUser , this.currentUser.id];
-      console.log(realtime.users)
-
       this.timelog.realTime(realtime).subscribe(result => {
         this.realtime = result.data[0];
         this.showAllUserLiveButton = this.realtime.onlineUsers.length > 1;

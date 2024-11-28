@@ -1,4 +1,4 @@
-<div class="main-content pt-2">
+<!-- <div class="main-content pt-2">
     <div class="container-fluid">
         <div class="tabs">
             <button (click)="selectTab(1)" [class.active]="selectedTab === 1">General Settings
@@ -23,5 +23,25 @@
         <div *ngIf="selectedTab === 4" class="tab-content p-0">
             <app-leave-Assignment></app-leave-Assignment>
         </div>
+    </div>
+</div> -->
+
+<div class="main-content pt-2">
+    <div class="container-fluid">
+        <div class="tabs">
+            <button class="btn" routerLink="general-setting" routerLinkActive="active">
+                General Settings
+            </button>
+            <button class="btn" routerLink="leave-category" routerLinkActive="active">
+                Leave Categories
+            </button>
+            <button class="btn" routerLink="leave-template" routerLinkActive="active">
+                Leave Templates
+            </button>
+            <button class="btn" routerLink="leave-assignment" routerLinkActive="active">
+                Leave Assignment
+            </button>
+        </div>
+        <router-outlet></router-outlet>
     </div>
 </div>

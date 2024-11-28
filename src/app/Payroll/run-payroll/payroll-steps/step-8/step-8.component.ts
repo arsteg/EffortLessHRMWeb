@@ -61,6 +61,7 @@ export class Step8Component {
         this.getIncomeTax();
         this.taxForm.reset();
         this.toast.success('Income Tax Added', 'Successfully!');
+        this.modalService.dismissAll();
       },
         err => {
           this.toast.error('Income Tax Can not be Added', 'Error!')
@@ -72,6 +73,7 @@ export class Step8Component {
         this.taxForm.reset();
         this.changeMode = 'Add';
         this.toast.success('Income Tax Updated', 'Successfully!');
+        this.modalService.dismissAll();
       },
         err => {
           this.toast.error('Income Tax Can not be Updated', 'Error!')
@@ -110,7 +112,22 @@ export class Step8Component {
     );
   }
 
+  payrollUser: any;
   open(content: any) {
+    if (this.changeMode == 'Update') {
+      this.payrollService.getPayrollUserById(this.selectedRecord?.PayrollUser).subscribe((res: any) => {
+        this.payrollUser = res.data;
+        const payrollUser = this.payrollUser?.user;
+
+        this.taxForm.patchValue({
+          PayrollUser: this.getUser(payrollUser),
+          TaxCalculatedMethod: this.selectedRecord?.TaxCalculatedMethod,
+          TaxCalculated: this.selectedRecord?.TaxCalculated,
+          TDSCalculated: this.selectedRecord?.TDSCalculated
+        });
+        this.taxForm.get('PayrollUser').disable();
+      })
+    }
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
 
@@ -131,12 +148,12 @@ export class Step8Component {
   }
 
   deleteTemplate(_id: string) {
-    this.payrollService.deleteFlexi(_id).subscribe((res: any) => {
+    this.payrollService.deleteIncomeTax(_id).subscribe((res: any) => {
       this.getIncomeTax();
-      this.toast.success('Successfully Deleted!!!', 'Flexi Benefits and Professional Tax')
+      this.toast.success('Successfully Deleted!!!', 'Income-Tax Overwrite')
     },
       (err) => {
-        this.toast.error('This Flexi Benefits and Professional Tax Can not be deleted!')
+        this.toast.error('This Income-Tax Overwrite Can not be deleted!')
       })
   }
 

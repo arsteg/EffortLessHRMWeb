@@ -15,29 +15,26 @@ import { UserLoansAdvancesComponent } from './loans-advances/loans-advances.comp
 
 
 const routes: Routes = [
+
   {
-    path: '', component: HomeComponent, canActivate: [AuthGuard],
+    path: '', component: ManageComponent, canActivate: [AuthGuard],
     children: [
       {
-        path: 'manage', component: ManageComponent, canActivate: [AuthGuard],
+        path: 'employee-settings', component: EmployeeSettingsComponent, canActivate: [AuthGuard],
         children: [
-          {
-            path: 'employee-settings', component: EmployeeSettingsComponent, canActivate: [AuthGuard],
-            children: [
-              { path: '', redirectTo: 'employee-profile', pathMatch: 'full' },
-              { path: 'employee-profile', component: EmployeeProfileComponent },
-              { path: 'employment-details', component: EmploymentDetailsComponent },
-              { path: 'salary-details', component: SalaryDetailsComponent },
-              { path: 'statutory-details', component: StatutoryDetailsComponent },
-              { path: 'loans-advances', component: UserLoansAdvancesComponent },
-              { path: 'tax', component: TaxComponent },
-            ]
-          }
+          { path: '', redirectTo: 'employee-profile', pathMatch: 'full' },
+          { path: 'employee-profile', component: EmployeeProfileComponent },
+          { path: 'employment-details', component: EmploymentDetailsComponent },
+          { path: 'salary-details', component: SalaryDetailsComponent },
+          { path: 'statutory-details', component: StatutoryDetailsComponent },
+          { path: 'loans-advances', component: UserLoansAdvancesComponent },
+          { path: 'tax', component: TaxComponent },
         ]
       }
     ]
   }
 ];
+
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

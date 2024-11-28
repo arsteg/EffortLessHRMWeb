@@ -22,6 +22,7 @@ import { HolidaysComponent } from './setup/holidays/holidays.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { OrganizationRoutingModule } from './organization-routing.module';
 
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
       positionClass: 'toast-top-right', // Position of the notification
       preventDuplicates: true,
     }),
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    OrganizationRoutingModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

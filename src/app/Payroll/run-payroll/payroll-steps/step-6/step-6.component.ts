@@ -92,6 +92,7 @@ export class Step6Component {
       this.payrollService.addFlexi(this.flexiBenefitsForm.value).subscribe((res: any) => {
         this.getFlexiBenefitsProfessionalTax();
         this.toast.success('Flexi Benefits and Professional Tax Created', 'Sccessfully!');
+        this.modalService.dismissAll();
       },
         (err) => { this.toast.error('Flexi Benefits and Professional Tax can not be Added', 'Error!') }
       )
@@ -99,7 +100,8 @@ export class Step6Component {
     if (this.changeMode == 'Update') {
       this.payrollService.updateFlexi(this.selectedRecord._id, this.flexiBenefitsForm.value).subscribe((res: any) => {
         this.getFlexiBenefitsProfessionalTax();
-        this.toast.success('Flexi Benefits and Professional Tax Updated', 'Successfully!')
+        this.toast.success('Flexi Benefits and Professional Tax Updated', 'Successfully!');
+        this.modalService.dismissAll();
       },
         err => { this.toast.error('Flexi Benefits and Professional Tax can not be Updated', 'Error!') })
     }

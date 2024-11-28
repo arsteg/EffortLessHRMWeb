@@ -28,7 +28,7 @@
                 <td>{{data?.lopDays}}</td>
                 <td>{{data?.payableDays}}</td>
                 <td><button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before"
-                        aria-label="Example icon button with a menu icon" (click)="open(modal)">
+                        aria-label="Example icon button with a menu icon" (click)="selectedRecord = data; changeMode = 'Update'; open(modal)">
                         <i class="bi bi-pencil-fill"></i>
                     </button></td>
             </tr>
@@ -47,8 +47,10 @@
     </div>
     <form [formGroup]="attendanceSummaryForm" (ngSubmit)="onSubmission()">
 
-        <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
-            [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
+        <div class="form-group" *ngIf="changeMode != 'Update'">
+            <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
+                [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
+        </div>
 
         <div class="form-group">
             <label for="">Total Days</label>

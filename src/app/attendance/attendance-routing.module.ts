@@ -20,10 +20,7 @@ import { AttendanceProcessComponent } from './attendance-process/attendance-proc
 
 const routes: Routes = [
   {
-    path: '', component: HomeComponent, canActivate: [AuthGuard],
-    children: [
-      {
-        path: 'attendance', component: AttendanceManagementComponent, canActivate: [AuthGuard],
+        path: '', component: AttendanceManagementComponent, canActivate: [AuthGuard],
         children: [
           {
             path: '',
@@ -60,8 +57,6 @@ const routes: Routes = [
       },
 
     ]
-  }
-];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

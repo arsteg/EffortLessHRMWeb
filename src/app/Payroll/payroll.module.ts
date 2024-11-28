@@ -125,7 +125,7 @@ import { PayrollUserListComponent } from './run-payroll/payroll-steps/payroll-us
     PayrollUserListComponent
   ],
   imports: [
-    CommonModule, 
+    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     SharedModule,

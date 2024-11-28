@@ -3,9 +3,7 @@ import { AttendanceService } from 'src/app/_services/attendance.service'; // Adj
 
 @Component({
   selector: 'app-overtime',
-  templateUrl: './overtime.component.html',
-  styleUrls: ['./overtime.component.css']
-})
+  templateUrl: './overtime.component.html'})
 export class OvertimeComponent implements OnInit {
   overtimeData: any[] = [];  // Define and initialize overtimeData as an empty array
 

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
@@ -25,7 +25,10 @@ export class AttendanceProcessComponent {
   processAttendance: any
   bsValue = new Date();
   selectedMonth: number = new Date().getMonth() + 1;
-
+  lop: any;
+  lopForm: FormGroup;
+  isLOPError: boolean = false;
+  lopExistsError: boolean = false;
 
   months = [
     { name: 'January', value: 1 },
@@ -49,14 +52,22 @@ export class AttendanceProcessComponent {
     private toast: ToastrService,
     private dialog: MatDialog
   ) {
+    this.lopForm = this.fb.group({
+      month: [''],
+      year: [''],
+      user: ['']
+    });
+
     this.attendanceProcessForm = this.fb.group({
-      attendanceProcessPeriodYear: [''],
-      attendanceProcessPeriodMonth: [''],
-      runDate: [''],
-      status: [''],
-      exportToPayroll: [''],
+      attendanceProcessPeriodYear: ['', Validators.required],
+      attendanceProcessPeriodMonth: ['', Validators.required],
+      runDate: ['', [this.runDateValidator.bind(this)]],
+      status: ['', Validators.required],
+      exportToPayroll: ['false', Validators.required],
       users: this.fb.array([this.createUserFormGroup()])
-    })
+    });
+    this.setupFormListeners();
+
   }
 
   ngOnInit() {
@@ -65,6 +76,44 @@ export class AttendanceProcessComponent {
       this.allAssignee = result && result.data && result.data.data;
     });
     this.getProcessAttendance();
+  }
+
+
+  runDateValidator(control: AbstractControl): ValidationErrors | null {
+    const runDate = new Date(control.value);
+
+    const year = this.attendanceProcessForm?.value?.attendanceProcessPeriodYear;
+    const month = this.attendanceProcessForm?.value?.attendanceProcessPeriodMonth;
+
+    if (!control.value) {
+      return { required: true }; // Run Date is required
+    }
+
+    if (!year || !month) {
+      return null; // Skip validation if year or month is not defined
+    }
+
+    const lastDayOfMonth = new Date(year, month, 0); // Last day of the selected month
+    const firstDayOfNextMonth = new Date(year, month, 1); // First day of the next month
+
+    // Define valid range
+    const lastFiveDaysStart = new Date(year, month - 1, lastDayOfMonth.getDate() - 4);
+    const firstFiveDaysEnd = new Date(year, month, 5);
+
+    if (runDate < lastFiveDaysStart || runDate > firstFiveDaysEnd) {
+      return { outOfRange: true }; // Run Date must fall in the valid range
+    }
+
+    return null; // Validation passed
+  }
+
+  setupFormListeners() {
+    this.attendanceProcessForm.valueChanges.subscribe((values) => {
+      const { attendanceProcessPeriodYear, attendanceProcessPeriodMonth } = values;
+      if (attendanceProcessPeriodYear && attendanceProcessPeriodMonth) {
+        this.getLOP();
+      }
+    });
   }
 
   onMonthChange(event: Event) {
@@ -87,6 +136,12 @@ export class AttendanceProcessComponent {
   }
 
   open(content: any) {
+    if (this.changeMode == 'Add') {
+      this.isLOPError = false;
+      this.lopExistsError = false;
+      this.attendanceProcessForm.value.exportToPayroll = 'true';
+      this.attendanceProcessForm.reset();
+    }
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
@@ -119,7 +174,7 @@ export class AttendanceProcessComponent {
       status: ['']
     });
   }
-  // Getter for the users FormArray
+
   get users(): FormArray {
     return this.attendanceProcessForm.get('users') as FormArray;
   }
@@ -135,6 +190,50 @@ export class AttendanceProcessComponent {
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'N/A';
   }
 
+  createAttendanceProcessLOP() {
+    console.log(this.lopForm.value);
+    this.attendanceService.addProcessAttendanceLOP(this.lopForm.value).subscribe((res: any) => {
+      if (res.status == 'fail') {
+        this.toast.error('This LOP is Already Exist!', 'Error!');
+        this.lopForm.reset();
+      }
+      if (res.status == 'success') {
+        this.toast.success('LOP is Created', 'Successfully!');
+        this.lopForm.reset();
+      }
+    })
+  }
+
+  getLOP() {
+    const payload = {
+      skip: '',
+      next: '',
+      month: this.attendanceProcessForm.value.attendanceProcessPeriodMonth,
+      year: this.attendanceProcessForm.value.attendanceProcessPeriodYear,
+    };
+
+    // Fetch LOP data
+    this.attendanceService.getProcessAttendanceLOPByMonth(payload).subscribe((lopRes: any) => {
+      this.lop = lopRes.data;
+
+      this.isLOPError = !this.lop || this.lop.length === 0;
+
+      this.attendanceService.getProcessAttendance(payload).subscribe((processRes: any) => {
+        this.processAttendance = processRes.data;
+
+        this.lopExistsError = this.processAttendance.some(
+          (attendance: any) =>
+            attendance.attendanceProcessPeriodMonth === this.attendanceProcessForm.value.attendanceProcessPeriodMonth &&
+            attendance.attendanceProcessPeriodYear === payload.year
+            // this.attendanceProcessForm.value.users.some(
+            //   (formUser: any) => formUser.user === attendance.user
+            // )
+        );
+        console.log(this.lopExistsError);
+      });
+    });
+  }
+
   getProcessAttendance() {
     let payload = {
       skip: '',
@@ -142,44 +241,49 @@ export class AttendanceProcessComponent {
       month: this.selectedMonth,
       year: this.selectedYear
     }
-    console.log(payload);
     this.attendanceService.getProcessAttendance(payload).subscribe((res: any) => {
       this.processAttendance = res.data;
     })
   }
+
   onSubmission() {
-    console.log('Form Submitted', this.attendanceProcessForm.value);
-    this.attendanceService.addProcessAttendance(this.attendanceProcessForm.value).subscribe((res: any) => {
-      this.processAttendance.push(res.data);
-      this.attendanceProcessForm.reset();
-      this.toast.success('Process ATtendance Created', 'Successfully!');
-    },
-      err => {
-        this.toast.error('Process Attendance Can not be Created', 'Error!')
-      })
+    if (this.attendanceProcessForm.valid) {
+      this.attendanceService.addProcessAttendance(this.attendanceProcessForm.value).subscribe((res: any) => {
+        this.processAttendance.push(res.data);
+        this.attendanceProcessForm.reset();
+        this.toast.success('Process ATtendance Created', 'Successfully!');
+      },
+        err => {
+          this.toast.error('Process Attendance Can not be Created', 'Error!')
+        })
+    }
+    else { this.attendanceProcessForm.markAllAsTouched() }
   }
 
-  deleteRecord(_id: string) {
-    // this.payroll.deleteCTCTemplate(_id).subscribe((res: any) => {
-    //   const index = this.ctcTemplate.findIndex(res => res._id === _id);
-    //   if (index !== -1) {
-    //     this.ctcTemplate.splice(index, 1);
-    //   }
-    //   this.toast.success('Successfully Deleted!!!', 'CTC Template');
-    // }, (err) => {
-    //   this.toast.error('CTC Template can not be deleted', 'Error');
-    // })
+  deleteRecord(data) {
+    let payload = {
+      attandanaceProcessPeroidMonth: data?.attendanceProcessPeriodMonth,
+      attandanaceProcessPeroidYear: data?.attendanceProcessPeriodYear
+    }
+    this.attendanceService.deleteProcessAttendance(payload).subscribe((res: any) => {
+      const index = this.processAttendance.findIndex(res => res._id === data?._id);
+      if (index !== -1) {
+        this.processAttendance.splice(index, 1);
+      }
+      this.toast.success('Successfully Deleted!!!', 'Attendance Process');
+    }, (err) => {
+      this.toast.error('Attendance Process can not be deleted', 'Error');
+    })
   }
 
-  deleteDialog(id: string): void {
+  deleteDialog(data: any): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '400px',
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result === 'delete') {
-        this.deleteRecord(id);
+        this.deleteRecord(data);
       }
     });
   }
-
 }

@@ -37,15 +37,34 @@ export class Step7Component {
   ) {
     this.overtimeForm = this.fb.group({
       PayrollUser: ['', Validators.required],
-      OverTime: ['', Validators.required],
+      // Overtime: ['', Validators.required],
       LateComing: ['', Validators.required],
       EarlyGoing: ['', Validators.required],
       FinalOvertime: ['', Validators.required]
-    })
+    });
+    this.onFormValueChanges();
   }
 
   ngOnInit() {
     this.getAllUsers();
+
+  }
+
+  onFormValueChanges(): void {
+    this.overtimeForm.valueChanges.subscribe(() => {
+      const selectedOvertimeId = this.overtimeForm.get('Overtime')?.value;
+      const overtimeRecord = this.overtimeInformation.find(o => o._id === selectedOvertimeId);
+      const overtimeInMinutes = overtimeRecord ? overtimeRecord.OverTime : 0;
+      const lateComingInHours = this.overtimeForm.get('LateComing')?.value || 0;
+      const earlyGoingInHours = this.overtimeForm.get('EarlyGoing')?.value || 0;
+
+      const lateComingInMinutes = lateComingInHours * 60;
+      const earlyGoingInMinutes = earlyGoingInHours * 60;
+
+      const finalOvertimeInMinutes = overtimeInMinutes - (lateComingInMinutes + earlyGoingInMinutes);
+
+      this.overtimeForm.get('FinalOvertime')?.setValue(finalOvertimeInMinutes, { emitEvent: false });
+    });
   }
 
   onUserSelectedFromChild(user: any) {
@@ -72,7 +91,6 @@ export class Step7Component {
         const payrollUser = this.payrollUser?.user;
         this.overtimeForm.patchValue({
           PayrollUser: this.getUser(payrollUser),
-          OverTime: this.selectedRecord?.OverTime,
           LateComing: this.selectedRecord?.LateComing,
           EarlyGoing: this.selectedRecord?.EarlyGoing,
           FinalOvertime: this.selectedRecord?.FinalOvertime
@@ -108,8 +126,8 @@ export class Step7Component {
   getOvertime() {
     console.log(this.selectedUserId?._id);
     this.payrollService.getOvertime(this.selectedUserId?._id).subscribe((res: any) => {
-      this.overtime = res.data;
-      const userRequests = this.overtime.map((item: any) => {
+      this.overtime = res.data.records;
+      const userRequests = this.overtime?.map((item: any) => {
         return this.payrollService.getPayrollUserById(item.PayrollUser).pipe(
           map((userRes: any) => ({
             ...item,
@@ -139,6 +157,7 @@ export class Step7Component {
         this.getOvertime();
         this.overtimeForm.reset();
         this.toast.success('Overtime Created', 'Successfully!');
+        this.modalService.dismissAll();
       },
         (err) => {
           this.toast.error('Overtime can not be Created', 'Error!');
@@ -151,6 +170,7 @@ export class Step7Component {
         this.overtimeForm.reset();
         this.changeMode = 'Add';
         this.toast.success('Overtime Updated', 'Successfully!');
+        this.modalService.dismissAll();
       },
         err => {
           this.toast.error('Overtime can not be Updated', 'Error!');
