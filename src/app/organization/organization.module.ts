@@ -3,10 +3,10 @@ import { CommonModule } from '@angular/common';
 import { OrganizationComponent } from './organization/organization.component';
 import { SharedModule } from '../shared/shared.Module';
 import { CommonComponentsModule } from '../common/commonComponents.module';
-import { AssetsModule } from '../AssetsManagement/assetManagement.module';
-import { AssetManagerComponent } from '../AssetsManagement/assetAssetManager/asset.component';
+// import { AssetsModule } from '../AssetsManagement/assetManagement.module';
+// import { AssetManagerComponent } from '../AssetsManagement/assetAssetManager/asset.component';
 import { DocumentManagementModule } from '../documentManager/documentManager.module';
-import { DocumentManagerComponent } from '../documentManager/documentManager.component';
+// import { DocumentManagerComponent } from '../documentManager/documentManager.component';
 import { SetupComponent } from './setup/setup.component';
 import { EmployeeFieldsComponent } from './employee-fields/employee-fields.component';
 import { EmployeeTreeComponent } from './employee-tree/employee-tree.component';
@@ -23,6 +23,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { OrganizationRoutingModule } from './organization-routing.module';
+import { AssetsModule } from '../AssetsManagement/assetManagement.module';
 
 @NgModule({
   declarations: [
@@ -40,8 +41,7 @@ import { OrganizationRoutingModule } from './organization-routing.module';
     SignatoryDetailsComponent,
     HolidaysComponent
   ],
-  exports: [AssetManagerComponent,
-    DocumentManagerComponent],
+  exports: [],
   imports: [
     CommonModule,
     SharedModule,
@@ -51,11 +51,13 @@ import { OrganizationRoutingModule } from './organization-routing.module';
     FormsModule,
     ReactiveFormsModule,
     ToastrModule.forRoot({
-      timeOut: 3000, // Duration of the notification
-      positionClass: 'toast-top-right', // Position of the notification
+      timeOut: 3000,
+      positionClass: 'toast-top-right',
       preventDuplicates: true,
     }),
     BrowserAnimationsModule,
+    AssetsModule,
+    DocumentManagementModule,
     OrganizationRoutingModule
   ],
   schemas: [

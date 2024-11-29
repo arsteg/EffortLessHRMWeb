@@ -59,6 +59,8 @@ export class AddApplicationComponent {
   DateConfig: {
     minDate: Date; // Minimum date set kartoy
   };
+  existingLeaves: any[] = [];
+
 
   constructor(private fb: FormBuilder,
     private commonService: CommonService,
@@ -79,10 +81,10 @@ export class AddApplicationComponent {
       isHalfDayOption: [false],
       halfDays: this.fb.array([]),
       leaveApplicationAttachments: this.fb.array([])
-      
+
     }, { validators: this.dateValidator });
   }
- 
+
   createAttachment(data: any = {}): FormGroup {
     return this.fb.group({
       attachmentType: [data.attachmentType || null],
@@ -96,10 +98,10 @@ export class AddApplicationComponent {
   dateValidator(group: AbstractControl) {
     const startDate = group.get('startDate')?.value;
     const endDate = group.get('endDate')?.value;
-  
+
     if (startDate && endDate && moment(startDate).isAfter(moment(endDate))) {
       group.get('endDate')?.setErrors({ dateRangeError: true });
-    } 
+    }
     return null;
   }
 
@@ -258,7 +260,6 @@ export class AddApplicationComponent {
     this.member = JSON.parse(member.value);
   }
 
-  existingLeaves: any[] = [];
 
   getLeaveApplicationByUser() {
     let payload = { skip: '', next: '' }
@@ -284,9 +285,7 @@ export class AddApplicationComponent {
     let endDate = this.leaveApplication.get('endDate')?.value;
     startDate = this.stripTime(new Date(startDate));
     endDate = this.stripTime(new Date(endDate));
-
-    this.leaveApplication.patchValue({ startDate: startDate, endDate: endDate, status: 'Level 1 Approval Pending' });
-    // this.leaveApplication.value.status = 'Level 1 Approval Pending';
+    this.leaveApplication.patchValue({ startDate: startDate, endDate: endDate, status: 'Level 1 Approval Pending', level1Reason: 'string', level2Reason: 'string' });
     let payload = { skip: '', next: '' }
     this.leaveService.getLeaveApplicationbyUser(payload, employeeId).subscribe((res: any) => {
       this.existingLeaves = res.data;
@@ -300,11 +299,11 @@ export class AddApplicationComponent {
         this.toast.error('A leave application with the same details already Exists.', 'Error');
         return;
       } else {
-          console.log(this.leaveApplication.value)
-          this.leaveService.addLeaveApplication(this.leaveApplication.value).subscribe((res: any) => {
+        console.log(this.leaveApplication.value)
+        this.leaveService.addLeaveApplication(this.leaveApplication.value).subscribe((res: any) => {
           console.log('Leave Application Data - After submission:', this.leaveApplication.value);
           this.leaveApplicationRefreshed.emit(res.data);
-          // this.leaveApplication.reset();
+          this.leaveApplication.reset();
           this.toast.success('Leave Application Added Successfully');
         });
       }
@@ -420,16 +419,16 @@ export class AddApplicationComponent {
     return this.leaveApplication.get('leaveApplicationAttachments') as FormArray;
   }
 
-  onFileSelected(event:any) {
+  onFileSelected(event: any) {
     const files: FileList = event.target.files;
-    console.log('files',files);
-    
+    console.log('files', files);
+
     if (files) {
       for (let i = 0; i < files.length; i++) {
         const file: File = files.item(i);
         if (file) {
-          console.log('file',file);
-          
+          console.log('file', file);
+
           this.selectedFiles.push(file);
         }
       }

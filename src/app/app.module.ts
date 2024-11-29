@@ -11,7 +11,6 @@ import { ResetPasswordComponent } from './login/reset-password/reset-password.co
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { LayoutModule } from '@angular/cdk/layout';
-import { AddProjectComponent } from './Project/add-project/add-project.component';
 import { ChangePasswordComponent } from './login/change-password/change-password.component';
 import { UserFormCOntrolComponent } from './users/user-profile/user-form-control/user-form-control.component';
 import { UserProfileComponent } from './users/user-profile/user-profile.component';
@@ -52,11 +51,11 @@ import { DashboardModule } from './dashboard/dashboard.module';
 import { ApprovalsModule } from './approvals/approvals.module';
 import { QuillModule } from 'ngx-quill';
 import { CommonComponentsModule } from './common/commonComponents.module';
-import { AssetsModule } from './AssetsManagement/assetManagement.module';
+// import { AssetsModule } from './AssetsManagement/assetManagement.module';
 import { UserCalendarComponent } from './calendar/user-calendar/user-calendar.component';
 import { AdminCalendarComponent } from './calendar/admin-calendar/admin-calendar.component';
 import { FullCalendarModule } from '@fullcalendar/angular';
-import { DocumentManagementModule } from './documentManager/documentManager.module';
+// import { DocumentManagementModule } from './documentManager/documentManager.module';
 import { LeaveModule } from './Leave/leave.module';
 import { OragnizationModule } from './organization/organization.module';
 import { AttendanceModule } from './attendance/attendance.module';
@@ -73,8 +72,9 @@ import { NotificationComponent } from './home/notification/notification.componen
 import { environment } from '../environments/environment';
 import { SettingsModule } from './settings/settings.Module';
 import { ReportsModule } from './reports/reports.module';
-import { EditTaxComponent } from './users/employee-settings/tax/edit-tax/edit-tax.component';
 import { RequestManualTimeComponent } from './manualTime/request-manual-time/request-manual-time.component';
+import { AssetsModule } from './AssetsManagement/assetManagement.module';
+import { DocumentManagementModule } from './documentManager/documentManager.module';
 
 const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
 
@@ -86,7 +86,6 @@ const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
     ForgotPasswordComponent,
     SidebarDirective,
     ResetPasswordComponent,
-    AddProjectComponent,
     ChangePasswordComponent,
     UserProfileComponent,
     UserFormCOntrolComponent,
@@ -103,7 +102,7 @@ const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
     RolePermissionComponent,
     WorkspaceSettingsComponent,
     FeaturesSettingsComponent,
-    LeaveSettingsComponent,
+    // LeaveSettingsComponent,
     ViewLiveScreenComponent,
     UserCalendarComponent,
     AdminCalendarComponent,
@@ -138,10 +137,8 @@ const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
     DashboardModule,
     ApprovalsModule,
     CommonComponentsModule,
-    AssetsModule,
     QuillModule.forRoot(),
     FullCalendarModule,
-    DocumentManagementModule,
     LeaveModule,
     OragnizationModule,
     AttendanceModule,
@@ -153,7 +150,7 @@ const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
     FormsModule,
     SocketIoModule.forRoot(config),
     SettingsModule,
-    ReportsModule
+    ReportsModule,
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

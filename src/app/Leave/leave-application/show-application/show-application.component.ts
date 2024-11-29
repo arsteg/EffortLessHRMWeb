@@ -112,8 +112,9 @@ export class ShowApplicationComponent {
   }
 
   openSecondModal(selectedReport: any): void {
-    const userName = this.getUser(selectedReport.employee);
-    selectedReport.employee = userName;
+    // const userName = this.getUser(selectedReport?.employee);
+    // selectedReport.employee = userName;
+    console.log(selectedReport)
     this.leaveService.leave.next(selectedReport);
     const dialogRef = this.dialog.open(ViewApplicationComponent, {
       width: '50%',

@@ -37,34 +37,14 @@ export class Step7Component {
   ) {
     this.overtimeForm = this.fb.group({
       PayrollUser: ['', Validators.required],
-      // Overtime: ['', Validators.required],
       LateComing: ['', Validators.required],
       EarlyGoing: ['', Validators.required],
       FinalOvertime: ['', Validators.required]
     });
-    this.onFormValueChanges();
   }
 
   ngOnInit() {
     this.getAllUsers();
-
-  }
-
-  onFormValueChanges(): void {
-    this.overtimeForm.valueChanges.subscribe(() => {
-      const selectedOvertimeId = this.overtimeForm.get('Overtime')?.value;
-      const overtimeRecord = this.overtimeInformation.find(o => o._id === selectedOvertimeId);
-      const overtimeInMinutes = overtimeRecord ? overtimeRecord.OverTime : 0;
-      const lateComingInHours = this.overtimeForm.get('LateComing')?.value || 0;
-      const earlyGoingInHours = this.overtimeForm.get('EarlyGoing')?.value || 0;
-
-      const lateComingInMinutes = lateComingInHours * 60;
-      const earlyGoingInMinutes = earlyGoingInHours * 60;
-
-      const finalOvertimeInMinutes = overtimeInMinutes - (lateComingInMinutes + earlyGoingInMinutes);
-
-      this.overtimeForm.get('FinalOvertime')?.setValue(finalOvertimeInMinutes, { emitEvent: false });
-    });
   }
 
   onUserSelectedFromChild(user: any) {
@@ -115,16 +95,19 @@ export class Step7Component {
     }
   }
 
-
   getAttendanceOvertimeInformation() {
     let payload = { skip: '', next: '' }
     this.attendanceService.getOverTime(payload.skip, payload.next).subscribe((res: any) => {
       this.overtimeInformation = res.data;
+       const totalOvertime = this.overtimeInformation.reduce((sum, item) => {
+        return sum + (item.Overtime || 0);
+      }, 0);
+
+      console.log('Total Overtime:', totalOvertime);
     })
   }
 
   getOvertime() {
-    console.log(this.selectedUserId?._id);
     this.payrollService.getOvertime(this.selectedUserId?._id).subscribe((res: any) => {
       this.overtime = res.data.records;
       const userRequests = this.overtime?.map((item: any) => {

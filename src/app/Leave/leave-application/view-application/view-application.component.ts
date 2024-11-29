@@ -18,6 +18,7 @@ export class ViewApplicationComponent {
 
   ngOnInit() {
     this.leaveService.leave.getValue();
+    console.log(this.leaveService.leave.getValue());
     this.calculateTotalLeaveDays();
   }
 
@@ -35,10 +36,10 @@ export class ViewApplicationComponent {
           totalDays -= 0.5;
         }
       }
-      this.totalLeaveDays = totalDays; 
+      this.totalLeaveDays = totalDays;
     }
   }
-  
+
   closeModal() {
     this.dialogRef.close();
   }

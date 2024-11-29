@@ -12,8 +12,8 @@ import { BandComponent } from './setup/band/band.component';
 import { SignatoryDetailsComponent } from './setup/signatory-details/signatory-details.component';
 import { HolidaysComponent } from './setup/holidays/holidays.component';
 import { DocumentManagerComponent } from '../documentManager/documentManager.component';
-import { AssetManagerComponent } from '../AssetsManagement/assetAssetManager/asset.component';
 import { ProfileComponent } from './setup/profile/profile.component';
+import { AssetManagerComponent } from '../AssetsManagement/assetAssetManager/asset.component';
 
 const routes: Routes = [
   {
