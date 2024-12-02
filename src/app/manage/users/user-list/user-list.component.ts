@@ -1,17 +1,14 @@
 import { Component, ComponentFactoryResolver, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { signup, User } from 'src/app/models/user';
-import { ManageTeamService } from 'src/app/_services/manage-team.service';
-import { UserService } from '../../_services/users.service';
 import { Validators, FormGroup, FormBuilder } from '@angular/forms';
-import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { RoleService } from 'src/app/_services/role.service';
-import { TransitionCheckState } from '@angular/material/checkbox';
 import { ToastrService } from 'ngx-toastr';
 import { CommonService } from 'src/app/_services/common.Service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
+import { UserService } from 'src/app/_services/users.service';
 
 @Component({
   selector: 'app-user-list',
@@ -40,10 +37,8 @@ export class UserListComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute,
     private UserService: UserService,
     private fb: FormBuilder,
-    private auth: AuthenticationService,
     private roleService: RoleService,
     private toastrrr: ToastrService,
     public commonservice: CommonService,
@@ -135,13 +130,13 @@ export class UserListComponent implements OnInit {
   toggleView(data: any) {
     this.isEdit = true;
     this.UserService.setData(data, this.isEdit);
-    this.router.navigate(['/manage/employee-settings']);
+    console.log('Navigating to Employee Profile');
+    this.router.navigate(['/manage/employees/employee-settings/employee-profile']);
     this.showEmployeeDetails = !this.showEmployeeDetails;
   }
 
   goBackToUserView() {
     this.showEmployeeDetails = false;
-
   }
 
   showOffcanvas: boolean;

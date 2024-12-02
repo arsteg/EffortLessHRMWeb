@@ -12,8 +12,8 @@ import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { LayoutModule } from '@angular/cdk/layout';
 import { ChangePasswordComponent } from './login/change-password/change-password.component';
-import { UserFormCOntrolComponent } from './users/user-profile/user-form-control/user-form-control.component';
-import { UserProfileComponent } from './users/user-profile/user-profile.component';
+// import { UserFormCOntrolComponent } from './users/user-profile/user-form-control/user-form-control.component';
+// import { UserProfileComponent } from './users/user-profile/user-profile.component';
 import { FormControlsComponent } from './common/form-controls/form-controls.component';
 import { ScreenshotsComponent } from './screenshots/screenshots/screenshots.component';
 import { NgHttpLoaderModule } from 'ng-http-loader';
@@ -87,8 +87,8 @@ const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
     SidebarDirective,
     ResetPasswordComponent,
     ChangePasswordComponent,
-    UserProfileComponent,
-    UserFormCOntrolComponent,
+    // UserProfileComponent,
+    // UserFormCOntrolComponent,
     FormControlsComponent,
     ScreenshotsComponent,
     HomeComponent,
