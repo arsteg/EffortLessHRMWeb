@@ -75,6 +75,7 @@ import { ReportsModule } from './reports/reports.module';
 import { RequestManualTimeComponent } from './manualTime/request-manual-time/request-manual-time.component';
 import { AssetsModule } from './AssetsManagement/assetManagement.module';
 import { DocumentManagementModule } from './documentManager/documentManager.module';
+import { UserProfileComponent } from './users/user-profile/user-profile.component';
 
 const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
 
@@ -87,7 +88,7 @@ const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
     SidebarDirective,
     ResetPasswordComponent,
     ChangePasswordComponent,
-    // UserProfileComponent,
+    UserProfileComponent,
     // UserFormCOntrolComponent,
     FormControlsComponent,
     ScreenshotsComponent,
@@ -102,7 +103,6 @@ const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
     RolePermissionComponent,
     WorkspaceSettingsComponent,
     FeaturesSettingsComponent,
-    // LeaveSettingsComponent,
     ViewLiveScreenComponent,
     UserCalendarComponent,
     AdminCalendarComponent,

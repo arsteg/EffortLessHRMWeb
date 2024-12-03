@@ -259,6 +259,27 @@ export class AddSalaryDetailsComponent {
     const requests = [formValues];
     payload.employeeSalaryTaxAndStatutorySetting = requests;
     payload.user = this.selectedUser.id;
+    console.log(payload);
+
+    payload.salaryComponentEmployerContribution.filter(item => item?.employerContribution == '');
+    payload.salaryComponentEmployerContribution = [];
+
+    payload.salaryComponentFixedAllowance.filter(item => item?.fixedAllowance == '');
+    payload.salaryComponentFixedAllowance = [];
+
+    payload.salaryComponentFixedDeduction.filter(item => item?.fixedDeduction == '');
+    payload.salaryComponentFixedDeduction = [];
+
+    payload.salaryComponentOtherBenefits.filter(item => item?.otherBenefits == '');
+    payload.salaryComponentOtherBenefits = [];
+
+    payload.salaryComponentVariableAllowance.filter(item => item?.variableAllowance == '');
+    payload.salaryComponentVariableAllowance = [];
+
+    payload.salaryComponentVariableDeduction.filter(item => item?.variableDeduction == '');
+    payload.salaryComponentVariableDeduction = [];
+    console.log(payload);
+
     this.userService.addSalaryDetails(payload).subscribe((res: any) => {
       this.toast.success('The salary details have been successfully added.')
     },
@@ -488,5 +509,5 @@ export class AddSalaryDetailsComponent {
     return matchingRecord?.label;
   }
 
- 
+
 }

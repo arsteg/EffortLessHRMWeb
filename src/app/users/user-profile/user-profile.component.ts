@@ -1,11 +1,8 @@
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
-import { signup } from 'src/app/models/user';
-import { Base } from '../../controls/base';
-import { UserService } from '../../_services/users.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { RoleService } from 'src/app/_services/role.service';
+import { UserService } from 'src/app/_services/users.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -35,8 +32,8 @@ export class UserProfileComponent {
       address: [''],
       city: [''],
       state: [''],
-      pincode: [''],
-      phone: [''],
+      pincode: ['', [Validators.pattern('^[0-9]{6}$')]],
+      phone: ['', [Validators.pattern('^[0-9]{10}$')]],
       extraDetails: [''],
       role: ['', Validators.required],
       mobile: [''],

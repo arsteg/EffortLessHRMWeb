@@ -13,10 +13,10 @@ import { taskModule } from '../tasks/task.Module';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ManageRoutingModule } from './manage-routing.module';
-import { EmployeeSettingsModule } from './users/employee-settings/employee-settings.module';
+import { EmployeeSettingsModule } from '../users/employee-settings/employee-settings.module';
 import { QuillModule } from "ngx-quill";
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { UserListComponent } from './users/user-list/user-list.component';
+import { UserListComponent } from '../users/user-list/user-list.component';
 @NgModule({
   declarations: [
     ManageComponent, 

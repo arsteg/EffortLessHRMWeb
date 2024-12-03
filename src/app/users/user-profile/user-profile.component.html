@@ -21,7 +21,7 @@
               <div class="container-fluid">
                 <!-- Basic Information -->
                 <h5 class="formHeading">Basic Information</h5>
-                <div class="row">
+                <div class="row mt-2">
                   <div class="col-md-6">
                     <div class="form-group">
                       <label>First Name</label>
@@ -36,7 +36,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="row">
+                <div class="row mt-2">
                   <div class="col-md-6">
                     <div class="form-group">
                       <label>Job Title</label>
@@ -55,7 +55,7 @@
                   </div>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-6 mt-2">
                   <div class="form-group">
                     <label>Role</label>
                     <select name="" id="" formControlName="role">
@@ -75,7 +75,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="row">
+                <div class="row mt-2">
                   <div class="col-md-4">
                     <div class="form-group">
                       <label>City</label>
@@ -92,6 +92,11 @@
                     <div class="form-group">
                       <label>Pincode</label>
                       <input type="text" class="form-control" formControlName="pincode" placeholder="Enter Pincode">
+                      <div *ngIf="userProfileForm.get('pincode')?.invalid">
+                        <small class="text-danger" *ngIf="userProfileForm.get('pincode')?.errors?.['pattern']">
+                          Must contain only 6 Digits.
+                        </small>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -103,6 +108,11 @@
                     <div class="form-group">
                       <label>Phone</label>
                       <input type="text" class="form-control" formControlName="phone" placeholder="Enter Phone Number">
+                      <div *ngIf="userProfileForm.get('phone')?.invalid">
+                        <small class="text-danger" *ngIf="userProfileForm.get('phone')?.errors?.['pattern']">
+                          Must contain only 10 Digits.
+                        </small>
+                      </div>
                     </div>
                   </div>
                   <div class="col-md-6">
@@ -113,7 +123,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="row">
+                <div class="row mt-2">
                   <div class="col-md-6">
                     <div class="form-group">
                       <label>Emergency Contact Name</label>
@@ -158,20 +168,22 @@
                   </div>
                 </div>
 
-                <div class="row">
+                <div class="row mt-2">
                   <div class="col-md-6">
                     <div class="form-group">
                       <label for="disability">Disability</label>
                       <div class="d-flex">
-                      <div class="form-check">
-                        <input type="radio" class="form-check-input" id="disabilityYes" formControlName="Disability" value="Yes">
-                        <label class="form-check-label me-2" for="disabilityYes">Yes</label>
-                    </div>
-                    <div class="form-check">
-                        <input type="radio" class="form-check-input" id="disabilityNo" formControlName="Disability" value="No" checked>
-                        <label class="form-check-label" for="disabilityNo">No</label>
-                    </div>
-                  </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" id="disabilityYes" formControlName="Disability"
+                            value="Yes">
+                          <label class="form-check-label me-2" for="disabilityYes">Yes</label>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" id="disabilityNo" formControlName="Disability"
+                            value="No" checked>
+                          <label class="form-check-label" for="disabilityNo">No</label>
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <div class="col-md-6">
@@ -184,7 +196,7 @@
                   </div>
                 </div>
 
-                <div class="row">
+                <div class="row mt-2">
                   <div class="col-md-6">
                     <div class="form-group">
                       <label for="noOfChildren">Number of Children</label>
@@ -211,7 +223,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="row">
+                <div class="row mt-2">
                   <div class="col-md-6">
                     <div class="form-group">
                       <label>IFSC Code</label>
