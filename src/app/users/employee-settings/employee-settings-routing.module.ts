@@ -13,7 +13,7 @@ import { UserLoansAdvancesComponent } from './loans-advances/loans-advances.comp
 
 const routes: Routes = [
   {
-    path: 'manage/employees/employee-settings/employee-profile',
+    path: 'manage/employees/employee-settings',
     component: EmployeeSettingsComponent,
     canActivate: [AuthGuard],
     children: [

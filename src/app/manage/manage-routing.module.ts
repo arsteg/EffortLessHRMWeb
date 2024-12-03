@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { UserListComponent } from './users/user-list/user-list.component';
+import { UserListComponent } from '../users/user-list/user-list.component';
 import { ProjectListComponent } from '../Project/project-list/project-list.component';
 import { TasksComponent } from '../tasks/tasks.component';
 import { TeammembersComponent } from './teammembers/teammembers.component';
@@ -25,7 +25,7 @@ const routes: Routes = [
           {
             path: 'employee-settings',
             loadChildren: () =>
-              import('./users/employee-settings/employee-settings-routing.module').then(
+              import('../users/employee-settings/employee-settings-routing.module').then(
                 (m) => m.EmployeeSettingsRoutingModule
               ),
           },
