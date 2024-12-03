@@ -39,25 +39,36 @@ export class UpdateCTCTemplateComponent {
 
   ngOnInit() {
     this.getDataOfAllPayrollSettings();
-    if (this.isEdit == true) {
-      this.ctcTemplateForm.patchValue({
-        name: this.selectedRecord?.name,
-        ctcTemplateFixedAllowance: Array.isArray(this.selectedRecord.ctcTemplateFixedAllowances) ? this.selectedRecord.ctcTemplateFixedAllowances.map(item => (item.fixedAllowance)) : [],
-        ctcTemplateFixedDeduction: Array.isArray(this.selectedRecord.ctcTemplateFixedDeductions) ? this.selectedRecord.ctcTemplateFixedDeductions.map(item => (item.fixedDeduction)) : [],
-        ctcTemplateVariableAllowance: Array.isArray(this.selectedRecord.ctcTemplateVariableAllowances) ? this.selectedRecord.ctcTemplateVariableAllowances.map(item => (item.variableAllowance)) : [],
-        ctcTemplateVariableDeduction: Array.isArray(this.selectedRecord.ctcTemplateVariableDeductions) ? this.selectedRecord.ctcTemplateVariableDeductions.map(item => (item.variableDeduction)) : [],
-        ctcTemplateEmployerContribution: Array.isArray(this.selectedRecord.ctcTemplateEmployerContributions) ? this.selectedRecord.ctcTemplateEmployerContributions.map(item => (item.fixedContribution)) : [],
-        ctcTemplateOtherBenefitAllowance: Array.isArray(this.selectedRecord.ctcTemplateOtherBenefitAllowances) ? this.selectedRecord.ctcTemplateOtherBenefitAllowances.map(item => (item.otherBenefit)) : [],
-        ctcTemplateEmployeeDeduction: Array.isArray(this.selectedRecord.ctcTemplateEmployeeDeductions) ? this.selectedRecord.ctcTemplateEmployeeDeductions.map(item => (item.employeeDeduction)) : []
-      });
-    }
+    this.getRecordById();
   }
 
+  getRecordById() {
+    if (this.isEdit == true) {
+      this.payroll.getCTCTemplateById(this.selectedRecord?._id).subscribe((res: any) => {
+        const result = res.data;
+        console.log(result);
+        this.ctcTemplateForm.patchValue({
+            name: result?.name,
+            ctcTemplateFixedAllowance: Array.isArray(result.ctcTemplateFixedAllowances) ? result.ctcTemplateFixedAllowances.map(item => (item.fixedAllowance)) : [],
+            ctcTemplateFixedDeduction: Array.isArray(result.ctcTemplateFixedDeductions) ? result.ctcTemplateFixedDeductions.map(item => (item.fixedDeduction)) : [],
+            ctcTemplateVariableAllowance: Array.isArray(result.ctcTemplateVariableAllowances) ? result.ctcTemplateVariableAllowances.map(item => (item.variableAllowance)) : [],
+            ctcTemplateVariableDeduction: Array.isArray(result.ctcTemplateVariableDeductions) ? result.ctcTemplateVariableDeductions.map(item => (item.variableDeduction)) : [],
+            ctcTemplateEmployerContribution: Array.isArray(result.ctcTemplateEmployerContributions) ? result.ctcTemplateEmployerContributions.map(item => (item.fixedContribution)) : [],
+            ctcTemplateOtherBenefitAllowance: Array.isArray(result.ctcTemplateOtherBenefitAllowances) ? result.ctcTemplateOtherBenefitAllowances.map(item => (item.otherBenefit)) : [],
+            ctcTemplateEmployeeDeduction: Array.isArray(result.ctcTemplateEmployeeDeductions) ? result.ctcTemplateEmployeeDeductions.map(item => (item.employeeDeduction)) : []
+        });
+      })
+    }
+    if (this.isEdit == false) {
+      this.ctcTemplateForm.reset();
+    }
+  }
   onDropdownChange(event: any, type: string) {
     const selectedValues = event.value;
     switch (type) {
       case 'fixedAllowance':
         // Filter out the deselected options
+        console.log(this.selectedRecord.ctcTemplateFixedAllowances);
         this.selectedRecord.ctcTemplateFixedAllowances = this.selectedRecord.ctcTemplateFixedAllowances.filter(allowance =>
           selectedValues.includes(allowance.fixedAllowance));
 
