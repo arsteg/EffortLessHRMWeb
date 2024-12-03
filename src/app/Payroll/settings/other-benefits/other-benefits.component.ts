@@ -23,6 +23,7 @@ export class OtherBenefitsComponent {
   totalRecords: number
   recordsPerPage: number = 10;
   currentPage: number = 1;
+  public sortOrder: string = '';
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   user: any;
 

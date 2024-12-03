@@ -9,6 +9,7 @@ import { PayrollService } from 'src/app/_services/payroll.service';
 export class PfChargesComponent {
   searchText: string = '';
   pfCharges: any;
+  public sortOrder: string = '';
 
   constructor(private payroll: PayrollService){}
   ngOnInit(){

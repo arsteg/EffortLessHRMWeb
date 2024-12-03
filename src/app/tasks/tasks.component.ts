@@ -98,6 +98,7 @@ export class TasksComponent implements OnInit {
   storedFilters: any;
   status = new FormControl([]);
   toppingList: string[] = ['ToDo', 'In-Progress', 'Done', 'Close'];
+  domain: string;
 
   constructor(
     private tasksService: TasksService,
@@ -192,9 +193,7 @@ export class TasksComponent implements OnInit {
     });
 
     this.setDefaultViewMode()
-    this.route.queryParamMap.subscribe((params: ParamMap) => {
-      this.isListView = params.get('view') === 'list';
-    });
+    
     this.status.valueChanges.subscribe(value => {
       this.statusList.forEach(item => {
         item.isChecked = value.includes(item.name);
@@ -436,8 +435,8 @@ export class TasksComponent implements OnInit {
   getUsersListByProject() {
     const selectedProject = this.addForm.value.project;
     this.projectService.getprojectUser(selectedProject).subscribe((res: any) => {
-      this.usersByProject = res?.data?.projectUserList;
-      this.usersByProject = this.usersByProject.filter(user => user !== null);
+     const usersByProject = res?.data?.projectUserList;
+      this.usersByProject = usersByProject.filter(user => user.user !== null);
     });
   }
 
@@ -925,7 +924,6 @@ export class TasksComponent implements OnInit {
     this.showEditor = true;
   }
 
-  domain: string;
   @HostListener('window:load', ['$event'])
 
   onLoad(): void {

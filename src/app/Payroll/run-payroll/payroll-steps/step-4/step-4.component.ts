@@ -1,5 +1,5 @@
 import { Component, ElementRef, Input, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
@@ -38,9 +38,9 @@ export class Step4Component {
     private dialog: MatDialog
   ) {
     this.loanAdvanceForm = this.fb.group({
-      payrollUser: [''],
+      payrollUser: ['', Validators.required],
       loanAndAdvance: [''],
-      disbursementAmount: [0],
+      disbursementAmount: [0,[Validators.required, Validators.min(1)]],
       status: ['Pending']
     })
   }
@@ -79,10 +79,11 @@ export class Step4Component {
 
   onUserSelectedFromChild(userId: any) {
     this.selectedUserId = userId;
+    console.log(this.selectedUserId);
     this.getLoanAdvances();
     if (this.changeMode === 'Add' || this.changeMode === 'Update') {
-      this.getAllLoansAdvances();
       this.getLoanAdvancesOfUser();
+      this.getAllLoansAdvances();
     }
   }
 
@@ -100,8 +101,8 @@ export class Step4Component {
   getLoanAdvancesOfUser() {
     this.userService.getLoansAdvancesByUserId(this.selectedUserId?.user, { skip: '', next: '' }).subscribe((res: any) => {
       this.userloanAdvances = res.data;
-
-      if (this.userloanAdvances.length > 0) {
+console.log(this.userloanAdvances.length)
+      if (this.userloanAdvances.length >= 1) {
         this.userloanAdvances.unshift({ loanAdvancesCategory: '', name: 'Select Loan/Advance' });
       } else {
         this.userloanAdvances.unshift({ loanAdvancesCategory: '', name: 'Loans/Advances not Assigned to the Selected User' });
@@ -134,7 +135,7 @@ export class Step4Component {
     })
   }
 
- 
+  
   onSubmission() {
     this.loanAdvanceForm.value.payrollUser = this.selectedUserId?._id;
     
@@ -142,7 +143,11 @@ export class Step4Component {
       this.payrollService.addLoanAdvance(this.loanAdvanceForm.value).subscribe(
         (res: any) => {
           this.getLoanAdvances();
+          this.loanAdvanceForm.reset();
+          this.userloanAdvances = [];
+          this.selectedUserId = null;
           this.toast.success('Loan/Advance created', 'Successfully!');
+          this.modalService.dismissAll();
         },
         (err) => {
           this.toast.error('Loan/Advance cannot be created', 'Error!');
@@ -156,9 +161,10 @@ export class Step4Component {
           this.getLoanAdvances();
           this.toast.success('Loan/Advance Updated', 'Successfully');
           this.loanAdvanceForm.reset();
-          this.selectedUserId = null;
-          this.userloanAdvances = null;
+          this.selectedUserId = '';
+          this.userloanAdvances = [];
           this.changeMode = 'Add';
+          this.modalService.dismissAll();
         },
         (err) => {
           this.toast.error('Loan/Advance cannot be Updated', 'Error');
@@ -215,11 +221,11 @@ export class Step4Component {
   
   deleteTemplate(_id: string) {
     this.payrollService.deleteLoanAdvance(_id).subscribe((res: any) => {
-      this.getLoanAdvances();
+      // this.getLoanAdvances();
       if (res != null) {
-        const index = this.matchedLoanAdvances.findIndex(temp => temp._id === _id);
+        const index = this.loanAdvances.findIndex(temp => temp._id === _id);
         if (index !== -1) {
-          this.matchedLoanAdvances.splice(index, 1);
+          this.loanAdvances.splice(index, 1);
         }
       }
       this.toast.success('Successfully Deleted!!!', 'Loan/Advance')

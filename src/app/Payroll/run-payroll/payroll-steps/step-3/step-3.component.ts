@@ -29,6 +29,7 @@ export class Step3Component {
   changeMode: 'Add' | 'Update' = 'Add';
   selectedRecord: any;
   payrollUser: any;
+  salary: any;
 
   months = [
     { name: 'January', value: 1 },
@@ -72,17 +73,21 @@ export class Step3Component {
   generateYearList() {
     const currentYear = new Date().getFullYear();
     this.years = [currentYear - 1, currentYear, currentYear + 1];
-    // this.selectedYear = currentYear;
     this.variablePayForm.value.year = currentYear;
 
   }
   open(content: any) {
+    this.variablePayForm.patchValue({
+      month: this.selectedPayroll?.month,
+      year: this.selectedPayroll?.year
+    });
+    this.variablePayForm.get('month').disable();
+    this.variablePayForm.get('year').disable();
     if (this.changeMode === 'Update') {
       this.payrollService.getPayrollUserById(this.selectedRecord.payrollUser).subscribe((res: any) => {
         this.payrollUser = res.data;
 
         const payrollUser = this.payrollUser?.user;
-        console.log(this.selectedRecord)
         this.variablePayForm.patchValue({
           payrollUser: this.getUser(payrollUser),
           variableDeduction: this.selectedRecord?.variableDeduction,
@@ -92,7 +97,8 @@ export class Step3Component {
           year: this.selectedRecord?.year
         });
         this.variablePayForm.get('payrollUser').disable();
-        console.log(this.variablePayForm.value)
+        this.variablePayForm.get('month').disable();
+        this.variablePayForm.get('year').disable();
       });
     }
 
@@ -113,8 +119,6 @@ export class Step3Component {
     }
   }
 
-  salary: any;
-
   getSalarydetails() {
     this.selectedUserId
     this.userService.getSalaryByUserId(this.selectedUserId?.user).subscribe((res: any) => {
@@ -129,7 +133,6 @@ export class Step3Component {
   }
 
   getVariablePay() {
-    console.log(this.selectedUserId);
     this.payrollService.getVariablePay(this.selectedUserId?._id).subscribe((res: any) => {
       this.variablePay = res.data;
       const userRequests = this.variablePay.map((item: any) => {
@@ -163,6 +166,8 @@ export class Step3Component {
 
   onSubmit() {
     this.variablePayForm.value.payrollUser = this.selectedUserId._id;
+    this.variablePayForm.value.month = this.selectedPayroll.month;
+    this.variablePayForm.value.year = this.selectedPayroll.year;
     if (this.changeMode == 'Add') {
       this.payrollService.addVariablePay(this.variablePayForm.value).subscribe((res: any) => {
         this.variablePay = res.data;

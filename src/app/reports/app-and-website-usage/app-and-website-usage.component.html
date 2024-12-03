@@ -105,31 +105,40 @@
             <div class="table-responsive">
                 <table class="px-2" id="applicationUsages" #applicationUsages>
                     <thead>
+                        
                         <tr>
-                            <th class="pe-lg-0 pe-4" scope="col" [appSort]="appUsagesList" data-order="desc"
-                                data-name="name">Application&nbsp;<i class="bi bi-arrow-up sort"></i>
+                            <th class="pe-lg-0 pe-4" scope="col" [appSort]="appUsagesList" data-name="name"
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                                Application&nbsp;
+                                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                             </th>
-                            <th class="pe-lg-0 pe-5" scope="col" [appSort]="appUsagesList" data-order="desc"
-                                data-name="project">Project&nbsp;<i class="bi bi-arrow-up sort"></i>
+                            <th class="pe-lg-0 pe-5" scope="col" [appSort]="appUsagesList" data-name="project" 
+                                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Project &nbsp;
+                                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                             </th>
-                            <th class="pe-lg-0 pe-5" scope="col" [appSort]="appUsagesList" data-order="desc"
-                                data-name="user">Member&nbsp;<i class="bi bi-arrow-up sort"></i>
+                            <th class="pe-lg-0 pe-5" scope="col" [appSort]="appUsagesList" data-name="firstName"
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Member&nbsp;
+                                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                             </th>
-                            <th class="pe-lg-0 pe-4 text-center" scope="col" [appSort]="appUsagesList" data-order="desc"
-                                data-name="mouseClicks">Mouse&nbsp;Clicks&nbsp;<i class="bi bi-arrow-up sort"></i>
+                            <th class="pe-lg-0 pe-4 text-center" scope="col" [appSort]="appUsagesList"data-name="mouseClicks"
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Mouse&nbsp;Clicks&nbsp;
+                                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                             </th>
-                            <th class="pe-lg-0 pe-4 text-center" scope="col" [appSort]="appUsagesList" data-order="desc"
-                                data-name="scrollingNumber">Mouse&nbsp;Scroll&nbsp;<i class="bi bi-arrow-up sort"></i>
+                            <th class="pe-lg-0 pe-4 text-center" scope="col" [appSort]="appUsagesList" data-name="scrollingNumber"
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Mouse&nbsp;Scroll&nbsp;
+                                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                             </th>
-                            <th class="pe-lg-0 pe-4 text-center" scope="col" [appSort]="appUsagesList" data-order="desc"
-                                data-name="keyboardStrokes">keyboard&nbsp;Strokes&nbsp;<i
-                                    class="bi bi-arrow-up sort"></i>
+                            <th class="pe-lg-0 pe-4 text-center" scope="col" [appSort]="appUsagesList" data-name="keyboardStrokes"
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">keyboard&nbsp;Strokes&nbsp;
+                                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                             </th>
-                            <th class="pe-lg-0 pe-4 text-center" scope="col" [appSort]="appUsagesList" data-order="desc"
-                                data-name="inactive">Inactive&nbsp;(%)&nbsp;<i class="bi bi-arrow-up sort"></i>
+                            <th class="pe-lg-0 pe-4 text-center" scope="col" [appSort]="appUsagesList" data-name="inactive"
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Inactive&nbsp;(%)&nbsp;
+                                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                             </th>
-                            <th class="pe-lg-0 pe-4 text-center" scope="col" [appSort]="appUsagesList" data-order="desc"
-                                data-name="TimeSpent">Hours&nbsp;<i class="bi bi-arrow-up sort"></i>
+                            <th class="pe-lg-0 pe-4 text-center" scope="col" [appSort]="appUsagesList" data-name="inactive"
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Hours&nbsp;
+                                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                             </th>
                         </tr>
                     </thead>

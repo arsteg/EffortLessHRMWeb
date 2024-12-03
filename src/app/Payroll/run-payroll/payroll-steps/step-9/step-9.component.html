@@ -15,8 +15,7 @@
             <th>Total Employee Satutory Deductions</th>
             <th>Total Employee Satutory Contributions</th>
             <th>Total Fixed Deductions</th>
-            <th>Total Loans</th>
-            <th>Total Advances</th>
+            <th>Total Loans/Advances</th>
             <th>Total Flexi Benefits</th>
             <th>Total CTC</th>
             <th>Total Gross Salary</th>
@@ -32,13 +31,12 @@
                 <td></td>
                 <td>{{data?.totalFixedDeduction}}</td>
                 <td>{{data?.totalLoanAdvance}}</td>
-                <td></td>
-                <td></td>
+                <td>{{data?.totalFlexiBenefits}}</td>
                 <td>{{data?.yearlySalary}}</td>
                 <td>{{data?.monthlySalary}}</td>
                 <td></td>
                 <td>
-                    <button mat-mini-fab class="actions" matTooltip="View" (click)="open(modal)"
+                    <button mat-mini-fab class="actions" matTooltip="View" (click)="selectedRecord = data; open(modal)"
                         matTooltipPosition="before"><i class="bi bi-eye"></i></button>
                 </td>
             </tr>
@@ -46,15 +44,21 @@
     </table>
 </div>
 
-<ng-template #modal let-modal>
+<ng-template #modal let-modal class="w-100">
     <div class="modal-header border-bottom justify-content-between d-flex mb-2 pt-0">
         <div>
-            <h1 class="modal-title text-muted mb-0">View Payslip</h1>
+            <h1 class="modal-title text-muted mb-0">Salary Slip</h1>
         </div>
         <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
                 (click)="modal.close('Escape clicked')"></button>
         </div>
     </div>
-
-    <app-view-payslip></app-view-payslip>
+    <div>
+        <div class="d-flex">
+            <label>
+                <h1>{{getCompanyNameFromCookies()}}</h1>
+            </label>
+        </div>
+    </div>
+    <app-view-payslip [viewPayroll]="selectedRecord" [selectedPayroll]="selectedPayroll"></app-view-payslip>
 </ng-template>

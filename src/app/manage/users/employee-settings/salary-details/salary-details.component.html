@@ -20,10 +20,22 @@
     <div class="px-2 table-responsive">
         <table class="px-2">
             <thead>
-                <th class="pe-md-0 pe-3">Frequency</th>
-                <th class="pe-md-0 pe-3">CTC&nbsp;Effective&nbsp;From</th>
-                <th class="pe-md-0 pe-3">CTC&nbsp;Effective&nbsp;To</th>
-                <th class="pe-md-0 pe-3">Gross&nbsp;Salary(Yearly)</th>
+                <th class="pe-md-0 pe-3" [appSort]="salaryDetails" data-name="enteringAmount"
+                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Frequency
+                    <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                </th>
+                <th class="pe-md-0 pe-3" [appSort]="salaryDetails" data-name="payrollEffectiveFrom"
+                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">CTC&nbsp;Effective&nbsp;From
+                    <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                </th>
+                <th class="pe-md-0 pe-3" [appSort]="salaryDetails" data-name="actualEffectiveDate"
+                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">CTC&nbsp;Effective&nbsp;To
+                    <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                </th>
+                <th class="pe-md-0 pe-3" [appSort]="salaryDetails" data-name="Amount"
+                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Gross&nbsp;Salary(Yearly)
+                    <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                </th>
                 <th class="pe-md-5 ps-4 pe-5">Action</th>
             </thead>
 

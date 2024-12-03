@@ -13,9 +13,18 @@
             </div>
             <table>
                 <thead>
-                    <th>PF Charges Name</th>
-                    <th>Frequency</th>
-                    <th>Percentage</th>
+                    <th [appSort]="pfCharges" data-name=""
+                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">PF Charges Name
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th [appSort]="pfCharges" data-name=""
+                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Frequency
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th [appSort]="pfCharges" data-name=""
+                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Percentage
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
                 </thead>
                 <tbody>
                     <tr *ngFor="let pf of pfCharges">

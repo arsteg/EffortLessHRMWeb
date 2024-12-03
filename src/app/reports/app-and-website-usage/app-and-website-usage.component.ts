@@ -29,6 +29,7 @@ export class AppAndWebsiteUsageComponent implements OnInit {
   selectedProject: any = [];
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   role: any;
+  public sortOrder: string = '';
   constructor(
     private projectService: ProjectService
     , private timeLogService: TimeLogService

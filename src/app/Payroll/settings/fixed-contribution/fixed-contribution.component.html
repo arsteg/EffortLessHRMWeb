@@ -11,7 +11,10 @@
             </div>
             <table>
                 <thead>
-                    <th>Label Name</th>
+                    <th [appSort]="fixedContribution" data-name="label"
+                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Label Name
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
                     <th>Action</th>
                 </thead>
                 <tbody>

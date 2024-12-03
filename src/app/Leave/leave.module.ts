@@ -49,6 +49,7 @@ import { SupervisorsComponent } from './general-information/supervisors/supervis
 import { HolidaysComponent } from './general-information/holidays/holidays.component';
 import { GeneralComponent } from './general-information/general/general.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { LeaveRoutingModule } from './leave-routing.module';
 
 @NgModule({
   declarations: [LeaveApplicationComponent,
@@ -104,12 +105,14 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     NgxChartsModule,
     FormsModule,
     CommonComponentsModule,
-    NgbModule],
+    NgbModule,
+    LeaveRoutingModule
+  ],
 
-  exports: [LeaveApplicationComponent,
-    LeaveSettingComponent,
-    LeaveAssignmentComponent,
-    LeaveCategoryComponent],
+  // exports: [LeaveApplicationComponent,
+  //   LeaveSettingComponent,
+  //   LeaveAssignmentComponent,
+  //   LeaveCategoryComponent],
   schemas: [NO_ERRORS_SCHEMA]
 })
 export class LeaveModule { }

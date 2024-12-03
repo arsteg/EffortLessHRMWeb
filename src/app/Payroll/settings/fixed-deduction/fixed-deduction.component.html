@@ -22,7 +22,10 @@
             </div>
             <table>
                 <thead>
-                    <th>Deduction Name</th>
+                    <th [appSort]="fixedContributions" data-name="label"
+                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Deduction Name
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
                     <th>Actions</th>
                 </thead>
                 <tbody>

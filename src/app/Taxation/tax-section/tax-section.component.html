@@ -12,7 +12,10 @@
        
         <table>
             <thead>
-                <th>Section</th>
+                <th [appSort]="sections" data-name="section"
+                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Section
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                </th>
                 <th>Actions</th>
             </thead>
             <tbody>

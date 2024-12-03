@@ -15,6 +15,7 @@ export class FixedContributionComponent {
   showOffcanvas: boolean = false;
   @ViewChild('offcanvasContent', { read: ViewContainerRef }) offcanvasContent: ViewContainerRef;
   offcanvasInstance: any;
+  public sortOrder: string = '';
 
 
   constructor(private payroll: PayrollService) { }

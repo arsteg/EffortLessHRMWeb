@@ -14,9 +14,10 @@ export class EmployeeSettingsComponent {
   data: any;
   isEdit: boolean;
 
-  constructor(private userService: UserService, private route: ActivatedRoute) { }
+  constructor(private userService: UserService) { }
 
   ngOnInit() {
+    console.log('employee settings called')
     this.selectTab('tabEmploymentProfile');
     this.data = this.userService.getData();
     this.isEdit = this.userService.getIsEdit();

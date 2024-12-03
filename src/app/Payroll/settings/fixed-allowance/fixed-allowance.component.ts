@@ -21,6 +21,7 @@ export class FixedAllowanceComponent {
   closeResult: string = '';
   selectedRecord: any;
   fixedAllowanceForm: FormGroup;
+  public sortOrder: string = '';
 
   constructor(private payroll: PayrollService,
     private modalService: NgbModal,

@@ -139,6 +139,7 @@ export class Step5Component {
         this.selectedUserId = null;
         this.arrearForm.reset();
         this.toast.success('Manual Arrear Created', 'Successfully!');
+        this.modalService.dismissAll();
       },
         err => {
           this.toast.error('Manual arrear can not be Created', 'Error!');
@@ -176,6 +177,4 @@ export class Step5Component {
       }
     });
   }
-
-
 }

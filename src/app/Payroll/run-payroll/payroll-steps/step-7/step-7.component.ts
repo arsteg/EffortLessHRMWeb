@@ -37,11 +37,10 @@ export class Step7Component {
   ) {
     this.overtimeForm = this.fb.group({
       PayrollUser: ['', Validators.required],
-      OverTime: ['', Validators.required],
       LateComing: ['', Validators.required],
       EarlyGoing: ['', Validators.required],
       FinalOvertime: ['', Validators.required]
-    })
+    });
   }
 
   ngOnInit() {
@@ -72,7 +71,6 @@ export class Step7Component {
         const payrollUser = this.payrollUser?.user;
         this.overtimeForm.patchValue({
           PayrollUser: this.getUser(payrollUser),
-          OverTime: this.selectedRecord?.OverTime,
           LateComing: this.selectedRecord?.LateComing,
           EarlyGoing: this.selectedRecord?.EarlyGoing,
           FinalOvertime: this.selectedRecord?.FinalOvertime
@@ -97,19 +95,22 @@ export class Step7Component {
     }
   }
 
-
   getAttendanceOvertimeInformation() {
     let payload = { skip: '', next: '' }
     this.attendanceService.getOverTime(payload.skip, payload.next).subscribe((res: any) => {
       this.overtimeInformation = res.data;
+       const totalOvertime = this.overtimeInformation.reduce((sum, item) => {
+        return sum + (item.Overtime || 0);
+      }, 0);
+
+      console.log('Total Overtime:', totalOvertime);
     })
   }
 
   getOvertime() {
-    console.log(this.selectedUserId?._id);
     this.payrollService.getOvertime(this.selectedUserId?._id).subscribe((res: any) => {
-      this.overtime = res.data;
-      const userRequests = this.overtime.map((item: any) => {
+      this.overtime = res.data.records;
+      const userRequests = this.overtime?.map((item: any) => {
         return this.payrollService.getPayrollUserById(item.PayrollUser).pipe(
           map((userRes: any) => ({
             ...item,
@@ -139,6 +140,7 @@ export class Step7Component {
         this.getOvertime();
         this.overtimeForm.reset();
         this.toast.success('Overtime Created', 'Successfully!');
+        this.modalService.dismissAll();
       },
         (err) => {
           this.toast.error('Overtime can not be Created', 'Error!');
@@ -151,6 +153,7 @@ export class Step7Component {
         this.overtimeForm.reset();
         this.changeMode = 'Add';
         this.toast.success('Overtime Updated', 'Successfully!');
+        this.modalService.dismissAll();
       },
         err => {
           this.toast.error('Overtime can not be Updated', 'Error!');

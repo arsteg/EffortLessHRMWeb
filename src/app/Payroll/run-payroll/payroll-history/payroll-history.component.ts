@@ -1,10 +1,13 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { forkJoin } from 'rxjs';
 import { CommonService } from 'src/app/_services/common.Service';
 import { PayrollService } from 'src/app/_services/payroll.service';
+import { UserService } from 'src/app/_services/users.service';
+import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-payroll-history',
@@ -42,7 +45,9 @@ export class PayrollHistoryComponent {
     private payrollService: PayrollService,
     private fb: FormBuilder,
     private toast: ToastrService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private dialog: MatDialog,
+    private userService: UserService
   ) {
     this.payrollForm = this.fb.group({
       date: [],
@@ -52,7 +57,7 @@ export class PayrollHistoryComponent {
     });
     this.payrollUserForm = this.fb.group({
       payroll: [''],
-      user: [''],
+      user: ['', Validators.required],
       totalHomeTake: [0],
       totalFlexiBenefits: [0],
       totalCTC: [0],
@@ -93,17 +98,17 @@ export class PayrollHistoryComponent {
     const payrollPayload = { skip: '', next: '' };
     this.payrollService.getPayroll(payrollPayload).subscribe((payrollRes: any) => {
       this.payroll = payrollRes.data;
-  
+
       this.payroll.forEach((payrollItem, index) => {
         const payrollUsersPayload = { skip: '', next: '', payroll: payrollItem._id };
-  
+
         this.payrollService.getPayrollUsers(payrollUsersPayload).subscribe((payrollUsersRes: any) => {
           const users = payrollUsersRes.data;
-  
+
           const activeCount = users.filter(user => user.status === 'Active').length;
           const onHoldCount = users.filter(user => user.status === 'OnHold').length;
           const processedCount = users.filter(user => user.status === 'Processed').length;
-  
+
           this.payroll[index] = {
             ...payrollItem,
             activeCount: activeCount,
@@ -114,7 +119,7 @@ export class PayrollHistoryComponent {
       });
     });
   }
-  
+
   getAllUsers() {
     this.commonService.populateUsers().subscribe((res: any) => {
       this.users = res.data.data;
@@ -143,26 +148,67 @@ export class PayrollHistoryComponent {
 
   updatePayrollUser() {
     // add user
-    this.payrollUserForm.value.payroll = this.selectedPayroll;
-    this.payrollService.addPayrollUser(this.payrollUserForm.value).subscribe((res: any) => {
-      this.payrollUsers = res.data;
-      this.getPayrollWithUserCounts();
-      this.toast.success('Employee added to the payroll', 'Successfully');
-      this.payrollUserForm.patchValue({
-        user: '',
-        payroll: this.selectedPayroll,
-        totalHomeTake: 0,
-        totalFlexiBenefits: 0,
-        totalCTC: 0,
-        totalGrossSalary: 0,
-        totalTakeHome: 0,
-        status: 'Active'
-      })
-    })
-    // remove user
-    // this.payrollService.updatePayrollUser(this.selectedPayroll,this.payrollUserForm.value).subscribe((res:any)=>{
 
-    // })
+    console.log(this.payrollUserForm.value.totalGrossSalary);
+
+    if (this.payrollUserForm.valid) {
+      this.payrollUserForm.value.payroll = this.selectedPayroll;
+
+      this.userService.getSalaryByUserId(this.payrollUserForm.value.user).subscribe((res: any) => {
+        const lastSalaryRecord = res.data[res.data.length - 1];
+        this.payrollUserForm.value.totalGrossSalary = lastSalaryRecord.Amount;
+
+        this.payrollService.addPayrollUser(this.payrollUserForm.value).subscribe((res: any) => {
+          this.payrollUsers = res.data;
+          this.getPayrollWithUserCounts();
+          this.toast.success('Employee added to the payroll', 'Successfully');
+          this.payrollUserForm.patchValue({
+            user: '',
+            payroll: this.selectedPayroll,
+            totalHomeTake: 0,
+            totalFlexiBenefits: 0,
+            totalCTC: 0,
+            totalGrossSalary: 0,
+            totalTakeHome: 0,
+            status: 'Active'
+          })
+        })
+      })
+    }
+
+    else { this.payrollUserForm.markAllAsTouched(); }
   }
+
+  getGrossSalaryBySalaryStructure(): void {
+    this.userService.getSalaryByUserId(this.payrollUserForm.value.user).subscribe((res: any) => {
+      const lastSalaryRecord = res.data[res.data.length - 1];
+      this.payrollUserForm.get('totalGrossSalary').disable();
+      return this.payrollUserForm.patchValue({
+        totalGrossSalary: lastSalaryRecord.Amount
+      })
+    });
+  }
+
+  deleteTemplate(_id: string) {
+    this.payrollService.deleteArrear(_id).subscribe((res: any) => {
+      this.ngOnInit();
+      this.toast.success('Successfully Deleted!!!', 'Payroll')
+    },
+      (err) => {
+        this.toast.error('This Payroll Can not be deleted!')
+      })
+  }
+
+  deleteDialog(id: string): void {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '400px',
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result === 'delete') {
+        this.deleteTemplate(id);
+      }
+    });
+  }
+
 
 }

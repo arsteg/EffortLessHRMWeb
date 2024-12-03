@@ -23,6 +23,7 @@ export class TaxSectionComponent {
   recordsPerPage: number = 10;
   currentPage: number = 1;
   sections: any;
+  public sortOrder: string = '';
 
   constructor(private modalService: NgbModal,
     private taxService: TaxationService,

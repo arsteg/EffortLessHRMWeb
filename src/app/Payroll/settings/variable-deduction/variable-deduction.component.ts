@@ -25,6 +25,7 @@ export class VariableDeductionComponent {
   months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   years: number[] = [];
   members: any[];
+  public sortOrder: string = '';
 
   constructor(private modalService: NgbModal,
     private toast: ToastrService,

@@ -1,0 +1,18 @@
+<table>
+  <thead>
+    <tr>
+      <th>Check-In Date</th>
+      <th>Check-Out Date</th>
+      <th>Shift Time</th>
+      <th>Overtime</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let overtime of overtimeData">
+      <td>{{ overtime.CheckInDate | date:'short' }}</td>
+      <td>{{ overtime.CheckOutDate | date:'short' }}</td>
+      <td>{{ overtime.ShiftTime }}</td>
+      <td>{{ overtime.OverTime }} minutes</td>
+    </tr>
+  </tbody>
+</table>

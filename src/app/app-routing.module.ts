@@ -18,7 +18,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { RealtimeComponent } from './realtime/realtime.component';
 import { MainComponent } from './main/main.component';
 import { TasksComponent } from './tasks/tasks.component';
-// import { RequestManualTimeComponent } from './manualTime/request-manual-time/request-manual-time.component';
+import { RequestManualTimeComponent } from './manualTime/request-manual-time/request-manual-time.component';
 import { RequestApprovalComponent } from './manualTime/requestApproval/requestApproval.component';
 import { AddManualTimeComponent } from './manualTime/addManualTime/add-manual-time.component';
 import { ActivityDescriptionComponent } from './reports/activity-description/activity-description.component';
@@ -43,16 +43,9 @@ import { SubtaskComponent } from './tasks/subtask/subtask.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { AdminCalendarComponent } from './calendar/admin-calendar/admin-calendar.component';
 import { UserCalendarComponent } from './calendar/user-calendar/user-calendar.component';
-import { AssetManagerComponent } from './AssetsManagement/assetAssetManager/asset.component';
-import { DocumentManagerComponent } from './documentManager/documentManager.component';
 import { LeaveManagementComponent } from './Leave/leave-grant/leave-grant.component';
-import { ManageComponent } from './manage/manage/manage.component';
-import { OrganizationComponent } from './organization/organization/organization.component';
 import { TimesheetsComponent } from './timesheets/timesheets.component';
-import { LeaveComponent } from './Leave/leave/leave.component';
-import { ExpensesComponent } from './Expenses/expenses.component';
 import { AlertsComponent } from './Alerts/alerts.component';
-import { PayrollComponent } from './Payroll/payroll.component';
 import { TaxationComponent } from './Taxation/taxation.component';
 import { SeparationComponent } from './Separation/separation.component';
 import { SettingsComponent } from './settings/settings.component';
@@ -61,7 +54,6 @@ import { ApprovalsComponent } from './approvals/approvals.component';
 import { UserTaxDeclarationComponent } from './Taxation/user-tax-declaration/user-tax-declaration.component';
 import { ExpenseCategorySettingsComponent } from './Expenses/settings/expense-category-settings/expense-category-settings.component';
 import { InterviewProcessMainComponent } from './pages/interviewProcess/interview-process-main/interview-process-main.component';
-import { AttendanceManagementComponent } from './attendance/attendance-management/attendance-management.component';
 
 const routes: Routes = [
   { path: '', component: MainComponent },
@@ -78,17 +70,15 @@ const routes: Routes = [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'userDashboard', component: UserDashboardComponent },
       { path: 'logout', component: LoginComponent },
-      // { path: 'userProfile', component: UserProfileComponent },
       { path: 'screenshots', component: ScreenshotsComponent },
       { path: 'teamMembers', component: TeammembersComponent },
       { path: 'roles', component: RolesComponent },
       { path: 'permissionModel', component: PermissionModelComponent },
       { path: 'Profile', component: ProfileComponent },
-      { path: 'project', component: ProjectListComponent },
       { path: 'realtime', component: RealtimeComponent },
       { path: 'tasks', component: TasksComponent },
       { path: 'tags', component: TagComponent },
-      // { path: 'requestManualTime', component: RequestManualTimeComponent },
+      { path: 'requestManualTime', component: RequestManualTimeComponent },
       { path: 'ManualTimeRequestApproval', component: RequestApprovalComponent },
       { path: 'AddManualTime', component: AddManualTimeComponent },
       { path: 'activityDescription', component: ActivityDescriptionComponent },
@@ -99,26 +89,21 @@ const routes: Routes = [
       { path: 'userTimesheet', component: UserTimesheetComponent },
       { path: 'workspace', component: WorkspaceSettingsComponent },
       { path: 'features', component: FeaturesSettingsComponent },
-      { path: 'leavesettings', component: LeaveSettingsComponent },
       { path: 'edit-task', component: EditTaskComponent },
       { path: 'comments', component: TaskCommentComponent },
       { path: 'genericSettings', component: GenericSettingsComponent },
       { path: 'viewLiveScreen', component: ViewLiveScreenComponent },
-      { path: 'emailtemplate', component: EmailTemplateComponent },
       { path: 'SubTask', component: SubtaskComponent },
-      { path: 'assetsManagement', component: AssetManagerComponent },
       { path: 'AdminCalendar', component: AdminCalendarComponent },
       { path: 'UserCalendar', component: UserCalendarComponent },
-      { path: 'documentManager', component: DocumentManagerComponent },
-      { path: 'leave', component: LeaveManagementComponent },
-      { path: 'manage', component: ManageComponent },
-      { path: 'organization', component: OrganizationComponent },
-      { path: 'attendance', component: AttendanceManagementComponent },
+      { path: 'manage', loadChildren: () => import('./manage/manage-routing.module').then(m => m.ManageRoutingModule) },
+      { path: 'organization', loadChildren: () => import('./organization/organization-routing.module').then(m => m.OrganizationRoutingModule) },
+      { path: 'attendance', loadChildren: () => import('./attendance/attendance-routing.module').then(m => m.AttendanceRoutingModule) },
       { path: 'timesheet', component: TimesheetsComponent },
-      { path: 'Leave', component: LeaveComponent },
-      { path: 'expenses', component: ExpensesComponent },
+      { path: 'leave', loadChildren: () => import('./Leave/leave-routing.module').then(m => m.LeaveRoutingModule) },
+      { path: 'expense', loadChildren: () => import('./Expenses/expenses-routing.module').then(m => m.ExpensesRoutingModule) },
       { path: 'alerts', component: AlertsComponent },
-      { path: 'payroll', component: PayrollComponent },
+      { path: 'payroll', loadChildren: () => import('./Payroll/payroll-routing.module').then(m => m.PayrollRoutingModule) },
       { path: 'taxation', component: TaxationComponent},
       { path: 'separation', component: SeparationComponent },
       { path: 'settings', component: SettingsComponent },

@@ -19,6 +19,7 @@ export class SalaryDetailsComponent {
   showViewSalaryDetails: boolean = false;
   showAddSalaryDetails: boolean = false;
   selectedUser = this.userService.getData();
+  public sortOrder: string = '';
 
   constructor(
     private modalService: NgbModal,

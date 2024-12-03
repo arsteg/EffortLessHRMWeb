@@ -39,7 +39,6 @@ import { AdvanceRejectedComponent } from './advance-reports/advance-rejected/adv
 import { AdvanceCancelledComponent } from './advance-reports/advance-cancelled/advance-cancelled.component';
 import { ViewReportsComponent } from './advance-reports/view-reports/view-reports.component';
 import { StatusUpdateComponent } from './advance-reports/status-update/status-update.component';
-import { BrowserModule } from '@angular/platform-browser';
 import { TeamExpenseComponent } from './team-expense/team-expense.component';
 import { GeneralInformationComponent } from './general-information/general-information.component';
 import { ShowMyExpensesComponent } from './my-expense/show-my-expenses/show-my-expenses.component';
@@ -53,6 +52,7 @@ import { ApplicableExpenseSettingsComponent } from './general-information/applic
 import { SupervisorsComponent } from './general-information/supervisors/supervisors.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { ExpensesRoutingModule } from './expenses-routing.module';
  
 @NgModule({
   declarations: [
@@ -97,7 +97,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     SupervisorsComponent,
   ],
   imports: [
-    BrowserModule,
     CommonModule,
     SharedModule,
     CommonComponentsModule,
@@ -112,7 +111,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     MatCheckboxModule,
     MatRadioModule,
     MatTooltipModule,
-    NgbModule
+    NgbModule,
+    ExpensesRoutingModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

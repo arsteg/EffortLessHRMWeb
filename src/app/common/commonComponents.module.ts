@@ -19,7 +19,8 @@ import { MatDialogModule } from "@angular/material/dialog";
 @NgModule({
     declarations:[SubordinateSelectionComponent, CRUDComponent],
     exports:[SubordinateSelectionComponent, CRUDComponent],
-    imports:[SharedModule,
+    imports:[
+      SharedModule,
       RouterModule,
       MatFormFieldModule,
       MatDatepickerModule,

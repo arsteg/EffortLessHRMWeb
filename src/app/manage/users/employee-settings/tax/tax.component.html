@@ -22,13 +22,34 @@
     <div class="px-2 mt-2">
         <table class="px-2">
             <thead>
-                <th class="pe-lg-0 pe-3">Financial&nbsp;Year</th>
-                <th class="pe-lg-0 pe-3">80C&nbsp;Deductions</th>
-                <th class="pe-lg-0 pe-3">Section&nbsp;10&nbsp;Exemptions</th>
-                <th class="pe-lg-0 pe-3">Chapter&nbsp;VI&nbsp;Deductions</th>
-                <th class="pe-lg-0 pe-3">Total&nbsp;Prequisites</th>
-                <th class="pe-lg-0 pe-3">Interest&nbsp;on&nbsp;Home&nbsp;Loan</th>
-                <th class="pe-lg-0 pe-3">Previous&nbsp;Employment&nbsp;Information</th>
+                <th class="pe-lg-0 pe-3" [appSort]="taxList" data-name="financialYear"
+                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Financial&nbsp;Year
+                    <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                </th>
+                <th class="pe-lg-0 pe-3" [appSort]="taxList" data-name="financialYear"
+                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">80C&nbsp;Deductions
+                    <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                </th>
+                <th class="pe-lg-0 pe-3" [appSort]="taxList" data-name="financialYear"
+                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Section&nbsp;10&nbsp;Exemptions
+                    <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                </th>
+                <th class="pe-lg-0 pe-3" [appSort]="taxList" data-name="financialYear"
+                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Chapter&nbsp;VI&nbsp;Deductions
+                    <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                </th>
+                <th class="pe-lg-0 pe-3" [appSort]="taxList" data-name="financialYear"
+                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Total&nbsp;Prequisites
+                    <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                </th>
+                <th class="pe-lg-0 pe-3" [appSort]="taxList" data-name="financialYear"
+                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Interest&nbsp;on&nbsp;Home&nbsp;Loan
+                    <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                </th>
+                <th class="pe-lg-0 pe-3" [appSort]="taxList" data-name="financialYear"
+                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Previous&nbsp;Employment&nbsp;Information
+                    <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                </th>
                 <th class="pe-lg-0 pe-3">Actions</th>
             </thead>
 

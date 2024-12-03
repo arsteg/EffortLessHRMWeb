@@ -7,7 +7,7 @@
         <div class="d-flex align-items-center">
             <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
                 [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
-            <button mat-raised-button class="addBtn ms-2" (click)="changeMode = 'Add'; open(modal);">Add</button>
+            <button mat-raised-button class="addBtn ms-2" type="reset" (click)="changeMode = 'Add'; open(modal);">Add</button>
         </div>
     </div>
     <table>
@@ -90,9 +90,10 @@
 
         <div class="form-group mt-3">
             <label for="month">Month</label>
-            <select id="monthSelect" formControlName="month">
+            <input type="text" class="form-control" formControlName="month">
+            <!-- <select id="monthSelect" formControlName="month">
                 <option *ngFor="let month of months" [value]="month.value">{{ month.name }}</option>
-            </select>
+            </select> -->
             <div *ngIf="variablePayForm.get('month')?.invalid && variablePayForm.get('month')?.touched"
                 class="text-danger">
                 Month is required!
@@ -101,9 +102,10 @@
 
         <div class="form-group mt-3">
             <label for="year">Year</label>
-            <select id="year" name="year" class="form-control" formControlName="year">
+            <input type="text" class="form-control" formControlName="year">
+            <!-- <select id="year" name="year" class="form-control" formControlName="year">
                 <option *ngFor="let year of years" [value]="year">{{ year }}</option>
-            </select>
+            </select> -->
             <div *ngIf="variablePayForm.get('year')?.invalid && variablePayForm.get('year')?.touched"
                 class="text-danger">Year is required!
             </div>

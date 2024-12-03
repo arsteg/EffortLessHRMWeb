@@ -11,16 +11,14 @@ export class PayrollUserListComponent {
   payrollUsers: any;
   users: any;
   selectedUserId: string | undefined;
-  selectedUser: any;
+  selectedUser:string = '';
 
   @Input() selectedPayroll: any;
   @Output() userSelected = new EventEmitter<string>();
 
   constructor(private payrollService: PayrollService,
     private commonService: CommonService
-  ) {
-
-  }
+  ) { }
 
   ngOnInit() {
     this.getAllUsers();
@@ -29,7 +27,7 @@ export class PayrollUserListComponent {
       this.payrollUsers = res.data;
     })
   }
-
+ 
   getAllUsers() {
     this.commonService.populateUsers().subscribe((res: any) => {
       this.users = res.data.data;

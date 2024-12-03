@@ -15,11 +15,26 @@
         </app-pagination>
         <table>
             <thead>
-                <th>Component</th>
-                <th>Section</th>
-                <th>Maximum Amount</th>
-                <th>Type</th>
-                <th>Order</th>
+                <th [appSort]="taxComponents" data-name="componantName"
+                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Component
+                    <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                </th>
+                <th [appSort]="taxComponents" data-name="section"
+                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Section
+                    <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                </th>
+                <th [appSort]="taxComponents" data-name="maximumAmount"
+                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Maximum Amount
+                    <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                </th>
+                <th [appSort]="taxComponents" data-name="type"
+                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Type
+                    <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                </th>
+                <th [appSort]="taxComponents" data-name="order"
+                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Order
+                    <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                </th>
                 <th>Action</th>
             </thead>
             <tbody>

@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ViewPayslipComponent } from './view-payslip.component';
+import { OvertimeComponent } from './overtime.component';
 
-describe('ViewPayslipComponent', () => {
-  let component: ViewPayslipComponent;
-  let fixture: ComponentFixture<ViewPayslipComponent>;
+describe('OvertimeComponent', () => {
+  let component: OvertimeComponent;
+  let fixture: ComponentFixture<OvertimeComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ViewPayslipComponent]
+      declarations: [OvertimeComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(ViewPayslipComponent);
+    fixture = TestBed.createComponent(OvertimeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -33,6 +33,7 @@ export class GeneralSettingsComponent {
   roundingRules: any;
   pfTemplates: any;
   gratuityTemplate: any;
+  public sortOrder: string = '';
 
   constructor(private fb: FormBuilder,
     private modalService: NgbModal,

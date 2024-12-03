@@ -21,11 +21,9 @@ import { VariableAllowanceComponent } from './settings/variable-allowance/variab
 import { FixedContributionComponent } from './settings/fixed-contribution/fixed-contribution.component';
 
 const routes: Routes = [
-  {
-    path: '', component: HomeComponent, canActivate: [AuthGuard],
-    children: [
+  
       {
-        path: 'payroll', component: PayrollComponent, canActivate: [AuthGuard],
+        path: '', component: PayrollComponent, canActivate: [AuthGuard],
         children: [
           { path: '', redirectTo: 'settings', pathMatch: 'full' },
           {
@@ -51,9 +49,8 @@ const routes: Routes = [
           { path: 'fnf-payslips', component: FnfPayslipsComponent }
         ]
       }
-    ]
-  }
-];
+    ];
+  
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

@@ -24,6 +24,7 @@ export class FlexiBenefitsComponent {
   currentPage: number = 1;
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   user: any;
+  public sortOrder: string = '';
 
   constructor(private modalService: NgbModal,
     private toast: ToastrService,

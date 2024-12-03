@@ -27,9 +27,21 @@
             <table class="px-4">
                 <thead>
                     <tr>
-                        <th class="ps-2">Employee</th>
-                        <th>Shift</th>
-                        <th>Start Date</th>
+                        <th class="ps-2" [appSort]="shiftAssigments" data-name="user"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Employee
+                        <i
+                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                        </th>
+                        <th [appSort]="shiftAssigments" data-name="template"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Shift
+                        <i
+                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                        </th>
+                        <th [appSort]="shiftAssigments" data-name="startDate"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Start Date
+                        <i
+                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                        </th>
 
                         <th scope="col" class="text-center">Actions</th>
                     </tr>

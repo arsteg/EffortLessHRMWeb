@@ -26,6 +26,7 @@ export class VariableAllowanceComponent {
   members: any[];
   months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   years: number[] = [];
+  public sortOrder: string = '';
 
   constructor(private payroll: PayrollService,
     private modalService: NgbModal,

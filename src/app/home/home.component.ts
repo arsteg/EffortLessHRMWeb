@@ -193,13 +193,13 @@ export const SideBarAdminMenu = [
     lightIcon: 'assets/Sidenav-Icons/light-Icons/screenshots.png',
     url: '/screenshots',
   },
-  {
-    id: '19',
-    icon: 'assets/Sidenav-Icons/livescreen.png',
-    lightIcon: 'assets/Sidenav-Icons/light-Icons/liveScreen.png',
-    title: 'View Live Screen',
-    url: '/viewLiveScreen'
-  },
+  // {
+  //   id: '19',
+  //   icon: 'assets/Sidenav-Icons/livescreen.png',
+  //   lightIcon: 'assets/Sidenav-Icons/light-Icons/liveScreen.png',
+  //   title: 'View Live Screen',
+  //   url: '/viewLiveScreen'
+  // },
   {
     id: '3',
     title: 'RealTime',
@@ -221,7 +221,7 @@ export const SideBarAdminMenu = [
     title: 'Manage',
     icon: 'assets/Sidenav-Icons/manage.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/manage.png',
-    url: '/manage/employees'
+    url: '/manage'
 
   },
   {
@@ -236,7 +236,7 @@ export const SideBarAdminMenu = [
     title: 'Attendance',
     icon: 'assets/Sidenav-Icons/attendance.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/attendance.png',
-    url: '/attendance/settings'
+    url: '/attendance'
 
   },
   {
@@ -252,7 +252,7 @@ export const SideBarAdminMenu = [
     title: 'Leave',
     icon: 'assets/Sidenav-Icons/leave.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/leave.png',
-    url: 'Leave'
+    url: 'leave'
 
   },
   {
@@ -260,7 +260,7 @@ export const SideBarAdminMenu = [
     title: 'Expenses',
     icon: 'assets/Sidenav-Icons/expenses.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/expenses.png',
-    url: 'expenses'
+    url: 'expense'
   },
   {
     id: '11',
@@ -274,7 +274,7 @@ export const SideBarAdminMenu = [
     title: 'Payroll',
     icon: 'assets/Sidenav-Icons/payroll.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/payroll.png',
-    url: '/payroll/settings'
+    url: '/payroll'
   },
   {
     id: '13',
@@ -359,13 +359,13 @@ export const SideBarUserMenu = [
     url: '/screenshots',
 
   },
-  {
-    id: '17',
-    title: 'View Live Screen',
-    icon: 'assets/Sidenav-Icons/livescreen.png',
-    lightIcon: 'assets/Sidenav-Icons/light-Icons/liveScreen.png',
-    url: '/viewLiveScreen'
-  },
+  // {
+  //   id: '17',
+  //   title: 'View Live Screen',
+  //   icon: 'assets/Sidenav-Icons/livescreen.png',
+  //   lightIcon: 'assets/Sidenav-Icons/light-Icons/liveScreen.png',
+  //   url: '/viewLiveScreen'
+  // },
   {
     id: '3',
     title: 'RealTime',
@@ -394,7 +394,7 @@ export const SideBarUserMenu = [
     title: 'Organization',
     icon: 'assets/Sidenav-Icons/organization.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/organization.png',
-    url: 'organization'
+    url: '/organization'
 
   },
   {
@@ -409,14 +409,14 @@ export const SideBarUserMenu = [
     title: 'Leave',
     icon: 'assets/Sidenav-Icons/leave.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/leave.png',
-    url: 'Leave'
+    url: 'leave'
   },
   {
     id: '8',
     title: 'Attendance',
     icon: 'assets/Sidenav-Icons/attendance.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/attendance.png',
-    url: '/attendance/my-attendance-records'
+    url: '/attendance'
   },
   {
     id: '9',
@@ -438,7 +438,7 @@ export const SideBarUserMenu = [
     title: 'Expenses',
     icon: 'assets/Sidenav-Icons/expenses.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/expenses.png',
-    url: 'expenses'
+    url: 'expense'
   },
   {
     id: '12',

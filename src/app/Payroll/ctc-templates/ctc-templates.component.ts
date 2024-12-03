@@ -24,6 +24,7 @@ export class CtcTemplatesComponent {
   currentPage: number = 1;
   offcanvasData = 'Initial data';
   showOffcanvas: boolean = false;
+  public sortOrder: string = '';
 
   constructor(private modalService: NgbModal,
     private payroll: PayrollService,

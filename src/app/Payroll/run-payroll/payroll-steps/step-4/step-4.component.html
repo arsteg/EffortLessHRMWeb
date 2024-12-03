@@ -78,6 +78,10 @@
         <div class="form-group">
             <label for="">Enter Disbursement Amount</label>
             <input type="number" class="form-control" formControlName="disbursementAmount">
+            <div *ngIf="loanAdvanceForm.get('disbursementAmount')?.invalid && loanAdvanceForm.get('disbursementAmount')?.touched"
+                class="text-danger">
+               Disbursement Amount must be greater than 0.
+            </div>
         </div>
 
         <div class="form-group">
@@ -89,7 +93,7 @@
         </div>
 
         <div class="d-flex justify-content-between">
-            <button mat-raised-button type="button">Cancel</button>
+            <button mat-raised-button type="button" (click)="setFormValues(selectedRecord)">Cancel</button>
             <button mat-raised-button type="submit" class="addBtn">Save</button>
         </div>
     </form>

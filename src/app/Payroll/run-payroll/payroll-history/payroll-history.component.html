@@ -57,7 +57,7 @@
                                         <i class="bi bi-pencil dropdown-item w-25"></i><span
                                             class="pt-1 text-muted">Edit</span>
                                     </li>
-                                    <li class="d-flex border-bottom action-list">
+                                    <li class="d-flex border-bottom action-list" (click)="deleteDialog(data._id)">
                                         <i class="bi bi-trash dropdown-item w-25"></i><span
                                             class="pt-1 text-muted">Delete</span>
                                     </li>
@@ -132,48 +132,55 @@
     </div>
     <form [formGroup]="payrollUserForm" (ngSubmit)="updatePayrollUser()">
 
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label for="" class="">Employee Selection for Payroll&nbsp;<span class="text-danger">*</span></label>
+                <select name="" id="" class="form-control" formControlName="user"
+                    (click)="getGrossSalaryBySalaryStructure()">
+                    <option [value]="user?.id" *ngFor="let user of users; let i = index">{{user?.firstName |
+                        titlecase}} {{user.lastName | titlecase}}</option>
 
-        <div class="form-group">
-            <label for="" class="">Employee Selection for Payroll&nbsp;<span class="text-danger">*</span></label>
-            <select name="" id="" class="form-control" formControlName="user">
-                <option [value]="user?.id" *ngFor="let user of users; let i = index">{{user?.firstName |
-                    titlecase}} {{user.lastName | titlecase}}</option>
+                </select>
+                <div *ngIf="payrollUserForm.get('user').invalid && payrollUserForm.get('user').touched"
+                    class="text-danger error">
+                    Please Choose an Employee to Assign the Payroll!
+                </div>
+            </div>
 
-            </select>
-            <div *ngIf="payrollUserForm.get('user').invalid && payrollUserForm.get('user').touched"
-                class="text-danger error">
-                Please Choose an Employee to Assign the Payroll!
+            <div class="form-group my-2 col-md-6">
+                <label for="totalHomeTakeInput">Total Home Take</label>
+                <input type="number" id="totalHomeTakeInput" formControlName="totalHomeTake" class="form-control"
+                    placeholder="Enter Total Home Take" />
             </div>
         </div>
 
-        <div class="form-group my-2 col-md-6">
-            <label for="totalHomeTakeInput">Total Home Take</label>
-            <input type="number" id="totalHomeTakeInput" formControlName="totalHomeTake" class="form-control"
-                placeholder="Enter Total Home Take" />
+        <div class="row">
+            <div class="form-group my-2 col-md-6">
+                <label for="totalFlexiBenefitsInput">Total Flexi Benefits</label>
+                <input type="number" id="totalFlexiBenefitsInput" formControlName="totalFlexiBenefits"
+                    class="form-control" placeholder="Enter Total Flexi Benefits" />
+            </div>
+
+            <div class="form-group my-2 col-md-6">
+                <label for="totalCTCInput">Total CTC</label>
+                <input type="number" id="totalCTCInput" formControlName="totalCTC" class="form-control"
+                    placeholder="Enter Total CTC" />
+            </div>
         </div>
 
-        <div class="form-group my-2 col-md-6">
-            <label for="totalFlexiBenefitsInput">Total Flexi Benefits</label>
-            <input type="number" id="totalFlexiBenefitsInput" formControlName="totalFlexiBenefits" class="form-control"
-                placeholder="Enter Total Flexi Benefits" />
-        </div>
+        <div class="row">
 
-        <div class="form-group my-2 col-md-6">
-            <label for="totalCTCInput">Total CTC</label>
-            <input type="number" id="totalCTCInput" formControlName="totalCTC" class="form-control"
-                placeholder="Enter Total CTC" />
-        </div>
+            <div class="form-group my-2 col-md-6">
+                <label for="totalGrossSalaryInput">Total Gross Salary</label>
+                <input type="number" id="totalGrossSalaryInput" formControlName="totalGrossSalary" class="form-control"
+                    placeholder="Enter Total Gross Salary" />
+            </div>
 
-        <div class="form-group my-2 col-md-6">
-            <label for="totalGrossSalaryInput">Total Gross Salary</label>
-            <input type="number" id="totalGrossSalaryInput" formControlName="totalGrossSalary" class="form-control"
-                placeholder="Enter Total Gross Salary" />
-        </div>
-
-        <div class="form-group my-2 col-md-6">
-            <label for="totalTakeHomeInput">Total Take Home</label>
-            <input type="number" id="totalTakeHomeInput" formControlName="totalTakeHome" class="form-control"
-                placeholder="Enter Total Take Home" />
+            <div class="form-group my-2 col-md-6">
+                <label for="totalTakeHomeInput">Total Take Home</label>
+                <input type="number" id="totalTakeHomeInput" formControlName="totalTakeHome" class="form-control"
+                    placeholder="Enter Total Take Home" />
+            </div>
         </div>
 
         <div class="form-group my-2 col-md-6">
@@ -217,5 +224,6 @@
     </div>
 </ng-template>
 
-<button *ngIf="isAllEmployees" (click)="isAllEmployees = false" mat-raised-button class="bi bi-arrow-left addBtn">Back</button>
+<button *ngIf="isAllEmployees" (click)="isAllEmployees = false" mat-raised-button
+    class="bi bi-arrow-left addBtn">Back</button>
 <app-payroll-steps [selectedPayroll]="selectedPayroll" *ngIf="isAllEmployees"></app-payroll-steps>
