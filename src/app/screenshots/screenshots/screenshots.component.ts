@@ -48,6 +48,7 @@ export class ScreenshotsComponent implements OnInit {
   role: any;
   myControl = new FormControl();
   filteredMembers: Observable<teamMember[]>;
+  data: any = [];
 
   constructor(
     private timeLogService: TimeLogService,
@@ -62,15 +63,9 @@ export class ScreenshotsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.populateMembers().then(() => {
-      let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-      this.myControl.setValue(this.members.find(member => member.id === currentUser.id));
-  
-      this.filteredMembers = this.myControl.valueChanges.pipe(
-        startWith(''),
-        map(value => value ? this.filterMembers(value) : this.members)
-      );
-    });
+    this.members = [];
+    this.populateMembers();
+
     this.showScreenShots();
     this.subscription = this.timeLogService.currentMessage.subscribe((message: any) => this.message = message);
 
@@ -90,106 +85,44 @@ export class ScreenshotsComponent implements OnInit {
     return member ? member.name : '';
   }
 
-  // filterMembers(value: any): teamMember[] {
-  //   if (value === '') { // Check if the input field is being clicked
-  //     this.onMemberSelectionChange(null); // Reset the selected member
-  //     console.log(this.members);
-  //     return this.members; // Return all members
-  //   }
-
-  //   if (typeof value === 'string') { // Check if value is a string
-  //     const filterValue = value.toLowerCase();
-  //     console.log(this.members);
-
-  //     return this.members.filter(member => {
-  //       return member.name.toLowerCase().includes(filterValue) ||
-  //         member.id.toLowerCase().includes(filterValue) ||
-  //         member.email.toLowerCase().includes(filterValue);
-  //     });
-  //   } else {
-  //     this.onMemberSelectionChange(value)
-  //     const filterValue = value?.name?.toLowerCase();
-  //     if (!filterValue) { // If filterValue is null or undefined, return all members
-  //       console.log(this.members);
-  //       return this.members;
-
-  //     }
-  //     console.log(this.members);
-
-  //     return this.members.filter(member => {
-  //       return member.name.toLowerCase().includes(filterValue) ||
-  //         member.id.toLowerCase().includes(filterValue) ||
-  //         member.email.toLowerCase().includes(filterValue);
-  //     });
-  //   }
-  // }
-  filterMembers(value: any): teamMember[] {
-    // Return all members when the input is empty (for initial click or reset)
-    if (value === '') {
-      return this.members;
-    }
-  
-    // If the user selects from the dropdown, the value will be an object, not a string
-    if (typeof value === 'string') {
-      const filterValue = value.toLowerCase();
-  
-      // Filter the members list based on name, id, or email
-      return this.members.filter(member => {
-        return member.name.toLowerCase().includes(filterValue) ||
-               member.id.toLowerCase().includes(filterValue) ||
-               member.email.toLowerCase().includes(filterValue);
-      });
-    }
-  
-    // If a member object is selected (not during filtering), trigger the change
-    if (value && typeof value === 'object') {
-      this.onMemberSelectionChange(value); // Now only trigger when the user selects
-    }
-  
-    return this.members; // Always return the full list for display
-  }
-  
   onMemberSelectionChange(member: any) {
-    this.member = member;
+    this.member = JSON.parse(member.value);
     this.showScreenShots();
   }
-  populateMembers(): Promise<void> {
-    return new Promise(resolve => {
-      let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-      this.members = [];
-      this.members.push({ id: currentUser.id, name: "Me", email: currentUser.email });
-      this.member = currentUser;
+  populateMembers() {
+    this.members = [];
+    let currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
-      this.timeLogService.getTeamMembers(this.member.id).subscribe({
-        next: response => {
-          this.timeLogService.getusers(response.data).subscribe({
-            next: result => {
-              let otherMembers = [];
+    this.members.push({ id: currentUser.id, name: "Me", email: currentUser.email });
+    this.member = currentUser;
 
-              result.data.forEach(user => {
-                if (user.id !== currentUser.id) {
-                  otherMembers.push({ id: user.id, name: `${user.firstName} ${user.lastName}`, email: user.email });
-                }
-              });
+    this.timeLogService.getTeamMembers(this.member.id).subscribe({
+      next: response => {
+        this.timeLogService.getusers(response.data).subscribe({
+          next: result => {
+            let otherMembers = [];
 
-              otherMembers.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
+            result.data.forEach(user => {
+              if (user.id !== currentUser.id) {
+                otherMembers.push({ id: user.id, name: `${user.firstName} ${user.lastName}`, email: user.email });
+              }
+            });
 
-              this.members = [...this.members, ...otherMembers];
-              resolve();
-            },
-            error: error => {
-              console.log('There was an error!', error);
-            }
-          });
-        },
-        error: error => {
-          console.log('There was an error!', error);
-        }
-      });
+            otherMembers.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
+
+            this.members = [this.members[0], ...otherMembers];
+          },
+          error: error => {
+            console.log('There was an error!', error);
+          }
+        });
+      },
+      error: error => {
+        console.log('There was an error!', error);
+      }
     });
   }
 
-  data: any = [];
   showScreenShots() {
     let currentUser = JSON.parse(localStorage.getItem('currentUser'));
     let formattedDate = this.formatDate(this.selectedDate);
@@ -233,7 +166,6 @@ export class ScreenshotsComponent implements OnInit {
       }
     });
   }
-
 
   deleteScreenShot() {
     let logs = { logs: this.selectedTimelog.map((id) => { return { logId: id } }) };
