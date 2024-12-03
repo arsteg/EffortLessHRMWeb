@@ -59,21 +59,21 @@ export class EmployeeProfileComponent {
   }
 
   ngOnInit() {
-    if (this.isEdit) {
-      this.timelogService.getusers(this.selectedUser.id).subscribe((res: any) => {
-        const formattedDOB = res.data[0].DOB ? formatDate(res.data[0].DOB, 'yyyy-MM-dd', 'en') : null;
-        const formattedMarriageAniversary = res.data[0].MarraigeAniversary ? formatDate(res.data[0].MarraigeAniversary, 'yyyy-MM-dd', 'en') : null;
-        this.userForm.patchValue({
-          ...res.data[0],
-          role: res.data[0].role.id,
-          DOB: formattedDOB,
-          MarraigeAniversary: formattedMarriageAniversary
-        });
-        if (this.isEdit) {
-          this.userForm.get('email').disable();
-        }
-      })
-    }
+    console.log(this.selectedUser?.id);
+    this.timelogService.getusers(this.selectedUser?.id).subscribe((res: any) => {
+      const formattedDOB = res?.data[0]?.DOB ? formatDate(res?.data[0]?.DOB, 'yyyy-MM-dd', 'en') : null;
+      const formattedMarriageAniversary = res.data[0]?.MarraigeAniversary ? formatDate(res.data[0]?.MarraigeAniversary, 'yyyy-MM-dd', 'en') : null;
+      this.userForm.patchValue({
+        ...res.data[0],
+        role: res?.data[0]?.role || res?.data[0]?.role?.id || '',
+        DOB: formattedDOB,
+        MarraigeAniversary: formattedMarriageAniversary
+      });
+      console.log(this.userForm.value);
+      if (this.isEdit) {
+        this.userForm.get('email').disable();
+      }
+    })
     this.getRoles();
   }
 
@@ -82,7 +82,7 @@ export class EmployeeProfileComponent {
     const confirmPassword = group.get('passwordConfirm')?.value;
     return password === confirmPassword ? null : { notMatching: true };
   }
-  
+
   getErrorMessage(field: string): string {
     const control = this.userForm.get(field);
     if (control?.hasError('required')) {
@@ -102,25 +102,13 @@ export class EmployeeProfileComponent {
     return '';
   }
 
-  
+
   onSubmit() {
-  console.log(this.userForm.valid);
-  if (this.userForm.valid) {
-    if (this.isEdit) {
-      this.userService.updateUser(this.selectedUser.id, this.userForm.value).subscribe(
-        (res: any) => this.toast.success('User Updated Successfully'),
-        err => this.toast.error('User Update Failed')
-      );
-    } else {
-      this.userService.addUser(this.userForm.value).subscribe(
-        (res: any) => this.toast.success('User Created Successfully')
-      );
-    }
-  } else {
-    this.userForm.markAllAsTouched();
-    this.toast.error('Form is invalid. Please fill out the required fields.', 'Error!');
+    this.userService.updateUser(this.selectedUser.id, this.userForm.value).subscribe(
+      (res: any) => this.toast.success('User Updated Successfully'),
+      (err) => { this.toast.error('User Update Failed') }
+    );
   }
-}
 
 
   getRoles() {

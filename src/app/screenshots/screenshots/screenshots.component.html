@@ -17,23 +17,12 @@
         <!-- Member Selection -->
         <div
           class="col-lg-3 col-md-9 col-sm-8 pt-md-0 pt-lg-1 mb-md-0 mb-3 order-md-0 order-1 d-flex justify-content-center align-items-baseline text-center">
-          <!-- <label for="member" class="pt-2 pe-3">Member</label>
+          <label for="member" class="pt-2 pe-3">Member</label>
           <select id="member" name="member" class="form-control form-select form-select-sm select_member"
             aria-label=".form-select-sm example" #member (change)="onMemberSelectionChange(member)">
             <option *ngFor="let m of members" value="{{m|json}}">{{m.name | titlecase}}</option>
-          </select> -->
-          <mat-form-field class="example-full-width">
-            <mat-label>Member</mat-label>
-            <input type="text" matInput [formControl]="myControl" [matAutocomplete]="auto">
-            <mat-autocomplete  #auto="matAutocomplete" [displayWith]="displayFn">
-              <mat-option  *ngFor="let member of (filteredMembers | async) || members" [value]="member">
-                {{ member.name | titlecase }}
-              </mat-option>
-            </mat-autocomplete>
-          </mat-form-field>
+          </select>
         </div>
-
-        
         
         <!-- Refresh and Delete Button - desktop and tablet -->
         <div class="d-flex justify-content-end col-lg-6 col-md-4 col-sm-6 pb-1 d-md-flex d-none">
