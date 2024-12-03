@@ -9,7 +9,7 @@
                     <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
                         name="searchText" aria-label="default input example">
                     <button mat-raised-button class="addBtn rounded-pill ms-3"
-                        (click)="clearselectedRequest(); isEdit=false; open(addModal)">Add New</button>
+                        (click)="isEdit=false; open(addModal)">Add New</button>
                 </div>
             </div>
             <table>
