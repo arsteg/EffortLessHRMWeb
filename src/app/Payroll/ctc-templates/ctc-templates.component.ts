@@ -82,10 +82,14 @@ export class CtcTemplatesComponent {
   }
 
   openOffcanvas(isEdit: boolean, record: any = null) {
+    console.log('offcanvas called!')
     this.isEdit = isEdit;
     this.selectedRecord = record;
+    console.log(this.selectedRecord)
+    this.payroll.ctcTempData.next(this.selectedRecord);
     this.showOffcanvas = true;
     this.offcanvasContent.clear();
+    
 
     // Create the component factory
     const componentFactory = this.componentFactoryResolver.resolveComponentFactory(UpdateCTCTemplateComponent);

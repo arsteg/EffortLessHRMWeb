@@ -16,13 +16,7 @@
                 (recordsPerPageChange)="onRecordsPerPageChange($event)">
             </app-pagination>
             <table>
-                <!-- <thead>
-                    <th>Template Name</th>
-                    <th>Fixed Allowance</th>
-                    <th>Fixed Deduction</th>
-                    <th>Other Allowances</th>
-                    <th>Actions</th>
-                </thead> -->
+              
                 <thead>
                     <th [appSort]="ctcTemplate" data-name="name"
                     (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Template Name
