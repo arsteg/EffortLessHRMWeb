@@ -49,7 +49,6 @@ export class Step2Component {
     this.selectedUserId = userId;
     this.getAttendanceSummary();
     this.getProcessAttendanceLOPForPayrollUser();
-
   }
 
   open(content: any) {
@@ -122,39 +121,79 @@ export class Step2Component {
   }
 
   onSubmission() {
-    this.attendanceSummaryForm.value.payrollUser = this.selectedUserId._id;
-    if (this.changeMode == 'Add') {
-      this.payrollService.addAttendanceSummary(this.attendanceSummaryForm.value).subscribe((res: any) => {
-        this.getAttendanceSummary();
-        this.attendanceSummaryForm.enable();
-        this.attendanceSummaryForm.patchValue({
-          payrollUser: '',
-          totalDays: 0,
-          lopDays: 0,
-          payableDays: 0
-        });
-        this.toast.success('Attendance summary for payroll user Created', 'Successfully!');
-      },
-        err => {
-          this.toast.error('Attendance summary for payroll user can not be created', 'Error!');
-        })
+    // Extract form values
+    const formData = this.attendanceSummaryForm.value;
+  
+    // Perform a check for existing records
+    const existingRecord = this.attendanceSummary.find(
+      (record: any) =>
+        record.payrollUser === this.selectedUserId._id &&
+        record.month === formData.month &&
+        record.year === formData.year
+    );
+  
+    if (existingRecord) {
+      // Show toast if record exists
+      this.toast.warning(
+        'Attendance summary for the selected payroll user, month, and year already exists.',
+        'Duplicate Record!'
+      );
+      return; // Stop further execution
     }
-    if (this.changeMode == 'Update') {
-      let payload = {
-        totalDays: this.attendanceSummaryForm.value?.totalDays,
-        lopDays: this.attendanceSummaryForm.value?.lopDays,
-        payableDays: this.attendanceSummaryForm.value?.payableDays
-      }
-      this.payrollService.updateAttendanceSummary(this.selectedRecord?._id, payload).subscribe((res: any) => {
-        this.getAttendanceSummary();
-        this.toast.success('Attendance summary for payroll user Updated', 'Successfully!');
-      },
-        err => {
-          this.toast.error('Attendance summary for payroll user can not be Updated', 'Error!');
-        })
+  
+    // Continue if no duplicate record exists
+    if (this.changeMode === 'Add') {
+      formData.payrollUser = this.selectedUserId._id;
+  
+      this.payrollService.addAttendanceSummary(formData).subscribe(
+        (res: any) => {
+          this.getAttendanceSummary(); // Refresh attendance summary
+          this.attendanceSummaryForm.enable(); // Re-enable form
+  
+          // Reset form fields
+          this.attendanceSummaryForm.patchValue({
+            payrollUser: '',
+            totalDays: 0,
+            lopDays: 0,
+            payableDays: 0,
+          });
+  
+          // Show success message
+          this.toast.success(
+            'Attendance summary for payroll user created successfully!',
+            'Success!'
+          );
+        },
+        (err) => {
+          // Show error message
+          this.toast.error(
+            'Attendance summary for payroll user could not be created.',
+            'Error!'
+          );
+        }
+      );
     }
-
   }
+  
+  // onSubmission() {
+  //   this.attendanceSummaryForm.value.payrollUser = this.selectedUserId._id;
+  //   if (this.changeMode == 'Add') {
+  //     this.payrollService.addAttendanceSummary(this.attendanceSummaryForm.value).subscribe((res: any) => {
+  //       this.getAttendanceSummary();
+  //       this.attendanceSummaryForm.enable();
+  //       this.attendanceSummaryForm.patchValue({
+  //         payrollUser: '',
+  //         totalDays: 0,
+  //         lopDays: 0,
+  //         payableDays: 0
+  //       });
+  //       this.toast.success('Attendance summary for payroll user Created', 'Successfully!');
+  //     },
+  //       err => {
+  //         this.toast.error('Attendance summary for payroll user can not be created', 'Error!');
+  //       })
+  //   }
+  // }
 
   getMonthNumber(monthName: string): number {
     const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
