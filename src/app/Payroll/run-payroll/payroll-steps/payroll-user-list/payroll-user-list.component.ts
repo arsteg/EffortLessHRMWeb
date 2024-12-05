@@ -10,8 +10,7 @@ import { PayrollService } from 'src/app/_services/payroll.service';
 export class PayrollUserListComponent {
   payrollUsers: any;
   users: any;
-  selectedUserId: string | undefined;
-  selectedUser:string = '';
+  selectedUser: string = '';
 
   @Input() selectedPayroll: any;
   @Output() userSelected = new EventEmitter<string>();
@@ -27,7 +26,7 @@ export class PayrollUserListComponent {
       this.payrollUsers = res.data;
     })
   }
- 
+
   getAllUsers() {
     this.commonService.populateUsers().subscribe((res: any) => {
       this.users = res.data.data;

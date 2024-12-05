@@ -74,8 +74,19 @@ export class Step3Component {
     const currentYear = new Date().getFullYear();
     this.years = [currentYear - 1, currentYear, currentYear + 1];
     this.variablePayForm.value.year = currentYear;
-
   }
+
+  resetForm() {
+    this.variablePayForm.reset();
+    this.variablePayForm.patchValue({
+      month: this.selectedPayroll?.month,
+      year: this.selectedPayroll?.year,
+      variableDeduction: '',
+      variableAllowance: '',
+      amount: 0,
+    });
+  }
+
   open(content: any) {
     this.variablePayForm.patchValue({
       month: this.selectedPayroll?.month,
@@ -119,16 +130,17 @@ export class Step3Component {
     }
   }
 
-  getSalarydetails() {
+  getSalarydetailsByUser() {
     this.selectedUserId
     this.userService.getSalaryByUserId(this.selectedUserId?.user).subscribe((res: any) => {
-      this.salary = res.data;
+      this.salary =  res.data[res.data.length - 1];
+      console.log(this.salary)
     })
   }
 
   onUserSelectedFromChild(userId: string) {
     this.selectedUserId = userId;
-    this.getSalarydetails();
+    this.getSalarydetailsByUser();
     this.getVariablePay();
   }
 
@@ -162,6 +174,16 @@ export class Step3Component {
     let payload = { skipe: '', next: '' }
     this.payrollService.getVariableAllowance(payload).subscribe((res: any) => { this.varAllowance = res.data });
     this.payrollService.getVariableDeduction(payload).subscribe((res: any) => { this.varDeduction = res.data });
+  }
+
+  getVariableAllowance(templateId: string) {
+    const matchingTemp = this.varAllowance?.find(temp => temp._id === templateId);
+    return matchingTemp ? matchingTemp.label : '';
+  }
+
+  getVariableDeduction(templateId: string) {
+    const matchingTemp = this.varDeduction?.find(temp => temp._id === templateId);
+    return matchingTemp ? matchingTemp.label : '';
   }
 
   onSubmit() {
