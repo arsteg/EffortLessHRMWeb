@@ -179,3 +179,7 @@ input {
   min-height: 15px !important;
   min-width: 15px !important;
 }
+
+.manualImg{
+  height: 8vw;
+}
