@@ -65,7 +65,7 @@ export class LoginComponent implements OnInit {
             this.router.navigateByUrl(this.returnUrl || '/dashboard');
           } else {
             localStorage.setItem('adminView', 'user');
-            this.router.navigateByUrl(this.returnUrl || '/userDashboard');
+            this.router.navigateByUrl(this.returnUrl || '/dashboard/user');
           }
         },
         err => {

@@ -1,17 +1,13 @@
-import { Component, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './login/register/register.component';
 import { ForgotPasswordComponent } from './login/forgot-password/forgot-password.component';
-import { ProjectListComponent } from './Project/project-list/project-list.component';
 import { AuthGuard } from './auth.guard';
-import { DashboardComponent } from './dashboard/dashboard.component';
 import { ChangePasswordComponent } from './login/change-password/change-password.component';
-// import { UserProfileComponent } from './users/user-profile/user-profile.component';
-import { ScreenshotsComponent } from './screenshots/screenshots/screenshots.component';
 import { TeammembersComponent } from './manage/teammembers/teammembers.component';
-import { HomeComponent } from './home/home.component';
+import { HomeComponent } from './layouts/home/home.component';
 import { RolesComponent } from './manage/roles/roles/roles.component';
 import { PermissionModelComponent } from './manage/permissonModel/permission-model/permission-model.component';
 import { ProfileComponent } from './profile/profile.component';
@@ -26,10 +22,8 @@ import { AppAndWebsiteUsageComponent } from './reports/app-and-website-usage/app
 import { PermissionsComponent } from './permissions/permissions.component';
 import { RolePermissionComponent } from './role-permission/role-permission.component';
 import { ResetPasswordComponent } from './login/reset-password/reset-password.component';
-import { ProfileSettingsComponent } from './settings/profile-settings/profile-settings.component';
 import { WorkspaceSettingsComponent } from './settings/workspace-settings/workspace-settings.component';
 import { FeaturesSettingsComponent } from './settings/features-settings/features-settings.component';
-import { LeaveSettingsComponent } from './settings/leave-settings/leave-settings.component';
 import { TagComponent } from './tasks/task.tag/tag.component';
 import { EditTaskComponent } from './tasks/edit-task/edit-task.component';
 import { TaskCommentComponent } from './tasks/task-comment/task-comment.component';
@@ -37,13 +31,10 @@ import { UserTimesheetComponent } from './timesheets/user-timesheet/user-timeshe
 import { AdminTimesheetComponent } from './timesheets/admin-timesheet/admin-timesheet.component';
 import { GenericSettingsComponent } from './settings/generic-settings/generic-settings.component';
 import { ViewLiveScreenComponent } from './viewLiveScreen/view-live-screen/view-live-screen.component';
-import { UserDashboardComponent } from './dashboard/user-dashboard/user-dashboard.component';
-import { EmailTemplateComponent } from './email-template/email-template.component';
 import { SubtaskComponent } from './tasks/subtask/subtask.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { AdminCalendarComponent } from './calendar/admin-calendar/admin-calendar.component';
 import { UserCalendarComponent } from './calendar/user-calendar/user-calendar.component';
-import { LeaveManagementComponent } from './Leave/leave-grant/leave-grant.component';
 import { TimesheetsComponent } from './timesheets/timesheets.component';
 import { AlertsComponent } from './Alerts/alerts.component';
 import { TaxationComponent } from './Taxation/taxation.component';
@@ -56,21 +47,19 @@ import { ExpenseCategorySettingsComponent } from './Expenses/settings/expense-ca
 import { InterviewProcessMainComponent } from './pages/interviewProcess/interview-process-main/interview-process-main.component';
 
 const routes: Routes = [
-  { path: '', component: MainComponent },
-  { path: 'main', component: MainComponent },
-  { path: 'login', component: LoginComponent },
-  { path: 'forgotPassword', component: ForgotPasswordComponent },
-  { path: 'register', component: RegisterComponent },
-  { path: 'changePassword', component: ChangePasswordComponent },
-  { path: 'resetPassword/:token', component: ResetPasswordComponent },
-  { path: 'category-settings', component: ExpenseCategorySettingsComponent },
   {
     path: '', component: HomeComponent, canActivate: [AuthGuard],
     children: [
-      { path: 'dashboard', component: DashboardComponent },
-      { path: 'userDashboard', component: UserDashboardComponent },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      {
+        path: 'dashboard', loadChildren: () =>
+          import('./feature_modules/dashboard/dashboard.module').then(m => m.DashboardModule),
+      },
+      {
+        path: 'screenshots', loadChildren: () =>
+          import('./feature_modules/screenshots/screenshots.module').then(m => m.ScreenshotsModule)
+      },
       { path: 'logout', component: LoginComponent },
-      { path: 'screenshots', component: ScreenshotsComponent },
       { path: 'teamMembers', component: TeammembersComponent },
       { path: 'roles', component: RolesComponent },
       { path: 'permissionModel', component: PermissionModelComponent },
@@ -103,16 +92,26 @@ const routes: Routes = [
       { path: 'leave', loadChildren: () => import('./Leave/leave-routing.module').then(m => m.LeaveRoutingModule) },
       { path: 'expense', loadChildren: () => import('./Expenses/expenses-routing.module').then(m => m.ExpensesRoutingModule) },
       { path: 'alerts', component: AlertsComponent },
-      { path: 'payroll', loadChildren: () => import('./Payroll/payroll-routing.module').then(m => m.PayrollRoutingModule) },
-      { path: 'taxation', component: TaxationComponent},
+      { path: 'payroll', loadChildren: () => import('./feature_modules/payroll/payroll.module').then(m => m.PayrollModule) },
+      { path: 'taxation', component: TaxationComponent },
       { path: 'separation', component: SeparationComponent },
       { path: 'settings', component: SettingsComponent },
-      { path: 'reports', component: ReportsComponent},
-      { path: 'Approvals', component: ApprovalsComponent},
+      { path: 'reports', component: ReportsComponent },
+      { path: 'Approvals', component: ApprovalsComponent },
       { path: 'taxDeclaration', component: UserTaxDeclarationComponent },
       { path: 'interviewProcess', component: InterviewProcessMainComponent }
     ]
-  }
+  },
+  { path: 'main', component: MainComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'forgotPassword', component: ForgotPasswordComponent },
+  { path: 'register', component: RegisterComponent },
+  { path: 'changePassword', component: ChangePasswordComponent },
+  { path: 'resetPassword/:token', component: ResetPasswordComponent },
+  { path: 'category-settings', component: ExpenseCategorySettingsComponent },
+
+  { path: '**', redirectTo: 'main' },
+
 ]
 
 @NgModule({

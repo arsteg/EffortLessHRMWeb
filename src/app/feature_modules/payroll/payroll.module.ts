@@ -18,7 +18,7 @@ import { RunPayrollComponent } from './run-payroll/run-payroll.component';
 import { PayslipsComponent } from './payslips/payslips.component';
 import { FnfPayslipsComponent } from './fnf-payslips/fnf-payslips.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { SharedModule } from '../shared/shared.Module';
+import { SharedModule } from 'src/app/shared/shared.Module';
 import { RoundingRulesComponent } from './settings/general-settings/rounding-rules/rounding-rules.component';
 import { PfTemplateComponent } from './settings/general-settings/pf-template/pf-template.component';
 import { GratuityTemplateComponent } from './settings/general-settings/gratuity-template/gratuity-template.component';
@@ -33,8 +33,6 @@ import { ContributionComponent } from './settings/fixed-contribution/esic/contri
 import { DeductionComponent } from './settings/fixed-contribution/lwf/deduction/deduction.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatButtonModule } from '@angular/material/button';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserModule } from '@angular/platform-browser';
 import { PtSlabComponent } from './settings/fixed-contribution/pt/pt-slab/pt-slab.component';
 import { ConfigureStateComponent } from './settings/fixed-contribution/pt/eligible-states/configure-state/configure-state.component';
 import { UpdateStateComponent } from './settings/fixed-contribution/pt/eligible-states/configure-state/update-state/update-state.component';
@@ -62,7 +60,7 @@ import { Step9Component } from './run-payroll/payroll-steps/step-9/step-9.compon
 import { ViewPayslipComponent } from './run-payroll/payroll-steps/step-9/view-payslip/view-payslip.component';
 import { VarAllowanceComponent } from './ctc-templates/assigned-templates/var-allowance/var-allowance.component';
 import { VarDeductionComponent } from './ctc-templates/assigned-templates/var-deduction/var-deduction.component';
-import { CommonComponentsModule } from '../common/commonComponents.module';
+import { CommonComponentsModule } from 'src/app/common/commonComponents.module';
 import { PayrollRoutingModule } from './payroll-routing.module';
 import { PayrollUserListComponent } from './run-payroll/payroll-steps/payroll-user-list/payroll-user-list.component';
 
@@ -131,8 +129,6 @@ import { PayrollUserListComponent } from './run-payroll/payroll-steps/payroll-us
     SharedModule,
     MatSidenavModule,
     MatButtonModule,
-    BrowserAnimationsModule,
-    BrowserModule,
     OverlayModule,
     NgbDropdownModule,
     CommonComponentsModule,

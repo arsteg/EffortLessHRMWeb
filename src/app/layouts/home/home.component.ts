@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Spinkit } from 'ng-http-loader';
-import { AuthenticationService } from '../_services/authentication.service';
+import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { MatDialog } from '@angular/material/dialog';
 import { Offcanvas } from 'bootstrap';
@@ -88,7 +88,7 @@ export class HomeComponent implements OnInit {
     localStorage.setItem('adminView', view);
     if (view == 'user') {
       this.menuList = SideBarUserMenu;
-      this.router.navigate(['userDashboard'])
+      this.router.navigate(['dashboard','user'])
     }
     else if (view == 'admin') {
       this.menuList = SideBarAdminMenu;
@@ -348,7 +348,7 @@ export const SideBarUserMenu = [
     title: 'Dashboard',
     icon: 'assets/Sidenav-Icons/dashboard.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/dashboard.png',
-    url: '/userDashboard',
+    url: '/dashboard/user',
 
   },
   {

@@ -10,7 +10,6 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { FormsModule } from '@angular/forms';
 import { SubordinateSelectionComponent } from "./subordinateSelection/subordinateSelection.component";
 import { CRUDComponent } from './crud/crud.component';
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MatIconModule } from "@angular/material/icon";
 import { MatTooltip, MatTooltipModule } from "@angular/material/tooltip";
 import { MatSelectModule } from "@angular/material/select";
@@ -31,7 +30,6 @@ import { MatDialogModule } from "@angular/material/dialog";
       MatRippleModule,
       NgxChartsModule,
       FormsModule,
-      BrowserAnimationsModule,
       MatIconModule,
       MatTooltipModule,
       MatSelectModule,
