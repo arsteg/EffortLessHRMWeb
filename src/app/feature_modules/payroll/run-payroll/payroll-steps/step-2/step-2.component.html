@@ -27,9 +27,9 @@
                 <td>{{data?.totalDays}}</td>
                 <td>{{data?.lopDays}}</td>
                 <td>{{data?.payableDays}}</td>
-                <td><button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before"
+                <td><button class="actions" mat-mini-fab matTooltip="View" matTooltipPosition="before"
                         aria-label="Example icon button with a menu icon" (click)="selectedRecord = data; changeMode = 'Update'; open(modal)">
-                        <i class="bi bi-pencil-fill"></i>
+                        <i class="bi bi-eye"></i>
                     </button></td>
             </tr>
         </tbody>
@@ -67,7 +67,7 @@
             <input type="number" class="form-control" formControlName="payableDays">
         </div>
 
-        <div class="d-flex justify-content-between">
+        <div class="d-flex justify-content-between" *ngIf="changeMode == 'Add'">
             <button mat-raised-button type="button">Cancel</button>
             <button mat-raised-button type="submit" class="addBtn">Save</button>
         </div>
