@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HomeComponent } from '../home/home.component';
-import { AuthGuard } from '../auth.guard';
+import { AuthGuard } from 'src/app/auth.guard';
 import { PayrollComponent } from './payroll.component';
 import { SettingsComponent } from './settings/settings.component';
 import { CtcTemplatesComponent } from './ctc-templates/ctc-templates.component';

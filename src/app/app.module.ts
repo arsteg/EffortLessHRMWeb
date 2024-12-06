@@ -15,9 +15,8 @@ import { ChangePasswordComponent } from './login/change-password/change-password
 // import { UserFormCOntrolComponent } from './users/user-profile/user-form-control/user-form-control.component';
 // import { UserProfileComponent } from './users/user-profile/user-profile.component';
 import { FormControlsComponent } from './common/form-controls/form-controls.component';
-import { ScreenshotsComponent } from './screenshots/screenshots/screenshots.component';
 import { NgHttpLoaderModule } from 'ng-http-loader';
-import { HomeComponent } from './home/home.component';
+import { HomeComponent } from './layouts/home/home.component';
 import { RolesComponent } from './manage/roles/roles/roles.component';
 import { PermissionModelComponent } from './manage/permissonModel/permission-model/permission-model.component';
 import { ProfileComponent } from './profile/profile.component';
@@ -47,7 +46,7 @@ import { DatePipe } from '@angular/common';
 import { MatDialogModule } from '@angular/material/dialog';
 import { timesheetModule } from './timesheets/timesheet.Module';
 import { ViewLiveScreenComponent } from './viewLiveScreen/view-live-screen/view-live-screen.component';
-import { DashboardModule } from './dashboard/dashboard.module';
+// import { DashboardModule } from './dashboard/dashboard.module';
 import { ApprovalsModule } from './approvals/approvals.module';
 import { QuillModule } from 'ngx-quill';
 import { CommonComponentsModule } from './common/commonComponents.module';
@@ -61,14 +60,13 @@ import { OragnizationModule } from './organization/organization.module';
 import { AttendanceModule } from './attendance/attendance.module';
 import { ExpensesModule } from './Expenses/expenses.module';
 import { AlertsModule } from './Alerts/alerts.module';
-import { PayrollModule } from './Payroll/payroll.module';
 import { TaxationModule } from './Taxation/taxation.module';
 import { SeparationModule } from './Separation/separation.module';
 import { UserTaxDeclarationComponent } from './Taxation/user-tax-declaration/user-tax-declaration.component';
 import { FormsModule } from '@angular/forms';
 import { LiveScreenComponent } from './realtime/live-screen/live-screen.component';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
-import { NotificationComponent } from './home/notification/notification.component';
+import { NotificationComponent } from './layouts/home/notification/notification.component';
 import { environment } from '../environments/environment';
 import { SettingsModule } from './settings/settings.Module';
 import { ReportsModule } from './reports/reports.module';
@@ -91,7 +89,6 @@ const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
     UserProfileComponent,
     // UserFormCOntrolComponent,
     FormControlsComponent,
-    ScreenshotsComponent,
     HomeComponent,
     RolesComponent,
     PermissionModelComponent,
@@ -134,7 +131,7 @@ const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
     MatSlideToggleModule,
     MatDialogModule,
     timesheetModule,
-    DashboardModule,
+    // DashboardModule,
     ApprovalsModule,
     CommonComponentsModule,
     QuillModule.forRoot(),
@@ -144,7 +141,6 @@ const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
     AttendanceModule,
     ExpensesModule,
     AlertsModule,
-    PayrollModule,
     TaxationModule,
     SeparationModule,
     FormsModule,

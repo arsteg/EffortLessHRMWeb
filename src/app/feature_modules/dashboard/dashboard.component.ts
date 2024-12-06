@@ -1,18 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonService } from '../_services/common.Service';
-import { ManageTeamService } from '../_services/manage-team.service';
-import { TimeLogService } from '../_services/timeLogService';
+import { CommonService } from 'src/app/_services/common.Service';
+import { ManageTeamService } from 'src/app/_services/manage-team.service';
+import { TimeLogService } from 'src/app/_services/timeLogService';
 import { FormControl } from '@angular/forms';
-import { AuthenticationService } from '../_services/authentication.service';
-import { HoursWorked, MonthlySummary, ProjectTask, WeeklySummary } from '../models/dashboard/userdashboardModel';
-import { DashboardService } from '../_services/dashboard.Service';
+import { AuthenticationService } from 'src/app/_services/authentication.service';
+import { HoursWorked, MonthlySummary, ProjectTask, WeeklySummary } from 'src/app/models/dashboard/userdashboardModel';
+import { DashboardService } from 'src/app/_services/dashboard.Service';
 import { ToastrService } from 'ngx-toastr';
-import { teamMember } from '../models/teamMember';
+import { teamMember } from 'src/app/models/teamMember';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { Observable, Subscription } from 'rxjs';
-import { User } from '../models/user';
-import { SocketService } from '../_services/socket.Service';
-import { StatefulComponent } from '../common/statefulComponent/statefulComponent';
+import { User } from 'src/app/models/user';
+import { SocketService } from 'src/app/_services/socket.Service';
+import { StatefulComponent } from 'src/app/common/statefulComponent/statefulComponent';
 import { ActivatedRoute, Router } from '@angular/router';
 @Component({
   selector: 'app-dashboard',
