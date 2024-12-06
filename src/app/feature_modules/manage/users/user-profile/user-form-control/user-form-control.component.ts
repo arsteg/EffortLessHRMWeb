@@ -4,9 +4,9 @@ import { first } from 'rxjs';
 import { signup } from 'src/app/models/user';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { NotificationService } from 'src/app/_services/notification.service';
-import { Base } from '../../../controls/base';
-import { ControlService } from '../../../_services/control.service';
-import { UserService } from '../../../_services/users.service';
+import { Base } from 'src/app/controls/base';
+import { ControlService } from 'src/app/_services/control.service';
+import { UserService } from 'src/app/_services/users.service';
 
 @Component({
   selector: 'app-user-form-control',

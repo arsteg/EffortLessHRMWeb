@@ -1,4 +1,4 @@
-import { project } from "../Project/model/project";
+import { project } from "src/app/feature_modules/manage/Project/model/project";
 export class Task {
   _id: string;
   taskName: string;

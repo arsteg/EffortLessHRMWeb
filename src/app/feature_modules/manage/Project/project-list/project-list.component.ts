@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ProjectService } from '../../_services/project.service';
-import { NotificationService } from '../../_services/notification.service';
+import { ProjectService } from 'src/app/_services/project.service';
 import { addUser, project } from '../model/project';
 import { Validators, FormGroup, FormBuilder, FormControl, AbstractControl } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';

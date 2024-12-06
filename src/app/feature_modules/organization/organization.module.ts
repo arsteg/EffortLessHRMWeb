@@ -1,12 +1,12 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OrganizationComponent } from './organization/organization.component';
-import { SharedModule } from '../shared/shared.Module';
-import { CommonComponentsModule } from '../common/commonComponents.module';
-// import { AssetsModule } from '../AssetsManagement/assetManagement.module';
-// import { AssetManagerComponent } from '../AssetsManagement/assetAssetManager/asset.component';
-import { DocumentManagementModule } from '../documentManager/documentManager.module';
-// import { DocumentManagerComponent } from '../documentManager/documentManager.component';
+import { SharedModule } from 'src/app/shared/shared.Module';
+import { CommonComponentsModule } from 'src/app/common/commonComponents.module';
+// import { AssetsModule } from 'src/app/AssetsManagement/assetManagement.module';
+// import { AssetManagerComponent } from 'src/app/AssetsManagement/assetAssetManager/asset.component';
+import { DocumentManagementModule } from 'src/app/documentManager/documentManager.module';
+// import { DocumentManagerComponent } from 'src/app/documentManager/documentManager.component';
 import { SetupComponent } from './setup/setup.component';
 import { EmployeeFieldsComponent } from './employee-fields/employee-fields.component';
 import { EmployeeTreeComponent } from './employee-tree/employee-tree.component';
@@ -21,9 +21,8 @@ import { SignatoryDetailsComponent } from './setup/signatory-details/signatory-d
 import { HolidaysComponent } from './setup/holidays/holidays.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { OrganizationRoutingModule } from './organization-routing.module';
-import { AssetsModule } from '../AssetsManagement/assetManagement.module';
+import { AssetsModule } from 'src/app/AssetsManagement/assetManagement.module';
 
 @NgModule({
   declarations: [
@@ -41,10 +40,8 @@ import { AssetsModule } from '../AssetsManagement/assetManagement.module';
     SignatoryDetailsComponent,
     HolidaysComponent
   ],
-  exports: [],
   imports: [
     CommonModule,
-    SharedModule,
     CommonComponentsModule,
     AssetsModule,
     DocumentManagementModule,
@@ -55,7 +52,6 @@ import { AssetsModule } from '../AssetsManagement/assetManagement.module';
       positionClass: 'toast-top-right',
       preventDuplicates: true,
     }),
-    BrowserAnimationsModule,
     AssetsModule,
     DocumentManagementModule,
     OrganizationRoutingModule

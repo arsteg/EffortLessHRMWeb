@@ -3,7 +3,6 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { project } from '../Project/model/project';
 import { baseService } from './base';
 import { Asset, AssetAttributeValue, AssetStatus, AssetType, CustomAttribute, UpdateCustomAttribute, Vendor } from '../models/AssetsManagement/Asset';
 

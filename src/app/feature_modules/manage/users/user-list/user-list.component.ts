@@ -5,7 +5,7 @@ import { RoleService } from 'src/app/_services/role.service';
 import { ToastrService } from 'ngx-toastr';
 import { CommonService } from 'src/app/_services/common.Service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { UserService } from 'src/app/_services/users.service';
@@ -37,6 +37,7 @@ export class UserListComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private UserService: UserService,
     private fb: FormBuilder,
     private roleService: RoleService,
@@ -131,8 +132,8 @@ export class UserListComponent implements OnInit {
     this.isEdit = true;
     this.UserService.setData(data, this.isEdit);
     console.log('Navigating to Employee Profile');
-    this.router.navigate(['/manage/employees/employee-settings/employee-profile']);
-    this.showEmployeeDetails = !this.showEmployeeDetails;
+    this.router.navigate(['./employee-settings'], {relativeTo: this.route});
+    // this.showEmployeeDetails = !this.showEmployeeDetails; TODO: Toggle from employee settings
   }
 
   goBackToUserView() {

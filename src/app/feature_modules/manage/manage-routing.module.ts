@@ -1,14 +1,14 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { UserListComponent } from '../users/user-list/user-list.component';
-import { ProjectListComponent } from '../Project/project-list/project-list.component';
-import { TasksComponent } from '../tasks/tasks.component';
+import { UserListComponent } from './users/user-list/user-list.component';
+import { ProjectListComponent } from './Project/project-list/project-list.component';
+import { TasksComponent } from 'src/app/tasks/tasks.component';
 import { TeammembersComponent } from './teammembers/teammembers.component';
-import { EmailTemplateComponent } from '../email-template/email-template.component';
-import { TagComponent } from '../tasks/task.tag/tag.component';
+import { EmailTemplateComponent } from './email-template/email-template.component';
+import { TagComponent } from 'src/app/tasks/task.tag/tag.component';
 import { ManageComponent } from './manage/manage.component';
-import { AuthGuard } from '../auth.guard';
-import { RequestManualTimeComponent } from '../manualTime/request-manual-time/request-manual-time.component';
+import { AuthGuard } from 'src/app/auth.guard';
+import { RequestManualTimeComponent } from 'src/app/manualTime/request-manual-time/request-manual-time.component';
 
 
 const routes: Routes = [
@@ -25,8 +25,8 @@ const routes: Routes = [
           {
             path: 'employee-settings',
             loadChildren: () =>
-              import('../users/employee-settings/employee-settings-routing.module').then(
-                (m) => m.EmployeeSettingsRoutingModule
+              import('./users/employee-settings/employee-settings.module').then(
+                (m) => m.EmployeeSettingsModule
               ),
           },
         ],

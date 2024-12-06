@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-import { EmailtemplateService } from '../_services/emailtemplate.service';
+import { EmailtemplateService } from 'src/app/_services/emailtemplate.service';
 import { Validators, FormGroup, FormBuilder, FormControl, AbstractControl } from '@angular/forms';
 
 @Component({
