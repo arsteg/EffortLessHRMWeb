@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from '../auth.guard';
+import { AuthGuard } from 'src/app/auth.guard';
 import { AttendanceManagementComponent } from './attendance-management/attendance-management.component';
 import { AttendanceManagementSettingsComponent } from './attendance-settings/attendance-management-settings.component';
 import { GeneralSettingsComponent } from './attendance/generalSettings/generalSettings.component';

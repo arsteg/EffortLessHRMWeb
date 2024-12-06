@@ -1,7 +1,7 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CommonComponentsModule } from '../common/commonComponents.module';
-import { SharedModule } from '../shared/shared.Module';
+import { CommonComponentsModule } from 'src/app/common/commonComponents.module';
+import { SharedModule } from 'src/app/shared/shared.Module';
 import { AttendanceManagementComponent } from './attendance-management/attendance-management.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';

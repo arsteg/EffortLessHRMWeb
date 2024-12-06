@@ -1,13 +1,8 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
-import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { MatDialog } from '@angular/material/dialog';
-import { CommonService } from 'src/app/_services/common.Service';
-import { AttendanceRegularizationComponent } from './attendance-regularization/attendance-regularization.component';
 import { ExportService } from 'src/app/_services/export.service';
 import { AttendanceService } from 'src/app/_services/attendance.service';
-import { GeneralTemplateSettingsComponent } from './general-template-settings/general-template-settings.component';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { ToastrService } from 'ngx-toastr';
 

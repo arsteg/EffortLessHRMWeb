@@ -31,6 +31,7 @@ import { MatStepperModule }  from '@angular/material/stepper';
 import { MatDialogActions, MatDialogClose, MatDialogContent, MatDialogModule, MatDialogTitle } from '@angular/material/dialog';
 import { PaginationComponent } from '../pagination/pagination.component';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @NgModule({
   declarations: [SortDirective, SearchPipe, MilliSecondsToTimePipe, PaginationComponent],
@@ -64,7 +65,8 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
     MatDialogContent,
     MatDialogTitle,
     MatTooltipModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatSlideToggleModule
   ],
   exports: [
     SortDirective,
@@ -102,7 +104,8 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
     TooltipModule,
     MatTooltipModule,
     PaginationComponent,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatSlideToggleModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,
