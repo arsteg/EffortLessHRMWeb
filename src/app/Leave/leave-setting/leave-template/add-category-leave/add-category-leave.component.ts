@@ -45,7 +45,7 @@ export class AddCategoryLeaveComponent {
       this.members = res.data.data;
     });
 
-    this.router.navigateByUrl('/Leave', { skipLocationChange: true }).then(() => {
+    this.router.navigateByUrl('home/leave', { skipLocationChange: true }).then(() => {
       this.router.navigate([this.router.url]);
   });
 

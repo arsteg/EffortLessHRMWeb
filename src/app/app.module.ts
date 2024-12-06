@@ -31,7 +31,6 @@ import { RolePermissionComponent } from './role-permission/role-permission.compo
 import { AuthGuard } from './auth.guard';
 import { WorkspaceSettingsComponent } from './settings/workspace-settings/workspace-settings.component';
 import { FeaturesSettingsComponent } from './settings/features-settings/features-settings.component';
-import { LeaveSettingsComponent } from './settings/leave-settings/leave-settings.component';
 import { taskModule } from './tasks/task.Module';
 import { SharedModule } from './shared/shared.Module';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -40,19 +39,12 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { DatePipe } from '@angular/common';
 import { MatDialogModule } from '@angular/material/dialog';
-import { timesheetModule } from './timesheets/timesheet.Module';
 import { ViewLiveScreenComponent } from './viewLiveScreen/view-live-screen/view-live-screen.component';
-// import { DashboardModule } from './dashboard/dashboard.module';
 import { ApprovalsModule } from './approvals/approvals.module';
 import { QuillModule } from 'ngx-quill';
 import { CommonComponentsModule } from './common/commonComponents.module';
-// import { AssetsModule } from './AssetsManagement/assetManagement.module';
-import { UserCalendarComponent } from './calendar/user-calendar/user-calendar.component';
-import { AdminCalendarComponent } from './calendar/admin-calendar/admin-calendar.component';
 import { FullCalendarModule } from '@fullcalendar/angular';
-// import { DocumentManagementModule } from './documentManager/documentManager.module';
 import { LeaveModule } from './Leave/leave.module';
-import { AttendanceModule } from './attendance/attendance.module';
 import { ExpensesModule } from './Expenses/expenses.module';
 import { AlertsModule } from './Alerts/alerts.module';
 import { TaxationModule } from './Taxation/taxation.module';
@@ -65,8 +57,6 @@ import { environment } from '../environments/environment';
 import { SettingsModule } from './settings/settings.Module';
 import { ReportsModule } from './reports/reports.module';
 import { RequestManualTimeComponent } from './manualTime/request-manual-time/request-manual-time.component';
-import { AssetsModule } from './AssetsManagement/assetManagement.module';
-import { DocumentManagementModule } from './documentManager/documentManager.module';
 import { UserProfileComponent } from './feature_modules/manage/users/user-profile/user-profile.component';
 
 const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
@@ -91,8 +81,6 @@ const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
     WorkspaceSettingsComponent,
     FeaturesSettingsComponent,
     ViewLiveScreenComponent,
-    UserCalendarComponent,
-    AdminCalendarComponent,
     UserTaxDeclarationComponent,
     NotificationComponent,
     RequestManualTimeComponent,
@@ -119,14 +107,11 @@ const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
     MatPaginatorModule,
     MatSlideToggleModule,
     MatDialogModule,
-    timesheetModule,
-    // DashboardModule,
     ApprovalsModule,
     CommonComponentsModule,
     QuillModule.forRoot(),
     FullCalendarModule,
     LeaveModule,
-    AttendanceModule,
     ExpensesModule,
     AlertsModule,
     TaxationModule,

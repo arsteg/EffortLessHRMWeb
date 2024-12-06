@@ -88,11 +88,11 @@ export class HomeComponent implements OnInit {
     localStorage.setItem('adminView', view);
     if (view == 'user') {
       this.menuList = SideBarUserMenu;
-      this.router.navigate(['dashboard','user'])
+      this.router.navigateByUrl('home/dashboard/user')
     }
     else if (view == 'admin') {
       this.menuList = SideBarAdminMenu;
-      this.router.navigate(['dashboard'])
+      this.router.navigateByUrl('home/dashboard')
     }
     this.collapseSidebar();  // Automatically collapse the sidebar
   }
@@ -184,35 +184,35 @@ export const SideBarAdminMenu = [
     title: 'Dashboard',
     icon: 'assets/Sidenav-Icons/dashboard.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/dashboard.png',
-    url: '/dashboard',
+    url: 'dashboard',
   },
   {
     id: '2',
     title: 'Screenshots',
     icon: 'assets/Sidenav-Icons/screenshots.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/screenshots.png',
-    url: '/screenshots',
+    url: 'screenshots',
   },
   // {
   //   id: '19',
   //   icon: 'assets/Sidenav-Icons/livescreen.png',
   //   lightIcon: 'assets/Sidenav-Icons/light-Icons/liveScreen.png',
   //   title: 'View Live Screen',
-  //   url: '/viewLiveScreen'
+  //   url: 'viewLiveScreen'
   // },
   {
     id: '3',
     title: 'RealTime',
     icon: 'assets/Sidenav-Icons/realtime.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/realtime.png',
-    url: '/realtime'
+    url: 'realtime'
   },
   {
     id: '4',
     title: 'Organization',
     icon: 'assets/Sidenav-Icons/organization.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/organization.png',
-    url: '/organization'
+    url: 'organization'
 
 
   },
@@ -221,7 +221,7 @@ export const SideBarAdminMenu = [
     title: 'Manage',
     icon: 'assets/Sidenav-Icons/manage.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/manage.png',
-    url: '/manage'
+    url: 'manage'
 
   },
   {
@@ -229,14 +229,14 @@ export const SideBarAdminMenu = [
     title: 'Calendar',
     icon: 'assets/Sidenav-Icons/calendar.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/calendar.png',
-    url: '/AdminCalendar'
+    url: 'calendar/admin'
   },
   {
     id: '7',
     title: 'Attendance',
     icon: 'assets/Sidenav-Icons/attendance.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/attendance.png',
-    url: '/attendance'
+    url: 'attendance'
 
   },
   {
@@ -244,7 +244,7 @@ export const SideBarAdminMenu = [
     title: 'Timesheets',
     icon: 'assets/Sidenav-Icons/timesheet.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/timesheet.png',
-    url: 'adminTimesheets'
+    url: 'timesheets/admin'
 
   },
   {
@@ -274,7 +274,7 @@ export const SideBarAdminMenu = [
     title: 'Payroll',
     icon: 'assets/Sidenav-Icons/payroll.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/payroll.png',
-    url: '/payroll'
+    url: 'payroll'
   },
   {
     id: '13',
@@ -309,7 +309,7 @@ export const SideBarAdminMenu = [
     icon: 'assets/Sidenav-Icons/permission.png',
     title: 'Permissions',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/permission.png',
-    url: '/permissions'
+    url: 'permissions'
 
   },
   {
@@ -317,14 +317,14 @@ export const SideBarAdminMenu = [
     icon: 'assets/Sidenav-Icons/roles.png',
     title: 'Roles',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/roles.png',
-    url: '/roles'
+    url: 'roles'
   },
   {
     id: '18',
     icon: 'assets/Sidenav-Icons/rolePermission.png',
     title: 'Role Permission',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/rolePermission.png',
-    url: '/rolePermission'
+    url: 'rolePermission'
   },
   {
     id: '19',
@@ -338,7 +338,7 @@ export const SideBarAdminMenu = [
     title: 'Interview Process',
     icon: 'assets/Sidenav-Icons/settings.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/settings.png',
-    url: '/interviewProcess'
+    url: 'interviewProcess'
   }
 ];
 
@@ -348,7 +348,7 @@ export const SideBarUserMenu = [
     title: 'Dashboard',
     icon: 'assets/Sidenav-Icons/dashboard.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/dashboard.png',
-    url: '/dashboard/user',
+    url: 'dashboard/user',
 
   },
   {
@@ -356,7 +356,7 @@ export const SideBarUserMenu = [
     title: 'Screenshots',
     icon: 'assets/Sidenav-Icons/screenshots.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/screenshots.png',
-    url: '/screenshots',
+    url: 'screenshots',
 
   },
   // {
@@ -364,14 +364,14 @@ export const SideBarUserMenu = [
   //   title: 'View Live Screen',
   //   icon: 'assets/Sidenav-Icons/livescreen.png',
   //   lightIcon: 'assets/Sidenav-Icons/light-Icons/liveScreen.png',
-  //   url: '/viewLiveScreen'
+  //   url: 'viewLiveScreen'
   // },
   {
     id: '3',
     title: 'RealTime',
     icon: 'assets/Sidenav-Icons/realtime.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/realtime.png',
-    url: '/realtime'
+    url: 'realtime'
 
   },
 
@@ -394,7 +394,7 @@ export const SideBarUserMenu = [
     title: 'Organization',
     icon: 'assets/Sidenav-Icons/organization.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/organization.png',
-    url: '/organization'
+    url: 'organization'
 
   },
   {
@@ -402,7 +402,7 @@ export const SideBarUserMenu = [
     title: 'Calendar',
     icon: 'assets/Sidenav-Icons/calendar.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/calendar.png',
-    url: '/UserCalendar'
+    url: 'calendar/user'
   },
   {
     id: '7',
@@ -416,14 +416,14 @@ export const SideBarUserMenu = [
     title: 'Attendance',
     icon: 'assets/Sidenav-Icons/attendance.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/attendance.png',
-    url: '/attendance'
+    url: 'attendance'
   },
   {
     id: '9',
     title: 'Timesheets',
     icon: 'assets/Sidenav-Icons/timesheet.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/timesheet.png',
-    url: 'userTimesheet'
+    url: 'timesheets/user'
   },
   {
     id: '10',
@@ -473,7 +473,7 @@ export const SideBarUserMenu = [
     title: 'Settings',
     icon: 'assets/Sidenav-Icons/settings.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/settings.png',
-    url: '/userPreferences'
+    url: 'userPreferences'
   }
 ];
 

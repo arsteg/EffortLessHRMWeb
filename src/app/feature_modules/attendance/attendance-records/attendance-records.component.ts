@@ -1,9 +1,6 @@
 import { Component, TrackByFunction } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
-import { ToastrService } from 'ngx-toastr';
-import { ExportService } from 'src/app/_services/export.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { EmployeeAttendanceHistoryComponent } from './employee-attendance-history/employee-attendance-history.component';
 import { UploadRecordsComponent } from './upload-records/upload-records.component';

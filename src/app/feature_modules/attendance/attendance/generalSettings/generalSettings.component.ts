@@ -1,16 +1,12 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/_services/common.Service';
-import { TimeLogService } from 'src/app/_services/timeLogService';
-import { DatePipe, NgIf } from '@angular/common';
-import { ReportsService } from 'src/app/_services/reports.service';
-import { ExportService } from 'src/app/_services/export.service';
+import { DatePipe } from '@angular/common';
 import { AttendanceService } from 'src/app/_services/attendance.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { ToastrService } from 'ngx-toastr';
 import { MatDialog } from '@angular/material/dialog';
-import { PaginationService } from 'src/app/_services/pagination.service'
 
 @Component({
   selector: 'app-generalSettings',
