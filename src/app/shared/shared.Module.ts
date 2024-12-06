@@ -28,7 +28,7 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
 import { MilliSecondsToTimePipe } from '../pipes/SecondsToTimePipe';
 import { MatStepperModule }  from '@angular/material/stepper';
-import { MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle } from '@angular/material/dialog';
+import { MatDialogActions, MatDialogClose, MatDialogContent, MatDialogModule, MatDialogTitle } from '@angular/material/dialog';
 import { PaginationComponent } from '../pagination/pagination.component';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 
@@ -69,7 +69,6 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
   exports: [
     SortDirective,
     CdkTableModule,
-    
     MatToolbarModule,
     MatButtonModule,
     MatSidenavModule,
@@ -78,7 +77,6 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
     MatCheckboxModule,
     MatRadioModule,
     MatTableModule,
-    MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
     MatTabsModule,
@@ -96,6 +94,7 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
     MilliSecondsToTimePipe,
     MatFormFieldModule,
     MatStepperModule,
+    MatDialogModule,
     MatDialogActions,
     MatDialogClose,
     MatDialogContent,

@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { project } from '../Project/model/project';
+import { project } from 'src/app/feature_modules/manage/Project/model/project';
 import { baseService } from './base';
 
 @Injectable({ providedIn: 'root' })

@@ -1,9 +1,9 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CommonService } from 'src/app/_services/common.Service';
-import { TimeLogService } from '../_services/timeLogService';
-import { ProjectService } from '../_services/project.service';
-import { ExportService } from '../_services/export.service';
-import { RealTime } from '../models/timeLog';
+import { TimeLogService } from 'src/app/_services/timeLogService';
+import { ProjectService } from 'src/app/_services/project.service';
+import { ExportService } from 'src/app/_services/export.service';
+import { RealTime } from 'src/app/models/timeLog';
 import { Observable, switchMap } from 'rxjs';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { LiveScreenComponent } from './live-screen/live-screen.component';

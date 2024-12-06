@@ -16,7 +16,6 @@ import { StatutoryDetailsComponent } from './statutory-details/statutory-details
 import { SalaryDetailsComponent } from './salary-details/salary-details.component';
 import { EmploymentDetailsComponent } from './employment-details/employment-details.component';
 import { EmployeeSettingsComponent } from './employee-settings.component';
-import { SharedModule } from 'src/app/shared/shared.Module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonComponentsModule } from 'src/app/common/commonComponents.module';
 import { MatRadioModule } from '@angular/material/radio';
@@ -44,7 +43,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
   imports: [
     CommonModule,
     EmployeeSettingsRoutingModule,
-    SharedModule,
     FormsModule,
     ReactiveFormsModule,
     CommonComponentsModule,

@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { UserService } from 'src/app/_services/users.service';
 
 @Component({

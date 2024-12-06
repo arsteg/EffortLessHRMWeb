@@ -6,12 +6,11 @@ import { RegisterComponent } from './login/register/register.component';
 import { ForgotPasswordComponent } from './login/forgot-password/forgot-password.component';
 import { AuthGuard } from './auth.guard';
 import { ChangePasswordComponent } from './login/change-password/change-password.component';
-import { TeammembersComponent } from './manage/teammembers/teammembers.component';
 import { HomeComponent } from './layouts/home/home.component';
-import { RolesComponent } from './manage/roles/roles/roles.component';
-import { PermissionModelComponent } from './manage/permissonModel/permission-model/permission-model.component';
+import { RolesComponent } from './feature_modules/manage/roles/roles/roles.component';
+import { PermissionModelComponent } from './feature_modules/manage/permissonModel/permission-model/permission-model.component';
 import { ProfileComponent } from './profile/profile.component';
-import { RealtimeComponent } from './realtime/realtime.component';
+import { RealtimeComponent } from './feature_modules/realtime/realtime.component';
 import { MainComponent } from './main/main.component';
 import { TasksComponent } from './tasks/tasks.component';
 import { RequestManualTimeComponent } from './manualTime/request-manual-time/request-manual-time.component';
@@ -59,12 +58,23 @@ const routes: Routes = [
         path: 'screenshots', loadChildren: () =>
           import('./feature_modules/screenshots/screenshots.module').then(m => m.ScreenshotsModule)
       },
+      { 
+        path: 'realtime', loadChildren: () => 
+        import('./feature_modules/realtime/realtime.module').then(m => m.RealtimeModule) 
+      },
+      { 
+        path: 'organization', loadChildren: () =>
+          import('./feature_modules/organization/organization.module').then(m => m.OragnizationModule) 
+      },
+      {
+         path: 'manage', loadChildren: () => 
+          import('./feature_modules/manage/manage.module').then(m => m.ManageModule) 
+        },
+
       { path: 'logout', component: LoginComponent },
-      { path: 'teamMembers', component: TeammembersComponent },
-      { path: 'roles', component: RolesComponent },
-      { path: 'permissionModel', component: PermissionModelComponent },
+      { path: 'roles', component: RolesComponent }, // TODO: module to bepick from manage
+      { path: 'permissionModel', component: PermissionModelComponent },  // TODO: module to bepick from manage
       { path: 'Profile', component: ProfileComponent },
-      { path: 'realtime', component: RealtimeComponent },
       { path: 'tasks', component: TasksComponent },
       { path: 'tags', component: TagComponent },
       { path: 'requestManualTime', component: RequestManualTimeComponent },
@@ -85,8 +95,6 @@ const routes: Routes = [
       { path: 'SubTask', component: SubtaskComponent },
       { path: 'AdminCalendar', component: AdminCalendarComponent },
       { path: 'UserCalendar', component: UserCalendarComponent },
-      { path: 'manage', loadChildren: () => import('./manage/manage-routing.module').then(m => m.ManageRoutingModule) },
-      { path: 'organization', loadChildren: () => import('./organization/organization-routing.module').then(m => m.OrganizationRoutingModule) },
       { path: 'attendance', loadChildren: () => import('./attendance/attendance-routing.module').then(m => m.AttendanceRoutingModule) },
       { path: 'timesheet', component: TimesheetsComponent },
       { path: 'leave', loadChildren: () => import('./Leave/leave-routing.module').then(m => m.LeaveRoutingModule) },

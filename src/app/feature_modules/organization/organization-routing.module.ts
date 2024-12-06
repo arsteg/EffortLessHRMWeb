@@ -1,7 +1,7 @@
 import { Component, NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { OrganizationComponent } from './organization/organization.component';
-import { AuthGuard } from '../auth.guard';
+import { AuthGuard } from 'src/app/auth.guard';
 import { SetupComponent } from './setup/setup.component';
 import { ZoneComponent } from './setup/zone/zone.component';
 import { LocationComponent } from './setup/location/location.component';
@@ -11,9 +11,9 @@ import { DesignationComponent } from './setup/designation/designation.component'
 import { BandComponent } from './setup/band/band.component';
 import { SignatoryDetailsComponent } from './setup/signatory-details/signatory-details.component';
 import { HolidaysComponent } from './setup/holidays/holidays.component';
-import { DocumentManagerComponent } from '../documentManager/documentManager.component';
+import { DocumentManagerComponent } from 'src/app/documentManager/documentManager.component';
 import { ProfileComponent } from './setup/profile/profile.component';
-import { AssetManagerComponent } from '../AssetsManagement/assetAssetManager/asset.component';
+import { AssetManagerComponent } from 'src/app/AssetsManagement/assetAssetManager/asset.component';
 
 const routes: Routes = [
   {

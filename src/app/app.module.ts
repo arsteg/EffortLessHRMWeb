@@ -17,11 +17,8 @@ import { ChangePasswordComponent } from './login/change-password/change-password
 import { FormControlsComponent } from './common/form-controls/form-controls.component';
 import { NgHttpLoaderModule } from 'ng-http-loader';
 import { HomeComponent } from './layouts/home/home.component';
-import { RolesComponent } from './manage/roles/roles/roles.component';
-import { PermissionModelComponent } from './manage/permissonModel/permission-model/permission-model.component';
 import { ProfileComponent } from './profile/profile.component';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { RealtimeComponent } from './realtime/realtime.component';
 import { MainComponent } from './main/main.component';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -29,7 +26,6 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CommonService } from 'src/app/_services/common.Service';
 import { UserService } from './_services/users.service';
 import { AddManualTimeComponent } from './manualTime/addManualTime/add-manual-time.component';
-import { ManageModule } from './manage/manage.module';
 import { PermissionsComponent } from './permissions/permissions.component';
 import { RolePermissionComponent } from './role-permission/role-permission.component';
 import { AuthGuard } from './auth.guard';
@@ -56,7 +52,6 @@ import { AdminCalendarComponent } from './calendar/admin-calendar/admin-calendar
 import { FullCalendarModule } from '@fullcalendar/angular';
 // import { DocumentManagementModule } from './documentManager/documentManager.module';
 import { LeaveModule } from './Leave/leave.module';
-import { OragnizationModule } from './organization/organization.module';
 import { AttendanceModule } from './attendance/attendance.module';
 import { ExpensesModule } from './Expenses/expenses.module';
 import { AlertsModule } from './Alerts/alerts.module';
@@ -64,7 +59,6 @@ import { TaxationModule } from './Taxation/taxation.module';
 import { SeparationModule } from './Separation/separation.module';
 import { UserTaxDeclarationComponent } from './Taxation/user-tax-declaration/user-tax-declaration.component';
 import { FormsModule } from '@angular/forms';
-import { LiveScreenComponent } from './realtime/live-screen/live-screen.component';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { NotificationComponent } from './layouts/home/notification/notification.component';
 import { environment } from '../environments/environment';
@@ -73,7 +67,7 @@ import { ReportsModule } from './reports/reports.module';
 import { RequestManualTimeComponent } from './manualTime/request-manual-time/request-manual-time.component';
 import { AssetsModule } from './AssetsManagement/assetManagement.module';
 import { DocumentManagementModule } from './documentManager/documentManager.module';
-import { UserProfileComponent } from './users/user-profile/user-profile.component';
+import { UserProfileComponent } from './feature_modules/manage/users/user-profile/user-profile.component';
 
 const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
 
@@ -86,14 +80,10 @@ const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
     SidebarDirective,
     ResetPasswordComponent,
     ChangePasswordComponent,
-    UserProfileComponent,
     // UserFormCOntrolComponent,
     FormControlsComponent,
     HomeComponent,
-    RolesComponent,
-    PermissionModelComponent,
     ProfileComponent,
-    RealtimeComponent,
     MainComponent,
     AddManualTimeComponent,
     PermissionsComponent,
@@ -104,9 +94,9 @@ const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
     UserCalendarComponent,
     AdminCalendarComponent,
     UserTaxDeclarationComponent,
-    LiveScreenComponent,
     NotificationComponent,
-    RequestManualTimeComponent
+    RequestManualTimeComponent,
+    UserProfileComponent // TODO: Remove it from manage module and use it in home/layout for editing user profile
    
   ],
   imports: [
@@ -122,7 +112,6 @@ const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
     TooltipModule,
     ModalModule,
     DragDropModule,
-    ManageModule,
     SharedModule,
     taskModule,
     MatDatepickerModule,
@@ -137,7 +126,6 @@ const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
     QuillModule.forRoot(),
     FullCalendarModule,
     LeaveModule,
-    OragnizationModule,
     AttendanceModule,
     ExpensesModule,
     AlertsModule,
