@@ -101,7 +101,6 @@ const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
     ModalModule,
     DragDropModule,
     SharedModule,
-    taskModule,
     MatDatepickerModule,
     MatNativeDateModule,
     MatPaginatorModule,

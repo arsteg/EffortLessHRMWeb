@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from 'src/app/_services/users.service';
 
 @Component({
@@ -13,16 +14,18 @@ export class EmployeeSettingsComponent {
   data: any;
   isEdit: boolean;
 
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService,private router: Router,
+    private route: ActivatedRoute,) { }
 
   ngOnInit() {
-    console.log('employee settings called')
-    this.selectTab('tabEmploymentProfile');
+    console.log(this.userService.toggleEmployeesDetails.getValue());
+
     this.data = this.userService.getData();
     this.isEdit = this.userService.getIsEdit();
   }
 
-  selectTab(tabId: string) {
-    this.activeTab = tabId;
+  toggleToEmployees() {
+    this.userService.toggleEmployeesDetails.next(false);
+    this.router.navigate(['../'], { relativeTo: this.route });
   }
 }

@@ -45,30 +45,35 @@ export class UserListComponent implements OnInit {
     public commonservice: CommonService,
     private dialog: MatDialog,
     private toast: ToastrService) {
-    
-      this.userForm = this.fb.group(
-        {
-          firstName: ['', [Validators.required, Validators.pattern('^[A-Za-z]{2,}$')]],
-          lastName: ['', [Validators.required, Validators.pattern('^[A-Za-z]{2,}$')]],
-          email: ['', [Validators.required, Validators.email]],
-          password: ['', [Validators.required, Validators.minLength(8)]],
-          passwordConfirm: ['', Validators.required],
-          jobTitle: [''],
-          phone: ['', [Validators.pattern('^[0-9]{10}$')]],
-          role: ['', Validators.required],
-        },
-        { validator: this.passwordMatchValidator }
-      );
-      
+
+    this.userForm = this.fb.group(
+      {
+        firstName: ['', [Validators.required, Validators.pattern('^[A-Za-z]{2,}$')]],
+        lastName: ['', [Validators.required, Validators.pattern('^[A-Za-z]{2,}$')]],
+        email: ['', [Validators.required, Validators.email]],
+        password: ['', [Validators.required, Validators.minLength(8)]],
+        passwordConfirm: ['', Validators.required],
+        jobTitle: [''],
+        phone: ['', [Validators.pattern('^[0-9]{10}$')]],
+        role: ['', Validators.required],
+      },
+      { validator: this.passwordMatchValidator }
+    );
   }
 
   ngOnInit() {
+    console.log(this.showEmployeeDetails)
+
     this.getRoles();
     this.getAllRoles();
     this.commonservice.populateUsers().subscribe(result => {
       this.usersList = result && result.data && result.data.data;
     });
     this.firstLetter = this.commonservice.firstletter;
+    this.UserService.toggleEmployeesDetails.subscribe((showDetails) => {
+      this.showEmployeeDetails = showDetails;
+      console.log(this.showEmployeeDetails)
+    });
   }
 
   passwordMatchValidator(group: FormGroup) {
@@ -131,13 +136,10 @@ export class UserListComponent implements OnInit {
   toggleView(data: any) {
     this.isEdit = true;
     this.UserService.setData(data, this.isEdit);
-    console.log('Navigating to Employee Profile');
-    this.router.navigate(['./employee-settings'], {relativeTo: this.route});
-    // this.showEmployeeDetails = !this.showEmployeeDetails; TODO: Toggle from employee settings
-  }
-
-  goBackToUserView() {
-    this.showEmployeeDetails = false;
+    console.log(this.showEmployeeDetails)
+    this.UserService.toggleEmployeesDetails.next(this.showEmployeeDetails)
+    this.router.navigate(['./employee-settings'], { relativeTo: this.route });
+    this.showEmployeeDetails = !this.showEmployeeDetails;
   }
 
   showOffcanvas: boolean;
