@@ -20,7 +20,6 @@ import { VariableAllowanceComponent } from './settings/variable-allowance/variab
 import { FixedContributionComponent } from './settings/fixed-contribution/fixed-contribution.component';
 
 const routes: Routes = [
-  
       {
         path: '', component: PayrollComponent, canActivate: [AuthGuard],
         children: [

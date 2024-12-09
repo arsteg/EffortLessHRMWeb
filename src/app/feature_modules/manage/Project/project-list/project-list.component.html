@@ -23,7 +23,7 @@
 
                     <div class="d-flex align-items-baseline justify-content-end">
                         <p class="mb-0 me-3">({{projectList?.length}}) Records Found</p>
-    
+
                         <button mat-raised-button class="addBtn rounded-pill" (click)="clearForm()"
                             data-bs-toggle="modal" data-bs-target="#addModal">Add
                             New</button>
@@ -46,31 +46,33 @@
                                     [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                             </th>
 
-                            <th class="pe-4" scope="col" [appSort]="projectList" data-order="{{ sortOrder }}" data-name="startDate"
-                                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Start&nbsp;Date&nbsp;<i
+                            <th class="pe-4" scope="col" [appSort]="projectList" data-order="{{ sortOrder }}"
+                                data-name="startDate" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                                Start&nbsp;Date&nbsp;<i
                                     [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                             </th>
 
-                            <th class="pe-4" scope="col" [appSort]="projectList" data-order="{{ sortOrder }}" data-name="endDate"
-                                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                            <th class="pe-4" scope="col" [appSort]="projectList" data-order="{{ sortOrder }}"
+                                data-name="endDate" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
                                 End&nbsp;Date&nbsp;<i
                                     [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                             </th>
 
-                            <th class="pe-4 text-center" scope="col" [appSort]="projectList" data-order="{{ sortOrder }}"
-                                data-name="estimatedTime" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                            <th class="pe-4 text-center" scope="col" [appSort]="projectList"
+                                data-order="{{ sortOrder }}" data-name="estimatedTime"
+                                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
                                 Estimated&nbsp;Time&nbsp;<i
                                     [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                             </th>
 
-                            <th class="pe-4" scope="col" [appSort]="projectList" data-order="{{ sortOrder }}" data-name="notes"
-                                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                            <th class="pe-4" scope="col" [appSort]="projectList" data-order="{{ sortOrder }}"
+                                data-name="notes" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
                                 Notes&nbsp;<i
                                     [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                             </th>
                             <th class="pe-4" scope="col" data-order="desc" data-name="status">Status</th>
-                            <th class="pe-4" scope="col" [appSort]="projectList" data-order="desc" data-name="users?.user?.firstName"
-                                *ngIf="!userId">Members</th>
+                            <th class="pe-4" scope="col" [appSort]="projectList" data-order="desc"
+                                data-name="users?.user?.firstName" *ngIf="!userId">Members</th>
                             <th class="pe-2" scope="col" class=" text-center">Action</th>
                         </tr>
                     </thead>
@@ -107,9 +109,9 @@
                                         <i class="bi bi-send"></i>
                                     </button>
                                     <ul ngbDropdownMenu class="dropdown-menu py-0">
-                                        <li class="d-flex border-bottom action-list" 
-                                        data-bs-toggle="modal" data-bs-target="#manageUsersModal"
-                                        (click)="selectedProject= data; getProjectUser(data.id)">
+                                        <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
+                                            data-bs-target="#manageUsersModal"
+                                            (click)="selectedProject= data; getProjectUser(data.id)">
                                             <i class="bi bi-person-gear text-primary dropdown-item w-25"></i>
                                             <span class="pt-1 text-muted">Manage User</span>
                                         </li>
@@ -126,7 +128,7 @@
                                             <span class="pt-1 text-muted">Delete Project</span>
                                         </li>
 
-                                        
+
                                     </ul>
                                 </div>
                             </td>
@@ -142,40 +144,37 @@
 <!-- Manage user modal -->
 <div class="modal" id="manageUsersModal">
     <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-body">
-          <div class="d-flex justify-content-between">
-            <h4 class="modal-title text-start">Manage Members</h4>
-            <button type="button" data-bs-dismiss="modal" class="btn-close"></button>
-          </div>
-          <hr class="mt-0">
-          <div class="row" *ngIf="selectedProject">
-            <form  (ngSubmit)="saveProjectUsers()">
-              <div class="row d-flex justify-content-center">
-                <div class="col-md-8">
-                  <div *ngFor="let assignee of allAssignee" class="mt-2">
-                    <mat-checkbox
-                      color="primary"
-                      [checked]="isUserSelected(assignee.id)"
-                      (change)="onCheckboxChange(assignee, $event.checked)"
-                    >
-                      {{ assignee.firstName | titlecase }} {{ assignee.lastName | titlecase }}
-                    </mat-checkbox>
-                  </div>
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="d-flex justify-content-between">
+                    <h4 class="modal-title text-start">Manage Members</h4>
+                    <button type="button" data-bs-dismiss="modal" class="btn-close"></button>
                 </div>
-              </div>
-              <div class="d-flex justify-content-between mt-3">
-                <button mat-raised-button class="mx-2" data-bs-dismiss="modal" type="button">Cancel</button>
-                <button mat-raised-button class="addBtn" type="submit">Save</button>
-              </div>
-            </form>
-          </div>
+                <hr class="mt-0">
+                <div class="row" *ngIf="selectedProject">
+                    <form (ngSubmit)="saveProjectUsers()">
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-md-8">
+                                <div *ngFor="let assignee of allAssignee" class="mt-2">
+                                    <mat-checkbox color="primary" [checked]="isUserSelected(assignee.id)"
+                                        (change)="onCheckboxChange(assignee, $event.checked)">
+                                        {{ assignee.firstName | titlecase }} {{ assignee.lastName | titlecase }}
+                                    </mat-checkbox>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between mt-3">
+                            <button mat-raised-button class="mx-2" data-bs-dismiss="modal" type="button">Cancel</button>
+                            <button mat-raised-button class="addBtn" type="submit">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
+</div>
 
-  
+
 <!-- Add User -->
 <div class="modal" id="addUserModal">
     <div class="modal-dialog modal-dialog-centered">
@@ -278,7 +277,8 @@
                             <div class="col-md-12">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <label for="projectName" class="text-start">Project Name</label>
+                                        <label for="projectName" class="text-start">Project Name <span
+                                                class="text-danger">*</span></label>
 
                                         <input type="text" name="projectName" id="projectName"
                                             formControlName="projectName" class="form-control input pt-0" required>
@@ -293,8 +293,8 @@
                                     <div class="col-md-6">
                                         <label for="estimatedTime"
                                             class="text-start d-flex justify-content-between"><span>
-                                                Estimated Time </span><span class="text-muted"
-                                                style="font-size: 12px">(In
+                                                Estimated Time <span class="text-danger">*</span></span><span
+                                                class="text-muted" style="font-size: 12px">(In
                                                 hours)</span></label>
 
                                         <input type="number" name="estimatedTime" id="estimatedTime"
@@ -311,14 +311,11 @@
 
                                 <div class="row mt-2">
                                     <div class="col-md-6">
-                                        <label for="startDate" class="text-start">Start Date</label>
+                                        <label for="startDate" class="text-start">Start Date <span
+                                                class="text-danger">*</span></label>
 
                                         <div class="row">
                                             <div class="col-12 form-group ">
-                                                <!-- <input placeholder="YYYY-MM-DD" class="form-control"
-                                                    #datepickerYMD="bsDatepicker" bsDatepicker
-                                                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
-                                                    formControlName="startDate"  required> -->
                                                 <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker
                                                     [bsValue]="bsValue" [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
                                                     formControlName="startDate" />
@@ -334,14 +331,11 @@
 
 
                                     <div class="col-md-6">
-                                        <label for="endDate" class="text-start">End Date</label>
+                                        <label for="endDate" class="text-start">End Date <span
+                                                class="text-danger">*</span></label>
 
                                         <div class="row">
                                             <div class="col-12 form-group">
-                                                <!-- <input placeholder="YYYY-MM-DD" class="form-control"
-                                                    #datepickerYMD="bsDatepicker" bsDatepicker
-                                                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
-                                                    formControlName="endDate"  required> -->
                                                 <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker
                                                     [bsValue]="bsValue" [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
                                                     formControlName="endDate" />
@@ -358,7 +352,7 @@
 
 
                                 <div class="row mt-2">
-                                    <label for="notes" class="text-start">Notes</label>
+                                    <label for="notes" class="text-start">Notes <span class="text-danger">*</span></label>
                                 </div>
                                 <input type="text" name="notes" id="notes" class="form-control input  pt-0"
                                     formControlName="notes" required>

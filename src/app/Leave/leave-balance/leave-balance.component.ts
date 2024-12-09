@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LeaveService } from 'src/app/_services/leave.service';
 import { TimeLogService } from 'src/app/_services/timeLogService';
 import { CommonService } from 'src/app/_services/common.Service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-leave-balance',
@@ -38,13 +39,13 @@ export class LeaveBalanceComponent {
     'NOVEMBER',
     'DECEMBER'
   ];
-
-
+  extractedUrl: string = '';
 
   constructor(private leaveService: LeaveService,
     private fb: FormBuilder,
     private commonService: CommonService,
-    private timeLogService: TimeLogService) {
+    private timeLogService: TimeLogService,
+    private router: Router) {
     this.leaveBalanceForm = this.fb.group({
       user: ['', Validators.required],
       cycle: ['', Validators.required],
@@ -53,6 +54,16 @@ export class LeaveBalanceComponent {
   }
 
   ngOnInit() {
+
+    const fullUrl = this.router.url; // e.g., /#/home/leave/my-application
+
+    // Extract the part after "/home/leave/"
+    const basePath = '/home/leave/';
+    if (fullUrl.includes(basePath)) {
+      this.extractedUrl = fullUrl.split(basePath)[1]; // e.g., "my-application"
+      console.log(this.extractedUrl)
+    }
+
     this.commonService.populateUsers().subscribe((res: any) => {
       this.members = res.data.data;
     });

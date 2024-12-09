@@ -284,7 +284,7 @@ export class AddSalaryDetailsComponent {
       this.toast.success('The salary details have been successfully added.')
     },
       err => {
-        this.toast.error('The salary details ca not be added', 'Error')
+        this.toast.error('The salary details can not be added', 'Error')
       })
   }
 

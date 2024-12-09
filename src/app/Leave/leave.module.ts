@@ -95,24 +95,11 @@ import { LeaveRoutingModule } from './leave-routing.module';
     CommonModule,
     SharedModule,
     RouterModule,
-    MatFormFieldModule,
-    MatDatepickerModule,
-    MatButtonModule,
-    MatInputModule,
-    MatRippleModule,
-    MatNativeDateModule,
-    MatRippleModule,
     NgxChartsModule,
-    FormsModule,
     CommonComponentsModule,
     NgbModule,
     LeaveRoutingModule
   ],
-
-  // exports: [LeaveApplicationComponent,
-  //   LeaveSettingComponent,
-  //   LeaveAssignmentComponent,
-  //   LeaveCategoryComponent],
   schemas: [NO_ERRORS_SCHEMA]
 })
 export class LeaveModule { }

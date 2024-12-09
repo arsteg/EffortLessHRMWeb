@@ -10,7 +10,6 @@ import { HomeComponent } from './layouts/home/home.component';
 import { RolesComponent } from './feature_modules/manage/roles/roles/roles.component';
 import { PermissionModelComponent } from './feature_modules/manage/permissonModel/permission-model/permission-model.component';
 import { ProfileComponent } from './profile/profile.component';
-import { RealtimeComponent } from './feature_modules/realtime/realtime.component';
 import { MainComponent } from './main/main.component';
 import { TasksComponent } from './tasks/tasks.component';
 import { RequestManualTimeComponent } from './manualTime/request-manual-time/request-manual-time.component';
@@ -26,15 +25,10 @@ import { FeaturesSettingsComponent } from './settings/features-settings/features
 import { TagComponent } from './tasks/task.tag/tag.component';
 import { EditTaskComponent } from './tasks/edit-task/edit-task.component';
 import { TaskCommentComponent } from './tasks/task-comment/task-comment.component';
-import { UserTimesheetComponent } from './timesheets/user-timesheet/user-timesheet.component';
-import { AdminTimesheetComponent } from './timesheets/admin-timesheet/admin-timesheet.component';
 import { GenericSettingsComponent } from './settings/generic-settings/generic-settings.component';
 import { ViewLiveScreenComponent } from './viewLiveScreen/view-live-screen/view-live-screen.component';
 import { SubtaskComponent } from './tasks/subtask/subtask.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
-import { AdminCalendarComponent } from './calendar/admin-calendar/admin-calendar.component';
-import { UserCalendarComponent } from './calendar/user-calendar/user-calendar.component';
-import { TimesheetsComponent } from './timesheets/timesheets.component';
 import { AlertsComponent } from './Alerts/alerts.component';
 import { TaxationComponent } from './Taxation/taxation.component';
 import { SeparationComponent } from './Separation/separation.component';
@@ -46,8 +40,10 @@ import { ExpenseCategorySettingsComponent } from './Expenses/settings/expense-ca
 import { InterviewProcessMainComponent } from './pages/interviewProcess/interview-process-main/interview-process-main.component';
 
 const routes: Routes = [
+  { path: '', redirectTo: 'landing', pathMatch: 'full' },
+  { path: 'landing', component: MainComponent },
   {
-    path: '', component: HomeComponent, canActivate: [AuthGuard],
+    path: 'home', component: HomeComponent, canActivate: [AuthGuard],
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       {
@@ -58,18 +54,30 @@ const routes: Routes = [
         path: 'screenshots', loadChildren: () =>
           import('./feature_modules/screenshots/screenshots.module').then(m => m.ScreenshotsModule)
       },
-      { 
-        path: 'realtime', loadChildren: () => 
-        import('./feature_modules/realtime/realtime.module').then(m => m.RealtimeModule) 
-      },
-      { 
-        path: 'organization', loadChildren: () =>
-          import('./feature_modules/organization/organization.module').then(m => m.OragnizationModule) 
+      {
+        path: 'realtime', loadChildren: () =>
+          import('./feature_modules/realtime/realtime.module').then(m => m.RealtimeModule)
       },
       {
-         path: 'manage', loadChildren: () => 
-          import('./feature_modules/manage/manage.module').then(m => m.ManageModule) 
-        },
+        path: 'organization', loadChildren: () =>
+          import('./feature_modules/organization/organization.module').then(m => m.OragnizationModule)
+      },
+      {
+        path: 'manage', loadChildren: () =>
+          import('./feature_modules/manage/manage.module').then(m => m.ManageModule)
+      },
+      {
+        path: 'calendar', loadChildren: () =>
+          import('./feature_modules/calendar/calendar.module').then(m => m.CalendarModule)
+      },
+      {
+        path: 'attendance', loadChildren: () =>
+          import('./feature_modules/attendance/attendance.module').then(m => m.AttendanceModule)
+      },
+      {
+        path: 'timesheets', loadChildren: () =>
+          import('./feature_modules/timesheets/timesheets.module').then(m => m.TimesheetsModule)
+      },
 
       { path: 'logout', component: LoginComponent },
       { path: 'roles', component: RolesComponent }, // TODO: module to bepick from manage
@@ -84,8 +92,6 @@ const routes: Routes = [
       { path: 'applicationusages', component: AppAndWebsiteUsageComponent },
       { path: 'permissions', component: PermissionsComponent },
       { path: 'rolePermission', component: RolePermissionComponent },
-      { path: 'adminTimesheets', component: AdminTimesheetComponent },
-      { path: 'userTimesheet', component: UserTimesheetComponent },
       { path: 'workspace', component: WorkspaceSettingsComponent },
       { path: 'features', component: FeaturesSettingsComponent },
       { path: 'edit-task', component: EditTaskComponent },
@@ -93,11 +99,8 @@ const routes: Routes = [
       { path: 'genericSettings', component: GenericSettingsComponent },
       { path: 'viewLiveScreen', component: ViewLiveScreenComponent },
       { path: 'SubTask', component: SubtaskComponent },
-      { path: 'AdminCalendar', component: AdminCalendarComponent },
-      { path: 'UserCalendar', component: UserCalendarComponent },
-      { path: 'attendance', loadChildren: () => import('./attendance/attendance-routing.module').then(m => m.AttendanceRoutingModule) },
-      { path: 'timesheet', component: TimesheetsComponent },
-      { path: 'leave', loadChildren: () => import('./Leave/leave-routing.module').then(m => m.LeaveRoutingModule) },
+
+      { path: 'leave', loadChildren: () => import('./Leave/leave.module').then(m => m.LeaveModule) },
       { path: 'expense', loadChildren: () => import('./Expenses/expenses-routing.module').then(m => m.ExpensesRoutingModule) },
       { path: 'alerts', component: AlertsComponent },
       { path: 'payroll', loadChildren: () => import('./feature_modules/payroll/payroll.module').then(m => m.PayrollModule) },
@@ -110,7 +113,6 @@ const routes: Routes = [
       { path: 'interviewProcess', component: InterviewProcessMainComponent }
     ]
   },
-  { path: 'main', component: MainComponent },
   { path: 'login', component: LoginComponent },
   { path: 'forgotPassword', component: ForgotPasswordComponent },
   { path: 'register', component: RegisterComponent },
@@ -118,7 +120,8 @@ const routes: Routes = [
   { path: 'resetPassword/:token', component: ResetPasswordComponent },
   { path: 'category-settings', component: ExpenseCategorySettingsComponent },
 
-  { path: '**', redirectTo: 'main' },
+  // Fallback route
+  { path: '**', redirectTo: 'landing' },
 
 ]
 
