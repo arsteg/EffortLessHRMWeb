@@ -1,9 +1,7 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { ExpensesModule } from './expenses.module';
 import { ExpensesComponent } from './expenses.component';
-import { AuthGuard } from '../auth.guard';
+import { AuthGuard } from 'src/app/auth.guard';
 import { SettingsComponent } from './settings/settings.component';
 import { ExpenseReportsComponent } from './expense-reports/expense-reports.component';
 import { AdvanceReportsComponent } from './advance-reports/advance-reports.component';

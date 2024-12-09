@@ -1,5 +1,5 @@
 import { formatDate } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { RoleService } from 'src/app/_services/role.service';
@@ -59,7 +59,6 @@ export class EmployeeProfileComponent {
   }
 
   ngOnInit() {
-    console.log(this.selectedUser?.id);
     this.timelogService.getusers(this.selectedUser?.id).subscribe((res: any) => {
       const formattedDOB = res?.data[0]?.DOB ? formatDate(res?.data[0]?.DOB, 'yyyy-MM-dd', 'en') : null;
       const formattedMarriageAniversary = res.data[0]?.MarraigeAniversary ? formatDate(res.data[0]?.MarraigeAniversary, 'yyyy-MM-dd', 'en') : null;
@@ -69,7 +68,6 @@ export class EmployeeProfileComponent {
         DOB: formattedDOB,
         MarraigeAniversary: formattedMarriageAniversary
       });
-      console.log(this.userForm.value);
       if (this.isEdit) {
         this.userForm.get('email').disable();
       }
@@ -95,5 +93,9 @@ export class EmployeeProfileComponent {
     this.roleService.getAllRole().subscribe((res: any) => {
       this.roles = res.data;
     })
+  }
+
+  onResetForm(){
+    this.ngOnInit();
   }
 }
