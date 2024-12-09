@@ -1,6 +1,8 @@
+<!-- <router-outlet></router-outlet> -->
 <div class="main-content">
+   
     <div class="container-fluid">
-        <button class="addBtn border-0 mt-2" mat-raised-button routerLink="/manage/employees" routerLinkActive="active">
+        <button class="addBtn border-0 mt-2" mat-raised-button (click)="toggleToEmployees()">
             <i class="bi bi-arrow-left"></i> All Employees
         </button>
         <div class="d-flex align-items-center pt-3 px-2 w-100">
