@@ -285,9 +285,9 @@ export class TasksComponent implements OnInit {
       queryParams: { taskId: taskId }
     };
     if (p_Id) {
-      this.router.navigate(['/SubTask'], navigationExtras);
+      this.router.navigate(['home/SubTask'], navigationExtras);
     } else {
-      this.router.navigate(['/edit-task'], navigationExtras);
+      this.router.navigate(['home/edit-task'], navigationExtras);
     }
   }
  
