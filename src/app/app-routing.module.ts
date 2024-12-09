@@ -29,14 +29,14 @@ import { GenericSettingsComponent } from './settings/generic-settings/generic-se
 import { ViewLiveScreenComponent } from './viewLiveScreen/view-live-screen/view-live-screen.component';
 import { SubtaskComponent } from './tasks/subtask/subtask.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
-import { AlertsComponent } from './Alerts/alerts.component';
+import { AlertsComponent } from './feature_modules/alerts/alerts.component';
 import { TaxationComponent } from './Taxation/taxation.component';
 import { SeparationComponent } from './Separation/separation.component';
 import { SettingsComponent } from './settings/settings.component';
 import { ReportsComponent } from './reports/reports.component';
 import { ApprovalsComponent } from './approvals/approvals.component';
 import { UserTaxDeclarationComponent } from './Taxation/user-tax-declaration/user-tax-declaration.component';
-import { ExpenseCategorySettingsComponent } from './Expenses/settings/expense-category-settings/expense-category-settings.component';
+import { ExpenseCategorySettingsComponent } from './feature_modules/expenses/settings/expense-category-settings/expense-category-settings.component';
 import { InterviewProcessMainComponent } from './pages/interviewProcess/interview-process-main/interview-process-main.component';
 
 const routes: Routes = [
@@ -78,6 +78,22 @@ const routes: Routes = [
         path: 'timesheets', loadChildren: () =>
           import('./feature_modules/timesheets/timesheets.module').then(m => m.TimesheetsModule)
       },
+      {
+        path: 'leave',
+        loadChildren: () => import('./feature_modules/leave/leave.module').then(m => m.LeaveModule)
+      },
+      {
+        path: 'expense',
+        loadChildren: () => import('./feature_modules/expenses/expenses.module').then(m => m.ExpensesModule)
+      },
+      { 
+        path: 'alerts', 
+        loadChildren: () => import('./feature_modules/alerts/alerts.module').then(m => m.AlertsModule)
+      },
+      {
+        path: 'payroll',
+        loadChildren: () => import('./feature_modules/payroll/payroll.module').then(m => m.PayrollModule)
+      },
 
       { path: 'logout', component: LoginComponent },
       { path: 'roles', component: RolesComponent }, // TODO: module to bepick from manage
@@ -100,10 +116,6 @@ const routes: Routes = [
       { path: 'viewLiveScreen', component: ViewLiveScreenComponent },
       { path: 'SubTask', component: SubtaskComponent },
 
-      { path: 'leave', loadChildren: () => import('./Leave/leave.module').then(m => m.LeaveModule) },
-      { path: 'expense', loadChildren: () => import('./Expenses/expenses-routing.module').then(m => m.ExpensesRoutingModule) },
-      { path: 'alerts', component: AlertsComponent },
-      { path: 'payroll', loadChildren: () => import('./feature_modules/payroll/payroll.module').then(m => m.PayrollModule) },
       { path: 'taxation', component: TaxationComponent },
       { path: 'separation', component: SeparationComponent },
       { path: 'settings', component: SettingsComponent },

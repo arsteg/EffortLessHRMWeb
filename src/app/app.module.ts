@@ -44,9 +44,6 @@ import { ApprovalsModule } from './approvals/approvals.module';
 import { QuillModule } from 'ngx-quill';
 import { CommonComponentsModule } from './common/commonComponents.module';
 import { FullCalendarModule } from '@fullcalendar/angular';
-import { LeaveModule } from './Leave/leave.module';
-import { ExpensesModule } from './Expenses/expenses.module';
-import { AlertsModule } from './Alerts/alerts.module';
 import { TaxationModule } from './Taxation/taxation.module';
 import { SeparationModule } from './Separation/separation.module';
 import { UserTaxDeclarationComponent } from './Taxation/user-tax-declaration/user-tax-declaration.component';
@@ -111,9 +108,6 @@ const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
     CommonComponentsModule,
     QuillModule.forRoot(),
     FullCalendarModule,
-    LeaveModule,
-    ExpensesModule,
-    AlertsModule,
     TaxationModule,
     SeparationModule,
     FormsModule,

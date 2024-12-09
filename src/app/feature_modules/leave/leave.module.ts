@@ -1,14 +1,7 @@
 import { NO_ERRORS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SharedModule } from "../shared/shared.Module";
 import { RouterModule } from '@angular/router';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
-import { MatNativeDateModule, MatRippleModule } from '@angular/material/core';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
-import { FormsModule } from '@angular/forms';
 import { LeaveApplicationComponent } from './leave-application/leave-application.component';
 import { LeaveSettingComponent } from './leave-setting/leave-setting.component';
 import { LeaveAssignmentComponent } from './leave-setting/leave-assignment/leave-assignment.component';
@@ -17,7 +10,7 @@ import { LeaveTemplateComponent } from './leave-setting/leave-template/leave-tem
 import { LeaveManagementComponent } from './leave-grant/leave-grant.component';
 import { LeaveComponent } from './leave/leave.component';
 import { GeneralSettingsComponent } from './leave-setting/general-settings/general-settings.component';
-import { CommonComponentsModule } from '../common/commonComponents.module';
+import { CommonComponentsModule } from 'src/app/common/commonComponents.module';
 import { AddCategoryLeaveComponent } from './leave-setting/leave-template/add-category-leave/add-category-leave.component';
 import { CreateLeaveComponent } from './leave-setting/leave-template/create-leave/create-leave.component';
 import { PendingComponent } from './leave-grant/pending/pending.component';
@@ -93,7 +86,6 @@ import { LeaveRoutingModule } from './leave-routing.module';
   ],
   imports: [
     CommonModule,
-    SharedModule,
     RouterModule,
     NgxChartsModule,
     CommonComponentsModule,

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LeaveComponent } from './leave/leave.component';
-import { AuthGuard } from '../auth.guard';
+import { AuthGuard } from 'src/app/auth.guard';
 import { LeaveSettingComponent } from './leave-setting/leave-setting.component';
 import { GeneralSettingsComponent } from './leave-setting/general-settings/general-settings.component';
 import { LeaveCategoryComponent } from './leave-setting/leave-category/leave-category.component';

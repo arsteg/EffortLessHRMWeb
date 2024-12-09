@@ -5,8 +5,7 @@ import { SettingsComponent } from './settings/settings.component';
 import { ExpensesCategoriesComponent } from './settings/expenses-categories/expenses-categories.component';
 import { ExpensesTemplatesComponent } from './settings/expenses-templates/expenses-templates.component';
 import { ExpensesTemplateAssignmentComponent } from './settings/expenses-template-assignment/expenses-template-assignment.component';
-import { SharedModule } from '../shared/shared.Module';
-import { CommonComponentsModule } from '../common/commonComponents.module';
+import { CommonComponentsModule } from 'src/app/common/commonComponents.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AdvanceCategoriesComponent } from './settings/advance-categories/advance-categories.component';
 import { AdvanceTemplateAssignmentComponent } from './settings/advance-template-assignment/advance-template-assignment.component';
@@ -19,7 +18,6 @@ import { PendingComponent } from './expense-reports/pending/pending.component';
 import { ApprovedComponent } from './expense-reports/approved/approved.component';
 import { CancelledComponent } from './expense-reports/cancelled/cancelled.component';
 import { RejectedComponent } from './expense-reports/rejected/rejected.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { AddExpenseReportComponent } from './expense-reports/add-expense-report/add-expense-report.component';
 import { CreateReportComponent } from './expense-reports/create-report/create-report.component';
@@ -98,12 +96,10 @@ import { ExpensesRoutingModule } from './expenses-routing.module';
   ],
   imports: [
     CommonModule,
-    SharedModule,
     CommonComponentsModule,
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
-    BrowserAnimationsModule,
     MatDialogModule,
     MatIconModule,
     BsDatepickerModule.forRoot(),
