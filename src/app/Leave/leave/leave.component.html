@@ -2,15 +2,15 @@
     <div class="container-fluid px-0">
         <ng-container *ngIf="view === 'admin'">
             <div class="d-flex bg-white subMenu w-100">
-                <a routerLink="/leave/settings" class="btn rounded-pill submenuTab" 
+                <a routerLink="settings" class="btn rounded-pill submenuTab" 
                    [routerLinkActive]="'active'">Settings</a>
-                <a routerLink="/leave/leave-grant" class="btn rounded-pill submenuTab" 
+                <a routerLink="leave-grant" class="btn rounded-pill submenuTab" 
                    [routerLinkActive]="'active'">Leave Grant</a>
-                <a routerLink="/leave/leave-balance" class="btn rounded-pill submenuTab" 
+                <a routerLink="leave-balance" class="btn rounded-pill submenuTab" 
                    [routerLinkActive]="'active'">Leave Balance</a>
-                <a routerLink="/leave/leave-application" class="btn rounded-pill submenuTab" 
+                <a routerLink="leave-application" class="btn rounded-pill submenuTab" 
                    [routerLinkActive]="'active'">Leave Application</a>
-                <a routerLink="/leave/short-leave" class="btn rounded-pill submenuTab" 
+                <a routerLink="short-leave" class="btn rounded-pill submenuTab" 
                    [routerLinkActive]="'active'">Short Leave</a>
             </div>
             <router-outlet></router-outlet>
@@ -18,21 +18,21 @@
 
         <ng-container *ngIf="view === 'user'">
             <div class="d-flex bg-white subMenu w-100">
-                <a routerLink="/leave/my-application" class="btn rounded-pill submenuTab" 
+                <a routerLink="my-application" class="btn rounded-pill submenuTab" 
                    [routerLinkActive]="'active'">My Application</a>
-                <a routerLink="/leave/my-leave-balance" class="btn rounded-pill submenuTab" 
+                <a routerLink="my-leave-balance" class="btn rounded-pill submenuTab" 
                    [routerLinkActive]="'active'">My Leave Balance</a>
-                <a routerLink="/leave/my-team-balance" class="btn rounded-pill submenuTab" 
+                <a routerLink="my-team-balance" class="btn rounded-pill submenuTab" 
                    [routerLinkActive]="'active'">Team Leave Balances</a>
-                <a routerLink="/leave/my-leave-grant" class="btn rounded-pill submenuTab" 
+                <a routerLink="my-leave-grant" class="btn rounded-pill submenuTab" 
                    [routerLinkActive]="'active'">My Leave Grant</a>
-                <a routerLink="/leave/team-application" class="btn rounded-pill submenuTab" 
+                <a routerLink="team-application" class="btn rounded-pill submenuTab" 
                    [routerLinkActive]="'active'">Team Application</a>
-                <a routerLink="/leave/team-short-leave" class="btn rounded-pill submenuTab" 
+                <a routerLink="team-short-leave" class="btn rounded-pill submenuTab" 
                    [routerLinkActive]="'active'">Team Short Leave</a>
-                <a routerLink="/leave/team-leave-grant" class="btn rounded-pill submenuTab" 
+                <a routerLink="team-leave-grant" class="btn rounded-pill submenuTab" 
                    [routerLinkActive]="'active'">Team Leave Grant</a>
-                <a routerLink="/leave/general-information" class="btn rounded-pill submenuTab" 
+                <a routerLink="general-information" class="btn rounded-pill submenuTab" 
                    [routerLinkActive]="'active'">General Information</a>
             </div>
             <router-outlet></router-outlet>

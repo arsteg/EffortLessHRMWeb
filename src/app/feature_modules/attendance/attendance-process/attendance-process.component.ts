@@ -247,11 +247,12 @@ export class AttendanceProcessComponent {
   }
 
   onSubmission() {
+    console.log(this.attendanceProcessForm.value)
     if (this.attendanceProcessForm.valid) {
       this.attendanceService.addProcessAttendance(this.attendanceProcessForm.value).subscribe((res: any) => {
         this.processAttendance.push(res.data);
         this.attendanceProcessForm.reset();
-        this.toast.success('Process ATtendance Created', 'Successfully!');
+        this.toast.success('Process Attendance Created', 'Successfully!');
       },
         err => {
           this.toast.error('Process Attendance Can not be Created', 'Error!')

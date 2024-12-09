@@ -168,8 +168,43 @@
         <div *ngIf="isLOPError" class="alert alert-danger mt-3">
             For the selected month and year, LOP does not exist. Please create the LOP for the same!
         </div>
-        <div *ngIf="lopExistsError" class="alert alert-warning mt-3">
+        <!-- <div *ngIf="lopExistsError" class="alert alert-warning mt-3">
             For the selected month and year, Attendance Process already exists!
+        </div> -->
+
+        <div formArrayName="users">
+            <div *ngFor="let user of attendanceProcessForm.get('users')['controls']; let i = index" [formGroupName]="i"
+                class="d-flex align-items-center mb-3">
+
+                <!-- Employee Selection -->
+                <div class="form-group flex-grow-1 me-2">
+                    <label for="member">Select An Employee for Template Assignment <span
+                            class="text-danger">*</span></label>
+                    <select id="member" name="member" class="form-control" [attr.disabled]="changeMode === 'Update'"
+                        formControlName="user" aria-label="form-select-sm example">
+                        <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                            {{ assignee?.firstName | titlecase }} {{ assignee?.lastName | titlecase }}
+                        </option>
+                    </select>
+
+                    <div *ngIf="lopExistsError" class="alert alert-warning mt-3">
+                        For the selected User, Month and Year, Attendance Process already exists!
+                    </div>
+                </div>
+
+                <!-- Status Input -->
+                <div class="form-group flex-grow-1 mr-2">
+                    <label for="userStatus">Status</label>
+                    <input type="text" id="userStatus" formControlName="status" class="form-control">
+                </div>
+
+                <!-- Remove Button (Only shown if addUser has been clicked at least once) -->
+                <!-- <button *ngIf="showRemoveButton" type="button" (click)="removeUser(i)"
+                    class="btn btn-danger bi bi-x"></button> -->
+            </div>
+
+            <!-- Add User Button -->
+            <!-- <button type="button" (click)="addUser()" class="btn btn-primary mt-2 bi bi-plus"> Add User</button> -->
         </div>
 
         <div class="row mt-2">
@@ -225,40 +260,7 @@
 
         </div>
 
-        <div formArrayName="users">
-            <div *ngFor="let user of attendanceProcessForm.get('users')['controls']; let i = index" [formGroupName]="i"
-                class="d-flex align-items-center mb-3">
-
-                <!-- Employee Selection -->
-                <div class="form-group flex-grow-1 me-2">
-                    <label for="member">Select An Employee for Template Assignment <span
-                            class="text-danger">*</span></label>
-                    <select id="member" name="member" class="form-control" [attr.disabled]="changeMode === 'Update'"
-                        formControlName="user" aria-label="form-select-sm example">
-                        <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
-                            {{ assignee?.firstName | titlecase }} {{ assignee?.lastName | titlecase }}
-                        </option>
-                    </select>
-
-                    <div *ngIf="lopExistsError" class="alert alert-warning mt-3">
-                        For the selected User, Month and Year, Attendance Process already exists!
-                    </div>
-                </div>
-
-                <!-- Status Input -->
-                <div class="form-group flex-grow-1 mr-2">
-                    <label for="userStatus">Status</label>
-                    <input type="text" id="userStatus" formControlName="status" class="form-control">
-                </div>
-
-                <!-- Remove Button (Only shown if addUser has been clicked at least once) -->
-                <!-- <button *ngIf="showRemoveButton" type="button" (click)="removeUser(i)"
-                    class="btn btn-danger bi bi-x"></button> -->
-            </div>
-
-            <!-- Add User Button -->
-            <!-- <button type="button" (click)="addUser()" class="btn btn-primary mt-2 bi bi-plus"> Add User</button> -->
-        </div>
+       
 
         <div class="d-flex justify-content-between mt-2">
             <button type="reset" mat-raised-button>Cancel</button>

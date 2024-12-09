@@ -100,7 +100,7 @@ const routes: Routes = [
       { path: 'viewLiveScreen', component: ViewLiveScreenComponent },
       { path: 'SubTask', component: SubtaskComponent },
 
-      { path: 'leave', loadChildren: () => import('./Leave/leave-routing.module').then(m => m.LeaveRoutingModule) },
+      { path: 'leave', loadChildren: () => import('./Leave/leave.module').then(m => m.LeaveModule) },
       { path: 'expense', loadChildren: () => import('./Expenses/expenses-routing.module').then(m => m.ExpensesRoutingModule) },
       { path: 'alerts', component: AlertsComponent },
       { path: 'payroll', loadChildren: () => import('./feature_modules/payroll/payroll.module').then(m => m.PayrollModule) },
