@@ -4,7 +4,6 @@ import { Spinkit } from 'ng-http-loader';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { MatDialog } from '@angular/material/dialog';
-import { Offcanvas } from 'bootstrap';
 declare var bootstrap: any;
 
 @Component({
@@ -430,7 +429,7 @@ export const SideBarUserMenu = [
     title: 'Taxation',
     icon: 'assets/Sidenav-Icons/taxation.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/taxation.png',
-    url: 'taxDeclaration'
+    url: 'taxation/tax-declaration'
 
   },
   {
@@ -466,14 +465,14 @@ export const SideBarUserMenu = [
     title: 'Manual Time',
     icon: 'assets/Sidenav-Icons/manualTime.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/manualTime.png',
-    url: 'requestManualTime'
+    url: 'manual-time'
   },
   {
     id: '16',
     title: 'Settings',
     icon: 'assets/Sidenav-Icons/settings.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/settings.png',
-    url: 'userPreferences'
+    url: 'settings/user-preferences'
   }
 ];
 

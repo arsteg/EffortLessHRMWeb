@@ -25,12 +25,9 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CommonService } from 'src/app/_services/common.Service';
 import { UserService } from './_services/users.service';
-import { AddManualTimeComponent } from './manualTime/addManualTime/add-manual-time.component';
 import { PermissionsComponent } from './permissions/permissions.component';
 import { RolePermissionComponent } from './role-permission/role-permission.component';
 import { AuthGuard } from './auth.guard';
-import { WorkspaceSettingsComponent } from './settings/workspace-settings/workspace-settings.component';
-import { FeaturesSettingsComponent } from './settings/features-settings/features-settings.component';
 import { taskModule } from './tasks/task.Module';
 import { SharedModule } from './shared/shared.Module';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -40,20 +37,13 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { DatePipe } from '@angular/common';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ViewLiveScreenComponent } from './viewLiveScreen/view-live-screen/view-live-screen.component';
-import { ApprovalsModule } from './approvals/approvals.module';
 import { QuillModule } from 'ngx-quill';
 import { CommonComponentsModule } from './common/commonComponents.module';
 import { FullCalendarModule } from '@fullcalendar/angular';
-import { TaxationModule } from './Taxation/taxation.module';
-import { SeparationModule } from './Separation/separation.module';
-import { UserTaxDeclarationComponent } from './Taxation/user-tax-declaration/user-tax-declaration.component';
 import { FormsModule } from '@angular/forms';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { NotificationComponent } from './layouts/home/notification/notification.component';
 import { environment } from '../environments/environment';
-import { SettingsModule } from './settings/settings.Module';
-import { ReportsModule } from './reports/reports.module';
-import { RequestManualTimeComponent } from './manualTime/request-manual-time/request-manual-time.component';
 import { UserProfileComponent } from './feature_modules/manage/users/user-profile/user-profile.component';
 
 const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
@@ -72,15 +62,10 @@ const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
     HomeComponent,
     ProfileComponent,
     MainComponent,
-    AddManualTimeComponent,
     PermissionsComponent,
     RolePermissionComponent,
-    WorkspaceSettingsComponent,
-    FeaturesSettingsComponent,
     ViewLiveScreenComponent,
-    UserTaxDeclarationComponent,
     NotificationComponent,
-    RequestManualTimeComponent,
     UserProfileComponent // TODO: Remove it from manage module and use it in home/layout for editing user profile
    
   ],
@@ -103,16 +88,11 @@ const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
     MatPaginatorModule,
     MatSlideToggleModule,
     MatDialogModule,
-    ApprovalsModule,
     CommonComponentsModule,
     QuillModule.forRoot(),
     FullCalendarModule,
-    TaxationModule,
-    SeparationModule,
     FormsModule,
     SocketIoModule.forRoot(config),
-    SettingsModule,
-    ReportsModule,
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,
