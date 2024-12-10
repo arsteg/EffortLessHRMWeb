@@ -2,8 +2,8 @@ import { Component, Input, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LeaveService } from 'src/app/_services/leave.service';
 import { TimeLogService } from 'src/app/_services/timeLogService';
-import { CommonService } from 'src/app/_services/common.Service';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-leave-balance',
@@ -40,12 +40,13 @@ export class LeaveBalanceComponent {
     'DECEMBER'
   ];
   extractedUrl: string = '';
+  error: string = ''
 
   constructor(private leaveService: LeaveService,
     private fb: FormBuilder,
-    private commonService: CommonService,
     private timeLogService: TimeLogService,
-    private router: Router) {
+    private router: Router,
+    private toast: ToastrService) {
     this.leaveBalanceForm = this.fb.group({
       user: ['', Validators.required],
       cycle: ['', Validators.required],
@@ -54,22 +55,19 @@ export class LeaveBalanceComponent {
   }
 
   ngOnInit() {
-
-    const fullUrl = this.router.url; // e.g., /#/home/leave/my-application
+    const fullUrl = this.router.url;
 
     // Extract the part after "/home/leave/"
     const basePath = '/home/leave/';
     if (fullUrl.includes(basePath)) {
-      this.extractedUrl = fullUrl.split(basePath)[1]; // e.g., "my-application"
+      this.extractedUrl = fullUrl.split(basePath)[1];
       console.log(this.extractedUrl)
     }
 
-    this.commonService.populateUsers().subscribe((res: any) => {
-      this.members = res.data.data;
-    });
+
     this.getAllLeaveCatgeories();
     this.populateMembers();
-    this.getCategoriesByCurrentUser();
+    if (this.extractedUrl != 'my-team-balance' && this.extractedUrl != 'leave-balance') { this.getCategoriesByCurrentUser(); }
 
     const currentYear = new Date().getFullYear();
     const previousYear = currentYear - 1;
@@ -126,9 +124,7 @@ export class LeaveBalanceComponent {
     this.member = JSON.parse(member.value);
   }
 
-  getLeaveBalanceOfAllUsers() {
-    // levae balance of all users
-  }
+
   getLeaveBalance() {
     if (this.leaveBalanceForm.valid) {
       let payload = {
@@ -137,10 +133,10 @@ export class LeaveBalanceComponent {
         category: this.leaveBalanceForm.value.category
       }
       if (this.portalView == 'user') {
-        if (this.tab === 3) {
+        if (this.extractedUrl === 'my-leave-balance') {
           payload.user = this.currentUser?.id;
 
-        } else if (this.tab === 2) {
+        } else if (this.extractedUrl === 'my-team-balance') {
           payload.user = this.member?.id;
         }
       }
@@ -157,24 +153,36 @@ export class LeaveBalanceComponent {
       this.allCategories = res.data;
     })
   }
+  selecteduser(userId: string) {
+    this.member = userId;
 
-  selecteduser(user) {
-    this.member = user;
-    this.leaveService.getLeaveCategoriesByUserv1(user).subscribe((res: any) => {
-      if (res.status == 'success') {
-        this.leaveCategories = res.data;
+    // Clear the error and form controls initially
+    this.error = '';
+    this.leaveCategories = []; // Clear leave categories
+    this.leaveBalanceForm.patchValue({ category: '' }); // Reset the category field
+
+    this.leaveService.getLeaveCategoriesByUserv1(userId).subscribe(
+      (res: any) => {
+        if (res.status === 'success') {
+          this.leaveCategories = res.data;
+          this.error = ''; // Clear any previous error message
+        } else if (res.status === 'failure') {
+          this.leaveCategories = []; // Clear categories as none are available
+          this.leaveBalanceForm.patchValue({ category: '' }); // Reset the category field
+          this.error =
+            'It seems that leave categories have not been assigned to this employee yet. Please contact your administrator to assign the appropriate leave categories.';
+        }
+      },
+      (err) => {
+        // Handle HTTP or server errors
+        this.leaveCategories = [];
+        this.leaveBalanceForm.patchValue({ category: '' }); // Reset the category field
+        this.error = 'An error occurred while fetching leave categories. Please try again later.';
       }
-    })
+    );
   }
 
-  getCategoriesByUser() {
-    this.member = this.selectedUser;
-    this.leaveService.getLeaveCategoriesByUserv1(this.selectedUser).subscribe((res: any) => {
-      if (res.status == 'success') {
-        this.leaveCategories = res.data;
-      }
-    })
-  }
+
 
   getCategoriesByCurrentUser() {
     const user = this.currentUser?.id;
@@ -182,6 +190,9 @@ export class LeaveBalanceComponent {
     this.leaveService.getLeaveCategoriesByUserv1(user).subscribe((res: any) => {
       if (res.status == 'success') {
         this.leaveCategories = res.data;
+      }
+      else if (res.status == 'failure') {
+        this.toast.error('It seems that leave categories have not been assigned to this employee yet. Please contact your administrator to assign the appropriate leave categories.')
       }
     })
   }
