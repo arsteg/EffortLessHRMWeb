@@ -14,3 +14,7 @@
 .mat-form-field-outline.mat-form-field-outline-primary.ng-valid {
     border-color: #ff4081 !important;
 }
+
+.errorMsg{
+    margin-top: -30px;
+}
