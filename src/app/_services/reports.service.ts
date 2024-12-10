@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { Activity, Attendance, Leave, Productivity, SearchAppUsagesRequest, SearchTaskRequest, TimeLine, Timesheet } from '../reports/model/productivityModel';
+import { Activity, Attendance, Leave, Productivity, SearchAppUsagesRequest, SearchTaskRequest, TimeLine, Timesheet } from '../feature_modules/reports/model/productivityModel';
 
 @Injectable({ providedIn: 'root' })
 export class ReportsService {

@@ -8,7 +8,7 @@ import { EmailTemplateComponent } from './email-template/email-template.componen
 import { TagComponent } from 'src/app/tasks/task.tag/tag.component';
 import { ManageComponent } from './manage/manage.component';
 import { AuthGuard } from 'src/app/auth.guard';
-import { RequestManualTimeComponent } from 'src/app/manualTime/request-manual-time/request-manual-time.component';
+import { RequestManualTimeComponent } from 'src/app/feature_modules/manual-time/request-manual-time/request-manual-time.component';
 
 
 const routes: Routes = [
