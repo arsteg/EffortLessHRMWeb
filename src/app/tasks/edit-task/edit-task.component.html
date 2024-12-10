@@ -66,10 +66,10 @@
 
                                 <ol class="breadcrumb bg-transparent align-self-center ms-auto m-0 p-0">
                                     <ng-container>
-                                        <button *ngIf="view==='admin'" [routerLink]="['/manage/tasks']"
+                                        <button *ngIf="view==='admin'" [routerLink]="['../manage/tasks']"
                                             class="btn  submenuTab active rounded-pill"><span class="bi bi-arrow-left ">
                                                 Back</span></button>
-                                        <a href="" *ngIf="view==='user'" [routerLink]="['/tasks']"
+                                        <a href="" *ngIf="view==='user'" [routerLink]="['../tasks']"
                                             style="text-decoration: none;"> <button
                                                 class="btn  submenuTab active rounded-pill"><span
                                                     class="bi bi-arrow-left ">
@@ -806,10 +806,10 @@
 
     <div *ngIf="tasks?.data?.task === null " class="d-flex justify-content-center mt-5">
         <ng-container>
-            <button *ngIf="view==='admin'" [routerLink]="['/manage/tasks']"
+            <button *ngIf="view==='admin'" [routerLink]="['../manage/tasks']"
                 class="btn submenuTab active rounded-pill"><span class="bi bi-arrow-left ">
                     Back</span></button>
-            <a href="" *ngIf="view==='user'" [routerLink]="['/tasks']"> <button
+            <a href="" *ngIf="view==='user'" [routerLink]="['../tasks']"> <button
                     class="btn btn-outline-primary rounded-pill"><span class="bi bi-arrow-left ">
                         Back</span></button></a>
         </ng-container>

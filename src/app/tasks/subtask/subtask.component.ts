@@ -266,7 +266,7 @@ assignee: any;
       queryParams: { taskId: taskId }
     };
     console.log(taskId)
-    this.router.navigate(['/edit-task'], navigationExtras);
+    this.router.navigate(['../edit-task'], navigationExtras);
   }
   onFileSelect(event) {
     const files: FileList = event.target.files;
