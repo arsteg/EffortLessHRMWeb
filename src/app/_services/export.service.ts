@@ -18,10 +18,10 @@ export class ExportService {
     /* generate workbook and add the worksheet */
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-    /* save to file */  
+    /* save to file */
     XLSX.writeFile(wb, fileName + ".xlsx");
   }
-  
+
   exportToCSV(fileName:string, tableId: string, jsondata:any){
     /* pass here the table id */
     let element = document.getElementById(tableId);
@@ -29,26 +29,31 @@ export class ExportService {
     /* generate workbook and add the worksheet */
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-    /* save to file */  
+    /* save to file */
     XLSX.writeFile(wb, fileName + ".csv");
   }
 
-  exportToPdf(fileName:string, content: HTMLElement): void
-  {
-    
-    let pdf = new jsPDF();
+  exportToPdf(fileName: string, title:string, content: HTMLElement): void {
+    const pdf = new jsPDF('p', 'mm', 'a4'); // Initialize jsPDF
+    // Generate the content of the report
     html2canvas(content).then((canvas) => {
-      let fileWidth = 208;
-      let fileHeight = (canvas.height * fileWidth) / canvas.width;
+      const fileWidth = 208; // A4 width in mm
+      const fileHeight = (canvas.height * fileWidth) / canvas.width; // Calculate proportional height
       const FILEURI = canvas.toDataURL('image/png');
-      let PDF = new jsPDF('p', 'mm', 'a4');
-      let position = 0;
-      pdf.addImage(FILEURI, 'PNG', 0, position, fileWidth, fileHeight);
 
+      // Add the title to the PDF
+      pdf.setFontSize(16); // Set font size for the title
+      pdf.setFont('helvetica', 'bold'); // Use bold font
+      pdf.text(title, pdf.internal.pageSize.getWidth() / 2, 15, { align: 'center' }); // Center title at y=15mm
+
+      // Add the content below the title
+      const contentPosition = 25; // Start content below the title (leave space for the title)
+      pdf.addImage(FILEURI, 'PNG', 0, contentPosition, fileWidth, fileHeight);
+
+      // Save the file
       pdf.save(fileName + ".pdf");
     });
   }
- 
 export(fileName: string, tableId: string, format: 'csv' | 'xls') {
   // Get the table element by ID
   const table = document.getElementById(tableId);
@@ -87,5 +92,5 @@ export(fileName: string, tableId: string, format: 'csv' | 'xls') {
   }
 }
 
-  
+
 }

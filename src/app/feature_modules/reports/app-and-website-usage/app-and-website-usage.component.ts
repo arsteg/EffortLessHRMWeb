@@ -136,7 +136,7 @@ export class AppAndWebsiteUsageComponent implements OnInit {
 
   @ViewChild('applicationUsages') content!: ElementRef
   exportToPdf() {
-    this.exportService.exportToPdf('ApplicationUsages', this.content.nativeElement)
+    this.exportService.exportToPdf('ApplicationUsages', 'Application Usages', this.content.nativeElement)
   }
 
   private convertToDateWithStartTime(dateString: string): Date {

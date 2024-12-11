@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ProjectService } from '../../../_services/project.service';
-import { DatePipe } from '@angular/common'; 
+import { DatePipe } from '@angular/common';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { TimeLogService } from 'src/app/_services/timeLogService';
@@ -31,7 +31,7 @@ export class ActivityDescriptionComponent implements OnInit {
   selectedProject: any = [];
   roleId = localStorage.getItem('roleId');
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
-  
+
   public getJSON(): Observable<any> {
     return this.http.get(this._jsonURL);
   }
@@ -44,7 +44,7 @@ export class ActivityDescriptionComponent implements OnInit {
     , private exportService: ExportService
     )
   {
-    this.fromDate= this.datepipe.transform(new Date(this.currentDate.setDate(this.diff)),'yyyy-MM-dd');  
+    this.fromDate= this.datepipe.transform(new Date(this.currentDate.setDate(this.diff)),'yyyy-MM-dd');
     this.toDate=this.datepipe.transform(new Date(this.currentDate.setDate(this.lastday)),'yyyy-MM-dd');
     this.getActivityData();
   }
@@ -68,7 +68,7 @@ export class ActivityDescriptionComponent implements OnInit {
     }
   }
 
-  populateUsers() {    
+  populateUsers() {
     this.members = [];
     this.members.push({ id: this.currentUser.id, name: "Me", email: this.currentUser.email });
     this.member = this.currentUser;
@@ -127,16 +127,16 @@ export class ActivityDescriptionComponent implements OnInit {
     minutes = minutes % 60;
     return hours + ' hr ' + minutes + ' m';
   }
-  
+
   exportToExcel(){
     this.exportService.exportToExcel('Activity', 'activitydescription', this.activityDescriptionList);
   }
   exportToCsv(){
     this.exportService.exportToCSV('Activity', 'activitydescription', this.activityDescriptionList);
   }
-  
+
   @ViewChild('activitydescription') content!: ElementRef
   exportToPdf(){
-    this.exportService.exportToPdf('Activity', this.content.nativeElement)
+    this.exportService.exportToPdf('Activity', 'Activity Report', this.content.nativeElement)
   }
 }

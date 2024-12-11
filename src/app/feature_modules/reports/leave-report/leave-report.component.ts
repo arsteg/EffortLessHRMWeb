@@ -93,7 +93,7 @@ export class LeaveReportComponent implements OnInit {
 
   @ViewChild('leaveReport') content!: ElementRef
   exportToPdf() {
-    this.exportService.exportToPdf('Leave', this.content.nativeElement)
+    this.exportService.exportToPdf('Leave',  'Leave Report', this.content.nativeElement)
   }
 
   getLeaveReport() {

@@ -86,7 +86,7 @@ a
   filterData(){
     this.populateTimesheet();
   }
- 
+
   exportToCsv() {
     this.generateTableContent('csv').then(csvContent => {
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -101,7 +101,7 @@ a
   //     return `${response.firstName+' '+ response.lastName}`
   //   })
   // }
-  
+
 getSelectedUserNames(): Promise<string> {
   const user = this.currentUser.id;
   return new Promise((resolve, reject) => {
@@ -143,7 +143,7 @@ getSelectedUserNames(): Promise<string> {
       return content;
     }
   }
-  
+
   async exportToXlsx() {
     const xlsxContent = await this.generateTableContent('xls');
     const worksheet = XLSX.utils.aoa_to_sheet(xlsxContent);
@@ -153,10 +153,10 @@ getSelectedUserNames(): Promise<string> {
     const xlsxFile = new Blob([xlsxBlob], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
     saveAs(xlsxFile, 'user_TimeSheet.xlsx');
   }
- 
+
   @ViewChild('userTimeSheet') content!: ElementRef
   exportToPdf() {
-    this.exportService.exportToPdf('user Timesheet', this.content.nativeElement)
+    this.exportService.exportToPdf('user Timesheet', 'User Timesheet Report', this.content.nativeElement)
   }
   formatDate(dateVal) {
     var newDate = new Date(dateVal);
@@ -199,7 +199,7 @@ getSelectedUserNames(): Promise<string> {
   getFirstDayOfWeek(){
     const today = new Date();
     const dayOfWeek = today.getDay();
-    const diff = today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1); 
+    const diff = today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
     const firstDayOfWeek = new Date(today.setDate(diff));
     this.fromDate = this.datePipe.transform(firstDayOfWeek, 'yyyy-MM-dd');
   }
