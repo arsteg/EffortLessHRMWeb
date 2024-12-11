@@ -23,7 +23,7 @@
               <mat-form-field appearance="outline" class="w-100">
                 <mat-label>Select User</mat-label>
                 <mat-select name="users" multiple [(ngModel)]="selectedUser">
-                  <mat-slide-toggle class="m-2" (click)="selectAllUsers()" 
+                  <mat-slide-toggle class="m-2" (click)="selectAllUsers()"
                     color="primary">All</mat-slide-toggle>
 
                   <hr class="my-0" />
@@ -104,8 +104,8 @@
                 <td class="pe-lg-1 pe-4 text-center">{{getTotalHours(row.slice(1)) | milliSecondsToTime}}</td>
               </tr>
 
-              <tr class="table-active" *ngIf="timeLogs?.matrix[user]?.length>0">
-                <td>Total</td>
+              <tr class="table-active total-row-background bold-text" *ngIf="timeLogs?.matrix[user]?.length>0">
+                <td >Total</td>
                 <td></td>
                 <td class="pe-lg-1 pe-4 text-center" *ngFor="let row of timesheetAllTotals[user]">{{row| milliSecondsToTime }}</td>
               </tr>
