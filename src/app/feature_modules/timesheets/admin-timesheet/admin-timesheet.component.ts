@@ -155,7 +155,7 @@ export class AdminTimesheetComponent implements OnInit {
 
   exportToXlsx() {
     const xlsxContent = this.generateTableContent('xls');
-    console.log(xlsxContent); 
+    console.log(xlsxContent);
     const worksheet = XLSX.utils.aoa_to_sheet(xlsxContent);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
@@ -163,10 +163,10 @@ export class AdminTimesheetComponent implements OnInit {
     const xlsxFile = new Blob([xlsxBlob], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
     saveAs(xlsxFile, 'admin_timesheet.xlsx');
   }
- 
+
   @ViewChild('adminTimeSheet') content!: ElementRef
   exportToPdf() {
-    this.exportService.exportToPdf('Admin Timesheet', this.content.nativeElement)
+    this.exportService.exportToPdf('Admin Timesheet', 'Admin Timesheet Report', this.content.nativeElement)
   }
 
   formatDate(dateVal) {

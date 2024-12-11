@@ -127,7 +127,7 @@ export class RealtimeComponent implements OnInit {
 
   @ViewChild('realTime') content!: ElementRef
   exportToPdf() {
-    this.exportService.exportToPdf('RealTime', this.content.nativeElement)
+    this.exportService.exportToPdf('RealTime', 'RealTime Report', this.content.nativeElement)
   }
 
 

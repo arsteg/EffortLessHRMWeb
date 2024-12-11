@@ -375,7 +375,7 @@ getTimeLine() {
 
     @ViewChild('timeSheet') content!: ElementRef
     exportToPdf() {
-      this.exportService.exportToPdf('TimeSheets', this.content.nativeElement)
+      this.exportService.exportToPdf('TimeSheets',  'TimeSheet Report', this.content.nativeElement)
     }
     hasLogsInHour(hour: number): boolean {
       return this.timeline.some(log => this.isLogInHour(log, this.startTime.getHours() + hour));
