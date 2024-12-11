@@ -4,7 +4,6 @@ import { TasksService } from '../_services/tasks.service';
 import { Validators, FormGroup, FormBuilder, FormControl, AbstractControl } from '@angular/forms';
 import { response } from '../models/response';
 import { ToastrService } from 'ngx-toastr';
-import { project } from '../Project/model/project';
 import { ProjectService } from '../_services/project.service';
 import { UserService } from '../_services/users.service';
 import { CommonService } from 'src/app/_services/common.Service';
@@ -286,9 +285,9 @@ export class TasksComponent implements OnInit {
       queryParams: { taskId: taskId }
     };
     if (p_Id) {
-      this.router.navigate(['/SubTask'], navigationExtras);
+      this.router.navigate(['home/SubTask'], navigationExtras);
     } else {
-      this.router.navigate(['/edit-task'], navigationExtras);
+      this.router.navigate(['home/edit-task'], navigationExtras);
     }
   }
  
@@ -937,27 +936,6 @@ export class TasksComponent implements OnInit {
     }
   }
 
-  // copyTask(task) {
-  //   const taskID = task.id;
-  //   const p_Id = task.parentTask;
-  //   const tempInput = document.createElement('input');
-
-  //   if (p_Id && taskID) {
-  //     tempInput.value = `http://${this.domain}/#/SubTask/taskId=${taskID}`;
-  //     document.body.appendChild(tempInput);
-  //     tempInput.select();
-  //     document.execCommand('copy');
-  //     document.body.removeChild(tempInput);
-  //   }
-  //   if (taskID && !p_Id) {
-  //     tempInput.value = `http://${this.domain}/#/edit-task/taskId=${taskID}`;
-  //     document.body.appendChild(tempInput);
-  //     tempInput.select();
-  //     document.execCommand('copy');
-  //     document.body.removeChild(tempInput);
-  //   }
-  //   this.snackBar.open('Task is copied to clipboard', 'Dismiss', { duration: 4000 });
-  // }
 
   copyTask(task) {
     const hostname = window.location.hostname;
@@ -971,8 +949,8 @@ export class TasksComponent implements OnInit {
     const taskID = task.id;
     const p_Id = task.parentTask;
     const url = p_Id
-      ? `http://${this.domain}/#/SubTask?taskId=${taskID}`
-      : `http://${this.domain}/#/edit-task?taskId=${taskID}`;
+      ? `http://${this.domain}/#/home/SubTask?taskId=${taskID}`
+      : `http://${this.domain}/#/home/edit-task?taskId=${taskID}`;
 
     navigator.clipboard.writeText(url).then(() => {
       this.snackBar.open('Task is copied to clipboard', 'Dismiss', { duration: 4000 });

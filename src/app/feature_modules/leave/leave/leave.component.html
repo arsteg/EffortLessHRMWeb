@@ -1,0 +1,41 @@
+<div class="main-content contentData">
+    <div class="container-fluid px-0">
+        <ng-container *ngIf="view === 'admin'">
+            <div class="d-flex bg-white subMenu w-100">
+                <a routerLink="settings" class="btn rounded-pill submenuTab" 
+                   [routerLinkActive]="'active'">Settings</a>
+                <a routerLink="leave-grant" class="btn rounded-pill submenuTab" 
+                   [routerLinkActive]="'active'">Leave Grant</a>
+                <a routerLink="leave-balance" class="btn rounded-pill submenuTab" 
+                   [routerLinkActive]="'active'">Leave Balance</a>
+                <a routerLink="leave-application" class="btn rounded-pill submenuTab" 
+                   [routerLinkActive]="'active'">Leave Application</a>
+                <a routerLink="short-leave" class="btn rounded-pill submenuTab" 
+                   [routerLinkActive]="'active'">Short Leave</a>
+            </div>
+            <router-outlet></router-outlet>
+        </ng-container>
+
+        <ng-container *ngIf="view === 'user'">
+            <div class="d-flex bg-white subMenu w-100">
+                <a routerLink="my-application" class="btn rounded-pill submenuTab" 
+                   [routerLinkActive]="'active'">My Application</a>
+                <a routerLink="my-leave-balance" class="btn rounded-pill submenuTab" 
+                   [routerLinkActive]="'active'">My Leave Balance</a>
+                <a routerLink="my-team-balance" class="btn rounded-pill submenuTab" 
+                   [routerLinkActive]="'active'">Team Leave Balances</a>
+                <a routerLink="my-leave-grant" class="btn rounded-pill submenuTab" 
+                   [routerLinkActive]="'active'">My Leave Grant</a>
+                <a routerLink="team-application" class="btn rounded-pill submenuTab" 
+                   [routerLinkActive]="'active'">Team Application</a>
+                <a routerLink="team-short-leave" class="btn rounded-pill submenuTab" 
+                   [routerLinkActive]="'active'">Team Short Leave</a>
+                <a routerLink="team-leave-grant" class="btn rounded-pill submenuTab" 
+                   [routerLinkActive]="'active'">Team Leave Grant</a>
+                <a routerLink="general-information" class="btn rounded-pill submenuTab" 
+                   [routerLinkActive]="'active'">General Information</a>
+            </div>
+            <router-outlet></router-outlet>
+        </ng-container>
+    </div>
+</div>

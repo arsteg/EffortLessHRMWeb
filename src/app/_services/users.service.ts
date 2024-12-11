@@ -27,6 +27,7 @@ export class UserService {
   selectedEmployee: any = new BehaviorSubject('');
   private data: any;
   private isEdit: boolean;
+  toggleEmployeesDetails: any = new BehaviorSubject('');
 
   constructor(private http: HttpClient) {
   }

@@ -1,0 +1,20 @@
+.mdc-text-field--outlined:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-notched-outline__leading,
+.mdc-text-field--outlined:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-notched-outline__notch,
+.mdc-text-field--outlined:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-notched-outline__trailing {
+    outline-color: #ff4081 !important;
+    box-shadow: 0 0 0 2px #ff4081 !important;
+    border-color: #ff4081 !important;
+
+}
+
+.mat-form-field-outline.mat-form-field-outline-primary.ng-valid.mat-form-field-focused {
+    border-color: #ff4081 !important;
+}
+
+.mat-form-field-outline.mat-form-field-outline-primary.ng-valid {
+    border-color: #ff4081 !important;
+}
+
+.errorMsg{
+    margin-top: -30px;
+}

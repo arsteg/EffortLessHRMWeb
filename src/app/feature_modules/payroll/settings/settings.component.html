@@ -1,0 +1,49 @@
+<div class="main-content pt-2">
+    <div class="container-fluid">
+        <div class="d-flex align-items-center pt-3 px-2 w-100">
+            <ul class="nav nav-tabs flex employees_panel" style="border: none">
+                <li class="nav-item employees_btn">
+                    <a class="nav-link" routerLink="general-settings"
+                        routerLinkActive="active">General&nbsp;Settings</a>
+                </li>
+                <li class="nav-item employees_btn">
+                    <a class="nav-link" routerLink="fixed-allowances"
+                        routerLinkActive="active">Fixed&nbsp;Allowances</a>
+                </li>
+                <li class="nav-item employees_btn">
+                    <a class="nav-link" routerLink="fixed-contributions"
+                        routerLinkActive="active">Fixed&nbsp;Contributions</a>
+                </li>
+                <li class="nav-item employees_btn">
+                    <a class="nav-link" routerLink="variable-allowances"
+                        routerLinkActive="active">Variable&nbsp;Allowances</a>
+                </li>
+                <li class="nav-item employees_btn">
+                    <a class="nav-link" routerLink="fixed-deductions"
+                        routerLinkActive="active">Fixed&nbsp;Deductions</a>
+                </li>
+                <li class="nav-item employees_btn">
+                    <a class="nav-link" routerLink="variable-deductions"
+                        routerLinkActive="active">Variable&nbsp;Deductions</a>
+                </li>
+                <li class="nav-item employees_btn">
+                    <a class="nav-link" routerLink="other-benefits" routerLinkActive="active">Other&nbsp;Benefits</a>
+                </li>
+                <li class="nav-item employees_btn">
+                    <a class="nav-link" routerLink="loans-advances" routerLinkActive="active">Loans/Advances</a>
+                </li>
+                <li class="nav-item employees_btn">
+                    <a class="nav-link" routerLink="flexi-benefits" routerLinkActive="active">Flexi&nbsp;Benefits</a>
+                </li>
+                <li class="nav-item employees_btn">
+                    <a class="nav-link" routerLink="pf-charges" routerLinkActive="active">PF&nbsp;Charges</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="pt-0 px-0">
+            <router-outlet></router-outlet>
+        </div>
+
+    </div>
+</div>

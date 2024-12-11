@@ -62,10 +62,10 @@ export class LoginComponent implements OnInit {
           console.log(desiredUrl)
           if (data.data.user?.role?.id === '639acb77b5e1ffe22eaa4a39') {
             localStorage.setItem('adminView', 'admin');
-            this.router.navigateByUrl(this.returnUrl || '/dashboard');
+            this.router.navigateByUrl(this.returnUrl || 'home/dashboard');
           } else {
             localStorage.setItem('adminView', 'user');
-            this.router.navigateByUrl(this.returnUrl || '/userDashboard');
+            this.router.navigateByUrl(this.returnUrl || 'home/dashboard/user');
           }
         },
         err => {

@@ -466,6 +466,12 @@ export class PayrollService {
     return response;
   }
 
+  getAttendanceSummaryBypayroll(payroll: string): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/payrolluser-attendance-summary-by-payroll/${payroll}`, this.httpOptions);
+    return response;
+  }
+
+
   // Run Payroll: (step-3) Variable pays
   addVariablePay(payload: any): Observable<any> {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/payroll-variable-pay`, payload, this.httpOptions);
@@ -487,6 +493,11 @@ export class PayrollService {
     return response;
   }
 
+  getVariablePayByPayroll(payroll: string): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/payroll-variable-pay-by-payroll/${payroll}`, this.httpOptions);
+    return response;
+  }
+
   // Run Payroll: (step-4) loans/Advances
   addLoanAdvance(payload: any): Observable<any> {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/payroll-loan-advance`, payload, this.httpOptions);
@@ -495,6 +506,11 @@ export class PayrollService {
 
   getLoanAdvance(payrollUser: string): Observable<any> {
     var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/payroll-loan-advance-by-payrolluser/${payrollUser}`, this.httpOptions);
+    return response;
+  }
+
+  getLoanAdvanceByPayroll(payroll: string): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/payroll-loan-advance-by-payroll/${payroll}`, this.httpOptions);
     return response;
   }
 
@@ -519,6 +535,11 @@ export class PayrollService {
     return response;
   }
 
+  getArrearByPayroll(payroll: string): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/payroll-manual-arrears-by-payroll/${payroll}`, this.httpOptions);
+    return response;
+  }
+
   deleteArrear(id: string): Observable<any> {
     var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll/payroll-manual-arrears/${id}`, this.httpOptions);
     return response;
@@ -537,6 +558,11 @@ export class PayrollService {
 
   getFlexiByUsers(payrollUser: string): Observable<any> {
     var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/flexi-benefits-pf-tax-by-payrolluser/${payrollUser}`, this.httpOptions);
+    return response;
+  }
+
+  getFlexiByPayroll(payroll: string): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/flexi-benefits-pf-tax-by-payroll/${payroll}`, this.httpOptions);
     return response;
   }
 
@@ -561,6 +587,11 @@ export class PayrollService {
     return response;
   }
 
+  getOvertimeByPayroll(payroll: string): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/overtime-by-payroll/${payroll}`, this.httpOptions);
+    return response;
+  }
+
   deleteOvertime(id: string): Observable<any> {
     var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payrollOvertime/${id}`, this.httpOptions);
     return response;
@@ -579,6 +610,11 @@ export class PayrollService {
 
   getIncomeTax(payrollUser: string): Observable<any> {
     var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/incomeTax-by-payrollUser/${payrollUser}`, this.httpOptions);
+    return response;
+  }
+
+  getIncomeTaxByPayroll(payroll: string): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/incomeTax-by-payroll/${payroll}`, this.httpOptions);
     return response;
   }
 

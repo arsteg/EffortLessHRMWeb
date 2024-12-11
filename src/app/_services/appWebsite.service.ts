@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
-import { AppWebsite } from '../settings/app-website-settings/appWebsite';
+import { AppWebsite } from 'src/app/feature_modules/settings/app-website-settings/appWebsite';
 
 @Injectable({
   providedIn: 'root'

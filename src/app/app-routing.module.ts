@@ -1,118 +1,137 @@
-import { Component, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './login/register/register.component';
 import { ForgotPasswordComponent } from './login/forgot-password/forgot-password.component';
-import { ProjectListComponent } from './Project/project-list/project-list.component';
 import { AuthGuard } from './auth.guard';
-import { DashboardComponent } from './dashboard/dashboard.component';
 import { ChangePasswordComponent } from './login/change-password/change-password.component';
-// import { UserProfileComponent } from './users/user-profile/user-profile.component';
-import { ScreenshotsComponent } from './screenshots/screenshots/screenshots.component';
-import { TeammembersComponent } from './manage/teammembers/teammembers.component';
-import { HomeComponent } from './home/home.component';
-import { RolesComponent } from './manage/roles/roles/roles.component';
-import { PermissionModelComponent } from './manage/permissonModel/permission-model/permission-model.component';
+import { HomeComponent } from './layouts/home/home.component';
+import { RolesComponent } from './feature_modules/manage/roles/roles/roles.component';
+import { PermissionModelComponent } from './feature_modules/manage/permissonModel/permission-model/permission-model.component';
 import { ProfileComponent } from './profile/profile.component';
-import { RealtimeComponent } from './realtime/realtime.component';
 import { MainComponent } from './main/main.component';
 import { TasksComponent } from './tasks/tasks.component';
-import { RequestManualTimeComponent } from './manualTime/request-manual-time/request-manual-time.component';
-import { RequestApprovalComponent } from './manualTime/requestApproval/requestApproval.component';
-import { AddManualTimeComponent } from './manualTime/addManualTime/add-manual-time.component';
-import { ActivityDescriptionComponent } from './reports/activity-description/activity-description.component';
-import { AppAndWebsiteUsageComponent } from './reports/app-and-website-usage/app-and-website-usage.component';
 import { PermissionsComponent } from './permissions/permissions.component';
 import { RolePermissionComponent } from './role-permission/role-permission.component';
 import { ResetPasswordComponent } from './login/reset-password/reset-password.component';
-import { ProfileSettingsComponent } from './settings/profile-settings/profile-settings.component';
-import { WorkspaceSettingsComponent } from './settings/workspace-settings/workspace-settings.component';
-import { FeaturesSettingsComponent } from './settings/features-settings/features-settings.component';
-import { LeaveSettingsComponent } from './settings/leave-settings/leave-settings.component';
 import { TagComponent } from './tasks/task.tag/tag.component';
 import { EditTaskComponent } from './tasks/edit-task/edit-task.component';
 import { TaskCommentComponent } from './tasks/task-comment/task-comment.component';
-import { UserTimesheetComponent } from './timesheets/user-timesheet/user-timesheet.component';
-import { AdminTimesheetComponent } from './timesheets/admin-timesheet/admin-timesheet.component';
-import { GenericSettingsComponent } from './settings/generic-settings/generic-settings.component';
+import { GenericSettingsComponent } from './feature_modules/settings/generic-settings/generic-settings.component';
 import { ViewLiveScreenComponent } from './viewLiveScreen/view-live-screen/view-live-screen.component';
-import { UserDashboardComponent } from './dashboard/user-dashboard/user-dashboard.component';
-import { EmailTemplateComponent } from './email-template/email-template.component';
 import { SubtaskComponent } from './tasks/subtask/subtask.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
-import { AdminCalendarComponent } from './calendar/admin-calendar/admin-calendar.component';
-import { UserCalendarComponent } from './calendar/user-calendar/user-calendar.component';
-import { LeaveManagementComponent } from './Leave/leave-grant/leave-grant.component';
-import { TimesheetsComponent } from './timesheets/timesheets.component';
-import { AlertsComponent } from './Alerts/alerts.component';
-import { TaxationComponent } from './Taxation/taxation.component';
-import { SeparationComponent } from './Separation/separation.component';
-import { SettingsComponent } from './settings/settings.component';
-import { ReportsComponent } from './reports/reports.component';
-import { ApprovalsComponent } from './approvals/approvals.component';
-import { UserTaxDeclarationComponent } from './Taxation/user-tax-declaration/user-tax-declaration.component';
-import { ExpenseCategorySettingsComponent } from './Expenses/settings/expense-category-settings/expense-category-settings.component';
+import { ExpenseCategorySettingsComponent } from './feature_modules/expenses/settings/expense-category-settings/expense-category-settings.component';
 import { InterviewProcessMainComponent } from './pages/interviewProcess/interview-process-main/interview-process-main.component';
 
 const routes: Routes = [
-  { path: '', component: MainComponent },
-  { path: 'main', component: MainComponent },
+  { path: '', redirectTo: 'landing', pathMatch: 'full' },
+  { path: 'landing', component: MainComponent },
+  {
+    path: 'home', component: HomeComponent, canActivate: [AuthGuard],
+    children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      {
+        path: 'dashboard',
+        loadChildren: () => import('./feature_modules/dashboard/dashboard.module').then(m => m.DashboardModule),
+      },
+      {
+        path: 'screenshots',
+        loadChildren: () => import('./feature_modules/screenshots/screenshots.module').then(m => m.ScreenshotsModule)
+      },
+      {
+        path: 'realtime',
+        loadChildren: () => import('./feature_modules/realtime/realtime.module').then(m => m.RealtimeModule)
+      },
+      {
+        path: 'organization',
+        loadChildren: () => import('./feature_modules/organization/organization.module').then(m => m.OragnizationModule)
+      },
+      {
+        path: 'manage',
+        loadChildren: () => import('./feature_modules/manage/manage.module').then(m => m.ManageModule)
+      },
+      {
+        path: 'calendar',
+        loadChildren: () => import('./feature_modules/calendar/calendar.module').then(m => m.CalendarModule)
+      },
+      {
+        path: 'attendance', 
+        loadChildren: () => import('./feature_modules/attendance/attendance.module').then(m => m.AttendanceModule)
+      },
+      {
+        path: 'timesheets',
+        loadChildren: () => import('./feature_modules/timesheets/timesheets.module').then(m => m.TimesheetsModule)
+      },
+      {
+        path: 'leave',
+        loadChildren: () => import('./feature_modules/leave/leave.module').then(m => m.LeaveModule)
+      },
+      {
+        path: 'expense',
+        loadChildren: () => import('./feature_modules/expenses/expenses.module').then(m => m.ExpensesModule)
+      },
+      { 
+        path: 'alerts', 
+        loadChildren: () => import('./feature_modules/alerts/alerts.module').then(m => m.AlertsModule)
+      },
+      {
+        path: 'payroll',
+        loadChildren: () => import('./feature_modules/payroll/payroll.module').then(m => m.PayrollModule)
+      },
+      {
+        path: 'taxation', 
+        loadChildren: () => import('./feature_modules/taxation/taxation.module').then(m=>m.TaxationModule)
+      },
+      { 
+        path: 'reports',
+        loadChildren: () => import('./feature_modules/reports/reports.module').then(m=>m.ReportsModule)
+      },
+      { 
+        path: 'separation',
+        loadChildren: () => import('./feature_modules/separation/separation.module').then(m=>m.SeparationModule) 
+      },
+      { 
+        path: 'settings',
+        loadChildren: () => import('./feature_modules/settings/settings.module').then(m=>m.SettingsModule) 
+      },
+      { path: 'manual-time',
+        loadChildren: ()=> import('./feature_modules/manual-time/manual-time.module').then(m=>m.ManualTimeModule) 
+      },
+      {
+         path: 'Approvals', 
+        loadChildren: () => import('./feature_modules/approvals/approvals.module').then(m=>m.ApprovalsModule)
+      },
+
+
+      { path: 'logout', component: LoginComponent },
+      { path: 'roles', component: RolesComponent }, // TODO: module to bepick from manage
+      { path: 'permissionModel', component: PermissionModelComponent },  // TODO: module to bepick from manage
+      { path: 'Profile', component: ProfileComponent }, // Individual route
+      { path: 'tasks', component: TasksComponent },
+      { path: 'tags', component: TagComponent },
+      { path: 'permissions', component: PermissionsComponent },
+      { path: 'rolePermission', component: RolePermissionComponent },
+      { path: 'edit-task', component: EditTaskComponent },
+      { path: 'comments', component: TaskCommentComponent },
+      { path: 'genericSettings', component: GenericSettingsComponent },
+      { path: 'viewLiveScreen', component: ViewLiveScreenComponent },
+      { path: 'SubTask', component: SubtaskComponent },
+
+      { path: 'interviewProcess', component: InterviewProcessMainComponent }
+    ]
+  },
   { path: 'login', component: LoginComponent },
   { path: 'forgotPassword', component: ForgotPasswordComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'changePassword', component: ChangePasswordComponent },
   { path: 'resetPassword/:token', component: ResetPasswordComponent },
   { path: 'category-settings', component: ExpenseCategorySettingsComponent },
-  {
-    path: '', component: HomeComponent, canActivate: [AuthGuard],
-    children: [
-      { path: 'dashboard', component: DashboardComponent },
-      { path: 'userDashboard', component: UserDashboardComponent },
-      { path: 'logout', component: LoginComponent },
-      { path: 'screenshots', component: ScreenshotsComponent },
-      { path: 'teamMembers', component: TeammembersComponent },
-      { path: 'roles', component: RolesComponent },
-      { path: 'permissionModel', component: PermissionModelComponent },
-      { path: 'Profile', component: ProfileComponent },
-      { path: 'realtime', component: RealtimeComponent },
-      { path: 'tasks', component: TasksComponent },
-      { path: 'tags', component: TagComponent },
-      { path: 'requestManualTime', component: RequestManualTimeComponent },
-      { path: 'ManualTimeRequestApproval', component: RequestApprovalComponent },
-      { path: 'AddManualTime', component: AddManualTimeComponent },
-      { path: 'activityDescription', component: ActivityDescriptionComponent },
-      { path: 'applicationusages', component: AppAndWebsiteUsageComponent },
-      { path: 'permissions', component: PermissionsComponent },
-      { path: 'rolePermission', component: RolePermissionComponent },
-      { path: 'adminTimesheets', component: AdminTimesheetComponent },
-      { path: 'userTimesheet', component: UserTimesheetComponent },
-      { path: 'workspace', component: WorkspaceSettingsComponent },
-      { path: 'features', component: FeaturesSettingsComponent },
-      { path: 'edit-task', component: EditTaskComponent },
-      { path: 'comments', component: TaskCommentComponent },
-      { path: 'genericSettings', component: GenericSettingsComponent },
-      { path: 'viewLiveScreen', component: ViewLiveScreenComponent },
-      { path: 'SubTask', component: SubtaskComponent },
-      { path: 'AdminCalendar', component: AdminCalendarComponent },
-      { path: 'UserCalendar', component: UserCalendarComponent },
-      { path: 'manage', loadChildren: () => import('./manage/manage-routing.module').then(m => m.ManageRoutingModule) },
-      { path: 'organization', loadChildren: () => import('./organization/organization-routing.module').then(m => m.OrganizationRoutingModule) },
-      { path: 'attendance', loadChildren: () => import('./attendance/attendance-routing.module').then(m => m.AttendanceRoutingModule) },
-      { path: 'timesheet', component: TimesheetsComponent },
-      { path: 'leave', loadChildren: () => import('./Leave/leave-routing.module').then(m => m.LeaveRoutingModule) },
-      { path: 'expense', loadChildren: () => import('./Expenses/expenses-routing.module').then(m => m.ExpensesRoutingModule) },
-      { path: 'alerts', component: AlertsComponent },
-      { path: 'payroll', loadChildren: () => import('./Payroll/payroll-routing.module').then(m => m.PayrollRoutingModule) },
-      { path: 'taxation', component: TaxationComponent},
-      { path: 'separation', component: SeparationComponent },
-      { path: 'settings', component: SettingsComponent },
-      { path: 'reports', component: ReportsComponent},
-      { path: 'Approvals', component: ApprovalsComponent},
-      { path: 'taxDeclaration', component: UserTaxDeclarationComponent },
-      { path: 'interviewProcess', component: InterviewProcessMainComponent }
-    ]
-  }
+
+  // Fallback route
+  { path: '**', redirectTo: 'landing' },
+
 ]
 
 @NgModule({

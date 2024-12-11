@@ -2,7 +2,6 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { TasksService } from '../../_services/tasks.service';
 import { ToastrService } from 'ngx-toastr';
-import { project } from 'src/app/Project/model/project';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonService } from 'src/app/_services/common.Service';
 import { DatePipe } from '@angular/common';
@@ -21,7 +20,7 @@ import { ProjectService } from 'src/app/_services/project.service';
 export class EditTaskComponent implements OnInit {
   selectedTask: any;
   updateForm: FormGroup;
-  projectList: project[] = [];
+  projectList: any = [];
   tasks: any = [];
   task: any = [];
   subTask: any = [];
