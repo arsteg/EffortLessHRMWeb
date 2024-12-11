@@ -1,10 +1,7 @@
-import { ThisReceiver } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import { userRole } from 'src/app/models/role.model';
-import { Role } from 'src/app/models/role.model';
 import { RoleService } from 'src/app/_services/role.service';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Validators, FormGroup, FormBuilder, FormControl, AbstractControl } from '@angular/forms';
+import { Validators, FormGroup, FormBuilder } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({

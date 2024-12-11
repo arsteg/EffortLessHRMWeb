@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { AppWebsiteService } from '../_services/appWebsite.service';
+import { AppWebsiteService } from '../../../_services/appWebsite.service';
 import { first, Subscription } from 'rxjs';
-import { UtilsService } from '../_services/utils.service';
+import { UtilsService } from '../../../_services/utils.service';
 
 @Component({
   selector: 'browser-history',

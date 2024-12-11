@@ -13,9 +13,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule  } from "@angular/material/input";
+import { MatInputModule } from "@angular/material/input";
 import { CommonModule } from "@angular/common";
-import { MatSelectModule  } from '@angular/material/select';
+import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule, MatRippleModule } from '@angular/material/core';
@@ -27,11 +27,12 @@ import { MatSortModule } from '@angular/material/sort';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
 import { MilliSecondsToTimePipe } from '../pipes/SecondsToTimePipe';
-import { MatStepperModule }  from '@angular/material/stepper';
+import { MatStepperModule } from '@angular/material/stepper';
 import { MatDialogActions, MatDialogClose, MatDialogContent, MatDialogModule, MatDialogTitle } from '@angular/material/dialog';
 import { PaginationComponent } from '../pagination/pagination.component';
-import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 @NgModule({
   declarations: [SortDirective, SearchPipe, MilliSecondsToTimePipe, PaginationComponent],
@@ -47,7 +48,6 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     MatTableModule,
     MatFormFieldModule,
     MatInputModule,
-    BsDatepickerModule,
     ReactiveFormsModule,
     MatSelectModule,
     FormsModule,
@@ -64,13 +64,16 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     MatDialogClose,
     MatDialogContent,
     MatDialogTitle,
-    MatTooltipModule,
     MatAutocompleteModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    CdkTableModule,
+    MatTabsModule,
+    MatPaginatorModule,
+    MatDialogModule,
+    NgxChartsModule,
   ],
   exports: [
-    SortDirective,
-    CdkTableModule,
+    CommonModule,
     MatToolbarModule,
     MatButtonModule,
     MatSidenavModule,
@@ -79,33 +82,32 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     MatCheckboxModule,
     MatRadioModule,
     MatTableModule,
+    MatFormFieldModule,
     MatInputModule,
-    MatSelectModule,
-    MatTabsModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatPaginatorModule,
-    SearchPipe,
-    CommonModule,
-    BsDatepickerModule,
     ReactiveFormsModule,
+    MatSelectModule,
     FormsModule,
     BsDatepickerModule,
+    MatTooltipModule,
     MatSortModule,
+    TooltipModule,
     ToastrModule,
-    MilliSecondsToTimePipe,
-    MatFormFieldModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatRippleModule,
     MatStepperModule,
-    MatDialogModule,
     MatDialogActions,
     MatDialogClose,
     MatDialogContent,
     MatDialogTitle,
-    TooltipModule,
-    MatTooltipModule,
-    PaginationComponent,
     MatAutocompleteModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    CdkTableModule,
+    MatTabsModule,
+    MatPaginatorModule,
+    MatDialogModule,
+    NgxChartsModule,
+    SortDirective, SearchPipe, MilliSecondsToTimePipe, PaginationComponent
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

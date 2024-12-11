@@ -323,21 +323,21 @@ export const SideBarAdminMenu = [
     icon: 'assets/Sidenav-Icons/rolePermission.png',
     title: 'Role Permission',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/rolePermission.png',
-    url: 'rolePermission'
+    url: 'role-permission'
   },
   {
     id: '19',
     icon: 'assets/Sidenav-Icons/approvals.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/approval.png',
     title: 'Approvals',
-    url: 'Approvals'
+    url: 'approvals'
   },
   {
     id: '20',
     title: 'Interview Process',
     icon: 'assets/Sidenav-Icons/settings.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/settings.png',
-    url: 'interviewProcess'
+    url: 'interview-process'
   }
 ];
 

@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, NgModule } from "@angular/core";
-import { SharedModule } from "../shared/shared.Module";
+import { SharedModule } from "src/app/shared/shared.Module";
 import { RouterModule } from '@angular/router';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';

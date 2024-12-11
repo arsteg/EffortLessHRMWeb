@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { PermissionsService } from '../_services/permissions.service';
-import { PermissionModelService } from '../_services/permission-model.service';
-import { RoleService } from '../_services/role.service';
+import { PermissionsService } from 'src/app/_services/permissions.service';
+import { PermissionModelService } from 'src/app/_services/permission-model.service';
+import { RoleService } from 'src/app/_services/role.service';
 
 @Component({
   selector: 'app-role-permission',

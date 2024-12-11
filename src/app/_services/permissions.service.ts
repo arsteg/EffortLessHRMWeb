@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { baseService } from './base';
-import { permissions } from '../permissions/permission';
+import { permissions } from '../feature_modules/permissions/permissions/permission';
 import { Permission } from '../models/permissionModel';
 
 @Injectable({

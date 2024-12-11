@@ -12,21 +12,18 @@ import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { LayoutModule } from '@angular/cdk/layout';
 import { ChangePasswordComponent } from './login/change-password/change-password.component';
-// import { UserFormCOntrolComponent } from './users/user-profile/user-form-control/user-form-control.component';
-// import { UserProfileComponent } from './users/user-profile/user-profile.component';
-import { FormControlsComponent } from './common/form-controls/form-controls.component';
 import { NgHttpLoaderModule } from 'ng-http-loader';
 import { HomeComponent } from './layouts/home/home.component';
 import { ProfileComponent } from './profile/profile.component';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { MainComponent } from './main/main.component';
+import { MainComponent } from './layouts/main/main.component';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CommonService } from 'src/app/_services/common.Service';
 import { UserService } from './_services/users.service';
-import { PermissionsComponent } from './permissions/permissions.component';
-import { RolePermissionComponent } from './role-permission/role-permission.component';
+import { PermissionsComponent } from './feature_modules/permissions/permissions/permissions.component';
+import { RolePermissionComponent } from './feature_modules/role-permission/role-permission/role-permission.component';
 import { AuthGuard } from './auth.guard';
 import { taskModule } from './tasks/task.Module';
 import { SharedModule } from './shared/shared.Module';
@@ -36,7 +33,6 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { DatePipe } from '@angular/common';
 import { MatDialogModule } from '@angular/material/dialog';
-import { ViewLiveScreenComponent } from './viewLiveScreen/view-live-screen/view-live-screen.component';
 import { QuillModule } from 'ngx-quill';
 import { CommonComponentsModule } from './common/commonComponents.module';
 import { FullCalendarModule } from '@fullcalendar/angular';
@@ -57,17 +53,13 @@ const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
     SidebarDirective,
     ResetPasswordComponent,
     ChangePasswordComponent,
-    // UserFormCOntrolComponent,
-    FormControlsComponent,
     HomeComponent,
     ProfileComponent,
     MainComponent,
     PermissionsComponent,
     RolePermissionComponent,
-    ViewLiveScreenComponent,
     NotificationComponent,
-    UserProfileComponent // TODO: Remove it from manage module and use it in home/layout for editing user profile
-   
+    UserProfileComponent // imported from manage, to be used in home profile
   ],
   imports: [
     BrowserModule,
