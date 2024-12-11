@@ -8,7 +8,7 @@ import { teamMember } from 'src/app/models/teamMember';
   styleUrls: ['./subordinateSelection.component.css']
 })
 export class SubordinateSelectionComponent implements OnInit {
-  @Output() selectedUsersChange: EventEmitter<string> = new EventEmitter<string>();
+  @Output() selectedUsersChange: EventEmitter<any> = new EventEmitter<any>();
   @Output() selectedUserNameChange: EventEmitter<string> = new EventEmitter<string>();
   members: any;
   member: any;

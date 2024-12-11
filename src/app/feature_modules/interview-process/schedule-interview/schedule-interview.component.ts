@@ -9,8 +9,8 @@ import { candidateDataFieldValue } from 'src/app/models/interviewProcess/candida
 import { candidate } from 'src/app/models/interviewProcess/candidate';
 import { InterviewDetail } from 'src/app/models/interviewProcess/candidateInterviewDetail';
 import { interviewer } from 'src/app/models/interviewProcess/interviewer';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import {EditInterviewerDialogComponent} from 'src/app/pages/interviewProcess/schedule-interview/editInterviewerDialog/editInterviewerDialogComponent'
+import { MatDialog } from '@angular/material/dialog';
+import {EditInterviewerDialogComponent} from '../schedule-interview/editInterviewerDialog/editInterviewerDialogComponent'
 import { CommonService } from 'src/app/_services/common.Service';
 
 

@@ -7,7 +7,7 @@ import { forkJoin, map } from 'rxjs';
 import { CommonService } from 'src/app/_services/common.Service';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
-import { SelectedUser } from 'src/app/viewLiveScreen/view-live-screen/view-live-screen.component';
+import { SelectedUser } from 'src/app/feature_modules/view-live-screen/view-live-screen/view-live-screen.component';
 
 @Component({
   selector: 'app-step-6',

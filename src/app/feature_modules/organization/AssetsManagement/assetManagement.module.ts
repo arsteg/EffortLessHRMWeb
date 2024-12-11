@@ -12,14 +12,29 @@ import { SharedModule } from "src/app/shared/shared.Module";
 import { CommonComponentsModule } from "src/app/common/commonComponents.module";
 
 @NgModule({
-    declarations: [AssetComponent, AssetStatusComponent, VendorComponent, AssetTypeComponent, AssignAssetsComponent,
-    VendorAssetsComponent,AssetManagerComponent, UserAssetAssignmentComponent],
-    exports: [AssetComponent, AssetStatusComponent, VendorComponent, AssetTypeComponent, AssignAssetsComponent,
-      VendorAssetsComponent,AssetManagerComponent],
-    imports: [
-      SharedModule, CommonComponentsModule, FormsModule
-    ]
+  declarations: [
+    AssetComponent, 
+    AssetStatusComponent, 
+    VendorComponent,
+    AssetTypeComponent, 
+    AssignAssetsComponent,
+    VendorAssetsComponent, 
+    AssetManagerComponent, 
+    UserAssetAssignmentComponent,
+  ],
+  exports: [
+    AssetComponent,
+    AssetStatusComponent,
+    VendorComponent,
+    AssetTypeComponent,
+    AssignAssetsComponent,
+    VendorAssetsComponent, 
+    AssetManagerComponent
+  ],
+  imports: [
+    SharedModule, CommonComponentsModule, FormsModule
+  ]
 })
-export class AssetsModule{
+export class AssetsModule {
 
 }

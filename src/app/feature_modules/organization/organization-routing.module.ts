@@ -11,9 +11,9 @@ import { DesignationComponent } from './setup/designation/designation.component'
 import { BandComponent } from './setup/band/band.component';
 import { SignatoryDetailsComponent } from './setup/signatory-details/signatory-details.component';
 import { HolidaysComponent } from './setup/holidays/holidays.component';
-import { DocumentManagerComponent } from 'src/app/documentManager/documentManager.component';
+import { DocumentManagerComponent } from 'src/app/feature_modules/organization/documentManager/documentManager.component';
 import { ProfileComponent } from './setup/profile/profile.component';
-import { AssetManagerComponent } from 'src/app/AssetsManagement/assetAssetManager/asset.component';
+import { AssetManagerComponent } from 'src/app/feature_modules/organization/AssetsManagement/assetAssetManager/asset.component';
 
 const routes: Routes = [
   {
