@@ -23,7 +23,7 @@
             <th>Actions</th>
         </thead>
         <tbody>
-            <tr *ngFor="let data of payrollUsers">
+            <tr *ngFor="let data of payrollUsers | search: searchText">
                 <td>{{getUser(data?.employee)}}</td>
                 <td>{{data?.totalFixedAllowance}}</td>
                 <td>{{data?.totalOtherBenefit}}</td>

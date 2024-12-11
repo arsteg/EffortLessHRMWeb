@@ -18,7 +18,7 @@
             <th>Actions</th>
         </thead>
         <tbody>
-            <tr *ngFor="let data of incomeTax">
+            <tr *ngFor="let data of incomeTax | search: searchText">
                 <td>{{data?.payrollUserDetails}}</td>
                 <td>{{data?.TaxCalculatedMethod}}</td>
                 <td>{{data?.TaxCalculated}}</td>

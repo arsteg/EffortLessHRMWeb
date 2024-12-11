@@ -20,9 +20,8 @@
         </thead>
         <tbody>
             <tr>
-            <tr *ngFor="let data of overtime">
+            <tr *ngFor="let data of overtime | search: searchText">
                 <td>{{data?.payrollUserDetails}}</td>
-                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>

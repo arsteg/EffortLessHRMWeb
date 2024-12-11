@@ -68,6 +68,7 @@ export class Step3Component {
     this.generateYearList();
     this.getAllUsers();
     this.getVariableDeductionAndAllowance();
+    this.getVariablePayByPayroll();
   }
 
   generateYearList() {
@@ -133,7 +134,7 @@ export class Step3Component {
   getSalarydetailsByUser() {
     this.selectedUserId
     this.userService.getSalaryByUserId(this.selectedUserId?.user).subscribe((res: any) => {
-      this.salary =  res.data[res.data.length - 1];
+      this.salary = res.data[res.data.length - 1];
       console.log(this.salary)
     })
   }
@@ -168,6 +169,31 @@ export class Step3Component {
         this.toast.error("Error fetching attendance summary:", error);
       }
     );
+  }
+
+  getVariablePayByPayroll() {
+    this.payrollService.getVariablePayByPayroll(this.selectedPayroll?._id).subscribe((res: any) => {
+      this.variablePay = res.data;
+      const userRequests = this.variablePay.map((item: any) => {
+        return this.payrollService.getPayrollUserById(item.payrollUser).pipe(
+          map((userRes: any) => ({
+            ...item,
+            payrollUserDetails: this.getUser(userRes?.data.user)
+          }))
+        );
+      });
+      forkJoin(userRequests).subscribe(
+        (results: any[]) => {
+          this.variablePay = results;
+        },
+        (error) => {
+          this.toast.error("Error fetching payroll user details:", error);
+        }
+      );
+    },
+      (error) => {
+        this.toast.error("Error fetching attendance summary:", error);
+      })
   }
 
   getVariableDeductionAndAllowance() {

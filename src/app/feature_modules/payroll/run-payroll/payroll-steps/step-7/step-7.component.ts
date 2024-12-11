@@ -45,6 +45,7 @@ export class Step7Component {
 
   ngOnInit() {
     this.getAllUsers();
+    this.getOvertimeByPayroll();
   }
 
   onUserSelectedFromChild(user: any) {
@@ -99,7 +100,7 @@ export class Step7Component {
     let payload = { skip: '', next: '' }
     this.attendanceService.getOverTime(payload.skip, payload.next).subscribe((res: any) => {
       this.overtimeInformation = res.data;
-       const totalOvertime = this.overtimeInformation.reduce((sum, item) => {
+      const totalOvertime = this.overtimeInformation.reduce((sum, item) => {
         return sum + (item.Overtime || 0);
       }, 0);
 
@@ -131,6 +132,31 @@ export class Step7Component {
         this.toast.error("Error fetching attendance summary:", error);
       }
     );
+  }
+
+  getOvertimeByPayroll() {
+    this.payrollService.getOvertimeByPayroll(this.selectedPayroll?._id).subscribe((res: any) => {
+      this.overtime = res.data;
+      const userRequests = this.overtime?.map((item: any) => {
+        return this.payrollService.getPayrollUserById(item.PayrollUser).pipe(
+          map((userRes: any) => ({
+            ...item,
+            payrollUserDetails: this.getUser(userRes?.data.user)
+          }))
+        );
+      });
+      forkJoin(userRequests).subscribe(
+        (results: any[]) => {
+          this.overtime = results;
+        },
+        (error) => {
+          this.toast.error("Error fetching payroll user details:", error);
+        }
+      );
+    },
+      (error) => {
+        this.toast.error("Error fetching attendance summary:", error);
+      })
   }
 
   onSubmission() {
