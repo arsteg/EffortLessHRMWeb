@@ -42,6 +42,7 @@ export class Step6Component {
 
   ngOnInit() {
     this.getAllUsers();
+    this.getFlexiBenefitsByPayroll();
   }
 
   onUserSelectedFromChild(user: any) {
@@ -84,6 +85,31 @@ export class Step6Component {
         this.toast.error("Error fetching attendance summary:", error);
       }
     );
+  }
+
+  getFlexiBenefitsByPayroll() {
+    this.payrollService.getFlexiByPayroll(this.selectedPayroll?._id).subscribe((res: any) => {
+      this.flexiBenefits = res.data;
+      const userRequests = this.flexiBenefits.map((item: any) => {
+        return this.payrollService.getPayrollUserById(item.PayrollUser).pipe(
+          map((userRes: any) => ({
+            ...item,
+            payrollUserDetails: this.getUser(userRes?.data.user)
+          }))
+        );
+      });
+      forkJoin(userRequests).subscribe(
+        (results: any[]) => {
+          this.flexiBenefits = results;
+        },
+        (error) => {
+          this.toast.error("Error fetching payroll user details:", error);
+        }
+      );
+    },
+      (error) => {
+        this.toast.error("Error fetching attendance summary:", error);
+      })
   }
 
   onSubmission() {

@@ -1,7 +1,11 @@
 <mat-stepper labelPosition="bottom" #stepper>
+    
     <mat-step [stepControl]="firstFormGroup">
         <form [formGroup]="firstFormGroup">
-            <ng-template matStepLabel>Step 1</ng-template>
+            
+            <ng-template matStepLabel>
+                Step 1
+                </ng-template>
             <div class="d-flex justify-content-between">
                 <h3>Step 1: Employee Selection</h3>
                 <button mat-raised-button matStepperNext>Next</button>

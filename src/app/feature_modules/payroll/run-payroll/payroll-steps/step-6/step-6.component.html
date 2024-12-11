@@ -17,7 +17,7 @@
             <th>Actions</th>
         </thead>
         <tbody>
-            <tr *ngFor="let records of flexiBenefits">
+            <tr *ngFor="let records of flexiBenefits | search: searchText">
                 <td>{{records?.payrollUserDetails}}</td>
                 <td>{{records?.TotalFlexiBenefitAmount}}</td>
                 <td>{{records?.TotalProfessionalTaxAmount}}</td>

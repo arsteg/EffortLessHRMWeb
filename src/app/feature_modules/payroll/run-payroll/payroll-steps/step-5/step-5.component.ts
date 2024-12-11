@@ -24,6 +24,7 @@ export class Step5Component {
   users: any;
   selectedRecord: any;
   payrollUser: any;
+  searchText: string = '';
 
   constructor(private modalService: NgbModal,
     private fb: FormBuilder,
@@ -45,6 +46,7 @@ export class Step5Component {
 
   ngOnInit() {
     this.getAllUsers();
+    this.getArrearsByPayroll();
   }
 
   selectTab(tabId: string) {
@@ -104,7 +106,7 @@ export class Step5Component {
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'N/A';
   }
 
-  
+
   getArrears() {
     this.payrollService.getArrear(this.selectedUserId._id).subscribe((res: any) => {
       this.arrears = res.data;
@@ -131,6 +133,30 @@ export class Step5Component {
     );
   }
 
+  getArrearsByPayroll() {
+    this.payrollService.getArrearByPayroll(this.selectedPayroll?._id).subscribe((res: any) => {
+      this.arrears = res.data;
+      const userRequests = this.arrears.map((item: any) => {
+        return this.payrollService.getPayrollUserById(item.payrollUser).pipe(
+          map((userRes: any) => ({
+            ...item,
+            payrollUserDetails: this.getUser(userRes?.data.user)
+          }))
+        );
+      });
+      forkJoin(userRequests).subscribe(
+        (results: any[]) => {
+          this.arrears = results;
+        },
+        (error) => {
+          this.toast.error("Error fetching payroll user details:", error);
+        }
+      );
+    },
+      (error) => {
+        this.toast.error("Error fetching attendance summary:", error);
+      })
+  }
   onSubmission() {
     this.arrearForm.value.payrollUser = this.selectedUserId._id;
     if (this.changeMode == 'Add') {

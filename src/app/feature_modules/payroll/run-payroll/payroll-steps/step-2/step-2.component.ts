@@ -43,6 +43,7 @@ export class Step2Component {
 
   ngOnInit() {
     this.getAllUsers();
+    this.getAttendanceSummaryByPayroll();
   }
 
   onUserSelectedFromChild(userId: string) {
@@ -123,7 +124,7 @@ export class Step2Component {
   onSubmission() {
     // Extract form values
     const formData = this.attendanceSummaryForm.value;
-  
+
     // Perform a check for existing records
     const existingRecord = this.attendanceSummary.find(
       (record: any) =>
@@ -131,7 +132,7 @@ export class Step2Component {
         record.month === formData.month &&
         record.year === formData.year
     );
-  
+
     if (existingRecord) {
       // Show toast if record exists
       this.toast.warning(
@@ -140,16 +141,16 @@ export class Step2Component {
       );
       return; // Stop further execution
     }
-  
+
     // Continue if no duplicate record exists
     if (this.changeMode === 'Add') {
       formData.payrollUser = this.selectedUserId._id;
-  
+
       this.payrollService.addAttendanceSummary(formData).subscribe(
         (res: any) => {
           this.getAttendanceSummary(); // Refresh attendance summary
           this.attendanceSummaryForm.enable(); // Re-enable form
-  
+
           // Reset form fields
           this.attendanceSummaryForm.patchValue({
             payrollUser: '',
@@ -157,7 +158,7 @@ export class Step2Component {
             lopDays: 0,
             payableDays: 0,
           });
-  
+
           // Show success message
           this.toast.success(
             'Attendance summary for payroll user created successfully!',
@@ -174,26 +175,6 @@ export class Step2Component {
       );
     }
   }
-  
-  // onSubmission() {
-  //   this.attendanceSummaryForm.value.payrollUser = this.selectedUserId._id;
-  //   if (this.changeMode == 'Add') {
-  //     this.payrollService.addAttendanceSummary(this.attendanceSummaryForm.value).subscribe((res: any) => {
-  //       this.getAttendanceSummary();
-  //       this.attendanceSummaryForm.enable();
-  //       this.attendanceSummaryForm.patchValue({
-  //         payrollUser: '',
-  //         totalDays: 0,
-  //         lopDays: 0,
-  //         payableDays: 0
-  //       });
-  //       this.toast.success('Attendance summary for payroll user Created', 'Successfully!');
-  //     },
-  //       err => {
-  //         this.toast.error('Attendance summary for payroll user can not be created', 'Error!');
-  //       })
-  //   }
-  // }
 
   getMonthNumber(monthName: string): number {
     const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -227,5 +208,32 @@ export class Step2Component {
       });
       this.attendanceSummaryForm.disable();
     })
+  }
+
+  getAttendanceSummaryByPayroll() {
+    this.payrollService.getAttendanceSummaryBypayroll(this.selectedPayroll?._id).subscribe((res: any) => {
+      this.attendanceSummary = res.data;
+      const userRequests = this.attendanceSummary.map((item: any) => {
+        return this.payrollService.getPayrollUserById(item.payrollUser).pipe(
+          map((userRes: any) => ({
+            ...item,
+            payrollUserDetails: this.getUser(userRes?.data.user)
+          }))
+        );
+      });
+
+      forkJoin(userRequests).subscribe(
+        (results: any[]) => {
+          this.attendanceSummary = results;
+        },
+        (error) => {
+          console.error("Error fetching payroll user details:", error);
+        }
+      );
+    },
+      (error) => {
+        console.error("Error fetching attendance summary:", error);
+      }
+    )
   }
 }

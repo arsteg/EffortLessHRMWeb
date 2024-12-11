@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { ToastrService } from 'ngx-toastr';
 import { CompanyService } from 'src/app/_services/company.service';
@@ -31,7 +31,7 @@ export class EmploymentDetailsComponent {
   ) {
     this.jobInformationForm = this.fb.group({
       user: [''],
-      effectiveFrom: [],
+      effectiveFrom: [ , Validators.required],
       location: [''],
       designation: [''],
       employmentType: [''],
@@ -41,8 +41,8 @@ export class EmploymentDetailsComponent {
       subDepartments: [''],
       employmentStatusEffectiveFrom: [],
       zone: [''],
-      noticePeriod: ['']
-    })
+      noticePeriod: ['', Validators.required]
+    });
   }
 
   ngOnInit() {

@@ -40,7 +40,7 @@ export class Step4Component {
     this.loanAdvanceForm = this.fb.group({
       payrollUser: ['', Validators.required],
       loanAndAdvance: [''],
-      disbursementAmount: [0,[Validators.required, Validators.min(1)]],
+      disbursementAmount: [0, [Validators.required, Validators.min(1)]],
       status: ['Pending']
     })
   }
@@ -48,6 +48,7 @@ export class Step4Component {
   ngOnInit() {
     this.getAllUsers();
     this.getAllLoansAdvances();
+    this.getLoanAdvanceByPayroll();
   }
 
   open(content: any) {
@@ -101,7 +102,6 @@ export class Step4Component {
   getLoanAdvancesOfUser() {
     this.userService.getLoansAdvancesByUserId(this.selectedUserId?.user, { skip: '', next: '' }).subscribe((res: any) => {
       this.userloanAdvances = res.data;
-console.log(this.userloanAdvances.length)
       if (this.userloanAdvances.length >= 1) {
         this.userloanAdvances.unshift({ loanAdvancesCategory: '', name: 'Select Loan/Advance' });
       } else {
@@ -135,10 +135,10 @@ console.log(this.userloanAdvances.length)
     })
   }
 
-  
+
   onSubmission() {
     this.loanAdvanceForm.value.payrollUser = this.selectedUserId?._id;
-    
+
     if (this.changeMode === 'Add') {
       this.payrollService.addLoanAdvance(this.loanAdvanceForm.value).subscribe(
         (res: any) => {
@@ -154,7 +154,7 @@ console.log(this.userloanAdvances.length)
         }
       );
     }
-  
+
     if (this.changeMode === 'Update') {
       this.payrollService.updateLoanAdvance(this.selectedRecord._id, this.loanAdvanceForm.value).subscribe(
         (res: any) => {
@@ -172,7 +172,7 @@ console.log(this.userloanAdvances.length)
       );
     }
   }
-  
+
   getLoanAdvances() {
     forkJoin({
       userLoanAdvances: this.userService.getLoansAdvancesByUserId(this.selectedUserId?.user, { skip: '', next: '' }),
@@ -181,7 +181,7 @@ console.log(this.userloanAdvances.length)
       switchMap(({ userLoanAdvances, loanAdvances }) => {
         this.userloanAdvances = userLoanAdvances.data;
         this.loanAdvances = loanAdvances.data;
-  
+
         const userRequests = this.loanAdvances.map((item: any) =>
           this.payrollService.getPayrollUserById(item.payrollUser).pipe(
             map((userRes: any) => ({
@@ -190,18 +190,18 @@ console.log(this.userloanAdvances.length)
             }))
           )
         );
-  
+
         return forkJoin(userRequests);
       })
     ).subscribe(
       (detailedLoanAdvances) => {
         this.loanAdvances = detailedLoanAdvances;
-  
+
         this.matchedLoanAdvances = this.loanAdvances.reduce((acc: any[], loanAdvance) => {
           const matchingUserLoanAdvance = this.userloanAdvances.find(
             (userLoanAdvance) => userLoanAdvance.loanAdvancesCategory === loanAdvance.loanAndAdvance
           );
-  
+
           if (matchingUserLoanAdvance) {
             acc.push({
               ...loanAdvance,
@@ -209,7 +209,7 @@ console.log(this.userloanAdvances.length)
               frequency: matchingUserLoanAdvance.repaymentFrequency
             });
           }
-  
+
           return acc;
         }, []);
       },
@@ -217,8 +217,54 @@ console.log(this.userloanAdvances.length)
         console.error("Error fetching data:", error);
       }
     );
-  }  
-  
+  }
+
+  getLoanAdvanceByPayroll() {
+    forkJoin({
+      userLoanAdvances: this.userService.getLoansAdvancesByCompany({ skip: '', next: '' }),
+      loanAdvances: this.payrollService.getLoanAdvanceByPayroll(this.selectedPayroll?._id)
+    }).pipe(
+      switchMap(({ userLoanAdvances, loanAdvances }) => {
+        this.userloanAdvances = userLoanAdvances.data;
+        this.loanAdvances = loanAdvances.data;
+
+        const userRequests = this.loanAdvances.map((item: any) =>
+          this.payrollService.getPayrollUserById(item.payrollUser).pipe(
+            map((userRes: any) => ({
+              ...item,
+              payrollUserDetails: this.getUser(userRes?.data.user)
+            }))
+          )
+        );
+
+        return forkJoin(userRequests);
+      })
+    ).subscribe(
+      (detailedLoanAdvances) => {
+        this.loanAdvances = detailedLoanAdvances;
+
+        this.matchedLoanAdvances = this.loanAdvances.reduce((acc: any[], loanAdvance) => {
+          const matchingUserLoanAdvance = this.userloanAdvances.find(
+            (userLoanAdvance) => userLoanAdvance.loanAdvancesCategory === loanAdvance.loanAndAdvance
+          );
+
+          if (matchingUserLoanAdvance) {
+            acc.push({
+              ...loanAdvance,
+              amount: matchingUserLoanAdvance.amount,
+              frequency: matchingUserLoanAdvance.repaymentFrequency
+            });
+          }
+
+          return acc;
+        }, []);
+      },
+      (error) => {
+        console.error("Error fetching data:", error);
+      }
+    );
+  }
+
   deleteTemplate(_id: string) {
     this.payrollService.deleteLoanAdvance(_id).subscribe((res: any) => {
       // this.getLoanAdvances();

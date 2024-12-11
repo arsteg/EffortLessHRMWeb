@@ -23,6 +23,7 @@ export class Step8Component {
   selectedUserId: any;
   @Input() selectedPayroll: any;
   selectedRecord: any;
+  payrollUser: any;
 
   constructor(private modalService: NgbModal,
     private fb: FormBuilder,
@@ -41,6 +42,7 @@ export class Step8Component {
 
   ngOnInit() {
     this.getAllUsers();
+    this.getIncomeTaxByPayroll();
   }
 
   getAllUsers() {
@@ -112,7 +114,31 @@ export class Step8Component {
     );
   }
 
-  payrollUser: any;
+  getIncomeTaxByPayroll() {
+    this.payrollService.getIncomeTaxByPayroll(this.selectedPayroll?._id).subscribe((res: any) => {
+      this.incomeTax = res.data;
+      const userRequests = this.incomeTax.map((item: any) => {
+        return this.payrollService.getPayrollUserById(item.PayrollUser).pipe(
+          map((userRes: any) => ({
+            ...item,
+            payrollUserDetails: this.getUser(userRes?.data.user)
+          }))
+        );
+      });
+      forkJoin(userRequests).subscribe(
+        (results: any[]) => {
+          this.incomeTax = results;
+        },
+        (error) => {
+          this.toast.error("Error fetching payroll user details:", error);
+        }
+      );
+    },
+      (error) => {
+        this.toast.error("Error fetching attendance summary:", error);
+      })
+  }
+
   open(content: any) {
     if (this.changeMode == 'Update') {
       this.payrollService.getPayrollUserById(this.selectedRecord?.PayrollUser).subscribe((res: any) => {

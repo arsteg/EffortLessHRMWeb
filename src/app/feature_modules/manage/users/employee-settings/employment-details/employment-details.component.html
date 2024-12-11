@@ -1,6 +1,6 @@
 <div class="pt-3 px-2">
   <mat-accordion class="example-headers-align">
-    <mat-expansion-panel hideToggle>
+    <mat-expansion-panel [expanded]="true">
       <mat-expansion-panel-header>
         <mat-panel-title>
           Appointment Details
@@ -49,7 +49,7 @@
       </form>
     </mat-expansion-panel>
 
-    <mat-expansion-panel hideToggle>
+    <mat-expansion-panel>
       <mat-expansion-panel-header>
         <mat-panel-title>
           Job Information
@@ -72,6 +72,9 @@
             <input matInput [matDatepicker]="joiningDatePicker2" formControlName="effectiveFrom"
               (focus)="joiningDatePicker2.open()" readonly>
             <mat-datepicker #joiningDatePicker2></mat-datepicker>
+            <mat-error *ngIf="jobInformationForm.get('effectiveFrom')?.hasError('required') && jobInformationForm.get('effectiveFrom')?.touched">
+              Effective From Date is required.
+            </mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="col-md-6">
@@ -87,12 +90,6 @@
             <mat-select formControlName="designation">
               <mat-option *ngFor="let designation of designations"
                 value="{{designation?._id}}">{{designation?.designation}}</mat-option>
-              <!-- <mat-option value="Team Lead">Team Lead</mat-option>
-              <mat-option value="Project Manager">Project Manager</mat-option>
-              <mat-option value="HR">HR</mat-option>
-              <mat-option value="Junior Software Developer">Junior Software Developer</mat-option>
-              <mat-option value="Senior Software Developer">Senior Software Developer</mat-option>
-              <mat-option value="CEO">CEO</mat-option> -->
             </mat-select>
           </mat-form-field>
 
@@ -161,9 +158,10 @@
               <mat-option value="CEO">CEO</mat-option>
             </mat-select>
           </mat-form-field>
+          
           <mat-form-field appearance="outline" class="col-md-6">
             <mat-label>Organization</mat-label>
-            <input type="text" matInput [value]="this.selectedUser?.company?.companyName">
+            <input type="text" matInput [value]="this.selectedUser?.company?.companyName" disabled>
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="col-md-6">
@@ -184,8 +182,11 @@
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="col-md-6">
-            <mat-label>Notice Period</mat-label>
+            <mat-label>Notice Period (in days)</mat-label>
             <input matInput formControlName="noticePeriod">
+            <mat-error *ngIf="jobInformationForm.get('noticePeriod')?.hasError('required') && jobInformationForm.get('noticePeriod')?.touched">
+              Notice Period is required.
+            </mat-error>
           </mat-form-field>
         </div>
       </form>
