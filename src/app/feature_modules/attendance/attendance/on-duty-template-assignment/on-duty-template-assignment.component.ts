@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
@@ -20,9 +20,9 @@ export class OnDutyTemplateAssignmentComponent {
   isEdit: boolean = false;
   closeResult: string = '';
   changeMode: 'Add' | 'Update' = 'Add';
-  selectedTemplateId: string;
+  selectedTemplate: any;
   users: any[];
-  templateAssigments: any;
+  templateAssignments: any;
   allAssignee: any[];
   templateById: any;
   templates: any;
@@ -31,6 +31,8 @@ export class OnDutyTemplateAssignmentComponent {
   recordsPerPage: number = 10;
   currentPage: number = 1;
   public sortOrder: string = '';
+  errorMessage: string = '';
+  userAlreadyExists: boolean = false;
 
   constructor(
     private attendanceService: AttendanceService,
@@ -43,8 +45,8 @@ export class OnDutyTemplateAssignmentComponent {
 
   ) {
     this.onDutyTempAssignForm = this.fb.group({
-      user: [''],
-      onDutyTemplate: [''],
+      user: ['', Validators.required],
+      onDutyTemplate: ['', Validators.required],
       effectiveFrom: [],
       primaryApprovar: [null],
       secondaryApprovar: [null],
@@ -59,6 +61,7 @@ export class OnDutyTemplateAssignmentComponent {
       this.allAssignee = result && result.data && result.data.data;
     });
     this.loadRecords();
+
   }
 
   onPageChange(page: number) {
@@ -77,11 +80,22 @@ export class OnDutyTemplateAssignmentComponent {
       next: this.recordsPerPage.toString()
     };
     this.attendanceService.getOnDutyAssignmentTemplate(pagination.skip, pagination.next).subscribe((res: any) => {
-      this.templateAssigments = res.data;
+      this.templateAssignments = res.data;
       this.totalRecords = res.total;
     })
   }
+  checkIfUserExists(event: Event) {
+    const selectedUserId = (event.target as HTMLSelectElement).value;
+    this.userAlreadyExists = this.templateAssignments.some(
+      (assignment) => assignment.user === selectedUserId
+    );
 
+    if (this.userAlreadyExists) {
+      this.onDutyTempAssignForm.get('user')?.setErrors({ alreadyAssigned: true });
+    } else {
+      this.onDutyTempAssignForm.get('user')?.setErrors(null);
+    }
+  }
   getUser(employeeId: string) {
     const matchingUser = this.allAssignee?.find(user => user._id === employeeId);
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'N/A';
@@ -97,8 +111,6 @@ export class OnDutyTemplateAssignmentComponent {
     });
   }
 
-
-
   closeModal() {
     this.modalService.dismissAll();
   }
@@ -113,6 +125,16 @@ export class OnDutyTemplateAssignmentComponent {
   }
 
   open(content: any) {
+    if (this.isEdit === false) {
+      this.onDutyTempAssignForm.get('user').enable();
+      this.onDutyTempAssignForm.patchValue({
+        user: '',
+        onDutyTemplate: '',
+        effectiveFrom: '',
+        primaryApprovar: '',
+        secondaryApprovar: '',
+      })
+    }
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
@@ -127,7 +149,10 @@ export class OnDutyTemplateAssignmentComponent {
       effectiveFrom: data.effectiveFrom,
       primaryApprovar: data.primaryApprovar,
       secondaryApprovar: data.secondaryApprovar
-    })
+    });
+    if (this.isEdit) {
+      this.onDutyTempAssignForm.get('user').disable();
+    }
   }
 
   deleteTemplate(id: string) {
@@ -154,7 +179,7 @@ export class OnDutyTemplateAssignmentComponent {
     });
   }
   exportToCsv() {
-    const dataToExport = this.templateAssigments.map((data) => ({
+    const dataToExport = this.templateAssignments.map((data) => ({
       user: this.getUser(data.user),
       onDutyTemplate: this.getOnDutyTemplateName(data.onDutyTemplate),
       effectiveFrom: data.effectiveFrom,
@@ -209,27 +234,47 @@ export class OnDutyTemplateAssignmentComponent {
       primaryApprovar: this.onDutyTempAssignForm.value.primaryApprovar,
       secondaryApprovar: this.onDutyTempAssignForm.value.secondaryApprovar
     }
-    if (this.templateById.ApprovarType === 'template-wise') {
+    if (this.templateById?.ApprovarType === 'template-wise') {
       this.onDutyTempAssignForm.get('primaryApprovar').disable();
       this.onDutyTempAssignForm.get('secondaryApprovar').disable();
     }
 
-    console.log(payload)
-    if (!this.isEdit) {
-      console.log(payload);
-      this.attendanceService.addOnDutyAssignmentTemplate(payload).subscribe((res: any) => {
-        this.loadRecords();
-        this.toast.success('OnDuty Template Assigned', 'Successfully');
-        this.onDutyTempAssignForm.reset();
-      })
+    if (this.onDutyTempAssignForm.valid) {
+      if (!this.isEdit) {
+        console.log(payload);
+        this.attendanceService.addOnDutyAssignmentTemplate(payload).subscribe((res: any) => {
+          this.loadRecords();
+          this.toast.success('OnDuty Template Assigned', 'Successfully');
+          this.onDutyTempAssignForm.patchValue({
+            user: '',
+            onDutyTemplate: '',
+            effectiveFrom: '',
+            primaryApprovar: '',
+            secondaryApprovar: '',
+          })
+          this.onDutyTempAssignForm.get('primaryApprovar').enable();
+          this.onDutyTempAssignForm.get('secondaryApprovar').enable();
+        })
+      }
+      else {
+        this.attendanceService.updateOnDutyAssignmentTemplate(this.selectedTemplate?._id, payload).subscribe((res: any) => {
+          this.loadRecords();
+          this.toast.success('OnDuty Template Assignment Updated', 'Successfully');
+          this.isEdit = false;
+          this.onDutyTempAssignForm.patchValue({
+            user: '',
+            onDutyTemplate: '',
+            effectiveFrom: '',
+            primaryApprovar: '',
+            secondaryApprovar: '',
+          })
+          this.onDutyTempAssignForm.get('primaryApprovar').enable();
+          this.onDutyTempAssignForm.get('secondaryApprovar').enable();
+          this.onDutyTempAssignForm.get('user').enable();
+        })
+      }
     }
-    else {
-      this.attendanceService.updateOnDutyAssignmentTemplate(this.selectedTemplateId, payload).subscribe((res: any) => {
-        this.loadRecords();
-        this.toast.success('OnDuty Template Assignment Updated', 'Successfully');
-        this.onDutyTempAssignForm.reset();
-      })
-    }
+    else { this.onDutyTempAssignForm.markAllAsTouched() }
   }
 
 }

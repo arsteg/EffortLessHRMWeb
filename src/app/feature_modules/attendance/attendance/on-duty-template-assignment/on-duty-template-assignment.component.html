@@ -6,10 +6,10 @@
                 <div class="d-flex align-items-center">
                     <span class="bi bi-search searchIcon"></span>
 
-                    <input class="form-control search" type="text"  placeholder="Search..." [(ngModel)]="searchText" name="searchText"
-                        aria-label="default input example">
+                    <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
+                        name="searchText" aria-label="default input example">
 
-                    <button mat-raised-button (click)="open(addModal); changeMode == 'Add'; isEdit= false;"
+                    <button mat-raised-button (click)=" changeMode = 'Add'; isEdit= false; open(addModal);"
                         class="addBtn rounded-pill mx-3">Assign
                         Template</button>
 
@@ -18,57 +18,56 @@
                         Download</button>
 
                 </div>
-            
-            <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
-            [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
-            (recordsPerPageChange)="onRecordsPerPageChange($event)">
-            </app-pagination>
-        </div>
+
+                <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
+                    [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
+                    (recordsPerPageChange)="onRecordsPerPageChange($event)">
+                </app-pagination>
+            </div>
             <table class="px-4">
                 <thead>
                     <tr>
-                        <th class="ps-2" [appSort]="templateAssigments" data-name="user"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Employee
-                        <i
-                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                        <th [appSort]="templateAssigments" data-name="onDutyTemplate"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">OnDuty Template
-                        <i
-                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                        <th [appSort]="templateAssigments" data-name="effectiveFrom"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Effective From
-                        <i
-                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                        <th [appSort]="templateAssigments" data-name="primaryApprovar"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Primary Approver
-                        <i
-                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                        <th [appSort]="templateAssigments" data-name="secondaryApprovar"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Secondary Approver
-                        <i
-                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
+                        <th class="ps-2" [appSort]="templateAssignments" data-name="user"
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Employee
+                            <i
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                        </th>
+                        <th [appSort]="templateAssignments" data-name="onDutyTemplate"
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">OnDuty Template
+                            <i
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                        </th>
+                        <th [appSort]="templateAssignments" data-name="effectiveFrom"
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Effective From
+                            <i
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                        </th>
+                        <th [appSort]="templateAssignments" data-name="primaryApprovar"
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Primary Approver
+                            <i
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                        </th>
+                        <th [appSort]="templateAssignments" data-name="secondaryApprovar"
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Secondary Approver
+                            <i
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                        </th>
                         <th scope="col" class="text-center">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr
-                        *ngFor="let template of templateAssigments| search: searchText">
-                       <td>{{getUser(template?.user)}}</td>
+                    <tr *ngFor="let template of templateAssignments| search: searchText">
+                        <td>{{getUser(template?.user)}}</td>
                         <td>{{getOnDutyTemplateName(template?.onDutyTemplate)}}</td>
                         <td>{{template?.effectiveFrom | date: 'mediumDate'}}</td>
                         <td>{{getUser(template?.primaryApprovar)}}</td>
                         <td>{{getUser(template?.secondaryApprovar)}}</td>
                         <td class="text-center">
-                            <button class="actions" mat-mini-fab  matTooltip="Edit" matTooltipPosition="before" (click)="changeMode=='Update';
-                                open(addModal);
+                            <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before" (click)="changeMode=='Update';
                                 isEdit= true;
-                                selectedTemplateId=template._id;
-                                setFormValues(template)" aria-label="Example icon button with a menu icon">
+                                selectedTemplate=template;
+                                setFormValues(template);
+                                open(addModal);" aria-label="Example icon button with a menu icon">
                                 <i class="bi bi-pencil-fill"></i>
                             </button>
 
@@ -100,22 +99,35 @@
         <div class="form-group">
             <label for="">Select An Employee for Template Assignment</label>
             <select id="member" name="member" class="form-control" [attr.disabled]="changeMode === 'Update'"
-                formControlName="user" class="form-select form-select-sm" aria-label="form-select-sm example">
+                formControlName="user" class="form-select form-select-sm" aria-label="form-select-sm example"
+                (change)="checkIfUserExists($event)">
+                <option value="" [selected] [disabled]>Select Employee--</option>
                 <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
                     {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
                 </option>
             </select>
+            <div *ngIf="onDutyTempAssignForm.get('user').invalid && onDutyTempAssignForm.get('user').touched" class="text-danger error">
+                Employee selection is required.
+              </div>
+            <div *ngIf="userAlreadyExists" class="text-danger error">
+                On-duty template is already assigned to this employee.
+              </div>
+
         </div>
 
         <div class="form-group my-2">
             <label for="">Select Template</label>
-            <select id="attendanceTemplate" class="form-control" [attr.disabled]="isEdit === true"
+            <select id="attendanceTemplate" class="form-control" 
                 formControlName="onDutyTemplate" name="attendanceTemp" class="form-select form-select-sm"
                 aria-label=".form-select-sm example" (change)="onTemplateSelectionChange($event)">
+                <option value="" [selected] [disabled]>Select Template--</option>
                 <option *ngFor="let template of templates" [value]="template?._id">
                     {{template?.name}}
                 </option>
             </select>
+            <div *ngIf="onDutyTempAssignForm.get('onDutyTemplate').invalid && onDutyTempAssignForm.get('onDutyTemplate').touched"  class="text-danger error">
+                Template selection is required.
+              </div>
         </div>
 
 
@@ -131,6 +143,7 @@
             <label for="">Choose Primary Approver</label>
             <select id="member" name="primary" class="form-control" formControlName="primaryApprovar"
                 class="form-select form-select-sm" aria-label=".form-select-sm example">
+                <option value="" [selected] [disabled]>Select Primary Approver--</option>
                 <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
                     {{assignee?.firstName | titlecase}} {{assignee?.lastName | titlecase}}
                 </option>
@@ -141,6 +154,7 @@
             <label for="">Choose Secondary Approver</label>
             <select id="member" name="secondary" class="form-control" formControlName="secondaryApprovar"
                 class="form-select form-select-sm" aria-label="form-select-sm example">
+                <option value="" [selected] [disabled]>Select Secondary Approver--</option>
                 <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
                     {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
                 </option>
@@ -149,7 +163,7 @@
 
 
         <div class="d-flex justify-content-between mt-2">
-            <button type="reset" mat-raised-button>Cancel</button>
+            <button type="button" (click)="setFormValues(selectedTemplate)" mat-raised-button>Cancel</button>
             <button type="submit" mat-raised-button class="addBtn">{{isEdit == true ? 'Update': 'Add'}}</button>
         </div>
     </form>
