@@ -29,6 +29,7 @@ export class AttendanceProcessComponent {
   lopForm: FormGroup;
   isLOPError: boolean = false;
   lopExistsError: boolean = false;
+  userValidationStates: { error: boolean; matchingAttendance: boolean }[] = [];
 
   months = [
     { name: 'January', value: 1 },
@@ -64,9 +65,8 @@ export class AttendanceProcessComponent {
       runDate: ['', [this.runDateValidator.bind(this)]],
       status: ['', Validators.required],
       exportToPayroll: ['false', Validators.required],
-      users: this.fb.array([this.createUserFormGroup()])
+      users: this.fb.array([])
     });
-    this.setupFormListeners();
 
   }
 
@@ -78,7 +78,6 @@ export class AttendanceProcessComponent {
     this.getProcessAttendance();
   }
 
-
   runDateValidator(control: AbstractControl): ValidationErrors | null {
     const runDate = new Date(control.value);
 
@@ -86,34 +85,21 @@ export class AttendanceProcessComponent {
     const month = this.attendanceProcessForm?.value?.attendanceProcessPeriodMonth;
 
     if (!control.value) {
-      return { required: true }; // Run Date is required
+      return { required: true };
     }
 
     if (!year || !month) {
-      return null; // Skip validation if year or month is not defined
+      return null;
     }
-
-    const lastDayOfMonth = new Date(year, month, 0); // Last day of the selected month
-    const firstDayOfNextMonth = new Date(year, month, 1); // First day of the next month
-
-    // Define valid range
+    const lastDayOfMonth = new Date(year, month, 0);
     const lastFiveDaysStart = new Date(year, month - 1, lastDayOfMonth.getDate() - 4);
     const firstFiveDaysEnd = new Date(year, month, 5);
 
     if (runDate < lastFiveDaysStart || runDate > firstFiveDaysEnd) {
-      return { outOfRange: true }; // Run Date must fall in the valid range
+      return { outOfRange: true };
     }
 
-    return null; // Validation passed
-  }
-
-  setupFormListeners() {
-    this.attendanceProcessForm.valueChanges.subscribe((values) => {
-      const { attendanceProcessPeriodYear, attendanceProcessPeriodMonth } = values;
-      if (attendanceProcessPeriodYear && attendanceProcessPeriodMonth) {
-        this.getLOP();
-      }
-    });
+    return null;
   }
 
   onMonthChange(event: Event) {
@@ -122,7 +108,6 @@ export class AttendanceProcessComponent {
 
   selectTab(tabId: string) {
     this.activeTab = tabId;
-    console.log(this.activeTab);
   }
 
   private getDismissReason(reason: any): string {
@@ -139,8 +124,20 @@ export class AttendanceProcessComponent {
     if (this.changeMode == 'Add') {
       this.isLOPError = false;
       this.lopExistsError = false;
-      this.attendanceProcessForm.value.exportToPayroll = 'true';
-      this.attendanceProcessForm.reset();
+      this.attendanceProcessForm.reset({
+        exportToPayroll: 'false',
+        status: 'Pending',
+      });
+
+      this.attendanceProcessForm.get('status').disable();
+      this.attendanceProcessForm.get('exportToPayroll').disable();
+
+      const usersFormArray = this.attendanceProcessForm.get('users') as FormArray;
+      while (usersFormArray.length) {
+        usersFormArray.removeAt(0);
+      }
+
+      this.userValidationStates = [];
     }
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
@@ -154,25 +151,18 @@ export class AttendanceProcessComponent {
     this.getProcessAttendance();
   }
 
+
   addUser() {
-    const users = this.attendanceProcessForm.get('users') as FormArray;
-    users.push(this.createUserFormGroup());
-    this.showRemoveButton = true;
+    const userGroup = this.fb.group({
+      user: ['', Validators.required],
+      status: [''],
+    });
+    (this.attendanceProcessForm.get('users') as FormArray).push(userGroup);
   }
+
 
   removeUser(index: number) {
-    const users = this.attendanceProcessForm.get('users') as FormArray;
-    users.removeAt(index);
-    if (users.length === 1) {
-      this.showRemoveButton = false;
-    }
-  }
-
-  createUserFormGroup(): FormGroup {
-    return this.fb.group({
-      user: [''],
-      status: ['']
-    });
+    (this.attendanceProcessForm.get('users') as FormArray).removeAt(index);
   }
 
   get users(): FormArray {
@@ -191,7 +181,6 @@ export class AttendanceProcessComponent {
   }
 
   createAttendanceProcessLOP() {
-    console.log(this.lopForm.value);
     this.attendanceService.addProcessAttendanceLOP(this.lopForm.value).subscribe((res: any) => {
       if (res.status == 'fail') {
         this.toast.error('This LOP is Already Exist!', 'Error!');
@@ -204,7 +193,15 @@ export class AttendanceProcessComponent {
     })
   }
 
-  getLOP() {
+  onUserChange() {
+    this.validateLOPAndAttendance();
+  }
+
+  onMonthOrYearChange() {
+    this.validateLOPAndAttendance();
+  }
+
+  validateLOPAndAttendance() {
     const payload = {
       skip: '',
       next: '',
@@ -212,24 +209,33 @@ export class AttendanceProcessComponent {
       year: this.attendanceProcessForm.value.attendanceProcessPeriodYear,
     };
 
-    // Fetch LOP data
+    const usersArray = this.attendanceProcessForm.value.users; // Get the array of users from the form
+    const selectedUsers = usersArray.map((userObj: any) => userObj.user); // Extract the user field for comparison
+
+    this.userValidationStates = selectedUsers.map(() => ({ error: false, matchingAttendance: false }));
+
     this.attendanceService.getProcessAttendanceLOPByMonth(payload).subscribe((lopRes: any) => {
       this.lop = lopRes.data;
 
-      this.isLOPError = !this.lop || this.lop.length === 0;
+      selectedUsers.forEach((selectedUser, index) => {
+        if (selectedUser === null) {
+          this.userValidationStates[index].error = true; // User not selected
+          return;
+        }
 
-      this.attendanceService.getProcessAttendance(payload).subscribe((processRes: any) => {
-        this.processAttendance = processRes.data;
+        this.userValidationStates[index].error = this.lop.some((lop: any) => lop.user === selectedUser);
 
-        this.lopExistsError = this.processAttendance.some(
-          (attendance: any) =>
-            attendance.attendanceProcessPeriodMonth === this.attendanceProcessForm.value.attendanceProcessPeriodMonth &&
-            attendance.attendanceProcessPeriodYear === payload.year
-            // this.attendanceProcessForm.value.users.some(
-            //   (formUser: any) => formUser.user === attendance.user
-            // )
-        );
-        console.log(this.lopExistsError);
+        if (this.userValidationStates[index].error) {
+          this.attendanceService.getProcessAttendance(payload).subscribe((processRes: any) => {
+            this.processAttendance = processRes.data;
+
+            this.userValidationStates[index].matchingAttendance = this.processAttendance.some((attendance: any) =>
+              attendance.attendanceProcessPeriodMonth === payload.month &&
+              attendance.attendanceProcessPeriodYear === payload.year &&
+              attendance.users.some((user: any) => user.user === selectedUser)
+            );
+          });
+        }
       });
     });
   }
@@ -247,18 +253,40 @@ export class AttendanceProcessComponent {
   }
 
   onSubmission() {
-    console.log(this.attendanceProcessForm.value)
+
+    this.attendanceProcessForm.get('status')?.enable();
+    this.attendanceProcessForm.get('exportToPayroll')?.enable();
+
+    this.attendanceProcessForm.patchValue({
+      status: 'Pending',
+      exportToPayroll: false
+    })
     if (this.attendanceProcessForm.valid) {
       this.attendanceService.addProcessAttendance(this.attendanceProcessForm.value).subscribe((res: any) => {
-        this.processAttendance.push(res.data);
-        this.attendanceProcessForm.reset();
+        const processedAttendance = res.data;
+        this.selectedMonth = processedAttendance?.attendanceProcess?.attendanceProcessPeriodMonth;
+        this.processAttendance.push(res.data.attendanceProcess);
+
+        this.attendanceProcessForm.reset({
+          exportToPayroll: 'false',
+          status: 'Pending',
+        });
+
+        const usersFormArray = this.attendanceProcessForm.get('users') as FormArray;
+        while (usersFormArray.length) {
+          usersFormArray.removeAt(0);
+        }
+        this.userValidationStates = [];
         this.toast.success('Process Attendance Created', 'Successfully!');
       },
         err => {
           this.toast.error('Process Attendance Can not be Created', 'Error!')
         })
     }
+
     else { this.attendanceProcessForm.markAllAsTouched() }
+    this.attendanceProcessForm.get('status')?.disable();
+    this.attendanceProcessForm.get('exportToPayroll')?.disable();
   }
 
   deleteRecord(data) {

@@ -61,7 +61,7 @@
 
                                 <!-- <div class="d-flex"> -->
                                 <div class="form-group  d-flex align-items-center  col-md-3">
-                                    <label for="">LOP&nbsp;Month</label>
+                                    <label for="">LOP&nbsp;Month </label>
                                     <select id="monthSelect" [(ngModel)]="selectedMonth"
                                         (change)="onMonthChange($event)">
                                         <option *ngFor="let month of months" [value]="month.value">{{ month.name }}
@@ -70,13 +70,12 @@
                                 </div>
 
                                 <div class="form-group d-flex align-items-center  col-md-3">
-                                    <label for="year" class="pt-2 pe-3">LOP&nbsp;Year</label>
+                                    <label for="year" class="pt-2 pe-3">LOP&nbsp;Year </label>
                                     <select id="year" name="year" class="form-control" [(ngModel)]="selectedYear"
                                         (change)="onYearChange($event)">
                                         <option *ngFor="let year of years" [value]="year">{{ year }}</option>
                                     </select>
                                 </div>
-
 
                                 <!-- </div> -->
                                 <button mat-raised-button class="addBtn ms-auto col-md-2"
@@ -94,7 +93,14 @@
                                         <td>{{data?.attendanceProcessPeriodMonth}}-{{data?.attendanceProcessPeriodYear}}
                                         </td>
                                         <td>{{data?.runDate | date:'mediumDate'}}</td>
-                                        <td>{{data?.exportToPayroll}}</td>
+                                        <td>
+                                            <ng-container *ngIf="data?.exportToPayroll; else showCross">
+                                                <i class="bi bi-check2 text-success"></i>
+                                            </ng-container>
+                                            <ng-template #showCross>
+                                                <i class="bi bi-x-lg text-danger"></i>
+                                            </ng-template>
+                                        </td>
                                         <td>
                                             <button class="actions ms-2" mat-mini-fab matTooltip="Delete"
                                                 matTooltipPosition="after"
@@ -139,7 +145,8 @@
         <div class="row">
             <div class="col-md-6 form-group">
                 <label for="year">Attendance Process Period Year <span class="text-danger">*</span></label>
-                <select id="year" name="year" class="form-control" formControlName="attendanceProcessPeriodYear">
+                <select id="year" name="year" class="form-control" formControlName="attendanceProcessPeriodYear"
+                    (change)="onMonthOrYearChange()">
                     <option *ngFor="let year of years" [value]="year">{{ year }}</option>
                 </select>
                 <div *ngIf="attendanceProcessForm.get('attendanceProcessPeriodYear')?.touched 
@@ -153,7 +160,8 @@
 
             <div class="col-md-6 form-group">
                 <label for="monthSelect">Attendance Process Period Month <span class="text-danger">*</span></label>
-                <select id="monthSelect" formControlName="attendanceProcessPeriodMonth">
+                <select id="monthSelect" formControlName="attendanceProcessPeriodMonth"
+                    (change)="onMonthOrYearChange()">
                     <option *ngFor="let month of months" [value]="month.value">{{ month.name }}</option>
                 </select>
                 <div *ngIf="attendanceProcessForm.get('attendanceProcessPeriodMonth')?.touched 
@@ -165,54 +173,46 @@
                 </div>
             </div>
         </div>
-        <div *ngIf="isLOPError" class="alert alert-danger mt-3">
-            For the selected month and year, LOP does not exist. Please create the LOP for the same!
-        </div>
-        <!-- <div *ngIf="lopExistsError" class="alert alert-warning mt-3">
-            For the selected month and year, Attendance Process already exists!
-        </div> -->
 
         <div formArrayName="users">
-            <div *ngFor="let user of attendanceProcessForm.get('users')['controls']; let i = index" [formGroupName]="i"
-                class="d-flex align-items-center mb-3">
-
-                <!-- Employee Selection -->
-                <div class="form-group flex-grow-1 me-2">
-                    <label for="member">Select An Employee for Template Assignment <span
-                            class="text-danger">*</span></label>
-                    <select id="member" name="member" class="form-control" [attr.disabled]="changeMode === 'Update'"
-                        formControlName="user" aria-label="form-select-sm example">
-                        <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
-                            {{ assignee?.firstName | titlecase }} {{ assignee?.lastName | titlecase }}
-                        </option>
-                    </select>
-
-                    <div *ngIf="lopExistsError" class="alert alert-warning mt-3">
-                        For the selected User, Month and Year, Attendance Process already exists!
+            <div *ngFor="let user of attendanceProcessForm.get('users')['controls']; let i = index" [formGroupName]="i">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="form-group flex-grow-1 me-2">
+                        <label for="member">Select An Employee for Template Assignment <span class="text-danger">*</span></label>
+                        <select id="member" name="member" class="form-control" [attr.disabled]="changeMode === 'Update'"
+                            formControlName="user" (change)="onUserChange()" aria-label="form-select-sm example">
+                            <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                                {{ assignee?.firstName | titlecase }} {{ assignee?.lastName | titlecase }}
+                            </option>
+                        </select>
                     </div>
+        
+                    <div class="form-group flex-grow-1 mr-2">
+                        <label for="userStatus">Status</label>
+                        <input type="text" id="userStatus" formControlName="status" class="form-control">
+                    </div>
+                    <button type="button" (click)="removeUser (i)" class="btn btn-danger bi bi-x"></button>
                 </div>
-
-                <!-- Status Input -->
-                <div class="form-group flex-grow-1 mr-2">
-                    <label for="userStatus">Status</label>
-                    <input type="text" id="userStatus" formControlName="status" class="form-control">
+        
+                <!-- Display LOP validation message for the specific user -->
+                <div *ngIf="userValidationStates[i]?.error === false" class="alert alert-warning mt-3">
+                    LOP is not available for the selected employee in the specified month and year. Kindly create the LOP for the selected employee.
                 </div>
-
-                <!-- Remove Button (Only shown if addUser has been clicked at least once) -->
-                <!-- <button *ngIf="showRemoveButton" type="button" (click)="removeUser(i)"
-                    class="btn btn-danger bi bi-x"></button> -->
+        
+                <!-- Display attendance process validation message for the specific user -->
+                <div *ngIf="userValidationStates[i]?.matchingAttendance" class="alert alert-warning mt-3">
+                    An attendance process already exists for the selected employee for the specified month and year.
+                </div>
             </div>
-
-            <!-- Add User Button -->
-            <!-- <button type="button" (click)="addUser()" class="btn btn-primary mt-2 bi bi-plus"> Add User</button> -->
+        
+            <button type="button" mat-raised-button (click)="addUser ()" class="addBtn mt-2 bi bi-plus"> Add User</button>
         </div>
-
+          
         <div class="row mt-2">
             <div class="col-md-6 form-group">
                 <label for="runDate">Run Date <span class="text-danger">*</span></label>
                 <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
                     [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="runDate" />
-
                 <div
                     *ngIf="attendanceProcessForm.get('runDate')?.touched && attendanceProcessForm.get('runDate')?.invalid">
                     <small class="text-danger" *ngIf="attendanceProcessForm.get('runDate')?.errors?.['required']">
@@ -229,11 +229,8 @@
 
             <div class="col-md-6 form-group">
                 <label for="status">Status <span class="text-danger">*</span></label>
-                <select id="status" formControlName="status" class="form-control">
-                    <option value="">Select Status</option>
-                    <option value="Pending">Pending</option>
-                    <option value="Processed">Processed</option>
-                </select>
+                <input type="text" value="Pending" class="form-control" formControlName="status" />
+                
                 <div *ngIf="attendanceProcessForm.get('status')?.touched 
              && attendanceProcessForm.get('status')?.invalid">
                     <small class="text-danger" *ngIf="attendanceProcessForm.get('status')?.errors?.['required']">
@@ -260,7 +257,7 @@
 
         </div>
 
-       
+
 
         <div class="d-flex justify-content-between mt-2">
             <button type="reset" mat-raised-button>Cancel</button>
