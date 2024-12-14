@@ -15,20 +15,24 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 export class AttendanceProcessComponent {
   activeTab: string = 'attendanceProcess';
   searchText: string = '';
-  attendanceProcessForm: FormGroup;
-  changeMode: 'Add' | 'Update' = 'Add';
   closeResult: string = '';
+
+  lopForm: FormGroup;
+  attendanceProcessForm: FormGroup;
+  fnfAttendanceProcessForm: FormGroup;
+
+  changeMode: 'Add' | 'Update' = 'Add';
   years: number[] = [];
   selectedYear: number;
-  allAssignee: any[];
+
   showRemoveButton = false;
+
   processAttendance: any
+  lop: any;
+  allAssignee: any[];
+
   bsValue = new Date();
   selectedMonth: number = new Date().getMonth() + 1;
-  lop: any;
-  lopForm: FormGroup;
-  isLOPError: boolean = false;
-  lopExistsError: boolean = false;
   userValidationStates: { error: boolean; matchingAttendance: boolean }[] = [];
 
   months = [
@@ -68,6 +72,14 @@ export class AttendanceProcessComponent {
       users: this.fb.array([])
     });
 
+    this.fnfAttendanceProcessForm = this.fb.group({
+      attendanceProcessPeriodYear: [''],
+      attendanceProcessPeriodMonth: [''],
+      runDate: [''],
+      exportToPayroll: [''],
+      isFNF: [true],
+      users: this.fb.array([])
+    })
   }
 
   ngOnInit() {
@@ -122,8 +134,6 @@ export class AttendanceProcessComponent {
 
   open(content: any) {
     if (this.changeMode == 'Add') {
-      this.isLOPError = false;
-      this.lopExistsError = false;
       this.attendanceProcessForm.reset({
         exportToPayroll: 'false',
         status: 'Pending',
@@ -151,7 +161,7 @@ export class AttendanceProcessComponent {
     this.getProcessAttendance();
   }
 
-
+// Attendance process users array
   addUser() {
     const userGroup = this.fb.group({
       user: ['', Validators.required],
@@ -159,7 +169,6 @@ export class AttendanceProcessComponent {
     });
     (this.attendanceProcessForm.get('users') as FormArray).push(userGroup);
   }
-
 
   removeUser(index: number) {
     (this.attendanceProcessForm.get('users') as FormArray).removeAt(index);
@@ -169,9 +178,26 @@ export class AttendanceProcessComponent {
     return this.attendanceProcessForm.get('users') as FormArray;
   }
 
+// FnF Attendance process users array
+  addfnfUser() {
+    const userGroup = this.fb.group({
+      user: ['', Validators.required],
+      status: [''],
+    });
+    (this.fnfAttendanceProcessForm.get('users') as FormArray).push(userGroup);
+  }
+
+  removefnfUser(index: number) {
+    (this.fnfAttendanceProcessForm.get('users') as FormArray).removeAt(index);
+  }
+
+  get fnfUsers(): FormArray {
+    return this.fnfAttendanceProcessForm.get('users') as FormArray;
+  }
+
   generateYearList() {
     const currentYear = new Date().getFullYear();
-    this.years = [currentYear - 1, currentYear, currentYear + 1];
+    this.years = [currentYear - 1, currentYear];
     this.selectedYear = currentYear;
   }
 

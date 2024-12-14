@@ -119,7 +119,36 @@
                     id="fnfattendanceProcess">
 
                     <div class="mt-2 bg-white tableContainer">
-                        <pre>FnF Attendance Process</pre>
+                        <div class="d-flex">
+                            <div class="form-group ms-auto">
+                                <label for="month">Select FNF Period</label>
+                                <select name="" id="month" >
+                                    <option value="" [disabled] [selected]>Select Period--</option>
+                                    <option value=""></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="tableContainer">
+                            <table>
+                                <thead>
+                                    <th>Attendance Process Period</th>
+                                    <th>Run Date</th>
+                                    <th>Process Details</th>
+                                    <th>Export to Full & Final</th>
+                                    <th>Actions</th>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -261,8 +290,7 @@
 
         <div class="d-flex justify-content-between mt-2">
             <button type="reset" mat-raised-button>Cancel</button>
-            <button type="submit" mat-raised-button class="addBtn"
-                [disabled]="isLOPError || lopExistsError">Submit</button>
+            <button type="submit" mat-raised-button class="addBtn">Submit</button>
         </div>
     </form>
 </ng-template>
