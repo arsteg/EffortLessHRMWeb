@@ -85,7 +85,7 @@ export class ExpensesCategoriesComponent implements OnInit {
   }
   open(content: any) {
 
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
@@ -154,7 +154,7 @@ export class ExpensesCategoriesComponent implements OnInit {
     this.recordsPerPage = recordsPerPage;
     this.getAllExpensesCategories();
   }
-  
+
   getAllExpensesCategories() {
     let pagination = {
       skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
@@ -167,8 +167,14 @@ export class ExpensesCategoriesComponent implements OnInit {
   }
 
   onCancel() {
-    this.isEdit = false;
-    this.addCategoryForm.reset();
+    // this.isEdit = false;
+    // this.addCategoryForm.reset();
+    if (this.isEdit) {
+      this.addCategoryForm.patchValue({
+
+      })
+    }
+    else if (!this.isEdit) { this.addCategoryForm.reset(); }
   }
 
   addExpenseCategory() {
@@ -242,40 +248,39 @@ export class ExpensesCategoriesComponent implements OnInit {
       isMandatory: this.addCategoryForm.value['isMandatory']
     };
 
-    if (
-      this.addCategoryForm.get('type').dirty ||
-      this.addCategoryForm.get('label').dirty ||
-      this.addCategoryForm.get('isMandatory').dirty
-    ) {
-      this.expenses.updateCategory(this.selectedCategory?._id, categoryPayload).subscribe((res: any) => {
-        this.getAllExpensesCategories();
-        this.toast.success('Expense Category Updated', 'Succesffully')
-        this.updatedCategory = res.data._id;
-      });
-    }
+    this.expenses.updateCategory(this.selectedCategory?._id, categoryPayload).subscribe((res: any) => {
+      this.getAllExpensesCategories();
+      this.toast.success('Expense Category Updated', 'Succesffully')
+      this.updatedCategory = res.data._id;
+    });
+
     if (this.addCategoryForm.get('fields')) {
       const updateFields = (this.addCategoryForm.value['fields'] as any[]).filter(
         (field) => field.id && !this.originalFields.some((originalField) => isEqual(field, originalField))
       );
-      if (this.addCategoryForm.get('fields').dirty) {
-        let fieldsPayload = {
+
+      if (updateFields.length > 0) {
+        const fieldsPayload = {
           fields: updateFields
         };
-        console.log(fieldsPayload)
+
         this.expenses.updateCategoryField(fieldsPayload).subscribe((res: any) => {
-          this.toast.success('Expense Category Applicable field Updated', 'Successfully')
+          (this.addCategoryForm.get('fields') as FormArray).clear();
+          this.addCategoryForm.reset({
+            isMandatory: false
+          });
+          this.isEdit = false;
+          this.toast.success('Expense Category Applicable field Updated', 'Successfully');
         });
       }
       const newFields = (this.addCategoryForm.value['fields'] as any[]).filter(
         (field) => !field.id && !this.originalFields.some((originalField) => isEqual(field, originalField))
       );
-      console.log(newFields);
       if (newFields && newFields.length > 0) {
         let fieldsPayload = {
           fields: newFields,
           expenseCategory: this.selectedCategory._id
         };
-        console.log(fieldsPayload)
         this.expenses.addCategoryField(fieldsPayload).subscribe((res: any) => {
           this.toast.success('Expense Category Applicable field Added', 'Successfully')
         });
@@ -285,10 +290,8 @@ export class ExpensesCategoriesComponent implements OnInit {
     this.getAllExpensesCategories();
   }
 
-  editCategory(category, index) {
+  editCategory() {
     this.isEdit = true;
-    this.selectedCategory = category;
-    console.log(this.selectedCategory)
     this.expenses.getApplicationFieldbyCategory(this.selectedCategory?._id).subscribe((res: any) => {
       this.field = res.data;
       let fieldData = this.field.map((field) => {
@@ -330,9 +333,9 @@ export class ExpensesCategoriesComponent implements OnInit {
       }
     });
     this.addCategoryForm.patchValue({
-      type: category.type,
-      label: category.label,
-      isMandatory: category.isMandatory,
+      type: this.selectedCategory.type,
+      label: this.selectedCategory.label,
+      isMandatory: this.selectedCategory.isMandatory,
       fields: this.fields.value,
       expenseCategory: this.selectedCategory._id,
     });

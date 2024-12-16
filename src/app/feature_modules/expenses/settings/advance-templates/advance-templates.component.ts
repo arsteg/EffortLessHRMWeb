@@ -24,7 +24,6 @@ export class AdvanceTemplatesComponent implements OnInit {
   updatedCategory: any;
   list: any;
   advanceCategories: any = [];
-  selectedTemplateId: any;
   advanceCategoriesall: any;
   templates: any[] = [];
   categoryList: any;
@@ -104,7 +103,7 @@ export class AdvanceTemplatesComponent implements OnInit {
   }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
@@ -142,21 +141,11 @@ export class AdvanceTemplatesComponent implements OnInit {
     })
   }
 
-  getCategoriesByTemplate(id: string) {
-    this.selectedTemplateId = id;
-    this.expenseService.getCategoriesByTemplate(id).subscribe((res: any) => {
-      this.categoryList = res.data;
-      const selectedCategories = this.categoryList.map(category => category.advanceTemplate);
-      this.addAdvanceTempForm.get('advanceTemplates').setValue(selectedCategories);
-    })
-  }
   isSelected(categoryId: string): boolean {
     const selectedCategories = this.addAdvanceTempForm.get('advanceCategories').value;
     console.log(selectedCategories.includes(categoryId))
     return selectedCategories.includes(categoryId);
   }
-
-
 
   addAdvanceTemplate() {
 
@@ -198,7 +187,7 @@ export class AdvanceTemplatesComponent implements OnInit {
           secondApprovalEmployee: this.addAdvanceTempForm.value['secondApprovalEmployee'],
           advanceCategories: this.addAdvanceTempForm.value.advanceCategories.map(category => ({ advanceCategory: category })),
         };
-        this.expenseService.updateAdvanceTemplates(this.selectedTemplateId, payload).subscribe((res: any) => {
+        this.expenseService.updateAdvanceTemplates(this.selectedTemplate._id, payload).subscribe((res: any) => {
           this.addAdvanceTempForm.reset();
           this.toast.success(' Advance Template Updated', 'Successfully!!!');
           this.isEdit = false;
@@ -225,20 +214,25 @@ export class AdvanceTemplatesComponent implements OnInit {
     });
   }
 
-  editadvanceCategory(category, index) {
+  editadvanceCategory() {
     this.isEdit = true;
     this.changeMode = 'Update';
-    this.expenseService.getAdvanceTemplateById(category?._id).subscribe((res: any) => {
-      this.addAdvanceTempForm.patchValue({
-        policyLabel: res.data.policyLabel,
-        firstApprovalEmployee: res.data.firstApprovalEmployee,
-        secondApprovalEmployee: res.data.secondApprovalEmployee,
-        approvalType: res.data.approvalType,
-        approvalLevel: res.data.approvalLevel,
-        advanceCategories: res.data.advanceCategories.map((advanceCategory: any) => advanceCategory.advanceCategory)
-      });
-      console.log(this.addAdvanceTempForm.value)
-    })
+    if (this.isEdit) {
+      this.expenseService.getAdvanceTemplateById(this.selectedTemplate?._id).subscribe((res: any) => {
+        this.addAdvanceTempForm.patchValue({
+          policyLabel: res.data.policyLabel,
+          firstApprovalEmployee: res.data.firstApprovalEmployee,
+          secondApprovalEmployee: res.data.secondApprovalEmployee,
+          approvalType: res.data.approvalType,
+          approvalLevel: res.data.approvalLevel,
+          advanceCategories: res.data.advanceCategories.map((advanceCategory: any) => advanceCategory.advanceCategory)
+        });
+        console.log(this.addAdvanceTempForm.value)
+      })
+    }
+    if (!this.isEdit) {
+      this.addAdvanceTempForm.reset();
+    }
   }
 
   deleteAdvancecate(id: string): void {

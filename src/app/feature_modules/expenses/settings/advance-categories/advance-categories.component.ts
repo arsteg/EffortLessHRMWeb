@@ -1,4 +1,4 @@
-import { Component,OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -11,7 +11,7 @@ import { MatDialog } from '@angular/material/dialog';
   templateUrl: './advance-categories.component.html',
   styleUrl: './advance-categories.component.css'
 })
-export class AdvanceCategoriesComponent implements OnInit{
+export class AdvanceCategoriesComponent implements OnInit {
   searchText: '';
   isEdit = false;
   field: any = [];
@@ -23,8 +23,8 @@ export class AdvanceCategoriesComponent implements OnInit{
   addCategory: FormGroup;
   closeResult: string = '';
   advanceCategories: any;
-  changesMade: boolean =false;
-  initialLabelValue:string;
+  changesMade: boolean = false;
+  initialLabelValue: string;
   public sortOrder: string = '';
   totalRecords: number
   recordsPerPage: number = 10;
@@ -33,21 +33,18 @@ export class AdvanceCategoriesComponent implements OnInit{
   constructor(private fb: FormBuilder,
     private dialog: MatDialog,
     private modalService: NgbModal,
-    private expenseService: ExpensesService ,
-    private toast: ToastrService) {    
-  
-        this.addCategory = this.fb.group({
-          label: ['', Validators.required]
-       
-        }) 
+    private expenseService: ExpensesService,
+    private toast: ToastrService) {
+
+    this.addCategory = this.fb.group({
+      label: ['', Validators.required]
+
+    })
   }
-  ngOnInit(){
-   this.getAllAdvanceCategories();
+  ngOnInit() {
+    this.getAllAdvanceCategories();
   }
-  onCancel() {
-    this.isEdit = false;
-    this.addCategory.reset();
-  }
+
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
@@ -59,14 +56,13 @@ export class AdvanceCategoriesComponent implements OnInit{
   }
   open(content: any) {
 
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
     });
   }
   clearselectedRequest() {
-    this.isEdit = false;
     this.addCategory.reset();
   }
   onPageChange(page: number) {
@@ -89,63 +85,58 @@ export class AdvanceCategoriesComponent implements OnInit{
     })
   }
 
-  addAdvanceCategories() {
-    if (this.changeMode === 'Add') {
-      let payload = {     
-        label: this.addCategory.value['label'],  
+  onSubmit() {
+    if (!this.isEdit) {
+      let payload = {
+        label: this.addCategory.value['label'],
       };
 
       this.expenseService.addAdvanceCategory(payload).subscribe((res: any) => {
         const newCategory = res.data;
         this.toast.success('Advance Category Created!', 'Successfully');
         this.advanceCategories.push(newCategory)
-        if (this.addCategory.value['label'].length > 0) {
-          let fieldsPayload = {
-            fields: this.addCategory.value['label'],
-            expenseCategory: newCategory._id
-          };
-        }
-        this.clearselectedRequest();
+        this.addCategory.reset();
       },
         err => {
           this.toast.error('This category is already exist', 'Error!!!')
         });
     }
-    
+    if (this.isEdit) {
+      let categoryPayload = {
+        label: this.addCategory.value['label']
+      };
+
+      if (this.addCategory.get('label').dirty) {
+        this.expenseService.updateAdvanceCategory(this.selectedCategory?._id, categoryPayload).subscribe((res: any) => {
+          this.updatedCategory = res.data._id;
+          this.toast.success('Advance Category Updated!', 'Successfully');
+          this.addCategory.reset();
+          this.isEdit = false;
+          this.getAllAdvanceCategories();
+        },
+          (err) => {
+            this.toast.error('Advance Category can not be Updated!', 'Error');
+          });
+      }
+    }
   }
 
-  updateAdvanceCategory() {
-    let categoryPayload = {
-      label: this.addCategory.value['label']
-    };
-  
-    if (this.addCategory.get('label').dirty) {
-      this.expenseService.updateAdvanceCategory(this.selectedCategory?._id, categoryPayload).subscribe((res: any) => {
-        this.updatedCategory = res.data._id;
-        this.toast.success('Advance Category Updated!', 'Successfully');
-        this.getAllAdvanceCategories();
-      },
-      (err)=>{
-        this.toast.error('Advance Category can not be Updated!', 'Error');
-      });
-    }
-  }  
-
-  editAdvanceCategory(category, index) {
-    this.isEdit = true;
-    this.selectedCategory = category;
-
+  editAdvanceCategory() {
+    if (this.isEdit) {
       this.addCategory.patchValue({
-        
-        label: category.label,      
+
+        label: this.selectedCategory.label,
         expenseCategory: this.selectedCategory._id,
       });
-     this.changesMade=false;
+    }
+    if (!this.isEdit) {
+      this.addCategory.reset();
+    }
   }
 
-  
 
- 
+
+
   deleteAdvancecate(id: string): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '400px',

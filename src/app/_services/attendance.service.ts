@@ -469,7 +469,7 @@ export class AttendanceService implements CanActivate {
     var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/process-attendance-by-month`, payload, this.httpOptions);
     return response;
   }
-  
+
   deleteProcessAttendance(payload: any): Observable<response<any>> {
     const options = {
       ...this.httpOptions,
@@ -478,4 +478,14 @@ export class AttendanceService implements CanActivate {
     return this.http.delete<response<any>>(`${environment.apiUrlDotNet}/attendance/process-attendance`, options);
   }
 
+  // fnf Attendance process
+  addFnFAttendanceProcess(payload: any): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/process-attendance-fnf`, payload, this.httpOptions);
+    return response;
+  }
+
+  getfnfAttendanceProcess(payload: any): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/process-attendance-fnf-by-month`, payload, this.httpOptions);
+    return response;
+  }
 }

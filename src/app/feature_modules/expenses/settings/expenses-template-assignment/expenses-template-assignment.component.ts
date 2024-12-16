@@ -16,7 +16,7 @@ import { DatePipe } from '@angular/common';
 export class ExpensesTemplateAssignmentComponent implements OnInit {
   searchText: string = '';
   isEdit: boolean = false;
-  changeMode: 'Add' | 'View' = 'Add';
+  changeMode: 'Add' | 'View' | 'Update' = 'Add';
   closeResult: string = '';
   templates: any[] = [];
   userId: string;
@@ -24,7 +24,7 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
   templateAssignments: any;
   templateAssignmentForm: FormGroup;
   templateResponse;
-  selectedTemplateAssignmentId: any;
+  selectedTemplateAssignment: any;
   allAssignee: any[];
   p: number = 1;
   bsValue = new Date();
@@ -69,9 +69,9 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
     }, 1000)
   }
 
-  setFormValues(data) {
+  setFormValues() {
     this.showApproverFields = true;
-    let payload = { skip: '', next: '' }
+    const data = this.selectedTemplateAssignment;
     this.expenseService.getTemplateAssignmentById(data.user).subscribe((res: any) => {
       const templateAssignment = res.data[0];
       console.log(templateAssignment)
@@ -108,8 +108,8 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
             });
           }
           this.templateAssignmentForm.get('user').disable();
-            this.templateAssignmentForm.get('effectiveDate').disable();
-            this.templateAssignmentForm.get('expenseTemplate').disable();
+          this.templateAssignmentForm.get('effectiveDate').disable();
+          this.templateAssignmentForm.get('expenseTemplate').disable();
           this.templateAssignmentForm.get('primaryApprover').disable();
           this.templateAssignmentForm.get('secondaryApprover').disable();
         }
@@ -123,8 +123,8 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
             effectiveDate: templateAssignment.effectiveDate
           });
           this.templateAssignmentForm.get('user').disable();
-            this.templateAssignmentForm.get('effectiveDate').disable();
-            this.templateAssignmentForm.get('expenseTemplate').disable();
+          this.templateAssignmentForm.get('effectiveDate').disable();
+          this.templateAssignmentForm.get('expenseTemplate').disable();
           this.templateAssignmentForm.get('primaryApprover').enable();
           this.templateAssignmentForm.get('secondaryApprover').enable();
         }
@@ -225,10 +225,14 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
     });
   }
   clearSelection() {
-    this.changeMode = 'Add';
-    this.templateAssignmentForm.get('user')?.enable();
-    this.templateAssignmentForm.get('expenseTemplate')?.enable();
-    this.templateAssignmentForm.reset();
+    if (this.changeMode == 'Add') {
+      this.templateAssignmentForm.get('user')?.enable();
+      this.templateAssignmentForm.get('expenseTemplate')?.enable();
+      this.templateAssignmentForm.reset();
+    }
+    if (this.changeMode == 'Update') {
+      this.setFormValues();
+    }
   }
 
   deleteTemplateAssignment(_id: string) {
@@ -289,20 +293,29 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
     };
     this.expenseService.getTemplateAssignment(pagination).subscribe((res: any) => {
       this.templateAssignments = res.data.map((report) => {
+        const expenseTemplateDetails = this.getTemplateDetails(report?.expenseTemplate);
         return {
           ...report,
           employeeName: this.getUser(report?.user),
           expenseTemplate: this.getTemplate(report?.expenseTemplate),
           primaryApprover: this.getUser(report?.primaryApprover),
           secondaryApprover: this.getUser(report?.secondaryApprover),
-          date: this.datePipe.transform(report.effectiveDate, 'MMM d, yyyy'),
+          approvalType: expenseTemplateDetails?.approvalType
         };
       });
       this.totalRecords = res.total;
     });
   }
 
+  getTemplateDetails(templateId: string) {
+    return this.templates?.find(template => template?._id === templateId);
+  }
+
   addOrUpdateAssignment() {
+    this.templateAssignmentForm.get('user').enable();
+    this.templateAssignmentForm.get('expenseTemplate').enable();
+    this.templateAssignmentForm.get('effectiveDate').enable();
+
     let payload = {
       user: this.templateAssignmentForm.value.user || null,
       primaryApprover: this.templateAssignmentForm.value.primaryApprover,
@@ -310,22 +323,31 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
       expenseTemplate: this.templateAssignmentForm.value.expenseTemplate || null,
       effectiveDate: this.templateAssignmentForm.value.effectiveDate
     }
-
-    if (this.changeMode == 'Add') {
-      console.log(payload)
-      this.expenseService.addTemplateAssignment(payload).subscribe((res: any) => {
-        const newTemplateAssignment = res.data;
+    this.expenseService.addTemplateAssignment(payload).subscribe((res: any) => {
+      const newTemplateAssignment = res.data;
+      if (this.changeMode == 'Add') {
         this.toast.success('Advance Template Assigned!', 'Successfully')
         this.templateAssignments.push(newTemplateAssignment);
-        this.getAssignments();
-        this.templateAssignmentForm.reset();
-        this.showApproverFields = false;
-      },
-        (err) => {
-          this.toast.error('Advance Template Cannot be created!', 'Error')
-        });
-    }
-   
+      }
+      if (this.changeMode == 'Update') {
+        this.toast.success('Advance Template Assignment Updated!', 'Successfully')
+        this.changeMode = 'Add';
+        this.templateAssignmentForm.get('user').enable();
+        this.templateAssignmentForm.get('expenseTemplate').enable();
+        this.templateAssignmentForm.get('effectiveDate').enable();
+      }
+      this.getAssignments();
+      this.templateAssignmentForm.reset();
+      this.showApproverFields = false;
+    },
+      (err) => {
+        if (this.changeMode == 'Add') { this.toast.error('Advance Template Cannot be created!', 'Error') }
+        if (this.changeMode == 'Update') { this.toast.error('Advance Template Cannot be Updated!', 'Error') }
+      });
+
+    this.templateAssignmentForm.get('user').disable();
+    this.templateAssignmentForm.get('expenseTemplate').disable();
+    this.templateAssignmentForm.get('effectiveDate').disable();
   }
 
 

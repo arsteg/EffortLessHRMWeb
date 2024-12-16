@@ -3,9 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { CommonService } from 'src/app/_services/common.Service';
-import { Router } from '@angular/router';
-import { ModalDismissReasons, NgbModal, NgbModalConfig } from '@ng-bootstrap/ng-bootstrap';
-
+import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-expense-general-settings',
@@ -20,6 +18,7 @@ export class ExpenseGeneralSettingsComponent {
   users: any = [];
   @Input() changeMode: any;
   @Input() modal: any;
+  @Input() selectedTemplate: any;
   @Output() close: any = new EventEmitter();
   @Output() changeStep: any = new EventEmitter();
   closeResult: string = '';
@@ -30,7 +29,6 @@ export class ExpenseGeneralSettingsComponent {
     private expenseService: ExpensesService,
     private commonService: CommonService,
     private toast: ToastrService,
-    private router: Router,
     private modalService: NgbModal,
   ) {
     this.addTemplateForm = this.fb.group({
@@ -49,13 +47,12 @@ export class ExpenseGeneralSettingsComponent {
 
   ngOnInit() {
     if (this.changeMode == 'Add') {
-      console.log(this.changeMode)
       this.addTemplateForm.reset();
     }
-    else {
+    else if (this.changeMode == 'Next') {
       this.expenseService.selectedTemplate.subscribe((template: any) => {
         if (template._id) {
-          this.setFormValues(template)
+          this.setFormValues()
         }
       })
     }
@@ -99,34 +96,36 @@ export class ExpenseGeneralSettingsComponent {
     } else {
       this.checkedFormats.splice(formatIndex, 1);
     }
-    console.log(this.checkedFormats)
   }
 
-  setFormValues(templateData: any) {
-    this.expenseService.getCategoriesByTemplate(templateData._id).subscribe((res: any) => {
-      this.categoryList = res.data;
+  setFormValues() {
+    if (this.changeMode == 'Add') { this.addTemplateForm.reset(); }
+    const templateData = this.selectedTemplate;
+    if (this.changeMode == 'Next') {
+      this.expenseService.getCategoriesByTemplate(templateData?._id).subscribe((res: any) => {
+        this.categoryList = res.data;
 
-      let expenseCategories = this.categoryList.map(category => category.expenseCategory);
-      this.addTemplateForm.patchValue({
-        policyLabel: templateData.policyLabel,
-        approvalType: templateData.approvalType,
-        approvalLevel: templateData.approvalLevel,
-        downloadableFormats: templateData.downloadableFormats,
-        applyforSameCategorySamedate: templateData.applyforSameCategorySamedate,
-        advanceAmount: templateData.advanceAmount,
-        firstApprovalEmployee: templateData.firstApprovalEmployee,
-        secondApprovalEmployee: templateData.secondApprovalEmployee,
-        expenseCategories: expenseCategories
+        let expenseCategories = this.categoryList.map(category => category.expenseCategory);
+        this.addTemplateForm.patchValue({
+          policyLabel: templateData.policyLabel,
+          approvalType: templateData.approvalType,
+          approvalLevel: templateData.approvalLevel,
+          downloadableFormats: templateData.downloadableFormats,
+          applyforSameCategorySamedate: templateData.applyforSameCategorySamedate,
+          advanceAmount: templateData.advanceAmount,
+          firstApprovalEmployee: templateData.firstApprovalEmployee,
+          secondApprovalEmployee: templateData.secondApprovalEmployee,
+          expenseCategories: expenseCategories
+        });
+        this.checkedFormats = templateData.downloadableFormats;
+
       });
-      this.checkedFormats = templateData.downloadableFormats;
-
-    });
+    }
   }
 
   getCategoriesByTemplate(id: string) {
     this.expenseService.getCategoriesByTemplate(id).subscribe((res: any) => {
       let categoryList = res.data;
-      console.log(categoryList)
     })
   }
 
@@ -136,7 +135,7 @@ export class ExpenseGeneralSettingsComponent {
   }
 
   getAllExpensesCategories() {
-    let payload ={
+    let payload = {
       next: '',
       skip: ''
     }
@@ -205,7 +204,7 @@ export class ExpenseGeneralSettingsComponent {
     }
   }
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;

@@ -9,7 +9,7 @@
                     <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
                         name="searchText" aria-label="default input example">
                     <button mat-raised-button class="addBtn rounded-pill ms-3"
-                        (click)="isEdit = false; open(addModal); clearselectedRequest()">Add New</button>
+                        (click)="isEdit = false; changeMode = 'Add'; open(addModal); clearselectedRequest()">Add New</button>
                 </div>
             </div>
             <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
@@ -50,11 +50,21 @@
                         <td>{{templateAssignment?.advanceTemplate}}</td>
                         <td>{{templateAssignment?.primaryApprover}}</td>
                         <td>{{templateAssignment?.secondaryApprover}}</td>
-                        <td>{{templateAssignment?.date | date: 'mediumDate'}}</td>
                         <td class="">
+                            <button *ngIf="templateAssignment.approvalType == 'employee-wise'" class="actions"
+                                mat-mini-fab matTooltip="Edit" matTooltipPosition="before" (click)="changeMode='Update';
+                                isEdit = true;
+                            showApproverFields = true;
+                            selectedTemplateAssignment = templateAssignment;
+                            setFormValues();
+                                open(addModal);
+                                isEdit = true" aria-label="Example icon button with a menu icon">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+
                             <button class="actions" mat-mini-fab matTooltip="View" matTooltipPosition="before"
                                 aria-label="Example icon button with a menu icon" (click)="isEdit = true;changeMode = 'View'; selectedTemplateAssignment = templateAssignment;
-                                 setFormValues(templateAssignment);
+                                 setFormValues();
                                  open(addModal);">
                                 <i class="bi bi-eye"></i>
                             </button>
@@ -74,7 +84,7 @@
 <ng-template #addModal let-modal>
     <div class="modal-header border-bottom mb-2 pt-0 d-flex justify-content-between">
         <div>
-            <h1 class="modal-title text-muted mb-0">{{isEdit ? 'View': 'Add'}} Advance Template Assignment</h1>
+            <h1 class="modal-title text-muted mb-0">{{changeMode}} Advance Template Assignment</h1>
         </div>
         <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
                 (click)="modal.close('Escape clicked')"></button>
@@ -157,7 +167,8 @@
         <div class="row">
             <div class="col-12 form-group mb-3">
                 <input placeholder="YYYY-MM-DD" formControlName="effectiveDate" class="form-control"
-                [attr.disabled]="changeMode === 'View'" #datepickerYMD="bsDatepicker" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" required>
+                    [attr.disabled]="changeMode === 'View'" #datepickerYMD="bsDatepicker" bsDatepicker
+                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" required>
                 <div *ngIf="addTemplateAssignmentForm.get('effectiveDate').invalid && addTemplateAssignmentForm.get('effectiveDate').touched"
                     class="text-danger error">
                     Please select Date!
@@ -165,16 +176,12 @@
             </div>
         </div>
 
-        <div class="mt-2">
+        <div class="mt-2" *ngIf="changeMode == 'Add' || 'Update'">
             <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
-                <button mat-raised-button type="button" *ngIf="changeMode == 'Add'" (click)="onCancel()">Cancel</button>
-                <button mat-raised-button class="addBtn" *ngIf="changeMode == 'Add'" type="submit">Submit</button>
+                <button mat-raised-button type="button" (click)="setFormValues()">Cancel</button>
+                <button mat-raised-button class="addBtn" type="submit">Submit</button>
 
             </div>
         </div>
-
-
-
     </form>
-
 </ng-template>
