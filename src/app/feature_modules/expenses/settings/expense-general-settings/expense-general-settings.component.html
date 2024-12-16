@@ -70,7 +70,7 @@
             </div>
         </div>
 
-        <div class="row mt-2" *ngIf="addTemplateForm.get('approvalType').value === 'template-wise'">
+        <div class="row mt-2 d-flex align-items-end" *ngIf="addTemplateForm.get('approvalType').value === 'template-wise'">
             <div class="col-md-6">
                 <label for="firstApprovalEmployee">Please Select An Employee For First Approver? <span
                         class="text-danger">*</span></label>
@@ -102,8 +102,6 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field>
-
-
         </div>
 
         <div class="mt-2">
@@ -143,7 +141,7 @@
     </div>
 
     <div class="d-flex border-top py-2 justify-content-between">
-        <button mat-raised-button type="reset">Cancel</button>
+        <button mat-raised-button type="button" (click)="setFormValues()">Cancel</button>
         <button mat-raised-button class="addBtn" type="submit"
             [disabled]="!addTemplateForm.valid">{{changeMode}}</button>
     </div>

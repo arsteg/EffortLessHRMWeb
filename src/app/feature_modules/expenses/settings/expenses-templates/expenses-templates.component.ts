@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal, NgbModalConfig } from '@ng-bootstrap/ng-bootstrap';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
-import { FormGroup, FormBuilder, FormArray, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { CommonService } from 'src/app/_services/common.Service';
 @Component({
@@ -19,7 +19,7 @@ export class ExpensesTemplatesComponent implements OnInit {
   expenseCategories: any;
   addTemplateForm: FormGroup;
   p: number = 1;
-  selectedTemplateId: any;
+  selectedTemplate: any;
   formatValues: string;
   filteredTemplates: any[] = [];
   categoryList: any;
@@ -48,9 +48,6 @@ export class ExpensesTemplatesComponent implements OnInit {
   ngOnInit(): void {
     this.getAllTemplates();
     this.filteredTemplate();
-  }
-
-  clearForm(){
   }
 
   onClose(event) {
@@ -166,13 +163,13 @@ export class ExpensesTemplatesComponent implements OnInit {
     } else {
       const existingFormats = this.formatValues
       const updatedFormats = this.addTemplateForm.value.downloadableFormats;
-      this.expenseService.updateTemplate(this.selectedTemplateId, payload).subscribe((res: any) => {
+      this.expenseService.updateTemplate(this.selectedTemplate?._id, payload).subscribe((res: any) => {
         const updatedTemplate = res.data;
         const index = this.templates.findIndex(template => template._id === updatedTemplate._id);
         if (index !== -1) {
           this.templates[index] = updatedTemplate;
         }
-        this.categoriesAddOrUpdate(this.selectedTemplateId, payload.expenseCategories);
+        this.categoriesAddOrUpdate(this.selectedTemplate._id, payload.expenseCategories);
         this.addTemplateForm.reset();
         this.toast.success('Template Updated Successfully!');
       }, err => {
@@ -193,9 +190,9 @@ export class ExpensesTemplatesComponent implements OnInit {
   }
 
   updateTemplate(templateId: any) {
-    this.selectedTemplateId = templateId;
+    this.selectedTemplate = templateId._id;
     this.changeMode = 'Next';
-    this.expenseService.getTemplateById(templateId).subscribe((res: any) => {
+    this.expenseService.getTemplateById(templateId._id).subscribe((res: any) => {
       this.setFormValues(res.data);
     });
   }
@@ -260,7 +257,6 @@ export class ExpensesTemplatesComponent implements OnInit {
   }
 
   getCategoriesByTemplate(id: string) {
-    this.selectedTemplateId = id;
     this.expenseService.getCategoriesByTemplate(id).subscribe((res: any) => {
       this.categoryList = res.data;
       const selectedCategories = this.categoryList.map(category => category.expenseCategory);

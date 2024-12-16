@@ -49,7 +49,7 @@
           </div>
           <select class="form-select w-50" formControlName="timePeroid" aria-label="Default select example"
             [attr.disabled]="!categoryCtrl.get('isTimePeroidSet').value ? true : null">
-            <option selected>Select Time</option>
+            <option value="" disabled selected>Select Time</option>
             <option value="Day">Day</option>
             <option value="Week">Week</option>
             <option value="Month">Month</option>

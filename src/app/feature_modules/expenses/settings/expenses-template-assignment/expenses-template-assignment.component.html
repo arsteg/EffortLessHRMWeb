@@ -13,9 +13,9 @@
                 </div>
             </div>
             <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
-            [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
-            (recordsPerPageChange)="onRecordsPerPageChange($event)">
-        </app-pagination>
+                [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
+                (recordsPerPageChange)="onRecordsPerPageChange($event)">
+            </app-pagination>
             <table class="px-4">
                 <thead>
                     <tr>
@@ -45,25 +45,32 @@
                 </thead>
                 <tbody>
 
-                    <tr
-                        *ngFor="let templateAssignment of templateAssignments | search: searchText; let i = index">
-
+                    <tr *ngFor="let templateAssignment of templateAssignments | search: searchText; let i = index">
                         <td>{{templateAssignment?.employeeName}}</td>
                         <td>{{templateAssignment?.expenseTemplate}}</td>
                         <td>{{templateAssignment?.primaryApprover}}</td>
                         <td>{{templateAssignment?.secondaryApprover}}</td>
                         <td>{{templateAssignment?.date | date:'mediumDate'}}</td>
                         <td class="">
-                            <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before" (click)="changeMode='View';
+                            <button *ngIf="templateAssignment.approvalType == 'employee-wise'" class="actions"
+                                mat-mini-fab matTooltip="Edit" matTooltipPosition="before" (click)="changeMode='Update';
                             showApproverFields = true;
-                               setFormValues(templateAssignment);
-                               selectedTemplateAssignmentId = templateAssignment;
+                            selectedTemplateAssignment = templateAssignment;
+                            setFormValues();
                                 open(addModal);
-                                isEdit = true"
-                                 aria-label="Example icon button with a menu icon">
+                                isEdit = true" aria-label="Example icon button with a menu icon">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="actions mx-2" mat-mini-fab matTooltip="View" matTooltipPosition="before"
+                                (click)="changeMode='View';
+                            showApproverFields = true;
+                               setFormValues();
+                               selectedTemplateAssignment = templateAssignment;
+                                open(addModal);
+                                isEdit = true" aria-label="Example icon button with a menu icon">
                                 <i class="bi bi-eye"></i>
                             </button>
-                            <button class="actions ms-2" mat-mini-fab matTooltip="Delete" matTooltipPosition="after"
+                            <button class="actions" mat-mini-fab matTooltip="Delete" matTooltipPosition="after"
                                 aria-label="Example icon button with a menu icon"
                                 (click)="openDialog(templateAssignment?._id)">
                                 <i class="bi bi-trash"></i>
@@ -72,7 +79,7 @@
                     </tr>
                 </tbody>
             </table>
-           
+
         </div>
 
     </div>
@@ -157,9 +164,10 @@
             </div>
         </div>
 
-        <div class="d-flex border-top mt-2 py-2 justify-content-between">
-            <button mat-raised-button type="button" *ngIf="changeMode == 'Add'" (click)="clearSelection()">Cancel</button>
-            <button mat-raised-button type="submit" *ngIf="changeMode == 'Add'" class="addBtn">{{changeMode}}</button>
+        <div class="d-flex border-top mt-2 py-2 justify-content-between" *ngIf="changeMode == 'Add' || 'Update'">
+            <button mat-raised-button type="button"
+                (click)="clearSelection()">Cancel</button>
+            <button mat-raised-button type="submit" class="addBtn">{{changeMode}}</button>
         </div>
     </form>
 </ng-template>
