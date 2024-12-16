@@ -184,50 +184,7 @@ export class AdvanceTemplateAssignmentComponent {
       skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
       next: this.recordsPerPage.toString()
     };
-    // this.expenseService.getAdvanceTemplateAssignment(pagination).subscribe((res: any) => {
-    //   this.templateAssignments = res.data;
-    //   const userRequests = this.templateAssignments.map(assignment =>
-    //     this.authService.GetMe(assignment.user).toPromise()
-    //   );
-
-    //   const primaryRequests = this.templateAssignments.map(assignment =>
-    //     this.authService.GetMe(assignment.primaryApprover).toPromise()
-    //   );
-
-    //   const secondaryRequests = this.templateAssignments.map(assignment =>
-    //     this.authService.GetMe(assignment.secondaryApprover).toPromise()
-    //   );
-
-    //   const templateRequests = this.templateAssignments.map(assignment =>
-    //     this.expenseService.getAdvanceTemplateById(assignment.advanceTemplate).toPromise()
-    //   );
-
-    //   Promise.all([...userRequests, ...templateRequests, ...primaryRequests, ...secondaryRequests]).then(results => {
-    //     for (let i = 0; i < this.templateAssignments.length; i++) {
-    //       const userResponse = results[i];
-    //       this.templateResponse = results[i + this.templateAssignments.length];
-    //       const primaryApproverResponse = results[i + this.templateAssignments.length * 2];
-    //       const secondaryApproverResponse = results[i + this.templateAssignments.length * 3]; // Adjusted index here
-
-    //       if (userResponse) {
-    //         this.templateAssignments[i].user = userResponse.data.users;
-    //       }
-
-    //       if (primaryApproverResponse) {
-    //         this.templateAssignments[i].primaryApprover = primaryApproverResponse.data.users;
-    //       }
-
-    //       if (secondaryApproverResponse) {
-    //         this.templateAssignments[i].secondaryApprover = secondaryApproverResponse.data.users;
-    //       }
-
-    //       if (this.templateResponse.data) {
-    //         this.templateAssignments[i].advanceTemplate = this.templateResponse.data;
-    //       }
-    //     }
-    //   });
-    // });
-
+   
     this.expenseService.getAdvanceTemplateAssignment(pagination).subscribe((res: any) => {
       this.templateAssignments = res.data.map((report) => {
         const expenseAdvanceTemplateDetails = this.getTemplateDetails(report?.advanceTemplate);
