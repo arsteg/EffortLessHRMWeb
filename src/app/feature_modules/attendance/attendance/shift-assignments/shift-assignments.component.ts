@@ -29,6 +29,7 @@ export class ShiftAssignmentsComponent {
   recordsPerPage: number = 10;
   currentPage: number = 1;
   public sortOrder: string = '';
+  userHasTemplateError: boolean = false;
 
   constructor(private attendanceService: AttendanceService,
     private modalService: NgbModal,
@@ -49,6 +50,13 @@ export class ShiftAssignmentsComponent {
       this.allAssignee = result && result.data && result.data.data;
     });
     this.loadRecords();
+  }
+
+  onEmployeeChange(event: any) {
+    const selectedEmployeeId = event.target.value;
+    this.userHasTemplateError = this.shiftAssigments.some(
+      (assignment: any) => assignment.user === selectedEmployeeId
+    );
   }
 
   onPageChange(page: number) {
@@ -91,7 +99,13 @@ export class ShiftAssignmentsComponent {
   }
 
   clearForm() {
-    this.shiftForm.reset();
+    this.shiftForm.reset({
+      user: '',
+      template: '',
+      startDate: new Date()
+    });
+    this.shiftForm.get('user').enable();
+    this.userHasTemplateError = false;
   }
   closeModal() {
     this.modalService.dismissAll();
@@ -130,7 +144,11 @@ export class ShiftAssignmentsComponent {
       template: data.template,
       user: data.user,
       startDate: data.startDate
-    })
+    });
+    if (this.isEdit) {
+      this.shiftForm.get('user').disable();
+      this.userHasTemplateError = false;
+    }
   }
 
   onSubmission() {
@@ -139,7 +157,13 @@ export class ShiftAssignmentsComponent {
         this.attendanceService.addShiftAssignment(this.shiftForm.value).subscribe((res: any) => {
           this.loadRecords();
           this.toast.success('Shift Template Assigned', 'Successfully');
-          this.shiftForm.reset();
+          this.shiftForm.reset({
+            user: '',
+            template: '',
+            startDate: new Date()
+          });
+          this.shiftForm.get('user').enable();
+          this.isEdit = false;
         },
           err => {
             this.toast.error('Shift Template Can not be Assigned', 'ERROR')
@@ -148,7 +172,12 @@ export class ShiftAssignmentsComponent {
       else {
         this.attendanceService.updateShiftAssignment(this.selectedShift, this.shiftForm.value).subscribe((res: any) => {
           this.loadRecords();
-          this.shiftForm.reset();
+          this.shiftForm.reset({
+            user: '',
+            template: '',
+            startDate: new Date()
+          });
+          this.shiftForm.get('user').enable();
           this.isEdit = false,
             this.toast.success('Shift Template Assignment Updated', 'Succesfully')
         },

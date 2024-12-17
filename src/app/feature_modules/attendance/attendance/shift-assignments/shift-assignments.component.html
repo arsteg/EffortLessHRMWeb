@@ -9,7 +9,7 @@
                     <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
                         name="searchText" aria-label="default input example">
 
-                    <button mat-raised-button (click)="open(addModal); clearForm(); changeMode == 'Add'; isEdit= false;"
+                    <button mat-raised-button (click)="clearForm(); changeMode == 'Add'; isEdit= false; open(addModal);"
                         class="addBtn rounded-pill mx-3">Add
                     </button>
 
@@ -91,7 +91,9 @@
         <div class="form-group">
             <label for="">Select An Employee for Template Assignment<span class="text-danger">*</span></label>
             <select id="member" name="member" class="form-control" [attr.disabled]="changeMode === 'Update'"
+                (change)="onEmployeeChange($event)"
                 formControlName="user" class="form-select form-select-sm" aria-label="form-select-sm example">
+                <option value="" disabled selected>Select Employee -- </option>
                 <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
                     {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
                 </option>
@@ -99,12 +101,16 @@
             <div *ngIf="shiftForm.get('user').invalid && shiftForm.get('user').touched" class="text-danger error">
                 Please Select an Employee!
             </div>
+            <div class="text-danger" *ngIf="userHasTemplateError">
+                The selected Employee already has an assigned Shift Template!
+            </div>
         </div>
 
         <div class="form-group my-2">
             <label for="">Select Template<span class="text-danger">*</span></label>
             <select id="attendanceTemplate" class="form-control" formControlName="template" name="attendanceTemp"
                 class="form-select form-select-sm" aria-label=".form-select-sm example">
+                <option value="" disabled selected>Select Template -- </option>
                 <option *ngFor="let template of shift" [value]="template?._id">
                     {{template?.name}}
                 </option>
@@ -128,7 +134,7 @@
 
         <div class="d-flex justify-content-between mt-2">
             <button type="reset" mat-raised-button>Cancel</button>
-            <button type="submit" mat-raised-button class="addBtn">{{isEdit == true ? 'Update': 'Add'}}</button>
+            <button type="submit" mat-raised-button class="addBtn" [disabled]="userHasTemplateError">{{isEdit == true ? 'Update': 'Add'}}</button>
         </div>
     </form>
 
