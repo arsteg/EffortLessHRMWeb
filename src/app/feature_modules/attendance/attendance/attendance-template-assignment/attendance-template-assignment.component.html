@@ -28,29 +28,29 @@
                 <thead>
                     <tr>
                         <th class="ps-2" [appSort]="attendanceTemplateAssignment" data-name="employee"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Employee Name
-                        <i
-                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                        <th [appSort]="attendanceTemplateAssignment" data-name="attandanceTemplate"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Assigned Attendance Template
-                        <i
-                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                        <th [appSort]="attendanceTemplateAssignment" data-name="primaryApprover"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Primary Supervisor
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Employee Name
                             <i
-                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                        </th>
+                        <th [appSort]="attendanceTemplateAssignment" data-name="attandanceTemplate"
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Assigned Attendance Template
+                            <i
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                        </th>
+                        <th [appSort]="attendanceTemplateAssignment" data-name="primaryApprover"
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Primary Supervisor
+                            <i
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                         </th>
                         <th [appSort]="attendanceTemplateAssignment" data-name="secondaryApprover"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Secondary Supervisor
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Secondary Supervisor
                             <i
-                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                         </th>
                         <th [appSort]="attendanceTemplateAssignment" data-name="effectiveFrom"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Effective Date
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Effective Date
                             <i
-                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                         </th>
                         <th scope="col" class="text-center">Actions</th>
                     </tr>
@@ -98,8 +98,10 @@
 
         <div class="form-group">
             <label for="">Select An Employee for Template Assignment <span class="text-danger">*</span></label>
-            <select id="member" name="member" class="form-control" [attr.disabled]="changeMode === 'Update'"
-                formControlName="employee" class="form-select form-select-sm" aria-label="form-select-sm example">
+            <select id="member" name="member" class="form-control" (change)="onEmployeeChange($event)"
+                [attr.disabled]="changeMode === 'Update'" formControlName="employee" class="form-select form-select-sm"
+                aria-label="form-select-sm example">
+                <option value="" disabled selected>Select Employee -- </option>
                 <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
                     {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
                 </option>
@@ -108,6 +110,10 @@
                 *ngIf="attendanceTemplateAssignmentForm.get('employee').hasError('required') && attendanceTemplateAssignmentForm.get('employee').touched">
                 Employee is required!
             </div>
+            <div class="text-danger" *ngIf="userHasTemplateError">
+                The selected employee already has an assigned attendance template!
+            </div>
+
         </div>
 
         <div class="form-group my-2">
@@ -115,6 +121,7 @@
             <select id="attendanceTemplate" class="form-control" [attr.disabled]="isEdit === true"
                 formControlName="attandanceTemplate" name="attendanceTemp" class="form-select form-select-sm"
                 aria-label=".form-select-sm example" (change)="onTemplateSelectionChange($event)">
+                <option value="" disabled selected>Select Template -- </option>
                 <option *ngFor="let template of templates" [value]="template?._id">
                     {{template?.label}}
                 </option>
@@ -142,6 +149,8 @@
             <label for="">Choose Primary Approver <span class="text-danger">*</span></label>
             <select id="member" name="primary" class="form-control" formControlName="primaryApprover"
                 class="form-select form-select-sm" aria-label=".form-select-sm example">
+
+                <option value="" disabled selected>Select Primary Approver -- </option>
                 <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
                     {{assignee?.firstName | titlecase}} {{assignee?.lastName | titlecase}}
                 </option>
@@ -156,6 +165,7 @@
             <label for="">Choose Secondary Approver <span class="text-danger">*</span></label>
             <select id="member" name="secondary" class="form-control" formControlName="secondaryApprover"
                 class="form-select form-select-sm" aria-label="form-select-sm example">
+                <option value="" disabled selected>Select Secondary Approver -- </option>
                 <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
                     {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
                 </option>
@@ -167,7 +177,8 @@
         </div>
         <div class="d-flex border-top mt-2 py-2 justify-content-between">
             <button mat-raised-button type="reset">Cancel</button>
-            <button mat-raised-button type="submit" class="addBtn">Add</button>
+            <button mat-raised-button type="submit" class="addBtn"
+                [disabled]="userHasTemplateError && !attendanceTemplateAssignmentForm.valid">Add</button>
         </div>
     </form>
 </ng-template>

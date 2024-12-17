@@ -33,6 +33,7 @@ export class AttendanceTemplateAssignmentComponent {
   recordsPerPage: number = 10;
   currentPage: number = 1;
   public sortOrder: string = '';
+  userHasTemplateError: boolean = false;
 
   constructor(private modalService: NgbModal,
     private exportService: ExportService,
@@ -60,8 +61,14 @@ export class AttendanceTemplateAssignmentComponent {
       this.allAssignee = result && result.data && result.data.data;
     });
     this.getAllTemplates();
-    // this.getAttendanceAssignments();
     this.loadRecords();
+  }
+
+  onEmployeeChange(event: any) {
+    const selectedEmployeeId = event.target.value;
+    this.userHasTemplateError = this.attendanceTemplateAssignment.some(
+      (assignment: any) => assignment.employee === selectedEmployeeId
+    );
   }
 
   onPageChange(page: number) {
@@ -245,9 +252,20 @@ export class AttendanceTemplateAssignmentComponent {
     })
   }
 
-
-
   onCreate() {
+    const selectedEmployeeId = this.attendanceTemplateAssignmentForm.get('employee')?.value;
+
+    // Check if the employee already has a template assigned
+    const isAlreadyAssigned = this.attendanceTemplateAssignment.some(
+      (assignment: any) => assignment.employeeId === selectedEmployeeId
+    );
+
+    if (isAlreadyAssigned) {
+      this.userHasTemplateError = true; // Show error
+      return; // Stop form submission
+    }
+
+    this.userHasTemplateError = false;
     if (this.attendanceTemplateAssignmentForm.valid) {
       this.attendanceService.getAttendanceTemplateById(this.selectedTemp).subscribe((res: any) => {
         this.templateById = res.data;
@@ -269,7 +287,13 @@ export class AttendanceTemplateAssignmentComponent {
         this.attendanceService.addAttendanceAssignment(payload).subscribe((res: any) => {
           this.loadRecords();
           this.toast.success('Attendance Template Assigned', 'Successfully');
-          this.attendanceTemplateAssignmentForm.reset();
+          this.attendanceTemplateAssignmentForm.reset({
+            employee: '',
+            attandanceTemplate: '',
+            effectiveFrom: new Date(),
+            primaryApprover: '',
+            secondaryApprover: ''
+          });
         });
       });
     }
@@ -289,14 +313,16 @@ export class AttendanceTemplateAssignmentComponent {
 
   onUpdate() {
     console.log(this.selectedTemplate);
-   if(this.updateTemplateAssignForm.valid){ let payload = {
-      primaryApprovar: this.updateTemplateAssignForm.value.primaryApprovar,
-      secondaryApprovar: this.updateTemplateAssignForm.value.secondaryApprovar
+    if (this.updateTemplateAssignForm.valid) {
+      let payload = {
+        primaryApprovar: this.updateTemplateAssignForm.value.primaryApprovar,
+        secondaryApprovar: this.updateTemplateAssignForm.value.secondaryApprovar
+      }
+      console.log(payload);
+      this.attendanceService.updateAttendanceAssignment(this.selectedTemplate._id, payload).subscribe((res: any) => {
+        this.loadRecords();
+      })
     }
-    console.log(payload);
-    this.attendanceService.updateAttendanceAssignment(this.selectedTemplate._id, payload).subscribe((res: any) => {
-      this.loadRecords();
-    })}
     else {
       this.markFormGroupTouched(this.updateTemplateAssignForm);
     }
