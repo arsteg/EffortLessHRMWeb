@@ -6,10 +6,10 @@
                 <div class="d-flex align-items-center">
                     <span class="bi bi-search searchIcon"></span>
 
-                    <input class="form-control search" type="text" placeholder="Search..."  [(ngModel)]="searchText" name="searchText"
-                        aria-label="default input example">
+                    <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
+                        name="searchText" aria-label="default input example">
 
-                    <button mat-raised-button (click)="open(addModal); changeMode == 'Add'; isEdit= false;"
+                    <button mat-raised-button (click)="changeMode = 'Add'; isEdit= false; open(addModal); "
                         class="addBtn rounded-pill mx-3">Add
                         Template</button>
 
@@ -18,39 +18,39 @@
                         Download</button>
 
                 </div>
-            
-            <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
-            [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
-            (recordsPerPageChange)="onRecordsPerPageChange($event)">
-            </app-pagination>
-        </div>
+
+                <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
+                    [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
+                    (recordsPerPageChange)="onRecordsPerPageChange($event)">
+                </app-pagination>
+            </div>
             <table class="px-4">
                 <thead>
                     <tr>
                         <th class="ps-2" [appSort]="onDutyTemplate" data-name="name"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Template Name
-                        <i
-                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Template Name
+                            <i
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                        </th>
                         <th [appSort]="onDutyTemplate" data-name="_id"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Number of Employees Covered
-                        <i
-                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Number of Employees Covered
+                            <i
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                        </th>
                         <th scope="col" class="text-center">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr
-                        *ngFor="let template of onDutyTemplate| search: searchText">
+                    <tr *ngFor="let template of onDutyTemplate| search: searchText">
                         <td>{{template?.name}}</td>
                         <td>{{ templateAssignmentCount[template._id] || 0 }}</td>
                         <td class="text-center">
-                            <button class="actions" mat-mini-fab  matTooltip="Edit" matTooltipPosition="before" (click)="changeMode=='Update';
+                            <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before" (click)="changeMode=='Update';
                                 open(addModal);
                                 isEdit= true;
-                                selectedTemplateId=template._id;
-                                setFormValues(template)" aria-label="Example icon button with a menu icon">
+                                changeMode = 'Update';
+                                selectedTemplate=template;
+                                setFormValues()" aria-label="Example icon button with a menu icon">
                                 <i class="bi bi-pencil-fill"></i>
                             </button>
 
@@ -63,7 +63,7 @@
                     </tr>
                 </tbody>
             </table>
-            </div>
+        </div>
     </div>
 </div>
 
@@ -81,12 +81,17 @@
     <form action="" [formGroup]="onDutyTempForm" (ngSubmit)="onSubmission()">
 
         <div class="form-group">
-            <label for="">Template Name</label>
+            <label for="">Template Name <span class="text-danger">*</span></label>
             <input type="text" formControlName="name" class="form-control">
+            <div *ngIf="onDutyTempForm.get('name').touched && onDutyTempForm.get('name').hasError('required')"
+                class="text-danger">
+                Template Name is required.
+            </div>
         </div>
 
         <div class="form-group my-2">
-            <label for="">Is comment mandatory for submission of an On duty request?</label>
+            <label for="">Is comment mandatory for submission of an On duty request? <span
+                    class="text-danger">*</span></label>
             <div class="d-flex">
                 <div class="form-check">
                     <input class="form-check-input" type="radio" formControlName="isCommentMandatory"
@@ -95,8 +100,6 @@
                         Yes
                     </label>
                 </div>
-
-
                 <div class="form-check ms-3">
                     <input class="form-check-input" type="radio" formControlName="isCommentMandatory"
                         id="isCommentMandatory-No" required [value]="false">
@@ -105,10 +108,16 @@
                     </label>
                 </div>
             </div>
+            <div *ngIf="onDutyTempForm.get('isCommentMandatory').touched && onDutyTempForm.get('isCommentMandatory').hasError('required')"
+                class="text-danger">
+                Please select any one Option!
+            </div>
+
         </div>
 
         <div class="form-group my-2">
-            <label for="">Can Employee submit On duty request for multiple days?</label>
+            <label for="">Can Employee submit On duty request for multiple days? <span
+                    class="text-danger">*</span></label>
             <div class="d-flex">
                 <div class="form-check">
                     <input class="form-check-input" type="radio" formControlName="canSubmitForMultipleDays"
@@ -117,8 +126,6 @@
                         Yes
                     </label>
                 </div>
-
-
                 <div class="form-check ms-3">
                     <input class="form-check-input" type="radio" formControlName="canSubmitForMultipleDays"
                         id="canSubmitForMultipleDays-No" required [value]="false">
@@ -127,15 +134,14 @@
                     </label>
                 </div>
             </div>
+            <div *ngIf="onDutyTempForm.get('canSubmitForMultipleDays').touched && onDutyTempForm.get('canSubmitForMultipleDays').hasError('required')"
+                class="text-danger">
+                Please select any one Option!
+            </div>
         </div>
 
         <div class="form-group my-2">
-            <label for="">Map template to Locations,Departments,Bands & Designations</label>
-            <select name="" id="" formControlName=""></select>
-        </div>
-
-        <div class="form-group my-2">
-            <label for="">Level of Approvals?</label>
+            <label for="">Level of Approvals? <span class="text-danger">*</span></label>
             <div class="d-flex">
                 <div class="form-check">
                     <input class="form-check-input" type="radio" formControlName="ApprovalLevel" id="ApprovalLevel-Yes"
@@ -144,8 +150,6 @@
                         Level 1
                     </label>
                 </div>
-
-
                 <div class="form-check ms-3">
                     <input class="form-check-input" type="radio" formControlName="ApprovalLevel" id="ApprovalLevel-No"
                         required value="2">
@@ -154,9 +158,14 @@
                     </label>
                 </div>
             </div>
+            <div *ngIf="onDutyTempForm.get('ApprovalLevel').touched && onDutyTempForm.get('ApprovalLevel').hasError('required')"
+                class="text-danger">
+                Selection of Approval level is Required!
+            </div>
         </div>
 
-        <div *ngIf="onDutyTempForm.get('ApprovalLevel').value == '1' || onDutyTempForm.get('ApprovalLevel').value == '2'">
+        <div
+            *ngIf="onDutyTempForm.get('ApprovalLevel').value == '1' || onDutyTempForm.get('ApprovalLevel').value == '2'">
             <div class="form-group my-2">
                 <label for="">Are first level approver comments mandatory for approval?</label>
                 <div class="d-flex">
@@ -268,7 +277,7 @@
         </div>
 
         <div class="form-group my-2">
-            <label for="">How do you want to select approvers?</label>
+            <label for="">How do you want to select approvers? <span class="text-danger">*</span></label>
             <div class="d-flex">
                 <div class="form-check">
                     <input class="form-check-input" formControlName="ApprovarType" type="radio" id="ApprovarType-Yes"
@@ -285,6 +294,10 @@
                         Employee Wise
                     </label>
                 </div>
+            </div>
+            <div *ngIf="onDutyTempForm.get('ApprovarType').touched && onDutyTempForm.get('ApprovarType').hasError('required')"
+                class="text-danger">
+                Selection of Approver Type is Required!
             </div>
         </div>
 
@@ -314,7 +327,7 @@
 
 
         <div class="d-flex justify-content-between mt-2">
-            <button type="reset" mat-raised-button>Cancel</button>
+            <button type="button" (click)="setFormValues()" mat-raised-button>Cancel</button>
             <button type="submit" mat-raised-button class="addBtn">{{isEdit == true ? 'Update': 'Add'}}</button>
         </div>
     </form>

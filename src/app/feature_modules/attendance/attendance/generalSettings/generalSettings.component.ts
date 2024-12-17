@@ -183,15 +183,19 @@ export class GeneralSettingsComponent implements OnInit {
   }
 
   editReason() {
-    const formattedUsers = this.selectedReason.userRegularizationReasons.map((user: any) => (user.user));
-    this.regularizationForm.patchValue({
-      label: this.selectedReason.label,
-      isFrequecyRestriction: this.selectedReason.isFrequecyRestriction,
-      limit: this.selectedReason.limit,
-      frequency: this.selectedReason.frequency,
-      applicableEmployee: this.selectedReason.applicableEmployee,
-      users: formattedUsers
-    });
+    if (this.isEdit) {
+      const formattedUsers = this.selectedReason?.userRegularizationReasons.map((user: any) => (user.user));
+
+      this.regularizationForm.patchValue({
+        label: this.selectedReason.label,
+        isFrequecyRestriction: this.selectedReason.isFrequecyRestriction,
+        limit: this.selectedReason.limit,
+        frequency: this.selectedReason.frequency,
+        applicableEmployee: this.selectedReason.applicableEmployee,
+        users: formattedUsers
+      });
+    }
+    if (!this.isEdit) { this.regularizationForm.reset(); }
   }
 
   updateRegularization() {
@@ -280,13 +284,17 @@ export class GeneralSettingsComponent implements OnInit {
   }
 
   editDutyReason() {
-    console.log(this.selectedDutyReason)
-    const formattedUsers = this.selectedDutyReason.userOnDutyReason.map((user: any) => (user.user));
-    this.dutyReasonForm.patchValue({
-      label: this.selectedDutyReason.label,
-      applicableEmployee: this.selectedDutyReason.applicableEmployee,
-      users: formattedUsers
-    });
+    if (this.isEdit) {
+      const formattedUsers = this.selectedDutyReason.userOnDutyReason.map((user: any) => (user.user));
+      this.dutyReasonForm.patchValue({
+        label: this.selectedDutyReason.label,
+        applicableEmployee: this.selectedDutyReason.applicableEmployee,
+        users: formattedUsers
+      });
+    }
+    if (!this.isEdit) {
+      this.dutyReasonForm.reset();
+    }
   }
   updateDutyReason() {
     let id = this.selectedDutyReason._id;

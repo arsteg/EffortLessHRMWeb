@@ -78,10 +78,7 @@ export class AttendanceRegularizationComponent {
   }
 
   ngOnInit() {
-    if (this.isEdit) {
-      this.getRegularizationByTemplateId();
-      this.getCurrentLocation();
-    }
+    this.setFormValues();
   }
 
   closeModal() {
@@ -130,13 +127,13 @@ export class AttendanceRegularizationComponent {
 
   open(content: any) {
 
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
     });
   }
-  
+
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
@@ -205,11 +202,34 @@ export class AttendanceRegularizationComponent {
         isFacialFingerprintRecognitionFromMobile: data.isFacialFingerprintRecognitionFromMobile,
         attendanceTemplate: data.attendanceTemplate
       });
-
     });
   }
 
-
+  setFormValues() {
+    if (this.isEdit) {
+      this.getRegularizationByTemplateId();
+      this.getCurrentLocation();
+    }
+    if (!this.isEdit) {
+      this.regularisationForm.patchValue({
+        canEmpRegularizeOwnAttendance: false,
+        canSupervisorsRegularizeSubordinatesAttendance: false,
+        canAdminEditRegularizeAttendance: false,
+        isIPrestrictedEmployeeCheckInCheckOut: false,
+        IPDetails: this.fb.array([]),
+        shouldWeeklyEmailNotificationToBeSent: '',
+        whoReceiveWeeklyEmailNotification: this.fb.array([]),
+        isRestrictLocationForCheckInCheckOutUsingMobile: false,
+        restrictLocationDetails: [],
+        howAssignLocationsForEachEmployee: '',
+        enableLocationCaptureFromMobile: false,
+        geoLocationAPIProvider: '',
+        googleAPIKey: '',
+        isFacialFingerprintRecognitionFromMobile: false,
+        attendanceTemplate: ''
+      })
+    }
+  }
 
   onSubmission() {
     const templateId = this.attendanceService.selectedTemplate.getValue()._id;
@@ -267,7 +287,6 @@ export class AttendanceRegularizationComponent {
     });
   }
 
-
   getCurrentLocation() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -316,7 +335,6 @@ export class AttendanceRegularizationComponent {
     console.error('Error getting location:', error.message);
   }
 
-  // Call geolocation API to get user's location
   getUserLocation() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(this.geolocationSuccess.bind(this), this.geolocationError.bind(this));
@@ -325,7 +343,6 @@ export class AttendanceRegularizationComponent {
     }
   }
 
-  // Function to update map center and marker on user interaction (optional)
   handleMapClick(event: google.maps.MapMouseEvent) {
     const newLat = event.latLng.lat();
     const newLng = event.latLng.lng();

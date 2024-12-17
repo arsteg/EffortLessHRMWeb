@@ -127,13 +127,13 @@ export class OnDutyTemplateAssignmentComponent {
   open(content: any) {
     if (this.isEdit === false) {
       this.onDutyTempAssignForm.get('user').enable();
-      this.onDutyTempAssignForm.patchValue({
+      this.onDutyTempAssignForm.reset({
         user: '',
         onDutyTemplate: '',
-        effectiveFrom: '',
+        effectiveFrom: new Date(),
         primaryApprovar: '',
-        secondaryApprovar: '',
-      })
+        secondaryApprovar: ''
+      });
     }
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
@@ -142,16 +142,28 @@ export class OnDutyTemplateAssignmentComponent {
     });
   }
 
-  setFormValues(data) {
-    this.onDutyTempAssignForm.patchValue({
-      user: data.user,
-      onDutyTemplate: data.onDutyTemplate,
-      effectiveFrom: data.effectiveFrom,
-      primaryApprovar: data.primaryApprovar,
-      secondaryApprovar: data.secondaryApprovar
-    });
+  setFormValues() {
     if (this.isEdit) {
-      this.onDutyTempAssignForm.get('user').disable();
+      const data = this.selectedTemplate;
+      this.onDutyTempAssignForm.patchValue({
+        user: data.user,
+        onDutyTemplate: data.onDutyTemplate,
+        effectiveFrom: data.effectiveFrom,
+        primaryApprovar: data.primaryApprovar,
+        secondaryApprovar: data.secondaryApprovar
+      });
+      if (this.isEdit) {
+        this.onDutyTempAssignForm.get('user').disable();
+      }
+    }
+    if (!this.isEdit) {
+      this.onDutyTempAssignForm.reset({
+        user: '',
+        onDutyTemplate: '',
+        effectiveFrom: new Date(),
+        primaryApprovar: '',
+        secondaryApprovar: ''
+      });
     }
   }
 
@@ -241,14 +253,13 @@ export class OnDutyTemplateAssignmentComponent {
 
     if (this.onDutyTempAssignForm.valid) {
       if (!this.isEdit) {
-        console.log(payload);
         this.attendanceService.addOnDutyAssignmentTemplate(payload).subscribe((res: any) => {
           this.loadRecords();
           this.toast.success('OnDuty Template Assigned', 'Successfully');
           this.onDutyTempAssignForm.patchValue({
             user: '',
             onDutyTemplate: '',
-            effectiveFrom: '',
+            effectiveFrom: new Date(),
             primaryApprovar: '',
             secondaryApprovar: '',
           })
@@ -261,13 +272,13 @@ export class OnDutyTemplateAssignmentComponent {
           this.loadRecords();
           this.toast.success('OnDuty Template Assignment Updated', 'Successfully');
           this.isEdit = false;
-          this.onDutyTempAssignForm.patchValue({
+          this.onDutyTempAssignForm.reset({
             user: '',
             onDutyTemplate: '',
-            effectiveFrom: '',
+            effectiveFrom: new Date(),
             primaryApprovar: '',
-            secondaryApprovar: '',
-          })
+            secondaryApprovar: ''
+          });
           this.onDutyTempAssignForm.get('primaryApprovar').enable();
           this.onDutyTempAssignForm.get('secondaryApprovar').enable();
           this.onDutyTempAssignForm.get('user').enable();
