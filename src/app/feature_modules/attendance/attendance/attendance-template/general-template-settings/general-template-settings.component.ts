@@ -63,13 +63,12 @@ export class GeneralTemplateSettingsComponent {
 
   ngOnInit() {
     this.getModes();
-
     this.getAllUsers();
     this.getLeaveCatgeories();
     if (this.isEdit) {
       this.attendanceService.selectedTemplate.subscribe(res => {
         if (res._id) {
-          this.setFormValues(res);
+          this.setFormValues();
         }
       })
     }
@@ -96,35 +95,61 @@ export class GeneralTemplateSettingsComponent {
     this.addTemplateForm.get('firstApprovalEmployee').updateValueAndValidity();
     this.addTemplateForm.get('secondApprovalEmployee').updateValueAndValidity();
   }
- 
-  setFormValues(templateData: any) {
-    this.addTemplateForm.patchValue({
-      label: templateData?.label,
-      attendanceMode: templateData?.attendanceMode,
-      missingCheckInCheckoutHandlingMode: templateData?.missingCheckInCheckoutHandlingMode,
-      missingCheckinCheckoutAttendanceProcessMode: templateData?.missingCheckinCheckoutAttendanceProcessMode,
-      minimumHoursRequiredPerWeek: templateData?.minimumHoursRequiredPerWeek,
-      minimumMinutesRequiredPerWeek: templateData?.minimumMinutesRequiredPerWeek,
-      notifyEmployeeMinHours: templateData?.notifyEmployeeMinHours,
-      isShortTimeLeaveDeductible: templateData?.isShortTimeLeaveDeductible,
-      weeklyOfDays: templateData?.weeklyOfDays,
-      weklyofHalfDay: templateData?.weklyofHalfDay,
-      alternateWeekOffRoutine: templateData?.alternateWeekOffRoutine,
-      daysForAlternateWeekOffRoutine: templateData?.daysForAlternateWeekOffRoutine,
-      isNotificationToSupervisors: templateData?.isNotificationToSupervisors,
-      isCommentMandatoryForRegularisation: templateData?.isCommentMandatoryForRegularisation,
-      departmentDesignations: templateData?.departmentDesignations,
-      approversType: templateData?.approversType,
-      approvalLevel: templateData?.approvalLevel,
-      primaryApprover: templateData?.primaryApprover,
-      secondaryApprover: templateData?.secondaryApprover,
-      leveCategoryHierarchyForAbsentHalfDay: templateData?.leveCategoryHierarchyForAbsentHalfDay
-    });
-    this.selectedWeeklyDays = templateData?.weeklyOfDays;
-    this.selectedHalfDays = templateData?.weklyofHalfDay;
-    this.selectedAlternateWeekDays = templateData?.daysForAlternateWeekOffRoutine;
-    this.selectedCategory = templateData?.leveCategoryHierarchyForAbsentHalfDay;
-    this.capturingAttendance = templateData?.attendanceMode;
+
+  setFormValues() {
+    if (this.isEdit) {
+      this.attendanceService.selectedTemplate.subscribe(res => {
+        const templateData = res;
+        this.addTemplateForm.patchValue({
+          label: templateData?.label,
+          attendanceMode: templateData?.attendanceMode,
+          missingCheckInCheckoutHandlingMode: templateData?.missingCheckInCheckoutHandlingMode,
+          missingCheckinCheckoutAttendanceProcessMode: templateData?.missingCheckinCheckoutAttendanceProcessMode,
+          minimumHoursRequiredPerWeek: templateData?.minimumHoursRequiredPerWeek,
+          minimumMinutesRequiredPerWeek: templateData?.minimumMinutesRequiredPerWeek,
+          notifyEmployeeMinHours: templateData?.notifyEmployeeMinHours,
+          isShortTimeLeaveDeductible: templateData?.isShortTimeLeaveDeductible,
+          weeklyOfDays: templateData?.weeklyOfDays,
+          weklyofHalfDay: templateData?.weklyofHalfDay,
+          alternateWeekOffRoutine: templateData?.alternateWeekOffRoutine,
+          daysForAlternateWeekOffRoutine: templateData?.daysForAlternateWeekOffRoutine,
+          isNotificationToSupervisors: templateData?.isNotificationToSupervisors,
+          isCommentMandatoryForRegularisation: templateData?.isCommentMandatoryForRegularisation,
+          departmentDesignations: templateData?.departmentDesignations,
+          approversType: templateData?.approversType,
+          approvalLevel: templateData?.approvalLevel,
+          primaryApprover: templateData?.primaryApprover,
+          secondaryApprover: templateData?.secondaryApprover,
+          leveCategoryHierarchyForAbsentHalfDay: templateData?.leveCategoryHierarchyForAbsentHalfDay
+        });
+        this.selectedWeeklyDays = templateData?.weeklyOfDays;
+        this.selectedHalfDays = templateData?.weklyofHalfDay;
+        this.selectedAlternateWeekDays = templateData?.daysForAlternateWeekOffRoutine;
+        this.selectedCategory = templateData?.leveCategoryHierarchyForAbsentHalfDay;
+        this.capturingAttendance = templateData?.attendanceMode;
+      });
+    }
+    if (!this.isEdit) {
+      this.addTemplateForm.reset({
+        label: '',
+        missingCheckInCheckoutHandlingMode: '',
+        missingCheckinCheckoutAttendanceProcessMode: '',
+        minimumHoursRequiredPerWeek: 40,
+        minimumMinutesRequiredPerWeek: 0,
+        notifyEmployeeMinHours: true,
+        isShortTimeLeaveDeductible: true,
+        weeklyOfDays: null,
+        weklyofHalfDay: null,
+        alternateWeekOffRoutine: 'none',
+        daysForAlternateWeekOffRoutine: null,
+        isNotificationToSupervisors: true,
+        isCommentMandatoryForRegularisation: true,
+        approversType: '',
+        approvalLevel: '',
+        primaryApprover: '',
+        secondaryApprover: '',
+      });
+    }
   }
 
   isWeeklyDays(days) {
