@@ -10,8 +10,9 @@ import { Router } from '@angular/router';
 
 export class AuthenticationService {
   private loggedIn = new BehaviorSubject<boolean>(false);
-  private currentUserSubject: BehaviorSubject<User>;
+  public currentUserSubject: BehaviorSubject<any>;
   public currentUser: Observable<any>;
+  public companySubscription = new BehaviorSubject(null);
   role: any = new BehaviorSubject('');
   private userIdSubject = new BehaviorSubject<string | null>(null);
   userId$ = this.userIdSubject.asObservable();
@@ -65,6 +66,10 @@ export class AuthenticationService {
     if (storedUser) {
       this.currentUserSubject.next(storedUser);
     }
+    const subscription = JSON.parse(localStorage.getItem('subscription'));
+    if(subscription) {
+      this.companySubscription.next(subscription);
+    }
   }
 
   public get currentUserValue(): User {
@@ -95,6 +100,7 @@ export class AuthenticationService {
       .pipe(map(user => {
 
         this.currentUserSubject.next(user);
+        this.companySubscription.next(user.data.companySubscription);
         this.loggedIn.next(true);
         return user;
       }));
@@ -104,6 +110,7 @@ export class AuthenticationService {
     return new Promise<void>((resolve) => {
       localStorage.removeItem('jwtToken');
       localStorage.removeItem('currentUser');
+      localStorage.removeItem('subscription');
       localStorage.removeItem('rememberMe');
       localStorage.removeItem('roleId');
       localStorage.removeItem('loginTime');

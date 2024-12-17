@@ -53,13 +53,14 @@ export class LoginComponent implements OnInit {
         data => {
           this.loading = false;
           this.user.id = data.data.user.id;
+          this.user.firstName = data.data.user.firstName;
+          this.user.lastName = data.data.user.lastName;
           localStorage.setItem('jwtToken', data.token);
           localStorage.setItem('currentUser', JSON.stringify(this.user));
+          localStorage.setItem('subscription', JSON.stringify(data.data.companySubscription));
           localStorage.setItem('rememberMe', JSON.stringify(this.rememberMe));
           localStorage.setItem('roleId', data.data.user?.role?.id);
-
           const desiredUrl = this.route.snapshot.queryParams['redirectUrl'];
-          console.log(desiredUrl)
           if (data.data.user?.role?.id === '639acb77b5e1ffe22eaa4a39') {
             localStorage.setItem('adminView', 'admin');
             this.router.navigateByUrl(this.returnUrl || 'home/dashboard');

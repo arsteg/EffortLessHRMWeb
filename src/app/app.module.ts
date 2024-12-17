@@ -41,6 +41,7 @@ import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { NotificationComponent } from './layouts/home/notification/notification.component';
 import { environment } from '../environments/environment';
 import { UserProfileComponent } from './feature_modules/manage/users/user-profile/user-profile.component';
+import { SubscriptionComponent } from './layouts/subscription/subscription.component';
 
 const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
 
@@ -54,6 +55,7 @@ const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
     ResetPasswordComponent,
     ChangePasswordComponent,
     HomeComponent,
+    SubscriptionComponent,
     ProfileComponent,
     MainComponent,
     PermissionsComponent,

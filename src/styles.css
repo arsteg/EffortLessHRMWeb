@@ -1,5 +1,10 @@
 @import '~quill/dist/quill.snow.css';
 
+:root{
+  --primary: rgba(244, 135, 0, 1);
+  --white: #ffffff;
+}
+
 html .mat-mdc-mini-fab.mat-accent,
 .mat-mdc-mini-fab.mat-accent {
   --mdc-fab-container-color: #e8eaef !important;

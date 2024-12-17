@@ -15,6 +15,13 @@ export class AuthGuard  {
   ): Promise<boolean | UrlTree> {
     return this.authService.isLoggedIn().then((loggedIn) => {
       if (loggedIn) {
+        const subscription = this.authService.companySubscription.getValue();
+        console.log(subscription);  // Check the subscription status
+
+        if(subscription?.status !== 'active') {
+           this.router.navigate(['/subscription']);
+           return true;
+        }
         return true;
       } else {
         return this.router.createUrlTree(['/login'], { queryParams: { returnUrl: state.url } });

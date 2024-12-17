@@ -1,0 +1,22 @@
+<div class="d-flex justify-content-center">
+    @for(plan of plans; track plan){
+        <div class="card" >
+            <div class="card-header">
+                <h2 class="m-0 text-white">{{plan.name}}</h2>
+            </div>
+            <div class="card-body">
+                <h1>{{plan.currentprice | currency: 'INR'}} / month</h1>
+                <ul>
+                    <li>Unlimited tracking</li>
+                    <li>Manage your employees at one place</li>
+                    <li>Access for unlimited users</li>
+                </ul>
+
+                <p><small>Auto-debit {{plan.currentprice | currency: 'INR'}} every month on {{today | date:'dd'}} till canceled.</small></p>
+            </div>
+            <div class="card-footer">
+                <button mat-raised-button class="addBtn" (click)="payNow(plan)" [disabled]="loading">{{loading ? 'Loading' : 'Pay Now'}}</button>
+            </div>
+        </div>
+    }
+</div>
