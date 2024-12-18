@@ -11,6 +11,35 @@
                         (click)="selectTab('fnfattendanceProcess')">FnF Attendance Process</a>
                 </li>
             </ul>
+            <div class="row  align-items-center my-2 px-3">
+
+                <label class="col-md-1">Filters&nbsp;| </label>
+
+                <div class="d-flex align-items-center col-md-2">
+                    <span class="bi bi-search searchIcon"></span>
+
+                    <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
+                        name="searchText" aria-label="default input example">
+                </div>
+
+                <!-- <div class="d-flex"> -->
+                <div class="form-group  d-flex align-items-center  col-md-3">
+                    <label for="">LOP&nbsp;Month&nbsp;</label>
+                    <select id="monthSelect" [(ngModel)]="selectedMonth" (change)="onMonthChange($event)">
+                        <option *ngFor="let month of months" [value]="month.value">{{ month.name }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group d-flex align-items-center  col-md-3">
+                    <label for="year" class="pt-2 pe-3">LOP&nbsp;Year&nbsp;</label>
+                    <select id="year" name="year" class="form-control" [(ngModel)]="selectedYear"
+                        (change)="onYearChange($event)">
+                        <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+                    </select>
+                </div>
+                <!-- </div> -->
+            </div>
             <div class="tab-content pt-0">
                 <div class="tab-pane" [ngClass]="{'active': activeTab === 'attendanceProcess'}" id="attendanceProcess">
                     <form [formGroup]="lopForm" (ngSubmit)="createAttendanceProcessLOP()">
@@ -48,50 +77,23 @@
 
                         <div class="tableContainer pt-2">
 
-                            <div class="row  align-items-center mb-2 px-3">
 
-                                <label class="col-md-1">Filters&nbsp;| </label>
+                            <button mat-raised-button class="addBtn ms-auto col-md-2"
+                                (click)="changeMode = 'Add'; open(addModal)">Create&nbsp;Attendance&nbsp;Process</button>
 
-                                <div class="d-flex align-items-center col-md-2">
-                                    <span class="bi bi-search searchIcon"></span>
-
-                                    <input class="form-control search" type="text" placeholder="Search..."
-                                        [(ngModel)]="searchText" name="searchText" aria-label="default input example">
-                                </div>
-
-                                <!-- <div class="d-flex"> -->
-                                <div class="form-group  d-flex align-items-center  col-md-3">
-                                    <label for="">LOP&nbsp;Month </label>
-                                    <select id="monthSelect" [(ngModel)]="selectedMonth"
-                                        (change)="onMonthChange($event)">
-                                        <option *ngFor="let month of months" [value]="month.value">{{ month.name }}
-                                        </option>
-                                    </select>
-                                </div>
-
-                                <div class="form-group d-flex align-items-center  col-md-3">
-                                    <label for="year" class="pt-2 pe-3">LOP&nbsp;Year </label>
-                                    <select id="year" name="year" class="form-control" [(ngModel)]="selectedYear"
-                                        (change)="onYearChange($event)">
-                                        <option *ngFor="let year of years" [value]="year">{{ year }}</option>
-                                    </select>
-                                </div>
-
-                                <!-- </div> -->
-                                <button mat-raised-button class="addBtn ms-auto col-md-2"
-                                    (click)="changeMode = 'Add'; open(addModal)">Create&nbsp;Attendance&nbsp;Process</button>
-                            </div>
                             <table>
                                 <thead>
                                     <th>Attendance Process Period</th>
+                                    <th>Employee</th>
                                     <th>Run Date</th>
                                     <th>Export to Payroll</th>
                                     <th>Actions</th>
                                 </thead>
                                 <tbody>
-                                    <tr *ngFor="let data of processAttendance | search: searchText">
+                                    <tr *ngFor="let data of processAttendance | search: searchText; let i = index">
                                         <td>{{data?.attendanceProcessPeriodMonth}}-{{data?.attendanceProcessPeriodYear}}
                                         </td>
+                                        <td>{{data?.users}}</td>
                                         <td>{{data?.runDate | date:'mediumDate'}}</td>
                                         <td>
                                             <ng-container *ngIf="data?.exportToPayroll; else showCross">
@@ -119,32 +121,42 @@
                     id="fnfattendanceProcess">
 
                     <div class="mt-2 bg-white tableContainer">
-                        <div class="d-flex">
-                            <div class="form-group ms-auto">
-                                <label for="month">Select FNF Period</label>
-                                <select name="" id="month" >
-                                    <option value="" [disabled] [selected]>Select Period--</option>
-                                    <option value=""></option>
-                                </select>
-                            </div>
-                        </div>
+
+                        <button mat-raised-button class="addBtn" type="button"
+                            (click)="changeMode = 'Add'; open(addFnFModal)">Add
+                            FnF</button>
 
                         <div class="tableContainer">
                             <table>
                                 <thead>
                                     <th>Attendance Process Period</th>
+                                    <th>Employee</th>
                                     <th>Run Date</th>
-                                    <th>Process Details</th>
                                     <th>Export to Full & Final</th>
-                                    <th>Actions</th>
+                                    <th>Full & Final Applicable</th>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
+                                    <tr *ngFor="let data of fnfAttendanceProcess">
+                                        <td>{{data?.attendanceProcessPeriodMonth}}-{{data?.attendanceProcessPeriodYear}}
+                                        </td>
+                                        <td>{{data?.user}}</td>
+                                        <td>{{data?.runDate | date: 'medium'}}</td>
+                                        <td>
+                                            <ng-container *ngIf="data?.exportToPayroll; else showCross">
+                                                <i class="bi bi-check2 text-success"></i>
+                                            </ng-container>
+                                            <ng-template #showCross>
+                                                <i class="bi bi-x-lg text-danger"></i>
+                                            </ng-template>
+                                        </td>
+                                        <td>
+                                            <ng-container *ngIf="data?.isFNF; else showCross">
+                                                <i class="bi bi-check2 text-success"></i>
+                                            </ng-container>
+                                            <ng-template #showCross>
+                                                <i class="bi bi-x-lg text-danger"></i>
+                                            </ng-template>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -166,11 +178,7 @@
                 (click)="modal.close('Escape clicked')"></button>
         </div>
     </div>
-
-
-
     <form [formGroup]="attendanceProcessForm" (ngSubmit)="onSubmission()">
-
         <div class="row">
             <div class="col-md-6 form-group">
                 <label for="year">Attendance Process Period Year <span class="text-danger">*</span></label>
@@ -207,7 +215,8 @@
             <div *ngFor="let user of attendanceProcessForm.get('users')['controls']; let i = index" [formGroupName]="i">
                 <div class="d-flex align-items-center mb-3">
                     <div class="form-group flex-grow-1 me-2">
-                        <label for="member">Select An Employee for Template Assignment <span class="text-danger">*</span></label>
+                        <label for="member">Select An Employee for Template Assignment <span
+                                class="text-danger">*</span></label>
                         <select id="member" name="member" class="form-control" [attr.disabled]="changeMode === 'Update'"
                             formControlName="user" (change)="onUserChange()" aria-label="form-select-sm example">
                             <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
@@ -215,28 +224,30 @@
                             </option>
                         </select>
                     </div>
-        
+
                     <div class="form-group flex-grow-1 mr-2">
                         <label for="userStatus">Status</label>
                         <input type="text" id="userStatus" formControlName="status" class="form-control">
                     </div>
-                    <button type="button" (click)="removeUser (i)" class="btn btn-danger bi bi-x"></button>
+                    <button type="button" (click)="removeUser(i)" class="btn btn-danger bi bi-x"></button>
                 </div>
-        
+
                 <!-- Display LOP validation message for the specific user -->
                 <div *ngIf="userValidationStates[i]?.error === false" class="alert alert-warning mt-3">
-                    LOP is not available for the selected employee in the specified month and year. Kindly create the LOP for the selected employee.
+                    LOP is not available for the selected employee in the specified month and year. Kindly create the
+                    LOP for the selected employee.
                 </div>
-        
+
                 <!-- Display attendance process validation message for the specific user -->
                 <div *ngIf="userValidationStates[i]?.matchingAttendance" class="alert alert-warning mt-3">
                     An attendance process already exists for the selected employee for the specified month and year.
                 </div>
             </div>
-        
-            <button type="button" mat-raised-button (click)="addUser ()" class="addBtn mt-2 bi bi-plus"> Add User</button>
+
+            <button type="button" mat-raised-button (click)="addUser()" class="addBtn mt-2 bi bi-plus"> Add
+                User</button>
         </div>
-          
+
         <div class="row mt-2">
             <div class="col-md-6 form-group">
                 <label for="runDate">Run Date <span class="text-danger">*</span></label>
@@ -259,7 +270,7 @@
             <div class="col-md-6 form-group">
                 <label for="status">Status <span class="text-danger">*</span></label>
                 <input type="text" value="Pending" class="form-control" formControlName="status" />
-                
+
                 <div *ngIf="attendanceProcessForm.get('status')?.touched 
              && attendanceProcessForm.get('status')?.invalid">
                     <small class="text-danger" *ngIf="attendanceProcessForm.get('status')?.errors?.['required']">
@@ -290,7 +301,110 @@
 
         <div class="d-flex justify-content-between mt-2">
             <button type="reset" mat-raised-button>Cancel</button>
-            <button type="submit" mat-raised-button class="addBtn">Submit</button>
+            <button type="submit" mat-raised-button class="addBtn" [disabled]="fnfError">Submit</button>
+        </div>
+    </form>
+</ng-template>
+
+<ng-template #addFnFModal let-modal>
+    <div class="modal-header border-bottom mb-2 pt-0 d-flex justify-content-between">
+        <div>
+            <h1 class="modal-title text-muted mb-0">{{changeMode}} Full & Final Attendance Process
+            </h1>
+        </div>
+        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
+                (click)="modal.close('Escape clicked')"></button>
+        </div>
+    </div>
+
+    <form [formGroup]="fnfAttendanceProcessForm" (ngSubmit)="onSubmissionFnF()">
+        <div class="row">
+            <div class="col-md-6 form-group">
+                <label for="year">Attendance Process Period Year <span class="text-danger">*</span></label>
+                <select id="year" name="year" class="form-control" formControlName="attendanceProcessPeriodYear"
+                    (change)="onMonthOrYearChange()">
+                    <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+                </select>
+                <div *ngIf="fnfAttendanceProcessForm.get('attendanceProcessPeriodYear')?.touched 
+                 && fnfAttendanceProcessForm.get('attendanceProcessPeriodYear')?.invalid">
+                    <small class="text-danger"
+                        *ngIf="fnfAttendanceProcessForm.get('attendanceProcessPeriodYear')?.errors?.['required']">
+                        Year is required.
+                    </small>
+                </div>
+            </div>
+    
+            <div class="col-md-6 form-group">
+                <label for="monthSelect">Attendance Process Period Month <span class="text-danger">*</span></label>
+                <select id="monthSelect" formControlName="attendanceProcessPeriodMonth"
+                    (change)="onMonthOrYearChange()">
+                    <option *ngFor="let month of months" [value]="month.value">{{ month.name }}</option>
+                </select>
+                <div *ngIf="fnfAttendanceProcessForm.get('attendanceProcessPeriodMonth')?.touched 
+                 && fnfAttendanceProcessForm.get('attendanceProcessPeriodMonth')?.invalid">
+                    <small class="text-danger"
+                        *ngIf="fnfAttendanceProcessForm.get('attendanceProcessPeriodMonth')?.errors?.['required']">
+                        Month is required.
+                    </small>
+                </div>
+            </div>
+        </div>
+    
+        <div formArrayName="users">
+            <div *ngFor="let user of fnfUsers.controls; let i = index" [formGroupName]="i">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="form-group flex-grow-1 me-2">
+                        <label for="member">Select An Employee for Template Assignment <span
+                                class="text-danger">*</span></label>
+                        <select id="member" name="member" class="form-control" formControlName="user"
+                            (change)="onFnF_userChange()" aria-label="form-select-sm example">
+                            <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                                {{ assignee?.firstName | titlecase }} {{ assignee?.lastName | titlecase }}
+                            </option>
+                        </select>
+                    </div>
+    
+                    <div class="form-group flex-grow-1 mr-2">
+                        <label for="userStatus">Status</label>
+                        <input type="text" id="userStatus" formControlName="status" class="form-control">
+                    </div>
+                    <button type="button" (click)="removefnfUser(i)" class="btn btn-danger bi bi-x"></button>
+                </div>
+    
+                <!-- Display attendance process validation message for the specific user -->
+                <div *ngIf="userValidationStates[i]?.matchingAttendance" class="alert alert-warning mt-3">
+                    Full & Final Attendance can not be Processed because an attendance process already exists for the
+                    selected employee.
+                </div>
+            </div>
+    
+            <button type="button" mat-raised-button (click)="addfnfUser()" class="addBtn mt-2 bi bi-plus"> Add
+                User</button>
+        </div>
+    
+        <div class="row mt-2">
+            <div class="col-md-6 form-group">
+                <label for="runDate">Run Date <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
+                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="runDate" />
+                <div
+                    *ngIf="fnfAttendanceProcessForm.get('runDate')?.touched && fnfAttendanceProcessForm.get('runDate')?.invalid">
+                    <small class="text-danger" *ngIf="fnfAttendanceProcessForm.get('runDate')?.errors?.['required']">
+                        Run Date is required.
+                    </small>
+                    <small class="text-danger" *ngIf="fnfAttendanceProcessForm.get('runDate')?.errors?.['futureDate']">
+                        Run Date cannot be a future date.
+                    </small>
+                    <small class="text-danger" *ngIf="fnfAttendanceProcessForm.get('runDate')?.errors?.['outOfRange']">
+                        Run Date must be within the selected attendance period.
+                    </small>
+                </div>
+            </div>
+        </div>
+    
+        <div class="d-flex justify-content-between mt-2">
+            <button type="reset" mat-raised-button>Cancel</button>
+            <button type="submit" mat-raised-button class="addBtn" [disabled]="fnfError">Submit</button>
         </div>
     </form>
 </ng-template>
