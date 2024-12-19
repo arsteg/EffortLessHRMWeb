@@ -45,9 +45,9 @@ export class AddCategoryLeaveComponent {
       this.members = res.data.data;
     });
 
-    this.router.navigateByUrl('home/leave', { skipLocationChange: true }).then(() => {
-      this.router.navigate([this.router.url]);
-  });
+    // this.router.navigateByUrl('home/leave', { skipLocationChange: true }).then(() => {
+    //   this.router.navigate([this.router.url]);
+  // });
 
     this.leaveService.selectedTemplate.subscribe((selectedTemplate) => {
       this.firstForm = this._formBuilder.group({
@@ -130,7 +130,6 @@ export class AddCategoryLeaveComponent {
   }
 
   onSubmit() {
-    const templateId = this.leaveService.selectedTemplate.getValue()._id;
     this.firstForm.value.leaveCategories.forEach((category: any) => {
       category.users = category.users.map((user: any) => ({ user }));
     });

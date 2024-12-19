@@ -1,15 +1,15 @@
 <div class="modal-body">
     <div class=" d-flex justify-content-between">
         <div class="">
-            <h1  class="p-3"> Show Short Leave Details</h1>
+            <h3 class="px-3 pt-2 mb-0 text-muted"> Show Short Leave Details</h3>
         </div>
         <div mat-dialog-actions>
-            <button mat-button mat-dialog-close (click)="closeModal()"><mat-icon aria-hidden="false" aria-label="Example close icon"
-                    fontIcon="close"></mat-icon></button>
+            <button mat-button mat-dialog-close (click)="closeModal()"><mat-icon aria-hidden="false"
+                    aria-label="Example close icon" fontIcon="close"></mat-icon></button>
         </div>
     </div>
-    <hr class="mt-0">
-    <div class="row" mat-dialog-content>
+    <hr class="my-0">
+    <div class="row pt-0" mat-dialog-content>
         <div class="tableContainer">
             <table>
 
@@ -39,7 +39,7 @@
                     <td>{{this.leaveService?.leave?.getValue()?.comments}}</td>
                 </tr>
 
-               
+
             </table>
         </div>
     </div>

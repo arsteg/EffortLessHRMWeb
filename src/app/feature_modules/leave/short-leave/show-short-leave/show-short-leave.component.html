@@ -58,7 +58,11 @@
                 <td>{{ leave?.endTime }}</td>
                 <td class="text-center">{{ leave?.durationInMinutes }}</td>
                 <td>{{ leave?.comments }}</td>
-                <td>{{ leave?.status }}</td>
+                <td>
+                    <mat-icon *ngIf="leave?.status === 'Approve'" matTooltip="Approved" matTooltipPosition="below" class="text-success">done_all</mat-icon>
+                    <mat-icon *ngIf="leave?.status === 'Reject'" matTooltip="Rejected" matTooltipPosition="below" class="text-danger">cancel</mat-icon>
+                    <mat-icon *ngIf="leave?.status === 'Pending'" matTooltip="Pending" matTooltipPosition="below" class="text-warning">hourglass_empty</mat-icon>
+                </td>
                 <td>
                     <div ngbDropdown class="dropdown-center d-inline-block">
                         <button class="actions ms-2" mat-mini-fab ngbDropdownToggle
@@ -68,12 +72,12 @@
 
                         <ul ngbDropdownMenu class="dropdown-menu py-0">
                             <li class="d-flex border-bottom action-list" *ngIf="actionOptions.approve"
-                                (click)="openStatusModal(leave, 'Approved')">
+                                (click)="selectedShortLeave= leave; selectedStatus = 'Approve'; open(statusUpdate);">
                                 <i class="fas fa-check-circle dropdown-item w-25"></i><span
                                     class="pt-1 text-muted">Approve</span>
                             </li>
                             <li class="d-flex border-bottom action-list" *ngIf="actionOptions.reject"
-                                (click)="openStatusModal(leave, 'Rejected')">
+                                (click)="selectedShortLeave= leave; selectedStatus = 'Reject';  open(statusUpdate);">
                                 <i class="bi bi-person-dash dropdown-item w-25"></i><span
                                     class="pt-1 text-muted">Reject</span>
                             </li>
@@ -100,9 +104,18 @@
 </ng-template>
 
 <ng-template #statusUpdate let-modal>
-    <app-update-short-leave (shortLeaveRefreshed)="refreshShortLeaveTable()"></app-update-short-leave>
+    <div class="modal-header border-bottom mb-2 pt-0 d-flex justify-content-between">
+        <div>
+            <h1 class="modal-title text-muted mb-0">{{selectedStatus}} Short Leave</h1>
+        </div>
+        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
+                (click)="modal.close('Escape clicked')"></button>
+        </div>
+    </div>
+    <app-update-short-leave [modalInstance]="modal" [selectedStatus]="selectedStatus"
+        (shortLeaveRefreshed)="refreshShortLeaveTable()" [selectedShortLeave]="selectedShortLeave">
+    </app-update-short-leave>
 </ng-template>
-
 
 <ng-template #viewModal let-modal>
     <app-view-short-leave></app-view-short-leave>

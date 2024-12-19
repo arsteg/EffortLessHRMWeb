@@ -22,10 +22,10 @@
             <tr>
             <tr *ngFor="let data of overtime | search: searchText">
                 <td>{{data?.payrollUserDetails}}</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>{{data?.LateComing}}</td>
+                <td>{{data?.EarlyGoing}}</td>
+                <td>{{data?.FinalOvertime}}</td>
+                <td>-not specified-</td>
                 <td>
                     <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before" (click)="changeMode = 'Update';
                             open(modal);" aria-label="Example icon button with a menu icon">
