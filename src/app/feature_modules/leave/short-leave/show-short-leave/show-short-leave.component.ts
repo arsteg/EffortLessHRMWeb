@@ -5,7 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ExportService } from 'src/app/_services/export.service';
 import { LeaveService } from 'src/app/_services/leave.service';
 import { CommonService } from 'src/app/_services/common.Service';
-import { UpdateShortLeaveComponent } from '../update-short-leave/update-short-leave.component';
+// import { UpdateShortLeaveComponent } from '../update-short-leave/update-short-leave.component';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { ViewShortLeaveComponent } from '../view-short-leave/view-short-leave.component';
 import { DatePipe } from '@angular/common';
@@ -28,6 +28,8 @@ export class ShowShortLeaveComponent {
   totalRecords: number = 0
   recordsPerPage: number = 10;
   currentPage: number = 1;
+  selectedShortLeave: any;
+  selectedStatus: string;
 
   constructor(private modalService: NgbModal,
     public leaveService: LeaveService,
@@ -38,6 +40,7 @@ export class ShowShortLeaveComponent {
     private datePipe: DatePipe) { }
 
     ngOnInit() {
+      console.log(this.status)
       this.commonService.populateUsers().subscribe(result => {
         this.allAssignee = result && result.data && result.data.data;
         this.getShortLeaves();
@@ -57,6 +60,9 @@ export class ShowShortLeaveComponent {
           date: this.datePipe.transform(leave.date, 'MMM d, yyyy'),
           startTime: this.datePipe.transform(leave.startTime, 'h:mm a'),
           endTime: this.datePipe.transform(leave.endTime, 'h:mm a'),
+          start: leave.startTime,
+          end: leave.endTime,
+          Date: leave.date
         }));
       });
   }
@@ -77,17 +83,6 @@ export class ShowShortLeaveComponent {
     this.getShortLeaves();
   }
 
-  openStatusModal(report: any, status: string): void {
-    report.status = status;
-    this.leaveService.leave.next(report);
-    const dialogRef = this.dialog.open(UpdateShortLeaveComponent, {
-      width: '50%',
-      data: { report }
-    });
-    dialogRef.afterClosed().subscribe(result => {
-    });
-  }
-
   refreshShortLeaveTable() {
     const requestBody = { "status": this.status, "skip": ((this.currentPage - 1) * this.recordsPerPage).toString(), "next": this.recordsPerPage.toString() };
     this.leaveService.getShortLeave(requestBody).subscribe(
@@ -99,6 +94,8 @@ export class ShowShortLeaveComponent {
           date: this.datePipe.transform(leave.date, 'MMM d, yyyy'),
           startTime: this.datePipe.transform(leave.startTime, 'h:mm a'),
           endTime: this.datePipe.transform(leave.endTime, 'h:mm a'),
+          start: leave.startTime,
+          end: leave.endTime
         }));
       },
       (error) => {

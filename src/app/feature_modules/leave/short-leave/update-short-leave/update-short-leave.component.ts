@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
+import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { LeaveService } from 'src/app/_services/leave.service';
 
 @Component({
@@ -13,9 +14,12 @@ export class UpdateShortLeaveComponent {
   updateLeaveReport: FormGroup;
   leaveUpdateStatus: any;
 
+  @Input() selectedShortLeave: any;
+  @Input() selectedStatus: string;
+  @Input() modalInstance!: NgbModalRef;
+
   constructor(public leaveService: LeaveService,
-    private fb: FormBuilder,
-    private dialogRef: MatDialogRef<UpdateShortLeaveComponent>) {
+    private fb: FormBuilder) {
     this.updateLeaveReport = this.fb.group({
       employee: [''],
       date: [],
@@ -26,32 +30,26 @@ export class UpdateShortLeaveComponent {
       status: [''],
       level1Reason: [''],
       level2Reason: ['']
-
-    })
+    });
   }
 
   updateApprovedReport() {
-    this.leaveUpdateStatus = this.leaveService.leave.getValue();
-    let id = this.leaveService.leave.getValue()._id;
     let payload = {
-      employee: this.leaveUpdateStatus.employee,
-      date: this.leaveUpdateStatus.date,
-      startTime: this.leaveUpdateStatus.startTime,
-      endTime: this.leaveUpdateStatus.endTime,
-      durationInMinutes: this.leaveUpdateStatus.durationInMinutes,
-      comments: this.leaveUpdateStatus.comments,
-      status: this.leaveUpdateStatus.status,
-      level1Reason: this.leaveUpdateStatus.level1Reason,
-      level2Reason: this.leaveUpdateStatus.level2Reason
+      employee: this.selectedShortLeave.employee,
+      date: this.selectedShortLeave.Date,
+      startTime: this.selectedShortLeave.start,
+      endTime: this.selectedShortLeave.end,
+      durationInMinutes: this.selectedShortLeave.durationInMinutes,
+      comments: this.selectedShortLeave.comments,
+      status: this.selectedStatus,
+      level1Reason: this.selectedShortLeave.level1Reason,
+      level2Reason: this.selectedShortLeave.level2Reason
     }
-    this.leaveService.updateShortLeave(id, payload).subscribe((res: any) => {
+    this.leaveService.updateShortLeave(this.selectedShortLeave?._id, payload).subscribe((res: any) => {
       this.shortLeaveRefreshed.emit();
-      this.dialogRef.close();
+      this.modalInstance.close();
     });
     this.shortLeaveRefreshed.emit();
   }
-  closeModal() {
-    this.dialogRef.close();
-  }
-  
+
 }
