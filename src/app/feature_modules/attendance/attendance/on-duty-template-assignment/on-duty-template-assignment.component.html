@@ -66,7 +66,7 @@
                             <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before" (click)="changeMode=='Update';
                                 isEdit= true;
                                 selectedTemplate=template;
-                                setFormValues(template);
+                                setFormValues();
                                 open(addModal);" aria-label="Example icon button with a menu icon">
                                 <i class="bi bi-pencil-fill"></i>
                             </button>
@@ -163,7 +163,7 @@
 
 
         <div class="d-flex justify-content-between mt-2">
-            <button type="button" (click)="setFormValues(selectedTemplate)" mat-raised-button>Cancel</button>
+            <button type="button" (click)="setFormValues()" mat-raised-button>Cancel</button>
             <button type="submit" mat-raised-button class="addBtn">{{isEdit == true ? 'Update': 'Add'}}</button>
         </div>
     </form>

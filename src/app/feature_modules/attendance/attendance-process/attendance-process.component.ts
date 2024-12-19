@@ -16,16 +16,17 @@ export class AttendanceProcessComponent {
   activeTab: string = 'attendanceProcess';
   searchText: string = '';
   closeResult: string = '';
+  changeMode: 'Add' | 'Update' = 'Add';
 
   lopForm: FormGroup;
   attendanceProcessForm: FormGroup;
   fnfAttendanceProcessForm: FormGroup;
 
-  changeMode: 'Add' | 'Update' = 'Add';
   years: number[] = [];
   selectedYear: number;
 
   showRemoveButton = false;
+  fnfError: boolean = false;
 
   processAttendance: any
   lop: any;
@@ -49,6 +50,7 @@ export class AttendanceProcessComponent {
     { name: 'November', value: 11 },
     { name: 'December', value: 12 }
   ];
+  fnfAttendanceProcess: any;
 
   constructor(private attendanceService: AttendanceService,
     private fb: FormBuilder,
@@ -73,49 +75,45 @@ export class AttendanceProcessComponent {
     });
 
     this.fnfAttendanceProcessForm = this.fb.group({
-      attendanceProcessPeriodYear: [''],
-      attendanceProcessPeriodMonth: [''],
-      runDate: [''],
-      exportToPayroll: [''],
+      attendanceProcessPeriodYear: ['', Validators.required],
+      attendanceProcessPeriodMonth: ['', Validators.required],
+      runDate: [''[this.runDateValidator.bind(this)]],
+      exportToPayroll: ['', Validators.required],
       isFNF: [true],
       users: this.fb.array([])
     })
   }
 
   ngOnInit() {
-    this.generateYearList();
     this.commonService.populateUsers().subscribe(result => {
       this.allAssignee = result && result.data && result.data.data;
     });
+    this.generateYearList();
     this.getProcessAttendance();
   }
 
   runDateValidator(control: AbstractControl): ValidationErrors | null {
     const runDate = new Date(control.value);
-
     const year = this.attendanceProcessForm?.value?.attendanceProcessPeriodYear;
     const month = this.attendanceProcessForm?.value?.attendanceProcessPeriodMonth;
-
     if (!control.value) {
       return { required: true };
     }
-
     if (!year || !month) {
       return null;
     }
     const lastDayOfMonth = new Date(year, month, 0);
     const lastFiveDaysStart = new Date(year, month - 1, lastDayOfMonth.getDate() - 4);
     const firstFiveDaysEnd = new Date(year, month, 5);
-
     if (runDate < lastFiveDaysStart || runDate > firstFiveDaysEnd) {
       return { outOfRange: true };
     }
-
     return null;
   }
 
   onMonthChange(event: Event) {
-    this.getProcessAttendance();
+    if (this.activeTab == 'attendanceProcess') { this.getProcessAttendance(); }
+    if (this.activeTab == 'fnfattendanceProcess') { this.getFnfAttendanceProcess(); }
   }
 
   selectTab(tabId: string) {
@@ -141,14 +139,19 @@ export class AttendanceProcessComponent {
 
       this.attendanceProcessForm.get('status').disable();
       this.attendanceProcessForm.get('exportToPayroll').disable();
-
       const usersFormArray = this.attendanceProcessForm.get('users') as FormArray;
       while (usersFormArray.length) {
         usersFormArray.removeAt(0);
       }
+      if (this.activeTab == 'attendanceProcess') { this.userValidationStates = []; }
 
-      this.userValidationStates = [];
+      const fnfUsersFormArray = this.fnfAttendanceProcessForm.get('users') as FormArray;
+
+      while (fnfUsersFormArray.length) {
+        fnfUsersFormArray.removeAt(0);
+      }
     }
+
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
@@ -157,11 +160,11 @@ export class AttendanceProcessComponent {
   }
 
   onYearChange(event: any) {
-    this.selectedYear = event.target.value;
-    this.getProcessAttendance();
+    if (this.activeTab == 'attendanceProcess') { this.getProcessAttendance(); }
+    if (this.activeTab == 'fnfattendanceProcess') { this.getFnfAttendanceProcess(); }
   }
 
-// Attendance process users array
+  // Attendance process users array
   addUser() {
     const userGroup = this.fb.group({
       user: ['', Validators.required],
@@ -178,7 +181,6 @@ export class AttendanceProcessComponent {
     return this.attendanceProcessForm.get('users') as FormArray;
   }
 
-// FnF Attendance process users array
   addfnfUser() {
     const userGroup = this.fb.group({
       user: ['', Validators.required],
@@ -224,7 +226,8 @@ export class AttendanceProcessComponent {
   }
 
   onMonthOrYearChange() {
-    this.validateLOPAndAttendance();
+    if (this.activeTab == 'attendanceProcess') { this.validateLOPAndAttendance(); }
+    if (this.activeTab == 'fnfattendanceProcess') { this.onFnF_userChange(); }
   }
 
   validateLOPAndAttendance() {
@@ -235,31 +238,26 @@ export class AttendanceProcessComponent {
       year: this.attendanceProcessForm.value.attendanceProcessPeriodYear,
     };
 
-    const usersArray = this.attendanceProcessForm.value.users; // Get the array of users from the form
+    const usersArray = this.attendanceProcessForm.value.users
     const selectedUsers = usersArray.map((userObj: any) => userObj.user); // Extract the user field for comparison
-
     this.userValidationStates = selectedUsers.map(() => ({ error: false, matchingAttendance: false }));
-
     this.attendanceService.getProcessAttendanceLOPByMonth(payload).subscribe((lopRes: any) => {
       this.lop = lopRes.data;
-
       selectedUsers.forEach((selectedUser, index) => {
         if (selectedUser === null) {
-          this.userValidationStates[index].error = true; // User not selected
+          this.userValidationStates[index].error = true;
           return;
         }
-
         this.userValidationStates[index].error = this.lop.some((lop: any) => lop.user === selectedUser);
-
         if (this.userValidationStates[index].error) {
           this.attendanceService.getProcessAttendance(payload).subscribe((processRes: any) => {
             this.processAttendance = processRes.data;
-
             this.userValidationStates[index].matchingAttendance = this.processAttendance.some((attendance: any) =>
               attendance.attendanceProcessPeriodMonth === payload.month &&
               attendance.attendanceProcessPeriodYear === payload.year &&
               attendance.users.some((user: any) => user.user === selectedUser)
             );
+            this.fnfError = this.userValidationStates[index].matchingAttendance;
           });
         }
       });
@@ -274,15 +272,18 @@ export class AttendanceProcessComponent {
       year: this.selectedYear
     }
     this.attendanceService.getProcessAttendance(payload).subscribe((res: any) => {
-      this.processAttendance = res.data;
+      this.processAttendance = res.data.map((data) => {
+        return {
+          ...data,
+          users: data.users.map((user) => this.getUser(user?.user).toLocaleUpperCase()),
+        }
+      })
     })
   }
 
   onSubmission() {
-
     this.attendanceProcessForm.get('status')?.enable();
     this.attendanceProcessForm.get('exportToPayroll')?.enable();
-
     this.attendanceProcessForm.patchValue({
       status: 'Pending',
       exportToPayroll: false
@@ -339,6 +340,62 @@ export class AttendanceProcessComponent {
       if (result === 'delete') {
         this.deleteRecord(data);
       }
+    });
+  }
+
+  onSubmissionFnF() {
+    if (this.fnfAttendanceProcessForm.valid) {
+      this.attendanceService.addFnFAttendanceProcess(this.fnfAttendanceProcessForm.value).subscribe((res: any) => {
+        this.toast.success('Full & Final Attendance Processed', 'Successfully!');
+      }, err => {
+        this.toast.error('Full & Final Attendance can not be Processed', 'Error')
+      })
+    }
+    else { this.fnfAttendanceProcessForm.markAllAsTouched(); }
+  }
+
+  getFnfAttendanceProcess() {
+    let payload = {
+      skip: '',
+      next: '',
+      month: this.selectedMonth,
+      year: this.selectedYear,
+      isFNF: true
+    }
+    this.attendanceService.getfnfAttendanceProcess(payload).subscribe((res: any) => {
+      this.fnfAttendanceProcess = res.data.map((data) => {
+        return {
+          ...data,
+          user: data?.users?.length
+        }
+      })
+    })
+  }
+
+  onFnF_userChange() {
+    let payload = {
+      skip: '',
+      next: '',
+      month: this.fnfAttendanceProcessForm.value.attendanceProcessPeriodMonth,
+      year: this.fnfAttendanceProcessForm.value.attendanceProcessPeriodYear,
+    }
+    this.attendanceService.getProcessAttendance(payload).subscribe((processRes: any) => {
+      this.processAttendance = processRes.data;
+      const usersArray = this.fnfAttendanceProcessForm.value.users
+      const selectedUsers = usersArray.map((userObj: any) => userObj.user);
+      this.userValidationStates = selectedUsers.map(() => ({ error: false, matchingAttendance: false }));
+      selectedUsers.forEach((selectedUser, index) => {
+        if (selectedUser === null) {
+          this.userValidationStates[index].error = true;
+          return;
+        }
+        this.userValidationStates[index].matchingAttendance = this.processAttendance.some((attendance: any) =>
+          attendance.attendanceProcessPeriodMonth === payload.month &&
+          attendance.attendanceProcessPeriodYear === payload.year &&
+          attendance.users.some((user: any) => user.user === selectedUser)
+        );
+        this.fnfError = this.userValidationStates[index].matchingAttendance;
+      });
     });
   }
 }

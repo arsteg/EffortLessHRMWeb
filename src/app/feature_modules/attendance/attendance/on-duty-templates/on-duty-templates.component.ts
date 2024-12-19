@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
@@ -19,7 +19,7 @@ export class OnDutyTemplatesComponent {
   isEdit: boolean = false;
   closeResult: string = '';
   changeMode: 'Add' | 'Update' = 'Add';
-  selectedTemplateId: string;
+  selectedTemplate: any;
   onDutyTemplate: any;
   onDutyTempForm: FormGroup;
   users: any[];
@@ -39,16 +39,16 @@ export class OnDutyTemplatesComponent {
     private commonService: CommonService) {
 
     this.onDutyTempForm = this.fb.group({
-      name: [''],
-      isCommentMandatory: [true],
-      canSubmitForMultipleDays: [true],
-      ApprovalLevel: [''],
+      name: ['', Validators.required],
+      isCommentMandatory: [true, Validators.required],
+      canSubmitForMultipleDays: [true, Validators.required],
+      ApprovalLevel: ['', Validators.required],
       FirstApproverCommentsMandatoryforApproval: [true],
       SecondApproverCommentsMandatoryforApproval: [true],
       FirstApproverCommentsMandatoryforRejection: [true],
       SecondApproverCommentsMandatoryforRejection: [true],
       IntitiateDutyRequestBy: [['']],
-      ApprovarType: [''],
+      ApprovarType: ['', Validators.required],
       FirstLevelApprovar: [null],
       SecondLevelApprovar: [null]
     });
@@ -88,10 +88,12 @@ export class OnDutyTemplatesComponent {
       this.users = res.data.data;
     })
   }
+
   getUser(employeeId: string) {
     const matchingUser = this.users?.find(user => user._id === employeeId);
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'N/A';
   }
+
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
@@ -103,6 +105,13 @@ export class OnDutyTemplatesComponent {
   }
 
   open(content: any) {
+    if (this.changeMode == 'Add') {
+      this.onDutyTempForm.reset({
+        isCommentMandatory: true,
+        canSubmitForMultipleDays: true,
+        IntitiateDutyRequestBy: ['']
+      })
+    }
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
@@ -110,25 +119,32 @@ export class OnDutyTemplatesComponent {
     });
   }
 
-  setFormValues(data) {
-    this.onDutyTempForm.patchValue({
-      name: data.name,
-      isCommentMandatory: data.isCommentMandatory,
-      canSubmitForMultipleDays: data.canSubmitForMultipleDays,
-      ApprovalLevel: data.ApprovalLevel,
-      FirstApproverCommentsMandatoryforApproval: data.FirstApproverCommentsMandatoryforApproval,
-      SecondApproverCommentsMandatoryforApproval: data.SecondApproverCommentsMandatoryforApproval,
-      FirstApproverCommentsMandatoryforRejection: data.FirstApproverCommentsMandatoryforRejection,
-      SecondApproverCommentsMandatoryforRejection: data.SecondApproverCommentsMandatoryforRejection,
-      IntitiateDutyRequestBy: data.IntitiateDutyRequestBy,
-      ApprovarType: data.ApprovarType,
-      FirstLevelApprovar: data.FirstLevelApprovar,
-      SecondLevelApprovar: data.SecondLevelApprovar
-    });
-    console.log(this.onDutyTempForm.value);
+  setFormValues() {
+    const data = this.selectedTemplate;
+    if (this.changeMode == 'Update') {
+      this.onDutyTempForm.patchValue({
+        name: data.name,
+        isCommentMandatory: data.isCommentMandatory,
+        canSubmitForMultipleDays: data.canSubmitForMultipleDays,
+        ApprovalLevel: data.ApprovalLevel,
+        FirstApproverCommentsMandatoryforApproval: data.FirstApproverCommentsMandatoryforApproval,
+        SecondApproverCommentsMandatoryforApproval: data.SecondApproverCommentsMandatoryforApproval,
+        FirstApproverCommentsMandatoryforRejection: data.FirstApproverCommentsMandatoryforRejection,
+        SecondApproverCommentsMandatoryforRejection: data.SecondApproverCommentsMandatoryforRejection,
+        IntitiateDutyRequestBy: data.IntitiateDutyRequestBy,
+        ApprovarType: data.ApprovarType,
+        FirstLevelApprovar: data.FirstLevelApprovar,
+        SecondLevelApprovar: data.SecondLevelApprovar
+      });
+    }
+    if (this.changeMode == 'Add') {
+      this.onDutyTempForm.reset({
+        isCommentMandatory: true,
+        canSubmitForMultipleDays: true,
+        IntitiateDutyRequestBy: ['']
+      })
+    }
   }
-
-
 
   getOnDutyTempAssignment() {
     this.attendanceService.getOnDutyAssignmentTemplate('', '').subscribe((res: any) => {
@@ -147,23 +163,33 @@ export class OnDutyTemplatesComponent {
   }
 
   onSubmission() {
-    if (!this.isEdit) {
-      this.attendanceService.addOnDutyTemplate(this.onDutyTempForm.value).subscribe((res: any) => {
-        this.loadRecords();
-        this.toast.success('Successfully Created!!!', 'OnDuty Template');
+    if (this.onDutyTempForm.valid) {
+      if (!this.isEdit) {
+        this.attendanceService.addOnDutyTemplate(this.onDutyTempForm.value).subscribe((res: any) => {
+          this.loadRecords();
+          this.toast.success('Successfully Created!!!', 'OnDuty Template');
 
-      }, (err) => {
-        this.toast.error('This OnDuty Template Can not be Created', 'Error')
-      })
+        }, (err) => {
+          this.toast.error('This OnDuty Template Can not be Created', 'Error')
+        })
+      }
+      else {
+        this.attendanceService.updateOnDutyTemplate(this.selectedTemplate?._id, this.onDutyTempForm.value).subscribe((res: any) => {
+          this.loadRecords();
+          this.changeMode = 'Add';
+          this.isEdit = false;
+          this.onDutyTempForm.reset({
+            isCommentMandatory: true,
+            canSubmitForMultipleDays: true,
+            IntitiateDutyRequestBy: ['']
+          })
+          this.toast.success('Successfully Updated!!!', 'OnDuty Template');
+        }, (err) => {
+          this.toast.error('This OnDuty Template Can not be Updated', 'Error')
+        })
+      }
     }
-    else {
-      this.attendanceService.updateOnDutyTemplate(this.selectedTemplateId, this.onDutyTempForm.value).subscribe((res: any) => {
-        this.loadRecords();
-        this.toast.success('Successfully Updated!!!', 'OnDuty Template');
-      }, (err) => {
-        this.toast.error('This OnDuty Template Can not be Updated', 'Error')
-      })
-    }
+    else { this.onDutyTempForm.markAllAsTouched() }
   }
 
   deleteTemplate(id: string) {

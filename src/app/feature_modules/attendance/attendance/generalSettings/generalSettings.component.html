@@ -72,8 +72,7 @@
 
           <div class="mt-2 bg-white tableContainer">
             <div class="d-flex align-items-center justify-content-between">
-              <button class="btn addBtn" (click)="open(addModal); clearForm(); isEdit= false">Add&nbsp;Reason</button>
-
+              <button class="btn addBtn" (click)="isEdit= false; clearForm();  open(addModal);">Add&nbsp;Reason</button>
               <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
                 [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
                 (recordsPerPageChange)="onRecordsPerPageChange($event)">
@@ -119,7 +118,7 @@
           <div class="mt-2 bg-white tableContainer">
             <div class="d-flex align-items-center justify-content-between">
               <button class="btn addBtn"
-                (click)="open(addDutyModal); clearForm() ;isEdit= false">On&nbsp;Duty&nbsp;Reason</button>
+                (click)="clearForm(); isEdit= false; open(addDutyModal);">Add&nbsp;On&nbsp;Duty&nbsp;Reason</button>
               <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
                 [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
                 (recordsPerPageChange)="onRecordsPerPageChange($event)">
@@ -158,7 +157,6 @@
                 </tr>
               </tbody>
             </table>
-
           </div>
         </div>
       </div>
@@ -254,7 +252,7 @@
     </div>
 
     <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
-      <button mat-raised-button type="button">Cancel</button>
+      <button mat-raised-button type="button" (click)="editReason()">Cancel</button>
       <button mat-raised-button class="addBtn" type="submit">{{isEdit ? 'Update' : 'Add'}}</button>
     </div>
   </form>
@@ -318,11 +316,9 @@
       </div>
     </div>
     <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
-      <button mat-raised-button type="button">Cancel</button>
+      <button mat-raised-button type="button" (click)="editDutyReason()">Cancel</button>
       <button mat-raised-button class="addBtn" type="submit">{{isEdit?
         'Update': 'Add'}}</button>
-
     </div>
   </form>
-
 </ng-template>
