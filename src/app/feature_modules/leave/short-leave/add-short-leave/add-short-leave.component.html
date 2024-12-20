@@ -14,11 +14,11 @@
                         {{member?.name | titlecase}}
                     </mat-option>
                 </mat-select>
+                <mat-error *ngIf="shortLeave.get('employee').invalid && shortLeave.get('employee').touched">
+                    Employee selection is required
+                </mat-error>
             </mat-form-field>
-            <div *ngIf="shortLeave.get('employee').invalid && shortLeave.get('employee').touched"
-                class="text-danger error">
-                Employee selection is required
-            </div>
+
         </div>
 
         <!-- only team members -->
@@ -94,8 +94,7 @@
 
         <div class="d-flex justify-content-between">
             <button mat-raised-button type="reset">Cancel</button>
-            <button mat-button class="addBtn" type="submit"
-                >Submit</button>
+            <button mat-button class="addBtn" type="submit">Submit</button>
         </div>
     </form>
 </div>

@@ -233,7 +233,8 @@ export class AddShortLeaveComponent {
 
   onSubmission() {
     if (this.shortLeave.invalid) {
-      this.toast.error('Please enter valid data');
+      // this.toast.error('Please enter valid data');
+      this.shortLeave.markAllAsTouched();
     }
 
     const startTime = new Date(this.shortLeave.get('startTime').value);
@@ -270,15 +271,15 @@ export class AddShortLeaveComponent {
       level1Reason: this.shortLeave.value.level1Reason,
       level2Reason: this.shortLeave.value.level2Reason
     }
-    this.toast.success('Short leave application submitted successfully');
     if (this.url == 'my-short-leave') {
       payload.employee = this.currentUser.id
     }
     if (this.url == 'team-short-leave') {
       payload.employee = this.userId
     }
-    if (this.shortLeave.valid) {
+    if (payload) {
       this.leaveService.addShortLeave(payload).subscribe((res: any) => {
+        this.toast.success('Short Leave Added', 'Successfully')
         this.shortLeaveRefreshed.emit();
         this.shortLeave.reset();
       })
