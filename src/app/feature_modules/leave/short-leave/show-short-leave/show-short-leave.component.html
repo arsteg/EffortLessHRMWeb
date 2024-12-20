@@ -26,7 +26,7 @@
 
     <table class="mt-2">
         <thead>
-            <th [appSort]="shortLeave" data-name="employee"
+            <th  *ngIf="portalView == 'admin'|| portalView== 'user' && extractedUrl == 'team-short-leave'" [appSort]="shortLeave" data-name="employee"
                 (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Employee Name
                 <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
             </th>
@@ -52,16 +52,20 @@
         </thead>
         <tbody>
             <tr *ngFor="let leave of shortLeave  | search: searchText">
-                <td>{{ leave?.employeeName | titlecase }}</td>
+                <td *ngIf="portalView == 'admin'|| portalView== 'user' && extractedUrl == 'team-short-leave'">{{
+                    leave?.employeeName | titlecase }}</td>
                 <td>{{ leave?.date }}</td>
                 <td>{{ leave?.startTime }}</td>
                 <td>{{ leave?.endTime }}</td>
                 <td class="text-center">{{ leave?.durationInMinutes }}</td>
                 <td>{{ leave?.comments }}</td>
                 <td>
-                    <mat-icon *ngIf="leave?.status === 'Approve'" matTooltip="Approved" matTooltipPosition="below" class="text-success">done_all</mat-icon>
-                    <mat-icon *ngIf="leave?.status === 'Reject'" matTooltip="Rejected" matTooltipPosition="below" class="text-danger">cancel</mat-icon>
-                    <mat-icon *ngIf="leave?.status === 'Pending'" matTooltip="Pending" matTooltipPosition="below" class="text-warning">hourglass_empty</mat-icon>
+                    <mat-icon *ngIf="leave?.status === 'Approve'" matTooltip="Approved" matTooltipPosition="below"
+                        class="text-success">done_all</mat-icon>
+                    <mat-icon *ngIf="leave?.status === 'Reject'" matTooltip="Rejected" matTooltipPosition="below"
+                        class="text-danger">cancel</mat-icon>
+                    <mat-icon *ngIf="leave?.status === 'Pending'" matTooltip="Pending" matTooltipPosition="below"
+                        class="text-warning">hourglass_empty</mat-icon>
                 </td>
                 <td>
                     <div ngbDropdown class="dropdown-center d-inline-block">
@@ -99,7 +103,7 @@
 </div>
 
 <ng-template #addModal let-modal>
-    <app-add-short-leave [tab]="tab" (close)="onClose($event)"
+    <app-add-short-leave [tab]="tab" (close)="onClose($event)" [url]="extractedUrl"
         (shortLeaveRefreshed)="refreshShortLeaveTable()"></app-add-short-leave>
 </ng-template>
 

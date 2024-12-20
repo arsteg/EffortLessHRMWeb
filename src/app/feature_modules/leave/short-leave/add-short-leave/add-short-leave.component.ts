@@ -4,23 +4,21 @@ import { ToastrService } from 'ngx-toastr';
 import { LeaveService } from 'src/app/_services/leave.service';
 import { TimeLogService } from 'src/app/_services/timeLogService';
 import { CommonService } from 'src/app/_services/common.Service';
-import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { DatePipe, formatDate } from '@angular/common';
 export function duplicateLeaveValidator(existingLeaves: any[]): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
     if (!control.value) {
-      return null; // No value, no validation
+      return null;
     }
 
     // Example logic to check for duplicates
     const isDuplicate = existingLeaves.some((leave: any) =>
       leave.employee === control.value &&
       // Assuming leave.startDate is the date you want to compare
-      leave.startDate === control.root.get('date').value // Use root to get 'date' value
+      leave.startDate === control.root.get('date').value
     );
 
-    return isDuplicate ? { duplicateLeave: true } : null; // Return error if duplicate
+    return isDuplicate ? { duplicateLeave: true } : null;
   };
 }
 
@@ -51,14 +49,16 @@ export class AddShortLeaveComponent {
   submitButtonDisabled: any;
   isDuplicateLeave: any;
   @Input() status: string;
+  @Input() url: string;
+  existingLeaves: any[] = [];
+  existingShortLeaves: any[] = [];
 
   constructor(private leaveService: LeaveService,
     private toast: ToastrService,
     private fb: FormBuilder,
     private commonService: CommonService,
     private timeLogService: TimeLogService,
-    private toastr: ToastrService,
-    private datePipe: DatePipe) {
+  ) {
     this.shortLeave = this.fb.group({
       employee: ['', Validators.required],
       date: [new Date, Validators.required],
@@ -73,7 +73,6 @@ export class AddShortLeaveComponent {
     this.shortLeave.get('startTime').valueChanges.subscribe(() => this.calculateTotalTime());
     this.shortLeave.get('endTime').valueChanges.subscribe(() => this.calculateTotalTime());
   }
-
 
   ngOnInit() {
     this.commonService.populateUsers().subscribe(result => {
@@ -107,8 +106,8 @@ export class AddShortLeaveComponent {
   }
 
 
- checkForDuplicateLeave() {
-    const employeeId = this.shortLeave.get('employee')?.value;
+  checkForDuplicateLeave() {
+    const employeeId = this.shortLeave.get('employee')?.value || this.userId || this.currentUser.id;
     const date = this.shortLeave.get('date')?.value;
     const startTime = this.shortLeave.get('startTime')?.value;
     const endTime = this.shortLeave.get('endTime')?.value;
@@ -144,7 +143,7 @@ export class AddShortLeaveComponent {
             shortLeaveStartTime === selectedStartTime &&
             shortLeaveEndTime === selectedEndTime;
         });
-        
+
         if (
           (this.leaveGeneralSettings.maxDurationForShortLeaveApplicationInMin && this.totalTimeInMinutes > this.leaveGeneralSettings.maxDurationForShortLeaveApplicationInMin) ||
           isExistingLeave ||
@@ -221,13 +220,16 @@ export class AddShortLeaveComponent {
     }
   }
 
-  existingLeaves: any[] = [];
-  existingShortLeaves: any[] = [];
+ 
   stripTime(date: Date): string {
     date.setUTCHours(0, 0, 0, 0);
     return date.toISOString();
   }
-
+  userId: string;
+  selectedUsersChanged($event: string): void {
+    this.userId = $event;
+    this.checkForDuplicateLeave();
+  }
 
   onSubmission() {
     if (this.shortLeave.invalid) {
@@ -245,7 +247,7 @@ export class AddShortLeaveComponent {
       this.shortLeave.get('durationInMinutes').setValue('');
     }
 
-  
+
 
     if (this.leaveGeneralSettings.maxDurationForShortLeaveApplicationInMin && this.totalTimeInMinutes > this.leaveGeneralSettings.maxDurationForShortLeaveApplicationInMin) {
       this.toast.error('You cannot apply for more than ' + this.leaveGeneralSettings.maxDurationForShortLeaveApplicationInMin + ' minutes of short leave');
@@ -269,10 +271,18 @@ export class AddShortLeaveComponent {
       level2Reason: this.shortLeave.value.level2Reason
     }
     this.toast.success('Short leave application submitted successfully');
-    this.leaveService.addShortLeave(payload).subscribe((res: any) => {
-      this.shortLeaveRefreshed.emit();
-      this.shortLeave.reset();
-    })
+    if (this.url == 'my-short-leave') {
+      payload.employee = this.currentUser.id
+    }
+    if (this.url == 'team-short-leave') {
+      payload.employee = this.userId
+    }
+    if (this.shortLeave.valid) {
+      this.leaveService.addShortLeave(payload).subscribe((res: any) => {
+        this.shortLeaveRefreshed.emit();
+        this.shortLeave.reset();
+      })
+    }
   }
 
   onDateSelected(date: Date): void {

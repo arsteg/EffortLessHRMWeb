@@ -9,6 +9,7 @@ import { CommonService } from 'src/app/_services/common.Service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { ViewShortLeaveComponent } from '../view-short-leave/view-short-leave.component';
 import { DatePipe } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-show-short-leave',
@@ -30,6 +31,8 @@ export class ShowShortLeaveComponent {
   currentPage: number = 1;
   selectedShortLeave: any;
   selectedStatus: string;
+  extractedUrl: string = '';
+  currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
   constructor(private modalService: NgbModal,
     public leaveService: LeaveService,
@@ -37,21 +40,32 @@ export class ShowShortLeaveComponent {
     private exportService: ExportService,
     private commonService: CommonService,
     private toast: ToastrService,
-    private datePipe: DatePipe) { }
+    private datePipe: DatePipe,
+    private router: Router) { }
 
-    ngOnInit() {
-      console.log(this.status)
-      this.commonService.populateUsers().subscribe(result => {
-        this.allAssignee = result && result.data && result.data.data;
-        this.getShortLeaves();
-      });
+  ngOnInit() {
+    console.log(this.status)
+    this.commonService.populateUsers().subscribe(result => {
+      this.allAssignee = result && result.data && result.data.data;
+      this.getShortLeaves();
+    });
+    const fullUrl = this.router.url;
+
+    // Extract the part after "/home/leave/"
+    const basePath = '/home/leave/';
+    if (fullUrl.includes(basePath)) {
+      this.extractedUrl = fullUrl.split(basePath)[1];
+      console.log(this.extractedUrl)
+    }
   }
 
   getShortLeaves() {
     const requestBody = {
       "skip": ((this.currentPage - 1) * this.recordsPerPage).toString(),
       "next": this.recordsPerPage.toString(),
-      "status": this.status };
+      "status": this.status
+    };
+    if (this.extractedUrl != 'my-short-leave') {
       this.leaveService.getShortLeave(requestBody).subscribe((leaves) => {
         this.totalRecords = leaves.total;
         this.shortLeave = leaves.data.map((leave: any) => ({
@@ -65,6 +79,22 @@ export class ShowShortLeaveComponent {
           Date: leave.date
         }));
       });
+    }
+    if(this.extractedUrl === 'my-short-leave'){
+      this.leaveService.getShortLeaveByUserId(this.currentUser?.id, requestBody).subscribe((leaves: any)=>{
+        this.totalRecords = leaves.total;
+        this.shortLeave = leaves.data.map((leave: any) => ({
+          ...leave,
+          employeeName: this.getUser(leave.employee),
+          date: this.datePipe.transform(leave.date, 'MMM d, yyyy'),
+          startTime: this.datePipe.transform(leave.startTime, 'h:mm a'),
+          endTime: this.datePipe.transform(leave.endTime, 'h:mm a'),
+          start: leave.startTime,
+          end: leave.endTime,
+          Date: leave.date
+        }));
+      })
+    }
   }
 
   onClose(event) {
@@ -105,7 +135,7 @@ export class ShowShortLeaveComponent {
   }
 
   exportToCsv() {
-     const dataToExport = this.shortLeave.map((shortLeave) => ({
+    const dataToExport = this.shortLeave.map((shortLeave) => ({
       employee: this.getUser(shortLeave.employee),
       startTime: shortLeave.startTime,
       endTime: shortLeave.endTime,
@@ -117,13 +147,13 @@ export class ShowShortLeaveComponent {
   }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
     });
   }
-  
+
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
