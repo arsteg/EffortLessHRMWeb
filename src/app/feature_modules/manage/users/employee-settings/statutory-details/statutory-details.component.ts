@@ -35,7 +35,7 @@ export class StatutoryDetailsComponent {
       isIncomeTaxDeducted: [true],
       isGratuityEligible: [true],
       isComeUnderGratuityPaymentAct: [true],
-      taxRegime: [true],
+      taxRegime: [''],
       taxRegimeUpdated: [],
       taxRegimeUpdatedBy: [''],
       roundOffApplicable: [true],
@@ -45,7 +45,10 @@ export class StatutoryDetailsComponent {
   }
 
   ngOnInit() {
-    this.getStatutoryDetailsByUser();
+    if (this.selectedUser.id) {
+      this.getStatutoryDetailsByUser();
+    }
+    else this.statutoryDetailsForm.patchValue({ taxRegime: '' })
   }
 
   getStatutoryDetailsByUser() {

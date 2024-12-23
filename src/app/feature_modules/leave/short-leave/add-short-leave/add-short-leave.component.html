@@ -4,23 +4,8 @@
 </div>
 <div mat-dialog-content>
     <form [formGroup]="shortLeave" (ngSubmit)="onSubmission()">
-        <ng-container *ngIf="portalView != 'user'">
-            <label for="member">Select an Employee for Short Leave <span class="text-danger">*</span></label>
-            <mat-form-field appearance="outline" class="w-100 mx-1">
-                <mat-select formControlName="employee">
-                    <mat-option *ngFor="let member of allAssignee" [value]="member.id">
-                        {{member?.firstName | titlecase}}&nbsp;{{member?.lastName}}
-                    </mat-option>
-                </mat-select>
-
-                <div *ngIf="shortLeave.get('employee').invalid && shortLeave.get('employee').touched"
-                    class="text-danger error">
-                    Employee selection is required
-                </div>
-            </mat-form-field>
-        </ng-container>
-
-        <div *ngIf=" tab === 6" class="mb-2">
+        <!-- all members -->
+        <div *ngIf="url == 'short-leave'" class="mb-2">
             <label for="member">Select an Employee for Short Leave <span class="text-danger">*</span></label>
             <mat-form-field appearance="outline" class="w-100 mx-1">
                 <mat-label>Select Employee</mat-label>
@@ -29,14 +14,19 @@
                         {{member?.name | titlecase}}
                     </mat-option>
                 </mat-select>
+                <mat-error *ngIf="shortLeave.get('employee').invalid && shortLeave.get('employee').touched">
+                    Employee selection is required
+                </mat-error>
             </mat-form-field>
-            <div *ngIf="shortLeave.get('employee').invalid && shortLeave.get('employee').touched"
-                class="text-danger error">
-                Employee selection is required
-            </div>
+
         </div>
 
-        <div class="">
+        <!-- only team members -->
+        <div *ngIf="url == 'team-short-leave'">
+            <subordinateSelection (selectedUsersChange)="selectedUsersChanged($event)"></subordinateSelection>
+        </div>
+
+        <div class="mt-2">
             <label for="">Select Date <span class="text-danger">*</span></label>
             <div class=" col-12 form-group mb-3">
                 <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
@@ -104,8 +94,7 @@
 
         <div class="d-flex justify-content-between">
             <button mat-raised-button type="reset">Cancel</button>
-            <button mat-button class="addBtn" type="submit"
-                [disabled]="submitButtonDisabled || shortLeave.invalid">Submit</button>
+            <button mat-button class="addBtn" type="submit">Submit</button>
         </div>
     </form>
 </div>
