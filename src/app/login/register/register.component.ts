@@ -45,18 +45,23 @@ export class RegisterComponent implements OnInit {
 
   onGenerateOTP() {
     let email = this.registerNewUser.get('email').value;
-    this.loading = true;
-    this.authenticationService.generateOTP({ email }).subscribe(
-      () => {
-        this.toast.success('OTP sent to your email', 'Success');
-        this.loading = false;
-        this.otpGenerated = true;
+    if (email) {
+      this.authenticationService.generateOTP({ email }).subscribe(
+        () => {
+          this.loading = true
+          this.toast.success('OTP sent to your email', 'Success');
+          this.loading = false;
+          this.otpGenerated = true;
 
-      },
-      (error) => {
-        this.notifyService.showError(error.message, 'Error');
-      }
-    );
+        },
+        (error) => {
+          this.notifyService.showError(error.message, 'Error');
+        }
+      );
+    }
+    else {
+      this.registerNewUser.get('email').markAllAsTouched();
+    }
   }
 
   onReGenerateOTP() {
@@ -100,29 +105,32 @@ export class RegisterComponent implements OnInit {
   }
 
   onSubmit() {
-    this.loading = true;
     if (this.registerNewUser.value.password !== this.registerNewUser.value.passwordConfirm) {
       this.notifyService.showWarning("Passwords don't match", "Warning");
       return;
     }
-    this.authenticationService.webSignup(this.registerNewUser.value).subscribe(
-      data => {
-        setTimeout(() => {
-          this.notifyService.showSuccess("User Created Successfully", "Success")
-          this.router.navigate(['/login']);
-          this.loading = false;
-        }, 300);
-      },
-      err => {
-        this.notifyService.showError(err.message, "Error")
-        if (err.message) {
-          this.loading = false;
+    if (this.registerNewUser.valid) {
+      this.loading = true;
+      this.authenticationService.webSignup(this.registerNewUser.value).subscribe(
+        data => {
+          setTimeout(() => {
+            this.notifyService.showSuccess("User Created Successfully", "Success")
+            this.router.navigate(['/login']);
+            this.loading = false;
+          }, 300);
+        },
+        err => {
+          this.notifyService.showError(err.message, "Error")
+          if (err.message) {
+            this.loading = false;
+          }
         }
-      }
-    );
+      );
+    }
+    else { this.registerNewUser.markAllAsTouched(); }
   }
   getCurrentYear(): number {
     return new Date().getFullYear();
   }
-  
+
 }

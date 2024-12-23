@@ -6,7 +6,7 @@
     <div class="hero_bg">
       <img src="assets/main/bg-effect.png" alt="">
     </div>
-    
+
     <div class="w-50 image">
       <img src="assets/main/register/register.png" alt="register" class="w-100 zoom-animation">
     </div>
@@ -41,9 +41,12 @@
             <div class="col-md-8 mt-2">
               <label class="mb-2 " for="email">E-Mail Address</label>
               <input id="email" type="email" class="form-control" name="email" formControlName="email" required email>
-              <div *ngIf="!registerNewUser.get('email').valid && registerNewUser.get('email').touched"
-                class="validationErroMessage">
+              <div *ngIf="!registerNewUser.get('email').valid && registerNewUser.get('email').dirty" class="validationErroMessage">
                 <small class="text-light">Email is invalid!</small>
+              </div>
+
+              <div *ngIf="registerNewUser.get('email').touched" class="validationErroMessage">
+                <small class="text-light">Please enter Email!</small>
               </div>
             </div>
 
@@ -51,7 +54,7 @@
             <!-- Generate/Resend OTP button -->
             <div class="col-md-4 pt-2">
               <button *ngIf="!otpGenerated" type="button" mat-raised-button class="addBtn mt-2"
-                (click)="onGenerateOTP()" [disabled]="!registerNewUser.get('email').valid">
+                (click)="onGenerateOTP()">
                 <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
                 Generate&nbsp;OTP
               </button>
@@ -136,8 +139,7 @@
 
           <div class="align-items-center d-flex justify-content-between mt-3">
             <button mat-raised-button type="reset">Cancel</button>
-            <button type="submit" mat-raised-button class="addBtn ms-auto"
-              [disabled]="!registerNewUser.valid || !otpVerified">
+            <button type="submit" mat-raised-button class="addBtn ms-auto">
               Register
             </button>
           </div>
@@ -153,10 +155,10 @@
   </div>
 
   <div class="footer">
-    <div class="text-center mt-5">
-        <span>
-            Copyright &copy; 2015-{{getCurrentYear()}} &mdash; ARSTEG Solutions Pvt Ltd.
-        </span>
+    <div class="text-center mt-5 pt-5">
+      <span>
+        Copyright &copy; 2015-{{getCurrentYear()}} &mdash; ARSTEG Solutions Pvt Ltd.
+      </span>
     </div>
-</div>
+  </div>
 </div>
