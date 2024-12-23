@@ -10,7 +10,8 @@
         <div class="row ps-3 bannerImg">
           <div class="col-6">
             <span><img src="assets/main/login/log1.png" class="w-100 main-bannerSection home banner1" alt=""></span>
-            <span><img src="assets/main/login/log2.png" class="w-100 main-bannerSection home banner2 ms-2" alt=""></span>
+            <span><img src="assets/main/login/log2.png" class="w-100 main-bannerSection home banner2 ms-2"
+                alt=""></span>
           </div>
           <div class="col-6 align-content-center secondCol">
             <span><img src="assets/main/login/log3.png" class="w-75 main-bannerSection2 home banner3" alt=""></span>
@@ -22,13 +23,12 @@
         <div class="card shadow-lg mb-5 pb-5">
           <div class="card-body p-5">
             <h1 class="fs-4 card-title fw-bold mb-4 text-white border-bottom pb-2">Login</h1>
-            <form (ngSubmit)=onSubmit() #f="ngForm" class="needs-validation" novalidate="" autocomplete="off">
+            <form (ngSubmit)=onSubmit() [formGroup]="loginForm" class="needs-validation">
               <div class="mb-3">
                 <label class="mb-2 text-light" for="email">E-Mail Address</label>
-                <input id="username" type="username" class="rounded-pill form-control" name="username" ngModel required
-                  username #username="ngModel">
-                <div *ngIf="!username.valid && username.touched" class="validationErroMessage">
-                  Email is required
+                <input id="username" type="username" class="rounded-pill form-control" name="username"  required formControlName="email">
+                <div *ngIf="!loginForm.get('email').valid && loginForm.get('email').touched" class="validationErroMessage">
+                  Email is required!
                 </div>
               </div>
 
@@ -39,10 +39,9 @@
                     Forgot Password?
                   </a>
                 </div>
-                <input id="password" type="password" class="rounded-pill form-control" name="password" ngModel required
-                  #password="ngModel">
-                <div *ngIf="!password.valid && password.touched" class="validationErroMessage">
-                  Email is required
+                <input id="password" type="password" class="rounded-pill form-control" name="password"  required formControlName="password">
+                <div *ngIf="!loginForm.get('password').valid && loginForm.get('password').touched" class="validationErroMessage">
+                  Password is required!
                 </div>
               </div>
 
@@ -58,10 +57,14 @@
               </div>
               <div class="d-flex align-items-center">
 
-                <button type="submit" mat-raised-button class="addBtn ms-auto">
+                <div *ngIf="inValidForm" class="text-light mt-3">
+                  Invalid email or password. Please try again.
+                </div>
+                
+                <button type="submit" mat-raised-button class="addBtn ms-auto d-flex">
 
-                  <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
-                  Login
+                  <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>
+                  <span>Login</span>
                 </button>
               </div>
             </form>
