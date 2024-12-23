@@ -111,6 +111,10 @@ const routes: Routes = [
         path: 'interview-process',
         loadChildren: () => import('./feature_modules/interview-process/interview-process.module').then(m => m.InterviewProcessModule)
       },
+      {
+        path: 'subscription',
+        loadChildren: () => import('./feature_modules/subscription/subscription.module').then(m => m.SubscriptionModule)
+      },
       { path: 'tasks', component: TasksComponent }, // TODO: Shared Component
       { path: 'SubTask', component: SubtaskComponent }, // TODO: Shared Component
       { path: 'edit-task', component: EditTaskComponent }, // TODO: Shared Component

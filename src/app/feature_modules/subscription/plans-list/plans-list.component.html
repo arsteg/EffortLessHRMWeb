@@ -1,0 +1,57 @@
+<div class="container-fluid">
+    <div class="d-flex justify-content-between">
+        <button mat-button (click)="openCreatePlanDialog()">
+            <mat-icon>add</mat-icon>Create Plan
+        </button>
+    </div>
+  @if(plans()){
+  <table mat-table [dataSource]="plans()">
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>Plan Name</th>
+      <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="currentprice">
+        <th mat-header-cell *matHeaderCellDef>Amount</th>
+        <td mat-cell *matCellDef="let element">
+            {{ element.currentprice | currency: 'INR'}}
+        </td>
+      </ng-container>
+
+    <ng-container matColumnDef="planId">
+      <th mat-header-cell *matHeaderCellDef>Plan ID</th>
+      <td mat-cell *matCellDef="let element">
+        @if(element.planId){
+        <a href="javascript:void(0)" (click)="openPlanDetailsDialog(element)">
+            {{ element.planId }}
+        </a>
+        }
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="action">
+      <th mat-header-cell *matHeaderCellDef>Action</th>
+      <td mat-cell *matCellDef="let element">
+        @if(element.planId){
+        <button mat-icon-button matTooltip="Options" [matMenuTriggerFor]="actionMenu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #actionMenu="matMenu">
+            <button mat-menu-item (click)="copyPlanId(element.planId)">
+                <mat-icon>content_copy</mat-icon>
+                <span>Copy Plan ID</span>
+            </button>
+            <button mat-menu-item>
+                <mat-icon>loyalty</mat-icon>
+                <span>Subscriptions</span>
+            </button>
+        </mat-menu>
+        }
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columns"></tr>
+    <tr mat-row *matRowDef="let row; columns: columns"></tr>
+  </table>
+  }
+</div>

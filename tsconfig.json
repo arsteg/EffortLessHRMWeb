@@ -29,6 +29,9 @@
     "strictInputAccessModifiers": true,
     "strictTemplates": true,
     "strictPropertyInitialization": false,
-    "noPropertyAccessFromIndexSignature": false
+    "noPropertyAccessFromIndexSignature": false,
+    "_enabledBlockTypes": [
+      "if", "switch", "for"
+    ]
   }
 }

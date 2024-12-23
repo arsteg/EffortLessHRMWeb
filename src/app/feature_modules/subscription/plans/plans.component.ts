@@ -1,4 +1,4 @@
-import { CurrencyPipe, DatePipe, } from '@angular/common';
+import { CurrencyPipe, DatePipe, NgClass, } from '@angular/common';
 import { ChangeDetectorRef, Component, inject, } from '@angular/core';
 import { Router } from '@angular/router';
 import { SubscriptionService } from 'src/app/_services/subscription.service';
@@ -13,7 +13,8 @@ declare let Razorpay: any;
   imports: [
     CurrencyPipe,
     DatePipe,
-    MatButtonModule
+    MatButtonModule,
+    NgClass
   ],
   templateUrl: './plans.component.html',
   styleUrl: './plans.component.css'
@@ -30,12 +31,19 @@ export class PlansComponent {
   user = this.authService.currentUserSubject.getValue();
 
   ngOnInit() {
-    this.getPlan();
-    console.log(this.subscription)
+    if(!this.hasActiveSubscription){
+      this.getPlan();
+    } else {
+      this.getPlan(this.subscription.plan_id)
+    }
   }
 
-  getPlan() {
-    this.subscriptionService.getPlanByName('Membership Pan')
+  get hasActiveSubscription(){
+    return this.subscription?.status === 'active'
+  }
+
+  getPlan(id?:any) {
+    this.subscriptionService.getPlanByName(id || 'Membership Pan')
       .subscribe((res: any) => {
         this.plans = res.data;
       })
@@ -54,7 +62,7 @@ export class PlansComponent {
 
   makePayment(id: string) {
     const options = {
-      "key": "rzp_test_xQi4sKdFNrIe2z",
+      "key": "rzp_test_xQi4sKdFNrIe2z", // TODO: Set in environment file or backend
       "subscription_id": id,
       "name": this.user.firstName + ' ' + this.user.lastName,
       "description": "Auth txn for " + id,

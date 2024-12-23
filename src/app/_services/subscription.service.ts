@@ -22,7 +22,19 @@ export class SubscriptionService extends baseService {
    return this.http.get(`${environment.apiUrlDotNet}/pricing/plan/${name}`, this.httpOptions);
   }
 
+  createPlan(payload: any){
+    return this.http.post(`${environment.apiUrlDotNet}/pricing/plan`, payload, this.httpOptions);
+  }
+
+  getSubscriptions(){
+    return this.http.get(`${environment.apiUrlDotNet}/pricing/subscription`, this.httpOptions);
+  }
+
   createSubscription(payload: any){
    return this.http.post(environment.apiUrlDotNet + '/pricing/subscription', payload, this.httpOptions);
+  }
+
+  pauseResumeSubscription(payload: any){
+   return this.http.post(environment.apiUrlDotNet + '/pricing/pause-resume-subscription', payload, this.httpOptions);
   }
 }
