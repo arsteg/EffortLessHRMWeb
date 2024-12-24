@@ -38,7 +38,15 @@ export class SubscriptionService extends baseService {
    return this.http.post(environment.apiUrlDotNet + '/pricing/pause-resume-subscription', payload, this.httpOptions);
   }
 
+  getSubscriptionById(id: string){
+    return this.http.get(`${environment.apiUrlDotNet}/pricing/subscription/${id}`, this.httpOptions);
+  }
+
   cancelSubscription(payload: any){
     return this.http.post(environment.apiUrlDotNet + '/pricing/cancel-subscription', payload, this.httpOptions);
    }
+
+  getInvoiceBySubscription(id: string){
+    return this.http.get(`${environment.apiUrlDotNet}/pricing/subscription-invoice/${id}`, this.httpOptions);
+  }
 }

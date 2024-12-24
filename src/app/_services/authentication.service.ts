@@ -99,7 +99,13 @@ export class AuthenticationService {
     return this.http.post<any>(`${environment.apiUrlDotNet}/users/login`, { email: user.email, password: user.password }, httpOptions)
       .pipe(map(user => {
 
-        this.currentUserSubject.next(user);
+        this.currentUserSubject.next(
+          {
+            firstName: user.data.user.firstName,
+            id:  user.data.user.id,
+            lastName: user.data.user.lastName
+          }
+        );
         this.companySubscription.next(user.data.companySubscription);
         this.loggedIn.next(true);
         return user;

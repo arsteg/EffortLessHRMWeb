@@ -11,6 +11,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import {MatMenuModule} from '@angular/material/menu';
 import { PlanDetailsComponent } from './plan-details/plan-details.component';
 import { ConfirmCancelComponent } from './confirm-cancel/confirm-cancel.component';
+import { PaymentsComponent } from './payments/payments.component';
 
 @Component({
   selector: 'app-subscriptions-list',
@@ -55,6 +56,17 @@ export class SubscriptionsListComponent {
     });
 
     dialogRef.afterClosed().subscribe((result: any) => {});
+  }
+
+  openPaymentsDialog(subscriptionId: string) {
+    const dialogRef = this.dialog.open(PaymentsComponent, {
+      width: '500px',
+      data: { subscriptionId }
+    });
+
+    dialogRef.afterClosed().subscribe((result: any) => {
+      // Handle any actions after the dialog is closed if needed
+    });
   }
 
   pauseResume(subscription){
