@@ -7,6 +7,8 @@ import { ViewReportsComponent } from '../view-reports/view-reports.component';
 import { StatusUpdateComponent } from '../status-update/status-update.component';
 import { FormControl } from '@angular/forms';
 import { ExportService } from 'src/app/_services/export.service';
+import { ToastrService } from 'ngx-toastr';
+import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-show-report',
@@ -22,7 +24,7 @@ export class ShowReportComponent {
   closeResult: string = '';
   @Output() advanceReportRefreshed: EventEmitter<void> = new EventEmitter<void>();
   @Input() status: string;
-  @Input() actionOptions: { approve: boolean, reject: boolean, cancel: boolean, view: boolean };
+  @Input() actionOptions: { approve: boolean, reject: boolean, cancel: boolean, view: boolean, edit: boolean, delete: boolean };
   employee = new FormControl('');
   reportSummary: any;
   totalAmount: number = 0;
@@ -31,15 +33,17 @@ export class ShowReportComponent {
   totalRecords: number
   recordsPerPage: number = 10;
   currentPage: number = 1;
+  changeMode: 'Add' | 'Update' = 'Add';
+  selectedRecord: any;
 
   constructor(private commonService: CommonService,
     private expenseService: ExpensesService,
     private dialog: MatDialog,
     private modalService: NgbModal,
-    private exportService: ExportService) { }
+    private exportService: ExportService,
+    private toast: ToastrService) { }
 
   ngOnInit(): void {
-    console.log(this.status);
     this.commonService.populateUsers().subscribe(result => {
       this.allAssignee = result && result.data && result.data.data;
     });
@@ -87,7 +91,7 @@ export class ShowReportComponent {
   }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
@@ -159,4 +163,29 @@ export class ShowReportComponent {
     }));
     this.exportService.exportToCSV('Advance-Report', 'Advance-Report', dataToExport);
   }
+
+  deleteExpenseReport(id: string): void {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '400px',
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'delete') {
+        this.deleteReport(id);
+      }
+      err => {
+        this.toast.error('Can not be Deleted', 'Error!')
+      }
+    });
+  }
+  deleteReport(id: string) {
+    this.expenseService.deleteAdvanceReport(id).subscribe((res: any) => {
+      this.advanceReport = this.advanceReport.filter(report => report._id !== id);
+      this.toast.success('Successfully Deleted!!!', 'Advance Expense Report');
+    },
+      (err) => {
+        this.toast.error('This Advance Expense Report is already being used!'
+          , 'Error!')
+      })
+  }
+
 }

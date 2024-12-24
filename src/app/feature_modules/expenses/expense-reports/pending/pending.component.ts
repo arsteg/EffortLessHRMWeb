@@ -8,6 +8,7 @@ import { CommonService } from 'src/app/_services/common.Service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { ExportService } from 'src/app/_services/export.service';
+import { setTime } from 'ngx-bootstrap/chronos/utils/date-setters';
 
 @Component({
   selector: 'app-pending',
@@ -18,7 +19,7 @@ export class PendingComponent {
   [x: string]: any;
   searchText: string = '';
   expenseCategories: any;
-  @Input() isEdit : boolean = false;
+  @Input() isEdit: boolean = false;
   closeResult: string = '';
   step: number = 1;
   expenseReport: any;
@@ -55,13 +56,13 @@ export class PendingComponent {
   }
 
   ngOnInit() {
-    this.getExpenseReport();
     this.commonService.populateUsers().subscribe((res: any) => {
       this.users = res.data.data;
     });
+      this.getExpenseReport();
   }
   refreshExpenseReportTable() {
-   this.getExpenseReport();
+    this.getExpenseReport();
   }
 
   private getDismissReason(reason: any): string {
@@ -88,7 +89,7 @@ export class PendingComponent {
   open(content: any) {
     console.log(content);
     this.expenseService.expenseReportExpense.next(this.selectedReport);
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
@@ -129,7 +130,12 @@ export class PendingComponent {
       status: 'Level 1 Approval Pending'
     };
     this.expenseService.getExpenseReport(pagination).subscribe((res: any) => {
-      this.expenseReport = res.data;
+      this.expenseReport = res.data.map((data) => {
+        return {
+          ...data,
+          user: this.getUser(data?.employee)
+        }
+      })
       this.totalRecords = res.total;
     });
   }

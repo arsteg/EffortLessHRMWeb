@@ -7,7 +7,7 @@
             <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
                 name="searchText" aria-label="default input example">
 
-            <button mat-raised-button class="addBtn rounded-pill mx-3" (click)="open(addModal)">Add
+            <button mat-raised-button class="addBtn rounded-pill mx-3" (click)="changeMode='Add'; open(addModal)">Add
                 Expense</button>
 
             <button class="submenuTab active rounded-pill" (click)="exportToCsv()"> <i
@@ -72,39 +72,53 @@
                         </button>
 
                         <ul ngbDropdownMenu class="dropdown-menu">
-                            <li class="d-flex" *ngIf="actionOptions.approve"
+                            <li class="d-flex border-bottom" *ngIf="actionOptions.approve"
                                 (click)="openStatusModal(report, 'Approved')">
                                 <i class="fas fa-check-circle dropdown-item w-25"></i>
                                 <span class="pt-1 text-muted">Approve</span>
                             </li>
-                            <hr class="mx-2 my-0">
-                            <li class="d-flex" *ngIf="actionOptions.reject"
+
+                            <li class="d-flex border-bottom" *ngIf="actionOptions.reject"
                                 (click)="openStatusModal(report, 'Rejected')">
                                 <i class="bi bi-person-dash dropdown-item w-25"></i>
                                 <span class="pt-1 text-muted">Reject</span>
                             </li>
-                            <hr class="mx-2 my-0">
-                            <li class="d-flex" *ngIf="actionOptions.cancel"
+
+                            <li class="d-flex border-bottom" *ngIf="actionOptions.cancel"
                                 (click)="openStatusModal(report, 'Cancelled')">
                                 <i class="bi bi-person-dash text-danger dropdown-item w-25"></i>
                                 <span class="pt-1 text-muted">Cancel</span>
                             </li>
-                            <hr class="mx-2 my-0">
-                            <li class="d-flex" *ngIf="actionOptions.view" (click)="openSecondModal(report)">
+
+                            <li class="d-flex border-bottom" *ngIf="actionOptions.view"
+                                (click)="openSecondModal(report)">
                                 <i class="fas fa-eye dropdown-item w-25"></i>
                                 <span class="pt-1 text-muted">View</span>
+                            </li>
+
+                            <li class="d-flex border-bottom" *ngIf="actionOptions.edit" data-bs-toggle="modal"
+                                data-bs-target="#Editmodel"
+                                (click)="selectedRecord = report; changeMode='Update'; open(addModal);">
+                                <i class="bi bi-pencil text-success  dropdown-item w-25"></i><span
+                                    class="pt-1 text-muted">Edit</span>
+                            </li>
+
+                            <li class="d-flex" *ngIf="actionOptions.delete" data-bs-toggle="modal"
+                                data-bs-target="#Editmodel" (click)="deleteExpenseReport(report?._id)">
+                                <i class="bi bi-trash text-danger dropdown-item w-25"></i><span
+                                    class="pt-1 text-muted">Delete</span>
                             </li>
                         </ul>
                     </div>
                 </td>
-                
+
             </tr>
         </tbody>
     </table>
 </div>
 
 <ng-template #addModal let-modal>
-    <app-add-advance-report (close)="onClose($event)"
+    <app-add-advance-report (close)="onClose($event)" [changeMode]="changeMode" [selectedRecord]="selectedRecord"
         (advanceReportRefreshed)="refreshExpenseReportTable()"></app-add-advance-report>
 </ng-template>
 
