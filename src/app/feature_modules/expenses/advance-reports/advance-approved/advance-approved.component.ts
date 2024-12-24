@@ -10,7 +10,9 @@ export class AdvanceApprovedComponent {
     approve: false,
     reject: false,
     view: true,
-    cancel: true
+    cancel: true,
+    delete: false,
+    edit: false
   };
   @Input() selectedTab: number;
 

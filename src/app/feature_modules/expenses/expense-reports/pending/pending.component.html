@@ -51,7 +51,7 @@
                     <tr
                         *ngFor="let expenseReport of expenseReport | search: searchText;  let i = index">
                         <td class="ps-2">{{expenseReport?.title}}</td>
-                        <td>{{getUser(expenseReport?.employee)}}</td>
+                        <td>{{expenseReport?.user}}</td>
                         <td>
                             {{calculateTotalAmount(expenseReport)}}
                         </td>
@@ -64,7 +64,10 @@
                         </td>
 
 
-                        <td>{{expenseReport?.status}}</td>
+                        <td>
+                            <mat-icon matTooltip="{{expenseReport?.status}}" matTooltipPosition="below"
+                        class="text-warning">hourglass_empty</mat-icon>
+                        </td>
                         <td class="action text-center">
                             <div class="dropdown-center">
 
@@ -109,11 +112,9 @@
                                         <i class="bi bi-trash text-success  dropdown-item w-25"></i><span
                                             class="pt-1 text-muted">Delete</span>
                                     </li>
-
                                 </ul>
                             </div>
                         </td>
-
                     </tr>
                 </tbody>
             </table>

@@ -22,7 +22,7 @@ export class CompanyService {
   public getToken() {
     return localStorage.getItem('jwtToken');
   }
-// band Crud
+  // band Crud
 
   addBand(payload: any): Observable<any> {
     return this.http.post<any>(`${environment.apiUrlDotNet}/company/bands`, payload, this.httpOptions);
@@ -87,7 +87,7 @@ export class CompanyService {
   }
 
   // designation Crud
-    getDesignations(): Observable<any> {
+  getDesignations(): Observable<any> {
     return this.http.get<any>(`${environment.apiUrlDotNet}/company/designations-by-company`, this.httpOptions);
   }
 
@@ -138,7 +138,7 @@ export class CompanyService {
   // Holidays Crud
 
   getHolidays(payload: any): Observable<any> {
-    return this.http.post<any>(`${environment.apiUrlDotNet}/company/holiday-by-year`, payload , this.httpOptions);
+    return this.http.post<any>(`${environment.apiUrlDotNet}/company/holiday-by-year`, payload, this.httpOptions);
   }
 
   addHolidays(payload: any): Observable<any> {
@@ -151,5 +151,30 @@ export class CompanyService {
 
   deleteHolidays(id: string): Observable<any> {
     return this.http.delete<any>(`${environment.apiUrlDotNet}/company/holiday/${id}`, this.httpOptions);
+  }
+
+  // Tax Slab CRUD
+  getTaxSlabByYear(cycle: string): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrlDotNet}/company/tax-slabs-by-cycle/${cycle}`, this.httpOptions);
+  }
+
+  getTaxSlabByCompany(payload: any): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrlDotNet}/company/tax-slabs-by-company`, payload, this.httpOptions);
+  }
+
+  getTaxSlabById(id: string): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrlDotNet}/company/tax-slabs/${id}`, this.httpOptions);
+  }
+
+  addTaxSlab(payload: any): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrlDotNet}/company/tax-slabs`, payload, this.httpOptions);
+  }
+
+  updateTaxSlab(id: string, payload: any): Observable<any> {
+    return this.http.put<any>(`${environment.apiUrlDotNet}/company/tax-slabs/${id}`, payload, this.httpOptions);
+  }
+
+  deleteTaxSlab(id: string): Observable<any> {
+    return this.http.delete<any>(`${environment.apiUrlDotNet}/company/tax-slabs/${id}`, this.httpOptions);
   }
 }

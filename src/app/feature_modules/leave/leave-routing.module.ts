@@ -26,6 +26,7 @@ const routes: Routes = [
       { path: 'my-leave-balance', component: LeaveBalanceComponent },
       { path: 'my-team-balance', component: LeaveBalanceComponent },
       { path: 'my-leave-grant', component: LeaveManagementComponent },
+      { path: 'my-short-leave', component: ShortLeaveComponent },
       { path: 'team-application', component: LeaveApplicationComponent },
       { path: 'team-short-leave', component: ShortLeaveComponent },
       { path: 'team-leave-grant', component: LeaveManagementComponent },

@@ -50,7 +50,7 @@
                     <tr
                     *ngFor="let expenseReport of expenseReport | search: searchText;  let i = index">
                     <td class="ps-2">{{expenseReport?.title}}</td>
-                    <td>{{getUser(expenseReport?.employee)}}</td>
+                    <td>{{expenseReport?.user}}</td>
                    
                     <td>
                         {{calculateTotalAmount(expenseReport)}}
@@ -64,7 +64,10 @@
                     </td>
 
 
-                    <td>{{expenseReport?.status}}</td>
+                    <td>
+                        <mat-icon  matTooltip="{{expenseReport?.status}}" matTooltipPosition="below"
+                        class="text-danger">block</mat-icon>
+                    </td>
                     <td class="">
                         <div class="dropdown-center">
                             <button class="actions ms-2" mat-mini-fab data-bs-toggle="dropdown"
