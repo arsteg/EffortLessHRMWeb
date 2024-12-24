@@ -1,0 +1,151 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="tableContainer bg-white py-2">
+            <div class="d-flex justify-content-between align-items-center mb-2 px-3">
+                <p class="mb-0">({{totalRecords}}) Records Found</p>
+                <div class="form-group d-flex align-items-center w-25">
+                    <label for="cycle" class="form-label">Year&nbsp;</label>
+                    <select id="cycle" [(ngModel)]="selectedCycle" (change)="onTaxSlabChange(selectedCycle)"
+                        class="form-select">
+                        <option *ngFor="let year of fiscalYears" [value]="year">{{ year }}</option>
+                    </select>
+                </div>
+                <div class="d-flex align-items-center">
+                    <span class="bi bi-search searchIcon"></span>
+
+                    <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
+                        name="searchText" aria-label="default input example">
+
+                    <button mat-raised-button class="addBtn rounded-pill w-100"
+                        (click)="setFormValues(); isEdit=false; open(addModal)">Add&nbsp;New</button>
+                </div>
+            </div>
+
+            <table>
+                <thead>
+                    <th [appSort]="taxSlabs" data-name="IncomeTaxSlabs"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Income Tax Slabs
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th [appSort]="taxSlabs" data-name="minAmount"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Minimum
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th [appSort]="taxSlabs" data-name="maxAmount"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Maximum
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th [appSort]="taxSlabs" data-name="taxPercentage"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Percentage
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th [appSort]="taxSlabs" data-name="cycle"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">cycle
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th [appSort]="taxSlabs" data-name="regime"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Regime
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th>Actions</th>
+                </thead>
+
+                <tbody>
+                    <tr *ngFor="let data of taxSlabs | search : searchText; let i = index">
+                        <td>{{data?.IncomeTaxSlabs}}</td>
+                        <td>{{data?.minAmount}}</td>
+                        <td>{{data?.maxAmount}}</td>
+                        <td>{{data?.taxPercentage}}</td>
+                        <td>{{data?.cycle}}</td>
+                        <td>{{data?.regime}}</td>
+                        <td>
+                            <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before"
+                                aria-label="Example icon button with a menu icon"
+                                (click)="selectedRecord = data; isEdit= true; setFormValues(); open(addModal)">
+                                <i class="bi bi-pencil-fill"></i>
+                            </button>
+                            <button class="actions ms-2" mat-mini-fab matTooltip="Delete" matTooltipPosition="after"
+                                aria-label="Example icon button with a menu icon" (click)="deleteDialog(data?._id)">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- add company -->
+<ng-template #addModal let-modal>
+    <div class="modal-header d-flex justify-content-between border-bottom mb-2 pt-0">
+        <div>
+            <h1 class="modal-title text-muted mb-0">{{isEdit? 'Update': 'Add'}} Income Tax Slab</h1>
+        </div>
+        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
+                (click)="modal.close('Escape clicked')"></button>
+        </div>
+    </div>
+
+    <form [formGroup]="taxSlabForm" (ngSubmit)="onSubmission()">
+
+        <div class="form-group mt-2">
+            <label for="">Income Tax Slab<span class="text-danger">*</span></label>
+            <input type="text" class="form-control" placeholder="" formControlName="IncomeTaxSlabs">
+            <div *ngIf="taxSlabForm.get('IncomeTaxSlabs').invalid && (taxSlabForm.get('IncomeTaxSlabs').dirty || taxSlabForm.get('IncomeTaxSlabs').touched)"
+                class="error">
+                <small class="text-danger">Income Tax Slab is required.</small>
+            </div>
+        </div>
+
+        <div class="form-group mt-2">
+            <label for="">Enter Minimum Amount <span class="text-danger">*</span></label>
+            <input class="form-control" type="number" formControlName="minAmount">
+            <div *ngIf="taxSlabForm.get('minAmount').invalid && (taxSlabForm.get('minAmount').dirty || taxSlabForm.get('minAmount').touched)"
+                class="error">
+                <small class="text-danger">Minimum Amount is required.</small>
+            </div>
+        </div>
+
+        <div class="form-group mt-2">
+            <label for="">Enter Maximum Amount <span class="text-danger">*</span></label>
+            <input class="form-control" type="number" formControlName="maxAmount">
+            <div *ngIf="taxSlabForm.get('maxAmount').invalid && (taxSlabForm.get('maxAmount').dirty || taxSlabForm.get('maxAmount').touched)"
+                class="error">
+                <small class="text-danger">Maximum Amount is required.</small>
+            </div>
+        </div>
+
+        <div class="form-group mt-2">
+            <label for="">Enter Tax Percentage <span class="text-danger">*</span></label>
+            <input class="form-control" type="number" formControlName="taxPercentage">
+            <div *ngIf="taxSlabForm.get('taxPercentage').invalid && (taxSlabForm.get('taxPercentage').dirty || taxSlabForm.get('taxPercentage').touched)"
+                class="error">
+                <small class="text-danger">Tax Percentage is required.</small>
+            </div>
+        </div>
+
+        <div class="form-group mt-2">
+            <label for="cycle" class="form-label">Cycle</label>
+            <select id="cycle" formControlName="cycle" class="form-select">
+                <option value="" [disabled] selected>Select Cycle --</option>
+                <option *ngFor="let year of fiscalYears" [value]="year">{{ year }}</option>
+            </select>
+        </div>
+
+        <div class="form-group mt-2">
+            <label for="regime" class="form-label">Regime</label>
+            <select id="regime" formControlName="regime" class="form-select">
+                <option value="" [disabled] selected>Select Regime --</option>
+                <option value="Old Regime">Old Regime</option>
+                <option value="New Regime">New Regime</option>
+            </select>
+        </div>
+
+        <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
+            <button mat-raised-button type="button" (click)="setFormValues()">Cancel</button>
+            <button mat-raised-button class="addBtn" type="submit">Submit</button>
+        </div>
+    </form>
+
+</ng-template>
