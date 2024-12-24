@@ -10,6 +10,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import {MatMenuModule} from '@angular/material/menu';
 import { PlanDetailsComponent } from './plan-details/plan-details.component';
+import { ConfirmCancelComponent } from './confirm-cancel/confirm-cancel.component';
 
 @Component({
   selector: 'app-subscriptions-list',
@@ -65,6 +66,27 @@ export class SubscriptionsListComponent {
     .pipe(takeUntilDestroyed(this.destroyRef))
     .subscribe((response: any)=>{
       this.getSubscriptions();  
+    })
+  }
+
+  cancel(subscription){
+    const dialogRef = this.dialog.open(ConfirmCancelComponent,
+      {
+        width: '500px',
+        data: subscription
+      });
+    dialogRef.afterClosed().subscribe((result:any)=>{
+      if(typeof result === 'number'){
+        const payload = {
+          subscriptionId: subscription.subscriptionId,
+          cancelAtCycleEnd: result
+        }
+        this.subscriptionService.cancelSubscription(payload)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe((response: any)=>{
+          this.getSubscriptions();
+        })
+      }
     })
   }
 }

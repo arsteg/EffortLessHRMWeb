@@ -37,4 +37,8 @@ export class SubscriptionService extends baseService {
   pauseResumeSubscription(payload: any){
    return this.http.post(environment.apiUrlDotNet + '/pricing/pause-resume-subscription', payload, this.httpOptions);
   }
+
+  cancelSubscription(payload: any){
+    return this.http.post(environment.apiUrlDotNet + '/pricing/cancel-subscription', payload, this.httpOptions);
+   }
 }

@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { AuthenticationService } from 'src/app/_services/authentication.service';
 
 @Component({
   selector: 'app-subscription',
@@ -7,5 +7,9 @@ import { Router } from '@angular/router';
   styleUrl: './subscription.component.css'
 })
 export class SubscriptionComponent {
+  private readonly authService = inject(AuthenticationService);
 
+  logout(){
+    this.authService.logout();
+  }
 }

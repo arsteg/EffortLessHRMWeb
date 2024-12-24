@@ -4,21 +4,27 @@
     <ng-container matColumnDef="status">
       <th mat-header-cell *matHeaderCellDef>Status</th>
       <td mat-cell *matCellDef="let element">
-        @switch(element.razorpaySubscription?.status){ @case('active'){
-        <span class="btn btn-outline-primary">Active</span>
-        } @case('paused'){
-        <span class="btn btn-outline-warning">Paused</span>
-        } @case('cancelled'){
-        <span class="btn btn-outline-danger">Cancelled</span>
-        } @case('halted'){
-        <span class="btn btn-outline-info">Haulted</span>
-        } @case('pending'){
-        <span class="btn btn-outline-warning">Pending</span>
-        } @case('completed'){
-        <span class="btn btn-outline-success">Completed</span>
-        } @case('authenticated'){
-        <span class="btn btn-outline-secondary">Authenticated</span>
-        } }
+        <div class="d-flex align-items-center">
+          @switch(element.razorpaySubscription?.status){ @case('active'){
+            <span class="btn btn-outline-primary">Active</span>
+            } @case('paused'){
+            <span class="btn btn-outline-warning">Paused</span>
+            } @case('cancelled'){
+            <span class="btn btn-outline-danger">Cancelled</span>
+            } @case('halted'){
+            <span class="btn btn-outline-info">Haulted</span>
+            } @case('pending'){
+            <span class="btn btn-outline-warning">Pending</span>
+            } @case('completed'){
+            <span class="btn btn-outline-success">Completed</span>
+            } @case('authenticated'){
+            <span class="btn btn-outline-secondary">Authenticated</span>
+            }
+          }
+          @if(element.dateUnsubscribed && element.razorpaySubscription?.status !== 'cancelled') {
+            <mat-icon matTooltip="This subscription is marked for cancellation and will not be charged on next due date">info</mat-icon>
+          }
+        </div>
       </td>
     </ng-container>
 
@@ -86,6 +92,7 @@
           mat-icon-button
           matTooltip="Options"
           [matMenuTriggerFor]="actionMenu"
+          [disabled]="element.razorpaySubscription?.status === 'cancelled'"
         >
           <mat-icon>more_vert</mat-icon>
         </button>
@@ -104,11 +111,14 @@
                 : "Resume"
             }}</span>
           </button>
-          }
-          <button mat-menu-item>
+          } @if(element.razorpaySubscription?.status !== 'cancelled'){
+          <button mat-menu-item (click)="cancel(element)">
             <mat-icon>close</mat-icon>
-            <span>Cancel</span>
+            <span>{{
+              element.dateUnsubscribed ? "Cancel Immediately" : "Cancel"
+            }}</span>
           </button>
+          }
         </mat-menu>
         }
       </td>

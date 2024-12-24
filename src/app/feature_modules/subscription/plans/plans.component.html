@@ -45,7 +45,7 @@
                   <p><small>Auto-debit {{plan.currentprice | currency: 'INR'}} every month on {{today | date:'dd'}} till canceled.</small></p>
                 </div>
                 <div class="card-footer">
-                    @if(subscription.status === 'new') {
+                    @if(subscription.status === 'new' || subscription.status === 'cancelled') {
                         <button mat-raised-button class="addBtn" (click)="payNow(plan)" [disabled]="loading">{{loading ? 'Loading' : 'Pay Now'}}</button>
                     } @else {
                         Status of your subscription is {{subscription.status}}. Please contact administrator.
