@@ -32,10 +32,10 @@ export class RejectedComponent {
     private exportService: ExportService) { }
 
   ngOnInit() {
-    this.getExpenseReport();
     this.commonService.populateUsers().subscribe((res: any) => {
       this.users = res.data.data;
     });
+    this.getExpenseReport();
   }
   onPageChange(page: number) {
     this.currentPage = page;
@@ -54,7 +54,12 @@ export class RejectedComponent {
       status: 'Rejected'
     };
     this.expenseService.getExpenseReport(pagination).subscribe((res: any) => {
-      this.expenseReport = res.data;
+      this.expenseReport = res.data.map((data) => {
+        return {
+          ...data,
+          user: this.getUser(data?.employee)
+        }
+      })
       this.totalRecords = res.total;
     });
   }
@@ -80,7 +85,7 @@ export class RejectedComponent {
     }
   }
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;

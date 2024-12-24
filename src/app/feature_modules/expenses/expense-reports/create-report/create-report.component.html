@@ -12,13 +12,13 @@
 
             <label for="firstApprovalEmployee">Select Category<span class="text-danger">*</span></label>
 
-            <select name="expenseCategory" *ngIf="this.expenseService.isEdit.getValue() == true"
+            <!-- <select name="expenseCategory" *ngIf="this.expenseService.isEdit.getValue() == true"
                 id="firstApprovalEmployee" formControlName="expenseCategory" required class="ms-2 form-control">
                 <option value="">Select Category</option>
                 <option *ngFor="let category of categories" [value]="category._id">{{category?.label}}</option>
-            </select>
-
-            <select name="expenseCategory" *ngIf="this.expenseService.isEdit.getValue() == false"
+            </select> -->
+            <!-- *ngIf="this.expenseService.isEdit.getValue() == false" -->
+            <select name="expenseCategory" 
                 id="firstApprovalEmployee" formControlName="expenseCategory" required class="ms-2 form-control"
                 (ngModelChange)="onCategorySelection($event)">
                 <option value="">-Select Category-</option>

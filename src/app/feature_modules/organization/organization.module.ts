@@ -19,6 +19,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
 import { OrganizationRoutingModule } from './organization-routing.module';
 import { AssetsModule } from 'src/app/feature_modules/organization/AssetsManagement/assetManagement.module';
+import { TaxSlabComponent } from './setup/tax-slab/tax-slab.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { AssetsModule } from 'src/app/feature_modules/organization/AssetsManagem
     DesignationComponent,
     BandComponent,
     SignatoryDetailsComponent,
-    HolidaysComponent
+    HolidaysComponent,
+    TaxSlabComponent
   ],
   imports: [
     CommonModule,

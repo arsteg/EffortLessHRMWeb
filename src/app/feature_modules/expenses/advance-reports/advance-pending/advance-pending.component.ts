@@ -10,7 +10,9 @@ export class AdvancePendingComponent {
     approve: true,
     reject: true,
     view: true,
-    cancel: false
+    cancel: false,
+    delete: true,
+    edit: true
   };
   @Input() selectedTab: number;
 

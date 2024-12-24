@@ -832,8 +832,8 @@ label {
 }
 
 .footer {
-  position: absolute;
-  bottom: 10px;
+  position: fixed;
+  /* bottom: 10px; */
   left: 40%;
 }
 

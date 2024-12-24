@@ -10,7 +10,9 @@ export class AdvanceCancelledComponent {
     approve: false,
     reject: false,
     view: true,
-    cancel: false
+    cancel: false,
+    delete: false,
+    edit: false
   };
   @Input() selectedTab: number;
 

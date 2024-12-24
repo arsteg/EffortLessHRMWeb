@@ -47,10 +47,10 @@ export class ApprovedComponent {
   }
 
   ngOnInit() {
-    this.getExpenseReport();
     this.commonService.populateUsers().subscribe((res: any) => {
       this.users = res.data.data;
     });
+    this.getExpenseReport();
   }
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
@@ -62,7 +62,7 @@ export class ApprovedComponent {
     }
   }
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
@@ -104,7 +104,12 @@ export class ApprovedComponent {
       status: 'Approved'
     };
     this.expenseService.getExpenseReport(pagination).subscribe((res: any) => {
-      this.expenseReport = res.data;
+      this.expenseReport = res.data.map((data) => {
+        return {
+          ...data,
+          user: this.getUser(data?.employee)
+        }
+      })
       this.totalRecords = res.total;
     });
   }

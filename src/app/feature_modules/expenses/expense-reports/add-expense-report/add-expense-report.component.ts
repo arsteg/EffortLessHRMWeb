@@ -47,9 +47,7 @@ export class AddExpenseReportComponent {
       amount: [''],
       expenseReportExpenses: []
     });
-
   }
-
 
   ngOnInit() {
     console.log(this.changeMode)
@@ -100,8 +98,20 @@ export class AddExpenseReportComponent {
   }
 
   resetForm() {
-    this.expenseReportExpenses = [];
-    this.addExpenseForm.reset();
+    console.log(this.changeMode)
+    if (this.changeMode == 'Add') {
+      this.expenseReportExpenses = [];
+      this.addExpenseForm.reset();
+    }
+    if (this.changeMode == 'Update') {
+      this.addExpenseForm.patchValue({
+        employee: this.expenseService.selectedReport.getValue().employee,
+        title: this.expenseService.selectedReport.getValue().title,
+        amount: this.expenseService.selectedReport.getValue().amount,
+        status: this.expenseService.selectedReport.getValue().status
+      });
+      this.getExpenseReportExpensesByReportId();
+    }
   }
 
   getSelectedExpenseReportExpense(selectedExpenseReportExpense: any) {
@@ -112,6 +122,8 @@ export class AddExpenseReportComponent {
   closeModal() {
     this.close.emit(true);
   }
+
+  noCategoryError: boolean;
   getCategoryByUser() {
     const user = this.addExpenseForm.value.employee;
     this.expenseService.selectedUser.next(user);
@@ -121,7 +133,8 @@ export class AddExpenseReportComponent {
 
         this.expenseService.tempAndCat.next(res);
         if (!res || res.data == null) {
-          this.toast.warning('User is not Assigned to any Expense Categories', 'Warning')
+          this.noCategoryError = true;
+          // this.toast.warning('User is not Assigned to any Expense Categories', 'Warning')
         }
       })
     }
@@ -138,7 +151,8 @@ export class AddExpenseReportComponent {
       let formArray = this.expenseService.expenseReportExpense.getValue();
       payload.expenseReportExpenses = [formArray];
     }
-    if (this.changeMode == 'Add') {
+    if(this.addExpenseForm.valid)
+   { if (this.changeMode == 'Add') {
       console.log(payload);
       this.expenseService.addExpensePendingReport(payload).subscribe((res: any) => {
         this.toast.success('Expense Template Applicable Category Added Successfully!');
@@ -164,9 +178,11 @@ export class AddExpenseReportComponent {
           this.toast.error('Expense Template Applicable Category Can not be Updated', 'ERROR!')
         }
       )
-    }
+    }}
+    else { this.addExpenseForm.markAllAsTouched(); }
     this.updateExpenseReportTable.emit();
   }
+
   getCategoryById(categoryId) {
     this.expenseService.getExpenseCategoryById(categoryId).subscribe((res: any) => {
       this.category = res.data.label;

@@ -12,33 +12,34 @@
                     <button mat-raised-button class="addBtn rounded-pill mx-3" (click)="open(addModal); step=1">Add
                         Expense</button>
 
-                    <button class="submenuTab active rounded-pill" (click)="exportToCsv()"> <i class="bi bi-download downloadBtn pe-2"  ></i>
+                    <button class="submenuTab active rounded-pill" (click)="exportToCsv()"> <i
+                            class="bi bi-download downloadBtn pe-2"></i>
                         Download</button>
 
                 </div>
             </div>
             <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
-        [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
-        (recordsPerPageChange)="onRecordsPerPageChange($event)">
-        </app-pagination>
+                [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
+                (recordsPerPageChange)="onRecordsPerPageChange($event)">
+            </app-pagination>
             <table class="px-4">
                 <thead>
                     <tr>
                         <th class="ps-2" [appSort]="expenseReport" data-name="title"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Report&nbsp;Title
-                        <i
-                            [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                    <th [appSort]="expenseReport" data-name="employee"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Employee
-                        <i
-                            [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                    <th [appSort]="expenseReport" data-name="expenseReport"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Total Amount
-                        <i
-                            [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Report&nbsp;Title
+                            <i
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                        </th>
+                        <th [appSort]="expenseReport" data-name="employee"
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Employee
+                            <i
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                        </th>
+                        <th [appSort]="expenseReport" data-name="expenseReport"
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Total Amount
+                            <i
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                        </th>
                         <th>Reimbursable</th>
                         <th>Billable</th>
                         <th>Status</th>
@@ -47,11 +48,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr
-                        *ngFor="let expenseReport of expenseReport | search: searchText;  let i = index">
+                    <tr *ngFor="let expenseReport of expenseReport | search: searchText;  let i = index">
                         <td class="ps-2">{{expenseReport?.title}}</td>
-                        <td>{{getUser(expenseReport?.employee)}}</td>
-                        
+                        <td>{{expenseReport?.user}}</td>
+
                         <td>
                             {{calculateTotalAmount(expenseReport)}}
                         </td>
@@ -64,7 +64,10 @@
                         </td>
 
 
-                        <td>{{expenseReport?.status}}</td>
+                        <td>
+                            <mat-icon matTooltip="{{expenseReport?.status}}" matTooltipPosition="below"
+                                class="text-success">done_all</mat-icon>
+                        </td>
                         <td class="">
                             <div class="dropdown-center">
                                 <button class="actions ms-2" mat-mini-fab data-bs-toggle="dropdown"

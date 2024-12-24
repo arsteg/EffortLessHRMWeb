@@ -21,6 +21,8 @@
       class="text-danger error">
       Please select Employee for this Expense Report!
     </div>
+    <div *ngIf="noCategoryError" class="text-danger error">
+      Selected User is not Assigned to any Expense Category!</div>
   </div>
 
   <div class="form-group mt-2">
@@ -39,7 +41,7 @@
     </div>
   </div>
 
- 
+
   <div class="tableContainer bg-white">
     <table class="mt-2">
       <thead>
@@ -53,7 +55,7 @@
         </tr>
       </thead>
       <tbody *ngIf="changeMode">
-       <tr *ngFor="let expenseReportExp of expenseReportExpenses">
+        <tr *ngFor="let expenseReportExp of expenseReportExpenses">
           <td>{{expenseReportExp?.incurredDate | date:'mediumDate' }}</td>
           <td>{{ getCategoryLabel(expenseReportExp?.expenseCategory) }}</td>
           <td>{{expenseReportExp?.amount}}</td>
@@ -74,7 +76,8 @@
             </ng-template>
           </td>
           <td><button class="actions" type="button" [disabled]="!expenseReportExp?._id"
-              (click)="openSecondModal(true); isEdit === true; getSelectedExpenseReportExpense(expenseReportExp)" mat-mini-fab  matTooltip="Edit" matTooltipPosition="before"
+              (click)="openSecondModal(true); isEdit === true; getSelectedExpenseReportExpense(expenseReportExp)"
+              mat-mini-fab matTooltip="Edit" matTooltipPosition="before"
               aria-label="Example icon button with a menu icon">
               <i class="bi bi-pencil-fill"></i>
             </button>
@@ -86,7 +89,7 @@
           </td>
         </tr>
       </tbody>
-    
+
     </table>
   </div>
   <div>
@@ -94,7 +97,7 @@
       class="submenuTab active rounded-pill mt-2">Add Expense</button>
   </div>
   <div class="mt-3 d-flex justify-content-between">
-    <button mat-raised-button type="reset" (click)="resetForm()">Cancel</button>
-    <button mat-raised-button type="submit" class="addBtn" [disabled]="!addExpenseForm.valid">{{changeMode}}</button>
+    <button mat-raised-button type="button" (click)="resetForm()">Cancel</button>
+    <button mat-raised-button type="submit" class="addBtn">{{changeMode}}</button>
   </div>
 </form>
