@@ -14,6 +14,7 @@ import { HolidaysComponent } from './setup/holidays/holidays.component';
 import { DocumentManagerComponent } from 'src/app/feature_modules/organization/documentManager/documentManager.component';
 import { ProfileComponent } from './setup/profile/profile.component';
 import { AssetManagerComponent } from 'src/app/feature_modules/organization/AssetsManagement/assetAssetManager/asset.component';
+import { TaxSlabComponent } from './setup/tax-slab/tax-slab.component';
 
 const routes: Routes = [
   {
@@ -42,6 +43,7 @@ const routes: Routes = [
           { path: 'band', component: BandComponent },
           { path: 'signatory-details', component: SignatoryDetailsComponent },
           { path: 'holiday', component: HolidaysComponent },
+          { path: 'tax-slab', component: TaxSlabComponent }
         ]
       },
       { path: 'employee-field', component: AssetManagerComponent },
