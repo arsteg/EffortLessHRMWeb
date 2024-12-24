@@ -43,7 +43,7 @@ export class VariableAllowanceComponent {
       isLWFAffected: [true],
       isIncomeTaxAffected: [true],
       deductIncomeTaxAllowance: ['', Validators.required],
-      taxRegime: [''],
+      taxRegime: [['']],
       isShowInCTCStructure: [true],
       paidAllowanceFrequently: ['', Validators.required],
       allowanceEffectiveFromMonth: ['', Validators.required],
@@ -124,14 +124,34 @@ export class VariableAllowanceComponent {
     formValue.variableAllowanceApplicableEmployee = formValue.variableAllowanceApplicableEmployee.map(item => ({
       employee: item
     }));
-    console.log(formValue);
     if (this.variableAllowanceForm.valid) {
       if (this.isEdit == false) {
-        console.log(formValue);
-
         this.payroll.addVariableAllowance(formValue).subscribe((res: any) => {
           this.variableAllowances.push(res.data);
-          this.onCancel();
+          this.variableAllowanceForm.reset({
+            label: '',
+            allowanceRatePerDay: 0,
+            isPayrollEditable: true,
+            isProvidentFundAffected: true,
+            isESICAffected: true,
+            isLWFAffected: true,
+            isIncomeTaxAffected: true,
+            deductIncomeTaxAllowance: '',
+            taxRegime: '',
+            isShowInCTCStructure: true,
+            paidAllowanceFrequently: '',
+            allowanceEffectiveFromMonth: '',
+            allowanceEffectiveFromYear: '',
+            isEndingPeriod: true,
+            allowanceStopMonth: '',
+            allowanceStopYear: '',
+            amountEnterForThisVariableAllowance: '',
+            amount: 0,
+            percentage: 0,
+            isProfessionalTaxAffected: true,
+            isAttandanceToAffectEligibility: true,
+            variableAllowanceApplicableEmployee: []
+          })
           this.toast.success('Successfully Added!!!', 'Variable Allowance');
         },
           (err) => {
@@ -144,7 +164,31 @@ export class VariableAllowanceComponent {
           if (index !== -1) {
             this.variableAllowances[index] = res.data;
           }
-          this.onCancel();
+          this.variableAllowanceForm.reset({
+            label: '',
+            allowanceRatePerDay: 0,
+            isPayrollEditable: true,
+            isProvidentFundAffected: true,
+            isESICAffected: true,
+            isLWFAffected: true,
+            isIncomeTaxAffected: true,
+            deductIncomeTaxAllowance: '',
+            taxRegime: '',
+            isShowInCTCStructure: true,
+            paidAllowanceFrequently: '',
+            allowanceEffectiveFromMonth: '',
+            allowanceEffectiveFromYear: '',
+            isEndingPeriod: true,
+            allowanceStopMonth: '',
+            allowanceStopYear: '',
+            amountEnterForThisVariableAllowance: '',
+            amount: 0,
+            percentage: 0,
+            isProfessionalTaxAffected: true,
+            isAttandanceToAffectEligibility: true,
+            variableAllowanceApplicableEmployee: []
+          })
+          this.isEdit = false;
           this.toast.success('Successfully Updated!!!', 'Variable Allowance');
         },
           (err) => {
@@ -153,25 +197,15 @@ export class VariableAllowanceComponent {
       }
     }
     else {
-      this.markFormGroupTouched(this.variableAllowanceForm);
+      this.variableAllowanceForm.markAllAsTouched();
     }
   }
-  markFormGroupTouched(formGroup: FormGroup) {
-    Object.values(formGroup.controls).forEach(control => {
-      control.markAsTouched();
-      if (control instanceof FormGroup) {
-        this.markFormGroupTouched(control);
-      }
-    });
-  }
+ 
   editRecord() {
     this.variableAllowanceForm.patchValue(this.selectedRecord);
   }
 
-  
-
   onCancel() {
-    this.isEdit = false;
     this.variableAllowanceForm.patchValue({
       label: '',
       allowanceRatePerDay: 0,
