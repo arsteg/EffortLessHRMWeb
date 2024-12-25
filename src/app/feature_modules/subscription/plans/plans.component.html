@@ -25,6 +25,10 @@
             @if(subscription.remaining_count > 0 && subscription.current_end){
                 <p>Next due on {{subscription.current_end*1000 | date: 'dd MMM, yyyy'}}.</p>
             }
+
+            <button mat-raised-button class="addBtn" (click)="viewPayments()">
+                <mat-icon>payment</mat-icon>View Payments
+            </button>
         </div>
     </div>
 } @else {

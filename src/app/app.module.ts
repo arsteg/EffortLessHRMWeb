@@ -1,4 +1,8 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
+import {
+  CUSTOM_ELEMENTS_SCHEMA,
+  NgModule,
+  NO_ERRORS_SCHEMA,
+} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -6,10 +10,19 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './login/register/register.component';
 import { ForgotPasswordComponent } from './login/forgot-password/forgot-password.component';
 import { SidebarDirective } from './layout/sidebar.directive';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import {
+  HTTP_INTERCEPTORS,
+  HttpClient,
+  HttpClientModule,
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from '@angular/common/http';
 import { ResetPasswordComponent } from './login/reset-password/reset-password.component';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
+import {
+  BrowserAnimationsModule,
+  NoopAnimationsModule,
+} from '@angular/platform-browser/animations';
 import { LayoutModule } from '@angular/cdk/layout';
 import { ChangePasswordComponent } from './login/change-password/change-password.component';
 import { NgHttpLoaderModule } from 'ng-http-loader';
@@ -42,6 +55,7 @@ import { NotificationComponent } from './layouts/home/notification/notification.
 import { environment } from '../environments/environment';
 import { UserProfileComponent } from './feature_modules/manage/users/user-profile/user-profile.component';
 import { SubscriptionComponent } from './layouts/subscription/subscription.component';
+import { ErrorInterceptor } from './_helpers/error.interceptor';
 
 const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
 
@@ -61,7 +75,7 @@ const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
     PermissionsComponent,
     RolePermissionComponent,
     NotificationComponent,
-    UserProfileComponent // imported from manage, to be used in home profile
+    UserProfileComponent, // imported from manage, to be used in home profile
   ],
   imports: [
     BrowserModule,
@@ -87,12 +101,16 @@ const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
     FormsModule,
     SocketIoModule.forRoot(config),
   ],
-  schemas: [
-    CUSTOM_ELEMENTS_SCHEMA,
-    NO_ERRORS_SCHEMA
+  schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
+  providers: [
+    CommonService,
+    UserService,
+    AuthGuard,
+    DatePipe,
+    HttpClient,
+    provideHttpClient(withInterceptorsFromDi()),
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
   ],
-  providers: [CommonService, UserService, AuthGuard, DatePipe, HttpClient],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-
-export class AppModule { }
+export class AppModule {}

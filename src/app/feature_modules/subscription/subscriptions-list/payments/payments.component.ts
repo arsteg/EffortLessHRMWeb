@@ -19,7 +19,7 @@ export class PaymentsComponent {
   private readonly dialogData = inject(MAT_DIALOG_DATA);
   paymentsData = signal<any>(null);
   loading = signal<boolean>(false);
-  displayedColumns: string[] = ['date', 'amount', 'invoice_id'];
+  displayedColumns: string[] = ['date', 'amount', 'method', 'invoice_id'];
   dataSource = signal<any[]>([]);
 
   ngOnInit() {

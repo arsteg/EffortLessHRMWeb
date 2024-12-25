@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PlansListComponent } from '../plans-list/plans-list.component';
 import { PlansComponent } from '../plans/plans.component';
 import { SubscriptionsListComponent } from '../subscriptions-list/subscriptions-list.component';
+import { CommonService } from 'src/app/_services/common.Service';
 
 @Component({
   selector: 'app-subscriptions',
@@ -20,12 +21,17 @@ import { SubscriptionsListComponent } from '../subscriptions-list/subscriptions-
 export class SubscriptionsComponent {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+  private readonly commonService = inject(CommonService);
   selectedIndex = 0;
+  user: any;
 
   ngOnInit(){
     this.route.queryParams.subscribe((params)=>{
       this.selectedIndex = params['tab'];
     })
+    this.commonService.getCurrentUser().subscribe((user)=>{
+      this.user = user;
+    });
   }
 
   onTabChange(event){

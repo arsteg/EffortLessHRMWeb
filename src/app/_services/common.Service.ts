@@ -98,7 +98,6 @@ export class CommonService extends baseService {
   }
 
   getCurrentUser(): BehaviorSubject<any> {
-    console.log(this.currentProfileSubject);
     return this.currentProfileSubject;
   }
 

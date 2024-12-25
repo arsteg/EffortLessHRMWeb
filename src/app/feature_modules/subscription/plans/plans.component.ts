@@ -5,7 +5,10 @@ import { SubscriptionService } from 'src/app/_services/subscription.service';
 import { MatButtonModule } from '@angular/material/button';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { response } from 'src/app/models/response';
+import { MatDialog } from '@angular/material/dialog';
+import { PaymentsComponent } from '../subscriptions-list/payments/payments.component';
+import { MatIconModule } from '@angular/material/icon';
+import { pipe, timeout } from 'rxjs';
 
 declare let Razorpay: any;
 
@@ -16,7 +19,8 @@ declare let Razorpay: any;
     CurrencyPipe,
     DatePipe,
     MatButtonModule,
-    NgClass
+    NgClass,
+    MatIconModule
   ],
   templateUrl: './plans.component.html',
   styleUrl: './plans.component.css'
@@ -27,6 +31,7 @@ export class PlansComponent {
   private readonly authService = inject(AuthenticationService);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly destoryRef = inject(DestroyRef);
+  private readonly dialog = inject(MatDialog);
   today: Date = new Date();
   loading: boolean = false;
   plans = [];
@@ -59,8 +64,8 @@ export class PlansComponent {
     this.loading = true;
     this.subscriptionService.createSubscription(payload)
       .subscribe((data: any) => {
-        this.makePayment(data.data.subscription.subscriptionId);
-      })
+        this.makePayment(data.data.subscription.subscriptionId); 
+      }) 
   }
 
   makePayment(id: string) {
@@ -79,7 +84,10 @@ export class PlansComponent {
             this.subscription.id = id;
             this.authService.companySubscription.next(this.subscription);
             localStorage.setItem('subscription', JSON.stringify(this.subscription));
-            this.router.navigate(['home/dashboard']);
+            this.subscriptionService.activateSubscription(id)
+            .subscribe(()=>{ 
+                this.router.navigate(['home/dashboard']);
+            });
           }
           this.cdr.detectChanges();
       },
@@ -95,5 +103,11 @@ export class PlansComponent {
     };
     const rzp = new Razorpay(options);
     rzp.open();
+  }
+
+  viewPayments() {
+    this.dialog.open(PaymentsComponent, {
+      data: { subscriptionId: this.subscription.id }
+    });
   }
 }
