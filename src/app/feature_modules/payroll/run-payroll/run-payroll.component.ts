@@ -1,17 +1,33 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-run-payroll',
   templateUrl: './run-payroll.component.html',
-  styleUrl: './run-payroll.component.css'
+  styleUrls: ['./run-payroll.component.css']
 })
-export class RunPayrollComponent {
-  selectedTab: number = 1;
-  constructor() { }
+export class RunPayrollComponent implements OnInit {
+  selectedTab: string = 'run-payroll';
+  showTabs: boolean = true;
 
-  ngOnInit(): void {  
+  constructor(private route: ActivatedRoute, private router: Router) { }
+
+  ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      this.selectedTab = params['tab'] || 'run-payroll';
+    });
   }
-  selectTab(tabIndex: number) {
+
+  selectTab(tabIndex: string) {
     this.selectedTab = tabIndex;
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { tab: this.selectedTab },
+      queryParamsHandling: 'merge'
+    });
+  }
+
+  toggleView() {
+    this.showTabs = !this.showTabs;
   }
 }

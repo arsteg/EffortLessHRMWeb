@@ -9,11 +9,12 @@ import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 export class PayslipsComponent {
   closeResult: string = '';
   searchText: string = '';
+  showPayslipDetail: boolean;
 
   constructor(private modalService: NgbModal) { }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
@@ -28,5 +29,15 @@ export class PayslipsComponent {
     } else {
       return `with: ${reason}`;
     }
+  }
+
+  viewPayslip() {
+    // this.selectedPayslip = payslip;
+    this.showPayslipDetail = true;
+  }
+
+  closePayslipDetail() {
+    this.showPayslipDetail = false;
+    // this.selectedPayslip = null;
   }
 }
