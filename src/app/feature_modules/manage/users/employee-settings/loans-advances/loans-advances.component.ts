@@ -19,13 +19,13 @@ export class UserLoansAdvancesComponent {
   closeResult: string = '';
   loansAdvancesForm: FormGroup;
   selectedUser = this.userService.getData();
-  totalRecords: number
+  totalRecords: number;
   recordsPerPage: number = 10;
   currentPage: number = 1;
   selectedRecord: any;
   loansAdvancesCategories: any;
   public sortOrder: string = '';
-  
+
   constructor(
     private modalService: NgbModal,
     private fb: FormBuilder,
@@ -37,13 +37,29 @@ export class UserLoansAdvancesComponent {
     this.loansAdvancesForm = this.fb.group({
       user: ['', Validators.required],
       loanAdvancesCategory: ['', Validators.required],
-      amount: [0, Validators.required],
-      repaymentFrequency: ['', Validators.required]
-    })
+      amount: [{ value: 0, disabled: true }, Validators.required],
+      noOfInstallment: [0, Validators.required],
+      monthlyInstallment: [0, Validators.required]
+    });
+    this.loansAdvancesForm.get('amount').disable();
+    this.loansAdvancesForm.get('noOfInstallment').valueChanges.subscribe(() => {
+      this.calculateTotalAmount();
+    });
+
+    this.loansAdvancesForm.get('monthlyInstallment').valueChanges.subscribe(() => {
+      this.calculateTotalAmount();
+    });
   }
 
   ngOnInit() {
     this.loadRecords();
+  }
+
+  calculateTotalAmount() {
+    const noOfInstallment = this.loansAdvancesForm.get('noOfInstallment').value;
+    const monthlyInstallment = this.loansAdvancesForm.get('monthlyInstallment').value;
+    const totalAmount = noOfInstallment * monthlyInstallment;
+    this.loansAdvancesForm.get('amount').setValue(totalAmount, { emitEvent: false });
   }
 
   deleteLoansAdvances(id: string): void {
@@ -84,7 +100,7 @@ export class UserLoansAdvancesComponent {
     this.payroll.getLoans(payload).subscribe((res: any) => {
       this.loansAdvancesCategories = res.data;
     })
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
@@ -96,9 +112,9 @@ export class UserLoansAdvancesComponent {
   }
 
   onSubmission() {
+    this.loansAdvancesForm.patchValue({ user: this.selectedUser._id });
     if (!this.isEdit) {
-      this.loansAdvancesForm.value.user = this.selectedUser.id;
-      console.log(this.loansAdvancesForm.value);
+      this.loansAdvancesForm.get('amount').enable();
       this.userService.addLoansAdvances(this.loansAdvancesForm.value).subscribe((res: any) => {
         console.log(res.data);
         this.loansAdvances.push(res.data);
@@ -108,6 +124,7 @@ export class UserLoansAdvancesComponent {
         this.toast.error('This Loan/Advance Can not be added!', 'Error!')
       })
     } else if (this.isEdit) {
+      this.loansAdvancesForm.get('amount').enable();
       this.userService.updateLoansAdvances(this.selectedRecord._id, this.loansAdvancesForm.value).subscribe((res: any) => {
         const index = this.loansAdvances.findIndex(z => z._id === this.selectedRecord._id);
         if (index !== -1) {
@@ -120,6 +137,7 @@ export class UserLoansAdvancesComponent {
         this.toast.error('This Loan/Advance Can not be Updated!', 'Error!')
       })
     }
+    this.loansAdvancesForm.get('amount').disable();
   }
 
   onPageChange(page: number) {
@@ -137,7 +155,7 @@ export class UserLoansAdvancesComponent {
       skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
       next: this.recordsPerPage.toString()
     };
-    this.userService.getLoansAdvancesByUserId(this.selectedUser.id, pagination).subscribe((res: any) => {
+    this.userService.getLoansAdvancesByUserId(this.selectedUser._id, pagination).subscribe((res: any) => {
       this.loansAdvances = res.data;
       this.totalRecords = res.total;
     });
