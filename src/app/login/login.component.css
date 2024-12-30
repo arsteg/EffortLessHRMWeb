@@ -155,3 +155,13 @@ input.ng-invalid.ng-touched {
     width:100% !important;
   }
 }
+
+.showPswrd{
+  position: absolute;
+    left: 88%;
+    padding: 15px 10px 0px;
+    background: none;
+}
+ .showPswrd i{
+  font-size: larger;
+ }
