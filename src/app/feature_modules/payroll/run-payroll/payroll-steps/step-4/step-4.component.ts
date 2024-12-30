@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-import { catchError, forkJoin, map, of, switchMap } from 'rxjs';
+import { forkJoin, map, of, switchMap } from 'rxjs';
 import { CommonService } from 'src/app/_services/common.Service';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { UserService } from 'src/app/_services/users.service';
@@ -47,7 +47,6 @@ export class Step4Component {
     });
 
     this.loanAdvanceForm.get('type').valueChanges.subscribe((type) => {
-      console.log('Type changed to:', type);
       if (type === 'Disbursement') {
         this.loanAdvanceForm.get('disbursementAmount').setValidators([Validators.required, Validators.min(1)]);
         this.loanAdvanceForm.get('disbursementAmount').enable();
@@ -97,7 +96,6 @@ export class Step4Component {
 
   onUserSelectedFromChild(userId: any) {
     this.selectedUserId = userId;
-    console.log(this.selectedUserId);
     this.getLoanAdvances();
     if (this.changeMode === 'Add' || this.changeMode === 'Update') {
       this.getLoanAdvancesOfUser();
@@ -286,7 +284,6 @@ export class Step4Component {
 
   deleteTemplate(_id: string) {
     this.payrollService.deleteLoanAdvance(_id).subscribe((res: any) => {
-      // this.getLoanAdvances();
       if (res != null) {
         const index = this.loanAdvances.findIndex(temp => temp._id === _id);
         if (index !== -1) {
