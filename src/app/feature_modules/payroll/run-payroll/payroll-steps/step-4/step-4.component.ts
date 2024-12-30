@@ -40,9 +40,24 @@ export class Step4Component {
     this.loanAdvanceForm = this.fb.group({
       payrollUser: ['', Validators.required],
       loanAndAdvance: [''],
-      disbursementAmount: [0, [Validators.required, Validators.min(1)]],
-      status: ['Pending']
-    })
+      disbursementAmount: [{ value: 0, disabled: true }, [Validators.required, Validators.min(1)]],
+      status: ['Pending'],
+      type: [''],
+      amount: [0]
+    });
+
+    this.loanAdvanceForm.get('type').valueChanges.subscribe((type) => {
+      console.log('Type changed to:', type);
+      if (type === 'Disbursement') {
+        this.loanAdvanceForm.get('disbursementAmount').setValidators([Validators.required, Validators.min(1)]);
+        this.loanAdvanceForm.get('disbursementAmount').enable();
+      } else if (type === 'Repayment') {
+        this.loanAdvanceForm.get('disbursementAmount').setValue(0);
+        this.loanAdvanceForm.get('disbursementAmount').clearValidators();
+        this.loanAdvanceForm.get('disbursementAmount').disable();
+      }
+      this.loanAdvanceForm.get('disbursementAmount').updateValueAndValidity();
+    });
   }
 
   ngOnInit() {
@@ -64,7 +79,9 @@ export class Step4Component {
       payrollUser: '',
       loanAndAdvance: '',
       disbursementAmount: 0,
-      status: 'Pending'
+      status: 'Pending',
+      type: '',
+      amount: 0
     })
   }
 
@@ -129,7 +146,9 @@ export class Step4Component {
         payrollUser: this.getUser(payrollUser),
         loanAndAdvance: form.loanAndAdvance,
         disbursementAmount: form.disbursementAmount,
-        status: form.status
+        status: form.status,
+        type: form.type,
+        amount: form.amount
       });
       this.loanAdvanceForm.get('payrollUser').disable();
     })

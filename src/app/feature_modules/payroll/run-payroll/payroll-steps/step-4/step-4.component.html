@@ -74,6 +74,13 @@
                 </option>
             </select>
         </div>
+        <div class="form-group">
+            <label for="type">Type of Amount</label>
+            <select name="" id="type" formControlName="type">
+                <option value="Disbursement">Disbursement</option>
+                <option value="Repayment">Repayment</option>
+            </select>
+        </div>
 
         <div class="form-group">
             <label for="">Enter Disbursement Amount</label>
@@ -81,6 +88,15 @@
             <div *ngIf="loanAdvanceForm.get('disbursementAmount')?.invalid && loanAdvanceForm.get('disbursementAmount')?.touched"
                 class="text-danger">
                Disbursement Amount must be greater than 0.
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="">Enter Amount</label>
+            <input type="number" class="form-control" formControlName="amount">
+            <div *ngIf="loanAdvanceForm.get('amount')?.invalid && loanAdvanceForm.get('amount')?.touched"
+                class="text-danger">
+               Please add Valid Amount.
             </div>
         </div>
 
