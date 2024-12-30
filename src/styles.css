@@ -37,6 +37,8 @@ body {
 }
 
 .search {
+  border: none !important;
+  background: none !important;
   border-radius: 2rem !important;
   box-shadow: none;
   padding-left: 35px !important;
@@ -125,7 +127,7 @@ thead tr {
 }
 
 thead th {
-  font-weight: 700;
+  font-weight: 700 !important;
   color: #64728c;
   font-family: Nunito Sans, sans-serif;
   cursor: pointer;
@@ -681,9 +683,11 @@ th {
   border-radius: 2px;
 } */
 
-thead{
-  background: #ecffd5;
+thead,
+th {
+  background: #ecffd5 !important;
 }
+
 .tableContainer {
   border-radius: 20px;
 }
@@ -720,9 +724,10 @@ button {
   background-color: #e3e3e3;
 }
 
-.orangeBackground{
+.orangeBackground {
   background-color: #ff7b1d;
 }
+
 button.active {
   color: #ff7b1d;
   border: 1px solid;
@@ -965,4 +970,8 @@ h2 {
   font-size: 14px;
   text-decoration: underline;
   color: #ff7b1d;
+}
+
+.custom-select-panel {
+  z-index: 1060 !important;
 }

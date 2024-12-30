@@ -147,10 +147,6 @@ export class PayrollHistoryComponent {
   }
 
   updatePayrollUser() {
-    // add user
-
-    console.log(this.payrollUserForm.value.totalGrossSalary);
-
     if (this.payrollUserForm.valid) {
       this.payrollUserForm.value.payroll = this.selectedPayroll;
 
@@ -175,7 +171,6 @@ export class PayrollHistoryComponent {
         })
       })
     }
-
     else { this.payrollUserForm.markAllAsTouched(); }
   }
 

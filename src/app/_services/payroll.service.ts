@@ -26,6 +26,7 @@ export class PayrollService {
   configureState: any = new BehaviorSubject('');
   assignedTemplates: any = new BehaviorSubject('');
   ctcTempData: any = new BehaviorSubject('');
+  selectedFnFPayroll: any = new BehaviorSubject('');
 
   constructor(private http: HttpClient) { }
   public getToken() {
@@ -625,6 +626,105 @@ export class PayrollService {
 
   updateIncomeTax(id: string, payload: any): Observable<any> {
     var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/incomeTax/${id}`, payload, this.httpOptions);
+    return response;
+  }
+
+  // FnF CRUD
+  addFnF(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/fnf`, payload, this.httpOptions);
+    return response;
+  }
+
+  updateFnF(id: string, payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/fnf/${id}`, payload, this.httpOptions);
+    return response;
+  }
+
+  deleteFnF(id: string): Observable<any> {
+    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll/fnf/${id}`, this.httpOptions);
+    return response;
+  }
+
+  getFnF(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/fnf/payroll-by-company`, payload, this.httpOptions);
+    return response;
+  }
+
+  getFnFById(id: string): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/fnf/${id}`, this.httpOptions);
+    return response;
+  }
+
+  // CRUD FnF User
+  addFnFUser(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/fnf/users`, payload, this.httpOptions);
+    return response;
+  }
+
+   getFnFUsers(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/users-by-payroll-fnf`, payload, this.httpOptions);
+    return response;
+  }
+  
+  updateFnFUser(id: string, payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/fnf/users/${id}`, payload, this.httpOptions);
+    return response;
+  }
+
+  deleteFnFUser(id: string): Observable<any> {
+    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll/fnf/users/${id}`, this.httpOptions);
+    return response;
+  }
+
+  // FnF Attendance Summary CRUD
+  addFnFAttendanceSummary(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/payroll-fnf-attendance-summary`, payload, this.httpOptions);
+    return response;
+  }
+
+  updateFnFAttendanceSummary(id: string, payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/payroll-fnf-attendance-summary/${id}`, payload, this.httpOptions);
+    return response;
+  }
+
+  deleteFnFAttendanceSummary(id: string): Observable<any> {
+    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll/payroll-fnf-attendance-summary/${id}`, this.httpOptions);
+    return response;
+  }
+
+  getFnFAttendanceSummary(fnfPayrollId: string): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/payroll-fnf-attendance-summary-by-payroll-fnf/${fnfPayrollId}`, this.httpOptions);
+    return response;
+  }
+
+  getFnFAttendanceSummaryByFnFUserId(fnfUserId: string): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/payroll-fnf-attendance-summary/${fnfUserId}`, this.httpOptions);
+    return response;
+  }
+
+  // VariablePay CRUD
+  addFnFVariablePay(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/payroll-fnf-variable-pay`, payload, this.httpOptions);
+    return response;
+  }
+
+  updateFnFVariablePay(id: string, payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/payroll-fnf-variable-pay/${id}`, payload, this.httpOptions);
+    return response;
+  }
+
+  deleteFnFVariablePay(id: string): Observable<any> {
+    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll/payroll-fnf-variable-pay/${id}`, this.httpOptions);
+    return response;
+  }
+
+  getFnFVariablePaySummary(fnfPayloadId: string): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/payroll-fnf-variable-pay-by-payroll-fnf/${fnfPayloadId}`, this.httpOptions);
+    return response;
+  }
+
+  getFnFVariablePayFnFUserId(fnfUserId: string): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/fnf-variable-pay/${fnfUserId}`, this.httpOptions);
     return response;
   }
 }
