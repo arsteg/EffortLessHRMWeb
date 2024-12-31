@@ -20,6 +20,7 @@ export class LoginComponent implements OnInit {
   user: signup = new signup();
   loginForm: FormGroup;
   inValidForm: boolean;
+  hidePassword: boolean = true;
 
 
   constructor(private formBuilder: UntypedFormBuilder,
@@ -91,6 +92,10 @@ export class LoginComponent implements OnInit {
     else{this.loginForm.markAllAsTouched()}
   }
   
+  togglePasswordVisibility() {
+    this.hidePassword = !this.hidePassword;
+  }
+
   getCurrentYear(): number {
     return new Date().getFullYear();
   }

@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 
@@ -31,7 +30,6 @@ export class LoansAdvancesComponent {
     private fb: FormBuilder,
     private dialog: MatDialog,
     private payroll: PayrollService,
-    private auth: AuthenticationService
   ) {
     this.loansAdvancesForm = this.fb.group({
       name: ['', Validators.required]      

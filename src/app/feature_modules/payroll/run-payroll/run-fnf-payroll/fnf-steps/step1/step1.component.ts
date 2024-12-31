@@ -55,6 +55,7 @@ export class FNFStep1Component implements OnInit {
   }
 
   onUserChange(fnfUserId: string): void {
+    console.log('fnf payroll users: ',fnfUserId);
     this.payrollService.selectedFnFPayroll.subscribe((fnfPayroll: any) => {
     const fnfUser = fnfPayroll.userList[0].user;
 
