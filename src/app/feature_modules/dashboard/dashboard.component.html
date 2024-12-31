@@ -30,21 +30,24 @@
               <h1 class="content__data pe-lg-0 pe-3">1</h1>
             </div>
             <div class="mt-2 border-end pe-lg-5 pe-0 d-lg-block d-flex justify-content-between align-items-center">
-              <p class="content__title ps-lg-0 ps-3">Next payment on</p>
-              <h1 class="content__data pe-lg-0 pe-3">09 Jun, 2023</h1>
-            </div>
-            <div class="mt-2 border-end pe-lg-5 pe-0 d-lg-block d-flex justify-content-between align-items-center">
-              <p class="content__title ps-lg-0 ps-3">Latest Invoice</p>
               <div class="content__data pe-lg-0 pe-3">
-                <h1 class="">$2.99</h1>
-                <a href="">My Invoices</a>
+                <p class="content__title">{{subscription.currentPlanId.frequency | titlecase}} Subscription</p>
+                <h1>{{subscription?.currentPlanId.name}}</h1>
+                <h1>{{subscription?.razorpaySubscription.status | titlecase}}</h1>
               </div>
             </div>
-            <div class="mt-2 pe-lg-5 pe-0 d-lg-block d-flex justify-content-between align-items-center">
-              <p class="content__title ps-lg-0 ps-3 text-end">Balance</p>
+            <div class="mt-2 border-end pe-lg-5 pe-0 d-lg-block d-flex justify-content-between align-items-center">
               <div class="content__data pe-lg-0 pe-3">
-                <h1 class="">$0</h1>
-                <a href="">Make Payment</a>
+                <p class="content__title">Next payment</p>
+                <h1>{{subscription?.currentPlanId.currentprice | currency: 'INR'}}</h1>
+                <h1>{{subscription?.razorpaySubscription.current_end*1000 | date}}</h1>
+              </div>  
+            </div>
+            <div class="mt-2 pe-lg-5 pe-0 d-lg-block d-flex justify-content-between align-items-center">
+              <p class="content__title ps-lg-0 ps-3 text-end">Payment Method</p>
+              <div class="content__data pe-lg-0 pe-3">
+                <h1 class="">{{subscription.razorpaySubscription.payment_method | titlecase}}</h1>
+                <a href="javascript:void(0)" (click)="openPaymentsDialog()">View Payments</a>
               </div>
             </div>
           </div>
