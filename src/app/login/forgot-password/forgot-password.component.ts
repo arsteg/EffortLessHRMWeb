@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { UntypedFormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import {  NgForm } from '@angular/forms';
 import { first } from 'rxjs';
 import { NotificationService } from '../../_services/notification.service';
 import { AuthenticationService } from '../../_services/authentication.service';
@@ -19,9 +18,6 @@ export class ForgotPasswordComponent implements OnInit {
   @ViewChild('f') forgotPasswordForm: NgForm;
   
   constructor( 
-    private formBuilder: UntypedFormBuilder,
-    private route: ActivatedRoute,
-    private router: Router,
     private authenticationService: AuthenticationService,
     private notifyService: NotificationService) { }
 
@@ -44,4 +40,8 @@ export class ForgotPasswordComponent implements OnInit {
         this.loading = false;
     });
  }  
+
+ getCurrentYear(): number {
+  return new Date().getFullYear();
+}
 }

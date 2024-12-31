@@ -7,7 +7,7 @@ import { UserService } from 'src/app/_services/users.service';
 @Component({
   selector: 'app-add-salary-details',
   templateUrl: './add-salary-details.component.html',
-  styleUrl: './add-salary-details.component.css'
+  styleUrls: ['./add-salary-details.component.css']
 })
 export class AddSalaryDetailsComponent {
   @Output() backToSalaryDetails = new EventEmitter<void>();
@@ -88,7 +88,6 @@ export class AddSalaryDetailsComponent {
       this.disableFormControls(this.salaryDetailsForm);
     }
   }
-
 
   disableFormControls(formGroup: FormGroup | FormArray) {
     if (formGroup instanceof FormGroup) {
@@ -210,7 +209,7 @@ export class AddSalaryDetailsComponent {
       monthlyAmount: [0, Validators.required],
       yearlyAmount: [0, Validators.required],
     });
-    this.employerContributionArray.push(allowanceGroup)
+    this.employerContributionArray.push(allowanceGroup);
   }
 
   addFixedDeduction(): void {
@@ -219,7 +218,7 @@ export class AddSalaryDetailsComponent {
       monthlyAmount: [0, Validators.required],
       yearlyAmount: [0, Validators.required],
     });
-    this.fixedDeductionArray.push(allowanceGroup)
+    this.fixedDeductionArray.push(allowanceGroup);
   }
 
   addVariableAllowance(): void {
@@ -228,7 +227,7 @@ export class AddSalaryDetailsComponent {
       monthlyAmount: [0, Validators.required],
       yearlyAmount: [0, Validators.required],
     });
-    this.variableAllowanceArray.push(allowanceGroup)
+    this.variableAllowanceArray.push(allowanceGroup);
   }
 
   addVariableDeduction(): void {
@@ -237,7 +236,7 @@ export class AddSalaryDetailsComponent {
       monthlyAmount: [0, Validators.required],
       yearlyAmount: [0, Validators.required],
     });
-    this.variableDeductionArray.push(allowanceGroup)
+    this.variableDeductionArray.push(allowanceGroup);
   }
 
   addPFCharge(): void {
@@ -261,23 +260,14 @@ export class AddSalaryDetailsComponent {
     payload.user = this.selectedUser.id;
     console.log(payload);
 
-    payload.salaryComponentEmployerContribution.filter(item => item?.employerContribution == '');
-    payload.salaryComponentEmployerContribution = [];
+    payload.salaryComponentEmployerContribution = payload.salaryComponentEmployerContribution.filter(item => item?.employerContribution !== '');
+    payload.salaryComponentFixedAllowance = payload.salaryComponentFixedAllowance.filter(item => item?.fixedAllowance !== '');
+    payload.salaryComponentFixedDeduction = payload.salaryComponentFixedDeduction.filter(item => item?.fixedDeduction !== '');
+    payload.salaryComponentOtherBenefits = payload.salaryComponentOtherBenefits.filter(item => item?.otherBenefits !== '');
+    payload.salaryComponentVariableAllowance = payload.salaryComponentVariableAllowance.filter(item => item?.variableAllowance !== '');
+    payload.salaryComponentVariableDeduction = payload.salaryComponentVariableDeduction.filter(item => item?.variableDeduction !== '');
+    payload.salaryComponentPFCharge = payload.salaryComponentPFCharge.filter(item => item?.pfCharge !== '');
 
-    payload.salaryComponentFixedAllowance.filter(item => item?.fixedAllowance == '');
-    payload.salaryComponentFixedAllowance = [];
-
-    payload.salaryComponentFixedDeduction.filter(item => item?.fixedDeduction == '');
-    payload.salaryComponentFixedDeduction = [];
-
-    payload.salaryComponentOtherBenefits.filter(item => item?.otherBenefits == '');
-    payload.salaryComponentOtherBenefits = [];
-
-    payload.salaryComponentVariableAllowance.filter(item => item?.variableAllowance == '');
-    payload.salaryComponentVariableAllowance = [];
-
-    payload.salaryComponentVariableDeduction.filter(item => item?.variableDeduction == '');
-    payload.salaryComponentVariableDeduction = [];
     console.log(payload);
 
     this.userService.addSalaryDetails(payload).subscribe((res: any) => {
@@ -295,7 +285,7 @@ export class AddSalaryDetailsComponent {
     }
     this.payrollService.getCTCTemplate(payload).subscribe((res: any) => {
       this.ctcTemplates = res.data;
-    })
+    });
   }
 
   getCTCTemplateById(id: string): void {
@@ -313,7 +303,7 @@ export class AddSalaryDetailsComponent {
           fixedAllowanceArray.push(allowanceGroup);
         });
 
-        // // CTC template other benefits
+        // CTC template other benefits
         const otherBenefitsArray = this.salaryDetailsForm.get('salaryComponentOtherBenefits') as FormArray;
         otherBenefitsArray.clear();
 
@@ -324,12 +314,11 @@ export class AddSalaryDetailsComponent {
             yearlyAmount: [otherBenefit.value * 12]
           });
           otherBenefitsArray.push(benefitGroup);
-          console.log(otherBenefitsArray)
+          console.log(otherBenefitsArray);
           this.handleMonthlyAmountChanges();
-
         });
 
-        // ctc template employer contributions
+        // CTC template employer contributions
         const employerContributionArray = this.salaryDetailsForm.get('salaryComponentEmployerContribution') as FormArray;
         employerContributionArray.clear();
         ctcTemplate.data.ctcTemplateEmployerContributions.forEach((fixedContribution: any) => {
@@ -340,10 +329,9 @@ export class AddSalaryDetailsComponent {
           });
           employerContributionArray.push(employerContributionGroup);
           this.handleMonthlyAmountChanges();
-
         });
 
-        // // ctc template fixed deductions
+        // CTC template fixed deductions
         const fixedDeductionArray = this.salaryDetailsForm.get('salaryComponentFixedDeduction') as FormArray;
         fixedDeductionArray.clear();
         ctcTemplate.data.ctcTemplateFixedDeductions.forEach((fixedDeduction: any) => {
@@ -354,8 +342,8 @@ export class AddSalaryDetailsComponent {
           });
           fixedDeductionArray.push(deductionGroup);
         });
-        // ctc template variable allowances
 
+        // CTC template variable allowances
         const variableAllowanceArray = this.salaryDetailsForm.get('salaryComponentVariableAllowance') as FormArray;
         variableAllowanceArray.clear();
         ctcTemplate.data.ctcTemplateVariableAllowances.forEach((variableAllowance: any) => {
@@ -367,7 +355,7 @@ export class AddSalaryDetailsComponent {
           variableAllowanceArray.push(allowanceGroup);
         });
 
-        // ctc template variable deductions
+        // CTC template variable deductions
         const variableDeductionArray = this.salaryDetailsForm.get('salaryComponentVariableDeduction') as FormArray;
         variableDeductionArray.clear();
         ctcTemplate.data.ctcTemplateVariableDeductions.forEach((variableDeduction: any) => {
@@ -380,7 +368,7 @@ export class AddSalaryDetailsComponent {
         });
       },
       (error: any) => {
-        this.toast.error('Error fetching CTC template:', 'ERror');
+        this.toast.error('Error fetching CTC template:', 'Error');
       }
     );
   }
@@ -389,7 +377,7 @@ export class AddSalaryDetailsComponent {
     let payload = {
       next: '',
       skip: ''
-    }
+    };
     this.payrollService.getPfTemplate(payload).subscribe((res: any) => {
       this.pfTemplates = res.data;
     });
@@ -425,7 +413,6 @@ export class AddSalaryDetailsComponent {
       const taxAndStatutorySettingGroup = this.salaryDetailsForm.get('employeeSalaryTaxAndStatutorySetting') as FormGroup;
       taxAndStatutorySettingGroup.patchValue(res.data.taxAndSalutaorySetting[0]);
 
-
       const salaryComponentFixedAllowance = res.data.fixedAllowanceList;
       this.fixedAllowances.clear();
       salaryComponentFixedAllowance.forEach((allowance) => {
@@ -441,6 +428,7 @@ export class AddSalaryDetailsComponent {
         const benefitGroup = this.otherBenefitsArray.at(this.otherBenefitsArray.length - 1);
         benefitGroup.patchValue(benefit);
       });
+
       const salaryComponentEmployerContribution = res.data.employerContributionList;
       this.employerContributionArray.clear();
       salaryComponentEmployerContribution.forEach((benefit) => {
@@ -448,6 +436,7 @@ export class AddSalaryDetailsComponent {
         const benefitGroup = this.employerContributionArray.at(this.employerContributionArray.length - 1);
         benefitGroup.patchValue(benefit);
       });
+
       const salaryComponentFixedDeduction = res.data.fixedDeductionList;
       this.fixedDeductionArray.clear();
       salaryComponentFixedDeduction.forEach((benefit) => {
@@ -455,35 +444,38 @@ export class AddSalaryDetailsComponent {
         const benefitGroup = this.fixedDeductionArray.at(this.fixedDeductionArray.length - 1);
         benefitGroup.patchValue(benefit);
       });
+
       const salaryComponentVariableAllowance = res.data.variableAllowanceList;
       this.variableAllowanceArray.clear();
       salaryComponentVariableAllowance.forEach((benefit) => {
         this.addVariableAllowance();
         const benefitGroup = this.variableAllowanceArray.at(this.variableAllowanceArray.length - 1);
-        benefitGroup.patchValue(benefit)
+        benefitGroup.patchValue(benefit);
       });
+
       const salaryComponentVariableDeduction = res.data.variableDeductionList;
       this.variableDeductionArray.clear();
       salaryComponentVariableDeduction.forEach((benefit) => {
         this.addVariableDeduction();
         const benefitGroup = this.variableDeductionArray.at(this.variableDeductionArray.length - 1);
-        benefitGroup.patchValue(benefit)
+        benefitGroup.patchValue(benefit);
       });
+
       const salaryComponentPFCharge = res.data.salaryComponentPFCharge;
       this.pfChargeArray.clear();
       salaryComponentPFCharge.forEach((benefit) => {
         this.addPFCharge();
         const benefitGroup = this.pfChargeArray.at(this.pfChargeArray.length - 1);
-        benefitGroup.patchValue(benefit)
+        benefitGroup.patchValue(benefit);
       });
-
-    })
+    });
   }
 
   getFixedAllowance(data: string) {
     const matchingRecord = this.fixedAllowance?.find(rec => rec._id === data);
     return matchingRecord?.label;
   }
+
   getOtherBenefits(data: string) {
     const matchingRecord = this.otherBenefits?.find(rec => rec._id === data);
     return matchingRecord?.label;
@@ -508,6 +500,4 @@ export class AddSalaryDetailsComponent {
     const matchingRecord = this.variableDeduction?.find(rec => rec._id === data);
     return matchingRecord?.label;
   }
-
-
 }

@@ -1,17 +1,17 @@
 <div class="main-content contentData">
     <div class="container-fluid px-0">
-        <div class=" d-flex  ms-5">
-            <button (click)="selectTab(1)" [class.active]="selectedTab === 1">Run
+        <div class="d-flex ms-5" *ngIf="showTabs">
+            <button (click)="selectTab('run-payroll')" [class.active]="selectedTab === 'run-payroll'">Run
                 Payroll</button>
-            <button (click)="selectTab(2)" [class.active]="selectedTab === 2">
+            <button (click)="selectTab('fnf-run-payroll')" [class.active]="selectedTab === 'fnf-run-payroll'">
                 Run Fnf Payroll</button>
         </div>
 
-        <div *ngIf="selectedTab === 1" class="tab-content p-0 mt-0">
+        <div *ngIf="selectedTab === 'run-payroll'" class="tab-content p-0 mt-0">
             <app-payroll-history></app-payroll-history>
         </div>
-        <div *ngIf="selectedTab === 2" class="tab-content p-0 mt-0">
-            <app-run-fnf-payroll></app-run-fnf-payroll>
+        <div *ngIf="selectedTab === 'fnf-run-payroll'" class="tab-content p-0 mt-0">
+            <app-run-fnf-payroll (changeView)="toggleView()"></app-run-fnf-payroll>
         </div>
     </div>
 </div>

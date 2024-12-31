@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-import { catchError, forkJoin, map, of, switchMap } from 'rxjs';
+import { forkJoin, map, of, switchMap } from 'rxjs';
 import { CommonService } from 'src/app/_services/common.Service';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { UserService } from 'src/app/_services/users.service';
@@ -40,9 +40,23 @@ export class Step4Component {
     this.loanAdvanceForm = this.fb.group({
       payrollUser: ['', Validators.required],
       loanAndAdvance: [''],
-      disbursementAmount: [0, [Validators.required, Validators.min(1)]],
-      status: ['Pending']
-    })
+      disbursementAmount: [{ value: 0, disabled: true }, [Validators.required, Validators.min(1)]],
+      status: ['Pending'],
+      type: [''],
+      amount: [0]
+    });
+
+    this.loanAdvanceForm.get('type').valueChanges.subscribe((type) => {
+      if (type === 'Disbursement') {
+        this.loanAdvanceForm.get('disbursementAmount').setValidators([Validators.required, Validators.min(1)]);
+        this.loanAdvanceForm.get('disbursementAmount').enable();
+      } else if (type === 'Repayment') {
+        this.loanAdvanceForm.get('disbursementAmount').setValue(0);
+        this.loanAdvanceForm.get('disbursementAmount').clearValidators();
+        this.loanAdvanceForm.get('disbursementAmount').disable();
+      }
+      this.loanAdvanceForm.get('disbursementAmount').updateValueAndValidity();
+    });
   }
 
   ngOnInit() {
@@ -64,7 +78,9 @@ export class Step4Component {
       payrollUser: '',
       loanAndAdvance: '',
       disbursementAmount: 0,
-      status: 'Pending'
+      status: 'Pending',
+      type: '',
+      amount: 0
     })
   }
 
@@ -80,7 +96,6 @@ export class Step4Component {
 
   onUserSelectedFromChild(userId: any) {
     this.selectedUserId = userId;
-    console.log(this.selectedUserId);
     this.getLoanAdvances();
     if (this.changeMode === 'Add' || this.changeMode === 'Update') {
       this.getLoanAdvancesOfUser();
@@ -129,7 +144,9 @@ export class Step4Component {
         payrollUser: this.getUser(payrollUser),
         loanAndAdvance: form.loanAndAdvance,
         disbursementAmount: form.disbursementAmount,
-        status: form.status
+        status: form.status,
+        type: form.type,
+        amount: form.amount
       });
       this.loanAdvanceForm.get('payrollUser').disable();
     })
@@ -267,7 +284,6 @@ export class Step4Component {
 
   deleteTemplate(_id: string) {
     this.payrollService.deleteLoanAdvance(_id).subscribe((res: any) => {
-      // this.getLoanAdvances();
       if (res != null) {
         const index = this.loanAdvances.findIndex(temp => temp._id === _id);
         if (index !== -1) {

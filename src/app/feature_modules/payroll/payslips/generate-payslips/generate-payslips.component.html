@@ -1,0 +1,112 @@
+<div class="payslip-detail">
+    <button class="backBtn" mat-raised-button (click)="close.emit()">Back</button>
+    <h2>Payslip Details</h2>
+
+    <div class="container bg-white py-5 px-4">
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <span>
+                <img class="w-50" src="assets/images/company-logo.jpg" alt="">
+            </span>
+
+            <div class="">
+                <label for="company-name" class="fw-bold">Company Name*</label><br>
+                <label for="">Company Address</label>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-3">
+                <span class="fw-bold">Date of joining:</span><br>
+                <span class="fw-bold">Pay Period:</span><br>
+                <span class="fw-bold">Payable days:</span><br>
+            </div>
+            <div class="col-3">
+                <span>05 Dec, 2022</span><br>
+                <span>December, 2024</span><br>
+                <span>20</span><br>
+            </div>
+            <div class="col-3">
+                <span class="fw-bold">Employee Name:</span><br>
+                <span class="fw-bold">Designation:</span><br>
+                <span class="fw-bold">Department:</span><br>
+            </div>
+            <div class="col-3">
+                <span>Rukhsana Khan</span><br>
+                <span>Software Engineer</span><br>
+                <span>Software Development</span><br>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-6">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Earnings</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Basic Salary</td>
+                            <td>$2000</td>
+                        </tr>
+                        <tr>
+                            <td>HRA</td>
+                            <td>$500</td>
+                        </tr>
+                        <tr>
+                            <td>Conveyance</td>
+                            <td>$200</td>
+                        </tr>
+                        <!-- Add more earnings as needed -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-6">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Deductions</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>PF</td>
+                            <td>00</td>
+                        </tr>
+                        <tr>
+                            <td>ESIC</td>
+                            <td>00</td>
+                        </tr>
+                        <tr>
+                            <td>Professional Tax</td>
+                            <td>00</td>
+                        </tr>
+                        <!-- Add more deductions as needed -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-6">
+                <h3 class="mb-0">Total Earnings</h3>
+                <p>00</p>
+            </div>
+            <div class="col-6">
+                <h3 class="mb-0">Total Deductions</h3>
+                <p>00</p>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-12">
+                <h3 class="mb-0">Net Pay</h3>
+                <p>00</p>
+            </div>
+        </div>
+
+    </div>
+</div>

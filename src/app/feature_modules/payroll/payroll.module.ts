@@ -63,7 +63,14 @@ import { VarDeductionComponent } from './ctc-templates/assigned-templates/var-de
 import { CommonComponentsModule } from 'src/app/common/commonComponents.module';
 import { PayrollRoutingModule } from './payroll-routing.module';
 import { PayrollUserListComponent } from './run-payroll/payroll-steps/payroll-user-list/payroll-user-list.component';
-
+import { GeneratePayslipsComponent } from './payslips/generate-payslips/generate-payslips.component';
+import {MatMenuModule} from '@angular/material/menu';
+import { FnfUsersComponent } from './run-payroll/run-fnf-payroll/fnf-steps/fnf-users/fnf-users.component';
+import { FNFStep1Component } from './run-payroll/run-fnf-payroll/fnf-steps/step1/step1.component';
+import { FNFStep2Component } from './run-payroll/run-fnf-payroll/fnf-steps/step2/step2.component';
+import { FNFStep3Component } from './run-payroll/run-fnf-payroll/fnf-steps/step3/step3.component';
+import { FNFStep4Component } from './run-payroll/run-fnf-payroll/fnf-steps/step4/step4.component';
+import { MatTableModule } from '@angular/material/table';
 @NgModule({
   declarations: [
     PayrollComponent,
@@ -120,7 +127,13 @@ import { PayrollUserListComponent } from './run-payroll/payroll-steps/payroll-us
     ViewPayslipComponent,
     VarAllowanceComponent,
     VarDeductionComponent,
-    PayrollUserListComponent
+    PayrollUserListComponent,
+    GeneratePayslipsComponent,
+    FnfUsersComponent,
+    FNFStep1Component,
+    FNFStep2Component,
+    FNFStep3Component,
+    FNFStep4Component
   ],
   imports: [
     CommonModule,
@@ -132,7 +145,9 @@ import { PayrollUserListComponent } from './run-payroll/payroll-steps/payroll-us
     OverlayModule,
     NgbDropdownModule,
     CommonComponentsModule,
-    PayrollRoutingModule
+    PayrollRoutingModule,
+    MatMenuModule,
+    MatTableModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

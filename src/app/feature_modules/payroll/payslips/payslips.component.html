@@ -1,4 +1,4 @@
-<div class="main-content">
+<div class="main-content" *ngIf="!showPayslipDetail">
     <div class="container-fluid">
         <div class="tableContainer">
             <div class="d-flex align-items-center px-2 py-1">
@@ -12,19 +12,21 @@
             </div>
             <table>
                 <thead>
-                    <th>Full & Final Period</th>
-                    <th>Date</th>
-                    <th>Full & Final Details</th>
+                    <th>Employee</th>
+                    <th>Period</th>
+                    <th>Payroll</th>
                     <th>Status</th>
                     <th>Actions</th>
                 </thead>
                 <tbody>
                     <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td>Employee Name</td>
+                        <td>Dec, 2024</td>
+                        <td>Processed</td>
+                        <td>Approved</td>
+                        <td>
+                            <button mat-raised-button class="addBtn" (click)="viewPayslip()">Show Payslip</button>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -32,16 +34,4 @@
     </div>
 </div>
 
-<ng-template #modal let-modal>
-    <div class="modal-header border-bottom justify-content-between d-flex mb-2 pt-0">
-        <div>
-            <h1 class="modal-title text-muted mb-0">View Payslip</h1>
-        </div>
-        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
-                (click)="modal.close('Escape clicked')"></button>
-        </div>
-    </div>
-    <div class="modal-body">
-
-    </div>
-</ng-template>
+<app-generate-payslips *ngIf="showPayslipDetail"  (close)="closePayslipDetail()"></app-generate-payslips>
