@@ -1,0 +1,67 @@
+@if(user.freeCompany){
+    Free Company
+} @else {
+
+    @if(hasActiveSubscription){
+        <div class="card w-50 m-4 text-center">
+            @for(plan of plans; track plan){
+            <div class="card-header">
+                <h2 class="m-0 text-white">
+                    {{plan.name}} <hr>
+                    {{plan.currentprice | currency: 'INR'}} * {{plan.quantity > 1?plan.quantity:''}} /
+                    @switch(plan.frequency){
+                        @case('weekly'){Week}
+                        @case('monthly'){Month}
+                        @case('yearly'){Year}
+                    }
+                </h2>
+            </div>
+            }
+            <div class="card-body">
+                <ul class="text-start">
+                    <li>Created at: {{subscription.created_at*1000 | date: 'dd MMM, yyyy - hh:mm a'}}</li>
+                    <li>Start at: {{subscription.current_start*1000 | date: 'dd MMM, yyyy - hh:mm a'}}</li>
+                    <li>Method: {{subscription.payment_method}}</li>
+                </ul>
+                <p [ngClass]="{'text-success': subscription.status === 'active'}">
+                    Your subscription is {{subscription.status}}.
+                </p>
+                @if(subscription.remaining_count > 0 && subscription.current_end){
+                    <p>Next due on {{subscription.current_end*1000 | date: 'dd MMM, yyyy'}}.</p>
+                }
+    
+                <button mat-raised-button class="addBtn" (click)="viewPayments()">
+                    <mat-icon>payment</mat-icon>View Payments
+                </button>
+            </div>
+        </div>
+    } @else {
+        <div class="d-flex justify-content-center gap-4 flex-wrap">
+            @for(plan of plans; track plan){
+                <div class="card" >
+                    <div class="card-header">
+                        <h2 class="m-0 text-white">{{plan.name}}</h2>
+                    </div>
+                    <div class="card-body">
+                        <h1>{{plan.currentprice | currency: 'INR'}} /{{plan.quantity>1 ? 'user per ':''}}month</h1>
+                        <ul>
+                            <li>Unlimited tracking</li>
+                            <li>Manage your employees at one place</li>
+                            <li>Access for {{plan.quantity}} user(s)</li>
+                            <li>{{plan.description}}</li>
+                        </ul>
+                        
+                      <p><small>Auto-debit {{plan.currentprice * plan.quantity | currency: 'INR'}} every month on {{today | date:'dd'}} till canceled.</small></p>
+                    </div>
+                    <div class="card-footer">
+                        @if(subscription.status === 'new' || subscription.status === 'cancelled' || subscription.status === 'created') {
+                            <button mat-raised-button class="addBtn" (click)="payNow(plan)" [disabled]="plan['loading']">{{plan['loading'] ? 'Loading' : 'Pay Now'}}</button>
+                        } @else {
+                            Status of your subscription is {{subscription.status}}. Please contact administrator.
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
+}

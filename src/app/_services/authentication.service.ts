@@ -10,8 +10,9 @@ import { Router } from '@angular/router';
 
 export class AuthenticationService {
   private loggedIn = new BehaviorSubject<boolean>(false);
-  private currentUserSubject: BehaviorSubject<User>;
+  public currentUserSubject: BehaviorSubject<any>;
   public currentUser: Observable<any>;
+  public companySubscription = new BehaviorSubject(null);
   role: any = new BehaviorSubject('');
   private userIdSubject = new BehaviorSubject<string | null>(null);
   userId$ = this.userIdSubject.asObservable();
@@ -65,6 +66,10 @@ export class AuthenticationService {
     if (storedUser) {
       this.currentUserSubject.next(storedUser);
     }
+    const subscription = JSON.parse(localStorage.getItem('subscription'));
+    if(subscription) {
+      this.companySubscription.next(subscription);
+    }
   }
 
   public get currentUserValue(): User {
@@ -94,7 +99,15 @@ export class AuthenticationService {
     return this.http.post<any>(`${environment.apiUrlDotNet}/users/login`, { email: user.email, password: user.password }, httpOptions)
       .pipe(map(user => {
 
-        this.currentUserSubject.next(user);
+        this.currentUserSubject.next(
+          {
+            firstName: user.data.user.firstName,
+            id:  user.data.user.id,
+            lastName: user.data.user.lastName,
+            freeCompany: user.data.user.company.freeCompany,
+          }
+        );
+        this.companySubscription.next(user.data.companySubscription);
         this.loggedIn.next(true);
         return user;
       }));
@@ -104,6 +117,7 @@ export class AuthenticationService {
     return new Promise<void>((resolve) => {
       localStorage.removeItem('jwtToken');
       localStorage.removeItem('currentUser');
+      localStorage.removeItem('subscription');
       localStorage.removeItem('rememberMe');
       localStorage.removeItem('roleId');
       localStorage.removeItem('loginTime');

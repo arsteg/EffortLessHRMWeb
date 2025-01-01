@@ -68,11 +68,15 @@ export class LoginComponent implements OnInit {
             } else {
               this.loading = true;
               this.user.id = data.data.user.id;
+              this.user.firstName = data.data.user.firstName;
+              this.user.lastName = data.data.user.lastName;
+              this.user.freeCompany = data.data.user.company.freeCompany;
               localStorage.setItem('jwtToken', data.token);
               localStorage.setItem('currentUser', JSON.stringify(this.user));
               localStorage.setItem('rememberMe', JSON.stringify(this.rememberMe));
               localStorage.setItem('roleId', data.data.user?.role?.id);
-
+              localStorage.setItem('subscription', JSON.stringify(data.data.companySubscription));
+    
               const desiredUrl = this.route.snapshot.queryParams['redirectUrl'];
               if (data.data.user?.role?.id === '639acb77b5e1ffe22eaa4a39') {
                 localStorage.setItem('adminView', 'admin');

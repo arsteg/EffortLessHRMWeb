@@ -1,0 +1,19 @@
+<h1 mat-dialog-title>Cancel Subscription?</h1>
+<mat-dialog-content>
+
+    <div class="alert alert-warning">
+        <strong>Important: </strong> This action can not be undone. The subscription will move to cancelled state.
+    </div>
+
+    <mat-radio-group aria-label="Select an option" [(ngModel)]="cancelAtCycleEnd">
+        <mat-radio-button [value]="1">
+            Cancel at end of current billing cycle (Next payment will not be charged)
+        </mat-radio-button>
+        <mat-radio-button [value]="0">Cancel Immediately</mat-radio-button>
+      </mat-radio-group>      
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-raised-button mat-dialog-close>No, don't</button>
+  <button mat-raised-button (click)="cancelSubscription()">Cancel Subscription</button>
+</mat-dialog-actions>
