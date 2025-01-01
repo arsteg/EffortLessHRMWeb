@@ -48,6 +48,7 @@ export class CreatePlanComponent {
       description: new FormControl(''),
       notes1: new FormControl(''),
       notes2: new FormControl(''),
+      quantity: new FormControl('1', [Validators.min(1)]),
     });
   }
 

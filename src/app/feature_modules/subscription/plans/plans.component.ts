@@ -33,7 +33,6 @@ export class PlansComponent {
   private readonly destoryRef = inject(DestroyRef);
   private readonly dialog = inject(MatDialog);
   today: Date = new Date();
-  loading: boolean = false;
   plans = [];
   subscription = this.authService.companySubscription.getValue();
   user = this.authService.currentUserSubject.getValue();
@@ -51,24 +50,32 @@ export class PlansComponent {
   }
 
   getPlan(id?:any) {
-    this.subscriptionService.getPlanByName(id || 'Membership Pan')
+    if(id){
+      this.subscriptionService.getPlanByName(id)
       .subscribe((res: any) => {
         this.plans = res.data;
-      })
+      });
+    } else {
+      this.subscriptionService.getPlans()
+        .subscribe((res: any) => {
+          this.plans = res.data.filter((plan: any) => plan.IsActive);
+        });
+    }
   }
 
   payNow(plan: any) {
     const payload = {
-      currentPlanId: plan._id
+      currentPlanId: plan._id,
+      quantity: plan.quantity,
     };
-    this.loading = true;
+    plan['loading'] = true;
     this.subscriptionService.createSubscription(payload)
       .subscribe((data: any) => {
-        this.makePayment(data.data.subscription.subscriptionId); 
+        this.makePayment(data.data.subscription.subscriptionId, plan); 
       }) 
   }
 
-  makePayment(id: string) {
+  makePayment(id: string, plan: any) {
     const options = {
       "key": "rzp_test_xQi4sKdFNrIe2z", // TODO: Set in environment file or backend
       "subscription_id": id,
@@ -77,7 +84,7 @@ export class PlansComponent {
       "handler": (response: any) => {
           response['subscriptionId'] = id;
           if (response.razorpay_payment_id) {
-            this.loading = false;
+            plan['loading'] = false;
             this.subscription.status = 'active';
             this.subscription.created_at = new Date().getTime() / 1000;
             this.subscription.current_start = new Date().getTime() / 1000;
@@ -85,8 +92,14 @@ export class PlansComponent {
             this.authService.companySubscription.next(this.subscription);
             localStorage.setItem('subscription', JSON.stringify(this.subscription));
             this.subscriptionService.activateSubscription(id)
-            .subscribe(()=>{ 
+            .subscribe((data: any)=>{ 
+              setTimeout(() => {
+              if (localStorage.getItem('roleId') === '639acb77b5e1ffe22eaa4a39') {
                 this.router.navigate(['home/dashboard']);
+              } else {
+                this.router.navigate(['home/dashboard/user']);
+              }
+              }, 200);
             });
           }
           this.cdr.detectChanges();
@@ -96,7 +109,7 @@ export class PlansComponent {
       },
       "modal": {
         "ondismiss": () => {
-          this.loading = false;
+          plan['loading'] = false;
           this.cdr.detectChanges();
         }
       }

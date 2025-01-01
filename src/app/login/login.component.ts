@@ -70,6 +70,7 @@ export class LoginComponent implements OnInit {
               this.user.id = data.data.user.id;
               this.user.firstName = data.data.user.firstName;
               this.user.lastName = data.data.user.lastName;
+              this.user.freeCompany = data.data.user.company.freeCompany;
               localStorage.setItem('jwtToken', data.token);
               localStorage.setItem('currentUser', JSON.stringify(this.user));
               localStorage.setItem('rememberMe', JSON.stringify(this.rememberMe));

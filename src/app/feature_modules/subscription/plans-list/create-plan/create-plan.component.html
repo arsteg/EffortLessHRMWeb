@@ -1,7 +1,7 @@
 <h1 mat-dialog-title>Create Plan</h1>
 <mat-dialog-content>
   <form [formGroup]="planForm">
-    <div class="row">
+    <div class="row g-3">
       <div class="col-6 form-group">
         <label for="name">Plan Name*</label>
         <input
@@ -60,6 +60,24 @@
                 <small class="text-danger">Minimum interval should be at least 1</small>
             }
         }
+      </div>
+
+      <div class="col-12 form-group">
+        <label for="quantity">Quantity</label>
+        <input
+          id="quantity"
+          formControlName="quantity"
+          class="form-control" />
+
+          <small>Number of license per subscription</small>
+
+          @if((planForm.get('quantity').dirty ||
+          planForm.get('quantity').touched)){
+  
+              @if(planForm.get('quantity').errors?.min){
+                  <small class="text-danger">Minimum quantity should be at least 1</small>
+              }
+          }
       </div>
 
       <div class="col-12 form-group">

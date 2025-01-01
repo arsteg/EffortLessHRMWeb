@@ -32,7 +32,7 @@ export class PlansListComponent {
   readonly destroyRef = inject(DestroyRef);
   readonly snackbar = inject(MatSnackBar);
   readonly dialog = inject(MatDialog);
-  columns = ['name', 'currentprice', 'planId', 'action'];
+  columns = ['name', 'currentprice', 'quantity', 'planId', 'action'];
   plans = signal([]);
 
   ngOnInit() {

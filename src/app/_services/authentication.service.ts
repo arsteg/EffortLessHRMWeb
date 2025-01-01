@@ -103,7 +103,8 @@ export class AuthenticationService {
           {
             firstName: user.data.user.firstName,
             id:  user.data.user.id,
-            lastName: user.data.user.lastName
+            lastName: user.data.user.lastName,
+            freeCompany: user.data.user.company.freeCompany,
           }
         );
         this.companySubscription.next(user.data.companySubscription);

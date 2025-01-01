@@ -18,6 +18,13 @@
         </td>
       </ng-container>
 
+      <ng-container matColumnDef="quantity">
+        <th mat-header-cell *matHeaderCellDef>Quantity</th>
+        <td mat-cell *matCellDef="let element">
+            {{ element.quantity}}
+        </td>
+      </ng-container>
+
     <ng-container matColumnDef="planId">
       <th mat-header-cell *matHeaderCellDef>Plan ID</th>
       <td mat-cell *matCellDef="let element">
