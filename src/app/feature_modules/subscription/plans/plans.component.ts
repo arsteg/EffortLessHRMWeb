@@ -8,7 +8,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
 import { PaymentsComponent } from '../subscriptions-list/payments/payments.component';
 import { MatIconModule } from '@angular/material/icon';
-import { pipe, timeout } from 'rxjs';
+
 
 declare let Razorpay: any;
 
@@ -36,13 +36,23 @@ export class PlansComponent {
   plans = [];
   subscription = this.authService.companySubscription.getValue();
   user = this.authService.currentUserSubject.getValue();
+  rzCred = '';
 
   ngOnInit() {
     if(!this.hasActiveSubscription){
+      this.credentials();
       this.getPlan();
     } else {
       this.getPlan(this.subscription.plan_id);
     }
+  }
+
+  credentials(){
+    this.subscriptionService.getCredentials()
+    .pipe(takeUntilDestroyed(this.destoryRef))
+    .subscribe((res: any) => {
+      this.rzCred = res.data;
+    });
   }
 
   get hasActiveSubscription(){
@@ -64,6 +74,10 @@ export class PlansComponent {
   }
 
   payNow(plan: any) {
+    if(!this.rzCred){
+      alert('Please contact admin to setup payment gateway');
+      return false;
+    }
     const payload = {
       currentPlanId: plan._id,
       quantity: plan.quantity,
@@ -72,12 +86,13 @@ export class PlansComponent {
     this.subscriptionService.createSubscription(payload)
       .subscribe((data: any) => {
         this.makePayment(data.data.subscription.subscriptionId, plan); 
-      }) 
+      }) ;
+      return true;
   }
 
   makePayment(id: string, plan: any) {
     const options = {
-      "key": "rzp_test_xQi4sKdFNrIe2z", // TODO: Set in environment file or backend
+      "key": this.rzCred, // TODO: Set in environment file or backend
       "subscription_id": id,
       "name": this.user.firstName + ' ' + this.user.lastName,
       "description": "Payment for subscription " + id,

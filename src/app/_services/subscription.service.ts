@@ -53,4 +53,8 @@ export class SubscriptionService extends baseService {
   activateSubscription(id: string){
     return this.http.post(`${environment.apiUrlDotNet}/pricing/activate-subscription/${id}`, {}, this.httpOptions);
   }
+
+  getCredentials(){
+    return this.http.get(`${environment.apiUrlDotNet}/pricing/credentials`, this.httpOptions);
+  }
 }
