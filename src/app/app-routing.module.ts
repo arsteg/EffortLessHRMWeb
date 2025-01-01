@@ -14,6 +14,7 @@ import { TagComponent } from './tasks/task.tag/tag.component';
 import { EditTaskComponent } from './tasks/edit-task/edit-task.component';
 import { TaskCommentComponent } from './tasks/task-comment/task-comment.component';
 import { SubtaskComponent } from './tasks/subtask/subtask.component';
+import { SubscriptionComponent } from './layouts/subscription/subscription.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'landing', pathMatch: 'full' },
@@ -110,11 +111,25 @@ const routes: Routes = [
         path: 'interview-process',
         loadChildren: () => import('./feature_modules/interview-process/interview-process.module').then(m => m.InterviewProcessModule)
       },
+      {
+        path: 'subscription',
+        loadChildren: () => import('./feature_modules/subscription/subscription.module').then(m => m.SubscriptionModule)
+      },
       { path: 'tasks', component: TasksComponent }, // TODO: Shared Component
       { path: 'SubTask', component: SubtaskComponent }, // TODO: Shared Component
       { path: 'edit-task', component: EditTaskComponent }, // TODO: Shared Component
       { path: 'tags', component: TagComponent }, // TODO: Shared Component
       { path: 'comments', component: TaskCommentComponent }, //TODO: Shared component
+    ]
+  },
+  {
+    path: 'subscription',
+    component: SubscriptionComponent,
+    children: [
+      {
+        path: '',
+        loadChildren: () => import('./feature_modules/subscription/subscription.module').then(m => m.SubscriptionModule)
+      }
     ]
   },
   { path: 'login', component: LoginComponent },

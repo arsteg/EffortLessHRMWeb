@@ -11,6 +11,7 @@ export class User {
     role: Role;
     name:string;
     email: string;
+    freeCompany: boolean;
 }
 export class updateUser{
   firstName: string;
@@ -44,6 +45,7 @@ export class signup{
   passwordConfirm: string;
   companyName: string;
   companyId:string;
+  freeCompany: boolean;
   role:string;
   jobTitle: String;
   address: String;

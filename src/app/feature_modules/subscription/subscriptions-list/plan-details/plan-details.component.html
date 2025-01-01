@@ -1,0 +1,23 @@
+<h1 mat-dialog-title>Plan Details</h1>
+<mat-dialog-content>
+<div>Plan ID: {{plan()?.planId || data?.id}}</div>
+<div>Plan Name: {{plan()?.name}}</div>
+<div>Plan Amount: {{plan()?.currentprice}}</div>
+<div>Description: {{plan()?.description}}</div>
+<div>Frequency: {{plan()?.frequency}}</div>
+<div>
+    Notes: 
+    <ul>
+        @if(plan()?.notes?.note1){
+            <li>{{plan().notes.note1}}</li>
+        }
+        @if(plan()?.notes?.note2){
+            <li>{{plan().notes.note2}}</li>
+        }
+    </ul>
+</div>
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-raised-button mat-dialog-close>Close</button>
+</mat-dialog-actions>

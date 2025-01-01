@@ -1,0 +1,122 @@
+<h1 mat-dialog-title>Create Plan</h1>
+<mat-dialog-content>
+  <form [formGroup]="planForm">
+    <div class="row g-3">
+      <div class="col-6 form-group">
+        <label for="name">Plan Name*</label>
+        <input
+          type="text"
+          id="name"
+          class="form-control"
+          formControlName="name"
+        />
+        @if((planForm.get('name').dirty || planForm.get('name').touched) &&
+        planForm.get('name').invalid){
+        <small class="text-danger">Plan name is required</small>
+        }
+      </div>
+
+      <div class="col-6 form-group">
+        <label for="amount">Amount*</label>
+        <input
+          type="number"
+          id="amount"
+          class="form-control"
+          formControlName="currentprice"
+        />
+        @if((planForm.get('currentprice').dirty ||
+        planForm.get('currentprice').touched)){
+
+            @if(planForm.get('currentprice').errors?.required){
+                <small class="text-danger">Amount is required</small>
+            }
+            @if(planForm.get('currentprice').errors?.min){
+                <small class="text-danger">Minimum amount should be at least 1</small>
+            }
+        }
+      </div>
+
+      <div class="col-6 form-group">
+        <label for="frequency">Frequency</label>
+        <select id="frequency" class="form-control" formControlName="frequency">
+          <option value="weekly">Weekly</option>
+          <option value="monthly">Monthly</option>
+          <option value="yearly">Yearly</option>
+        </select>
+      </div>
+
+      <div class="col-6 form-group">
+        <label for="interval">Interval</label>
+        <input
+          type="number"
+          id="interval"
+          class="form-control"
+          formControlName="interval"
+        />
+        @if((planForm.get('interval').dirty ||
+        planForm.get('interval').touched)){
+
+            @if(planForm.get('interval').errors?.min){
+                <small class="text-danger">Minimum interval should be at least 1</small>
+            }
+        }
+      </div>
+
+      <div class="col-12 form-group">
+        <label for="quantity">Quantity</label>
+        <input
+          id="quantity"
+          formControlName="quantity"
+          class="form-control" />
+
+          <small>Number of license per subscription</small>
+
+          @if((planForm.get('quantity').dirty ||
+          planForm.get('quantity').touched)){
+  
+              @if(planForm.get('quantity').errors?.min){
+                  <small class="text-danger">Minimum quantity should be at least 1</small>
+              }
+          }
+      </div>
+
+      <div class="col-12 form-group">
+        <label for="description">Description</label>
+        <textarea
+          id="description"
+          formControlName="description"
+          class="form-control"
+        ></textarea>
+      </div>
+
+      <div class="col-6 form-group">
+        <label for="notes1">Note 1</label>
+        <input
+          type="text"
+          id="notes1"
+          class="form-control"
+          formControlName="notes1"
+        />
+      </div>
+
+      <div class="col-6 form-group">
+        <label for="notes2">Note 2</label>
+        <input
+          type="text"
+          id="notes2"
+          class="form-control"
+          formControlName="notes2"
+        />
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-raised-button class="addBtn" (click)="createPlan()" [disabled]="loading()">
+    @if(loading()){
+    <span class="spinner-border spinner-border-sm mr-1"></span>
+    }
+    Create Plan
+  </button>
+  <button mat-raised-button mat-dialog-close>Cancel</button>
+</mat-dialog-actions>

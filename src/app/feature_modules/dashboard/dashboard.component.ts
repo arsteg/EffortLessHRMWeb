@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonService } from 'src/app/_services/common.Service';
 import { ManageTeamService } from 'src/app/_services/manage-team.service';
 import { TimeLogService } from 'src/app/_services/timeLogService';
@@ -14,6 +14,8 @@ import { User } from 'src/app/models/user';
 import { SocketService } from 'src/app/_services/socket.Service';
 import { StatefulComponent } from 'src/app/common/statefulComponent/statefulComponent';
 import { ActivatedRoute, Router } from '@angular/router';
+import { PaymentsComponent } from '../subscription/subscriptions-list/payments/payments.component';
+import { MatDialog } from '@angular/material/dialog';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -52,6 +54,8 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
   member: teamMember;
   selectedDate: Date = new Date;
   dayWorkStatusByUser: any[];
+  subscription: any;
+  readonly dialog = inject(MatDialog);
 
   constructor(
     private timelog: TimeLogService,
@@ -66,6 +70,14 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
   ) {
     super(commonService,activatedRoute,router);
   }
+
+    openPaymentsDialog() {
+      const dialogRef = this.dialog.open(PaymentsComponent, {
+        width: '500px',
+        data: { subscriptionId: this.subscription.razorpaySubscription.id }
+      });
+    }
+  
   // selectedUser: any;
   override ngOnInit(): void {
     //region event notifications
@@ -93,6 +105,7 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
     let currentUser = JSON.parse(localStorage.getItem('currentUser'))
     this.auth.GetMe(currentUser.id).subscribe((response: any) => {
       this.currentProfile = response && response.data.users;
+      this.subscription = response.data.companySubscription;
       return this.currentProfile;
     });
     this.populateMembers();
