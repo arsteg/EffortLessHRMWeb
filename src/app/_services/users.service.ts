@@ -244,4 +244,9 @@ export class UserService {
   getTaxDeclarationByUserId(userId: string, payload: any): Observable<any> {
     return this.http.post<any>(`${environment.apiUrlDotNet}/users/employee-income-tax-declarations-by-user/${userId}`, payload, this.httpOptions);
   }
+
+  getUsersByStatus(status: string): Observable<any>{
+    return this.http.get<any>(`${environment.apiUrlDotNet}/users/getUsersByStatus/${status}`, this.httpOptions);
+
+  }
 }

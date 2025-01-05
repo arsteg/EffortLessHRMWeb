@@ -5,6 +5,7 @@ import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { AttendanceService } from 'src/app/_services/attendance.service';
 import { CommonService } from 'src/app/_services/common.Service';
+import { UserService } from 'src/app/_services/users.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
@@ -51,13 +52,15 @@ export class AttendanceProcessComponent {
     { name: 'December', value: 12 }
   ];
   fnfAttendanceProcess: any;
+  fnfAttendanceProcessUsers: any;
 
   constructor(private attendanceService: AttendanceService,
     private fb: FormBuilder,
     private modalService: NgbModal,
     private commonService: CommonService,
     private toast: ToastrService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private userService: UserService
   ) {
     this.lopForm = this.fb.group({
       month: [''],
@@ -88,10 +91,16 @@ export class AttendanceProcessComponent {
     this.commonService.populateUsers().subscribe(result => {
       this.allAssignee = result && result.data && result.data.data;
     });
+    this.getUsersByFnFAttendance();
     this.generateYearList();
     this.getProcessAttendance();
   }
 
+  getUsersByFnFAttendance() {
+    this.userService.getUsersByStatus('FNF Attendance Processed').subscribe((res: any) => {
+      this.fnfAttendanceProcessUsers = res.data['users'];
+    });
+  }
   runDateValidator(control: AbstractControl): ValidationErrors | null {
     const runDate = new Date(control.value);
     const year = this.attendanceProcessForm?.value?.attendanceProcessPeriodYear;
@@ -288,6 +297,7 @@ export class AttendanceProcessComponent {
       status: 'Pending',
       exportToPayroll: false
     })
+    console.log(this.attendanceProcessForm.value);
     if (this.attendanceProcessForm.valid) {
       this.attendanceService.addProcessAttendance(this.attendanceProcessForm.value).subscribe((res: any) => {
         const processedAttendance = res.data;
@@ -344,14 +354,15 @@ export class AttendanceProcessComponent {
   }
 
   onSubmissionFnF() {
-    if (this.fnfAttendanceProcessForm.valid) {
+    console.log(this.fnfAttendanceProcessForm.value);
+    // if (this.fnfAttendanceProcessForm.valid) {
       this.attendanceService.addFnFAttendanceProcess(this.fnfAttendanceProcessForm.value).subscribe((res: any) => {
         this.toast.success('Full & Final Attendance Processed', 'Successfully!');
       }, err => {
         this.toast.error('Full & Final Attendance can not be Processed', 'Error')
       })
-    }
-    else { this.fnfAttendanceProcessForm.markAllAsTouched(); }
+    // }
+    // else { this.fnfAttendanceProcessForm.markAllAsTouched(); }
   }
 
   getFnfAttendanceProcess() {

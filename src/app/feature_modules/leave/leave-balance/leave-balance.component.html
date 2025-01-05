@@ -8,7 +8,7 @@
                     </label>
                     <mat-form-field appearance="outline" class="w-50 mx-1">
                         <mat-select name="users" formControlName="user">
-                            <mat-option *ngFor="let member of users" value="{{member|json}}"
+                            <mat-option *ngFor="let member of users" value="{{member.id}}"
                                 (click)="selecteduser(member.id)">
                                 {{member?.name | titlecase}}
                             </mat-option>

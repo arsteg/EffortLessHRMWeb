@@ -6,6 +6,7 @@ import { PayrollService } from 'src/app/_services/payroll.service';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { CommonService } from 'src/app/_services/common.Service';
+import { UserService } from 'src/app/_services/users.service';
 
 @Component({
   selector: 'app-step2',
@@ -23,13 +24,17 @@ export class FNFStep2Component implements OnInit {
   varDeductions: any;
   isEdit: boolean = false;
 
+  variableAllowance: any;
+  variableDeduction: any;
+  
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
 
   constructor(private fb: FormBuilder,
     private payrollService: PayrollService,
     public dialog: MatDialog,
     private commonService: CommonService,
-    private toast: ToastrService) {
+    private toast: ToastrService,
+    private userService: UserService) {
     this.variablePayForm = this.fb.group({
       payrollFNFUser: ['', Validators.required],
       variableDeduction: ['', Validators.required],
@@ -51,6 +56,22 @@ export class FNFStep2Component implements OnInit {
       }
     })
   }
+
+  onUserChange(fnfUserId: string): void {
+    this.getRecordsByUser(fnfUserId);
+    this.payrollService.selectedFnFPayroll.subscribe((fnfPayroll: any) => {
+      const fnfUser = fnfPayroll.userList[0].user;
+
+      this.payrollService.getFnFAttendanceSummaryByFnFUserId(fnfUserId).subscribe((res: any) => {
+        this.variablePaySummary.data = res.data;
+        this.variablePaySummary.data.forEach((summary: any) => {
+          const user = this.userList.find(user => user._id === fnfUser);
+          summary.userName = user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
+        });
+      });
+    });
+  }
+
 
   getLists() {
     // get all users
@@ -180,13 +201,35 @@ export class FNFStep2Component implements OnInit {
   }
 
   getMatchingVarAllowance(id: string) {
-    const matchedValue = this.varAllowances.find((allowance: any) => allowance._id === id);
-    return matchedValue ? matchedValue.label : '--';
+    if (this.varAllowances && this.varAllowances.length) {
+      const matchedValue = this.varAllowances.find((allowance: any) => allowance?._id === id);
+      return matchedValue ? matchedValue.label : '--';
+    }
   }
 
   getMatchingVarDeduction(id: string) {
-    const matchedValue = this.varDeductions.find((deduction: any) => deduction._id === id);
-    return matchedValue ? matchedValue.label : '--';
+    if (this.varDeductions && this.varDeductions.length) {
+      const matchedValue = this.varDeductions.find((deduction: any) => deduction._id === id);
+      return matchedValue ? matchedValue.label : '--';
+    }
+  }
+
+
+
+  getRecordsByUser(selectedUser: string) {
+    const data = this.payrollService.selectedFnFPayroll.getValue()['userList'];
+    console.log(data);
+    console.log(selectedUser)
+    const user = data.find((user) => user._id === selectedUser);
+
+    this.userService.getSalaryByUserId(user.user).subscribe((res: any) => {
+      const response = res.data[res.data.length - 1];
+      console.log(response);
+      this.variableAllowance = response.variableAllowanceList;
+      this.variableDeduction = response.variableDeductionList;
+      console.log(this.variableAllowance);
+      console.log(this.variableDeduction);
+    });
   }
 
 }
