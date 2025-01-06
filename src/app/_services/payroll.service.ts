@@ -681,6 +681,11 @@ export class PayrollService {
     return response;
   }
 
+  getFnFUserById(id: string): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/fnf/users/${id}`, this.httpOptions);
+    return response;
+  }
+
   // FnF Attendance Summary CRUD
   addFnFAttendanceSummary(payload: any): Observable<any> {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/payroll-fnf-attendance-summary`, payload, this.httpOptions);
