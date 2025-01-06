@@ -25,7 +25,6 @@ export class Step2Component {
   payrollUser: any;
   attendanceLOPUser: any;
 
-
   constructor(private payrollService: PayrollService,
     private fb: FormBuilder,
     private modalService: NgbModal,

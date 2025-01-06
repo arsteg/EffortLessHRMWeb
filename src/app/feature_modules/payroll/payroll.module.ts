@@ -64,13 +64,21 @@ import { CommonComponentsModule } from 'src/app/common/commonComponents.module';
 import { PayrollRoutingModule } from './payroll-routing.module';
 import { PayrollUserListComponent } from './run-payroll/payroll-steps/payroll-user-list/payroll-user-list.component';
 import { GeneratePayslipsComponent } from './payslips/generate-payslips/generate-payslips.component';
-import {MatMenuModule} from '@angular/material/menu';
+import { MatMenuModule } from '@angular/material/menu';
 import { FnfUsersComponent } from './run-payroll/run-fnf-payroll/fnf-steps/fnf-users/fnf-users.component';
 import { FNFStep1Component } from './run-payroll/run-fnf-payroll/fnf-steps/step1/step1.component';
 import { FNFStep2Component } from './run-payroll/run-fnf-payroll/fnf-steps/step2/step2.component';
 import { FNFStep3Component } from './run-payroll/run-fnf-payroll/fnf-steps/step3/step3.component';
 import { FNFStep4Component } from './run-payroll/run-fnf-payroll/fnf-steps/step4/step4.component';
 import { MatTableModule } from '@angular/material/table';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDialogModule } from '@angular/material/dialog';
+import { FNFStep5Component } from './run-payroll/run-fnf-payroll/fnf-steps/step5/step5.component';
+import { FNFStep6Component } from './run-payroll/run-fnf-payroll/fnf-steps/step6/step6.component';
+import { FNFStep7Component } from './run-payroll/run-fnf-payroll/fnf-steps/step7/step7.component';
+import { FNFStep8Component } from './run-payroll/run-fnf-payroll/fnf-steps/step8/step8.component';
+import { FNFStep9Component } from './run-payroll/run-fnf-payroll/fnf-steps/step9/step9.component';
 @NgModule({
   declarations: [
     PayrollComponent,
@@ -133,7 +141,12 @@ import { MatTableModule } from '@angular/material/table';
     FNFStep1Component,
     FNFStep2Component,
     FNFStep3Component,
-    FNFStep4Component
+    FNFStep4Component,
+    FNFStep5Component,
+    FNFStep6Component,
+    FNFStep7Component,
+    FNFStep8Component,
+    FNFStep9Component
   ],
   imports: [
     CommonModule,
@@ -147,7 +160,10 @@ import { MatTableModule } from '@angular/material/table';
     CommonComponentsModule,
     PayrollRoutingModule,
     MatMenuModule,
-    MatTableModule
+    MatTableModule,
+    MatSelectModule,
+    MatDatepickerModule,
+    MatDialogModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

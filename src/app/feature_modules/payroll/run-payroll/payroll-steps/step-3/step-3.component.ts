@@ -135,7 +135,6 @@ export class Step3Component {
     this.selectedUserId
     this.userService.getSalaryByUserId(this.selectedUserId?.user).subscribe((res: any) => {
       this.salary = res.data[res.data.length - 1];
-      console.log(this.salary)
     })
   }
 

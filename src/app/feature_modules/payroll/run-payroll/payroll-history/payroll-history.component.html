@@ -1,6 +1,6 @@
-<div class="main-content" *ngIf="!isAllEmployees">
+<div class="main-content" *ngIf="isAllEmployees">
     <div class="container-fluid">
-        <div class="tableContainer">
+        <div class="tableContainer bg-white mt-2">
             <div class="d-flex align-items-center px-2 py-1">
                 <p class="mb-0 me-auto">Payroll History</p>
                 <div class="d-flex align-items-center">
@@ -10,61 +10,66 @@
                     <button class="addBtn ms-2" mat-raised-button (click)="open(addModal)">Add Payroll</button>
                 </div>
             </div>
-            <table>
-                <thead>
-                    <th>Payroll Period</th>
-                    <th>Date</th>
-                    <th>Payroll Details</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </thead>
-                <tbody>
+            <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+                <ng-container matColumnDef="payrollPeriod">
+                    <th mat-header-cell *matHeaderCellDef> Payroll Period </th>
+                    <td mat-cell *matCellDef="let data"> {{data?.month}} - {{data?.year}} </td>
+                </ng-container>
 
-                    <tr *ngFor="let data of payroll">
-                        <td>{{data?.month}} - {{data?.year}}</td>
-                        <td>{{data?.date | date:'mediumDate'}}</td>
-                        <td>
-                            <ul type="none" class="ps-0">
-                                <li>No. of Processed Employees: {{data?.processedCount}}</li>
-                                <li>No. of Active Employees: {{data?.activeCount}} </li>
-                                <li>No. of On-Hold Employees: {{data?.onHoldCount}} </li>
-                            </ul>
-                        </td>
-                        <td>{{data?.status}}</td>
-                        <td>
-                            <div ngbDropdown class="dropdown-center">
-                                <button class="actions ms-2" mat-mini-fab ngbDropdownToggle aria-expanded="false"
-                                    aria-label="Example icon button with a menu icon">
-                                    <i class="bi bi-send"></i>
-                                </button>
-                                <ul ngbDropdownMenu class="dropdown-menu py-0">
-                                    <li class="d-flex border-bottom action-list">
-                                        <i class="bi bi-download dropdown-item w-25"></i><span
-                                            class="pt-1 text-muted">Download Register</span>
-                                    </li>
-                                    <li class="d-flex border-bottom action-list">
-                                        <i class="bi bi-clipboard-check dropdown-item w-25"></i><span
-                                            class="pt-1 text-muted">Tax Register</span>
-                                    </li>
-                                    <li class="d-flex border-bottom action-list"
-                                        (click)="selectedPayroll = data?._id; open(addUserModal)">
-                                        <i class="bi bi-plus-circle dropdown-item w-25"></i><span
-                                            class="pt-1 text-muted">Add Employee</span>
-                                    </li>
-                                    <li class="d-flex border-bottom action-list"
-                                        (click)="selectedPayroll = data; isAllEmployees = true;">
-                                        <i class="bi bi-pencil dropdown-item w-25"></i><span
-                                            class="pt-1 text-muted">Edit</span>
-                                    </li>
-                                    <li class="d-flex border-bottom action-list" (click)="deleteDialog(data._id)">
-                                        <i class="bi bi-trash dropdown-item w-25"></i><span
-                                            class="pt-1 text-muted">Delete</span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
+                <ng-container matColumnDef="date">
+                    <th mat-header-cell *matHeaderCellDef> Date </th>
+                    <td mat-cell *matCellDef="let data"> {{data?.date | date:'mediumDate'}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="payrollDetails">
+                    <th mat-header-cell *matHeaderCellDef> Payroll Details </th>
+                    <td mat-cell *matCellDef="let data">
+                        <ul type="none" class="ps-0">
+                            <li>No. of Processed Employees: {{data?.processedCount}}</li>
+                            <li>No. of Active Employees: {{data?.activeCount}} </li>
+                            <li>No. of On-Hold Employees: {{data?.onHoldCount}} </li>
+                        </ul>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="status">
+                    <th mat-header-cell *matHeaderCellDef> Status </th>
+                    <td mat-cell *matCellDef="let data"> {{data?.status}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef> Actions </th>
+                    <td mat-cell *matCellDef="let data">
+                        <button mat-icon-button [matMenuTriggerFor]="menu">
+                            <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #menu="matMenu">
+                            <button mat-menu-item>
+                                <mat-icon>download</mat-icon>
+                                <span>Download Register</span>
+                            </button>
+                            <button mat-menu-item>
+                                <mat-icon>assignment_turned_in</mat-icon>
+                                <span>Tax Register</span>
+                            </button>
+                            <button mat-menu-item (click)="selectedPayroll = data?._id; open(addUserModal)">
+                                <mat-icon>person_add</mat-icon>
+                                <span>Add Employee</span>
+                            </button>
+                            <button mat-menu-item (click)="selectedPayroll = data; openSteps();">
+                                <mat-icon>edit</mat-icon>
+                                <span>Edit</span>
+                            </button>
+                            <button mat-menu-item (click)="deleteDialog(data._id)">
+                                <mat-icon>delete</mat-icon>
+                                <span>Delete</span>
+                            </button>
+                        </mat-menu>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             </table>
         </div>
     </div>
@@ -223,6 +228,7 @@
     </div>
 </ng-template>
 
-<button *ngIf="isAllEmployees" (click)="isAllEmployees = false" mat-raised-button
-    class="bi bi-arrow-left addBtn">Back</button>
-<app-payroll-steps [selectedPayroll]="selectedPayroll" *ngIf="isAllEmployees"></app-payroll-steps>
+<div *ngIf="!isAllEmployees">
+    <button mat-raised-button class="bi bi-arrow-left addBtn" (click)="goBack()">Back</button>
+    <app-payroll-steps [selectedPayroll]="selectedPayroll"></app-payroll-steps>
+</div>

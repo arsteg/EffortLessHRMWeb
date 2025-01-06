@@ -8,7 +8,7 @@ import { candidate } from '../models/interviewProcess/candidate';
 import { candidateDataFieldValue } from '../models/interviewProcess/candidateDataFieldValue';
 import { feedbackField } from '../models/interviewProcess/feedbackField';
 import { InterviewDetail } from '../models/interviewProcess/candidateInterviewDetail';
-import { BehaviorSubject, Observable, map } from 'rxjs';
+import { BehaviorSubject, Observable, map, of } from 'rxjs';
 import { UserService } from './users.service';
 import { ProjectService } from './project.service';
 
@@ -17,8 +17,8 @@ import { ProjectService } from './project.service';
 })
 export class CommonService extends baseService {
 
-  allAssignee: any[];
-  projectList: any[];
+  allAssignee: any[] = [];
+  projectList: any[] = [];
   firstletter: string;
   private currentProfileSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   private currentProfileRoleSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
@@ -37,6 +37,11 @@ export class CommonService extends baseService {
     }),
     withCredentials: true
   };
+
+  private usersCache: any[] = [];
+  private usersSubject: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+  users$ = this.usersSubject.asObservable();
+
   constructor(private userService: UserService,
     private projectService: ProjectService,
     private http: HttpClient) {
@@ -44,13 +49,19 @@ export class CommonService extends baseService {
   }
 
   populateUsers(): Observable<any> {
-    return this.userService.getUserList().pipe(
-      map(result => {
-        this.allAssignee = result && result.data && result.data.data;
-        return result;
-      })
-    );
+    if (this.usersCache.length > 0) {
+      return of({ data: { data: this.usersCache } });
+    } else {
+      return this.userService.getUserList().pipe(
+        map(result => {
+          this.usersCache = result.data.data;
+          this.usersSubject.next(this.usersCache);
+          return result;
+        })
+      );
+    }
   }
+
   getProjectList(): Observable<any> {
     return this.projectService.getprojects('', '').pipe(
       map((response: any) => {
@@ -165,10 +176,6 @@ export class CommonService extends baseService {
     return this.http.get<any>(`${environment.apiUrlDotNet}/common/UserUIState/${key}`, this.httpOptions);
   }
 
-
-  // getCountries(): Observable<any[]> {
-  //   return this.http.get<any[]>(this.apiUrl );
-  // }
   private countries = [
     { name: 'USA', states: [{ name: 'California', cities: ['Los Angeles', 'San Francisco'] }] },
     { name: 'India', states: [{ name: 'Maharashtra', cities: ['Mumbai', 'Pune'] }] },
@@ -191,5 +198,4 @@ export class CommonService extends baseService {
     }
     return [];
   }
- 
 }

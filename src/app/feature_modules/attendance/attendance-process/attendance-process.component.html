@@ -136,8 +136,8 @@
                                     <th>Full & Final Applicable</th>
                                 </thead>
                                 <tbody>
-                                    <tr *ngFor="let data of fnfAttendanceProcess">
-                                        <td>{{data?.attendanceProcessPeriodMonth}}-{{data?.attendanceProcessPeriodYear}}
+                                    <tr *ngFor="let data of fnfAttendanceProcessUsers">
+                                        <td>{{data?.firstName}} {{data?.lastName}}
                                         </td>
                                         <td>{{data?.user}}</td>
                                         <td>{{data?.runDate | date: 'medium'}}</td>

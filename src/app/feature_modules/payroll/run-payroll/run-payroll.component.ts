@@ -30,4 +30,5 @@ export class RunPayrollComponent implements OnInit {
   toggleView() {
     this.showTabs = !this.showTabs;
   }
+  
 }

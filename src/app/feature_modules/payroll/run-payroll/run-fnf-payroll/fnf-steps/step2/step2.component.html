@@ -73,37 +73,42 @@
     <div class="form-container p-3" style="max-height: 70vh; overflow-y: auto;">
         <form [formGroup]="variablePayForm" (ngSubmit)="onSubmit()">
             <div class="row">
-                <mat-form-field appearance="outline" class="col-md-6 my-2">
+                <!-- <mat-form-field appearance="outline" class="col-md-6 my-2">
                     <mat-label>Payroll FNF User</mat-label>
                     <input matInput formControlName="payrollFNFUser">
                     <mat-error *ngIf="variablePayForm.get('payrollFNFUser').hasError('required')">Payroll FNF User is
                         required</mat-error>
-                </mat-form-field>
+                </mat-form-field> -->
+                <app-fnf-users (changeUser)="onUserChange($event)"></app-fnf-users>
 
                 <mat-form-field appearance="outline" class="col-md-6 my-2">
                     <mat-label>Variable Deduction</mat-label>
-                    <input matInput formControlName="variableDeduction">
-                    <mat-error *ngIf="variablePayForm.get('variableDeduction').hasError('required')">Variable Deduction
-                        is required</mat-error>
+                    <mat-select formControlName="variableDeduction">
+                        <mat-option *ngFor="let deduction of salary?.variableDeductionList" [value]="deduction?.variableDeduction">{{getVariableDeduction(deduction?.variableDeduction)}}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="variablePayForm.get('variableDeduction').hasError('required')">Variable Deduction is required</mat-error>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="col-md-6 my-2">
                     <mat-label>Variable Allowance</mat-label>
-                    <input matInput formControlName="variableAllowance">
-                    <mat-error *ngIf="variablePayForm.get('variableAllowance').hasError('required')">Variable Allowance
-                        is required</mat-error>
+                    <mat-select formControlName="variableAllowance">
+                        <mat-option *ngFor="let allowance of salary?.variableAllowanceList" [value]="allowance?.variableAllowance">{{getVariableAllowance(allowance?.variableAllowance)}}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="variablePayForm.get('variableAllowance').hasError('required')">Variable Allowance is required</mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="col-md-6 my-2">
+                    <mat-label>Month</mat-label>
+                    <mat-select formControlName="month">
+                        <mat-option *ngFor="let month of months" [value]="month">{{ month }}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="variablePayForm.get('month').hasError('required')">Month is required</mat-error>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="col-md-6 my-2">
                     <mat-label>Amount</mat-label>
                     <input matInput type="number" formControlName="amount">
                     <mat-error *ngIf="variablePayForm.get('amount').hasError('required')">Amount is required</mat-error>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline" class="col-md-6 my-2">
-                    <mat-label>Month</mat-label>
-                    <input matInput formControlName="month">
-                    <mat-error *ngIf="variablePayForm.get('month').hasError('required')">Month is required</mat-error>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="col-md-6 my-2">
