@@ -19,6 +19,9 @@
           <mat-form-field appearance="outline" class="col-md-6">
             <mat-label>What is the Employee ID/Code</mat-label>
             <input matInput>
+            <mat-error *ngIf="jobInformationForm.get('employeeId')?.hasError('required') && jobInformationForm.get('employeeId')?.touched">
+              Employee ID is required.
+            </mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="col-md-6">
@@ -32,18 +35,27 @@
               <mat-option value="Direct Deposit">Direct Deposit</mat-option>
               <mat-option value="Cash">Cash</mat-option>
             </mat-select>
+            <mat-error *ngIf="jobInformationForm.get('salaryPaymentMethod')?.hasError('required') && jobInformationForm.get('salaryPaymentMethod')?.touched">
+              Salary Payment Method is required.
+            </mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="col-md-6">
             <mat-label>What is the Employee's joining Date</mat-label>
             <input matInput [matDatepicker]="joiningDatePicker" (focus)="joiningDatePicker.open()" readonly>
             <mat-datepicker #joiningDatePicker></mat-datepicker>
+            <mat-error *ngIf="jobInformationForm.get('joiningDate')?.hasError('required') && jobInformationForm.get('joiningDate')?.touched">
+              Joining Date is required.
+            </mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="col-md-6">
             <mat-label>What is the Employee's confirmation Date</mat-label>
             <input matInput [matDatepicker]="confirmationDatePicker" (focus)="confirmationDatePicker.open()" readonly>
             <mat-datepicker #confirmationDatePicker></mat-datepicker>
+            <mat-error *ngIf="jobInformationForm.get('confirmationDate')?.hasError('required') && jobInformationForm.get('confirmationDate')?.touched">
+              Confirmation Date is required.
+            </mat-error>
           </mat-form-field>
         </div>
       </form>
@@ -55,22 +67,19 @@
           Job Information
         </mat-panel-title>
         <mat-panel-description>
-
           <mat-icon>info</mat-icon>
           &nbsp;{{selectedUser?.firstName | titlecase}}&nbsp;{{selectedUser?.lastName | titlecase}}
         </mat-panel-description>
       </mat-expansion-panel-header>
 
       <form [formGroup]="jobInformationForm" (ngSubmit)="onSubmissionJobInformation()">
-
         <div class="d-flex justify-content-end mb-2">
           <button mat-raised-button class="addBtn">Save</button>
         </div>
         <div class="row">
           <mat-form-field appearance="outline" class="col-md-6">
             <mat-label>Effective From</mat-label>
-            <input matInput [matDatepicker]="joiningDatePicker2" formControlName="effectiveFrom"
-              (focus)="joiningDatePicker2.open()" readonly>
+            <input matInput [matDatepicker]="joiningDatePicker2" formControlName="effectiveFrom" (focus)="joiningDatePicker2.open()" readonly>
             <mat-datepicker #joiningDatePicker2></mat-datepicker>
             <mat-error *ngIf="jobInformationForm.get('effectiveFrom')?.hasError('required') && jobInformationForm.get('effectiveFrom')?.touched">
               Effective From Date is required.
@@ -80,24 +89,28 @@
           <mat-form-field appearance="outline" class="col-md-6">
             <mat-label>Location</mat-label>
             <mat-select formControlName="location">
-              <mat-option *ngFor="let location of locations" value="{{location?._id}}">{{location?.locationCode}},
-                {{location?.city}}, {{location?.state}}, {{location?.country}} </mat-option>
+              <mat-option *ngFor="let location of locations" [value]="location?._id">{{location?.locationCode}}, {{location?.city}}, {{location?.state}}, {{location?.country}}</mat-option>
             </mat-select>
+            <mat-error *ngIf="jobInformationForm.get('location')?.hasError('required') && jobInformationForm.get('location')?.touched">
+              Location is required.
+            </mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="col-md-6">
             <mat-label>Designation</mat-label>
             <mat-select formControlName="designation">
-              <mat-option *ngFor="let designation of designations"
-                value="{{designation?._id}}">{{designation?.designation}}</mat-option>
+              <mat-option *ngFor="let designation of designations" [value]="designation?._id">{{designation?.designation}}</mat-option>
             </mat-select>
+            <mat-error *ngIf="jobInformationForm.get('designation')?.hasError('required') && jobInformationForm.get('designation')?.touched">
+              Designation is required.
+            </mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="col-md-6">
             <mat-label>Employment Type</mat-label>
             <mat-select formControlName="employmentType">
               <mat-option value="Full-time employment">Full-time employment</mat-option>
-              <mat-option value="Part-time employment"> Part-time employment</mat-option>
+              <mat-option value="Part-time employment">Part-time employment</mat-option>
               <mat-option value="Apprenticeship">Apprenticeship</mat-option>
               <mat-option value="Traineeship">Traineeship</mat-option>
               <mat-option value="Internship">Internship</mat-option>
@@ -107,49 +120,63 @@
               <mat-option value="Probation">Probation</mat-option>
               <mat-option value="Leased employment">Leased employment</mat-option>
             </mat-select>
+            <mat-error *ngIf="jobInformationForm.get('employmentType')?.hasError('required') && jobInformationForm.get('employmentType')?.touched">
+              Employment Type is required.
+            </mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="col-md-6">
             <mat-label>Reporting Supervisor</mat-label>
             <mat-select formControlName="reportingSupervisor">
-              <mat-option *ngFor="let supervisor of supervisors" value="{{supervisor?.id}}">{{supervisor?.firstName}}
-                {{supervisor?.lastName}}</mat-option>
+              <mat-option *ngFor="let supervisor of supervisors" [value]="supervisor?.id">{{supervisor?.firstName}} {{supervisor?.lastName}}</mat-option>
             </mat-select>
+            <mat-error *ngIf="jobInformationForm.get('reportingSupervisor')?.hasError('required') && jobInformationForm.get('reportingSupervisor')?.touched">
+              Reporting Supervisor is required.
+            </mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="col-md-6">
             <mat-label>Department</mat-label>
             <mat-select formControlName="department">
-              <mat-option *ngFor="let department of departments"
-                value="{{department?._id}}">{{department?.departmentName}}</mat-option>
+              <mat-option *ngFor="let department of departments" [value]="department?._id">{{department?.departmentName}}</mat-option>
             </mat-select>
+            <mat-error *ngIf="jobInformationForm.get('department')?.hasError('required') && jobInformationForm.get('department')?.touched">
+              Department is required.
+            </mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="col-md-6">
             <mat-label>Band</mat-label>
             <mat-select formControlName="band">
-              <mat-option *ngFor="let band of bands" value="{{band?._id}}">{{band?.band}}</mat-option>
+              <mat-option *ngFor="let band of bands" [value]="band?._id">{{band?.band}}</mat-option>
             </mat-select>
+            <mat-error *ngIf="jobInformationForm.get('band')?.hasError('required') && jobInformationForm.get('band')?.touched">
+              Band is required.
+            </mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="col-md-6">
             <mat-label>Sub-Department</mat-label>
             <mat-select formControlName="subDepartments">
-              <mat-option *ngFor="let subDepartment of subDepartments"
-                value="{{subDepartment?._id}}">{{subDepartment?.subDepartmentName}}</mat-option>
+              <mat-option *ngFor="let subDepartment of subDepartments" [value]="subDepartment?._id">{{subDepartment?.subDepartmentName}}</mat-option>
             </mat-select>
+            <mat-error *ngIf="jobInformationForm.get('subDepartments')?.hasError('required') && jobInformationForm.get('subDepartments')?.touched">
+              Sub-Department is required.
+            </mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="col-md-6">
             <mat-label>Employment Status Effective From</mat-label>
-            <input matInput [matDatepicker]="joiningDatePicker3" formControlName="employmentStatusEffectiveFrom"
-              (focus)="joiningDatePicker3.open()" readonly>
+            <input matInput [matDatepicker]="joiningDatePicker3" formControlName="employmentStatusEffectiveFrom" (focus)="joiningDatePicker3.open()" readonly>
             <mat-datepicker #joiningDatePicker3></mat-datepicker>
+            <mat-error *ngIf="jobInformationForm.get('employmentStatusEffectiveFrom')?.hasError('required') && jobInformationForm.get('employmentStatusEffectiveFrom')?.touched">
+              Employment Status Effective From Date is required.
+            </mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="col-md-6">
             <mat-label>Employment Status</mat-label>
-            <mat-select>
+            <mat-select formControlName="employmentStatus">
               <mat-option value="Team Lead">Team Lead</mat-option>
               <mat-option value="Project Manager">Project Manager</mat-option>
               <mat-option value="HR">HR</mat-option>
@@ -157,8 +184,11 @@
               <mat-option value="Senior Software Developer">Senior Software Developer</mat-option>
               <mat-option value="CEO">CEO</mat-option>
             </mat-select>
+            <mat-error *ngIf="jobInformationForm.get('employmentStatus')?.hasError('required') && jobInformationForm.get('employmentStatus')?.touched">
+              Employment Status is required.
+            </mat-error>
           </mat-form-field>
-          
+
           <mat-form-field appearance="outline" class="col-md-6">
             <mat-label>Organization</mat-label>
             <input type="text" matInput [value]="this.selectedUser?.company?.companyName" disabled>
@@ -167,18 +197,27 @@
           <mat-form-field appearance="outline" class="col-md-6">
             <mat-label>Zone</mat-label>
             <mat-select formControlName="zone">
-              <mat-option *ngFor="let zone of zones" value="{{zone?._id}}">{{zone?.zoneName}}</mat-option>
+              <mat-option *ngFor="let zone of zones" [value]="zone?._id">{{zone?.zoneName}}</mat-option>
             </mat-select>
+            <mat-error *ngIf="jobInformationForm.get('zone')?.hasError('required') && jobInformationForm.get('zone')?.touched">
+              Zone is required.
+            </mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="col-md-6">
             <mat-label>Biometric Employee Code</mat-label>
-            <input matInput>
+            <input matInput formControlName="biometricEmployeeCode">
+            <mat-error *ngIf="jobInformationForm.get('biometricEmployeeCode')?.hasError('required') && jobInformationForm.get('biometricEmployeeCode')?.touched">
+              Biometric Employee Code is required.
+            </mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="col-md-6">
             <mat-label>Previous Experience (Months)</mat-label>
-            <input matInput>
+            <input matInput formControlName="previousExperience">
+            <mat-error *ngIf="jobInformationForm.get('previousExperience')?.hasError('required') && jobInformationForm.get('previousExperience')?.touched">
+              Previous Experience is required.
+            </mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="col-md-6">
@@ -190,7 +229,6 @@
           </mat-form-field>
         </div>
       </form>
-
     </mat-expansion-panel>
   </mat-accordion>
 </div>

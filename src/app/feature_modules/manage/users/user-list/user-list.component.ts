@@ -9,6 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { UserService } from 'src/app/_services/users.service';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-user-list',
@@ -16,7 +17,7 @@ import { UserService } from 'src/app/_services/users.service';
   styleUrls: ['./user-list.component.css'],
 })
 export class UserListComponent implements OnInit {
-  usersList: any[];
+  usersList: MatTableDataSource<any>;
   inviteUser: signup[] = [];
   searchText = '';
   p: number = 1;
@@ -34,6 +35,7 @@ export class UserListComponent implements OnInit {
   isEdit: boolean = false;
   userForm: FormGroup;
   roles: any;
+  totalRecords: number;
 
   constructor(
     private router: Router,
@@ -62,12 +64,11 @@ export class UserListComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.showEmployeeDetails)
-
     this.getRoles();
     this.getAllRoles();
     this.commonservice.populateUsers().subscribe(result => {
-      this.usersList = result && result.data && result.data.data;
+      this.totalRecords = result.results;
+      this.usersList = new MatTableDataSource(result && result.data && result.data.data);
     });
     this.firstLetter = this.commonservice.firstletter;
     this.UserService.toggleEmployeesDetails.subscribe((showDetails) => {
@@ -82,7 +83,8 @@ export class UserListComponent implements OnInit {
     return password === confirmPassword ? null : { notMatching: true };
   }
   drop(event: CdkDragDrop<any[]>) {
-    moveItemInArray(this.usersList, event.previousIndex, event.currentIndex);
+    moveItemInArray(this.usersList.data, event.previousIndex, event.currentIndex);
+    this.usersList.data = [...this.usersList.data];
   }
 
   getAllRoles() {
@@ -108,7 +110,7 @@ export class UserListComponent implements OnInit {
     // if (this.addForm.valid) {
     this.UserService.addUser(this.userForm.value).subscribe(result => {
       const users = result['data'].User;
-      this.usersList.push(users);
+      this.usersList.data = [...this.usersList.data, users];
       this.toastrrr.success('New User Added', 'Successfully Added!');
     }, err => {
       this.toastrrr.error('User with this Email already Exists', 'Duplicate Email!')
@@ -117,12 +119,10 @@ export class UserListComponent implements OnInit {
 
   }
 
-
-
   deleteUser() {
     this.UserService.deleteUser(this.selectedUser._id)
       .subscribe(response => {
-        this.usersList = this.usersList.filter(user => user._id !== this.selectedUser._id);
+        this.usersList.data = this.usersList.data.filter(user => user._id !== this.selectedUser._id);
         this.toastrrr.success('Existing User Deleted', 'Successfully Deleted!')
       }, err => {
         this.toastrrr.error('Can not be Deleted', 'ERROR!')
@@ -172,13 +172,18 @@ export class UserListComponent implements OnInit {
 
   delete(id: string) {
     this.UserService.deleteUser(id).subscribe((res: any) => {
-      this.usersList = this.usersList.filter(user => user?._id !== id);
+      this.usersList.data = this.usersList.data.filter(user => user?._id !== id);
       this.toast.success('Employee record has been successfully deleted.', 'Action Complete');
     },
       (err) => {
         this.toast.error('This Employee record Can not be deleted.'
           , 'Error!')
       })
+  }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.usersList.filter = filterValue.trim().toLowerCase();
   }
 
 }

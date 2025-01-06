@@ -40,7 +40,7 @@ export class AddSalaryDetailsComponent {
       payrollEffectiveFrom: [''],
       actualEffectiveDate: [''],
       frequencyToEnterCTC: [''],
-      CTCTemplate: [''],
+      CTCTemplate: ['manual'],
       isEmployerPartInclusiveInSalaryStructure: [false],
       enteringAmount: ['Monthly'],
       Amount: [0],
@@ -74,6 +74,7 @@ export class AddSalaryDetailsComponent {
   }
 
   ngOnInit(): void {
+    this.salaryDetailsForm.patchValue({ CTCTemplate: 'manual' });
     this.addFixedAllowance();
     this.addOtherBenefit();
     this.addEmployerContribution();
@@ -499,5 +500,25 @@ export class AddSalaryDetailsComponent {
   getVariableDeduction(data: string) {
     const matchingRecord = this.variableDeduction?.find(rec => rec._id === data);
     return matchingRecord?.label;
+  }
+
+  onCTCTemplateChange(value: string) {
+    if (value === 'manual') {
+      this.addButtons = true;
+      this.enableManualEntry();
+    } else {
+      this.addButtons = false;
+      this.getCTCTemplateById(value);
+    }
+  }
+
+  enableManualEntry() {
+    this.salaryDetailsForm.get('salaryComponentFixedAllowance').enable();
+    this.salaryDetailsForm.get('salaryComponentOtherBenefits').enable();
+    this.salaryDetailsForm.get('salaryComponentEmployerContribution').enable();
+    this.salaryDetailsForm.get('salaryComponentFixedDeduction').enable();
+    this.salaryDetailsForm.get('salaryComponentVariableAllowance').enable();
+    this.salaryDetailsForm.get('salaryComponentVariableDeduction').enable();
+    this.salaryDetailsForm.get('salaryComponentPFCharge').enable();
   }
 }

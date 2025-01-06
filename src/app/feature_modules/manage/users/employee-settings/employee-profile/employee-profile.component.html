@@ -3,292 +3,270 @@
         <div class="container-fluid">
 
             <!-- Basic Information -->
-            <h5 class="formHeading">Basic Information</h5>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>First Name <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" formControlName="firstName"
-                            placeholder="Enter First Name" />
-                        <div *ngIf="userForm.get('firstName')?.touched && userForm.get('firstName')?.invalid">
-                            <small class="text-danger" *ngIf="userForm.get('firstName')?.errors?.['required']">
-                                First Name is required.
-                            </small>
-                            <small class="text-danger" *ngIf="userForm.get('firstName')?.errors?.['pattern']">
-                                Must contain at least 2 alphabetic characters.
-                            </small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Last Name <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" formControlName="lastName"
-                            placeholder="Enter Last Name" />
-                        <div *ngIf="userForm.get('lastName')?.touched && userForm.get('lastName')?.invalid">
-                            <small class="text-danger" *ngIf="userForm.get('lastName')?.errors?.['required']">
-                                Last Name is required.
-                            </small>
-                            <small class="text-danger" *ngIf="userForm.get('lastName')?.errors?.['pattern']">
-                                Must contain at least 2 alphabetic characters.
-                            </small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Job Title</label>
-                        <input type="text" class="form-control" formControlName="jobTitle"
-                            placeholder="Enter Job Title" />
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Role <span class="text-danger">*</span></label>
-                        <select class="form-control" formControlName="role">
-                            <option value="" disabled>Select Role</option>
-                            <option *ngFor="let role of roles" [value]="role?.id">
-                                {{ role?.Name }}
-                            </option>
-                        </select>
-                        <div *ngIf="userForm.get('role')?.touched && userForm.get('role')?.invalid">
-                            <small class="text-danger" *ngIf="userForm.get('role')?.errors?.['required']">Role is
-                                required.</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" class="form-control" formControlName="email" placeholder="Enter Email" />
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Gender</label>
-                        <select class="form-control" formControlName="Gender">
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
-                            <option value="other">Other</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
+            <mat-accordion>
+                <mat-expansion-panel [expanded]="true">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Basic Information
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div class="row">
+                        <mat-form-field appearance="outline" class="col-md-6">
+                            <mat-label>First Name </mat-label>
+                            <input matInput formControlName="firstName" placeholder="Enter First Name">
+                            <mat-error *ngIf="userForm.get('firstName')?.touched && userForm.get('firstName')?.invalid">
+                                <small *ngIf="userForm.get('firstName')?.errors?.['required']">First Name is required.</small>
+                                <small *ngIf="userForm.get('firstName')?.errors?.['pattern']">Must contain at least 2 alphabetic characters.</small>
+                            </mat-error>
+                        </mat-form-field>
 
-            <!-- Personal Details -->
-            <h5 class="formHeading mt-4">Personal Details</h5>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Date of Birth</label>
-                        <input type="date" class="form-control" formControlName="DOB" />
+                        <mat-form-field appearance="outline" class="col-md-6">
+                            <mat-label>Last Name </mat-label>
+                            <input matInput formControlName="lastName" placeholder="Enter Last Name">
+                            <mat-error *ngIf="userForm.get('lastName')?.touched && userForm.get('lastName')?.invalid">
+                                <small *ngIf="userForm.get('lastName')?.errors?.['required']">Last Name is required.</small>
+                                <small *ngIf="userForm.get('lastName')?.errors?.['pattern']">Must contain at least 2 alphabetic characters.</small>
+                            </mat-error>
+                        </mat-form-field>
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Marital Status</label>
-                        <select class="form-control" formControlName="MaritalStatus">
-                            <option value="Unmarried">Unmarried</option>
-                            <option value="Married">Married</option>
-                            <option value="Other">Other</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Marriage Anniversary</label>
-                        <input type="date" class="form-control" formControlName="MarraigeAniversary" />
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>PAN Card</label>
-                        <input type="text" class="form-control" formControlName="Pancard"
-                            placeholder="Enter PAN Card Number" />
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Aadhar Number</label>
-                        <input type="text" class="form-control" formControlName="AadharNumber"
-                            placeholder="Enter Aadhar Number" />
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Disability</label>
-                        <select class="form-control" formControlName="Disability">
-                            <option value="no">No</option>
-                            <option value="yes">Yes</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
 
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Father/Husband Name</label>
-                        <input type="text" class="form-control" formControlName="FatherHusbandName"
-                            placeholder="Enter Name" />
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Number of Children</label>
-                        <input type="number" class="form-control" formControlName="NoOfChildren"
-                            placeholder="Enter Number of Children" />
-                    </div>
-                </div>
-            </div>
+                    <div class="row">
+                        <mat-form-field appearance="outline" class="col-md-6">
+                            <mat-label>Job Title</mat-label>
+                            <input matInput formControlName="jobTitle" placeholder="Enter Job Title">
+                        </mat-form-field>
 
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Passport Details</label>
-                        <input type="text" class="form-control" formControlName="PassportDetails"
-                            placeholder="Enter Passport Details" />
+                        <mat-form-field appearance="outline" class="col-md-6">
+                            <mat-label>Role </mat-label>
+                            <mat-select formControlName="role">
+                                <mat-option value="" disabled>Select Role</mat-option>
+                                <mat-option *ngFor="let role of roles" [value]="role?.id">{{ role?.Name }}</mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="userForm.get('role')?.touched && userForm.get('role')?.invalid">
+                                <small *ngIf="userForm.get('role')?.errors?.['required']">Role is required.</small>
+                            </mat-error>
+                        </mat-form-field>
                     </div>
-                </div>
-            </div>
 
-            <!-- Address Details -->
-            <h5 class="formHeading mt-4">Address</h5>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Address</label>
-                        <input type="text" class="form-control" formControlName="address" placeholder="Enter Address" />
-                    </div>
-                </div>
+                    <div class="row">
+                        <mat-form-field appearance="outline" class="col-md-6">
+                            <mat-label>Email</mat-label>
+                            <input matInput type="email" formControlName="email" placeholder="Enter Email">
+                        </mat-form-field>
 
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>City</label>
-                        <input type="text" class="form-control" formControlName="city" placeholder="Enter City" />
+                        <mat-form-field appearance="outline" class="col-md-6">
+                            <mat-label>Gender</mat-label>
+                            <mat-select formControlName="Gender">
+                                <mat-option value="male">Male</mat-option>
+                                <mat-option value="female">Female</mat-option>
+                                <mat-option value="other">Other</mat-option>
+                            </mat-select>
+                        </mat-form-field>
                     </div>
-                </div>
-            </div>
-            <div class="row">
+                </mat-expansion-panel>
 
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>State</label>
-                        <input type="text" class="form-control" formControlName="state" placeholder="Enter State" />
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Pincode</label>
-                        <input type="text" class="form-control" formControlName="pincode" placeholder="Enter Pincode" />
-                    </div>
-                </div>
-            </div>
-            <!-- Contact -->
-            <h5 class="formHeading mt-4">Contact</h5>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Phone</label>
-                        <input type="text" class="form-control" formControlName="phone"
-                            placeholder="Enter Phone Number" />
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Mobile</label>
-                        <input type="text" class="form-control" formControlName="mobile"
-                            placeholder="Enter Mobile Number" />
-                    </div>
-                </div>
-            </div>
+                <!-- Personal Details -->
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Personal Details
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div class="row">
+                        <mat-form-field appearance="outline" class="col-md-6">
+                            <mat-label>Date of Birth</mat-label>
+                            <input matInput type="date" formControlName="DOB">
+                        </mat-form-field>
 
-            <!-- Emergency Contact -->
-            <h5 class="formHeading mt-4">Emergency Contact</h5>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Emergency Contact Name</label>
-                        <input type="text" class="form-control" formControlName="emergancyContactName"
-                            placeholder="Enter Name" />
+                        <mat-form-field appearance="outline" class="col-md-6">
+                            <mat-label>Marital Status</mat-label>
+                            <mat-select formControlName="MaritalStatus">
+                                <mat-option value="Unmarried">Unmarried</mat-option>
+                                <mat-option value="Married">Married</mat-option>
+                                <mat-option value="Other">Other</mat-option>
+                            </mat-select>
+                        </mat-form-field>
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Emergency Contact Number</label>
-                        <input type="text" class="form-control" formControlName="emergancyContactNumber"
-                            placeholder="Enter Contact Number" />
-                    </div>
-                </div>
-            </div>
 
-            <!-- Bank Details -->
-            <h5 class="formHeading mt-4">Bank Details</h5>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Bank Name</label>
-                        <input type="text" class="form-control" formControlName="BankName"
-                            placeholder="Enter Bank Name" />
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Bank Account Number</label>
-                        <input type="text" class="form-control" formControlName="BankAccountNumber"
-                            placeholder="Enter Account Number" />
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Bank IFSC Code</label>
-                        <input type="text" class="form-control" formControlName="BankIFSCCode"
-                            placeholder="Enter IFSC Code" />
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Bank Branch</label>
-                        <input type="text" class="form-control" formControlName="BankBranch"
-                            placeholder="Enter Bank Branch" />
-                    </div>
-                </div>
-            </div>
+                    <div class="row">
+                        <mat-form-field appearance="outline" class="col-md-6">
+                            <mat-label>Marriage Anniversary</mat-label>
+                            <input matInput type="date" formControlName="MarraigeAniversary">
+                        </mat-form-field>
 
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Bank Address</label>
-                        <input type="text" class="form-control" formControlName="BankAddress"
-                            placeholder="Enter Bank Address" />
+                        <mat-form-field appearance="outline" class="col-md-6">
+                            <mat-label>PAN Card</mat-label>
+                            <input matInput formControlName="Pancard" placeholder="Enter PAN Card Number">
+                        </mat-form-field>
                     </div>
-                </div>
-            </div>
 
-            <div class="row">
-                <div class="form-group col-md-12 mt-2">
-                    <label for="extraDetails">Extra Details</label>
-                    <textarea formControlName="extraDetails" class="form-control" id="extraDetails"
-                        placeholder="Enter Extra Details"></textarea>
-                </div>
-            </div>
+                    <div class="row">
+                        <mat-form-field appearance="outline" class="col-md-6">
+                            <mat-label>Aadhar Number</mat-label>
+                            <input matInput formControlName="AadharNumber" placeholder="Enter Aadhar Number">
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="col-md-6">
+                            <mat-label>Disability</mat-label>
+                            <mat-select formControlName="Disability">
+                                <mat-option value="no">No</mat-option>
+                                <mat-option value="yes">Yes</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="row">
+                        <mat-form-field appearance="outline" class="col-md-6">
+                            <mat-label>Father/Husband Name</mat-label>
+                            <input matInput formControlName="FatherHusbandName" placeholder="Enter Name">
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="col-md-6">
+                            <mat-label>Number of Children</mat-label>
+                            <input matInput type="number" formControlName="NoOfChildren" placeholder="Enter Number of Children">
+                        </mat-form-field>
+                    </div>
+
+                    <div class="row">
+                        <mat-form-field appearance="outline" class="col-md-6">
+                            <mat-label>Passport Details</mat-label>
+                            <input matInput formControlName="PassportDetails" placeholder="Enter Passport Details">
+                        </mat-form-field>
+                    </div>
+                </mat-expansion-panel>
+
+                <!-- Address Details -->
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Address
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div class="row">
+                        <mat-form-field appearance="outline" class="col-md-6">
+                            <mat-label>Address</mat-label>
+                            <input matInput formControlName="address" placeholder="Enter Address">
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="col-md-6">
+                            <mat-label>City</mat-label>
+                            <input matInput formControlName="city" placeholder="Enter City">
+                        </mat-form-field>
+                    </div>
+
+                    <div class="row">
+                        <mat-form-field appearance="outline" class="col-md-6">
+                            <mat-label>State</mat-label>
+                            <input matInput formControlName="state" placeholder="Enter State">
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="col-md-6">
+                            <mat-label>Pincode</mat-label>
+                            <input matInput formControlName="pincode" placeholder="Enter Pincode">
+                        </mat-form-field>
+                    </div>
+                </mat-expansion-panel>
+
+                <!-- Contact -->
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Contact
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div class="row">
+                        <mat-form-field appearance="outline" class="col-md-6">
+                            <mat-label>Phone</mat-label>
+                            <input matInput formControlName="phone" placeholder="Enter Phone Number">
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="col-md-6">
+                            <mat-label>Mobile</mat-label>
+                            <input matInput formControlName="mobile" placeholder="Enter Mobile Number">
+                        </mat-form-field>
+                    </div>
+                </mat-expansion-panel>
+
+                <!-- Emergency Contact -->
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Emergency Contact
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div class="row">
+                        <mat-form-field appearance="outline" class="col-md-6">
+                            <mat-label>Emergency Contact Name</mat-label>
+                            <input matInput formControlName="emergancyContactName" placeholder="Enter Name">
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="col-md-6">
+                            <mat-label>Emergency Contact Number</mat-label>
+                            <input matInput formControlName="emergancyContactNumber" placeholder="Enter Contact Number">
+                        </mat-form-field>
+                    </div>
+                </mat-expansion-panel>
+
+                <!-- Bank Details -->
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Bank Details
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div class="row">
+                        <mat-form-field appearance="outline" class="col-md-6">
+                            <mat-label>Bank Name</mat-label>
+                            <input matInput formControlName="BankName" placeholder="Enter Bank Name">
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="col-md-6">
+                            <mat-label>Bank Account Number</mat-label>
+                            <input matInput formControlName="BankAccountNumber" placeholder="Enter Account Number">
+                        </mat-form-field>
+                    </div>
+
+                    <div class="row">
+                        <mat-form-field appearance="outline" class="col-md-6">
+                            <mat-label>Bank IFSC Code</mat-label>
+                            <input matInput formControlName="BankIFSCCode" placeholder="Enter IFSC Code">
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="col-md-6">
+                            <mat-label>Bank Branch</mat-label>
+                            <input matInput formControlName="BankBranch" placeholder="Enter Bank Branch">
+                        </mat-form-field>
+                    </div>
+
+                    <div class="row">
+                        <mat-form-field appearance="outline" class="col-md-6">
+                            <mat-label>Bank Address</mat-label>
+                            <input matInput formControlName="BankAddress" placeholder="Enter Bank Address">
+                        </mat-form-field>
+                    </div>
+                </mat-expansion-panel>
+
+                <!-- Extra Details -->
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Extra Details
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div class="row">
+                        <mat-form-field appearance="outline" class="col-md-12">
+                            <mat-label>Extra Details</mat-label>
+                            <textarea matInput formControlName="extraDetails" placeholder="Enter Extra Details"></textarea>
+                        </mat-form-field>
+                    </div>
+                </mat-expansion-panel>
+            </mat-accordion>
 
             <!-- Submit Button -->
             <div class="d-flex justify-content-between mt-3">
                 <button mat-raised-button type="button" (click)="onResetForm()">Cancel</button>
-                <button mat-raised-button type="submit" class="addBtn">Submit</button>
+                <button mat-raised-button type="submit" class="addBtn" [disabled]="!userForm.valid">Submit</button>
             </div>
-
         </div>
     </form>
 </div>
