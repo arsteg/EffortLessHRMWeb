@@ -73,36 +73,44 @@ export class CommonService extends baseService {
 
   getRandomColor(firstName: string) {
     let colorMap = {
-      A: '#76bc21',
-      B: '#faba5c',
-      C: '#0000ff',
-      D: '#ffff00',
-      E: '#00ffff',
-      F: '#ff00ff',
-      G: '#f1421d',
-      H: '#1633eb',
-      I: '#f1836c',
-      J: '#824b40',
-      K: '#256178',
-      L: '#0d3e50',
-      M: '#3c8dad',
-      N: '#67a441',
-      O: '#dc57c3',
-      P: '#673a05',
-      Q: '#ec8305',
-      R: '#00a19d',
-      S: '#2ee8e8',
-      T: '#5c9191',
-      U: '#436a2b',
-      V: '#dd573b',
-      W: '#424253',
-      X: '#74788d',
-      Y: '#16cf96',
-      Z: '#4916cf'
+        A: '#76bc21',
+        B: '#faba5c',
+        C: '#0000ff',
+        D: '#ffff00',
+        E: '#00ffff',
+        F: '#ff00ff',
+        G: '#f1421d',
+        H: '#1633eb',
+        I: '#f1836c',
+        J: '#824b40',
+        K: '#256178',
+        L: '#0d3e50',
+        M: '#3c8dad',
+        N: '#67a441',
+        O: '#dc57c3',
+        P: '#673a05',
+        Q: '#ec8305',
+        R: '#00a19d',
+        S: '#2ee8e8',
+        T: '#5c9191',
+        U: '#436a2b',
+        V: '#dd573b',
+        W: '#424253',
+        X: '#74788d',
+        Y: '#16cf96',
+        Z: '#4916cf'
     };
-    this.firstletter = firstName?.charAt(0).toUpperCase();
-    return colorMap[this.firstletter] || '#000000';
-  }
+    if (Array.isArray(firstName)) {
+        return firstName.map(name => {
+            this.firstletter = name.charAt(0).toUpperCase();
+            return this.firstletter;
+            // return colorMap[this.firstletter] || '#000000';
+        });
+    } else {
+        this.firstletter = firstName?.charAt(0).toUpperCase();
+        return colorMap[this.firstletter] || '#000000';
+    }
+}
 
   setCurrentUser(profile: any): void {
     this.currentProfileSubject.next(profile);
