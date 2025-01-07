@@ -40,6 +40,7 @@ export class EmploymentDetailsComponent {
       band: ['', Validators.required],
       subDepartments: ['', Validators.required],
       employmentStatusEffectiveFrom: ['', Validators.required],
+      employmentStatus: ['', Validators.required],
       zone: ['', Validators.required],
       noticePeriod: ['0', Validators.required]
     });
