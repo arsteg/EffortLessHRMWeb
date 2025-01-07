@@ -177,12 +177,12 @@
           <mat-form-field appearance="outline" class="col-md-6">
             <mat-label>Employment Status</mat-label>
             <mat-select formControlName="employmentStatus">
-              <mat-option value="Active">Active</mat-option>
-              <mat-option value="In-Active">In-Active</mat-option>
-              <mat-option value="Probationary">Probationary</mat-option>
-              <mat-option value="Terminated">Terminated</mat-option>
-              <mat-option value="Retired">Retired</mat-option>
-              <mat-option value="Self-Employed">Self-Employed</mat-option>
+              <mat-option value="Team Lead">Team Lead</mat-option>
+              <mat-option value="Project Manager">Project Manager</mat-option>
+              <mat-option value="HR">HR</mat-option>
+              <mat-option value="Junior Software Developer">Junior Software Developer</mat-option>
+              <mat-option value="Senior Software Developer">Senior Software Developer</mat-option>
+              <mat-option value="CEO">CEO</mat-option>
             </mat-select>
             <mat-error *ngIf="jobInformationForm.get('employmentStatus')?.hasError('required') && jobInformationForm.get('employmentStatus')?.touched">
               Employment Status is required.

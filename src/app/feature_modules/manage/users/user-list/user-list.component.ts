@@ -69,7 +69,6 @@ export class UserListComponent implements OnInit {
     this.commonservice.populateUsers().subscribe(result => {
       this.totalRecords = result.results;
       this.usersList = new MatTableDataSource(result && result.data && result.data.data);
-      console.log(this.usersList)
     });
     this.firstLetter = this.commonservice.firstletter;
     this.UserService.toggleEmployeesDetails.subscribe((showDetails) => {

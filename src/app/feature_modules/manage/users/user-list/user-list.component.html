@@ -5,6 +5,11 @@
             <div class="d-md-flex d-block justify-content-between align-items-center mb-2 px-2">
                 <div class="col-lg-2 d-flex align-items-center justify-content-start  mb-md-0 mb-3">
                     <span class="bi bi-search searchIcon" style="z-index: 999;"></span>
+                    <!-- <input class="form-control" type="text" placeholder="search here.." [(ngModel)]="searchText"
+                        name="searchText" aria-label="default input example" style="border: none !important;
+                        position: relative;
+                        padding-left: 40px !important;"> -->
+
                     <input class="form-control" type="text" placeholder="search here.." (input)="applyFilter($event)"
                         aria-label="default input example" style="border: none !important; position: relative; padding-left: 40px !important;">
                 </div>
@@ -53,13 +58,13 @@
                         <td mat-cell *matCellDef="let data"> {{ data.createdOn | date:'mediumDate'}} </td>
                     </ng-container>
 
-                    <!-- <ng-container matColumnDef="status">
+                    <ng-container matColumnDef="status">
                         <th mat-header-cell *matHeaderCellDef> Status </th>
                         <td mat-cell *matCellDef="let data">
                             <span class="badge rounded-pill table-button bg-success text-light px-4 py-2"
                                 *ngIf="data.status=='Active'">{{data.status}}</span>
                         </td>
-                    </ng-container> -->
+                    </ng-container>
 
                     <ng-container matColumnDef="actions">
                         <th mat-header-cell *matHeaderCellDef class="text-center"> Actions </th>
@@ -73,8 +78,8 @@
                         </td>
                     </ng-container>
 
-                    <tr mat-header-row *matHeaderRowDef="['name', 'email', 'jobTitle', 'role', 'createdOn',  'actions']"></tr>
-                    <tr mat-row *matRowDef="let row; columns: ['name', 'email', 'jobTitle', 'role', 'createdOn',  'actions'];"></tr>
+                    <tr mat-header-row *matHeaderRowDef="['name', 'email', 'jobTitle', 'role', 'createdOn', 'status', 'actions']"></tr>
+                    <tr mat-row *matRowDef="let row; columns: ['name', 'email', 'jobTitle', 'role', 'createdOn', 'status', 'actions'];"></tr>
                 </table>
             </div>
         </div>
