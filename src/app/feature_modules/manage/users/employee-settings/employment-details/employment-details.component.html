@@ -11,22 +11,20 @@
         </mat-panel-description>
       </mat-expansion-panel-header>
 
-      <form>
+      <form [formGroup]="appointmentForm" (ngSubmit)="onAppointmentSubmission()">
         <div class="d-flex justify-content-end mb-2">
           <button mat-raised-button class="addBtn" type="submit">Save</button>
         </div>
         <div class="row">
           <mat-form-field appearance="outline" class="col-md-6">
             <mat-label>What is the Employee ID/Code</mat-label>
-            <input matInput>
-            <mat-error *ngIf="jobInformationForm.get('employeeId')?.hasError('required') && jobInformationForm.get('employeeId')?.touched">
-              Employee ID is required.
-            </mat-error>
+            <input matInput value="{{appointment?.empCode}}" disabled>
+            
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="col-md-6">
             <mat-label>How is the Employee Salary Paid?</mat-label>
-            <mat-select>
+            <mat-select formControlName="salaryTypePaid">
               <mat-option value="Bank Transfer">Bank Transfer</mat-option>
               <mat-option value="Salary Accounts">Salary Accounts</mat-option>
               <mat-option value="Digital Wallets">Digital Wallets</mat-option>
@@ -42,7 +40,7 @@
 
           <mat-form-field appearance="outline" class="col-md-6">
             <mat-label>What is the Employee's joining Date</mat-label>
-            <input matInput [matDatepicker]="joiningDatePicker" (focus)="joiningDatePicker.open()" readonly>
+            <input matInput [matDatepicker]="joiningDatePicker" (focus)="joiningDatePicker.open()" formControlName="joiningDate" readonly>
             <mat-datepicker #joiningDatePicker></mat-datepicker>
             <mat-error *ngIf="jobInformationForm.get('joiningDate')?.hasError('required') && jobInformationForm.get('joiningDate')?.touched">
               Joining Date is required.
@@ -51,7 +49,7 @@
 
           <mat-form-field appearance="outline" class="col-md-6">
             <mat-label>What is the Employee's confirmation Date</mat-label>
-            <input matInput [matDatepicker]="confirmationDatePicker" (focus)="confirmationDatePicker.open()" readonly>
+            <input matInput [matDatepicker]="confirmationDatePicker" (focus)="confirmationDatePicker.open()" formControlName="confirmationDate" readonly>
             <mat-datepicker #confirmationDatePicker></mat-datepicker>
             <mat-error *ngIf="jobInformationForm.get('confirmationDate')?.hasError('required') && jobInformationForm.get('confirmationDate')?.touched">
               Confirmation Date is required.

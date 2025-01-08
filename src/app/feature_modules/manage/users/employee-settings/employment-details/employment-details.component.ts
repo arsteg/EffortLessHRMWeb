@@ -14,6 +14,7 @@ export class EmploymentDetailsComponent {
   selectedUser = this.userService.getData();
   disableSelect = new FormControl(false);
   jobInformationForm: FormGroup;
+  appointmentForm: FormGroup;
   supervisors: any;
   bands: any = [];
   zones: any = [];
@@ -22,6 +23,7 @@ export class EmploymentDetailsComponent {
   employmentStatus: any;
   designations: any = [];
   locations: any = [];
+  appointment: any;
 
   constructor(
     private userService: UserService,
@@ -29,6 +31,15 @@ export class EmploymentDetailsComponent {
     private fb: FormBuilder,
     private toast: ToastrService
   ) {
+    this.appointmentForm = this.fb.group(
+      {
+        user: [''],
+        salaryTypePaid: [''],
+        joiningDate: [0],
+        confirmationDate: [0]
+      }
+    )
+
     this.jobInformationForm = this.fb.group({
       user: ['', Validators.required],
       effectiveFrom: ['', Validators.required],
@@ -68,6 +79,22 @@ export class EmploymentDetailsComponent {
     })
   }
 
+  onAppointmentSubmission() {
+    this.appointmentForm.value.user = this.selectedUser._id
+    this.userService.getAppointmentByUserId(this.selectedUser._id).subscribe((res: any) => {
+      if (!res.data) {
+        this.userService.addAppointment(this.appointmentForm.value).subscribe((res: any) => {
+          this.toast.success('Appointment Details Added', 'Successfully')
+        })
+      }
+      else {
+        this.userService.updateAppointment(res.data._id, this.appointmentForm.value).subscribe((res: any) => {
+          this.toast.success('Appointment Details Updated', 'Successfully')
+        })
+      }
+    })
+  }
+
   onSubmissionJobInformation() {
     if (this.jobInformationForm.valid) {
       this.userService.getJobInformationByUserId(this.selectedUser._id).subscribe((res: any) => {
@@ -90,6 +117,10 @@ export class EmploymentDetailsComponent {
   }
 
   getData() {
+    this.userService.getAppointmentByUserId(this.selectedUser._id).subscribe((res: any) => {
+      this.appointment = res.data;
+      this.appointmentForm.patchValue(res.data);
+    })
     this.userService.getJobInformationByUserId(this.selectedUser._id).subscribe((res: any) => {
       this.jobInformationForm.patchValue(res.data[0]);
     })
