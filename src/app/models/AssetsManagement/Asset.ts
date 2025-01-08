@@ -12,6 +12,7 @@ export interface Asset {
 
 export interface AssetStatus {
   statusName: string;
+  isDeletable:boolean;
 }
 
 // src/app/models/Vendor.ts

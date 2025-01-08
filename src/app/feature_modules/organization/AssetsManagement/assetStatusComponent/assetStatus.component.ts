@@ -13,9 +13,11 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 })
 export class AssetStatusComponent implements OnInit {
     assetStatuses : AssetStatus[]; // This should ideally be an array of AssetStatus type
+    assetStatusesFiltered : AssetStatus[]; // This should ideally be an array of AssetStatus type
     assetStatusForm: FormGroup;
-    isEdit = false;
+    private _isEdit = false; // Internal property for isEdit
     selectedStatus: any; // Ideally, this should be of type AssetStatus
+    searchQuery: string = '';
 
     constructor(private fb: FormBuilder,
          private toast: ToastrService,
@@ -30,13 +32,28 @@ export class AssetStatusComponent implements OnInit {
 
     initForm() {
         this.assetStatusForm = this.fb.group({
-          statusName: ['', Validators.required]
+          statusName: ['', [Validators.required, this.checkDuplicateStatusName.bind(this)]]
         });
     }
+  // Getter and Setter for isEdit
+  get isEdit(): boolean {
+    return this._isEdit;
+  }
+
+  set isEdit(value: boolean) {
+    this._isEdit = value;
+    this.onIsEditChange(value); // Action to take when isEdit changes
+  }
+  onIsEditChange(value: boolean): void {
+    if (value === false) {
+      this.assetStatusForm.reset();
+    }
+  }
 
     getAssetStatuses() {
         this.assetManagementService.getAllAssetStatuses().subscribe(response => {
             this.assetStatuses = response.data
+            this.assetStatusesFiltered = this.assetStatuses;
         });
     }
 
@@ -75,7 +92,7 @@ export class AssetStatusComponent implements OnInit {
           width: '400px',
           data: status
         });
-    
+
         dialogRef.afterClosed().subscribe(result => {
           if (result === 'delete') {
             this.deleteAssetStatus(status);
@@ -85,4 +102,23 @@ export class AssetStatusComponent implements OnInit {
           }
         });
       }
+
+      filterAssetStatus(): void {
+        this.assetStatusesFiltered = this.assetStatuses.filter(assetType =>
+          assetType.statusName.toLowerCase().includes(this.searchQuery.toLowerCase())
+        );
+      }
+      // In the component class
+checkDuplicateStatusName(control: any) {
+  const statusName = control.value;
+  const isDuplicate = this.assetStatuses?.find(status =>
+      status.statusName.toLowerCase() === statusName.toLowerCase() &&
+      (!this.isEdit || status._id !== this.selectedStatus?._id)
+  );
+  return isDuplicate ? { duplicate: true } : null;
+}
+clearForm() {
+  this.assetStatusForm.reset();
+  this.isEdit = false; // Optionally reset isEdit flag if needed
+}
 }
