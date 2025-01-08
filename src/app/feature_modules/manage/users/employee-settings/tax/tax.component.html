@@ -12,13 +12,6 @@
         </div>
     </div>
 
-    <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
-        [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
-        (recordsPerPageChange)="onRecordsPerPageChange($event)">
-    </app-pagination>
-
-    <pre>Total Components in Use: {{totalIncomeTaxComponentsLength}}</pre>
-
     <div class="px-2 mt-2">
         <table class="px-2">
             <thead>
@@ -56,12 +49,12 @@
             <tbody>
                 <tr *ngFor="let tax of taxList | search:searchText">
                     <td>{{tax?.financialYear}}</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td>{{tax?.componentSums?.componentSums?.['80C Deduction'] || 0}}</td>
+                    <td>{{tax?.componentSums?.componentSums?.['Section 10'] || 0}}</td>
+                    <td>{{tax?.componentSums?.componentSums?.['Chapter VI Deductions'] || 0}}</td>
+                    <td>{{tax?.componentSums?.componentSums?.['Prequisites'] || 0}}</td>
+                    <td>{{tax?.componentSums?.componentSums?.['Interest on Home Loan'] || 0}}</td>
+                    <td>{{tax?.componentSums?.componentSums?.['Previous Employment Information'] || 0}}</td>
                     <td class="action text-center">
                         <div ngbDropdown class="dropdown-center">
                             <button class="actions ms-2" mat-mini-fab ngbDropdownToggle aria-expanded="false"
@@ -94,6 +87,11 @@
             </tbody>
         </table>
     </div>
+
+    <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
+        [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
+        (recordsPerPageChange)="onRecordsPerPageChange($event)">
+    </app-pagination>
 </div>
 
 <div *ngIf="showOffcanvas" class="offcanvas offcanvas-end w-75" [ngClass]="{ 'show': showOffcanvas }" tabindex="-1"
@@ -101,15 +99,8 @@
     <div class="offcanvas-header">
         <h2>Employee Tax Calculator</h2>
         <div class="d-flex justify-content-between px-4">
-            <label for="">{{selectedUser?.firstName | titlecase}}&nbsp;{{selectedUser?.lastName | titlecase}}</label>
-            <ul type="none">
-                <li><label>Date of Joining:</label>&nbsp;{{selectedUser?.createdOn | date: 'mediumDate'}}</li>
-                <li><label>Date of Birth:</label> &nbsp;{{selectedUser?.DOB | date: 'mediumDate'}}</li>
-                <li><label>Gender:</label>&nbsp; {{selectedUser?.Gender}}</li>
-                <li><label>Pan:</label>&nbsp; {{selectedUser?.Pancard}}</li>
-                <li><label>Status:</label>&nbsp; {{selectedUser?.status}}</li>
-                <li><label>Age:</label>&nbsp; {{getAge(selectedUser?.DOB)}}</li>
-            </ul>
+            <label for="">{{selectedUser?.firstName | titlecase}}&nbsp;{{selectedUser?.lastName | titlecase}} | {{selectedRecord?.financialYear}}</label>
+            
         </div>
     </div>
     <hr>

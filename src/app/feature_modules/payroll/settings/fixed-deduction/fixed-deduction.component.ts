@@ -38,14 +38,14 @@ export class FixedDeductionComponent {
   ngOnInit() {
     this.getFixedDeduction();
   }
-  clearForm(){
+  clearForm() {
     this.fixedContributionForm.patchValue({
       label: '',
       isEffectAttendanceOnEligibility: true
     })
   }
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
 
     }, (reason) => {
@@ -71,6 +71,9 @@ export class FixedDeductionComponent {
     if (!this.isEdit) {
       this.payroll.addFixedDeduction(this.fixedContributionForm.value).subscribe((res: any) => {
         this.fixedContributions.push(res.data);
+        this.fixedContributionForm.reset({
+          isEffectAttendanceOnEligibility: true
+        })
         this.toast.success('Successfully Added!!!', 'Fixed Deduction');
       },
         (err) => {
@@ -93,7 +96,7 @@ export class FixedDeductionComponent {
   }
   editRecord() {
     this.fixedContributionForm.patchValue(this.selectedRecord)
-   }
+  }
 
   deleteRecord(_id: string) {
     this.payroll.deleteFixedDeduction(_id).subscribe((res: any) => {

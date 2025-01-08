@@ -5,6 +5,7 @@ import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { TaxationService } from 'src/app/_services/taxation.service';
 import { ToastrService } from 'ngx-toastr';
+
 @Component({
   selector: 'app-tax',
   templateUrl: './tax.component.html',
@@ -20,7 +21,7 @@ export class TaxComponent {
   @ViewChild('offcanvasContent', { read: ViewContainerRef }) offcanvasContent: ViewContainerRef;
   selectedUser = this.userService.getData();
   taxView: boolean;
-  totalRecords: number
+  totalRecords: number;
   recordsPerPage: number = 10;
   currentPage: number = 1;
   uniqueFinancialYears: string[];
@@ -53,6 +54,7 @@ export class TaxComponent {
   }
 
   ngOnInit() {
+    console.log(this.selectedUser)
     this.getTaxDeclaration();
   }
 
@@ -107,17 +109,59 @@ export class TaxComponent {
       skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
       next: this.recordsPerPage.toString()
     };
-    this.userService.getTaxDeclarationByUserId(this.selectedUser.id, pagination).subscribe((res: any) => {
+    this.userService.getTaxDeclarationByUserId(this.selectedUser?._id, pagination).subscribe((res: any) => {
       this.taxList = res.data;
-      this.totalIncomeTaxComponentsLength = this.taxList.reduce((acc, current) => {
-        return acc + current.incomeTaxDeclarationComponent.length;
-      }, 0);
-      console.log(this.totalIncomeTaxComponentsLength);
+
+      this.taxList.forEach((tax: any) => {
+        const incomeTaxComponents = tax.incomeTaxDeclarationComponent;
+
+        const sectionIds = incomeTaxComponents.map((component: any) => component.section);
+
+        const sectionRequests = sectionIds.map((sectionId: string) =>
+          this.taxService.getTaxSectionById(sectionId).toPromise()
+        );
+
+        Promise.all(sectionRequests).then((sections: any[]) => {
+          const allSections = sections.map(section => section.data);
+          const mappedIncomeTaxComponents = incomeTaxComponents.map((component: any) => ({
+            ...component,
+            section: allSections.find((section: any) => section._id === component.section)?.section
+          }));
+          console.log(mappedIncomeTaxComponents);
+
+          // Calculate the sum of each component
+          const componentSums = this.calculateComponentSums(mappedIncomeTaxComponents);
+          console.log('Component Sums:', componentSums);
+
+          // Update the tax item with the calculated sums and hra
+          tax.totalRentDeclared = this.getTotalRentDeclared(tax.incomeTaxDeclarationHRA);
+          const hra = tax.totalRentDeclared;
+          tax.componentSums = { componentSums, hra };
+          console.log(tax.componentSums)
+          this.taxService.taxByUser.next(tax.componentSums);
+
+        });
+
+      });
 
       this.totalRecords = res.total;
       this.uniqueFinancialYears = this.getUniqueFinancialYears(this.taxList);
-      this.taxService.taxByUser.next(res.data);
-    })
+    });
+  }
+
+  calculateComponentSums(components: any[]): any {
+    const sums: any = {};
+    components.forEach((component: any) => {
+      if (!sums[component.section]) {
+        sums[component.section] = 0;
+      }
+      sums[component.section] += component.approvedAmount;
+    });
+    return sums || 0;
+  }
+
+  getTotalRentDeclared(hraList: any[]): number {
+    return hraList.reduce((sum, item) => sum + item.rentDeclared, 0);
   }
 
   getUniqueFinancialYears(taxList: any[]): string[] {
@@ -157,7 +201,7 @@ export class TaxComponent {
   }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
@@ -167,15 +211,15 @@ export class TaxComponent {
   taxDeclaration() {
     let payload = {
       financialYear: this.taxDeclarationForm.value.financialYear,
-      user: this.selectedUser.id,
+      user: this.selectedUser._id,
       employeeIncomeTaxDeclarationComponent: [],
       employeeIncomeTaxDeclarationHRA: []
-    }
+    };
     this.taxService.addIncomeTax(payload).subscribe((res: any) => {
       this.taxList.push(res.data);
       this.toastr.success('Tax Declaration Added Successfully');
     }, err => {
       this.toastr.error('Something went wrong');
-    })
+    });
   }
 }

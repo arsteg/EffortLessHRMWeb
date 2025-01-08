@@ -47,7 +47,7 @@ export class VariableDeductionComponent {
       amount: [0, Validators.required],
       percentage: [0, Validators.required],
       isAttendanceToAffectEligibility: [true, Validators.required],
-      variableDeductionApplicableEmployee: [[], Validators.required]
+      variableDeductionApplicableEmployee: [[]]
     });
     const currentYear = new Date().getFullYear();
     for (let year = currentYear - 2; year <= currentYear + 1; year++) {
