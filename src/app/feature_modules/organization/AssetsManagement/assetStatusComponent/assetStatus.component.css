@@ -1,0 +1,11 @@
+th, td {
+  padding: 10px; /* Adjust padding as needed */
+}
+
+th:nth-child(1), td:nth-child(1) {
+  text-align: left;
+}
+
+th:nth-child(2), td:nth-child(2) {
+  text-align: right;
+}
