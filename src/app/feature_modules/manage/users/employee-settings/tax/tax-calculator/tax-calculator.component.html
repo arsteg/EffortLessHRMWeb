@@ -1,14 +1,10 @@
-<!-- <form [formGroup]="taxForm">
 <mat-accordion class="example-headers-align">
-
-
-    <mat-expansion-panel [expanded]="false">
+    <mat-expansion-panel [expanded]="true">
         <mat-expansion-panel-header class="header">
             <mat-panel-title class="d-flex justify-content-between">
                 <label>Gross Salary</label>
-                <label class="text-center"><span>0.00</span><br>Total Fixed Allowances</label>
-                <label class="text-center"><span>0.00</span><br>Total Variable Allowances</label>
-                <label class="text-center"><span>0.00</span><br>Total Prequisites</label>
+                <label class="text-center"><span>{{fixedAllowanceSum || 0.00}}</span><br>Total Fixed Allowances</label>
+                <label class="text-center"><span>{{variableAllowanceSum || 0.00}}</span><br>Total Variable Allowances</label>
                 <label class="text-center"><span>0.00</span><br>Gross Annual Income/Salary(with all Allowances)</label>
             </mat-panel-title>
         </mat-expansion-panel-header>
@@ -23,427 +19,43 @@
                 <tbody>
                     <td>Gross Salary</td>
                     <td>0.00</td>
-                    <td><input type="number" class="form-control" formControlName="grossSalary"></td>
+                    <td><input type="number" class="form-control"  value="{{grossSalary}}"></td>
                 </tbody>
             </table>
         </div>
     </mat-expansion-panel>
 
-    <mat-expansion-panel [expanded]="false">
-        <mat-expansion-panel-header class="header">
-
-            <mat-panel-title class="d-flex justify-content-between">
-                <label>Exemptions</label>
-                <label class="text-center"><span>0.00</span><br>Old Regime</label>
-            </mat-panel-title>
-        </mat-expansion-panel-header>
-        <div>
-            <hr>
-            <table>
-                <thead>
-                    <th>Section Name</th>
-                    <th>Old Regime</th>
-                </thead>
-                <tbody>
-                    <td>Exemptions U/S 10 (like education allowance, LTA, etc. And not including HRA)</td>
-                    <td><input type="number" class="form-control" formControlName="exemptions"></td>
-                </tbody>
-            </table>
-        </div>
-    </mat-expansion-panel>
-
-    <mat-expansion-panel [expanded]="false">
-        <mat-expansion-panel-header class="header">
-
-            <mat-panel-title class="d-flex justify-content-between">
-                <label>HRA Exemptions</label>
-                <label class="text-center"><span>0.00</span><br>Old Regime</label>
-            </mat-panel-title>
-        </mat-expansion-panel-header>
-        <div>
-            <hr>
-            <table>
-                <tbody>
-                    <tr>
-                        <td>Basic salary received per annum</td>
-                    </tr>
-                    <tr>
-                        <td>Dearness allowance (DA) received per annum</td>
-                    </tr>
-                    <tr>
-                        <td>HRA received per annum</td>
-                        <td><input type="text" class="form-control" [(ngModel)]="totalAmount"></td>
-                    </tr>
-                    <tr>
-                        <td>Total rent paid per annum</td>
-                        <td><input type="text" class="form-control"
-                                [value]="incomeTaxDeclarationHRA[0].rentDeclared * 12"></td>
-                    </tr>
-                    <tr>
-                        <td>City Type</td>
-                        <td><select name="" id="" class="form-control" [(ngModel)]="cityType">
-                                <option value="Non-Metro">Non-Metro</option>
-                                <option value="Metro">Metro</option>
-                            </select>
-                        </td>
-                    </tr>
-
-                
-                </tbody>
-            </table>
-        </div>
-    </mat-expansion-panel>
-
-    <mat-expansion-panel [expanded]="false">
-        <mat-expansion-panel-header class="header">
-            <mat-panel-title class="d-flex justify-content-between">
-                Investment Deducted from Salary
-                <label class="text-center"><span>0.00</span><br>Maximum Amount</label>
-                <label class="text-center"><span>0.00</span><br>Old Regime</label>
-            </mat-panel-title>
-        </mat-expansion-panel-header>
-        <div>
-            <hr>
-        </div>
-    </mat-expansion-panel>
-
-    <mat-expansion-panel [expanded]="false">
-        <mat-expansion-panel-header class="header">
-            <mat-panel-title class="d-flex justify-content-between">
-                Chapter-VI A
-                <label class="text-center"><span>0.00</span><br>Maximum Amount</label>
-                <label class="text-center"><span>0.00</span><br>Old Regime</label>
-            </mat-panel-title>
-        </mat-expansion-panel-header>
-        <div>
-            <hr>
-            <table>
-                <thead>
-                    <th>Section Name</th>
-                    <th>Maximum Amount</th>
-                    <th>Old Regime</th>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>U/S 80E</td>
-                        <td>0.00</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>U/S 80EE</td>
-                        <td>0.00</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>U/S 80G</td>
-                        <td>0.00</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>U/S 80GG</td>
-                        <td>0.00</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>U/S 80U Disablity 80U - only self 40%-80%</td>
-                        <td>0.00</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>U/S 80U Disablity 80U - only self above 80%</td>
-                        <td>0.00</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>U/S 80D Individual, Spouse & Children</td>
-                        <td>0.00</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>U/S 80D Individual, Spouse, Children & Parent below 60</td>
-                        <td>0.00</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>U/S 80D Individual, Spouse, Children & Parent Above 60</td>
-                        <td>0.00</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>U/S 80D Health Checkup</td>
-                        <td>0.00</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>U/S 80DD Handicapped Dependent 80DD 40%-80%</td>
-                        <td>0.00</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>U/S 80DD Handicapped Dependent 80DD above 80%</td>
-                        <td>0.00</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>U/S 80DDB Medical Treatment(Specific Diseases)- Dependent</td>
-                        <td>0.00</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>U/S 80DDB Medical Treatment(Specific Diseases)- Senior citizen</td>
-                        <td>0.00</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>U/S 80TTA (Interest from saving account)</td>
-                        <td>0.00</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>U/S 80CCG</td>
-                        <td>0.00</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>U/S 80GGA</td>
-                        <td>0.00</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>U/S 80GGC</td>
-                        <td>0.00</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>U/S 80QQB</td>
-                        <td>0.00</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>U/S 80RRB</td>
-                        <td>0.00</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </mat-expansion-panel>
-
-    <mat-expansion-panel [expanded]="false">
-        <mat-expansion-panel-header class="header">
-            <mat-panel-title class="d-flex justify-content-between">
-                Section 80C & 80CCC
-                <label class="text-center"><span>0.00</span><br>Maximum Amount</label>
-                <label class="text-center"><span>0.00</span><br>Old Regime</label>
-            </mat-panel-title>
-        </mat-expansion-panel-header>
-        <div>
-            <hr>
-            <table>
-                <thead>
-                    <th>Section Name</th>
-                    <th>Maximum Amount</th>
-                    <th>Old Regime</th>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>GI/GISL</td>
-                        <td>0.00</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>LIC/Premium Paid</td>
-                        <td>0.00</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>Purchase of NSC</td>
-                        <td>0.00</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>ULIP</td>
-                        <td>0.00</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>Payment of HB Loan (Principal)</td>
-                        <td>0.00</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>PLI (Postal Life Insurance)</td>
-                        <td>0.00</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>Equity linked savings/tax savings bond etc</td>
-                        <td>0.00</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>U/S 80CCD (NPS)</td>
-                        <td>0.00</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>U/S 80CCC</td>
-                        <td>0.00</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>Fixed Deposit Scheme above 5 Years</td>
-                        <td>0.00</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>Stamp Duty/Registration Fees</td>
-                        <td>0.00</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>Kissan Vikas Patra (KVP)</td>
-                        <td>0.00</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>Sukanya Samriddhi Account</td>
-                        <td>0.00</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>Child Education Fee</td>
-                        <td>0.00</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>Contribution to Pension Fund of Life Insurance Companies</td>
-                        <td>0.00</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>Contribution to Pension Fund of UTI or Other Mutual Funds</td>
-                        <td>0.00</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>Contribution to PPF</td>
-                        <td>0.00</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>Contribution to GPF/CPF/EPF</td>
-                        <td>0.00</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </mat-expansion-panel>
-
-    <mat-expansion-panel [expanded]="false">
-        <mat-expansion-panel-header class="header">
-            <mat-panel-title>
-                Income from Other Source
-            </mat-panel-title>
-        </mat-expansion-panel-header>
-        <div>
-            <hr>
-
-        </div>
-    </mat-expansion-panel>
-
-    <mat-expansion-panel [expanded]="false">
-        <mat-expansion-panel-header class="header">
-            <mat-panel-title class="d-flex justify-content-between">
-                Previous Employment Information
-                <label class="text-center"><span>No Limit</span><br>Maximum Amount</label>
-                <label class="text-center"><span>0.00</span><br>Old Regime</label>
-            </mat-panel-title>
-        </mat-expansion-panel-header>
-        <div>
-            <hr>
-            <table>
-                <thead>
-                    <th>Section Name</th>
-                    <th>Maximum Amount</th>
-                    <th>Old Regime</th>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Previous Taxable Income</td>
-                        <td>0</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>Previous Tax</td>
-                        <td>0</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>Previous PF</td>
-                        <td>0</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>Previous PT</td>
-                        <td>0</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </mat-expansion-panel>
-
-    <mat-expansion-panel [expanded]="false">
-        <mat-expansion-panel-header class="header">
-            <mat-panel-title class="d-flex justify-content-between">
-                Interest on Home Loan
-                <label class="text-center"><span>0.00</span><br>Maximum Amount</label>
-                <label class="text-center"><span>0.00</span><br>Old Regime</label>
-            </mat-panel-title>
-        </mat-expansion-panel-header>
-        <div>
-            <hr>
-            <table>
-                <thead>
-                    <th>Section Name</th>
-                    <th>Maximum Amount</th>
-                    <th>Old Regime</th>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>80EE: Deductions on Home LOan Interest for First Time Home Owners</td>
-                        <td>0</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>80EEA: Deduction in respect of Interest on LOan taken for certain house property</td>
-                        <td>0</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>Interest on Housing Loan(Letout)</td>
-                        <td>0</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>Interest on Housing Loan(Self Occupied)</td>
-                        <td>0</td>
-                        <td><input type="number" class="form-control"></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </mat-expansion-panel>
-
+    <ng-container *ngFor="let section of taxSections">
+        <mat-expansion-panel [expanded]="false">
+            <mat-expansion-panel-header class="header">
+                <mat-panel-title class="d-flex justify-content-between">
+                    <label>{{section.section}}</label>
+                    <label class="text-center"><span>Total: {{section.total}}</span><br>{{section.regime}}</label>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            <div>
+                <hr>
+                <table>
+                    <thead>
+                        <th>Income Tax Section Components</th>
+                        <th>Amount</th>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of section.items">
+                            <td>{{item.name}}</td>
+                            <td><input type="number" class="form-control"  [value]="item.amount"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </mat-expansion-panel>
+    </ng-container>
 </mat-accordion>
-</form>
 
 <div class="mt-3">
     <i><strong>Disclaimer: </strong> <small>The above calculator is illustrative and designed to enable Employee to get
             a quick
-            view toward Old vs New Regime tax calculation. Please follow ypur discretion in deciding which plan suits
+            view toward Old vs New Regime tax calculation. Please follow your discretion in deciding which plan suits
             you the
             best. The data shown above does not get saved anywhere. The Actual Tax calculation could be different based
             on
@@ -458,12 +70,9 @@
 </div>
 <ng-template #addModal let-modal>
     <div class="modal-header">
-
         <h1 class="modal-title text-muted mb-0">Computed Amount</h1>
-
         <button type="button" data-bs-dismiss="modal" class="btn-close text-end"
             (click)="modal.close('Escape clicked')"></button>
-
     </div>
     <div class="modal-body">
         <table class="table">
@@ -509,38 +118,11 @@
         <div class="mt-2 border-top pt-2"><strong>Disclaimer: </strong>
             <i>The above calculator is illustrative and designed to enable Employee to get a quick view toward Old vs
                 New Regime tax calculation.
-                Please follow ypur discretion in deciding which plan suits you the best. The data shown above does not
+                Please follow your discretion in deciding which plan suits you the best. The data shown above does not
                 get saved anywhere. the Actual
                 Tax calculation could be different based on actual & additional variable payment and paydays, if
                 applicable, which will be part of your final respective month payroll cycle.
             </i>
         </div>
     </div>
-</ng-template> -->
-<div class="container">
-    <h1>Tax Calculator</h1>
-    <form (ngSubmit)="calculateTax()">
-        <div>
-            <label for="income">Total Annual Income:</label>
-            <input type="number" id="income" [value]="salaryDetail?.Amount" [(ngModel)]="income" name="income"
-                required />
-        </div>
-        <div>
-            <label for="hra">HRA Exemption:</label>
-            <input type="number" id="hra" [value]="incomeTaxDeclarationHRA" [(ngModel)]="incomeTaxDeclarationHRA" name="hra" />
-        </div>
-        <div>
-            <label for="section80c">Section 80C Deductions:</label>
-            <input type="number" id="section80c" [(ngModel)]="section80C" name="section80c" />
-        </div>
-        <div>
-            <label for="chapterVIa">Chapter VI-A Deductions:</label>
-            <input type="number" id="chapterVIa" [(ngModel)]="chapterVIa" name="chapterVIa" />
-        </div>
-        <button type="submit">Calculate Taxable Salary</button>
-    </form>
-
-    <div *ngIf="taxableSalary !== null">
-        <h2>Calculated Taxable Salary: {{ taxableSalary | currency: 'INR' }}</h2>
-    </div>
-</div>
+</ng-template>
