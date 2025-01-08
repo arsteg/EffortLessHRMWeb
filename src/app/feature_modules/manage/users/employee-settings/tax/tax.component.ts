@@ -54,7 +54,6 @@ export class TaxComponent {
   }
 
   ngOnInit() {
-    console.log(this.selectedUser)
     this.getTaxDeclaration();
   }
 
@@ -109,7 +108,10 @@ export class TaxComponent {
       skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
       next: this.recordsPerPage.toString()
     };
-    this.userService.getTaxDeclarationByUserId(this.selectedUser?._id, pagination).subscribe((res: any) => {
+    
+    // this.userService.getTaxDeclarationByUserId(this.selectedUser?._id, pagination).subscribe((res: any) => {
+
+    this.userService.getTaxDeclarationByUserId('62dfa8d13babb9ac2072863c', pagination).subscribe((res: any) => {
       this.taxList = res.data;
 
       this.taxList.forEach((tax: any) => {
@@ -127,17 +129,14 @@ export class TaxComponent {
             ...component,
             section: allSections.find((section: any) => section._id === component.section)?.section
           }));
-          console.log(mappedIncomeTaxComponents);
 
           // Calculate the sum of each component
           const componentSums = this.calculateComponentSums(mappedIncomeTaxComponents);
-          console.log('Component Sums:', componentSums);
 
           // Update the tax item with the calculated sums and hra
           tax.totalRentDeclared = this.getTotalRentDeclared(tax.incomeTaxDeclarationHRA);
           const hra = tax.totalRentDeclared;
           tax.componentSums = { componentSums, hra };
-          console.log(tax.componentSums)
           this.taxService.taxByUser.next(tax.componentSums);
 
         });

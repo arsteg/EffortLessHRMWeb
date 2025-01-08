@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { TaxationService } from 'src/app/_services/taxation.service';
 import { UserService } from 'src/app/_services/users.service';
 
 @Component({
@@ -10,41 +11,97 @@ import { UserService } from 'src/app/_services/users.service';
 export class TaxCalculatorComponent {
   @Input() isEdit: boolean;
   @Input() selectedRecord: any = null;
-  closeResult: string = '';
+
   incomeTaxDeclarationHRA: any;
-  cityType: string;
-  totalAmount = 0;
+  incomeTaxComponentsTotal: any;
   salaryDetail: any;
+  grossSalary: any;
+  taxSections: any;
+  taxComponents: any;
+
+  cityType: string;
+  closeResult: string = '';
+
+  totalAmount: number = 0;
+  fixedAllowanceSum: number = 0;
+  variableAllowanceSum: number = 0;
+  income: number = 0;
+  hraExemption: number = 0;
+  section80C: number = 0;
+  chapterVIa: number = 0;
+  taxableSalary: number = 0;
 
   constructor(private modalService: NgbModal,
-    private userService: UserService
+    private userService: UserService,
+    private taxService: TaxationService
   ) { }
 
   ngOnInit() {
-    console.log(this.selectedRecord);
-    this.userService.getSalaryByUserId(this.selectedRecord.user).subscribe((res: any) => {
-      const record = res.data;
-        this.salaryDetail = record[record.length - 1];
-    });
-    // if (this.selectedRecord && this.selectedRecord.incomeTaxDeclarationHRA) {
-      const hraRecords = this.selectedRecord.incomeTaxDeclarationHRA;
-    
-      // Use reduce to sum the rentDeclared fields
-      this.incomeTaxDeclarationHRA = hraRecords.reduce((sum, record) => {
-         const incomeTaxDeclarationHRA = sum + (record.rentDeclared || 0);
-         return incomeTaxDeclarationHRA;
-      }, 0);
-      console.log('Total Rent Declared:', this.incomeTaxDeclarationHRA);
-    // } else {
-    //   console.log('No HRA records found.');
-    // }
+    this.getTaxSections();
+    this.getTaxComponents();
+    this.getSalaryByUser();
+
   }
 
-  income: number | null = null;
-  hraExemption: number | null = null;
-  section80C: number | null = null;
-  chapterVIa: number | null = null;
-  taxableSalary: number | null = null;
+  getTaxSections() {
+    this.taxService.getAllTaxSections().subscribe((res: any) => {
+      this.taxSections = res.data;
+      this.filterComponents();
+    })
+  }
+
+  getTaxComponents() {
+    this.taxService.getAllTaxComponents({ skip: '', next: '' }).subscribe((res: any) => {
+      this.taxComponents = res.data;
+      this.filterComponents();
+    })
+  }
+
+  filterComponents() {
+    if (this.taxSections && this.taxComponents && this.selectedRecord?.incomeTaxDeclarationComponent) {
+      this.taxSections.forEach(section => {
+        const items = this.taxComponents
+          .filter(component => component.section === section._id && this.selectedRecord.incomeTaxDeclarationComponent.some(declaration => declaration.incomeTaxComponent === component._id))
+          .map(component => {
+            const declaration = this.selectedRecord.incomeTaxDeclarationComponent.find(declaration => declaration.incomeTaxComponent === component._id);
+            return {
+              name: component.componantName,
+              amount: declaration ? declaration.approvedAmount : 0
+            };
+          });
+
+        section.items = items;
+        section.total = items.reduce((sum, item) => sum + item.amount, 0);
+      });
+    }
+  }
+
+  getSalaryByUser() {
+    this.userService.getSalaryByUserId(this.selectedRecord.user).subscribe((res: any) => {
+      const record = res.data;
+      this.salaryDetail = record[record.length - 1];
+      if (this.salaryDetail.enteringAmount == 'Yearly') {
+        this.grossSalary = this.salaryDetail?.Amount;
+      }
+      else {
+        this.grossSalary = this.salaryDetail?.Amount * 12
+      }
+      this.calculateSum();
+    });
+  }
+
+  calculateSum() {
+    if (this.salaryDetail && this.salaryDetail.fixedAllowanceList) {
+      this.fixedAllowanceSum = this.salaryDetail.fixedAllowanceList.reduce((sum, allowance) => {
+        return sum + (allowance.monthlyAmount || 0);
+      }, 0);
+    }
+    if (this.salaryDetail && this.salaryDetail.variableAllowanceList) {
+      this.variableAllowanceSum = this.salaryDetail.variableAllowanceList.reduce((sum, allowance) => {
+        return sum + (allowance.monthlyAmount || 0);
+      }, 0);
+    }
+  }
 
   calculateTax() {
     if (this.salaryDetail?.Amount) {
