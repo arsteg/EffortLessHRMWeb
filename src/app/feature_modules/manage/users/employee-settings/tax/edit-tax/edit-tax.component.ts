@@ -23,6 +23,7 @@ export class EditTaxComponent {
   ) { }
 
   ngOnInit() {
+   
     this.taxService.getAllTaxSections().subscribe((res: any) => {
       this.taxSections = res.data;
       if (this.taxSections?.length) {
@@ -35,7 +36,7 @@ export class EditTaxComponent {
   selectTab(tabId: string) {
     this.activeTab = tabId;
     this.activeTabName = this.taxSections.find((section: any) => section._id === tabId)?.section;
-    console.log(this.activeTabName)
+    // console.log(this.activeTabName)
   }
  
 }

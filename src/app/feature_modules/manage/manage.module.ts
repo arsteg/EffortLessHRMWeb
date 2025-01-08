@@ -15,7 +15,6 @@ import { RolesComponent } from '../roles/roles/roles.component';
 import { PermissionModelComponent } from './permissonModel/permission-model/permission-model.component';
 import { EmailTemplateComponent } from './email-template/email-template.component';
 import { ProjectListComponent } from './Project/project-list/project-list.component';
-
 @NgModule({
   declarations: [
     ManageComponent,
