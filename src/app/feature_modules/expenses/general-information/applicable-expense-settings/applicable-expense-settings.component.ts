@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { ExpensesService } from 'src/app/_services/expenses.service';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-applicable-expense-settings',
@@ -10,6 +11,8 @@ import { ExpensesService } from 'src/app/_services/expenses.service';
 export class ApplicableExpenseSettingsComponent {
   employeeApplicableSettings: any;
   categories: any;
+  displayedColumns: string[] = ['expenseCategory', 'policyInformation'];
+  dataSource = new MatTableDataSource<any>();
 
   constructor(private auth: AuthenticationService,
     private expenseService: ExpensesService) {
@@ -19,6 +22,7 @@ export class ApplicableExpenseSettingsComponent {
     this.auth.currentUser.subscribe(res => {
       this.expenseService.getEmployeeApplicableSettings(res.id).subscribe((res: any) => {
         this.employeeApplicableSettings = res.data.applicableCategories;
+        this.dataSource.data = this.employeeApplicableSettings;
       });
       this.getCategories();
     })

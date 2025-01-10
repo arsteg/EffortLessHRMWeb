@@ -1,10 +1,13 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatMenuTrigger } from '@angular/material/menu';
+import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { CommonService } from 'src/app/_services/common.Service';
-import { map } from 'rxjs/operators'
+import { map } from 'rxjs/operators';
 import { ExportService } from 'src/app/_services/export.service';
 
 @Component({
@@ -19,18 +22,17 @@ export class ApprovedComponent {
   changeMode: 'Add' | 'Update' = 'Add';
   @Output() expenseTemplateReportRefreshed: EventEmitter<void> = new EventEmitter<void>();
   expenseReport: any;
-  users: any[];
+  users: any[] = [];
   isEdit: boolean = false;
-  p: number = 1;
   updateExpenseReport: FormGroup;
-  expenseReportExpenses: any;
   selectedReport: any;
   categories: any;
-  displayedData: any[] = [];
-  public sortOrder: string = '';
-  totalRecords: number
+  displayedData: MatTableDataSource<any> = new MatTableDataSource([]);
+  totalRecords: number;
   recordsPerPage: number = 10;
   currentPage: number = 1;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatMenuTrigger) menuTrigger: MatMenuTrigger;
 
   constructor(private modalService: NgbModal,
     private expenseService: ExpensesService,
@@ -43,7 +45,7 @@ export class ApprovedComponent {
       status: [''],
       primaryApprovalReason: [''],
       secondaryApprovalReason: ['']
-    })
+    });
   }
 
   ngOnInit() {
@@ -52,6 +54,7 @@ export class ApprovedComponent {
     });
     this.getExpenseReport();
   }
+
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
@@ -61,6 +64,7 @@ export class ApprovedComponent {
       return `with: ${reason}`;
     }
   }
+
   open(content: any) {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
@@ -68,6 +72,7 @@ export class ApprovedComponent {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
     });
   }
+
   onClose(event) {
     if (event) {
       this.modalService.dismissAll();
@@ -78,23 +83,26 @@ export class ApprovedComponent {
   onChangeStep(event) {
     this.step = event;
   }
+
   onChangeMode(event) {
     if (this.isEdit = true) {
-      this.changeMode = event
+      this.changeMode = event;
     }
   }
 
   refreshExpenseReportTable() {
     this.getExpenseReport();
   }
-  onPageChange(page: number) {
-    this.currentPage = page;
+
+  onPageChange(event) {
+    this.currentPage = event.pageIndex + 1;
+    this.recordsPerPage = event.pageSize;
     this.getExpenseReport();
   }
 
-  onRecordsPerPageChange(recordsPerPage: number) {
-    this.recordsPerPage = recordsPerPage;
-    this.getExpenseReport();
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.displayedData.filter = filterValue.trim().toLowerCase();
   }
 
   getExpenseReport() {
@@ -108,9 +116,11 @@ export class ApprovedComponent {
         return {
           ...data,
           user: this.getUser(data?.employee)
-        }
-      })
+        };
+      });
       this.totalRecords = res.total;
+      this.displayedData = new MatTableDataSource(this.expenseReport);
+      this.displayedData.paginator = this.paginator;
     });
   }
 
@@ -119,46 +129,6 @@ export class ApprovedComponent {
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'User Not Found';
   }
 
-  updateReport() {
-    let id = this.selectedReport._id;
-    let payload = {
-      employee: this.selectedReport.employee,
-      title: this.selectedReport.title,
-      status: 'Cancelled',
-      primaryApprovalReason: '',
-      secondaryApprovalReason: ''
-    }
-    this.expenseService.updateExpenseReport(id, payload).subscribe((res: any) => {
-      this.expenseReport = this.expenseReport.filter(report => report._id !== id);
-    })
-  }
-
-
-
-  getCategories() {
-    let payload = {
-      next: '',
-      skip: ''
-    }
-    this.expenseService.getExpenseCatgories(payload).subscribe((res: any) => {
-      console.log(res.data);
-      this.categories = res.data;
-    })
-  }
-
-  getCategoryLabel(expenseCategoryId: string): Observable<string> {
-    let payload = {
-      next: '',
-      skip: ''
-    }
-    return this.expenseService.getExpenseCatgories(payload).pipe(
-      map((res: any) => {
-        const categories = res.data;
-        const matchingCategory = categories.find(category => category._id === expenseCategoryId);
-        return matchingCategory ? matchingCategory.label : '';
-      })
-    );
-  }
   updateCancelledReport() {
     let id = this.selectedReport._id;
     let payload = {
@@ -167,11 +137,13 @@ export class ApprovedComponent {
       status: 'Cancelled',
       primaryApprovalReason: this.updateExpenseReport.value.primaryApprovalReason,
       secondaryApprovalReason: ''
-    }
+    };
     this.expenseService.updateExpenseReport(id, payload).subscribe((res: any) => {
       this.expenseReport = this.expenseReport.filter(report => report._id !== id);
-    })
+      this.displayedData.data = this.expenseReport;
+    });
   }
+
   exportToCsv() {
     const dataToExport = this.expenseReport.map((categories) => ({
       title: categories.title,
@@ -183,6 +155,7 @@ export class ApprovedComponent {
     }));
     this.exportService.exportToCSV('Expense-Approved-Report', 'Expense-Approved-Report', dataToExport);
   }
+
   calculateTotalAmount(expenseReport: any): number {
     let totalAmount = 0;
     if (expenseReport.expenseReportExpense && expenseReport.expenseReportExpense.length > 0) {
@@ -192,14 +165,14 @@ export class ApprovedComponent {
     }
     return totalAmount;
   }
+
   calculateTotalisReimbursable(expenseReport: any, isReimbursable: boolean, isBillable: boolean): number {
     let totalAmount = 0;
     if (expenseReport.expenseReportExpense && expenseReport.expenseReportExpense.length > 0) {
       for (const expense of expenseReport.expenseReportExpense) {
         if (expense.isReimbursable === isReimbursable) {
           totalAmount += expense.amount;
-        }
-        else if (expense.isBillable === isBillable) {
+        } else if (expense.isBillable === isBillable) {
           totalAmount += expense.amount;
         }
       }

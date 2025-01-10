@@ -1,129 +1,93 @@
 <div class="mainContent">
-    <div class="container">
-        <div class="py-2 px-0 bg-white tableContainer">
-            <div class="d-flex justify-content-between align-items-center mb-2 px-3">
-                <p class="mb-0">({{expenseReport?.length}}) Records Found</p>
-                <div class="d-flex align-items-center">
-                    <span class="bi bi-search searchIcon"></span>
-
-                    <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
-                        name="searchText" aria-label="default input example">
-
-                    <button mat-raised-button class="addBtn rounded-pill mx-3"
-                        (click)="open(addModal);clearform(); changeMode === 'Add'; step=1">Add
-                        Expense</button>
-
-                    <button class="submenuTab active  rounded-pill" (click)="exportToCsv()"> <i
-                            class="bi bi-download downloadBtn pe-2"></i>
-                        Download</button>
-
-                </div>
-            </div>
-            <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
-        [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
-        (recordsPerPageChange)="onRecordsPerPageChange($event)">
-        </app-pagination>
-            <table class="px-4">
-                <thead>
-                    <tr>
-                        <th class="ps-2" [appSort]="expenseReport" data-name="title"
-                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Report&nbsp;Title
-                            <i
-                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                        </th>
-                        <th [appSort]="expenseReport" data-name="employee"
-                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Employee
-                            <i
-                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                        </th>
-                        <th [appSort]="expenseReport" data-name="expenseReport"
-                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Total Amount
-                            <i
-                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                        </th>
-                        <th>Reimbursable</th>
-                        <th>Billable</th>
-                        <th>Status</th>
-                        <th scope="col" class="text-center">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr
-                        *ngFor="let expenseReport of expenseReport | search: searchText;  let i = index">
-                        <td class="ps-2">{{expenseReport?.title}}</td>
-                        <td>{{expenseReport?.user}}</td>
-                        <td>
-                            {{calculateTotalAmount(expenseReport)}}
-                        </td>
-
-                        <td>
-                            {{calculateTotalisReimbursable(expenseReport, true, false)}}
-                        </td>
-                        <td>
-                            {{calculateTotalisReimbursable(expenseReport, false, true)}}
-                        </td>
-
-
-                        <td>
-                            <mat-icon matTooltip="{{expenseReport?.status}}" matTooltipPosition="below"
-                        class="text-warning">hourglass_empty</mat-icon>
-                        </td>
-                        <td class="action text-center">
-                            <div class="dropdown-center">
-
-                                <button class="actions ms-2" mat-mini-fab data-bs-toggle="dropdown"
-                                    aria-expanded="false" aria-label="Example icon button with a menu icon">
-                                    <i class="bi bi-send"></i>
-                                </button>
-                                <ul class="dropdown-menu py-0">
-                                    <li class="d-flex  border-bottom action-list" data-bs-toggle="modal"
-                                        data-bs-target="#ApproveModal"
-                                        (click)="selectedReport = expenseReport; status = 'Approved'">
-                                        <i class="fas fa-check-circle   dropdown-item w-25"></i><span
-                                            class="pt-1 text-muted">Approve
-                                        </span>
-                                    </li>
-
-
-                                    <li class="d-flex  border-bottom action-list" data-bs-toggle="modal"
-                                        data-bs-target="#cancel"
-                                        (click)="selectedReport = expenseReport; status = 'Rejected'">
-                                        <i class="bi bi-person-dash  dropdown-item w-25"></i><span
-                                            class="pt-1 text-muted">Reject
-                                        </span>
-                                    </li>
-
-                                    <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
-                                        data-bs-target="#viewModal"
-                                        (click)=" open(viewModal); selectedReport = expenseReport;">
-                                        <i class="fas fa-eye dropdown-item w-25"></i><span
-                                            class="pt-1 text-muted">View</span>
-                                    </li>
-
-                                    <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
-                                        data-bs-target="#Editmodel"
-                                        (click)="open(addModal); editReport(expenseReport); changeMode='Update'">
-                                        <i class="bi bi-pencil text-success  dropdown-item w-25"></i><span
-                                            class="pt-1 text-muted">Edit</span>
-                                    </li>
-
-                                    <li class="d-flex border-bottom action-list" data-bs-toggle="modal"
-                                        data-bs-target="#Editmodel" (click)="deleteExpenseReport(expenseReport?._id)">
-                                        <i class="bi bi-trash text-success  dropdown-item w-25"></i><span
-                                            class="pt-1 text-muted">Delete</span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            
-        </div>
+  <div class="py-3 tableContainer">
+    <div class="d-flex justify-content-between align-items-start mb-2 px-3">
+      <mat-form-field appearance="outline">
+        <mat-label>Search</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Search...">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+      <div>
+        <button mat-raised-button color="accent" class="rounded-pill" (click)="open(addModal);clearform(); changeMode === 'Add'; step=1">
+          <mat-icon>add</mat-icon>Add Expense
+        </button>
+        <button class="rounded-pill" mat-stroked-button (click)="exportToCsv()">
+          <mat-icon>download</mat-icon> Download
+        </button>
+      </div>
     </div>
+    <table mat-table [dataSource]="dataSource">
+      <ng-container matColumnDef="title">
+        <th mat-header-cell *matHeaderCellDef> Report Title </th>
+        <td mat-cell *matCellDef="let expenseReport"> {{expenseReport?.title}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="employee">
+        <th mat-header-cell *matHeaderCellDef> Employee </th>
+        <td mat-cell *matCellDef="let expenseReport"> {{expenseReport?.user}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="totalAmount">
+        <th mat-header-cell *matHeaderCellDef> Total Amount </th>
+        <td mat-cell *matCellDef="let expenseReport"> {{calculateTotalAmount(expenseReport)}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="reimbursable">
+        <th mat-header-cell *matHeaderCellDef> Reimbursable </th>
+        <td mat-cell *matCellDef="let expenseReport"> {{calculateTotalisReimbursable(expenseReport, true, false)}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="billable">
+        <th mat-header-cell *matHeaderCellDef> Billable </th>
+        <td mat-cell *matCellDef="let expenseReport"> {{calculateTotalisReimbursable(expenseReport, false, true)}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef> Status </th>
+        <td mat-cell *matCellDef="let expenseReport">
+          <mat-icon matTooltip="{{expenseReport?.status}}" matTooltipPosition="below" class="text-warning">hourglass_empty</mat-icon>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef class="text-center"> Action </th>
+        <td mat-cell *matCellDef="let expenseReport" class="text-center">
+          <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="selectedReport = expenseReport; status = 'Approved'" data-bs-toggle="modal" data-bs-target="#ApproveModal">
+              <mat-icon>check_circle</mat-icon>
+              <span>Approve</span>
+            </button>
+            <button mat-menu-item (click)="selectedReport = expenseReport; status = 'Rejected'" data-bs-toggle="modal" data-bs-target="#cancel">
+              <mat-icon>cancel</mat-icon>
+              <span>Reject</span>
+            </button>
+            <button mat-menu-item (click)="open(viewModal); selectedReport = expenseReport;">
+              <mat-icon>visibility</mat-icon>
+              <span>View</span>
+            </button>
+            <button mat-menu-item (click)="open(addModal); editReport(expenseReport); changeMode='Update'">
+              <mat-icon>edit</mat-icon>
+              <span>Edit</span>
+            </button>
+            <button mat-menu-item (click)="deleteExpenseReport(expenseReport?._id)">
+              <mat-icon>delete</mat-icon>
+              <span>Delete</span>
+            </button>
+          </mat-menu>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    <mat-paginator [length]="totalRecords" [pageSize]="recordsPerPage" [pageSizeOptions]="[5, 10, 25, 50, 100]" (page)="onPageChange($event)">
+    </mat-paginator>
+  </div>
 </div>
 
-<!-- Approve  -->
+<!-- Approve Modal -->
 <div class="modal" id="ApproveModal">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -163,7 +127,7 @@
     </div>
 </div>
 
-<!-- Reject  -->
+<!-- Reject Modal -->
 <div class="modal" id="cancel">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -207,7 +171,7 @@
     </div>
 </div>
 
-<!--View Modal-->
+<!-- View Modal -->
 <ng-template #viewModal let-modal>
     <app-view-report (close)="onClose($event)" (changeStep)="onChangeStep($event)" *ngIf="step == 1"
         [report]="selectedReport"></app-view-report>

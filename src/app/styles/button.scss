@@ -1,0 +1,9 @@
+/* Override styles for material button variable */
+.mat-mdc-raised-button.mat-accent {
+  --mdc-protected-button-label-text-color: white;
+}
+
+html .mat-mdc-fab.mat-accent,
+html .mat-mdc-mini-fab.mat-accent {
+  --mat-fab-foreground-color: white;
+}

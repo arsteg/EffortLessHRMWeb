@@ -1,6 +1,9 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatSort } from '@angular/material/sort';
+import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { ExportService } from 'src/app/_services/export.service';
 import { CommonService } from 'src/app/_services/common.Service';
@@ -18,15 +21,15 @@ export class CancelledComponent {
   @Output() expenseTemplateReportRefreshed: EventEmitter<void> = new EventEmitter<void>();
   expenseReport: any;
   isEdit: boolean = false;
-  users: any[];
+  users: any[] = [];
   selectedReport: any;
   expenseReportExpenses: any;
-  p: number = 1;
-  displayedData: any[] = [];
-  public sortOrder: string = '';
-  status: string;
+  displayedColumns: string[] = ['title', 'user', 'totalAmount', 'reimbursable', 'billable', 'status', 'action'];
+  dataSource = new MatTableDataSource<any>();
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
   updateExpenseReport: FormGroup;
-  totalRecords: number
+  totalRecords: number;
   recordsPerPage: number = 10;
   currentPage: number = 1;
 
@@ -41,7 +44,7 @@ export class CancelledComponent {
       status: [''],
       primaryApprovalReason: [''],
       secondaryApprovalReason: ['']
-    })
+    });
   }
 
   ngOnInit() {
@@ -50,14 +53,16 @@ export class CancelledComponent {
     });
     this.getExpenseReport();
   }
-  onPageChange(page: number) {
-    this.currentPage = page;
+
+  onPageChange(event) {
+    this.currentPage = event.pageIndex + 1;
+    this.recordsPerPage = event.pageSize;
     this.getExpenseReport();
   }
 
-  onRecordsPerPageChange(recordsPerPage: number) {
-    this.recordsPerPage = recordsPerPage;
-    this.getExpenseReport();
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
   getExpenseReport() {
@@ -71,8 +76,9 @@ export class CancelledComponent {
         return {
           ...data,
           user: this.getUser(data?.employee)
-        }
-      })
+        };
+      });
+      this.dataSource.data = this.expenseReport;
       this.totalRecords = res.total;
     });
   }
@@ -91,6 +97,7 @@ export class CancelledComponent {
       return `with: ${reason}`;
     }
   }
+
   open(content: any) {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
@@ -98,6 +105,7 @@ export class CancelledComponent {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
     });
   }
+
   onClose(event) {
     if (event) {
       this.modalService.dismissAll();
@@ -108,15 +116,17 @@ export class CancelledComponent {
   onChangeStep(event) {
     this.step = event;
   }
+
   onChangeMode(event) {
     if (this.isEdit = true) {
-      this.changeMode = event
+      this.changeMode = event;
     }
   }
 
   refreshExpenseReportTable() {
     this.getExpenseReport();
   }
+
   exportToCsv() {
     const dataToExport = this.expenseReport.map((categories) => ({
       title: categories.title,
@@ -128,6 +138,7 @@ export class CancelledComponent {
     }));
     this.exportService.exportToCSV('Expense-Cancelled-Report', 'Expense-Cancelled-Report', dataToExport);
   }
+
   calculateTotalAmount(expenseReport: any): number {
     let totalAmount = 0;
     if (expenseReport.expenseReportExpense && expenseReport.expenseReportExpense.length > 0) {
@@ -137,20 +148,18 @@ export class CancelledComponent {
     }
     return totalAmount;
   }
+
   calculateTotalisReimbursable(expenseReport: any, isReimbursable: boolean, isBillable: boolean): number {
     let totalAmount = 0;
     if (expenseReport.expenseReportExpense && expenseReport.expenseReportExpense.length > 0) {
       for (const expense of expenseReport.expenseReportExpense) {
         if (expense.isReimbursable === isReimbursable) {
           totalAmount += expense.amount;
-        }
-        else if (expense.isBillable === isBillable) {
+        } else if (expense.isBillable === isBillable) {
           totalAmount += expense.amount;
         }
       }
     }
     return totalAmount;
   }
-
-
 }

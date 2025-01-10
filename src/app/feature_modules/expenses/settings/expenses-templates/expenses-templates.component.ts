@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal, NgbModalConfig } from '@ng-bootstrap/ng-bootstrap';
 import { ExpensesService } from 'src/app/_services/expenses.service';
@@ -6,6 +6,9 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { CommonService } from 'src/app/_services/common.Service';
+import { PageEvent } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
+
 @Component({
   selector: 'app-expenses-templates',
   templateUrl: './expenses-templates.component.html',
@@ -32,6 +35,8 @@ export class ExpensesTemplatesComponent implements OnInit {
   totalRecords: number
   recordsPerPage: number = 10;
   currentPage: number = 1;
+  displayedColumns: string[] = ['policyLabel', 'matchingCategories', 'actions'];
+  dataSource: MatTableDataSource<any> = new MatTableDataSource();
 
   constructor(
     private modalService: NgbModal,
@@ -47,7 +52,6 @@ export class ExpensesTemplatesComponent implements OnInit {
 
   ngOnInit(): void {
     this.getAllTemplates();
-    this.filteredTemplate();
   }
 
   onClose(event) {
@@ -107,14 +111,20 @@ export class ExpensesTemplatesComponent implements OnInit {
       }
     });
   }
-  onPageChange(page: number) {
-    this.currentPage = page;
+  onPageChange(event: PageEvent) {
+    this.currentPage = event.pageIndex + 1;
+    this.recordsPerPage = event.pageSize;
     this.getAllTemplates();
   }
 
   onRecordsPerPageChange(recordsPerPage: number) {
     this.recordsPerPage = recordsPerPage;
     this.getAllTemplates();
+  }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
+    this.dataSource.filter = filterValue;
   }
 
   getAllTemplates() {
@@ -125,8 +135,12 @@ export class ExpensesTemplatesComponent implements OnInit {
     this.expenseService.getAllTemplates(pagination).subscribe((res: any) => {
       this.templates = res.data;
       this.totalRecords = res.total;
-      this.getAllCategoriesOfAllTemplate()
-    })
+      this.dataSource.data = this.templates;
+      this.dataSource.filterPredicate = (data: any, filter: string) => {
+        return data.policyLabel.toLowerCase().includes(filter);
+      };
+      this.getAllCategoriesOfAllTemplate();
+    });
   }
 
   get downloadableFormatsArray() {
@@ -203,17 +217,6 @@ export class ExpensesTemplatesComponent implements OnInit {
       return downloadableFormatsArray.value.includes(format);
     }
     return false;
-  }
-
-  filteredTemplate() {
-    const searchTerm = this.searchText.trim().toLowerCase();
-    if (searchTerm === '') {
-      this.filteredTemplates = this.templates; // Assign a copy of the original list
-    } else {
-      this.filteredTemplates = this.templates.filter(item =>
-        item.policyLabel.toLowerCase().includes(searchTerm)
-      );
-    }
   }
 
   categoriesAddOrUpdate(templateId: string, categories: any) {

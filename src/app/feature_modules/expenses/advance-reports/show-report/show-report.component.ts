@@ -9,7 +9,8 @@ import { FormControl } from '@angular/forms';
 import { ExportService } from 'src/app/_services/export.service';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
-
+import { MatTableDataSource } from '@angular/material/table';
+import { forkJoin } from 'rxjs';
 @Component({
   selector: 'app-show-report',
   templateUrl: './show-report.component.html',
@@ -35,6 +36,8 @@ export class ShowReportComponent {
   currentPage: number = 1;
   changeMode: 'Add' | 'Update' = 'Add';
   selectedRecord: any;
+  displayedColumns = ['employee', 'category', 'amount', 'status', 'comment', 'action'];
+  dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
 
   constructor(private commonService: CommonService,
     private expenseService: ExpensesService,
@@ -44,25 +47,33 @@ export class ShowReportComponent {
     private toast: ToastrService) { }
 
   ngOnInit(): void {
-    this.commonService.populateUsers().subscribe(result => {
-      this.allAssignee = result && result.data && result.data.data;
-    });
-    this.getAdvanceReports();
-    let payload = {
-      next: '', skip: ''
-    }
-    this.expenseService.getAdvanceCatgories(payload).subscribe((res: any) => {
-      this.allCategory = res.data;
+    forkJoin({
+      users: this.commonService.populateUsers(),
+      categories: this.expenseService.getAdvanceCatgories({ next: '', skip: '' }),
+      reports: this.expenseService.getAdvanceReport({
+        skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
+        next: this.recordsPerPage.toString(),
+        status: this.status
+      })
+    }).subscribe(({ users, categories, reports }) => {
+      this.allAssignee = users && users.data && users.data.data;
+      this.allCategory = categories.data;
+      const rawReports = reports.data
+      this.totalAmount = rawReports.reduce((total, report) => total + report.amount, 0);
+      this.advanceReport = reports.data.filter(leave => leave.status === this.status);
+      this.dataSource.data = this.advanceReport;
+      this.totalRecords = reports?.total;
     });
   }
 
-  onPageChange(page: number) {
-    this.currentPage = page;
-    this.getAdvanceReports();
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  onRecordsPerPageChange(recordsPerPage: number) {
-    this.recordsPerPage = recordsPerPage;
+  onPageChange(event: any) {
+    this.currentPage = event.pageIndex + 1;
+    this.recordsPerPage = event.pageSize;
     this.getAdvanceReports();
   }
 
@@ -76,6 +87,7 @@ export class ShowReportComponent {
       const rawReports = res.data
       this.totalAmount = rawReports.reduce((total, report) => total + report.amount, 0);
       this.advanceReport = res.data.filter(leave => leave.status === this.status);
+      this.dataSource.data = this.advanceReport;
       this.totalRecords = res.total;
     });
   }

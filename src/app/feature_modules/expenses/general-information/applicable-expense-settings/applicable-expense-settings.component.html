@@ -1,19 +1,20 @@
-<div class="tableContainer bg-white">
-    <table>
-        <thead>
-            <th>Expense Category</th>
-            <th>Policy Information</th>
-        </thead>
-        <tbody>
-            <ng-container *ngIf="employeeApplicableSettings?.length > 0">
-                <tr *ngFor="let employeeApplicableSettings of employeeApplicableSettings; let i = index">
-                    <td>{{getCategoryLabel(employeeApplicableSettings?.expenseCategory)}}</td>
-                    <td>Maximum amount for single expense: {{employeeApplicableSettings?.maximumExpensesCanApply}}<br>
-                        Maximum amount without receipt : {{employeeApplicableSettings?.maximumAmountWithoutReceipt}}<br>
-                        Maximum time can request: {{employeeApplicableSettings?.maximumExpensesCanApply}}
-                    </td>
-                </tr>
-            </ng-container>
-        </tbody>
+<div class="tableContainer py-3">
+    <table mat-table [dataSource]="dataSource">
+        <ng-container matColumnDef="expenseCategory">
+            <th mat-header-cell *matHeaderCellDef> Expense Category </th>
+            <td mat-cell *matCellDef="let element"> {{getCategoryLabel(element?.expenseCategory)}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="policyInformation">
+            <th mat-header-cell *matHeaderCellDef> Policy Information </th>
+            <td mat-cell *matCellDef="let element">
+                Maximum amount for single expense: {{element?.maximumExpensesCanApply}}<br>
+                Maximum amount without receipt : {{element?.maximumAmountWithoutReceipt}}<br>
+                Maximum time can request: {{element?.maximumExpensesCanApply}}
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
 </div>

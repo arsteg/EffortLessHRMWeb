@@ -33,11 +33,15 @@ import { PaginationComponent } from '../pagination/pagination.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatCardModule }from '@angular/material/card';
 
 @NgModule({
   declarations: [SortDirective, SearchPipe, MilliSecondsToTimePipe, PaginationComponent],
   imports: [
     CommonModule,
+    MatMenuModule,
+    MatCardModule,
     MatToolbarModule,
     MatButtonModule,
     MatSidenavModule,
@@ -74,6 +78,8 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
   ],
   exports: [
     CommonModule,
+    MatMenuModule,
+    MatCardModule,
     MatToolbarModule,
     MatButtonModule,
     MatSidenavModule,

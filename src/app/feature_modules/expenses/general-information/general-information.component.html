@@ -1,17 +1,14 @@
-<div class="main-content pt-2">
-    <div class="container-fluid">
-        <div class="tabs">
-            <button (click)="selectTab(1)" [class.active]="selectedTab === 1">
-                Supervisors</button>
-            <button (click)="selectTab(2)" [class.active]="selectedTab === 2">Expense
-               Applicable Expense Settings</button>
-        </div>
-
-        <div *ngIf="selectedTab === 1" class="tab-content p-0">
-            <app-supervisors></app-supervisors>
-        </div>
-        <div *ngIf="selectedTab === 2" class="tab-content  p-0">
-            <app-applicable-expense-settings></app-applicable-expense-settings>
-        </div>
-    </div>
+<div class="main-content px-2">
+    <mat-tab-group animationDuration="0ms" mat-stretch-tabs="false" mat-align-tabs="start">
+        <mat-tab label="Supervisors">
+            <ng-template matTabContent>
+                <app-supervisors></app-supervisors>
+            </ng-template>
+        </mat-tab>
+        <mat-tab label="Expense Applicable Expense Settings">
+            <ng-template matTabContent>
+                <app-applicable-expense-settings></app-applicable-expense-settings>
+            </ng-template>
+        </mat-tab>
+    </mat-tab-group>
 </div>

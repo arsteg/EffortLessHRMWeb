@@ -5,6 +5,7 @@ import { CommonService } from 'src/app/_services/common.Service';
 import { MatDialog } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ViewReportComponent } from '../../expense-reports/view-report/view-report.component';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-show-team-expenses',
@@ -32,6 +33,8 @@ export class ShowTeamExpensesComponent {
   selectedReport: any;
   updateExpenseReport: FormGroup;
   @Input() selectedTab: number;
+  dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
+  displayedColumns: string[] = ['title', 'employeeName','totalAmount', 'amount', 'reimbursable', 'billable', 'status', 'actions'];
 
   constructor(private modalService: NgbModal,
     private expenseService: ExpensesService,
@@ -95,14 +98,15 @@ export class ShowTeamExpensesComponent {
     //   }
     // );
   }
-  onPageChange(page: number) {
-    this.currentPage = page;
+  onPageChange(event: any) {
+    this.currentPage = event.pageIndex + 1;
+    this.recordsPerPage = event.pageSize;
     this.getExpenseReport();
   }
 
-  onRecordsPerPageChange(recordsPerPage: number) {
-    this.recordsPerPage = recordsPerPage;
-    this.getExpenseReport();
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
   getExpenseReport() {
@@ -119,6 +123,7 @@ export class ShowTeamExpensesComponent {
           employeeName: this.getUser(report?.employee)
         };
       });
+      this.dataSource.data = this.expenseReport;
       this.totalAmount = this.expenseReport.reduce((total, report) => total + report.amount, 0);
       this.totalRecords = res.total;
     });
