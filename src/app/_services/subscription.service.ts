@@ -8,11 +8,19 @@ import { baseService } from './base';
 })
 export class SubscriptionService extends baseService {
 
+  private getHttpOptions() {
+    const token = localStorage.getItem('jwtToken');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      'Authorization': `Bearer ${token}`
+    });
+    const httpOptions = { headers, withCredentials: true };
+    return httpOptions;
+  }
+
   readonly http = inject(HttpClient);
-  private httpOptions = {
-    headers: new HttpHeaders({ 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Authorization': `Bearer ${this.getToken()}` }),
-    withCredentials: true
-  };
+  private httpOptions = this.getHttpOptions();
 
   getPlans() {
    return this.http.get(environment.apiUrlDotNet + '/pricing/plan', this.httpOptions);
