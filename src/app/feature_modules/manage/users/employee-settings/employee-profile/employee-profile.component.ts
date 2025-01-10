@@ -11,6 +11,7 @@ import { UserService } from 'src/app/_services/users.service';
   templateUrl: './employee-profile.component.html',
   styleUrl: './employee-profile.component.css'
 })
+
 export class EmployeeProfileComponent {
   userForm: FormGroup;
   roles: any;
@@ -76,18 +77,19 @@ export class EmployeeProfileComponent {
   }
 
   onSubmit() {
-    if (this.userForm.invalid) {
-      this.userForm.markAllAsTouched();
-      this.toast.warning('Please Fill up all Required Details!')
-    }
-    else {
+    if (this.userForm.valid) {
+    //   this.userForm.markAllAsTouched();
+    //   if (this.userForm.errors?.['pattern']) {
+    //     return;
+    //   }
+    //   this.toast.warning('Please Fill up all Required Details!')
+    // } else {
       this.userService.updateUser(this.selectedUser.id, this.userForm.value).subscribe(
         (res: any) => this.toast.success('User Updated Successfully'),
         (err) => { this.toast.error('User Update Failed') }
       );
     }
   }
-
 
   getRoles() {
     this.roleService.getAllRole().subscribe((res: any) => {

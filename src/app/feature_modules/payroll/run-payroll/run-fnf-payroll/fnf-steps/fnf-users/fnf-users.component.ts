@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { PayrollService } from 'src/app/_services/payroll.service';
-import { ToastrService } from 'ngx-toastr';
 import { CommonService } from 'src/app/_services/common.Service';
 
 @Component({
@@ -13,9 +12,9 @@ export class FnfUsersComponent implements OnInit {
   selectedFnFUser: string;
   users: any[] = [];
   @Output() changeUser: EventEmitter<string> = new EventEmitter<string>();
+  // @Output() userSelected = new EventEmitter<string>();
 
   constructor(private payrollService: PayrollService,
-    private toast: ToastrService,
     private commonService: CommonService) { }
 
   ngOnInit() {
@@ -26,9 +25,14 @@ export class FnfUsersComponent implements OnInit {
   }
 
   fetchFnFUsers(): void {
-    this.payrollService.selectedFnFPayroll.subscribe((res) => {
-      this.fnfUsers = res.userList;
-    });
+    const fnfPayroll = this.payrollService.selectedFnFPayroll.getValue();
+    if (fnfPayroll && fnfPayroll.userList) {
+      this.fnfUsers = fnfPayroll.userList;
+    } else {
+      this.payrollService.selectedFnFPayroll.subscribe((res) => {
+        this.fnfUsers = res.userList;
+      });
+    }
   }
 
   onFnFUserSelection(event: any): void {

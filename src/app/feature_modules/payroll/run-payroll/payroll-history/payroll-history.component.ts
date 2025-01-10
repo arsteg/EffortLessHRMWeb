@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -8,6 +8,7 @@ import { CommonService } from 'src/app/_services/common.Service';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { UserService } from 'src/app/_services/users.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-payroll-history',
@@ -16,7 +17,7 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 })
 export class PayrollHistoryComponent {
   closeResult: string = '';
-  isAllEmployees: boolean;
+  isAllEmployees: boolean = true;
   searchText: string = '';
   payroll: any;
   payrollUsers: any;
@@ -25,6 +26,9 @@ export class PayrollHistoryComponent {
   payrollUserForm: FormGroup;
   years: number[] = [];
   users: any;
+  displayedColumns: string[] = ['payrollPeriod', 'date', 'payrollDetails', 'status', 'actions'];
+  dataSource: MatTableDataSource<any>;
+  @Output() changeView = new EventEmitter<void>();
 
   months = [
     'January',
@@ -72,10 +76,22 @@ export class PayrollHistoryComponent {
     this.getAllUsers();
     this.getPayrollWithUserCounts();
   }
+
+  goBack() {
+    this.isAllEmployees = true;
+    this.changeView.emit();
+  }
+
+  openSteps() {
+    this.isAllEmployees = false;
+    this.changeView.emit();
+  }
+
   generateYearList() {
     const currentYear = new Date().getFullYear();
     this.years = [currentYear - 1, currentYear, currentYear + 1];
   }
+  
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
@@ -115,6 +131,8 @@ export class PayrollHistoryComponent {
             onHoldCount: onHoldCount,
             processedCount: processedCount
           };
+
+          this.dataSource = new MatTableDataSource(this.payroll);
         });
       });
     });

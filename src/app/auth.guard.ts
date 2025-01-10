@@ -17,7 +17,6 @@ export class AuthGuard  {
       if (loggedIn) {
         const subscription = this.authService.companySubscription.getValue();
         const user = this.authService.currentUserSubject.getValue();
-        console.log('uer',user)
 
         if(subscription?.status !== 'active' && !user.freeCompany) {
            this.router.navigate(['/subscription']);

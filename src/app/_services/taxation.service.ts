@@ -34,6 +34,12 @@ export class TaxationService {
     var response = this.http.get<any>(`${environment.apiUrlDotNet}/common/income-tax-sections/${companyId}`, this.httpOptions);
     return response;
   }
+  
+  getTaxSectionById(id: string): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/common/income-tax-sections/${id}`, this.httpOptions);
+    return response
+  }
+
   getAllTaxSections(): Observable<any> {
     var response = this.http.get<any>(`${environment.apiUrlDotNet}/common/income-tax-sections-by-company`, this.httpOptions);
     return response;

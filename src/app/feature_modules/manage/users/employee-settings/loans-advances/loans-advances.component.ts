@@ -1,7 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { UserService } from 'src/app/_services/users.service';
@@ -26,8 +25,9 @@ export class UserLoansAdvancesComponent {
   loansAdvancesCategories: any;
   public sortOrder: string = '';
 
+  @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
+
   constructor(
-    private modalService: NgbModal,
     private fb: FormBuilder,
     private userService: UserService,
     private payroll: PayrollService,
@@ -85,25 +85,14 @@ export class UserLoansAdvancesComponent {
     })
   }
 
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
-  }
-
-  open(content: any) {
+  openDialog() {
     let payload = { skip: '', next: '' }
     this.payroll.getLoans(payload).subscribe((res: any) => {
       this.loansAdvancesCategories = res.data;
-    })
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
+    this.dialog.open(this.dialogTemplate, {
+      width: '600px',
+      disableClose: true
     });
   }
 
@@ -116,8 +105,7 @@ export class UserLoansAdvancesComponent {
     if (!this.isEdit) {
       this.loansAdvancesForm.get('amount').enable();
       this.userService.addLoansAdvances(this.loansAdvancesForm.value).subscribe((res: any) => {
-        console.log(res.data);
-        this.loansAdvances.push(res.data);
+        this.loadRecords();
         this.loansAdvancesForm.reset();
         this.toast.success('Successfully Added!!!', 'Loan/Advance')
       }, err => {
@@ -126,10 +114,7 @@ export class UserLoansAdvancesComponent {
     } else if (this.isEdit) {
       this.loansAdvancesForm.get('amount').enable();
       this.userService.updateLoansAdvances(this.selectedRecord._id, this.loansAdvancesForm.value).subscribe((res: any) => {
-        const index = this.loansAdvances.findIndex(z => z._id === this.selectedRecord._id);
-        if (index !== -1) {
-          this.loansAdvances[index] = { ...this.selectedRecord, ...this.loansAdvancesForm.value };
-        }
+        this.loadRecords();
         this.isEdit = false;
         this.loansAdvancesForm.reset();
         this.toast.success('Successfully Updated!!!', 'Loan/Advance')

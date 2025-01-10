@@ -8,7 +8,7 @@
         </div>
 
         <div *ngIf="selectedTab === 'run-payroll'" class="tab-content p-0 mt-0">
-            <app-payroll-history></app-payroll-history>
+            <app-payroll-history  (changeView)="toggleView()"></app-payroll-history>
         </div>
         <div *ngIf="selectedTab === 'fnf-run-payroll'" class="tab-content p-0 mt-0">
             <app-run-fnf-payroll (changeView)="toggleView()"></app-run-fnf-payroll>

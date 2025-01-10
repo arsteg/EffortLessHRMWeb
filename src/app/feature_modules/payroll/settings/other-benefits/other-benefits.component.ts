@@ -85,7 +85,9 @@ export class OtherBenefitsComponent {
       this.payroll.addOtherBenefits(this.otherBenefitForm.value).subscribe((res: any) => {
         this.otherBenefits.push(res.data);
         this.toast.success('Successfully Added!!!', 'Other Benefit');
-        this.otherBenefitForm.reset();
+        this.otherBenefitForm.reset({
+          isEffectAttendanceOnEligibility : true
+        });
       },
         (err) => {
           this.toast.error('Other Benefit Can not be added', 'Other Benefit');
