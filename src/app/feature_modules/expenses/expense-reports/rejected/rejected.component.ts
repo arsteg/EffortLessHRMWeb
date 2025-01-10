@@ -1,8 +1,11 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { ExportService } from 'src/app/_services/export.service';
 import { CommonService } from 'src/app/_services/common.Service';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatSort } from '@angular/material/sort';
 
 @Component({
   selector: 'app-rejected',
@@ -24,6 +27,10 @@ export class RejectedComponent {
   public sortOrder: string = '';
   totalRecords: number
   recordsPerPage: number = 10;
+  displayedColumns: string[] = ['title', 'user', 'totalAmount', 'reimbursable', 'billable', 'status', 'action'];
+  dataSource = new MatTableDataSource<any>();
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
   currentPage: number = 1;
 
   constructor(private modalService: NgbModal,
@@ -34,18 +41,21 @@ export class RejectedComponent {
   ngOnInit() {
     this.commonService.populateUsers().subscribe((res: any) => {
       this.users = res.data.data;
+      this.getExpenseReport();
     });
-    this.getExpenseReport();
   }
-  onPageChange(page: number) {
-    this.currentPage = page;
+
+  onPageChange(event) {
+    this.currentPage = event.pageIndex + 1;
+    this.recordsPerPage = event.pageSize;
     this.getExpenseReport();
   }
 
-  onRecordsPerPageChange(recordsPerPage: number) {
-    this.recordsPerPage = recordsPerPage;
-    this.getExpenseReport();
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
+
 
   getExpenseReport() {
     const pagination = {
@@ -59,7 +69,8 @@ export class RejectedComponent {
           ...data,
           user: this.getUser(data?.employee)
         }
-      })
+      });
+      this.dataSource.data = this.expenseReport;
       this.totalRecords = res.total;
     });
   }

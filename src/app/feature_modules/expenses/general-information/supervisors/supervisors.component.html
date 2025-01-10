@@ -1,20 +1,16 @@
-<div class="tableContainer bg-white">
-    <table>
-        <thead>
-            <th>Name</th>
-            <th>Level</th>
-        </thead>
-        <tbody>
-            <ng-container *ngIf="supervisors?.length > 0">
-                <tr>
-                    <td>{{getUser(supervisors[0]?.primaryApprover) | titlecase}}</td>
-                    <td>1 Level</td>
-                </tr>
-                <tr>
-                    <td>{{getUser(supervisors[0]?.secondaryApprover) | titlecase}}</td>
-                    <td>2 Level</td>
-                </tr>
-            </ng-container>
-        </tbody>
+<div class="tableContainer py-3">
+    <table mat-table [dataSource]="dataSource">
+        <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef> Name </th>
+            <td mat-cell *matCellDef="let element"> {{getUser(element.primaryApprover) | titlecase}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="level">
+            <th mat-header-cell *matHeaderCellDef> Level </th>
+            <td mat-cell *matCellDef="let element"> 1 Level </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
 </div>

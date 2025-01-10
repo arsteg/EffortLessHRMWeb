@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { CommonService } from 'src/app/_services/common.Service';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-supervisors',
@@ -11,6 +12,8 @@ import { CommonService } from 'src/app/_services/common.Service';
 export class SupervisorsComponent {
   supervisors: any;
   allAssignee: any;
+  displayedColumns: string[] = ['name', 'level'];
+  dataSource: MatTableDataSource<any>;
 
   constructor(private auth: AuthenticationService,
     private expenseService: ExpensesService,
@@ -22,6 +25,7 @@ export class SupervisorsComponent {
       const user = res.id;
       this.expenseService.getEmployeeExpenseAssignments(user).subscribe((result: any) => {
         this.supervisors = result.data;
+        this.dataSource = new MatTableDataSource(this.supervisors);
       });
     });
 

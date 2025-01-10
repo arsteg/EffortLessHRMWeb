@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -8,6 +8,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { Observable, forkJoin } from 'rxjs';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { CommonService } from 'src/app/_services/common.Service';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-advance-templates',
@@ -35,6 +38,11 @@ export class AdvanceTemplatesComponent implements OnInit {
   totalRecords: number
   recordsPerPage: number = 10;
   currentPage: number = 1;
+  displayedColumns: string[] = ['policyLabel', 'advanceCategories', 'actions'];
+  dataSource: MatTableDataSource<any>;
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
 
   constructor(private fb: FormBuilder,
     private modalService: NgbModal,
@@ -75,6 +83,9 @@ export class AdvanceTemplatesComponent implements OnInit {
     this.addAdvanceTempForm.get('approvalType').valueChanges.subscribe((value: any) => {
       this.validateApprovers(value, this.addAdvanceTempForm.get('approvalLevel').value)
     });
+    this.dataSource = new MatTableDataSource(this.list);
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
   }
 
   validateApprovers(approverType, approverLevel) {
@@ -110,8 +121,9 @@ export class AdvanceTemplatesComponent implements OnInit {
     });
   }
 
-  onPageChange(page: number) {
-    this.currentPage = page;
+  onPageChange(event: PageEvent) {
+    this.currentPage = event.pageIndex + 1;
+    this.recordsPerPage = event.pageSize;
     this.getAllTemplates();
   }
 
@@ -126,7 +138,8 @@ export class AdvanceTemplatesComponent implements OnInit {
     };
     this.expenseService.getAdvanceTemplates(pagination).subscribe((res: any) => {
       this.list = res.data;
-      this.totalRecords = res.total
+      this.totalRecords = res.total;
+      this.dataSource.data = this.list;
     })
   }
 
@@ -261,7 +274,14 @@ export class AdvanceTemplatesComponent implements OnInit {
       })
   }
 
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
 
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+  }
 
 }
 

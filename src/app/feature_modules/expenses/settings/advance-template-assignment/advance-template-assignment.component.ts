@@ -8,6 +8,10 @@ import { CommonService } from 'src/app/_services/common.Service';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-advance-template-assignment',
@@ -35,6 +39,8 @@ export class AdvanceTemplateAssignmentComponent {
   templateById: any;
   @ViewChild('primaryApproverField') primaryApproverField: ElementRef;
   @ViewChild('secondaryApproverField') secondaryApproverField: ElementRef;
+  displayedColumns: string[] = ['employeeName', 'advanceTemplate', 'primaryApprover', 'secondaryApprover', 'actions'];
+  dataSource = new MatTableDataSource<any>([]);
 
   constructor(private fb: FormBuilder,
     private modalService: NgbModal,
@@ -54,13 +60,29 @@ export class AdvanceTemplateAssignmentComponent {
   }
 
   ngOnInit() {
-    this.commonService.populateUsers().subscribe(result => {
-      this.allAssignee = result && result.data && result.data.data;
+    forkJoin({
+      users: this.commonService.populateUsers(),
+      templates: this.expenseService.getAdvanceTemplates({ next: '', skip: '' }),
+      assignments: this.expenseService.getAdvanceTemplateAssignment({
+        skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
+        next: this.recordsPerPage.toString()
+      })
+    }).subscribe(({ users, templates, assignments }) => {
+      this.allAssignee = users?.data?.data || [];
+      this.advanceTemplates = templates.data;
+      this.dataSource.data = assignments.data.map((report) => {
+        const expenseAdvanceTemplateDetails = this.getTemplateDetails(report?.advanceTemplate);
+        return {
+          ...report,
+          employeeName: this.getUser(report?.user),
+          advanceTemplate: this.getAdvanceTemplate(report?.advanceTemplate),
+          primaryApprover: this.getUser(report?.primaryApprover),
+          secondaryApprover: this.getUser(report?.secondaryApprover),
+          approvalType: expenseAdvanceTemplateDetails?.approvalType
+        };
+      });
+      this.totalRecords = assignments?.total || 0;
     });
-    this.getAllTemplates();
-    setTimeout(() => {
-      this.getAssignments();
-    }, 1000)
   }
 
   getUser(employeeId: string) {
@@ -170,15 +192,12 @@ export class AdvanceTemplateAssignmentComponent {
     });
   }
 
-  onPageChange(page: number) {
-    this.currentPage = page;
+  onPageChange(event: any) {
+    this.currentPage = event.pageIndex + 1;
+    this.recordsPerPage = event.pageSize;
     this.getAssignments();
   }
 
-  onRecordsPerPageChange(recordsPerPage: number) {
-    this.recordsPerPage = recordsPerPage;
-    this.getAssignments();
-  }
   getAssignments() {
     let pagination = {
       skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
@@ -186,7 +205,7 @@ export class AdvanceTemplateAssignmentComponent {
     };
    
     this.expenseService.getAdvanceTemplateAssignment(pagination).subscribe((res: any) => {
-      this.templateAssignments = res.data.map((report) => {
+      this.dataSource.data = res.data.map((report) => {
         const expenseAdvanceTemplateDetails = this.getTemplateDetails(report?.advanceTemplate);
         return {
           ...report,
@@ -203,6 +222,11 @@ export class AdvanceTemplateAssignmentComponent {
 
   getTemplateDetails(templateId: string) {
     return this.advanceTemplates?.find(template => template?._id === templateId);
+  }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
   onSubmit() {

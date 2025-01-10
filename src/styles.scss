@@ -1,13 +1,9 @@
+@use 'app/styles/theme.scss';
 @import '~quill/dist/quill.snow.css';
 
 :root{
   --primary: rgba(244, 135, 0, 1);
   --white: #ffffff;
-}
-
-html .mat-mdc-mini-fab.mat-accent,
-.mat-mdc-mini-fab.mat-accent {
-  --mdc-fab-container-color: #e8eaef !important;
 }
 
 .main-content {
@@ -80,70 +76,6 @@ select :focus-visible {
 }
 
 
-
-td {
-  padding: 15px;
-  transition: all 0.5s ease-in-out;
-}
-
-td.highlight {
-  padding: 0;
-  width: 4px;
-  display: none;
-}
-
-td.highlight div {
-  width: 4px;
-  height: 60px;
-  border-radius: 4px;
-  background-color: white;
-  transition: all 0.5s ease-in-out;
-}
-
-tr:hover {
-  background-color: #ffdfc0;
-}
-
-tr:hover .data {
-  cursor: all-scroll;
-  color: #0d6efd;
-}
-
-tr .data {
-  font-size: 28px;
-  vertical-align: middle;
-}
-
-tr:hover .action {
-  cursor: pointer;
-}
-
-tr:hover td.highlight div {
-  transform: scaleX(3);
-}
-
-.table td {
-  padding: 12px 10px;
-}
-
-
-thead tr {
-  box-shadow: none !important;
-}
-
-thead th {
-  font-weight: 700 !important;
-  color: #64728c;
-  font-family: Nunito Sans, sans-serif;
-  cursor: pointer;
-}
-
-tbody {
-  color: #605e5e !important;
-  --bs-table-striped-color: #605e5e !important;
-  font-size: 13.5px;
-}
-
 :host ::ng-deep .pagination .ngx-pagination .current {
   background: #76bc21 !important;
   border: transparent !important;
@@ -190,11 +122,6 @@ tbody {
 
 .bs-datepicker-head bs-datepicker-navigation-view {
   display: flex;
-}
-
-.mat-select-panel:not {
-  min-width: calc(100% + 70px);
-  transform: scaleY(0.9);
 }
 
 .addUser {
@@ -594,8 +521,7 @@ select {
   border: calc(var(--fc-daygrid-event-dot-width)/2) solid #ff7b1d !important;
 }
 
-.fc .fc-button,
-.mat-calendar-body-selected {
+.fc .fc-button {
   background: #76bc21 !important;
 }
 
@@ -654,59 +580,6 @@ select {
   z-index: 991;
 }
 
-table {
-  border-collapse: separate;
-  border-spacing: 0 10px;
-  width: 100%;
-}
-
-td {
-
-  padding: 3px 0;
-  text-align: left;
-}
-
-tr:hover td {
-  font-weight: 500;
-  color: black;
-}
-
-td:first-child {
-  padding-left: 5px;
-}
-
-td:last-child {
-  /* border-top-right-radius: 1.2rem;
-  border-bottom-right-radius: 1.2rem; */
-}
-
-th {
-  padding: 10px 5px;
-}
-
-/* tr {
-  box-shadow: 0.02rem 0.02rem 0.2rem 0.2rem rgb(126 126 126 / 15%) !important;
-  border-radius: 2px;
-} */
-
-thead,
-th {
-  background: #ecffd5 !important;
-}
-
-.tableContainer {
-  border-radius: 20px;
-}
-
-.tableContainer table {
-
-  border-radius: 15px !important;
-}
-
-.tableContainer p {
-  color: #64728c
-}
-
 .addBtn {
   background-color: #76bc21 !important;
   color: white !important;
@@ -747,32 +620,6 @@ button.active {
 
 .breadcrumb-item.active {
   color: #ff7b1d !important;
-}
-
-td:first-child,
-th:first-child {
-  /* padding-left: 10px; */
-}
-
-.form-select-sm,
-select,
-input {
-  min-height: 45px !important;
-  /* font-size: .75rem !important; */
-  font-weight: 400 !important;
-  line-height: 1.5 !important;
-  border-radius: 0.65rem !important;
-  border: 1px solid #e8eaef !important;
-  padding: 0.675rem 0.5rem !important;
-  color: #64728c !important;
-  transition: none !important;
-}
-
-label {
-  font-size: 15px;
-  font-weight: 500;
-  color: #64728c;
-  display: block;
 }
 
 @media (min-width: 576px) {
@@ -826,9 +673,7 @@ label {
   font-size: smaller;
 }
 
-.form-check-input:checked,
-.mat-step-icon-selected,
-.mat-step-icon-state-edit {
+.form-check-input:checked{
   background-color: #76bc21 !important;
 }
 
@@ -857,26 +702,6 @@ label {
   background: orange !important;
 }
 
-.mat-mini-fab.mat-accent {
-  background: none !important;
-}
-
-.mat-checkbox-checked.mat-primary .mat-checkbox-background,
-.mat-primary .mat-pseudo-checkbox-checked.mat-pseudo-checkbox-full,
-.mat-radio-button.mat-primary .mat-radio-inner-circle,
-.mat-raised-button.mat-primary {
-  background-color: #76bc21 !important;
-  background: #76bc21 !important;
-}
-
-.mat-radio-button.mat-primary.mat-radio-checked .mat-radio-outer-circle {
-  border-color: #76bc21 !important;
-}
-
-.mat-primary .mat-option.mat-selected:not(.mat-option-disabled) {
-  color: #76bc21 !important;
-}
-
 option:hover {
   background: orange !important;
 }
@@ -890,34 +715,8 @@ option:hover {
   font-size: large;
 }
 
-.mdc-text-field--outlined .mat-mdc-form-field-infix {
-  padding-bottom: 0px !important;
-}
-
-.mdc-notched-outline {
-  height: 85% !important;
-}
-
-html .mat-mdc-mini-fab.mat-accent {
-  --mat-fab-foreground-color: #7bbf2a;
-}
-
 h2 {
   color: #64728c;
-}
-
-.mdc-checkbox .mdc-checkbox__native-control:enabled:checked~.mdc-checkbox__background {
-  background: #76bc21 !important;
-  border-color: #76bc21 !important;
-}
-
-.mat-mdc-radio-button .mdc-radio .mdc-radio__native-control:enabled:checked+.mdc-radio__background .mdc-radio__outer-circle,
-.mat-mdc-radio-button .mdc-radio .mdc-radio__native-control:enabled+.mdc-radio__background .mdc-radio__inner-circle {
-  border-color: #76bc21 !important;
-}
-
-.mat-mdc-radio-button.mat-mdc-radio-checked .mdc-radio__background::before {
-  background: #76bc21 !important;
 }
 
 .nav-link.activeTab {
@@ -936,35 +735,6 @@ h2 {
 
 .nav-link:hover {
   border-color: #ffcba6 #ffcba6 #ffcba6 !important;
-}
-
-.mdc-text-field--filled:not(.mdc-text-field--disabled),
-.mat-mdc-form-field-focus-overlay {
-  background-color: transparent !important;
-}
-
-.mat-mdc-form-field-focus-overlay {
-  background: white !important;
-}
-
-.mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-line-ripple::before,
-.mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-line-ripple::after {
-  border-bottom-color: transparent !important;
-}
-
-.mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-text-field__input {
-  background: white;
-}
-
-.mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled) .mdc-list-item__primary-text,
-.mat-pseudo-checkbox-minimal.mat-pseudo-checkbox-checked::after,
-.mat-pseudo-checkbox-minimal.mat-pseudo-checkbox-indeterminate::after {
-  color: #76bc21 !important;
-}
-
-.mdc-text-field--filled:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-floating-label,
-.mdc-text-field--filled:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-floating-label--float-above {
-  color: #2d2d2c !important;
 }
 
 .action-list {
