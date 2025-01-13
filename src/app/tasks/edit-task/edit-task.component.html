@@ -290,7 +290,7 @@
                                         </div>
                                     </div>
                                     <div *ngIf="showEditor">
-                                        <quill-editor #editor [styles]="{height: 'auto'}" formControlName="description"
+                                        <quill-editor #editor [styles]="{ height: '400px' }" formControlName="description"
                                             [(ngModel)]="tasks?.data?.task.description"></quill-editor>
                                     </div>
                                     <div *ngIf="updateForm.controls['description'].invalid && updateForm.controls['description'].touched"
