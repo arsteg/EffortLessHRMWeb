@@ -1,37 +1,19 @@
 <div class="main-content contentData">
     <div class="container-fluid px-0">
         <ng-container>
-            <div *ngIf="view=== 'admin' ">
-                 <div class=" d-flex bg-white subMenu w-100">
-            <button class="btn rounded-pill submenuTab" (click)="selectTab(1)"
-                [class.active]="selectedTab === 1">Settings</button>
-            <button class="btn rounded-pill submenuTab" (click)="selectTab(2)" [class.active]="selectedTab === 2">
-                All Separations Requests</button>
-            <button class="btn rounded-pill submenuTab" (click)="selectTab(3)" [class.active]="selectedTab === 3">
-                Asset Deallocations Request</button>
-
-
-
-        </div>
-
-        <div *ngIf="selectedTab === 1" class="tab-content">
-        </div>
-        <div *ngIf="selectedTab === 2" class="tab-content">
-        </div>
-        <div *ngIf="selectedTab === 3" class="tab-content">
-        </div>
-    </div>
-<div *ngIf="view=== 'user'">
-    <div class="mt-5">
-        <nav aria-label="breadcrumb" class="bg-white subMenu w-100">
-            <ol class="breadcrumb">
-              <li class="breadcrumb-item"><a>Separation</a></li>
-              <li class="breadcrumb-item active" aria-current="page"><u>Initiate/Check Status</u></li>
-            </ol>
-          </nav>
-</div>
-</div>    
-</ng-container>
-       
+            <div class="d-flex bg-white subMenu w-100">
+                <a routerLink="settings" class="btn rounded-pill submenuTab" 
+                   [routerLinkActive]="'active'">Settings</a>
+                <a routerLink="all-separations" class="btn rounded-pill submenuTab" 
+                   [routerLinkActive]="'active'">All Separations Requests</a>
+                <a routerLink="asset-deallocations" class="btn rounded-pill submenuTab" 
+                   [routerLinkActive]="'active'">Asset Deallocations Request</a>
+                <a routerLink="resignation" class="btn rounded-pill submenuTab"
+                   [routerLinkActive]="'active'">Resignation</a>
+                <a routerLink="termination" class="btn rounded-pill submenuTab"
+                   [routerLinkActive]="'active'">Termination</a>
+            </div>
+            <router-outlet></router-outlet>
+        </ng-container>
     </div>
 </div>
