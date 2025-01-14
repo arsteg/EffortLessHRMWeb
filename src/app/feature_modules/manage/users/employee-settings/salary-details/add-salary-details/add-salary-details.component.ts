@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { UserService } from 'src/app/_services/users.service';
@@ -13,7 +14,7 @@ export class AddSalaryDetailsComponent {
   @Output() backToSalaryDetails = new EventEmitter<void>();
   disableSelect = new FormControl(false);
   salaryDetailsForm: FormGroup;
-  selectedUser = this.userService.getData();
+  selectedUser: any;
   ctcTemplates: any;
   taxStatutoryForm: FormGroup;
   pfTemplates: any;
@@ -33,7 +34,8 @@ export class AddSalaryDetailsComponent {
   constructor(private fb: FormBuilder,
     private userService: UserService,
     private payrollService: PayrollService,
-    private toast: ToastrService
+    private toast: ToastrService,
+    private router: Router
   ) {
     this.salaryDetailsForm = this.fb.group({
       user: [''],
@@ -74,6 +76,7 @@ export class AddSalaryDetailsComponent {
   }
 
   ngOnInit(): void {
+    this.logUrlSegmentsForUser();
     this.salaryDetailsForm.patchValue({ CTCTemplate: 'manual' });
     this.addFixedAllowance();
     this.addOtherBenefit();
@@ -261,12 +264,23 @@ export class AddSalaryDetailsComponent {
     }
   }
 
+  logUrlSegmentsForUser() {
+    const urlPath = this.router.url;
+    const segments = urlPath.split('/').filter(segment => segment);
+    if (segments.length >= 3) {
+      const employee = segments[segments.length - 3];
+      this.userService.getUserByEmpCode(employee).subscribe((res: any) => {
+        this.selectedUser = res.data;
+      })
+    }
+  }
+
   onSubmissionSalaryDetails(): void {
     const payload = this.salaryDetailsForm.value;
     const formValues = this.employeeSalaryTaxAndStatutorySetting.value;
     const requests = [formValues];
     payload.employeeSalaryTaxAndStatutorySetting = requests;
-    payload.user = this.selectedUser.id;
+    payload.user = this.selectedUser[0].id;
 
     payload.salaryComponentEmployerContribution = payload.salaryComponentEmployerContribution.filter(item => item?.employerContribution !== '');
     payload.salaryComponentFixedAllowance = payload.salaryComponentFixedAllowance.filter(item => item?.fixedAllowance !== '');

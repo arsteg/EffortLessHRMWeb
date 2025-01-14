@@ -1,14 +1,16 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { UserService } from 'src/app/_services/users.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-salary-details',
   templateUrl: './salary-details.component.html',
-  styleUrl: './salary-details.component.css'
+  styleUrls: ['./salary-details.component.css']
 })
 export class SalaryDetailsComponent {
   searchText: string = '';
@@ -18,22 +20,22 @@ export class SalaryDetailsComponent {
   closeResult: string;
   showViewSalaryDetails: boolean = false;
   showAddSalaryDetails: boolean = false;
-  selectedUser = this.userService.getData();
+  selectedUser: any;
   public sortOrder: string = '';
 
   constructor(
     private modalService: NgbModal,
     private userService: UserService,
     private toast: ToastrService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
-    this.userService.getSalaryByUserId(this.selectedUser.id).subscribe((res: any) => {
-      this.salaryDetails = res.data;
-      this.showViewSalaryDetails = true;
-    })
+    this.logUrlSegmentsForUser();
   }
+
+
   calculateTotalAmount(frequency: string, amount: number): number {
     const frequencyMultiplier: { [key: string]: number } = {
       'Monthly': 12,
@@ -99,10 +101,25 @@ export class SalaryDetailsComponent {
     this.getSalaryDetails();
   }
 
+  logUrlSegmentsForUser() {
+    const urlPath = this.router.url;
+    const segments = urlPath.split('/').filter(segment => segment);
+    if (segments.length >= 3) {
+      const employee = segments[segments.length - 3];
+      this.userService.getUserByEmpCode(employee).subscribe((res: any) => {
+        this.selectedUser = res.data;
+        this.getSalaryDetails();
+      })
+    }
+  }
+
   getSalaryDetails() {
-    this.userService.getSalaryByUserId(this.selectedUser.id).subscribe((res: any) => {
-      this.salaryDetails = res.data;
+    forkJoin([
+      this.userService.getSalaryByUserId(this.selectedUser[0]?._id),
+      this.userService.getUserList()
+    ]).subscribe((results: any[]) => {
+      this.salaryDetails = results[0].data;
       this.showViewSalaryDetails = true;
-    })
+    });
   }
 }

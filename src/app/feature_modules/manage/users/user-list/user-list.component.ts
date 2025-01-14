@@ -36,6 +36,8 @@ export class UserListComponent implements OnInit {
   userForm: FormGroup;
   roles: any;
   totalRecords: number;
+  showOffcanvas: boolean;
+  @ViewChild('offcanvasContent', { read: ViewContainerRef }) offcanvasContent: ViewContainerRef;
 
   constructor(
     private router: Router,
@@ -73,7 +75,6 @@ export class UserListComponent implements OnInit {
     this.firstLetter = this.commonservice.firstletter;
     this.UserService.toggleEmployeesDetails.subscribe((showDetails) => {
       this.showEmployeeDetails = showDetails;
-      console.log(this.showEmployeeDetails)
     });
   }
 
@@ -136,14 +137,17 @@ export class UserListComponent implements OnInit {
   toggleView(data: any) {
     this.isEdit = true;
     this.UserService.setData(data, this.isEdit);
-    console.log(this.showEmployeeDetails)
-    this.UserService.toggleEmployeesDetails.next(this.showEmployeeDetails)
-    this.router.navigate(['./employee-settings'], { relativeTo: this.route });
+    this.UserService.toggleEmployeesDetails.next(this.showEmployeeDetails);
+
+    const empCode = data.appointment[0]?.empCode;
+    if (empCode) {
+      this.router.navigate([empCode, 'employee-settings', 'employee-profile'], { relativeTo: this.route });
+    } else {
+      console.error('empCode is not defined');
+    }
     this.showEmployeeDetails = !this.showEmployeeDetails;
   }
 
-  showOffcanvas: boolean;
-  @ViewChild('offcanvasContent', { read: ViewContainerRef }) offcanvasContent: ViewContainerRef;
 
   openOffcanvas(isEdit: boolean) {
     this.isEdit = isEdit;

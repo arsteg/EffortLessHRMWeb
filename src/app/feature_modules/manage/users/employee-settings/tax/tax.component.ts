@@ -1,15 +1,17 @@
-import { Component, ComponentFactoryResolver, Input, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ComponentFactoryResolver, ViewChild, ViewContainerRef } from '@angular/core';
 import { TaxCalculatorComponent } from './tax-calculator/tax-calculator.component';
 import { UserService } from 'src/app/_services/users.service';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { TaxationService } from 'src/app/_services/taxation.service';
 import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-tax',
   templateUrl: './tax.component.html',
-  styleUrl: './tax.component.css'
+  styleUrls: ['./tax.component.css']
 })
 export class TaxComponent {
   searchText: string = '';
@@ -19,13 +21,13 @@ export class TaxComponent {
   showOffcanvas: boolean = false;
   isEdit: boolean = false;
   @ViewChild('offcanvasContent', { read: ViewContainerRef }) offcanvasContent: ViewContainerRef;
-  selectedUser = this.userService.getData();
+  selectedUser: any;
   taxView: boolean;
   totalRecords: number;
   recordsPerPage: number = 10;
   currentPage: number = 1;
-  uniqueFinancialYears: string[];
-  uniqueSections: string[];
+  uniqueFinancialYears: string[] = [];
+  uniqueSections: string[] = [];
   closeResult: string = '';
   taxDeclarationForm: FormGroup;
   years: string[] = [];
@@ -38,7 +40,8 @@ export class TaxComponent {
     private modalService: NgbModal,
     private fb: FormBuilder,
     private taxService: TaxationService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private router: Router
   ) {
     this.taxDeclarationForm = this.fb.group({
       financialYear: [''],
@@ -54,7 +57,7 @@ export class TaxComponent {
   }
 
   ngOnInit() {
-    this.getTaxDeclaration();
+    this.logUrlSegmentsForUser();
   }
 
   openOffcanvas(isEdit: boolean, record: any = null) {
@@ -103,28 +106,41 @@ export class TaxComponent {
     this.getTaxDeclaration();
   }
 
+  logUrlSegmentsForUser() {
+    const urlPath = this.router.url;
+    const segments = urlPath.split('/').filter(segment => segment);
+    if (segments.length >= 3) {
+      const employee = segments[segments.length - 3];
+      this.userService.getUserByEmpCode(employee).subscribe((res: any) => {
+        this.selectedUser = res.data;
+        this.getTaxDeclaration();
+      });
+    }
+  }
+
   getTaxDeclaration() {
     const pagination = {
       skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
       next: this.recordsPerPage.toString()
     };
-    
-    // this.userService.getTaxDeclarationByUserId(this.selectedUser?._id, pagination).subscribe((res: any) => {
 
-    this.userService.getTaxDeclarationByUserId('62dfa8d13babb9ac2072863c', pagination).subscribe((res: any) => {
+    this.userService.getTaxDeclarationByUserId(this.selectedUser[0]?._id, pagination).subscribe((res: any) => {
       this.taxList = res.data;
 
-      this.taxList.forEach((tax: any) => {
-        const incomeTaxComponents = tax.incomeTaxDeclarationComponent;
+      const sectionIds = this.taxList.flatMap((tax: any) =>
+        tax.incomeTaxDeclarationComponent.map((component: any) => component.section)
+      );
 
-        const sectionIds = incomeTaxComponents.map((component: any) => component.section);
+      const sectionRequests = sectionIds.map((sectionId: string) =>
+        this.taxService.getTaxSectionById(sectionId).toPromise()
+      );
 
-        const sectionRequests = sectionIds.map((sectionId: string) =>
-          this.taxService.getTaxSectionById(sectionId).toPromise()
-        );
+      forkJoin(sectionRequests).subscribe((sections: any[]) => {
+        const allSections = sections.map(section => section.data);
 
-        Promise.all(sectionRequests).then((sections: any[]) => {
-          const allSections = sections.map(section => section.data);
+        this.taxList.forEach((tax: any) => {
+          const incomeTaxComponents = tax.incomeTaxDeclarationComponent;
+
           const mappedIncomeTaxComponents = incomeTaxComponents.map((component: any) => ({
             ...component,
             section: allSections.find((section: any) => section._id === component.section)?.section
@@ -138,13 +154,11 @@ export class TaxComponent {
           const hra = tax.totalRentDeclared;
           tax.componentSums = { componentSums, hra };
           this.taxService.taxByUser.next(tax.componentSums);
-
         });
 
+        this.totalRecords = res.total;
+        this.uniqueFinancialYears = this.getUniqueFinancialYears(this.taxList);
       });
-
-      this.totalRecords = res.total;
-      this.uniqueFinancialYears = this.getUniqueFinancialYears(this.taxList);
     });
   }
 
@@ -210,7 +224,7 @@ export class TaxComponent {
   taxDeclaration() {
     let payload = {
       financialYear: this.taxDeclarationForm.value.financialYear,
-      user: this.selectedUser._id,
+      user: this.selectedUser[0]._id,
       employeeIncomeTaxDeclarationComponent: [],
       employeeIncomeTaxDeclarationHRA: []
     };

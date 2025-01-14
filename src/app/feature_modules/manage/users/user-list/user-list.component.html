@@ -5,10 +5,6 @@
             <div class="d-md-flex d-block justify-content-between align-items-center mb-2 px-2">
                 <div class="col-lg-2 d-flex align-items-center justify-content-start  mb-md-0 mb-3">
                     <span class="bi bi-search searchIcon" style="z-index: 999;"></span>
-                    <!-- <input class="form-control" type="text" placeholder="search here.." [(ngModel)]="searchText"
-                        name="searchText" aria-label="default input example" style="border: none !important;
-                        position: relative;
-                        padding-left: 40px !important;"> -->
 
                     <input class="form-control" type="text" placeholder="search here.." (input)="applyFilter($event)"
                         aria-label="default input example" style="border: none !important; position: relative; padding-left: 40px !important;">

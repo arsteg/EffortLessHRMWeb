@@ -1,17 +1,19 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { CompanyService } from 'src/app/_services/company.service';
 import { UserService } from 'src/app/_services/users.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-employment-details',
   templateUrl: './employment-details.component.html',
-  styleUrl: './employment-details.component.css'
+  styleUrls: ['./employment-details.component.css']
 })
 export class EmploymentDetailsComponent {
   step = 0;
-  selectedUser = this.userService.getData();
+  selectedUser: any;
   disableSelect = new FormControl(false);
   jobInformationForm: FormGroup;
   appointmentForm: FormGroup;
@@ -29,7 +31,9 @@ export class EmploymentDetailsComponent {
     private userService: UserService,
     private companyService: CompanyService,
     private fb: FormBuilder,
-    private toast: ToastrService
+    private toast: ToastrService,
+    private route: ActivatedRoute,
+    private router: Router
   ) {
     this.appointmentForm = this.fb.group(
       {
@@ -58,7 +62,7 @@ export class EmploymentDetailsComponent {
   }
 
   ngOnInit() {
-    this.getData();
+    this.logUrlSegmentsForUser();
   }
 
   setStep(index: number) {
@@ -80,8 +84,8 @@ export class EmploymentDetailsComponent {
   }
 
   onAppointmentSubmission() {
-    this.appointmentForm.value.user = this.selectedUser._id
-    this.userService.getAppointmentByUserId(this.selectedUser._id).subscribe((res: any) => {
+    this.appointmentForm.value.user = this.selectedUser[0]._id
+    this.userService.getAppointmentByUserId(this.selectedUser[0]._id).subscribe((res: any) => {
       if (!res.data) {
         this.userService.addAppointment(this.appointmentForm.value).subscribe((res: any) => {
           this.toast.success('Appointment Details Added', 'Successfully')
@@ -97,15 +101,15 @@ export class EmploymentDetailsComponent {
 
   onSubmissionJobInformation() {
     if (this.jobInformationForm.valid) {
-      this.userService.getJobInformationByUserId(this.selectedUser._id).subscribe((res: any) => {
+      this.userService.getJobInformationByUserId(this.selectedUser[0]._id).subscribe((res: any) => {
         if (res.data.length <= 0) {
-          this.jobInformationForm.value.user = this.selectedUser._id;
+          this.jobInformationForm.value.user = this.selectedUser[0]._id;
           this.userService.addJobInformation(this.jobInformationForm.value).subscribe((res: any) => {
             this.toast.success('Job Information Added Successfully');
           }, err => { this.toast.error('Job Information Not Added', 'Error'); })
         } else {
           this.userService.updateJobInformation(res.data[0]._id, this.jobInformationForm.value).subscribe((res: any) => {
-            this.userService.getJobInformationByUserId(this.selectedUser._id).subscribe((res: any) => {
+            this.userService.getJobInformationByUserId(this.selectedUser[0]._id).subscribe((res: any) => {
               this.jobInformationForm.patchValue(res.data[0]);
             })
           })
@@ -116,34 +120,42 @@ export class EmploymentDetailsComponent {
     }
   }
 
+  logUrlSegmentsForUser() {
+    const urlPath = this.router.url;
+    const segments = urlPath.split('/').filter(segment => segment);
+    if (segments.length >= 3) {
+      const employee = segments[segments.length - 3];
+      console.log(employee)
+      this.userService.getUserByEmpCode(employee).subscribe((res: any) => {
+        this.selectedUser = res.data;
+        this.getData(); // Call getData after setting selectedUser
+      })
+    }
+  }
+
   getData() {
-    this.userService.getAppointmentByUserId(this.selectedUser._id).subscribe((res: any) => {
-      this.appointment = res.data;
-      this.appointmentForm.patchValue(res.data);
-    })
-    this.userService.getJobInformationByUserId(this.selectedUser._id).subscribe((res: any) => {
-      this.jobInformationForm.patchValue(res.data[0]);
-    })
-    this.userService.getUserList().subscribe((res: any) => {
-      this.supervisors = res.data.data;
-    })
-    this.companyService.getBand().subscribe((res: any) => {
-      this.bands = res.data;
-    })
-    this.companyService.getZones().subscribe((res: any) => {
-      this.zones = res.data;
-    })
-    this.companyService.getSubDepartments().subscribe((res: any) => {
-      this.subDepartments = res.data;
-    })
-    this.companyService.getDepartments().subscribe((res: any) => {
-      this.departments = res.data;
-    })
-    this.companyService.getDesignations().subscribe((res: any) => {
-      this.designations = res.data;
-    })
-    this.companyService.getLocations().subscribe((res: any) => {
-      this.locations = res.data;
-    })
+    console.log(this.selectedUser)
+    forkJoin([
+      this.userService.getAppointmentByUserId(this.selectedUser[0]._id),
+      this.userService.getJobInformationByUserId(this.selectedUser[0]._id),
+      this.userService.getUserList(),
+      this.companyService.getBand(),
+      this.companyService.getZones(),
+      this.companyService.getSubDepartments(),
+      this.companyService.getDepartments(),
+      this.companyService.getDesignations(),
+      this.companyService.getLocations()
+    ]).subscribe((results: any[]) => {
+      this.appointment = results[0].data;
+      this.appointmentForm.patchValue(results[0].data);
+      this.jobInformationForm.patchValue(results[1].data[0]);
+      this.supervisors = results[2].data.data;
+      this.bands = results[3].data;
+      this.zones = results[4].data;
+      this.subDepartments = results[5].data;
+      this.departments = results[6].data;
+      this.designations = results[7].data;
+      this.locations = results[8].data;
+    });
   }
 }

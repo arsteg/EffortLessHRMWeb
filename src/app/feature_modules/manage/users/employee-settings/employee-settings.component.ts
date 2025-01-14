@@ -6,80 +6,69 @@ import { UserService } from 'src/app/_services/users.service';
 @Component({
   selector: 'app-employee-settings',
   templateUrl: './employee-settings.component.html',
-  styleUrl: './employee-settings.component.css'
+  styleUrls: ['./employee-settings.component.css']
 })
 export class EmployeeSettingsComponent {
   @Output() backToUserView = new EventEmitter<void>();
   @Input() selectedUser: any;
-  data: any;
-  isEdit: boolean;
-  selectedIndex: number = 0;
+  selectedIndex: number;
   employeeForm: FormGroup;
+  selectedTab: string;
 
-  constructor(private userService: UserService, private router: Router, private route: ActivatedRoute, private fb: FormBuilder) {
-    this.employeeForm = this.fb.group({
-      employeeId: ['', Validators.required],
-      salaryPaymentMethod: ['', Validators.required],
-      joiningDate: ['', Validators.required],
-      confirmationDate: ['', Validators.required],
-      effectiveFrom: ['', Validators.required],
-      location: ['', Validators.required],
-      designation: ['', Validators.required],
-      employmentType: ['', Validators.required],
-      reportingSupervisor: ['', Validators.required],
-      department: ['', Validators.required],
-      band: ['', Validators.required],
-      subDepartments: ['', Validators.required],
-      employmentStatusEffectiveFrom: ['', Validators.required],
-      employmentStatus: ['', Validators.required],
-      noticePeriod: ['', Validators.required],
-      zone: ['', Validators.required],
-      biometricEmployeeCode: ['', Validators.required],
-      previousExperience: ['', Validators.required]
-    });
-  }
+  constructor(private userService: UserService,
+    private router: Router,
+    private route: ActivatedRoute) { }
 
   ngOnInit() {
-    this.data = this.userService.getData();
-    this.isEdit = this.userService.getIsEdit();
-    this.route.queryParams.subscribe(params => {
-      const tab = params['tab'];
-      if (tab) {
-        this.selectedIndex = this.getTabIndex(tab);
-      } else {
-        this.route.firstChild?.url.subscribe(url => {
-          const path = url[0]?.path;
-          this.selectedIndex = this.getTabIndex(path);
-        });
-      }
-    });
+    const urlPath = this.router.url;
+    const segments = urlPath.split('/').filter(segment => segment);
+    const lastRoute = segments[segments.length - 1];
+
+    const tabRoutes = ['employee-profile', 'employment-details', 'salary-details', 'statutory-details', 'loans-advances', 'tax'];
+    this.selectedIndex = tabRoutes.indexOf(lastRoute);
+
+    switch (this.selectedIndex) {
+      case 0:
+        this.selectedTab = 'Employee Profile';
+        break;
+      case 1:
+        this.selectedTab = 'Employment Details';
+        break;
+      case 2:
+        this.selectedTab = 'Salary Details';
+        break;
+      case 3:
+        this.selectedTab = 'Statutory Details';
+        break;
+      case 4:
+        this.selectedTab = 'Loans/Advances';
+        break;
+      case 5:
+        this.selectedTab = 'Tax';
+        break;
+      default:
+        this.selectedTab = 'Employee Profile';
+        break;
+    }
+    if (this.selectedTab) {
+      this.userService.toggleEmployeesDetails.next(true);
+    }
   }
 
   toggleToEmployees() {
-    this.userService.toggleEmployeesDetails.next(false);
-    this.router.navigate(['../'], { relativeTo: this.route });
+    const urlPath = this.router.url;
+    const segments = urlPath.split('/').filter(segment => segment);
+    const newSegments = segments.slice(0, -3);
+    const newPath = newSegments.join('/');
+    if (this.selectedTab) {
+      this.userService.toggleEmployeesDetails.next(false);
+    }
+    this.router.navigate(['/' + newPath], { relativeTo: this.route });
   }
 
   onTabChange(event: any) {
+    this.selectedTab = event.tab.textLabel;
     const tabRoutes = ['employee-profile', 'employment-details', 'salary-details', 'statutory-details', 'loans-advances', 'tax'];
     this.router.navigate([tabRoutes[event.index]], { relativeTo: this.route });
-  }
-
-  getTabIndex(path: string): number {
-    const tabRoutes = ['employee-profile', 'employment-details', 'salary-details', 'statutory-details', 'loans-advances', 'tax'];
-    return tabRoutes.indexOf(path);
-  }
-
-  getTabLabel(index: number): string {
-    const tabLabels = ['Employee Profile', 'Employment Details', 'Salary Details', 'Statutory Details', 'Loans/Advances', 'Tax'];
-    return tabLabels[index];
-  }
-
-  onSubmit() {
-    if (this.employeeForm.valid) {
-      // Handle form submission
-    } else {
-      this.employeeForm.markAllAsTouched();
-    }
   }
 }
