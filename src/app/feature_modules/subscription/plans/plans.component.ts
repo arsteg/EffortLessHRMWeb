@@ -39,7 +39,7 @@ export class PlansComponent {
   rzCred = '';
 
   ngOnInit() {
-    if(!this.hasActiveSubscription){
+    if (!this.hasActiveSubscription) {
       this.credentials();
       this.getPlan();
     } else {
@@ -47,24 +47,24 @@ export class PlansComponent {
     }
   }
 
-  credentials(){
+  credentials() {
     this.subscriptionService.getCredentials()
-    .pipe(takeUntilDestroyed(this.destoryRef))
-    .subscribe((res: any) => {
-      this.rzCred = res.data;
-    });
+      .pipe(takeUntilDestroyed(this.destoryRef))
+      .subscribe((res: any) => {
+        this.rzCred = res.data;
+      });
   }
 
-  get hasActiveSubscription(){
+  get hasActiveSubscription() {
     return this.subscription?.status === 'active'
   }
 
-  getPlan(id?:any) {
-    if(id){
+  getPlan(id?: any) {
+    if (id) {
       this.subscriptionService.getPlanByName(id)
-      .subscribe((res: any) => {
-        this.plans = res.data;
-      });
+        .subscribe((res: any) => {
+          this.plans = res.data;
+        });
     } else {
       this.subscriptionService.getPlans()
         .subscribe((res: any) => {
@@ -74,7 +74,7 @@ export class PlansComponent {
   }
 
   payNow(plan: any) {
-    if(!this.rzCred){
+    if (!this.rzCred) {
       alert('Please contact admin to setup payment gateway');
       return false;
     }
@@ -85,9 +85,9 @@ export class PlansComponent {
     plan['loading'] = true;
     this.subscriptionService.createSubscription(payload)
       .subscribe((data: any) => {
-        this.makePayment(data.data.subscription.subscriptionId, plan); 
-      }) ;
-      return true;
+        this.makePayment(data.data.subscription.subscriptionId, plan);
+      });
+    return true;
   }
 
   makePayment(id: string, plan: any) {
@@ -97,27 +97,29 @@ export class PlansComponent {
       "name": this.user.firstName + ' ' + this.user.lastName,
       "description": "Payment for subscription " + id,
       "handler": (response: any) => {
-          response['subscriptionId'] = id;
-          if (response.razorpay_payment_id) {
-            plan['loading'] = false;
-            this.subscription.status = 'active';
-            this.subscription.created_at = new Date().getTime() / 1000;
-            this.subscription.current_start = new Date().getTime() / 1000;
-            this.subscription.id = id;
-            this.authService.companySubscription.next(this.subscription);
-            localStorage.setItem('subscription', JSON.stringify(this.subscription));
-            this.subscriptionService.activateSubscription(id)
-            .subscribe((data: any)=>{ 
+        response['subscriptionId'] = id;
+        if (response.razorpay_payment_id) {
+          plan['loading'] = false;
+          this.subscription.status = 'active';
+          this.subscription.created_at = new Date().getTime() / 1000;
+          this.subscription.current_start = new Date().getTime() / 1000;
+          this.subscription.id = id;
+          this.subscriptionService.activateSubscription(id)
+            .subscribe((data: any) => {
+              this.authService.companySubscription.next(data.subscription.razorpaySubscription);
+              localStorage.setItem('subscription', JSON.stringify(data.subscription.razorpaySubscription));
               setTimeout(() => {
-              if (localStorage.getItem('roleId') === '639acb77b5e1ffe22eaa4a39') {
-                this.router.navigate(['home/dashboard']);
-              } else {
-                this.router.navigate(['home/dashboard/user']);
-              }
+                if (localStorage.getItem('roleId') === '639acb77b5e1ffe22eaa4a39') {
+                  this.router.navigate(['home/dashboard']);
+                  this.cdr.detectChanges();
+                } else {
+                  this.router.navigate(['home/dashboard/user']);
+                  this.cdr.detectChanges();
+                }
               }, 200);
             });
-          }
-          this.cdr.detectChanges();
+        }
+        this.cdr.detectChanges();
       },
       "prefill": {
         "email": this.user.email,
