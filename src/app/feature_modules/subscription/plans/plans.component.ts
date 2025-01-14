@@ -1,5 +1,5 @@
 import { CurrencyPipe, DatePipe, NgClass, } from '@angular/common';
-import { ChangeDetectorRef, Component, inject, DestroyRef } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, DestroyRef, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { SubscriptionService } from 'src/app/_services/subscription.service';
 import { MatButtonModule } from '@angular/material/button';
@@ -32,6 +32,7 @@ export class PlansComponent {
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly destoryRef = inject(DestroyRef);
   private readonly dialog = inject(MatDialog);
+  private readonly ngZone = inject(NgZone);
   today: Date = new Date();
   plans = [];
   subscription = this.authService.companySubscription.getValue();
@@ -106,28 +107,25 @@ export class PlansComponent {
           this.subscription.id = id;
           this.subscriptionService.activateSubscription(id)
             .subscribe((data: any) => {
-              this.authService.companySubscription.next(data.subscription.razorpaySubscription);
-              localStorage.setItem('subscription', JSON.stringify(data.subscription.razorpaySubscription));
-              setTimeout(() => {
+              this.authService.companySubscription.next(data.data.subscription.razorpaySubscription);
+              localStorage.setItem('subscription', JSON.stringify(data.data.subscription.razorpaySubscription));
+
+              this.ngZone.run(() => {
                 if (localStorage.getItem('roleId') === '639acb77b5e1ffe22eaa4a39') {
                   this.router.navigate(['home/dashboard']);
-                  this.cdr.detectChanges();
                 } else {
                   this.router.navigate(['home/dashboard/user']);
-                  this.cdr.detectChanges();
                 }
-              }, 200);
+              });
             });
         }
-        this.cdr.detectChanges();
       },
       "prefill": {
         "email": this.user.email,
       },
       "modal": {
         "ondismiss": () => {
-          plan['loading'] = false;
-          this.cdr.detectChanges();
+          this.ngZone.run(() => {plan['loading'] = false;});
         }
       }
     };
