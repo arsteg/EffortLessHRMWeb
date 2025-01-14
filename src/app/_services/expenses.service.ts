@@ -180,7 +180,7 @@ export class ExpensesService {
     return response;
   }
 
-  getTemplateAssignment(payload: any): Observable<response<any>> {
+  getTemplateAssignment(payload: any): Observable<any> {
     var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/employee-expense-assignments-list`, payload, this.httpOptions);
     return response;
   }
@@ -248,7 +248,7 @@ export class ExpensesService {
     return response;
   }
 
-  getAdvanceTemplateAssignment(payload: any): Observable<response<any>> {
+  getAdvanceTemplateAssignment(payload: any): Observable<any> {
     var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/employee-advance-assignments-list`, payload,  this.httpOptions);
     return response;
   }
@@ -334,7 +334,7 @@ export class ExpensesService {
     var response = this.http.put<response<any>>(`${environment.apiUrlDotNet}/expense/advance/${id}`, advanceReport, this.httpOptions);
     return response;
   }
-  getAdvanceReport(payload: any): Observable<response<any>> {
+  getAdvanceReport(payload: any): Observable<any> {
     var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/expense/advance-list`, payload, this.httpOptions);
     return response;
   }

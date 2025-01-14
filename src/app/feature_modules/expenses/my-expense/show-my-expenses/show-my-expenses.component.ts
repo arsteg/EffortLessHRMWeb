@@ -8,6 +8,7 @@ import { ViewReportsComponent } from '../../advance-reports/view-reports/view-re
 import { CommonService } from 'src/app/_services/common.Service';
 import { ExportService } from 'src/app/_services/export.service';
 import { ViewReportComponent } from '../../expense-reports/view-report/view-report.component';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-show-my-expenses',
@@ -34,7 +35,8 @@ export class ShowMyExpensesComponent {
   currentPage: number = 1;
   @Input() selectedTab: number;
   selectedReport;
-
+  displayedColumns: string[] = ['title', 'totalAmount', 'amount', 'reimbursable', 'billable', 'status', 'actions'];
+  dataSource: any = new MatTableDataSource([]);
 
   constructor(private modalService: NgbModal,
     private expenseService: ExpensesService,
@@ -98,14 +100,15 @@ export class ShowMyExpensesComponent {
   refreshExpenseReportTable() {
     this.getExpenseByUser();
   }
-  onPageChange(page: number) {
-    this.currentPage = page;
+  onPageChange(event: any) {
+    this.currentPage = event.pageIndex + 1;
+    this.recordsPerPage = event.pageSize;
     this.getExpenseByUser();
   }
 
-  onRecordsPerPageChange(recordsPerPage: number) {
-    this.recordsPerPage = recordsPerPage;
-    this.getExpenseByUser();
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
   getExpenseByUser() {
@@ -115,6 +118,7 @@ export class ShowMyExpensesComponent {
     };
     this.expenseService.getExpenseReportByUser(this.currentUser.id, pagination).subscribe((res: any) => {
       this.expenseReport = res.data;
+      this.dataSource.data = this.expenseReport;
       this.totalAmount = this.expenseReport.reduce((total, report) => total + report.amount, 0);
       this.totalRecords = res.total;
     })

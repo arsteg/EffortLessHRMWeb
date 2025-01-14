@@ -1,6 +1,24 @@
-<h2 mat-dialog-title><span class="fa fa-warning fa-lg text-danger"></span> Delete</h2>
-<mat-dialog-content>Are you sure to delete the selected item?</mat-dialog-content>
-<mat-dialog-actions>
-  <button mat-button color="primary" [mat-dialog-close]="'delete'">Delete</button>
-  <button mat-button (click)="onNoClick()">Cancel</button>
+<div class="dialog-header">
+  <h2 mat-dialog-title class="dialog-title">
+    <span class="fa fa-warning"></span>
+    Confirm Deletion
+  </h2>
+</div>
+<mat-dialog-content class="dialog-content">
+  Are you sure you want to delete this item? This action is irreversible.
+</mat-dialog-content>
+<mat-dialog-actions class="dialog-actions">
+  <button
+    mat-button
+    color="warn"
+    [mat-dialog-close]="'delete'"
+    class="delete-button">
+    Delete
+  </button>
+  <button
+    mat-button
+    (click)="onNoClick()"
+    class="cancel-button">
+    Cancel
+  </button>
 </mat-dialog-actions>

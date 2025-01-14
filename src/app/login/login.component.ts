@@ -30,7 +30,8 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder) {
     this.loginForm = this.fb.group({
       email: ['', Validators.required],
-      password: ['', Validators.required]
+      password: ['', Validators.required],
+      rememberMe: [false]
     })
   }
   ngOnInit(): void {
@@ -42,7 +43,7 @@ export class LoginComponent implements OnInit {
     } else {
       this.router.navigateByUrl('login');
     }
-    this.rememberMe = localStorage.getItem('rememberMe') == 'true';
+    this.loginForm.controls['rememberMe'].setValue(localStorage.getItem('rememberMe') == 'true');
 
   }
 
@@ -73,7 +74,7 @@ export class LoginComponent implements OnInit {
               this.user.freeCompany = data.data.user.company.freeCompany;
               localStorage.setItem('jwtToken', data.token);
               localStorage.setItem('currentUser', JSON.stringify(this.user));
-              localStorage.setItem('rememberMe', JSON.stringify(this.rememberMe));
+              localStorage.setItem('rememberMe', JSON.stringify(this.loginForm.value.rememberMe));
               localStorage.setItem('roleId', data.data.user?.role?.id);
               localStorage.setItem('subscription', JSON.stringify(data.data.companySubscription));
     

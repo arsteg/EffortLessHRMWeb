@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-advance-categories',
@@ -16,19 +18,21 @@ export class AdvanceCategoriesComponent implements OnInit {
   isEdit = false;
   field: any = [];
   selectedCategory: any;
-  p: number = 1;
   updatedCategory: any;
   originalFields: any[] = [];
   changeMode: 'Add' | 'Update' = 'Add';
   addCategory: FormGroup;
   closeResult: string = '';
-  advanceCategories: any;
+  advanceCategories: MatTableDataSource<any>;
   changesMade: boolean = false;
   initialLabelValue: string;
   public sortOrder: string = '';
-  totalRecords: number
+  totalRecords: number;
   recordsPerPage: number = 10;
   currentPage: number = 1;
+  displayedColumns: string[] = ['label', 'actions'];
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(private fb: FormBuilder,
     private dialog: MatDialog,
@@ -38,9 +42,9 @@ export class AdvanceCategoriesComponent implements OnInit {
 
     this.addCategory = this.fb.group({
       label: ['', Validators.required]
-
-    })
+    });
   }
+
   ngOnInit() {
     this.getAllAdvanceCategories();
   }
@@ -54,35 +58,39 @@ export class AdvanceCategoriesComponent implements OnInit {
       return `with: ${reason}`;
     }
   }
-  open(content: any) {
 
+  open(content: any) {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
     });
   }
+
   clearselectedRequest() {
     this.addCategory.reset();
   }
-  onPageChange(page: number) {
-    this.currentPage = page;
+
+  onPageChange(event: any) {
+    this.currentPage = event.pageIndex + 1;
+    this.recordsPerPage = event.pageSize;
     this.getAllAdvanceCategories();
   }
 
-  onRecordsPerPageChange(recordsPerPage: number) {
-    this.recordsPerPage = recordsPerPage;
-    this.getAllAdvanceCategories();
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.advanceCategories.filter = filterValue.trim().toLowerCase();
   }
+
   getAllAdvanceCategories() {
     let pagination = {
       skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
       next: this.recordsPerPage.toString()
     };
     this.expenseService.getAdvanceCatgories(pagination).subscribe((res: any) => {
-      this.advanceCategories = res.data;
+      this.advanceCategories = new MatTableDataSource(res.data);
       this.totalRecords = res.total;
-    })
+    });
   }
 
   onSubmit() {
@@ -94,11 +102,12 @@ export class AdvanceCategoriesComponent implements OnInit {
       this.expenseService.addAdvanceCategory(payload).subscribe((res: any) => {
         const newCategory = res.data;
         this.toast.success('Advance Category Created!', 'Successfully');
-        this.advanceCategories.push(newCategory)
+        this.advanceCategories.data.push(newCategory);
+        this.advanceCategories._updateChangeSubscription();
         this.addCategory.reset();
       },
         err => {
-          this.toast.error('This category is already exist', 'Error!!!')
+          this.toast.error('This category is already exist', 'Error!!!');
         });
     }
     if (this.isEdit) {
@@ -124,7 +133,6 @@ export class AdvanceCategoriesComponent implements OnInit {
   editAdvanceCategory() {
     if (this.isEdit) {
       this.addCategory.patchValue({
-
         label: this.selectedCategory.label,
         expenseCategory: this.selectedCategory._id,
       });
@@ -134,32 +142,27 @@ export class AdvanceCategoriesComponent implements OnInit {
     }
   }
 
-
-
-
   deleteAdvancecate(id: string): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '400px',
-
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'delete') {
         this.deleteAdvanceCategory(id);
       }
       err => {
-        this.toast.error('Can not be Deleted', 'Error!')
+        this.toast.error('Can not be Deleted', 'Error!');
       }
     });
   }
+
   deleteAdvanceCategory(id: string) {
     this.expenseService.deleteAdvanceCategory(id).subscribe((res: any) => {
       this.getAllAdvanceCategories();
-      this.toast.success('Successfully Deleted!!!', 'Advance Category')
+      this.toast.success('Successfully Deleted!!!', 'Advance Category');
     },
       (err) => {
-        this.toast.error('This category is already being used in an expense template!'
-          , 'Advance Category, Can not be deleted!')
-      })
+        this.toast.error('This category is already being used in an expense template!', 'Advance Category, Can not be deleted!');
+      });
   }
-
 }

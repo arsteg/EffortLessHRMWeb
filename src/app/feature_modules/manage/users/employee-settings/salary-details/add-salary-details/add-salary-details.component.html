@@ -32,9 +32,9 @@
 
             <mat-form-field appearance="outline" class="col-md-6 my-2 border-bottom">
                 <mat-label>Select CTC Template</mat-label>
-                <mat-select formControlName="CTCTemplate">
-                    <mat-option *ngFor="let ctcTemplate of ctcTemplates" [value]="ctcTemplate._id"
-                        (click)="addButtons = false; getCTCTemplateById(ctcTemplate?._id)">
+                <mat-select formControlName="CTCTemplate" (selectionChange)="onCTCTemplateChange($event.value)">
+                    <mat-option value="manual">Enter Manually</mat-option>
+                    <mat-option *ngFor="let ctcTemplate of ctcTemplates" [value]="ctcTemplate._id">
                         {{ctcTemplate.name}}
                     </mat-option>
                 </mat-select>

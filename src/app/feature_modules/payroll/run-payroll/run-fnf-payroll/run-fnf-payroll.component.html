@@ -3,13 +3,11 @@
         <div class="tableContainer bg-white mt-2">
             <div class="d-flex justify-content-between align-items-center px-2 py-1">
                 <p class="mb-0">Full and Final Payroll History</p>
-                <div class="d-flex w-50 align-items-center">
+                <div class="ms-auto d-flex align-items-center">
                     <span class="bi bi-search searchIcon"></span>
                     <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
                         name="searchText" aria-label="default input example">
-                    <select class="form-control ms-2" [(ngModel)]="selectedMonth">
-                        <option value="{{month}}" *ngFor="let month of fnfMonths">{{month}}</option>
-                    </select>
+                    
                     <button class="addBtn ms-2 w-100" mat-raised-button (click)="open(modal)">Run&nbsp;Full
                         &nbsp;&&nbsp;Final</button>
                 </div>
@@ -26,8 +24,8 @@
                 </ng-container>
 
                 <ng-container matColumnDef="details">
-                    <th mat-header-cell *matHeaderCellDef> Full & Final Details </th>
-                    <td mat-cell *matCellDef="let element"> {{element.details}} </td>
+                    <th mat-header-cell *matHeaderCellDef> Full & Final Users </th>
+                    <td mat-cell *matCellDef="let element"> {{element.userList?.length || 0}} </td>
                 </ng-container>
 
                 <ng-container matColumnDef="status">
@@ -71,36 +69,77 @@
     <button mat-raised-button (click)="goBack()">Back to Table</button>
     <mat-horizontal-stepper [linear]="false" #stepper>
         <mat-step>
-                <ng-template matStepLabel>Step 1</ng-template>
-                <app-step1></app-step1>
-                <div>
-                    <button mat-button matStepperNext>Next</button>
-                </div>
+            <ng-template matStepLabel>Step 1</ng-template>
+            <ng-template matStepContent><app-step1></app-step1></ng-template>
+            <div>
+                <button mat-button matStepperNext>Next</button>
+            </div>
         </mat-step>
         <mat-step>
-                <ng-template matStepLabel>Step 2</ng-template>
-                <app-step2></app-step2>
-                <div>
-                    <button mat-button matStepperPrevious>Back</button>
-                    <button mat-button matStepperNext>Next</button>
-                </div>
+            <ng-template matStepLabel>Step 2</ng-template>
+            <ng-template matStepContent><app-step2></app-step2></ng-template>
+            <div>
+                <button mat-button matStepperPrevious>Back</button>
+                <button mat-button matStepperNext>Next</button>
+            </div>
         </mat-step>
         <mat-step>
-                <ng-template matStepLabel>Step 3</ng-template>
-                <app-step3></app-step3>
-                <div>
-                    <button mat-button matStepperPrevious>Back</button>
-                    <button mat-button matStepperNext>Next</button>
-                </div>
+            <ng-template matStepLabel>Step 3</ng-template>
+            <ng-template matStepContent><app-step3></app-step3></ng-template>
+            <div>
+                <button mat-button matStepperPrevious>Back</button>
+                <button mat-button matStepperNext>Next</button>
+            </div>
         </mat-step>
         <mat-step>
-                <ng-template matStepLabel>Step 4</ng-template>
-                <app-step4></app-step4>
-                <div>
-                    <button mat-button matStepperPrevious>Back</button>
-                    <button mat-button (click)="completeFnF()">Complete</button>
-                </div>
+            <ng-template matStepLabel>Step 4</ng-template>
+            <ng-template matStepContent><app-step4></app-step4></ng-template>
+            <div>
+                <button mat-button matStepperPrevious>Back</button>
+                <button mat-button matStepperNext>Next</button>
+            </div>
         </mat-step>
+        <mat-step>
+            <ng-template matStepLabel>Step 5</ng-template>
+            <ng-template matStepContent><app-step5></app-step5></ng-template>
+            <div>
+                <button mat-button matStepperPrevious>Back</button>
+                <button mat-button matStepperNext>Next</button>
+            </div>
+        </mat-step>
+        <mat-step>
+            <ng-template matStepLabel>Step 6</ng-template>
+            <ng-template matStepContent><app-step6></app-step6></ng-template>
+            <div>
+                <button mat-button matStepperPrevious>Back</button>
+                <button mat-button matStepperNext>Next</button>
+            </div>
+        </mat-step>
+        <mat-step>
+            <ng-template matStepLabel>Step 7</ng-template>
+            <ng-template matStepContent><app-step7></app-step7></ng-template>
+            <div>
+                <button mat-button matStepperPrevious>Back</button>
+                <button mat-button matStepperNext>Next</button>
+            </div>
+        </mat-step>
+        <mat-step>
+            <ng-template matStepLabel>Step 8</ng-template>
+            <ng-template matStepContent><app-step8></app-step8></ng-template>
+            <div>
+                <button mat-button matStepperPrevious>Back</button>
+                <button mat-button matStepperNext>Next</button>
+            </div>
+        </mat-step>
+        <mat-step>
+            <ng-template matStepLabel>Step 9</ng-template>
+            <ng-template matStepContent><app-step9></app-step9></ng-template>
+            <div>
+                <button mat-button matStepperPrevious>Back</button>
+                <button mat-button (click)="completeFnF()">Complete</button>
+            </div>
+        </mat-step>
+
     </mat-horizontal-stepper>
 </div>
 
@@ -159,13 +198,13 @@
     </div>
     <div class="modal-body">
         <form [formGroup]="fnfUserForm" (ngSubmit)="onFnFUserSubmission()">
-            
+
             <div class="form-group my-2">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>User</mat-label>
                     <mat-select formControlName="user" (selectionChange)="onMemberSelection($event)">
-                        <mat-option *ngFor="let user of userList" [value]="user._id">
-                            {{user.firstName}} {{user.lastName}}
+                        <mat-option *ngFor="let user of fnfAttendanceUsers" [value]="user.user">
+                            {{ getUserName(user.user) }}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>

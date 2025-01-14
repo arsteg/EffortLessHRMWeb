@@ -1,14 +1,15 @@
-import { Component, EventEmitter, Output, Input } from '@angular/core';
-import { FormGroup, FormBuilder, FormArray, Validators, FormControl } from '@angular/forms';
+import { Component, EventEmitter, Output, Input, ViewChild } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatMenuTrigger } from '@angular/material/menu';
+import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
-import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { ExportService } from 'src/app/_services/export.service';
-import { setTime } from 'ngx-bootstrap/chronos/utils/date-setters';
 
 @Component({
   selector: 'app-pending',
@@ -24,20 +25,19 @@ export class PendingComponent {
   step: number = 1;
   expenseReport: any;
   @Output() expenseTemplateReportRefreshed: EventEmitter<void> = new EventEmitter<void>();
-  users: any[];
-  p: number = 1;
-  allExpenseReport: any;
-  displayedData: any[] = [];
+  users: any[] = [];
+  displayedColumns: string[] = ['title', 'employee', 'totalAmount', 'reimbursable', 'billable', 'status', 'action'];
+  dataSource = new MatTableDataSource<any>();
   changeMode: 'Add' | 'Update' = 'Add';
-  selectedReport;
+  selectedReport: any;
   updateExpenseReport: FormGroup;
   status: string;
-  expenseReportExpenses: any;
-  public sortOrder: string = '';
-  totalRecords: number
+  totalRecords: number;
   recordsPerPage: number = 10;
   currentPage: number = 1;
 
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatMenuTrigger) menuTrigger: MatMenuTrigger;
 
   constructor(private modalService: NgbModal,
     private expenseService: ExpensesService,
@@ -52,15 +52,16 @@ export class PendingComponent {
       status: [''],
       primaryApprovalReason: [''],
       secondaryApprovalReason: ['']
-    })
+    });
   }
 
   ngOnInit() {
     this.commonService.populateUsers().subscribe((res: any) => {
       this.users = res.data.data;
     });
-      this.getExpenseReport();
+    this.getExpenseReport();
   }
+
   refreshExpenseReportTable() {
     this.getExpenseReport();
   }
@@ -109,19 +110,20 @@ export class PendingComponent {
 
   onChangeMode(event) {
     if (this.isEdit = true) {
-      this.changeMode = event
+      this.changeMode = event;
     }
   }
-  onPageChange(page: number) {
-    this.currentPage = page;
+
+  onPageChange(event) {
+    this.currentPage = event.pageIndex + 1;
+    this.recordsPerPage = event.pageSize;
     this.getExpenseReport();
   }
 
-  onRecordsPerPageChange(recordsPerPage: number) {
-    this.recordsPerPage = recordsPerPage;
-    this.getExpenseReport();
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
-
 
   getExpenseReport() {
     const pagination = {
@@ -134,8 +136,9 @@ export class PendingComponent {
         return {
           ...data,
           user: this.getUser(data?.employee)
-        }
-      })
+        };
+      });
+      this.dataSource.data = this.expenseReport;
       this.totalRecords = res.total;
     });
   }
@@ -149,19 +152,19 @@ export class PendingComponent {
         this.deleteReport(id);
       }
       err => {
-        this.toast.error('Can not be Deleted', 'Error!')
+        this.toast.error('Can not be Deleted', 'Error!');
       }
     });
   }
+
   deleteReport(id: string) {
     this.expenseService.deleteExpenseReport(id).subscribe((res: any) => {
-      this.displayedData = this.displayedData.filter(report => report._id !== id);
+      this.dataSource.data = this.dataSource.data.filter(report => report._id !== id);
       this.toast.success('Successfully Deleted!!!', 'Expense Report');
     },
       (err) => {
-        this.toast.error('This Expense Report is already being used!'
-          , 'Error!')
-      })
+        this.toast.error('This Expense Report is already being used!', 'Error!');
+      });
   }
 
   getUser(employeeId: string) {
@@ -172,7 +175,7 @@ export class PendingComponent {
   editReport(report: any) {
     this.isEdit = true;
     this.selectedReport = report;
-    this.expenseService.selectedReport.next(this.selectedReport)
+    this.expenseService.selectedReport.next(this.selectedReport);
   }
 
   exportToCsv() {
@@ -195,10 +198,10 @@ export class PendingComponent {
       status: 'Approved',
       primaryApprovalReason: this.updateExpenseReport.value.primaryApprovalReason,
       secondaryApprovalReason: ''
-    }
+    };
     this.expenseService.updateExpenseReport(id, payload).subscribe((res: any) => {
-      this.expenseReport = this.expenseReport.filter(report => report._id !== id);
-    })
+      this.dataSource.data = this.dataSource.data.filter(report => report._id !== id);
+    });
   }
 
   updateRejectedReport() {
@@ -209,10 +212,10 @@ export class PendingComponent {
       status: 'Rejected',
       primaryApprovalReason: this.updateExpenseReport.value.primaryApprovalReason,
       secondaryApprovalReason: ''
-    }
+    };
     this.expenseService.updateExpenseReport(id, payload).subscribe((res: any) => {
-      this.expenseReport = this.expenseReport.filter(report => report._id !== id);
-    })
+      this.dataSource.data = this.dataSource.data.filter(report => report._id !== id);
+    });
   }
 
   calculateTotalAmount(expenseReport: any): number {
@@ -224,6 +227,7 @@ export class PendingComponent {
     }
     return totalAmount;
   }
+
   calculateTotalisReimbursable(expenseReport: any, isReimbursable: boolean, isBillable: boolean): number {
     let totalAmount = 0;
     if (expenseReport.expenseReportExpense && expenseReport.expenseReportExpense.length > 0) {

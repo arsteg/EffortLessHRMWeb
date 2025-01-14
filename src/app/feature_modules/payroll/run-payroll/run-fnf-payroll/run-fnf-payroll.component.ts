@@ -8,6 +8,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { UserService } from 'src/app/_services/users.service';
+import { AttendanceService } from 'src/app/_services/attendance.service';
 
 @Component({
   selector: 'app-run-fnf-payroll',
@@ -23,13 +24,14 @@ export class RunFnfPayrollComponent implements OnInit {
   selectedMonth: string;
   fnfForm: FormGroup;
   fnfUserForm: FormGroup;
-  
+
   selectedFnFUser: any;
   userList: any[] = [];
   fnfPayroll = new MatTableDataSource<any>();
   displayedColumns: string[] = ['period', 'date', 'details', 'status', 'actions'];
   showFnFPayroll: boolean = true;
   showFnFSteps: boolean = false;
+  fnfAttendanceUsers: any[] = [];
   @Output() changeView = new EventEmitter<void>();
 
   @ViewChild('fnfUserModal') fnfUserModal: TemplateRef<any>;
@@ -40,7 +42,8 @@ export class RunFnfPayrollComponent implements OnInit {
     private commonService: CommonService,
     private toast: ToastrService,
     private dialog: MatDialog,
-    private userService: UserService) {
+    private userService: UserService,
+    private attendanceService: AttendanceService) {
     const currentMonthIndex = new Date().getMonth();
     this.selectedMonth = this.fnfMonths[currentMonthIndex];
     const currentYear = new Date().getFullYear();
@@ -82,9 +85,33 @@ export class RunFnfPayrollComponent implements OnInit {
     const payload = { skip: '', next: '' };
     this.payrollService.getFnF(payload).subscribe(res => {
       this.fnfPayroll.data = res.data;
+      this.fnfPayroll.data.forEach((fnf: any) => {
+        this.getFnFUsers(fnf._id);
+      });
     }, error => {
       this.toast.error('Failed to fetch Full & Final Payroll data', 'Error');
     });
+  }
+
+  getFnFUsers(fnfPayrollId: string): void {
+    const payload = {
+      skip: '',
+      next: '',
+      payrollFNF: fnfPayrollId
+    }
+
+    this.payrollService.getFnFUsers(payload).subscribe(
+      (res: any) => {
+        const fnfPayroll = this.fnfPayroll.data.find((fnf: any) => fnf._id === fnfPayrollId);
+        if (fnfPayroll) {
+          fnfPayroll.userList = res.data;
+          fnfPayroll.userLength = res.total;
+        }
+      },
+      (error: any) => {
+        this.toast.error('Failed to fetch FnF Users', 'Error');
+      }
+    );
   }
 
   open(content: any) {
@@ -96,6 +123,7 @@ export class RunFnfPayrollComponent implements OnInit {
   }
 
   editFnF(user: any) {
+    this.getFnFAttendanceUsers(user);
     this.selectedFnFUser = user;
     this.fnfUserForm.patchValue({
       ...user,
@@ -120,7 +148,7 @@ export class RunFnfPayrollComponent implements OnInit {
         this.toast.error('Failed to fetch FnF Users', 'Error');
       }
     );
-    
+
     this.changeView.emit();
   }
 
@@ -255,18 +283,7 @@ export class RunFnfPayrollComponent implements OnInit {
     // Implement the logic to complete the FnF process
   }
 
-  getFnFUsers(): void {
-    const fnfPayroll = this.payrollService.selectedFnFPayroll.getValue();
-    const payload = { fnfPayrollId: fnfPayroll._id };
-    this.payrollService.getFnFUsers(payload).subscribe(
-      (res: any) => {
-        this.userList = res.data;
-      },
-      (error: any) => {
-        this.toast.error('Failed to fetch FnF Users', 'Error');
-      }
-    );
-  }
+
 
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
@@ -277,4 +294,25 @@ export class RunFnfPayrollComponent implements OnInit {
       return `with: ${reason}`;
     }
   }
+
+
+  getFnFAttendanceUsers(data: any) {
+    const payload = {
+      skip: '',
+      next: '',
+      month: data?.month,
+      year: data?.year,
+      isFNF: true
+    }
+    this.attendanceService.getfnfAttendanceProcess(payload).subscribe((res: any) => {
+      this.fnfAttendanceUsers = res['data'].map((record: any) => record.users).flat();
+      console.log(this.fnfAttendanceUsers);
+    });
+  }
+
+  getUserName(userId: string) {
+    const matchedName = this.userList.find(user => user._id === userId);
+    return matchedName ? `${matchedName.firstName + ' ' + matchedName.lastName}` : '';
+  }
+
 }

@@ -1,8 +1,12 @@
 <div class="tableContainer">
     <div class="d-flex align-items-center justify-content-between">
-        <span class="bi bi-search searchIcon"></span>
-        <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
-            name="searchText" aria-label="default input example">
+        <div><label>Generated Payroll</label></div>
+        <div class="d-flex align-items-center ms-auto">
+            <span class="bi bi-search searchIcon"></span>
+
+            <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
+                name="searchText" aria-label="default input example">
+        </div>
         <div>
             <button mat-raised-button class="addBtn" (click)="open(modal);">Download</button>
         </div>

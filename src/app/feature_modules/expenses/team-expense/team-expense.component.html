@@ -1,24 +1,19 @@
-<div class="main-content pt-2">
-    <div class="container-fluid">
-        <div class="tabs">
-            <button (click)="selectTab(1)" [class.active]="selectedTabs === 1">Pending
-                </button>
-            <button (click)="selectTab(2)" [class.active]="selectedTabs === 2">Approved
-                </button>
-           
-            <button (click)="selectTab(3)" [class.active]="selectedTabs === 3">Rejected
-                </button>
-           
-        </div>
-
-        <div *ngIf="selectedTabs === 1" class="tab-content p-0">
-            <app-pending-team-expenses></app-pending-team-expenses>
-        </div>
-        <div *ngIf="selectedTabs === 2" class="tab-content  p-0">
-            <app-approved-team-expenses></app-approved-team-expenses>
-        </div>
-        <div *ngIf="selectedTabs === 3" class="tab-content p-0">
-            <app-rejected-team-expenses></app-rejected-team-expenses>
-        </div>
-    </div>
+<div class="main-content px-2">
+    <mat-tab-group animationDuration="0ms" mat-stretch-tabs="false" mat-align-tabs="start">
+        <mat-tab label="Pending">
+            <ng-template matTabContent>
+                <app-pending-team-expenses></app-pending-team-expenses>
+            </ng-template>
+        </mat-tab>
+        <mat-tab label="Approved">
+            <ng-template matTabContent>
+                <app-approved-team-expenses></app-approved-team-expenses>
+            </ng-template>
+        </mat-tab>
+        <mat-tab label="Rejected">
+            <ng-template matTabContent>
+                <app-rejected-team-expenses></app-rejected-team-expenses>
+            </ng-template>
+        </mat-tab>
+    </mat-tab-group>
 </div>

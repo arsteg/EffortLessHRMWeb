@@ -1,28 +1,27 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray, Validators, FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { isEqual } from 'date-fns';
 import { ToastrService } from 'ngx-toastr';
-import { of, forkJoin } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators'
 import { ExpensesService } from 'src/app/_services/expenses.service';
-import { ExpenseCategory, ExpenseCategoryField } from 'src/app/models/expenses';
+import { ExpenseCategory } from 'src/app/models/expenses';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
+import { MatTableDataSource } from '@angular/material/table';
+
 @Component({
   selector: 'app-expenses-categories',
   templateUrl: './expenses-categories.component.html',
   styleUrls: ['./expenses-categories.component.css']
 })
 export class ExpensesCategoriesComponent implements OnInit {
-  searchText: string = '';
   changeMode: 'Add' | 'Update' = 'Add';
   closeResult: string = '';
   selectedExpenseType: string = '';
   selectedFieldType: string = '';
   selectedFieldName: string = '';
   categoryFields: any[] = [];
-  expenseCategories: any;
+  expenseCategories = new MatTableDataSource<any>();
   addCategory: ExpenseCategory;
   addCategoryForm: FormGroup;
   fieldType: string = '';
@@ -47,10 +46,10 @@ export class ExpensesCategoriesComponent implements OnInit {
   value: any;
   updatedCategory: any;
   originalFields: any[] = [];
-  p: number = 1;
-  totalRecords: number
+  totalRecords: number;
   recordsPerPage: number = 10;
   currentPage: number = 1;
+  displayedColumns: string[] = ['label', 'type', 'actions'];
 
   constructor(private modalService: NgbModal,
     private dialog: MatDialog,
@@ -74,6 +73,7 @@ export class ExpensesCategoriesComponent implements OnInit {
   ngOnInit(): void {
     this.getAllExpensesCategories();
   }
+
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
@@ -83,14 +83,15 @@ export class ExpensesCategoriesComponent implements OnInit {
       return `with: ${reason}`;
     }
   }
-  open(content: any) {
 
+  open(content: any) {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
     });
   }
+
   clearselectedRequest() {
     this.isEdit = false;
     this.addCategoryForm.reset();
@@ -145,13 +146,10 @@ export class ExpensesCategoriesComponent implements OnInit {
       fieldArray.removeAt(valueIndex);
     }
   }
-  onPageChange(page: number) {
-    this.currentPage = page;
-    this.getAllExpensesCategories();
-  }
 
-  onRecordsPerPageChange(recordsPerPage: number) {
-    this.recordsPerPage = recordsPerPage;
+  onPageChange(event: any) {
+    this.currentPage = event.pageIndex + 1;
+    this.recordsPerPage = event.pageSize;
     this.getAllExpensesCategories();
   }
 
@@ -161,9 +159,13 @@ export class ExpensesCategoriesComponent implements OnInit {
       next: this.recordsPerPage.toString()
     };
     this.expenses.getExpenseCatgories(pagination).subscribe((res: any) => {
-      this.expenseCategories = res.data;
+      this.expenseCategories.data = res.data;
       this.totalRecords = res.total;
     });
+  }
+
+  applyFilter(filterValue: any) {
+    this.expenseCategories.filter = filterValue.trim().toLowerCase();
   }
 
   onCancel() {
@@ -187,7 +189,7 @@ export class ExpensesCategoriesComponent implements OnInit {
 
       this.expenses.addCategory(categoryPayload).subscribe((res: any) => {
         const newCategory = res.data;
-        this.expenseCategories.push(newCategory)
+        this.expenseCategories.data.push(newCategory)
         if (this.addCategoryForm.value['fields'].length > 0) {
           let fieldsPayload = {
             fields: this.addCategoryForm.value['fields'],
