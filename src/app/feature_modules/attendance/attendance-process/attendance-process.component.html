@@ -11,133 +11,139 @@
                         (click)="selectTab('fnfattendanceProcess')">FnF Attendance Process</a>
                 </li>
             </ul>
-            <div class="row  align-items-center my-2 px-3">
-
-                <label class="col-md-1">Filters&nbsp;| </label>
-
-                <div class="d-flex align-items-center col-md-2">
-                    <span class="bi bi-search searchIcon"></span>
-
-                    <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
-                        name="searchText" aria-label="default input example">
-                </div>
-
-                <!-- <div class="d-flex"> -->
-                <div class="form-group  d-flex align-items-center  col-md-3">
-                    <label for="">LOP&nbsp;Month&nbsp;</label>
-                    <select id="monthSelect" [(ngModel)]="selectedMonth" (change)="onMonthChange($event)">
-                        <option *ngFor="let month of months" [value]="month.value">{{ month.name }}
-                        </option>
-                    </select>
-                </div>
-
-                <div class="form-group d-flex align-items-center  col-md-3">
-                    <label for="year" class="pt-2 pe-3">LOP&nbsp;Year&nbsp;</label>
-                    <select id="year" name="year" class="form-control" [(ngModel)]="selectedYear"
-                        (change)="onYearChange($event)">
-                        <option *ngFor="let year of years" [value]="year">{{ year }}</option>
-                    </select>
-                </div>
-                <!-- </div> -->
-            </div>
+           
             <div class="tab-content pt-0">
                 <div class="tab-pane" [ngClass]="{'active': activeTab === 'attendanceProcess'}" id="attendanceProcess">
-                    <div class="d-flex justify-content-between align-items-center ">
+                    <div class="d-flex justify-content-between align-items-center">
                         <small><b>Note: </b><span class="text-danger">Create LOP (Loss of Pay) to Process Attendance for
                                 Users*</span></small>
                         <button mat-raised-button class="addBtn ms-auto"
                             (click)="openLopFormDialog()">Create&nbsp;LOP</button>
-
                         <button mat-raised-button class="addBtn ms-2"
-                            (click)="changeMode = 'Add'; open(addModal)">Create&nbsp;Attendance&nbsp;Process</button>
-
+                            (click)="changeMode = 'Add'; attendancePeriodError = false; lopNotCreatedError =  false; open(addModal)">Create&nbsp;Attendance&nbsp;Process</button>
                     </div>
-
                     <div class="mt-2 bg-white tableContainer">
-
-                        <div class="tableContainer pt-2">
-
-                            <table>
-                                <thead>
-                                    <th>Attendance Process Period</th>
-                                    <th>Employee</th>
-                                    <th>Run Date</th>
-                                    <th>Export to Payroll</th>
-                                    <th>Actions</th>
-                                </thead>
-                                <tbody>
-                                    <tr *ngFor="let data of processAttendance | search: searchText; let i = index">
-                                        <td>{{data?.attendanceProcessPeriodMonth}}-{{data?.attendanceProcessPeriodYear}}
-                                        </td>
-                                        <td>
-                                            <mat-icon matTooltip="{{data?.users}}"
-                                                matTooltipPosition="below">group</mat-icon>
-                                        </td>
-                                        <td>{{data?.runDate | date:'mediumDate'}}</td>
-                                        <td>
-                                            <ng-container *ngIf="data?.exportToPayroll; else showCross">
-                                                <i class="bi bi-check2 text-success"></i>
-                                            </ng-container>
-                                            <ng-template #showCross>
-                                                <i class="bi bi-x-lg text-danger"></i>
-                                            </ng-template>
-                                        </td>
-                                        <td>
-                                            <button class="actions ms-2" mat-mini-fab matTooltip="Delete"
-                                                matTooltipPosition="after"
-                                                aria-label="Example icon button with a menu icon"
-                                                (click)="deleteDialog(data)">
-                                                <i class="bi bi-trash"></i>
+                        <div class="tableContainer py-2">
+                            <div class="row align-items-center my-2 px-3">
+                                <mat-form-field class="col-md-2" appearance="outline">
+                                    <mat-label>Search</mat-label>
+                                    <input matInput placeholder="Search..." [(ngModel)]="searchText" name="searchText">
+                                </mat-form-field>
+                                <mat-form-field class="col-md-3" appearance="outline">
+                                    <mat-label>LOP Month</mat-label>
+                                    <mat-select [(ngModel)]="selectedMonth" (selectionChange)="onMonthChange($event)">
+                                        <mat-option *ngFor="let month of months" [value]="month.value">{{ month.name }}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <mat-form-field class="col-md-3" appearance="outline">
+                                    <mat-label>LOP Year</mat-label>
+                                    <mat-select [(ngModel)]="selectedYear" (selectionChange)="onYearChange($event)">
+                                        <mat-option *ngFor="let year of years" [value]="year">{{ year }}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <table mat-table [dataSource]="processAttendance" >
+                                <ng-container matColumnDef="attendanceProcessPeriod">
+                                    <th mat-header-cell *matHeaderCellDef>Attendance Process Period</th>
+                                    <td mat-cell *matCellDef="let data">{{data?.attendanceProcessPeriodMonth}}-{{data?.attendanceProcessPeriodYear}}</td>
+                                </ng-container>
+                                <ng-container matColumnDef="employee">
+                                    <th mat-header-cell *matHeaderCellDef>Employee</th>
+                                    <td mat-cell *matCellDef="let data">
+                                        <mat-icon matTooltip="{{data?.users}}" matTooltipPosition="below">group</mat-icon>
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="runDate">
+                                    <th mat-header-cell *matHeaderCellDef>Run Date</th>
+                                    <td mat-cell *matCellDef="let data">{{data?.runDate | date:'mediumDate'}}</td>
+                                </ng-container>
+                                <ng-container matColumnDef="exportToPayroll">
+                                    <th mat-header-cell *matHeaderCellDef>Export to Payroll</th>
+                                    <td mat-cell *matCellDef="let data">
+                                        <ng-container *ngIf="data?.exportToPayroll; else showCross">
+                                            <i class="bi bi-check2 text-success"></i>
+                                        </ng-container>
+                                        <ng-template #showCross>
+                                            <i class="bi bi-x-lg text-danger"></i>
+                                        </ng-template>
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="actions">
+                                    <th mat-header-cell *matHeaderCellDef>Actions</th>
+                                    <td mat-cell *matCellDef="let data">
+                                        <button mat-icon-button [matMenuTriggerFor]="menu">
+                                            <mat-icon>more_vert</mat-icon>
+                                        </button>
+                                        <mat-menu #menu="matMenu">
+                                            <button mat-menu-item (click)="deleteDialog(data)">
+                                                <mat-icon>delete</mat-icon>
+                                                <span>Delete</span>
                                             </button>
-                                        </td>
-                                    </tr>
-                                </tbody>
+                                        </mat-menu>
+                                    </td>
+                                </ng-container>
+                                <tr mat-header-row *matHeaderRowDef="['attendanceProcessPeriod', 'employee', 'runDate', 'exportToPayroll', 'actions']"></tr>
+                                <tr mat-row *matRowDef="let row; columns: ['attendanceProcessPeriod', 'employee', 'runDate', 'exportToPayroll', 'actions'];"></tr>
                             </table>
                         </div>
                     </div>
                 </div>
-                <div class="tab-pane" [ngClass]="{'active': activeTab === 'fnfattendanceProcess'}"
-                    id="fnfattendanceProcess">
-
+                <div class="tab-pane" [ngClass]="{'active': activeTab === 'fnfattendanceProcess'}" id="fnfattendanceProcess">
                     <div class="mt-2 bg-white tableContainer">
-
                         <button mat-raised-button class="addBtn" type="button"
-                            (click)="changeMode = 'Add'; open(addFnFModal)">Add
-                            FnF</button>
-
+                            (click)="changeMode = 'Add'; open(addFnFModal)">Add FnF</button>
                         <div class="tableContainer">
-                            <table>
-                                <thead>
-                                    <th>Attendance Process Period</th>
-                                    <th>Employee</th>
-                                    <th>Run Date</th>
-                                    <th>Export to Full & Final</th>
-                                    <th>Full & Final Applicable</th>
-                                </thead>
-                                <tbody>
-                                    <tr *ngFor="let data of fnfAttendanceProcessUsers">
-                                        <td>{{data?.firstName}} {{data?.lastName}}
-                                        </td>
-                                        <td>{{data?.user}}</td>
-                                        <td>{{data?.runDate | date: 'medium'}}</td>
-                                        <td>
-                                            <ng-container *ngIf="data?.exportToPayroll; else showCross">
-                                                <i class="bi bi-check2 text-success"></i>
-                                            </ng-container>
-                                            <ng-template #showCross>
-                                                <i class="bi bi-x-lg text-danger"></i>
-                                            </ng-template>
-                                        </td>
-                                        <td>
-                                            <ng-container *ngIf="data?.isFNF; else showCross">
-                                                <i class="bi bi-check2 text-success"></i>
-                                            </ng-container>
-                                            <ng-template #showCross>
-                                                <i class="bi bi-x-lg text-danger"></i>
-                                            </ng-template>
-                                        </td>
-                                    </tr>
-                                </tbody>
+                            <table mat-table [dataSource]="fnfAttendanceProcessUsers" >
+                                <ng-container matColumnDef="attendanceProcessPeriod">
+                                    <th mat-header-cell *matHeaderCellDef>Attendance Process Period</th>
+                                    <td mat-cell *matCellDef="let data">{{data?.firstName}} {{data?.lastName}}</td>
+                                </ng-container>
+                                <ng-container matColumnDef="employee">
+                                    <th mat-header-cell *matHeaderCellDef>Employee</th>
+                                    <td mat-cell *matCellDef="let data">{{data?.user}}</td>
+                                </ng-container>
+                                <ng-container matColumnDef="runDate">
+                                    <th mat-header-cell *matHeaderCellDef>Run Date</th>
+                                    <td mat-cell *matCellDef="let data">{{data?.runDate | date: 'medium'}}</td>
+                                </ng-container>
+                                <ng-container matColumnDef="exportToPayroll">
+                                    <th mat-header-cell *matHeaderCellDef>Export to Full & Final</th>
+                                    <td mat-cell *matCellDef="let data">
+                                        <ng-container *ngIf="data?.exportToPayroll; else showCross">
+                                            <i class="bi bi-check2 text-success"></i>
+                                        </ng-container>
+                                        <ng-template #showCross>
+                                            <i class="bi bi-x-lg text-danger"></i>
+                                        </ng-template>
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="isFNF">
+                                    <th mat-header-cell *matHeaderCellDef>Full & Final Applicable</th>
+                                    <td mat-cell *matCellDef="let data">
+                                        <ng-container *ngIf="data?.isFNF; else showCross">
+                                            <i class="bi bi-check2 text-success"></i>
+                                        </ng-container>
+                                        <ng-template #showCross>
+                                            <i class="bi bi-x-lg text-danger"></i>
+                                        </ng-template>
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="actions">
+                                    <th mat-header-cell *matHeaderCellDef>Actions</th>
+                                    <td mat-cell *matCellDef="let data">
+                                        <button mat-icon-button [matMenuTriggerFor]="menu">
+                                            <mat-icon>more_vert</mat-icon>
+                                        </button>
+                                        <mat-menu #menu="matMenu">
+                                            <button mat-menu-item (click)="deleteDialog(data)">
+                                                <mat-icon>delete</mat-icon>
+                                                <span>Delete</span>
+                                            </button>
+                                        </mat-menu>
+                                    </td>
+                                </ng-container>
+                                <tr mat-header-row *matHeaderRowDef="['attendanceProcessPeriod', 'employee', 'runDate', 'exportToPayroll', 'isFNF', 'actions']"></tr>
+                                <tr mat-row *matRowDef="let row; columns: ['attendanceProcessPeriod', 'employee', 'runDate', 'exportToPayroll', 'isFNF', 'actions'];"></tr>
                             </table>
                         </div>
                     </div>
@@ -161,11 +167,13 @@
     <form [formGroup]="attendanceProcessForm" (ngSubmit)="onSubmission()">
         <div class="row">
             <div class="col-md-6 form-group">
-                <label for="year">Attendance Process Period Year <span class="text-danger">*</span></label>
-                <select id="year" name="year" class="form-control" formControlName="attendanceProcessPeriodYear"
-                    (change)="onMonthOrYearChange()">
-                    <option *ngFor="let year of years" [value]="year">{{ year }}</option>
-                </select>
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Attendance Process Period Year </mat-label>
+                    <mat-select id="year" name="year" formControlName="attendanceProcessPeriodYear"
+                        (selectionChange)="onMonthOrYearChange()">
+                        <mat-option *ngFor="let year of years" [value]="year">{{ year }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
                 <div *ngIf="attendanceProcessForm.get('attendanceProcessPeriodYear')?.touched 
                    && attendanceProcessForm.get('attendanceProcessPeriodYear')?.invalid">
                     <small class="text-danger"
@@ -176,11 +184,13 @@
             </div>
 
             <div class="col-md-6 form-group">
-                <label for="monthSelect">Attendance Process Period Month <span class="text-danger">*</span></label>
-                <select id="monthSelect" formControlName="attendanceProcessPeriodMonth"
-                    (change)="onMonthOrYearChange()">
-                    <option *ngFor="let month of months" [value]="month.value">{{ month.name }}</option>
-                </select>
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Attendance Process Period Month </mat-label>
+                    <mat-select id="monthSelect" formControlName="attendanceProcessPeriodMonth"
+                        (selectionChange)="onMonthOrYearChange()">
+                        <mat-option *ngFor="let month of months" [value]="month.value">{{ month.name }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
                 <div *ngIf="attendanceProcessForm.get('attendanceProcessPeriodMonth')?.touched 
              && attendanceProcessForm.get('attendanceProcessPeriodMonth')?.invalid">
                     <small class="text-danger"
@@ -189,14 +199,22 @@
                     </small>
                 </div>
             </div>
-        </div>
-        <div *ngIf="this.lop?.length === 0 && this.attendanceProcessForm.value.attendanceProcessPeriodMonth && this.attendanceProcessForm.value.attendanceProcessPeriodYear" class="text-danger">LOP is not processed for the selected month and year</div>
+        @if(attendancePeriodError){
+          <span class="text-danger">Attendance is already processed for the selected month and year.</span>
+        }
+        @else if (lopNotCreatedError){
+            <span class="text-danger">LOP is not created for the selected month and year.</span>
+        }
+    </div>
+
 
         <div class="row mt-2">
             <div class="col-md-6 form-group">
-                <label for="runDate">Run Date <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
-                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="runDate" />
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Run Date </mat-label>
+                    <input matInput type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
+                        [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="runDate" />
+                </mat-form-field>
                 <div
                     *ngIf="attendanceProcessForm.get('runDate')?.touched && attendanceProcessForm.get('runDate')?.invalid">
                     <small class="text-danger" *ngIf="attendanceProcessForm.get('runDate')?.errors?.['required']">
@@ -212,10 +230,10 @@
             </div>
 
             <div class="col-md-6 form-group">
-                <label for="status">Status <span class="text-danger">*</span></label>
-                <input type="text" value="Pending" class="form-control" formControlName="status" />
-
-
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Status </mat-label>
+                    <input matInput type="text" value="Pending" class="form-control" formControlName="status" />
+                </mat-form-field>
             </div>
         </div>
         <div class="form-group my-2">
@@ -226,25 +244,19 @@
                         class="form-check-input">
                     <label for="exportToPayrollYes" class="form-check-label">Yes</label>
                 </div>
-
                 <div class="form-check ms-2">
                     <input type="radio" id="exportToPayrollNo" value="false" [checked] formControlName="exportToPayroll"
                         class="form-check-input">
                     <label for="exportToPayrollNo" class="form-check-label">No</label>
                 </div>
             </div>
-
         </div>
-
-
-
         <div class="d-flex justify-content-between mt-2">
             <button type="reset" mat-raised-button>Cancel</button>
-            <button type="submit" mat-raised-button class="addBtn" [disabled]="fnfError">Submit</button>
+            <button type="submit" mat-raised-button class="addBtn" [disabled]="attendancePeriodError || lopNotCreatedError">Submit</button>
         </div>
     </form>
 </ng-template>
-
 
 <!-- Add LOP for attendance process -->
 <ng-template #LopFormDialog let-dialogRef="dialogRef" let-data>
@@ -255,7 +267,7 @@
                 <div class="col-md-12">
                     <mat-form-field appearance="outline" class="w-100">
                         <mat-label>User</mat-label>
-                        <mat-select formControlName="user">
+                        <mat-select formControlName="user" multiple>
                             <mat-option *ngFor="let assignee of allAssignee" [value]="assignee.id">
                                 {{assignee?.firstName | titlecase}} {{assignee?.lastName | titlecase}}
                             </mat-option>
@@ -302,15 +314,17 @@
                 (click)="modal.close('Escape clicked')"></button>
         </div>
     </div>
-
     <form [formGroup]="fnfAttendanceProcessForm" (ngSubmit)="onSubmissionFnF()">
         <div class="row">
             <div class="col-md-6 form-group">
-                <label for="year">Attendance Process Period Year <span class="text-danger">*</span></label>
-                <select id="year" name="year" class="form-control" formControlName="attendanceProcessPeriodYear"
-                    (change)="onMonthOrYearChange()">
-                    <option *ngFor="let year of years" [value]="year">{{ year }}</option>
-                </select>
+                <label for="year">Attendance Process Period Year </label>
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Year</mat-label>
+                    <mat-select id="year" name="year" formControlName="attendanceProcessPeriodYear"
+                        (selectionChange)="onMonthOrYearChange()">
+                        <mat-option *ngFor="let year of years" [value]="year">{{ year }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
                 <div *ngIf="fnfAttendanceProcessForm.get('attendanceProcessPeriodYear')?.touched 
                  && fnfAttendanceProcessForm.get('attendanceProcessPeriodYear')?.invalid">
                     <small class="text-danger"
@@ -319,13 +333,15 @@
                     </small>
                 </div>
             </div>
-
             <div class="col-md-6 form-group">
-                <label for="monthSelect">Attendance Process Period Month <span class="text-danger">*</span></label>
-                <select id="monthSelect" formControlName="attendanceProcessPeriodMonth"
-                    (change)="onMonthOrYearChange()">
-                    <option *ngFor="let month of months" [value]="month.value">{{ month.name }}</option>
-                </select>
+                <label for="monthSelect">Attendance Process Period Month </label>
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Month</mat-label>
+                    <mat-select id="monthSelect" formControlName="attendanceProcessPeriodMonth"
+                        (selectionChange)="onMonthOrYearChange()">
+                        <mat-option *ngFor="let month of months" [value]="month.value">{{ month.name }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
                 <div *ngIf="fnfAttendanceProcessForm.get('attendanceProcessPeriodMonth')?.touched 
                  && fnfAttendanceProcessForm.get('attendanceProcessPeriodMonth')?.invalid">
                     <small class="text-danger"
@@ -335,7 +351,6 @@
                 </div>
             </div>
         </div>
-
         <div formArrayName="users">
             <div *ngFor="let user of fnfUsers.controls; let i = index" [formGroupName]="i">
                 <div class="d-flex align-items-center mb-3">
@@ -344,7 +359,7 @@
                                 class="text-danger">*</span></label>
                         <select id="member" name="member" class="form-control" formControlName="user"
                             (change)="onFnF_userChange()" aria-label="form-select-sm example">
-                            <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                            <option *ngFor="let assignee of usersForFNF" [value]="assignee.id">
                                 {{ assignee?.firstName | titlecase }} {{ assignee?.lastName | titlecase }}
                             </option>
                         </select>
@@ -370,9 +385,11 @@
 
         <div class="row mt-2">
             <div class="col-md-6 form-group">
-                <label for="runDate">Run Date <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
-                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="runDate" />
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Run Date </mat-label>
+                    <input matInput type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
+                        [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="runDate" />
+                </mat-form-field>
                 <div
                     *ngIf="fnfAttendanceProcessForm.get('runDate')?.touched && fnfAttendanceProcessForm.get('runDate')?.invalid">
                     <small class="text-danger" *ngIf="fnfAttendanceProcessForm.get('runDate')?.errors?.['required']">
