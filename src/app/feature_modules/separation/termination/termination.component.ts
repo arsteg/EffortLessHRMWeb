@@ -20,11 +20,17 @@ export class TerminationComponent {
   terminations: any;
   userTerminations: any;
   displayedColumns: string[] = [
+    'user',
     'termination_date', 'termination_reason', 'notice_given',
     'performance_warnings', 'severance_paid', 'final_pay_processed',
     'company_property_returned', 'exit_interview_date', 'legal_compliance',
-    'unemployment_claim', 'termination_status'
+    'unemployment_claim', 'termination_status', 'actions'
   ];
+  userTerminationColumns: string[] = ['termination_date', 'termination_reason', 'notice_given',
+    'performance_warnings', 'severance_paid', 'final_pay_processed',
+    'company_property_returned', 'exit_interview_date', 'legal_compliance',
+    'unemployment_claim', 'termination_status'];
+
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
   @ViewChild('updateStatusResignation') updateStatusResignation: TemplateRef<any>;
   selectedStatus: string;
@@ -90,7 +96,8 @@ export class TerminationComponent {
       this.separationService.getTerminationByCompany().subscribe((res: any) => {
         this.terminations = res.data;
       });
-    }else{
+    }
+    if (this.view === 'user') {
       this.separationService.getTerminationByUserId(this.currentUser.id).subscribe((res: any) => {
         this.userTerminations = res.data;
       });

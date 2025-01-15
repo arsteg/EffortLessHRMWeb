@@ -12,7 +12,6 @@ export class AttendanceManagementComponent {
   constructor() { }
 
   ngOnInit(): void {
-    console.log(this.view)
   }
   selectTab(tabIndex: number) {
     this.selectedTab = tabIndex;
