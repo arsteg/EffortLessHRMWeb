@@ -28,6 +28,7 @@ export class UserService {
   private data: any;
   private isEdit: boolean;
   toggleEmployeesDetails: any = new BehaviorSubject('');
+  empCode: any = new BehaviorSubject('');
 
   constructor(private http: HttpClient) {
   }
@@ -164,6 +165,15 @@ export class UserService {
   getUserById(userId: any): Observable<newUser> {
     return this.http.post<newUser>(`${environment.apiUrlDotNet}/users/getusers`, userId, this.httpOptions);
   }
+
+  getUserByEmpCode(empCode: any): Observable<newUser> {
+    return this.http.get<newUser>(`${environment.apiUrlDotNet}/users/getUsersByEmpCode/${empCode}`, this.httpOptions);
+  }
+
+  getUsersByStatus(status: string): Observable<any> {
+    return this.http.get<newUser>(`${environment.apiUrlDotNet}/users/getUsersByStatus/${status}`, this.httpOptions);
+  }
+
   addUser(newUser: newUser): Observable<newUser> {
     return this.http.post<newUser>(`${environment.apiUrlDotNet}/users/inviteUser`, newUser, this.httpOptions);
   }
@@ -207,7 +217,7 @@ export class UserService {
   deleteSalaryDetails(id: string): Observable<any> {
     return this.http.delete<any>(`${environment.apiUrlDotNet}/users/salary-details/${id}`, this.httpOptions);
   }
-  
+
   // statutory details
   addStatutoryDetails(payload: any): Observable<any> {
     return this.http.post<any>(`${environment.apiUrlDotNet}/users/employee-salutatory-details`, payload, this.httpOptions);
@@ -245,11 +255,6 @@ export class UserService {
     return this.http.post<any>(`${environment.apiUrlDotNet}/users/employee-income-tax-declarations-by-user/${userId}`, payload, this.httpOptions);
   }
 
-  getUsersByStatus(status: string): Observable<any>{
-    return this.http.get<any>(`${environment.apiUrlDotNet}/users/getUsersByStatus/${status}`, this.httpOptions);
-
-  }
-
   // Appointments CRUD
 
   addAppointment(payload: any): Observable<any> {
@@ -262,5 +267,5 @@ export class UserService {
 
   updateAppointment(id: string, payload: any): Observable<any> {
     return this.http.put<any>(`${environment.apiUrlDotNet}/users/appointments/${id}`, payload, this.httpOptions);
-  }  
+  }
 }

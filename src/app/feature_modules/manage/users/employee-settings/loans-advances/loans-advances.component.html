@@ -22,7 +22,7 @@
     </app-pagination>
 
     <div class="px-2 mt-2 table-responsive">
-        <table mat-table [dataSource]="loansAdvances" class="mat-elevation-z8">
+        <table mat-table [dataSource]="loansAdvances" >
             <ng-container matColumnDef="loanAdvancesCategory">
                 <th mat-header-cell *matHeaderCellDef>Category</th>
                 <td mat-cell *matCellDef="let data">{{getRecord(data?.loanAdvancesCategory)}}</td>

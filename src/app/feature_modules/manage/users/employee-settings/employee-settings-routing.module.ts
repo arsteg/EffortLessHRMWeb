@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { UserListComponent } from '../user-list/user-list.component';
 import { EmployeeSettingsComponent } from './employee-settings.component';
 import { AuthGuard } from 'src/app/auth.guard';
 import { EmployeeProfileComponent } from './employee-profile/employee-profile.component';
@@ -9,7 +8,6 @@ import { SalaryDetailsComponent } from './salary-details/salary-details.componen
 import { StatutoryDetailsComponent } from './statutory-details/statutory-details.component';
 import { TaxComponent } from './tax/tax.component';
 import { UserLoansAdvancesComponent } from './loans-advances/loans-advances.component';
-
 
 const routes: Routes = [
   {
@@ -26,7 +24,7 @@ const routes: Routes = [
       { path: 'tax', component: TaxComponent },
     ],
   },
-]
+];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

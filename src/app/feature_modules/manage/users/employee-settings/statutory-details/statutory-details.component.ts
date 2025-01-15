@@ -1,22 +1,24 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { error } from 'console';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { UserService } from 'src/app/_services/users.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-statutory-details',
   templateUrl: './statutory-details.component.html',
-  styleUrl: './statutory-details.component.css'
+  styleUrls: ['./statutory-details.component.css']
 })
 export class StatutoryDetailsComponent {
   statutoryDetailsForm: FormGroup;
-  selectedUser = this.userService.getData();
+  selectedUser: any;
 
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
-    private toast: ToastrService
+    private toast: ToastrService,
+    private router: Router
   ) {
     this.statutoryDetailsForm = this.fb.group({
       user: [''],
@@ -45,22 +47,33 @@ export class StatutoryDetailsComponent {
   }
 
   ngOnInit() {
-    if (this.selectedUser.id) {
-      this.getStatutoryDetailsByUser();
+    this.logUrlSegmentsForUser();
+  }
+
+  logUrlSegmentsForUser() {
+    const urlPath = this.router.url;
+    const segments = urlPath.split('/').filter(segment => segment);
+    if (segments.length >= 3) {
+      const employee = segments[segments.length - 3];
+      this.userService.getUserByEmpCode(employee).subscribe((res: any) => {
+        this.selectedUser = res.data;
+        this.getStatutoryDetailsByUser();
+      })
     }
-    else this.statutoryDetailsForm.patchValue({ taxRegime: '' })
   }
 
   getStatutoryDetailsByUser() {
-    this.userService.getStatutoryByUserId(this.selectedUser.id).subscribe((res: any) => {
-      this.statutoryDetailsForm.patchValue(res.data[0]);
+    forkJoin([
+      this.userService.getStatutoryByUserId(this.selectedUser[0]?.id)
+    ]).subscribe((results: any[]) => {
+      this.statutoryDetailsForm.patchValue(results[0].data[0]);
     });
   }
 
   onSubmission() {
-    this.statutoryDetailsForm.value.user = this.selectedUser.id;
-    this.userService.getStatutoryByUserId(this.selectedUser.id).subscribe((res: any) => {
-      if (res.data < 0) {
+    this.statutoryDetailsForm.value.user = this.selectedUser[0].id;
+    this.userService.getStatutoryByUserId(this.selectedUser[0].id).subscribe((res: any) => {
+      if (res.data.length === 0) {
         this.userService.addStatutoryDetails(this.statutoryDetailsForm.value).subscribe((res: any) => {
           this.getStatutoryDetailsByUser();
           this.toast.success('Statutory Details Added Successfully');

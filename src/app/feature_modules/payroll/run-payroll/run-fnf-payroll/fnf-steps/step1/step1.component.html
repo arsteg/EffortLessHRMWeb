@@ -7,7 +7,7 @@
                 Summary</button>
         </div>
     </div>
-    <table mat-table [dataSource]="attendanceSummary" class="mat-elevation-z8">
+    <table mat-table [dataSource]="attendanceSummary" >
         <ng-container matColumnDef="payrollUser">
             <th mat-header-cell *matHeaderCellDef> Payroll User </th>
             <td mat-cell *matCellDef="let element"> {{element.userName}} </td>

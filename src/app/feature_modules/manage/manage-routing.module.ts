@@ -23,7 +23,7 @@ const routes: Routes = [
         component: UserListComponent,
         children: [
           {
-            path: 'employee-settings',
+            path: ':empCode/employee-settings',
             loadChildren: () =>
               import('./users/employee-settings/employee-settings.module').then(
                 (m) => m.EmployeeSettingsModule

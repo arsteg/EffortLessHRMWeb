@@ -7,11 +7,12 @@ import { AttendanceService } from 'src/app/_services/attendance.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { UserService } from 'src/app/_services/users.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-attendance-process',
   templateUrl: './attendance-process.component.html',
-  styleUrl: './attendance-process.component.css'
+  styleUrls: ['./attendance-process.component.css']
 })
 export class AttendanceProcessComponent {
   activeTab: string = 'attendanceProcess';
@@ -23,39 +24,42 @@ export class AttendanceProcessComponent {
   attendanceProcessForm: FormGroup;
   fnfAttendanceProcessForm: FormGroup;
 
-  years: number[] = [];
-  selectedYear: number;
+  years: string[] = [];
+  selectedYear: string;
 
   showRemoveButton = false;
   fnfError: boolean = false;
+  attendancePeriodError: boolean = false;
+  lopNotCreatedError: boolean = false;
 
-  processAttendance: any
+  processAttendance: any;
   lop: any;
+  fnfAttendanceProcess: any;
+  fnfAttendanceProcessUsers: any;
   allAssignee: any[];
 
   bsValue = new Date();
-  selectedMonth: number = new Date().getMonth() + 1;
+  selectedMonth: string = (new Date().getMonth() + 1).toString();
 
   months = [
-    { name: 'January', value: 1 },
-    { name: 'February', value: 2 },
-    { name: 'March', value: 3 },
-    { name: 'April', value: 4 },
-    { name: 'May', value: 5 },
-    { name: 'June', value: 6 },
-    { name: 'July', value: 7 },
-    { name: 'August', value: 8 },
-    { name: 'September', value: 9 },
-    { name: 'October', value: 10 },
-    { name: 'November', value: 11 },
-    { name: 'December', value: 12 }
+    { name: 'January', value: '1' },
+    { name: 'February', value: '2' },
+    { name: 'March', value: '3' },
+    { name: 'April', value: '4' },
+    { name: 'May', value: '5' },
+    { name: 'June', value: '6' },
+    { name: 'July', value: '7' },
+    { name: 'August', value: '8' },
+    { name: 'September', value: '9' },
+    { name: 'October', value: '10' },
+    { name: 'November', value: '11' },
+    { name: 'December', value: '12' }
   ];
-  fnfAttendanceProcess: any;
-  fnfAttendanceProcessUsers: any;
+
   @ViewChild('LopFormDialog') dialogTemplate: TemplateRef<any>;
 
-
-  constructor(private attendanceService: AttendanceService,
+  constructor(
+    private attendanceService: AttendanceService,
     private fb: FormBuilder,
     private modalService: NgbModal,
     public commonService: CommonService,
@@ -66,7 +70,7 @@ export class AttendanceProcessComponent {
     this.lopForm = this.fb.group({
       month: ['', Validators.required],
       year: ['', Validators.required],
-      user: ['', Validators.required]
+      user: [[], Validators.required]
     });
 
     this.attendanceProcessForm = this.fb.group({
@@ -81,7 +85,7 @@ export class AttendanceProcessComponent {
     this.fnfAttendanceProcessForm = this.fb.group({
       attendanceProcessPeriodYear: ['', Validators.required],
       attendanceProcessPeriodMonth: ['', Validators.required],
-      runDate: [''[this.runDateValidator.bind(this)]],
+      runDate: ['', [this.runDateValidator.bind(this)]],
       exportToPayroll: ['', Validators.required],
       isFNF: [true],
       users: this.fb.array([])
@@ -89,12 +93,24 @@ export class AttendanceProcessComponent {
   }
 
   ngOnInit() {
-    this.commonService.populateUsers().subscribe(result => {
-      this.allAssignee = result && result.data && result.data.data;
-    });
-    this.getUsersByFnFAttendance();
     this.generateYearList();
-    this.getProcessAttendance();
+    forkJoin([
+      this.commonService.populateUsers(),
+      this.attendanceService.getProcessAttendance({ skip: '', next: '', month: this.selectedMonth, year: this.selectedYear })
+    ]).subscribe(results => {
+      const [usersResult, processAttendanceResult] = results;
+      this.allAssignee = usersResult && usersResult.data && usersResult.data.data;
+      this.processAttendance = processAttendanceResult.data.map((data: any) => {
+        return {
+          ...data,
+          users: data.users.map((user) => this.getUser(user?.user)),
+        };
+      });
+      console.log(this.processAttendance);
+    });
+
+    this.getUsersByStatus();
+    this.getUsersByFnFAttendance();
     this.lopForm.patchValue({
       month: this.selectedMonth,
       year: this.selectedYear
@@ -106,6 +122,7 @@ export class AttendanceProcessComponent {
       this.fnfAttendanceProcessUsers = res.data['users'];
     });
   }
+
   runDateValidator(control: AbstractControl): ValidationErrors | null {
     const runDate = new Date(control.value);
     const year = this.attendanceProcessForm?.value?.attendanceProcessPeriodYear;
@@ -125,7 +142,7 @@ export class AttendanceProcessComponent {
     return null;
   }
 
-  onMonthChange(event: Event) {
+  onMonthChange(event: any) {
     if (this.activeTab == 'attendanceProcess') { this.getProcessAttendance(); }
     if (this.activeTab == 'fnfattendanceProcess') { this.getFnfAttendanceProcess(); }
   }
@@ -190,7 +207,6 @@ export class AttendanceProcessComponent {
     if (this.activeTab == 'fnfattendanceProcess') { this.getFnfAttendanceProcess(); }
   }
 
-
   addfnfUser() {
     const userGroup = this.fb.group({
       user: ['', Validators.required],
@@ -208,8 +224,8 @@ export class AttendanceProcessComponent {
   }
 
   generateYearList() {
-    const currentYear = new Date().getFullYear();
-    this.years = [currentYear - 1, currentYear];
+    const currentYear = new Date().getFullYear().toString();
+    this.years = [(parseInt(currentYear) - 1).toString(), currentYear];
     this.selectedYear = currentYear;
   }
 
@@ -220,24 +236,37 @@ export class AttendanceProcessComponent {
 
   createAttendanceProcessLOP() {
     if (this.lopForm.valid) {
-      this.attendanceService.addProcessAttendanceLOP(this.lopForm.value).subscribe((res: any) => {
-        if (res.status == 'fail') {
-          this.toast.error('Lop Already Processed for respective user', 'Error!');
+      const selectedUsers = this.lopForm.value.user;
+      const requests = selectedUsers.map((userId: string) => {
+        const payload = {
+          month: this.lopForm.value.month,
+          year: this.lopForm.value.year,
+          user: userId
+        };
+        return this.attendanceService.addProcessAttendanceLOP(payload);
+      });
+
+      forkJoin(requests).subscribe(
+        (responses: any[]) => {
+          responses.forEach((res: any) => {
+            if (res.status === 'fail') {
+              this.toast.error(`LOP Already Processed for user ${res.data.user}`, 'Error!');
+            } else if (res.status === 'success') {
+              this.toast.success(`LOP Processed for user ${res.data.user}`, 'Successfully!');
+            }
+          });
           this.lopForm.reset({
             month: this.selectedMonth,
             year: this.selectedYear
           });
+        },
+        (error) => {
+          this.toast.error('Error processing LOP for users', 'Error!');
         }
-        if (res.status == 'success') {
-          this.toast.success('LOP Processed', 'Successfully!');
-          this.lopForm.reset({
-            month: this.selectedMonth,
-            year: this.selectedYear
-          });
-        }
-      })
+      );
+    } else {
+      this.lopForm.markAllAsTouched();
     }
-    else this.lopForm.markAllAsTouched();
   }
 
   onUserChange() {
@@ -245,8 +274,12 @@ export class AttendanceProcessComponent {
   }
 
   onMonthOrYearChange() {
-    if (this.activeTab == 'attendanceProcess') { this.validateLOPAndAttendance(); }
-    if (this.activeTab == 'fnfattendanceProcess') { this.onFnF_userChange(); }
+    if (this.activeTab == 'attendanceProcess') { 
+      this.validateLOPAndAttendance(); 
+    }
+    if (this.activeTab == 'fnfattendanceProcess') { 
+      this.onFnF_userChange(); 
+    }
   }
 
   validateLOPAndAttendance() {
@@ -257,25 +290,24 @@ export class AttendanceProcessComponent {
       year: this.attendanceProcessForm.value.attendanceProcessPeriodYear,
     };
 
-    const usersArray = this.attendanceProcessForm.value.users
-    const selectedUsers = usersArray.map((userObj: any) => userObj.user); // Extract the user field for comparison
-    this.attendanceService.getProcessAttendanceLOPByMonth(payload).subscribe((lopRes: any) => {
-      this.lop = lopRes.data;
-      selectedUsers.forEach((selectedUser, index) => {
-        if (selectedUser === null) {
-          return;
-        }
-        if (this.lop.some((lop: any) => lop.user === selectedUser)) {
-          this.attendanceService.getProcessAttendance(payload).subscribe((processRes: any) => {
-            this.processAttendance = processRes.data;
-            this.fnfError = this.processAttendance.some((attendance: any) =>
-              attendance.attendanceProcessPeriodMonth === payload.month &&
-              attendance.attendanceProcessPeriodYear === payload.year &&
-              attendance.users.some((user: any) => user.user === selectedUser)
-            );
-          });
-        }
-      });
+    this.attendanceService.getProcessAttendance(payload).subscribe((res: any) => {
+      const existingAttendance = res.data.find((attendance: any) => 
+        attendance.attendanceProcessPeriodMonth === this.attendanceProcessForm.value.attendanceProcessPeriodMonth &&
+        attendance.attendanceProcessPeriodYear === this.attendanceProcessForm.value.attendanceProcessPeriodYear
+      );
+
+      if (existingAttendance) {
+        this.attendancePeriodError = true;
+      } else {
+        this.attendancePeriodError = false;
+        this.attendanceService.getProcessAttendanceLOPByMonth(payload).subscribe((lopRes: any) => {
+          if (lopRes.data.length === 0) {
+            this.lopNotCreatedError = true;
+          } else {
+            this.lopNotCreatedError = false;
+          }
+        });
+      }
     });
   }
 
@@ -283,27 +315,27 @@ export class AttendanceProcessComponent {
     let payload = {
       skip: '',
       next: '',
-      month: this.selectedMonth,
-      year: this.selectedYear
-    }
+      month: this.selectedMonth.toString(),
+      year: this.selectedYear.toString()
+    };
     this.attendanceService.getProcessAttendance(payload).subscribe((res: any) => {
       this.processAttendance = res.data.map((data) => {
         return {
           ...data,
           users: data.users.map((user) => this.getUser(user?.user)),
         }
-      })
+      });
     })
   }
 
   onSubmission() {
-    if (this.attendanceProcessForm.valid) {
+    if (this.attendanceProcessForm.valid && !this.attendancePeriodError && !this.lopNotCreatedError) {
       let payload = {
         skip: '',
         next: '',
-        month: this.selectedMonth,
-        year: this.selectedYear
-      }
+        year: this.selectedYear.toString(),
+        month: this.selectedMonth.toString()
+      };
       this.attendanceService.getProcessAttendanceLOPByMonth(payload).subscribe((lopRes: any) => {
         const uniqueUsers = new Set(lopRes.data.map((data) => data.user));
 
@@ -321,13 +353,13 @@ export class AttendanceProcessComponent {
         this.attendanceService.addProcessAttendance(this.attendanceProcessForm.value).subscribe((res: any) => {
           const processedAttendance = res.data;
           this.selectedMonth = processedAttendance?.attendanceProcess?.attendanceProcessPeriodMonth;
-          this.processAttendance.push(res.data.attendanceProcess);
+          this.getProcessAttendance();
 
           this.attendanceProcessForm.reset({
             exportToPayroll: 'false',
             status: 'Pending',
           });
-          
+
           this.attendanceProcessForm.get('status')?.disable();
           this.attendanceProcessForm.get('exportToPayroll')?.disable();
 
@@ -337,29 +369,25 @@ export class AttendanceProcessComponent {
           this.toast.success('Process Attendance Created', 'Successfully!');
         },
           err => {
-            this.toast.error('Process Attendance Already Exists', 'Error!')
-          })
+            this.toast.error('Process Attendance Already Exists', 'Error!');
+          });
       });
+    } else {
+      this.attendanceProcessForm.markAllAsTouched();
     }
-
-    else { this.attendanceProcessForm.markAllAsTouched() }
-   
   }
 
   deleteRecord(data) {
     let payload = {
       attandanaceProcessPeroidMonth: data?.attendanceProcessPeriodMonth,
       attandanaceProcessPeroidYear: data?.attendanceProcessPeriodYear
-    }
+    };
     this.attendanceService.deleteProcessAttendance(payload).subscribe((res: any) => {
-      const index = this.processAttendance.findIndex(res => res._id === data?._id);
-      if (index !== -1) {
-        this.processAttendance.splice(index, 1);
-      }
+      this.getProcessAttendance();
       this.toast.success('Successfully Deleted!!!', 'Attendance Process');
     }, (err) => {
       this.toast.error('Attendance Process can not be deleted', 'Error');
-    })
+    });
   }
 
   deleteDialog(data: any): void {
@@ -373,14 +401,21 @@ export class AttendanceProcessComponent {
     });
   }
 
+  usersForFNF: any;
+  getUsersByStatus() {
+    this.userService.getUsersByStatus('Resigned').subscribe((res: any) => {
+      this.usersForFNF = res.data['users'];
+    });
+  }
+
   onSubmissionFnF() {
     console.log(this.fnfAttendanceProcessForm.value);
     // if (this.fnfAttendanceProcessForm.valid) {
     this.attendanceService.addFnFAttendanceProcess(this.fnfAttendanceProcessForm.value).subscribe((res: any) => {
       this.toast.success('Full & Final Attendance Processed', 'Successfully!');
     }, err => {
-      this.toast.error('Full & Final Attendance can not be Processed', 'Error')
-    })
+      this.toast.error('Full & Final Attendance can not be Processed', 'Error');
+    });
     // }
     // else { this.fnfAttendanceProcessForm.markAllAsTouched(); }
   }
@@ -392,15 +427,15 @@ export class AttendanceProcessComponent {
       month: this.selectedMonth,
       year: this.selectedYear,
       isFNF: true
-    }
+    };
     this.attendanceService.getfnfAttendanceProcess(payload).subscribe((res: any) => {
       this.fnfAttendanceProcess = res.data.map((data) => {
         return {
           ...data,
           user: data?.users?.length
-        }
-      })
-    })
+        };
+      });
+    });
   }
 
   onFnF_userChange() {
@@ -409,10 +444,10 @@ export class AttendanceProcessComponent {
       next: '',
       month: this.fnfAttendanceProcessForm.value.attendanceProcessPeriodMonth,
       year: this.fnfAttendanceProcessForm.value.attendanceProcessPeriodYear,
-    }
+    };
     this.attendanceService.getProcessAttendance(payload).subscribe((processRes: any) => {
       this.processAttendance = processRes.data;
-      const usersArray = this.fnfAttendanceProcessForm.value.users
+      const usersArray = this.fnfAttendanceProcessForm.value.users;
       const selectedUsers = usersArray.map((userObj: any) => userObj.user);
       selectedUsers.forEach((selectedUser, index) => {
         if (selectedUser === null) {
