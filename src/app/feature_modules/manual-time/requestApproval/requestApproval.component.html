@@ -62,7 +62,7 @@
                     <tr *ngFor="let record of manualTimeRequestFiltered | search: searchText ">
                         <td>{{record.date | date: 'short'}}</td>
                         <td class="text-center">
-                            <span *ngIf="record?.user.firstName == null">N/A</span>
+                            <span *ngIf="record?.user?.firstName == null">N/A</span>
                             <span *ngIf="record?.user?.firstName != null" class="letter text-light d-lg-inline-block"
                                 [tooltip]="(record?.user?.firstName| titlecase) + (' ') +( record?.user?.lastName | titlecase)"
                                 [style.background-color]="commonservice.getRandomColor(record?.user?.firstName)">
