@@ -31,6 +31,7 @@ export interface AssetType {
   typeName: string;
   description: string;
   customAttributes: CustomAttribute[];
+  isDeletable:boolean;
 }
 export interface AssetStatus {
   _id:string;
