@@ -305,14 +305,13 @@
     <h1 mat-dialog-title>{{changeMode}} Full & Final Attendance Process</h1>
     <div mat-dialog-content>
         <form [formGroup]="fnfAttendanceProcessForm" (ngSubmit)="onSubmissionFnF()">
-            
+
             <div class="d-flex align-items-center mb-3">
                 <div class="form-group flex-grow-1 me-2">
                     <label for="member">Select An Employee for Template Assignment <span
                             class="text-danger">*</span></label>
                     <mat-form-field appearance="outline" class="w-100">
-                        <mat-select id="member" name="member" (selectionChange)="selectedUser($event)"
-                            (selectionChange)="onFnF_userChange()">
+                        <mat-select id="member" name="member" (selectionChange)="selectedUser($event)">
                             <mat-option *ngFor="let assignee of usersForFNF" [value]="assignee.id">
                                 {{ assignee?.firstName | titlecase }} {{ assignee?.lastName | titlecase }}
                             </mat-option>
@@ -356,8 +355,16 @@
                         </small>
                     </div>
                 </div>
+                <div class="error" *ngIf="fnfAttendanceProcessForm.errors?.['beforeTermination']">
+                    Selected Period cannot be before the Termination Date.
+                </div>
+                <div class="error" *ngIf="fnfAttendanceProcessForm.errors?.['beforeResignation']">
+                    Selected Period cannot be before the Resignation Date.
+                </div>
+                <div class="error" *ngIf="fnfAttendanceProcessForm.errors?.['afterLastWorkingDay']">
+                    Selected Period cannot be after the Last Working Day.
+                </div>
             </div>
-
 
             <div class="row mt-2">
                 <div class="col-md-6 form-group">
@@ -387,7 +394,8 @@
 
             <div class="d-flex justify-content-between mt-2">
                 <button type="button" mat-button (click)="dialogRef.close()">Cancel</button>
-                <button type="submit" mat-raised-button class="addBtn">Submit</button>
+                <button type="submit" mat-raised-button class="addBtn"
+                    [disabled]="fnfAttendanceProcessForm.errors?.['beforeTermination'] || fnfAttendanceProcessForm.errors?.['beforeResignation'] || fnfAttendanceProcessForm.errors?.['afterLastWorkingDay']">Submit</button>
             </div>
         </form>
     </div>
