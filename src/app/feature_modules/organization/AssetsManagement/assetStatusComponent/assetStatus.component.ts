@@ -111,6 +111,10 @@ export class AssetStatusComponent implements OnInit {
       // In the component class
 checkDuplicateStatusName(control: any) {
   const statusName = control.value;
+  // Check if the value is empty
+  if (!control.value || control.value.trim() === '') {
+    return null; // Let the `Validators.required` handle empty values
+  }
   const isDuplicate = this.assetStatuses?.find(status =>
       status.statusName.toLowerCase() === statusName.toLowerCase() &&
       (!this.isEdit || status._id !== this.selectedStatus?._id)
