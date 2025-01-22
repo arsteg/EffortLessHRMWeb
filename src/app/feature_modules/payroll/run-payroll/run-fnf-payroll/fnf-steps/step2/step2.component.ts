@@ -30,7 +30,7 @@ export class FNFStep2Component implements OnInit {
   selectedFnFUserId: any;
   salary: any;
   months: string[] = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-
+  isStep: boolean;
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
 
   constructor(private fb: FormBuilder,
@@ -55,6 +55,7 @@ export class FNFStep2Component implements OnInit {
     this.getLists();
 
     this.payrollService.selectedFnFPayroll.subscribe((fnfPayroll: any) => {
+      this.isStep = fnfPayroll?.isSteps;
       this.fnfPayroll = fnfPayroll;
       if (fnfPayroll) {
         this.fetchVariablePaySummary(fnfPayroll);

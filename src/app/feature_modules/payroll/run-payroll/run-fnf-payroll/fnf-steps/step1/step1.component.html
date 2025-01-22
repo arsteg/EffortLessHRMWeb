@@ -1,13 +1,13 @@
-<div class="tableContainer bg-white mt-2">
-    <div class="d-flex justify-content-between align-items-baseline">
+<div class="border-top">
+    <div class="d-flex justify-content-between align-items-baseline pt-2">
         <div><label>Attendance Summary</label></div>
         <div class="d-flex">
-            <app-fnf-users (changeUser)="onUserChange($event)"></app-fnf-users>
+            <app-fnf-users [isStep]="isStep" (changeUser)="onUserChange($event)"></app-fnf-users>
             <button mat-raised-button class="addBtn ms-2 mt-1" (click)="openDialog(false)">Add Attendance
                 Summary</button>
         </div>
     </div>
-    <table mat-table [dataSource]="attendanceSummary" >
+    <table mat-table [dataSource]="attendanceSummary">
         <ng-container matColumnDef="payrollUser">
             <th mat-header-cell *matHeaderCellDef> Payroll User </th>
             <td mat-cell *matCellDef="let element"> {{element.userName}} </td>
@@ -47,7 +47,6 @@
             <th mat-header-cell *matHeaderCellDef> Overtime Hours </th>
             <td mat-cell *matCellDef="let element"> {{element.overtimeHours}} </td>
         </ng-container>
-
         <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef> Actions </th>
             <td mat-cell *matCellDef="let element">
@@ -59,7 +58,7 @@
                         <mat-icon>edit</mat-icon>
                         <span>Edit</span>
                     </button>
-                    <button mat-menu-item (click)="deleteAttendanceSummary(element._id)">
+                    <button mat-menu-item (click)="deleteDialog(element._id)">
                         <mat-icon>delete</mat-icon>
                         <span>Delete</span>
                     </button>
@@ -83,67 +82,69 @@
     <div class="form-container p-3" style="max-height: 70vh; overflow-y: auto; z-index: 1050;">
         <form [formGroup]="attendanceSummaryForm" (ngSubmit)="onSubmit()">
             <div class="row">
-                <!-- <mat-form-field appearance="outline" class="col-md-6 my-2" >
-                    <mat-label>Payroll FNF User</mat-label>
-                    <mat-select formControlName="payrollFNFUser" panelClass="custom-select-panel" style="z-index: 1000;">
-                        <mat-option *ngFor="let user of userList" [value]="user._id">
-                            {{user.firstName}} {{user.lastName}}
-                        </mat-option>
-                    </mat-select>
-                    <mat-error *ngIf="attendanceSummaryForm.get('payrollFNFUser').hasError('required')">Payroll FNF User is
-                        required</mat-error>
-                </mat-form-field> -->
-                <app-fnf-users (changeUser)="onUserChange($event)"></app-fnf-users>
+                @if(isEdit){
+                <mat-form-field appearance="outline" class="my-2">
+                    <mat-label>Selected FnF User</mat-label>
+                    <input matInput type="text" formControlName="payrollFNFUser">
 
-                <mat-form-field appearance="outline" class="col-md-6 my-2" style="z-index: 1060;">
+                </mat-form-field>
+                }
+                @else if (!isEdit) {
+                <app-fnf-users [isStep]="isStep" (changeUser)="onUserChange($event)"></app-fnf-users>
+                }
+                <mat-form-field appearance="outline" class="col-md-6 my-2">
                     <mat-label>Total Days</mat-label>
                     <input matInput type="number" formControlName="totalDays">
                     <mat-error *ngIf="attendanceSummaryForm.get('totalDays').hasError('required')">Total Days is
                         required</mat-error>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="col-md-6 my-2" style="z-index: 1060;">
+                <mat-form-field appearance="outline" class="col-md-6 my-2">
                     <mat-label>LOP Days</mat-label>
                     <input matInput type="number" formControlName="lopDays">
-                    <mat-error *ngIf="attendanceSummaryForm.get('lopDays').hasError('required')">LOP Days is required</mat-error>
+                    <mat-error *ngIf="attendanceSummaryForm.get('lopDays').hasError('required')">LOP Days is
+                        required</mat-error>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="col-md-6 my-2" style="z-index: 1060;">
+                <mat-form-field appearance="outline" class="col-md-6 my-2">
                     <mat-label>Payable Days</mat-label>
                     <input matInput type="number" formControlName="payableDays">
                     <mat-error *ngIf="attendanceSummaryForm.get('payableDays').hasError('required')">Payable Days is
                         required</mat-error>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="col-md-6 my-2" style="z-index: 1060;">
+                <mat-form-field appearance="outline" class="col-md-6 my-2">
                     <mat-label>Leave Encashment Days</mat-label>
                     <input matInput type="number" formControlName="leaveEncashmentDays">
-                    <mat-error *ngIf="attendanceSummaryForm.get('leaveEncashmentDays').hasError('required')">Leave Encashment
+                    <mat-error *ngIf="attendanceSummaryForm.get('leaveEncashmentDays').hasError('required')">Leave
+                        Encashment
                         Days is required</mat-error>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="col-md-6 my-2" style="z-index: 1060;">
+                <mat-form-field appearance="outline" class="col-md-6 my-2">
                     <mat-label>Leave Balance</mat-label>
                     <input matInput type="number" formControlName="leaveBalance">
                     <mat-error *ngIf="attendanceSummaryForm.get('leaveBalance').hasError('required')">Leave Balance is
                         required</mat-error>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="col-md-6 my-2" style="z-index: 1060;">
+                <mat-form-field appearance="outline" class="col-md-6 my-2">
                     <mat-label>Adjusted Payable Days</mat-label>
                     <input matInput type="number" formControlName="adjustedPayableDays">
-                    <mat-error *ngIf="attendanceSummaryForm.get('adjustedPayableDays').hasError('required')">Adjusted Payable
+                    <mat-error *ngIf="attendanceSummaryForm.get('adjustedPayableDays').hasError('required')">Adjusted
+                        Payable
                         Days is required</mat-error>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="col-md-6 my-2" style="z-index: 1060;">
+                <mat-form-field appearance="outline" class="col-md-6 my-2">
                     <mat-label>Adjustment Reason</mat-label>
                     <input matInput formControlName="adjustmentReason">
-                    <mat-error *ngIf="attendanceSummaryForm.get('adjustmentReason').hasError('required')">Adjustment Reason is
+                    <mat-error *ngIf="attendanceSummaryForm.get('adjustmentReason').hasError('required')">Adjustment
+                        Reason is
                         required</mat-error>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="col-md-6 my-2" style="z-index: 1060;">
+                <mat-form-field appearance="outline" class="col-md-6 my-2">
                     <mat-label>Overtime Hours</mat-label>
                     <input matInput type="number" formControlName="overtimeHours">
                     <mat-error *ngIf="attendanceSummaryForm.get('overtimeHours').hasError('required')">Overtime Hours is
@@ -153,20 +154,20 @@
 
             <div formArrayName="adjustmentDetails" class="my-3">
                 <div *ngFor="let detail of adjustmentDetails.controls; let i = index" [formGroupName]="i" class="row">
-                    <mat-form-field appearance="outline" class="col-md-4 my-2" style="z-index: 1060;">
+                    <mat-form-field appearance="outline" class="col-md-4 my-2">
                         <mat-label>Reason</mat-label>
                         <input matInput formControlName="reason">
                         <mat-error *ngIf="detail.get('reason').hasError('required')">Reason is required</mat-error>
                     </mat-form-field>
 
-                    <mat-form-field appearance="outline" class="col-md-3 my-2" style="z-index: 1060;">
+                    <mat-form-field appearance="outline" class="col-md-3 my-2">
                         <mat-label>Amount Adjusted</mat-label>
                         <input matInput type="number" formControlName="amountAdjusted">
                         <mat-error *ngIf="detail.get('amountAdjusted').hasError('required')">Amount Adjusted is
                             required</mat-error>
                     </mat-form-field>
 
-                    <mat-form-field appearance="outline" class="col-md-3 my-2" style="z-index: 1060;">
+                    <mat-form-field appearance="outline" class="col-md-3 my-2">
                         <mat-label>Date</mat-label>
                         <input matInput [matDatepicker]="picker" formControlName="date">
                         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>

@@ -8,7 +8,7 @@
                             <small><b>Note: </b><span class="text-danger">Create LOP (Loss of Pay) to Process Attendance
                                     for Users*</span></small>
                             <button mat-raised-button class="addBtn ms-auto"
-                                (click)="openLopFormDialog()">Create&nbsp;LOP</button>
+                                (click)="changeMode = 'Add'; openLopFormDialog()">Create&nbsp;LOP</button>
                             <button mat-raised-button class="addBtn ms-2"
                                 (click)="changeMode = 'Add'; attendancePeriodError = false; lopNotCreatedError = false; open(addModal)">Create&nbsp;Attendance&nbsp;Process</button>
                         </div>
@@ -302,13 +302,13 @@
 
 <!-- Add FnF Attendance process -->
 <ng-template #addFnFModal let-dialogRef="dialogRef">
-    <h1 mat-dialog-title>{{changeMode}} Full & Final Attendance Process</h1>
+    <h1 mat-dialog-title>Full & Final Attendance Process</h1>
     <div mat-dialog-content>
         <form [formGroup]="fnfAttendanceProcessForm" (ngSubmit)="onSubmissionFnF()">
 
             <div class="d-flex align-items-center mb-3">
                 <div class="form-group flex-grow-1 me-2">
-                    <label for="member">Select An Employee for Template Assignment <span
+                    <label for="member">Select Resigned or Terminated Users <span
                             class="text-danger">*</span></label>
                     <mat-form-field appearance="outline" class="w-100">
                         <mat-select id="member" name="member" (selectionChange)="selectedUser($event)">
