@@ -2,7 +2,7 @@
     <div class="d-flex justify-content-between align-items-baseline">
         <div><label>Variable Pay</label></div>
         <div class="d-flex">
-            <app-fnf-users></app-fnf-users>
+            <app-fnf-users [isStep]="isStep"></app-fnf-users>
             <button mat-raised-button class="addBtn ms-2 mt-1" (click)="openDialog(false)">Add Variable Pay
             </button>
         </div>

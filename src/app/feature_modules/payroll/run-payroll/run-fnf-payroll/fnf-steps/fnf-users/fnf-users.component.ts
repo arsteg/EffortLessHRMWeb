@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { CommonService } from 'src/app/_services/common.Service';
+import { UserService } from 'src/app/_services/users.service';
 
 @Component({
   selector: 'app-fnf-users',
@@ -12,37 +13,51 @@ export class FnfUsersComponent implements OnInit {
   selectedFnFUser: string;
   users: any[] = [];
   @Output() changeUser: EventEmitter<string> = new EventEmitter<string>();
-  // @Output() userSelected = new EventEmitter<string>();
+  @Input() isStep: boolean = false;
 
   constructor(private payrollService: PayrollService,
-    private commonService: CommonService) { }
+    private userService: UserService) { }
 
   ngOnInit() {
-    this.commonService.populateUsers().subscribe((res: any) => {
-      this.users = res.data['data'];
-    });
     this.fetchFnFUsers();
+    this.getSettledUsers();
   }
 
   fetchFnFUsers(): void {
     const fnfPayroll = this.payrollService.selectedFnFPayroll.getValue();
     if (fnfPayroll && fnfPayroll.userList) {
       this.fnfUsers = fnfPayroll.userList;
+      this.filterAvailableUsers();
     } else {
       this.payrollService.selectedFnFPayroll.subscribe((res) => {
         this.fnfUsers = res.userList;
+        this.filterAvailableUsers();
       });
+    }
+  }
+
+  getSettledUsers(): void {
+    this.userService.getUsersByStatus('Settled').subscribe((res: any) => {
+      this.users = res.data['users'];
+      this.filterAvailableUsers();
+    });
+  }
+
+  filterAvailableUsers(): void {
+    if (this.fnfUsers && this.users && !this.isStep) {
+      this.users = this.users.filter(user =>
+        !this.fnfUsers.some(fnfUser => fnfUser.user === user._id)
+      );
+    }
+    if (this.isStep) {
+      this.users = this.users.filter(user =>
+        this.fnfUsers.some(fnfUser => fnfUser.user === user._id)
+      );
     }
   }
 
   onFnFUserSelection(event: any): void {
     this.selectedFnFUser = event.value;
     this.changeUser.emit(this.selectedFnFUser);
-    console.log('Selected FnF User ID:', this.selectedFnFUser);
-  }
-
-  getUserNames(userId: string): string {
-    const user = this.users.find((user) => user._id === userId);
-    return user ? `${user.firstName} ${user.lastName}` : '';
   }
 }

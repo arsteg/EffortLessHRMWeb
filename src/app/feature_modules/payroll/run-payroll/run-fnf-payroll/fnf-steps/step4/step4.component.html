@@ -2,7 +2,7 @@
     <div class="d-flex justify-content-between align-items-baseline">
         <div><label>Termination Compensation</label></div>
         <div class="d-flex">
-            <app-fnf-users (changeUser)="onUserChange($event)"></app-fnf-users>
+            <app-fnf-users [isStep]="isStep" (changeUser)="onUserChange($event)"></app-fnf-users>
             <button mat-raised-button class="addBtn ms-2 mt-1" (click)="openDialog(false)">Add Termination Compensation</button>
         </div>
     </div>

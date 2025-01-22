@@ -1,9 +1,10 @@
 <div class="fnf-users-container">
     <mat-form-field appearance="outline" class="w-100">
         <mat-label>Select FnF Payroll User</mat-label>
-        <mat-select [(value)]="selectedFnFUser" (selectionChange)="onFnFUserSelection($event)">
-            <mat-option *ngFor="let user of fnfUsers" [value]="user?._id">
-                {{getUserNames(user.user)}}
+        <mat-select [(value)]="selectedFnFUser"
+         (selectionChange)="onFnFUserSelection($event)">
+            <mat-option *ngFor="let user of users" [value]="user?._id">
+                {{user.firstName}} {{user.lastName}}
             </mat-option>
         </mat-select>
     </mat-form-field>

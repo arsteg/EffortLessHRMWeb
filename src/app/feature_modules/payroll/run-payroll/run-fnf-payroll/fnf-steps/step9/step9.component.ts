@@ -20,7 +20,7 @@ export class FNFStep9Component implements OnInit {
   userList: any[] = [];
   fnfUsers: any;
   isEdit: boolean = false;
-
+  isStep: boolean;
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
 
   constructor(private fb: FormBuilder,
@@ -42,6 +42,7 @@ export class FNFStep9Component implements OnInit {
     });
 
     this.payrollService.selectedFnFPayroll.subscribe((fnfPayroll: any) => {
+      this.isStep = fnfPayroll?.isSteps;
       if (fnfPayroll) {
         setTimeout(() => {
           this.fetchIncomeTax(fnfPayroll);
@@ -82,7 +83,7 @@ export class FNFStep9Component implements OnInit {
       taxCalculatedMethod: incomeTax.taxCalculatedMethod,
       taxCalculated: incomeTax.taxCalculated,
       tdsCalculated: incomeTax.tdsCalculated
-    }); 
+    });
     this.openDialog(true);
   }
 

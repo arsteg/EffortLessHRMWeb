@@ -7,7 +7,7 @@
                     <span class="bi bi-search searchIcon"></span>
                     <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
                         name="searchText" aria-label="default input example">
-                    
+
                     <button class="addBtn ms-2 w-100" mat-raised-button (click)="open(modal)">Run&nbsp;Full
                         &nbsp;&&nbsp;Final</button>
                 </div>
@@ -42,7 +42,7 @@
                         <mat-menu #menu="matMenu">
                             <button mat-menu-item (click)="editFnF(element)">
                                 <mat-icon>group</mat-icon>
-                                <span>Update Users</span>
+                                <span>Add Users</span>
                             </button>
 
                             <button mat-menu-item (click)="openFnFSteps(element)">
@@ -190,7 +190,7 @@
 <ng-template #fnfUserModal let-modal>
     <div class="modal-header border-bottom justify-content-between d-flex mb-2 pt-0">
         <div>
-            <h1 class="modal-title text-muted mb-0">Update FnF User</h1>
+            <h1 class="modal-title text-muted mb-0">Add Settled User for Full & Final Payroll</h1>
         </div>
         <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
                 (click)="modal.close('Escape clicked')"></button>
@@ -200,14 +200,7 @@
         <form [formGroup]="fnfUserForm" (ngSubmit)="onFnFUserSubmission()">
 
             <div class="form-group my-2">
-                <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>User</mat-label>
-                    <mat-select formControlName="user" (selectionChange)="onMemberSelection($event)">
-                        <mat-option *ngFor="let user of fnfAttendanceUsers" [value]="user.user">
-                            {{ getUserName(user.user) }}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
+                <app-fnf-users (changeUser)="onUserSelectedFromChild($event)"></app-fnf-users>
             </div>
             <div class="form-group my-2">
                 <mat-form-field appearance="outline" class="w-100">
