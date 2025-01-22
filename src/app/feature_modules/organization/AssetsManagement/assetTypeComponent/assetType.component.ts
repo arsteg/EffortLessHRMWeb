@@ -93,7 +93,7 @@ export class AssetTypeComponent implements OnInit {
       attributeName: ['', Validators.required],
       description: [''],
       dataType: ['string', Validators.required],
-      isRequired: [false]
+      isRequired: [false, Validators.required]
     });
   }
 
