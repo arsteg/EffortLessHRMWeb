@@ -130,6 +130,7 @@ export class AttendanceProcessComponent {
 
       } else if (this.activeTab === 'fnfattendanceProcess') {
         forkJoin([
+          this.changeMode = 'Update',
           this.getUsersByStatus(),
           this.getFnfAttendanceProcess()
         ]).subscribe(([users, attendanceProcess]) => {
@@ -179,8 +180,6 @@ export class AttendanceProcessComponent {
   }
 
   open(content: TemplateRef<any>) {
-    this.changeMode = 'Add';
-    if (this.changeMode == 'Add') {
       this.getUsersByStatus();
       this.attendanceProcessForm.reset({
         exportToPayroll: 'false',
@@ -199,7 +198,6 @@ export class AttendanceProcessComponent {
       while (fnfUsersFormArray.length) {
         fnfUsersFormArray.removeAt(0);
       }
-    }
 
     const dialogRef = this.dialog.open(content, {
       width: '600px',
@@ -215,7 +213,6 @@ export class AttendanceProcessComponent {
   }
 
   openLopFormDialog() {
-    this.changeMode = 'Add';
     const dialogRef = this.dialog.open(this.dialogTemplate, {
       width: '600px',
       disableClose: true
@@ -415,22 +412,6 @@ export class AttendanceProcessComponent {
     });
   }
 
-  // getUsersByStatus() {
-  //   forkJoin([
-  //     this.userService.getUsersByStatus('Resigned'),
-  //     this.userService.getUsersByStatus('Terminated'),
-  //     this.userService.getUsersByStatus('Settled'),
-  //     this.userService.getUsersByStatus('FNF Attendance Processed'),
-  //   ]).subscribe((results: any[]) => {
-  //     const [resignedUsers, terminatedUsers, settledUsers, fnfAttendanceProcessed] = results;
-  //     this.usersForFNF = [
-  //       ...resignedUsers.data['users'],
-  //       ...terminatedUsers.data['users'],
-  //       ...(this.changeMode != 'Add' ? settledUsers.data['users'] : []),
-  //       ...fnfAttendanceProcessed.data['users']
-  //     ];
-  //   });
-  // }
   getUsersByStatus(): Observable<any[]> {
     return forkJoin([
       this.userService.getUsersByStatus('Resigned'),
@@ -439,14 +420,15 @@ export class AttendanceProcessComponent {
       this.userService.getUsersByStatus('FNF Attendance Processed'),
     ]).pipe(
       map((results: any[]) => {
-        const [resignedUsers, terminatedUsers, settledUsers, fnfAttendanceProcessed] = results;
+        const [resignedUsers, terminatedUsers, settledUsers,  fnfAttendanceProcessed] = results;
         this.usersForFNF = [
           ...resignedUsers.data['users'],
           ...terminatedUsers.data['users'],
-          ...(this.changeMode !== 'Add' ? settledUsers.data['users'] : []),
+          ...(this.changeMode === 'Add' ? settledUsers.data['users'] : []),
           ...fnfAttendanceProcessed.data['users']
         ];
-        return this.usersForFNF; // Return the combined list of users
+
+        return this.usersForFNF;
       })
     );
   }
@@ -459,28 +441,23 @@ export class AttendanceProcessComponent {
   selectedUser(user: any) {
     this.selectedFnfUser = user.value;
 
-    // Reset the form with the selected user
     this.fnfAttendanceProcessForm.reset({
       users: [{ user: user.value, status: '' }]
     });
 
-    // Fetch termination data
     this.separationService.getTerminationByUserId(this.selectedFnfUser).subscribe((res: any) => {
       if (res.data) {
         this.termination = res.data;
         this.terminationMonth = new Date(this.termination.termination_date).getMonth() + 1;
         this.terminationYear = new Date(this.termination.termination_date).getFullYear();
 
-        // Clear resignation-related fields
         this.resignationMonth = null;
         this.resignationYear = null;
         this.noticePeriod = null;
         this.lastWorkingDay = null;
 
-        // Trigger validation update
         this.fnfAttendanceProcessForm.updateValueAndValidity();
       } else {
-        // If no termination data, fetch resignation data
         this.separationService.getResignationsByUserId(this.selectedFnfUser).subscribe((res: any) => {
           const resignation = res.data;
           if (resignation) {
@@ -489,11 +466,9 @@ export class AttendanceProcessComponent {
             this.noticePeriod = resignation.notice_period;
             this.lastWorkingDay = resignation.last_working_day;
 
-            // Clear termination-related fields
             this.terminationMonth = null;
             this.terminationYear = null;
 
-            // Trigger validation update
             this.fnfAttendanceProcessForm.updateValueAndValidity();
           }
         });
@@ -507,13 +482,11 @@ export class AttendanceProcessComponent {
     const year = group.get('attendanceProcessPeriodYear')?.value;
     const month = group.get('attendanceProcessPeriodMonth')?.value;
 
-    // Ensure all required data is available before validation
     if (!year || !month || (!this.terminationMonth && !this.resignationMonth)) {
-      return null; // Skip validation if required data is missing
+      return null;
     }
 
-    // Create Date objects for validation
-    const selectedDate = new Date(year, month - 1); // Subtract 1 for zero-indexed month
+    const selectedDate = new Date(year, month - 1); 
     const terminationDate = this.terminationMonth
       ? new Date(this.terminationYear, this.terminationMonth - 1)
       : null;
@@ -522,12 +495,10 @@ export class AttendanceProcessComponent {
       : null;
     const lastWorkingDay = this.lastWorkingDay ? new Date(this.lastWorkingDay) : null;
 
-    // Validate against termination dates
     if (terminationDate && selectedDate < terminationDate) {
       return { beforeTermination: true }; // Selected date is before termination date
     }
 
-    // Validate against resignation dates
     if (resignationDate && selectedDate < resignationDate) {
       return { beforeResignation: true }; // Selected date is before resignation date
     }
@@ -536,7 +507,7 @@ export class AttendanceProcessComponent {
       return { afterLastWorkingDay: true }; // Selected date is after last working day
     }
 
-    return null; // Valid year and month
+    return null;
   }
 
 
@@ -560,23 +531,6 @@ export class AttendanceProcessComponent {
     }
   }
 
-  // getFnfAttendanceProcess() {
-  //   let payload = {
-  //     skip: '',
-  //     next: '',
-  //     month: this.selectedMonth,
-  //     year: this.selectedYear,
-  //     isFNF: true
-  //   };
-  //   this.attendanceService.getfnfAttendanceProcess(payload).subscribe((res: any) => {
-  //     this.fnfAttendanceProcess = res.data.map((data) => {
-  //       return {
-  //         ...data,
-  //         users: data.users.map((user) => this.getMatchedUser(user?.user))
-  //       };
-  //     });
-  //   });
-  // }
   getFnfAttendanceProcess(): Observable<any> {
     const payload = {
       skip: '',
@@ -620,6 +574,4 @@ export class AttendanceProcessComponent {
       });
     });
   }
-
-
 }
