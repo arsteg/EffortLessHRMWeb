@@ -20,6 +20,7 @@ export class FNFStep4Component implements OnInit {
   userList: any[] = [];
   fnfUsers: any;
   isEdit: boolean = false;
+  isStep: boolean;
 
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
 
@@ -49,6 +50,7 @@ export class FNFStep4Component implements OnInit {
     });
 
     this.payrollService.selectedFnFPayroll.subscribe((fnfPayroll: any) => {
+      this.isStep = fnfPayroll?.isSteps;
       if (fnfPayroll) {
         setTimeout(() => {
           this.fetchTerminationCompensation(fnfPayroll);
