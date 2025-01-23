@@ -10,6 +10,8 @@ import { FormsModule } from '@angular/forms';
 import { UserAssetAssignmentComponent } from "./user-asset-assignment/user-asset-assignment.component";
 import { SharedModule } from "src/app/shared/shared.Module";
 import { CommonComponentsModule } from "src/app/common/commonComponents.module";
+import { InfiniteScrollModule } from "ngx-infinite-scroll";
+
 
 @NgModule({
   declarations: [
@@ -32,7 +34,7 @@ import { CommonComponentsModule } from "src/app/common/commonComponents.module";
     AssetManagerComponent
   ],
   imports: [
-    SharedModule, CommonComponentsModule, FormsModule
+    SharedModule, CommonComponentsModule, FormsModule,InfiniteScrollModule
   ]
 })
 export class AssetsModule {
