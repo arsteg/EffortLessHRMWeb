@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, Input } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -14,11 +14,10 @@ import { UserService } from 'src/app/_services/users.service';
   styleUrls: ['./step2.component.css']
 })
 export class FNFStep2Component implements OnInit {
-  displayedColumns: string[] = ['payrollUser', 'variableDeduction', 'variableAllowance', 'amount', 'month', 'year', 'actions'];
+  displayedColumns: string[] = ['payrollFNFUser', 'variableDeduction', 'variableAllowance', 'amount', 'month', 'year', 'actions'];
   variablePaySummary = new MatTableDataSource<any>();
   variablePayForm: FormGroup;
   selectedVariablePay: any;
-  years: number[] = [];
   userList: any[] = [];
   varAllowances: any;
   varDeductions: any;
@@ -26,23 +25,25 @@ export class FNFStep2Component implements OnInit {
 
   variableAllowance: any;
   variableDeduction: any;
-  fnfPayroll: any;
   selectedFnFUserId: any;
   salary: any;
   months: string[] = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-  isStep: boolean;
+  
+  @Input() settledUsers: any[];
+  @Input() fnfPayrollRecord: any;
+  @Input() isSteps: boolean;
+
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
 
   constructor(private fb: FormBuilder,
     private payrollService: PayrollService,
     public dialog: MatDialog,
-    private commonService: CommonService,
     private toast: ToastrService,
     private userService: UserService) {
     this.variablePayForm = this.fb.group({
       payrollFNFUser: ['', Validators.required],
-      variableDeduction: ['', Validators.required],
-      variableAllowance: ['', Validators.required],
+      variableDeduction: [null],
+      variableAllowance: [null],
       amount: [0, Validators.required],
       month: ['', Validators.required],
       year: [0, Validators.required]
@@ -50,51 +51,53 @@ export class FNFStep2Component implements OnInit {
   }
 
   ngOnInit(): void {
-    this.generateYears();
-
     this.getLists();
 
-    this.payrollService.selectedFnFPayroll.subscribe((fnfPayroll: any) => {
-      this.isStep = fnfPayroll?.isSteps;
-      this.fnfPayroll = fnfPayroll;
+    // this.payrollService.selectedFnFPayroll.subscribe((fnfPayroll: any) => {
+    //   this.isStep = fnfPayroll?.isSteps;
+      const fnfPayroll =this.fnfPayrollRecord;
+      this.variablePayForm.patchValue({
+        month: fnfPayroll?.month,
+        year: fnfPayroll?.year
+      });
+
       if (fnfPayroll) {
         this.fetchVariablePaySummary(fnfPayroll);
       }
-    })
+    // })
   }
 
   onUserChange(fnfUserId: string): void {
     this.variablePayForm.patchValue({
-      month: this.fnfPayroll.month,
-      year: this.fnfPayroll.year
+      month: this.fnfPayrollRecord.month,
+      year: this.fnfPayrollRecord.year
     });
     this.variablePayForm.get('year').disable();
     this.variablePayForm.get('month').disable();
 
     this.selectedFnFUserId = fnfUserId;
+
     this.getSalarydetailsByUser();
 
     this.getRecordsByUser(fnfUserId);
-    this.payrollService.selectedFnFPayroll.subscribe((fnfPayroll: any) => {
-      const fnfUser = fnfPayroll.userList[0].user;
+    // this.payrollService.selectedFnFPayroll.subscribe((fnfPayroll: any) => {
 
-      this.payrollService.getFnFAttendanceSummaryByFnFUserId(fnfUserId).subscribe((res: any) => {
-        this.variablePaySummary.data = res.data;
-        this.variablePaySummary.data.forEach((summary: any) => {
-          const user = this.userList.find(user => user._id === fnfUser);
-          summary.userName = user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
-        });
-      });
+    //   const fnfUser = fnfPayroll.userList[0].user;
+    const matchedUser = this.fnfPayrollRecord.userList.find((user: any) => user.user === fnfUserId);
+    const payrollFNFUserId = matchedUser ? matchedUser._id : null;
+
+    this.payrollService.getFnFVariablePayFnFUserId(payrollFNFUserId).subscribe((res: any) => {
+      this.variablePaySummary.data = res.data;
+      // this.variablePaySummary.data.forEach((summary: any) => {
+      //   const user = this.userList.find(user => user._id === fnfUser);
+      //   summary.userName = user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
+      // });
     });
+    // });
   }
 
 
   getLists() {
-    // get all users
-    this.commonService.populateUsers().subscribe((res: any) => {
-      this.userList = res.data['data'];
-    });
-
     let payload = { skip: '', next: '' }
 
     // get all variable allowances and deductions
@@ -105,16 +108,11 @@ export class FNFStep2Component implements OnInit {
     this.payrollService.getVariableDeduction(payload).subscribe((res: any) => {
       this.varDeductions = res.data;
     });
-    this.payrollService.selectedFnFPayroll.subscribe((fnfPayroll: any) => {
-      if (fnfPayroll) {
-        this.fetchVariablePaySummary(fnfPayroll);
+    // this.payrollService.selectedFnFPayroll.subscribe((fnfPayroll: any) => {
+      if (this.fnfPayrollRecord) {
+        this.fetchVariablePaySummary(this.fnfPayrollRecord);
       }
-    })
-  }
-
-  generateYears(): void {
-    const currentYear = new Date().getFullYear();
-    this.years = [currentYear, currentYear + 1];
+    // })
   }
 
   openDialog(isEdit: boolean): void {
@@ -137,20 +135,31 @@ export class FNFStep2Component implements OnInit {
       month: variablePay.month,
       year: variablePay.year
     });
-
+    this.variablePayForm.get('payrollFNFUser').disable();
     this.openDialog(true);
   }
 
   onSubmit(): void {
+    this.variablePayForm.get('year').enable();
+    this.variablePayForm.get('month').enable();
+    this.variablePayForm.get('payrollFNFUser').enable();
+
+    const matchedUser = this.fnfPayrollRecord.userList.find((user: any) => user.user === this.selectedFnFUserId);
+    const payrollFNFUserId = matchedUser ? matchedUser._id : null;
+
+    this.variablePayForm.patchValue({
+      payrollFNFUser: payrollFNFUserId
+    })
+
     if (this.variablePayForm.valid) {
-      this.variablePayForm.get('year').enable();
-      this.variablePayForm.get('month').enable();
+
       const payload = this.variablePayForm.value;
       if (this.selectedVariablePay) {
         this.payrollService.updateFnFVariablePay(this.selectedVariablePay._id, payload).subscribe(
           (res: any) => {
             this.toast.success('Variable Pay updated successfully', 'Success');
-            // this.fetchVariablePaySummary();
+            this.fetchVariablePaySummary(this.fnfPayrollRecord);
+            this.dialog.closeAll();
           },
           (error: any) => {
             this.toast.error('Failed to update Variable Pay', 'Error');
@@ -160,7 +169,8 @@ export class FNFStep2Component implements OnInit {
         this.payrollService.addFnFVariablePay(payload).subscribe(
           (res: any) => {
             this.toast.success('Variable Pay added successfully', 'Success');
-            // this.fetchVariablePaySummary();
+            this.fetchVariablePaySummary(this.fnfPayrollRecord); 
+            this.dialog.closeAll();
           },
           (error: any) => {
             this.toast.error('Failed to add Variable Pay', 'Error');
@@ -192,7 +202,7 @@ export class FNFStep2Component implements OnInit {
   deleteVariablePay(_id: string) {
     this.payrollService.deleteFnFVariablePay(_id).subscribe((res: any) => {
       this.toast.success('Variable Pay Deleted', 'Success');
-      // this.fetchVariablePaySummary();
+      this.fetchVariablePaySummary(this.fnfPayrollRecord);
     }, error => {
       this.toast.error('Failed to delete Variable Pay', 'Error');
     });
@@ -205,14 +215,27 @@ export class FNFStep2Component implements OnInit {
     });
   }
 
+  getMatchedSettledUser(userId: string) {
+    const matchedUser = this.settledUsers?.find(user => user?._id == userId)
+    return matchedUser ? `${matchedUser?.firstName}  ${matchedUser?.lastName}` : 'Not specified'
+  }
+
   fetchVariablePaySummary(fnfPayroll: any): void {
     this.payrollService.getFnFVariablePaySummary(fnfPayroll._id).subscribe(
       (res: any) => {
         this.variablePaySummary.data = res.data;
-        this.variablePaySummary.data.forEach((summary: any, index: number) => {
-          const user = this.userList.find(user => user._id === fnfPayroll.userList[index].user);
-          summary.userName = user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
-        });
+
+        const matchedUser = this.fnfPayrollRecord.userList.find(
+          (user: any) => this.variablePaySummary.data.some((summary: any) => summary.payrollFNFUser === user._id)
+        );
+
+        if (matchedUser) {
+          const payrollFNFUserName = matchedUser.user
+
+          this.variablePaySummary.data.forEach((item: any) => {
+            item.payrollFNFUser = this.getMatchedSettledUser(payrollFNFUserName);
+          });
+        }
       },
       (error: any) => {
         this.toast.error('Failed to fetch Variable Pay Summary', 'Error');
@@ -237,10 +260,7 @@ export class FNFStep2Component implements OnInit {
 
 
   getRecordsByUser(selectedUser: string) {
-    const data = this.payrollService.selectedFnFPayroll.getValue()['userList'];
-    const user = data.find((user) => user._id === selectedUser);
-
-    this.userService.getSalaryByUserId(user.user).subscribe((res: any) => {
+    this.userService.getSalaryByUserId(selectedUser).subscribe((res: any) => {
       const response = res.data[res.data.length - 1];
       this.variableAllowance = response.variableAllowanceList;
       this.variableDeduction = response.variableDeductionList;
@@ -248,8 +268,8 @@ export class FNFStep2Component implements OnInit {
   }
 
   getSalarydetailsByUser() {
-    console.log(this.fnfPayroll);
-    this.fnfPayroll.userList.forEach((user: any) => {
+
+    this.fnfPayrollRecord.userList.forEach((user: any) => {
       if (user._id === this.selectedFnFUserId) {
         const fnfUser = user.user;
         this.userService.getSalaryByUserId(fnfUser).subscribe((res: any) => {
