@@ -734,7 +734,7 @@ export class PayrollService {
   }
 
   getFnFVariablePayFnFUserId(fnfUserId: string): Observable<any> {
-    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/fnf-variable-pay/${fnfUserId}`, this.httpOptions);
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/payroll-fnf-variable-pay-by-payrollfnfuser/${fnfUserId}`, this.httpOptions);
     return response;
   }
 
