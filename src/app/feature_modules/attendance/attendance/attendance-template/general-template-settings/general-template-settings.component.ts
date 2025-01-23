@@ -51,7 +51,7 @@ export class GeneralTemplateSettingsComponent {
       alternateWeekOffRoutine: ['none', Validators.required],
       daysForAlternateWeekOffRoutine: [null],
       isNotificationToSupervisors: [true],
-      isCommentMandatoryForRegularisation: [true, Validators.required],
+      isCommentMandatoryForRegularisation: [true],
       departmentDesignations: ['Software Developer', Validators.required],
       approversType: ['', Validators.required],
       approvalLevel: ['', Validators.required],
