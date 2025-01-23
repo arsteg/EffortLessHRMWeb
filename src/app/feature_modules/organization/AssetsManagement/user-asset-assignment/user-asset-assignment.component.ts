@@ -63,7 +63,7 @@ export class UserAssetAssignmentComponent implements OnInit {
     this.loadUnAssignedAssets();
   }
   getAllAssetTypes() {
-    this.assetManagementService.getAllAssetTypes().subscribe(response => {
+    this.assetManagementService.getAllAssetTypes(0,0).subscribe(response => {
       this.assetTypes = response.data;
       this.filteredAssetTypes = this.assetTypes;
   });

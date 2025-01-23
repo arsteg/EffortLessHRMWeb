@@ -1,13 +1,22 @@
-<div class="asset-container" style="background-color: white;">
+<div class="asset-container">
   <div class="row py-2">
     <div class="list-container col-md-6 tableContainer">
       <div class="d-flex justify-content-between">
         <h2 class="contentHeading p-2">Asset Types: {{ assetTypes?.length }}</h2>
         <div class="d-flex align-items-center"> <span class="bi bi-search searchIcon mb-3"></span>
-          <input type="text" placeholder="Search Asset Type..." [(ngModel)]="searchQuery" (input)="filterAssetTypes()"
-            class="form-control search mt-2 mb-3">
+          <input type="text" placeholder="Search Asset Type..."  (input)="onSearchInput($event)"
+            class="form-control search mt-2 mb-3">            
         </div>
-      </div>
+                
+        <app-pagination 
+        [recordsPerPageOptions]="[10, 25, 50, 100]" 
+        [totalRecords]="totalRecords" 
+        [recordsPerPage]="recordsPerPage" 
+        [currentPage]="currentPage" 
+        (pageChange)="onPageChange($event)" 
+        (recordsPerPageChange)="onRecordsPerPageChange($event)">
+      </app-pagination>
+      </div>      
       <table class="p-2 rounded mt-2">
         <thead class="thead-dark">
           <tr>
@@ -41,6 +50,9 @@
         <div class="form-group">
           <label for="typeName">Type Name:</label>
           <input type="text" class="form-control" id="typeName" formControlName="typeName" required maxlength="50">
+          <div *ngIf="assetTypeForm.get('typeName').hasError('required') && assetTypeForm.get('typeName').dirty" class="text-danger">
+            Name is required.
+          </div>
           <div *ngIf="assetTypeForm.get('typeName').hasError('duplicate')" class="text-danger">
             Type name already exists.
           </div>
@@ -48,6 +60,9 @@
         <div class="form-group mt-2">
           <label for="description">Description:</label>
           <input type="text" class="form-control" id="description" formControlName="description" required maxlength="50">
+          <div *ngIf="assetTypeForm.get('description').hasError('required') && assetTypeForm.get('description').dirty" class="text-danger">
+            Description is required.
+          </div>
         </div>
         
         <div formArrayName="customAttributes">
@@ -72,9 +87,15 @@
                 <tr *ngFor="let customAttribute of customAttributes.controls; let i = index" [formGroupName]="i">
                   <td style="padding: 8px;">
                     <input type="text" class="form-control" formControlName="attributeName" required maxlength="50">
+                    <div *ngIf="customAttribute.get('attributeName').hasError('required') && customAttribute.get('attributeName').dirty" class="text-danger">
+                      Name is required.
+                    </div>
                   </td>
                   <td style="padding: 8px;">
                     <input type="text" class="form-control" formControlName="description" required maxlength="50">
+                    <div *ngIf="customAttribute.get('description').hasError('required') && customAttribute.get('description').dirty" class="text-danger">
+                      Description is required.
+                    </div>
                   </td>
                   <td style="padding: 8px;">
                     <select class="form-control" formControlName="dataType">

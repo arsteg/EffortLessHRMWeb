@@ -29,7 +29,7 @@ export class AssignAssetsComponent implements OnInit {
   }
 
   loadUnAssignedAssets() {
-    this.assetManagementService.getEmployeeUnAssignedAssets(this.userId).subscribe(response => {
+    this.assetManagementService.getUnAssignedAssets().subscribe(response => {
       this.unAssignedAssets = response.data;
   });
   }
@@ -62,7 +62,7 @@ export class AssignAssetsComponent implements OnInit {
     this.loadUnAssignedAssets();
   }
   getAllAssetTypes() {
-    this.assetManagementService.getAllAssetTypes().subscribe(response => {
+    this.assetManagementService.getAllAssetTypes(0,0).subscribe(response => {
       this.assetTypes = response.data;
       this.filteredAssetTypes = this.assetTypes;
   });
