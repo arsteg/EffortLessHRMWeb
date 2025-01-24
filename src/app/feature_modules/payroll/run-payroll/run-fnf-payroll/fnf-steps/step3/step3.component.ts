@@ -91,11 +91,12 @@ export class FNFStep3Component implements OnInit {
     this.manualArrearForm.patchValue({
       payrollFNFUser: payrollFNFUserId
     });
+    
+    console.log(this.manualArrearForm.value);
 
     if (this.manualArrearForm.valid) {
 
       this.manualArrearForm.get('payrollFNFUser').enable();
-
 
       if (this.isEdit) {
 
@@ -173,7 +174,7 @@ export class FNFStep3Component implements OnInit {
   }
 
   deleteRecord(_id: string) {
-   
+
     this.payrollService.deleteFnFManualArrear(_id).subscribe((res: any) => {
       this.fetchManualArrears(this.fnfPayrollRecord);
       this.toast.success('Successfully Deleted!!!', 'FNF Manual Arrear');
@@ -197,7 +198,7 @@ export class FNFStep3Component implements OnInit {
     const matchedUser = this.settledUsers?.find(user => user?._id == userId)
     return matchedUser ? `${matchedUser?.firstName}  ${matchedUser?.lastName}` : 'Not specified'
   }
- 
+
   fetchManualArrears(fnfPayroll: any): void {
     this.payrollService.getFnFManualArrearsByPayrollFnF(fnfPayroll?._id).subscribe(
       (res: any) => {
