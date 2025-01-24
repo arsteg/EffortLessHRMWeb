@@ -2,15 +2,15 @@
     <div class="d-flex justify-content-between align-items-baseline pt-2">
         <div><label>Attendance Summary</label></div>
         <div class="d-flex">
-            <app-fnf-users [isStep]="isStep" (changeUser)="onUserChange($event)"></app-fnf-users>
+            <app-fnf-users [isStep]="isSteps" (changeUser)="onUserChange($event)"></app-fnf-users>
             <button mat-raised-button class="addBtn ms-2 mt-1" (click)="openDialog(false)">Add Attendance
                 Summary</button>
         </div>
     </div>
     <table mat-table [dataSource]="attendanceSummary">
-        <ng-container matColumnDef="payrollFNFUser">
+        <ng-container matColumnDef="userName">
             <th mat-header-cell *matHeaderCellDef> Payroll User </th>
-            <td mat-cell *matCellDef="let element"> {{element.payrollFNFUser}} </td>
+            <td mat-cell *matCellDef="let element"> {{element.userName}} </td>
         </ng-container>
 
         <ng-container matColumnDef="totalDays">
@@ -90,7 +90,7 @@
                 </mat-form-field>
                 }
                 @else if (!isEdit) {
-                <app-fnf-users [isStep]="isStep" (changeUser)="onUserChange($event)"></app-fnf-users>
+                <app-fnf-users [isStep]="isSteps" (changeUser)="onUserChange($event)"></app-fnf-users>
                 }
                 <mat-form-field appearance="outline" class="col-md-6 my-2">
                     <mat-label>Total Days</mat-label>

@@ -17,7 +17,6 @@ export class FNFStep3Component implements OnInit {
   manualArrears = new MatTableDataSource<any>();
   manualArrearForm: FormGroup;
   selectedManualArrear: any;
-  userList: any[] = [];
   fnfUsers: any;
   isEdit: boolean = false;
   selectedFNFUser: any;
@@ -42,7 +41,6 @@ export class FNFStep3Component implements OnInit {
   }
 
   ngOnInit(): void {
-
     if (this.fnfPayrollRecord) {
       this.fetchManualArrears(this.fnfPayrollRecord);
     }
@@ -55,7 +53,7 @@ export class FNFStep3Component implements OnInit {
     this.payrollService.getFnFManualArrearsByPayrollFnFUser(fnfUserId).subscribe((res: any) => {
       this.manualArrears.data = res.data;
       this.manualArrears.data.forEach((arrear: any) => {
-        const user = this.userList.find(user => user._id === fnfUser);
+        const user = this.settledUsers.find(user => user._id === fnfUser);
         arrear.userName = user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
       });
     });
@@ -195,48 +193,11 @@ export class FNFStep3Component implements OnInit {
     });
   }
 
-  // deleteManualArrear(_id: string) {
-  //   this.payrollService.deleteFnFManualArrear(_id).subscribe((res: any) => {
-  //     this.toast.success('Manual Arrear Deleted', 'Success');
-  //     this.fetchManualArrears(this.fnfPayrollRecord);
-  //   }, error => {
-  //     this.toast.error('Failed to delete Manual Arrear', 'Error');
-  //   });
-  // }
-
-  // deleteFnF(id: string): void {
-  //   const dialogRef = this.dialog.open(ConfirmationDialogComponent, { width: '400px', });
-  //   dialogRef.afterClosed().subscribe((result) => {
-  //     if (result === 'delete') { this.deleteManualArrear(id); }
-  //   });
-  // }
   getMatchedSettledUser(userId: string) {
     const matchedUser = this.settledUsers?.find(user => user?._id == userId)
     return matchedUser ? `${matchedUser?.firstName}  ${matchedUser?.lastName}` : 'Not specified'
   }
-
-  // fetchManualArrears(fnfPayroll: any): void {
-  //   this.payrollService.getFnFManualArrearsByPayrollFnF(fnfPayroll?._id).subscribe(
-  //     (res: any) => {
-  //       this.manualArrears.data = res.data;
-
-  //       const matchedUser = this.fnfPayrollRecord.userList.find(
-  //         (user: any) => this.manualArrears.data.some((summary: any) => summary.payrollFNFUser === user._id)
-  //       );
-
-  //       if (matchedUser) {
-  //         const payrollFNFUserName = matchedUser.user
-
-  //         this.manualArrears.data.forEach((item: any) => {
-  //           item.payrollFNFUser = this.getMatchedSettledUser(payrollFNFUserName);
-  //         });
-  //       }
-  //     },
-  //     (error: any) => {
-  //       this.toast.error('Failed to fetch Manual Arrears', 'Error');
-  //     }
-  //   );
-  // }
+ 
   fetchManualArrears(fnfPayroll: any): void {
     this.payrollService.getFnFManualArrearsByPayrollFnF(fnfPayroll?._id).subscribe(
       (res: any) => {
@@ -260,11 +221,5 @@ export class FNFStep3Component implements OnInit {
         this.toast.error('Failed to fetch Manual Arrears', 'Error');
       }
     );
-  }
-
-
-  getUserName(userId: string): string {
-    const user = this.userList.find(user => user._id === userId);
-    return user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
   }
 }
