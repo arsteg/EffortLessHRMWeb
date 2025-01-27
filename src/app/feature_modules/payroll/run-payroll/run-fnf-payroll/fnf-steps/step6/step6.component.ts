@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, Input } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -13,66 +13,66 @@ import { CommonService } from 'src/app/_services/common.Service';
   styleUrl: './step6.component.css'
 })
 export class FNFStep6Component implements OnInit {
-  displayedColumns: string[] = ['payrollUser', 'statutoryBenefit', 'benefitAmount', 'status', 'finalSettlementAmount', 'fnfClearanceStatus', 'fnfDate', 'actions'];
+  displayedColumns: string[] = ['userName', 'IsGratuityApplicable', 'GratuityAmount', 'IsProvidentFundApplicable', 'ProvidentFundAmount', 'ProvidentFundPaymentProcess', 'IsProvidentFundWithdrawFormSubmitted', 'actions'];
   statutoryBenefits = new MatTableDataSource<any>();
-  fnfStep6Form: FormGroup;
+  statutoryBenefitForm: FormGroup;
   selectedStatutoryBenefit: any;
-  userList: any[] = [];
   fnfUsers: any;
   isEdit: boolean = false;
-  isStep: boolean;
+  @Input() settledUsers: any[];
+  @Input() fnfPayrollRecord: any;
+  @Input() isSteps: boolean;
+  selectedFNFUser: any;
 
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
 
   constructor(private fb: FormBuilder,
     private payrollService: PayrollService,
-    private commonService: CommonService,
     public dialog: MatDialog,
     private toast: ToastrService) {
-    this.fnfStep6Form = this.fb.group({
+    this.statutoryBenefitForm = this.fb.group({
       payrollFNFUser: ['', Validators.required],
-      statutoryBenefit: ['', Validators.required],
-      benefitAmount: [0, Validators.required],
-      status: ['', Validators.required],
-      finalSettlementAmount: [0, Validators.required],
-      fnfClearanceStatus: ['', Validators.required],
-      fnfDate: ['', Validators.required]
+      IsGratuityApplicable: [true],
+      GratuityAmount: [0, Validators.required],
+      IsProvidentFundApplicable: [true],
+      ProvidentFundAmount: [0, Validators.required],
+      ProvidentFundPaymentProcess: ['', Validators.required],
+      IsProvidentFundWithdrawFormSubmitted: [true],
     });
   }
 
   ngOnInit(): void {
-    this.commonService.populateUsers().subscribe((res: any) => {
-      this.userList = res.data['data'];
-    });
 
-    this.payrollService.selectedFnFPayroll.subscribe((fnfPayroll: any) => {
-      this.isStep = fnfPayroll?.isSteps;
-      if (fnfPayroll) {
-        setTimeout(() => {
-          this.fetchStatutoryBenefits(fnfPayroll);
-        }, 1000);
-      }
-    });
+    this.fetchStatutoryBenefits(this.fnfPayrollRecord);
+
   }
 
   onUserChange(fnfUserId: string): void {
-    console.log('fnf payroll users: ', fnfUserId);
-    this.payrollService.selectedFnFPayroll.subscribe((fnfPayroll: any) => {
-      const fnfUser = fnfPayroll.userList[0].user;
-
-      this.payrollService.getFnFStatutoryBenefitByPayrollFnFUser(fnfUserId).subscribe((res: any) => {
-        this.statutoryBenefits.data = res.data;
-        this.statutoryBenefits.data.forEach((benefit: any) => {
-          const user = this.userList.find(user => user._id === fnfUser);
-          console.log(user);
-          benefit.userName = user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
-        });
+    this.selectedFNFUser = fnfUserId;
+    const fnfUser = this.fnfPayrollRecord.userList[0].user;
+    this.payrollService.getFnFStatutoryBenefitByPayrollFnFUser(fnfUserId).subscribe((res: any) => {
+      this.statutoryBenefits.data = res.data;
+      this.statutoryBenefits.data.forEach((benefit: any) => {
+        const user = this.settledUsers.find(user => user._id === fnfUser);
+        console.log(user);
+        benefit.userName = user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
       });
     });
   }
 
   openDialog(isEdit: boolean): void {
     this.isEdit = isEdit;
+    if (!this.isEdit) {
+      this.statutoryBenefitForm.reset({
+        payrollFNFUser: '',
+        IsGratuityApplicable: false,
+        GratuityAmount: 0,
+        IsProvidentFundApplicable: false,
+        ProvidentFundAmount: 0,
+        ProvidentFundPaymentProcess: '',
+        IsProvidentFundWithdrawFormSubmitted: false,
+      });
+    }
     this.dialog.open(this.dialogTemplate, {
       width: '50%',
       panelClass: 'custom-dialog-container',
@@ -83,39 +83,73 @@ export class FNFStep6Component implements OnInit {
   editStatutoryBenefit(benefit: any): void {
     this.isEdit = true;
     this.selectedStatutoryBenefit = benefit;
-    this.fnfStep6Form.patchValue({
-      payrollFNFUser: benefit.payrollFNFUser,
-      statutoryBenefit: benefit.statutoryBenefit,
-      benefitAmount: benefit.benefitAmount,
-      status: benefit.status,
-      finalSettlementAmount: benefit.finalSettlementAmount,
-      fnfClearanceStatus: benefit.fnfClearanceStatus,
-      fnfDate: benefit.fnfDate
-    });
 
+    this.statutoryBenefitForm.patchValue({
+      payrollFNFUser: benefit.userName,
+      IsGratuityApplicable: benefit.IsGratuityApplicable,
+      GratuityAmount: benefit.GratuityAmount,
+      IsProvidentFundApplicable: benefit.IsProvidentFundApplicable,
+      ProvidentFundAmount: benefit.ProvidentFundAmount,
+      ProvidentFundPaymentProcess: benefit.ProvidentFundPaymentProcess,
+      IsProvidentFundWithdrawFormSubmitted: benefit.IsProvidentFundWithdrawFormSubmitted,
+    });
+    this.statutoryBenefitForm.get('payrollFNFUser').disable();
     this.openDialog(true);
   }
 
   onSubmit(): void {
-    if (this.fnfStep6Form.valid) {
-      const payload = this.fnfStep6Form.value;
+    const matchedUser = this.fnfPayrollRecord.userList.find((user: any) => user?.user === this.selectedFNFUser);
+    const payrollFNFUserId = matchedUser ? matchedUser._id : null;
+
+    this.statutoryBenefitForm.patchValue({
+      payrollFNFUser: payrollFNFUserId
+    })
+
+    if (this.statutoryBenefitForm.valid) {
+      this.statutoryBenefitForm.get('payrollFNFUser').enable();
       if (this.selectedStatutoryBenefit) {
-        this.payrollService.updateFnFStatutoryBenefit(this.selectedStatutoryBenefit._id, payload).subscribe(
+        this.payrollService.updateFnFStatutoryBenefit(this.selectedStatutoryBenefit._id, this.statutoryBenefitForm.value).subscribe(
           (res: any) => {
             this.toast.success('Statutory Benefit updated successfully', 'Success');
+            this.fetchStatutoryBenefits(this.fnfPayrollRecord);
+            this.statutoryBenefitForm.reset({
+              payrollFNFUser: '',
+              statutoryBenefit: '',
+              benefitAmount: 0,
+              status: '',
+              finalSettlementAmount: 0,
+              fnfClearanceStatus: '',
+              fnfDate: ''
+            });
+            this.isEdit = false;
             this.dialog.closeAll();
-            this.fetchStatutoryBenefits(this.selectedStatutoryBenefit.fnfPayrollId);
           },
           (error: any) => {
             this.toast.error('Failed to update Statutory Benefit', 'Error');
           }
         );
       } else {
-        this.payrollService.addFnFStatutoryBenefit(payload).subscribe(
+        const matchedUser = this.fnfPayrollRecord.userList.find((user: any) => user.user === this.selectedFNFUser);
+        const payrollFNFUserId = matchedUser ? matchedUser._id : null;
+
+        this.statutoryBenefitForm.patchValue({
+          payrollFNFUser: payrollFNFUserId
+        });
+
+        this.payrollService.addFnFStatutoryBenefit(this.statutoryBenefitForm.value).subscribe(
           (res: any) => {
             this.toast.success('Statutory Benefit added successfully', 'Success');
+            this.fetchStatutoryBenefits(this.fnfPayrollRecord);
+            this.statutoryBenefitForm.reset({
+              payrollFNFUser: '',
+              statutoryBenefit: '',
+              benefitAmount: 0,
+              status: '',
+              finalSettlementAmount: 0,
+              fnfClearanceStatus: '',
+              fnfDate: ''
+            });
             this.dialog.closeAll();
-            this.fetchStatutoryBenefits(payload.fnfPayrollId);
           },
           (error: any) => {
             this.toast.error('Failed to add Statutory Benefit', 'Error');
@@ -123,13 +157,13 @@ export class FNFStep6Component implements OnInit {
         );
       }
     } else {
-      this.fnfStep6Form.markAllAsTouched();
+      this.statutoryBenefitForm.markAllAsTouched();
     }
   }
 
   onCancel(): void {
     if (this.isEdit && this.selectedStatutoryBenefit) {
-      this.fnfStep6Form.patchValue({
+      this.statutoryBenefitForm.patchValue({
         payrollFNFUser: this.selectedStatutoryBenefit.payrollFNFUser,
         statutoryBenefit: this.selectedStatutoryBenefit.statutoryBenefit,
         benefitAmount: this.selectedStatutoryBenefit.benefitAmount,
@@ -139,14 +173,14 @@ export class FNFStep6Component implements OnInit {
         fnfDate: this.selectedStatutoryBenefit.fnfDate
       });
     } else {
-      this.fnfStep6Form.reset();
+      this.statutoryBenefitForm.reset();
     }
   }
 
   deleteStatutoryBenefit(_id: string) {
     this.payrollService.deleteFnFStatutoryBenefit(_id).subscribe((res: any) => {
       this.toast.success('Statutory Benefit Deleted', 'Success');
-      this.fetchStatutoryBenefits(this.selectedStatutoryBenefit.fnfPayrollId);
+      this.fetchStatutoryBenefits(this.fnfPayrollRecord);
     }, error => {
       this.toast.error('Failed to delete Statutory Benefit', 'Error');
     });
@@ -159,24 +193,36 @@ export class FNFStep6Component implements OnInit {
     });
   }
 
+  getMatchedSettledUser(userId: string) {
+    const matchedUser = this.settledUsers?.find(user => user?._id == userId)
+    return matchedUser ? `${matchedUser?.firstName}  ${matchedUser?.lastName}` : 'Not specified'
+  }
+
   fetchStatutoryBenefits(fnfPayroll: any): void {
     this.payrollService.getFnFStatutoryBenefitByPayrollFnF(fnfPayroll?._id).subscribe(
       (res: any) => {
         this.statutoryBenefits.data = res.data;
-        this.statutoryBenefits.data.forEach((benefit: any, index: number) => {
-          const user = this.userList.find(user => user._id === fnfPayroll.userList[index].user);
-          benefit.userName = user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
+
+        this.statutoryBenefits.data.forEach((item: any) => {
+          const matchedUser = this.fnfPayrollRecord.userList.find((user: any) => user._id === item.payrollFNFUser);
+          item.userName = this.getMatchedSettledUser(matchedUser.user);
         });
+
+        if (this.isEdit && this.selectedStatutoryBenefit) {
+          this.statutoryBenefitForm.patchValue({
+            payrollFNFUser: this.selectedStatutoryBenefit.payrollFNFUser,
+            ...this.selectedStatutoryBenefit
+          });
+        }
       },
       (error: any) => {
-        this.toast.error('Failed to fetch Statutory Benefits', 'Error');
+        this.toast.error('Failed to fetch Termination Compensation', 'Error');
       }
     );
   }
 
   getUserName(userId: string): string {
-    const user = this.userList.find(user => user._id === userId);
+    const user = this.settledUsers.find(user => user._id === userId);
     return user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
   }
 }
-

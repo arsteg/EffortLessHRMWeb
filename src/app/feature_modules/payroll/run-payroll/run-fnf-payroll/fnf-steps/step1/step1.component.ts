@@ -263,13 +263,13 @@ export class FNFStep1Component implements OnInit {
       (res: any) => {
         this.attendanceSummary.data = res.data;
 
-        // Map the userName for each manual arrear
+        
         this.attendanceSummary.data.forEach((item: any) => {
           const matchedUser = this.fnfPayrollRecord.userList.find((user: any) => user._id === item.payrollFNFUser);
           item.userName = this.getMatchedSettledUser(matchedUser.user);
         });
         console.log(this.attendanceSummary.data)
-        // Patch form in edit mode
+        
         if (this.isEdit && this.selectedAttendanceSummary) {
           this.attendanceSummaryForm.patchValue({
             payrollFNFUser: this.selectedAttendanceSummary.payrollFNFUser,

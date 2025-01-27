@@ -13,15 +13,14 @@ import { CommonService } from 'src/app/_services/common.Service';
   styleUrls: ['./step8.component.css']
 })
 export class FNFStep8Component implements OnInit {
-  displayedColumns: string[] = ['payrollUser', 'lateComing', 'earlyGoing', 'finalOvertime', 'actions'];
-  overtime = new MatTableDataSource<any>();
+  displayedColumns: string[] = ['payrollUser', 'taxCalculatedMethod', 'taxCalculated', 'tdsCalculated', 'actions'];
+  incomeTax = new MatTableDataSource<any>();
   fnfStep6Form: FormGroup;
-  selectedOvertime: any;
+  selectedIncomeTax: any;
   userList: any[] = [];
   fnfUsers: any;
   isEdit: boolean = false;
   isStep: boolean;
-
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
 
   constructor(private fb: FormBuilder,
@@ -31,9 +30,9 @@ export class FNFStep8Component implements OnInit {
     private toast: ToastrService) {
     this.fnfStep6Form = this.fb.group({
       PayrollFNFUser: ['', Validators.required],
-      lateComing: ['', Validators.required],
-      earlyGoing: ['', Validators.required],
-      finalOvertime: ['', Validators.required]
+      taxCalculatedMethod: ['', Validators.required],
+      taxCalculated: [0, Validators.required],
+      tdsCalculated: [0, Validators.required]
     });
   }
 
@@ -46,22 +45,21 @@ export class FNFStep8Component implements OnInit {
       this.isStep = fnfPayroll?.isSteps;
       if (fnfPayroll) {
         setTimeout(() => {
-          this.fetchOvertime(fnfPayroll);
+          this.fetchIncomeTax(fnfPayroll);
         }, 1000);
       }
     });
   }
 
   onUserChange(fnfUserId: string): void {
-    console.log('fnf payroll users: ', fnfUserId);
     this.payrollService.selectedFnFPayroll.subscribe((fnfPayroll: any) => {
       const fnfUser = fnfPayroll.userList[0].user;
 
-      this.payrollService.getFnFOvertimeByPayrollFnFUser(fnfUserId).subscribe((res: any) => {
-        this.overtime.data = res.data;
-        this.overtime.data.forEach((overtime: any) => {
+      this.payrollService.getFnFIncomeTaxByPayrollFnFUser(fnfUserId).subscribe((res: any) => {
+        this.incomeTax.data = res.data;
+        this.incomeTax.data.forEach((incomeTax: any) => {
           const user = this.userList.find(user => user._id === fnfUser);
-          overtime.userName = user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
+          incomeTax.userName = user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
         });
       });
     });
@@ -76,44 +74,42 @@ export class FNFStep8Component implements OnInit {
     });
   }
 
-  editOvertime(overtime: any): void {
+  editIncomeTax(incomeTax: any): void {
     this.isEdit = true;
-    this.selectedOvertime = overtime;
+    this.selectedIncomeTax = incomeTax;
     this.fnfStep6Form.patchValue({
-      PayrollFNFUser: overtime.PayrollFNFUser,
-      lateComing: overtime.lateComing,
-      earlyGoing: overtime.earlyGoing,
-      finalOvertime: overtime.finalOvertime
+      PayrollFNFUser: incomeTax.PayrollFNFUser,
+      taxCalculatedMethod: incomeTax.taxCalculatedMethod,
+      taxCalculated: incomeTax.taxCalculated,
+      tdsCalculated: incomeTax.tdsCalculated
     });
-
     this.openDialog(true);
   }
 
   onSubmit(): void {
     if (this.fnfStep6Form.valid) {
       const payload = this.fnfStep6Form.value;
-      if (this.selectedOvertime) {
-        this.payrollService.updateFnFOvertime(this.selectedOvertime._id, payload).subscribe(
+      if (this.selectedIncomeTax) {
+        this.payrollService.updateFnFIncomeTax(this.selectedIncomeTax._id, payload).subscribe(
           (res: any) => {
-            this.toast.success('Overtime updated successfully', 'Success');
+            this.toast.success('Income Tax updated successfully', 'Success');
             this.dialog.closeAll();
-            this.fetchOvertime(this.selectedOvertime.fnfPayrollId);
+            this.fetchIncomeTax(this.selectedIncomeTax.fnfPayrollId);
           },
           (error: any) => {
-            this.toast.error('Failed to update Overtime', 'Error');
+            this.toast.error('Failed to update Income Tax', 'Error');
           }
         );
       } else {
-        this.payrollService.addFnFOvertime(payload).subscribe(
+        this.payrollService.addFnFIncomeTax(payload).subscribe(
           (res: any) => {
-            this.toast.success('Overtime added successfully', 'Success');
+            this.toast.success('Income Tax added successfully', 'Success');
             this.dialog.closeAll();
-            this.fetchOvertime(payload.fnfPayrollId);
+            this.fetchIncomeTax(payload.fnfPayrollId);
           },
           (error: any) => {
-            this.toast.error('Failed to add Overtime', 'Error');
-          }
-        );
+            this.toast.error('Failed to add Income Tax', 'Error');
+          });
       }
     } else {
       this.fnfStep6Form.markAllAsTouched();
@@ -121,45 +117,45 @@ export class FNFStep8Component implements OnInit {
   }
 
   onCancel(): void {
-    if (this.isEdit && this.selectedOvertime) {
+    if (this.isEdit && this.selectedIncomeTax) {
       this.fnfStep6Form.patchValue({
-        PayrollFNFUser: this.selectedOvertime.PayrollFNFUser,
-        lateComing: this.selectedOvertime.lateComing,
-        earlyGoing: this.selectedOvertime.earlyGoing,
-        finalOvertime: this.selectedOvertime.finalOvertime
+        PayrollFNFUser: this.selectedIncomeTax.PayrollFNFUser,
+        taxCalculatedMethod: this.selectedIncomeTax.taxCalculatedMethod,
+        taxCalculated: this.selectedIncomeTax.taxCalculated,
+        tdsCalculated: this.selectedIncomeTax.tdsCalculated
       });
     } else {
       this.fnfStep6Form.reset();
     }
   }
 
-  deleteOvertime(_id: string) {
-    this.payrollService.deleteFnFOvertime(_id).subscribe((res: any) => {
-      this.toast.success('Overtime Deleted', 'Success');
-      this.fetchOvertime(this.selectedOvertime.fnfPayrollId);
+  deleteIncomeTax(_id: string) {
+    this.payrollService.deleteFnFIncomeTax(_id).subscribe((res: any) => {
+      this.toast.success('Income Tax Deleted', 'Success');
+      this.fetchIncomeTax(this.selectedIncomeTax.fnfPayrollId);
     }, error => {
-      this.toast.error('Failed to delete Overtime', 'Error');
+      this.toast.error('Failed to delete Income Tax', 'Error');
     });
   }
 
   deleteFnF(id: string): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, { width: '400px', });
     dialogRef.afterClosed().subscribe((result) => {
-      if (result === 'delete') { this.deleteOvertime(id); }
+      if (result === 'delete') { this.deleteIncomeTax(id); }
     });
   }
 
-  fetchOvertime(fnfPayroll: any): void {
-    this.payrollService.getFnFOvertimeByPayrollFnF(fnfPayroll?._id).subscribe(
+  fetchIncomeTax(fnfPayroll: any): void {
+    this.payrollService.getFnFIncomeTaxByPayrollFnF(fnfPayroll?._id).subscribe(
       (res: any) => {
-        this.overtime.data = res.data;
-        this.overtime.data.forEach((overtime: any, index: number) => {
+        this.incomeTax.data = res.data;
+        this.incomeTax.data.forEach((incomeTax: any, index: number) => {
           const user = this.userList.find(user => user._id === fnfPayroll.userList[index].user);
-          overtime.userName = user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
+          incomeTax.userName = user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
         });
       },
       (error: any) => {
-        this.toast.error('Failed to fetch Overtime', 'Error');
+        this.toast.error('Failed to fetch Income Tax', 'Error');
       }
     );
   }

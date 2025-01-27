@@ -92,8 +92,6 @@ export class FNFStep3Component implements OnInit {
       payrollFNFUser: payrollFNFUserId
     });
     
-    console.log(this.manualArrearForm.value);
-
     if (this.manualArrearForm.valid) {
 
       this.manualArrearForm.get('payrollFNFUser').enable();
@@ -203,14 +201,13 @@ export class FNFStep3Component implements OnInit {
     this.payrollService.getFnFManualArrearsByPayrollFnF(fnfPayroll?._id).subscribe(
       (res: any) => {
         this.manualArrears.data = res.data;
-
-        // Map the userName for each manual arrear
+        
         this.manualArrears.data.forEach((item: any) => {
           const matchedUser = this.fnfPayrollRecord.userList.find((user: any) => user._id === item.payrollFNFUser);
           item.userName = this.getMatchedSettledUser(matchedUser.user);
         });
 
-        // Patch form in edit mode
+        
         if (this.isEdit && this.selectedManualArrear) {
           this.manualArrearForm.patchValue({
             payrollFNFUser: this.selectedManualArrear.payrollFNFUser,

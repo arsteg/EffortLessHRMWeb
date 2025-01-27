@@ -228,13 +228,13 @@ export class FNFStep2Component implements OnInit {
       (res: any) => {
         this.variablePaySummary.data = res.data;
 
-        // Map the userName for each manual arrear
+        
         this.variablePaySummary.data.forEach((item: any) => {
           const matchedUser = this.fnfPayrollRecord.userList.find((user: any) => user._id === item.payrollFNFUser);
           item.userName = this.getMatchedSettledUser(matchedUser.user);
         });
         console.log(this.variablePaySummary.data)
-        // Patch form in edit mode
+        
         if (this.isEdit && this.selectedVariablePay) {
           this.variablePayForm.patchValue({
             payrollFNFUser: this.selectedVariablePay.payrollFNFUser,

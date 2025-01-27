@@ -30,7 +30,6 @@ export class FNFStep4Component implements OnInit {
 
   constructor(private fb: FormBuilder,
     private payrollService: PayrollService,
-    private commonService: CommonService,
     public dialog: MatDialog,
     private toast: ToastrService) {
     this.terminationCompensationForm = this.fb.group({
@@ -68,7 +67,21 @@ export class FNFStep4Component implements OnInit {
 
   openDialog(isEdit: boolean): void {
     this.isEdit = isEdit;
-    console.log(this.isEdit);
+    if(!this.isEdit){
+      this.terminationCompensationForm.reset({
+        payrollFNFUser: '',
+        terminationDate: '',
+        noticePeriod: 0,
+        gratuityEligible: 0,
+        yearsOfService: 0,
+        gratuityAmount: 0,
+        severancePay: 0,
+        retirementBenefits: 0,
+        redeploymentCompensation: 0,
+        outplacementServices: 0,
+        status: 'pending'
+      });
+    }
     this.dialog.open(this.dialogTemplate, {
       width: '50%',
       panelClass: 'custom-dialog-container',
@@ -103,7 +116,6 @@ export class FNFStep4Component implements OnInit {
     this.terminationCompensationForm.patchValue({
       payrollFNFUser: payrollFNFUserId
     })
-    console.log(this.terminationCompensationForm.value);
     if (this.terminationCompensationForm.valid) {
       this.terminationCompensationForm.get('payrollFNFUser').enable();
       if (this.selectedTerminationCompensation || this.isEdit) {
@@ -206,13 +218,13 @@ export class FNFStep4Component implements OnInit {
       (res: any) => {
         this.terminationCompensation.data = res.data;
 
-        // Map the userName for each manual arrear
+        
         this.terminationCompensation.data.forEach((item: any) => {
           const matchedUser = this.fnfPayrollRecord.userList.find((user: any) => user._id === item.payrollFNFUser);
           item.userName = this.getMatchedSettledUser(matchedUser.user);
         });
         console.log(this.terminationCompensation.data)
-        // Patch form in edit mode
+        
         if (this.isEdit && this.selectedTerminationCompensation) {
           this.terminationCompensationForm.patchValue({
             payrollFNFUser: this.selectedTerminationCompensation.payrollFNFUser,
