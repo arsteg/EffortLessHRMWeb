@@ -1,13 +1,22 @@
-<div class="asset-container" style="background-color: white;">
+<div class="asset-container">
   <div class="row py-2">
-    <div class="list-container col-md-8 tableContainer">
+    <div class="list-container col-md-6 tableContainer">
       <div class="d-flex justify-content-between">
         <h2 class="contentHeading p-2">Asset Types: {{ assetTypes?.length }}</h2>
         <div class="d-flex align-items-center"> <span class="bi bi-search searchIcon mb-3"></span>
-          <input type="text" placeholder="Search Asset Type..." [(ngModel)]="searchQuery" (input)="filterAssetTypes()"
-            class="form-control search mt-2 mb-3">
+          <input type="text" placeholder="Search Asset Type..."  (input)="onSearchInput($event)"
+            class="form-control search mt-2 mb-3">            
         </div>
-      </div>
+                
+        <app-pagination 
+        [recordsPerPageOptions]="[10, 25, 50, 100]" 
+        [totalRecords]="totalRecords" 
+        [recordsPerPage]="recordsPerPage" 
+        [currentPage]="currentPage" 
+        (pageChange)="onPageChange($event)" 
+        (recordsPerPageChange)="onRecordsPerPageChange($event)">
+      </app-pagination>
+      </div>      
       <table class="p-2 rounded mt-2">
         <thead class="thead-dark">
           <tr>
@@ -17,17 +26,16 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let assetType of assetTypes">
+          <tr *ngFor="let assetType of filteredAssetTypes">
             <td (click)="editAssetType(assetType)">{{ assetType.typeName }}</td>
             <td (click)="editAssetType(assetType)">{{ assetType.description }}</td>
             <td class="text-center">
 
               <button class="actions" mat-mini-fab title="Update User" (click)="editAssetType(assetType)"
-                data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"
-                aria-label="Example icon button with a menu icon">
+                data-bs-toggle="offcanvas" aria-label="Example icon button with a menu icon">
                 <i class="bi bi-pencil-fill"></i>
               </button>
-              <button class="actions ms-2" mat-mini-fab title="Delete User" (click)="openDialog(assetType)"
+              <button [disabled]="!assetType.isDeletable" class="actions ms-2" mat-mini-fab title="Delete User" (click)="openDialog(assetType)"
                 aria-label="Example icon button with a menu icon">
                 <i class="bi bi-trash"></i>
               </button>
@@ -36,94 +44,103 @@
         </tbody>
       </table>
     </div>
-    <div class="col-md-4 border-start">
-      <h2 class="contentHeading p-2">Add New Asset Type</h2>
-      <form [formGroup]="addAssetType" (ngSubmit)="addAsset()" class="me-3">
+    <div class="col-md-6 border-start">
+      <h2 class="contentHeading p-2">{{isEdit?'Edit Asset Type':'Add Asset Type'}}</h2>
+      <form [formGroup]="assetTypeForm" (ngSubmit)="createAssetType()" class="me-3">
         <div class="form-group">
           <label for="typeName">Type Name:</label>
-          <input type="text" class="form-control" id="typeName" formControlName="typeName">
+          <input type="text" class="form-control" id="typeName" formControlName="typeName" required maxlength="50">
+          <div *ngIf="assetTypeForm.get('typeName').hasError('required') && assetTypeForm.get('typeName').dirty" class="text-danger">
+            Name is required.
+          </div>
+          <div *ngIf="assetTypeForm.get('typeName').hasError('duplicate')" class="text-danger">
+            Type name already exists.
+          </div>
         </div>
         <div class="form-group mt-2">
           <label for="description">Description:</label>
-          <input type="text" class="form-control" id="description" formControlName="description">
+          <input type="text" class="form-control" id="description" formControlName="description" required maxlength="50">
+          <div *ngIf="assetTypeForm.get('description').hasError('required') && assetTypeForm.get('description').dirty" class="text-danger">
+            Description is required.
+          </div>
         </div>
-        <div class="d-flex justify-content-between mt-3">
-          <button mat-raised-button type="submit" class="addBtn" [disabled]="!addAssetType.valid">Add</button>
-          <button mat-raised-button type="button" (click)="resetAsset()">Cancel</button>
+        
+        <div formArrayName="customAttributes">
+          <fieldset style="border: 2px solid #ccc; padding: 10px; border-radius: 8px; margin-top: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <legend style="font-size: 1.2em; font-weight: bold; color: #333; padding: 0 5px;">Fields</legend>
+              <button mat-raised-button color="primary" class="add-attribute-button" (click)="addNewCustomAttribute()">
+                <mat-icon>add</mat-icon>
+              </button>
+            </div>                       
+            <table class="p-2 rounded mt-2 table table-bordered" style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr>
+                  <th style="text-align: left; padding: 8px;">Name</th>
+                  <th style="text-align: left; padding: 8px;">Description</th>
+                  <th style="text-align: left; padding: 8px;">Data Type</th>
+                  <th style="text-align: center; padding: 8px;">Required?</th>
+                  <th style="text-align: right; padding: 8px;">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let customAttribute of customAttributes.controls; let i = index" [formGroupName]="i">
+                  <td style="padding: 8px;">
+                    <input type="text" class="form-control" formControlName="attributeName" required maxlength="50">
+                    <div *ngIf="customAttribute.get('attributeName').hasError('required') && customAttribute.get('attributeName').dirty" class="text-danger">
+                      Name is required.
+                    </div>
+                  </td>
+                  <td style="padding: 8px;">
+                    <input type="text" class="form-control" formControlName="description" required maxlength="50">
+                    <div *ngIf="customAttribute.get('description').hasError('required') && customAttribute.get('description').dirty" class="text-danger">
+                      Description is required.
+                    </div>
+                  </td>
+                  <td style="padding: 8px;">
+                    <select class="form-control" formControlName="dataType">
+                      <option value="string">String</option>
+                      <option value="number">Number</option>
+                      <option value="date">Date</option>
+                      <option value="boolean">Boolean</option>
+                    </select>
+                  </td>
+                  <td style="text-align: center; padding: 8px;">
+                    <input type="checkbox" class="form-check-input" formControlName="isRequired">
+                  </td>
+                  <td style="text-align: right; padding: 8px;">
+                    <div class="d-flex justify-content-end gap-2">
+                      <button mat-mini-fab type="button" class="actions btn btn-sm btn-primary" [disabled]="!customAttribute.dirty"
+                        (click)="updateCustomAttribute(i)" aria-label="Save the custom Attribute">
+                        <i class="fa fa-floppy-o"></i>
+                      </button>                      
+                      <button mat-mini-fab type="button" class="actions btn btn-sm btn-danger" (click)="deleteCustomAttribute(i)"
+                        aria-label="Delete the custom Attribute">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </fieldset>        
+          <!-- <div class="d-flex justify-content-between">                
+            <button mat-raised-button type="submit" class="addBtn" [disabled]="!assetTypeForm.valid">Add</button>
+            <button mat-raised-button type="button" *ngIf="isEdit" (click)="isEdit = false">Cancel</button>
+          </div> -->
+          
+          <div class="d-flex justify-content-between mt-3">
+            <!-- <button mat-raised-button type="submit" [ngClass]="{'addBtn': true, 'addBtn-disabled': !assetTypeForm.valid}" [disabled]="!assetTypeForm.valid">
+            {{isEdit ? 'Save Asset Type' : 'Add Asset Type'}} </button> -->
+
+            <button type="submit" mat-raised-button color="primary" class="ml-5" [disabled]="!assetTypeForm.valid">
+              {{ isEdit ? 'Update' : 'Add' }}
+            </button>
+
+            <button mat-raised-button type="button" (click)="resetAsset()">Cancel</button>
+          </div>
         </div>
       </form>
     </div>
-
-  </div>
-</div>
-
-<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
-  <div class="offcanvas-header">
-    <h3 id="offcanvasRightLabel">Edit Asset Type</h3>
-    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-  </div>
-  <div class="offcanvas-body">
-    <form [formGroup]="assetTypeForm" (ngSubmit)="addCustomAttributes()">
-      <div class="form-group">
-        <label for="typeName">Type Name:</label>
-        <input type="text" class="form-control " id="typeName" formControlName="typeName">
-      </div>
-      <div class="form-group mt-2">
-        <label for="description">Description:</label>
-        <input type="text" class="form-control " id="description" formControlName="description">
-      </div>
-      <div formArrayName="customAttributes">
-        <table class="p-2 rounded mt-2">
-          <thead>
-            <tr>
-              <th>Attribute Name</th>
-              <th>Description</th>
-              <th>Data Type</th>
-              <th>Is Required</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let customAttribute of customAttributes.controls; let i = index" [formGroupName]="i">
-              <td>
-                <input type="text" class="form-control" formControlName="attributeName">
-              </td>
-              <td>
-                <input type="text" class="form-control" formControlName="description">
-              </td>
-              <td>
-                <select class="form-control" formControlName="dataType">
-                  <option value="string">String</option>
-                  <option value="number">Number</option>
-                  <option value="date">Date</option>
-                  <option value="boolean">Boolean</option>
-                </select>
-              </td>
-              <td class="align-middle">
-                <input type="checkbox" class="form-check-input" formControlName="isRequired">
-              </td>
-              <td>
-                <div class="d-flex">
-                  <button mat-mini-fab type="button"  class="actions" [disabled]="!customAttribute.dirty"
-                    (click)="updateCustomAttribute(i)" aria-label="Update the custom Attribute">
-                    <mat-icon class="action-button">edit</mat-icon>
-                  </button>
-                  <button mat-mini-fab type="button"  class="actions" (click)="deleteCustomAttribute(i)"
-                    aria-label="Delete the custom Attribute">
-                    <mat-icon class="action-button" >delete</mat-icon>
-                  </button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="d-flex justify-content-between">
-        <button type="button" (click)="addNewCustomAttribute()" class="btn addBtn">Add Custom Attribute</button>
-
-        <button mat-raised-button type="submit" class="addBtn" [disabled]="!assetTypeForm.valid">Add</button>
-        <button mat-raised-button type="button" *ngIf="isEdit" (click)="isEdit = false">Cancel</button>
-      </div>
-    </form>
   </div>
 </div>

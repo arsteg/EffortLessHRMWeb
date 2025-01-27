@@ -6,7 +6,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
   styleUrls: ['./pagination.component.css']
 })
 export class PaginationComponent {
-  @Input() recordsPerPageOptions: number[] = [5, 10, 25, 50, 100];
+  @Input() recordsPerPageOptions: number[] = [10, 25, 50, 100];
   @Input() totalRecords: number = 0;
   @Input() recordsPerPage: number = 10;
   @Input() currentPage: number = 1;

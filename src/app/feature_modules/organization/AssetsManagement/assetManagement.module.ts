@@ -11,6 +11,7 @@ import { UserAssetAssignmentComponent } from "./user-asset-assignment/user-asset
 import { SharedModule } from "src/app/shared/shared.Module";
 import { CommonComponentsModule } from "src/app/common/commonComponents.module";
 
+
 @NgModule({
   declarations: [
     AssetComponent, 
@@ -32,7 +33,9 @@ import { CommonComponentsModule } from "src/app/common/commonComponents.module";
     AssetManagerComponent
   ],
   imports: [
-    SharedModule, CommonComponentsModule, FormsModule
+    SharedModule,
+     CommonComponentsModule,
+     FormsModule, 
   ]
 })
 export class AssetsModule {

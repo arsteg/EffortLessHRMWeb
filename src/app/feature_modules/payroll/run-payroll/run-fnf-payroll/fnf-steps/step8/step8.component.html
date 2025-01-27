@@ -1,30 +1,30 @@
 <div class="tableContainer bg-white mt-2">
     <div class="d-flex justify-content-between align-items-baseline">
-        <div><label>Overtime</label></div>
+        <div><label>Income Tax</label></div>
         <div class="d-flex">
-            <app-fnf-users (changeUser)="onUserChange($event)"></app-fnf-users>
-            <button mat-raised-button class="addBtn ms-2 mt-1" (click)="openDialog(false)">Add Overtime</button>
+            <app-fnf-users [isStep]="isStep" (changeUser)="onUserChange($event)"></app-fnf-users>
+            <button mat-raised-button class="addBtn ms-2 mt-1" (click)="openDialog(false)">Add Income Tax</button>
         </div>
     </div>
-    <table mat-table [dataSource]="overtime" class="mat-elevation-z8">
+    <table mat-table [dataSource]="incomeTax" >
         <ng-container matColumnDef="payrollUser">
             <th mat-header-cell *matHeaderCellDef> Payroll User </th>
             <td mat-cell *matCellDef="let element"> {{element.userName}} </td>
         </ng-container>
 
-        <ng-container matColumnDef="lateComing">
-            <th mat-header-cell *matHeaderCellDef> Late Coming </th>
-            <td mat-cell *matCellDef="let element"> {{element.lateComing}} </td>
+        <ng-container matColumnDef="taxCalculatedMethod">
+            <th mat-header-cell *matHeaderCellDef> Tax Calculated Method </th>
+            <td mat-cell *matCellDef="let element"> {{element.taxCalculatedMethod}} </td>
         </ng-container>
 
-        <ng-container matColumnDef="earlyGoing">
-            <th mat-header-cell *matHeaderCellDef> Early Going </th>
-            <td mat-cell *matCellDef="let element"> {{element.earlyGoing}} </td>
+        <ng-container matColumnDef="taxCalculated">
+            <th mat-header-cell *matHeaderCellDef> Tax Calculated </th>
+            <td mat-cell *matCellDef="let element"> {{element.taxCalculated}} </td>
         </ng-container>
 
-        <ng-container matColumnDef="finalOvertime">
-            <th mat-header-cell *matHeaderCellDef> Final Overtime </th>
-            <td mat-cell *matCellDef="let element"> {{element.finalOvertime}} </td>
+        <ng-container matColumnDef="tdsCalculated">
+            <th mat-header-cell *matHeaderCellDef> TDS Calculated </th>
+            <td mat-cell *matCellDef="let element"> {{element.tdsCalculated}} </td>
         </ng-container>
 
         <ng-container matColumnDef="actions">
@@ -34,11 +34,11 @@
                     <mat-icon>more_vert</mat-icon>
                 </button>
                 <mat-menu #menu="matMenu">
-                    <button mat-menu-item (click)="editOvertime(element)">
+                    <button mat-menu-item (click)="editIncomeTax(element)">
                         <mat-icon>edit</mat-icon>
                         <span>Edit</span>
                     </button>
-                    <button mat-menu-item (click)="deleteOvertime(element._id)">
+                    <button mat-menu-item (click)="deleteIncomeTax(element._id)">
                         <mat-icon>delete</mat-icon>
                         <span>Delete</span>
                     </button>
@@ -54,31 +54,39 @@
 <ng-template #dialogTemplate>
     <div class="modal-header border-bottom justify-content-between d-flex mb-2 p-3" style="z-index: 1050;">
         <div>
-            <h1 class="modal-title text-muted mb-0">{{ isEdit ? 'Edit' : 'Add' }} Overtime For FnF Payroll</h1>
+            <h1 class="modal-title text-muted mb-0">{{ isEdit ? 'Edit' : 'Add' }} Income Tax For FnF Payroll</h1>
         </div>
         <div class=""><button type="button" class="btn-close text-end" (click)="dialog.closeAll()"></button></div>
     </div>
     <div class="form-container p-3" style="max-height: 70vh; overflow-y: auto; z-index: 1050;">
         <form [formGroup]="fnfStep6Form" (ngSubmit)="onSubmit()">
             <div class="row">
-                <app-fnf-users (changeUser)="onUserChange($event)"></app-fnf-users>
-
+                @if(isEdit){
+                    <mat-form-field appearance="outline" class="my-2">
+                        <mat-label>Selected FnF User</mat-label>
+                        <input matInput type="text" formControlName="payrollFNFUser">
+    
+                    </mat-form-field>
+                    }
+                    @else if (!isEdit) {
+                    <app-fnf-users [isStep]="isStep" (changeUser)="onUserChange($event)"></app-fnf-users>
+                    }
                 <mat-form-field appearance="outline" class="col-md-6 my-2" style="z-index: 1060;">
-                    <mat-label>Late Coming</mat-label>
-                    <input matInput formControlName="lateComing">
-                    <mat-error *ngIf="fnfStep6Form.get('lateComing').hasError('required')">Late Coming is required</mat-error>
+                    <mat-label>Tax Calculated Method</mat-label>
+                    <input matInput formControlName="taxCalculatedMethod">
+                    <mat-error *ngIf="fnfStep6Form.get('taxCalculatedMethod').hasError('required')">Tax Calculated Method is required</mat-error>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="col-md-6 my-2" style="z-index: 1060;">
-                    <mat-label>Early Going</mat-label>
-                    <input matInput formControlName="earlyGoing">
-                    <mat-error *ngIf="fnfStep6Form.get('earlyGoing').hasError('required')">Early Going is required</mat-error>
+                    <mat-label>Tax Calculated</mat-label>
+                    <input matInput type="number" formControlName="taxCalculated">
+                    <mat-error *ngIf="fnfStep6Form.get('taxCalculated').hasError('required')">Tax Calculated is required</mat-error>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="col-md-6 my-2" style="z-index: 1060;">
-                    <mat-label>Final Overtime</mat-label>
-                    <input matInput formControlName="finalOvertime">
-                    <mat-error *ngIf="fnfStep6Form.get('finalOvertime').hasError('required')">Final Overtime is required</mat-error>
+                    <mat-label>TDS Calculated</mat-label>
+                    <input matInput type="number" formControlName="tdsCalculated">
+                    <mat-error *ngIf="fnfStep6Form.get('tdsCalculated').hasError('required')">TDS Calculated is required</mat-error>
                 </mat-form-field>
             </div>
 

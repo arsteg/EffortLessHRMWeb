@@ -42,16 +42,15 @@
                 <div class="input-group">
                   <input [type]="hidePassword ? 'password' : 'text'" id="password" class="rounded-pill form-control" name="password" required formControlName="password">
                   <div class="input-group-append">
-                    <button type="button" class="showPswrd" (click)="togglePasswordVisibility()">
-                      <i [class]="hidePassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+                    <button type="button" class="showPswrd" (click)="togglePasswordVisibility()" aria-label="Toggle Password Visibility">
+                      <i [class]="hidePassword ? 'bi bi-eye-slash' : 'bi bi-eye'" aria-hidden="true"></i>
                     </button>
                   </div>
                 </div>
                 <div *ngIf="!loginForm.get('password').valid && loginForm.get('password').touched" class="validationErroMessage">
                   Password is required!
-                </div>
+                </div>                
               </div>
-
               <div class="mb-3">
                 <div class="mb-2 w-100">
 
@@ -63,15 +62,14 @@
               </div>
               <div class="d-flex align-items-center">
 
-                <div *ngIf="inValidForm" class="text-light mt-3">
-                  Invalid email or password. Please try again.
-                </div>
+                <div *ngIf="errorMessage" class="text-light mt-3">
+                  {{ errorMessage }}
+                </div>                
                 
-                <button type="submit" mat-raised-button class="addBtn ms-auto d-flex">
-
+                <button mat-raised-button color="primary" type="submit" class="addBtn ms-auto d-flex">
                   <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>
-                  <span>Login</span>
-                </button>
+                  Login
+                </button>                
               </div>
             </form>
           </div>

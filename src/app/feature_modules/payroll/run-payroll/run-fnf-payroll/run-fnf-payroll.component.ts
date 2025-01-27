@@ -9,6 +9,7 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 import { MatDialog } from '@angular/material/dialog';
 import { UserService } from 'src/app/_services/users.service';
 import { AttendanceService } from 'src/app/_services/attendance.service';
+import { forkJoin, map } from 'rxjs';
 
 @Component({
   selector: 'app-run-fnf-payroll',
@@ -26,12 +27,14 @@ export class RunFnfPayrollComponent implements OnInit {
   fnfUserForm: FormGroup;
 
   selectedFnFUser: any;
-  userList: any[] = [];
+  settledUser: any[] = [];
   fnfPayroll = new MatTableDataSource<any>();
   displayedColumns: string[] = ['period', 'date', 'details', 'status', 'actions'];
   showFnFPayroll: boolean = true;
   showFnFSteps: boolean = false;
   fnfAttendanceUsers: any[] = [];
+  selectedUserId: any;
+  salary: any;
   @Output() changeView = new EventEmitter<void>();
 
   @ViewChild('fnfUserModal') fnfUserModal: TemplateRef<any>;
@@ -65,10 +68,62 @@ export class RunFnfPayrollComponent implements OnInit {
 
   ngOnInit() {
     this.generateYearList();
+    this.getSettledUsers();
     this.fetchFnFPayroll();
-    this.commonService.populateUsers().subscribe((res: any) => {
-      this.userList = res.data['data'];
-    });
+  }
+
+  getSettledUsers() {
+    this.userService.getUsersByStatus('Settled').subscribe((res: any) => {
+      this.settledUser = res.data['users'];
+    })
+  }
+
+  onUserSelectedFromChild(userId: any) {
+    this.selectedUserId = userId;
+    this.getSalarydetailsByUser();
+  }
+
+
+  getSalarydetailsByUser() {
+    let totalCTC = 0;
+    this.userService.getSalaryByUserId(this.selectedUserId).subscribe((res: any) => {
+      // const lastSalaryRecord = res.data[res.data.length - 1];
+      const lastSalaryRecord = res.data[res.data.length - 1];
+      if (lastSalaryRecord.enteringAmount === 'Monthly') {
+        totalCTC = lastSalaryRecord.Amount * 12;
+      }
+      if (lastSalaryRecord.enteringAmount === 'Yearly') {
+        totalCTC = lastSalaryRecord.Amount;
+      }
+      this.payrollService.getFlexiByUsers(this.selectedUserId).subscribe((res: any) => {
+        const totalFlexiBenefits = res?.data?.records?.reduce((sum, flexiBenefit) =>
+          sum + (flexiBenefit.TotalFlexiBenefitAmount || 0), 0) || 0;
+
+        const totalFDYearlyAmount = lastSalaryRecord.fixedDeductionList?.reduce((sum, deduction) =>
+          sum + (deduction.yearlyAmount || 0), 0) || 0;
+
+        const totalVDYearlyAmount = lastSalaryRecord.variableDeductionList?.reduce((sum, deduction) =>
+          sum + (deduction.yearlyAmount || 0), 0) || 0;
+
+        const totalECYearlyAmount = lastSalaryRecord.employerContributionList?.reduce((sum, contribution) =>
+          sum + (contribution.yearlyAmount || 0), 0) || 0;
+
+        const deductions = totalFDYearlyAmount + totalVDYearlyAmount + totalECYearlyAmount
+
+        const totalTakeHome = totalCTC - deductions;
+
+        this.fnfUserForm.patchValue({
+          totalFlexiBenefits: totalFlexiBenefits,
+          totalCTC: totalCTC,
+          totalGrossSalary: lastSalaryRecord.Amount,
+          totalTakeHome: totalTakeHome
+        });
+        this.fnfUserForm.get('totalFlexiBenefits').disable();
+        this.fnfUserForm.get('totalCTC').disable();
+        this.fnfUserForm.get('totalGrossSalary').disable();
+        this.fnfUserForm.get('totalTakeHome').disable();
+      });
+    })
   }
 
   generateYearList() {
@@ -78,41 +133,60 @@ export class RunFnfPayrollComponent implements OnInit {
 
   onYearChange(event: any) {
     this.selectedYear = event.target.value;
-    console.log('Selected year:', this.selectedYear);
   }
 
   fetchFnFPayroll() {
     const payload = { skip: '', next: '' };
-    this.payrollService.getFnF(payload).subscribe(res => {
-      this.fnfPayroll.data = res.data;
-      this.fnfPayroll.data.forEach((fnf: any) => {
-        this.getFnFUsers(fnf._id);
-      });
-    }, error => {
-      this.toast.error('Failed to fetch Full & Final Payroll data', 'Error');
-    });
-  }
-
-  getFnFUsers(fnfPayrollId: string): void {
-    const payload = {
-      skip: '',
-      next: '',
-      payrollFNF: fnfPayrollId
-    }
-
-    this.payrollService.getFnFUsers(payload).subscribe(
+  
+    this.payrollService.getFnF(payload).subscribe(
       (res: any) => {
-        const fnfPayroll = this.fnfPayroll.data.find((fnf: any) => fnf._id === fnfPayrollId);
-        if (fnfPayroll) {
-          fnfPayroll.userList = res.data;
-          fnfPayroll.userLength = res.total;
-        }
+        this.fnfPayroll.data = res.data; // Assign the data to the `fnfPayroll` property
+  
+        // Prepare an array of observables for user API calls
+        const userRequests = this.fnfPayroll.data.map((fnf: any) =>
+          this.payrollService.getFnFUsers({ skip: '', next: '', payrollFNF: fnf?._id }).pipe(
+            map((userRes: any) => ({
+              fnfId: fnf._id,
+              users: userRes.data,
+            }))
+          )
+        );
+  
+        // Use forkJoin to execute all user-related API requests concurrently
+        forkJoin(userRequests).subscribe(
+          (userResponses: any[]) => {
+            // Process each response and map the data
+            userResponses.forEach(({ fnfId, users }) => {
+              const fnfPayroll = this.fnfPayroll.data.find((fnf: any) => fnf._id === fnfId);
+              if (fnfPayroll) {
+                fnfPayroll.userList = users;
+  
+                // Map user details
+                const userNames = users.map((user: any) => {
+                  const matchedUser = this.settledUser.find((u: any) => u._id === user.user);
+                  return matchedUser
+                    ? `${matchedUser.firstName} ${matchedUser.lastName}`
+                    : 'Unknown User';
+                });
+  
+                // Join usernames into a single string and assign to `details`
+                fnfPayroll.details = userNames.length > 0 ? userNames.join(', ') : 'No Users';
+              }
+            });
+          },
+          (error: any) => {
+            console.error('Error fetching user data:', error);
+            this.toast.error('Failed to fetch user data', 'Error');
+          }
+        );
       },
       (error: any) => {
-        this.toast.error('Failed to fetch FnF Users', 'Error');
+        console.error('Error fetching Full & Final Payroll data:', error);
+        this.toast.error('Failed to fetch Full & Final Payroll data', 'Error');
       }
     );
   }
+  
 
   open(content: any) {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
@@ -123,7 +197,7 @@ export class RunFnfPayrollComponent implements OnInit {
   }
 
   editFnF(user: any) {
-    this.getFnFAttendanceUsers(user);
+    this.payrollService.selectedFnFPayroll.next(user);
     this.selectedFnFUser = user;
     this.fnfUserForm.patchValue({
       ...user,
@@ -132,23 +206,10 @@ export class RunFnfPayrollComponent implements OnInit {
     this.open(this.fnfUserModal);
   }
 
-  openFnFSteps(user: any) {
-    this.selectedFnFUser = user;
+  openFnFSteps(fnfPayroll: any) {
+    this.selectedFnFUser = fnfPayroll;
     this.showFnFPayroll = false;
     this.showFnFSteps = true;
-    let payload = {
-      skip: '', next: '', payrollFNF: user._id
-    }
-    this.payrollService.getFnFUsers(payload).subscribe(
-      (res: any) => {
-        this.userList = res.data;
-        this.payrollService.selectedFnFPayroll.next({ ...user, userList: this.userList });
-      },
-      (error: any) => {
-        this.toast.error('Failed to fetch FnF Users', 'Error');
-      }
-    );
-
     this.changeView.emit();
   }
 
@@ -179,11 +240,6 @@ export class RunFnfPayrollComponent implements OnInit {
     }
   }
 
-  onMemberSelection(event: any) {
-    const userId = event.value;
-    console.log('Selected user ID:', userId);
-    this.getTotalByUser(userId);
-  }
 
   getTotalByUser(userId: string) {
     let totalCTC = 0;
@@ -195,13 +251,10 @@ export class RunFnfPayrollComponent implements OnInit {
       if (lastSalaryRecord.enteringAmount === 'Yearly') {
         totalCTC = lastSalaryRecord.Amount;
       }
-      console.log('Last Salary Record:', lastSalaryRecord);
-      console.log('Total CTC:', totalCTC);
 
       this.payrollService.getFlexiByUsers(userId).subscribe((res: any) => {
         const totalFlexiBenefits = res?.data?.records?.reduce((sum, flexiBenefit) =>
           sum + (flexiBenefit.TotalFlexiBenefitAmount || 0), 0) || 0;
-        console.log('Total Flexi Benefits:', totalFlexiBenefits);
 
         const totalFDYearlyAmount = lastSalaryRecord.fixedDeductionList?.reduce((sum, deduction) =>
           sum + (deduction.yearlyAmount || 0), 0) || 0;
@@ -215,7 +268,6 @@ export class RunFnfPayrollComponent implements OnInit {
         const deductions = totalFDYearlyAmount + totalVDYearlyAmount + totalECYearlyAmount
 
         const totalTakeHome = totalCTC - deductions;
-        console.log('Total Take Home:', totalTakeHome);
 
         this.fnfUserForm.patchValue({
           totalFlexiBenefits: totalFlexiBenefits,
@@ -232,11 +284,17 @@ export class RunFnfPayrollComponent implements OnInit {
   }
 
   onFnFUserSubmission() {
+    this.fnfUserForm.patchValue({
+      user: this.selectedUserId
+    })
+
+    this.fnfUserForm.get('totalFlexiBenefits').enable();
+    this.fnfUserForm.get('totalCTC').enable();
+    this.fnfUserForm.get('totalGrossSalary').enable();
+    this.fnfUserForm.get('totalTakeHome').enable();
+
     if (this.fnfUserForm.valid) {
-      this.fnfUserForm.get('totalFlexiBenefits').enable();
-      this.fnfUserForm.get('totalCTC').enable();
-      this.fnfUserForm.get('totalGrossSalary').enable();
-      this.fnfUserForm.get('totalTakeHome').enable();
+
       this.payrollService.addFnFUser(this.fnfUserForm.value).subscribe((res: any) => {
         this.toast.success('FnF User Updated', 'Success');
         this.modalService.dismissAll();
@@ -244,11 +302,12 @@ export class RunFnfPayrollComponent implements OnInit {
       }, error => {
         this.toast.error('Failed to update FnF User', 'Error');
       });
-      this.fnfUserForm.get('totalFlexiBenefits').disable();
-      this.fnfUserForm.get('totalCTC').disable();
-      this.fnfUserForm.get('totalGrossSalary').disable();
-      this.fnfUserForm.get('totalTakeHome').disable();
+
     }
+    this.fnfUserForm.get('totalFlexiBenefits').disable();
+    this.fnfUserForm.get('totalCTC').disable();
+    this.fnfUserForm.get('totalGrossSalary').disable();
+    this.fnfUserForm.get('totalTakeHome').disable();
   }
 
   resetForm() {
@@ -283,8 +342,6 @@ export class RunFnfPayrollComponent implements OnInit {
     // Implement the logic to complete the FnF process
   }
 
-
-
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
@@ -295,23 +352,8 @@ export class RunFnfPayrollComponent implements OnInit {
     }
   }
 
-
-  getFnFAttendanceUsers(data: any) {
-    const payload = {
-      skip: '',
-      next: '',
-      month: data?.month,
-      year: data?.year,
-      isFNF: true
-    }
-    this.attendanceService.getfnfAttendanceProcess(payload).subscribe((res: any) => {
-      this.fnfAttendanceUsers = res['data'].map((record: any) => record.users).flat();
-      console.log(this.fnfAttendanceUsers);
-    });
-  }
-
   getUserName(userId: string) {
-    const matchedName = this.userList.find(user => user._id === userId);
+    const matchedName = this.settledUser.find(user => user._id === userId);
     return matchedName ? `${matchedName.firstName + ' ' + matchedName.lastName}` : '';
   }
 

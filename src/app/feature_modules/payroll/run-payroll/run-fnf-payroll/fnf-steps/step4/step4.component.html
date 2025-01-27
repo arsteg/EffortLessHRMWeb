@@ -1,13 +1,14 @@
-<div class="tableContainer bg-white mt-2">
-    <div class="d-flex justify-content-between align-items-baseline">
+<div class="border-top">
+    <div class="d-flex justify-content-between align-items-baseline pt-2">
         <div><label>Termination Compensation</label></div>
         <div class="d-flex">
-            <app-fnf-users (changeUser)="onUserChange($event)"></app-fnf-users>
-            <button mat-raised-button class="addBtn ms-2 mt-1" (click)="openDialog(false)">Add Termination Compensation</button>
+            <app-fnf-users [isStep]="isStep" (changeUser)="onUserChange($event)"></app-fnf-users>
+            <button mat-raised-button class="addBtn ms-2 mt-1" (click)="openDialog(false)">Add Termination
+                Compensation</button>
         </div>
     </div>
-    <table mat-table [dataSource]="terminationCompensation" class="mat-elevation-z8">
-        <ng-container matColumnDef="payrollUser">
+    <table mat-table [dataSource]="terminationCompensation">
+        <ng-container matColumnDef="userName">
             <th mat-header-cell *matHeaderCellDef> Payroll User </th>
             <td mat-cell *matCellDef="let element"> {{element.userName}} </td>
         </ng-container>
@@ -73,7 +74,7 @@
                         <mat-icon>edit</mat-icon>
                         <span>Edit</span>
                     </button>
-                    <button mat-menu-item (click)="deleteTerminationCompensation(element._id)">
+                    <button mat-menu-item (click)="deleteFnF(element._id)">
                         <mat-icon>delete</mat-icon>
                         <span>Delete</span>
                     </button>
@@ -89,73 +90,98 @@
 <ng-template #dialogTemplate>
     <div class="modal-header border-bottom justify-content-between d-flex mb-2 p-3" style="z-index: 1050;">
         <div>
-            <h1 class="modal-title text-muted mb-0">{{ isEdit ? 'Edit' : 'Add' }} Termination Compensation For FnF Payroll</h1>
+            <h1 class="modal-title text-muted mb-0">{{ isEdit ? 'Edit' : 'Add' }} Termination Compensation For FnF
+                Payroll</h1>
         </div>
         <div class=""><button type="button" class="btn-close text-end" (click)="dialog.closeAll()"></button></div>
     </div>
     <div class="form-container p-3" style="max-height: 70vh; overflow-y: auto; z-index: 1050;">
-        <form [formGroup]="fnfStep3Form" (ngSubmit)="onSubmit()">
+        <form [formGroup]="terminationCompensationForm" (ngSubmit)="onSubmit()">
             <div class="row">
-                <app-fnf-users (changeUser)="onUserChange($event)"></app-fnf-users>
+                @if(isEdit){
+                <mat-form-field appearance="outline" class="my-2">
+                    <mat-label>Selected FnF User</mat-label>
+                    <input matInput type="text" formControlName="payrollFNFUser">
 
-                <mat-form-field appearance="outline" class="col-md-6 my-2" style="z-index: 1060;">
+                </mat-form-field>
+                }
+                @else if (!isEdit) {
+                <app-fnf-users [isStep]="isStep" (changeUser)="onUserChange($event)"></app-fnf-users>
+                }
+                <mat-form-field appearance="outline" class="col-md-6 my-2">
                     <mat-label>Termination Date</mat-label>
-                    <input matInput type="date" formControlName="terminationDate">
-                    <mat-error *ngIf="fnfStep3Form.get('terminationDate').hasError('required')">Termination Date is required</mat-error>
+                    <input matInput [matDatepicker]="picker" formControlName="terminationDate">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                    <mat-error
+                        *ngIf="terminationCompensationForm.get('terminationDate').hasError('required')">Termination Date
+                        is required</mat-error>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="col-md-6 my-2" style="z-index: 1060;">
+                <mat-form-field appearance="outline" class="col-md-6 my-2" >
                     <mat-label>Notice Period</mat-label>
                     <input matInput type="number" formControlName="noticePeriod">
-                    <mat-error *ngIf="fnfStep3Form.get('noticePeriod').hasError('required')">Notice Period is required</mat-error>
+                    <mat-error *ngIf="terminationCompensationForm.get('noticePeriod').hasError('required')">Notice
+                        Period is required</mat-error>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="col-md-6 my-2" style="z-index: 1060;">
+                <mat-form-field appearance="outline" class="col-md-6 my-2" >
                     <mat-label>Gratuity Eligible</mat-label>
                     <input matInput type="number" formControlName="gratuityEligible">
-                    <mat-error *ngIf="fnfStep3Form.get('gratuityEligible').hasError('required')">Gratuity Eligible is required</mat-error>
+                    <mat-error *ngIf="terminationCompensationForm.get('gratuityEligible').hasError('required')">Gratuity
+                        Eligible is required</mat-error>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="col-md-6 my-2" style="z-index: 1060;">
+                <mat-form-field appearance="outline" class="col-md-6 my-2" >
                     <mat-label>Years of Service</mat-label>
                     <input matInput type="number" formControlName="yearsOfService">
-                    <mat-error *ngIf="fnfStep3Form.get('yearsOfService').hasError('required')">Years of Service is required</mat-error>
+                    <mat-error *ngIf="terminationCompensationForm.get('yearsOfService').hasError('required')">Years of
+                        Service is required</mat-error>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="col-md-6 my-2" style="z-index: 1060;">
+                <mat-form-field appearance="outline" class="col-md-6 my-2" >
                     <mat-label>Gratuity Amount</mat-label>
                     <input matInput type="number" formControlName="gratuityAmount">
-                    <mat-error *ngIf="fnfStep3Form.get('gratuityAmount').hasError('required')">Gratuity Amount is required</mat-error>
+                    <mat-error *ngIf="terminationCompensationForm.get('gratuityAmount').hasError('required')">Gratuity
+                        Amount is required</mat-error>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="col-md-6 my-2" style="z-index: 1060;">
+                <mat-form-field appearance="outline" class="col-md-6 my-2" >
                     <mat-label>Severance Pay</mat-label>
                     <input matInput type="number" formControlName="severancePay">
-                    <mat-error *ngIf="fnfStep3Form.get('severancePay').hasError('required')">Severance Pay is required</mat-error>
+                    <mat-error *ngIf="terminationCompensationForm.get('severancePay').hasError('required')">Severance
+                        Pay is required</mat-error>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="col-md-6 my-2" style="z-index: 1060;">
+                <mat-form-field appearance="outline" class="col-md-6 my-2" >
                     <mat-label>Retirement Benefits</mat-label>
                     <input matInput type="number" formControlName="retirementBenefits">
-                    <mat-error *ngIf="fnfStep3Form.get('retirementBenefits').hasError('required')">Retirement Benefits is required</mat-error>
+                    <mat-error
+                        *ngIf="terminationCompensationForm.get('retirementBenefits').hasError('required')">Retirement
+                        Benefits is required</mat-error>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="col-md-6 my-2" style="z-index: 1060;">
+                <mat-form-field appearance="outline" class="col-md-6 my-2" >
                     <mat-label>Redeployment Compensation</mat-label>
                     <input matInput type="number" formControlName="redeploymentCompensation">
-                    <mat-error *ngIf="fnfStep3Form.get('redeploymentCompensation').hasError('required')">Redeployment Compensation is required</mat-error>
+                    <mat-error
+                        *ngIf="terminationCompensationForm.get('redeploymentCompensation').hasError('required')">Redeployment
+                        Compensation is required</mat-error>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="col-md-6 my-2" style="z-index: 1060;">
+                <mat-form-field appearance="outline" class="col-md-6 my-2" >
                     <mat-label>Outplacement Services</mat-label>
                     <input matInput type="number" formControlName="outplacementServices">
-                    <mat-error *ngIf="fnfStep3Form.get('outplacementServices').hasError('required')">Outplacement Services is required</mat-error>
+                    <mat-error
+                        *ngIf="terminationCompensationForm.get('outplacementServices').hasError('required')">Outplacement
+                        Services is required</mat-error>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="col-md-6 my-2" style="z-index: 1060;">
+                <mat-form-field appearance="outline" class="col-md-6 my-2" >
                     <mat-label>Status</mat-label>
                     <input matInput formControlName="status">
-                    <mat-error *ngIf="fnfStep3Form.get('status').hasError('required')">Status is required</mat-error>
+                    <mat-error *ngIf="terminationCompensationForm.get('status').hasError('required')">Status is
+                        required</mat-error>
                 </mat-form-field>
             </div>
 

@@ -179,7 +179,7 @@ export class AssetComponent implements OnInit {
   }
 
   loadAssetTypes() {
-    this.assetService.getAllAssetTypes().subscribe(
+    this.assetService.getAllAssetTypes(0,0).subscribe(
       (response) => {
         this.assetTypes = response.data;
         if (this.assetTypes && this.assetTypes.length > 0) {

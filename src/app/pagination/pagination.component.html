@@ -1,21 +1,51 @@
 <ng-container>
   <div class="d-flex justify-content-end align-items-center mt-3 px-2">
-    Items per page
-    <select style="width: 80px;" class="page form-select form-select-sm mx-2"
-      [(ngModel)]="recordsPerPage" (ngModelChange)="updateRecordsPerPage($event)">
-      <option class="page" *ngFor="let option of recordsPerPageOptions" [value]="option">
+    <!-- Page Size Dropdown -->
+    <span>Page Size</span>
+    <select 
+      class="form-select form-select-sm mx-2" 
+      style="width: 80px;" 
+      [(ngModel)]="recordsPerPage" 
+      (ngModelChange)="updateRecordsPerPage($event)">
+      <option *ngFor="let option of recordsPerPageOptions" [value]="option">
         {{ option }}
       </option>
     </select>
 
-    <span class="ml-2 page">{{ currentPage }} - {{ getTotalPages() }} of {{ totalRecords }}</span>
+    <!-- Current Page and Total Pages Display -->
+    <span class="ml-2">Page {{ currentPage }} of {{ getTotalPages() }}, Records: {{ totalRecords }}</span>
 
-    <!-- previous page -->
-    <span (click)="firstPagePagination()" class="page bi bi-chevron-bar-left btn-lg btn-outline-primary" title="First Page" [class.disabled]="isPreviousButtonDisabled()"></span>
-    <span (click)="previousPagination()" class="page bi bi-chevron-left btn-lg btn-outline-primary" title="Previous Page" [class.disabled]="isPreviousButtonDisabled()"></span>
+    <!-- Pagination Buttons -->
+    <!-- First Page -->
+    <span 
+      (click)="firstPagePagination()" 
+      class="bi bi-chevron-bar-left btn-lg btn-outline-primary mx-1" 
+      title="First Page" 
+      [class.disabled]="isPreviousButtonDisabled()">
+    </span>
 
-    <!-- next page -->
-    <span (click)="nextPagination()" class="page bi bi-chevron-right btn-lg btn-outline-primary" title="Next Page" [class.disabled]="isNextButtonDisabled()"></span>
-    <span (click)="lastPagePagination()" class="page bi bi-chevron-bar-right btn-lg btn-outline-primary" title="Last Page" [class.disabled]="isNextButtonDisabled()"></span>
+    <!-- Previous Page -->
+    <span 
+      (click)="previousPagination()" 
+      class="bi bi-chevron-left btn-lg btn-outline-primary mx-1" 
+      title="Previous Page" 
+      [class.disabled]="isPreviousButtonDisabled()">
+    </span>
+
+    <!-- Next Page -->
+    <span 
+      (click)="nextPagination()" 
+      class="bi bi-chevron-right btn-lg btn-outline-primary mx-1" 
+      title="Next Page" 
+      [class.disabled]="isNextButtonDisabled()">
+    </span>
+
+    <!-- Last Page -->
+    <span 
+      (click)="lastPagePagination()" 
+      class="bi bi-chevron-bar-right btn-lg btn-outline-primary mx-1" 
+      title="Last Page" 
+      [class.disabled]="isNextButtonDisabled()">
+    </span>
   </div>
 </ng-container>

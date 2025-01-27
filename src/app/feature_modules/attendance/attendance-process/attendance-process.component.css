@@ -1,0 +1,9 @@
+.table-responsive {
+    overflow-x: auto;
+  }
+  
+  .tableContainer {
+    width: 100%;
+    overflow-x: hidden;
+  }
+  

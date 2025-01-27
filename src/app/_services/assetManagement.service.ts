@@ -147,9 +147,9 @@ export class AssetManagementService {
 
   //Asset Types
 
-  getAllAssetTypes(): Observable<any> {
+  getAllAssetTypes(skip:number,next:number): Observable<any> {
     return this.http.get<any>(
-      `${environment.apiUrlDotNet}/assetsManagement/allAssetTypes`,
+      `${environment.apiUrlDotNet}/assetsManagement/allAssetTypes?skip=${skip}&next=${next}`,
       this.httpOptions
     );
   }
@@ -225,6 +225,12 @@ export class AssetManagementService {
   getEmployeeUnAssignedAssets(emploieeId:string): Observable<any> {
     return this.http.get<any>(
       `${environment.apiUrlDotNet}/assetsManagement/unassignedAssets/${emploieeId}`,
+      this.httpOptions
+    );
+  }
+  getUnAssignedAssets(): Observable<any> {
+    return this.http.get<any>(
+      `${environment.apiUrlDotNet}/assetsManagement/unassignedAssets`,
       this.httpOptions
     );
   }
