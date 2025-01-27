@@ -389,6 +389,11 @@ export class PayrollService {
   }
   // PF charges
 
+  addPFCharges(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/pf-charge`, payload, this.httpOptions);
+    return response;
+  }
+  
   getAllPFCharges(payload: any): Observable<any> {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/pf-charge-by-company`, payload, this.httpOptions);
     return response;
@@ -661,7 +666,7 @@ export class PayrollService {
     return response;
   }
 
-   getFnFUsers(payload: any): Observable<any> {
+  getFnFUsers(payload: any): Observable<any> {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/users-by-payroll-fnf`, payload, this.httpOptions);
     return response;
   }
@@ -670,7 +675,7 @@ export class PayrollService {
     var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/fnf/users-by-userId/${userId}`, this.httpOptions);
     return response;
   }
-  
+
   updateFnFUser(id: string, payload: any): Observable<any> {
     var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/fnf/users/${id}`, payload, this.httpOptions);
     return response;
@@ -768,7 +773,7 @@ export class PayrollService {
     var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/payroll-fnf-manual-arrears-by-payroll-fnf/${payrollFnF}`, this.httpOptions);
     return response;
   }
-  
+
   // FnF Termination Compensation CRUD
   addFnFTerminationCompensation(payload: any): Observable<any> {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/payroll-fnf-termination-compensation`, payload, this.httpOptions);
