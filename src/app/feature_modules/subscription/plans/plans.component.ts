@@ -33,18 +33,21 @@ export class PlansComponent {
   private readonly destoryRef = inject(DestroyRef);
   private readonly dialog = inject(MatDialog);
   private readonly ngZone = inject(NgZone);
-  today: Date = new Date();
   plans = [];
   subscription = this.authService.companySubscription.getValue();
+  subscribedPlan: any;
   user = this.authService.currentUserSubject.getValue();
   rzCred = '';
+  selectedPlan: any;
+  loading = false;
+  loadingPlans = false;
 
   ngOnInit() {
     if (!this.hasActiveSubscription) {
       this.credentials();
       this.getPlan();
     } else {
-      this.getPlan(this.subscription.plan_id);
+      this.getSubscription(this.subscription.id);
     }
   }
 
@@ -60,57 +63,66 @@ export class PlansComponent {
     return this.subscription?.status === 'active'
   }
 
-  getPlan(id?: any) {
-    if (id) {
-      this.subscriptionService.getPlanByName(id)
-        .subscribe((res: any) => {
-          this.plans = res.data;
-        });
-    } else {
-      this.subscriptionService.getPlans()
-        .subscribe((res: any) => {
-          this.plans = res.data.filter((plan: any) => plan.IsActive);
-        });
-    }
+  getSubscription(id){
+    this.subscriptionService.getSubscriptionById(id)
+    .pipe(takeUntilDestroyed(this.destoryRef))
+    .subscribe((data: any) => {
+      console.log(data);
+      this.subscribedPlan = data.data.subscription.currentPlanId;
+      this.subscription = data.data.subscription.razorpaySubscription;
+    })
   }
 
-  payNow(plan: any) {
+  getPlan() {
+    this.loadingPlans = true;
+      this.subscriptionService.getPlans()
+      .pipe(takeUntilDestroyed(this.destoryRef))
+      .subscribe((res: any) => {
+          this.plans = res.data.filter((plan: any) => plan.IsActive);
+          this.loadingPlans = false;
+        }, ()=>{
+          this.loadingPlans = false;
+        });
+  }
+
+  payNow() {
     if (!this.rzCred) {
       alert('Please contact admin to setup payment gateway');
       return false;
     }
     const payload = {
-      currentPlanId: plan._id,
-      quantity: plan.quantity,
+      currentPlanId: this.selectedPlan._id,
+      quantity: this.selectedPlan.quantity,
     };
-    plan['loading'] = true;
+    this.loading = true;
     this.subscriptionService.createSubscription(payload)
       .subscribe((data: any) => {
-        this.makePayment(data.data.subscription.subscriptionId, plan);
+        this.makePayment(data.data.subscription.subscriptionId, this.selectedPlan);
       });
     return true;
   }
 
   makePayment(id: string, plan: any) {
+    console.log(this.user)
     const options = {
       "key": this.rzCred, // TODO: Set in environment file or backend
       "subscription_id": id,
       "name": this.user.firstName + ' ' + this.user.lastName,
       "description": "Payment for subscription " + id,
       "handler": (response: any) => {
+        console.log(response);
         response['subscriptionId'] = id;
         if (response.razorpay_payment_id) {
-          plan['loading'] = false;
           this.subscription.status = 'active';
           this.subscription.created_at = new Date().getTime() / 1000;
           this.subscription.current_start = new Date().getTime() / 1000;
           this.subscription.id = id;
           this.subscriptionService.activateSubscription(id)
             .subscribe((data: any) => {
-              this.authService.companySubscription.next(data.data.subscription.razorpaySubscription);
-              localStorage.setItem('subscription', JSON.stringify(data.data.subscription.razorpaySubscription));
-
               this.ngZone.run(() => {
+                this.authService.companySubscription.next(data.data.subscription.razorpaySubscription);
+                localStorage.setItem('subscription', JSON.stringify(data.data.subscription.razorpaySubscription));
+                this.loading = false;
                 if (localStorage.getItem('roleId') === '639acb77b5e1ffe22eaa4a39') {
                   this.router.navigate(['home/dashboard']);
                 } else {
@@ -118,14 +130,18 @@ export class PlansComponent {
                 }
               });
             });
+        } else {
+          this.loading = false;
         }
       },
       "prefill": {
-        "email": this.user.email,
+        "email": this.user.email || '',
       },
       "modal": {
         "ondismiss": () => {
-          this.ngZone.run(() => {plan['loading'] = false;});
+          this.ngZone.run(() => {
+            this.loading = false;
+          });
         }
       }
     };

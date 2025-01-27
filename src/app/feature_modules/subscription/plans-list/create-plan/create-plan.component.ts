@@ -12,7 +12,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatRadioModule } from '@angular/material/radio';
 import { SubscriptionService } from 'src/app/_services/subscription.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-
+import { MatSelectModule } from '@angular/material/select';
 @Component({
   selector: 'app-create-plan',
   standalone: true,
@@ -23,6 +23,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     MatFormFieldModule,
     MatButtonModule,
     MatRadioModule,
+    MatSelectModule,
   ],
   providers: [
     {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {floatLabel: 'auto'}}
@@ -49,20 +50,23 @@ export class CreatePlanComponent {
       notes1: new FormControl(''),
       notes2: new FormControl(''),
       quantity: new FormControl('1', [Validators.min(1)]),
+      type: new FormControl('', [Validators.required]),
     });
   }
 
   createPlan(){
-    this.loading.set(true);
-    const payload = this.planForm.value;
-    payload['IsActive'] = true;
-    this.subscriptionService.createPlan(this.planForm.value)
-    .pipe(takeUntilDestroyed(this.destroyRef))
-    .subscribe((data:any)=>{
-      this.loading.set(false);
-      this.dialogRef.close('success');
-    },(error:any)=>{
-      this.loading.set(false);
-    })
+    if(this.planForm.valid){
+      this.loading.set(true);
+      const payload = this.planForm.value;
+      payload['IsActive'] = true;
+      this.subscriptionService.createPlan(this.planForm.value)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((data:any)=>{
+        this.loading.set(false);
+        this.dialogRef.close('success');
+      },(error:any)=>{
+        this.loading.set(false);
+      })
+    }
   }
 }

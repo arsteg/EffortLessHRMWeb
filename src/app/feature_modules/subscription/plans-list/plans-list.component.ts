@@ -72,9 +72,18 @@ export class PlansListComponent {
 
   openPlanDetailsDialog(plan: any) {
     this.dialog.open(PlanDetailsComponent, {
-      width: '500px',
       data: {plan}
     });
+  }
 
+  toggleActivePlan(id: string, status: boolean) {
+    status = !status
+    this.subscriptionService
+      .updatePlan(id, {IsActive: status})
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((response: any) => {
+        this.getPlans();
+        this.snackbar.open(`Plan ${status?'enabled':'disabled'} successfully`, 'OK');
+      });
   }
 }

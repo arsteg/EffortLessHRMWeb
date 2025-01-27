@@ -20,10 +20,14 @@ export class SubscriptionService extends baseService {
   }
 
   readonly http = inject(HttpClient);
-  private httpOptions = this.getHttpOptions();
+  httpOptions = this.getHttpOptions();
 
   getPlans() {
    return this.http.get(environment.apiUrlDotNet + '/pricing/plan', this.httpOptions);
+  }
+
+  updatePlan(id: string, payload: any){
+    return this.http.put(`${environment.apiUrlDotNet}/pricing/plan/${id}`, payload, this.httpOptions);
   }
 
   getPlanByName(name: string){
