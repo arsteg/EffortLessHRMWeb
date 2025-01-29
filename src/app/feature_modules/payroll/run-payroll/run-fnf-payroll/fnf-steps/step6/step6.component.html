@@ -2,7 +2,7 @@
     <div class="d-flex justify-content-between align-items-baseline pt-2">
         <div><label>Statutory Benefits</label></div>
         <div class="d-flex">
-            <app-fnf-users [isStep]="isSteps" (changeUser)="onUserChange($event)"></app-fnf-users>
+            <app-fnf-users [isStep]="isSteps" [selectedFnF]="selectedFnF" (changeUser)="onUserChange($event)"></app-fnf-users>
             <button mat-raised-button class="addBtn ms-2 mt-1" (click)="openDialog(false)">Add Statutory Benefit</button>
         </div>
     </div>
@@ -14,7 +14,11 @@
 
         <ng-container matColumnDef="IsGratuityApplicable">
             <th mat-header-cell *matHeaderCellDef> Gratuity Applicable </th>
-            <td mat-cell *matCellDef="let element"> {{element.IsGratuityApplicable}} </td>
+            <td mat-cell *matCellDef="let element">
+                <mat-icon [ngClass]="{'text-success': element.IsGratuityApplicable, 'text-danger': !element.IsGratuityApplicable}">
+                    {{ element.IsGratuityApplicable ? 'check' : 'close' }}
+                </mat-icon>
+            </td>
         </ng-container>
 
         <ng-container matColumnDef="GratuityAmount">
@@ -24,7 +28,11 @@
 
         <ng-container matColumnDef="IsProvidentFundApplicable">
             <th mat-header-cell *matHeaderCellDef> Provident Fund Applicable </th>
-            <td mat-cell *matCellDef="let element"> {{element.IsProvidentFundApplicable}} </td>
+            <td mat-cell *matCellDef="let element">
+                <mat-icon [ngClass]="{'text-success': element.IsProvidentFundApplicable, 'text-danger': !element.IsProvidentFundApplicable}">
+                    {{ element.IsProvidentFundApplicable ? 'check' : 'close' }}
+                </mat-icon>
+            </td>
         </ng-container>
 
         <ng-container matColumnDef="ProvidentFundAmount">
@@ -39,7 +47,11 @@
 
         <ng-container matColumnDef="IsProvidentFundWithdrawFormSubmitted">
             <th mat-header-cell *matHeaderCellDef> Provident Fund Withdraw Form </th>
-            <td mat-cell *matCellDef="let element"> {{element.IsProvidentFundWithdrawFormSubmitted}} </td>
+            <td mat-cell *matCellDef="let element">
+                <mat-icon [ngClass]="{'text-success': element.IsProvidentFundWithdrawFormSubmitted, 'text-danger': !element.IsProvidentFundWithdrawFormSubmitted}">
+                    {{ element.IsProvidentFundWithdrawFormSubmitted ? 'check' : 'close' }}
+                </mat-icon>
+            </td>
         </ng-container>
 
         <ng-container matColumnDef="actions">
@@ -83,7 +95,7 @@
                     </mat-form-field>
                 }
                 @else if (!isEdit) {
-                    <app-fnf-users [isStep]="isSteps" (changeUser)="onUserChange($event)"></app-fnf-users>
+                    <app-fnf-users [isStep]="isSteps" [selectedFnF]="selectedFnF" (changeUser)="onUserChange($event)"></app-fnf-users>
                 }
                 <mat-form-field appearance="outline" class="col-md-6 my-2">
                     <mat-label>Gratuity Amount</mat-label>

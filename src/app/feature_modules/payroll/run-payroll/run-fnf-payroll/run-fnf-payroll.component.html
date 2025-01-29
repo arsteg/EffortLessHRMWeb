@@ -44,12 +44,12 @@
                             <mat-icon>more_vert</mat-icon>
                         </button>
                         <mat-menu #menu="matMenu">
-                            <button mat-menu-item (click)="editFnF(element)">
+                            <button mat-menu-item (click)="selectedFnF=element ;editFnF(element)">
                                 <mat-icon>group</mat-icon>
                                 <span>Add Users</span>
                             </button>
 
-                            <button mat-menu-item (click)="openFnFSteps(element)">
+                            <button mat-menu-item (click)="selectedFnF = element; openFnFSteps(element)">
                                 <mat-icon>edit</mat-icon>
                                 <span>Edit</span>
                             </button>
@@ -76,7 +76,8 @@
             <ng-template matStepLabel>Step 1</ng-template>
             <ng-template matStepContent><app-step1 [fnfPayrollRecord]="selectedFnFUser"
                 [isSteps]="showFnFSteps"
-                [settledUsers]="settledUser"></app-step1></ng-template>
+                [settledUsers]="settledUser"
+                [selectedFnF]="selectedFnF"></app-step1></ng-template>
             <div>
                 <button mat-button matStepperNext>Next</button>
             </div>
@@ -85,7 +86,8 @@
             <ng-template matStepLabel>Step 2</ng-template>
             <ng-template matStepContent><app-step2 [fnfPayrollRecord]="selectedFnFUser"
                 [isSteps]="showFnFSteps"
-                [settledUsers]="settledUser"></app-step2></ng-template>
+                [settledUsers]="settledUser"
+                [selectedFnF]="selectedFnF"></app-step2></ng-template>
             <div>
                 <button mat-button matStepperPrevious>Back</button>
                 <button mat-button matStepperNext>Next</button>
@@ -95,7 +97,8 @@
             <ng-template matStepLabel>Step 3</ng-template>
             <ng-template matStepContent><app-step3 [fnfPayrollRecord]="selectedFnFUser"
                 [isSteps]="showFnFSteps"
-                [settledUsers]="settledUser"></app-step3></ng-template>
+                [settledUsers]="settledUser"
+                [selectedFnF]="selectedFnF"></app-step3></ng-template>
             <div>
                 <button mat-button matStepperPrevious>Back</button>
                 <button mat-button matStepperNext>Next</button>
@@ -105,7 +108,8 @@
             <ng-template matStepLabel>Step 4</ng-template>
             <ng-template matStepContent><app-step4 [fnfPayrollRecord]="selectedFnFUser"
                 [isSteps]="showFnFSteps"
-                [settledUsers]="settledUser"></app-step4></ng-template>
+                [settledUsers]="settledUser"
+                [selectedFnF]="selectedFnF"></app-step4></ng-template>
             <div>
                 <button mat-button matStepperPrevious>Back</button>
                 <button mat-button matStepperNext>Next</button>
@@ -115,7 +119,8 @@
             <ng-template matStepLabel>Step 5</ng-template>
             <ng-template matStepContent><app-step5 [fnfPayrollRecord]="selectedFnFUser"
                 [isSteps]="showFnFSteps"
-                [settledUsers]="settledUser"></app-step5></ng-template>
+                [settledUsers]="settledUser"
+                [selectedFnF]="selectedFnF"></app-step5></ng-template>
             <div>
                 <button mat-button matStepperPrevious>Back</button>
                 <button mat-button matStepperNext>Next</button>
@@ -123,9 +128,10 @@
         </mat-step>
         <mat-step>
             <ng-template matStepLabel>Step 6</ng-template>
-            <ng-template matStepContent><app-step6 [fnfPayrollRecord]="selectedFnFUser"
+            <ng-template matStepContent><app-step6 
                 [isSteps]="showFnFSteps"
-                [settledUsers]="settledUser"></app-step6></ng-template>
+                [settledUsers]="settledUser"
+                [selectedFnF]="selectedFnF"></app-step6></ng-template>
             <div>
                 <button mat-button matStepperPrevious>Back</button>
                 <button mat-button matStepperNext>Next</button>
@@ -135,7 +141,8 @@
             <ng-template matStepLabel>Step 7</ng-template>
             <ng-template matStepContent><app-step7 [fnfPayrollRecord]="selectedFnFUser"
                 [isSteps]="showFnFSteps"
-                [settledUsers]="settledUser"></app-step7></ng-template>
+                [settledUsers]="settledUser"
+                [selectedFnF]="selectedFnF"></app-step7></ng-template>
             <div>
                 <button mat-button matStepperPrevious>Back</button>
                 <button mat-button matStepperNext>Next</button>
@@ -146,7 +153,8 @@
             <ng-template matStepLabel>Step 8</ng-template>
             <ng-template matStepContent><app-step8 [fnfPayrollRecord]="selectedFnFUser"
                 [isSteps]="showFnFSteps"
-                [settledUsers]="settledUser"></app-step8></ng-template>
+                [settledUsers]="settledUser"
+                [selectedFnF]="selectedFnF"></app-step8></ng-template>
             <div>
                 <button mat-button matStepperPrevious>Back</button>
                 <button mat-button (click)="completeFnF()">Complete</button>
@@ -213,7 +221,7 @@
         <form [formGroup]="fnfUserForm" (ngSubmit)="onFnFUserSubmission()">
 
             <div class="form-group my-2">
-                <app-fnf-users (changeUser)="onUserSelectedFromChild($event)"></app-fnf-users>
+                <app-fnf-users  [selectedFnF]="selectedFnF" (changeUser)="onUserSelectedFromChild($event)"></app-fnf-users>
             </div>
             <div class="form-group my-2">
                 <mat-form-field appearance="outline" class="w-100">
