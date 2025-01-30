@@ -5,6 +5,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
+import { UserService } from 'src/app/_services/users.service';
+import { catchError, forkJoin, map } from 'rxjs';
 
 @Component({
   selector: 'app-step5',
@@ -14,24 +16,27 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 export class FNFStep5Component implements OnInit {
   displayedColumns: string[] = ['userName', 'loanAndAdvance', 'LoanAdvanceAmount', 'status', 'finalSettlementAmount', 'fnfClearanceStatus', 'fnfDate', 'actions'];
   loanAdvances = new MatTableDataSource<any>();
+  userLoanAdvances: any[] = [];
   loanAdvanceForm: FormGroup;
   selectedLoanAdvance: any;
   fnfUsers: any;
   isEdit: boolean = false;
   selectedFNFUser: any;
   @Input() settledUsers: any[];
-  @Input() fnfPayrollRecord: any;
   @Input() isSteps: boolean;
+  @Input() selectedFnF: any;
+  loanCategories: any;
 
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
 
   constructor(private fb: FormBuilder,
     private payrollService: PayrollService,
+    private userService: UserService,
     public dialog: MatDialog,
     private toast: ToastrService) {
     this.loanAdvanceForm = this.fb.group({
       payrollFNFUser: ['', Validators.required],
-      loanAndAdvance: [null],
+      loanAndAdvance: ['', Validators.required],
       LoanAdvanceAmount: [0],
       status: ['', Validators.required],
       finalSettlementAmount: [0, Validators.required],
@@ -41,24 +46,58 @@ export class FNFStep5Component implements OnInit {
   }
 
   ngOnInit(): void {
-    this.fetchLoanAdvances(this.fnfPayrollRecord);
-
+    forkJoin({
+      loanCategories: this.getLoanAdvanceCategory(),
+      loanAdvances: this.fetchLoanAdvances(this.selectedFnF)
+    }).subscribe((results) => {
+      // Handle the results of both observables
+      this.loanCategories = results.loanCategories;
+      this.loanAdvances.data = results.loanAdvances;
+    },
+      (error) => {
+        console.error('An error occurred:', error);
+      }
+    );
   }
 
   onUserChange(fnfUserId: string): void {
-    console.log('fnf payroll users: ', fnfUserId);
     this.selectedFNFUser = fnfUserId;
-    this.selectedFNFUser = fnfUserId;
-    const fnfUser = this.fnfPayrollRecord.userList[0].user;
+    const matchedUser = this.selectedFnF.userList.find((user: any) => user.user === fnfUserId);
+    const payrollFNFUserId = matchedUser ? matchedUser._id : null;
 
+    if (payrollFNFUserId) {
       this.payrollService.getFnFLoanAdvanceByPayrollFnFUser(fnfUserId).subscribe((res: any) => {
         this.loanAdvances.data = res.data;
         this.loanAdvances.data.forEach((advance: any) => {
-          const user = this.settledUsers.find(user => user._id === fnfUser);
-          console.log(user);
+          const user = this.settledUsers.find(user => user._id === fnfUserId);
           advance.userName = user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
         });
       });
+    }
+    if (!this.isEdit) {
+      this.userService.getLoansAdvancesByUserId(fnfUserId, { skip: '', next: '' }).subscribe((res: any) => {
+        this.userLoanAdvances = res.data.map((res: any) => {
+          return {
+            ...res,
+            loanAdvanceCategory: this.getMatchingCategory(res.loanAdvancesCategory)
+          }
+        });
+      })
+    }
+  }
+
+  getLoanAdvanceCategory() {
+    return this.payrollService.getLoans({ skip: '', next: '' }).pipe(
+      map((res: any) => {
+        this.loanCategories = res.data;
+        return res.data;
+      })
+    );
+  }
+
+  getMatchingCategory(loanAdvanceCategory: string) {
+    const matchedCategory = this.loanCategories?.find((category: any) => category._id === loanAdvanceCategory);
+    return matchedCategory ? matchedCategory.name : 'Unknown Category';
   }
 
   openDialog(isEdit: boolean): void {
@@ -73,29 +112,47 @@ export class FNFStep5Component implements OnInit {
   editLoanAdvance(advance: any): void {
     this.isEdit = true;
     this.selectedLoanAdvance = advance;
-    this.loanAdvanceForm.patchValue({
-      payrollFNFUser: advance.userName,
-      loanAndAdvance: advance.loanAndAdvance,
-      LoanAdvanceAmount: advance.LoanAdvanceAmount,
-      status: advance.status,
-      finalSettlementAmount: advance.finalSettlementAmount,
-      fnfClearanceStatus: advance.fnfClearanceStatus,
-      fnfDate: advance.fnfDate
-    });
 
-    this.openDialog(true);
+    // Ensure the form control is enabled
+    const user = this.selectedFnF.userList.find(user => user._id === advance.payrollFNFUser);
+    const payrollFNFUserId = user ? user.user : null;
+
+    this.userService.getLoansAdvancesByUserId(payrollFNFUserId, { skip: '', next: '' }).subscribe((res: any) => {
+      this.userLoanAdvances = res.data.map((res: any) => {
+        return {
+          ...res,
+          loanAdvanceCategory: this.getMatchingCategory(res.loanAdvancesCategory)
+        }
+      });
+
+
+        // Patch the form with other values
+        this.loanAdvanceForm.patchValue({
+          payrollFNFUser: advance.userName,
+          loanAndAdvance: advance.loanAndAdvance,
+          LoanAdvanceAmount: advance.LoanAdvanceAmount,
+          status: advance.status,
+          finalSettlementAmount: advance.finalSettlementAmount,
+          fnfClearanceStatus: advance.fnfClearanceStatus,
+          fnfDate: advance.fnfDate
+        });
+        this.loanAdvanceForm.get('payrollFNFUser').disable();
+        this.openDialog(true);
+      
+      });
   }
 
   onSubmit(): void {
-    const matchedUser = this.fnfPayrollRecord.userList.find((user: any) => user?.user === this.selectedFNFUser);
+    const matchedUser = this.selectedFnF.userList.find((user: any) => user?.user === this.selectedFNFUser);
     const payrollFNFUserId = matchedUser ? matchedUser._id : null;
 
     this.loanAdvanceForm.patchValue({
-      payrollFNFUser: payrollFNFUserId
-    })
+      payrollFNFUser: payrollFNFUserId,
+      loanAndAdvance: this.loanAdvanceForm.get('loanAndAdvance').value
+    });
     if (this.loanAdvanceForm.valid) {
       this.loanAdvanceForm.get('payrollFNFUser').enable();
-      if (this.selectedLoanAdvance || this.isEdit) {
+      if (this.isEdit) {
         this.loanAdvanceForm.patchValue({
           payrollFNFUser: this.selectedLoanAdvance.payrollFNFUser,
         });
@@ -103,7 +160,10 @@ export class FNFStep5Component implements OnInit {
         this.payrollService.updateFnFLoanAdvance(this.selectedLoanAdvance._id, this.loanAdvanceForm.value).subscribe(
           (res: any) => {
             this.toast.success('Loan Advance updated successfully', 'Success');
-            this.fetchLoanAdvances(this.selectedLoanAdvance.fnfPayrollId);
+            this.fetchLoanAdvances(this.selectedFnF).subscribe((data) => {
+              this.loanAdvances.data = data;
+            });
+
             this.loanAdvanceForm.reset({
               payrollFNFUser: '',
               loanAndAdvance: '',
@@ -121,7 +181,7 @@ export class FNFStep5Component implements OnInit {
           }
         );
       } else {
-        const matchedUser = this.fnfPayrollRecord.userList.find((user: any) => user.user === this.selectedFNFUser);
+        const matchedUser = this.selectedFnF.userList.find((user: any) => user.user === this.selectedFNFUser);
         const payrollFNFUserId = matchedUser ? matchedUser._id : null;
 
         this.loanAdvanceForm.patchValue({
@@ -131,7 +191,9 @@ export class FNFStep5Component implements OnInit {
         this.payrollService.addFnFLoanAdvance(this.loanAdvanceForm.value).subscribe(
           (res: any) => {
             this.toast.success('Loan Advance added successfully', 'Success');
-            this.fetchLoanAdvances(this.fnfPayrollRecord);
+            this.fetchLoanAdvances(this.selectedFnF).subscribe((data) => {
+              this.loanAdvances.data = data;
+            });
             this.loanAdvanceForm.reset({
               payrollFNFUser: '',
               loanAndAdvance: '',
@@ -172,7 +234,9 @@ export class FNFStep5Component implements OnInit {
   deleteLoanAdvance(_id: string) {
     this.payrollService.deleteFnFLoanAdvance(_id).subscribe((res: any) => {
       this.toast.success('Loan Advance Deleted', 'Success');
-      this.fetchLoanAdvances(this.selectedLoanAdvance.fnfPayrollId);
+      this.fetchLoanAdvances(this.selectedFnF).subscribe((data) => {
+        this.loanAdvances.data = data;
+      });
     }, error => {
       this.toast.error('Failed to delete Loan Advance', 'Error');
     });
@@ -184,19 +248,24 @@ export class FNFStep5Component implements OnInit {
       if (result === 'delete') { this.deleteLoanAdvance(id); }
     });
   }
+
   getMatchedSettledUser(userId: string) {
     const matchedUser = this.settledUsers?.find(user => user?._id == userId)
     return matchedUser ? `${matchedUser?.firstName}  ${matchedUser?.lastName}` : 'Not specified'
   }
 
-  fetchLoanAdvances(fnfPayroll: any): void {
-    this.payrollService.getFnFLoanAdvanceByPayrollFnF(fnfPayroll?._id).subscribe(
-      (res: any) => {
-        this.loanAdvances.data = res.data;
+  fetchLoanAdvances(fnfPayroll: any) {
+    return this.payrollService.getFnFLoanAdvanceByPayrollFnF(fnfPayroll?._id).pipe(
+      map((res: any) => {
+        const loanAdvancesData = res.data.map((res: any) => {
+          return {
+            ...res,
+            loanAdvanceCategory: this.getMatchingCategory(res.loanAndAdvance)
+          };
+        });
 
-        
-        this.loanAdvances.data.forEach((item: any) => {
-          const matchedUser = this.fnfPayrollRecord.userList.find((user: any) => user._id === item.payrollFNFUser);
+        loanAdvancesData.forEach((item: any) => {
+          const matchedUser = this.selectedFnF.userList.find((user: any) => user._id === item.payrollFNFUser);
           item.userName = this.getMatchedSettledUser(matchedUser.user);
         });
 
@@ -206,10 +275,14 @@ export class FNFStep5Component implements OnInit {
             ...this.selectedLoanAdvance
           });
         }
-      },
-      (error: any) => {
+
+        return loanAdvancesData; // Return the data for forkJoin
+      }),
+      catchError((error) => {
         this.toast.error('Failed to fetch Termination Compensation', 'Error');
-      });
+        throw error; // Propagate the error to forkJoin
+      })
+    );
   }
 
   getUserName(userId: string): string {
