@@ -920,7 +920,7 @@ export class PayrollService {
   }
 
   getFnFOvertimeByPayrollFnFUser(payrollFnFUser: string): Observable<any> {
-    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/payroll-fnf-overtime-by-payrollFNFUser/${payrollFnFUser}`, this.httpOptions);
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/payroll-fnf-overtime-by-payroll-fnf-user/${payrollFnFUser}`, this.httpOptions);
     return response;
   }
 

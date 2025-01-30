@@ -16,13 +16,12 @@ export class FNFStep7Component implements OnInit {
   overtime = new MatTableDataSource<any>();
   overtimeForm: FormGroup;
   selectedOvertime: any;
-  userList: any[] = [];
   fnfUsers: any;
   isEdit: boolean = false;
   selectedFNFUser: any;
   @Input() settledUsers: any[];
-  @Input() fnfPayrollRecord: any;
   @Input() isSteps: boolean;
+  @Input() selectedFnF: any;
 
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
 
@@ -39,21 +38,23 @@ export class FNFStep7Component implements OnInit {
   }
 
   ngOnInit(): void {
-    this.fetchOvertime(this.fnfPayrollRecord);
+    this.fetchOvertime(this.selectedFnF);
   }
 
   onUserChange(fnfUserId: string): void {
     this.selectedFNFUser = fnfUserId;
-    const fnfUser = this.fnfPayrollRecord.userList[0].user;
+    const matchedUser = this.selectedFnF.userList.find((user: any) => user.user === fnfUserId);
+    const payrollFNFUserId = matchedUser ? matchedUser._id : null;
 
-      this.payrollService.getFnFOvertimeByPayrollFnFUser(fnfUserId).subscribe((res: any) => {
-        this.overtime.data = res.data;
+    if (payrollFNFUserId) {
+      this.payrollService.getFnFOvertimeByPayrollFnFUser(payrollFNFUserId).subscribe((res: any) => {
+        this.overtime.data = res.data['records'];
         this.overtime.data.forEach((overtime: any) => {
-          const user = this.userList.find(user => user._id === fnfUser);
+          const user = this.settledUsers.find(user => user._id === fnfUserId);
           overtime.userName = user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
         });
       });
-   
+    }
   }
 
   openDialog(isEdit: boolean): void {
@@ -70,21 +71,22 @@ export class FNFStep7Component implements OnInit {
     this.selectedOvertime = overtime;
     this.overtimeForm.patchValue({
       PayrollFNFUser: overtime.userName,
-      LateComing: overtime.lateComing,
-      EarlyGoing: overtime.earlyGoing,
-      FinalOvertime: overtime.finalOvertime
+      LateComing: overtime.LateComing,
+      EarlyGoing: overtime.EarlyGoing,
+      FinalOvertime: overtime.FinalOvertime
     });
-
+    this.overtimeForm.get('PayrollFNFUser').disable();
     this.openDialog(true);
   }
 
   onSubmit(): void {
-    const matchedUser = this.fnfPayrollRecord.userList.find((user: any) => user.user === this.selectedFNFUser);
+    const matchedUser = this.selectedFnF.userList.find((user: any) => user.user === this.selectedFNFUser);
     const payrollFNFUserId = matchedUser ? matchedUser._id : null;
 
     this.overtimeForm.patchValue({
       PayrollFNFUser: payrollFNFUserId
     });
+    console.log(this.overtimeForm.value);
     if (this.overtimeForm.valid) {
       this.overtimeForm.get('PayrollFNFUser').enable();
 
@@ -95,7 +97,7 @@ export class FNFStep7Component implements OnInit {
         this.payrollService.updateFnFOvertime(this.selectedOvertime._id, this.overtimeForm.value).subscribe(
           (res: any) => {
             this.toast.success('Overtime updated successfully', 'Success');
-            this.fetchOvertime(this.fnfPayrollRecord);
+            this.fetchOvertime(this.selectedFnF);
             this.overtimeForm.reset({
               PayrollFNFUser: '',
               LateComing: '',
@@ -110,10 +112,16 @@ export class FNFStep7Component implements OnInit {
           }
         );
       } else {
+        const matchedUser = this.selectedFnF.userList.find((user: any) => user.user === this.selectedFNFUser);
+        const payrollFNFUserId = matchedUser ? matchedUser._id : null;
+
+        this.overtimeForm.patchValue({
+          PayrollFNFUser: payrollFNFUserId
+        });
         this.payrollService.addFnFOvertime(this.overtimeForm.value).subscribe(
           (res: any) => {
             this.toast.success('Overtime added successfully', 'Success');
-            this.fetchOvertime(this.fnfPayrollRecord);
+            this.fetchOvertime(this.selectedFnF);
             this.overtimeForm.reset({
               PayrollFNFUser: '',
               LateComing: '',
@@ -130,6 +138,8 @@ export class FNFStep7Component implements OnInit {
     } else {
       this.overtimeForm.markAllAsTouched();
     }
+    this.overtimeForm.get('PayrollFNFUser').disable();
+
   }
 
   onCancel(): void {
@@ -148,7 +158,7 @@ export class FNFStep7Component implements OnInit {
   deleteOvertime(_id: string) {
     this.payrollService.deleteFnFOvertime(_id).subscribe((res: any) => {
       this.toast.success('Overtime Deleted', 'Success');
-      this.fetchOvertime(this.selectedOvertime.fnfPayrollId);
+      this.fetchOvertime(this.selectedFnF);
     }, error => {
       this.toast.error('Failed to delete Overtime', 'Error');
     });
@@ -172,14 +182,13 @@ export class FNFStep7Component implements OnInit {
         this.overtime.data = res.data;
 
         this.overtime.data.forEach((item: any) => {
-          const matchedUser = this.fnfPayrollRecord.userList.find((user: any) => user._id === item.payrollFNFUser);
-          item.userName = this.getMatchedSettledUser(matchedUser.user);
+          const matchedUser = this.selectedFnF.userList.find((user: any) => user._id === item.PayrollFNFUser);
+          item.userName = this.getMatchedSettledUser(matchedUser?.user);
         });
-
 
         if (this.isEdit && this.selectedOvertime) {
           this.overtimeForm.patchValue({
-            payrollFNFUser: this.selectedOvertime.payrollFNFUser,
+            payrollFNFUser: this.selectedOvertime.PayrollFNFUser,
             ...this.selectedOvertime,
           });
         }
