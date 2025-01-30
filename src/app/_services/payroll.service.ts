@@ -951,7 +951,7 @@ export class PayrollService {
   }
 
   getFnFIncomeTaxByPayrollFnFUser(payrollFnFUser: string): Observable<any> {
-    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/payroll-fnf-income-tax-by-payrollFNFUser/${payrollFnFUser}`, this.httpOptions);
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/payroll-fnf-income-tax-by-payroll-fnf-user/${payrollFnFUser}`, this.httpOptions);
     return response;
   }
 

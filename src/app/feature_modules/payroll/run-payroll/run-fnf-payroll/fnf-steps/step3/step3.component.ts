@@ -52,7 +52,7 @@ export class FNFStep3Component implements OnInit {
       this.payrollService.getFnFManualArrearsByPayrollFnFUser(payrollFNFUserId).subscribe((res: any) => {
         this.manualArrears.data = res.data;
         this.manualArrears.data.forEach((arrear: any) => {
-          const user = this.settledUsers.find(user => user._id === fnfUserId);
+          const user = this.settledUsers.find(user => user?._id === fnfUserId);
           arrear.userName = user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
         });
       });

@@ -86,11 +86,10 @@ export class FNFStep7Component implements OnInit {
     this.overtimeForm.patchValue({
       PayrollFNFUser: payrollFNFUserId
     });
-    console.log(this.overtimeForm.value);
     if (this.overtimeForm.valid) {
       this.overtimeForm.get('PayrollFNFUser').enable();
 
-      if (this.selectedOvertime || this.isEdit) {
+      if (this.isEdit) {
         this.overtimeForm.patchValue({
           PayrollFNFUser: this.selectedOvertime.PayrollFNFUser,
         });
