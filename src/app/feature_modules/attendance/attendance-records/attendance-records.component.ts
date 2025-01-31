@@ -53,6 +53,8 @@ export class AttendanceRecordsComponent {
   holidays: any;
   selectedUser: any;
 
+  attendanceData = [];
+
   constructor(private modalService: NgbModal,
     private dialog: MatDialog,
     private commonService: CommonService,
@@ -74,6 +76,69 @@ export class AttendanceRecordsComponent {
     this.getDetails();
     this.getHolidays();
   }
+
+
+  
+downloadAttendance() {
+  const csvContent = this.convertToCSV(this.attendanceData);
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'attendance.csv';
+  link.click();
+}
+
+convertToCSV(data: any[]): string {
+  const header = ['Employee Code', 'Date', 'Start Time', 'End Time'].join(',');
+  const rows = data.map(item =>
+    `"${item.employeeCode}","${item.date}","${item.startTime}","${item.endTime}"`
+  ).join('\n');
+  return `${header}\n${rows}`;
+}
+
+uploadAttendance(event: any) {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      const csvData = e.target.result;
+      const parsedData = this.parseCSV(csvData);
+      if (parsedData.length === 0) {
+        alert('CSV file is empty or invalid.');
+        return;
+      }
+      if (this.validateCSV(parsedData)) {
+        alert('CSV file is valid and uploaded successfully!');
+        console.log('Uploaded Data:', parsedData);
+      } else {
+        alert('Invalid CSV file. Please check the columns and data.');
+      }
+    };
+    reader.readAsText(file, 'UTF-8');  // Ensuring UTF-8 encoding
+  }
+}
+
+parseCSV(csvData: string): any[] {
+  const rows = csvData.split('\n').map(row => row.trim()).filter(row => row);
+  if (rows.length < 2) return [];  // Ensure at least header + one row
+
+  const header = rows[0].split(',').map(col => col.trim());
+  return rows.slice(1).map(row => {
+    const values = row.split(',').map(val => val.trim());
+    return {
+      employeeCode: values[0] || '',
+      date: values[1] || '',
+      startTime: values[2] || '',
+      endTime: values[3] || ''
+    };
+  });
+}
+
+validateCSV(data: any[]): boolean {
+  const requiredKeys = ['employeeCode', 'date', 'startTime', 'endTime'];
+  return data.every(row => requiredKeys.every(key => row.hasOwnProperty(key) && row[key] !== ''));
+}
+  // ---------------------------
 
   trackByDate: TrackByFunction<string> = (index: number, date: string): string => {
     return date;
