@@ -84,6 +84,7 @@ export class OvertimeRecordsComponent {
 
   onYearChange(event: any) {
     this.selectedYear = event.target.value;
+    this.getOvertimeByMonth();
   }
 
   getUser(employeeId: string) {
@@ -138,7 +139,6 @@ export class OvertimeRecordsComponent {
     }
 
     if (this.view == 'admin') {
-      console.log('Admin API called')
       this.attendanceService.getAttendanceOvertimeByMonth(payloadForMonth).subscribe((res: any) => {
         const userOvertimeMap = new Map();
 
@@ -161,6 +161,7 @@ export class OvertimeRecordsComponent {
           });
         }
         this.overtimeRecords = Array.from(userOvertimeMap.values());
+        console.log(this.overtimeRecords); 
       });
     }
   }

@@ -7,6 +7,7 @@ import { UploadRecordsComponent } from './upload-records/upload-records.componen
 import { AttendanceService } from 'src/app/_services/attendance.service';
 import { LeaveService } from 'src/app/_services/leave.service';
 import { CompanyService } from 'src/app/_services/company.service';
+import { forkJoin, map } from 'rxjs';
 
 @Component({
   selector: 'app-attendance-records',
@@ -64,88 +65,91 @@ export class AttendanceRecordsComponent {
   ) { }
 
   ngOnInit() {
-    this.commonService.populateUsers().subscribe((res: any) => {
-      this.users = res.data.data;
+    this.generateYearList();
+
+    forkJoin({
+      users: this.commonService.populateUsers(),
+      attendance: this.getAttendanceByMonth(),
+      details: this.getDetails(),
+      holidays: this.getHolidays()
+    }).subscribe({
+      next: (results: { users: any; attendance: any; details: any; holidays: any }) => {
+        this.users = results.users.data.data;
+        this.groupedAttendanceRecords = this.groupAttendanceByUser(results.attendance);
+        this.leave = results.details.data.filter(leave => leave.status == 'Approved');
+        this.holidays = results.holidays.data;
+      },
+      error: (error) => {
+        console.error('An error occurred:', error);
+      }
     });
 
     this.loadDatesForSelectedMonth();
-    this.generateYearList();
-    setTimeout(() => {
-      this.getAttendanceByMonth();
-    }, 1000);
-    this.getDetails();
-    this.getHolidays();
   }
 
-
-  
-downloadAttendance() {
-  const csvContent = this.convertToCSV(this.attendanceData);
-  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-  const link = document.createElement('a');
-  link.href = URL.createObjectURL(blob);
-  link.download = 'attendance.csv';
-  link.click();
-}
-
-convertToCSV(data: any[]): string {
-  const header = ['Employee Code', 'Date', 'Start Time', 'End Time'].join(',');
-  const rows = data.map(item =>
-    `"${item.employeeCode}","${item.date}","${item.startTime}","${item.endTime}"`
-  ).join('\n');
-  return `${header}\n${rows}`;
-}
-
-uploadAttendance(event: any) {
-  const file = event.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e: any) => {
-      const csvData = e.target.result;
-      const parsedData = this.parseCSV(csvData);
-      if (parsedData.length === 0) {
-        alert('CSV file is empty or invalid.');
-        return;
-      }
-      if (this.validateCSV(parsedData)) {
-        alert('CSV file is valid and uploaded successfully!');
-        console.log('Uploaded Data:', parsedData);
-      } else {
-        alert('Invalid CSV file. Please check the columns and data.');
-      }
-    };
-    reader.readAsText(file, 'UTF-8');  // Ensuring UTF-8 encoding
+  downloadAttendance() {
+    const csvContent = this.convertToCSV(this.attendanceData);
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'attendance.csv';
+    link.click();
   }
-}
 
-parseCSV(csvData: string): any[] {
-  const rows = csvData.split('\n').map(row => row.trim()).filter(row => row);
-  if (rows.length < 2) return [];  // Ensure at least header + one row
+  convertToCSV(data: any[]): string {
+    const header = ['Employee Code', 'Date', 'Start Time', 'End Time'].join(',');
+    const rows = data.map(item =>
+      `"${item.employeeCode}","${item.date}","${item.startTime}","${item.endTime}"`
+    ).join('\n');
+    return `${header}\n${rows}`;
+  }
 
-  const header = rows[0].split(',').map(col => col.trim());
-  return rows.slice(1).map(row => {
-    const values = row.split(',').map(val => val.trim());
-    return {
-      employeeCode: values[0] || '',
-      date: values[1] || '',
-      startTime: values[2] || '',
-      endTime: values[3] || ''
-    };
-  });
-}
+  uploadAttendance(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        const csvData = e.target.result;
+        const parsedData = this.parseCSV(csvData);
+        if (parsedData.length === 0) {
+          alert('CSV file is empty or invalid.');
+          return;
+        }
+        if (this.validateCSV(parsedData)) {
+          alert('CSV file is valid and uploaded successfully!');
+        } else {
+          alert('Invalid CSV file. Please check the columns and data.');
+        }
+      };
+      reader.readAsText(file, 'UTF-8');  // Ensuring UTF-8 encoding
+    }
+  }
 
-validateCSV(data: any[]): boolean {
-  const requiredKeys = ['employeeCode', 'date', 'startTime', 'endTime'];
-  return data.every(row => requiredKeys.every(key => row.hasOwnProperty(key) && row[key] !== ''));
-}
+  parseCSV(csvData: string): any[] {
+    const rows = csvData.split('\n').map(row => row.trim()).filter(row => row);
+    if (rows.length < 2) return [];  // Ensure at least header + one row
+
+    const header = rows[0].split(',').map(col => col.trim());
+    return rows.slice(1).map(row => {
+      const values = row.split(',').map(val => val.trim());
+      return {
+        employeeCode: values[0] || '',
+        date: values[1] || '',
+        startTime: values[2] || '',
+        endTime: values[3] || ''
+      };
+    });
+  }
+
+  validateCSV(data: any[]): boolean {
+    const requiredKeys = ['employeeCode', 'date', 'startTime', 'endTime'];
+    return data.every(row => requiredKeys.every(key => row.hasOwnProperty(key) && row[key] !== ''));
+  }
   // ---------------------------
 
   trackByDate: TrackByFunction<string> = (index: number, date: string): string => {
     return date;
   };
-
- 
-
 
   closeModal() {
     this.modalService.dismissAll();
@@ -177,7 +181,6 @@ validateCSV(data: any[]): boolean {
     // this.exportService.exportToCSV('Shift-Assignment', 'Shift-Assignment', dataToExport);
   }
 
-
   viewHistory(user: any) {
     const attendanceRecords = this.currentMonthDates.map(date => {
       return {
@@ -195,7 +198,6 @@ validateCSV(data: any[]): boolean {
       const fullDayTime = this.formatFullDayTime(fullHours, 0);  // Example format: 08:00:00
       const halfDayTime = this.formatFullDayTime(halfHours, 0);
       const daysInMonth = new Date(this.selectedYear, this.selectedMonth, 0).getDate();
-      console.log(daysInMonth);
       // Create the selectedAttendanceRecord object
       this.selectedAttendanceRecord = {
         user: user.name,
@@ -207,8 +209,6 @@ validateCSV(data: any[]): boolean {
         shiftHalfDayTime: halfDayTime,
         monthDays: daysInMonth
       };
-
-      console.log(this.selectedAttendanceRecord);
 
       this.dialog.open(EmployeeAttendanceHistoryComponent, {
         data: this.selectedAttendanceRecord
@@ -230,7 +230,6 @@ validateCSV(data: any[]): boolean {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
     });
   }
 
@@ -265,26 +264,28 @@ validateCSV(data: any[]): boolean {
 
   getAttendanceByMonth() {
     const payload = { skip: '', next: '', month: this.selectedMonth, year: this.selectedYear };
-    this.attendanceService.getAttendanceRecordsByMonth(payload).subscribe((res: any) => {
-      const rawRecords = res.data;
-      this.groupedAttendanceRecords = this.groupAttendanceByUser(rawRecords);
+    return this.attendanceService.getAttendanceRecordsByMonth(payload).pipe(
+      map((res: any) => res.data)
+    );
+  }
+
+  onMonthChange(event: any) {
+    this.selectedMonth = event.value;
+    this.loadDatesForSelectedMonth();
+    this.getAttendanceByMonth().subscribe((attendance) => {
+      this.groupedAttendanceRecords = this.groupAttendanceByUser(attendance);
     });
   }
 
-  onMonthChange(event: Event) {
-    this.loadDatesForSelectedMonth();
-    this.getAttendanceByMonth();
-  }
-
   loadDatesForSelectedMonth() {
-    const year = new Date().getFullYear();
-    const daysInMonth = new Date(year, this.selectedMonth, 0).getDate();
+    const daysInMonth = new Date(this.selectedYear, this.selectedMonth, 0).getDate();
 
     this.currentMonthDates = [];
     for (let day = 1; day <= daysInMonth; day++) {
-      this.currentMonthDates.push(new Date(year, this.selectedMonth - 1, day));
+      this.currentMonthDates.push(new Date(this.selectedYear, this.selectedMonth - 1, day));
     }
   }
+
   formatDate(date: Date): string {
     const year = date.getFullYear();
     const month = ('0' + (date.getMonth() + 1)).slice(-2);
@@ -298,10 +299,12 @@ validateCSV(data: any[]): boolean {
     this.selectedYear = currentYear;
   }
   onYearChange(event: any) {
-    this.selectedYear = event.target.value;
+    this.selectedYear = event.value;
+    this.loadDatesForSelectedMonth();
+    this.getAttendanceByMonth().subscribe((attendance) => {
+      this.groupedAttendanceRecords = this.groupAttendanceByUser(attendance);
+    });
   }
-
-
 
   getShiftByUser(user: any): any {
 
@@ -351,12 +354,8 @@ validateCSV(data: any[]): boolean {
     return 'N/A';
   }
 
-
   getDetails() {
-    this.leaveService.getLeaveApplication({ skip: '', next: '' }).subscribe((res: any) => {
-      const leave = res.data;
-      this.leave = leave.filter(leave => leave.status == 'Approved');
-    })
+    return this.leaveService.getLeaveApplication({ skip: '', next: '' });
   }
 
   isDateOnLeave(user: any, date: Date): boolean {
@@ -384,10 +383,8 @@ validateCSV(data: any[]): boolean {
   }
 
   getHolidays() {
-    let payload = { skip: '', next: '', year: this.selectedYear }
-    this.companyService.getHolidays(payload).subscribe((res: any) => {
-      this.holidays = res.data;
-    })
+    let payload = { skip: '', next: '', year: this.selectedYear };
+    return this.companyService.getHolidays(payload);
   }
 
   isHolidayForUser(user: any, date: Date): boolean {
@@ -413,6 +410,4 @@ validateCSV(data: any[]): boolean {
 
     return false;
   }
-
-
 }
