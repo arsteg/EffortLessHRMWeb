@@ -1,7 +1,9 @@
-<div class="form-group">
-    <label for="">Payroll User Selection <span class="text-danger">*</span></label>
-    <select name="" id="" [(ngModel)]="selectedUser" (ngModelChange)="onUserSelect($event)">
-        <option value="" selected disabled>Select Payroll User</option>
-        <option [ngValue]="users" *ngFor="let users of payrollUsers">{{getUser(users?.user)}}</option>
-    </select>
-</div>
+    <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Payroll User Selection <span class="text-danger">*</span></mat-label>
+        <mat-select [(value)]="selectedUser"
+        (selectionChange)="onUserSelect($event)">
+           <mat-option *ngFor="let user of payrollUsers" [value]="user">
+            {{getUser(user?.user)}}
+           </mat-option>
+       </mat-select>
+    </mat-form-field>

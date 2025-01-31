@@ -433,6 +433,11 @@ export class PayrollService {
     return response;
   }
 
+  deletePayroll(id: string): Observable<any> {
+    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll/${id}`, this.httpOptions);
+    return response;
+  }
+
   // Run Payroll: Payroll Users (Step-1)
 
   getPayrollUsers(payload: any): Observable<any> {

@@ -1,19 +1,18 @@
-<div class="tableContainer">
+<div class="">
     <div class="d-flex justify-content-between align-items-center">
         <div><label>Attendance Summary</label></div>
         <div class="d-flex align-items-center ms-auto">
             <span class="bi bi-search searchIcon"></span>
-
             <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
                 name="searchText" aria-label="default input example">
         </div>
         <div class="d-flex align-items-center">
             <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
                 [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
-            <button mat-raised-button class=" ms-2 addBtn" (click)="changeMode = 'Add'; open(modal);">Add</button>
+            <button mat-raised-button class="ms-2 addBtn" (click)="changeMode = 'Add'; openDialog();">Add</button>
         </div>
-
     </div>
+
     <table>
         <thead>
             <th>Employee Name</th>
@@ -28,49 +27,49 @@
                 <td>{{data?.totalDays}}</td>
                 <td>{{data?.lopDays}}</td>
                 <td>{{data?.payableDays}}</td>
-                <td><button class="actions" mat-mini-fab matTooltip="View" matTooltipPosition="before"
-                        aria-label="Example icon button with a menu icon" (click)="selectedRecord = data; changeMode = 'Update'; open(modal)">
+                <td>
+                    <button class="actions" mat-mini-fab matTooltip="View" matTooltipPosition="before"
+                        aria-label="Example icon button with a menu icon" (click)="selectedRecord = data; changeMode = 'View'; openDialog()">
                         <i class="bi bi-eye"></i>
-                    </button></td>
+                    </button>
+                </td>
             </tr>
         </tbody>
     </table>
 </div>
 
-<ng-template #modal let-modal>
-    <div class="modal-header border-bottom justify-content-between d-flex mb-2 pt-0">
-        <div>
-            <h1 class="modal-title text-muted mb-0">{{changeMode}} Attendance Summary</h1>
-        </div>
-        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
-                (click)="modal.close('Escape clicked')"></button>
-        </div>
+<ng-template #dialogTemplate>
+    <h1 mat-dialog-title>{{changeMode}} Attendance Summary</h1>
+    <div mat-dialog-content>
+        <form [formGroup]="attendanceSummaryForm" (ngSubmit)="onSubmission()">
+            <div class="row">
+                <ng-container class="col-md-6" *ngIf="changeMode != 'View'">
+                    <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
+                        [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
+                </ng-container>
+
+                <mat-form-field appearance="outline" class="my-2 col-md-6">
+                    <mat-label>Total Days</mat-label>
+                    <input matInput type="number" formControlName="totalDays">
+                    <mat-error *ngIf="attendanceSummaryForm.get('totalDays').hasError('required')">Total Days is required</mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="my-2 col-md-6">
+                    <mat-label>LOP Days</mat-label>
+                    <input matInput type="number" formControlName="lopDays">
+                    <mat-error *ngIf="attendanceSummaryForm.get('lopDays').hasError('required')">LOP Days is required</mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="my-2 col-md-6">
+                    <mat-label>Payable Days</mat-label>
+                    <input matInput type="number" formControlName="payableDays">
+                    <mat-error *ngIf="attendanceSummaryForm.get('payableDays').hasError('required')">Payable Days is required</mat-error>
+                </mat-form-field>
+            </div>
+        </form>
     </div>
-    <form [formGroup]="attendanceSummaryForm" (ngSubmit)="onSubmission()">
-
-        <div class="form-group" *ngIf="changeMode != 'Update'">
-            <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
-                [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
-        </div>
-
-        <div class="form-group">
-            <label for="">Total Days</label>
-            <input type="number" class="form-control" formControlName="totalDays">
-        </div>
-
-        <div class="form-group">
-            <label for="">LOP Days</label>
-            <input type="number" class="form-control" formControlName="lopDays">
-        </div>
-
-        <div class="form-group">
-            <label for="">Payable Days</label>
-            <input type="number" class="form-control" formControlName="payableDays">
-        </div>
-
-        <div class="d-flex justify-content-between mt-3" *ngIf="changeMode == 'Add'">
-            <button mat-raised-button type="button">Cancel</button>
-            <button mat-raised-button type="submit" class="addBtn">Save</button>
-        </div>
-    </form>
+    <div mat-dialog-actions class="d-flex justify-content-between">
+        <button mat-button (click)="closeDialog()">Cancel</button>
+        <button mat-raised-button color="primary" (click)="onSubmission()"  *ngIf="changeMode == 'Add'">Save</button>
+    </div>
 </ng-template>

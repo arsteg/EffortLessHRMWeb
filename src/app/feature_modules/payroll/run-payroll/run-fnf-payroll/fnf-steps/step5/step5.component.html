@@ -86,16 +86,7 @@
                 @else if (!isEdit) {
                 <app-fnf-users [isStep]="isSteps" [selectedFnF]="selectedFnF" (changeUser)="onUserChange($event)"></app-fnf-users>
                 }
-                <!-- <mat-form-field appearance="outline" class="col-md-6 my-2">
-                    <mat-label>Loan and Advance</mat-label>
-                    <mat-select formControlName="loanAndAdvance">
-                        <mat-option *ngIf="userLoanAdvances?.length === 0" disabled>No Loan/Advance Assigned. Please skip this step</mat-option>
-                        <mat-option *ngFor="let loan of userLoanAdvances" [value]="loan.loanAdvancesCategory">
-                            {{loan?.loanAdvanceCategory}}
-                        </mat-option>
-                    </mat-select>
-                    <mat-error *ngIf="loanAdvanceForm.get('loanAndAdvance').hasError('required')">Loan and Advance is required</mat-error>
-                </mat-form-field> -->
+               
                 <mat-form-field appearance="outline" class="col-md-6 my-2">
                     <mat-label>Loan and Advance</mat-label>
                     <mat-select formControlName="loanAndAdvance">
@@ -110,7 +101,7 @@
                         Loan and Advance is required
                     </mat-error>
                 </mat-form-field>
-                
+
                 <mat-form-field appearance="outline" class="col-md-6 my-2">
                     <mat-label>Loan Advance Amount</mat-label>
                     <input matInput type="number" formControlName="LoanAdvanceAmount">

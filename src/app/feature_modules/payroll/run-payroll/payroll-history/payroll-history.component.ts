@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -29,21 +29,9 @@ export class PayrollHistoryComponent {
   displayedColumns: string[] = ['payrollPeriod', 'date', 'payrollDetails', 'status', 'actions'];
   dataSource: MatTableDataSource<any>;
   @Output() changeView = new EventEmitter<void>();
+  @ViewChild('addDialogTemplate') addDialogTemplate: TemplateRef<any>;
 
-  months = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December'
-  ];
+  months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
   constructor(private modalService: NgbModal,
     private payrollService: PayrollService,
@@ -54,10 +42,10 @@ export class PayrollHistoryComponent {
     private userService: UserService
   ) {
     this.payrollForm = this.fb.group({
-      date: [],
-      status: [''],
-      month: [''],
-      year: ['']
+      date: [Date, Validators.required],
+      status: ['', Validators.required],
+      month: ['',Validators.required],
+      year: ['', Validators.required]
     });
     this.payrollUserForm = this.fb.group({
       payroll: [''],
@@ -91,7 +79,7 @@ export class PayrollHistoryComponent {
     const currentYear = new Date().getFullYear();
     this.years = [currentYear - 1, currentYear, currentYear + 1];
   }
-  
+
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
@@ -153,15 +141,35 @@ export class PayrollHistoryComponent {
     return monthNames[monthNumber - 1] || "Invalid month";
   }
 
+  openAddDialog() {
+    const dialogRef = this.dialog.open(this.addDialogTemplate, {
+      width: '600px',
+      disableClose: true
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+      }
+    });
+  }
+
+  closeAddDialog() {
+    this.dialog.closeAll();
+  }
+
   onSubmission() {
-    this.payrollService.addPayroll(this.payrollForm.value).subscribe((res: any) => {
-      const record = res.data;
-      this.payroll.push(record);
-      this.toast.success('Payroll Created', 'Successfully!')
-    },
-      err => {
-        this.toast.error('Payroll can not be created', 'Error!')
-      })
+    if (this.payrollForm.valid) {
+      this.payrollService.addPayroll(this.payrollForm.value).subscribe((res: any) => {
+        const record = res.data;
+        this.getPayrollWithUserCounts();
+        this.toast.success('Payroll Created', 'Successfully!');
+        this.closeAddDialog();
+      },
+        err => {
+          this.toast.error('Payroll cannot be created', 'Error!');
+        });
+    } else {
+      this.payrollForm.markAllAsTouched();
+    }
   }
 
   updatePayrollUser() {
@@ -203,8 +211,8 @@ export class PayrollHistoryComponent {
   }
 
   deleteTemplate(_id: string) {
-    this.payrollService.deleteArrear(_id).subscribe((res: any) => {
-      this.ngOnInit();
+    this.payrollService.deletePayroll(_id).subscribe((res: any) => {
+      this.getPayrollWithUserCounts();
       this.toast.success('Successfully Deleted!!!', 'Payroll')
     },
       (err) => {

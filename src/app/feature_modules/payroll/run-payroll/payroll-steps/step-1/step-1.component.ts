@@ -1,6 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { CommonService } from 'src/app/_services/common.Service';
 import { PayrollService } from 'src/app/_services/payroll.service';
@@ -12,7 +12,6 @@ import { PayrollService } from 'src/app/_services/payroll.service';
 })
 export class Step1Component {
   activeTab: string = 'tabActiveEmployees';
-  closeResult: string = '';
   @Input() selectedPayroll: any;
   payrollUsers: any;
   users: any;
@@ -21,14 +20,15 @@ export class Step1Component {
   activeUsers: any[] = [];
   onHoldUsers: any[] = [];
   processedUsers: any[] = [];
-  status : 'Active' | 'OnHold' | 'Processed' = 'Active';
-  
+  status: 'Active' | 'OnHold' | 'Processed' = 'Active';
+  @ViewChild('modalTemplate') modalTemplate: TemplateRef<any>;
 
-  constructor(private modalService: NgbModal,
+  constructor(
     private payrollService: PayrollService,
     private commonService: CommonService,
     private fb: FormBuilder,
-    private toast: ToastrService
+    private toast: ToastrService,
+    private dialog: MatDialog
   ) {
     this.payrollUserForm = this.fb.group({
       payroll: [''],
@@ -47,7 +47,7 @@ export class Step1Component {
       totalVariableDeduction: [0],
       totalLoan: [0],
       totalAdvance: [0]
-    })
+    });
   }
 
   ngOnInit() {
@@ -58,7 +58,7 @@ export class Step1Component {
   getAllUsers() {
     this.commonService.populateUsers().subscribe((res: any) => {
       this.users = res.data.data;
-    })
+    });
   }
 
   getUser(employeeId: string) {
@@ -70,31 +70,23 @@ export class Step1Component {
     this.activeTab = tabId;
   }
 
-  open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+  openDialog() {
+    this.dialog.open(this.modalTemplate, {
+      width: '400px',
+      disableClose: true
     });
   }
 
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
+  closeDialog() {
+    this.dialog.closeAll();
   }
 
- 
   getPayrollById() {
     const payload = { skip: '', next: '', payroll: this.selectedPayroll._id };
-  
+
     this.payrollService.getPayrollUsers(payload).subscribe((res: any) => {
       this.payrollUsers = res.data;
-  
+
       // Filter records for each status
       this.activeUsers = this.payrollUsers.filter(user => user.status === 'Active');
       this.onHoldUsers = this.payrollUsers.filter(user => user.status === 'OnHold');
@@ -102,25 +94,24 @@ export class Step1Component {
     });
   }
 
-  onSubmission(modal: any) {
+  onSubmission() {
     if (this.activeTab === 'tabActiveEmployees') {
       this.payrollUserForm.patchValue({ status: 'OnHold' });
     } else if (this.activeTab === 'tabEmployeesOnHold') {
       this.payrollUserForm.patchValue({ status: 'Processed' });
     } else if (this.activeTab === 'tabProcessedEmployees') {
-      this.payrollUserForm.patchValue({ status: 'Active'})
+      this.payrollUserForm.patchValue({ status: 'Active' });
     }
-    this.payrollUserForm.patchValue({ payroll: this.selectedPayroll?._id , user: this.selectedRecord?.user});
+    this.payrollUserForm.patchValue({ payroll: this.selectedPayroll?._id, user: this.selectedRecord?.user });
     this.payrollService.updatePayrollUser(this.selectedRecord?._id, this.payrollUserForm.value).subscribe(
       (res: any) => {
         this.toast.success('Successfully updated');
         this.getPayrollById();
-        modal.close();
+        this.closeDialog();
       },
       (error) => {
         this.toast.error('Update failed', 'Error');
       }
     );
-}
-
+  }
 }

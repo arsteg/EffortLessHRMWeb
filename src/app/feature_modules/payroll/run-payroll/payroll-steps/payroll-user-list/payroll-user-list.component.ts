@@ -39,7 +39,6 @@ export class PayrollUserListComponent {
   }
 
   onUserSelect(selectedUser: any) {
-    console.log(selectedUser.user)
     this.userSelected.emit(selectedUser);
   }
 
