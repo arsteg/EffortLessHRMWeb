@@ -15,6 +15,7 @@ export class PayrollStepsComponent {
   });
   isEditable = false;
   @Input() selectedPayroll: any;
+  @Input() payrollUsers: any;
 
   constructor(private _formBuilder: FormBuilder) {}
 

@@ -1,9 +1,8 @@
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-import { forkJoin, map, of, switchMap } from 'rxjs';
+import { forkJoin, map, switchMap } from 'rxjs';
 import { CommonService } from 'src/app/_services/common.Service';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { UserService } from 'src/app/_services/users.service';
@@ -16,7 +15,6 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 })
 export class Step4Component {
   searchText: string = '';
-  closeResult: string = '';
   loanAdvanceForm: FormGroup;
   selectedUserId: any;
   loanAdvances: any;
@@ -28,8 +26,10 @@ export class Step4Component {
   selectedRecord: any;
   payrollUser: any;
   matchedLoanAdvances: any;
+  selectedPayrollUser: string;
+  @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
 
-  constructor(private modalService: NgbModal,
+  constructor(
     private payrollService: PayrollService,
     private fb: FormBuilder,
     private commonService: CommonService,
@@ -39,24 +39,14 @@ export class Step4Component {
   ) {
     this.loanAdvanceForm = this.fb.group({
       payrollUser: ['', Validators.required],
-      loanAndAdvance: [''],
-      disbursementAmount: [{ value: 0, disabled: true }, [Validators.required, Validators.min(1)]],
+      loanAndAdvance: ['', Validators.required],
+      disbursementAmount: [0, [Validators.required, Validators.min(1)]],
       status: ['Pending'],
       type: [''],
       amount: [0]
     });
 
-    this.loanAdvanceForm.get('type').valueChanges.subscribe((type) => {
-      if (type === 'Disbursement') {
-        this.loanAdvanceForm.get('disbursementAmount').setValidators([Validators.required, Validators.min(1)]);
-        this.loanAdvanceForm.get('disbursementAmount').enable();
-      } else if (type === 'Repayment') {
-        this.loanAdvanceForm.get('disbursementAmount').setValue(0);
-        this.loanAdvanceForm.get('disbursementAmount').clearValidators();
-        this.loanAdvanceForm.get('disbursementAmount').disable();
-      }
-      this.loanAdvanceForm.get('disbursementAmount').updateValueAndValidity();
-    });
+    
   }
 
   ngOnInit() {
@@ -65,12 +55,15 @@ export class Step4Component {
     this.getLoanAdvanceByPayroll();
   }
 
-  open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+  openDialog() {
+    this.dialog.open(this.dialogTemplate, {
+      width: '600px',
+      disableClose: true
     });
+  }
+
+  closeDialog() {
+    this.dialog.closeAll();
   }
 
   clearForm() {
@@ -84,22 +77,13 @@ export class Step4Component {
     })
   }
 
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
-  }
-
   onUserSelectedFromChild(userId: any) {
-    this.selectedUserId = userId;
+    this.selectedUserId = userId.value.user;
+    this.selectedPayrollUser = userId.value._id;
+    this.getAllLoansAdvances();
     this.getLoanAdvances();
     if (this.changeMode === 'Add' || this.changeMode === 'Update') {
       this.getLoanAdvancesOfUser();
-      this.getAllLoansAdvances();
     }
   }
 
@@ -115,7 +99,7 @@ export class Step4Component {
   }
 
   getLoanAdvancesOfUser() {
-    this.userService.getLoansAdvancesByUserId(this.selectedUserId?.user, { skip: '', next: '' }).subscribe((res: any) => {
+    this.userService.getLoansAdvancesByUserId(this.selectedUserId, { skip: '', next: '' }).subscribe((res: any) => {
       this.userloanAdvances = res.data;
       if (this.userloanAdvances.length >= 1) {
         this.userloanAdvances.unshift({ loanAdvancesCategory: '', name: 'Select Loan/Advance' });
@@ -152,10 +136,10 @@ export class Step4Component {
     })
   }
 
-
   onSubmission() {
-    this.loanAdvanceForm.value.payrollUser = this.selectedUserId?._id;
-
+    this.loanAdvanceForm.get('payrollUser').enable();
+    this.loanAdvanceForm.value.payrollUser = this.selectedPayrollUser;
+    console.log(this.loanAdvanceForm.value.payrollUser);
     if (this.changeMode === 'Add') {
       this.payrollService.addLoanAdvance(this.loanAdvanceForm.value).subscribe(
         (res: any) => {
@@ -164,7 +148,7 @@ export class Step4Component {
           this.userloanAdvances = [];
           this.selectedUserId = null;
           this.toast.success('Loan/Advance created', 'Successfully!');
-          this.modalService.dismissAll();
+          this.closeDialog();
         },
         (err) => {
           this.toast.error('Loan/Advance cannot be created', 'Error!');
@@ -181,7 +165,7 @@ export class Step4Component {
           this.selectedUserId = '';
           this.userloanAdvances = [];
           this.changeMode = 'Add';
-          this.modalService.dismissAll();
+          this.closeDialog();
         },
         (err) => {
           this.toast.error('Loan/Advance cannot be Updated', 'Error');
@@ -192,15 +176,15 @@ export class Step4Component {
 
   getLoanAdvances() {
     forkJoin({
-      userLoanAdvances: this.userService.getLoansAdvancesByUserId(this.selectedUserId?.user, { skip: '', next: '' }),
-      loanAdvances: this.payrollService.getLoanAdvance(this.selectedUserId?._id)
+      userLoanAdvances: this.userService.getLoansAdvancesByUserId(this.selectedUserId, { skip: '', next: '' }),
+      loanAdvances: this.payrollService.getLoanAdvance(this.selectedPayrollUser)
     }).pipe(
       switchMap(({ userLoanAdvances, loanAdvances }) => {
         this.userloanAdvances = userLoanAdvances.data;
         this.loanAdvances = loanAdvances.data;
 
         const userRequests = this.loanAdvances.map((item: any) =>
-          this.payrollService.getPayrollUserById(item.payrollUser).pipe(
+          this.payrollService.getPayrollUserById(this.selectedPayrollUser).pipe(
             map((userRes: any) => ({
               ...item,
               payrollUserDetails: this.getUser(userRes?.data.user)
@@ -284,12 +268,7 @@ export class Step4Component {
 
   deleteTemplate(_id: string) {
     this.payrollService.deleteLoanAdvance(_id).subscribe((res: any) => {
-      if (res != null) {
-        const index = this.loanAdvances.findIndex(temp => temp._id === _id);
-        if (index !== -1) {
-          this.loanAdvances.splice(index, 1);
-        }
-      }
+      this.getLoanAdvances();
       this.toast.success('Successfully Deleted!!!', 'Loan/Advance')
     },
       (err) => {

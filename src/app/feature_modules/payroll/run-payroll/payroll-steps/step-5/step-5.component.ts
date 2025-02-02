@@ -1,7 +1,6 @@
-import { Component, Input } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { forkJoin, map } from 'rxjs';
 import { CommonService } from 'src/app/_services/common.Service';
@@ -15,7 +14,6 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 })
 export class Step5Component {
   activeTab: string = 'tabArrears';
-  closeResult: string = '';
   arrearForm: FormGroup;
   changeMode: 'Add' | 'Update' = 'Add';
   @Input() selectedPayroll: any;
@@ -25,8 +23,11 @@ export class Step5Component {
   selectedRecord: any;
   payrollUser: any;
   searchText: string = '';
+  selectedPayrollUser: string;
+  @Input() payrollUsers: any;
+  @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
 
-  constructor(private modalService: NgbModal,
+  constructor(
     private fb: FormBuilder,
     private payrollService: PayrollService,
     private commonService: CommonService,
@@ -34,17 +35,18 @@ export class Step5Component {
     private dialog: MatDialog
   ) {
     this.arrearForm = this.fb.group({
-      payrollUser: [''],
-      manualArrears: [0],
-      arrearDays: [0],
-      lopReversalDays: [0],
-      salaryRevisionDays: [0],
-      lopReversalArrears: [0],
-      totalArrears: [0]
-    })
+      payrollUser: ['', Validators.required],
+      manualArrears: [0, Validators.required],
+      arrearDays: [0, Validators.required],
+      lopReversalDays: [0, Validators.required],
+      salaryRevisionDays: [0, Validators.required],
+      lopReversalArrears: [0, Validators.required],
+      totalArrears: [0, Validators.required]
+    });
   }
 
   ngOnInit() {
+    console.log(this.payrollUsers)
     this.getAllUsers();
     this.getArrearsByPayroll();
   }
@@ -53,14 +55,13 @@ export class Step5Component {
     this.activeTab = tabId;
   }
 
-  open(content: any) {
+  openDialog() {
     if (this.changeMode == 'Update') {
       this.payrollService.getPayrollUserById(this.selectedRecord.payrollUser).subscribe((res: any) => {
         this.payrollUser = res.data;
 
         const payrollUser = this.payrollUser?.user;
 
-        console.log(payrollUser)
         this.arrearForm.patchValue({
           payrollUser: this.getUser(payrollUser),
           manualArrears: this.selectedRecord.manualArrears,
@@ -71,34 +72,28 @@ export class Step5Component {
           totalArrears: this.selectedRecord.totalArrears
         });
         this.arrearForm.get('payrollUser').disable();
-      })
+      });
     }
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    this.dialog.open(this.dialogTemplate, {
+      width: '600px',
+      disableClose: true
     });
   }
 
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
+  closeDialog() {
+    this.dialog.closeAll();
   }
 
   onUserSelectedFromChild(user: any) {
-    this.selectedUserId = user;
+    this.selectedUserId = user.value.user;
+    this.selectedPayrollUser = user?.value?._id;
     this.getArrears();
   }
 
   getAllUsers() {
     this.commonService.populateUsers().subscribe((res: any) => {
       this.users = res.data.data;
-    })
+    });
   }
 
   getUser(employeeId: string) {
@@ -106,16 +101,16 @@ export class Step5Component {
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'N/A';
   }
 
-
   getArrears() {
-    this.payrollService.getArrear(this.selectedUserId._id).subscribe((res: any) => {
+    this.payrollService.getArrear(this.selectedPayrollUser || this.selectedRecord?.payrollUser).subscribe((res: any) => {
       this.arrears = res.data;
       const userRequests = this.arrears.map((item: any) => {
-        return this.payrollService.getPayrollUserById(item.payrollUser).pipe(
+        return this.payrollService.getPayrollUserById(this.selectedPayrollUser || this.selectedRecord?.payrollUser).pipe(
           map((userRes: any) => ({
             ...item,
             payrollUserDetails: this.getUser(userRes?.data.user)
           }))
+
         );
       });
       forkJoin(userRequests).subscribe(
@@ -131,6 +126,12 @@ export class Step5Component {
         this.toast.error("Error fetching attendance summary:", error);
       }
     );
+    if (this.changeMode == 'Update' && this.selectedRecord) {
+      this.arrearForm.patchValue({
+        payrollUser: this.selectedRecord.payrollUser,
+        ...this.selectedRecord
+      });
+    }
   }
 
   getArrearsByPayroll() {
@@ -155,21 +156,30 @@ export class Step5Component {
     },
       (error) => {
         this.toast.error("Error fetching attendance summary:", error);
-      })
+      });
   }
+
   onSubmission() {
-    this.arrearForm.value.payrollUser = this.selectedUserId._id;
+    this.arrearForm.get('payrollUser').enable();
+    if (this.changeMode == 'Update') {
+      this.arrearForm.patchValue({
+        payrollUser: this.selectedRecord.payrollUser
+      });
+    }
+    console.log(this.arrearForm.value);
+
     if (this.changeMode == 'Add') {
+      this.arrearForm.value.payrollUser = this.selectedPayrollUser;
       this.payrollService.addArrear(this.arrearForm.value).subscribe((res: any) => {
         this.getArrears();
         this.selectedUserId = null;
         this.arrearForm.reset();
         this.toast.success('Manual Arrear Created', 'Successfully!');
-        this.modalService.dismissAll();
+        this.closeDialog();
       },
         err => {
           this.toast.error('Manual arrear can not be Created', 'Error!');
-        })
+        });
     }
     if (this.changeMode == 'Update') {
       this.payrollService.updateArrear(this.selectedRecord._id, this.arrearForm.value).subscribe((res: any) => {
@@ -178,19 +188,19 @@ export class Step5Component {
         this.selectedUserId = null;
         this.arrearForm.reset();
         this.changeMode = 'Add';
-        this.modalService.dismissAll();
-      })
+        this.closeDialog();
+      });
     }
   }
 
   deleteTemplate(_id: string) {
     this.payrollService.deleteArrear(_id).subscribe((res: any) => {
       this.getArrears();
-      this.toast.success('Successfully Deleted!!!', 'Arrear')
+      this.toast.success('Successfully Deleted!!!', 'Arrear');
     },
       (err) => {
-        this.toast.error('This Arrear Can not be deleted!')
-      })
+        this.toast.error('This Arrear Can not be deleted!');
+      });
   }
 
   deleteDialog(id: string): void {

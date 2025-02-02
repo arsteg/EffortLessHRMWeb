@@ -44,7 +44,7 @@ export class PayrollHistoryComponent {
     this.payrollForm = this.fb.group({
       date: [Date, Validators.required],
       status: ['', Validators.required],
-      month: ['',Validators.required],
+      month: ['', Validators.required],
       year: ['', Validators.required]
     });
     this.payrollUserForm = this.fb.group({
@@ -108,7 +108,8 @@ export class PayrollHistoryComponent {
 
         this.payrollService.getPayrollUsers(payrollUsersPayload).subscribe((payrollUsersRes: any) => {
           const users = payrollUsersRes.data;
-
+          this.payrollUsers = users;
+          
           const activeCount = users.filter(user => user.status === 'Active').length;
           const onHoldCount = users.filter(user => user.status === 'OnHold').length;
           const processedCount = users.filter(user => user.status === 'Processed').length;
@@ -181,7 +182,6 @@ export class PayrollHistoryComponent {
         this.payrollUserForm.value.totalGrossSalary = lastSalaryRecord.Amount;
 
         this.payrollService.addPayrollUser(this.payrollUserForm.value).subscribe((res: any) => {
-          this.payrollUsers = res.data;
           this.getPayrollWithUserCounts();
           this.toast.success('Employee added to the payroll', 'Successfully');
           this.payrollUserForm.patchValue({

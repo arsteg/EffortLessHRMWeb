@@ -443,7 +443,7 @@ export class AttendanceService implements CanActivate {
     return response;
   }
   getAttendanceOvertimeByUser(payload: any): Observable<response<any>> {
-    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/get-overtime-by-month-user`, payload, this.httpOptions);
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/overtime-by-user`, payload, this.httpOptions);
     return response;
   }
 

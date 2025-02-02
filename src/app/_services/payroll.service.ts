@@ -604,7 +604,7 @@ export class PayrollService {
   }
 
   deleteOvertime(id: string): Observable<any> {
-    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payrollOvertime/${id}`, this.httpOptions);
+    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll/overtime/${id}`, this.httpOptions);
     return response;
   }
 

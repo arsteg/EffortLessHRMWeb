@@ -1,4 +1,4 @@
-<div class="tableContainer">
+<div class="">
     <div class="d-flex justify-content-between align-items-center">
         <div><label>Loans/Advances</label></div>
         <div class="d-flex align-items-center ms-auto">
@@ -11,7 +11,7 @@
             <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
                 [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
             <button mat-raised-button class=" ms-2 addBtn"
-                (click)="changeMode = 'Add'; clearForm(); open(modal);">Add</button>
+                (click)="changeMode = 'Add'; clearForm(); openDialog();">Add</button>
         </div>
 
     </div>
@@ -34,84 +34,97 @@
                 <td>{{data?.disbursementAmount}}</td>
                 <td>{{data?.status}}</td>
                 <td>
-                    <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before"
-                        (click)="selectedRecord = data; changeMode = 'Update'; setFormValues(data); open(modal)"><i
-                            class="bi bi-pencil"></i></button>
-
-                    <button class="actions ms-2" mat-mini-fab matTooltip="Delete" matTooltipPosition="after"
-                        (click)="deleteDialog(data?._id)"><i class="bi bi-trash"></i></button>
+                    <button mat-icon-button [matMenuTriggerFor]="menu">
+                        <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu">
+                        <button mat-menu-item (click)="selectedRecord = data; changeMode = 'Update'; setFormValues(data); openDialog()">
+                            <mat-icon>edit</mat-icon>
+                            <span>Edit</span>
+                        </button>
+                        <button mat-menu-item (click)="deleteDialog(data?._id)">
+                            <mat-icon>delete</mat-icon>
+                            <span>Delete</span>
+                        </button>
+                    </mat-menu>
                 </td>
             </tr>
         </tbody>
     </table>
 </div>
 
-<ng-template #modal let-modal>
-    <div class="modal-header border-bottom justify-content-between d-flex mb-2 pt-0">
-        <div>
-            <h1 class="modal-title text-muted mb-0">{{changeMode}} Loans/Advances</h1>
-        </div>
-        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
-                (click)="modal.close('Escape clicked')"></button>
-        </div>
+<ng-template #dialogTemplate>
+    <h1 mat-dialog-title>{{changeMode}} Loans/Advances</h1>
+    <div mat-dialog-content>
+        <form [formGroup]="loanAdvanceForm" (ngSubmit)="onSubmission()">
+            <div class="row">
+                <div class="form-group col-md-6" *ngIf="changeMode != 'Update'">
+                    <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
+                        [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
+                </div>
+
+                <div class="form-group col-md-6" *ngIf="changeMode === 'Update'">
+                    <mat-form-field appearance="outline" class="my-2">
+                        <mat-label>Payroll User</mat-label>
+                        <input matInput type="text" [disabled] formControlName="payrollUser">
+                    </mat-form-field>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <mat-form-field appearance="outline" class="my-2">
+                        <mat-label>Loans and Advances on the selection of Payroll User</mat-label>
+                        <mat-select formControlName="loanAndAdvance">
+                            <mat-option *ngFor="let loanAdvance of userloanAdvances" [value]="loanAdvance.loanAdvancesCategory">
+                                {{ loanAdvance.name ? loanAdvance.name : getMatchingCategory(loanAdvance.loanAdvancesCategory) }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <mat-form-field appearance="outline" class="my-2">
+                        <mat-label>Type of Amount</mat-label>
+                        <mat-select formControlName="type">
+                            <mat-option value="Disbursement">Disbursement</mat-option>
+                            <mat-option value="Repayment">Repayment</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <mat-form-field appearance="outline" class="my-2">
+                        <mat-label>Enter Disbursement Amount</mat-label>
+                        <input matInput type="number" formControlName="disbursementAmount">
+                        <mat-error *ngIf="loanAdvanceForm.get('disbursementAmount')?.invalid && loanAdvanceForm.get('disbursementAmount')?.touched">
+                            Disbursement Amount must be greater than 0.
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <mat-form-field appearance="outline" class="my-2">
+                        <mat-label>Enter Amount</mat-label>
+                        <input matInput type="number" formControlName="amount">
+                        <mat-error *ngIf="loanAdvanceForm.get('amount')?.invalid && loanAdvanceForm.get('amount')?.touched">
+                            Please add Valid Amount.
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <mat-form-field appearance="outline" class="my-2">
+                        <mat-label>Status for Loan/Advance Payroll</mat-label>
+                        <mat-select formControlName="status">
+                            <mat-option value="Pending">Pending</mat-option>
+                            <mat-option value="Approved">Approved</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between mt-3">
+                <button type="button" (click)="closeDialog()" mat-raised-button>Cancel</button>
+                <button type="submit" class="addBtn" mat-raised-button>Save</button>
+            </div>
+        </form>
     </div>
-    <form [formGroup]="loanAdvanceForm" (ngSubmit)="onSubmission()">
-        <div class="form-group" *ngIf="changeMode != 'Update'">
-            <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
-                [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
-        </div>
-
-        <div class="form-group" *ngIf="changeMode === 'Update'">
-            <label for="">Payroll User</label>
-            <input type="text" [disabled] formControlName="payrollUser" class="form-control">
-        </div>
-
-        <div class="form-group">
-            <label for="loanAdvance">Loans and Advances on the selection of Payroll User</label>
-            <select name="" id="loanAdvance" formControlName="loanAndAdvance">
-                <option [ngValue]="loanAdvance.loanAdvancesCategory" *ngFor="let loanAdvance of userloanAdvances"
-                    [disabled]="!loanAdvance.loanAdvancesCategory">
-                    {{ loanAdvance.name ? loanAdvance.name : getMatchingCategory(loanAdvance.loanAdvancesCategory) }}
-                </option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="type">Type of Amount</label>
-            <select name="" id="type" formControlName="type">
-                <option value="Disbursement">Disbursement</option>
-                <option value="Repayment">Repayment</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="">Enter Disbursement Amount</label>
-            <input type="number" class="form-control" formControlName="disbursementAmount">
-            <div *ngIf="loanAdvanceForm.get('disbursementAmount')?.invalid && loanAdvanceForm.get('disbursementAmount')?.touched"
-                class="text-danger">
-               Disbursement Amount must be greater than 0.
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="">Enter Amount</label>
-            <input type="number" class="form-control" formControlName="amount">
-            <div *ngIf="loanAdvanceForm.get('amount')?.invalid && loanAdvanceForm.get('amount')?.touched"
-                class="text-danger">
-               Please add Valid Amount.
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="status">Status for Loan/Advance Payroll</label>
-            <select name="" id="status" formControlName="status">
-                <option value="Pending">Pending</option>
-                <option value="Approved">Approved</option>
-            </select>
-        </div>
-
-        <div class="d-flex justify-content-between">
-            <button mat-raised-button type="button" (click)="setFormValues(selectedRecord)">Cancel</button>
-            <button mat-raised-button type="submit" class="addBtn">Save</button>
-        </div>
-    </form>
 </ng-template>

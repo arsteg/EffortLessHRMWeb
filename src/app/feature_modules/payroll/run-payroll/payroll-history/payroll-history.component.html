@@ -242,5 +242,5 @@
 
 <div *ngIf="!isAllEmployees">
     <button mat-raised-button class="bi bi-arrow-left addBtn" (click)="goBack()">Back</button>
-    <app-payroll-steps [selectedPayroll]="selectedPayroll"></app-payroll-steps>
+    <app-payroll-steps [selectedPayroll]="selectedPayroll" [payrollUsers]="payrollUsers"></app-payroll-steps>
 </div>
