@@ -30,6 +30,8 @@ export class TaxCalculatorComponent {
   section80C: number = 0;
   chapterVIa: number = 0;
   taxableSalary: number = 0;
+  taxPayableOldRegime: number = 0;
+  taxPayableNewRegime: number = 0;
 
   constructor(private modalService: NgbModal,
     private userService: UserService,
@@ -40,21 +42,20 @@ export class TaxCalculatorComponent {
     this.getTaxSections();
     this.getTaxComponents();
     this.getSalaryByUser();
-
   }
 
   getTaxSections() {
     this.taxService.getAllTaxSections().subscribe((res: any) => {
       this.taxSections = res.data;
       this.filterComponents();
-    })
+    });
   }
 
   getTaxComponents() {
     this.taxService.getAllTaxComponents({ skip: '', next: '' }).subscribe((res: any) => {
       this.taxComponents = res.data;
       this.filterComponents();
-    })
+    });
   }
 
   filterComponents() {
@@ -84,7 +85,7 @@ export class TaxCalculatorComponent {
         this.grossSalary = this.salaryDetail?.Amount;
       }
       else {
-        this.grossSalary = this.salaryDetail?.Amount * 12
+        this.grossSalary = this.salaryDetail?.Amount * 12;
       }
       this.calculateSum();
     });
@@ -106,8 +107,48 @@ export class TaxCalculatorComponent {
   calculateTax() {
     if (this.salaryDetail?.Amount) {
       const deductions = (this.incomeTaxDeclarationHRA || 0) + (this.section80C || 0) + (this.chapterVIa || 0);
-      this.taxableSalary = this.salaryDetail?.Amount - deductions;
+      this.taxableSalary = this.grossSalary - deductions;
+
+      // Calculate tax for old regime
+      this.taxPayableOldRegime = this.calculateOldRegimeTax(this.taxableSalary);
+
+      // Calculate tax for new regime
+      this.taxPayableNewRegime = this.calculateNewRegimeTax(this.taxableSalary);
     }
+  }
+
+  calculateOldRegimeTax(taxableSalary: number): number {
+    let tax = 0;
+    if (taxableSalary <= 250000) {
+      tax = 0;
+    } else if (taxableSalary <= 500000) {
+      tax = (taxableSalary - 250000) * 0.05;
+    } else if (taxableSalary <= 1000000) {
+      tax = 12500 + (taxableSalary - 500000) * 0.2;
+    } else {
+      tax = 112500 + (taxableSalary - 1000000) * 0.3;
+    }
+    return tax;
+  }
+
+  calculateNewRegimeTax(taxableSalary: number): number {
+    let tax = 0;
+    if (taxableSalary <= 250000) {
+      tax = 0;
+    } else if (taxableSalary <= 500000) {
+      tax = (taxableSalary - 250000) * 0.05;
+    } else if (taxableSalary <= 750000) {
+      tax = 12500 + (taxableSalary - 500000) * 0.1;
+    } else if (taxableSalary <= 1000000) {
+      tax = 37500 + (taxableSalary - 750000) * 0.15;
+    } else if (taxableSalary <= 1250000) {
+      tax = 75000 + (taxableSalary - 1000000) * 0.2;
+    } else if (taxableSalary <= 1500000) {
+      tax = 125000 + (taxableSalary - 1250000) * 0.25;
+    } else {
+      tax = 187500 + (taxableSalary - 1500000) * 0.3;
+    }
+    return tax;
   }
 
   private getDismissReason(reason: any): string {

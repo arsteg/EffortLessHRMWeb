@@ -259,7 +259,7 @@ export class Step7Component {
     })
     if (this.changeMode == 'Add') {
       this.payrollService.addOvertime(this.overtimeForm.value).subscribe((res: any) => {
-        this.getOvertime();
+        this.getOvertimeByPayroll();
         this.overtimeForm.reset();
         this.toast.success('Overtime Created', 'Successfully!');
         this.closeDialog();
@@ -270,7 +270,7 @@ export class Step7Component {
     }
     if (this.changeMode == 'Update') {
       this.payrollService.updateOvertime(this.selectedRecord?._id, this.overtimeForm.value).subscribe((res: any) => {
-        this.getOvertime();
+        this.getOvertimeByPayroll();
         this.selectedUserId = null;
         this.overtimeForm.reset();
         this.changeMode = 'Add';
