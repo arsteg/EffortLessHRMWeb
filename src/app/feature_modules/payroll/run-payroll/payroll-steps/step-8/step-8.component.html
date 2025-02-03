@@ -1,5 +1,5 @@
-<div class="tableContainer">
-    <div class="d-flex align-items-center justify-content-between">
+<div class="">
+    <div class="d-flex align-items-center justify-content-between pt-2">
         <div><label>{{selectedPayroll?.month}}-{{selectedPayroll?.year}} | Income Tax</label></div>
         <div class="d-flex align-items-center ms-auto">
             <span class="bi bi-search searchIcon"></span>
@@ -25,12 +25,12 @@
         </ng-container>
 
         <ng-container matColumnDef="TaxCalculated">
-            <th mat-header-cell *matHeaderCellDef> Tax Calculation By EffortlessHRM </th>
+            <th mat-header-cell *matHeaderCellDef> Tax Calculation By EffortlessHRM (Yearly) </th>
             <td mat-cell *matCellDef="let data"> {{data?.TaxCalculated}} </td>
         </ng-container>
 
         <ng-container matColumnDef="TDSCalculated">
-            <th mat-header-cell *matHeaderCellDef> TDS to be Deducted </th>
+            <th mat-header-cell *matHeaderCellDef> TDS to be Deducted (Monthly)</th>
             <td mat-cell *matCellDef="let data"> {{data?.TDSCalculated}} </td>
         </ng-container>
 

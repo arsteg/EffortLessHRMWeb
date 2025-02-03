@@ -22,6 +22,7 @@ export class Step6Component {
   selectedUserId: any;
   selectedRecord: any;
   payrollUser: any;
+  selectedPayrollUser: any;
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
 
   constructor(
@@ -44,7 +45,8 @@ export class Step6Component {
   }
 
   onUserSelectedFromChild(user: any) {
-    this.selectedUserId = user;
+    this.selectedUserId = user.value.user;
+    this.selectedPayrollUser = user.value._id;
     this.getFlexiBenefitsProfessionalTax();
   }
 
@@ -60,7 +62,7 @@ export class Step6Component {
   }
 
   getFlexiBenefitsProfessionalTax() {
-    this.payrollService.getFlexiByUsers(this.selectedUserId?._id).subscribe((res: any) => {
+    this.payrollService.getFlexiByUsers(this.selectedPayrollUser).subscribe((res: any) => {
       this.flexiBenefits = res.data.records;
       const userRequests = this.flexiBenefits.map((item: any) => {
         return this.payrollService.getPayrollUserById(item.PayrollUser).pipe(
@@ -112,7 +114,7 @@ export class Step6Component {
 
   onSubmission() {
     this.flexiBenefitsForm.get('PayrollUser').enable();
-    this.flexiBenefitsForm.value.PayrollUser = this.selectedUserId._id;
+    this.flexiBenefitsForm.value.PayrollUser = this.selectedPayrollUser;
     if (this.changeMode == 'Add') {
       this.payrollService.addFlexi(this.flexiBenefitsForm.value).subscribe((res: any) => {
         this.getFlexiBenefitsProfessionalTax();

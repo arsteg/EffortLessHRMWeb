@@ -82,9 +82,9 @@ export class Step4Component {
     this.selectedPayrollUser = userId.value._id;
     this.getAllLoansAdvances();
     this.getLoanAdvances();
-    if (this.changeMode === 'Add' || this.changeMode === 'Update') {
+    // if (this.changeMode === 'Add' || this.changeMode === 'Update') {
       this.getLoanAdvancesOfUser();
-    }
+    // }
   }
 
   getAllUsers() {
@@ -139,11 +139,12 @@ export class Step4Component {
   onSubmission() {
     this.loanAdvanceForm.get('payrollUser').enable();
     this.loanAdvanceForm.value.payrollUser = this.selectedPayrollUser;
+    this.loanAdvanceForm.value.amount= 0;
     console.log(this.loanAdvanceForm.value.payrollUser);
     if (this.changeMode === 'Add') {
       this.payrollService.addLoanAdvance(this.loanAdvanceForm.value).subscribe(
         (res: any) => {
-          this.getLoanAdvances();
+          this.getLoanAdvanceByPayroll();
           this.loanAdvanceForm.reset();
           this.userloanAdvances = [];
           this.selectedUserId = null;
@@ -159,7 +160,7 @@ export class Step4Component {
     if (this.changeMode === 'Update') {
       this.payrollService.updateLoanAdvance(this.selectedRecord._id, this.loanAdvanceForm.value).subscribe(
         (res: any) => {
-          this.getLoanAdvances();
+          this.getLoanAdvanceByPayroll();
           this.toast.success('Loan/Advance Updated', 'Successfully');
           this.loanAdvanceForm.reset();
           this.selectedUserId = '';
@@ -268,7 +269,7 @@ export class Step4Component {
 
   deleteTemplate(_id: string) {
     this.payrollService.deleteLoanAdvance(_id).subscribe((res: any) => {
-      this.getLoanAdvances();
+      this.getLoanAdvanceByPayroll();
       this.toast.success('Successfully Deleted!!!', 'Loan/Advance')
     },
       (err) => {

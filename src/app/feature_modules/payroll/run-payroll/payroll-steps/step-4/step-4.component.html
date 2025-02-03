@@ -19,8 +19,7 @@
         <thead>
             <th>Employee Name</th>
             <th>Loan Category</th>
-            <th>Amount</th>
-            <th>Frequency</th>
+            <th>Total Amount</th>
             <th>Disbursed Amount</th>
             <th>Status</th>
             <th>Actions</th>
@@ -30,7 +29,6 @@
                 <td>{{data?.payrollUserDetails | titlecase}}</td>
                 <td>{{getMatchingCategory(data?.loanAndAdvance)}}</td>
                 <td>{{data?.amount}}</td>
-                <td>{{data?.frequency}}</td>
                 <td>{{data?.disbursementAmount}}</td>
                 <td>{{data?.status}}</td>
                 <td>
@@ -97,16 +95,6 @@
                         <input matInput type="number" formControlName="disbursementAmount">
                         <mat-error *ngIf="loanAdvanceForm.get('disbursementAmount')?.invalid && loanAdvanceForm.get('disbursementAmount')?.touched">
                             Disbursement Amount must be greater than 0.
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-
-                <div class="form-group col-md-6">
-                    <mat-form-field appearance="outline" class="my-2">
-                        <mat-label>Enter Amount</mat-label>
-                        <input matInput type="number" formControlName="amount">
-                        <mat-error *ngIf="loanAdvanceForm.get('amount')?.invalid && loanAdvanceForm.get('amount')?.touched">
-                            Please add Valid Amount.
                         </mat-error>
                     </mat-form-field>
                 </div>
