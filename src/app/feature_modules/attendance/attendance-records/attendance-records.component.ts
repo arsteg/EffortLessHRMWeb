@@ -8,6 +8,7 @@ import { AttendanceService } from 'src/app/_services/attendance.service';
 import { LeaveService } from 'src/app/_services/leave.service';
 import { CompanyService } from 'src/app/_services/company.service';
 import { forkJoin, map } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-attendance-records',
@@ -20,7 +21,7 @@ export class AttendanceRecordsComponent {
   searchText: string = '';
   closeResult: string = '';
   changeMode: 'Add' | 'Update' = 'Add';
-  attendanceRecords: any[];
+  attendanceRecords: any[] = [];
   users: any[] = [];
   selectedAttendanceRecord: any;
   filteredAttendanceRecords = [];
@@ -61,7 +62,8 @@ export class AttendanceRecordsComponent {
     private commonService: CommonService,
     private attendanceService: AttendanceService,
     private leaveService: LeaveService,
-    private companyService: CompanyService
+    private companyService: CompanyService,
+    private toast: ToastrService
   ) { }
 
   ngOnInit() {
@@ -112,11 +114,19 @@ export class AttendanceRecordsComponent {
         const csvData = e.target.result;
         const parsedData = this.parseCSV(csvData);
         if (parsedData.length === 0) {
-          alert('CSV file is empty or invalid.');
+          this.toast.warning('CSV file is empty or invalid.');
           return;
         }
         if (this.validateCSV(parsedData)) {
-          alert('CSV file is valid and uploaded successfully!');
+          console.log(parsedData);
+          this.attendanceService.uploadAttendanceRecords(parsedData).subscribe(
+            (res: any) => {
+              this.toast.success('CSV file uploaded successfully!');
+            },
+            (error: any) => {
+              this.toast.error('Failed to upload CSV file. Please try again.');
+            }
+          );
         } else {
           alert('Invalid CSV file. Please check the columns and data.');
         }
@@ -133,19 +143,18 @@ export class AttendanceRecordsComponent {
     return rows.slice(1).map(row => {
       const values = row.split(',').map(val => val.trim());
       return {
-        employeeCode: values[0] || '',
-        date: values[1] || '',
-        startTime: values[2] || '',
-        endTime: values[3] || ''
+        EmpCode: values[0] || '',
+        Date: values[1] || '',
+        StartTime: values[2] || '',
+        EndTime: values[3] || ''
       };
     });
   }
 
   validateCSV(data: any[]): boolean {
-    const requiredKeys = ['employeeCode', 'date', 'startTime', 'endTime'];
+    const requiredKeys = ['EmpCode', 'Date', 'StartTime', 'EndTime'];
     return data.every(row => requiredKeys.every(key => row.hasOwnProperty(key) && row[key] !== ''));
   }
-  // ---------------------------
 
   trackByDate: TrackByFunction<string> = (index: number, date: string): string => {
     return date;
