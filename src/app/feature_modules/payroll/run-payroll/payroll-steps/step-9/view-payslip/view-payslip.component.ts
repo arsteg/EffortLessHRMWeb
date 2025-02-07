@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectorRef, Component, Input } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { PayrollService } from 'src/app/_services/payroll.service';
 
@@ -11,41 +12,27 @@ export class ViewPayslipComponent {
   @Input() viewPayroll: any;
   @Input() selectedPayroll: any;
   userProfile: any;
-  attendanceSummary: any[];
-  salaryAfterLOP: any;
+  attendanceSummary: any;
+  salaryAfterLOP: string;
+  netSalary: any;
 
-  constructor(private authService: AuthenticationService,
-    private payrollService: PayrollService
-  ) { }
 
+  constructor() { }
   ngOnInit() {
-    this.getUser();
-    this.getLopDays();
     this.calculateSalaryAfterLOP();
+    this.netSalary =
+    Number(this.viewPayroll?.totalFixedAllowance) + Number(this.viewPayroll?.totalOvertime + Number(this.viewPayroll?.totalFlexiBenefits)) -
+    (Number(this.viewPayroll?.totalFixedDeduction) + Number(this.viewPayroll?.totalPfTax) + Number(this.viewPayroll?.totalIncomeTax));
+  
+    console.log(this.netSalary)
   }
 
-  getUser() {
-    this.authService.GetMe(this.viewPayroll?.employee).subscribe((res: any) => {
-      this.userProfile = res.data.users;
-    })
-  }
-
-  getLopDays() {
-    this.payrollService.getAttendanceSummary(this.viewPayroll?.payrollUser).subscribe((res: any) => {
-      this.attendanceSummary = res.data;
-      console.log(this.attendanceSummary);
-    })
-  }
-
-  calculateSalaryAfterLOP(): void {
+  calculateSalaryAfterLOP() {
     const monthlySalary = this.viewPayroll.monthlySalary;
-    const lopDays = this.attendanceSummary[0]?.lopDays;
-    const payableDays = this.attendanceSummary[0].payableDays;
-
-    const totalDays = lopDays + payableDays;
+    const totalDays = this.viewPayroll?.attendanceSummary[0].totalDays;
+    const payableDays = this.viewPayroll?.attendanceSummary[0]?.payableDays;
     const perDayPay = monthlySalary / totalDays;
-    const lopSalary = lopDays * perDayPay;
-    console.log(this.salaryAfterLOP);
-    this.salaryAfterLOP = monthlySalary - lopSalary;
+    const lopSalary = perDayPay * payableDays;
+    this.salaryAfterLOP = lopSalary.toFixed(2);
   }
 }

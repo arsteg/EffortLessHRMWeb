@@ -25,9 +25,9 @@
             <th>Actions</th>
         </thead>
         <tbody>
-            <tr *ngFor="let data of matchedLoanAdvances | search: searchText">
+            <tr *ngFor="let data of matchedLoanAdvances | search: searchText; let i = index">
                 <td>{{data?.payrollUserDetails | titlecase}}</td>
-                <td>{{getMatchingCategory(data?.loanAndAdvance)}}</td>
+                <td>{{data?.loanAndAdvance?.loanAdvancesCategory?.name}}</td>
                 <td>{{data?.amount}}</td>
                 <td>{{data?.disbursementAmount}}</td>
                 <td>{{data?.status}}</td>
@@ -72,8 +72,8 @@
                     <mat-form-field appearance="outline" class="my-2">
                         <mat-label>Loans and Advances on the selection of Payroll User</mat-label>
                         <mat-select formControlName="loanAndAdvance">
-                            <mat-option *ngFor="let loanAdvance of userloanAdvances" [value]="loanAdvance.loanAdvancesCategory">
-                                {{ loanAdvance.name ? loanAdvance.name : getMatchingCategory(loanAdvance.loanAdvancesCategory) }}
+                            <mat-option *ngFor="let loanAdvance of userloanAdvances" [value]="loanAdvance._id">
+                                {{ loanAdvance?.loanAdvancesCategory?.name }}
                             </mat-option>
                         </mat-select>
                     </mat-form-field>

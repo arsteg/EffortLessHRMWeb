@@ -17,13 +17,14 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 export class Step7Component {
   searchText: string = '';
   closeResult: string = '';
-  changeMode: 'Add' | 'Update' = 'Add';
+  changeMode: 'Add' | 'Update' = 'Update';
   overtime: any;
   overtimeForm: FormGroup;
-  users: any;
+  allUsers: any;
   selectedUserId: any;
   selectedRecord: any;
   payrollUser: any;
+  payrollUsers: any;
   @Input() selectedPayroll: any;
   overtimeInformation: any;
   overtimeRecords: any;
@@ -33,7 +34,6 @@ export class Step7Component {
   constructor(
     private payrollService: PayrollService,
     private fb: FormBuilder,
-    private commonService: CommonService,
     private dialog: MatDialog,
     private toast: ToastrService,
     private attendanceService: AttendanceService,
@@ -49,15 +49,23 @@ export class Step7Component {
   }
 
   ngOnInit() {
-    this.getAllUsers();
+    this.payrollService.allUsers.subscribe(res => {
+      this.allUsers = res;
+    });
+    this.payrollService.payrollUsers.subscribe(res => {
+      this.payrollUsers = res;
+    });
     this.getOvertimeByPayroll();
   }
 
   onUserSelectedFromChild(userId: any) {
     this.selectedUserId = userId.value.user;
     this.selectedPayrollUser = userId.value._id;
-    this.getOvertimeByUser();
-    this.getOvertime();
+    if (this.changeMode === 'Add') {
+      this.getOvertimeByUser();}
+      if(this.changeMode === 'Update')
+    {  this.getOvertime();}
+    
   }
 
   getOvertimeByUser() {
@@ -149,14 +157,9 @@ export class Step7Component {
     });
   }
 
-  getAllUsers() {
-    this.commonService.populateUsers().subscribe((res: any) => {
-      this.users = res.data.data;
-    });
-  }
-
+  
   getUser(employeeId: string) {
-    const matchingUser = this.users?.find(user => user._id === employeeId);
+    const matchingUser = this.allUsers?.find(user => user._id === employeeId);
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'N/A';
   }
 
@@ -181,6 +184,7 @@ export class Step7Component {
   }
 
   closeDialog() {
+    this.changeMode = 'Update';
     this.dialog.closeAll();
   }
 
@@ -199,52 +203,29 @@ export class Step7Component {
   getOvertime() {
     this.payrollService.getOvertime(this.selectedPayrollUser).subscribe((res: any) => {
       this.overtime = res.data.records;
-      const userRequests = this.overtime?.map((item: any) => {
-        return this.payrollService.getPayrollUserById(this.selectedPayrollUser).pipe(
-          map((userRes: any) => ({
-            ...item,
-            payrollUserDetails: this.getUser(userRes?.data.user)
-          }))
-        );
+      const userRequests = this.overtime.map((item: any) => {
+        const payrollUser = this.payrollUsers?.find((user: any) => user._id === item.PayrollUser);
+        return {
+          ...item,
+          payrollUserDetails: payrollUser ? this.getUser(payrollUser.user) : null
+        };
       });
-      forkJoin(userRequests).subscribe(
-        (results: any[]) => {
-          this.overtime = results;
-        },
-        (error) => {
-          this.toast.error("Error fetching payroll user details:", error);
-        }
-      );
-    },
-      (error) => {
-        this.toast.error("Error fetching attendance summary:", error);
-      }
-    );
+      this.overtime = userRequests;
+    });
   }
 
   getOvertimeByPayroll() {
     this.payrollService.getOvertimeByPayroll(this.selectedPayroll?._id).subscribe((res: any) => {
       this.overtime = res.data;
-      const userRequests = this.overtime?.map((item: any) => {
-        return this.payrollService.getPayrollUserById(item.PayrollUser).pipe(
-          map((userRes: any) => ({
-            ...item,
-            payrollUserDetails: this.getUser(userRes?.data.user)
-          }))
-        );
+      const userRequests = this.overtime.map((item: any) => {
+        const payrollUser = this.payrollUsers?.find((user: any) => user._id === item.PayrollUser);
+        return {
+          ...item,
+          payrollUserDetails: payrollUser ? this.getUser(payrollUser.user) : null
+        };
       });
-      forkJoin(userRequests).subscribe(
-        (results: any[]) => {
-          this.overtime = results;
-        },
-        (error) => {
-          this.toast.error("Error fetching payroll user details:", error);
-        }
-      );
-    },
-      (error) => {
-        this.toast.error("Error fetching attendance summary:", error);
-      });
+      this.overtime = userRequests;
+    });
   }
 
   onSubmission() {
@@ -256,7 +237,15 @@ export class Step7Component {
       LateComing: this.overtimeForm.get('LateComing').value,
       EarlyGoing: this.overtimeForm.get('EarlyGoing').value,
       FinalOvertime: this.overtimeForm.get('FinalOvertime').value
-    })
+    });
+
+    // Check if a record already exists for the selected user
+    const existingRecord = this.overtime.find((record: any) => record.PayrollUser === this.selectedPayrollUser);
+    if (existingRecord && this.changeMode === 'Add') {
+      this.toast.error('A record already exists for this user.', 'Error!');
+      return;
+    }
+
     if (this.changeMode == 'Add') {
       this.payrollService.addOvertime(this.overtimeForm.value).subscribe((res: any) => {
         this.getOvertimeByPayroll();

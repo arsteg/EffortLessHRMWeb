@@ -27,7 +27,9 @@ export class PayrollService {
   assignedTemplates: any = new BehaviorSubject('');
   ctcTempData: any = new BehaviorSubject('');
   selectedFnFPayroll: any = new BehaviorSubject('');
-
+  payrollUsers: any = new BehaviorSubject('');
+  allUsers: any = new BehaviorSubject('');
+  
   constructor(private http: HttpClient) { }
   public getToken() {
     return localStorage.getItem('jwtToken');
@@ -393,7 +395,7 @@ export class PayrollService {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/pf-charge`, payload, this.httpOptions);
     return response;
   }
-  
+
   getAllPFCharges(payload: any): Observable<any> {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/pf-charge-by-company`, payload, this.httpOptions);
     return response;
@@ -636,6 +638,11 @@ export class PayrollService {
 
   updateIncomeTax(id: string, payload: any): Observable<any> {
     var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/incomeTax/${id}`, payload, this.httpOptions);
+    return response;
+  }
+
+  generatedPayrollByPayroll(payroll: string): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/generatedPayroll-by-payroll/${payroll}`, this.httpOptions);
     return response;
   }
 

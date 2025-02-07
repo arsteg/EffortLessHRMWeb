@@ -10,6 +10,7 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 import { ToastrService } from 'ngx-toastr';
 import { FormControl } from '@angular/forms';
 import { DatePipe } from '@angular/common';
+import { forkJoin, map, of } from 'rxjs';
 
 @Component({
   selector: 'app-show-application',
@@ -46,11 +47,27 @@ export class ShowApplicationComponent {
     private datePipe: DatePipe
   ) { }
 
+  // ngOnInit() {
+  //   this.commonService.populateUsers().subscribe(result => {
+  //     this.allAssignee = result && result.data && result.data.data;
+  //   });
+  //   this.getLeaveApplication();
+  //   this.getleaveCatgeories();
+  // }
   ngOnInit() {
-    this.commonService.populateUsers().subscribe(result => {
-      this.allAssignee = result && result.data && result.data.data;
+    // Use forkJoin to call both API calls concurrently
+    forkJoin({
+      users: this.commonService.populateUsers(),
+      leaveApplications: this.getLeaveApplication()
+    }).subscribe(({ users, leaveApplications }) => {
+      // Handle the results of both API calls
+      this.allAssignee = users && users.data && users.data.data;
+  
+      // leaveApplications is already handled within the getLeaveApplication method
+      // No need to do anything extra here unless you want to process the result further
     });
-    this.getLeaveApplication();
+  
+    // Call getleaveCatgeories separately if it doesn't depend on the above calls
     this.getleaveCatgeories();
   }
 
@@ -161,50 +178,99 @@ export class ShowApplicationComponent {
     return totalDays;
   }  
 
+  // getLeaveApplication() {
+  //   const requestBody = {
+  //     "status": this.status,
+  //     "skip": ((this.currentPage - 1) * this.recordsPerPage).toString(),
+  //     "next": this.recordsPerPage.toString()
+  //   };
+  //   if (this.portalView === 'admin') {
+  //     this.leaveService.getLeaveApplication(requestBody).subscribe((res: any) => {
+  //       this.leaveApplication = res.data;
+  //       this.totalRecords = res.total;
+  //       this.leaveApplication = res.data.map((leave: any) => {
+  //         leave.totalLeaveDays = this.calculateTotalLeaveDays(leave);
+  //         return {
+  //           ...leave,
+  //           employeeName: this.getUser(leave.employee),
+  //           startDate: this.datePipe.transform(leave.startDate, 'MMM d, yyyy'),
+  //           endDate: this.datePipe.transform(leave.endDate, 'MMM d, yyyy')
+  //         };
+  //       });
+  //     });
+  //   }
+
+  //   else if (this.portalView === 'user') {
+  //     const employeeId = this.currentUser.id;
+  //     this.leaveService.getLeaveApplicationbyUser(requestBody, employeeId).subscribe((res: any) => {
+  //       this.leaveApplication = res.data.filter(leave => leave.status === this.status);
+  //       this.leaveApplication.forEach(leave => {
+  //         leave.totalLeaveDays = this.calculateTotalLeaveDays(leave);
+  //       });
+  //     });
+  //   }
+
+  //   else if (this.tab === 5) {
+  //     this.leaveService.getLeaveApplicationByTeam().subscribe((res: any) => {
+  //       this.leaveApplication = res.data.filter(leave => leave.status === this.status);
+  //       this.totalLeaveDays = 0;
+  //       this.leaveApplication.forEach(leave => {
+  //         leave.totalLeaveDays = this.calculateTotalLeaveDays(leave);
+  //       });
+  //     });
+  //   }
+  // }
   getLeaveApplication() {
-    // if (this.portalView === 'admin') {
     const requestBody = {
-      "status": this.status,
-      "skip": ((this.currentPage - 1) * this.recordsPerPage).toString(),
-      "next": this.recordsPerPage.toString()
+      status: this.status,
+      skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
+      next: this.recordsPerPage.toString()
     };
+  
     if (this.portalView === 'admin') {
-      this.leaveService.getLeaveApplication(requestBody).subscribe((res: any) => {
-        this.leaveApplication = res.data;
-        this.totalRecords = res.total;
-        this.leaveApplication = res.data.map((leave: any) => {
-          leave.totalLeaveDays = this.calculateTotalLeaveDays(leave);
-          return {
-            ...leave,
-            employeeName: this.getUser(leave.employee),
-            startDate: this.datePipe.transform(leave.startDate, 'MMM d, yyyy'),
-            endDate: this.datePipe.transform(leave.endDate, 'MMM d, yyyy')
-          };
-        });
-      });
-    }
-
-    else if (this.portalView === 'user') {
+      return this.leaveService.getLeaveApplication(requestBody).pipe(
+        map((res: any) => {
+          this.leaveApplication = res.data;
+          this.totalRecords = res.total;
+          this.leaveApplication = res.data.map((leave: any) => {
+            leave.totalLeaveDays = this.calculateTotalLeaveDays(leave);
+            return {
+              ...leave,
+              employeeName: this.getUser(leave.employee),
+              startDate: this.datePipe.transform(leave.startDate, 'MMM d, yyyy'),
+              endDate: this.datePipe.transform(leave.endDate, 'MMM d, yyyy')
+            };
+          });
+          return res; // Return the result for forkJoin
+        })
+      );
+    } else if (this.portalView === 'user') {
       const employeeId = this.currentUser.id;
-      this.leaveService.getLeaveApplicationbyUser(requestBody, employeeId).subscribe((res: any) => {
-        this.leaveApplication = res.data.filter(leave => leave.status === this.status);
-        this.leaveApplication.forEach(leave => {
-          leave.totalLeaveDays = this.calculateTotalLeaveDays(leave);
-        });
-      });
+      return this.leaveService.getLeaveApplicationbyUser(requestBody, employeeId).pipe(
+        map((res: any) => {
+          this.leaveApplication = res.data.filter((leave: any) => leave.status === this.status);
+          this.leaveApplication.forEach((leave: any) => {
+            leave.totalLeaveDays = this.calculateTotalLeaveDays(leave);
+          });
+          return res; // Return the result for forkJoin
+        })
+      );
+    } else if (this.tab === 5) {
+      return this.leaveService.getLeaveApplicationByTeam().pipe(
+        map((res: any) => {
+          this.leaveApplication = res.data.filter((leave: any) => leave.status === this.status);
+          this.totalLeaveDays = 0;
+          this.leaveApplication.forEach((leave: any) => {
+            leave.totalLeaveDays = this.calculateTotalLeaveDays(leave);
+          });
+          return res; // Return the result for forkJoin
+        })
+      );
     }
-
-    else if (this.tab === 5) {
-      this.leaveService.getLeaveApplicationByTeam().subscribe((res: any) => {
-        this.leaveApplication = res.data.filter(leave => leave.status === this.status);
-        this.totalLeaveDays = 0;
-        this.leaveApplication.forEach(leave => {
-          leave.totalLeaveDays = this.calculateTotalLeaveDays(leave);
-        });
-      });
-    }
+  
+    // Return an empty observable if none of the conditions match
+    return of(null);
   }
-
   deleteLeaveApplication(_id: string) {
     this.leaveService.deleteLeaveApplication(_id).subscribe((res: any) => {
       const index = this.leaveApplication.findIndex(temp => temp._id === _id);

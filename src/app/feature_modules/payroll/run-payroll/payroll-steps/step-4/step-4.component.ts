@@ -20,11 +20,11 @@ export class Step4Component {
   loanAdvances: any;
   userloanAdvances: any;
   allLoanAdvances: any;
-  users: any;
+  allUsers: any;
   @Input() selectedPayroll: any;
-  changeMode: 'Add' | 'Update' = 'Add';
+  changeMode: 'Add' | 'Update' = 'Update';
   selectedRecord: any;
-  payrollUser: any;
+  payrollUsers: any;
   matchedLoanAdvances: any;
   selectedPayrollUser: string;
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
@@ -45,13 +45,15 @@ export class Step4Component {
       type: [''],
       amount: [0]
     });
-
-    
   }
 
   ngOnInit() {
-    this.getAllUsers();
-    this.getAllLoansAdvances();
+    this.payrollService.allUsers.subscribe(res => {
+      this.allUsers = res;
+    });
+    this.payrollService.payrollUsers.subscribe(res => {
+      this.payrollUsers = res;
+    });
     this.getLoanAdvanceByPayroll();
   }
 
@@ -63,6 +65,7 @@ export class Step4Component {
   }
 
   closeDialog() {
+    this.changeMode = 'Update';
     this.dialog.closeAll();
   }
 
@@ -80,38 +83,25 @@ export class Step4Component {
   onUserSelectedFromChild(userId: any) {
     this.selectedUserId = userId.value.user;
     this.selectedPayrollUser = userId.value._id;
-    this.getAllLoansAdvances();
-    this.getLoanAdvances();
-    // if (this.changeMode === 'Add' || this.changeMode === 'Update') {
-      this.getLoanAdvancesOfUser();
-    // }
+    if (this.changeMode === 'Update') { this.getLoanAdvances(); }
+    if (this.changeMode === 'Add') { this.getLoanAdvancesOfUser(); }
   }
 
-  getAllUsers() {
-    this.commonService.populateUsers().subscribe((res: any) => {
-      this.users = res.data.data;
-    })
-  }
+
 
   getUser(employeeId: string) {
-    const matchingUser = this.users?.find(user => user._id === employeeId);
+    const matchingUser = this.allUsers?.find(user => user._id === employeeId);
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'N/A';
   }
 
   getLoanAdvancesOfUser() {
     this.userService.getLoansAdvancesByUserId(this.selectedUserId, { skip: '', next: '' }).subscribe((res: any) => {
       this.userloanAdvances = res.data;
-      if (this.userloanAdvances.length >= 1) {
-        this.userloanAdvances.unshift({ loanAdvancesCategory: '', name: 'Select Loan/Advance' });
+      if (this.userloanAdvances.length > 0) {
+        this.userloanAdvances.unshift({ loanAdvancesCategory: { name: 'Select Loan/Advance' } });
       } else {
-        this.userloanAdvances.unshift({ loanAdvancesCategory: '', name: 'Loans/Advances not Assigned to the Selected User' });
+        this.userloanAdvances.unshift({ loanAdvancesCategory: { name: 'Loans/Advances not Assigned to the Selected User' } });
       }
-    })
-  }
-
-  getAllLoansAdvances() {
-    this.payrollService.getLoans({ skip: '', next: '' }).subscribe((res: any) => {
-      this.allLoanAdvances = res.data;
     })
   }
 
@@ -122,8 +112,8 @@ export class Step4Component {
 
   setFormValues(form: any) {
     this.payrollService.getPayrollUserById(this.selectedRecord.payrollUser).subscribe((res: any) => {
-      this.payrollUser = res.data;
-      const payrollUser = this.payrollUser?.user;
+      this.payrollUsers = res.data;
+      const payrollUser = this.payrollUsers?.user;
       this.loanAdvanceForm.patchValue({
         payrollUser: this.getUser(payrollUser),
         loanAndAdvance: form.loanAndAdvance,
@@ -139,7 +129,7 @@ export class Step4Component {
   onSubmission() {
     this.loanAdvanceForm.get('payrollUser').enable();
     this.loanAdvanceForm.value.payrollUser = this.selectedPayrollUser;
-    this.loanAdvanceForm.value.amount= 0;
+    this.loanAdvanceForm.value.amount = 0;
     console.log(this.loanAdvanceForm.value.payrollUser);
     if (this.changeMode === 'Add') {
       this.payrollService.addLoanAdvance(this.loanAdvanceForm.value).subscribe(
@@ -176,95 +166,31 @@ export class Step4Component {
   }
 
   getLoanAdvances() {
-    forkJoin({
-      userLoanAdvances: this.userService.getLoansAdvancesByUserId(this.selectedUserId, { skip: '', next: '' }),
-      loanAdvances: this.payrollService.getLoanAdvance(this.selectedPayrollUser)
-    }).pipe(
-      switchMap(({ userLoanAdvances, loanAdvances }) => {
-        this.userloanAdvances = userLoanAdvances.data;
-        this.loanAdvances = loanAdvances.data;
-
-        const userRequests = this.loanAdvances.map((item: any) =>
-          this.payrollService.getPayrollUserById(this.selectedPayrollUser).pipe(
-            map((userRes: any) => ({
-              ...item,
-              payrollUserDetails: this.getUser(userRes?.data.user)
-            }))
-          )
-        );
-
-        return forkJoin(userRequests);
-      })
-    ).subscribe(
-      (detailedLoanAdvances) => {
-        this.loanAdvances = detailedLoanAdvances;
-
-        this.matchedLoanAdvances = this.loanAdvances.reduce((acc: any[], loanAdvance) => {
-          const matchingUserLoanAdvance = this.userloanAdvances.find(
-            (userLoanAdvance) => userLoanAdvance.loanAdvancesCategory === loanAdvance.loanAndAdvance
-          );
-
-          if (matchingUserLoanAdvance) {
-            acc.push({
-              ...loanAdvance,
-              amount: matchingUserLoanAdvance.amount,
-              frequency: matchingUserLoanAdvance.repaymentFrequency
-            });
-          }
-
-          return acc;
-        }, []);
-      },
-      (error) => {
-        console.error("Error fetching data:", error);
-      }
-    );
+    this.payrollService.getLoanAdvance(this.selectedPayrollUser).subscribe((res: any) => {
+      this.matchedLoanAdvances = res.data;
+      const userRequests = this.matchedLoanAdvances.map((item: any) => {
+        const payrollUser = this.payrollUsers?.find((user: any) => user._id === item.payrollUser);
+        return {
+          ...item,
+          payrollUserDetails: payrollUser ? this.getUser(payrollUser.user) : null
+        };
+      });
+      this.matchedLoanAdvances = userRequests
+    })
   }
 
   getLoanAdvanceByPayroll() {
-    forkJoin({
-      userLoanAdvances: this.userService.getLoansAdvancesByCompany({ skip: '', next: '' }),
-      loanAdvances: this.payrollService.getLoanAdvanceByPayroll(this.selectedPayroll?._id)
-    }).pipe(
-      switchMap(({ userLoanAdvances, loanAdvances }) => {
-        this.userloanAdvances = userLoanAdvances.data;
-        this.loanAdvances = loanAdvances.data;
-
-        const userRequests = this.loanAdvances.map((item: any) =>
-          this.payrollService.getPayrollUserById(item.payrollUser).pipe(
-            map((userRes: any) => ({
-              ...item,
-              payrollUserDetails: this.getUser(userRes?.data.user)
-            }))
-          )
-        );
-
-        return forkJoin(userRequests);
-      })
-    ).subscribe(
-      (detailedLoanAdvances) => {
-        this.loanAdvances = detailedLoanAdvances;
-
-        this.matchedLoanAdvances = this.loanAdvances.reduce((acc: any[], loanAdvance) => {
-          const matchingUserLoanAdvance = this.userloanAdvances.find(
-            (userLoanAdvance) => userLoanAdvance.loanAdvancesCategory === loanAdvance.loanAndAdvance
-          );
-
-          if (matchingUserLoanAdvance) {
-            acc.push({
-              ...loanAdvance,
-              amount: matchingUserLoanAdvance.amount,
-              frequency: matchingUserLoanAdvance.repaymentFrequency
-            });
-          }
-
-          return acc;
-        }, []);
-      },
-      (error) => {
-        console.error("Error fetching data:", error);
-      }
-    );
+    this.payrollService.getLoanAdvanceByPayroll(this.selectedPayroll?._id).subscribe((res: any) => {
+      this.matchedLoanAdvances = res.data;
+      const userRequests = this.matchedLoanAdvances.map((item: any) => {
+        const payrollUser = this.payrollUsers?.find((user: any) => user._id === item.payrollUser);
+        return {
+          ...item,
+          payrollUserDetails: payrollUser ? this.getUser(payrollUser.user) : null
+        };
+      });
+      this.matchedLoanAdvances = userRequests
+    });
   }
 
   deleteTemplate(_id: string) {

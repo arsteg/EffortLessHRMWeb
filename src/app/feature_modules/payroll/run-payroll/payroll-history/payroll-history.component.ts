@@ -21,7 +21,7 @@ export class PayrollHistoryComponent {
   searchText: string = '';
   payroll: any;
   payrollUsers: any;
-  selectedPayroll;
+  selectedPayroll: any;
   payrollForm: FormGroup;
   payrollUserForm: FormGroup;
   years: number[] = [];
@@ -71,6 +71,9 @@ export class PayrollHistoryComponent {
   }
 
   openSteps() {
+    this.payrollService.getPayrollUsers({skip: '', next: '', payroll: this.selectedPayroll?._id}).subscribe((res: any) => {
+      this.payrollService?.payrollUsers.next(res.data);
+    });
     this.isAllEmployees = false;
     this.changeView.emit();
   }
@@ -109,7 +112,6 @@ export class PayrollHistoryComponent {
         this.payrollService.getPayrollUsers(payrollUsersPayload).subscribe((payrollUsersRes: any) => {
           const users = payrollUsersRes.data;
           this.payrollUsers = users;
-          
           const activeCount = users.filter(user => user.status === 'Active').length;
           const onHoldCount = users.filter(user => user.status === 'OnHold').length;
           const processedCount = users.filter(user => user.status === 'Processed').length;
@@ -130,6 +132,7 @@ export class PayrollHistoryComponent {
   getAllUsers() {
     this.commonService.populateUsers().subscribe((res: any) => {
       this.users = res.data.data;
+      this.payrollService.allUsers.next(this.users);
     })
   }
 
@@ -230,6 +233,4 @@ export class PayrollHistoryComponent {
       }
     });
   }
-
-
 }

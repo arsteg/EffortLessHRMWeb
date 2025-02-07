@@ -25,8 +25,7 @@ export class UserListComponent implements OnInit {
   date = new Date('MMM d, y, h:mm:ss a');
   selectedUser: any;
   addForm: FormGroup;
-  updateForm: FormGroup
-  roleName: any = [];
+  updateForm: FormGroup;
   firstLetter: string;
   color: string;
   public sortOrder: string = '';
@@ -67,7 +66,6 @@ export class UserListComponent implements OnInit {
 
   ngOnInit() {
     this.getRoles();
-    this.getAllRoles();
     this.commonservice.populateUsers().subscribe(result => {
       this.totalRecords = result.results;
       this.usersList = new MatTableDataSource(result && result.data && result.data.data);
@@ -88,16 +86,10 @@ export class UserListComponent implements OnInit {
     this.usersList.data = [...this.usersList.data];
   }
 
-  getAllRoles() {
-    this.roleService.getAllRole().subscribe(response => {
-      this.roleName = response.data;
-    })
-  }
-
   getRoleName(id) {
-    let rolename = this.roleName.find((role) => { return role.id == id; });
-    if (rolename && rolename.Name) {
-      return rolename.Name
+    let role = this.roles.find((role) => { return role.id == id; });
+    if (role && role.Name) {
+      return role.Name
     } else { return 'Employee' }
   }
 

@@ -16,11 +16,12 @@ export class Step6Component {
   searchText: string = '';
   flexiBenefitsForm: FormGroup;
   flexiBenefits: any;
-  changeMode: 'Add' | 'Update' = 'Add';
-  users: any;
+  changeMode: 'Add' | 'Update' = 'Update';
+  allUsers: any;
   @Input() selectedPayroll: any;
   selectedUserId: any;
   selectedRecord: any;
+  payrollUsers: any;
   payrollUser: any;
   selectedPayrollUser: any;
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
@@ -40,24 +41,23 @@ export class Step6Component {
   }
 
   ngOnInit() {
-    this.getAllUsers();
+    this.payrollService.allUsers.subscribe(res => {
+      this.allUsers = res;
+    });
+    this.payrollService.payrollUsers.subscribe(res => {
+      this.payrollUsers = res;
+    });
     this.getFlexiBenefitsByPayroll();
   }
 
   onUserSelectedFromChild(user: any) {
     this.selectedUserId = user.value.user;
     this.selectedPayrollUser = user.value._id;
-    this.getFlexiBenefitsProfessionalTax();
-  }
-
-  getAllUsers() {
-    this.commonService.populateUsers().subscribe((res: any) => {
-      this.users = res.data.data;
-    });
+    if (this.changeMode === 'Add') { this.getFlexiBenefitsProfessionalTax(); }
   }
 
   getUser(employeeId: string) {
-    const matchingUser = this.users?.find(user => user._id === employeeId);
+    const matchingUser = this.allUsers?.find(user => user._id === employeeId);
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'N/A';
   }
 
@@ -65,51 +65,28 @@ export class Step6Component {
     this.payrollService.getFlexiByUsers(this.selectedPayrollUser).subscribe((res: any) => {
       this.flexiBenefits = res.data.records;
       const userRequests = this.flexiBenefits.map((item: any) => {
-        return this.payrollService.getPayrollUserById(item.PayrollUser).pipe(
-          map((userRes: any) => ({
-            ...item,
-            payrollUserDetails: this.getUser(userRes?.data.user)
-          }))
-        );
+        const payrollUser = this.payrollUsers?.find((user: any) => user._id === item.PayrollUser);
+        return {
+          ...item,
+          payrollUserDetails: payrollUser ? this.getUser(payrollUser.user) : null
+        };
       });
-      forkJoin(userRequests).subscribe(
-        (results: any[]) => {
-          this.flexiBenefits = results;
-        },
-        (error) => {
-          this.toast.error("Error fetching payroll user details:", error);
-        }
-      );
-    },
-      (error) => {
-        this.toast.error("Error fetching attendance summary:", error);
-      }
-    );
+      this.flexiBenefits = userRequests
+    })
   }
 
   getFlexiBenefitsByPayroll() {
     this.payrollService.getFlexiByPayroll(this.selectedPayroll?._id).subscribe((res: any) => {
       this.flexiBenefits = res.data;
       const userRequests = this.flexiBenefits.map((item: any) => {
-        return this.payrollService.getPayrollUserById(item.PayrollUser).pipe(
-          map((userRes: any) => ({
-            ...item,
-            payrollUserDetails: this.getUser(userRes?.data.user)
-          }))
-        );
+        const payrollUser = this.payrollUsers?.find((user: any) => user._id === item.PayrollUser);
+        return {
+          ...item,
+          payrollUserDetails: payrollUser ? this.getUser(payrollUser.user) : null
+        };
       });
-      forkJoin(userRequests).subscribe(
-        (results: any[]) => {
-          this.flexiBenefits = results;
-        },
-        (error) => {
-          this.toast.error("Error fetching payroll user details:", error);
-        }
-      );
-    },
-      (error) => {
-        this.toast.error("Error fetching attendance summary:", error);
-      });
+      this.flexiBenefits = userRequests;
+    });
   }
 
   onSubmission() {
@@ -154,6 +131,7 @@ export class Step6Component {
   }
 
   closeDialog() {
+    this.changeMode = 'Update';
     this.dialog.closeAll();
   }
 

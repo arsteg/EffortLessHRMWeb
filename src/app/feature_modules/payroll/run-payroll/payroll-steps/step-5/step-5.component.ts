@@ -15,16 +15,16 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 export class Step5Component {
   activeTab: string = 'tabArrears';
   arrearForm: FormGroup;
-  changeMode: 'Add' | 'Update' = 'Add';
+  changeMode: 'Add' | 'Update' = 'Update';
   @Input() selectedPayroll: any;
   selectedUserId: any;
   arrears: any;
-  users: any;
+  allUsers: any;
   selectedRecord: any;
   payrollUser: any;
   searchText: string = '';
   selectedPayrollUser: string;
-  @Input() payrollUsers: any;
+  payrollUsers: any;
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
 
   constructor(
@@ -46,8 +46,12 @@ export class Step5Component {
   }
 
   ngOnInit() {
-    console.log(this.payrollUsers)
-    this.getAllUsers();
+    this.payrollService.allUsers.subscribe(res => {
+      this.allUsers = res;
+    });
+    this.payrollService.payrollUsers.subscribe(res => {
+      this.payrollUsers = res;
+    });
     this.getArrearsByPayroll();
   }
 
@@ -81,23 +85,18 @@ export class Step5Component {
   }
 
   closeDialog() {
+    this.changeMode = 'Update';
     this.dialog.closeAll();
   }
 
   onUserSelectedFromChild(user: any) {
     this.selectedUserId = user.value.user;
     this.selectedPayrollUser = user?.value?._id;
-    this.getArrears();
-  }
-
-  getAllUsers() {
-    this.commonService.populateUsers().subscribe((res: any) => {
-      this.users = res.data.data;
-    });
+    if (this.changeMode === 'Add') { this.getArrears(); }
   }
 
   getUser(employeeId: string) {
-    const matchingUser = this.users?.find(user => user._id === employeeId);
+    const matchingUser = this.allUsers?.find(user => user._id === employeeId);
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'N/A';
   }
 
@@ -105,27 +104,14 @@ export class Step5Component {
     this.payrollService.getArrear(this.selectedPayrollUser || this.selectedRecord?.payrollUser).subscribe((res: any) => {
       this.arrears = res.data;
       const userRequests = this.arrears.map((item: any) => {
-        return this.payrollService.getPayrollUserById(this.selectedPayrollUser || this.selectedRecord?.payrollUser).pipe(
-          map((userRes: any) => ({
-            ...item,
-            payrollUserDetails: this.getUser(userRes?.data.user)
-          }))
-
-        );
+        const payrollUser = this.payrollUsers?.find((user: any) => user._id === item.payrollUser);
+        return {
+          ...item,
+          payrollUserDetails: payrollUser ? this.getUser(payrollUser.user) : null
+        };
       });
-      forkJoin(userRequests).subscribe(
-        (results: any[]) => {
-          this.arrears = results;
-        },
-        (error) => {
-          this.toast.error("Error fetching payroll user details:", error);
-        }
-      );
-    },
-      (error) => {
-        this.toast.error("Error fetching attendance summary:", error);
-      }
-    );
+      this.arrears = userRequests
+    });
     if (this.changeMode == 'Update' && this.selectedRecord) {
       this.arrearForm.patchValue({
         payrollUser: this.selectedRecord.payrollUser,
@@ -138,25 +124,14 @@ export class Step5Component {
     this.payrollService.getArrearByPayroll(this.selectedPayroll?._id).subscribe((res: any) => {
       this.arrears = res.data;
       const userRequests = this.arrears.map((item: any) => {
-        return this.payrollService.getPayrollUserById(item.payrollUser).pipe(
-          map((userRes: any) => ({
-            ...item,
-            payrollUserDetails: this.getUser(userRes?.data.user)
-          }))
-        );
+        const payrollUser = this.payrollUsers?.find((user: any) => user._id === item.payrollUser);
+        return {
+          ...item,
+          payrollUserDetails: payrollUser ? this.getUser(payrollUser.user) : null
+        };
       });
-      forkJoin(userRequests).subscribe(
-        (results: any[]) => {
-          this.arrears = results;
-        },
-        (error) => {
-          this.toast.error("Error fetching payroll user details:", error);
-        }
-      );
-    },
-      (error) => {
-        this.toast.error("Error fetching attendance summary:", error);
-      });
+      this.arrears = userRequests
+    });
   }
 
   onSubmission() {

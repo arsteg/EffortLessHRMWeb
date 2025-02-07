@@ -2,9 +2,7 @@ import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
-import { forkJoin, map } from 'rxjs';
 import { AttendanceService } from 'src/app/_services/attendance.service';
-import { CommonService } from 'src/app/_services/common.Service';
 import { PayrollService } from 'src/app/_services/payroll.service';
 
 @Component({
@@ -17,19 +15,18 @@ export class Step2Component {
   attendanceSummaryForm: FormGroup;
   @Input() selectedPayroll: any;
   attendanceSummary: any;
-  changeMode: 'Add' | 'View' = 'Add';
+  changeMode: 'Add' | 'View' = 'View';
   selectedUserId: any;
   selectedRecord: any;
-  users: any;
-  payrollUser: any;
+  payrollUsers: any;
   attendanceLOPUser: any;
   selectedPayrollUser: string;
+  allUsers: any[] = [];
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
 
   constructor(private payrollService: PayrollService,
     private fb: FormBuilder,
     private dialog: MatDialog,
-    private commonService: CommonService,
     private toast: ToastrService,
     private attendanceService: AttendanceService
   ) {
@@ -42,28 +39,31 @@ export class Step2Component {
   }
 
   ngOnInit() {
-    this.getAllUsers();
+    this.payrollService.allUsers.subscribe(res => {
+      this.allUsers = res;
+    });
+    this.payrollService.payrollUsers.subscribe(res => {
+      this.payrollUsers = res;
+    });
+
     this.getAttendanceSummaryByPayroll();
   }
+
   onUserSelectedFromChild(userId: any) {
     this.selectedUserId = userId.value.user;
     this.selectedPayrollUser = userId.value._id;
-    this.getAttendanceSummary(userId?.value._id);
-    this.getProcessAttendanceLOPForPayrollUser();
+    if (this.changeMode === 'View') { this.getAttendanceSummary(userId?.value._id); }
+    if (this.changeMode === 'Add') { this.getProcessAttendanceLOPForPayrollUser(); }
   }
 
   openDialog() {
     if (this.changeMode == 'View') {
-      this.payrollService.getPayrollUserById(this.selectedRecord.payrollUser).subscribe((res: any) => {
-        this.payrollUser = res.data;
-        const payrollUser = this.payrollUser?.user;
-        this.attendanceSummaryForm.patchValue({
-          totalDays: this.selectedRecord?.totalDays,
-          lopDays: this.selectedRecord?.lopDays,
-          payableDays: this.selectedRecord?.payableDays
-        });
-        this.attendanceSummaryForm.get('payrollUser').disable();
+      this.attendanceSummaryForm.patchValue({
+        totalDays: this.selectedRecord?.totalDays,
+        lopDays: this.selectedRecord?.lopDays,
+        payableDays: this.selectedRecord?.payableDays
       });
+      this.attendanceSummaryForm.get('payrollUser').disable();
     } else {
       this.attendanceSummaryForm.reset({
         payrollUser: '',
@@ -83,14 +83,8 @@ export class Step2Component {
     this.dialog.closeAll();
   }
 
-  getAllUsers() {
-    this.commonService.populateUsers().subscribe((res: any) => {
-      this.users = res.data.data;
-    });
-  }
-
   getUser(employeeId: string) {
-    const matchingUser = this.users?.find(user => user._id === employeeId);
+    const matchingUser = this.allUsers?.find(user => user._id === employeeId);
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'N/A';
   }
 
@@ -99,28 +93,21 @@ export class Step2Component {
       (res: any) => {
         this.attendanceSummary = res.data;
         const userRequests = this.attendanceSummary.map((item: any) => {
-          return this.payrollService.getPayrollUserById(item.payrollUser).pipe(
-            map((userRes: any) => ({
-              ...item,
-              payrollUserDetails: this.getUser(userRes?.data.user)
-            }))
-          );
+          const payrollUser = this.payrollUsers.find((user: any) => user._id === item.payrollUser);
+          return {
+            ...item,
+            payrollUserDetails: this.getUser(payrollUser?.user)
+          };
         });
 
-        forkJoin(userRequests).subscribe(
-          (results: any[]) => {
-            this.attendanceSummary = results;
-          },
-          (error) => {
-            console.error("Error fetching payroll user details:", error);
-          }
-        );
+        this.attendanceSummary = userRequests;
       },
       (error) => {
         console.error("Error fetching attendance summary:", error);
       }
     );
   }
+
 
   onSubmission() {
     if (this.attendanceSummaryForm.invalid) {
@@ -129,8 +116,7 @@ export class Step2Component {
     }
     this.attendanceSummaryForm.patchValue({
       payrollUser: this.selectedPayrollUser
-    })
-
+    });
     const formData = this.attendanceSummaryForm.value;
 
     const existingRecord = this.attendanceSummary.find(
@@ -149,13 +135,11 @@ export class Step2Component {
     }
 
     if (this.changeMode === 'Add') {
-      // formData.payrollUser = this.selectedUserId._id;
-
       this.payrollService.addAttendanceSummary(formData).subscribe(
         (res: any) => {
           this.getAttendanceSummaryByPayroll();
           this.attendanceSummaryForm.enable();
-
+          this.changeMode = 'View';
           this.attendanceSummaryForm.patchValue({
             payrollUser: '',
             totalDays: 0,
@@ -215,27 +199,19 @@ export class Step2Component {
   getAttendanceSummaryByPayroll() {
     this.payrollService.getAttendanceSummaryBypayroll(this.selectedPayroll?._id).subscribe((res: any) => {
       this.attendanceSummary = res.data;
-      const userRequests = this.attendanceSummary.map((item: any) => {
-        return this.payrollService.getPayrollUserById(item.payrollUser).pipe(
-          map((userRes: any) => ({
-            ...item,
-            payrollUserDetails: this.getUser(userRes?.data.user)
-          }))
-        );
-      });
 
-      forkJoin(userRequests).subscribe(
-        (results: any[]) => {
-          this.attendanceSummary = results;
-        },
-        (error) => {
-          console.error("Error fetching payroll user details:", error);
-        }
-      );
+      const userRequests = this.attendanceSummary.map((item: any) => {
+        const payrollUser = this.payrollUsers?.find((user: any) => user._id === item.payrollUser);
+
+        return {
+          ...item,
+          payrollUserDetails: payrollUser ? this.getUser(payrollUser.user) : null
+        };
+      });
+      this.attendanceSummary = userRequests;
     },
       (error) => {
         console.error("Error fetching attendance summary:", error);
-      }
-    );
+      });
   }
 }

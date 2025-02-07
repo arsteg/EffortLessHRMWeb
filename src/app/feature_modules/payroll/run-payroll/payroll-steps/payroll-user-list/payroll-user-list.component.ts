@@ -9,32 +9,26 @@ import { PayrollService } from 'src/app/_services/payroll.service';
 })
 export class PayrollUserListComponent {
   payrollUsers: any;
-  users: any;
+  allUsers: any;
   selectedUser: string = '';
 
   @Input() selectedPayroll: any;
   @Output() userSelected = new EventEmitter<string>();
 
-  constructor(private payrollService: PayrollService,
-    private commonService: CommonService
+  constructor(private payrollService: PayrollService
   ) { }
 
   ngOnInit() {
-    this.getAllUsers();
-    let payload = { skip: '', next: '', payroll: this.selectedPayroll?._id }
-    this.payrollService.getPayrollUsers(payload).subscribe((res: any) => {
-      this.payrollUsers = res.data;
+    this.payrollService.allUsers.subscribe(res => {
+      this.allUsers = res;
     })
-  }
-
-  getAllUsers() {
-    this.commonService.populateUsers().subscribe((res: any) => {
-      this.users = res.data.data;
+    this.payrollService.payrollUsers.subscribe(res => {
+      this.payrollUsers = res;
     })
   }
 
   getUser(employeeId: string) {
-    const matchingUser = this.users?.find(user => user._id === employeeId);
+    const matchingUser = this.allUsers?.find(user => user._id === employeeId);
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'N/A';
   }
 

@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { PayrollService } from 'src/app/_services/payroll.service';
 
 @Component({
   selector: 'app-payroll-steps',
@@ -15,11 +16,11 @@ export class PayrollStepsComponent {
   });
   isEditable = false;
   @Input() selectedPayroll: any;
-  @Input() payrollUsers: any;
-
-  constructor(private _formBuilder: FormBuilder) {}
-
   
-  ngOnInit(){
+  constructor(private _formBuilder: FormBuilder
+  ) { }
+
+
+  ngOnInit() {
   }
 }

@@ -1,92 +1,91 @@
-<mat-horizontal-stepper [linear]="false" #stepper>
-
+<mat-stepper orientation="vertical" [linear]="false" #stepper>
     <mat-step>
-
-        <ng-template matStepLabel>Step 1</ng-template>
+        <ng-template matStepLabel>Users by Status</ng-template>
         <ng-template matStepContent>
             <app-step-1 [selectedPayroll]="selectedPayroll"></app-step-1>
+            <div>
+                <button mat-button matStepperNext>Next</button>
+            </div>
         </ng-template>
-        <div>
-            <button mat-button matStepperNext>Next</button>
-        </div>
     </mat-step>
     <mat-step>
-        <ng-template matStepLabel>Step 2</ng-template>
+        <ng-template matStepLabel>Attendance</ng-template>
         <ng-template matStepContent>
-            <app-step-2 [selectedPayroll]="selectedPayroll" [payrollUsers]="payrollUsers"></app-step-2>
-        </ng-template>
+            <app-step-2 [selectedPayroll]="selectedPayroll" ></app-step-2>
+        
         <div>
             <button mat-button matStepperPrevious>Back</button>
             <button mat-button matStepperNext>Next</button>
         </div>
+    </ng-template>
     </mat-step>
     <mat-step>
-        <ng-template matStepLabel>Step 3</ng-template>
+        <ng-template matStepLabel>Variable Pay</ng-template>
         <ng-template matStepContent>
-            <app-step-3 [selectedPayroll]="selectedPayroll" [payrollUsers]="payrollUsers"></app-step-3>
+            <app-step-3 [selectedPayroll]="selectedPayroll" ></app-step-3>
+            <button mat-button matStepperPrevious>Back</button>
+            <div>
+                <button mat-button matStepperNext>Next</button>
+            </div>
         </ng-template>
-        <div>
+    </mat-step>
+    <mat-step>
+        <ng-template matStepLabel>Loans/Advances</ng-template>
+        <ng-template matStepContent>
+            <app-step-4 [selectedPayroll]="selectedPayroll" ></app-step-4>
+            <div>
+                <button mat-button matStepperPrevious>Back</button>
+                <button mat-button matStepperNext>Next</button>
+            </div>
+        </ng-template>
+    </mat-step>
+    <mat-step>
+        <ng-template matStepLabel>Manual Arrears</ng-template>
+        <ng-template matStepContent>
+            <app-step-5 [selectedPayroll]="selectedPayroll" ></app-step-5>
+            <div>
+                <button mat-button matStepperPrevious>Back</button>
+                <button mat-button matStepperNext>Next</button>
+            </div>
+        </ng-template>
+    </mat-step>
+    <mat-step>
+        <ng-template matStepLabel>Flexi Benefits</ng-template>
+        <ng-template matStepContent>
+            <app-step-6 [selectedPayroll]="selectedPayroll" ></app-step-6>
             <button mat-button matStepperPrevious>Back</button>
             <button mat-button matStepperNext>Next</button>
-        </div>
+            <div>
+            </div>
+        </ng-template>
     </mat-step>
     <mat-step>
-        <ng-template matStepLabel>Step 4</ng-template>
+        <ng-template matStepLabel>Overtime</ng-template>
         <ng-template matStepContent>
-            <app-step-4 [selectedPayroll]="selectedPayroll" [payrollUsers]="payrollUsers"></app-step-4>
+            <app-step-7 [selectedPayroll]="selectedPayroll" ></app-step-7>
+            <div>
+                <button mat-button matStepperPrevious>Back</button>
+                <button mat-button matStepperNext>Next</button>
+            </div>
         </ng-template>
-        <div>
-            <button mat-button matStepperPrevious>Back</button>
-            <button mat-button matStepperNext>Next</button>
-        </div>
     </mat-step>
     <mat-step>
-        <ng-template matStepLabel>Step 5</ng-template>
+        <ng-template matStepLabel>Income Tax</ng-template>
         <ng-template matStepContent>
-            <app-step-5 [selectedPayroll]="selectedPayroll" [payrollUsers]="payrollUsers"></app-step-5>
+            <app-step-8 [selectedPayroll]="selectedPayroll" ></app-step-8>
+            <div>
+                <button mat-button matStepperPrevious>Back</button>
+                <button mat-button matStepperNext>Next</button>
+            </div>
         </ng-template>
-        <div>
-            <button mat-button matStepperPrevious>Back</button>
-            <button mat-button matStepperNext>Next</button>
-        </div>
     </mat-step>
     <mat-step>
-        <ng-template matStepLabel>Step 6</ng-template>
+        <ng-template matStepLabel>Generated Payroll</ng-template>
         <ng-template matStepContent>
-            <app-step-6 [selectedPayroll]="selectedPayroll" [payrollUsers]="payrollUsers"></app-step-6>
+            <app-step-9 [selectedPayroll]="selectedPayroll" ></app-step-9>
+            <div>
+                <button mat-button matStepperPrevious>Back</button>
+            </div>
         </ng-template>
-        <div>
-            <button mat-button matStepperPrevious>Back</button>
-            <button mat-button matStepperNext>Next</button>
-        </div>
     </mat-step>
-    <mat-step>
-        <ng-template matStepLabel>Step 7</ng-template>
-        <ng-template matStepContent>
-            <app-step-7 [selectedPayroll]="selectedPayroll" [payrollUsers]="payrollUsers"></app-step-7>
-        </ng-template>
-        <div>
-            <button mat-button matStepperPrevious>Back</button>
-            <button mat-button matStepperNext>Next</button>
-        </div>
-    </mat-step>
-    <mat-step>
-        <ng-template matStepLabel>Step 8</ng-template>
-        <ng-template matStepContent>
-            <app-step-8 [selectedPayroll]="selectedPayroll" [payrollUsers]="payrollUsers"></app-step-8>
-        </ng-template>
-        <div>
-            <button mat-button matStepperPrevious>Back</button>
-            <button mat-button matStepperNext>Next</button>
-        </div>
-    </mat-step>
-    <mat-step>
-        <ng-template matStepLabel>Step 9</ng-template>
-        <ng-template matStepContent>
-            <app-step-9 [selectedPayroll]="selectedPayroll" [payrollUsers]="payrollUsers"></app-step-9>
-        </ng-template>
-        <div>
-            <button mat-button matStepperPrevious>Back</button>
-        </div>
-    </mat-step>
-</mat-horizontal-stepper>
+</mat-stepper>

@@ -1,10 +1,7 @@
 import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { th } from 'date-fns/locale';
 import { ToastrService } from 'ngx-toastr';
-import { forkJoin, map } from 'rxjs';
-import { CommonService } from 'src/app/_services/common.Service';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { UserService } from 'src/app/_services/users.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
@@ -18,13 +15,14 @@ export class Step8Component {
   searchText: string = '';
   closeResult: string = '';
   taxForm: FormGroup;
-  users: any;
-  changeMode: 'Add' | 'Update' = 'Add';
+  allUsers: any;
+  changeMode: 'Add' | 'Update' = 'Update';
   incomeTax: any;
   selectedUserId: any;
   @Input() selectedPayroll: any;
   selectedRecord: any;
   payrollUser: any;
+  payrollUsers: any;
   selectedPayrollUser: any;
   statutoryDetails: any;
   taxableSalary: number = 0;
@@ -34,7 +32,6 @@ export class Step8Component {
 
   constructor(
     private fb: FormBuilder,
-    private commonService: CommonService,
     private payrollService: PayrollService,
     private dialog: MatDialog,
     private toast: ToastrService,
@@ -49,18 +46,17 @@ export class Step8Component {
   }
 
   ngOnInit() {
-    this.getAllUsers();
+    this.payrollService.allUsers.subscribe(res => {
+      this.allUsers = res;
+    });
+    this.payrollService.payrollUsers.subscribe(res => {
+      this.payrollUsers = res;
+    });
     this.getIncomeTaxByPayroll();
   }
 
-  getAllUsers() {
-    this.commonService.populateUsers().subscribe((res: any) => {
-      this.users = res.data.data;
-    })
-  }
-
   getUser(employeeId: string) {
-    const matchingUser = this.users?.find(user => user._id === employeeId);
+    const matchingUser = this.allUsers?.find(user => user._id === employeeId);
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'N/A';
   }
 
@@ -69,74 +65,53 @@ export class Step8Component {
     this.taxForm.get('TaxCalculated')?.enable();
     this.taxForm.get('TDSCalculated')?.enable();
     this.taxForm.value.PayrollUser = this.selectedPayrollUser;
-      this.payrollService.addIncomeTax(this.taxForm.value).subscribe((res: any) => {
-        this.getIncomeTaxByPayroll();
-        this.taxForm.reset();
-        this.toast.success('Payroll Income Tax Added', 'Successfully!');
-        this.closeDialog();
-      },
-        err => {
-          this.toast.error('Payroll Income Tax Can not be Added', 'Error!')
-        })
+    this.payrollService.addIncomeTax(this.taxForm.value).subscribe((res: any) => {
+      this.getIncomeTaxByPayroll();
+      this.taxForm.reset();
+      this.toast.success('Payroll Income Tax Added', 'Successfully!');
+      this.closeDialog();
+    },
+      err => {
+        this.toast.error('Payroll Income Tax Can not be Added', 'Error!')
+      })
   }
 
   onUserSelectedFromChild(user: any) {
     this.selectedUserId = user.value.user;
     this.selectedPayrollUser = user.value._id;
-    this.calculateTax();
-    this.getStatutoryDetails();
-    this.getIncomeTax();
+    if (this.changeMode === 'Add') {
+      this.calculateTax();
+      this.getStatutoryDetails();
+    }
+    if (this.changeMode === 'Update') { this.getIncomeTax(); }
   }
 
   getIncomeTax() {
     this.payrollService.getIncomeTax(this.selectedPayrollUser).subscribe((res: any) => {
       this.incomeTax = res.data;
       const userRequests = this.incomeTax.map((item: any) => {
-        return this.payrollService.getPayrollUserById(this.selectedPayrollUser).pipe(
-          map((userRes: any) => ({
-            ...item,
-            payrollUserDetails: this.getUser(userRes?.data.user)
-          }))
-        );
+        const payrollUser = this.payrollUsers?.find((user: any) => user._id === item.PayrollUser);
+        return {
+          ...item,
+          payrollUserDetails: payrollUser ? this.getUser(payrollUser.user) : null
+        };
       });
-      forkJoin(userRequests).subscribe(
-        (results: any[]) => {
-          this.incomeTax = results;
-        },
-        (error) => {
-          this.toast.error("Error fetching payroll user details:", error);
-        }
-      );
-    },
-      (error) => {
-        this.toast.error("Error fetching attendance summary:", error);
-      }
-    );
+      this.incomeTax = userRequests;
+    });
   }
 
   getIncomeTaxByPayroll() {
     this.payrollService.getIncomeTaxByPayroll(this.selectedPayroll?._id).subscribe((res: any) => {
       this.incomeTax = res.data;
       const userRequests = this.incomeTax.map((item: any) => {
-        return this.payrollService.getPayrollUserById(item.PayrollUser).pipe(
-          map((userRes: any) => ({
-            ...item,
-            payrollUserDetails: this.getUser(userRes?.data.user)
-          }))
-        );
+        const payrollUser = this.payrollUsers?.find((user: any) => user._id === item.PayrollUser);
+        return {
+          ...item,
+          payrollUserDetails: payrollUser ? this.getUser(payrollUser.user) : null
+        };
       });
-      forkJoin(userRequests).subscribe(
-        (results: any[]) => {
-          this.incomeTax = results;
-        },
-        (error) => {
-          this.toast.error("Error fetching payroll user details:", error);
-        }
-      );
-    },
-      (error) => {
-        this.toast.error("Error fetching attendance summary:", error);
-      })
+      this.incomeTax = userRequests;
+    });
   }
 
   openDialog() {
@@ -160,6 +135,7 @@ export class Step8Component {
   }
 
   closeDialog() {
+    this.changeMode = 'Update';
     this.dialog.closeAll();
   }
 
