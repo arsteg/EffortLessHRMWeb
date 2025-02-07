@@ -7,22 +7,24 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./run-payroll.component.css']
 })
 export class RunPayrollComponent implements OnInit {
-  selectedTab: string = 'run-payroll';
+  selectedTabIndex: number = 0;
   showTabs: boolean = true;
 
   constructor(private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
-      this.selectedTab = params['tab'] || 'run-payroll';
+      const tab = params['tab'] || 'run-payroll';
+      this.selectedTabIndex = tab === 'run-payroll' ? 0 : 1;
     });
   }
 
-  selectTab(tabIndex: string) {
-    this.selectedTab = tabIndex;
+  selectTab(index: number) {
+    this.selectedTabIndex = index;
+    const tab = index === 0 ? 'run-payroll' : 'fnf-run-payroll';
     this.router.navigate([], {
       relativeTo: this.route,
-      queryParams: { tab: this.selectedTab },
+      queryParams: { tab },
       queryParamsHandling: 'merge'
     });
   }
@@ -30,5 +32,4 @@ export class RunPayrollComponent implements OnInit {
   toggleView() {
     this.showTabs = !this.showTabs;
   }
-  
 }

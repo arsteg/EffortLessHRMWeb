@@ -1,18 +1,17 @@
 <div class="main-content contentData">
     <div class="container-fluid px-0">
-        <div class="d-flex ms-5" *ngIf="showTabs">
-            <button (click)="selectTab('run-payroll')" [class.active]="selectedTab === 'run-payroll'">Run
-                Payroll</button>
-            <button (click)="selectTab('fnf-run-payroll')" [class.active]="selectedTab === 'fnf-run-payroll'">
-                Run Fnf Payroll</button>
-        </div>
-
-        <div *ngIf="selectedTab === 'run-payroll'" class="tab-content p-0 mt-0">
-            <app-payroll-history  (changeView)="toggleView()"></app-payroll-history>
-        </div>
-        <div *ngIf="selectedTab === 'fnf-run-payroll'" class="tab-content p-0 mt-0">
-            <app-run-fnf-payroll (changeView)="toggleView()"></app-run-fnf-payroll>
-        </div>
+        <mat-tab-group [(selectedIndex)]="selectedTabIndex" (selectedIndexChange)="selectTab($event)">
+            <mat-tab label="Run Payroll">
+                <ng-template matTabContent>
+                    <app-payroll-history (changeView)="toggleView()"></app-payroll-history>
+                </ng-template>
+            </mat-tab>
+            <mat-tab label="Run FnF Payroll">
+                <ng-template matTabContent>
+                    <app-run-fnf-payroll (changeView)="toggleView()"></app-run-fnf-payroll>
+                </ng-template>
+            </mat-tab>
+        </mat-tab-group>
     </div>
 </div>
 

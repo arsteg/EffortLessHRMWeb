@@ -1,74 +1,60 @@
-import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, Input } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
-import { CommonService } from 'src/app/_services/common.Service';
 
 @Component({
   selector: 'app-step7',
   templateUrl: './step7.component.html',
-  styleUrl: './step7.component.css'
+  styleUrls: ['./step7.component.css']
 })
 export class FNFStep7Component implements OnInit {
-  displayedColumns: string[] = ['payrollUser', 'statutoryBenefit', 'benefitAmount', 'status', 'finalSettlementAmount', 'fnfClearanceStatus', 'fnfDate', 'actions'];
-  statutoryBenefits = new MatTableDataSource<any>();
-  fnfStep6Form: FormGroup;
-  selectedStatutoryBenefit: any;
-  userList: any[] = [];
+  displayedColumns: string[] = ['userName', 'LateComing', 'EarlyGoing', 'FinalOvertime', 'actions'];
+  overtime = new MatTableDataSource<any>();
+  overtimeForm: FormGroup;
+  selectedOvertime: any;
   fnfUsers: any;
   isEdit: boolean = false;
-  isStep: boolean;
+  selectedFNFUser: any;
+  @Input() settledUsers: any[];
+  @Input() isSteps: boolean;
+  @Input() selectedFnF: any;
 
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
 
   constructor(private fb: FormBuilder,
     private payrollService: PayrollService,
-    private commonService: CommonService,
     public dialog: MatDialog,
     private toast: ToastrService) {
-    this.fnfStep6Form = this.fb.group({
-      payrollFNFUser: ['', Validators.required],
-      statutoryBenefit: ['', Validators.required],
-      benefitAmount: [0, Validators.required],
-      status: ['', Validators.required],
-      finalSettlementAmount: [0, Validators.required],
-      fnfClearanceStatus: ['', Validators.required],
-      fnfDate: ['', Validators.required]
+    this.overtimeForm = this.fb.group({
+      PayrollFNFUser: ['', Validators.required],
+      LateComing: ['', Validators.required],
+      EarlyGoing: ['', Validators.required],
+      FinalOvertime: ['', Validators.required]
     });
   }
 
   ngOnInit(): void {
-    this.commonService.populateUsers().subscribe((res: any) => {
-      this.userList = res.data['data'];
-    });
-
-    this.payrollService.selectedFnFPayroll.subscribe((fnfPayroll: any) => {
-      this.isStep = fnfPayroll?.isSteps;
-      if (fnfPayroll) {
-        setTimeout(() => {
-          this.fetchStatutoryBenefits(fnfPayroll);
-        }, 1000);
-      }
-    });
+    this.fetchOvertime(this.selectedFnF);
   }
 
   onUserChange(fnfUserId: string): void {
-    console.log('fnf payroll users: ', fnfUserId);
-    this.payrollService.selectedFnFPayroll.subscribe((fnfPayroll: any) => {
-      const fnfUser = fnfPayroll.userList[0].user;
+    this.selectedFNFUser = fnfUserId;
+    const matchedUser = this.selectedFnF.userList.find((user: any) => user.user === fnfUserId);
+    const payrollFNFUserId = matchedUser ? matchedUser._id : null;
 
-      this.payrollService.getFnFStatutoryBenefitByPayrollFnFUser(fnfUserId).subscribe((res: any) => {
-        this.statutoryBenefits.data = res.data;
-        this.statutoryBenefits.data.forEach((benefit: any) => {
-          const user = this.userList.find(user => user._id === fnfUser);
-          console.log(user);
-          benefit.userName = user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
+    if (payrollFNFUserId) {
+      this.payrollService.getFnFOvertimeByPayrollFnFUser(payrollFNFUserId).subscribe((res: any) => {
+        this.overtime.data = res.data['records'];
+        this.overtime.data.forEach((overtime: any) => {
+          const user = this.settledUsers.find(user => user._id === fnfUserId);
+          overtime.userName = user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
         });
       });
-    });
+    }
   }
 
   openDialog(isEdit: boolean): void {
@@ -80,104 +66,135 @@ export class FNFStep7Component implements OnInit {
     });
   }
 
-  editStatutoryBenefit(benefit: any): void {
+  editOvertime(overtime: any): void {
     this.isEdit = true;
-    this.selectedStatutoryBenefit = benefit;
-    this.fnfStep6Form.patchValue({
-      payrollFNFUser: benefit.payrollFNFUser,
-      statutoryBenefit: benefit.statutoryBenefit,
-      benefitAmount: benefit.benefitAmount,
-      status: benefit.status,
-      finalSettlementAmount: benefit.finalSettlementAmount,
-      fnfClearanceStatus: benefit.fnfClearanceStatus,
-      fnfDate: benefit.fnfDate
+    this.selectedOvertime = overtime;
+    this.overtimeForm.patchValue({
+      PayrollFNFUser: overtime.userName,
+      LateComing: overtime.LateComing,
+      EarlyGoing: overtime.EarlyGoing,
+      FinalOvertime: overtime.FinalOvertime
     });
-
+    this.overtimeForm.get('PayrollFNFUser').disable();
     this.openDialog(true);
   }
 
   onSubmit(): void {
-    if (this.fnfStep6Form.valid) {
-      const payload = this.fnfStep6Form.value;
-      if (this.selectedStatutoryBenefit) {
-        this.payrollService.updateFnFStatutoryBenefit(this.selectedStatutoryBenefit._id, payload).subscribe(
+    const matchedUser = this.selectedFnF.userList.find((user: any) => user.user === this.selectedFNFUser);
+    const payrollFNFUserId = matchedUser ? matchedUser._id : null;
+
+    this.overtimeForm.patchValue({
+      PayrollFNFUser: payrollFNFUserId
+    });
+    if (this.overtimeForm.valid) {
+      this.overtimeForm.get('PayrollFNFUser').enable();
+
+      if (this.isEdit) {
+        this.overtimeForm.patchValue({
+          PayrollFNFUser: this.selectedOvertime.PayrollFNFUser,
+        });
+        this.payrollService.updateFnFOvertime(this.selectedOvertime._id, this.overtimeForm.value).subscribe(
           (res: any) => {
-            this.toast.success('Statutory Benefit updated successfully', 'Success');
+            this.toast.success('Overtime updated successfully', 'Success');
+            this.fetchOvertime(this.selectedFnF);
+            this.overtimeForm.reset({
+              PayrollFNFUser: '',
+              LateComing: '',
+              EarlyGoing: '',
+              FinalOvertime: ''
+            })
+            this.isEdit = false;
             this.dialog.closeAll();
-            this.fetchStatutoryBenefits(this.selectedStatutoryBenefit.fnfPayrollId);
           },
           (error: any) => {
-            this.toast.error('Failed to update Statutory Benefit', 'Error');
+            this.toast.error('Failed to update Overtime', 'Error');
           }
         );
       } else {
-        this.payrollService.addFnFStatutoryBenefit(payload).subscribe(
+        const matchedUser = this.selectedFnF.userList.find((user: any) => user.user === this.selectedFNFUser);
+        const payrollFNFUserId = matchedUser ? matchedUser._id : null;
+
+        this.overtimeForm.patchValue({
+          PayrollFNFUser: payrollFNFUserId
+        });
+        this.payrollService.addFnFOvertime(this.overtimeForm.value).subscribe(
           (res: any) => {
-            this.toast.success('Statutory Benefit added successfully', 'Success');
+            this.toast.success('Overtime added successfully', 'Success');
+            this.fetchOvertime(this.selectedFnF);
+            this.overtimeForm.reset({
+              PayrollFNFUser: '',
+              LateComing: '',
+              EarlyGoing: '',
+              FinalOvertime: ''
+            })
             this.dialog.closeAll();
-            this.fetchStatutoryBenefits(payload.fnfPayrollId);
           },
           (error: any) => {
-            this.toast.error('Failed to add Statutory Benefit', 'Error');
+            this.toast.error('Failed to add Overtime', 'Error');
           }
         );
       }
     } else {
-      this.fnfStep6Form.markAllAsTouched();
+      this.overtimeForm.markAllAsTouched();
     }
+    this.overtimeForm.get('PayrollFNFUser').disable();
+
   }
 
   onCancel(): void {
-    if (this.isEdit && this.selectedStatutoryBenefit) {
-      this.fnfStep6Form.patchValue({
-        payrollFNFUser: this.selectedStatutoryBenefit.payrollFNFUser,
-        statutoryBenefit: this.selectedStatutoryBenefit.statutoryBenefit,
-        benefitAmount: this.selectedStatutoryBenefit.benefitAmount,
-        status: this.selectedStatutoryBenefit.status,
-        finalSettlementAmount: this.selectedStatutoryBenefit.finalSettlementAmount,
-        fnfClearanceStatus: this.selectedStatutoryBenefit.fnfClearanceStatus,
-        fnfDate: this.selectedStatutoryBenefit.fnfDate
+    if (this.isEdit && this.selectedOvertime) {
+      this.overtimeForm.patchValue({
+        PayrollFNFUser: this.selectedOvertime.PayrollFNFUser,
+        lateComing: this.selectedOvertime.lateComing,
+        earlyGoing: this.selectedOvertime.earlyGoing,
+        finalOvertime: this.selectedOvertime.finalOvertime
       });
     } else {
-      this.fnfStep6Form.reset();
+      this.overtimeForm.reset();
     }
   }
 
-  deleteStatutoryBenefit(_id: string) {
-    this.payrollService.deleteFnFStatutoryBenefit(_id).subscribe((res: any) => {
-      this.toast.success('Statutory Benefit Deleted', 'Success');
-      this.fetchStatutoryBenefits(this.selectedStatutoryBenefit.fnfPayrollId);
+  deleteOvertime(_id: string) {
+    this.payrollService.deleteFnFOvertime(_id).subscribe((res: any) => {
+      this.toast.success('Overtime Deleted', 'Success');
+      this.fetchOvertime(this.selectedFnF);
     }, error => {
-      this.toast.error('Failed to delete Statutory Benefit', 'Error');
+      this.toast.error('Failed to delete Overtime', 'Error');
     });
   }
 
   deleteFnF(id: string): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, { width: '400px', });
     dialogRef.afterClosed().subscribe((result) => {
-      if (result === 'delete') { this.deleteStatutoryBenefit(id); }
+      if (result === 'delete') { this.deleteOvertime(id); }
     });
   }
 
-  fetchStatutoryBenefits(fnfPayroll: any): void {
-    this.payrollService.getFnFStatutoryBenefitByPayrollFnF(fnfPayroll?._id).subscribe(
+  getMatchedSettledUser(userId: string) {
+    const matchedUser = this.settledUsers?.find(user => user?._id == userId)
+    return matchedUser ? `${matchedUser?.firstName}  ${matchedUser?.lastName}` : 'Not specified'
+  }
+
+  fetchOvertime(fnfPayroll: any): void {
+    this.payrollService.getFnFOvertimeByPayrollFnF(fnfPayroll?._id).subscribe(
       (res: any) => {
-        this.statutoryBenefits.data = res.data;
-        this.statutoryBenefits.data.forEach((benefit: any, index: number) => {
-          const user = this.userList.find(user => user._id === fnfPayroll.userList[index].user);
-          benefit.userName = user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
+        this.overtime.data = res.data;
+
+        this.overtime.data.forEach((item: any) => {
+          const matchedUser = this.selectedFnF.userList.find((user: any) => user._id === item.PayrollFNFUser);
+          item.userName = this.getMatchedSettledUser(matchedUser?.user);
         });
+
+        if (this.isEdit && this.selectedOvertime) {
+          this.overtimeForm.patchValue({
+            payrollFNFUser: this.selectedOvertime.PayrollFNFUser,
+            ...this.selectedOvertime,
+          });
+        }
       },
       (error: any) => {
-        this.toast.error('Failed to fetch Statutory Benefits', 'Error');
+        this.toast.error('Failed to fetch Overtime Records', 'Error');
       }
     );
   }
-
-  getUserName(userId: string): string {
-    const user = this.userList.find(user => user._id === userId);
-    return user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
-  }
 }
-
-

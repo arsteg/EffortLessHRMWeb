@@ -1,6 +1,6 @@
-<div class="tableContainer">
-    <div class="d-flex align-items-center justify-content-between">
-        <div><label>Income Tax</label></div>
+<div class="">
+    <div class="d-flex align-items-center justify-content-between pt-2">
+        <div><label>{{selectedPayroll?.month}}-{{selectedPayroll?.year}} | Income Tax</label></div>
         <div class="d-flex align-items-center ms-auto">
             <span class="bi bi-search searchIcon"></span>
 
@@ -10,99 +10,96 @@
         <div class="d-flex justify-content-end align-items-center">
             <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
                 [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
-            <button mat-raised-button class=" ms-2 addBtn" (click)="changeMode = 'Add'; open(modal);">Add</button>
+            <button mat-raised-button class=" ms-2 addBtn" (click)="changeMode = 'Add'; openDialog();">Add</button>
         </div>
     </div>
-    <table>
-        <thead>
-            <th>Employee Name</th>
-            <th>Tax Calculation Method</th>
-            <th>Tax Calculation By EffortlessHRM</th>
-            <th>TDS to be Deducted</th>
-            <th>Actions</th>
-        </thead>
-        <tbody>
-            <tr *ngFor="let data of incomeTax | search: searchText">
-                <td>{{data?.payrollUserDetails}}</td>
-                <td>{{data?.TaxCalculatedMethod}}</td>
-                <td>{{data?.TaxCalculated}}</td>
-                <td>{{data?.TDSCalculated}}</td>
-                <td><button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before" (click)="changeMode = 'Update';
-                    selectedRecord = data;
-                    open(modal);" aria-label="Example icon button with a menu icon">
-                        <i class="bi bi-pencil-fill"></i>
+    <table mat-table [dataSource]="incomeTax">
+        <ng-container matColumnDef="payrollUserDetails">
+            <th mat-header-cell *matHeaderCellDef> Employee Name </th>
+            <td mat-cell *matCellDef="let data"> {{data?.payrollUserDetails}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="TaxCalculatedMethod">
+            <th mat-header-cell *matHeaderCellDef> Tax Calculation Method </th>
+            <td mat-cell *matCellDef="let data"> {{data?.TaxCalculatedMethod}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="TaxCalculated">
+            <th mat-header-cell *matHeaderCellDef> Tax Calculation By EffortlessHRM (Yearly) </th>
+            <td mat-cell *matCellDef="let data"> {{data?.TaxCalculated}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="TDSCalculated">
+            <th mat-header-cell *matHeaderCellDef> TDS to be Deducted (Monthly)</th>
+            <td mat-cell *matCellDef="let data"> {{data?.TDSCalculated}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef> Actions </th>
+            <td mat-cell *matCellDef="let data">
+                <button mat-icon-button [matMenuTriggerFor]="menu">
+                    <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                   
+                    <button mat-menu-item (click)="deleteDialog(data?._id)">
+                        <mat-icon>delete</mat-icon>
+                        <span>Delete</span>
                     </button>
-                    <button class="actions ms-2" mat-mini-fab (click)="deleteDialog(data?._id)" matTooltip="Delete"
-                        matTooltipPosition="after" aria-label="Example icon button with a menu icon">
-                        <i class="bi bi-trash"></i>
-                    </button>
-                </td>
-            </tr>
-        </tbody>
+                </mat-menu>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="['payrollUserDetails', 'TaxCalculatedMethod', 'TaxCalculated', 'TDSCalculated', 'actions']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['payrollUserDetails', 'TaxCalculatedMethod', 'TaxCalculated', 'TDSCalculated', 'actions'];"></tr>
     </table>
 </div>
 
-<ng-template #modal let-modal>
-    <div class="modal-header border-bottom justify-content-between d-flex mb-2 pt-0">
-        <div>
-            <h1 class="modal-title text-muted mb-0">{{changeMode}} Income Tax</h1>
-        </div>
-        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
-                (click)="modal.close('Escape clicked')"></button>
-        </div>
+<ng-template #dialogTemplate>
+    <h1 mat-dialog-title>{{changeMode}} Income Tax</h1>
+    <div mat-dialog-content>
+        <form [formGroup]="taxForm" (ngSubmit)="onSubmission()">
+            <div class="row">
+                <div class="mt-2 col-md-6" *ngIf="changeMode != 'Update'">
+                    <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
+                        [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
+                </div>
+
+                <div class=" col-md-6" *ngIf="changeMode === 'Update'">
+                    <mat-form-field appearance="outline" class="my-2">
+                        <mat-label>Payroll User</mat-label>
+                        <input matInput type="text" [disabled] formControlName="PayrollUser">
+                    </mat-form-field>
+                </div>
+
+                <div class=" col-md-6">
+                    <mat-form-field appearance="outline" class="my-2">
+                        <mat-label>Tax Calculation Method</mat-label>
+                        <input matInput type="text" formControlName="TaxCalculatedMethod" placeholder="Enter tax calculation method">
+                        <mat-error *ngIf="taxForm.get('TaxCalculatedMethod').hasError('required')">Tax Calculation Method is required</mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class=" col-md-6">
+                    <mat-form-field appearance="outline" class="my-2">
+                        <mat-label>Tax Calculated (Yearly)</mat-label>
+                        <input matInput type="number" formControlName="TaxCalculated" placeholder="Enter calculated tax amount">
+                        <mat-error *ngIf="taxForm.get('TaxCalculated').hasError('required')">Tax Calculated is required</mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class=" col-md-6">
+                    <mat-form-field appearance="outline" class="my-2">
+                        <mat-label>TDS Calculated (Monthly)</mat-label>
+                        <input matInput type="number" formControlName="TDSCalculated" placeholder="Enter TDS amount">
+                        <mat-error *ngIf="taxForm.get('TDSCalculated').hasError('required')">TDS Calculated is required</mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between mt-3">
+                <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
+                <button mat-raised-button class="addBtn" type="submit">Save</button>
+            </div>
+        </form>
     </div>
-
-    <form [formGroup]="taxForm" (ngSubmit)="onSubmission()">
-
-        <div class="form-group" *ngIf="changeMode != 'Update'">
-            <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
-                [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
-        </div>
-
-        <div class="form-group" *ngIf="changeMode === 'Update'">
-            <label for="">Payroll User</label>
-            <input type="text" [disabled] formControlName="PayrollUser" class="form-control">
-        </div>
-
-        <div class="form-group my-2 col-md-6">
-            <label for="TaxCalculatedMethod">Tax Calculation Method</label>
-            <select id="" formControlName="TaxCalculatedMethod">
-                <option value="Flat Rate">Flat Rate</option>
-                <option value="Slab Rate">Slab Rate</option>
-                <option value="Progressive Rate">Progressive Rate</option>
-                <option value="Regressive Tax">Regressive Tax</option>
-                <option value="Exemption Based">Exemption Based</option>
-            </select>
-            <div *ngIf="taxForm.get('TaxCalculatedMethod').invalid && taxForm.get('TaxCalculatedMethod').touched"
-                class="text-danger error">
-                Please enter the tax calculation method!
-            </div>
-        </div>
-
-        <div class="form-group my-2 col-md-6">
-            <label for="TaxCalculated">Tax Calculated</label>
-            <input type="number" id="TaxCalculated" formControlName="TaxCalculated" class="form-control"
-                placeholder="Enter calculated tax amount" />
-            <div *ngIf="taxForm.get('TaxCalculated').invalid && taxForm.get('TaxCalculated').touched"
-                class="text-danger error">
-                Please enter the calculated tax amount!
-            </div>
-        </div>
-
-        <div class="form-group my-2 col-md-6">
-            <label for="TDSCalculated">TDS Calculated</label>
-            <input type="number" id="TDSCalculated" formControlName="TDSCalculated" class="form-control"
-                placeholder="Enter TDS amount" />
-            <div *ngIf="taxForm.get('TDSCalculated').invalid && taxForm.get('TDSCalculated').touched"
-                class="text-danger error">
-                Please enter the TDS amount!
-            </div>
-        </div>
-
-        <div class="d-flex justify-content-between">
-            <button mat-raised-button type="button">Cancel</button>
-            <button mat-raised-button type="submit" class="addBtn">Save</button>
-        </div>
-    </form>
-
 </ng-template>

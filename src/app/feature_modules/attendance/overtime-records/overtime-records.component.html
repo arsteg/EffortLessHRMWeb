@@ -10,7 +10,7 @@
                 </div>
 
                 <div class="form-group ms-2">
-                    <label for="year" class="pt-2 pe-3">Full and Final Year</label>
+                    <label for="year" class="pt-2 pe-3">Select Year</label>
                     <select id="year" name="year" class="form-control" [(ngModel)]="selectedYear"
                         (change)="onYearChange($event)">
                         <option *ngFor="let year of years" [value]="year">{{ year }}</option>
@@ -30,7 +30,7 @@
 
                             <td *ngFor="let date of currentMonthDates; trackBy: trackByDate">
                                 <ng-container *ngIf="getOvertimeForDate(date, data.overtimeRecords) as overtimeRecord">
-                                    {{ overtimeRecord.overtimeValue / 60 | number: '1.2-2' }} Hrs
+                                    {{ overtimeRecord.overtimeValue }} Mins
                                 </ng-container>
                             </td>
                         </tr>

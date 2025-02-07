@@ -1,16 +1,16 @@
 <div class="main-content" *ngIf="isAllEmployees">
     <div class="container-fluid">
-        <div class="tableContainer bg-white mt-2">
+        <div class="bg-white mt-2">
             <div class="d-flex align-items-center px-2 py-1">
                 <p class="mb-0 me-auto">Payroll History</p>
                 <div class="d-flex align-items-center">
                     <span class="bi bi-search searchIcon"></span>
                     <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
                         name="searchText" aria-label="default input example">
-                    <button class="addBtn ms-2" mat-raised-button (click)="open(addModal)">Add Payroll</button>
+                    <button class="addBtn ms-2" mat-raised-button (click)="openAddDialog()">Add Payroll</button>
                 </div>
             </div>
-            <table mat-table [dataSource]="dataSource" >
+            <table mat-table [dataSource]="dataSource">
                 <ng-container matColumnDef="payrollPeriod">
                     <th mat-header-cell *matHeaderCellDef> Payroll Period </th>
                     <td mat-cell *matCellDef="let data"> {{data?.month}} - {{data?.year}} </td>
@@ -24,17 +24,28 @@
                 <ng-container matColumnDef="payrollDetails">
                     <th mat-header-cell *matHeaderCellDef> Payroll Details </th>
                     <td mat-cell *matCellDef="let data">
-                        <ul type="none" class="ps-0">
-                            <li>No. of Processed Employees: {{data?.processedCount}}</li>
-                            <li>No. of Active Employees: {{data?.activeCount}} </li>
-                            <li>No. of On-Hold Employees: {{data?.onHoldCount}} </li>
-                        </ul>
+                        <div class="d-flex align-items-center">
+                            <mat-icon matTooltipPosition="before"
+                                matTooltip="Processed Employees: {{data?.processedCount}}"
+                                aria-label="Processed Employees">check_circle</mat-icon>
+
+                            <mat-icon matTooltipPosition="below" matTooltip="Active Employees: {{data?.activeCount}}"
+                                aria-label="Active Employees">person</mat-icon>
+
+                            <mat-icon matTooltipPosition="after" matTooltip="On-Hold Employees: {{data?.onHoldCount}}"
+                                aria-label="On-Hold Employees">pause_circle</mat-icon>
+                        </div>
                     </td>
                 </ng-container>
 
                 <ng-container matColumnDef="status">
                     <th mat-header-cell *matHeaderCellDef> Status </th>
-                    <td mat-cell *matCellDef="let data"> {{data?.status}} </td>
+                    <td mat-cell *matCellDef="let data">
+                        <mat-icon *ngIf="data?.status === 'InProgress'" matTooltip="In Progress" aria-label="In Progress">hourglass_empty</mat-icon>
+                        <mat-icon *ngIf="data?.status === 'Complete Approval Pending'" matTooltip="Complete Approval Pending" aria-label="Complete Approval Pending">hourglass_full</mat-icon>
+                        <mat-icon *ngIf="data?.status === 'OnHold'" matTooltip="On Hold" aria-label="On Hold">pause_circle</mat-icon>
+                        <mat-icon *ngIf="data?.status === 'Processed'" matTooltip="Processed" aria-label="Processed">check_circle</mat-icon>
+                    </td>
                 </ng-container>
 
                 <ng-container matColumnDef="actions">
@@ -75,55 +86,56 @@
     </div>
 </div>
 
+<ng-template #addDialogTemplate>
+    <h1 mat-dialog-title>Create Payroll</h1>
+    <div mat-dialog-content>
+        <form [formGroup]="payrollForm" (ngSubmit)="onSubmission()">
 
-<ng-template #addModal let-addModal>
-    <div class="modal-header border-bottom justify-content-between d-flex mb-2 pt-0">
-        <div>
-            <h1 class="modal-title text-muted mb-0">Create Payroll</h1>
-        </div>
-        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
-                (click)="addModal.close('Escape clicked')"></button>
-        </div>
+            <div class="row">
+                <mat-form-field appearance="outline" class="col-md-6 my-2">
+                    <mat-label>PayrollDate</mat-label>
+                    <input matInput [matDatepicker]="picker" formControlName="date">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                    <mat-error *ngIf="payrollForm.get('date').hasError('required')">Date is required</mat-error>
+                </mat-form-field>
 
+                <mat-form-field appearance="outline" class="my-2 col-md-6">
+                    <mat-label>Payroll Status</mat-label>
+                    <mat-select formControlName="status">
+                        <mat-option value="" disabled>Select payroll status</mat-option>
+                        <mat-option value="InProgress">In Progress</mat-option>
+                        <mat-option value="Complete Approval Pending">Complete Approval Pending</mat-option>
+                        <mat-option value="OnHold">On Hold</mat-option>
+                        <mat-option value="Processed">Processed</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="payrollForm.get('status').hasError('required')">Status is required</mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="my-2 col-md-6">
+                    <mat-label>Payroll Month</mat-label>
+                    <mat-select formControlName="month">
+                        <mat-option *ngFor="let month of months" [value]="month">{{ month }}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="payrollForm.get('month').hasError('required')">Month is required</mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="my-2 col-md-6">
+                    <mat-label>Payroll Year</mat-label>
+                    <mat-select formControlName="year">
+                        <mat-option *ngFor="let year of years" [value]="year">{{ year }}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="payrollForm.get('year').hasError('required')">Year is required</mat-error>
+                </mat-form-field>
+            </div>
+        </form>
     </div>
-    <form [formGroup]="payrollForm" (ngSubmit)="onSubmission()">
-        <div class="form-group my-2 col-md-6">
-            <label for="dateInput">Payroll Date</label>
-            <input type="date" id="dateInput" formControlName="date" class="form-control" />
-        </div>
-
-        <div class="form-group my-2 col-md-6">
-            <label for="statusInput">Payroll Status</label>
-            <select id="statusInput" formControlName="status" class="form-control">
-                <option value="" disabled selected>Select payroll status</option>
-                <option value="InProgress">In Progress</option>
-                <option value="Complete Approval Pending">Complete Approval Pending</option>
-                <option value="OnHold">On Hold</option>
-                <option value="Processed">Processed</option>
-            </select>
-        </div>
-
-        <div class="form-group my-2 col-md-6">
-            <label for="monthSelect">Payroll Month</label>
-            <select id="monthSelect" formControlName="month">
-                <option *ngFor="let month of months" [value]="month">{{ month }}</option>
-            </select>
-        </div>
-
-        <div class="form-group my-2 col-md-6">
-            <label for="yearInput">Payroll Year</label>
-            <select id="year" name="year" class="form-control" formControlName="year">
-                <option *ngFor="let year of years" [value]="year">{{ year }}</option>
-            </select>
-        </div>
-
-        <div class="d-flex justify-content-between">
-            <button mat-raised-button type="button">Cancel</button>
-            <button mat-raised-button type="submit" class="addBtn">Save</button>
-        </div>
-    </form>
-
+    <div mat-dialog-actions>
+        <button mat-button (click)="closeAddDialog()">Cancel</button>
+        <button mat-raised-button color="primary" (click)="onSubmission()">Save</button>
+    </div>
 </ng-template>
+
 <ng-template #addUserModal let-addUserModal>
     <div class="modal-header border-bottom justify-content-between d-flex mb-2 pt-0">
         <div>

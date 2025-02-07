@@ -36,17 +36,16 @@ export class RunFnfPayrollComponent implements OnInit {
   selectedUserId: any;
   salary: any;
   @Output() changeView = new EventEmitter<void>();
+  selectedFnF: any;
 
   @ViewChild('fnfUserModal') fnfUserModal: TemplateRef<any>;
 
   constructor(private modalService: NgbModal,
     private fb: FormBuilder,
     private payrollService: PayrollService,
-    private commonService: CommonService,
     private toast: ToastrService,
     private dialog: MatDialog,
-    private userService: UserService,
-    private attendanceService: AttendanceService) {
+    private userService: UserService) {
     const currentMonthIndex = new Date().getMonth();
     this.selectedMonth = this.fnfMonths[currentMonthIndex];
     const currentYear = new Date().getFullYear();

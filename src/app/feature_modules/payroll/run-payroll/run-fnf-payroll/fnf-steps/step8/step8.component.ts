@@ -1,11 +1,10 @@
-import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, Input } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
-import { CommonService } from 'src/app/_services/common.Service';
 
 @Component({
   selector: 'app-step8',
@@ -13,58 +12,50 @@ import { CommonService } from 'src/app/_services/common.Service';
   styleUrls: ['./step8.component.css']
 })
 export class FNFStep8Component implements OnInit {
-  displayedColumns: string[] = ['payrollUser', 'lateComing', 'earlyGoing', 'finalOvertime', 'actions'];
-  overtime = new MatTableDataSource<any>();
-  fnfStep6Form: FormGroup;
-  selectedOvertime: any;
+  displayedColumns: string[] = ['userName', 'taxCalculatedMethod', 'taxCalculated', 'tdsCalculated', 'actions'];
+  incomeTax = new MatTableDataSource<any>();
+  incomeTaxForm: FormGroup;
+  selectedIncomeTax: any;
   userList: any[] = [];
   fnfUsers: any;
   isEdit: boolean = false;
-  isStep: boolean;
-
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
+  @Input() settledUsers: any[];
+  @Input() isSteps: boolean;
+  @Input() selectedFnF: any;
+  selectedFNFUser: any;
+  taxCalculatedMethods: string[] = ['Manual', 'System'];
 
   constructor(private fb: FormBuilder,
     private payrollService: PayrollService,
-    private commonService: CommonService,
     public dialog: MatDialog,
     private toast: ToastrService) {
-    this.fnfStep6Form = this.fb.group({
+    this.incomeTaxForm = this.fb.group({
       PayrollFNFUser: ['', Validators.required],
-      lateComing: ['', Validators.required],
-      earlyGoing: ['', Validators.required],
-      finalOvertime: ['', Validators.required]
+      TaxCalculatedMethod: ['', Validators.required],
+      TaxCalculated: [0, Validators.required],
+      TDSCalculated: [0, Validators.required]
     });
   }
 
   ngOnInit(): void {
-    this.commonService.populateUsers().subscribe((res: any) => {
-      this.userList = res.data['data'];
-    });
-
-    this.payrollService.selectedFnFPayroll.subscribe((fnfPayroll: any) => {
-      this.isStep = fnfPayroll?.isSteps;
-      if (fnfPayroll) {
-        setTimeout(() => {
-          this.fetchOvertime(fnfPayroll);
-        }, 1000);
-      }
-    });
+    this.fetchIncomeTax(this.selectedFnF);
   }
 
   onUserChange(fnfUserId: string): void {
-    console.log('fnf payroll users: ', fnfUserId);
-    this.payrollService.selectedFnFPayroll.subscribe((fnfPayroll: any) => {
-      const fnfUser = fnfPayroll.userList[0].user;
+    this.selectedFNFUser = fnfUserId;
+    const matchedUser = this.selectedFnF.userList.find((user: any) => user.user === fnfUserId);
+    const payrollFNFUserId = matchedUser ? matchedUser._id : null;
 
-      this.payrollService.getFnFOvertimeByPayrollFnFUser(fnfUserId).subscribe((res: any) => {
-        this.overtime.data = res.data;
-        this.overtime.data.forEach((overtime: any) => {
-          const user = this.userList.find(user => user._id === fnfUser);
-          overtime.userName = user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
+    if (payrollFNFUserId) {
+      this.payrollService.getFnFIncomeTaxByPayrollFnFUser(payrollFNFUserId).subscribe((res: any) => {
+        this.incomeTax.data = res.data['records'];
+        this.incomeTax.data.forEach((incomeTax: any) => {
+          const user = this.settledUsers.find(user => user._id === fnfUserId);
+          incomeTax.userName = user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
         });
       });
-    });
+    }
   }
 
   openDialog(isEdit: boolean): void {
@@ -76,90 +67,134 @@ export class FNFStep8Component implements OnInit {
     });
   }
 
-  editOvertime(overtime: any): void {
+  editIncomeTax(incomeTax: any): void {
     this.isEdit = true;
-    this.selectedOvertime = overtime;
-    this.fnfStep6Form.patchValue({
-      PayrollFNFUser: overtime.PayrollFNFUser,
-      lateComing: overtime.lateComing,
-      earlyGoing: overtime.earlyGoing,
-      finalOvertime: overtime.finalOvertime
+    this.selectedIncomeTax = incomeTax;
+    console.log(incomeTax)
+    this.incomeTaxForm.patchValue({
+      PayrollFNFUser: incomeTax.userName,
+      TaxCalculatedMethod: incomeTax.TaxCalculatedMethod,
+      TaxCalculated: incomeTax.TaxCalculated,
+      TDSCalculated: incomeTax.TDSCalculated
     });
-
+    this.incomeTaxForm.get('PayrollFNFUser').disable();
     this.openDialog(true);
   }
 
   onSubmit(): void {
-    if (this.fnfStep6Form.valid) {
-      const payload = this.fnfStep6Form.value;
-      if (this.selectedOvertime) {
-        this.payrollService.updateFnFOvertime(this.selectedOvertime._id, payload).subscribe(
+    const matchedUser = this.selectedFnF.userList.find((user: any) => user.user === this.selectedFNFUser);
+    const payrollFNFUserId = matchedUser ? matchedUser._id : null;
+
+    this.incomeTaxForm.patchValue({
+      PayrollFNFUser: payrollFNFUserId
+    });
+    if (this.incomeTaxForm.valid) {
+      this.incomeTaxForm.get('PayrollFNFUser').enable();
+
+      const payload = this.incomeTaxForm.value;
+
+      if (this.isEdit) {
+        this.incomeTaxForm.patchValue({
+          PayrollFNFUser: this.selectedIncomeTax.PayrollFNFUser,
+        });
+        this.payrollService.updateFnFIncomeTax(this.selectedIncomeTax._id, payload).subscribe(
           (res: any) => {
-            this.toast.success('Overtime updated successfully', 'Success');
+            this.toast.success('Income Tax updated successfully', 'Success');
+            this.fetchIncomeTax(this.selectedFnF);
+            this.isEdit = false;
+            this.incomeTaxForm.reset({
+              PayrollFNFUser: '',
+              TaxCalculatedMethod: '',
+              TaxCalculated: 0,
+              TDSCalculated: 0
+            });
             this.dialog.closeAll();
-            this.fetchOvertime(this.selectedOvertime.fnfPayrollId);
           },
           (error: any) => {
-            this.toast.error('Failed to update Overtime', 'Error');
-          }
-        );
-      } else {
-        this.payrollService.addFnFOvertime(payload).subscribe(
-          (res: any) => {
-            this.toast.success('Overtime added successfully', 'Success');
-            this.dialog.closeAll();
-            this.fetchOvertime(payload.fnfPayrollId);
-          },
-          (error: any) => {
-            this.toast.error('Failed to add Overtime', 'Error');
+            this.toast.error('Failed to update Income Tax', 'Error');
           }
         );
       }
+      else {
+        const matchedUser = this.selectedFnF.userList.find((user: any) => user.user === this.selectedFNFUser);
+        const payrollFNFUserId = matchedUser ? matchedUser._id : null;
+
+        this.incomeTaxForm.patchValue({
+          PayrollFNFUser: payrollFNFUserId
+        });
+        this.payrollService.addFnFIncomeTax(payload).subscribe(
+          (res: any) => {
+            this.toast.success('Income Tax added successfully', 'Success');
+            this.fetchIncomeTax(this.selectedFnF);
+            this.incomeTaxForm.reset({
+              PayrollFNFUser: '',
+              TaxCalculatedMethod: '',
+              TaxCalculated: 0,
+              TDSCalculated: 0
+            });
+            this.dialog.closeAll();
+          },
+          (error: any) => {
+            this.toast.error('Failed to add Income Tax', 'Error');
+          });
+      }
     } else {
-      this.fnfStep6Form.markAllAsTouched();
+      this.incomeTaxForm.markAllAsTouched();
     }
   }
 
   onCancel(): void {
-    if (this.isEdit && this.selectedOvertime) {
-      this.fnfStep6Form.patchValue({
-        PayrollFNFUser: this.selectedOvertime.PayrollFNFUser,
-        lateComing: this.selectedOvertime.lateComing,
-        earlyGoing: this.selectedOvertime.earlyGoing,
-        finalOvertime: this.selectedOvertime.finalOvertime
+    if (this.isEdit && this.selectedIncomeTax) {
+      this.incomeTaxForm.patchValue({
+        PayrollFNFUser: this.selectedIncomeTax.PayrollFNFUser,
+        TaxCalculatedMethod: this.selectedIncomeTax.TaxCalculatedMethod,
+        TaxCalculated: this.selectedIncomeTax.TaxCalculated,
+        TDSCalculated: this.selectedIncomeTax.TDSCalculated
       });
     } else {
-      this.fnfStep6Form.reset();
+      this.incomeTaxForm.reset();
     }
   }
 
-  deleteOvertime(_id: string) {
-    this.payrollService.deleteFnFOvertime(_id).subscribe((res: any) => {
-      this.toast.success('Overtime Deleted', 'Success');
-      this.fetchOvertime(this.selectedOvertime.fnfPayrollId);
+  deleteIncomeTax(_id: string) {
+    this.payrollService.deleteFnFIncomeTax(_id).subscribe((res: any) => {
+      this.toast.success('Income Tax Deleted', 'Success');
+      this.fetchIncomeTax(this.selectedFnF);
     }, error => {
-      this.toast.error('Failed to delete Overtime', 'Error');
+      this.toast.error('Failed to delete Income Tax', 'Error');
     });
   }
 
   deleteFnF(id: string): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, { width: '400px', });
     dialogRef.afterClosed().subscribe((result) => {
-      if (result === 'delete') { this.deleteOvertime(id); }
+      if (result === 'delete') { this.deleteIncomeTax(id); }
     });
   }
 
-  fetchOvertime(fnfPayroll: any): void {
-    this.payrollService.getFnFOvertimeByPayrollFnF(fnfPayroll?._id).subscribe(
+  getMatchedSettledUser(userId: string) {
+    const matchedUser = this.settledUsers?.find(user => user?._id == userId)
+    return matchedUser ? `${matchedUser?.firstName}  ${matchedUser?.lastName}` : 'Not specified'
+  }
+
+  fetchIncomeTax(fnfPayroll: any): void {
+    this.payrollService.getFnFIncomeTaxByPayrollFnF(fnfPayroll?._id).subscribe(
       (res: any) => {
-        this.overtime.data = res.data;
-        this.overtime.data.forEach((overtime: any, index: number) => {
-          const user = this.userList.find(user => user._id === fnfPayroll.userList[index].user);
-          overtime.userName = user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
+        this.incomeTax.data = res.data;
+
+        this.incomeTax.data.forEach((item: any) => {
+          const matchedUser = this.selectedFnF.userList.find((user: any) => user._id === item.PayrollFNFUser);
+          item.userName = this.getMatchedSettledUser(matchedUser?.user);
         });
+        if (this.isEdit && this.selectedIncomeTax) {
+          this.incomeTaxForm.patchValue({
+            payrollFNFUser: this.selectedIncomeTax.PayrollFNFUser,
+            ...this.selectedIncomeTax,
+          });
+        }
       },
       (error: any) => {
-        this.toast.error('Failed to fetch Overtime', 'Error');
+        this.toast.error('Failed to fetch Income Tax', 'Error');
       }
     );
   }

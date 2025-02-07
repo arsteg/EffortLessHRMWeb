@@ -378,4 +378,8 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
       }
     }
   }
+
+  getAddonsAmount(){
+    return this.subscription?.addOns.reduce((acc, addon) => acc + addon.item.amount, 0) / 100;
+  }
 }

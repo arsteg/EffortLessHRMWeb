@@ -1,112 +1,113 @@
 <h1 mat-dialog-title>Create Plan</h1>
 <mat-dialog-content>
   <form [formGroup]="planForm">
-    <div class="row g-3">
-      <div class="col-6 form-group">
-        <label for="name">Plan Name*</label>
-        <input
-          type="text"
-          id="name"
-          class="form-control"
-          formControlName="name"
-        />
-        @if((planForm.get('name').dirty || planForm.get('name').touched) &&
-        planForm.get('name').invalid){
-        <small class="text-danger">Plan name is required</small>
-        }
+    <div class="row g-3 pt-3">
+      <div class="col-6">
+        <mat-form-field appearance="outline">
+          <mat-label>Plan Name</mat-label>
+          <input matInput formControlName="name" required>
+          @if ((planForm.get('name').dirty || planForm.get('name').touched) &&
+          planForm.get('name').invalid) {
+            <mat-error>Plan name is required</mat-error>
+          }
+        </mat-form-field>
       </div>
 
-      <div class="col-6 form-group">
-        <label for="amount">Amount*</label>
-        <input
-          type="number"
-          id="amount"
-          class="form-control"
-          formControlName="currentprice"
-        />
-        @if((planForm.get('currentprice').dirty ||
-        planForm.get('currentprice').touched)){
-
-            @if(planForm.get('currentprice').errors?.required){
-                <small class="text-danger">Amount is required</small>
+      <div class="col-6">
+          <mat-form-field appearance="outline">
+            <mat-label>Amount</mat-label>
+            <input matInput formControlName="currentprice" required>
+            @if((planForm.get('currentprice').dirty || planForm.get('currentprice').touched) && planForm.get('currentprice').errors){
+              <mat-error>
+                @if(planForm.get('currentprice').errors?.['required']){
+                  Amount is required
+                }
+                @if(planForm.get('currentprice').errors?.['min']){
+                  Minimum amount should be at least 1
+                }
+              </mat-error>
             }
-            @if(planForm.get('currentprice').errors?.min){
-                <small class="text-danger">Minimum amount should be at least 1</small>
-            }
-        }
+          </mat-form-field>
       </div>
 
-      <div class="col-6 form-group">
-        <label for="frequency">Frequency</label>
-        <select id="frequency" class="form-control" formControlName="frequency">
-          <option value="weekly">Weekly</option>
-          <option value="monthly">Monthly</option>
-          <option value="yearly">Yearly</option>
-        </select>
+      <div class="col-6">
+        <mat-form-field>
+          <mat-select formControlName="frequency">
+            <mat-option value="weekly">Weekly</mat-option>
+            <mat-option value="monthly">Monthly</mat-option>
+            <mat-option value="yearly">Yearly</mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
 
-      <div class="col-6 form-group">
-        <label for="interval">Interval</label>
-        <input
-          type="number"
-          id="interval"
-          class="form-control"
-          formControlName="interval"
-        />
-        @if((planForm.get('interval').dirty ||
-        planForm.get('interval').touched)){
-
-            @if(planForm.get('interval').errors?.min){
-                <small class="text-danger">Minimum interval should be at least 1</small>
-            }
-        }
-      </div>
-
-      <div class="col-12 form-group">
-        <label for="quantity">Quantity</label>
-        <input
-          id="quantity"
-          formControlName="quantity"
-          class="form-control" />
-
-          <small>Number of license per subscription</small>
-
-          @if((planForm.get('quantity').dirty ||
-          planForm.get('quantity').touched)){
-  
-              @if(planForm.get('quantity').errors?.min){
-                  <small class="text-danger">Minimum quantity should be at least 1</small>
+      <div class="col-6">
+        <mat-form-field appearance="outline">
+          <mat-label>Interval*</mat-label>
+          <input matInput formControlName="interval">
+          @if((planForm.get('interval').dirty || planForm.get('interval').touched)){
+              @if(planForm.get('interval').errors?.['min']){
+                <mat-error> Minimum interval should be at least 1</mat-error>
               }
           }
+        </mat-form-field>
       </div>
 
-      <div class="col-12 form-group">
-        <label for="description">Description</label>
-        <textarea
-          id="description"
-          formControlName="description"
-          class="form-control"
-        ></textarea>
+      <div class="col-12">
+          <mat-label>Plan Type</mat-label>
+          <mat-radio-group matInput formControlName="type">
+            <mat-radio-button value="fixed">Fixed Amount</mat-radio-button>
+            <mat-radio-button value="max_average">Max Average</mat-radio-button>
+            <mat-radio-button value="prorata" disabled>Prorata</mat-radio-button>
+          </mat-radio-group>
+          <div>
+            <small>
+              @if((planForm.get('type').invalid)){
+                Please select a plan type
+              }
+              @switch(planForm.get('type').value){
+                @case ('fixed'){
+                  Unlimited licenses for a fixed amount
+                }
+                @case ('prorata'){
+                  Charge based on the number of days in the month
+                }
+                @case ('max_average'){
+                  Charge based on the maximum average number of licenses
+                }
+              }
+            </small>
+          </div>
       </div>
 
-      <div class="col-6 form-group">
-        <label for="notes1">Note 1</label>
-        <input
-          type="text"
-          id="notes1"
-          class="form-control"
-          formControlName="notes1"
-        />
+      <div class="col-12">
+        <mat-form-field appearance="outline">
+          <mat-label>Description</mat-label>
+          <textarea
+            matInput
+            class="form-control"
+            formControlName="description"
+          ></textarea>
+        </mat-form-field>
       </div>
 
-      <div class="col-6 form-group">
-        <label for="notes2">Note 2</label>
-        <input
-          type="text"
-          id="notes2"
-          class="form-control"
-          formControlName="notes2"
-        />
+      <div class="col-6">
+        <mat-form-field appearance="outline">
+          <mat-label>Note 1</mat-label>
+          <textarea
+            matInput
+            formControlName="notes1"
+          ></textarea>
+        </mat-form-field>
+      </div>
+
+      <div class="col-6">
+        <mat-form-field appearance="outline">
+          <mat-label>Note 2</mat-label>
+          <textarea
+            matInput
+            formControlName="notes2"
+          ></textarea>
+        </mat-form-field>
       </div>
     </div>
   </form>

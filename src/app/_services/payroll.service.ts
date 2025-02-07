@@ -27,7 +27,9 @@ export class PayrollService {
   assignedTemplates: any = new BehaviorSubject('');
   ctcTempData: any = new BehaviorSubject('');
   selectedFnFPayroll: any = new BehaviorSubject('');
-
+  payrollUsers: any = new BehaviorSubject('');
+  allUsers: any = new BehaviorSubject('');
+  
   constructor(private http: HttpClient) { }
   public getToken() {
     return localStorage.getItem('jwtToken');
@@ -389,6 +391,11 @@ export class PayrollService {
   }
   // PF charges
 
+  addPFCharges(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/pf-charge`, payload, this.httpOptions);
+    return response;
+  }
+
   getAllPFCharges(payload: any): Observable<any> {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/pf-charge-by-company`, payload, this.httpOptions);
     return response;
@@ -425,6 +432,11 @@ export class PayrollService {
 
   getPayroll(payload: any): Observable<any> {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/payroll-by-company`, payload, this.httpOptions);
+    return response;
+  }
+
+  deletePayroll(id: string): Observable<any> {
+    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll/${id}`, this.httpOptions);
     return response;
   }
 
@@ -594,7 +606,7 @@ export class PayrollService {
   }
 
   deleteOvertime(id: string): Observable<any> {
-    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payrollOvertime/${id}`, this.httpOptions);
+    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll/overtime/${id}`, this.httpOptions);
     return response;
   }
 
@@ -626,6 +638,11 @@ export class PayrollService {
 
   updateIncomeTax(id: string, payload: any): Observable<any> {
     var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/incomeTax/${id}`, payload, this.httpOptions);
+    return response;
+  }
+
+  generatedPayrollByPayroll(payroll: string): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/generatedPayroll-by-payroll/${payroll}`, this.httpOptions);
     return response;
   }
 
@@ -661,7 +678,7 @@ export class PayrollService {
     return response;
   }
 
-   getFnFUsers(payload: any): Observable<any> {
+  getFnFUsers(payload: any): Observable<any> {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/users-by-payroll-fnf`, payload, this.httpOptions);
     return response;
   }
@@ -670,7 +687,7 @@ export class PayrollService {
     var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/fnf/users-by-userId/${userId}`, this.httpOptions);
     return response;
   }
-  
+
   updateFnFUser(id: string, payload: any): Observable<any> {
     var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/fnf/users/${id}`, payload, this.httpOptions);
     return response;
@@ -768,7 +785,7 @@ export class PayrollService {
     var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/payroll-fnf-manual-arrears-by-payroll-fnf/${payrollFnF}`, this.httpOptions);
     return response;
   }
-  
+
   // FnF Termination Compensation CRUD
   addFnFTerminationCompensation(payload: any): Observable<any> {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/payroll-fnf-termination-compensation`, payload, this.httpOptions);
@@ -915,7 +932,7 @@ export class PayrollService {
   }
 
   getFnFOvertimeByPayrollFnFUser(payrollFnFUser: string): Observable<any> {
-    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/payroll-fnf-overtime-by-payrollFNFUser/${payrollFnFUser}`, this.httpOptions);
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/payroll-fnf-overtime-by-payroll-fnf-user/${payrollFnFUser}`, this.httpOptions);
     return response;
   }
 
@@ -946,7 +963,7 @@ export class PayrollService {
   }
 
   getFnFIncomeTaxByPayrollFnFUser(payrollFnFUser: string): Observable<any> {
-    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/payroll-fnf-income-tax-by-payrollFNFUser/${payrollFnFUser}`, this.httpOptions);
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/payroll-fnf-income-tax-by-payroll-fnf-user/${payrollFnFUser}`, this.httpOptions);
     return response;
   }
 

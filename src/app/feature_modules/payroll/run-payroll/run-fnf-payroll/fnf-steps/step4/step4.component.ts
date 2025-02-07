@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, Input } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -13,25 +13,27 @@ import { CommonService } from 'src/app/_services/common.Service';
   styleUrl: './step4.component.css'
 })
 export class FNFStep4Component implements OnInit {
-  displayedColumns: string[] = ['payrollUser', 'terminationDate', 'noticePeriod', 'gratuityEligible', 'yearsOfService', 'gratuityAmount', 'severancePay', 'retirementBenefits', 'redeploymentCompensation', 'outplacementServices', 'status', 'actions'];
+  displayedColumns: string[] = ['userName', 'terminationDate', 'noticePeriod', 'gratuityEligible', 'yearsOfService', 'gratuityAmount', 'severancePay', 'retirementBenefits', 'redeploymentCompensation', 'outplacementServices', 'status', 'actions'];
   terminationCompensation = new MatTableDataSource<any>();
-  fnfStep3Form: FormGroup;
+  terminationCompensationForm: FormGroup;
   selectedTerminationCompensation: any;
   userList: any[] = [];
   fnfUsers: any;
+  selectedFNFUser: any;
   isEdit: boolean = false;
-  isStep: boolean;
+  @Input() settledUsers: any[];
+  @Input() isSteps: boolean;
+  @Input() selectedFnF: any;
 
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
 
   constructor(private fb: FormBuilder,
     private payrollService: PayrollService,
-    private commonService: CommonService,
     public dialog: MatDialog,
     private toast: ToastrService) {
-    this.fnfStep3Form = this.fb.group({
+    this.terminationCompensationForm = this.fb.group({
       payrollFNFUser: ['', Validators.required],
-      terminationDate: ['2024-12-31', Validators.required],
+      terminationDate: [Date, Validators.required],
       noticePeriod: [0, Validators.required],
       gratuityEligible: [0, Validators.required],
       yearsOfService: [0, Validators.required],
@@ -45,38 +47,41 @@ export class FNFStep4Component implements OnInit {
   }
 
   ngOnInit(): void {
-    this.commonService.populateUsers().subscribe((res: any) => {
-      this.userList = res.data['data'];
-    });
-
-    this.payrollService.selectedFnFPayroll.subscribe((fnfPayroll: any) => {
-      this.isStep = fnfPayroll?.isSteps;
-      if (fnfPayroll) {
-        setTimeout(() => {
-          this.fetchTerminationCompensation(fnfPayroll);
-        }, 1000);
-      }
-    });
+    console.log(this.settledUsers)
+    this.fetchTerminationCompensation(this.selectedFnF);
   }
 
   onUserChange(fnfUserId: string): void {
-    console.log('fnf payroll users: ', fnfUserId);
-    this.payrollService.selectedFnFPayroll.subscribe((fnfPayroll: any) => {
-      const fnfUser = fnfPayroll.userList[0].user;
+    this.selectedFNFUser = fnfUserId;
+    const fnfUser = this.selectedFnF.userList[0].user;
 
-      this.payrollService.getFnFTerminationCompensationByPayrollFnFUser(fnfUserId).subscribe((res: any) => {
-        this.terminationCompensation.data = res.data;
-        this.terminationCompensation.data.forEach((compensation: any) => {
-          const user = this.userList.find(user => user._id === fnfUser);
-          console.log(user);
-          compensation.userName = user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
-        });
+    this.payrollService.getFnFTerminationCompensationByPayrollFnFUser(fnfUserId).subscribe((res: any) => {
+      this.terminationCompensation.data = res.data;
+      this.terminationCompensation.data.forEach((compensation: any) => {
+        const user = this.userList.find(user => user._id === fnfUser);
+        console.log(user);
+        compensation.userName = user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
       });
     });
   }
 
   openDialog(isEdit: boolean): void {
     this.isEdit = isEdit;
+    if(!this.isEdit){
+      this.terminationCompensationForm.reset({
+        payrollFNFUser: '',
+        terminationDate: '',
+        noticePeriod: 0,
+        gratuityEligible: 0,
+        yearsOfService: 0,
+        gratuityAmount: 0,
+        severancePay: 0,
+        retirementBenefits: 0,
+        redeploymentCompensation: 0,
+        outplacementServices: 0,
+        status: 'pending'
+      });
+    }
     this.dialog.open(this.dialogTemplate, {
       width: '50%',
       panelClass: 'custom-dialog-container',
@@ -87,9 +92,8 @@ export class FNFStep4Component implements OnInit {
   editTerminationCompensation(compensation: any): void {
     this.isEdit = true;
     this.selectedTerminationCompensation = compensation;
-    console.log(compensation)
-    this.fnfStep3Form.patchValue({
-      payrollFNFUser: compensation.payrollFNFUser,
+    this.terminationCompensationForm.patchValue({
+      payrollFNFUser: compensation.userName,
       terminationDate: compensation.terminationDate,
       noticePeriod: compensation.noticePeriod,
       gratuityEligible: compensation.gratuityEligible,
@@ -101,30 +105,62 @@ export class FNFStep4Component implements OnInit {
       outplacementServices: compensation.outplacementServices,
       status: compensation.status
     });
-
+    this.terminationCompensationForm.get('payrollFNFUser').disable();
     this.openDialog(true);
   }
 
   onSubmit(): void {
-    if (this.fnfStep3Form.valid) {
-      const payload = this.fnfStep3Form.value;
-      if (this.selectedTerminationCompensation) {
-        this.payrollService.updateFnFTerminationCompensation(this.selectedTerminationCompensation._id, payload).subscribe(
+    const matchedUser = this.selectedFnF.userList.find((user: any) => user?.user === this.selectedFNFUser);
+    const payrollFNFUserId = matchedUser ? matchedUser._id : null;
+
+    this.terminationCompensationForm.patchValue({
+      payrollFNFUser: payrollFNFUserId
+    })
+    if (this.terminationCompensationForm.valid) {
+      this.terminationCompensationForm.get('payrollFNFUser').enable();
+      if (this.selectedTerminationCompensation || this.isEdit) {
+        this.terminationCompensationForm.patchValue({
+          payrollFNFUser: this.selectedTerminationCompensation.payrollFNFUser,
+        });
+
+        this.payrollService.updateFnFTerminationCompensation(this.selectedTerminationCompensation._id, this.terminationCompensationForm.value).subscribe(
           (res: any) => {
             this.toast.success('Termination Compensation updated successfully', 'Success');
+            this.fetchTerminationCompensation(this.selectedFnF);
+            this.terminationCompensationForm.reset({
+              payrollFNFUser: '',
+              terminationDate: '',
+              noticePeriod: 0,
+              gratuityEligible: 0,
+              yearsOfService: 0,
+              gratuityAmount: 0,
+              severancePay: 0,
+              retirementBenefits: 0,
+              redeploymentCompensation: 0,
+              outplacementServices: 0,
+              status: 'pending'
+            });
+            this.isEdit = false;
             this.dialog.closeAll();
-            this.fetchTerminationCompensation(this.selectedTerminationCompensation.fnfPayrollId);
           },
           (error: any) => {
             this.toast.error('Failed to update Termination Compensation', 'Error');
           }
         );
       } else {
-        this.payrollService.addFnFTerminationCompensation(payload).subscribe(
+        const matchedUser = this.selectedFnF.userList.find((user: any) => user.user === this.selectedFNFUser);
+        const payrollFNFUserId = matchedUser ? matchedUser._id : null;
+
+        this.terminationCompensationForm.patchValue({
+          payrollFNFUser: payrollFNFUserId
+        });
+
+        console.log(this.terminationCompensationForm.value);
+        this.payrollService.addFnFTerminationCompensation(this.terminationCompensationForm.value).subscribe(
           (res: any) => {
             this.toast.success('Termination Compensation added successfully', 'Success');
+            this.fetchTerminationCompensation(this.selectedFnF);
             this.dialog.closeAll();
-            this.fetchTerminationCompensation(payload.fnfPayrollId);
           },
           (error: any) => {
             this.toast.error('Failed to add Termination Compensation', 'Error');
@@ -132,13 +168,13 @@ export class FNFStep4Component implements OnInit {
         );
       }
     } else {
-      this.fnfStep3Form.markAllAsTouched();
+      this.terminationCompensationForm.markAllAsTouched();
     }
   }
 
   onCancel(): void {
     if (this.isEdit && this.selectedTerminationCompensation) {
-      this.fnfStep3Form.patchValue({
+      this.terminationCompensationForm.patchValue({
         payrollFNFUser: this.selectedTerminationCompensation.payrollFNFUser,
         terminationDate: this.selectedTerminationCompensation.terminationDate,
         noticePeriod: this.selectedTerminationCompensation.noticePeriod,
@@ -152,14 +188,14 @@ export class FNFStep4Component implements OnInit {
         status: this.selectedTerminationCompensation.status
       });
     } else {
-      this.fnfStep3Form.reset();
+      this.terminationCompensationForm.reset();
     }
   }
 
   deleteTerminationCompensation(_id: string) {
     this.payrollService.deleteFnFTerminationCompensation(_id).subscribe((res: any) => {
       this.toast.success('Termination Compensation Deleted', 'Success');
-      this.fetchTerminationCompensation(this.selectedTerminationCompensation.fnfPayrollId);
+      this.fetchTerminationCompensation(this.selectedFnF);
     }, error => {
       this.toast.error('Failed to delete Termination Compensation', 'Error');
     });
@@ -172,24 +208,33 @@ export class FNFStep4Component implements OnInit {
     });
   }
 
+  getMatchedSettledUser(userId: string) {
+    const matchedUser = this.settledUsers?.find(user => user?._id == userId)
+    return matchedUser ? `${matchedUser?.firstName}  ${matchedUser?.lastName}` : 'Not specified'
+  }
+
   fetchTerminationCompensation(fnfPayroll: any): void {
     this.payrollService.getFnFTerminationCompensationByPayrollFnF(fnfPayroll?._id).subscribe(
       (res: any) => {
         this.terminationCompensation.data = res.data;
-        this.terminationCompensation.data.forEach((compensation: any, index: number) => {
-          const user = this.userList.find(user => user._id === fnfPayroll.userList[index].user);
-          compensation.userName = user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
+
+        
+        this.terminationCompensation.data.forEach((item: any) => {
+          const matchedUser = this.selectedFnF.userList.find((user: any) => user._id === item.payrollFNFUser);
+          item.userName = this.getMatchedSettledUser(matchedUser.user);
         });
+        console.log(this.terminationCompensation.data)
+        
+        if (this.isEdit && this.selectedTerminationCompensation) {
+          this.terminationCompensationForm.patchValue({
+            payrollFNFUser: this.selectedTerminationCompensation.payrollFNFUser,
+            ...this.selectedTerminationCompensation
+          });
+        }
       },
       (error: any) => {
         this.toast.error('Failed to fetch Termination Compensation', 'Error');
       }
     );
   }
-
-  getUserName(userId: string): string {
-    const user = this.userList.find(user => user._id === userId);
-    return user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
-  }
 }
-

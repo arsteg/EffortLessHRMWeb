@@ -8,7 +8,7 @@ import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from
 @Injectable({
   providedIn: 'root'
 })
-export class AttendanceService implements CanActivate {
+export class AttendanceService  {
   private readonly token = this.getToken();
   private readonly apiUrl = environment.apiUrlDotNet;
   private readonly httpOptions = {
@@ -32,18 +32,18 @@ export class AttendanceService implements CanActivate {
   public getToken() {
     return localStorage.getItem('jwtToken');
   }
-  canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-    const userRole = localStorage.getItem('adminView'); // get user role from local storage or any other storage
+  // canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
+  //   const userRole = localStorage.getItem('adminView'); // get user role from local storage or any other storage
 
-    if (userRole === 'user') {
-      console.log(userRole)
-      this.router.navigate(['/attendance/my-attendance-records']);
-      return true;
-    } else {
-      this.router.navigate(['/attendance/settings']);
-      return true;
-    }
-  }
+  //   if (userRole === 'user') {
+  //     console.log(userRole)
+  //     this.router.navigate(['/attendance/my-attendance-records']);
+  //     return true;
+  //   } else {
+  //     this.router.navigate(['/attendance/settings']);
+  //     return true;
+  //   }
+  // }
 
   addGeneralSettings(generalSettingForm: any): Observable<response<any>> {
     var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/general-settings`, generalSettingForm, this.httpOptions);
@@ -436,6 +436,11 @@ export class AttendanceService implements CanActivate {
     return response;
   }
 
+  uploadAttendanceRecords(payload: any): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/upload-json`, payload, this.httpOptions);
+    return response;
+  }
+
   // Attendance Overtime
 
   getAttendanceOvertimeByMonth(payload: any): Observable<response<any>> {
@@ -443,7 +448,7 @@ export class AttendanceService implements CanActivate {
     return response;
   }
   getAttendanceOvertimeByUser(payload: any): Observable<response<any>> {
-    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/get-overtime-by-month-user`, payload, this.httpOptions);
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/overtime-by-user`, payload, this.httpOptions);
     return response;
   }
 

@@ -1,7 +1,7 @@
 <div class="container-fluid">
-    <div class="mt-2 bg-white tableContainer">
+    <div class="mt-2 bg-white">
         <div class="d-flex justify-content-between align-items-center">
-            <div><label>Manual Arrears</label></div>
+            <div><label>{{selectedPayroll?.month}}-{{selectedPayroll?.year}} | Manual Arrears</label></div>
             <div class="d-flex align-items-center ms-auto">
                 <span class="bi bi-search searchIcon"></span>
 
@@ -11,245 +11,136 @@
             <div class="d-flex align-items-center">
                 <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
                     [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
-                <button mat-raised-button class=" ms-2 addBtn" (click)="changeMode = 'Add'; open(modal);">Add</button>
+                <button mat-raised-button class=" ms-2 addBtn" (click)="changeMode = 'Add'; openDialog();">Add</button>
             </div>
         </div>
 
-        <table>
-            <thead>
-                <th>Employee Name</th>
-                <th>Manual Arrears</th>
-                <th>Arrear Days</th>
-                <th>LOP Reversal Days</th>
-                <th>Salary Revision Arrears</th>
-                <th>LOP Reversal Arrears</th>
-                <th>Total Arrears</th>
-                <th>Actions</th>
-            </thead>
-            <tbody>
-                <tr *ngFor="let data of arrears | search : searchText">
-                    <td>{{data?.payrollUserDetails}}</td>
-                    <td>{{data?.manualArrears}}</td>
-                    <td>{{data?.arrearDays}}</td>
-                    <td>{{data?.lopReversalDays}}</td>
-                    <td>{{data?.salaryRevisionDays}}</td>
-                    <td>{{data?.lopReversalArrears}}</td>
-                    <td>{{data?.totalArrears}}</td>
-                    <td>
-                        <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before"
-                            (click)="selectedRecord= data; changeMode = 'Update'; open(modal)"><i
-                                class="bi bi-pencil"></i></button>
-                        <button class="actions ms-2" mat-mini-fab matTooltip="Delete" matTooltipPosition="below"
-                            (click)="deleteDialog(data?._id)"><i class="bi bi-trash"></i></button>
-                    </td>
-                </tr>
-            </tbody>
+        <table mat-table [dataSource]="arrears">
+            <ng-container matColumnDef="payrollUserDetails">
+                <th mat-header-cell *matHeaderCellDef> Employee Name </th>
+                <td mat-cell *matCellDef="let data"> {{data?.payrollUserDetails}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="manualArrears">
+                <th mat-header-cell *matHeaderCellDef> Manual Arrears </th>
+                <td mat-cell *matCellDef="let data"> {{data?.manualArrears}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="arrearDays">
+                <th mat-header-cell *matHeaderCellDef> Arrear Days </th>
+                <td mat-cell *matCellDef="let data"> {{data?.arrearDays}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="lopReversalDays">
+                <th mat-header-cell *matHeaderCellDef> LOP Reversal Days </th>
+                <td mat-cell *matCellDef="let data"> {{data?.lopReversalDays}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="salaryRevisionDays">
+                <th mat-header-cell *matHeaderCellDef> Salary Revision Days </th>
+                <td mat-cell *matCellDef="let data"> {{data?.salaryRevisionDays}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="lopReversalArrears">
+                <th mat-header-cell *matHeaderCellDef> LOP Reversal Arrears </th>
+                <td mat-cell *matCellDef="let data"> {{data?.lopReversalArrears}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="totalArrears">
+                <th mat-header-cell *matHeaderCellDef> Total Arrears </th>
+                <td mat-cell *matCellDef="let data"> {{data?.totalArrears}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef> Actions </th>
+                <td mat-cell *matCellDef="let data">
+                    <button mat-icon-button [matMenuTriggerFor]="menu">
+                        <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu">
+                        <button mat-menu-item (click)="selectedRecord = data; changeMode = 'Update'; openDialog()">
+                            <mat-icon>edit</mat-icon>
+                            <span>Edit</span>
+                        </button>
+                        <button mat-menu-item (click)="deleteDialog(data?._id)">
+                            <mat-icon>delete</mat-icon>
+                            <span>Delete</span>
+                        </button>
+                    </mat-menu>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="['payrollUserDetails', 'manualArrears', 'arrearDays', 'lopReversalDays', 'salaryRevisionDays', 'lopReversalArrears', 'totalArrears', 'actions']"></tr>
+            <tr mat-row *matRowDef="let row; columns: ['payrollUserDetails', 'manualArrears', 'arrearDays', 'lopReversalDays', 'salaryRevisionDays', 'lopReversalArrears', 'totalArrears', 'actions'];"></tr>
         </table>
-
     </div>
-
-
-    <!-- <div class="tab-content pt-0">
-
-        <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabArrears'}" id="tabArrears">
-
-            <div class="d-flex justify-content-end align-items-center">
-                <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
-                    [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
-                <button mat-raised-button class=" ms-2 addBtn" (click)="changeMode = 'Add'; open(modal);">Add</button>
-            </div>
-
-            <div class="d-flex justify-content-between">
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" role="switch" id="first">
-                    <label class="form-check-label" for="first">Do you want to calculate arrears in the month? </label>
-                </div>
-
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" role="switch" id="second">
-                    <label class="form-check-label" for="second">Do you want to disburse arrears in the month?</label>
-                </div>
-            </div>
-
-
-
-            <div class="mt-2 bg-white tableContainer">
-
-                <table>
-                    <thead>
-                        <th>Employee Name</th>
-                        <th>Manual Arrears</th>
-                        <th>Arrear Days</th>
-                        <th>LOP Reversal Days</th>
-                        <th>Salary Revision Arrears</th>
-                        <th>LOP Reversal Arrears</th>
-                        <th>Total Arrears</th>
-                        <th>Actions</th>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let data of arrears">
-                            <td>{{data?.payrollUserDetails}}</td>
-                            <td>{{data?.manualArrears}}</td>
-                            <td>{{data?.arrearDays}}</td>
-                            <td>{{data?.lopReversalDays}}</td>
-                            <td>{{data?.salaryRevisionDays}}</td>
-                            <td>{{data?.lopReversalArrears}}</td>
-                            <td>{{data?.totalArrears}}</td>
-                            <td>
-                                <div ngbDropdown class="dropdown-center">
-                                    <button class="actions ms-2" mat-mini-fab ngbDropdownToggle aria-expanded="false"
-                                        aria-label="Example icon button with a menu icon">
-                                        <i class="bi bi-send"></i>
-                                    </button>
-                                    <ul ngbDropdownMenu class="dropdown-menu py-0">
-
-
-
-                                        <li class="d-flex action-list" data-bs-toggle="modal"
-                                            data-bs-target="#updateModal">
-                                            <i class="bi bi-eye-fill text-success dropdown-item w-25"></i>
-                                            <span class="pt-1 text-muted">View salary revision arrears</span>
-                                        </li>
-
-                                        <li class="d-flex action-list" data-bs-toggle="modal"
-                                            data-bs-target="#updateModal">
-                                            <i class="bi bi-eye-fill text-success dropdown-item w-25"></i>
-                                            <span class="pt-1 text-muted">View LOP reversal arrears</span>
-                                        </li>
-
-                                        <li class="d-flex border-bottom action-list" (click)="changeMode = 'Update';
-                                        selectedRecord= data; open(modal);">
-                                            <i class="bi bi-pencil text-danger dropdown-item w-25"></i>
-                                            <span class="pt-1 text-muted">Edit</span>
-                                        </li>
-                                        <li class="d-flex border-bottom action-list" (click)="deleteDialog(data?._id)">
-                                            <i class="bi bi-trash text-danger dropdown-item w-25"></i>
-                                            <span class="pt-1 text-muted">Delete</span>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-
-            </div>
-        </div>
-       <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabDeduction'}" id="tabDeduction">
-
-            <div class="mt-2 bg-white tableContainer">
-
-                <table>
-                    <thead>
-                        <th>Employee Code</th>
-                        <th>Employee Name</th>
-                        <th>Deduction days</th>
-                        <th>Total Amount</th>
-                        <th>Action</th>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td><button class="actions" mat-mini-fab matTooltip="UnHold Selected Employees"
-                                    matTooltipPosition="before" (click)="open(modalUnHold)"><i
-                                        class="bi bi-arrow-right-circle" style="font-size: x-large"></i></button></td>
-                        </tr>
-                    </tbody>
-                </table>
-
-            </div>
-        </div>
-        <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabEarning'}" id="tabEarning">
-            <div class="mt-2 bg-white tableContainer">
-                <table>
-                    <thead>
-                        <th>Employee Code</th>
-                        <th>Employee Name</th>
-                        <th>Earning Days</th>
-                        <th>Total Amount</th>
-                        <th>Action</th>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td><button class="actions" mat-mini-fab matTooltip="Re-Run Selected Employee"
-                                    matTooltipPosition="before" (click)="open(modalReRun)"><i
-                                        class="bi bi-arrow-right-circle" style="font-size: x-large"></i></button></td>
-                        </tr>
-                    </tbody>
-                </table>
-
-            </div>
-        </div> 
-    </div> -->
 </div>
 
-<ng-template #modal let-modal>
-    <div class="modal-header border-bottom justify-content-between d-flex mb-2 pt-0">
-        <div>
-            <h1 class="modal-title text-muted mb-0">{{changeMode}} Manual Arrear</h1>
-        </div>
-        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
-                (click)="modal.close('Escape clicked')"></button>
-        </div>
+<ng-template #dialogTemplate>
+    <h1 mat-dialog-title>{{changeMode}} Manual Arrear</h1>
+    <div mat-dialog-content>
+        <form [formGroup]="arrearForm" (ngSubmit)="onSubmission()">
+            <div class="row">
+                <div class="form-group col-md-6" *ngIf="changeMode != 'Update'">
+                    <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
+                        [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
+                </div>
+
+                <div class="form-group col-md-6" *ngIf="changeMode === 'Update'">
+                    <mat-form-field appearance="outline" class="my-2">
+                        <mat-label>Payroll User</mat-label>
+                        <input matInput type="text" [disabled] formControlName="payrollUser">
+                    </mat-form-field>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <mat-form-field appearance="outline" class="my-2">
+                        <mat-label>Manual Arrears</mat-label>
+                        <input matInput type="number" formControlName="manualArrears" placeholder="Enter Manual Arrears">
+                    </mat-form-field>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <mat-form-field appearance="outline" class="my-2">
+                        <mat-label>Arrear Days</mat-label>
+                        <input matInput type="number" formControlName="arrearDays" placeholder="Enter Arrear Days">
+                    </mat-form-field>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <mat-form-field appearance="outline" class="my-2">
+                        <mat-label>LOP Reversal Days</mat-label>
+                        <input matInput type="number" formControlName="lopReversalDays" placeholder="Enter LOP Reversal Days">
+                    </mat-form-field>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <mat-form-field appearance="outline" class="my-2">
+                        <mat-label>Salary Revision Days</mat-label>
+                        <input matInput type="number" formControlName="salaryRevisionDays" placeholder="Enter Salary Revision Days">
+                    </mat-form-field>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <mat-form-field appearance="outline" class="my-2">
+                        <mat-label>LOP Reversal Arrears</mat-label>
+                        <input matInput type="number" formControlName="lopReversalArrears" placeholder="Enter LOP Reversal Arrears">
+                    </mat-form-field>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <mat-form-field appearance="outline" class="my-2">
+                        <mat-label>Total Arrears</mat-label>
+                        <input matInput type="number" formControlName="totalArrears" placeholder="Enter Total Arrears">
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between mt-3">
+                <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
+                <button mat-raised-button class="addBtn" type="submit">Save</button>
+            </div>
+        </form>
     </div>
-    <form [formGroup]="arrearForm" (ngSubmit)="onSubmission()">
-        <div class="form-group" *ngIf="changeMode != 'Update'">
-            <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
-                [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
-        </div>
-
-        <div class="form-group" *ngIf="changeMode === 'Update'">
-            <label for="">Payroll User</label>
-            <input type="text" [disabled] formControlName="payrollUser" class="form-control">
-        </div>
-
-        <div class="form-group mt-2">
-            <label for="manualArrears">Manual Arrears</label>
-            <input type="number" id="manualArrears" formControlName="manualArrears" class="form-control"
-                placeholder="Enter Manual Arrears" />
-        </div>
-
-        <div class="form-group mt-2">
-            <label for="arrearDays">Arrear Days</label>
-            <input type="number" id="arrearDays" formControlName="arrearDays" class="form-control"
-                placeholder="Enter Arrear Days" />
-        </div>
-
-        <div class="form-group mt-2">
-            <label for="lopReversalDays">LOP Reversal Days</label>
-            <input type="number" id="lopReversalDays" formControlName="lopReversalDays" class="form-control"
-                placeholder="Enter LOP Reversal Days" />
-        </div>
-
-        <div class="form-group mt-2">
-            <label for="salaryRevisionDays">Salary Revision Days</label>
-            <input type="number" id="salaryRevisionDays" formControlName="salaryRevisionDays" class="form-control"
-                placeholder="Enter Salary Revision Days" />
-        </div>
-
-        <div class="form-group mt-2">
-            <label for="lopReversalArrears">LOP Reversal Arrears</label>
-            <input type="number" id="lopReversalArrears" formControlName="lopReversalArrears" class="form-control"
-                placeholder="Enter LOP Reversal Arrears" />
-        </div>
-
-        <div class="form-group mt-2">
-            <label for="totalArrears">Total Arrears</label>
-            <input type="number" id="totalArrears" formControlName="totalArrears" class="form-control"
-                placeholder="Enter Total Arrears" />
-        </div>
-
-        <div class="d-flex justify-content-between mt-2">
-            <button mat-raised-button type="reset">Cancel</button>
-            <button mat-raised-button type="submit" class="addBtn" [disabled]="arrearForm.invalid">Save</button>
-        </div>
-    </form>
 </ng-template>
 
 <ng-template #modalUnHold let-modal>

@@ -66,9 +66,7 @@ export class AssignAssetsComponent implements OnInit {
       this.assetTypes = response.data;
       this.filteredAssetTypes = this.assetTypes;
   });
-  }
-
-  
+  }  
   getAssetTypeName(assetTypeId: string): string {
     const assetType = this.filteredAssetTypes.find((type) => type._id === assetTypeId);
     return assetType ? assetType.typeName : 'Unknown'; // Return typeName or 'Unknown' if not found
@@ -82,5 +80,4 @@ export class AssignAssetsComponent implements OnInit {
       this.assetStatuses = response.data;
     });
   }  
-  
 }

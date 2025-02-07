@@ -1,9 +1,8 @@
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-import { forkJoin, map, of, switchMap } from 'rxjs';
+import { forkJoin, map, switchMap } from 'rxjs';
 import { CommonService } from 'src/app/_services/common.Service';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { UserService } from 'src/app/_services/users.service';
@@ -16,20 +15,21 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 })
 export class Step4Component {
   searchText: string = '';
-  closeResult: string = '';
   loanAdvanceForm: FormGroup;
   selectedUserId: any;
   loanAdvances: any;
   userloanAdvances: any;
   allLoanAdvances: any;
-  users: any;
+  allUsers: any;
   @Input() selectedPayroll: any;
-  changeMode: 'Add' | 'Update' = 'Add';
+  changeMode: 'Add' | 'Update' = 'Update';
   selectedRecord: any;
-  payrollUser: any;
+  payrollUsers: any;
   matchedLoanAdvances: any;
+  selectedPayrollUser: string;
+  @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
 
-  constructor(private modalService: NgbModal,
+  constructor(
     private payrollService: PayrollService,
     private fb: FormBuilder,
     private commonService: CommonService,
@@ -39,38 +39,34 @@ export class Step4Component {
   ) {
     this.loanAdvanceForm = this.fb.group({
       payrollUser: ['', Validators.required],
-      loanAndAdvance: [''],
-      disbursementAmount: [{ value: 0, disabled: true }, [Validators.required, Validators.min(1)]],
+      loanAndAdvance: ['', Validators.required],
+      disbursementAmount: [0, [Validators.required, Validators.min(1)]],
       status: ['Pending'],
       type: [''],
       amount: [0]
     });
-
-    this.loanAdvanceForm.get('type').valueChanges.subscribe((type) => {
-      if (type === 'Disbursement') {
-        this.loanAdvanceForm.get('disbursementAmount').setValidators([Validators.required, Validators.min(1)]);
-        this.loanAdvanceForm.get('disbursementAmount').enable();
-      } else if (type === 'Repayment') {
-        this.loanAdvanceForm.get('disbursementAmount').setValue(0);
-        this.loanAdvanceForm.get('disbursementAmount').clearValidators();
-        this.loanAdvanceForm.get('disbursementAmount').disable();
-      }
-      this.loanAdvanceForm.get('disbursementAmount').updateValueAndValidity();
-    });
   }
 
   ngOnInit() {
-    this.getAllUsers();
-    this.getAllLoansAdvances();
+    this.payrollService.allUsers.subscribe(res => {
+      this.allUsers = res;
+    });
+    this.payrollService.payrollUsers.subscribe(res => {
+      this.payrollUsers = res;
+    });
     this.getLoanAdvanceByPayroll();
   }
 
-  open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+  openDialog() {
+    this.dialog.open(this.dialogTemplate, {
+      width: '600px',
+      disableClose: true
     });
+  }
+
+  closeDialog() {
+    this.changeMode = 'Update';
+    this.dialog.closeAll();
   }
 
   clearForm() {
@@ -84,50 +80,28 @@ export class Step4Component {
     })
   }
 
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
-  }
-
   onUserSelectedFromChild(userId: any) {
-    this.selectedUserId = userId;
-    this.getLoanAdvances();
-    if (this.changeMode === 'Add' || this.changeMode === 'Update') {
-      this.getLoanAdvancesOfUser();
-      this.getAllLoansAdvances();
-    }
+    this.selectedUserId = userId.value.user;
+    this.selectedPayrollUser = userId.value._id;
+    if (this.changeMode === 'Update') { this.getLoanAdvances(); }
+    if (this.changeMode === 'Add') { this.getLoanAdvancesOfUser(); }
   }
 
-  getAllUsers() {
-    this.commonService.populateUsers().subscribe((res: any) => {
-      this.users = res.data.data;
-    })
-  }
+
 
   getUser(employeeId: string) {
-    const matchingUser = this.users?.find(user => user._id === employeeId);
+    const matchingUser = this.allUsers?.find(user => user._id === employeeId);
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'N/A';
   }
 
   getLoanAdvancesOfUser() {
-    this.userService.getLoansAdvancesByUserId(this.selectedUserId?.user, { skip: '', next: '' }).subscribe((res: any) => {
+    this.userService.getLoansAdvancesByUserId(this.selectedUserId, { skip: '', next: '' }).subscribe((res: any) => {
       this.userloanAdvances = res.data;
-      if (this.userloanAdvances.length >= 1) {
-        this.userloanAdvances.unshift({ loanAdvancesCategory: '', name: 'Select Loan/Advance' });
+      if (this.userloanAdvances.length > 0) {
+        this.userloanAdvances.unshift({ loanAdvancesCategory: { name: 'Select Loan/Advance' } });
       } else {
-        this.userloanAdvances.unshift({ loanAdvancesCategory: '', name: 'Loans/Advances not Assigned to the Selected User' });
+        this.userloanAdvances.unshift({ loanAdvancesCategory: { name: 'Loans/Advances not Assigned to the Selected User' } });
       }
-    })
-  }
-
-  getAllLoansAdvances() {
-    this.payrollService.getLoans({ skip: '', next: '' }).subscribe((res: any) => {
-      this.allLoanAdvances = res.data;
     })
   }
 
@@ -138,8 +112,8 @@ export class Step4Component {
 
   setFormValues(form: any) {
     this.payrollService.getPayrollUserById(this.selectedRecord.payrollUser).subscribe((res: any) => {
-      this.payrollUser = res.data;
-      const payrollUser = this.payrollUser?.user;
+      this.payrollUsers = res.data;
+      const payrollUser = this.payrollUsers?.user;
       this.loanAdvanceForm.patchValue({
         payrollUser: this.getUser(payrollUser),
         loanAndAdvance: form.loanAndAdvance,
@@ -152,19 +126,20 @@ export class Step4Component {
     })
   }
 
-
   onSubmission() {
-    this.loanAdvanceForm.value.payrollUser = this.selectedUserId?._id;
-
+    this.loanAdvanceForm.get('payrollUser').enable();
+    this.loanAdvanceForm.value.payrollUser = this.selectedPayrollUser;
+    this.loanAdvanceForm.value.amount = 0;
+    console.log(this.loanAdvanceForm.value.payrollUser);
     if (this.changeMode === 'Add') {
       this.payrollService.addLoanAdvance(this.loanAdvanceForm.value).subscribe(
         (res: any) => {
-          this.getLoanAdvances();
+          this.getLoanAdvanceByPayroll();
           this.loanAdvanceForm.reset();
           this.userloanAdvances = [];
           this.selectedUserId = null;
           this.toast.success('Loan/Advance created', 'Successfully!');
-          this.modalService.dismissAll();
+          this.closeDialog();
         },
         (err) => {
           this.toast.error('Loan/Advance cannot be created', 'Error!');
@@ -175,13 +150,13 @@ export class Step4Component {
     if (this.changeMode === 'Update') {
       this.payrollService.updateLoanAdvance(this.selectedRecord._id, this.loanAdvanceForm.value).subscribe(
         (res: any) => {
-          this.getLoanAdvances();
+          this.getLoanAdvanceByPayroll();
           this.toast.success('Loan/Advance Updated', 'Successfully');
           this.loanAdvanceForm.reset();
           this.selectedUserId = '';
           this.userloanAdvances = [];
           this.changeMode = 'Add';
-          this.modalService.dismissAll();
+          this.closeDialog();
         },
         (err) => {
           this.toast.error('Loan/Advance cannot be Updated', 'Error');
@@ -191,105 +166,36 @@ export class Step4Component {
   }
 
   getLoanAdvances() {
-    forkJoin({
-      userLoanAdvances: this.userService.getLoansAdvancesByUserId(this.selectedUserId?.user, { skip: '', next: '' }),
-      loanAdvances: this.payrollService.getLoanAdvance(this.selectedUserId?._id)
-    }).pipe(
-      switchMap(({ userLoanAdvances, loanAdvances }) => {
-        this.userloanAdvances = userLoanAdvances.data;
-        this.loanAdvances = loanAdvances.data;
-
-        const userRequests = this.loanAdvances.map((item: any) =>
-          this.payrollService.getPayrollUserById(item.payrollUser).pipe(
-            map((userRes: any) => ({
-              ...item,
-              payrollUserDetails: this.getUser(userRes?.data.user)
-            }))
-          )
-        );
-
-        return forkJoin(userRequests);
-      })
-    ).subscribe(
-      (detailedLoanAdvances) => {
-        this.loanAdvances = detailedLoanAdvances;
-
-        this.matchedLoanAdvances = this.loanAdvances.reduce((acc: any[], loanAdvance) => {
-          const matchingUserLoanAdvance = this.userloanAdvances.find(
-            (userLoanAdvance) => userLoanAdvance.loanAdvancesCategory === loanAdvance.loanAndAdvance
-          );
-
-          if (matchingUserLoanAdvance) {
-            acc.push({
-              ...loanAdvance,
-              amount: matchingUserLoanAdvance.amount,
-              frequency: matchingUserLoanAdvance.repaymentFrequency
-            });
-          }
-
-          return acc;
-        }, []);
-      },
-      (error) => {
-        console.error("Error fetching data:", error);
-      }
-    );
+    this.payrollService.getLoanAdvance(this.selectedPayrollUser).subscribe((res: any) => {
+      this.matchedLoanAdvances = res.data;
+      const userRequests = this.matchedLoanAdvances.map((item: any) => {
+        const payrollUser = this.payrollUsers?.find((user: any) => user._id === item.payrollUser);
+        return {
+          ...item,
+          payrollUserDetails: payrollUser ? this.getUser(payrollUser.user) : null
+        };
+      });
+      this.matchedLoanAdvances = userRequests
+    })
   }
 
   getLoanAdvanceByPayroll() {
-    forkJoin({
-      userLoanAdvances: this.userService.getLoansAdvancesByCompany({ skip: '', next: '' }),
-      loanAdvances: this.payrollService.getLoanAdvanceByPayroll(this.selectedPayroll?._id)
-    }).pipe(
-      switchMap(({ userLoanAdvances, loanAdvances }) => {
-        this.userloanAdvances = userLoanAdvances.data;
-        this.loanAdvances = loanAdvances.data;
-
-        const userRequests = this.loanAdvances.map((item: any) =>
-          this.payrollService.getPayrollUserById(item.payrollUser).pipe(
-            map((userRes: any) => ({
-              ...item,
-              payrollUserDetails: this.getUser(userRes?.data.user)
-            }))
-          )
-        );
-
-        return forkJoin(userRequests);
-      })
-    ).subscribe(
-      (detailedLoanAdvances) => {
-        this.loanAdvances = detailedLoanAdvances;
-
-        this.matchedLoanAdvances = this.loanAdvances.reduce((acc: any[], loanAdvance) => {
-          const matchingUserLoanAdvance = this.userloanAdvances.find(
-            (userLoanAdvance) => userLoanAdvance.loanAdvancesCategory === loanAdvance.loanAndAdvance
-          );
-
-          if (matchingUserLoanAdvance) {
-            acc.push({
-              ...loanAdvance,
-              amount: matchingUserLoanAdvance.amount,
-              frequency: matchingUserLoanAdvance.repaymentFrequency
-            });
-          }
-
-          return acc;
-        }, []);
-      },
-      (error) => {
-        console.error("Error fetching data:", error);
-      }
-    );
+    this.payrollService.getLoanAdvanceByPayroll(this.selectedPayroll?._id).subscribe((res: any) => {
+      this.matchedLoanAdvances = res.data;
+      const userRequests = this.matchedLoanAdvances.map((item: any) => {
+        const payrollUser = this.payrollUsers?.find((user: any) => user._id === item.payrollUser);
+        return {
+          ...item,
+          payrollUserDetails: payrollUser ? this.getUser(payrollUser.user) : null
+        };
+      });
+      this.matchedLoanAdvances = userRequests
+    });
   }
 
   deleteTemplate(_id: string) {
     this.payrollService.deleteLoanAdvance(_id).subscribe((res: any) => {
-      if (res != null) {
-        const index = this.loanAdvances.findIndex(temp => temp._id === _id);
-        if (index !== -1) {
-          this.loanAdvances.splice(index, 1);
-        }
-      }
+      this.getLoanAdvanceByPayroll();
       this.toast.success('Successfully Deleted!!!', 'Loan/Advance')
     },
       (err) => {

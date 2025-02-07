@@ -1,45 +1,57 @@
-<div class="tableContainer bg-white mt-2">
-    <div class="d-flex justify-content-between align-items-baseline">
+<div class="border-top">
+    <div class="d-flex justify-content-between align-items-baseline pt-2">
         <div><label>Statutory Benefits</label></div>
         <div class="d-flex">
-            <app-fnf-users [isStep]="isStep" (changeUser)="onUserChange($event)"></app-fnf-users>
+            <app-fnf-users [isStep]="isSteps" [selectedFnF]="selectedFnF" (changeUser)="onUserChange($event)"></app-fnf-users>
             <button mat-raised-button class="addBtn ms-2 mt-1" (click)="openDialog(false)">Add Statutory Benefit</button>
         </div>
     </div>
     <table mat-table [dataSource]="statutoryBenefits" >
-        <ng-container matColumnDef="payrollUser">
+        <ng-container matColumnDef="userName">
             <th mat-header-cell *matHeaderCellDef> Payroll User </th>
             <td mat-cell *matCellDef="let element"> {{element.userName}} </td>
         </ng-container>
 
-        <ng-container matColumnDef="statutoryBenefit">
-            <th mat-header-cell *matHeaderCellDef> Statutory Benefit </th>
-            <td mat-cell *matCellDef="let element"> {{element.statutoryBenefit}} </td>
+        <ng-container matColumnDef="IsGratuityApplicable">
+            <th mat-header-cell *matHeaderCellDef> Gratuity Applicable </th>
+            <td mat-cell *matCellDef="let element">
+                <mat-icon [ngClass]="{'text-success': element.IsGratuityApplicable, 'text-danger': !element.IsGratuityApplicable}">
+                    {{ element.IsGratuityApplicable ? 'check' : 'close' }}
+                </mat-icon>
+            </td>
         </ng-container>
 
-        <ng-container matColumnDef="benefitAmount">
-            <th mat-header-cell *matHeaderCellDef> Benefit Amount </th>
-            <td mat-cell *matCellDef="let element"> {{element.benefitAmount}} </td>
+        <ng-container matColumnDef="GratuityAmount">
+            <th mat-header-cell *matHeaderCellDef> Gratuity Amount </th>
+            <td mat-cell *matCellDef="let element"> {{element.GratuityAmount}} </td>
         </ng-container>
 
-        <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef> Status </th>
-            <td mat-cell *matCellDef="let element"> {{element.status}} </td>
+        <ng-container matColumnDef="IsProvidentFundApplicable">
+            <th mat-header-cell *matHeaderCellDef> Provident Fund Applicable </th>
+            <td mat-cell *matCellDef="let element">
+                <mat-icon [ngClass]="{'text-success': element.IsProvidentFundApplicable, 'text-danger': !element.IsProvidentFundApplicable}">
+                    {{ element.IsProvidentFundApplicable ? 'check' : 'close' }}
+                </mat-icon>
+            </td>
         </ng-container>
 
-        <ng-container matColumnDef="finalSettlementAmount">
-            <th mat-header-cell *matHeaderCellDef> Final Settlement Amount </th>
-            <td mat-cell *matCellDef="let element"> {{element.finalSettlementAmount}} </td>
+        <ng-container matColumnDef="ProvidentFundAmount">
+            <th mat-header-cell *matHeaderCellDef> Provident Fund Amount </th>
+            <td mat-cell *matCellDef="let element"> {{element.ProvidentFundAmount}} </td>
         </ng-container>
 
-        <ng-container matColumnDef="fnfClearanceStatus">
-            <th mat-header-cell *matHeaderCellDef> FnF Clearance Status </th>
-            <td mat-cell *matCellDef="let element"> {{element.fnfClearanceStatus}} </td>
+        <ng-container matColumnDef="ProvidentFundPaymentProcess">
+            <th mat-header-cell *matHeaderCellDef> Provident Fund Payment Process </th>
+            <td mat-cell *matCellDef="let element"> {{element.ProvidentFundPaymentProcess}} </td>
         </ng-container>
 
-        <ng-container matColumnDef="fnfDate">
-            <th mat-header-cell *matHeaderCellDef> FnF Date </th>
-            <td mat-cell *matCellDef="let element"> {{element.fnfDate | date: 'mediumDate'}} </td>
+        <ng-container matColumnDef="IsProvidentFundWithdrawFormSubmitted">
+            <th mat-header-cell *matHeaderCellDef> Provident Fund Withdraw Form </th>
+            <td mat-cell *matCellDef="let element">
+                <mat-icon [ngClass]="{'text-success': element.IsProvidentFundWithdrawFormSubmitted, 'text-danger': !element.IsProvidentFundWithdrawFormSubmitted}">
+                    {{ element.IsProvidentFundWithdrawFormSubmitted ? 'check' : 'close' }}
+                </mat-icon>
+            </td>
         </ng-container>
 
         <ng-container matColumnDef="actions">
@@ -53,7 +65,7 @@
                         <mat-icon>edit</mat-icon>
                         <span>Edit</span>
                     </button>
-                    <button mat-menu-item (click)="deleteStatutoryBenefit(element._id)">
+                    <button mat-menu-item (click)="deleteFnF(element._id)">
                         <mat-icon>delete</mat-icon>
                         <span>Delete</span>
                     </button>
@@ -74,45 +86,51 @@
         <div class=""><button type="button" class="btn-close text-end" (click)="dialog.closeAll()"></button></div>
     </div>
     <div class="form-container p-3" style="max-height: 70vh; overflow-y: auto; z-index: 1050;">
-        <form [formGroup]="fnfStep6Form" (ngSubmit)="onSubmit()">
+        <form [formGroup]="statutoryBenefitForm" (ngSubmit)="onSubmit()">
             <div class="row">
-                <app-fnf-users (changeUser)="onUserChange($event)"></app-fnf-users>
-
-                <mat-form-field appearance="outline" class="col-md-6 my-2" style="z-index: 1060;">
-                    <mat-label>Statutory Benefit</mat-label>
-                    <input matInput formControlName="statutoryBenefit">
-                    <mat-error *ngIf="fnfStep6Form.get('statutoryBenefit').hasError('required')">Statutory Benefit is required</mat-error>
+                @if(isEdit){
+                    <mat-form-field appearance="outline" class="my-2">
+                        <mat-label>Selected FnF User</mat-label>
+                        <input matInput type="text" formControlName="payrollFNFUser">
+                    </mat-form-field>
+                }
+                @else if (!isEdit) {
+                    <app-fnf-users [isStep]="isSteps" [selectedFnF]="selectedFnF" (changeUser)="onUserChange($event)"></app-fnf-users>
+                }
+                <mat-form-field appearance="outline" class="col-md-6 my-2">
+                    <mat-label>Gratuity Amount</mat-label>
+                    <input matInput type="number" formControlName="GratuityAmount">
+                    <mat-error *ngIf="statutoryBenefitForm.get('GratuityAmount').hasError('required')">Gratuity Amount is required</mat-error>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="col-md-6 my-2" style="z-index: 1060;">
-                    <mat-label>Benefit Amount</mat-label>
-                    <input matInput type="number" formControlName="benefitAmount">
-                    <mat-error *ngIf="fnfStep6Form.get('benefitAmount').hasError('required')">Benefit Amount is required</mat-error>
+                <mat-form-field appearance="outline" class="col-md-6 my-2">
+                    <mat-label>Provident Fund Amount</mat-label>
+                    <input matInput type="number" formControlName="ProvidentFundAmount">
+                    <mat-error *ngIf="statutoryBenefitForm.get('ProvidentFundAmount').hasError('required')">Provident Fund Amount is required</mat-error>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="col-md-6 my-2" style="z-index: 1060;">
-                    <mat-label>Status</mat-label>
-                    <input matInput formControlName="status">
-                    <mat-error *ngIf="fnfStep6Form.get('status').hasError('required')">Status is required</mat-error>
+                <mat-form-field appearance="outline" class="col-md-6 my-2">
+                    <mat-label>Provident Fund Payment Process</mat-label>
+                    <mat-select formControlName="ProvidentFundPaymentProcess">
+                        <mat-option value="Transfer">Transfer</mat-option>
+                        <mat-option value="Withdraw">Withdraw</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="statutoryBenefitForm.get('ProvidentFundPaymentProcess').hasError('required')">Provident Fund Payment Process is required</mat-error>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="col-md-6 my-2" style="z-index: 1060;">
-                    <mat-label>Final Settlement Amount</mat-label>
-                    <input matInput type="number" formControlName="finalSettlementAmount">
-                    <mat-error *ngIf="fnfStep6Form.get('finalSettlementAmount').hasError('required')">Final Settlement Amount is required</mat-error>
-                </mat-form-field>
+                
 
-                <mat-form-field appearance="outline" class="col-md-6 my-2" style="z-index: 1060;">
-                    <mat-label>FnF Clearance Status</mat-label>
-                    <input matInput formControlName="fnfClearanceStatus">
-                    <mat-error *ngIf="fnfStep6Form.get('fnfClearanceStatus').hasError('required')">FnF Clearance Status is required</mat-error>
-                </mat-form-field>
+                <div class="col-md-6 my-2">
+                    <mat-slide-toggle formControlName="IsGratuityApplicable">Is Gratuity Applicable</mat-slide-toggle>
+                </div>
 
-                <mat-form-field appearance="outline" class="col-md-6 my-2" style="z-index: 1060;">
-                    <mat-label>FnF Date</mat-label>
-                    <input matInput type="date" formControlName="fnfDate">
-                    <mat-error *ngIf="fnfStep6Form.get('fnfDate').hasError('required')">FnF Date is required</mat-error>
-                </mat-form-field>
+                <div class="col-md-6 my-2">
+                    <mat-slide-toggle formControlName="IsProvidentFundApplicable">Is Provident Fund Applicable</mat-slide-toggle>
+                </div>
+
+                <div class="col-md-6 my-2">
+                    <mat-slide-toggle formControlName="IsProvidentFundWithdrawFormSubmitted">Is Provident Fund Withdraw Form Submitted</mat-slide-toggle>
+                </div>
             </div>
 
             <div class="d-flex justify-content-between mt-3">

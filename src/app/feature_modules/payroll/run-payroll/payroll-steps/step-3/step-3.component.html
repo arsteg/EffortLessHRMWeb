@@ -1,6 +1,6 @@
-<div class="tableContainer">
+<div class="">
     <div class="d-flex align-items-center justify-content-between">
-        <div><label>Variable Pay</label></div>
+        <div><label>{{selectedPayroll?.month}}-{{selectedPayroll?.year}} | Variable Pay</label></div>
         <div class="d-flex align-items-center ms-auto">
             <span class="bi bi-search searchIcon"></span>
 
@@ -12,7 +12,7 @@
             <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
                 [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
             <button mat-raised-button class="addBtn ms-2" type="button"
-                (click)="changeMode = 'Add'; resetForm(); open(modal);">Add</button>
+                (click)="changeMode = 'Add'; openDialog();">Add</button>
         </div>
     </div>
     <table>
@@ -28,95 +28,104 @@
                 <td>{{data?.amount}}</td>
                 <td>{{data?.month}}-{{data?.year}}</td>
                 <td>
-                    <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before"
-                        (click)="selectedRecord= data;changeMode = 'Update'; open(modal)"><i
-                            class="bi bi-pencil"></i></button>
-                    <button class="actions ms-2" mat-mini-fab matTooltip="Delete" matTooltipPosition="below"
-                        (click)="deleteDialog(data?._id)"><i class="bi bi-trash"></i></button>
+                    <button mat-icon-button [matMenuTriggerFor]="menu">
+                        <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu">
+                        <button mat-menu-item (click)="selectedRecord = data; changeMode = 'Update'; openDialog()">
+                            <mat-icon>edit</mat-icon>
+                            <span>Edit</span>
+                        </button>
+                        <button mat-menu-item (click)="deleteDialog(data?._id)">
+                            <mat-icon>delete</mat-icon>
+                            <span>Delete</span>
+                        </button>
+                    </mat-menu>
                 </td>
             </tr>
         </tbody>
     </table>
 </div>
 
-<ng-template #modal let-modal>
-    <div class="modal-header border-bottom justify-content-between d-flex mb-2 pt-0">
-        <div>
-            <h1 class="modal-title text-muted mb-0">Variable Pay</h1>
+<ng-template #dialogTemplate>
+    <h1 mat-dialog-title>Variable Pay</h1>
+    <div mat-dialog-content>
+        <form [formGroup]="variablePayForm" (ngSubmit)="onSubmit()">
+            <div class="row">
+            <div class="form-group" *ngIf="changeMode === 'Add'">
+                <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
+                    [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
+            </div>
+
+            <div class="col-md-6" *ngIf="changeMode === 'Update'">
+                <mat-form-field appearance="outline" class="my-2">
+                    <mat-label>Payroll User</mat-label>
+                    <input matInput type="text" [disabled] formControlName="payrollUser">
+                </mat-form-field>
+            </div>
+
+            <div class="col-md-6 mt-3">
+                <mat-form-field appearance="outline" class="my-2">
+                    <mat-label>Variable Deduction</mat-label>
+                    <mat-select formControlName="variableDeduction">
+                        <mat-option value="" selected disabled>- Select Variable Deduction -</mat-option>
+                        <mat-option [value]="deduction?.variableDeduction" *ngFor="let deduction of salary?.variableDeductionList">
+                            {{getVariableDeduction(deduction?.variableDeduction)}}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="variablePayForm.get('variableDeduction')?.invalid && variablePayForm.get('variableDeduction')?.touched">
+                        Variable Deduction is required.
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <div class="col-md-6 mt-3">
+                <mat-form-field appearance="outline" class="my-2">
+                    <mat-label>Variable Allowance</mat-label>
+                    <mat-select formControlName="variableAllowance">
+                        <mat-option value="" selected disabled>- Select Variable Allowance -</mat-option>
+                        <mat-option [value]="allowance?.variableAllowance" *ngFor="let allowance of salary?.variableAllowanceList">
+                            {{getVariableAllowance(allowance?.variableAllowance)}}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="variablePayForm.get('variableAllowance')?.invalid && variablePayForm.get('variableAllowance')?.touched">
+                        Variable Allowance is required.
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <div class="col-md-6 mt-3">
+                <mat-form-field appearance="outline" class="my-2">
+                    <mat-label>Amount</mat-label>
+                    <input matInput type="number" formControlName="amount" placeholder="Enter Amount">
+                    <mat-error *ngIf="variablePayForm.get('amount')?.invalid && variablePayForm.get('amount')?.touched">
+                        Amount must be greater than 0.
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <div class="col-md-6 mt-3">
+                <mat-form-field appearance="outline" class="my-2">
+                    <mat-label>Month</mat-label>
+                    <input matInput type="text" formControlName="month">
+                    <mat-error *ngIf="variablePayForm.get('month')?.invalid && variablePayForm.get('month')?.touched">
+                        Month is required!
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <div class="col-md-6 mt-3">
+                <mat-form-field appearance="outline" class="my-2">
+                    <mat-label>Year</mat-label>
+                    <input matInput type="text" formControlName="year">
+                    <mat-error *ngIf="variablePayForm.get('year')?.invalid && variablePayForm.get('year')?.touched">
+                        Year is required!
+                    </mat-error>
+                </mat-form-field>
+            </div>
         </div>
-        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
-                (click)="modal.close('Escape clicked')"></button>
-        </div>
+            <div class="mt-4 d-flex justify-content-between">
+                <button type="button" (click)="closeDialog()" mat-raised-button>Cancel</button>
+                <button type="submit" class="addBtn" mat-raised-button>Submit</button>
+            </div>
+        </form>
     </div>
-
-    <form [formGroup]="variablePayForm" (ngSubmit)="onSubmit()">
-        <div class="form-group" *ngIf="changeMode === 'Add'">
-            <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
-                [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
-        </div>
-
-        <div class="form-group" *ngIf="changeMode === 'Update'">
-            <label for="">Payroll User</label>
-            <input type="text" [disabled] formControlName="payrollUser" class="form-control">
-        </div>
-
-        <div class="form-group mt-3">
-            <label for="variableDeduction">Variable Deduction</label>
-            <select name="" id="variableDeduction" formControlName="variableDeduction">
-                <option value="" selected disabled>- Select Variable Deduction -</option>
-                <option [value]="deduction?.variableDeduction" *ngFor="let deduction of salary?.variableDeductionList">
-                    {{getVariableDeduction(deduction?.variableDeduction)}}</option>
-            </select>
-            <div *ngIf="variablePayForm.get('variableDeduction')?.invalid && variablePayForm.get('variableDeduction')?.touched"
-                class="text-danger">
-                Variable Deduction is required.
-            </div>
-        </div>
-
-        <div class="form-group mt-3">
-            <label for="variableAllowance">Variable Allowance</label>
-            <select name="" id="variableAllowance" formControlName="variableAllowance">
-                <option value="" selected disabled>- Select Variable Allowance -</option>
-                <option [value]="allowance?.variableAllowance" *ngFor="let allowance of salary?.variableAllowanceList">
-                    {{getVariableAllowance(allowance?.variableAllowance)}}</option>
-            </select>
-            <div *ngIf="variablePayForm.get('variableAllowance')?.invalid && variablePayForm.get('variableAllowance')?.touched"
-                class="text-danger">
-                Variable Allowance is required.
-            </div>
-        </div>
-
-        <div class="form-group mt-3">
-            <label for="amount">Amount</label>
-            <input type="number" id="amount" class="form-control" formControlName="amount" placeholder="Enter Amount" />
-            <div *ngIf="variablePayForm.get('amount')?.invalid && variablePayForm.get('amount')?.touched"
-                class="text-danger">
-                Amount must be greater than 0.
-            </div>
-        </div>
-
-        <div class="form-group mt-3">
-            <label for="month">Month</label>
-            <input type="text" class="form-control" formControlName="month">
-
-            <div *ngIf="variablePayForm.get('month')?.invalid && variablePayForm.get('month')?.touched"
-                class="text-danger">
-                Month is required!
-            </div>
-        </div>
-
-        <div class="form-group mt-3">
-            <label for="year">Year</label>
-            <input type="text" class="form-control" formControlName="year">
-
-            <div *ngIf="variablePayForm.get('year')?.invalid && variablePayForm.get('year')?.touched"
-                class="text-danger">Year is required!
-            </div>
-        </div>
-
-        <div class="mt-4 d-flex justify-content-between">
-            <button type="button" (click)="resetForm()" mat-raised-button>Cancel</button>
-            <button type="submit" class="addBtn" mat-raised-button>Submit</button>
-        </div>
-    </form>
 </ng-template>

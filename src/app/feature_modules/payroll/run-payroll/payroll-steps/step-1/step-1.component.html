@@ -14,13 +14,8 @@
         </li>
     </ul>
     <div class="tab-content pt-0">
-
         <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabActiveEmployees'}" id="tabActiveEmployees">
-            <div class="d-flex justify-content-end align-items-center">
-                <button class="btn addBtn" (click)="open(modal);">Download</button>
-            </div>
-            <div class="mt-2 bg-white tableContainer">
-
+            <div class="mt-2 bg-white">
                 <table>
                     <thead>
                         <th>Employee Name</th>
@@ -31,20 +26,20 @@
                         <tr *ngFor="let data of activeUsers">
                             <td>{{getUser(data?.user)}}</td>
                             <td>{{selectedPayroll?.date | date: 'mediumDate'}}</td>
-                            <td><button class="actions" mat-mini-fab matTooltip="Place Selected Employees On Hold"
+                            <td>
+                                <button class="actions" mat-mini-fab matTooltip="Place Selected Employees On Hold"
                                     matTooltipPosition="before"
-                                    (click)="status= 'OnHold'; selectedRecord = data; open(modal)"><i
-                                        class="bi bi-arrow-right-circle" style="font-size: x-large"></i></button></td>
+                                    (click)="status= 'OnHold'; selectedRecord = data; openDialog()">
+                                    <i class="bi bi-arrow-right-circle" style="font-size: x-large"></i>
+                                </button>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
-
             </div>
         </div>
         <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabEmployeesOnHold'}" id="tabEmployeesOnHold">
-
-            <div class="mt-2 bg-white tableContainer">
-
+            <div class="mt-2 bg-white">
                 <table>
                     <thead>
                         <th>Employee Name</th>
@@ -55,19 +50,20 @@
                         <tr *ngFor="let data of onHoldUsers">
                             <td>{{getUser(data?.user)}}</td>
                             <td>{{selectedPayroll?.date | date: 'mediumDate'}}</td>
-                            <td><button class="actions" mat-mini-fab matTooltip="UnHold Selected Employees"
+                            <td>
+                                <button class="actions" mat-mini-fab matTooltip="UnHold Selected Employees"
                                     matTooltipPosition="before"
-                                    (click)="status= 'Processed'; selectedRecord = data; open(modal)"><i
-                                        class="bi bi-arrow-right-circle" style="font-size: x-large"></i></button></td>
+                                    (click)="status= 'Processed'; selectedRecord = data; openDialog()">
+                                    <i class="bi bi-arrow-right-circle" style="font-size: x-large"></i>
+                                </button>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
-
             </div>
         </div>
         <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabProcessedEmployees'}" id="tabProcessedEmployees">
-            <div class="mt-2 bg-white tableContainer">
-
+            <div class="mt-2 bg-white">
                 <table>
                     <thead>
                         <th>Employee Name</th>
@@ -78,31 +74,25 @@
                         <tr *ngFor="let data of processedUsers">
                             <td>{{getUser(data?.user)}}</td>
                             <td>{{selectedPayroll?.date | date: 'mediumDate'}}</td>
-                            <td><button class="actions" mat-mini-fab matTooltip="Re-Run Selected Employee"
+                            <td>
+                                <button class="actions" mat-mini-fab matTooltip="Re-Run Selected Employee"
                                     matTooltipPosition="before"
-                                    (click)="status= 'Active';  selectedRecord = data; open(modal)"><i
-                                        class="bi bi-arrow-right-circle" style="font-size: x-large"></i></button></td>
+                                    (click)="status= 'Active';  selectedRecord = data; openDialog()">
+                                    <i class="bi bi-arrow-right-circle" style="font-size: x-large"></i>
+                                </button>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
-
             </div>
         </div>
     </div>
 </div>
 
-<ng-template #modal let-modal>
-    <div class="modal-header border-bottom justify-content-between d-flex mb-2 pt-0">
-        <div>
-            <h1 class="modal-title text-muted mb-0">Do you want to put Selected Employee {{status}}?</h1>
-        </div>
-        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
-                (click)="modal.close('Escape clicked')"></button>
-        </div>
-
-    </div>
-    <div class="d-flex justify-content-between">
-        <button mat-raised-button type="button" (click)="modal.close('Escape clicked')">No</button>
-        <button mat-raised-button (click)="onSubmission(modal)" type="submit" class="addBtn">Yes</button>
+<ng-template #modalTemplate>
+    <h1 mat-dialog-title>Do you want to put Selected Employee {{status}}?</h1>
+    <div mat-dialog-actions class="d-flex justify-content-between">
+        <button mat-button (click)="closeDialog()">No</button>
+        <button mat-raised-button color="primary" (click)="onSubmission()">Yes</button>
     </div>
 </ng-template>

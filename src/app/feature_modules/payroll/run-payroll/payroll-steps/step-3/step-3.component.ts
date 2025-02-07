@@ -1,7 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { forkJoin, map } from 'rxjs';
 import { CommonService } from 'src/app/_services/common.Service';
@@ -16,7 +15,6 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 })
 export class Step3Component {
   searchText: string = '';
-  closeResult: string = '';
   variablePayForm: FormGroup;
   @Input() selectedPayroll: any;
   selectedUserId: any;
@@ -25,11 +23,13 @@ export class Step3Component {
   varDeduction: any;
   years: number[] = [];
   selectedYear: number;
-  users: any;
-  changeMode: 'Add' | 'Update' = 'Add';
+  changeMode: 'Add' | 'Update' = 'Update';
   selectedRecord: any;
   payrollUser: any;
   salary: any;
+  allUsers: any;
+  payrollUsers: any;
+  @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
 
   months = [
     { name: 'January', value: 1 },
@@ -45,9 +45,10 @@ export class Step3Component {
     { name: 'November', value: 11 },
     { name: 'December', value: 12 }
   ];
+  selectedPayrollUser: string;
 
-  constructor(private modalService: NgbModal,
-    private payrollService: PayrollService,
+
+  constructor(private payrollService: PayrollService,
     private fb: FormBuilder,
     private toast: ToastrService,
     private commonService: CommonService,
@@ -66,7 +67,12 @@ export class Step3Component {
 
   ngOnInit() {
     this.generateYearList();
-    this.getAllUsers();
+    this.payrollService.allUsers.subscribe(res => {
+      this.allUsers = res;
+    });
+    this.payrollService.payrollUsers.subscribe(res => {
+      this.payrollUsers = res;
+    });
     this.getVariableDeductionAndAllowance();
     this.getVariablePayByPayroll();
   }
@@ -77,18 +83,7 @@ export class Step3Component {
     this.variablePayForm.value.year = currentYear;
   }
 
-  resetForm() {
-    this.variablePayForm.reset();
-    this.variablePayForm.patchValue({
-      month: this.selectedPayroll?.month,
-      year: this.selectedPayroll?.year,
-      variableDeduction: '',
-      variableAllowance: '',
-      amount: 0,
-    });
-  }
-
-  open(content: any) {
+  openDialog() {
     this.variablePayForm.patchValue({
       month: this.selectedPayroll?.month,
       year: this.selectedPayroll?.year
@@ -114,55 +109,40 @@ export class Step3Component {
       });
     }
 
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    this.dialog.open(this.dialogTemplate, {
+      width: '600px',
+      disableClose: true
     });
   }
 
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
+  closeDialog() {
+    this.changeMode = 'Update';
+    this.dialog.closeAll();
   }
 
   getSalarydetailsByUser() {
-    this.selectedUserId
-    this.userService.getSalaryByUserId(this.selectedUserId?.user).subscribe((res: any) => {
+    this.userService.getSalaryByUserId(this.selectedUserId).subscribe((res: any) => {
       this.salary = res.data[res.data.length - 1];
     })
   }
-
-  onUserSelectedFromChild(userId: string) {
-    this.selectedUserId = userId;
-    this.getSalarydetailsByUser();
-    this.getVariablePay();
+  onUserSelectedFromChild(userId: any) {
+    this.selectedUserId = userId.value.user;
+    this.selectedPayrollUser = userId.value._id;
+    if (this.changeMode === 'Add') { this.getSalarydetailsByUser(); }
+    if (this.changeMode === 'Update') { this.getVariablePay(); }
   }
 
   getVariablePay() {
-    this.payrollService.getVariablePay(this.selectedUserId?._id).subscribe((res: any) => {
+    this.payrollService.getVariablePay(this.selectedPayrollUser).subscribe((res: any) => {
       this.variablePay = res.data;
       const userRequests = this.variablePay.map((item: any) => {
-        return this.payrollService.getPayrollUserById(item.payrollUser).pipe(
-          map((userRes: any) => ({
-            ...item,
-            payrollUserDetails: this.getUser(userRes?.data.user)
-          }))
-        );
+        const payrollUser = this.payrollUsers?.find((user: any) => user._id === item.payrollUser);
+        return {
+          ...item,
+          payrollUserDetails: payrollUser ? this.getUser(payrollUser.user) : null
+        };
       });
-      forkJoin(userRequests).subscribe(
-        (results: any[]) => {
-          this.variablePay = results;
-        },
-        (error) => {
-          this.toast.error("Error fetching payroll user details:", error);
-        }
-      );
+      this.variablePay = userRequests
     },
       (error) => {
         this.toast.error("Error fetching attendance summary:", error);
@@ -174,21 +154,13 @@ export class Step3Component {
     this.payrollService.getVariablePayByPayroll(this.selectedPayroll?._id).subscribe((res: any) => {
       this.variablePay = res.data;
       const userRequests = this.variablePay.map((item: any) => {
-        return this.payrollService.getPayrollUserById(item.payrollUser).pipe(
-          map((userRes: any) => ({
-            ...item,
-            payrollUserDetails: this.getUser(userRes?.data.user)
-          }))
-        );
+        const payrollUser = this.payrollUsers?.find((user: any) => user._id === item.payrollUser);
+        return {
+          ...item,
+          payrollUserDetails: payrollUser ? this.getUser(payrollUser.user) : null
+        };
       });
-      forkJoin(userRequests).subscribe(
-        (results: any[]) => {
-          this.variablePay = results;
-        },
-        (error) => {
-          this.toast.error("Error fetching payroll user details:", error);
-        }
-      );
+      this.variablePay = userRequests
     },
       (error) => {
         this.toast.error("Error fetching attendance summary:", error);
@@ -212,16 +184,23 @@ export class Step3Component {
   }
 
   onSubmit() {
-    this.variablePayForm.value.payrollUser = this.selectedUserId._id;
-    this.variablePayForm.value.month = this.selectedPayroll.month;
-    this.variablePayForm.value.year = this.selectedPayroll.year;
+    this.variablePayForm.get('month').enable();
+    this.variablePayForm.get('year').enable();
+    this.variablePayForm.get('payrollUser').enable();
+    this.variablePayForm.patchValue({
+      payrollUser: this.selectedPayrollUser,
+      month: this.selectedPayroll.month,
+      year: this.selectedPayroll.year
+    });
+
     if (this.changeMode == 'Add') {
       this.payrollService.addVariablePay(this.variablePayForm.value).subscribe((res: any) => {
         this.variablePay = res.data;
         this.getVariablePay();
         this.variablePayForm.reset();
         this.toast.success('Variable Pay Added', 'Successfully!');
-        this.modalService.dismissAll();
+        this.changeMode = 'Update'
+        this.closeDialog();
       },
         err => {
           this.toast.error('Variable Pay can not be Added', 'Error!');
@@ -235,12 +214,14 @@ export class Step3Component {
         this.variablePayForm.reset();
         this.changeMode = 'Update';
         this.toast.success('Variable Pay Updated', 'Successfully!');
-        this.modalService.dismissAll();
+        this.closeDialog();
       },
         err => {
           this.toast.error('Variable Pay can not be Updated', 'Error!');
         });
     }
+    this.variablePayForm.get('month').disable();
+    this.variablePayForm.get('year').disable();
   }
 
   deleteTemplate(_id: string) {
@@ -266,12 +247,12 @@ export class Step3Component {
 
   getAllUsers() {
     this.commonService.populateUsers().subscribe((res: any) => {
-      this.users = res.data.data;
+      this.allUsers = res.data.data;
     })
   }
 
   getUser(employeeId: string) {
-    const matchingUser = this.users?.find(user => user?._id === employeeId);
+    const matchingUser = this.allUsers?.find(user => user?._id === employeeId);
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'N/A';
   }
 

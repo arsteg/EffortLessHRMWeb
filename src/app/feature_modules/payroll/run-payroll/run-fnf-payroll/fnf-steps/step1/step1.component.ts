@@ -22,8 +22,8 @@ export class FNFStep1Component implements OnInit {
   attendanceLOPUser: any;
   action: boolean = false;
   @Input() settledUsers: any[];
-  @Input() fnfPayrollRecord: any;
   @Input() isSteps: boolean;
+  @Input() selectedFnF: any;
 
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
 
@@ -48,7 +48,7 @@ export class FNFStep1Component implements OnInit {
   }
 
   ngOnInit(): void {
-    this.fetchAttendanceSummary(this.fnfPayrollRecord);
+    this.fetchAttendanceSummary(this.selectedFnF);
   }
 
   onUserChange(fnfUserId: string): void {
@@ -56,15 +56,15 @@ export class FNFStep1Component implements OnInit {
     if (this.action) {
       this.getProcessAttendanceLOPForPayrollUser();
     }
-    const fnfUser = this.fnfPayrollRecord;
+    const fnfUser = this.selectedFnF;
 
-    const matchedUser = this.fnfPayrollRecord.userList.find((user: any) => user.user === this.selectedUserId);
+    const matchedUser = this.selectedFnF.userList.find((user: any) => user.user === this.selectedUserId);
     const payrollFNFUserId = matchedUser ? matchedUser._id : null;
 
     this.payrollService.getFnFAttendanceSummaryByFnFUserId(payrollFNFUserId).subscribe((res: any) => {
       this.attendanceSummary.data = res.data;
       this.attendanceSummary.data.forEach((summary: any) => {
-        const user = this.settledUsers.find(user => user._id === fnfUser);
+        const user = this.settledUsers.find(user => user._id === fnfUserId);
         summary.userName = user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
       });
     });
@@ -144,7 +144,7 @@ export class FNFStep1Component implements OnInit {
 
   onSubmit(): void {
 
-    const matchedUser = this.fnfPayrollRecord.userList.find((user: any) => user.user === this.selectedUserId);
+    const matchedUser = this.selectedFnF.userList.find((user: any) => user.user === this.selectedUserId);
     const payrollFNFUserId = matchedUser ? matchedUser._id : null;
 
     this.attendanceSummaryForm.patchValue({
@@ -161,7 +161,7 @@ export class FNFStep1Component implements OnInit {
         this.payrollService.updateFnFAttendanceSummary(this.selectedAttendanceSummary._id, this.attendanceSummaryForm.value).subscribe(
           (res: any) => {
             this.toast.success('Attendance Summary updated successfully', 'Success');
-            this.fetchAttendanceSummary(this.fnfPayrollRecord);
+            this.fetchAttendanceSummary(this.selectedFnF);
             this.attendanceSummaryForm.reset({
               payrollFNFUser: '',
               totalDays: 0,
@@ -184,7 +184,7 @@ export class FNFStep1Component implements OnInit {
         this.payrollService.addFnFAttendanceSummary(this.attendanceSummaryForm.value).subscribe(
           (res: any) => {
             this.toast.success('Attendance Summary added successfully', 'Success');
-            this.fetchAttendanceSummary(this.fnfPayrollRecord);
+            this.fetchAttendanceSummary(this.selectedFnF);
             this.attendanceSummaryForm.reset({
               payrollFNFUser: '',
               totalDays: 0,
@@ -235,7 +235,7 @@ export class FNFStep1Component implements OnInit {
 
   deleteRecord(_id: string) {
     this.payrollService.deleteFnFAttendanceSummary(_id).subscribe((res: any) => {
-      this.fetchAttendanceSummary(this.fnfPayrollRecord);
+      this.fetchAttendanceSummary(this.selectedFnF);
       this.toast.success('Attendance Summary Deleted', 'Success');
     }, error => {
       this.toast.error('Failed to delete Attendance Summary', 'Error');
@@ -261,15 +261,12 @@ export class FNFStep1Component implements OnInit {
   fetchAttendanceSummary(fnfPayroll: any): void {
     this.payrollService.getFnFAttendanceSummary(fnfPayroll?._id).subscribe(
       (res: any) => {
-        this.attendanceSummary.data = res.data;
-
-        // Map the userName for each manual arrear
+        this.attendanceSummary.data = res.data;        
         this.attendanceSummary.data.forEach((item: any) => {
-          const matchedUser = this.fnfPayrollRecord.userList.find((user: any) => user._id === item.payrollFNFUser);
+          const matchedUser = this.selectedFnF.userList.find((user: any) => user._id === item.payrollFNFUser);
           item.userName = this.getMatchedSettledUser(matchedUser.user);
         });
-        console.log(this.attendanceSummary.data)
-        // Patch form in edit mode
+        
         if (this.isEdit && this.selectedAttendanceSummary) {
           this.attendanceSummaryForm.patchValue({
             payrollFNFUser: this.selectedAttendanceSummary.payrollFNFUser,
@@ -296,8 +293,8 @@ export class FNFStep1Component implements OnInit {
     let payload = {
       skip: '',
       next: '',
-      year: this.fnfPayrollRecord.year,
-      month: this.getMonthNumber(this.fnfPayrollRecord.month).toString()
+      year: this.selectedFnF.year,
+      month: this.getMonthNumber(this.selectedFnF.month).toString()
     }
 
     this.attendanceService.getProcessAttendanceLOPByMonth(payload).subscribe((res: any) => {
@@ -305,12 +302,12 @@ export class FNFStep1Component implements OnInit {
       const matchingUsers = this.attendanceLOPUser.filter((lop: any) => lop.user === this.selectedUserId?.user);
 
       const lopUserLength = matchingUsers.length;
-      const payableDays = this.getTotalDaysInMonth(payload.year, this.fnfPayrollRecord.month) - lopUserLength;
+      const payableDays = this.getTotalDaysInMonth(payload.year, this.selectedFnF.month) - lopUserLength;
 
       this.attendanceSummaryForm.patchValue({
         lopDays: lopUserLength,
         payableDays: payableDays,
-        totalDays: this.getTotalDaysInMonth(payload.year, this.fnfPayrollRecord.month)
+        totalDays: this.getTotalDaysInMonth(payload.year, this.selectedFnF.month)
       });
     })
   }

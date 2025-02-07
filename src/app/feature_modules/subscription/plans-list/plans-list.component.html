@@ -48,9 +48,9 @@
                 <mat-icon>content_copy</mat-icon>
                 <span>Copy Plan ID</span>
             </button>
-            <button mat-menu-item>
-                <mat-icon>loyalty</mat-icon>
-                <span>Subscriptions</span>
+            <button mat-menu-item color="warn" (click)="toggleActivePlan(element._id, element.IsActive)">
+                <mat-icon>{{element.IsActive?'visibility_off':'visibility'}}</mat-icon>
+                <span>{{element.IsActive?'Disable':'Enable'}} Plan</span>
             </button>
         </mat-menu>
         }

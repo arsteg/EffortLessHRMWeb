@@ -1,13 +1,11 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { forkJoin, map } from 'rxjs';
 import { CommonService } from 'src/app/_services/common.Service';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
-import { SelectedUser } from 'src/app/feature_modules/view-live-screen/view-live-screen/view-live-screen.component';
 
 @Component({
   selector: 'app-step-6',
@@ -16,17 +14,19 @@ import { SelectedUser } from 'src/app/feature_modules/view-live-screen/view-live
 })
 export class Step6Component {
   searchText: string = '';
-  closeResult: string = '';
   flexiBenefitsForm: FormGroup;
   flexiBenefits: any;
-  changeMode: 'Add' | 'Update' = 'Add';
-  users: any;
+  changeMode: 'Add' | 'Update' = 'Update';
+  allUsers: any;
   @Input() selectedPayroll: any;
   selectedUserId: any;
   selectedRecord: any;
+  payrollUsers: any;
   payrollUser: any;
+  selectedPayrollUser: any;
+  @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
 
-  constructor(private modalService: NgbModal,
+  constructor(
     private payrollService: PayrollService,
     private fb: FormBuilder,
     private commonService: CommonService,
@@ -37,102 +37,81 @@ export class Step6Component {
       PayrollUser: ['', Validators.required],
       TotalFlexiBenefitAmount: [0, Validators.required],
       TotalProfessionalTaxAmount: [0, Validators.required]
-    })
+    });
   }
 
   ngOnInit() {
-    this.getAllUsers();
+    this.payrollService.allUsers.subscribe(res => {
+      this.allUsers = res;
+    });
+    this.payrollService.payrollUsers.subscribe(res => {
+      this.payrollUsers = res;
+    });
     this.getFlexiBenefitsByPayroll();
   }
 
   onUserSelectedFromChild(user: any) {
-    this.selectedUserId = user;
-    this.getFlexiBenefitsProfessionalTax();
-  }
-
-  getAllUsers() {
-    this.commonService.populateUsers().subscribe((res: any) => {
-      this.users = res.data.data;
-    })
+    this.selectedUserId = user.value.user;
+    this.selectedPayrollUser = user.value._id;
+    if (this.changeMode === 'Add') { this.getFlexiBenefitsProfessionalTax(); }
   }
 
   getUser(employeeId: string) {
-    const matchingUser = this.users?.find(user => user._id === employeeId);
+    const matchingUser = this.allUsers?.find(user => user._id === employeeId);
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'N/A';
   }
 
   getFlexiBenefitsProfessionalTax() {
-    this.payrollService.getFlexiByUsers(this.selectedUserId?._id).subscribe((res: any) => {
+    this.payrollService.getFlexiByUsers(this.selectedPayrollUser).subscribe((res: any) => {
       this.flexiBenefits = res.data.records;
       const userRequests = this.flexiBenefits.map((item: any) => {
-        return this.payrollService.getPayrollUserById(item.PayrollUser).pipe(
-          map((userRes: any) => ({
-            ...item,
-            payrollUserDetails: this.getUser(userRes?.data.user)
-          }))
-        );
+        const payrollUser = this.payrollUsers?.find((user: any) => user._id === item.PayrollUser);
+        return {
+          ...item,
+          payrollUserDetails: payrollUser ? this.getUser(payrollUser.user) : null
+        };
       });
-      forkJoin(userRequests).subscribe(
-        (results: any[]) => {
-          this.flexiBenefits = results;
-        },
-        (error) => {
-          this.toast.error("Error fetching payroll user details:", error);
-        }
-      );
-    },
-      (error) => {
-        this.toast.error("Error fetching attendance summary:", error);
-      }
-    );
+      this.flexiBenefits = userRequests
+    })
   }
 
   getFlexiBenefitsByPayroll() {
     this.payrollService.getFlexiByPayroll(this.selectedPayroll?._id).subscribe((res: any) => {
       this.flexiBenefits = res.data;
       const userRequests = this.flexiBenefits.map((item: any) => {
-        return this.payrollService.getPayrollUserById(item.PayrollUser).pipe(
-          map((userRes: any) => ({
-            ...item,
-            payrollUserDetails: this.getUser(userRes?.data.user)
-          }))
-        );
+        const payrollUser = this.payrollUsers?.find((user: any) => user._id === item.PayrollUser);
+        return {
+          ...item,
+          payrollUserDetails: payrollUser ? this.getUser(payrollUser.user) : null
+        };
       });
-      forkJoin(userRequests).subscribe(
-        (results: any[]) => {
-          this.flexiBenefits = results;
-        },
-        (error) => {
-          this.toast.error("Error fetching payroll user details:", error);
-        }
-      );
-    },
-      (error) => {
-        this.toast.error("Error fetching attendance summary:", error);
-      })
+      this.flexiBenefits = userRequests;
+    });
   }
 
   onSubmission() {
-    this.flexiBenefitsForm.value.PayrollUser = this.selectedUserId._id;
+    this.flexiBenefitsForm.get('PayrollUser').enable();
+    this.flexiBenefitsForm.value.PayrollUser = this.selectedPayrollUser;
     if (this.changeMode == 'Add') {
       this.payrollService.addFlexi(this.flexiBenefitsForm.value).subscribe((res: any) => {
         this.getFlexiBenefitsProfessionalTax();
-        this.toast.success('Flexi Benefits and Professional Tax Created', 'Sccessfully!');
-        this.modalService.dismissAll();
+        this.toast.success('Flexi Benefits and Professional Tax Created', 'Successfully!');
+        this.closeDialog();
       },
-        (err) => { this.toast.error('Flexi Benefits and Professional Tax can not be Added', 'Error!') }
-      )
+        (err) => { this.toast.error('Flexi Benefits and Professional Tax can not be Added', 'Error!'); }
+      );
     }
     if (this.changeMode == 'Update') {
       this.payrollService.updateFlexi(this.selectedRecord._id, this.flexiBenefitsForm.value).subscribe((res: any) => {
         this.getFlexiBenefitsProfessionalTax();
         this.toast.success('Flexi Benefits and Professional Tax Updated', 'Successfully!');
-        this.modalService.dismissAll();
+        this.closeDialog();
       },
-        err => { this.toast.error('Flexi Benefits and Professional Tax can not be Updated', 'Error!') })
+        err => { this.toast.error('Flexi Benefits and Professional Tax can not be Updated', 'Error!'); });
     }
   }
-  open(content: any) {
+
+  openDialog() {
     if (this.changeMode == 'Update') {
       this.payrollService.getPayrollUserById(this.selectedRecord.PayrollUser).subscribe((res: any) => {
         this.payrollUser = res.data;
@@ -143,45 +122,27 @@ export class Step6Component {
           TotalProfessionalTaxAmount: this.selectedRecord?.TotalProfessionalTaxAmount
         });
         this.flexiBenefitsForm.get('PayrollUser').disable();
-      })
+      });
     }
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    this.dialog.open(this.dialogTemplate, {
+      width: '600px',
+      disableClose: true
     });
   }
 
-  reset() {
-    this.payrollService.getPayrollUserById(this.selectedRecord.PayrollUser).subscribe((res: any) => {
-      this.payrollUser = res.data;
-      const payrollUser = this.payrollUser?.user;
-      this.flexiBenefitsForm.patchValue({
-        PayrollUser: this.getUser(payrollUser),
-        TotalFlexiBenefitAmount: this.selectedRecord?.TotalFlexiBenefitAmount,
-        TotalProfessionalTaxAmount: this.selectedRecord?.TotalProfessionalTaxAmount
-      });
-      this.flexiBenefitsForm.get('PayrollUser').disable();
-    })
-  }
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
+  closeDialog() {
+    this.changeMode = 'Update';
+    this.dialog.closeAll();
   }
 
   deleteTemplate(_id: string) {
     this.payrollService.deleteFlexi(_id).subscribe((res: any) => {
       this.getFlexiBenefitsProfessionalTax();
-      this.toast.success('Successfully Deleted!!!', 'Flexi Benefits and Professional Tax')
+      this.toast.success('Successfully Deleted!!!', 'Flexi Benefits and Professional Tax');
     },
       (err) => {
-        this.toast.error('This Flexi Benefits and Professional Tax Can not be deleted!')
-      })
+        this.toast.error('This Flexi Benefits and Professional Tax Can not be deleted!');
+      });
   }
 
   deleteDialog(id: string): void {
