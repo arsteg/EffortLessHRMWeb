@@ -18,7 +18,7 @@ export class AddSalaryDetailsComponent {
   ctcTemplates: any;
   taxStatutoryForm: FormGroup;
   pfTemplates: any;
-  fixedAllowance: any;
+  allFixedAllowance: any;
   otherBenefits: any;
   employerContribution: any;
   fixedDeduction: any;
@@ -85,7 +85,6 @@ export class AddSalaryDetailsComponent {
     this.addVariableAllowance();
     this.addVariableDeduction();
     this.addPFCharge();
-    this.getPayrolls();
     this.getCTCTemplates();
     if (this.edit) {
       this.getSalaryDetailsById();
@@ -311,13 +310,13 @@ export class AddSalaryDetailsComponent {
   getCTCTemplateById(id: string): void {
     this.payrollService.getCTCTemplateById(id).subscribe(
       (ctcTemplate: any) => {
-        // CTC template fixed allowances
+
         const fixedAllowanceArray = this.salaryDetailsForm.get('salaryComponentFixedAllowance') as FormArray;
         fixedAllowanceArray.clear();
         ctcTemplate.data.ctcTemplateFixedAllowances.forEach((fixedAllowance: any) => {
           if (fixedAllowance.criteria == 'Amount') {
             const allowanceGroup = this.fb.group({
-              fixedAllowance: [fixedAllowance.fixedAllowance],
+              fixedAllowance: [fixedAllowance.fixedAllowance?.label],
               monthlyAmount: [fixedAllowance.value],
               yearlyAmount: [fixedAllowance.value * 12]
             });
@@ -327,65 +326,48 @@ export class AddSalaryDetailsComponent {
             const grossPay = this.salaryDetailsForm.get('Amount').value;
             const monthlyAmount = (fixedAllowance.value / 100) * grossPay;
             const allowanceGroup = this.fb.group({
-              fixedAllowance: [fixedAllowance.fixedAllowance],
+              fixedAllowance: [fixedAllowance.fixedAllowance?.label],
               monthlyAmount: [monthlyAmount],
               yearlyAmount: [monthlyAmount * 12]
             });
             fixedAllowanceArray.push(allowanceGroup);
           }
         });
-
+        this.salaryDetailsForm.setControl('salaryComponentFixedAllowance', fixedAllowanceArray);
+        
         // CTC template other benefits
         const otherBenefitsArray = this.salaryDetailsForm.get('salaryComponentOtherBenefits') as FormArray;
         otherBenefitsArray.clear();
 
         ctcTemplate.data.ctcTemplateOtherBenefitAllowances.forEach((otherBenefit: any) => {
-          if (otherBenefit.criteria == 'Amount') {
             const benefitGroup = this.fb.group({
-              otherBenefits: [otherBenefit.otherBenefit],  // Bind other benefit
-              monthlyAmount: [otherBenefit.value],
-              yearlyAmount: [otherBenefit.value * 12]
+              otherBenefits: [otherBenefit?.otherBenefit?.label],  // Bind other benefit
+              monthlyAmount: [otherBenefit?.value],
+              yearlyAmount: [otherBenefit?.value * 12]
             });
             otherBenefitsArray.push(benefitGroup);
-          }
-          if (otherBenefit.criteria == 'Percentage') {
-            const grossPay = this.salaryDetailsForm.get('Amount').value;
-            const monthlyAmount = (otherBenefit.value / 100) * grossPay;
-            const benefitGroup = this.fb.group({
-              otherBenefits: [otherBenefit.otherBenefit],
-              monthlyAmount: [monthlyAmount],
-              yearlyAmount: [monthlyAmount * 12]
-            });
-            otherBenefitsArray.push(benefitGroup);
-          }
           this.handleMonthlyAmountChanges();
+
         });
+        this.salaryDetailsForm.setControl('salaryComponentOtherBenefits', otherBenefitsArray);
 
         // CTC template employer contributions
         const employerContributionArray = this.salaryDetailsForm.get('salaryComponentEmployerContribution') as FormArray;
         employerContributionArray.clear();
-        ctcTemplate.data.ctcTemplateEmployerContributions.forEach((fixedContribution: any) => {
-          if (fixedContribution.criteria == 'Amount') {
-            const employerContributionGroup = this.fb.group({
-              employerContribution: [fixedContribution.fixedContribution],
-              monthlyAmount: [fixedContribution.value],
-              yearlyAmount: [fixedContribution.value * 12]
-            });
-            employerContributionArray.push(employerContributionGroup);
-          }
-          if (fixedContribution.criteria == 'Percentage') {
-            const grossPay = this.salaryDetailsForm.get('Amount').value;
-            const monthlyAmount = (fixedContribution.value / 100) * grossPay;
-            const employerContributionGroup = this.fb.group({
-              employerContribution: [fixedContribution.fixedContribution],
-              monthlyAmount: [monthlyAmount],
-              yearlyAmount: [monthlyAmount * 12]
-            });
-            employerContributionArray.push(employerContributionGroup);
-          }
 
+        ctcTemplate.data.ctcTemplateEmployerContributions.forEach((fixedContribution: any) => {
+          // if (fixedContribution.criteria == 'Amount') {
+            const employerContributionGroup = this.fb.group({
+              employerContribution: [fixedContribution?.fixedContribution?.label],
+              monthlyAmount: [fixedContribution?.value],
+              yearlyAmount: [fixedContribution?.value * 12]
+            });
+            employerContributionArray.push(employerContributionGroup);
           this.handleMonthlyAmountChanges();
         });
+
+        this.salaryDetailsForm.setControl('salaryComponentEmployerContribution', employerContributionArray);
+
 
         // CTC template fixed deductions
         const fixedDeductionArray = this.salaryDetailsForm.get('salaryComponentFixedDeduction') as FormArray;
@@ -393,7 +375,7 @@ export class AddSalaryDetailsComponent {
         ctcTemplate.data.ctcTemplateFixedDeductions.forEach((fixedDeduction: any) => {
           if (fixedDeduction.criteria == 'Amount') {
             const deductionGroup = this.fb.group({
-              fixedDeduction: [fixedDeduction.fixedDeduction],
+              fixedDeduction: [fixedDeduction?.fixedDeduction?.label],
               monthlyAmount: [fixedDeduction.value],
               yearlyAmount: [fixedDeduction.value * 12]
             });
@@ -403,21 +385,23 @@ export class AddSalaryDetailsComponent {
             const grossPay = this.salaryDetailsForm.get('Amount').value;
             const monthlyAmount = (fixedDeduction.value / 100) * grossPay;
             const deductionGroup = this.fb.group({
-              fixedDeduction: [fixedDeduction.fixedDeduction],
+              fixedDeduction: [fixedDeduction?.fixedDeduction?.label],
               monthlyAmount: [monthlyAmount],
               yearlyAmount: [monthlyAmount * 12]
             });
             fixedDeductionArray.push(deductionGroup);
           }
         });
+        this.salaryDetailsForm.setControl('salaryComponentFixedDeduction', fixedDeductionArray);
 
         // CTC template variable allowances
         const variableAllowanceArray = this.salaryDetailsForm.get('salaryComponentVariableAllowance') as FormArray;
         variableAllowanceArray.clear();
+
         ctcTemplate.data.ctcTemplateVariableAllowances.forEach((variableAllowance: any) => {
           if (variableAllowance.criteria == 'Amount') {
             const allowanceGroup = this.fb.group({
-              variableAllowance: [variableAllowance.variableAllowance],  // Bind variable allowance
+              variableAllowance: [variableAllowance.variableAllowance?.label],  // Bind variable allowance
               monthlyAmount: [variableAllowance.value],
               yearlyAmount: [variableAllowance.value * 12]
             });
@@ -427,21 +411,22 @@ export class AddSalaryDetailsComponent {
             const grossPay = this.salaryDetailsForm.get('Amount').value;
             const monthlyAmount = (variableAllowance.value / 100) * grossPay;
             const allowanceGroup = this.fb.group({
-              variableAllowance: [variableAllowance.variableAllowance],
+              variableAllowance: [variableAllowance.variableAllowance?.label],
               monthlyAmount: [monthlyAmount],
               yearlyAmount: [monthlyAmount * 12]
             });
             variableAllowanceArray.push(allowanceGroup);
           }
         });
+        this.salaryDetailsForm.setControl('salaryComponentVariableAllowance', variableAllowanceArray);
 
         // CTC template variable deductions
         const variableDeductionArray = this.salaryDetailsForm.get('salaryComponentVariableDeduction') as FormArray;
         variableDeductionArray.clear();
         ctcTemplate.data.ctcTemplateVariableDeductions.forEach((variableDeduction: any) => {
-         if(variableDeduction.criteria == 'Amount') {
+          if (variableDeduction.criteria == 'Amount') {
             const deductionGroup = this.fb.group({
-              variableDeduction: [variableDeduction.variableDeduction],
+              variableDeduction: [variableDeduction?.variableDeduction?.label],
               monthlyAmount: [variableDeduction.value],
               yearlyAmount: [variableDeduction.value * 12]
             });
@@ -451,7 +436,7 @@ export class AddSalaryDetailsComponent {
             const grossPay = this.salaryDetailsForm.get('Amount').value;
             const monthlyAmount = (variableDeduction.value / 100) * grossPay;
             const deductionGroup = this.fb.group({
-              variableDeduction: [variableDeduction.variableDeduction],
+              variableDeduction: [variableDeduction?.variableDeduction?.label],
               monthlyAmount: [monthlyAmount],
               yearlyAmount: [monthlyAmount * 12]
             });
@@ -463,37 +448,6 @@ export class AddSalaryDetailsComponent {
         this.toast.error('Error fetching CTC template:', 'Error');
       }
     );
-  }
-
-  getPayrolls() {
-    let payload = {
-      next: '',
-      skip: ''
-    };
-    this.payrollService.getPfTemplate(payload).subscribe((res: any) => {
-      this.pfTemplates = res.data;
-    });
-    this.payrollService.getFixedAllowance(payload).subscribe((res: any) => {
-      this.fixedAllowance = res.data;
-    });
-    this.payrollService.getOtherBenefits(payload).subscribe((res: any) => {
-      this.otherBenefits = res.data;
-    });
-    this.payrollService.getFixedContribution(payload).subscribe((res: any) => {
-      this.employerContribution = res.data;
-    });
-    this.payrollService.getFixedDeduction(payload).subscribe((res: any) => {
-      this.fixedDeduction = res.data;
-    });
-    this.payrollService.getVariableAllowance(payload).subscribe((res: any) => {
-      this.variableAllowance = res.data;
-    });
-    this.payrollService.getVariableDeduction(payload).subscribe((res: any) => {
-      this.variableDeduction = res.data;
-    });
-    this.payrollService.getAllPFCharges(payload).subscribe((res: any) => {
-      this.pfCharge = res.data;
-    });
   }
 
   getSalaryDetailsById() {
@@ -561,36 +515,6 @@ export class AddSalaryDetailsComponent {
         benefitGroup.patchValue(benefit);
       });
     });
-  }
-
-  getFixedAllowance(data: string) {
-    const matchingRecord = this.fixedAllowance?.find(rec => rec._id === data);
-    return matchingRecord?.label;
-  }
-
-  getOtherBenefits(data: string) {
-    const matchingRecord = this.otherBenefits?.find(rec => rec._id === data);
-    return matchingRecord?.label;
-  }
-
-  getEmployerContribution(data: string) {
-    const matchingRecord = this.employerContribution?.find(rec => rec._id === data);
-    return matchingRecord?.label;
-  }
-
-  getFixedDeduction(data: string) {
-    const matchingRecord = this.fixedDeduction?.find(rec => rec._id === data);
-    return matchingRecord?.label;
-  }
-
-  getVariableAllowance(data: string) {
-    const matchingRecord = this.variableAllowance?.find(rec => rec._id === data);
-    return matchingRecord?.label;
-  }
-
-  getVariableDeduction(data: string) {
-    const matchingRecord = this.variableDeduction?.find(rec => rec._id === data);
-    return matchingRecord?.label;
   }
 
   onCTCTemplateChange(value: string) {
