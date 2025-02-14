@@ -77,27 +77,29 @@ export class AddSalaryDetailsComponent {
 
   ngOnInit(): void {
     this.logUrlSegmentsForUser();
-    this.salaryDetailsForm.patchValue({ CTCTemplate: 'manual' });
-    this.addFixedAllowance();
-    this.addOtherBenefit();
-    this.addEmployerContribution();
-    this.addFixedDeduction();
-    this.addVariableAllowance();
-    this.addVariableDeduction();
-    this.addPFCharge();
-    this.getCTCTemplates();
     if (this.edit) {
       this.getSalaryDetailsById();
       this.disableFormControls(this.salaryDetailsForm);
     }
+    if (this.edit === false) {
+      this.salaryDetailsForm.patchValue({ CTCTemplate: 'manual' });
+      this.addFixedAllowance();
+      this.addOtherBenefit();
+      this.addEmployerContribution();
+      this.addFixedDeduction();
+      this.addVariableAllowance();
+      this.addVariableDeduction();
+      this.addPFCharge();
+      this.getCTCTemplates();
 
-    // Subscribe to changes in the Amount control
-    this.salaryDetailsForm.get('Amount').valueChanges.subscribe((amount) => {
-      const ctcTemplateId = this.salaryDetailsForm.get('CTCTemplate').value;
-      if (ctcTemplateId && ctcTemplateId !== 'manual') {
-        this.getCTCTemplateById(ctcTemplateId);
-      }
-    });
+      // Subscribe to changes in the Amount control
+      this.salaryDetailsForm.get('Amount').valueChanges.subscribe((amount) => {
+        const ctcTemplateId = this.salaryDetailsForm.get('CTCTemplate').value;
+        if (ctcTemplateId && ctcTemplateId !== 'manual') {
+          this.getCTCTemplateById(ctcTemplateId);
+        }
+      });
+    }
   }
 
   disableFormControls(formGroup: FormGroup | FormArray) {
@@ -198,7 +200,7 @@ export class AddSalaryDetailsComponent {
 
   addFixedAllowance(): void {
     const allowanceGroup = this.fb.group({
-      fixedAllowanceLabel:[''],
+      fixedAllowanceLabel: [''],
       fixedAllowance: ['', Validators.required],
       monthlyAmount: [0, Validators.required],
       yearlyAmount: [0, Validators.required],

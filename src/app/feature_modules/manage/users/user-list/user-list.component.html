@@ -19,6 +19,11 @@
 
             <div class="table-responsive px-2">
                 <table mat-table [dataSource]="usersList" >
+                    <ng-container matColumnDef="empCode">
+                        <th mat-header-cell *matHeaderCellDef> Emp&nbsp;Code </th>
+                        <td mat-cell *matCellDef="let data"> {{ data.appointment[0]?.empCode }} </td>
+                    </ng-container>
+
                     <ng-container matColumnDef="name">
                         <th mat-header-cell *matHeaderCellDef> Members </th>
                         <td mat-cell *matCellDef="let data">
@@ -64,7 +69,7 @@
 
                     <ng-container matColumnDef="actions">
                         <th mat-header-cell *matHeaderCellDef class="text-center"> Actions </th>
-                        <td mat-cell *matCellDef="let data" class="text-center">
+                        <td mat-cell *matCellDef="let data" class="d-flex justify-content-between">
                             <button class="actions" matTooltip="Settings" matTooltipPosition="before"
                                 (click)="toggleView(data);"><mat-icon>settings</mat-icon></button>
                             <button class="actions" title="Delete User" matTooltip="Delete"
@@ -74,8 +79,8 @@
                         </td>
                     </ng-container>
 
-                    <tr mat-header-row *matHeaderRowDef="['name', 'email', 'jobTitle', 'role', 'createdOn', 'status', 'actions']"></tr>
-                    <tr mat-row *matRowDef="let row; columns: ['name', 'email', 'jobTitle', 'role', 'createdOn', 'status', 'actions'];"></tr>
+                    <tr mat-header-row *matHeaderRowDef="['empCode', 'name', 'email', 'jobTitle', 'role', 'createdOn', 'status', 'actions']"></tr>
+                    <tr mat-row *matRowDef="let row; columns: ['empCode', 'name', 'email', 'jobTitle', 'role', 'createdOn', 'status', 'actions'];"></tr>
                 </table>
             </div>
         </div>

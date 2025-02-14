@@ -1,8 +1,3 @@
-/* .addForm {
-  overflow-y: auto;
-  overflow-x: hidden;
-  height: 50vh;
-} */
 .text-reset{
   position: fixed;
   border-radius: 100%;
@@ -13,4 +8,7 @@
   border: none;
   opacity: 0.8;
   background-color: #76bc21;
+}
+.mat-column-empCode{
+  border-right: 1px solid
 }
