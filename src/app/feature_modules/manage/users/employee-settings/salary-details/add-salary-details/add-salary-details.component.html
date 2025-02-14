@@ -217,8 +217,10 @@
                                         <mat-option *ngFor="let fa of allFixedAllowance"
                                             [value]="fa._id">{{fa?.fixedAllowance?.label}}</mat-option>
                                     </mat-select> -->
-                                    <input matInput type="text" formControlName="fixedAllowance">
-
+                                    <!-- <input matInput type="text" formControlName="fixedAllowance"> -->
+                                    <!-- <input type="hidden" formControlName="fixedAllowance">  Hidden field for _id -->
+                                    <input matInput type="text" formControlName="fixedAllowanceLabel" readonly> <!-- Show label -->
+                                  
                                 </mat-form-field>
                                 <mat-form-field appearance="outline" class="col-md-4 my-2 border-bottom">
                                     <mat-label>Monthly Amount</mat-label>
@@ -272,8 +274,8 @@
                                         <mat-option *ngFor="let ob of otherBenefits"
                                             [value]="ob._id">{{ob?.label}}</mat-option>
                                     </mat-select> -->
-                                    <input matInput type="text" formControlName="otherBenefits">
-
+                                    <!-- <input matInput type="hidden" formControlName="otherBenefits"> -->
+                                    <input matInput type="text" formControlName="otherBenefitsLabel" readonly>
                                 </mat-form-field>
 
                                 <mat-form-field appearance="outline" class="col-md-4 my-2 border-bottom">
@@ -329,8 +331,8 @@
                                         <mat-option *ngFor="let ec of employerContribution"
                                             [value]="ec._id">{{ec?.label}}</mat-option>
                                     </mat-select> -->
-                                    <input matInput type="text" formControlName="employerContribution">
-
+                                    <!-- <input matInput type="hidden" formControlName="employerContribution"> -->
+                                    <input matInput type="text" formControlName="employerContributionLabel" readonly>
                                 </mat-form-field>
                                 <mat-form-field appearance="outline" class="col-md-4 my-2 border-bottom">
                                     <mat-label>Monthly Amount</mat-label>
@@ -384,7 +386,8 @@
                                         <mat-option *ngFor="let fd of fixedDeduction"
                                             [value]="fd._id">{{fd?.label}}</mat-option>
                                     </mat-select> -->
-                                    <input matInput type="text" formControlName="fixedDeduction">
+                                    <input matInput type="text" formControlName="fixedDeductionLabel" readonly>
+                                    <!-- <input matInput type="hidden" formControlName="fixedDeduction"> -->
 
                                 </mat-form-field>
                                 <mat-form-field appearance="outline" class="col-md-4 my-2 border-bottom">
@@ -438,7 +441,9 @@
                                         <mat-option *ngFor="let va of variableAllowance"
                                             [value]="va._id">{{va?.label}}</mat-option>
                                     </mat-select> -->
-                                    <input matInput type="text" formControlName="variableAllowance">
+                                    <input matInput type="text" formControlName="variableAllowanceLabel" readonly>
+
+                                    <!-- <input matInput type="hidden" formControlName="variableAllowance"> -->
 
                                 </mat-form-field>
                                 <mat-form-field appearance="outline" class="col-md-4 my-2 border-bottom">
@@ -492,7 +497,8 @@
                                         <mat-option *ngFor="let va of variableDeduction"
                                             [value]="va._id">{{va?.label}}</mat-option>
                                     </mat-select> -->
-                                    <input matInput type="text" formControlName="variableDeduction">
+                                    <!-- <input matInput type="hidden" formControlName="variableDeduction"> -->
+                                    <input matInput type="text" formControlName="variableDeductionLabel" readonly>
 
                                 </mat-form-field>
                                 <mat-form-field appearance="outline" class="col-md-4 my-2 border-bottom">

@@ -29,6 +29,7 @@ export class PayrollService {
   selectedFnFPayroll: any = new BehaviorSubject('');
   payrollUsers: any = new BehaviorSubject('');
   allUsers: any = new BehaviorSubject('');
+  payslip: any = new BehaviorSubject('');
   
   constructor(private http: HttpClient) { }
   public getToken() {
@@ -643,6 +644,11 @@ export class PayrollService {
 
   generatedPayrollByPayroll(payroll: string): Observable<any> {
     var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/generatedPayroll-by-payroll/${payroll}`, this.httpOptions);
+    return response;
+  }
+
+  getAllGeneratedPayroll():Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/generatedPayroll-by-company`, {}, this.httpOptions);
     return response;
   }
 

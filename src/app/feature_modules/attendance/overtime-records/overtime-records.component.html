@@ -1,42 +1,41 @@
 <div class="mainContent pt-3">
-    <div class="container-fluid">
-        <div class="p-2 bg-white tableContainer">
-            <div class="d-flex justify-content-end align-items-baseline mb-3">
-                <div>
-                    <label for="monthSelect">Select Month: </label>
-                    <select id="monthSelect" [(ngModel)]="selectedMonth" (change)="onMonthChange($event)">
-                        <option *ngFor="let month of months" [value]="month.value">{{ month.name }}</option>
-                    </select>
-                </div>
+  <div class="container-fluid">
+    <div class="p-2 bg-white tableContainer">
+      <div class="d-flex justify-content-end align-items-baseline mb-3">
+        <mat-form-field appearance="outline" class="me-2">
+          <mat-label>Select Month</mat-label>
+          <mat-select [(ngModel)]="selectedMonth" (selectionChange)="onMonthChange($event)">
+            <mat-option *ngFor="let month of months" [value]="month.value">{{ month.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
 
-                <div class="form-group ms-2">
-                    <label for="year" class="pt-2 pe-3">Select Year</label>
-                    <select id="year" name="year" class="form-control" [(ngModel)]="selectedYear"
-                        (change)="onYearChange($event)">
-                        <option *ngFor="let year of years" [value]="year">{{ year }}</option>
-                    </select>
-                </div>
-            </div>
+        <mat-form-field appearance="outline">
+          <mat-label>Select Year</mat-label>
+          <mat-select [(ngModel)]="selectedYear" (selectionChange)="onYearChange($event)">
+            <mat-option *ngFor="let year of years" [value]="year">{{ year }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
 
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <th *ngIf="this.view == 'admin'">Employee</th>
-                        <th *ngFor="let date of currentMonthDates">{{ date | date: 'shortDate' }}</th>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let data of overtimeRecords">
-                            <td *ngIf="this.view == 'admin'">{{data?.User}}</td>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <th *ngIf="this.view == 'admin'">Employee</th>
+            <th *ngFor="let date of currentMonthDates">{{ date | date: 'shortDate' }}</th>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of overtimeRecords">
+              <td *ngIf="this.view == 'admin'">{{data?.User}}</td>
 
-                            <td *ngFor="let date of currentMonthDates; trackBy: trackByDate">
-                                <ng-container *ngIf="getOvertimeForDate(date, data.overtimeRecords) as overtimeRecord">
-                                    {{ overtimeRecord.overtimeValue }} Mins
-                                </ng-container>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+              <td *ngFor="let date of currentMonthDates; trackBy: trackByDate">
+                <ng-container *ngIf="getOvertimeForDate(date, data.overtimeRecords) as overtimeRecord">
+                  {{ overtimeRecord.overtimeValue }} Mins
+                </ng-container>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
+  </div>
 </div>

@@ -41,9 +41,9 @@ export class EmployeeProfileComponent {
       emergancyContactName: [''],
       emergancyContactNumber: [''],
       Gender: [''],
-      DOB: [],
+      DOB: [''],
       MaritalStatus: ['Unmarried'],
-      MarraigeAniversary: [],
+      MarraigeAniversary: [''],
       PassportDetails: [''],
       Pancard: [''],
       AadharNumber: [''],
@@ -88,10 +88,13 @@ export class EmployeeProfileComponent {
 
   onSubmit() {
     if (this.userForm.valid) {
-      this.userService.updateUser(this.selectedUser[0].id, this.userForm.value).subscribe(
+      const payload = this.userForm.getRawValue();
+      this.userService.updateUser(this.selectedUser[0].id, payload).subscribe(
         (res: any) => this.toast.success('User Updated Successfully'),
         (err) => { this.toast.error('User Update Failed') }
       );
+    } else {
+      this.toast.error('Please fill all required fields correctly.');
     }
   }
 

@@ -55,7 +55,7 @@ export class OvertimeRecordsComponent {
     return date;
   };
 
-  onMonthChange(event: Event) {
+  onMonthChange(event: any) {
     this.loadDatesForSelectedMonth();
     this.getOvertimeByMonth();
   }

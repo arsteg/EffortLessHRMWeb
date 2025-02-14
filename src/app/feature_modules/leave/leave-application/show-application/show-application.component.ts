@@ -3,6 +3,7 @@ import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LeaveService } from 'src/app/_services/leave.service';
 import { UpdateApplicationComponent } from '../update-application/update-application.component';
 import { MatDialog } from '@angular/material/dialog';
+import { MatTableDataSource } from '@angular/material/table';
 import { ExportService } from 'src/app/_services/export.service';
 import { ViewApplicationComponent } from '../view-application/view-application.component';
 import { CommonService } from 'src/app/_services/common.Service';
@@ -18,7 +19,7 @@ import { forkJoin, map, of } from 'rxjs';
   styleUrl: './show-application.component.css'
 })
 export class ShowApplicationComponent {
-  leaveApplication: any;
+  leaveApplication = new MatTableDataSource<any>();
   @Input() status: string;
   closeResult: string = '';
   searchText: string = '';
@@ -33,9 +34,10 @@ export class ShowApplicationComponent {
   public sortOrder: string = '';
   defaultCatSkip = "0";
   defaultCatNext = "100000";
-  totalRecords: number = 0
+  totalRecords: number = 0;
   recordsPerPage: number = 10;
   currentPage: number = 1;
+  displayedColumns: string[] = ['employeeName', 'leaveCategory', 'startDate', 'endDate', 'totalLeaveDays', 'status', 'actions'];
 
   constructor(private modalService: NgbModal,
     private leaveService: LeaveService,
@@ -47,27 +49,13 @@ export class ShowApplicationComponent {
     private datePipe: DatePipe
   ) { }
 
-  // ngOnInit() {
-  //   this.commonService.populateUsers().subscribe(result => {
-  //     this.allAssignee = result && result.data && result.data.data;
-  //   });
-  //   this.getLeaveApplication();
-  //   this.getleaveCatgeories();
-  // }
   ngOnInit() {
-    // Use forkJoin to call both API calls concurrently
     forkJoin({
       users: this.commonService.populateUsers(),
       leaveApplications: this.getLeaveApplication()
     }).subscribe(({ users, leaveApplications }) => {
-      // Handle the results of both API calls
       this.allAssignee = users && users.data && users.data.data;
-  
-      // leaveApplications is already handled within the getLeaveApplication method
-      // No need to do anything extra here unless you want to process the result further
     });
-  
-    // Call getleaveCatgeories separately if it doesn't depend on the above calls
     this.getleaveCatgeories();
   }
 
@@ -89,7 +77,6 @@ export class ShowApplicationComponent {
 
   openStatusModal(report: any, status: string): void {
     report.status = status;
-    console.log(report)
     this.leaveService.leave.next(report);
     const dialogRef = this.dialog.open(UpdateApplicationComponent, {
       width: '50%',
@@ -102,43 +89,34 @@ export class ShowApplicationComponent {
 
   refreshLeaveApplicationTable(data: any) {
     data.totalLeaveDays = this.calculateTotalLeaveDays(data);
-    this.leaveApplication.push(data);
+    this.leaveApplication.data.push(data);
+    this.leaveApplication._updateChangeSubscription();
   }
 
   exportToCsv() {
-    const dataToExport = this.leaveApplication
+    const dataToExport = this.leaveApplication.data;
     this.exportService.exportToCSV('Leave Application', 'Leave Application', dataToExport);
   }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    const dialogRef = this.dialog.open(content, {
+      width: '500px',
+      disableClose: true
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
     });
   }
 
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
-  }
-
   openSecondModal(selectedReport: any): void {
-    // const userName = this.getUser(selectedReport?.employee);
-    // selectedReport.employee = userName;
-    console.log(selectedReport)
     this.leaveService.leave.next(selectedReport);
     const dialogRef = this.dialog.open(ViewApplicationComponent, {
       width: '50%',
       data: { report: selectedReport }
     });
     dialogRef.afterClosed().subscribe(result => {
-    this.getLeaveApplication();
+      this.getLeaveApplication();
     });
   }
 
@@ -146,7 +124,7 @@ export class ShowApplicationComponent {
     const requestBody = { "skip": this.defaultCatSkip, "next": this.defaultCatNext };
     this.leaveService.getAllLeaveCategories(requestBody).subscribe((res: any) => {
       this.leaveCategories = res.data;
-    })
+    });
   }
 
   getUser(employeeId: string) {
@@ -162,7 +140,7 @@ export class ShowApplicationComponent {
   trackByLeaveId(index: number, leave: any): string {
     return leave._id;
   }
-  
+
   calculateTotalLeaveDays(leave) {
     const startDate = new Date(leave.startDate);
     const endDate = new Date(leave.endDate);
@@ -176,63 +154,21 @@ export class ShowApplicationComponent {
       }
     }
     return totalDays;
-  }  
+  }
 
-  // getLeaveApplication() {
-  //   const requestBody = {
-  //     "status": this.status,
-  //     "skip": ((this.currentPage - 1) * this.recordsPerPage).toString(),
-  //     "next": this.recordsPerPage.toString()
-  //   };
-  //   if (this.portalView === 'admin') {
-  //     this.leaveService.getLeaveApplication(requestBody).subscribe((res: any) => {
-  //       this.leaveApplication = res.data;
-  //       this.totalRecords = res.total;
-  //       this.leaveApplication = res.data.map((leave: any) => {
-  //         leave.totalLeaveDays = this.calculateTotalLeaveDays(leave);
-  //         return {
-  //           ...leave,
-  //           employeeName: this.getUser(leave.employee),
-  //           startDate: this.datePipe.transform(leave.startDate, 'MMM d, yyyy'),
-  //           endDate: this.datePipe.transform(leave.endDate, 'MMM d, yyyy')
-  //         };
-  //       });
-  //     });
-  //   }
-
-  //   else if (this.portalView === 'user') {
-  //     const employeeId = this.currentUser.id;
-  //     this.leaveService.getLeaveApplicationbyUser(requestBody, employeeId).subscribe((res: any) => {
-  //       this.leaveApplication = res.data.filter(leave => leave.status === this.status);
-  //       this.leaveApplication.forEach(leave => {
-  //         leave.totalLeaveDays = this.calculateTotalLeaveDays(leave);
-  //       });
-  //     });
-  //   }
-
-  //   else if (this.tab === 5) {
-  //     this.leaveService.getLeaveApplicationByTeam().subscribe((res: any) => {
-  //       this.leaveApplication = res.data.filter(leave => leave.status === this.status);
-  //       this.totalLeaveDays = 0;
-  //       this.leaveApplication.forEach(leave => {
-  //         leave.totalLeaveDays = this.calculateTotalLeaveDays(leave);
-  //       });
-  //     });
-  //   }
-  // }
   getLeaveApplication() {
     const requestBody = {
       status: this.status,
       skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
       next: this.recordsPerPage.toString()
     };
-  
+
     if (this.portalView === 'admin') {
       return this.leaveService.getLeaveApplication(requestBody).pipe(
         map((res: any) => {
-          this.leaveApplication = res.data;
+          this.leaveApplication.data = res.data;
           this.totalRecords = res.total;
-          this.leaveApplication = res.data.map((leave: any) => {
+          this.leaveApplication.data = res.data.map((leave: any) => {
             leave.totalLeaveDays = this.calculateTotalLeaveDays(leave);
             return {
               ...leave,
@@ -241,47 +177,47 @@ export class ShowApplicationComponent {
               endDate: this.datePipe.transform(leave.endDate, 'MMM d, yyyy')
             };
           });
-          return res; // Return the result for forkJoin
+          return res;
         })
       );
     } else if (this.portalView === 'user') {
       const employeeId = this.currentUser.id;
       return this.leaveService.getLeaveApplicationbyUser(requestBody, employeeId).pipe(
         map((res: any) => {
-          this.leaveApplication = res.data.filter((leave: any) => leave.status === this.status);
-          this.leaveApplication.forEach((leave: any) => {
+          this.leaveApplication.data = res.data.filter((leave: any) => leave.status === this.status);
+          this.leaveApplication.data.forEach((leave: any) => {
             leave.totalLeaveDays = this.calculateTotalLeaveDays(leave);
           });
-          return res; // Return the result for forkJoin
+          return res;
         })
       );
     } else if (this.tab === 5) {
       return this.leaveService.getLeaveApplicationByTeam().pipe(
         map((res: any) => {
-          this.leaveApplication = res.data.filter((leave: any) => leave.status === this.status);
+          this.leaveApplication.data = res.data.filter((leave: any) => leave.status === this.status);
           this.totalLeaveDays = 0;
-          this.leaveApplication.forEach((leave: any) => {
+          this.leaveApplication.data.forEach((leave: any) => {
             leave.totalLeaveDays = this.calculateTotalLeaveDays(leave);
           });
-          return res; // Return the result for forkJoin
+          return res;
         })
       );
     }
-  
-    // Return an empty observable if none of the conditions match
+
     return of(null);
   }
+
   deleteLeaveApplication(_id: string) {
     this.leaveService.deleteLeaveApplication(_id).subscribe((res: any) => {
-      const index = this.leaveApplication.findIndex(temp => temp._id === _id);
+      const index = this.leaveApplication.data.findIndex(temp => temp._id === _id);
       if (index !== -1) {
-        this.leaveApplication.splice(index, 1);
+        this.leaveApplication.data.splice(index, 1);
+        this.leaveApplication._updateChangeSubscription();
       }
-      this.toast.success('Successfully Deleted!!!', 'Leave Application')
+      this.toast.success('Successfully Deleted!!!', 'Leave Application');
     }, (err) => {
-      this.toast.error('Leave Application can not be deleted'
-        , 'Error')
-    })
+      this.toast.error('Leave Application can not be deleted', 'Error');
+    });
   }
 
   deleteDialog(id: string): void {
