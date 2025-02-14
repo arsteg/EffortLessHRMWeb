@@ -92,7 +92,7 @@ export class Step5Component {
   onUserSelectedFromChild(user: any) {
     this.selectedUserId = user.value.user;
     this.selectedPayrollUser = user?.value?._id;
-    if (this.changeMode === 'Add') { this.getArrears(); }
+    if (this.changeMode != 'Add') { this.getArrears(); }
   }
 
   getUser(employeeId: string) {

@@ -1,15 +1,17 @@
 <div class="payslip-detail">
-    <button class="backBtn" mat-raised-button (click)="close.emit()">Back</button>
-    <h2>Payslip Details</h2>
-
-    <div class="container bg-white py-5 px-4">
+    <div class="d-flex justify-content-between">
+        <button class="backBtn" mat-raised-button (click)="close.emit()">Back</button>
+        <h2>Generated Salary Slip</h2>
+        <button color="primary" mat-raised-button (click)="downloadPDF()">Download</button>
+    </div>
+    <div id="payslipContainer" #payslipContainer class="container bg-white py-5 px-4">
         <div class="d-flex justify-content-between align-items-center mb-5">
             <span>
                 <img class="w-50" src="assets/images/company-logo.jpg" alt="">
             </span>
 
             <div class="">
-                <label for="company-name" class="fw-bold">Company Name*</label><br>
+                <label for="company-name" class="fw-bold">{{getCompanyNameFromCookies()}}</label><br>
                 <label for="">Company Address</label>
             </div>
         </div>
@@ -48,16 +50,20 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Basic Salary</td>
-                            <td>$2000</td>
+                            <td>Fixed Allowance + Basic Salary</td>
+                            <td>{{payslip?.totalFixedAllowance}}</td>
                         </tr>
                         <tr>
-                            <td>HRA</td>
-                            <td>$500</td>
+                            <td>Overtime</td>
+                            <td>{{payslip?.totalOvertime}}</td>
                         </tr>
                         <tr>
-                            <td>Conveyance</td>
-                            <td>$200</td>
+                            <td>Flexi Benefits</td>
+                            <td>{{payslip?.totalFlexiBenefits}}</td>
+                        </tr>
+                        <tr>
+                            <td>Other benefits</td>
+                            <td>{{payslip?.totalOtherBenefit}}</td>
                         </tr>
                         <!-- Add more earnings as needed -->
                     </tbody>
@@ -73,16 +79,16 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>PF</td>
-                            <td>00</td>
-                        </tr>
-                        <tr>
-                            <td>ESIC</td>
-                            <td>00</td>
+                            <td>Fixed Deductions</td>
+                            <td>{{payslip?.totalFixedDeduction}}</td>
                         </tr>
                         <tr>
                             <td>Professional Tax</td>
-                            <td>00</td>
+                            <td>{{payslip?.totalPfTax}}</td>
+                        </tr>
+                        <tr>
+                            <td>Income Tax</td>
+                            <td>{{payslip?.totalIncomeTax}}</td>
                         </tr>
                         <!-- Add more deductions as needed -->
                     </tbody>
@@ -92,19 +98,15 @@
 
         <div class="row mb-4">
             <div class="col-6">
-                <h3 class="mb-0">Total Earnings</h3>
-                <p>00</p>
-            </div>
-            <div class="col-6">
-                <h3 class="mb-0">Total Deductions</h3>
-                <p>00</p>
+                <h3 class="mb-0">Loan or Advances</h3>
+                <p>{{payslip?.totalLoanAdvance}}</p>
             </div>
         </div>
 
-        <div class="row mb-4">
+        <div class="row mb-4 border-top">
             <div class="col-12">
-                <h3 class="mb-0">Net Pay</h3>
-                <p>00</p>
+                <h3 class="mb-0">Total Pay calculated by LOP + Overtime: <span>{{totalPayWithOvertime}}</span>
+                </h3>
             </div>
         </div>
 

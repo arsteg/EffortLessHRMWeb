@@ -71,9 +71,9 @@ export class PayrollHistoryComponent {
   }
 
   openSteps() {
-    this.payrollService.getPayrollUsers({skip: '', next: '', payroll: this.selectedPayroll?._id}).subscribe((res: any) => {
-      this.payrollService?.payrollUsers.next(res.data);
-    });
+    // this.payrollService.getPayrollUsers({skip: '', next: '', payroll: this.selectedPayroll?._id}).subscribe((res: any) => {
+    //   this.payrollService?.payrollUsers.next(res.data);
+    // });
     this.isAllEmployees = false;
     this.changeView.emit();
   }
@@ -111,6 +111,7 @@ export class PayrollHistoryComponent {
 
         this.payrollService.getPayrollUsers(payrollUsersPayload).subscribe((payrollUsersRes: any) => {
           const users = payrollUsersRes.data;
+          this.payrollService?.payrollUsers.next(users);
           this.payrollUsers = users;
           const activeCount = users.filter(user => user.status === 'Active').length;
           const onHoldCount = users.filter(user => user.status === 'OnHold').length;
