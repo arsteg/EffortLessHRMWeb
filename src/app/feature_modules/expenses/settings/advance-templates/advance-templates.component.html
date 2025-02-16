@@ -1,173 +1,149 @@
 <div class="mainContent">
-  <div class="py-3 bg-white tableContainer">
-    <div class="d-flex justify-content-between align-items-start mb-2 px-3">
-      <mat-form-field appearance="outline">
-        <mat-label>Search</mat-label>
-        <input matInput (keyup)="applyFilter($event)" placeholder="Search...">
-        <mat-icon matSuffix>search</mat-icon>
-      </mat-form-field>
-      <button mat-raised-button color="accent" class="rounded-pill" (click)="isEdit = false; clearselectedRequest(); open(addModal)">
-        <mat-icon>add</mat-icon>Add New
-      </button>
+    <div class="py-3 bg-white tableContainer">
+        <div class="d-flex justify-content-between align-items-start mb-2 px-3">
+            <mat-form-field appearance="outline">
+                <mat-label>Search</mat-label>
+                <input matInput (keyup)="applyFilter($event)" placeholder="Search...">
+                <mat-icon matSuffix>search</mat-icon>
+            </mat-form-field>
+            <button mat-raised-button color="accent" class="rounded-pill"
+                (click)="isEdit = false; clearselectedRequest(); open(addModal)">
+                <mat-icon>add</mat-icon>Add New
+            </button>
+        </div>
+        <table mat-table [dataSource]="dataSource" matSort>
+            <ng-container matColumnDef="policyLabel">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Advance Template Name</th>
+                <td mat-cell *matCellDef="let advance">{{advance?.policyLabel}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="advanceCategories">
+                <th mat-header-cell *matHeaderCellDef>Number of Advance Categories</th>
+                <td mat-cell *matCellDef="let advance">{{advance?.advanceCategories?.length}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef>Actions</th>
+                <td mat-cell *matCellDef="let advance">
+                    <button mat-icon-button [matMenuTriggerFor]="menu">
+                        <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu">
+                        <button mat-menu-item
+                            (click)="isEdit = true; selectedTemplate= advance; editadvanceCategory(); open(addModal);">
+                            <mat-icon>edit</mat-icon>
+                            <span>Edit</span>
+                        </button>
+                        <button mat-menu-item (click)="deleteAdvancecate(advance?._id)">
+                            <mat-icon>delete</mat-icon>
+                            <span>Delete</span>
+                        </button>
+                    </mat-menu>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+        <mat-paginator [length]="totalRecords" [pageSize]="recordsPerPage" [pageSizeOptions]="[5, 10, 25, 50, 100]"
+            (page)="onPageChange($event)" showFirstLastButtons></mat-paginator>
     </div>
-    <table mat-table [dataSource]="dataSource" matSort>
-      <ng-container matColumnDef="policyLabel">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Advance Template Name</th>
-        <td mat-cell *matCellDef="let advance">{{advance?.policyLabel}}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="advanceCategories">
-        <th mat-header-cell *matHeaderCellDef>Number of Advance Categories</th>
-        <td mat-cell *matCellDef="let advance">{{advance?.advanceCategories?.length}}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>Actions</th>
-        <td mat-cell *matCellDef="let advance">
-          <button mat-icon-button [matMenuTriggerFor]="menu">
-            <mat-icon>more_vert</mat-icon>
-          </button>
-          <mat-menu #menu="matMenu">
-            <button mat-menu-item (click)="isEdit = true; selectedTemplate= advance; editadvanceCategory(); open(addModal);">
-              <mat-icon>edit</mat-icon>
-              <span>Edit</span>
-            </button>
-            <button mat-menu-item (click)="deleteAdvancecate(advance?._id)">
-              <mat-icon>delete</mat-icon>
-              <span>Delete</span>
-            </button>
-          </mat-menu>
-        </td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
-    <mat-paginator [length]="totalRecords" [pageSize]="recordsPerPage" [pageSizeOptions]="[5, 10, 25, 50, 100]" (page)="onPageChange($event)" showFirstLastButtons></mat-paginator>
-  </div>
 </div>
 
 <!-- Add/Update category -->
 
 <ng-template #addModal let-modal>
-    <div class="modal-header border-bottom mb-2 pt-0 d-flex justify-content-between">
-        <div>
-            <h1 class="modal-title text-muted mb-0">{{isEdit? 'Update': 'Add'}} Advance Template</h1>
-        </div>
-        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
-                (click)="modal.close('Escape clicked')"></button>
-        </div>
-    </div>
 
-    <form action="" [formGroup]="addAdvanceTempForm" (ngSubmit)="addAdvanceTemplate()">
-        <div class="form-group">
-            <label for="">Please provide a label for this Advance Template <span class="text-danger">*</span></label>
-            <input type="text" class="form-control w-100" placeholder="Add Custom Label" formControlName="policyLabel">
-            <div *ngIf="addAdvanceTempForm.get('policyLabel').invalid && addAdvanceTempForm.get('policyLabel').touched"
-                class="text-danger error">
-                Please Add Advance Category!
-            </div>
-        </div>
+    <h1 mat-dialog-title>{{isEdit? 'Update': 'Add'}} Advance Template</h1>
+    <div mat-dialog-content>
+        <form action="" [formGroup]="addAdvanceTempForm" (ngSubmit)="addAdvanceTemplate()">
 
-        <div class="mt-2">
-            <mat-form-field appearance="outline" class="w-100">
-                <mat-label>What expense categories are applicable in this expense template? <span
-                        class="text-danger">*</span></mat-label>
-                <mat-select multiple formControlName="advanceCategories">
+            <mat-form-field class="w-100">
+                <mat-label>Advance Template Label</mat-label>
+                <input type="text" matInput placeholder="Add Custom Label" formControlName="policyLabel" required>
+                <mat-error
+                    *ngIf="addAdvanceTempForm.get('policyLabel').invalid && addAdvanceTempForm.get('policyLabel').touched">
+                    Please add label for advance template
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="w-100">
+                <mat-label>What expense categories are applicable in this expense template?</mat-label>
+                <mat-select multiple formControlName="advanceCategories" required>
                     <mat-option [value]="advanceCategory?._id"
                         *ngFor="let advanceCategory of advanceCategoriesall; let i = index">
                         {{advanceCategory.label}}
                     </mat-option>
                 </mat-select>
+                <mat-error
+                    *ngIf="addAdvanceTempForm.get('advanceCategories').invalid && addAdvanceTempForm.get('advanceCategories').touched">
+                    Please select expense categories
+                </mat-error>
             </mat-form-field>
-            <div *ngIf="addAdvanceTempForm.get('advanceCategories').invalid && addAdvanceTempForm.get('advanceCategories').touched"
-                class="text-danger error">
-                Please Add Advance Category!
+
+            <div class="mt-2">
+                <mat-label>How many levels of approvals you want to add?</mat-label>
+                <br>
+                <mat-radio-group formControlName="approvalLevel" required>
+                    <mat-radio-button value="1">1 Level</mat-radio-button>
+                    <mat-radio-button value="2">2 Level</mat-radio-button>
+                </mat-radio-group>
+                <mat-error *ngIf="addAdvanceTempForm.get('approvalLevel').invalid && addAdvanceTempForm.get('approvalLevel').touched">
+                    Please select approval level
+                </mat-error>
             </div>
-        </div>
 
-        <div class="mt-2">
-            <div class="form-group">
-                <label for="">How many levels of approvals you want to add? <span class="text-danger">*</span></label>
-                <div class="d-flex">
-
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" id="level" formControlName="approvalLevel"
-                            value="1" required>
-                        <label class="form-check-label" for="level">
-                            1 Level
-                        </label>
-                    </div>
-                    <div class="form-check ms-4">
-                        <input class="form-check-input" type="radio" id="level2" formControlName="approvalLevel"
-                            required value="2">
-                        <label class="form-check-label" for="level2">
-                            2 Level
-                        </label>
-                    </div>
-                </div>
-                <div *ngIf="addAdvanceTempForm.get('approvalLevel').invalid && addAdvanceTempForm.get('approvalLevel').touched"
-                    class="text-danger error">
-                    Please Select Approval Type!
-                </div>
+            <div class="mt-2">
+                <mat-label>How would you like to add approvers?</mat-label>
+                <br>
+                <mat-radio-group formControlName="approvalType" required>
+                    <mat-radio-button value="template-wise">Template Wise</mat-radio-button>
+                    <mat-radio-button value="employee-wise">Employee Wise</mat-radio-button>
+                </mat-radio-group>
+                <mat-error *ngIf="addAdvanceTempForm.get('approvalType').invalid && addAdvanceTempForm.get('approvalType').touched">
+                    Please select approval type
+                </mat-error>
             </div>
-        </div>
 
-        <div class="mt-2">
-            <div class="form-group">
-                <label for="">How would you like to add approvers? <span class="text-danger">*</span></label>
-                <div class="d-flex">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" id="template-wise" formControlName="approvalType"
-                            required value="template-wise">
-                        <label class="form-check-label" for="template-wise">
-                            Template Wise
-                        </label>
-                    </div>
-                    <div class="form-check ms-4">
-                        <input class="form-check-input" type="radio" id="employee-wise" formControlName="approvalType"
-                            required value="employee-wise">
-                        <label class="form-check-label" for="employee-wise">
-                            Employee Wise
-                        </label>
-                    </div>
+            <div class="row mt-2" *ngIf="addAdvanceTempForm.get('approvalType').value === 'template-wise'">
+                <div class="col-md-6">
+                    <mat-form-field class="w-100">
+                        <mat-label>First Approver</mat-label>
+                        <mat-select formControlName="firstApprovalEmployee" required>
+                            <mat-option [value]="user?.id" *ngFor="let user of users; let i = index">{{user?.firstName |
+                                titlecase}} {{user.lastName | titlecase}}</mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="addAdvanceTempForm.get('firstApprovalEmployee').invalid && addAdvanceTempForm.get('firstApprovalEmployee').touched">
+                            Please select first approver
+                        </mat-error>
+                    </mat-form-field>
                 </div>
-                <div *ngIf="addAdvanceTempForm.get('approvalType').invalid && addAdvanceTempForm.get('approvalType').touched"
-                    class="text-danger error">
-                    Please Select Approval Type!
+                <div class="col-md-6" *ngIf="addAdvanceTempForm.get('approvalLevel').value === '2'">
+                    <mat-form-field class="w-100">
+                        <mat-label>Second Approver</mat-label>
+                        <mat-select formControlName="secondApprovalEmployee" required>
+                            <mat-option [value]="user?.id" *ngFor="let user of users; let i = index">{{user?.firstName |
+                                titlecase}} {{user.lastName | titlecase}}</mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="addAdvanceTempForm.get('secondApprovalEmployee').invalid && addAdvanceTempForm.get('secondApprovalEmployee').touched">
+                            Please select second approver
+                        </mat-error>
+                    </mat-form-field>
                 </div>
             </div>
-        </div>
-        <div class="row mt-2" *ngIf="addAdvanceTempForm.get('approvalType').value === 'template-wise'">
-            <div class="col-md-6">
-                <label for="firstApprovalEmployee">Please Select An Employee For First Approver? <span
-                        class="text-danger">*</span></label>
-                <select name="" id="firstApprovalEmployee" formControlName="firstApprovalEmployee" required
-                    class="ms-2 form-control">
-                    <option [disabled] value="">Select First Approval</option>
-                    <option [value]="user?.id" *ngFor="let user of users; let i = index">{{user?.firstName |
-                        titlecase}} {{user.lastName | titlecase}}</option>
 
-                </select>
+            <div class="mt-2">
+                <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
+                    <div>
+                        <button mat-raised-button type="button" (click)="dialogRef.close()">Cancel</button>
+                        <button mat-stroked-button type="button" (click)="editadvanceCategory()">Reset</button>
+                    </div>
+                    <button mat-raised-button class="addBtn" type="submit"
+                        [disabled]="!addAdvanceTempForm.valid">{{isEdit?
+                        'Update': 'Add'}}</button>
+                </div>
             </div>
-            <div class="col-md-6" *ngIf="addAdvanceTempForm.get('approvalLevel').value === '2'">
-                <label for="secondApprovalEmployee">Please Select An Employee For Second Approver? <span
-                        class="text-danger">*</span></label>
-                <select name="" id="secondApprovalEmployee" formControlName="secondApprovalEmployee" required
-                    class="ms-2 form-control">
-                    <option [disabled] value="">Select Second Approval</option>
-                    <option [value]="user?.id" *ngFor="let user of users; let i = index">{{user?.firstName |
-                        titlecase}} {{user.lastName | titlecase}}</option>
-                </select>
-            </div>
-        </div>
+        </form>
+    </div>
 
-        <div class="mt-2">
-            <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
-                <button mat-raised-button type="button" (click)="editadvanceCategory()">Cancel</button>
-                <button mat-raised-button class="addBtn" type="submit" [disabled]="!addAdvanceTempForm.valid">{{isEdit?
-                    'Update': 'Add'}}</button>
-            </div>
-        </div>
-    </form>
 </ng-template>

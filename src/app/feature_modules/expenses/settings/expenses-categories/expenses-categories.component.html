@@ -27,7 +27,8 @@
                         <mat-icon>more_vert</mat-icon>
                     </button>
                     <mat-menu #menu="matMenu">
-                        <button mat-menu-item (click)="this.selectedCategory= category ; editCategory(); open(addModal);">
+                        <button mat-menu-item
+                            (click)="this.selectedCategory= category ; editCategory(); open(addModal);">
                             <mat-icon>edit</mat-icon>
                             <span>Edit</span>
                         </button>
@@ -48,97 +49,94 @@
 </div>
 
 <!-- Add/Update category -->
-<ng-template #addModal let-modal>
-    <div class="modal-header border-bottom mb-2 pt-0 d-flex justify-content-between">
-        <div>
-            <h1 class="modal-title text-muted mb-0">{{isEdit? 'Update': 'Add'}} Expense Category</h1>
-        </div>
-        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
-                (click)="modal.close('Escape clicked')"></button>
-        </div>
-    </div>
+<ng-template #addModal>
+    <h1 mat-dialog-title>{{isEdit? 'Update': 'Add'}} Expense Category</h1>
+    <div mat-dialog-content>
+        <form [formGroup]="addCategoryForm" (ngSubmit)="isEdit ? updateExpenseCategory() :  addExpenseCategory()">
+            <mat-form-field class="w-100">
+                <mat-label>Choose the type of expense</mat-label>
+                <mat-select formControlName="type" required name="expenseType">
+                    <mat-option value="perDay">Per Day</mat-option>
+                    <mat-option value="time">Time</mat-option>
+                    <mat-option value="distance">Distance</mat-option>
+                    <mat-option value="dateRange">Date Range</mat-option>
+                    <mat-option value="other">Other</mat-option>
+                </mat-select>
+                <mat-error *ngIf="addCategoryForm.get('type').invalid && addCategoryForm.get('type').touched">
+                    Please choose a type of expense category
+                </mat-error>
+            </mat-form-field>
 
-    <form action="" [formGroup]="addCategoryForm" (ngSubmit)="isEdit ? updateExpenseCategory() :  addExpenseCategory()">
-        <div class="form-group">
-            <label for="">Please choose the type of expense <span class="text-danger">*</span></label>
-            <select formControlName="type" required name="expenseType" class="">
-                <option value="perDay">Per Day</option>
-                <option value="time">Time</option>
-                <option value="distance">Distance</option>
-                <option value="dateRange">Date Range</option>
-                <option value="other">Other</option>
-            </select>
-            <div *ngIf="addCategoryForm.get('type').invalid && addCategoryForm.get('type').touched"
-                class="text-danger error">
-                Please Select a Type of Category!
-            </div>
-        </div>
-        <div class="mt-2 form-group">
-            <label for="">Please provide a label for this Expense <span class="text-danger">*</span></label>
-            <input type="text" class="input form-control" formControlName="label" required
-                placeholder="Enter Custom Label">
-            <div *ngIf="addCategoryForm.get('label').invalid && addCategoryForm.get('label').touched"
-                class="text-danger error">
-                Please Enter Label of Category!
-            </div>
-        </div>
+            <mat-form-field class="w-100">
+                <mat-label>Enter a label for this expense</mat-label>
+                <input matInput formControlName="label" required placeholder="Enter Custom Label">
+                <mat-error *ngIf="addCategoryForm.get('label').invalid && addCategoryForm.get('label').touched">
+                    Please enter label of expense category
+                </mat-error>
+            </mat-form-field>
 
-        <div class="mt-2">
-            <div class="d-flex align-items-center">
-                <label for="">Please add/edit fields that employees need to fill during expense application</label>
-                <button class="submenuTab active rounded-pill ms-4" type="button" (click)="addField()">Add</button>
-            </div>
+            <div class="w-100 mt-2">
+                <div class="d-flex align-items-center">
+                    <label>Please add/edit fields that employees need to fill during expense application</label>
+                    <button mat-stroked-button color="primary" type="button" (click)="addField()">Add</button>
+                </div>
 
-            <div formArrayName="fields">
-                <div class="categoryField"
-                    *ngFor="let fieldGroup of addCategoryForm.get('fields')['controls']; let i = index">
-                    <ng-container [formGroupName]="i">
-                        <div class="d-flex mt-2">
-                            <input type="text" class="form-control" formControlName="fieldName" required
-                                placeholder="Enter Field Name">
-                            <select name="" id="" formControlName="fieldType" required class="ms-2 form-control">
-                                <option value="Dropdown">Dropdown</option>
-                                <option value="Textfield">Textfield</option>
-                                <option value="Number">Number</option>
-                                <option value="DateRange">DateRange</option>
-                                <option value="Date">Date</option>
-                            </select>
-                            <button class="actions ms-2" mat-mini-fab matTooltip="Delete" matTooltipPosition="after"
-                                type="button" aria-label="Example icon button with a menu icon"
-                                (click)="removeCatgoryField(i)">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </div>
+                <div formArrayName="fields">
+                    <div class="categoryField"
+                        *ngFor="let fieldGroup of addCategoryForm.get('fields')['controls']; let i = index">
+                        <ng-container [formGroupName]="i">
+                            <div class="d-flex gap-2">
+                                <mat-form-field class="compact-density">
+                                    <mat-label>Field Name</mat-label>
+                                    <input matInput formControlName="fieldName" required placeholder="Enter Field Name">
+                                </mat-form-field>
 
-                        <div class="mt-2 align-items-center"
-                            *ngIf="getFieldType(i) === 'Dropdown' || fieldGroup.get('fieldType').value === 'Dropdown'">
-                            <div class="d-flex">
+                                <mat-form-field class="compact-density">
+                                    <mat-label>Field Type</mat-label>
+                                    <mat-select formControlName="fieldType" required>
+                                        <mat-option value="Dropdown">Dropdown</mat-option>
+                                        <mat-option value="Textfield">Textfield</mat-option>
+                                        <mat-option value="Number">Number</mat-option>
+                                        <mat-option value="DateRange">DateRange</mat-option>
+                                        <mat-option value="Date">Date</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+
+                                <button mat-icon-button color="warn" matTooltip="Delete" type="button"
+                                    (click)="removeCatgoryField(i)">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </div>
+
+                            <div
+                                *ngIf="getFieldType(i) === 'Dropdown' || fieldGroup.get('fieldType').value === 'Dropdown'">
                                 <div>
-                                    <button class="addBtn rounded-pill text-white me-2 py-2" type="button"
-                                        (click)="addFieldValue(i)">
-                                        Add&nbsp;Option
-                                    </button>
-                                </div>
-                                <div formArrayName="expenseApplicationFieldValues" class="w-100">
-                                    <div
-                                        *ngFor="let fieldValueGroup of fieldGroup.get('expenseApplicationFieldValues')['controls']; let j = index">
-                                        <ng-container [formGroupName]="j">
-                                            <div class="d-flex align-items-center">
-                                                <input type="text" class="form-control fieldValue w-100 mb-1"
-                                                    placeholder="Enter Dropdown Options" formControlName="value">
-                                                <button class="actions removeFieldValue ms-2" mat-mini-fab
-                                                    matTooltip="Delete" matTooltipPosition="after" type="button"
-                                                    aria-label="Example icon button with a menu icon"
-                                                    (click)="removeFieldValue(i,j)">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </div>
-                                        </ng-container>
+                                    <div class="mb-2">
+                                        <button mat-stroked-button type="button" (click)="addFieldValue(i)">
+                                            <mat-icon>add</mat-icon> Option
+                                        </button>
+                                    </div>
+                                    <div formArrayName="expenseApplicationFieldValues" class="w-100">
+                                        <div
+                                            *ngFor="let fieldValueGroup of fieldGroup.get('expenseApplicationFieldValues')['controls']; let j = index">
+                                            <ng-container [formGroupName]="j">
+                                                <div class="d-flex align-items-center">
+                                                    <mat-form-field class="w-100">
+                                                        <input type="text" matInput placeholder="Enter Dropdown Options"
+                                                            formControlName="value">
+                                                    </mat-form-field>
+                                                    <button mat-icon-button matTooltip="Delete" color="warn"
+                                                        type="button" (click)="removeFieldValue(i,j)">
+                                                        <mat-icon>delete</mat-icon>
+                                                    </button>
+                                                </div>
+                                            </ng-container>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </ng-container>
+                        </ng-container>
+                    </div>
                 </div>
             </div>
 
@@ -155,33 +153,27 @@
             </div>
 
             <div class="mt-2">
-                <label for="">Is field mandatory while submitting expense request? <span
-                        class="text-danger">*</span></label>
-                <div class="d-flex">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" id="flexRadioDefault-Yes"
-                            formControlName="isMandatory" required [value]="true">
-                        <label class="form-check-label" for="flexRadioDefault-Yes">
-                            Yes
-                        </label>
-                    </div>
+                <mat-label>
+                    Is field mandatory while submitting expense request?
+                    <span class="text-danger">*</span>
+                </mat-label>
 
+                <mat-radio-group formControlName="isMandatory" required>
+                    <mat-radio-button value="true">Yes</mat-radio-button>
+                    <mat-radio-button value="false">No</mat-radio-button>
+                </mat-radio-group>
 
-                    <div class="form-check ms-3">
-                        <input class="form-check-input" type="radio" id="flexRadioDefault-No"
-                            formControlName="isMandatory" required [value]="false">
-                        <label class="form-check-label" for="flexRadioDefault-No">
-                            No
-                        </label>
-                    </div>
-                </div>
             </div>
 
             <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
-                <button mat-raised-button type="button" (click)="onCancel()">Cancel</button>
+                <div>
+                    <button mat-raised-button type="button" (click)="dialogRef.close()">Cancel</button>
+                    <button mat-stroked-button type="button" (click)="onCancel()">Reset</button>
+                </div>
                 <button mat-raised-button class="addBtn" type="submit" [disabled]="!addCategoryForm.valid">{{isEdit?
                     'Update': 'Add'}}</button>
             </div>
-        </div>
-    </form>
+
+        </form>
+    </div>
 </ng-template>

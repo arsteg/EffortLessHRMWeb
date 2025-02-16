@@ -51,7 +51,7 @@ import { SupervisorsComponent } from './general-information/supervisors/supervis
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ExpensesRoutingModule } from './expenses-routing.module';
- 
+
 @NgModule({
   declarations: [
     ExpensesComponent,

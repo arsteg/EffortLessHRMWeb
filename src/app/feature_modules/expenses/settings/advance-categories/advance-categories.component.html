@@ -6,7 +6,8 @@
         <input matInput (keyup)="applyFilter($event)" placeholder="Search...">
         <mat-icon matSuffix>search</mat-icon>
       </mat-form-field>
-      <button mat-raised-button color="accent" class="rounded-pill" (click)="isEdit = false; clearselectedRequest(); open(addModal)">
+      <button mat-raised-button color="accent" class="rounded-pill"
+        (click)="isEdit = false; clearselectedRequest(); open(addModal)">
         <mat-icon>add</mat-icon>Add New
       </button>
     </div>
@@ -22,7 +23,8 @@
             <mat-icon>more_vert</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
-            <button mat-menu-item (click)="isEdit = true; selectedCategory = category; editAdvanceCategory(); open(addModal);">
+            <button mat-menu-item
+              (click)="isEdit = true; selectedCategory = category; editAdvanceCategory(); open(addModal);">
               <mat-icon>edit</mat-icon>
               <span>Edit</span>
             </button>
@@ -36,34 +38,37 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
-    <mat-paginator [length]="totalRecords" [pageSize]="recordsPerPage" [pageSizeOptions]="[5, 10, 25, 50, 100]" (page)="onPageChange($event)">
+    <mat-paginator [length]="totalRecords" [pageSize]="recordsPerPage" [pageSizeOptions]="[5, 10, 25, 50, 100]"
+      (page)="onPageChange($event)">
     </mat-paginator>
   </div>
 </div>
 
 <!-- Add/Update Advance category -->
 <ng-template #addModal let-modal>
-  <div class="modal-header border-bottom mb-2 pt-0 d-flex justify-content-between">
-    <div>
-      <h1 class="modal-title text-muted mb-0">{{isEdit ? 'Update' : 'Add'}} Advance Category</h1>
-    </div>
-    <div class="">
-      <button type="button" data-bs-dismiss="modal" class="btn-close text-end" (click)="modal.close('Escape clicked')"></button>
-    </div>
-  </div>
-  <form action="" [formGroup]="addCategory" (ngSubmit)="onSubmit()">
-    <div class="form-group">
-      <label for="">Please provide a label for this category <span class="text-danger">*</span></label>
-      <input type="text" class="form-control w-100" placeholder="Add Custom Label" formControlName="label" required>
-      <div *ngIf="addCategory.get('label').invalid && addCategory.get('label').touched" class="text-danger error">
-        Please Add Advance Category!
-      </div>
-      <div class="mt-2">
-        <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
-          <button mat-raised-button type="button" (click)="editAdvanceCategory()">Cancel</button>
-          <button mat-raised-button class="addBtn" type="submit">{{isEdit ? 'Update' : 'Add'}}</button>
+
+  <h1 mat-dialog-title>{{isEdit ? 'Update' : 'Add'}} Advance Category</h1>
+  <div mat-dialog-content>
+    <form [formGroup]="addCategory" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <mat-form-field class="w-100">
+          <mat-label>Category Label</mat-label>
+          <input matInput type="text" placeholder="Add Custom Label" formControlName="label" required>
+          <mat-error *ngIf="addCategory.get('label').invalid && addCategory.get('label').touched">
+            Please add advance category label
+          </mat-error>
+        </mat-form-field>
+
+        <div class="mt-2">
+          <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
+            <div>
+              <button mat-raised-button type="button" (click)="dialogRef.close()">Cancel</button>
+              <button mat-stroked-button type="button" (click)="editAdvanceCategory()">Reset</button>
+            </div>
+            <button mat-raised-button class="addBtn" type="submit">{{isEdit ? 'Update' : 'Add'}}</button>
+          </div>
         </div>
       </div>
-    </div>
-  </form>
+    </form>
+  </div>
 </ng-template>

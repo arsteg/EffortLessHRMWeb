@@ -1,7 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray, Validators, FormControl } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { isEqual } from 'date-fns';
 import { ToastrService } from 'ngx-toastr';
 import { ExpensesService } from 'src/app/_services/expenses.service';
@@ -50,8 +49,9 @@ export class ExpensesCategoriesComponent implements OnInit {
   recordsPerPage: number = 10;
   currentPage: number = 1;
   displayedColumns: string[] = ['label', 'type', 'actions'];
+  dialogRef: MatDialogRef<any>;
 
-  constructor(private modalService: NgbModal,
+  constructor(
     private dialog: MatDialog,
     private expenses: ExpensesService,
     private fb: FormBuilder,
@@ -74,21 +74,14 @@ export class ExpensesCategoriesComponent implements OnInit {
     this.getAllExpensesCategories();
   }
 
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
-  }
-
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
+    this.dialogRef = this.dialog.open(content, {
+      width: '600px',
+      disableClose: true
+    });
+
+    this.dialogRef.afterClosed().subscribe(result => {
       this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
     });
   }
 
