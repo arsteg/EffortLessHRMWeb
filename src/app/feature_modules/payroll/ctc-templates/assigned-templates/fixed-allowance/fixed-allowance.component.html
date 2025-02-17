@@ -11,7 +11,7 @@
             </thead>
             <tbody formArrayName="fixedAllowance">
                 <tr *ngFor="let allowance of allowances; let i = index" [formGroupName]="i">
-                    <td>{{getAllowance(allowance.get('fixedAllowance').value)}}</td>
+                   <td>{{allowance.get('fixedAllowance').value}}</td>
                     <td>
                         <select formControlName="criteria">
                             <option value="Amount">Amount</option>

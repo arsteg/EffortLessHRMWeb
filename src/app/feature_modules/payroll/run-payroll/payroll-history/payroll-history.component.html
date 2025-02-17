@@ -40,10 +40,14 @@
         <ng-container matColumnDef="status">
           <th mat-header-cell *matHeaderCellDef> Status </th>
           <td mat-cell *matCellDef="let data">
-            <mat-icon *ngIf="data?.status === 'InProgress'" matTooltip="In Progress" aria-label="In Progress">hourglass_empty</mat-icon>
-            <mat-icon *ngIf="data?.status === 'Complete Approval Pending'" matTooltip="Complete Approval Pending" aria-label="Complete Approval Pending">hourglass_full</mat-icon>
-            <mat-icon *ngIf="data?.status === 'OnHold'" matTooltip="On Hold" aria-label="On Hold">pause_circle</mat-icon>
-            <mat-icon *ngIf="data?.status === 'Processed'" matTooltip="Processed" aria-label="Processed">check_circle</mat-icon>
+            <mat-icon *ngIf="data?.status === 'InProgress'" matTooltip="In Progress"
+              aria-label="In Progress">hourglass_empty</mat-icon>
+            <mat-icon *ngIf="data?.status === 'Complete Approval Pending'" matTooltip="Complete Approval Pending"
+              aria-label="Complete Approval Pending">hourglass_full</mat-icon>
+            <mat-icon *ngIf="data?.status === 'OnHold'" matTooltip="On Hold"
+              aria-label="On Hold">pause_circle</mat-icon>
+            <mat-icon *ngIf="data?.status === 'Processed'" matTooltip="Processed"
+              aria-label="Processed">check_circle</mat-icon>
           </td>
         </ng-container>
 
@@ -54,14 +58,6 @@
               <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #menu="matMenu">
-              <button mat-menu-item>
-                <mat-icon>download</mat-icon>
-                <span>Download Register</span>
-              </button>
-              <button mat-menu-item>
-                <mat-icon>assignment_turned_in</mat-icon>
-                <span>Tax Register</span>
-              </button>
               <button mat-menu-item (click)="selectedPayroll = data?._id; openAddUserDialog()">
                 <mat-icon>person_add</mat-icon>
                 <span>Add Employee</span>
@@ -142,12 +138,14 @@
         <mat-form-field appearance="outline" class="col-md-6 my-2">
           <mat-label>Employee Selection for Payroll</mat-label>
           <mat-select formControlName="user" (selectionChange)="getGrossSalaryBySalaryStructure()">
-            <mat-option *ngFor="let user of users" [value]="user?.id">{{user?.firstName | titlecase}} {{user.lastName | titlecase}}</mat-option>
+            <mat-option *ngFor="let user of users" [value]="user?.id">{{user?.firstName | titlecase}} {{user.lastName |
+              titlecase}}</mat-option>
           </mat-select>
           <mat-error *ngIf="payrollUserForm.get('user').invalid && payrollUserForm.get('user').touched">
             Please Choose an Employee to Assign the Payroll!
           </mat-error>
-          <mat-error *ngIf="!salaries.length">Please add the Salary details first to add the selected user in payroll.</mat-error>
+          <mat-error *ngIf="!salaries.length">Please add the Salary details first to add the selected user in
+            payroll.</mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="col-md-6 my-2">

@@ -28,15 +28,16 @@ export class AssignedTemplatesComponent {
 
   ngOnInit() {
     this.updateForm();
+    console.log('ctc template: ',this.payroll.selectedCTCTemplate.getValue());
+    this.payroll.selectedCTCTemplate.getValue();
   }
 
   updateForm() {
     // Subscribe to the assignedTemplates observable
-    this.payroll.assignedTemplates.subscribe(res => {
+    this.payroll.selectedCTCTemplate.subscribe(res => {
       this.form = res;
-
-      // Update the component's data with the new values
-      this.fixedAllowanceData = res.ctcTemplateFixedAllowance || [];
+      console.log(this.form)
+      this.fixedAllowanceData = res.ctcTemplateFixedAllowances || [];
       this.fixedDeductionData = res.ctcTemplateFixedDeduction || [];
       this.variableAllowanceData = res.ctcTemplateVariableAllowance || [];
       this.variableDeductionData = res.ctcTemplateVariableDeduction || [];
@@ -56,7 +57,7 @@ export class AssignedTemplatesComponent {
 
   onFixedAllowanceDataChange(data: any) {
     this.fixedAllowanceData = data;
-    this.data.ctcTemplateFixedAllowance = data; // Assign it to `this.data` so it reflects in the table
+    this.data.ctcTemplateFixedAllowance = data;
   }
 
   onFixedDeductionDataChange(data: any) {

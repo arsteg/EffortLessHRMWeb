@@ -30,6 +30,7 @@ export class PayrollHistoryComponent {
   @Output() changeView = new EventEmitter<void>();
   @ViewChild('addDialogTemplate') addDialogTemplate: TemplateRef<any>;
   @ViewChild('addUserModal') addUserModal: TemplateRef<any>;
+  salaries: any;
 
   months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -70,6 +71,7 @@ export class PayrollHistoryComponent {
   }
 
   openSteps() {
+    this.payrollService?.payrollUsers.next(this.selectedPayroll?.users);
     this.isAllEmployees = false;
     this.changeView.emit();
   }
@@ -119,7 +121,7 @@ export class PayrollHistoryComponent {
 
         this.payrollService.getPayrollUsers(payrollUsersPayload).subscribe((payrollUsersRes: any) => {
           const users = payrollUsersRes.data;
-          this.payrollService?.payrollUsers.next(users);
+          
           this.payrollUsers = users;
           const activeCount = users.filter(user => user.status === 'Active').length;
           const onHoldCount = users.filter(user => user.status === 'OnHold').length;
@@ -129,7 +131,8 @@ export class PayrollHistoryComponent {
             ...payrollItem,
             activeCount: activeCount,
             onHoldCount: onHoldCount,
-            processedCount: processedCount
+            processedCount: processedCount,
+            users: this.payrollUsers
           };
 
           this.dataSource = new MatTableDataSource(this.payroll);
@@ -201,7 +204,6 @@ export class PayrollHistoryComponent {
     }
   }
 
-  salaries: any;
   getGrossSalaryBySalaryStructure(): void {
     this.userService.getSalaryByUserId(this.payrollUserForm.value.user).subscribe((res: any) => {
       this.salaries = res.data;

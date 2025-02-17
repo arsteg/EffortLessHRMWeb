@@ -5,6 +5,8 @@ import { ToastrService } from 'ngx-toastr';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { UpdateCTCTemplateComponent } from './update-ctctemplate/update-ctctemplate.component';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatDrawer } from '@angular/material/sidenav';
 
 @Component({
   selector: 'app-ctc-templates',
@@ -19,12 +21,15 @@ export class CtcTemplatesComponent {
   showAssignedTemplates = false;
   isEdit: boolean = false;
   @ViewChild('offcanvasContent', { read: ViewContainerRef }) offcanvasContent: ViewContainerRef;
+  @ViewChild('drawer', { static: true }) drawer: MatDrawer;
   totalRecords: number
   recordsPerPage: number = 10;
   currentPage: number = 1;
   offcanvasData = 'Initial data';
   showOffcanvas: boolean = false;
   public sortOrder: string = '';
+  displayedColumns: string[] = ['name', 'fixedAllowances', 'fixedDeductions', 'otherAllowances', 'actions'];
+  dataSource: MatTableDataSource<any>;
 
   constructor(private modalService: NgbModal,
     private payroll: PayrollService,
@@ -55,6 +60,7 @@ export class CtcTemplatesComponent {
     this.payroll.getCTCTemplate(pagination).subscribe(data => {
       this.ctcTemplate = data.data;
       this.totalRecords = data.total;
+      this.dataSource = new MatTableDataSource(this.ctcTemplate);
     });
   }
 
@@ -81,15 +87,15 @@ export class CtcTemplatesComponent {
     });
   }
 
-  openOffcanvas(isEdit: boolean, record: any = null) {
-    console.log('offcanvas called!')
+  openDrawer(isEdit: boolean, record: any = null) {
     this.isEdit = isEdit;
     this.selectedRecord = record;
-    console.log(this.selectedRecord)
-    this.payroll.ctcTempData.next(this.selectedRecord);
-    this.showOffcanvas = true;
+    this.drawer.open();
+    this.loadDrawerContent();
+  }
+
+  loadDrawerContent() {
     this.offcanvasContent.clear();
-    
 
     // Create the component factory
     const componentFactory = this.componentFactoryResolver.resolveComponentFactory(UpdateCTCTemplateComponent);
@@ -105,10 +111,11 @@ export class CtcTemplatesComponent {
     });
   }
 
-  closeOffcanvas() {
-    this.showOffcanvas = false;
+  closeDrawer() {
+    this.drawer.close();
     this.isEdit = false;
     this.selectedRecord = null;
+    this.offcanvasContent.clear();
   }
 
   handleRecordUpdate(updatedRecord: any) {

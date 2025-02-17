@@ -26,9 +26,7 @@ export class AssignedFixedAllowanceComponent {
   }
 
   ngOnInit() {
-    this.getFixedAllowances();
     this.initForm();
-
     if (this.isEdit && this.selectedRecord) {
       this.patchFormValues();
     }
@@ -37,7 +35,6 @@ export class AssignedFixedAllowanceComponent {
   initForm() {
     const allowancesControl = this.fixedAllowanceForm.get('fixedAllowance') as FormArray;
     this.fixedAllowances = this.data.ctcTemplateFixedAllowance || [];
-
     this.fixedAllowances.forEach(fa => {
       allowancesControl.push(this.fb.group({
         fixedAllowance: [fa],
@@ -59,14 +56,13 @@ export class AssignedFixedAllowanceComponent {
 
   patchFormValues() {
     const allowancesControl = this.fixedAllowanceForm.get('fixedAllowance') as FormArray;
-    allowancesControl.clear(); // Clear existing controls if any
-
-    this.selectedRecord.ctcTemplateFixedAllowances.forEach((item: any, index: number) => {
+    allowancesControl.clear();
+    this.selectedRecord.ctcTemplateFixedAllowances.forEach((item: any) => {
       allowancesControl.push(this.fb.group({
-        fixedAllowance: [item.fixedAllowance || ''],
+        fixedAllowance: [item.fixedAllowance?.label || ''],
         criteria: [item.criteria || 'Amount'],
         value: [item.value || ''],
-        valueType: item.valueType || 0,
+        valueType: [item.valueType || 0],
         minimumAmount: [item.minimumAmount || 0]
       }));
     });
@@ -74,17 +70,5 @@ export class AssignedFixedAllowanceComponent {
 
   get allowances() {
     return (this.fixedAllowanceForm.get('fixedAllowance') as FormArray).controls;
-  }
-
-  getFixedAllowances() {
-    let payload = { next: '', skip: '' }
-    this.payroll.getFixedAllowance(payload).subscribe((res: any) => {
-      this.allfixedAllowances = res.data;
-    });
-  }
-
-  getAllowance(allowance: string) {
-    const matchingAllowance = this.allfixedAllowances?.find(res => res._id === allowance);
-    return matchingAllowance ? matchingAllowance.label : '';
   }
 }
