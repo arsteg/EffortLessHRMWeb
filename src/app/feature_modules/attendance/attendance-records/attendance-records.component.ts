@@ -274,7 +274,7 @@ export class AttendanceRecordsComponent {
   }
 
   getAttendanceByMonth() {
-    const payload = { skip: '', next: '', month: this.selectedMonth, year: this.selectedYear };
+    const payload = { skip: '', next: '1000000', month: this.selectedMonth, year: this.selectedYear };
     return this.attendanceService.getAttendanceRecordsByMonth(payload).pipe(
       map((res: any) => res.data)
     );
@@ -344,7 +344,7 @@ export class AttendanceRecordsComponent {
   }
 
   getDetails() {
-    return this.leaveService.getLeaveApplication({ skip: '', next: '' });
+    return this.leaveService.getLeaveApplication({ skip: '', next: '100000' });
   }
 
   isDateOnLeave(user: any, date: Date): boolean {
@@ -372,7 +372,7 @@ export class AttendanceRecordsComponent {
   }
 
   getHolidays() {
-    let payload = { skip: '', next: '', year: this.selectedYear };
+    let payload = { skip: '', next: '100000', year: this.selectedYear };
     return this.companyService.getHolidays(payload);
   }
 

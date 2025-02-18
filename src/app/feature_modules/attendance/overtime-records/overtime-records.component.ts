@@ -102,7 +102,7 @@ export class OvertimeRecordsComponent {
   getOvertimeByMonth() {
     let payloadForMonth = {
       skip: '',
-      next: '',
+      next: '100000',
       month: this.selectedMonth,
       year: this.selectedYear
     };

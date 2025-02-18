@@ -25,7 +25,7 @@ export class PayrollService {
   fixedAllowance: any = new BehaviorSubject('');
   configureState: any = new BehaviorSubject('');
   assignedTemplates: any = new BehaviorSubject('');
-  ctcTempData: any = new BehaviorSubject('');
+  selectedCTCTemplate: any = new BehaviorSubject('');
   selectedFnFPayroll: any = new BehaviorSubject('');
   payrollUsers: any = new BehaviorSubject('');
   allUsers: any = new BehaviorSubject('');

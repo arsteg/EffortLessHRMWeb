@@ -7,9 +7,6 @@
             <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
                 name="searchText" aria-label="default input example">
         </div>
-        <div>
-            <button mat-raised-button class="addBtn" (click)="openDialog()">Download</button>
-        </div>
     </div>
     <table mat-table [dataSource]="generatedPayroll">
         <ng-container matColumnDef="PayrollUsers">
@@ -98,6 +95,6 @@
             <mat-icon>close</mat-icon>
         </button>
     </div>
-    
+
     <app-view-payslip [viewPayroll]="selectedRecord" [selectedPayroll]="selectedPayroll"></app-view-payslip>
 </ng-template>

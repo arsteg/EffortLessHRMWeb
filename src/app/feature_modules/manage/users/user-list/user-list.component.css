@@ -10,5 +10,6 @@
   background-color: #76bc21;
 }
 .mat-column-empCode{
-  border-right: 1px solid
+  border-right: 1px solid #e0e0e0;
+  width: 30px;
 }
