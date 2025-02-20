@@ -37,16 +37,15 @@ export class AssignedTemplatesComponent {
     this.router.navigate(['home/payroll/ctc-template'])
   }
 
-  goToUpdateCTC() {
-    this.router.navigate(['home/payroll/ctc-template/update-ctc-template'])
-  }
-
   goBackToUpdateCTC() {
     const id = this.selectedRecord?._id || this.route.snapshot.paramMap.get('id');
     console.log(this.route);
     console.log(id)
     if (id) {
       this.router.navigate([`home/payroll/ctc-template/update-ctc-template/${id}`]);
+    }
+    else {
+      this.router.navigate([`home/payroll/ctc-template/update-ctc-template`]);
     }
   }
 
