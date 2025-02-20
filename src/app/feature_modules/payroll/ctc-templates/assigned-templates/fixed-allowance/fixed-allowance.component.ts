@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { PayrollService } from 'src/app/_services/payroll.service';
+
 @Component({
   selector: 'app-assigned-fixed-allowance',
   templateUrl: './fixed-allowance.component.html',
@@ -8,7 +9,6 @@ import { PayrollService } from 'src/app/_services/payroll.service';
 })
 export class AssignedFixedAllowanceComponent {
   @Input() isEdit: boolean;
-  @Input() data: any;
   @Output() formDataChange = new EventEmitter<any>();
   allfixedAllowances: any[] = [];
   fixedAllowances: any[] = [];
@@ -26,18 +26,20 @@ export class AssignedFixedAllowanceComponent {
   }
 
   ngOnInit() {
+    console.log(this.selectedRecord)
     this.initForm();
-    if (this.isEdit && this.selectedRecord) {
+    if (this.isEdit) {
       this.patchFormValues();
     }
   }
 
   initForm() {
     const allowancesControl = this.fixedAllowanceForm.get('fixedAllowance') as FormArray;
-    this.fixedAllowances = this.data.ctcTemplateFixedAllowance || [];
+    this.fixedAllowances = this.selectedRecord.ctcTemplateFixedAllowances || [];
     this.fixedAllowances.forEach(fa => {
       allowancesControl.push(this.fb.group({
-        fixedAllowance: [fa],
+        fixedAllowance: [fa.fixedAllowance?._id || ''],
+        fixedAllowanceLabel: [fa.fixedAllowance?.label || ''],
         criteria: ['Amount'],
         value: [''],
         valueType: [0],
@@ -47,7 +49,11 @@ export class AssignedFixedAllowanceComponent {
 
     this.fixedAllowanceForm.valueChanges.subscribe(() => {
       if (this.fixedAllowanceForm.valid) {
-        this.formDataChange.emit(this.fixedAllowanceForm.value.fixedAllowance);
+        const formValue = this.fixedAllowanceForm.value.fixedAllowance.map((allowance: any) => {
+          const { fixedAllowanceLabel, ...rest } = allowance;
+          return rest;
+        });
+        this.formDataChange.emit(formValue);
       } else {
         console.log("Form is invalid or incomplete");
       }
@@ -59,7 +65,8 @@ export class AssignedFixedAllowanceComponent {
     allowancesControl.clear();
     this.selectedRecord.ctcTemplateFixedAllowances.forEach((item: any) => {
       allowancesControl.push(this.fb.group({
-        fixedAllowance: [item.fixedAllowance?.label || ''],
+        fixedAllowance: [item.fixedAllowance?._id || ''],
+        fixedAllowanceLabel: [item.fixedAllowance?.label || ''],
         criteria: [item.criteria || 'Amount'],
         value: [item.value || ''],
         valueType: [item.valueType || 0],

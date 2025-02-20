@@ -26,10 +26,19 @@ export class PayrollService {
   configureState: any = new BehaviorSubject('');
   assignedTemplates: any = new BehaviorSubject('');
   selectedCTCTemplate: any = new BehaviorSubject('');
+  isEdit: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  showTable: BehaviorSubject<boolean> = new BehaviorSubject(false);
   selectedFnFPayroll: any = new BehaviorSubject('');
   payrollUsers: any = new BehaviorSubject('');
   allUsers: any = new BehaviorSubject('');
   payslip: any = new BehaviorSubject('');
+  
+  fixedAllowances: any = new BehaviorSubject('');
+  fixedDeductions: any = new BehaviorSubject('');
+  otherBenefits: any = new BehaviorSubject('');
+  fixedContributions: any = new BehaviorSubject('');
+  variableAllowances: any = new BehaviorSubject('');
+  variableDeductions: any = new BehaviorSubject('');
   
   constructor(private http: HttpClient) { }
   public getToken() {
