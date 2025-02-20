@@ -26,7 +26,6 @@ export class AssignedFixedAllowanceComponent {
   }
 
   ngOnInit() {
-    console.log(this.selectedRecord)
     this.initForm();
     if (this.isEdit) {
       this.patchFormValues();

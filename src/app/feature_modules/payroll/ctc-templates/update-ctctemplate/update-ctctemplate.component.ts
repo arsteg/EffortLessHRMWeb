@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { PayrollService } from 'src/app/_services/payroll.service';
-import { MatDrawer } from '@angular/material/sidenav';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 
 @Component({
@@ -13,7 +12,6 @@ export class UpdateCTCTemplateComponent {
   isEdit: boolean;
   @Input() selectedRecord: any = null;
   @Output() recordUpdatedFromAssigned: EventEmitter<any> = new EventEmitter<any>();
-  @ViewChild('drawer', { static: true }) drawer: MatDrawer;
   fixedAllowances: any;
   fixedDeduction: any;
   otherBenefits: any;
@@ -79,10 +77,6 @@ export class UpdateCTCTemplateComponent {
     }
   }
 
-  // proceed() {
-  //   this.router.navigate(['assigned-templates'], { relativeTo: this.route });
-  // }
-  
   getRecordById(id: string) {
     this.payroll.getCTCTemplateById(id).subscribe((res: any) => {
       const result = res.data;
@@ -298,16 +292,5 @@ export class UpdateCTCTemplateComponent {
     }
 
     this.payroll.selectedCTCTemplate.next(payload);
-  }
-
-  openDrawer() {
-    this.onSubmission(); // Call the onSubmission function to save the data before opening the drawer
-    this.showAssignedTemplates = true;
-    this.drawer.open();
-  }
-
-  closeDrawer() {
-    this.drawer.close();
-    this.showAssignedTemplates = false;
   }
 }

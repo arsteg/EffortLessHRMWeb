@@ -28,10 +28,12 @@ export class PayrollService {
   selectedCTCTemplate: any = new BehaviorSubject('');
   isEdit: BehaviorSubject<boolean> = new BehaviorSubject(false);
   showTable: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  showAssignedTemplate: BehaviorSubject<boolean> = new BehaviorSubject(false);
   selectedFnFPayroll: any = new BehaviorSubject('');
   payrollUsers: any = new BehaviorSubject('');
   allUsers: any = new BehaviorSubject('');
   payslip: any = new BehaviorSubject('');
+  
   
   fixedAllowances: any = new BehaviorSubject('');
   fixedDeductions: any = new BehaviorSubject('');

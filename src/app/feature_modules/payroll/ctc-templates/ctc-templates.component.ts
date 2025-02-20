@@ -91,60 +91,17 @@ export class CtcTemplatesComponent {
     });
   }
 
-  // openDrawer(isEdit: boolean, record: any = null) {
-  //   this.isEdit = isEdit;
-  //   this.selectedRecord = record;
-  //   this.drawer.open();
-  //   this.loadDrawerContent();
-  // }
-
-  // loadDrawerContent() {
-  //   this.offcanvasContent.clear();
-
-  //   // Create the component factory
-  //   const componentFactory = this.componentFactoryResolver.resolveComponentFactory(UpdateCTCTemplateComponent);
-
-  //   // Create the component and set the inputs
-  //   const componentRef = this.offcanvasContent.createComponent(componentFactory);
-  //   componentRef.instance.selectedRecord = this.selectedRecord;
-  //   componentRef.instance.isEdit = this.isEdit;
-
-  //   // Listen to the recordUpdatedFromAssigned event
-  //   componentRef.instance.recordUpdatedFromAssigned.subscribe((updatedRecord: any) => {
-  //     this.handleRecordUpdate(updatedRecord); // Refresh the list on update
-  //   });
-  // }
-
-  // closeDrawer() {
-  //   this.drawer.close();
-  //   this.isEdit = false;
-  //   this.selectedRecord = null;
-  //   this.offcanvasContent.clear();
-  // }
-
   handleRecordUpdate(updatedRecord: any) {
     this.getCTCTemplate();
     this.cdr.detectChanges();
   }
 
-  // getComponentsDetail(data: any) {
-  //   this.isEdit = true;
-  //   this.payroll.isEdit.next(true);
-  //   this.payroll.selectedCTCTemplate.next(data);
-  //   this.payroll.showTable.next(this.showTable);
-  //   const navigationExtras: NavigationExtras = {
-  //     queryParams: { id: data._id }
-  //   };
-  //   this.router.navigate(['update-ctc-template/'], navigationExtras)
-  //   // this.router.navigate(['home/payroll/ctc-template/update-ctc-template'], navigationExtras);
-  // }
   getComponentsDetail(data: any) {
     this.isEdit = true;
     this.payroll.isEdit.next(true);
     this.payroll.selectedCTCTemplate.next(data);
     this.payroll.showTable.next(this.showTable);
-    
-    // ✅ Corrected navigation
+    this.payroll.showAssignedTemplate.next(true);
     this.router.navigate([`update-ctc-template`, data._id], { relativeTo: this.route });
 }
 
@@ -152,6 +109,7 @@ export class CtcTemplatesComponent {
     this.payroll.isEdit.next(false);
     this.payroll.showTable.next(false);
     this.payroll.selectedCTCTemplate.next();
+    this.payroll.showAssignedTemplate.next(true);
     this.router.navigate(['home/payroll/ctc-template/update-ctc-template']);
   }
 }

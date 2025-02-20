@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { PayrollService } from 'src/app/_services/payroll.service';
@@ -22,7 +22,6 @@ export class AssignedTemplatesComponent {
 
   constructor(
     private payroll: PayrollService,
-    private fb: FormBuilder,
     private toast: ToastrService,
     private router: Router,
     private route: ActivatedRoute
@@ -39,13 +38,11 @@ export class AssignedTemplatesComponent {
 
   goBackToUpdateCTC() {
     const id = this.selectedRecord?._id || this.route.snapshot.paramMap.get('id');
-    console.log(this.route);
-    console.log(id)
+    this.payroll.showAssignedTemplate.next(true);
     if (id) {
       this.router.navigate([`home/payroll/ctc-template/update-ctc-template/${id}`]);
-    }
-    else {
-      this.router.navigate([`home/payroll/ctc-template/update-ctc-template`]);
+    } else {
+      this.router.navigate([`home/payroll/ctc-template/update-ctc-template`],);
     }
   }
 
