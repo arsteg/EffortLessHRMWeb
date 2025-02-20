@@ -49,6 +49,16 @@ const routes: Routes = [
         component: CtcTemplatesComponent
       },
       {
+        path: 'ctc-template/update-ctc-template',
+        component: UpdateCTCTemplateComponent,
+        children: [
+          {
+            path: 'assigned-templates',
+            component: AssignedTemplatesComponent
+          }
+        ]
+      },
+      {
         path: 'ctc-template/update-ctc-template/:id',
         component: UpdateCTCTemplateComponent,
         children: [

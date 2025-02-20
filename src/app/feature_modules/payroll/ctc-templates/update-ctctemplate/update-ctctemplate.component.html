@@ -6,10 +6,12 @@
   <span class="breadcrumb-item text-muted">Update CTC Template</span>
 </div>
 
-<form [formGroup]="ctcTemplateForm" class="row px-3">
-  <div class="form-group">
-    <label for="">Enter the Label for CTC Template</label>
-    <input type="text" class="form-control" formControlName="name" placeholder="CTC Template...">
+<form [formGroup]="ctcTemplateForm" class="row container px-3">
+  <div class="form-group col-md-6">
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Enter the Label for CTC Template</mat-label>
+      <input matInput type="text" formControlName="name" placeholder="CTC Template...">
+    </mat-form-field>
   </div>
 
   <div class="form-group mt-2 col-md-6">
