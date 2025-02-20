@@ -1,14 +1,16 @@
-<div class="tableContainer py-2">
-    <table>
-        <thead>
-            <th>Category</th>
-            <th>Value</th>
-        </thead>
-        <tbody  *ngIf="this.data.ctcTemplateEmployerContribution.length && this.data.ctcTemplateEmployerContribution.length > 0">
-            <tr *ngFor="let empContibutions of this.data.ctcTemplateEmployerContribution">
-                <td>{{getContribution(empContibutions)}}</td>
-                <td>As per Statutory Norms</td>
-            </tr>
-        </tbody>
-    </table>
+<div class="mt-2 p-2">
+  <table mat-table [dataSource]="selectedRecord.ctcTemplateEmployerContributions">
+    <ng-container matColumnDef="category">
+      <th mat-header-cell *matHeaderCellDef> Category </th>
+      <td mat-cell *matCellDef="let empContributions"> {{empContributions?.fixedContribution?.label}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="value">
+      <th mat-header-cell *matHeaderCellDef> Value </th>
+      <td mat-cell *matCellDef="let empContributions"> As per Statutory Norms </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="['category', 'value']"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['category', 'value'];"></tr>
+  </table>
 </div>

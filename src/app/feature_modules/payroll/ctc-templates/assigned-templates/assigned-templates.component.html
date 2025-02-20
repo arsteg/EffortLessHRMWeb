@@ -1,61 +1,38 @@
-<div class="d-flex justify-content-end mb-2"><button mat-raised-button class="addBtn"
-        (click)="onSubmission()">Save</button></div>
-<ul class="nav nav-tabs">
-    <li class="nav-item">
-        <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabFixedAllowance'}"
-            (click)="selectTab('tabFixedAllowance')">Fixed Allowances</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabFixedDeduction'}"
-            (click)="selectTab('tabFixedDeduction')">
-            Fixed Deductions</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabEmployerContribution'}"
-            (click)="selectTab('tabEmployerContribution')">Employer Contribution</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabOtherBenefit'}"
-            (click)="selectTab('tabOtherBenefit')">Other Benefits</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabEmployeeDeduction'}"
-            (click)="selectTab('tabEmployeeDeduction')">Employee Deduction</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabVariableAllowance'}"
-            (click)="selectTab('tabVariableAllowance')">Variable Allowance</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabVariableDeduction'}"
-            (click)="selectTab('tabVariableDeduction')">Variable Deduction</a>
-    </li>
-</ul>
-
-<div class="tab-content pt-0">
-    <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabFixedAllowance'}" id="tabFixedAllowance">
-        <app-assigned-fixed-allowance [data]="data" (formDataChange)="onFixedAllowanceDataChange($event)"
-            [selectedRecord]="selectedRecord" [isEdit]="isEdit"></app-assigned-fixed-allowance>
-    </div>
-    <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabFixedDeduction'}" id="tabFixedDeduction">
-        <app-assigned-fixed-deduction [data]="data" [isEdit]="isEdit" [selectedRecord]="selectedRecord"
-            (formDataChange)="onFixedDeductionDataChange($event)"></app-assigned-fixed-deduction>
-    </div>
-    <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabEmployerContribution'}" id="tabEmployerContribution">
-        <app-assigned-fixed-contribution [data]="data"></app-assigned-fixed-contribution>
-    </div>
-    <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabOtherBenefit'}" id="tabOtherBenefit">
-        <app-other-benefit [data]="data"></app-other-benefit>
-    </div>
-    <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabEmployeeDeduction'}" id="tabEmployeeDeduction">
-        <app-employee-deduction [data]="data"></app-employee-deduction>
-    </div>
-    <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabVariableAllowance'}" id="tabVariableAllowance">
-        <app-var-allowance [data]="data" (formDataChange)="onVariableAllowanceDataChange($event)"
-        [selectedRecord]="selectedRecord" [isEdit]="isEdit"></app-var-allowance>
-    </div>
-    <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabVariableDeduction'}" id="tabVariableDeduction">
-        <app-var-deduction [data]="data" (formDataChange)="onVariableDeductionDataChange($event)"
-        [selectedRecord]="selectedRecord" [isEdit]="isEdit"></app-var-deduction>
-    </div>
+<div class="d-flex justify-content-between border-bottom">
+  <div class="breadcrumb py-2">
+    <span class="breadcrumb-item active" (click)="goToCTC()" style="cursor: pointer;">
+      CTC Template
+    </span>
+    <span class="breadcrumb-item active" (click)="goBackToUpdateCTC()">Update CTC Template</span>
+    <span class="breadcrumb-item text-muted">Assigned CTC Template</span>
+  </div>
+  <button mat-raised-button class="addBtn" (click)="onSubmission()">Save</button>
 </div>
+
+<mat-tab-group [(selectedIndex)]="activeTabIndex">
+  <mat-tab label="Fixed Allowances">
+    <app-assigned-fixed-allowance (formDataChange)="onFixedAllowanceDataChange($event)"
+      [selectedRecord]="selectedRecord" [isEdit]="isEdit"></app-assigned-fixed-allowance>
+  </mat-tab>
+  <mat-tab label="Fixed Deductions">
+    <app-assigned-fixed-deduction [isEdit]="isEdit" [selectedRecord]="selectedRecord"
+      (formDataChange)="onFixedDeductionDataChange($event)"></app-assigned-fixed-deduction>
+  </mat-tab>
+  <mat-tab label="Employer Contribution">
+    <app-assigned-fixed-contribution></app-assigned-fixed-contribution>
+  </mat-tab>
+  <mat-tab label="Other Benefits">
+    <app-other-benefit></app-other-benefit>
+  </mat-tab>
+  <mat-tab label="Employee Deduction">
+    <app-employee-deduction></app-employee-deduction>
+  </mat-tab>
+  <mat-tab label="Variable Allowance">
+    <app-var-allowance (formDataChange)="onVariableAllowanceDataChange($event)"
+      [selectedRecord]="selectedRecord" [isEdit]="isEdit"></app-var-allowance>
+  </mat-tab>
+  <mat-tab label="Variable Deduction">
+    <app-var-deduction (formDataChange)="onVariableDeductionDataChange($event)"
+      [selectedRecord]="selectedRecord" [isEdit]="isEdit"></app-var-deduction>
+  </mat-tab>
+</mat-tab-group>

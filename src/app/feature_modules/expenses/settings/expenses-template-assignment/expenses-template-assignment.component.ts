@@ -1,12 +1,10 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, Inject  } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { CommonService } from 'src/app/_services/common.Service';
 import { ToastrService } from 'ngx-toastr';
-import { DatePipe } from '@angular/common';
 import { MatTableDataSource } from '@angular/material/table';
 import { forkJoin } from 'rxjs';
 
@@ -42,14 +40,14 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
   currentPage: number = 1;
   displayedColumns: string[] = ['employeeName', 'expenseTemplate', 'primaryApprover', 'secondaryApprover', 'effectiveDate', 'actions'];
   dataSource = new MatTableDataSource<any>([]);
+  dialogRef: MatDialogRef<any>;
 
-  constructor(private modalService: NgbModal,
+  constructor(
     private dialog: MatDialog,
     private expenseService: ExpensesService,
     private fb: FormBuilder,
     private commonService: CommonService,
-    private toast: ToastrService,
-    private datePipe: DatePipe) {
+    private toast: ToastrService) {
     this.templateAssignmentForm = this.fb.group({
       user: [''],
       primaryApprover: [''],
@@ -60,7 +58,6 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
 
     this.maxDate.setDate(this.maxDate.getDate() + 7);
     this.bsRangeValue = [this.bsValue, this.maxDate];
-
   }
 
   ngOnInit(): void {
@@ -155,7 +152,7 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
 
   onTemplateSelectionChange(event: any) {
     this.showApproverFields = true;
-    const selectedTemplateId = event.target.value;
+    const selectedTemplateId = event.value;
 
     this.expenseService.getTemplateById(selectedTemplateId).subscribe((res: any) => {
       this.templateById = res.data;
@@ -185,8 +182,8 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
           this.templateAssignmentForm.get('secondaryApprover').updateValueAndValidity();
 
           // Disable the fields
-          this.primaryApproverField.nativeElement.disabled = true;
-          this.secondaryApproverField.nativeElement.disabled = true;
+          // this.primaryApproverField.nativeElement.disabled = true;
+          // this.secondaryApproverField.nativeElement.disabled = true;
         }
       } else if (this.templateById.approvalType === 'employee-wise') {
         if (this.templateById.approvalLevel === '1') {
@@ -223,15 +220,7 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
     const matchingUser = this.allAssignee?.find(user => user._id === employeeId);
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'N/A';
   }
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
-  }
+
   open(content: any) {
     if (this.changeMode == 'Add') {
       this.showApproverFields = false;
@@ -239,10 +228,13 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
     else {
       this.showApproverFields = true;
     }
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
+    this.dialogRef = this.dialog.open(content, {
+      width: '600px',
+      disableClose: true
+    });
+
+    this.dialogRef.afterClosed().subscribe(result => {
       this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
     });
   }
   clearSelection() {

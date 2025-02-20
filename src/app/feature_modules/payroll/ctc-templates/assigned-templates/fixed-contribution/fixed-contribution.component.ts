@@ -8,29 +8,11 @@ import { PayrollService } from 'src/app/_services/payroll.service';
 })
 export class AssignedFixedContributionComponent {
   employerContributions: any;
-  @Input() data: any;
+  selectedRecord: any;
 
   constructor(private payroll: PayrollService) { }
 
   ngOnInit() {
-    this.employerContributions = this.data.ctcTemplateEmployerContribution;
-    this.getEmployerContribution();
+    this.selectedRecord = this.payroll?.selectedCTCTemplate.getValue();
   }
-
-  getEmployerContribution() {
-    let payload = {
-      next: '',
-      skip: ''
-    }
-    this.payroll.getFixedContribution(payload).subscribe((res: any) => {
-      this.employerContributions = res.data;
-    });
-  }
-
-  getContribution(empContribution: string) {
-    const matchingContribution = this.employerContributions?.find(res => res._id === empContribution);
-    return matchingContribution ? matchingContribution.label : '';
-  }
-
-
 }

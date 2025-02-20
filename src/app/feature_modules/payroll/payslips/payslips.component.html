@@ -1,37 +1,51 @@
 <div class="main-content" *ngIf="!showPayslipDetail">
-    <div class="container-fluid">
-        <div class="tableContainer">
-            <div class="d-flex align-items-center px-2 py-1">
-                <p class="mb-0 me-auto">Payslips</p>
-                <div class="d-flex align-items-center">
-                    <span class="bi bi-search searchIcon"></span>
-                    <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
-                        name="searchText" aria-label="default input example">
-                    <button class="addBtn ms-2" mat-raised-button>Refresh</button>
-                </div>
-            </div>
-            <table>
-                <thead>
-                    <th>Employee</th>
-                    <th>Period</th>
-                    <th>Payroll</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Employee Name</td>
-                        <td>Dec, 2024</td>
-                        <td>Processed</td>
-                        <td>Approved</td>
-                        <td>
-                            <button mat-raised-button class="addBtn" (click)="viewPayslip()">Show Payslip</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+  <div class="container-fluid">
+      <div class="d-flex align-items-center px-2 py-1">
+        <p class="mb-0 me-auto">Payslips</p>
+        <div class="d-flex align-items-center">
+          <span class="bi bi-search searchIcon"></span>
+          <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
+            name="searchText" aria-label="default input example">
+          <button class="addBtn ms-2" mat-raised-button (click)="refreshData()">Refresh</button>
         </div>
-    </div>
+      </div>
+      <table mat-table [dataSource]="payslips" class="mat-elevation-z8">
+        <ng-container matColumnDef="PayrollUser">
+          <th mat-header-cell *matHeaderCellDef> Employee </th>
+          <td mat-cell *matCellDef="let element"> {{element.PayrollUser?.user?.name}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="period">
+          <th mat-header-cell *matHeaderCellDef> Period </th>
+          <td mat-cell *matCellDef="let element"> {{element.payroll?.month}} - {{element?.payroll?.year}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="payroll">
+          <th mat-header-cell *matHeaderCellDef>Generated On </th>
+          <td mat-cell *matCellDef="let element"> {{element.payroll?.date | date: 'mediumDate'}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef> Status </th>
+          <td mat-cell *matCellDef="let data">
+            <mat-icon *ngIf="data?.payroll?.status === 'InProgress'" matTooltip="In Progress" aria-label="In Progress">hourglass_empty</mat-icon>
+            <mat-icon *ngIf="data?.payroll?.status === 'Complete Approval Pending'" matTooltip="Complete Approval Pending" aria-label="Complete Approval Pending">hourglass_full</mat-icon>
+            <mat-icon *ngIf="data?.payroll?.status === 'OnHold'" matTooltip="On Hold" aria-label="On Hold">pause_circle</mat-icon>
+            <mat-icon *ngIf="data?.payroll?.status === 'Processed'" matTooltip="Processed" aria-label="Processed">check_circle</mat-icon>
+        </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef> Actions </th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-raised-button class="addBtn" (click)="selectedRecord = element; viewPayslip()">Show Payslip</button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['PayrollUser', 'period', 'payroll', 'status', 'actions'];"></tr>
+      </table>
+  </div>
 </div>
 
-<app-generate-payslips *ngIf="showPayslipDetail"  (close)="closePayslipDetail()"></app-generate-payslips>
+<app-generate-payslips *ngIf="showPayslipDetail" (close)="closePayslipDetail()"></app-generate-payslips>

@@ -53,7 +53,7 @@ export class Step6Component {
   onUserSelectedFromChild(user: any) {
     this.selectedUserId = user.value.user;
     this.selectedPayrollUser = user.value._id;
-    if (this.changeMode === 'Add') { this.getFlexiBenefitsProfessionalTax(); }
+    if (this.changeMode != 'Add') { this.getFlexiBenefitsProfessionalTax(); }
   }
 
   getUser(employeeId: string) {
@@ -63,7 +63,7 @@ export class Step6Component {
 
   getFlexiBenefitsProfessionalTax() {
     this.payrollService.getFlexiByUsers(this.selectedPayrollUser).subscribe((res: any) => {
-      this.flexiBenefits = res.data.records;
+      this.flexiBenefits = res.data;
       const userRequests = this.flexiBenefits.map((item: any) => {
         const payrollUser = this.payrollUsers?.find((user: any) => user._id === item.PayrollUser);
         return {

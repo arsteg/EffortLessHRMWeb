@@ -112,10 +112,12 @@ export class AttendanceProcessComponent {
 
       });
   }
-
+  setlledUsers: any;
   ngOnInit() {
     this.generateYearList();
-
+    this.userService.getUsersByStatus('Settled').subscribe((res: any)=>{
+      this.setlledUsers = res.data['users'];
+    })
     this.route.queryParams.subscribe(params => {
       this.activeTab = params['tab'] || 'attendanceProcess';
       this.activeTabIndex = this.activeTab === 'attendanceProcess' ? 0 : 1;
@@ -427,14 +429,14 @@ export class AttendanceProcessComponent {
           ...(this.changeMode === 'Add' ? settledUsers.data['users'] : []),
           ...fnfAttendanceProcessed.data['users']
         ];
-
+console.log(this.usersForFNF)
         return this.usersForFNF;
       })
     );
   }
 
   getMatchedUser(userId: string) {
-    const matchingUser = this.usersForFNF?.find(user => user._id === userId);
+    const matchingUser = this.setlledUsers?.find(user => user._id === userId);
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'N/A';
   }
 

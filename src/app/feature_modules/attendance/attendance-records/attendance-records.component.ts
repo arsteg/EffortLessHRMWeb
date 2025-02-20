@@ -1,4 +1,5 @@
 import { Component, TrackByFunction } from '@angular/core';
+import * as moment from 'moment';
 import { MatDialog } from '@angular/material/dialog';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { CommonService } from 'src/app/_services/common.Service';
@@ -50,7 +51,6 @@ export class AttendanceRecordsComponent {
 
   years: number[] = [];
   selectedYear: number;
-  processedUsers: Set<string> = new Set();
   leave: any;
   holidays: any;
   selectedUser: any;
@@ -85,7 +85,6 @@ export class AttendanceRecordsComponent {
         console.error('An error occurred:', error);
       }
     });
-
     this.loadDatesForSelectedMonth();
   }
 
@@ -128,29 +127,41 @@ export class AttendanceRecordsComponent {
             }
           );
         } else {
-          alert('Invalid CSV file. Please check the columns and data.');
+          this.toast.error('Invalid CSV file. Please check the columns and data.');
         }
       };
-      reader.readAsText(file, 'UTF-8');  // Ensuring UTF-8 encoding
+      reader.readAsText(file, 'UTF-8');
     }
   }
 
   parseCSV(csvData: string): any[] {
     const rows = csvData.split('\n').map(row => row.trim()).filter(row => row);
-    if (rows.length < 2) return [];  // Ensure at least header + one row
-
+    if (rows.length < 2) return [];
+  
     const header = rows[0].split(',').map(col => col.trim());
     return rows.slice(1).map(row => {
       const values = row.split(',').map(val => val.trim());
+  
+      // Convert date format to YYYY-MM-DD
+      const formattedDate = this.formatDate(values[1]);
       return {
         EmpCode: values[0] || '',
-        Date: values[1] || '',
+        Date: formattedDate, // Ensure the correct date format
         StartTime: values[2] || '',
         EndTime: values[3] || ''
       };
     });
   }
-
+  
+  // Utility function to format date
+  formatDate(dateString: string): string {
+    const date = moment(dateString, [
+      "YYYY-MM-DD", "DD/MM/YYYY", "MM/DD/YYYY", "DD-MM-YYYY", "MM-DD-YYYY"
+    ], true);
+  
+    return date.isValid() ? date.format("YYYY-MM-DD") : '';
+  }
+  
   validateCSV(data: any[]): boolean {
     const requiredKeys = ['EmpCode', 'Date', 'StartTime', 'EndTime'];
     return data.every(row => requiredKeys.every(key => row.hasOwnProperty(key) && row[key] !== ''));
@@ -163,6 +174,7 @@ export class AttendanceRecordsComponent {
   closeModal() {
     this.modalService.dismissAll();
   }
+
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
@@ -181,15 +193,6 @@ export class AttendanceRecordsComponent {
     });
   }
 
-  exportToCsv() {
-    // const dataToExport = this.shiftAssigments.map((data) => ({
-    //   user: this.getUser(data.user),
-    //   template: this.getShiftTemplateName(data.template),
-    //   startDate: data.startDate
-    // }));
-    // this.exportService.exportToCSV('Shift-Assignment', 'Shift-Assignment', dataToExport);
-  }
-
   viewHistory(user: any) {
     const attendanceRecords = this.currentMonthDates.map(date => {
       return {
@@ -197,32 +200,32 @@ export class AttendanceRecordsComponent {
       };
     });
 
-    this.attendanceService.getShiftByUser(user.name).subscribe((res: any) => {
-      const fullHours = parseInt(res.data.minHoursPerDayToGetCreditForFullDay.split(":")[0], 10);
-      const halfHours = parseInt(res.data.minHoursPerDayToGetCreditforHalfDay.split(":")[0], 10);
-      this.fullDayDuration = fullHours * 60;
-      this.halfDayDuration = halfHours * 60;
+    // this.attendanceService.getShiftByUser(user.name).subscribe((res: any) => {
+    //   const fullHours = parseInt(res.data.minHoursPerDayToGetCreditForFullDay.split(":")[0], 10);
+    //   const halfHours = parseInt(res.data.minHoursPerDayToGetCreditforHalfDay.split(":")[0], 10);
+    //   this.fullDayDuration = fullHours * 60;
+    //   this.halfDayDuration = halfHours * 60;
 
-      // Format the full day time based on your desired format
-      const fullDayTime = this.formatFullDayTime(fullHours, 0);  // Example format: 08:00:00
-      const halfDayTime = this.formatFullDayTime(halfHours, 0);
-      const daysInMonth = new Date(this.selectedYear, this.selectedMonth, 0).getDate();
-      // Create the selectedAttendanceRecord object
-      this.selectedAttendanceRecord = {
-        user: user.name,
-        month: this.selectedMonth,
-        year: this.selectedYear,
-        records: attendanceRecords,
-        name: this.getUser(user.name),
-        shiftFullDayTime: fullDayTime,
-        shiftHalfDayTime: halfDayTime,
-        monthDays: daysInMonth
-      };
+    //   // Format the full day time based on your desired format
+    //   const fullDayTime = this.formatFullDayTime(fullHours, 0);  // Example format: 08:00:00
+    //   const halfDayTime = this.formatFullDayTime(halfHours, 0);
+    //   const daysInMonth = new Date(this.selectedYear, this.selectedMonth, 0).getDate();
+    //   // Create the selectedAttendanceRecord object
+    //   this.selectedAttendanceRecord = {
+    //     user: user.name,
+    //     month: this.selectedMonth,
+    //     year: this.selectedYear,
+    //     records: attendanceRecords,
+    //     name: this.getUser(user.name),
+    //     shiftFullDayTime: fullDayTime,
+    //     shiftHalfDayTime: halfDayTime,
+    //     monthDays: daysInMonth
+    //   };
 
-      this.dialog.open(EmployeeAttendanceHistoryComponent, {
-        data: this.selectedAttendanceRecord
-      });
-    });
+    //   this.dialog.open(EmployeeAttendanceHistoryComponent, {
+    //     data: this.selectedAttendanceRecord
+    //   });
+    // });
   }
 
   // Helper function to format full day time (optional, customize as needed)
@@ -252,7 +255,6 @@ export class AttendanceRecordsComponent {
 
     records.forEach(record => {
       const user = record.user;
-      const date = this.formatDate(new Date(record.date));
       const duration = record.duration;
       const userName = this.getUser(record.user);
 
@@ -264,7 +266,7 @@ export class AttendanceRecordsComponent {
         };
       }
       groupedRecords[user].attendance.push({
-        date: date,
+        date: record.date,
         duration: duration
       });
     });
@@ -272,7 +274,7 @@ export class AttendanceRecordsComponent {
   }
 
   getAttendanceByMonth() {
-    const payload = { skip: '', next: '', month: this.selectedMonth, year: this.selectedYear };
+    const payload = { skip: '', next: '1000000', month: this.selectedMonth, year: this.selectedYear };
     return this.attendanceService.getAttendanceRecordsByMonth(payload).pipe(
       map((res: any) => res.data)
     );
@@ -295,13 +297,6 @@ export class AttendanceRecordsComponent {
     }
   }
 
-  formatDate(date: Date): string {
-    const year = date.getFullYear();
-    const month = ('0' + (date.getMonth() + 1)).slice(-2);
-    const day = ('0' + date.getDate()).slice(-2);
-    return `${year}-${month}-${day}`;
-  }
-
   generateYearList() {
     const currentYear = new Date().getFullYear();
     this.years = [currentYear - 1, currentYear, currentYear + 1];
@@ -315,27 +310,12 @@ export class AttendanceRecordsComponent {
     });
   }
 
-  getShiftByUser(user: any): any {
-
-    if (this.processedUsers.has(user.name)) {
-      return;
-    }
-    this.processedUsers.add(user.name);
-    this.attendanceService.getShiftByUser(user.name).subscribe((res: any) => {
-      const fullHours = parseInt(res.data.minHoursPerDayToGetCreditForFullDay.split(":")[0], 10);
-      const halfHours = parseInt(res.data.minHoursPerDayToGetCreditforHalfDay.split(":")[0], 10);
-
-      this.fullDayDuration = fullHours * 60;
-      this.halfDayDuration = halfHours * 60;
-    });
-  }
-
   getAttendanceStatus(user: any, date: Date): string {
     const attendance = user.attendance.find((att: any) => new Date(att.date).toDateString() === date.toDateString());
-    this.getShiftByUser(user);
+    // this.getShiftByUser(user);
     const today = new Date();
     if (date > today) {
-      return 'notApplicable';
+      // return 'notApplicable';
     }
 
     if (this.isDateOnLeave(user.name, date)) {
@@ -364,7 +344,7 @@ export class AttendanceRecordsComponent {
   }
 
   getDetails() {
-    return this.leaveService.getLeaveApplication({ skip: '', next: '' });
+    return this.leaveService.getLeaveApplication({ skip: '', next: '100000' });
   }
 
   isDateOnLeave(user: any, date: Date): boolean {
@@ -392,7 +372,7 @@ export class AttendanceRecordsComponent {
   }
 
   getHolidays() {
-    let payload = { skip: '', next: '', year: this.selectedYear };
+    let payload = { skip: '', next: '100000', year: this.selectedYear };
     return this.companyService.getHolidays(payload);
   }
 

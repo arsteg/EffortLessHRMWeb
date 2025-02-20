@@ -15,7 +15,7 @@ export class ViewPayslipComponent {
   attendanceSummary: any;
   salaryAfterLOP: string;
   netSalary: any;
-
+  totalPayWithOvertime: string;
 
   constructor() { }
   ngOnInit() {
@@ -24,7 +24,7 @@ export class ViewPayslipComponent {
     Number(this.viewPayroll?.totalFixedAllowance) + Number(this.viewPayroll?.totalOvertime + Number(this.viewPayroll?.totalFlexiBenefits)) -
     (Number(this.viewPayroll?.totalFixedDeduction) + Number(this.viewPayroll?.totalPfTax) + Number(this.viewPayroll?.totalIncomeTax));
   
-    console.log(this.netSalary)
+    this.calculateTotalPayWithOvertime();
   }
 
   calculateSalaryAfterLOP() {
@@ -34,5 +34,11 @@ export class ViewPayslipComponent {
     const perDayPay = monthlySalary / totalDays;
     const lopSalary = perDayPay * payableDays;
     this.salaryAfterLOP = lopSalary.toFixed(2);
+  }
+
+  calculateTotalPayWithOvertime() {
+    const lopSalary = parseFloat(this.salaryAfterLOP);
+    const totalOvertime = parseFloat(this.viewPayroll?.totalOvertime);
+    this.totalPayWithOvertime = (lopSalary + totalOvertime).toFixed(2);
   }
 }

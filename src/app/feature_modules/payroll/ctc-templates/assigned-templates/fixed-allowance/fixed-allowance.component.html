@@ -1,37 +1,48 @@
-<div class="tableContainer">
-    <form [formGroup]="fixedAllowanceForm">
-        <table>
-            <thead>
-                <tr>
-                    <th>Category</th>
-                    <th>Criteria</th>
-                    <th>Value</th>
-                    <th>Minimum Amount</th>
-                </tr>
-            </thead>
-            <tbody formArrayName="fixedAllowance">
-                <tr *ngFor="let allowance of allowances; let i = index" [formGroupName]="i">
-                    <td>{{getAllowance(allowance.get('fixedAllowance').value)}}</td>
-                    <td>
-                        <select formControlName="criteria">
-                            <option value="Amount">Amount</option>
-                            <option value="Percentage">Percentage</option>
-                        </select>
-                    </td>
-                    <td>
-                        <ng-container [ngSwitch]="allowance?.get('criteria').value">
-                            <input *ngSwitchCase="'Amount'" type="number" formControlName="value" class="form-control"
-                                placeholder="Enter Amount">
-                            <input *ngSwitchCase="'Percentage'" type="number" formControlName="value"
-                                class="form-control" placeholder="Enter Percentage">
-                        </ng-container>
-                    </td>
-                    <td>
-                        <input type="number" formControlName="minimumAmount" class="form-control"
-                            placeholder="Blank for No Amount">
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </form>
+<div class="mt-2 px-2">
+  <form [formGroup]="fixedAllowanceForm">
+    <table mat-table [dataSource]="allowances">
+      <ng-container matColumnDef="category">
+        <th mat-header-cell *matHeaderCellDef> Category </th>
+        <td mat-cell *matCellDef="let allowance"> {{allowance.get('fixedAllowanceLabel').value}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="criteria">
+        <th mat-header-cell *matHeaderCellDef> Criteria </th>
+        <td mat-cell *matCellDef="let allowance" [formGroup]="allowance">
+          <mat-form-field appearance="fill">
+            <mat-select formControlName="criteria">
+              <mat-option value="Amount">Amount</mat-option>
+              <mat-option value="Percentage">Percentage</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="value">
+        <th mat-header-cell *matHeaderCellDef> Value </th>
+        <td mat-cell *matCellDef="let allowance" [formGroup]="allowance">
+          <ng-container [ngSwitch]="allowance?.get('criteria').value">
+            <mat-form-field appearance="fill" *ngSwitchCase="'Amount'">
+              <input matInput type="number" formControlName="value" placeholder="Enter Amount">
+            </mat-form-field>
+            <mat-form-field appearance="fill" *ngSwitchCase="'Percentage'">
+              <input matInput type="number" formControlName="value" placeholder="Enter Percentage">
+            </mat-form-field>
+          </ng-container>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="minimumAmount">
+        <th mat-header-cell *matHeaderCellDef> Minimum Amount </th>
+        <td mat-cell *matCellDef="let allowance" [formGroup]="allowance">
+          <mat-form-field appearance="fill">
+            <input matInput type="number" formControlName="minimumAmount" placeholder="Blank for No Amount">
+          </mat-form-field>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="['category', 'criteria', 'value', 'minimumAmount']"></tr>
+      <tr mat-row *matRowDef="let row; columns: ['category', 'criteria', 'value', 'minimumAmount'];"></tr>
+    </table>
+  </form>
 </div>

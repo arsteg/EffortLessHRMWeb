@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Output, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { forkJoin } from 'rxjs';
 import { CommonService } from 'src/app/_services/common.Service';
@@ -30,15 +29,16 @@ export class PayrollHistoryComponent {
   dataSource: MatTableDataSource<any>;
   @Output() changeView = new EventEmitter<void>();
   @ViewChild('addDialogTemplate') addDialogTemplate: TemplateRef<any>;
+  @ViewChild('addUserModal') addUserModal: TemplateRef<any>;
+  salaries: any;
 
   months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-  constructor(private modalService: NgbModal,
+  constructor(private dialog: MatDialog,
     private payrollService: PayrollService,
     private fb: FormBuilder,
     private toast: ToastrService,
     private commonService: CommonService,
-    private dialog: MatDialog,
     private userService: UserService
   ) {
     this.payrollForm = this.fb.group({
@@ -71,9 +71,7 @@ export class PayrollHistoryComponent {
   }
 
   openSteps() {
-    this.payrollService.getPayrollUsers({skip: '', next: '', payroll: this.selectedPayroll?._id}).subscribe((res: any) => {
-      this.payrollService?.payrollUsers.next(res.data);
-    });
+    this.payrollService?.payrollUsers.next(this.selectedPayroll?.users);
     this.isAllEmployees = false;
     this.changeView.emit();
   }
@@ -83,22 +81,34 @@ export class PayrollHistoryComponent {
     this.years = [currentYear - 1, currentYear, currentYear + 1];
   }
 
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
+  openAddDialog() {
+    const dialogRef = this.dialog.open(this.addDialogTemplate, {
+      width: '600px',
+      disableClose: true
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+      }
+    });
   }
 
-  open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+  closeAddDialog() {
+    this.dialog.closeAll();
+  }
+
+  openAddUserDialog() {
+    const dialogRef = this.dialog.open(this.addUserModal, {
+      width: '600px',
+      disableClose: true
     });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+      }
+    });
+  }
+
+  closeAddUserDialog() {
+    this.dialog.closeAll();
   }
 
   getPayrollWithUserCounts() {
@@ -111,6 +121,7 @@ export class PayrollHistoryComponent {
 
         this.payrollService.getPayrollUsers(payrollUsersPayload).subscribe((payrollUsersRes: any) => {
           const users = payrollUsersRes.data;
+          
           this.payrollUsers = users;
           const activeCount = users.filter(user => user.status === 'Active').length;
           const onHoldCount = users.filter(user => user.status === 'OnHold').length;
@@ -120,7 +131,8 @@ export class PayrollHistoryComponent {
             ...payrollItem,
             activeCount: activeCount,
             onHoldCount: onHoldCount,
-            processedCount: processedCount
+            processedCount: processedCount,
+            users: this.payrollUsers
           };
 
           this.dataSource = new MatTableDataSource(this.payroll);
@@ -145,21 +157,6 @@ export class PayrollHistoryComponent {
     return monthNames[monthNumber - 1] || "Invalid month";
   }
 
-  openAddDialog() {
-    const dialogRef = this.dialog.open(this.addDialogTemplate, {
-      width: '600px',
-      disableClose: true
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-      }
-    });
-  }
-
-  closeAddDialog() {
-    this.dialog.closeAll();
-  }
-
   onSubmission() {
     if (this.payrollForm.valid) {
       this.payrollService.addPayroll(this.payrollForm.value).subscribe((res: any) => {
@@ -177,7 +174,7 @@ export class PayrollHistoryComponent {
   }
 
   updatePayrollUser() {
-    if (this.payrollUserForm.valid) {
+    if (this.payrollUserForm.valid && this.salaries.length > 0) {
       this.payrollUserForm.value.payroll = this.selectedPayroll;
 
       this.userService.getSalaryByUserId(this.payrollUserForm.value.user).subscribe((res: any) => {
@@ -199,12 +196,17 @@ export class PayrollHistoryComponent {
           })
         })
       })
+    } else {
+      this.payrollUserForm.markAllAsTouched();
+      if (this.salaries.length === 0) {
+        this.toast.error('Please add the Salary details first to add the selected user in payroll.');
+      }
     }
-    else { this.payrollUserForm.markAllAsTouched(); }
   }
 
   getGrossSalaryBySalaryStructure(): void {
     this.userService.getSalaryByUserId(this.payrollUserForm.value.user).subscribe((res: any) => {
+      this.salaries = res.data;
       const lastSalaryRecord = res.data[res.data.length - 1];
       this.payrollUserForm.get('totalGrossSalary').disable();
       return this.payrollUserForm.patchValue({

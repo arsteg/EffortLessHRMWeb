@@ -35,7 +35,19 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatCardModule }from '@angular/material/card';
+import {MAT_DATE_FORMATS} from '@angular/material/core';
 
+export const MY_DATE_FORMATS = {
+  parse: {
+    dateInput: 'YYYY-MM-DD',  // for parsing input string
+  },
+  display: {
+    dateInput: 'YYYY-MM-DD',  // for displaying the input field
+    monthYearLabel: 'MMM YYYY', // e.g., "Jan 2025"
+    dateA11yLabel: 'LL', // accessibility
+    monthYearA11yLabel: 'MMMM YYYY',
+  }
+};
 @NgModule({
   declarations: [SortDirective, SearchPipe, MilliSecondsToTimePipe, PaginationComponent],
   imports: [
@@ -119,5 +131,8 @@ import { MatCardModule }from '@angular/material/card';
     CUSTOM_ELEMENTS_SCHEMA,
     NO_ERRORS_SCHEMA
   ],
+  providers: [
+    {provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMATS}
+  ]
 })
 export class SharedModule { }

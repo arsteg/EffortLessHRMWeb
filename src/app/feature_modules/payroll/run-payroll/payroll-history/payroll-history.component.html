@@ -1,246 +1,199 @@
 <div class="main-content" *ngIf="isAllEmployees">
-    <div class="container-fluid">
-        <div class="bg-white mt-2">
-            <div class="d-flex align-items-center px-2 py-1">
-                <p class="mb-0 me-auto">Payroll History</p>
-                <div class="d-flex align-items-center">
-                    <span class="bi bi-search searchIcon"></span>
-                    <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
-                        name="searchText" aria-label="default input example">
-                    <button class="addBtn ms-2" mat-raised-button (click)="openAddDialog()">Add Payroll</button>
-                </div>
-            </div>
-            <table mat-table [dataSource]="dataSource">
-                <ng-container matColumnDef="payrollPeriod">
-                    <th mat-header-cell *matHeaderCellDef> Payroll Period </th>
-                    <td mat-cell *matCellDef="let data"> {{data?.month}} - {{data?.year}} </td>
-                </ng-container>
-
-                <ng-container matColumnDef="date">
-                    <th mat-header-cell *matHeaderCellDef> Date </th>
-                    <td mat-cell *matCellDef="let data"> {{data?.date | date:'mediumDate'}} </td>
-                </ng-container>
-
-                <ng-container matColumnDef="payrollDetails">
-                    <th mat-header-cell *matHeaderCellDef> Payroll Details </th>
-                    <td mat-cell *matCellDef="let data">
-                        <div class="d-flex align-items-center">
-                            <mat-icon matTooltipPosition="before"
-                                matTooltip="Processed Employees: {{data?.processedCount}}"
-                                aria-label="Processed Employees">check_circle</mat-icon>
-
-                            <mat-icon matTooltipPosition="below" matTooltip="Active Employees: {{data?.activeCount}}"
-                                aria-label="Active Employees">person</mat-icon>
-
-                            <mat-icon matTooltipPosition="after" matTooltip="On-Hold Employees: {{data?.onHoldCount}}"
-                                aria-label="On-Hold Employees">pause_circle</mat-icon>
-                        </div>
-                    </td>
-                </ng-container>
-
-                <ng-container matColumnDef="status">
-                    <th mat-header-cell *matHeaderCellDef> Status </th>
-                    <td mat-cell *matCellDef="let data">
-                        <mat-icon *ngIf="data?.status === 'InProgress'" matTooltip="In Progress" aria-label="In Progress">hourglass_empty</mat-icon>
-                        <mat-icon *ngIf="data?.status === 'Complete Approval Pending'" matTooltip="Complete Approval Pending" aria-label="Complete Approval Pending">hourglass_full</mat-icon>
-                        <mat-icon *ngIf="data?.status === 'OnHold'" matTooltip="On Hold" aria-label="On Hold">pause_circle</mat-icon>
-                        <mat-icon *ngIf="data?.status === 'Processed'" matTooltip="Processed" aria-label="Processed">check_circle</mat-icon>
-                    </td>
-                </ng-container>
-
-                <ng-container matColumnDef="actions">
-                    <th mat-header-cell *matHeaderCellDef> Actions </th>
-                    <td mat-cell *matCellDef="let data">
-                        <button mat-icon-button [matMenuTriggerFor]="menu">
-                            <mat-icon>more_vert</mat-icon>
-                        </button>
-                        <mat-menu #menu="matMenu">
-                            <button mat-menu-item>
-                                <mat-icon>download</mat-icon>
-                                <span>Download Register</span>
-                            </button>
-                            <button mat-menu-item>
-                                <mat-icon>assignment_turned_in</mat-icon>
-                                <span>Tax Register</span>
-                            </button>
-                            <button mat-menu-item (click)="selectedPayroll = data?._id; open(addUserModal)">
-                                <mat-icon>person_add</mat-icon>
-                                <span>Add Employee</span>
-                            </button>
-                            <button mat-menu-item (click)="selectedPayroll = data; openSteps();">
-                                <mat-icon>edit</mat-icon>
-                                <span>Edit</span>
-                            </button>
-                            <button mat-menu-item (click)="deleteDialog(data._id)">
-                                <mat-icon>delete</mat-icon>
-                                <span>Delete</span>
-                            </button>
-                        </mat-menu>
-                    </td>
-                </ng-container>
-
-                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-            </table>
+  <div class="container-fluid">
+    <div class="bg-white mt-2">
+      <div class="d-flex align-items-center px-2 py-1">
+        <p class="mb-0 me-auto">Payroll History</p>
+        <div class="d-flex align-items-center">
+          <span class="bi bi-search searchIcon"></span>
+          <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
+            name="searchText" aria-label="default input example">
+          <button class="addBtn ms-2" mat-raised-button (click)="openAddDialog()">Add Payroll</button>
         </div>
+      </div>
+      <table mat-table [dataSource]="dataSource">
+        <ng-container matColumnDef="payrollPeriod">
+          <th mat-header-cell *matHeaderCellDef> Payroll Period </th>
+          <td mat-cell *matCellDef="let data"> {{data?.month}} - {{data?.year}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef> Date </th>
+          <td mat-cell *matCellDef="let data"> {{data?.date | date:'mediumDate'}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="payrollDetails">
+          <th mat-header-cell *matHeaderCellDef> Payroll Details </th>
+          <td mat-cell *matCellDef="let data">
+            <div class="d-flex align-items-center">
+              <mat-icon matTooltipPosition="before" matTooltip="Processed Employees: {{data?.processedCount}}"
+                aria-label="Processed Employees">check_circle</mat-icon>
+
+              <mat-icon matTooltipPosition="below" matTooltip="Active Employees: {{data?.activeCount}}"
+                aria-label="Active Employees">person</mat-icon>
+
+              <mat-icon matTooltipPosition="after" matTooltip="On-Hold Employees: {{data?.onHoldCount}}"
+                aria-label="On-Hold Employees">pause_circle</mat-icon>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef> Status </th>
+          <td mat-cell *matCellDef="let data">
+            <mat-icon *ngIf="data?.status === 'InProgress'" matTooltip="In Progress"
+              aria-label="In Progress">hourglass_empty</mat-icon>
+            <mat-icon *ngIf="data?.status === 'Complete Approval Pending'" matTooltip="Complete Approval Pending"
+              aria-label="Complete Approval Pending">hourglass_full</mat-icon>
+            <mat-icon *ngIf="data?.status === 'OnHold'" matTooltip="On Hold"
+              aria-label="On Hold">pause_circle</mat-icon>
+            <mat-icon *ngIf="data?.status === 'Processed'" matTooltip="Processed"
+              aria-label="Processed">check_circle</mat-icon>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef> Actions </th>
+          <td mat-cell *matCellDef="let data">
+            <button mat-icon-button [matMenuTriggerFor]="menu">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="selectedPayroll = data?._id; openAddUserDialog()">
+                <mat-icon>person_add</mat-icon>
+                <span>Add Employee</span>
+              </button>
+              <button mat-menu-item (click)="selectedPayroll = data; openSteps();">
+                <mat-icon>edit</mat-icon>
+                <span>Edit</span>
+              </button>
+              <button mat-menu-item (click)="deleteDialog(data._id)">
+                <mat-icon>delete</mat-icon>
+                <span>Delete</span>
+              </button>
+            </mat-menu>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
     </div>
+  </div>
 </div>
 
 <ng-template #addDialogTemplate>
-    <h1 mat-dialog-title>Create Payroll</h1>
-    <div mat-dialog-content>
-        <form [formGroup]="payrollForm" (ngSubmit)="onSubmission()">
+  <h1 mat-dialog-title>Create Payroll</h1>
+  <div mat-dialog-content>
+    <form [formGroup]="payrollForm" (ngSubmit)="onSubmission()">
+      <div class="row">
+        <mat-form-field appearance="outline" class="col-md-6 my-2">
+          <mat-label>Payroll Date</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="date">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+          <mat-error *ngIf="payrollForm.get('date').hasError('required')">Date is required</mat-error>
+        </mat-form-field>
 
-            <div class="row">
-                <mat-form-field appearance="outline" class="col-md-6 my-2">
-                    <mat-label>PayrollDate</mat-label>
-                    <input matInput [matDatepicker]="picker" formControlName="date">
-                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                    <mat-datepicker #picker></mat-datepicker>
-                    <mat-error *ngIf="payrollForm.get('date').hasError('required')">Date is required</mat-error>
-                </mat-form-field>
+        <mat-form-field appearance="outline" class="my-2 col-md-6">
+          <mat-label>Payroll Status</mat-label>
+          <mat-select formControlName="status">
+            <mat-option value="" disabled>Select payroll status</mat-option>
+            <mat-option value="InProgress">In Progress</mat-option>
+            <mat-option value="Complete Approval Pending">Complete Approval Pending</mat-option>
+            <mat-option value="OnHold">On Hold</mat-option>
+            <mat-option value="Processed">Processed</mat-option>
+          </mat-select>
+          <mat-error *ngIf="payrollForm.get('status').hasError('required')">Status is required</mat-error>
+        </mat-form-field>
 
-                <mat-form-field appearance="outline" class="my-2 col-md-6">
-                    <mat-label>Payroll Status</mat-label>
-                    <mat-select formControlName="status">
-                        <mat-option value="" disabled>Select payroll status</mat-option>
-                        <mat-option value="InProgress">In Progress</mat-option>
-                        <mat-option value="Complete Approval Pending">Complete Approval Pending</mat-option>
-                        <mat-option value="OnHold">On Hold</mat-option>
-                        <mat-option value="Processed">Processed</mat-option>
-                    </mat-select>
-                    <mat-error *ngIf="payrollForm.get('status').hasError('required')">Status is required</mat-error>
-                </mat-form-field>
+        <mat-form-field appearance="outline" class="my-2 col-md-6">
+          <mat-label>Payroll Month</mat-label>
+          <mat-select formControlName="month">
+            <mat-option *ngFor="let month of months" [value]="month">{{ month }}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="payrollForm.get('month').hasError('required')">Month is required</mat-error>
+        </mat-form-field>
 
-                <mat-form-field appearance="outline" class="my-2 col-md-6">
-                    <mat-label>Payroll Month</mat-label>
-                    <mat-select formControlName="month">
-                        <mat-option *ngFor="let month of months" [value]="month">{{ month }}</mat-option>
-                    </mat-select>
-                    <mat-error *ngIf="payrollForm.get('month').hasError('required')">Month is required</mat-error>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline" class="my-2 col-md-6">
-                    <mat-label>Payroll Year</mat-label>
-                    <mat-select formControlName="year">
-                        <mat-option *ngFor="let year of years" [value]="year">{{ year }}</mat-option>
-                    </mat-select>
-                    <mat-error *ngIf="payrollForm.get('year').hasError('required')">Year is required</mat-error>
-                </mat-form-field>
-            </div>
-        </form>
-    </div>
-    <div mat-dialog-actions>
-        <button mat-button (click)="closeAddDialog()">Cancel</button>
-        <button mat-raised-button color="primary" (click)="onSubmission()">Save</button>
-    </div>
+        <mat-form-field appearance="outline" class="my-2 col-md-6">
+          <mat-label>Payroll Year</mat-label>
+          <mat-select formControlName="year">
+            <mat-option *ngFor="let year of years" [value]="year">{{ year }}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="payrollForm.get('year').hasError('required')">Year is required</mat-error>
+        </mat-form-field>
+      </div>
+    </form>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button (click)="closeAddDialog()">Cancel</button>
+    <button mat-raised-button color="primary" (click)="onSubmission()">Save</button>
+  </div>
 </ng-template>
 
 <ng-template #addUserModal let-addUserModal>
-    <div class="modal-header border-bottom justify-content-between d-flex mb-2 pt-0">
-        <div>
-            <h1 class="modal-title text-muted mb-0">Assign Payroll to Employees</h1>
-        </div>
-        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
-                (click)="addUserModal.close('Escape clicked')"></button>
-        </div>
-
-    </div>
+  <h1 mat-dialog-title>Assign Payroll to Employees</h1>
+  <div mat-dialog-content>
     <form [formGroup]="payrollUserForm" (ngSubmit)="updatePayrollUser()">
+      <div class="row">
+        <mat-form-field appearance="outline" class="col-md-6 my-2">
+          <mat-label>Employee Selection for Payroll</mat-label>
+          <mat-select formControlName="user" (selectionChange)="getGrossSalaryBySalaryStructure()">
+            <mat-option *ngFor="let user of users" [value]="user?.id">{{user?.firstName | titlecase}} {{user.lastName |
+              titlecase}}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="payrollUserForm.get('user').invalid && payrollUserForm.get('user').touched">
+            Please Choose an Employee to Assign the Payroll!
+          </mat-error>
+          <mat-error *ngIf="!salaries.length">Please add the Salary details first to add the selected user in
+            payroll.</mat-error>
+        </mat-form-field>
 
-        <div class="row">
-            <div class="form-group col-md-6">
-                <label for="" class="">Employee Selection for Payroll&nbsp;<span class="text-danger">*</span></label>
-                <select name="" id="" class="form-control" formControlName="user"
-                    (click)="getGrossSalaryBySalaryStructure()">
-                    <option [value]="user?.id" *ngFor="let user of users; let i = index">{{user?.firstName |
-                        titlecase}} {{user.lastName | titlecase}}</option>
+        <mat-form-field appearance="outline" class="col-md-6 my-2">
+          <mat-label>Total Home Take</mat-label>
+          <input matInput type="number" formControlName="totalHomeTake" placeholder="Enter Total Home Take">
+        </mat-form-field>
+      </div>
 
-                </select>
-                <div *ngIf="payrollUserForm.get('user').invalid && payrollUserForm.get('user').touched"
-                    class="text-danger error">
-                    Please Choose an Employee to Assign the Payroll!
-                </div>
-            </div>
+      <div class="row">
+        <mat-form-field appearance="outline" class="col-md-6 my-2">
+          <mat-label>Total Flexi Benefits</mat-label>
+          <input matInput type="number" formControlName="totalFlexiBenefits" placeholder="Enter Total Flexi Benefits">
+        </mat-form-field>
 
-            <div class="form-group my-2 col-md-6">
-                <label for="totalHomeTakeInput">Total Home Take</label>
-                <input type="number" id="totalHomeTakeInput" formControlName="totalHomeTake" class="form-control"
-                    placeholder="Enter Total Home Take" />
-            </div>
-        </div>
+        <mat-form-field appearance="outline" class="col-md-6 my-2">
+          <mat-label>Total CTC</mat-label>
+          <input matInput type="number" formControlName="totalCTC" placeholder="Enter Total CTC">
+        </mat-form-field>
+      </div>
 
-        <div class="row">
-            <div class="form-group my-2 col-md-6">
-                <label for="totalFlexiBenefitsInput">Total Flexi Benefits</label>
-                <input type="number" id="totalFlexiBenefitsInput" formControlName="totalFlexiBenefits"
-                    class="form-control" placeholder="Enter Total Flexi Benefits" />
-            </div>
+      <div class="row">
+        <mat-form-field appearance="outline" class="col-md-6 my-2">
+          <mat-label>Total Gross Salary</mat-label>
+          <input matInput type="number" formControlName="totalGrossSalary" placeholder="Enter Total Gross Salary">
+        </mat-form-field>
 
-            <div class="form-group my-2 col-md-6">
-                <label for="totalCTCInput">Total CTC</label>
-                <input type="number" id="totalCTCInput" formControlName="totalCTC" class="form-control"
-                    placeholder="Enter Total CTC" />
-            </div>
-        </div>
+        <mat-form-field appearance="outline" class="col-md-6 my-2">
+          <mat-label>Total Take Home</mat-label>
+          <input matInput type="number" formControlName="totalTakeHome" placeholder="Enter Total Take Home">
+        </mat-form-field>
+      </div>
 
-        <div class="row">
-
-            <div class="form-group my-2 col-md-6">
-                <label for="totalGrossSalaryInput">Total Gross Salary</label>
-                <input type="number" id="totalGrossSalaryInput" formControlName="totalGrossSalary" class="form-control"
-                    placeholder="Enter Total Gross Salary" />
-            </div>
-
-            <div class="form-group my-2 col-md-6">
-                <label for="totalTakeHomeInput">Total Take Home</label>
-                <input type="number" id="totalTakeHomeInput" formControlName="totalTakeHome" class="form-control"
-                    placeholder="Enter Total Take Home" />
-            </div>
-        </div>
-
-        <div class="form-group my-2 col-md-6">
-            <label for="statusInput">Status</label>
-            <select id="statusInput" formControlName="status" class="form-control">
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
-            </select>
-        </div>
-
-        <div class="d-flex justify-content-between">
-            <button mat-raised-button type="button">Cancel</button>
-            <button mat-raised-button type="submit" class="addBtn">Save</button>
-        </div>
+      <mat-form-field appearance="outline" class="col-md-6 my-2">
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="status">
+          <mat-option value="Active">Active</mat-option>
+          <mat-option value="Inactive">Inactive</mat-option>
+        </mat-select>
+      </mat-form-field>
     </form>
-
-
-</ng-template>
-
-<ng-template #modal let-modal>
-    <div class="modal-header border-bottom justify-content-between d-flex mb-2 pt-0">
-        <div>
-            <h1 class="modal-title text-muted mb-0">How do you want to Edit Payroll?</h1>
-        </div>
-        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
-                (click)="modal.close('Escape clicked')"></button>
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label for="">Option 1: Edit Payroll for All Employees</label>
-        <button type="button" class="submenuTab active rounded-pill"
-            (click)="isAllEmployees = true; modal.close('Escape clicked')" data-bs-dismiss="modal"><i
-                class="bi bi-people"></i> All
-            Employees</button>
-    </div>
-
-    <div class="form-group mt-2">
-        <label for="">Option 2: Edit Payroll for Selected Employees</label>
-        <button class="submenuTab active rounded-pill"><i class="bi bi-people"></i> Selected Employees</button>
-    </div>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button (click)="closeAddUserDialog()">Cancel</button>
+    <button mat-raised-button color="primary" (click)="updatePayrollUser()">Save</button>
+  </div>
 </ng-template>
 
 <div *ngIf="!isAllEmployees">
-    <button mat-raised-button class="bi bi-arrow-left addBtn" (click)="goBack()">Back</button>
-    <app-payroll-steps [selectedPayroll]="selectedPayroll"></app-payroll-steps>
+  <button mat-raised-button class="bi bi-arrow-left addBtn" (click)="goBack()">Back</button>
+  <app-payroll-steps [selectedPayroll]="selectedPayroll"></app-payroll-steps>
 </div>

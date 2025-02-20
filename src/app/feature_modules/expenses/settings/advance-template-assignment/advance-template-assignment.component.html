@@ -39,11 +39,13 @@
             <mat-icon>more_vert</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
-            <button mat-menu-item *ngIf="element.approvalType == 'employee-wise'" (click)="changeMode='Update'; isEdit = true; showApproverFields = true; selectedTemplateAssignment = element; setFormValues(); open(addModal); isEdit = true">
+            <button mat-menu-item *ngIf="element.approvalType == 'employee-wise'"
+              (click)="changeMode='Update'; isEdit = true; showApproverFields = true; selectedTemplateAssignment = element; setFormValues(); open(addModal); isEdit = true">
               <mat-icon>edit</mat-icon>
               <span>Edit</span>
             </button>
-            <button mat-menu-item (click)="isEdit = true; changeMode = 'View'; selectedTemplateAssignment = element; setFormValues(); open(addModal);">
+            <button mat-menu-item
+              (click)="isEdit = true; changeMode = 'View'; selectedTemplateAssignment = element; setFormValues(); open(addModal);">
               <mat-icon>visibility</mat-icon>
               <span>View</span>
             </button>
@@ -64,107 +66,95 @@
   </div>
 </div>
 
-<ng-template #addModal let-modal>
-  <div class="modal-header border-bottom mb-2 pt-0 d-flex justify-content-between">
-    <div>
-      <h1 class="modal-title text-muted mb-0">{{changeMode}} Advance Template Assignment</h1>
-    </div>
-    <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
-        (click)="modal.close('Escape clicked')"></button>
-    </div>
+<ng-template #addModal>
+
+  <h1 mat-dialog-title>{{changeMode}} Advance Template Assignment</h1>
+  <div mat-dialog-content>
+
+    <form [formGroup]="addTemplateAssignmentForm" (ngSubmit)="onSubmit()">
+
+      <mat-form-field class="w-100">
+        <mat-label>User for Advance Expense Template Assignment</mat-label>
+        <mat-select formControlName="user" [attr.disabled]="changeMode === 'View'">
+          <mat-option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+            {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
+          </mat-option>
+        </mat-select>
+        <mat-error
+          *ngIf="addTemplateAssignmentForm.get('user').invalid && addTemplateAssignmentForm.get('user').touched">
+          Please select user
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field  class="w-100">
+        <mat-label>Select Template</mat-label>
+        <mat-select formControlName="advanceTemplate" [attr.disabled]="changeMode === 'View'"
+          (selectionChange)="onTemplateSelectionChange($event)">
+          <mat-option *ngFor="let template of advanceTemplates" [value]="template?._id">
+            {{template?.policyLabel}}
+          </mat-option>
+        </mat-select>
+        <mat-error
+          *ngIf="addTemplateAssignmentForm.get('advanceTemplate').invalid && addTemplateAssignmentForm.get('advanceTemplate').touched">
+          Please select advance template
+        </mat-error>
+      </mat-form-field>
+
+      <div *ngIf="showApproverFields">
+        <mat-form-field class="w-100"
+          *ngIf="(templateById?.approvalType === 'template-wise' || templateById?.approvalType === 'employee-wise') && templateById?.approvalLevel === '1'">
+          <mat-label>Select Primary Approver of Expense Template</mat-label>
+          <mat-select #primaryApproverField name="member" formControlName="primaryApprover">
+            <mat-option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+              {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="d-flex gap-2"
+          *ngIf="(templateById?.approvalType === 'template-wise' || templateById?.approvalType === 'employee-wise') && templateById?.approvalLevel === '2'">
+          <mat-form-field class="w-100">
+            <mat-label>Choose Primary Approver</mat-label>
+            <mat-select #primaryApproverField name="primary" [disabled] formControlName="primaryApprover">
+              <mat-option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                {{assignee?.firstName | titlecase}} {{assignee?.lastName | titlecase}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field class="w-100">
+            <mat-label>Choose Secondary Approver</mat-label>
+            <mat-select #secondaryApproverField [disabled] formControlName="secondaryApprover">
+              <mat-option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row mt-3">
+        <mat-form-field class="w-50">
+          <mat-label>Effective From Date</mat-label>
+          <input matInput [matDatepicker]="picker" required formControlName="effectiveDate" placeholder="Choose a date">
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+          <mat-error *ngIf="addTemplateAssignmentForm.get('effectiveDate').invalid && addTemplateAssignmentForm.get('effectiveDate').touched">
+            Please select date
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="mt-2" *ngIf="changeMode == 'Add' || 'Update'">
+        <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
+          <div>
+            <button mat-raised-button type="button" (click)="dialogRef.close()">Cancel</button>
+            <button mat-stroked-button type="button" (click)="setFormValues()">Reset</button>
+          </div>
+          <button mat-raised-button class="addBtn" type="submit">Submit</button>
+        </div>
+      </div>
+    </form>
   </div>
 
-  <form action="" [formGroup]="addTemplateAssignmentForm" (ngSubmit)="onSubmit()">
 
-    <div><label for="member"> Select User for Advance Expense Template Assignment <span
-          class="text-danger">*</span></label>
-      <select id="member" name="member" class="form-control" formControlName="user"
-        [attr.disabled]="changeMode === 'View'" class="form-select form-select-sm"
-        aria-label=".form-select-sm example">
-        <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
-          {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
-        </option>
-      </select>
-      <div *ngIf="addTemplateAssignmentForm.get('user').invalid && addTemplateAssignmentForm.get('user').touched"
-        class="text-danger error">
-        Please select User!
-      </div>
-    </div>
-
-    <div class="mt-2">
-      <label for="">Select Template <span class="text-danger">*</span></label>
-      <select id="expenseTemplate" class="form-control" formControlName="advanceTemplate"
-        [attr.disabled]="changeMode === 'View'" (change)="onTemplateSelectionChange($event)"
-        aria-label=".form-select-sm example">
-        <option *ngFor="let template of advanceTemplates" [value]="template?._id">
-          {{template?.policyLabel}}
-        </option>
-      </select>
-      <div *ngIf="addTemplateAssignmentForm.get('advanceTemplate').invalid && addTemplateAssignmentForm.get('advanceTemplate').touched"
-        class="text-danger error">
-        Please select Advance Template!
-      </div>
-    </div>
-    <div *ngIf="showApproverFields">
-      <div class="mt-2"
-        *ngIf="(templateById?.approvalType === 'template-wise' || templateById?.approvalType === 'employee-wise') && templateById?.approvalLevel === '1'">
-        <label for="">Select Primary Approver of Expense Template</label>
-        <select id="primaryApprover" #primaryApproverField name="member" class="form-control"
-          formControlName="primaryApprover" class="form-select form-select-sm"
-          aria-label=".form-select-sm example">
-          <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
-            {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
-          </option>
-        </select>
-      </div>
-      <div
-        *ngIf="(templateById?.approvalType === 'template-wise' || templateById?.approvalType === 'employee-wise') && templateById?.approvalLevel === '2'">
-        <div class="form-group my-2">
-          <label for="">Choose Primary Approver</label>
-          <select id="primaryApprover" #primaryApproverField name="primary" [disabled] class="form-control"
-            formControlName="primaryApprover" class="form-select form-select-sm"
-            aria-label=".form-select-sm example">
-            <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
-              {{assignee?.firstName | titlecase}} {{assignee?.lastName | titlecase}}
-            </option>
-          </select>
-        </div>
-
-        <div class="form-group my-2">
-          <label for="">Choose Secondary Approver</label>
-          <select id="secondaryApprover" #secondaryApproverField name="secondary" [disabled]
-            class="form-control" formControlName="secondaryApprover" class="form-select form-select-sm"
-            aria-label="form-select-sm example">
-            <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
-              {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
-            </option>
-          </select>
-        </div>
-      </div>
-    </div>
-
-    <div class="row mt-3">
-      <label for="startDate" class="text-start">Select Effective From Date <span
-          class="text-danger">*</span></label>
-    </div>
-    <div class="row">
-      <div class="col-12 form-group mb-3">
-        <input placeholder="YYYY-MM-DD" formControlName="effectiveDate" class="form-control"
-          [attr.disabled]="changeMode === 'View'" #datepickerYMD="bsDatepicker" bsDatepicker
-          [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" required>
-        <div *ngIf="addTemplateAssignmentForm.get('effectiveDate').invalid && addTemplateAssignmentForm.get('effectiveDate').touched"
-          class="text-danger error">
-          Please select Date!
-        </div>
-      </div>
-    </div>
-
-    <div class="mt-2" *ngIf="changeMode == 'Add' || 'Update'">
-      <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
-        <button mat-raised-button type="button" (click)="setFormValues()">Cancel</button>
-        <button mat-raised-button class="addBtn" type="submit">Submit</button>
-
-      </div>
-    </div>
-  </form>
 </ng-template>

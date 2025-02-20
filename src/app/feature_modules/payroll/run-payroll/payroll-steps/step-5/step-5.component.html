@@ -8,7 +8,7 @@
                 <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
                     name="searchText" aria-label="default input example">
             </div>
-            <div class="d-flex align-items-center">
+            <div class="d-flex align-items-baseine mt-1">
                 <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
                     [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
                 <button mat-raised-button class=" ms-2 addBtn" (click)="changeMode = 'Add'; openDialog();">Add</button>

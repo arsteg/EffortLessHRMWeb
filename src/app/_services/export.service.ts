@@ -33,27 +33,43 @@ export class ExportService {
     XLSX.writeFile(wb, fileName + ".csv");
   }
 
-  exportToPdf(fileName: string, title:string, content: HTMLElement): void {
-    const pdf = new jsPDF('p', 'mm', 'a4'); // Initialize jsPDF
-    // Generate the content of the report
-    html2canvas(content).then((canvas) => {
-      const fileWidth = 208; // A4 width in mm
-      const fileHeight = (canvas.height * fileWidth) / canvas.width; // Calculate proportional height
-      const FILEURI = canvas.toDataURL('image/png');
+  exportToPdf(fileName: string, title: string, content: HTMLElement): void {
+    const pdf = new jsPDF('p', 'mm', 'a4'); // Portrait mode, A4 size
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const margin = 10; // Adjust margins
+    const titleY = 15; // Position for the title
 
-      // Add the title to the PDF
-      pdf.setFontSize(16); // Set font size for the title
-      pdf.setFont('helvetica', 'bold'); // Use bold font
-      pdf.text(title, pdf.internal.pageSize.getWidth() / 2, 15, { align: 'center' }); // Center title at y=15mm
+    html2canvas(content, { scale: 2 }).then((canvas) => {
+      const imgData = canvas.toDataURL('image/png');
+      const imgWidth = 190; // Fit width to A4
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+      let position = 25;
 
-      // Add the content below the title
-      const contentPosition = 25; // Start content below the title (leave space for the title)
-      pdf.addImage(FILEURI, 'PNG', 0, contentPosition, fileWidth, fileHeight);
+      // Add Title
+      pdf.setFontSize(16);
+      pdf.setFont('helvetica', 'bold');
+      pdf.text(title, pageWidth / 2, titleY, { align: 'center' });
 
-      // Save the file
-      pdf.save(fileName + ".pdf");
+      // Add Content
+      pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
+      heightLeft -= pdf.internal.pageSize.getHeight();
+
+      // Handle multi-page PDFs
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
+        heightLeft -= pdf.internal.pageSize.getHeight();
+      }
+
+      // Download
+      pdf.save(`${fileName}.pdf`);
+    }).catch((error) => {
+      console.error("Error generating PDF:", error);
     });
   }
+
 export(fileName: string, tableId: string, format: 'csv' | 'xls') {
   // Get the table element by ID
   const table = document.getElementById(tableId);

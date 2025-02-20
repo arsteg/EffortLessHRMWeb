@@ -25,10 +25,20 @@ export class PayrollService {
   fixedAllowance: any = new BehaviorSubject('');
   configureState: any = new BehaviorSubject('');
   assignedTemplates: any = new BehaviorSubject('');
-  ctcTempData: any = new BehaviorSubject('');
+  selectedCTCTemplate: any = new BehaviorSubject('');
+  isEdit: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  showTable: BehaviorSubject<boolean> = new BehaviorSubject(false);
   selectedFnFPayroll: any = new BehaviorSubject('');
   payrollUsers: any = new BehaviorSubject('');
   allUsers: any = new BehaviorSubject('');
+  payslip: any = new BehaviorSubject('');
+  
+  fixedAllowances: any = new BehaviorSubject('');
+  fixedDeductions: any = new BehaviorSubject('');
+  otherBenefits: any = new BehaviorSubject('');
+  fixedContributions: any = new BehaviorSubject('');
+  variableAllowances: any = new BehaviorSubject('');
+  variableDeductions: any = new BehaviorSubject('');
   
   constructor(private http: HttpClient) { }
   public getToken() {
@@ -643,6 +653,11 @@ export class PayrollService {
 
   generatedPayrollByPayroll(payroll: string): Observable<any> {
     var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/generatedPayroll-by-payroll/${payroll}`, this.httpOptions);
+    return response;
+  }
+
+  getAllGeneratedPayroll():Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/generatedPayroll-by-company`, {}, this.httpOptions);
     return response;
   }
 

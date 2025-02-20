@@ -1,11 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-import { MatDialog } from '@angular/material/dialog';
-import { Observable, forkJoin } from 'rxjs';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { CommonService } from 'src/app/_services/common.Service';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
@@ -40,12 +37,11 @@ export class AdvanceTemplatesComponent implements OnInit {
   currentPage: number = 1;
   displayedColumns: string[] = ['policyLabel', 'advanceCategories', 'actions'];
   dataSource: MatTableDataSource<any>;
-
+  dialogRef: MatDialogRef<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(private fb: FormBuilder,
-    private modalService: NgbModal,
     private expenseService: ExpensesService,
     private toast: ToastrService,
     private commonService: CommonService,
@@ -60,15 +56,6 @@ export class AdvanceTemplatesComponent implements OnInit {
     });
   }
 
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
-  }
 
 
   ngOnInit(): void {
@@ -114,10 +101,9 @@ export class AdvanceTemplatesComponent implements OnInit {
   }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    this.dialogRef = this.dialog.open(content, {
+      width: '600px',
+      disableClose: true
     });
   }
 

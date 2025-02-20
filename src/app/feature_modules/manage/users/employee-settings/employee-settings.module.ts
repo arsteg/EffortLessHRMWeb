@@ -10,7 +10,6 @@ import { EmployeeProfileComponent } from './employee-profile/employee-profile.co
 import { TaxComponent } from './tax/tax.component';
 import { ViewLoansAdvancesComponent } from './loans-advances/view-loans-advances/view-loans-advances.component';
 import { AddSalaryDetailsComponent } from './salary-details/add-salary-details/add-salary-details.component';
-import { ViewSalaryDetailsComponent } from './salary-details/view-salary-details/view-salary-details.component';
 import { UserLoansAdvancesComponent } from './loans-advances/loans-advances.component';
 import { StatutoryDetailsComponent } from './statutory-details/statutory-details.component';
 import { SalaryDetailsComponent } from './salary-details/salary-details.component';
@@ -31,7 +30,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     SalaryDetailsComponent,
     StatutoryDetailsComponent,
     UserLoansAdvancesComponent,
-    ViewSalaryDetailsComponent,
     AddSalaryDetailsComponent,
     ViewLoansAdvancesComponent,
     TaxComponent,

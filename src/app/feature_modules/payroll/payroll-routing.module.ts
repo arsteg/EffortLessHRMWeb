@@ -18,37 +18,57 @@ import { VariableDeductionComponent } from './settings/variable-deduction/variab
 import { FixedDeductionComponent } from './settings/fixed-deduction/fixed-deduction.component';
 import { VariableAllowanceComponent } from './settings/variable-allowance/variable-allowance.component';
 import { FixedContributionComponent } from './settings/fixed-contribution/fixed-contribution.component';
+import { UpdateCTCTemplateComponent } from './ctc-templates/update-ctctemplate/update-ctctemplate.component';
+import { AssignedTemplatesComponent } from './ctc-templates/assigned-templates/assigned-templates.component';
+import { AssignedFixedAllowanceComponent } from './ctc-templates/assigned-templates/fixed-allowance/fixed-allowance.component';
 
 const routes: Routes = [
+  {
+    path: '', component: PayrollComponent, canActivate: [AuthGuard],
+    children: [
+      { path: '', redirectTo: 'settings', pathMatch: 'full' },
       {
-        path: '', component: PayrollComponent, canActivate: [AuthGuard],
+        path: 'settings', component: SettingsComponent, canActivate: [AuthGuard],
         children: [
-          { path: '', redirectTo: 'settings', pathMatch: 'full' },
-          {
-            path: 'settings', component: SettingsComponent, canActivate: [AuthGuard],
-            children: [
-              { path: '', redirectTo: 'general-settings', pathMatch: 'full' },
-              { path: 'general-settings', component: GeneralSettingsComponent },
-              { path: 'fixed-allowances', component: FixedAllowanceComponent },
-              { path: 'fixed-contributions', component: FixedContributionComponent },
-              { path: 'variable-allowances', component: VariableAllowanceComponent },
-              { path: 'fixed-deductions', component: FixedDeductionComponent },
-              { path: 'variable-deductions', component: VariableDeductionComponent },
-              { path: 'other-benefits', component: OtherBenefitsComponent },
-              { path: 'loans-advances', component: LoansAdvancesComponent },
-              { path: 'flexi-benefits', component: FlexiBenefitsComponent },
-              { path: 'pf-charges', component: PfChargesComponent }
-            ]
-          },
-          { path: 'ctc-template', component: CtcTemplatesComponent },
-          { path: 'lop-reversal', component: LopReversalComponent },
-          { path: 'run-payroll', component: RunPayrollComponent },
-          { path: 'payslips', component: PayslipsComponent },
-          { path: 'fnf-payslips', component: FnfPayslipsComponent }
+          { path: '', redirectTo: 'general-settings', pathMatch: 'full' },
+          { path: 'general-settings', component: GeneralSettingsComponent },
+          { path: 'fixed-allowances', component: FixedAllowanceComponent },
+          { path: 'fixed-contributions', component: FixedContributionComponent },
+          { path: 'variable-allowances', component: VariableAllowanceComponent },
+          { path: 'fixed-deductions', component: FixedDeductionComponent },
+          { path: 'variable-deductions', component: VariableDeductionComponent },
+          { path: 'other-benefits', component: OtherBenefitsComponent },
+          { path: 'loans-advances', component: LoansAdvancesComponent },
+          { path: 'flexi-benefits', component: FlexiBenefitsComponent },
+          { path: 'pf-charges', component: PfChargesComponent }
         ]
-      }
-    ];
-  
+      },
+      
+      {
+        path: 'ctc-template',
+        component: CtcTemplatesComponent
+      },
+      {
+        path: 'ctc-template/update-ctc-template/:id',
+        component: UpdateCTCTemplateComponent,
+        children: [
+          {
+            path: 'assigned-templates',
+            component: AssignedTemplatesComponent
+          }
+        ]
+      },
+      // {
+      //   path: 'ctc-template/update-ctc-template/assigned-templates',
+      //   component: AssignedFixedAllowanceComponent
+      // },
+      { path: 'lop-reversal', component: LopReversalComponent },
+      { path: 'run-payroll', component: RunPayrollComponent },
+      { path: 'payslips', component: PayslipsComponent },
+      { path: 'fnf-payslips', component: FnfPayslipsComponent }
+    ]
+  }
+];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

@@ -1,16 +1,11 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ExpensesService } from 'src/app/_services/expenses.service';
-import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -41,14 +36,12 @@ export class AdvanceTemplateAssignmentComponent {
   @ViewChild('secondaryApproverField') secondaryApproverField: ElementRef;
   displayedColumns: string[] = ['employeeName', 'advanceTemplate', 'primaryApprover', 'secondaryApprover', 'actions'];
   dataSource = new MatTableDataSource<any>([]);
-
+  dialogRef: MatDialogRef<any>;
   constructor(private fb: FormBuilder,
-    private modalService: NgbModal,
     private expenseService: ExpensesService,
     private commonService: CommonService,
     private toast: ToastrService,
     private dialog: MatDialog,
-    private datePipe: DatePipe
   ) {
     this.addTemplateAssignmentForm = this.fb.group({
       user: ['', Validators.required],
@@ -108,27 +101,17 @@ export class AdvanceTemplateAssignmentComponent {
     this.isEdit = false;
     this.addTemplateAssignmentForm.reset();
   }
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
-  }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    this.dialogRef = this.dialog.open(content, {
+      width: '600px',
+      disableClose: true
     });
   }
 
   onTemplateSelectionChange(event: any) {
     this.showApproverFields = true;
-    const selectedTemplateId = event.target.value;
+    const selectedTemplateId = event.value;
 
     this.expenseService.getAdvanceTemplateById(selectedTemplateId).subscribe((res: any) => {
       this.templateById = res.data;

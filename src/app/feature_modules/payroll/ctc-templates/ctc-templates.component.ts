@@ -5,6 +5,9 @@ import { ToastrService } from 'ngx-toastr';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { UpdateCTCTemplateComponent } from './update-ctctemplate/update-ctctemplate.component';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatDrawer } from '@angular/material/sidenav';
+import { Router, NavigationExtras, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-ctc-templates',
@@ -19,19 +22,25 @@ export class CtcTemplatesComponent {
   showAssignedTemplates = false;
   isEdit: boolean = false;
   @ViewChild('offcanvasContent', { read: ViewContainerRef }) offcanvasContent: ViewContainerRef;
-  totalRecords: number
+  @ViewChild('drawer', { static: true }) drawer: MatDrawer;
+  totalRecords: number;
   recordsPerPage: number = 10;
   currentPage: number = 1;
   offcanvasData = 'Initial data';
   showOffcanvas: boolean = false;
   public sortOrder: string = '';
+  displayedColumns: string[] = ['name', 'fixedAllowances', 'fixedDeductions', 'otherAllowances', 'actions'];
+  dataSource: MatTableDataSource<any>;
+  showTable: boolean = true;
 
   constructor(private modalService: NgbModal,
     private payroll: PayrollService,
     private toast: ToastrService,
     private dialog: MatDialog,
     private cdr: ChangeDetectorRef,
-    private componentFactoryResolver: ComponentFactoryResolver) { }
+    private router: Router,
+    private route: ActivatedRoute
+  ) { }
 
   ngOnInit() {
     this.getCTCTemplate();
@@ -55,6 +64,7 @@ export class CtcTemplatesComponent {
     this.payroll.getCTCTemplate(pagination).subscribe(data => {
       this.ctcTemplate = data.data;
       this.totalRecords = data.total;
+      this.dataSource = new MatTableDataSource(this.ctcTemplate);
     });
   }
 
@@ -67,7 +77,7 @@ export class CtcTemplatesComponent {
       this.toast.success('Successfully Deleted!!!', 'CTC Template');
     }, (err) => {
       this.toast.error('CTC Template can not be deleted', 'Error');
-    })
+    });
   }
 
   deleteDialog(id: string): void {
@@ -81,38 +91,67 @@ export class CtcTemplatesComponent {
     });
   }
 
-  openOffcanvas(isEdit: boolean, record: any = null) {
-    console.log('offcanvas called!')
-    this.isEdit = isEdit;
-    this.selectedRecord = record;
-    console.log(this.selectedRecord)
-    this.payroll.ctcTempData.next(this.selectedRecord);
-    this.showOffcanvas = true;
-    this.offcanvasContent.clear();
-    
+  // openDrawer(isEdit: boolean, record: any = null) {
+  //   this.isEdit = isEdit;
+  //   this.selectedRecord = record;
+  //   this.drawer.open();
+  //   this.loadDrawerContent();
+  // }
 
-    // Create the component factory
-    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(UpdateCTCTemplateComponent);
+  // loadDrawerContent() {
+  //   this.offcanvasContent.clear();
 
-    // Create the component and set the inputs
-    const componentRef = this.offcanvasContent.createComponent(componentFactory);
-    componentRef.instance.selectedRecord = this.selectedRecord;
-    componentRef.instance.isEdit = this.isEdit;
+  //   // Create the component factory
+  //   const componentFactory = this.componentFactoryResolver.resolveComponentFactory(UpdateCTCTemplateComponent);
 
-    // Listen to the recordUpdatedFromAssigned event
-    componentRef.instance.recordUpdatedFromAssigned.subscribe((updatedRecord: any) => {
-      this.handleRecordUpdate(updatedRecord); // Refresh the list on update
-    });
-  }
+  //   // Create the component and set the inputs
+  //   const componentRef = this.offcanvasContent.createComponent(componentFactory);
+  //   componentRef.instance.selectedRecord = this.selectedRecord;
+  //   componentRef.instance.isEdit = this.isEdit;
 
-  closeOffcanvas() {
-    this.showOffcanvas = false;
-    this.isEdit = false;
-    this.selectedRecord = null;
-  }
+  //   // Listen to the recordUpdatedFromAssigned event
+  //   componentRef.instance.recordUpdatedFromAssigned.subscribe((updatedRecord: any) => {
+  //     this.handleRecordUpdate(updatedRecord); // Refresh the list on update
+  //   });
+  // }
+
+  // closeDrawer() {
+  //   this.drawer.close();
+  //   this.isEdit = false;
+  //   this.selectedRecord = null;
+  //   this.offcanvasContent.clear();
+  // }
 
   handleRecordUpdate(updatedRecord: any) {
     this.getCTCTemplate();
     this.cdr.detectChanges();
+  }
+
+  // getComponentsDetail(data: any) {
+  //   this.isEdit = true;
+  //   this.payroll.isEdit.next(true);
+  //   this.payroll.selectedCTCTemplate.next(data);
+  //   this.payroll.showTable.next(this.showTable);
+  //   const navigationExtras: NavigationExtras = {
+  //     queryParams: { id: data._id }
+  //   };
+  //   this.router.navigate(['update-ctc-template/'], navigationExtras)
+  //   // this.router.navigate(['home/payroll/ctc-template/update-ctc-template'], navigationExtras);
+  // }
+  getComponentsDetail(data: any) {
+    this.isEdit = true;
+    this.payroll.isEdit.next(true);
+    this.payroll.selectedCTCTemplate.next(data);
+    this.payroll.showTable.next(this.showTable);
+    
+    // ✅ Corrected navigation
+    this.router.navigate([`update-ctc-template`, data._id], { relativeTo: this.route });
+}
+
+  navigateToUpdateCTCTemplate() {
+    this.payroll.isEdit.next(false);
+    this.payroll.showTable.next(false);
+    this.payroll.selectedCTCTemplate.next();
+    this.router.navigate(['home/payroll/ctc-template/update-ctc-template']);
   }
 }

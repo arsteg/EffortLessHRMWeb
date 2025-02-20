@@ -163,6 +163,9 @@
                         <mat-form-field appearance="outline" class="col-md-6">
                             <mat-label>Pincode</mat-label>
                             <input matInput formControlName="pincode" placeholder="Enter Pincode">
+                            <mat-error *ngIf="userForm.get('pincode')?.touched && userForm.get('pincode')?.invalid">
+                            <small *ngIf="userForm.get('pincode')?.errors?.['pattern']">Pincode must be a 6-digit number.</small>
+                        </mat-error>
                         </mat-form-field>
                     </div>
                 </mat-expansion-panel>
@@ -178,12 +181,18 @@
                         <mat-form-field appearance="outline" class="col-md-6">
                             <mat-label>Phone</mat-label>
                             <input matInput formControlName="phone" placeholder="Enter Phone Number">
-                        </mat-form-field>
+                            <mat-error *ngIf="userForm.get('phone')?.touched && userForm.get('phone')?.invalid">
+                            <small *ngIf="userForm.get('phone')?.errors?.['pattern']">Phone must be a 10-digit number.</small>
+                        </mat-error>
+                    </mat-form-field>
 
                         <mat-form-field appearance="outline" class="col-md-6">
                             <mat-label>Mobile</mat-label>
                             <input matInput formControlName="mobile" placeholder="Enter Mobile Number">
-                        </mat-form-field>
+                            <mat-error *ngIf="userForm.get('mobile')?.touched && userForm.get('mobile')?.invalid">
+                            <small *ngIf="userForm.get('mobile')?.errors?.['pattern']">Mobile must be a 10-digit number.</small>
+                        </mat-error>
+                    </mat-form-field>
                     </div>
                 </mat-expansion-panel>
 

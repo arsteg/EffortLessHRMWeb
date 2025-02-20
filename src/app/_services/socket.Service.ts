@@ -31,11 +31,11 @@ export class SocketService {
 
   // Get the list of users online
   getUsersOnline(): Observable<any> {
-    return this.socket.fromEvent<User[]>('users-online');
+    return this.socket.fromEvent('users-online');
   }
 
   // Get the list of users online
   getImageOnline(): Observable<any> {
-    return this.socket.fromEvent<User[]>('liveImage');
+    return this.socket.fromEvent('liveImage');
   }
 }
