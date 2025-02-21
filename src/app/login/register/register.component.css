@@ -6,9 +6,7 @@ input.ng-invalid.ng-touched {
   color: red;
 }
 
-.card {
-  background: #ff8b5b !important;
-}
+
 
 label {
   color: white;
