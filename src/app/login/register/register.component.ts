@@ -79,7 +79,7 @@ export class RegisterComponent implements OnInit {
         this.otpVerified = true;
       },
       (error) => {
-        this.notifyService.showError(error.message, 'Error');
+        this.notifyService.showError('OTP is not Verified', 'Error');
       }
     );
   }
