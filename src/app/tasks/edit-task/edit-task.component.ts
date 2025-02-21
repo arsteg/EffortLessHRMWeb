@@ -628,13 +628,14 @@ export class EditTaskComponent implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(['/manage'], { fragment: 'tab3' });
+    if (this.view === 'admin') { this.router.navigate(['home/manage/tasks']); }
+    else if (this.view === 'user') { this.router.navigate(['home/tasks']); }
   }
+
   getFaclass(status: string): string {
     const statusItem = this.statusList.find(item => item.name === status);
-    console.log(statusItem)
     return statusItem ? statusItem.faclass : ''; // Return the appropriate class or an empty string
-}
+  }
 
 }
 interface priority {

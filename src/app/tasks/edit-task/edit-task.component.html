@@ -66,13 +66,13 @@
 
                                 <ol class="breadcrumb bg-transparent align-self-center ms-auto m-0 p-0">
                                     <ng-container>
-                                        <button *ngIf="view==='admin'" [routerLink]="['/home/manage/tasks']"
+                                        <button *ngIf="view==='admin'" (click)="goBack()"
                                             class="btn  submenuTab active rounded-pill"><span class="bi bi-arrow-left ">
                                                 Back</span></button>
-                                        <button *ngIf="view==='user'" [routerLink]="['/home/tasks']" 
-                                        class="btn  submenuTab active rounded-pill"> <span
-                                                    class="bi bi-arrow-left ">
-                                                    Back</span></button>
+                                        <button *ngIf="view==='user'" (click)="goBack()"
+                                            class="btn  submenuTab active rounded-pill"> <span
+                                                class="bi bi-arrow-left ">
+                                                Back</span></button>
                                     </ng-container>
                                 </ol>
                             </div>
@@ -289,7 +289,8 @@
                                         </div>
                                     </div>
                                     <div *ngIf="showEditor">
-                                        <quill-editor #editor [styles]="{ height: '400px' }" formControlName="description"
+                                        <quill-editor #editor [styles]="{ height: '400px' }"
+                                            formControlName="description"
                                             [(ngModel)]="tasks?.data?.task.description"></quill-editor>
                                     </div>
                                     <div *ngIf="updateForm.controls['description'].invalid && updateForm.controls['description'].touched"
@@ -669,95 +670,7 @@
                                                 </ul>
                                             </div>
 
-                                            <!-- <div class="user-container btn-group align-items-center">
-                                                <button *ngIf="assignee && assignee.length > 0" type="button" class="btn dropdown-toggle dropdown-toggle-no-caret"
-                                                    data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <ng-container *ngFor="let user of assignee">
-                                                        <span class="letters p-1 rounded text-light"
-                                                            [tooltip]="(user.user.firstName | titlecase) + ' ' + (user.user.lastName | titlecase)"
-                                                            [style.background-color]="commonService.getRandomColor(user.user.firstName?.charAt(0) | uppercase)">
-                                                            {{ user.user.firstName?.charAt(0) | uppercase }}&nbsp;{{ user.user.lastName?.charAt(0) | uppercase }}
-                                                        </span>
-                                                    </ng-container>
-                                                    
-                                                    <i class="bi bi-person-plus-fill"></i>
-                                                </button>
-                                                <button *ngIf="!(assignee && assignee.length > 0)" type="button" 
-                                                    class="btn dropdown-toggle bi bi-person-plus-fill dropdown-toggle-no-caret"
-                                                    data-bs-toggle="dropdown" aria-expanded="false"></button>
-                                                <ul class="dropdown-menu" *ngIf="assignee && assignee.length > 0"
-                                                    style="width: 225px; transform: translate3d(-29px, 40px, 0px) !important; max-height: 200px; overflow-y: scroll;">
-                                                    <li class="border-left py-1"></li>
-                                                    <li *ngFor="let user of assignee" class="border-left" [value]="user.user.id">
-                                                        <p class="ps-2 py-2 mb-1" style="font-size: 13px;"
-                                                            (click)="addUserToTask(tasks?.data?.task?.id, user.user.id)">
-                                                            <span class="letters p-1 rounded text-light" style="font-size: 12px;"
-                                                                [tooltip]="(user.user.firstName | titlecase) + ' ' + (user.user.lastName | titlecase)"
-                                                                [style.background-color]="commonService.getRandomColor(user.user.firstName?.charAt(0) | uppercase)">
-                                                                {{ user.user.firstName?.charAt(0) | uppercase }}&nbsp;{{ user.user.lastName?.charAt(0) | uppercase }}
-                                                            </span>&nbsp;{{user.user.firstName | titlecase}}&nbsp;{{user.user.lastName | titlecase}}
-                                                        </p>
-                                                    </li>
-                                                </ul>
-                                            </div> -->
                                         </ng-container>
-
-                                        <!-- <ng-container>
-                                            <div class="user-container btn-group align-items-center"
-                                                *ngFor="let user of assignee;">
-                                                <button type="button"  *ngIf="user.user"
-                                                    class="btn dropdown-toggle dropdown-toggle-no-caret"
-                                                    data-bs-toggle="dropdown" aria-expanded="false">
-
-                                                    <span class="letters  p-1 rounded text-light"
-                                                        [tooltip]="(user?.user?.firstName | titlecase) + ' ' + (user?.user?.lastName | titlecase)"
-                                                        [style.background-color]="commonService.getRandomColor(user?.user?.firstName?.charAt(0) | uppercase)">
-                                                        {{ user?.user?.firstName?.charAt(0) | uppercase }}&nbsp;{{
-                                                        user?.user?.lastName?.charAt(0) | uppercase }}
-                                                    </span>
-                                                </button>
-
-                                                <span *ngIf="!user.user"><i type="button"
-                                                        class=" bi bi-person-plus-fill btn dropdown-toggle dropdown-toggle-no-caret"
-                                                        data-bs-toggle="dropdown" aria-expanded="false"></i>
-                                                </span>
-
-                                                <ul class="dropdown-menu" style="width: 225px; transform: translate3d(-29px, 40px, 0px) !important; max-height: 200px;
-                                            overflow-y: scroll;">
-                                                    <li class="border-left py-1"
-                                                        *ngIf="assignee.length === 1 && assignee[0]?.id">
-                                                    </li>
-                                                    <li *ngFor="let assignee of projectUser" class="border-left "
-                                                        [value]="assignee?.user?.id">
-                                                        <p *ngIf="assignee.user != null" class="ps-2 py-2 mb-1"
-                                                            style="font-size: 13px;"
-                                                            (click)="addUserToTask(tasks?.data?.task?.id, assignee.user.id)">
-                                                            <span class="letters p-1 rounded text-light"
-                                                                style="font-size: 12px;"
-                                                                [tooltip]="(assignee?.user?.firstName | titlecase) + ' ' + (assignee?.user?.lastName | titlecase)"
-                                                                [style.background-color]="commonService.getRandomColor(assignee?.user?.firstName?.charAt(0) | uppercase)">
-                                                                {{ assignee?.user?.firstName?.charAt(0) | uppercase
-                                                                }}&nbsp;{{ assignee?.user?.lastName?.charAt(0) |
-                                                                uppercase }}
-                                                            </span>&nbsp;{{assignee?.user?.firstName |
-                                                            titlecase}}&nbsp;{{assignee?.user?.lastName | titlecase}}
-                                                        </p>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </ng-container> -->
-                                        <!-- ------------------------- -->
-
-                                        <!-- <div class="row mt-3">
-                                                <label for="assignee" class="bi bi-person-plus-fill"></label>
-                                            </div>
-    
-                                            <select id="assignee" class="custom-select mb-3 p-2" formControlName="user">
-                                                <option [value]="user?.user?.id" *ngFor="let user of projectUser">
-                                                    {{user?.user?.firstName | titlecase}} {{user?.user?.lastName |
-                                                    titlecase}}
-                                                </option>
-                                            </select> -->
 
                                         <div class="d-flex align-items-center">
                                             <label for="fileUpload7"
@@ -801,17 +714,17 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <div *ngIf="tasks?.data?.task === null " class="d-flex justify-content-center mt-5">
-        <ng-container>
-            <button *ngIf="view==='admin'" [routerLink]="['/home/manage/tasks']"
-                class="btn submenuTab active rounded-pill"><span class="bi bi-arrow-left ">
-                    Back</span></button>
-            <a href="" *ngIf="view==='user'" [routerLink]="['/home/tasks']"> <button
-                    class="btn btn-outline-primary rounded-pill"><span class="bi bi-arrow-left ">
-                        Back</span></button></a>
-        </ng-container>
+        <div *ngIf="tasks?.data?.task === null " class="d-flex justify-content-center mt-5">
+            <ng-container>
+                <button *ngIf="view==='admin'" (click)="goBack()" class="btn submenuTab active rounded-pill"><span
+                        class="bi bi-arrow-left ">
+                       Back</span></button>
+                <button *ngIf="view==='user'" (click)="goBack()" class="btn btn-outline-primary rounded-pill"><span
+                        class="bi bi-arrow-left ">
+                       Back</span></button>
+            </ng-container>
+        </div>
     </div>
 </div>
 
