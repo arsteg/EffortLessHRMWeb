@@ -101,8 +101,6 @@ export class OvertimeRecordsComponent {
   }
   getOvertimeByMonth() {
     let payloadForMonth = {
-      skip: '',
-      next: '100000',
       month: this.selectedMonth,
       year: this.selectedYear
     };
@@ -161,7 +159,7 @@ export class OvertimeRecordsComponent {
           });
         }
         this.overtimeRecords = Array.from(userOvertimeMap.values());
-        console.log(this.overtimeRecords); 
+        console.log(this.overtimeRecords);
       });
     }
   }
