@@ -1,18 +1,15 @@
 <div class="container">
   <div><img src="assets/logo/expanded-logo.svg" alt="" style="height: 80px;"></div>
 
-  <div class="d-flex mainContent justify-content-between align-items-center">
+  <div class="d-flex mainContent justify-content-center align-items-center">
 
     <div class="hero_bg">
       <img src="assets/main/bg-effect.png" alt="">
     </div>
 
-    <div class="w-50 image">
-      <img src="assets/main/register/register.png" alt="register" class="w-100 zoom-animation">
-    </div>
     <div class="card bg-white shadow-lg">
       <div class="card-body px-5 py-3">
-        <h1 class="fs-4 card-title fw-bold mb-4">Register</h1>
+        <h1 class="fs-4 card-title text-center fw-bold mb-4 border-bottom pb-2 mat-primary">Register To EffortlessHRM</h1>
         <form (ngSubmit)="onSubmit()" [formGroup]="registerNewUser" class="needs-validation" novalidate=""
           autocomplete="off">
           <div class="row">
@@ -21,7 +18,8 @@
                 <mat-label>First Name</mat-label>
                 <input matInput id="firstName" type="text" formControlName="firstName" name="firstName" required autofocus>
                 <mat-error *ngIf="!registerNewUser.get('firstName').valid && registerNewUser.get('firstName').touched">
-                  First Name is required!
+                  <span *ngIf="registerNewUser.get('firstName').errors?.['required']">First Name is required!</span>
+                  <span *ngIf="registerNewUser.get('firstName').errors?.['invalidName']">First Name cannot contain spaces, numbers, or symbols!</span>
                 </mat-error>
               </mat-form-field>
             </div>
@@ -31,19 +29,20 @@
                 <mat-label>Last Name</mat-label>
                 <input matInput id="lastName" type="text" formControlName="lastName" name="lastName" required autofocus>
                 <mat-error *ngIf="!registerNewUser.get('lastName').valid && registerNewUser.get('lastName').touched">
-                  Last Name is required!
+                  <span *ngIf="registerNewUser.get('lastName').errors?.['invalidName']">Last Name cannot contain spaces, numbers, or symbols!</span>
                 </mat-error>
               </mat-form-field>
             </div>
           </div>
 
-          <div class="row d-flex align-items-start">
-            <div class="col-md-8 mt-2">
+          <div class="row d-flex align-items-start mt-2">
+            <div class="col-md-8 mt-3">
               <mat-form-field appearance="outline" class="w-100">
                 <mat-label>E-Mail Address</mat-label>
                 <input matInput id="email" type="email" name="email" formControlName="email" required email>
                 <mat-error *ngIf="!registerNewUser.get('email').valid && registerNewUser.get('email').touched">
-                  Email is invalid!
+                  <span *ngIf="registerNewUser.get('email').errors?.['required']">Email is required!</span>
+                  <span *ngIf="registerNewUser.get('email').errors?.['email']">Invalid email format!</span>
                 </mat-error>
               </mat-form-field>
             </div>
@@ -65,30 +64,32 @@
 
           <!-- OTP Input Field -->
           <div class="row d-flex align-items-baseline">
-            <div *ngIf="otpGenerated && loading == false" class="col-md-6 mt-2">
+            <div *ngIf="otpGenerated && loading == false" class="col-md-8 mt-2">
               <mat-form-field appearance="outline" class="w-100">
                 <mat-label>OTP</mat-label>
                 <input matInput id="otp" type="text" formControlName="otp" name="otp" required>
                 <mat-error *ngIf="!registerNewUser.get('otp').valid && registerNewUser.get('otp').touched">
-                  OTP is required!
+                  <span *ngIf="registerNewUser.get('otp').errors?.['required']">Please enter OTP!</span>
+                  <span *ngIf="registerNewUser.get('otp').errors?.['pattern']">OTP must be numeric!</span>
                 </mat-error>
               </mat-form-field>
             </div>
             <!-- Verify and Cancel OTP Buttons -->
-            <div class="col-md-6 mt-2 pt-2" *ngIf="otpGenerated && loading == false">
+            <div class="col-md-4 mt-2 pt-2" *ngIf="otpGenerated && loading == false">
               <div class="d-flex mt-2">
-                <button type="button" mat-raised-button class="addBtn verifyBtn me-2" (click)="onVerifyOTP()">
+                <button type="button" mat-raised-button class="addBtn verifyBtn me-2" (click)="onVerifyOTP()"
+                  [disabled]="registerNewUser.get('otp').value.length < 4">
                   Verify&nbsp;OTP
                 </button>
-                <button type="button" mat-raised-button class="cancelBtn" (click)="onCancelOTP()">
+                <!-- <button type="button" mat-raised-button class="cancelBtn" (click)="onCancelOTP()">
                   Cancel&nbsp;OTP
-                </button>
+                </button> -->
               </div>
             </div>
           </div>
 
           <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-12">
               <mat-form-field appearance="outline" class="w-100">
                 <mat-label>Company Name</mat-label>
                 <input matInput id="companyName" type="text" formControlName="companyName" name="companyName" required autofocus>
@@ -103,7 +104,10 @@
             <div class="col-md-6 mt-2">
               <mat-form-field appearance="outline" class="w-100">
                 <mat-label>Password</mat-label>
-                <input matInput id="password" type="password" formControlName="password" name="password" required>
+                <input matInput [type]="hidePassword ? 'password' : 'text'" id="password" formControlName="password" name="password" required>
+                <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword" type="button">
+                  <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
                 <mat-error *ngIf="registerNewUser.get('password')?.touched && registerNewUser.get('password')?.invalid">
                   <span *ngIf="registerNewUser.get('password')?.errors?.['required']">
                     Password is required.
@@ -118,7 +122,10 @@
             <div class="col-md-6 mt-2">
               <mat-form-field appearance="outline" class="w-100">
                 <mat-label>Confirm Password</mat-label>
-                <input matInput id="passwordConfirm" type="password" formControlName="passwordConfirm" name="passwordConfirm" required>
+                <input matInput [type]="hideConfirmPassword ? 'password' : 'text'" id="passwordConfirm" formControlName="passwordConfirm" name="passwordConfirm" required>
+                <button mat-icon-button matSuffix (click)="hideConfirmPassword = !hideConfirmPassword" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hideConfirmPassword" type="button">
+                  <mat-icon>{{hideConfirmPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
                 <mat-error *ngIf="registerNewUser.get('passwordConfirm')?.touched && registerNewUser.hasError('notMatching')">
                   Password and Confirm Password must match.
                 </mat-error>
@@ -140,7 +147,7 @@
       </div>
       <div class="card-footer py-3 border-0">
         <div class="text-center ">
-          Already have an account? <a routerLink="/login" class="">Login</a>
+          Already have an account? <a routerLink="/login" class="mat-primary">Login</a>
         </div>
       </div>
     </div>
