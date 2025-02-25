@@ -31,18 +31,12 @@ export class FixedAllowanceComponent {
   ) {
     this.fixedAllowanceForm = this.fb.group({
       label: ['', Validators.required],
-      type: ['None', Validators.required],
-      isArrearsAffect: [false],
-      calculatedBy: ['Monthly', Validators.required],
-      isTaxEnabledOnce: [false],
       isProvidentFundAffected: [false],
       isESICAffected: [false],
       isGratuityFundAffected: [false],
       isLWFAffected: [false],
       isProfessionalTaxAffected: [false],
       isTDSAffected: [false],
-      isAttendanceToEffectTheEligibility: [false
-      ]
     })
   }
 
@@ -98,17 +92,12 @@ export class FixedAllowanceComponent {
     this.isEdit = false;
     this.fixedAllowanceForm.patchValue({
       label: '',
-      type: 'None',
-      isArrearsAffect: false,
-      calculatedBy: 'Monthly',
-      isTaxEnabledOnce: false,
       isProvidentFundAffected: false,
       isESICAffected: false,
       isGratuityFundAffected: false,
       isLWFAffected: false,
       isProfessionalTaxAffected: false,
       isTDSAffected: false,
-      isAttendanceToEffectTheEligibility: false
     })
 
   }
@@ -161,18 +150,13 @@ export class FixedAllowanceComponent {
   clearForm() {
     this.fixedAllowanceForm.patchValue({
       label: '',
-      type: 'None',
-      isArrearsAffect: false,
-      calculatedBy: 'Monthly',
-      isTaxEnabledOnce: false,
       isProvidentFundAffected: false,
       isESICAffected: false,
       isGratuityFundAffected: false,
       isLWFAffected: false,
       isProfessionalTaxAffected: false,
       isTDSAffected: false,
-      isAttendanceToEffectTheEligibility: false
-    })
+      })
   }
 
   deleteRecord(_id: string) {

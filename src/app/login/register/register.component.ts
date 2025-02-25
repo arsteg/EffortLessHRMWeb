@@ -54,8 +54,9 @@ export class RegisterComponent implements OnInit {
   }
 
   onGenerateOTP() {
-    let email = this.registerNewUser.get('email').value;
-    if (email) {
+    let emailControl = this.registerNewUser.get('email');
+    if (emailControl.valid) {
+      let email = emailControl.value;
       this.authenticationService.generateOTP({ email }).subscribe(
         () => {
           this.loading = true;
@@ -68,7 +69,7 @@ export class RegisterComponent implements OnInit {
         }
       );
     } else {
-      this.registerNewUser.get('email').markAllAsTouched();
+      emailControl.markAllAsTouched();
     }
   }
 
