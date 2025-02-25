@@ -1,8 +1,4 @@
-import { ChangeDetectorRef, Component, Input } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
-import { AuthenticationService } from 'src/app/_services/authentication.service';
-import { PayrollService } from 'src/app/_services/payroll.service';
-
+import { Component, Input } from '@angular/core';
 @Component({
   selector: 'app-view-payslip',
   templateUrl: './view-payslip.component.html',
@@ -15,15 +11,16 @@ export class ViewPayslipComponent {
   attendanceSummary: any;
   salaryAfterLOP: string;
   netSalary: any;
-  totalPayWithOvertime: string;
+  totalPayWithOvertime: any;
 
   constructor() { }
+
   ngOnInit() {
     this.calculateSalaryAfterLOP();
     this.netSalary =
     Number(this.viewPayroll?.totalFixedAllowance) + Number(this.viewPayroll?.totalOvertime + Number(this.viewPayroll?.totalFlexiBenefits)) -
     (Number(this.viewPayroll?.totalFixedDeduction) + Number(this.viewPayroll?.totalPfTax) + Number(this.viewPayroll?.totalIncomeTax));
-  
+
     this.calculateTotalPayWithOvertime();
   }
 
@@ -40,5 +37,6 @@ export class ViewPayslipComponent {
     const lopSalary = parseFloat(this.salaryAfterLOP);
     const totalOvertime = parseFloat(this.viewPayroll?.totalOvertime);
     this.totalPayWithOvertime = (lopSalary + totalOvertime).toFixed(2);
+    this.totalPayWithOvertime -= (this.viewPayroll?.totalLoanAdvance);
   }
 }

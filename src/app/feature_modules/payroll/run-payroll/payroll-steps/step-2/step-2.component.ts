@@ -182,8 +182,9 @@ export class Step2Component {
 
     this.attendanceService.getProcessAttendanceLOPByMonth(payload).subscribe((res: any) => {
       this.attendanceLOPUser = res.data;
-      const matchingUsers = this.attendanceLOPUser.filter((lop: any) => lop.user === this.selectedUserId?.user);
-
+      console.log(this.selectedUserId)
+      const matchingUsers = this.attendanceLOPUser.filter((lop: any) => lop.user === this.selectedUserId);
+      console.log(matchingUsers)
       const lopUserLength = matchingUsers.length;
       const payableDays = this.getTotalDaysInMonth(payload.year, payload.month) - lopUserLength;
 

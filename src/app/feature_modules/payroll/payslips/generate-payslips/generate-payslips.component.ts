@@ -11,7 +11,7 @@ import html2canvas from 'html2canvas';
 export class GeneratePayslipsComponent {
   @Output() close = new EventEmitter<void>();
   payslip: any;
-  totalPayWithOvertime: string;
+  totalPayWithOvertime: any;
   salaryAfterLOP: string;
 
   @ViewChild('payslipContainer') payslipContainer: ElementRef;
@@ -37,6 +37,7 @@ export class GeneratePayslipsComponent {
     const lopSalary = parseFloat(this.salaryAfterLOP);
     const totalOvertime = parseFloat(this.payslip?.totalOvertime);
     this.totalPayWithOvertime = (lopSalary + totalOvertime).toFixed(2);
+    this.totalPayWithOvertime -= this.payslip?.totalLoanAdvance;
   }
 
   getCompanyNameFromCookies(): string | null {

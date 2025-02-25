@@ -57,7 +57,3 @@ export interface Payslip {
   payroll: string;
   status: string;
 }
-
-// const ELEMENT_DATA: Payslip[] = [
-//   { employee: 'Employee Name', period: 'Dec, 2024', payroll: 'Processed', status: 'Approved' }
-// ];

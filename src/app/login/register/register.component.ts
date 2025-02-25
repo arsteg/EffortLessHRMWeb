@@ -16,6 +16,8 @@ export class RegisterComponent implements OnInit {
   otpGenerated: boolean = false;
   otp: string = '';
   otpVerified: boolean = false;
+  hidePassword: boolean = true;
+  hideConfirmPassword: boolean = true;
 
   constructor(
     private authenticationService: AuthenticationService,
@@ -25,10 +27,10 @@ export class RegisterComponent implements OnInit {
     private fb: FormBuilder
   ) {
     this.registerNewUser = this.fb.group({
-      firstName: ['', Validators.required],
-      lastName: [''],
-      email: [''],
-      otp: [''],
+      firstName: ['', [Validators.required, this.noSpacesNumbersOrSymbolsValidator]],
+      lastName: ['', [this.noSpacesNumbersOrSymbolsValidator]],
+      email: ['', [Validators.required, Validators.email]],
+      otp: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
       password: ['', [Validators.required, Validators.minLength(8)]],
       passwordConfirm: ['', [Validators.required, Validators.minLength(8)]],
       companyName: ['']
@@ -41,6 +43,14 @@ export class RegisterComponent implements OnInit {
     const password = group.get('password')?.value;
     const confirmPassword = group.get('passwordConfirm')?.value;
     return password === confirmPassword ? null : { notMatching: true };
+  }
+
+  noSpacesNumbersOrSymbolsValidator(control: any) {
+    const value = control.value;
+    if (/\d/.test(value) || /\s/.test(value) || /[!@#$%^&*(),.?":{}|<>]/.test(value)) {
+      return { invalidName: true };
+    }
+    return null;
   }
 
   onGenerateOTP() {
@@ -84,27 +94,27 @@ export class RegisterComponent implements OnInit {
     );
   }
 
-  onCancelOTP() {
-    const payload = {
-      email: this.registerNewUser.get('email').value,
-      otp: this.registerNewUser.get('otp').value,
-    };
-    this.authenticationService.cancelOTP(payload).subscribe(
-      () => {
-        this.notifyService.showSuccess('OTP cancelled', 'Success');
-        this.otpGenerated = false;
-        this.otpVerified = false;
-        this.registerNewUser.get('otp').reset();
-      },
-      (error) => {
-        this.notifyService.showError(error.message, 'Error');
-      }
-    );
-  }
+  // onCancelOTP() {
+  //   const payload = {
+  //     email: this.registerNewUser.get('email').value,
+  //     otp: this.registerNewUser.get('otp').value,
+  //   };
+  //   this.authenticationService.cancelOTP(payload).subscribe(
+  //     () => {
+  //       this.notifyService.showSuccess('OTP cancelled', 'Success');
+  //       this.otpGenerated = false;
+  //       this.otpVerified = false;
+  //       this.registerNewUser.get('otp').reset();
+  //     },
+  //     (error) => {
+  //       this.notifyService.showError(error.message, 'Error');
+  //     }
+  //   );
+  // }
 
   onSubmit() {
     if (!this.otpVerified) {
-      this.notifyService.showWarning("Please verify the OTP before registering", "Warning");
+      this.notifyService.showWarning("Please verify the OTP before registering the Company", "Warning");
       return;
     }
     if (this.registerNewUser.value.password !== this.registerNewUser.value.passwordConfirm) {
