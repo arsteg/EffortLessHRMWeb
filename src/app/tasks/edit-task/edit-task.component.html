@@ -213,6 +213,12 @@
                                             </div>
                                         </div>
 
+                                        <span>|</span>
+
+                                        <span class="text-muted">&nbsp;&nbsp;<strong>Reporter:</strong>&nbsp;{{tasks?.data?.task?.createdBy?.firstName |
+                                            titlecase}}&nbsp;{{tasks?.data?.task?.createdBy?.lastName |
+                                            titlecase}}&nbsp;&nbsp;</span>
+
                                         <!-- Update project -->
                                         <div class="mt-3 me-2">
                                             <span for="project" class="text-start text-muted">Project</span>
@@ -719,10 +725,10 @@
             <ng-container>
                 <button *ngIf="view==='admin'" (click)="goBack()" class="btn submenuTab active rounded-pill"><span
                         class="bi bi-arrow-left ">
-                       Back</span></button>
+                        Back</span></button>
                 <button *ngIf="view==='user'" (click)="goBack()" class="btn btn-outline-primary rounded-pill"><span
                         class="bi bi-arrow-left ">
-                       Back</span></button>
+                        Back</span></button>
             </ng-container>
         </div>
     </div>

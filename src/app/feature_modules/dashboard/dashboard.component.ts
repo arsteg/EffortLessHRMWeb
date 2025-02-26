@@ -30,6 +30,7 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
   userId: string;
   projectwiseTimeSelectedMemberofAllTasks:string;
   projectwiseTimeSelectedMember:string;
+  view: [number, number]=[300, 200];
 
   //end region
 

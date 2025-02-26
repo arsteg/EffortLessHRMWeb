@@ -136,7 +136,7 @@
               'neutral': productivity.name === 'Neutral'
             }">{{productivity.name}}</li>
           </ul>
-          <ngx-charts-pie-chart [results]="productivityData" [labelFormatting]="labelFormatter">
+          <ngx-charts-pie-chart [results]="productivityData" [labelFormatting]="labelFormatter" [view]="view">
             <ng-template let-entry="data">
               <text class="pie-label" dy=".35em" text-anchor="middle">
                 {{ entry.value }}
@@ -160,7 +160,7 @@
                   'closed': task.name=== 'Closed'
                 }">{{task.name}}</li>
           </ul>
-          <ngx-charts-pie-chart [results]="taskSummary">
+          <ngx-charts-pie-chart [results]="taskSummary" [view]="view">
           </ngx-charts-pie-chart>
         </div>
       </div>
