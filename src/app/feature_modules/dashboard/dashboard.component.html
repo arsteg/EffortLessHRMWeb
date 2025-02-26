@@ -208,7 +208,7 @@
                   'neutral': productivity.name === 'Neutral'
                 }">{{productivity.name}}</li>
           </ul>
-          <ngx-charts-pie-chart [results]="productivityData"></ngx-charts-pie-chart>
+          <ngx-charts-pie-chart [results]="productivityData" [view]="view"></ngx-charts-pie-chart>
         </div>
       </div>
 
@@ -234,7 +234,7 @@
                   'closed': task.name=== 'Closed'
                 }">{{task.name}}</li>
           </ul>
-          <ngx-charts-pie-chart [results]="taskSummary"></ngx-charts-pie-chart>
+          <ngx-charts-pie-chart [results]="taskSummary" [view]="view"></ngx-charts-pie-chart>
         </div>
       </div>
     </div>
