@@ -69,4 +69,10 @@ export class SubscriptionService extends baseService {
   getCredentials(){
     return this.http.get(`${environment.apiUrlDotNet}/pricing/credentials`, this.httpOptions);
   }
+  Getlastinvoice(){
+    return this.http.get(`${environment.apiUrlDotNet}/pricing/last-invoice`, this.httpOptions);
+  }
+  GetUpcomingPayment(){
+    return this.http.get(`${environment.apiUrlDotNet}/pricing/upcoming-payment`, this.httpOptions);
+  }
 }

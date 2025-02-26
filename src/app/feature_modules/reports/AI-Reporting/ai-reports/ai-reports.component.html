@@ -1,0 +1,13 @@
+<div>
+    <h1>text to speech</h1>
+  </div>
+  <div>
+    <input placeholder="enter text" [(ngModel)]="recognizedText">    
+    <input placeholder="result" [(ngModel)]="reportText">    
+    <div>
+      <button [disabled]="startedEnabled==false" (click)="play()">Play</button>
+      <button [disabled]="startedEnabled==true" (click)="stop()">stop</button>      
+
+      <button  (click)="generateQueryFromText()">Fetch</button>      
+    </div>
+  </div>
