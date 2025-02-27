@@ -46,8 +46,6 @@ export class VariableDeductionComponent {
       amountEnterForThisVariableDeduction: ['', Validators.required],
       amount: [0, Validators.required],
       percentage: [0, Validators.required],
-      isAttendanceToAffectEligibility: [true, Validators.required],
-      variableDeductionApplicableEmployee: [[]]
     });
     const currentYear = new Date().getFullYear();
     for (let year = currentYear - 2; year <= currentYear + 1; year++) {
@@ -74,13 +72,11 @@ export class VariableDeductionComponent {
       deductionStopYear: '',
       amountEnterForThisVariableDeduction: '',
       amount: 0,
-      percentage: 0,
-      isAttendanceToAffectEligibility: true,
-      variableDeductionApplicableEmployee: []
+      percentage: 0
     })
   }
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
@@ -96,6 +92,7 @@ export class VariableDeductionComponent {
       return `with: ${reason}`;
     }
   }
+
   closeModal() {
     this.modalService.dismissAll();
   }
@@ -103,36 +100,33 @@ export class VariableDeductionComponent {
   onSubmission() {
     const formValue = this.variableDeductionForm.value;
     const payload = {
-      ...formValue,
-      variableDeductionApplicableEmployee: formValue.variableDeductionApplicableEmployee.map(employee => ({ employee }))
+      ...formValue
     };
-    console.log(payload)
-    if(this.variableDeductionForm.valid){if (!this.isEdit) {
-      this.payroll.addVariableDeduction(payload).subscribe((res: any) => {
-        this.variableDeduction.push(res.data);
-        this.toast.success('Successfully Added!!!', 'Variable Deduction');
-      },
-        (err) => {
-          this.toast.error('Variable Deduction Can not be added', 'Variable Deduction');
-        })
+    if (this.variableDeductionForm.valid) {
+      if (!this.isEdit) {
+        this.payroll.addVariableDeduction(payload).subscribe((res: any) => {
+          this.variableDeduction.push(res.data);
+          this.toast.success('Successfully Added!!!', 'Variable Deduction');
+        },
+          (err) => {
+            this.toast.error('Variable Deduction Can not be added', 'Variable Deduction');
+          })
+      }
+      else {
+        this.payroll.updateVariableDeduction(this.selectedRecord._id, payload).subscribe((res: any) => {
+          this.toast.success('Successfully Updated!!!', 'Variable Deduction');
+          this.getVariableDeduction();
+        },
+          (err) => {
+            this.toast.error('Variable Deduction Can not be Updated', 'Variable Deduction');
+          })
+      }
     }
-    else {
-      this.payroll.updateVariableDeduction(this.selectedRecord._id, payload).subscribe((res: any) => {
-        this.toast.success('Successfully Updated!!!', 'Variable Deduction');
-        const reason = res.data;
-        const index = this.variableDeduction.findIndex(reas => reas._id === reason._id);
-        if (index !== -1) {
-          this.variableDeduction[index] = reason;
-        }
-      },
-        (err) => {
-          this.toast.error('Variable Deduction Can not be Updated', 'Variable Deduction');
-        })
-    }}
     else {
       this.markFormGroupTouched(this.variableDeductionForm);
     }
   }
+
   markFormGroupTouched(formGroup: FormGroup) {
     Object.values(formGroup.controls).forEach(control => {
       control.markAsTouched();
@@ -141,21 +135,19 @@ export class VariableDeductionComponent {
       }
     });
   }
+
   isPercentageSelected(): boolean {
     const value = this.variableDeductionForm.get('amountEnterForThisVariableDeduction').value;
     return value === 'Percentage of gross salary paid' || value === 'Percentage of(Basic + DA) paid (or Basic if DA is not applicable)';
   }
+
   editRecord() {
-    this.variableDeductionForm.patchValue(this.selectedRecord)
+    this.variableDeductionForm.patchValue(this.selectedRecord);
   }
 
   deleteRecord(_id: string) {
     this.payroll.deleteVariableDeduction(_id).subscribe((res: any) => {
-      const index = this.variableDeduction.findIndex(res => res._id === _id);
-      if (index !== -1) {
-        this.variableDeduction.splice(index, 1);
-        this.totalRecords--;
-      }
+      this.getVariableDeduction();
       this.toast.success('Successfully Deleted!!!', 'Variable Deduction');
     },
       (err) => {
