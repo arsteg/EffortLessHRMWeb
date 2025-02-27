@@ -42,24 +42,22 @@
                 <div class="content__data pe-lg-0 pe-3">
                   <p class="content__title">Next payment</p>
                   <h1>
-                    Due Date: {{upcomingPayment?.due_date }}                   
+                    Due Date: {{(upcomingPayment?.due_date | date) || ''}}                   
                   </h1>
                   <h1>
-                    Amount: {{upcomingPayment?.total_due_amount}}                   
+                    Amount: {{(upcomingPayment?.total_due_amount | currency: 'INR') || ''}}                   
                   </h1>
                   <small *ngIf="getAddonsAmount()">{{'+' + (getAddonsAmount() | currency: "INR") + '(Add Ons)'}}</small>
                   <small *ngIf="subscription?.pendingUpdates.length">
                     {{'+' + ((subscription?.pendingUpdates.length * subscription?.currentPlanId.currentprice)  | currency: "INR") + '(New Users)'}}
                   </small>
-                  @if(subscription?.razorpaySubscription?.current_end){
-                    <h1>{{subscription?.razorpaySubscription?.current_end*1000 | date}}</h1>
-                  }
+                  
                 </div>  
               </div>
               <div class="mt-2 pe-lg-5 pe-0 d-lg-block d-flex justify-content-between align-items-center">
                 <p class="content__title ps-lg-0 ps-3 text-end">Last payment</p>
                 <div class="content__data pe-lg-0 pe-3">
-                  <h1 class="">Amount: {{lastInvoice?.amount}}</h1>
+                  <h1 class="">Amount: {{(lastInvoice?.amount | currency: 'INR') || ''}}</h1>
                   <h1 class="">Method: {{lastInvoice?.payment_method}}</h1>
                 </div>
               </div>            
