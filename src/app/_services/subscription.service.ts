@@ -69,4 +69,12 @@ export class SubscriptionService extends baseService {
   getCredentials(){
     return this.http.get(`${environment.apiUrlDotNet}/pricing/credentials`, this.httpOptions);
   }
+
+  changeSubscription(subscriptionId, payload){
+    return this.http.put(`${environment.apiUrlDotNet}/pricing/subscription/${subscriptionId}`, payload, this.httpOptions);
+  }
+
+  cancelChangeSubscription(subscriptionId){
+    return this.http.put(`${environment.apiUrlDotNet}/pricing/cancel-subscription-updates/${subscriptionId}`, {}, this.httpOptions);
+  }
 }
