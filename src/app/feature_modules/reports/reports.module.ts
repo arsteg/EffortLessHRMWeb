@@ -15,6 +15,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { TimelineComponent } from './timeline/timeline.component';
 import { ReportsRoutingModule } from './reports-routing.module';
+import { AiReportsComponent } from './AI-Reporting/ai-reports/ai-reports.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { ReportsRoutingModule } from './reports-routing.module';
     LeaveReportComponent,
     AppAndWebsiteUsageComponent,
     ActivityDescriptionComponent,
+    AiReportsComponent
   ],
   imports: [
     CommonModule,

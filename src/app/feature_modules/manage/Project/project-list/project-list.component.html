@@ -7,7 +7,7 @@
                     <select id="member" name="member" class="form-control" class="form-select form-select-sm"
                         aria-label=".form-select-sm example" [(ngModel)]="userId"
                         (change)="onMemberSelectionChange(userId)">
-                        <option value="All Projects">All Projects</option>
+                        <option value="All Members">All Members</option>
                         <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
                             {{assignee.firstName |titlecase}} {{assignee.lastName | titlecase}}
                         </option>

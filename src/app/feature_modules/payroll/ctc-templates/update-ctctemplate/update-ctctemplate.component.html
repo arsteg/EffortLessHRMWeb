@@ -1,10 +1,20 @@
-<form [formGroup]="ctcTemplateForm">
-  <div class="form-group">
-    <label for="">Enter the Label for CTC Template</label>
-    <input type="text" class="form-control" formControlName="name" placeholder="CTC Template...">
+@if(showAssignedTemplates) {
+<div class="breadcrumb py-2 border-bottom">
+  <span class="breadcrumb-item active" (click)="goBack()" style="cursor: pointer;">
+    CTC Template
+  </span>
+  <span class="breadcrumb-item text-muted">Update CTC Template</span>
+</div>
+
+<form [formGroup]="ctcTemplateForm" class="row container px-3">
+  <div class="form-group col-md-6">
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Enter the Label for CTC Template</mat-label>
+      <input matInput type="text" formControlName="name" placeholder="CTC Template...">
+    </mat-form-field>
   </div>
 
-  <div class="form-group mt-2">
+  <div class="form-group mt-2 col-md-6">
     <mat-form-field appearance="outline" class="w-100 mx-1">
       <mat-label>Fixed Allowances</mat-label>
       <mat-select multiple formControlName="ctcTemplateFixedAllowance"
@@ -15,7 +25,7 @@
       </mat-select>
     </mat-form-field>
   </div>
-  <div class="form-group mt-2">
+  <div class="form-group mt-2 col-md-6">
     <mat-form-field appearance="outline" class="w-100 mx-1">
       <mat-label>Fixed Deductions</mat-label>
       <mat-select multiple formControlName="ctcTemplateFixedDeduction"
@@ -26,7 +36,7 @@
       </mat-select>
     </mat-form-field>
   </div>
-  <div class="form-group mt-2">
+  <div class="form-group mt-2 col-md-6">
     <mat-form-field appearance="outline" class="w-100 mx-1">
       <mat-label>Employer Contributions</mat-label>
       <mat-select multiple formControlName="ctcTemplateEmployerContribution"
@@ -37,7 +47,7 @@
       </mat-select>
     </mat-form-field>
   </div>
-  <div class="form-group mt-2">
+  <div class="form-group mt-2 col-md-6">
     <mat-form-field appearance="outline" class="w-100 mx-1">
       <mat-label>Other Benefits Allowances</mat-label>
       <mat-select multiple formControlName="ctcTemplateOtherBenefitAllowance"
@@ -48,7 +58,7 @@
       </mat-select>
     </mat-form-field>
   </div>
-  <div class="form-group mt-2">
+  <div class="form-group mt-2 col-md-6">
     <mat-form-field appearance="outline" class="w-100 mx-1">
       <mat-label>Employee Deductions</mat-label>
       <mat-select multiple formControlName="ctcTemplateEmployeeDeduction"
@@ -60,7 +70,7 @@
     </mat-form-field>
   </div>
 
-  <div class="form-group mt-2">
+  <div class="form-group mt-2 col-md-6">
     <mat-form-field appearance="outline" class="w-100 mx-1">
       <mat-label>Variable Allowance</mat-label>
       <mat-select multiple formControlName="ctcTemplateVariableAllowance"
@@ -72,7 +82,7 @@
     </mat-form-field>
   </div>
 
-  <div class="form-group mt-2">
+  <div class="form-group mt-2 col-md-6">
     <mat-form-field appearance="outline" class="w-100 mx-1">
       <mat-label>Variable Deductions</mat-label>
       <mat-select multiple formControlName="ctcTemplateVariableDeduction"
@@ -85,18 +95,11 @@
   </div>
 
   <div class="d-flex border-top mt-2 py-2 justify-content-between">
-    <button mat-raised-button type="button" (click)="getRecordById()">Cancel</button>
-    <button mat-raised-button type="button" class="addBtn" (click)="openOffcanvas('AssignedTemp')">Proceed</button>
+    <button mat-raised-button type="button">Cancel</button>
+    <button mat-raised-button type="button" class="addBtn" (click)="showAssignedTemplates = false; getAssignedTemplates()">Proceed</button>
   </div>
 </form>
-
-<div class="offcanvas offcanvas-end w-75" id="AssignedTemp">
-  <div class="offcanvas-body">
-    <div class="container p-0">
-      <ng-container *ngIf="showAssignedTemplates">
-        <app-assigned-templates (recordUpdated)="handleRecordUpdate($event)" [data]="ctcTemplateForm.value"
-          [selectedRecord]="selectedRecord" [isEdit]="isEdit"></app-assigned-templates>
-      </ng-container>
-    </div>
-  </div>
-</div>
+}
+@else {
+<router-outlet></router-outlet>
+}

@@ -313,10 +313,10 @@ export class GeneralSettingsComponent {
       });
     }
     else if (this.activeTab == 'tabGratuityTemplates') {
-      this.payroll.getGratuityTemplate(pagination).subscribe((res: any) => {
-        this.gratuityTemplate = res.data;
-        this.totalRecords = res.total;
-      });
+      // this.payroll.getGratuityTemplate(pagination).subscribe((res: any) => {
+      //   this.gratuityTemplate = res.data;
+      //   this.totalRecords = res.total;
+      // });
     }
   }
 

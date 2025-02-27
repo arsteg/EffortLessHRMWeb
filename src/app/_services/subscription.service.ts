@@ -2,6 +2,8 @@ import { Injectable, inject } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { baseService } from './base';
+import { LastInvoiceModel } from '../models/dashboard/lastInvoiceModel';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -76,5 +78,13 @@ export class SubscriptionService extends baseService {
 
   cancelChangeSubscription(subscriptionId){
     return this.http.put(`${environment.apiUrlDotNet}/pricing/cancel-subscription-updates/${subscriptionId}`, {}, this.httpOptions);
+  }
+
+  getLastInvoice():Observable<any>{
+    return this.http.get<any>(`${environment.apiUrlDotNet}/pricing/last-invoice`, this.httpOptions);
+  }
+  
+  getUpcomingPayment():Observable<any>{
+    return this.http.get<any>(`${environment.apiUrlDotNet}/pricing/upcoming-payment`, this.httpOptions);
   }
 }

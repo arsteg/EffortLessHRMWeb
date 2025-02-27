@@ -16,6 +16,9 @@ import { StatefulComponent } from 'src/app/common/statefulComponent/statefulComp
 import { ActivatedRoute, Router } from '@angular/router';
 import { PaymentsComponent } from '../subscription/subscriptions-list/payments/payments.component';
 import { MatDialog } from '@angular/material/dialog';
+import { UpcomingPaymentModel } from 'src/app/models/dashboard/upcomingPaymentModel';
+import { LastInvoiceModel } from 'src/app/models/dashboard/lastInvoiceModel';
+import { SubscriptionService } from 'src/app/_services/subscription.service';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -30,6 +33,7 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
   userId: string;
   projectwiseTimeSelectedMemberofAllTasks:string;
   projectwiseTimeSelectedMember:string;
+  view: [number, number]=[300, 200];
 
   //end region
 
@@ -56,6 +60,8 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
   dayWorkStatusByUser: any[];
   subscription: any;
   readonly dialog = inject(MatDialog);
+  upcomingPayment:UpcomingPaymentModel;
+  lastInvoice:LastInvoiceModel;
 
   constructor(
     private timelog: TimeLogService,
@@ -66,6 +72,7 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
     private socketService : SocketService,
     protected override commonService: CommonService,
     activatedRoute: ActivatedRoute,
+    private subscriptionService: SubscriptionService,
     router: Router
   ) {
     super(commonService,activatedRoute,router);
@@ -194,6 +201,8 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
         this.toastr.error(err, 'ERROR!')
       });
     // }
+    this.populateUpcomingPayment();
+    this.populateLastInvoice();
     super.ngOnInit();
   }
   filterDate() {
@@ -381,5 +390,21 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
 
   getAddonsAmount(){
     return this.subscription?.addOns.reduce((acc, addon) => acc + addon.item.amount, 0) / 100;
+  }
+  populateUpcomingPayment(){
+    this.subscriptionService.getUpcomingPayment().subscribe(response => {
+      this.upcomingPayment = response.data;
+    },
+      err => {
+        console.log(err);        
+      });
+  }
+  populateLastInvoice(){
+    this.subscriptionService.getLastInvoice().subscribe(response => {
+      this.lastInvoice = response.data;
+    },
+      err => {
+        console.log(err);        
+      });
   }
 }

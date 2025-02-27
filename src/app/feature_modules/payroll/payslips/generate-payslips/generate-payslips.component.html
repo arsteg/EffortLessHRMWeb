@@ -55,7 +55,7 @@
                         </tr>
                         <tr>
                             <td>Overtime</td>
-                            <td>{{payslip?.totalOvertime}}</td>
+                            <td>{{payslip?.totalOvertime | number:'1.2-2'}}</td>
                         </tr>
                         <tr>
                             <td>Flexi Benefits</td>
@@ -64,6 +64,10 @@
                         <tr>
                             <td>Other benefits</td>
                             <td>{{payslip?.totalOtherBenefit}}</td>
+                        </tr>
+                        <tr>
+                            <td>Gross Pay</td>
+                            <td>{{payslip?.monthlySalary | number: '1.2-2'}}</td>
                         </tr>
                         <!-- Add more earnings as needed -->
                     </tbody>
@@ -90,22 +94,19 @@
                             <td>Income Tax</td>
                             <td>{{payslip?.totalIncomeTax}}</td>
                         </tr>
+                        <tr>
+                            <td>Loan/Advances</td>
+                            <td>{{payslip?.totalLoanAdvance}}</td>
+                        </tr>
                         <!-- Add more deductions as needed -->
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <div class="row mb-4">
-            <div class="col-6">
-                <h3 class="mb-0">Loan or Advances</h3>
-                <p>{{payslip?.totalLoanAdvance}}</p>
-            </div>
-        </div>
-
         <div class="row mb-4 border-top">
             <div class="col-12">
-                <h3 class="mb-0">Total Pay calculated by LOP + Overtime: <span>{{totalPayWithOvertime}}</span>
+                <h3 class="mb-0">Total Pay calculated by LOP + Overtime and Deducted Advance: <b>{{totalPayWithOvertime}}</b>
                 </h3>
             </div>
         </div>

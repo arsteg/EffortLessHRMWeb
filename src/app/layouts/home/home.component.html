@@ -121,7 +121,7 @@
           <div class="text-center">
             <img src="../assets/profile-image.png" class="profile-img mb-5" alt="Profile Picture">
             <p class="employee-id">{{currentProfile?.firstName}} {{currentProfile?.lastName}} - 01</p>
-            <p class="position">Position</p>
+            <p class="position">{{currentProfile?.jobTitle}}</p>
             <p class="email contentHeading">{{currentProfile?.email}}</p>
             <div class="my-4 d-flex justify-content-center">
               <div class="mx-4" *ngIf="portalType == 'admin'">

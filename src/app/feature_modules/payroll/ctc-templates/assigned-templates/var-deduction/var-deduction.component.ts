@@ -15,7 +15,7 @@ export class VarDeductionComponent {
   variableDeductions: any[] = [];
   variableDeductionForm: FormGroup;
   combinedDataChange: any;
-  @Input() selectedRecord: any;
+  selectedRecord: any;
 
   constructor(
     private payroll: PayrollService,
@@ -27,21 +27,22 @@ export class VarDeductionComponent {
   }
 
   ngOnInit() {
-    this.getVariableDeduction();
     this.initForm();
+    this.selectedRecord = this.payroll?.selectedCTCTemplate.getValue();
 
-    if (this.isEdit && this.selectedRecord) {
+    if (this.isEdit) {
       this.patchFormValues();
     }
   }
 
   initForm() {
     const allowancesControl = this.variableDeductionForm.get('variableDeduction') as FormArray;
-    this.variableDeductions = this.data.ctcTemplateVariableDeduction || [];
+    this.variableDeductions = this.selectedRecord?.ctcTemplateVariableDeductions || [];
 
     this.variableDeductions.forEach(fa => {
       allowancesControl.push(this.fb.group({
-        variableDeduction: [fa],
+        variableDeduction: [fa.variableDeduction?._id || ''],
+        variableDeductionLabel: [fa.variableDeduction?.label || ''],
         criteria: ['Amount'],
         value: [''],
         valueType: [0],
@@ -51,7 +52,11 @@ export class VarDeductionComponent {
 
     this.variableDeductionForm.valueChanges.subscribe(() => {
       if (this.variableDeductionForm.valid) {
-        this.formDataChange.emit(this.variableDeductionForm.value.variableDeduction);
+        const formValue = this.variableDeductionForm.value.variableDeduction.map((allowance: any) => {
+          const { variableDeductionLabel, ...rest } = allowance;
+          return rest;
+        });
+        this.formDataChange.emit(formValue);
       } else {
         console.log("Form is invalid or incomplete");
       }
@@ -64,7 +69,8 @@ export class VarDeductionComponent {
 
     this.selectedRecord.ctcTemplateVariableDeductions.forEach((item: any, index: number) => {
       allowancesControl.push(this.fb.group({
-        variableDeduction: [item.variableDeduction || ''],
+        variableDeduction: [item.variableDeduction?._id || ''],
+        variableDeductionLabel: [item.variableDeduction?.label || ''],
         criteria: [item.criteria || 'Amount'],
         value: [item.value || ''],
         valueType: item.valueType || '',
@@ -76,20 +82,4 @@ export class VarDeductionComponent {
   get allowances() {
     return (this.variableDeductionForm.get('variableDeduction') as FormArray).controls;
   }
-
-  getVariableDeduction() {
-    let payload = {
-      next: '',
-      skip: ''
-    }
-    this.payroll.getVariableDeduction(payload).subscribe((res: any) => {
-      this.allVariableDeductions = res.data;
-    });
-  }
-
-  getAllowance(allowance: string) {
-    const matchingAllowance = this.allVariableDeductions?.find(res => res._id === allowance);
-    return matchingAllowance ? matchingAllowance.label : '';
-  }
-
 }

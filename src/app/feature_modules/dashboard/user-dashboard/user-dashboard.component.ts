@@ -8,7 +8,6 @@ import { ManageTeamService } from 'src/app/_services/manage-team.service';
 import { TimeLogService } from 'src/app/_services/timeLogService';
 import { CommonService } from 'src/app/_services/common.Service';
 import { HoursWorked, MonthlySummary, WeeklySummary, ProjectTask } from 'src/app/models/dashboard/userdashboardModel';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 
 @Component({
@@ -37,6 +36,7 @@ export class UserDashboardComponent implements OnInit {
   taskSummary = [];
   dayWorkStatusByUser:any[];
   selectedDate:Date= new Date;
+  view: [number, number]=[300, 200];
 
   constructor(
     private timelog: TimeLogService,

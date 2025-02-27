@@ -25,11 +25,6 @@
               <h4 class="content-info mb-0">{{currentProfile?.firstName}} {{currentProfile?.lastName}}</h4>
               <!-- <p>{{role | titlecase}}</p> -->
             </div>
-            
-            @if(currentProfile?.company?.freeCompany){
-              FREE COMPANY
-            }
-            @else {
               <div class="mt-2 border-end pe-lg-5 pe-0 d-lg-block d-flex justify-content-between align-items-center">
                 <div class="content__data pe-lg-0 pe-3">
                   @if(subscription?.scheduledChanges?.planName){
@@ -45,37 +40,29 @@
               </div>
               <div class="mt-2 border-end pe-lg-5 pe-0 d-lg-block d-flex justify-content-between align-items-center">
                 <div class="content__data pe-lg-0 pe-3">
-                  @if(subscription?.scheduledChanges){
-                    <p class="content__title">Next payment</p>
-                    <h1>
-                      {{(subscription?.scheduledChanges?.planPrice * (subscription?.scheduledChanges?.quantity || 1)) | currency: 'INR'}}
-                    </h1>
-                    <small>{{subscription?.scheduledChanges?.charge_at * 1000 | date: 'dd MMM, yyyy'}}</small>
-                    <small>as per new plan</small>
-                  } @else {
-                    <p class="content__title">Next payment</p>
-                    <h1>
-                      {{(subscription?.currentPlanId.currentprice * (subscription?.razorpaySubscription?.quantity || 1)) | currency: 'INR'}}
-                     
-                    </h1>
-                    <small *ngIf="getAddonsAmount()">{{'+' + (getAddonsAmount() | currency: "INR") + '(Add Ons)'}}</small>
-                    <small *ngIf="subscription?.pendingUpdates.length">
-                      {{'+' + ((subscription?.pendingUpdates.length * subscription?.currentPlanId.currentprice)  | currency: "INR") + '(New Users)'}}
-                    </small>
-                    @if(subscription?.razorpaySubscription?.current_end){
-                      <h1>{{subscription?.razorpaySubscription?.current_end*1000 | date}}</h1>
-                    }
+                  <p class="content__title">Next payment</p>
+                  <h1>
+                    Due Date: {{upcomingPayment?.due_date }}                   
+                  </h1>
+                  <h1>
+                    Amount: {{upcomingPayment?.total_due_amount}}                   
+                  </h1>
+                  <small *ngIf="getAddonsAmount()">{{'+' + (getAddonsAmount() | currency: "INR") + '(Add Ons)'}}</small>
+                  <small *ngIf="subscription?.pendingUpdates.length">
+                    {{'+' + ((subscription?.pendingUpdates.length * subscription?.currentPlanId.currentprice)  | currency: "INR") + '(New Users)'}}
+                  </small>
+                  @if(subscription?.razorpaySubscription?.current_end){
+                    <h1>{{subscription?.razorpaySubscription?.current_end*1000 | date}}</h1>
                   }
                 </div>  
               </div>
               <div class="mt-2 pe-lg-5 pe-0 d-lg-block d-flex justify-content-between align-items-center">
-                <p class="content__title ps-lg-0 ps-3 text-end">Payment Method</p>
+                <p class="content__title ps-lg-0 ps-3 text-end">Last payment</p>
                 <div class="content__data pe-lg-0 pe-3">
-                  <h1 class="">{{subscription?.razorpaySubscription.payment_method | titlecase}}</h1>
-                  <a href="javascript:void(0)" (click)="openPaymentsDialog()">View Payments</a>
+                  <h1 class="">Amount: {{lastInvoice?.amount}}</h1>
+                  <h1 class="">Method: {{lastInvoice?.payment_method}}</h1>
                 </div>
-              </div>
-            }
+              </div>            
           </div>
         </div>
       </div>
@@ -223,7 +210,7 @@
                   'neutral': productivity.name === 'Neutral'
                 }">{{productivity.name}}</li>
           </ul>
-          <ngx-charts-pie-chart [results]="productivityData"></ngx-charts-pie-chart>
+          <ngx-charts-pie-chart [results]="productivityData" [view]="view"></ngx-charts-pie-chart>
         </div>
       </div>
 
@@ -249,7 +236,7 @@
                   'closed': task.name=== 'Closed'
                 }">{{task.name}}</li>
           </ul>
-          <ngx-charts-pie-chart [results]="taskSummary"></ngx-charts-pie-chart>
+          <ngx-charts-pie-chart [results]="taskSummary" [view]="view"></ngx-charts-pie-chart>
         </div>
       </div>
     </div>

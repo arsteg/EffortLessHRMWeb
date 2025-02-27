@@ -1,9 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
-import { signup, webSignup } from '../../models/user'
-import { NotificationService } from '../../_services/notification.service'
-import { Router, ActivatedRoute } from '@angular/router';
+import { NotificationService } from '../../_services/notification.service';
+import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -11,31 +10,34 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css']
 })
-
 export class RegisterComponent implements OnInit {
   loading = false;
   registerNewUser: FormGroup;
   otpGenerated: boolean = false;
   otp: string = '';
   otpVerified: boolean = false;
+  hidePassword: boolean = true;
+  hideConfirmPassword: boolean = true;
 
-  constructor(private authenticationService: AuthenticationService, private router: Router,
+  constructor(
+    private authenticationService: AuthenticationService,
+    private router: Router,
     private notifyService: NotificationService,
     private toast: ToastrService,
-    private fb: FormBuilder) {
+    private fb: FormBuilder
+  ) {
     this.registerNewUser = this.fb.group({
-      firstName: ['', Validators.required],
-      lastName: [''],
-      email: [''],
-      otp: [''],
+      firstName: ['', [Validators.required, this.noSpacesNumbersOrSymbolsValidator]],
+      lastName: ['', [this.noSpacesNumbersOrSymbolsValidator]],
+      email: ['', [Validators.required, Validators.email]],
+      otp: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
       password: ['', [Validators.required, Validators.minLength(8)]],
       passwordConfirm: ['', [Validators.required, Validators.minLength(8)]],
       companyName: ['']
-    }, { validator: this.passwordMatchValidator })
+    }, { validator: this.passwordMatchValidator });
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   passwordMatchValidator(group: FormGroup) {
     const password = group.get('password')?.value;
@@ -43,24 +45,31 @@ export class RegisterComponent implements OnInit {
     return password === confirmPassword ? null : { notMatching: true };
   }
 
+  noSpacesNumbersOrSymbolsValidator(control: any) {
+    const value = control.value;
+    if (/\d/.test(value) || /\s/.test(value) || /[!@#$%^&*(),.?":{}|<>]/.test(value)) {
+      return { invalidName: true };
+    }
+    return null;
+  }
+
   onGenerateOTP() {
-    let email = this.registerNewUser.get('email').value;
-    if (email) {
+    let emailControl = this.registerNewUser.get('email');
+    if (emailControl.valid) {
+      let email = emailControl.value;
       this.authenticationService.generateOTP({ email }).subscribe(
         () => {
-          this.loading = true
+          this.loading = true;
           this.toast.success('OTP sent to your email', 'Success');
           this.loading = false;
           this.otpGenerated = true;
-
         },
         (error) => {
           this.notifyService.showError(error.message, 'Error');
         }
       );
-    }
-    else {
-      this.registerNewUser.get('email').markAllAsTouched();
+    } else {
+      emailControl.markAllAsTouched();
     }
   }
 
@@ -81,30 +90,34 @@ export class RegisterComponent implements OnInit {
         this.otpVerified = true;
       },
       (error) => {
-        this.notifyService.showError(error.message, 'Error');
+        this.notifyService.showError('OTP is not Verified', 'Error');
       }
     );
   }
 
-  onCancelOTP() {
-    const payload = {
-      email: this.registerNewUser.get('email').value,
-      otp: this.registerNewUser.get('otp').value,
-    };
-    this.authenticationService.cancelOTP(payload).subscribe(
-      () => {
-        this.notifyService.showSuccess('OTP cancelled', 'Success');
-        this.otpGenerated = false;
-        this.otpVerified = false;
-        this.registerNewUser.get('otp').reset();
-      },
-      (error) => {
-        this.notifyService.showError(error.message, 'Error');
-      }
-    );
-  }
+  // onCancelOTP() {
+  //   const payload = {
+  //     email: this.registerNewUser.get('email').value,
+  //     otp: this.registerNewUser.get('otp').value,
+  //   };
+  //   this.authenticationService.cancelOTP(payload).subscribe(
+  //     () => {
+  //       this.notifyService.showSuccess('OTP cancelled', 'Success');
+  //       this.otpGenerated = false;
+  //       this.otpVerified = false;
+  //       this.registerNewUser.get('otp').reset();
+  //     },
+  //     (error) => {
+  //       this.notifyService.showError(error.message, 'Error');
+  //     }
+  //   );
+  // }
 
   onSubmit() {
+    if (!this.otpVerified) {
+      this.notifyService.showWarning("Please verify the OTP before registering the Company", "Warning");
+      return;
+    }
     if (this.registerNewUser.value.password !== this.registerNewUser.value.passwordConfirm) {
       this.notifyService.showWarning("Passwords don't match", "Warning");
       return;
@@ -114,23 +127,24 @@ export class RegisterComponent implements OnInit {
       this.authenticationService.webSignup(this.registerNewUser.value).subscribe(
         data => {
           setTimeout(() => {
-            this.notifyService.showSuccess("User Created Successfully", "Success")
+            this.notifyService.showSuccess("User Created Successfully", "Success");
             this.router.navigate(['/login']);
             this.loading = false;
           }, 300);
         },
         err => {
-          this.notifyService.showError(err.message, "Error")
+          this.notifyService.showError(err.message, "Error");
           if (err.message) {
             this.loading = false;
           }
         }
       );
+    } else {
+      this.registerNewUser.markAllAsTouched();
     }
-    else { this.registerNewUser.markAllAsTouched(); }
   }
+
   getCurrentYear(): number {
     return new Date().getFullYear();
   }
-
 }

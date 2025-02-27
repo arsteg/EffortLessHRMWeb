@@ -8,27 +8,11 @@ import { PayrollService } from 'src/app/_services/payroll.service';
 })
 export class EmployeeDeductionComponent {
   employeeDeduction: any;
-  @Input() data: any;
+  selectedRecord: any;
 
   constructor(private payroll: PayrollService) { }
 
   ngOnInit() {
-    this.employeeDeduction = this.data.ctcTemplateEmployeeDeduction;
-    this.getEmployeeDeduction();
-  }
-
-  getEmployeeDeduction() {
-    let payload = {
-      next: '',
-      skip: ''
-    }
-    this.payroll.getFixedContribution(payload).subscribe((res: any) => {
-      this.employeeDeduction = res.data;
-    });
-  }
-
-  getEmpDeduction(empContribution: string) {
-    const matchingContribution = this.employeeDeduction?.find(res => res?._id === empContribution);
-    return matchingContribution ? matchingContribution.label : '';
+    this.selectedRecord = this.payroll?.selectedCTCTemplate.getValue();
   }
 }

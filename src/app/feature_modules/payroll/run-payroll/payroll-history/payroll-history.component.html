@@ -133,7 +133,7 @@
 <ng-template #addUserModal let-addUserModal>
   <h1 mat-dialog-title>Assign Payroll to Employees</h1>
   <div mat-dialog-content>
-    <form [formGroup]="payrollUserForm" (ngSubmit)="updatePayrollUser()">
+    <form [formGroup]="payrollUserForm">
       <div class="row">
         <mat-form-field appearance="outline" class="col-md-6 my-2">
           <mat-label>Employee Selection for Payroll</mat-label>
@@ -144,13 +144,8 @@
           <mat-error *ngIf="payrollUserForm.get('user').invalid && payrollUserForm.get('user').touched">
             Please Choose an Employee to Assign the Payroll!
           </mat-error>
-          <mat-error *ngIf="!salaries.length">Please add the Salary details first to add the selected user in
+          <mat-error *ngIf="!salaries?.length">Please add the Salary details first to add the selected user in
             payroll.</mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="col-md-6 my-2">
-          <mat-label>Total Home Take</mat-label>
-          <input matInput type="number" formControlName="totalHomeTake" placeholder="Enter Total Home Take">
         </mat-form-field>
       </div>
 
@@ -188,8 +183,8 @@
     </form>
   </div>
   <div mat-dialog-actions>
-    <button mat-button (click)="closeAddUserDialog()">Cancel</button>
-    <button mat-raised-button color="primary" (click)="updatePayrollUser()">Save</button>
+    <button mat-button (click)="closeAddUserDialog()" type="button">Cancel</button>
+    <button mat-raised-button color="primary" (click)="updatePayrollUser()" type="submit">Save</button>
   </div>
 </ng-template>
 
