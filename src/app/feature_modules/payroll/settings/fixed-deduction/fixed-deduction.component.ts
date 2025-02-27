@@ -31,7 +31,6 @@ export class FixedDeductionComponent {
   ) {
     this.fixedContributionForm = this.fb.group({
       label: ['', Validators.required],
-      isEffectAttendanceOnEligibility: [true, Validators.required]
     })
   }
 
@@ -41,7 +40,6 @@ export class FixedDeductionComponent {
   clearForm() {
     this.fixedContributionForm.patchValue({
       label: '',
-      isEffectAttendanceOnEligibility: true
     })
   }
   open(content: any) {
@@ -72,7 +70,6 @@ export class FixedDeductionComponent {
       this.payroll.addFixedDeduction(this.fixedContributionForm.value).subscribe((res: any) => {
         this.fixedContributions.push(res.data);
         this.fixedContributionForm.reset({
-          isEffectAttendanceOnEligibility: true
         })
         this.toast.success('Successfully Added!!!', 'Fixed Deduction');
       },

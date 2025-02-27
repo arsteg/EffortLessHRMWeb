@@ -65,27 +65,7 @@
             <input type="text" class="form-control" formControlName="label" placeholder="Deduction Name" />
         </div>
 
-        <div class="form-group mt-2">
-            <label for="">Do you want attendance effect the eligibility? <span class="text-danger">*</span></label>
-            <div class="d-flex">
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" id="isProvidentFundAffected-yes"
-                        formControlName="isEffectAttendanceOnEligibility" required [value]="true">
-                    <label class="form-check-label" for="isProvidentFundAffected-yes">
-                        Yes
-                    </label>
-                </div>
-
-
-                <div class="form-check ms-3">
-                    <input class="form-check-input" type="radio" id="isProvidentFundAffected-no" required
-                        formControlName="isEffectAttendanceOnEligibility" [value]="false">
-                    <label class="form-check-label" for="isProvidentFundAffected-no">
-                        No
-                    </label>
-                </div>
-            </div>
-        </div>
+       
         <div class="d-flex border-top mt-2 py-2 justify-content-between">
             <button mat-raised-button type="button" (click)="clearForm()">Cancel</button>
             <button mat-raised-button type="submit" class="addBtn">Submit</button>
