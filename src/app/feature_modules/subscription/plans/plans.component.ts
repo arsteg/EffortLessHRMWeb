@@ -1,13 +1,16 @@
 import { CurrencyPipe, DatePipe, NgClass, } from '@angular/common';
-import { ChangeDetectorRef, Component, inject, DestroyRef, NgZone } from '@angular/core';
+import { Component, inject, DestroyRef, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { SubscriptionService } from 'src/app/_services/subscription.service';
 import { MatButtonModule } from '@angular/material/button';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { PaymentsComponent } from '../subscriptions-list/payments/payments.component';
 import { MatIconModule } from '@angular/material/icon';
+import { MatRadioModule } from '@angular/material/radio';
+import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 
 declare let Razorpay: any;
@@ -20,7 +23,11 @@ declare let Razorpay: any;
     DatePipe,
     MatButtonModule,
     NgClass,
-    MatIconModule
+    MatIconModule,
+    MatRadioModule,
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatSnackBarModule
   ],
   templateUrl: './plans.component.html',
   styleUrl: './plans.component.css'
@@ -29,13 +36,16 @@ export class PlansComponent {
   private readonly subscriptionService = inject(SubscriptionService);
   private readonly router = inject(Router);
   private readonly authService = inject(AuthenticationService);
-  private readonly cdr = inject(ChangeDetectorRef);
   private readonly destoryRef = inject(DestroyRef);
-  private readonly dialog = inject(MatDialog);
+  private readonly snackBar = inject(MatSnackBar);
+  readonly dialog = inject(MatDialog);
   private readonly ngZone = inject(NgZone);
+  changePlanForm: FormGroup;
   plans = [];
   subscription = this.authService.companySubscription.getValue();
+  subscriptionId = '';
   subscribedPlan: any;
+  scheduledChanges = null;
   user = this.authService.currentUserSubject.getValue();
   rzCred = '';
   selectedPlan: any;
@@ -49,6 +59,9 @@ export class PlansComponent {
     } else {
       this.getSubscription(this.subscription.id);
     }
+    this.changePlanForm = new FormGroup({
+      currentPlanId: new FormControl('', Validators.required)
+    });
   }
 
   credentials() {
@@ -63,26 +76,28 @@ export class PlansComponent {
     return this.subscription?.status === 'active'
   }
 
-  getSubscription(id){
+  getSubscription(id) {
     this.subscriptionService.getSubscriptionById(id)
-    .pipe(takeUntilDestroyed(this.destoryRef))
-    .subscribe((data: any) => {
-      console.log(data);
-      this.subscribedPlan = data.data.subscription.currentPlanId;
-      this.subscription = data.data.subscription.razorpaySubscription;
-    })
+      .pipe(takeUntilDestroyed(this.destoryRef))
+      .subscribe((data: any) => {
+        console.log(data);
+        this.subscriptionId = data.data.subscription._id;
+        this.subscribedPlan = data.data.subscription.currentPlanId;
+        this.subscription = data.data.subscription.razorpaySubscription;
+        this.scheduledChanges = data.data.subscription.scheduledChanges;
+      })
   }
 
   getPlan() {
     this.loadingPlans = true;
-      this.subscriptionService.getPlans()
+    this.subscriptionService.getPlans()
       .pipe(takeUntilDestroyed(this.destoryRef))
       .subscribe((res: any) => {
-          this.plans = res.data.filter((plan: any) => plan.IsActive);
-          this.loadingPlans = false;
-        }, ()=>{
-          this.loadingPlans = false;
-        });
+        this.plans = res.data.filter((plan: any) => plan.IsActive);
+        this.loadingPlans = false;
+      }, () => {
+        this.loadingPlans = false;
+      });
   }
 
   payNow() {
@@ -153,5 +168,56 @@ export class PlansComponent {
     this.dialog.open(PaymentsComponent, {
       data: { subscriptionId: this.subscription.id }
     });
+  }
+
+  viewPlans(content: any) {
+    this.subscriptionService.getPlans()
+      .pipe(takeUntilDestroyed(this.destoryRef))
+      .subscribe((res: any) => {
+        this.plans = res.data.filter((plan: any) => plan.IsActive);
+        this.loadingPlans = false;
+        const dialogRef = this.dialog.open(content, {
+          width: '600px',
+          data: { plans: this.plans },
+        });
+        dialogRef.afterClosed().subscribe(result => {
+          this.changePlanForm.reset();
+        });
+      }, () => {
+        this.loadingPlans = false;
+      });
+  }
+
+  changePlan() {
+    const payload = this.changePlanForm.value;
+    this.subscriptionService.changeSubscription(this.subscriptionId, payload)
+      .subscribe((data: any) => {
+        this.subscription = data.data.subscription.razorpaySubscription;
+        this.scheduledChanges = data.data.subscription.scheduledChanges;
+        this.authService.companySubscription.next(data.data.subscription.razorpaySubscription);
+        localStorage.setItem('subscription', JSON.stringify(data.data.subscription.razorpaySubscription));
+        this.dialog.closeAll();
+        this.snackBar.open('Plan changed successfully', 'Close', {duration: 5000});
+      }, (error: any)=>{
+        this.dialog.closeAll();
+        const message = error.error.message || 'An error occurred';
+        this.snackBar.open(message, 'Close', {duration: 5000});
+      });
+  }
+
+  cancelChangePlan(){
+    this.subscriptionService.cancelChangeSubscription(this.subscriptionId)
+      .subscribe((data: any) => {
+        this.subscription = data.data.subscription.razorpaySubscription;
+        this.scheduledChanges = null;
+        this.authService.companySubscription.next(data.data.subscription.razorpaySubscription);
+        localStorage.setItem('subscription', JSON.stringify(data.data.subscription.razorpaySubscription));
+        this.dialog.closeAll();
+        this.snackBar.open('Scheduled changes cancelled successfully', 'Close', {duration: 5000});
+      }, (error: any)=>{
+        this.dialog.closeAll();
+        const message = error.error.message || 'An error occurred';
+        this.snackBar.open(message, 'Close', {duration: 5000});
+      });
   }
 }
