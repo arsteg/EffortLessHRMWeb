@@ -1,8 +1,86 @@
-<div>
-      <h2>Logs for User: {{ userId }}</h2>
-      <ul>
-        <li *ngFor="let log of logs">
-          {{ log.timestamp}}: {{ log.message }}
-        </li>
-      </ul>
+<!-- <div>
+  <div class="selection-container">
+    <div class="form-group">
+      <label for="companySelect">Select Company:</label>
+      <select id="companySelect" [(ngModel)]="selectedCompany" (change)="onCompanyChange()">
+        <option value="">Select a company</option>
+        <option *ngFor="let company of companies" [value]="company.id">
+          {{company.name}}
+        </option>
+      </select>
     </div>
+
+    <div class="form-group">
+      <label for="userSelect">Select User:</label>
+      <select id="userSelect" [(ngModel)]="selectedUser" (change)="onUserChange()" [disabled]="!selectedCompany">
+        <option value="">Select a user</option>
+        <option *ngFor="let user of users" [value]="user.id">
+          {{user.name}}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <div *ngIf="selectedUser">
+    <h2>Logs for User: {{selectedUser}}</h2>
+    <ul>
+      <li *ngFor="let log of logs">
+        {{ log.timestamp}}: {{ log.message }}
+      </li>
+    </ul>
+  </div>
+</div> -->
+<div *ngFor="let log of logs">
+  <p>{{ log.timestamp }} - {{ log.message }}</p>
+</div>
+
+<div class="mainContent">
+  <div class="py-3 tableContainer">
+    <div class="d-flex align-items-start mb-2 px-3">
+      <mat-form-field appearance="outline">
+        <mat-label>Select Company</mat-label>
+        <mat-select [(ngModel)]="selectedCompany" (selectionChange)="onCompanyChange()">
+          <mat-option value="">Select a company</mat-option>
+          <mat-option *ngFor="let company of companies" [value]="company.id">
+            {{company.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- User Selection -->
+      <mat-form-field appearance="outline">
+        <mat-label>Select User</mat-label>
+        <mat-select [(ngModel)]="userId" (selectionChange)="onUserChange()" [disabled]="!selectedCompany">
+          <mat-option value="">Select a user</mat-option>
+          <mat-option *ngFor="let user of users" [value]="user.id">
+            {{user.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <!-- Logs Table -->
+    <div *ngIf="userId">
+      <table mat-table [dataSource]="logs" matSort>
+        <!-- Timestamp Column -->
+        <ng-container matColumnDef="timestamp">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Timestamp</th>
+          <td mat-cell *matCellDef="let log">{{log.timestamp}}</td>
+        </ng-container>
+
+        <!-- Message Column -->
+        <ng-container matColumnDef="message">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Message</th>
+          <td mat-cell *matCellDef="let log">{{log.message}}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+      <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 50, 100]">
+      </mat-paginator>
+    </div>
+  </div>
+</div>
+
