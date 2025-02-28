@@ -36,7 +36,6 @@ export class OtherBenefitsComponent {
   ) {
     this.otherBenefitForm = this.fb.group({
       label: ['', Validators.required],
-      isEffectAttendanceOnEligibility: [true, Validators.required],
       company: ['']
     });
     
@@ -49,7 +48,6 @@ export class OtherBenefitsComponent {
   clearForm() {
     this.otherBenefitForm.patchValue({
      label: '',
-      isEffectAttendanceOnEligibility: true 
     })
   }
   open(content: any) {
@@ -85,9 +83,7 @@ export class OtherBenefitsComponent {
       this.payroll.addOtherBenefits(this.otherBenefitForm.value).subscribe((res: any) => {
         this.otherBenefits.push(res.data);
         this.toast.success('Successfully Added!!!', 'Other Benefit');
-        this.otherBenefitForm.reset({
-          isEffectAttendanceOnEligibility : true
-        });
+        this.otherBenefitForm.reset();
       },
         (err) => {
           this.toast.error('Other Benefit Can not be added', 'Other Benefit');
