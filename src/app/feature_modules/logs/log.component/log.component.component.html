@@ -1,0 +1,8 @@
+<div>
+      <h2>Logs for User: {{ userId }}</h2>
+      <ul>
+        <li *ngFor="let log of logs">
+          {{ log.timestamp}}: {{ log.message }}
+        </li>
+      </ul>
+    </div>
