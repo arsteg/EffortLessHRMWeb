@@ -15,8 +15,10 @@
                             <mat-label>First Name </mat-label>
                             <input matInput formControlName="firstName" placeholder="Enter First Name">
                             <mat-error *ngIf="userForm.get('firstName')?.touched && userForm.get('firstName')?.invalid">
-                                <small *ngIf="userForm.get('firstName')?.errors?.['required']">First Name is required.</small>
-                                <small *ngIf="userForm.get('firstName')?.errors?.['pattern']">Must contain at least 2 alphabetic characters.</small>
+                                <small *ngIf="userForm.get('firstName')?.errors?.['required']">First Name is
+                                    required.</small>
+                                <small *ngIf="userForm.get('firstName')?.errors?.['pattern']">Must contain at least 2
+                                    alphabetic characters.</small>
                             </mat-error>
                         </mat-form-field>
 
@@ -24,8 +26,10 @@
                             <mat-label>Last Name </mat-label>
                             <input matInput formControlName="lastName" placeholder="Enter Last Name">
                             <mat-error *ngIf="userForm.get('lastName')?.touched && userForm.get('lastName')?.invalid">
-                                <small *ngIf="userForm.get('lastName')?.errors?.['required']">Last Name is required.</small>
-                                <small *ngIf="userForm.get('lastName')?.errors?.['pattern']">Must contain at least 2 alphabetic characters.</small>
+                                <small *ngIf="userForm.get('lastName')?.errors?.['required']">Last Name is
+                                    required.</small>
+                                <small *ngIf="userForm.get('lastName')?.errors?.['pattern']">Must contain at least 2
+                                    alphabetic characters.</small>
                             </mat-error>
                         </mat-form-field>
                     </div>
@@ -49,10 +53,10 @@
                     </div>
 
                     <div class="row">
-                        <mat-form-field appearance="outline" class="col-md-6">
+                        <!-- <mat-form-field appearance="outline" class="col-md-6">
                             <mat-label>Email</mat-label>
                             <input matInput type="email" formControlName="email" placeholder="Enter Email">
-                        </mat-form-field>
+                        </mat-form-field> -->
 
                         <mat-form-field appearance="outline" class="col-md-6">
                             <mat-label>Gender</mat-label>
@@ -123,7 +127,8 @@
 
                         <mat-form-field appearance="outline" class="col-md-6">
                             <mat-label>Number of Children</mat-label>
-                            <input matInput type="number" formControlName="NoOfChildren" placeholder="Enter Number of Children">
+                            <input matInput type="number" formControlName="NoOfChildren"
+                                placeholder="Enter Number of Children">
                         </mat-form-field>
                     </div>
 
@@ -162,10 +167,11 @@
 
                         <mat-form-field appearance="outline" class="col-md-6">
                             <mat-label>Pincode</mat-label>
-                            <input matInput formControlName="pincode" placeholder="Enter Pincode">
+                            <input type="number" matInput formControlName="pincode" placeholder="Enter Pincode">
                             <mat-error *ngIf="userForm.get('pincode')?.touched && userForm.get('pincode')?.invalid">
-                            <small *ngIf="userForm.get('pincode')?.errors?.['pattern']">Pincode must be a 6-digit number.</small>
-                        </mat-error>
+                                <small *ngIf="userForm.get('pincode')?.errors?.['pattern']">Pincode must be a 6-digit
+                                    number.</small>
+                            </mat-error>
                         </mat-form-field>
                     </div>
                 </mat-expansion-panel>
@@ -180,19 +186,21 @@
                     <div class="row">
                         <mat-form-field appearance="outline" class="col-md-6">
                             <mat-label>Phone</mat-label>
-                            <input matInput formControlName="phone" placeholder="Enter Phone Number">
+                            <input type="number" matInput formControlName="phone" placeholder="Enter Phone Number">
                             <mat-error *ngIf="userForm.get('phone')?.touched && userForm.get('phone')?.invalid">
-                            <small *ngIf="userForm.get('phone')?.errors?.['pattern']">Phone must be a 10-digit number.</small>
-                        </mat-error>
-                    </mat-form-field>
+                                <small *ngIf="userForm.get('phone')?.errors?.['pattern']">Phone must be a 10-digit
+                                    number.</small>
+                            </mat-error>
+                        </mat-form-field>
 
                         <mat-form-field appearance="outline" class="col-md-6">
                             <mat-label>Mobile</mat-label>
-                            <input matInput formControlName="mobile" placeholder="Enter Mobile Number">
+                            <input type="number" matInput formControlName="mobile" placeholder="Enter Mobile Number">
                             <mat-error *ngIf="userForm.get('mobile')?.touched && userForm.get('mobile')?.invalid">
-                            <small *ngIf="userForm.get('mobile')?.errors?.['pattern']">Mobile must be a 10-digit number.</small>
-                        </mat-error>
-                    </mat-form-field>
+                                <small *ngIf="userForm.get('mobile')?.errors?.['pattern']">Mobile must be a 10-digit
+                                    number.</small>
+                            </mat-error>
+                        </mat-form-field>
                     </div>
                 </mat-expansion-panel>
 
@@ -211,7 +219,7 @@
 
                         <mat-form-field appearance="outline" class="col-md-6">
                             <mat-label>Emergency Contact Number</mat-label>
-                            <input matInput formControlName="emergancyContactNumber" placeholder="Enter Contact Number">
+                            <input matInput type="number" formControlName="emergancyContactNumber" placeholder="Enter Contact Number">
                         </mat-form-field>
                     </div>
                 </mat-expansion-panel>
@@ -265,7 +273,8 @@
                     <div class="row">
                         <mat-form-field appearance="outline" class="col-md-12">
                             <mat-label>Extra Details</mat-label>
-                            <textarea matInput formControlName="extraDetails" placeholder="Enter Extra Details"></textarea>
+                            <textarea matInput formControlName="extraDetails"
+                                placeholder="Enter Extra Details"></textarea>
                         </mat-form-field>
                     </div>
                 </mat-expansion-panel>
@@ -274,7 +283,7 @@
             <!-- Submit Button -->
             <div class="d-flex justify-content-between mt-3">
                 <button mat-raised-button type="button" (click)="onResetForm()">Cancel</button>
-                <button mat-raised-button type="submit" class="addBtn" [disabled]="!userForm.valid">Submit</button>
+                <button mat-raised-button type="submit" class="addBtn">Submit</button>
             </div>
         </div>
     </form>
