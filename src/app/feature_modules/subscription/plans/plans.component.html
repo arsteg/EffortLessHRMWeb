@@ -2,7 +2,7 @@
     Free Company
 } @else {
 
-    @if(hasActiveSubscription){
+    @if(hasActiveSubscription && subscribedPlan){
         <div class="card p-0 col-md-4 col m-4 text-center">
             <div class="card-header">
                 <h2 class="m-0">
@@ -39,9 +39,26 @@
                     <p>Next due on {{subscription.current_end*1000 | date: 'dd MMM, yyyy'}}.</p>
                 }
         
-                <button mat-raised-button class="addBtn" (click)="viewPayments()">
-                    <mat-icon>payment</mat-icon>View Payments
+                <button mat-stroked-button (click)="viewPayments()">
+                    View Payments
                 </button>
+
+                <button mat-stroked-button (click)="viewPlans(selectPlanTemplate)">
+                    Change Plan
+                </button>
+
+                @if(scheduledChanges){
+                    <div class="bg-light border-rounded text-start mt-4 p-2">
+                        <strong class="m-0">Scheduled Plan Changes</strong>
+                        <ul>
+                            <li>Plan: {{scheduledChanges.planName}}</li>
+                            <li>From : {{scheduledChanges.charge_at*1000 | date: 'dd MMM, yyyy'}}</li>
+                            <li>Amount: {{(scheduledChanges.planPrice * scheduledChanges.quantity) | currency : 'INR'}}</li>
+                        </ul>
+
+                        <button mat-stroked-button (click)="cancelChangePlan()">Cancel Plan Changes</button>
+                    </div>
+                }
             </div>
         </div>
     } @else {
@@ -99,3 +116,34 @@
         </div>
     }
 }
+
+<ng-template #selectPlanTemplate>
+    <h1 mat-dialog-title>Select new Plan</h1>
+    <div mat-dialog-content>
+        <form [formGroup]="changePlanForm" (submit)="changePlan()">
+            <mat-radio-group formControlName="currentPlanId">
+                @for (plan of plans; track plan) {
+                  <mat-radio-button [value]="plan._id" [disabled]="plan._id === subscribedPlan._id">
+                    <div class="border p-2 mb-2">
+                        <div>{{plan.currentprice | currency:'INR'}} | {{plan.name}}</div>
+                        <div>{{plan.description}}</div>
+                        @if(plan.notes){
+                            @if(plan.notes.note1){
+                                <div>{{plan.notes.note1}}</div>
+                            }
+                            @if(plan.notes.note2){
+                                <div>{{plan.notes.note2}}</div>
+                            }
+                        }
+                    </div>
+                </mat-radio-button>
+                }
+            </mat-radio-group>
+
+            <div class="d-flex justify-content-between">
+                <button mat-stroked-button type="button" (click)="dialog.closeAll()">Cancel</button>
+                <button mat-raised-button  type="submit" color="primary">Submit</button>
+            </div>
+        </form>
+    </div>
+</ng-template>

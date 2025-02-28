@@ -1,5 +1,4 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { PayrollComponent } from './payroll.component';
 import { SettingsComponent } from './settings/settings.component';
 import { GeneralSettingsComponent } from './settings/general-settings/general-settings.component';
@@ -31,8 +30,6 @@ import { EsicComponent } from './settings/fixed-contribution/esic/esic.component
 import { CeilingAmountComponent } from './settings/fixed-contribution/esic/ceiling-amount/ceiling-amount.component';
 import { ContributionComponent } from './settings/fixed-contribution/esic/contribution/contribution.component';
 import { DeductionComponent } from './settings/fixed-contribution/lwf/deduction/deduction.component';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatButtonModule } from '@angular/material/button';
 import { PtSlabComponent } from './settings/fixed-contribution/pt/pt-slab/pt-slab.component';
 import { ConfigureStateComponent } from './settings/fixed-contribution/pt/eligible-states/configure-state/configure-state.component';
 import { UpdateStateComponent } from './settings/fixed-contribution/pt/eligible-states/configure-state/update-state/update-state.component';
@@ -46,7 +43,6 @@ import { AssignedFixedContributionComponent } from './ctc-templates/assigned-tem
 import { AssignedFixedDeductionComponent } from './ctc-templates/assigned-templates/fixed-deduction/fixed-deduction.component';
 import { PayrollHistoryComponent } from './run-payroll/payroll-history/payroll-history.component';
 import { RunFnfPayrollComponent } from './run-payroll/run-fnf-payroll/run-fnf-payroll.component';
-import { NgbDropdown, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { PayrollStepsComponent } from './run-payroll/payroll-steps/payroll-steps.component';
 import { Step1Component } from './run-payroll/payroll-steps/step-1/step-1.component';
 import { Step2Component } from './run-payroll/payroll-steps/step-2/step-2.component';
@@ -64,16 +60,11 @@ import { CommonComponentsModule } from 'src/app/common/commonComponents.module';
 import { PayrollRoutingModule } from './payroll-routing.module';
 import { PayrollUserListComponent } from './run-payroll/payroll-steps/payroll-user-list/payroll-user-list.component';
 import { GeneratePayslipsComponent } from './payslips/generate-payslips/generate-payslips.component';
-import { MatMenuModule } from '@angular/material/menu';
 import { FnfUsersComponent } from './run-payroll/run-fnf-payroll/fnf-steps/fnf-users/fnf-users.component';
 import { FNFStep1Component } from './run-payroll/run-fnf-payroll/fnf-steps/step1/step1.component';
 import { FNFStep2Component } from './run-payroll/run-fnf-payroll/fnf-steps/step2/step2.component';
 import { FNFStep3Component } from './run-payroll/run-fnf-payroll/fnf-steps/step3/step3.component';
 import { FNFStep4Component } from './run-payroll/run-fnf-payroll/fnf-steps/step4/step4.component';
-import { MatTableModule } from '@angular/material/table';
-import { MatSelectModule } from '@angular/material/select';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatDialogModule } from '@angular/material/dialog';
 import { FNFStep5Component } from './run-payroll/run-fnf-payroll/fnf-steps/step5/step5.component';
 import { FNFStep6Component } from './run-payroll/run-fnf-payroll/fnf-steps/step6/step6.component';
 import { FNFStep7Component } from './run-payroll/run-fnf-payroll/fnf-steps/step7/step7.component';
@@ -147,21 +138,12 @@ import { FNFStep8Component } from './run-payroll/run-fnf-payroll/fnf-steps/step8
     FNFStep8Component
   ],
   imports: [
-    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     SharedModule,
-    MatSidenavModule,
-    MatButtonModule,
     OverlayModule,
-    NgbDropdownModule,
     CommonComponentsModule,
     PayrollRoutingModule,
-    MatMenuModule,
-    MatTableModule,
-    MatSelectModule,
-    MatDatepickerModule,
-    MatDialogModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

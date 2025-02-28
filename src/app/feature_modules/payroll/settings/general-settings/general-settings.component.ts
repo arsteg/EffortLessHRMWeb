@@ -235,29 +235,18 @@ export class GeneralSettingsComponent {
         })
     }
     else if (this.activeTab === 'tabPFTemplate') {
-      // this.payroll.deleteFixedAllowance(_id).subscribe((res: any) => {
-      //   const index = this.fixedAllowance.findIndex(temp => temp._id === _id);
-      //   if (index!== -1) {
-      //     this.fixedAllowance.splice(index, 1);
-      //   }
-      //   this.toast.success('Successfully Deleted!!!', 'Fixed Allowance');
-      // },
-      //   (err) => {
-      //     this.toast.error('This Can not be delete as it is already used in the system', 'Fixed Allowance');
-      //   })
+      this.payroll.deletePFTemplate(_id).subscribe((res: any) => {
+        const index = this.fixedAllowance.findIndex(temp => temp._id === _id);
+        if (index!== -1) {
+          this.fixedAllowance.splice(index, 1);
+        }
+        this.toast.success('Successfully Deleted!!!', 'Fixed Allowance');
+      },
+        (err) => {
+          this.toast.error('This Can not be delete as it is already used in the system', 'Fixed Allowance');
+        })
     }
-    else if (this.activeTab === 'tabGratuityTemplates') {
-      //   this.payroll.deleteGeneralSettings(_id).subscribe((res: any) => {
-      //     const index = this.generalSettings.findIndex(temp => temp._id === _id);
-      //     if (index!== -1) {
-      //       this.generalSettings.splice(index, 1);
-      //     }
-      //     this.toast.success('Successfully Deleted!!!', 'General Settings');
-      //   },
-      //     (err) => {
-      //       this.toast.error('This Can not be delete as it is already used in the system', 'General Settings');
-      //     })
-    }
+    
   }
 
   deleteDialog(id: string): void {
@@ -312,12 +301,7 @@ export class GeneralSettingsComponent {
         this.totalRecords = res.total;
       });
     }
-    else if (this.activeTab == 'tabGratuityTemplates') {
-      this.payroll.getGratuityTemplate(pagination).subscribe((res: any) => {
-        this.gratuityTemplate = res.data;
-        this.totalRecords = res.total;
-      });
-    }
+   
   }
 
   onClose(event) {

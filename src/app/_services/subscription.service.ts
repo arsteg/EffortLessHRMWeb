@@ -71,9 +71,19 @@ export class SubscriptionService extends baseService {
   getCredentials(){
     return this.http.get(`${environment.apiUrlDotNet}/pricing/credentials`, this.httpOptions);
   }
+
+  changeSubscription(subscriptionId, payload){
+    return this.http.put(`${environment.apiUrlDotNet}/pricing/subscription/${subscriptionId}`, payload, this.httpOptions);
+  }
+
+  cancelChangeSubscription(subscriptionId){
+    return this.http.put(`${environment.apiUrlDotNet}/pricing/cancel-subscription-updates/${subscriptionId}`, {}, this.httpOptions);
+  }
+
   getLastInvoice():Observable<any>{
     return this.http.get<any>(`${environment.apiUrlDotNet}/pricing/last-invoice`, this.httpOptions);
   }
+  
   getUpcomingPayment():Observable<any>{
     return this.http.get<any>(`${environment.apiUrlDotNet}/pricing/upcoming-payment`, this.httpOptions);
   }
