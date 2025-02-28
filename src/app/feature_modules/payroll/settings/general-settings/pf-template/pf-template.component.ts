@@ -28,12 +28,12 @@ export class PfTemplateComponent {
   }
 
   ngOnInit() {
-    console.log(this.payroll.generalSettings.getValue());
     if (this.changeMode) {
       this.payroll.data.subscribe(res => {
+        console.log(res);
         this.pfTemplateForm.patchValue({
-          name: res.name,
-          roundingType: res.roundingType
+          templateName: res.templateName,
+          allowanceApplicable: res.allowanceApplicable
         })
       })
     }

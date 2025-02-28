@@ -20,7 +20,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from 'src/app/shared/shared.Module';
 import { RoundingRulesComponent } from './settings/general-settings/rounding-rules/rounding-rules.component';
 import { PfTemplateComponent } from './settings/general-settings/pf-template/pf-template.component';
-import { GratuityTemplateComponent } from './settings/general-settings/gratuity-template/gratuity-template.component';
 import { LwfComponent } from './settings/fixed-contribution/lwf/lwf.component';
 import { LwfSlabComponent } from './settings/fixed-contribution/lwf/lwf-slab/lwf-slab.component';
 import { PtComponent } from './settings/fixed-contribution/pt/pt.component';
@@ -90,7 +89,6 @@ import { FNFStep8Component } from './run-payroll/run-fnf-payroll/fnf-steps/step8
     FnfPayslipsComponent,
     RoundingRulesComponent,
     PfTemplateComponent,
-    GratuityTemplateComponent,
     LwfComponent,
     LwfSlabComponent,
     PtComponent,

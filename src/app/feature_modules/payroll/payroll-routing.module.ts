@@ -68,10 +68,6 @@ const routes: Routes = [
           }
         ]
       },
-      // {
-      //   path: 'ctc-template/update-ctc-template/assigned-templates',
-      //   component: AssignedFixedAllowanceComponent
-      // },
       { path: 'lop-reversal', component: LopReversalComponent },
       { path: 'run-payroll', component: RunPayrollComponent },
       { path: 'payslips', component: PayslipsComponent },
