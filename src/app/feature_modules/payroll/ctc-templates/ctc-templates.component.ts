@@ -103,12 +103,12 @@ export class CtcTemplatesComponent {
     this.payroll.showTable.next(this.showTable);
     this.payroll.showAssignedTemplate.next(true);
     this.router.navigate([`update-ctc-template`, data._id], { relativeTo: this.route });
-}
+  }
 
   navigateToUpdateCTCTemplate() {
     this.payroll.isEdit.next(false);
     this.payroll.showTable.next(false);
-    this.payroll.selectedCTCTemplate.next();
+    // this.payroll.selectedCTCTemplate.next();
     this.payroll.showAssignedTemplate.next(true);
     this.router.navigate(['home/payroll/ctc-template/update-ctc-template']);
   }

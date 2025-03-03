@@ -29,6 +29,7 @@ export class AssignedTemplatesComponent {
 
   ngOnInit() {
     this.updateForm();
+    console.log(this.payroll.getFormValues.getValue());
     this.selectedRecord = this.payroll.selectedCTCTemplate.getValue();
   }
 
