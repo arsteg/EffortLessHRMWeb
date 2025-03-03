@@ -108,24 +108,16 @@
                         </mat-radio-group>
                     </div>
                 </div>
-
-
             </div>
         </form>
     </div>
     <hr>
     <div class="">
         <div class="col-12">
-            <ul class="nav nav-tabs">
-                <li class="nav-item">
-                    <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabRoundingRules'}"
-                        (click)="selectTab('tabRoundingRules')">Rounding Rules for Statutory Contributions</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabPFTemplate'}"
-                        (click)="selectTab('tabPFTemplate')">PF Template</a>
-                </li>
-            </ul>
+            <mat-tab-group [(selectedIndex)]="selectedTab" class="d-flex justify-content-between">
+                <mat-tab label="Rounding Rules for Statutory Contributions" (click)="selectTab('tabRoundingRules')"></mat-tab>
+                <mat-tab label="PF Template" (click)="selectTab('tabPFTemplate')"></mat-tab>
+            </mat-tab-group>
             <div class="tab-content pt-0">
                 <div class="d-flex justify-content-between px-2 align-items-center">
                     <div> <button class="btn addBtn" (click)="open(modal); clearForm(); isEdit= false">Add</button>
@@ -187,8 +179,7 @@
                                         <mat-icon>more_vert</mat-icon>
                                     </button>
                                     <mat-menu #menu="matMenu">
-                                        <button mat-menu-item
-                                            (click)="isEdit= true; selectedRecord = roundingRule; open(modal);">
+                                        <button mat-menu-item (click)="isEdit= true; selectedRecord = roundingRule; open(modal);">
                                             <mat-icon>edit</mat-icon>
                                             <span>Edit</span>
                                         </button>
@@ -230,8 +221,7 @@
                                         <mat-icon>more_vert</mat-icon>
                                     </button>
                                     <mat-menu #menu="matMenu">
-                                        <button mat-menu-item
-                                            (click)="isEdit= true; selectedRecord = pfTemplate; open(modal);">
+                                        <button mat-menu-item (click)="isEdit= true; selectedRecord = pfTemplate; open(modal);">
                                             <mat-icon>edit</mat-icon>
                                             <span>Edit</span>
                                         </button>
@@ -258,11 +248,14 @@
 </div>
 
 <ng-template #modal let-modal>
-    @if(activeTab === 'tabRoundingRules'){
-     <app-rounding-rules (close)="onClose($event)" [changeMode]="isEdit"
-        [roundingRule]="selectedRecord"></app-rounding-rules>
-    }
-    @else{
-    <app-pf-template (close)="onClose($event)" [changeMode]="isEdit"></app-pf-template>
-    }
+    <ng-container *ngIf="activeTab === 'tabRoundingRules'">
+        <app-rounding-rules (close)="onClose($event)" [changeMode]="isEdit"
+            [roundingRule]="selectedRecord"></app-rounding-rules>
+    </ng-container>
+    <ng-container *ngIf="activeTab === 'tabPFTemplate'">
+        <app-pf-template (close)="onClose($event)" [changeMode]="isEdit"></app-pf-template>
+    </ng-container>
+    <ng-container *ngIf="activeTab === 'tabGratuityTemplates'">
+        <app-gratuity-template (close)="onClose($event)" [changeMode]="isEdit"></app-gratuity-template>
+    </ng-container>
 </ng-template>
