@@ -267,4 +267,7 @@ export class UserService {
   updateAppointment(id: string, payload: any): Observable<any> {
     return this.http.put<any>(`${environment.apiUrlDotNet}/users/appointments/${id}`, payload, this.httpOptions);
   }
+  getUsersByCompany(companyId: string) {
+    return this.http.get<any>(`${environment.apiUrlDotNet}/users/getUsersByCompany/${companyId}`,this.httpOptions);
+  }  
 }

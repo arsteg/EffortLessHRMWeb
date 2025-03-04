@@ -4,6 +4,12 @@ import { LogService } from 'src/app/_services/log.service';
 import { SharedModule } from 'src/app/shared/shared.Module';
 import { MatTableDataSource } from '@angular/material/table';
 import { ToastrService } from 'ngx-toastr';
+import { WebSocketNotification } from 'src/app/models/eventNotification/eventNotitication';
+import { CompanyService } from 'src/app/_services/company.service';
+import { company } from 'src/app/models/company';
+import { UserService } from 'src/app/_services/users.service';
+import { CommonService } from 'src/app/_services/common.Service';
+import { WebSocketService } from 'src/app/_services/web-socket.service';
 
 @Component({
   selector: 'app-log.component',
@@ -16,75 +22,70 @@ import { ToastrService } from 'ngx-toastr';
 export class LogComponentComponent implements OnInit, OnDestroy {
   userId = '62dfa8d13babb9ac2072863c'; // Replace with the selected user ID
   logs: any[] = [];
-  private logSubscription: Subscription;
-  companies: any[] = [];
+  private logSubscription: Subscription | null = null;
+  private webSocketSubscription: Subscription | null = null;
+  companies: company[] = [];
   users: any[] = [];
-  
   selectedCompany: string = '';
+  displayedColumns: string[] = ['timestamp', 'message'];  
+  message = '';
+  messages: WebSocketNotification[] = [];
 
-  displayedColumns: string[] = ['timestamp', 'message'];
-  dataSource: MatTableDataSource<any>;
-
-
-  constructor(private logService: LogService, private toast: ToastrService) {}
+  constructor(
+    private logService: LogService,
+    private toast: ToastrService,
+    private companyService: CompanyService,
+    private userService: UserService,
+    private webSocketService: WebSocketService,
+    private commonService: CommonService
+  ) {    
+  }
 
   ngOnInit() {
-    //Listen for logs for the selected user
-    this.logSubscription = this.logService.listenForLogs(this.userId).subscribe((log) => {
-      console.log('listen socket');
-      this.logs.unshift(log); // Add new log to the top of the list
-      },
-      err => {
-        this.toast.error(`Error: ${err.message}`, 'Error!!!');
-    });
     this.loadCompanies();
+    this.connectToWebSocket();
+  }
 
-    let selectedUser = {
-      userId: this.userId,
-    };
-
-    this.logService.setSelectedUser(selectedUser).subscribe((res: any) => {
-      console.log(res.data);
-      const retdata = res.data;
-    },
-      err => {
-        this.toast.error('Selected user can not be set', 'Error!!!')
-    });
-
-    this.logService.getLogForloggedInUser().subscribe((log) => {
-      console.log('called');
+  connectToWebSocket() {
+    this.webSocketService.connect();
+    this.webSocketSubscription = this.webSocketService.messages$.subscribe({
+      next: (message) => {
+        this.messages.push(message);        
+      },
+      error: (error) => console.error('WebSocket subscription error:', error)
     });
   }
 
-  loadCompanies() {
-    // this.logService.getCompanies().subscribe({
-    //   next: (companies) => {
-    //     this.companies = companies;
-    //   },
-    //   error: (error) => {
-    //     console.error('Error loading companies:', error);
-    //     // Handle error appropriately
-    //   }
-    // });
-  }
+ 
 
   onCompanyChange() {
-    // Reset user selection and users list when company changes
     this.userId = '';
     this.users = [];
     this.logs = [];
-
+  
     if (this.selectedCompany) {
-      // this.logService.getUsersByCompany(this.selectedCompany).subscribe({
-      //   next: (users) => {
-      //     this.users = users;
-      //   },
-      //   error: (error) => {
-      //     console.error('Error loading users:', error);
-      //     // Handle error appropriately
-      //   }
-      // });
+      this.userService.getUsersByCompany(this.selectedCompany).subscribe({
+        next: (response) => {
+          console.log('Users API response:', response);  // Add this for debugging
+          this.users = response.data?.users;
+        },
+        error: (error) => {
+          console.error('Error loading users:', error);
+        }
+      });
     }
+  }
+
+  loadCompanies() {
+    this.companyService.getCompanies().subscribe({
+      next: (response) => {
+        this.companies = response.data;
+      },
+      error: (error) => {
+        console.error('Error loading companies:', error);
+        // Handle error appropriately
+      }
+    });
   }
 
   onUserChange() {
@@ -92,18 +93,19 @@ export class LogComponentComponent implements OnInit, OnDestroy {
     this.logs = [];
 
     if (this.userId) {
-      // this.logService.getUserLogs(this.selectedUser).subscribe({
-      //   next: (logs) => {
-      //     this.logs = logs;
-      //   },
-      //   error: (error) => {
-      //     console.error('Error loading logs:', error);
-      //     // Handle error appropriately
-      //   }
-      // });
+      this.commonService.setSelectedUser({
+        "userId": this.userId
+      }).subscribe({
+        next: (response) => {
+          this.toast.success('User for log set successfully');
+        },
+        error: (error) => {
+          console.error('Error loading logs:', error);
+          // Handle error appropriately
+        }
+      });
     }
   }
-
   ngOnDestroy() {
     // Clean up the subscription
     if (this.logSubscription) {

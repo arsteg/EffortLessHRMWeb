@@ -1,4 +1,5 @@
 export class company{
+  id:string;
   companyName:string;
   contactPerson: string;
   address: string;
