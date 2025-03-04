@@ -33,7 +33,7 @@ export class PayrollService {
   payrollUsers: any = new BehaviorSubject('');
   allUsers: any = new BehaviorSubject('');
   payslip: any = new BehaviorSubject('');
-  
+  getFormValues: any = new BehaviorSubject('');
   
   fixedAllowances: any = new BehaviorSubject('');
   fixedDeductions: any = new BehaviorSubject('');
