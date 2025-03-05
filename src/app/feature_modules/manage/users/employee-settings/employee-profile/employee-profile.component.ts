@@ -27,7 +27,7 @@ export class EmployeeProfileComponent {
   ) {
     this.userForm = this.fb.group({
       firstName: ['', [Validators.required, Validators.pattern('^[A-Za-z]{2,}$')]],
-      lastName: ['', [Validators.required, Validators.pattern('^[A-Za-z]{2,}$')]],
+      lastName: ['', [Validators.pattern('^[A-Za-z]{2,}$')]],
       jobTitle: [''],
       address: [''],
       city: [''],
@@ -35,11 +35,11 @@ export class EmployeeProfileComponent {
       extraDetails: [''],
       role: ['', Validators.required],
       email: ['', Validators.email],
-      phone: ['', [Validators.pattern('^[0-9]{10}$')]],
-      mobile: ['', [Validators.pattern('^[0-9]{10}$')]],
-      pincode: ['', [Validators.pattern('^[0-9]{6}$')]],
+      phone: [, [Validators.pattern('^[0-9]{10}$')]],
+      mobile: [, [Validators.pattern('^[0-9]{10}$')]],
+      pincode: [, [Validators.pattern('^[0-9]{6}$')]],
       emergancyContactName: [''],
-      emergancyContactNumber: [''],
+      emergancyContactNumber: [],
       Gender: [''],
       DOB: [''],
       MaritalStatus: ['Unmarried'],
@@ -56,7 +56,6 @@ export class EmployeeProfileComponent {
       BankBranch: [''],
       BankAddress: ['']
     });
-    this.userForm.get('email').disable();
   }
 
   ngOnInit() {
@@ -88,8 +87,7 @@ export class EmployeeProfileComponent {
 
   onSubmit() {
     if (this.userForm.valid) {
-      const payload = this.userForm.getRawValue();
-      this.userService.updateUser(this.selectedUser[0].id, payload).subscribe(
+      this.userService.updateUser(this.selectedUser[0].id, this.userForm.value).subscribe(
         (res: any) => this.toast.success('User Updated Successfully'),
         (err) => { this.toast.error('User Update Failed') }
       );

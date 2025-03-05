@@ -76,6 +76,8 @@ export class AddSalaryDetailsComponent {
   }
 
   ngOnInit(): void {
+    this.salaryDetailsForm.get('frequencyToEnterCTC')?.setValue('Yearly');
+    this.salaryDetailsForm.value.get('frequencyToEnterCTC')?.disable(); 
     this.logUrlSegmentsForUser();
     if (this.edit) {
       this.getSalaryDetailsById();
@@ -324,7 +326,7 @@ export class AddSalaryDetailsComponent {
     }));
 
     payload.salaryComponentPFCharge = payload.salaryComponentPFCharge.filter(item => item?.pfCharge !== '');
-    console.log(payload);
+    payload.frequencyToEnterCTC = 'Yearly';
     this.userService.addSalaryDetails(payload).subscribe((res: any) => {
       this.toast.success('The salary details have been successfully added.')
     },

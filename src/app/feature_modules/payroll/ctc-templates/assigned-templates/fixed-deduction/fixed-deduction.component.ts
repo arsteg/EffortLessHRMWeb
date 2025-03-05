@@ -15,7 +15,7 @@ export class AssignedFixedDeductionComponent {
   @Output() formDataChange = new EventEmitter<any>();
   @Input() isEdit: boolean = false;
   @Input() selectedRecord: any = {};
-
+  @Input() ctcTemplateFixedDeduction: any;
   constructor(
     private fb: FormBuilder
   ) {
@@ -34,9 +34,7 @@ export class AssignedFixedDeductionComponent {
   initForm() {
     const allowancesControl = this.fixedDeductionForm.get('fixedDeduction') as FormArray;
     allowancesControl.clear();
-
-    if (this.selectedRecord?.ctcTemplateFixedDeductions?.length) {
-      this.fixedDeduction = this.selectedRecord.ctcTemplateFixedDeductions;
+      this.fixedDeduction = this.selectedRecord.ctcTemplateFixedDeductions || this.ctcTemplateFixedDeduction;
 
       this.fixedDeduction.forEach(fd => {
         allowancesControl.push(this.fb.group({
@@ -48,7 +46,6 @@ export class AssignedFixedDeductionComponent {
           minimumAmount: [fd.minimumAmount || 0]
         }));
       });
-    }
 
     this.fixedDeductionForm.valueChanges.subscribe(() => {
       if (this.fixedDeductionForm.valid) {
@@ -65,9 +62,24 @@ export class AssignedFixedDeductionComponent {
 
   patchFormValues() {
     const allowancesControl = this.fixedDeductionForm.get('fixedDeduction') as FormArray;
+    allowancesControl.clear();
 
-    if (this.selectedRecord?.ctcTemplateFixedDeductions?.length) {
+    // if (this.selectedRecord?.ctcTemplateFixedDeductions?.length) {
+    if (this.isEdit) {
       this.selectedRecord.ctcTemplateFixedDeductions.forEach((item: any) => {
+        allowancesControl.push(this.fb.group({
+          fixedDeduction: [item.fixedDeduction?._id || ''],
+          fixedDeductionLabel: [item.fixedDeduction?.label || ''],
+          criteria: [item.criteria || 'Amount'],
+          value: [item.value || ''],
+          valueType: [item.valueType || 0],
+          minimumAmount: [item.minimumAmount || 0]
+        }));
+      });
+      console.log(this.selectedRecord.ctcTemplateFixedDeductions);
+    }
+    else if(!this.isEdit) {
+      this.ctcTemplateFixedDeduction.forEach((item: any) => {
         allowancesControl.push(this.fb.group({
           fixedDeduction: [item.fixedDeduction?._id || ''],
           fixedDeductionLabel: [item.fixedDeduction?.label || ''],

@@ -177,4 +177,7 @@ export class CompanyService {
   deleteTaxSlab(id: string): Observable<any> {
     return this.http.delete<any>(`${environment.apiUrlDotNet}/company/tax-slabs/${id}`, this.httpOptions);
   }
+  getCompanies(): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrlDotNet}/company/All`, this.httpOptions);
+  }
 }

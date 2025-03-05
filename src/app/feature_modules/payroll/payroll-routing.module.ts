@@ -43,13 +43,12 @@ const routes: Routes = [
           { path: 'pf-charges', component: PfChargesComponent }
         ]
       },
-      
       {
         path: 'ctc-template',
         component: CtcTemplatesComponent
       },
       {
-        path: 'ctc-template/update-ctc-template',
+        path: 'ctc-template/create-ctc-template',
         component: UpdateCTCTemplateComponent,
         children: [
           {
@@ -68,10 +67,6 @@ const routes: Routes = [
           }
         ]
       },
-      // {
-      //   path: 'ctc-template/update-ctc-template/assigned-templates',
-      //   component: AssignedFixedAllowanceComponent
-      // },
       { path: 'lop-reversal', component: LopReversalComponent },
       { path: 'run-payroll', component: RunPayrollComponent },
       { path: 'payslips', component: PayslipsComponent },

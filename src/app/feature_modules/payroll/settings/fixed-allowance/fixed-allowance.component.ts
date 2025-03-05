@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
@@ -22,9 +21,9 @@ export class FixedAllowanceComponent {
   selectedRecord: any;
   fixedAllowanceForm: FormGroup;
   public sortOrder: string = '';
+  dialogRef: MatDialogRef<any>;
 
   constructor(private payroll: PayrollService,
-    private modalService: NgbModal,
     private toast: ToastrService,
     private fb: FormBuilder,
     private dialog: MatDialog
@@ -44,13 +43,9 @@ export class FixedAllowanceComponent {
     this.getFixedAllowance();
   }
 
-  onPageChange(page: number) {
-    this.currentPage = page;
-    this.getFixedAllowance();
-  }
-
-  onRecordsPerPageChange(recordsPerPage: number) {
-    this.recordsPerPage = recordsPerPage;
+  onPageChange(event: any) {
+    this.currentPage = event.pageIndex + 1;
+    this.recordsPerPage = event.pageSize;
     this.getFixedAllowance();
   }
 
@@ -66,47 +61,26 @@ export class FixedAllowanceComponent {
   }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
+    this.dialogRef = this.dialog.open(content, {
+      width: '600px',
+      disableClose: true,
+    });
 
-    }, (reason) => {
-
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    this.dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.getFixedAllowance();
+      }
     });
   }
 
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
-  }
   closeModal() {
-    this.modalService.dismissAll();
-  }
-
-  onCancel() {
-    this.isEdit = false;
-    this.fixedAllowanceForm.patchValue({
-      label: '',
-      isProvidentFundAffected: false,
-      isESICAffected: false,
-      isGratuityFundAffected: false,
-      isLWFAffected: false,
-      isProfessionalTaxAffected: false,
-      isTDSAffected: false,
-    })
-
+    this.dialogRef.close(true);
   }
 
   onSubmission() {
     if (this.fixedAllowanceForm.valid) {
       if (!this.isEdit) {
         this.payroll.addAllowanceTemplate(this.fixedAllowanceForm.value).subscribe((res: any) => {
-          this.fixedAllowance.push(res.data);
           this.toast.success('Successfully Added!!!', 'Fixed Allowance');
           this.closeModal();
         },
@@ -116,10 +90,6 @@ export class FixedAllowanceComponent {
       }
       else {
         this.payroll.updateAllowanceTemplate(this.selectedRecord._id, this.fixedAllowanceForm.value).subscribe((res: any) => {
-          const index = this.fixedAllowance.findIndex(item => item._id === this.selectedRecord._id);
-          if (index !== -1) {
-            this.fixedAllowance[index] = res.data;
-          }
           this.toast.success('Successfully Updated!!!', 'Fixed Allowance');
           this.closeModal();
         },
@@ -144,20 +114,20 @@ export class FixedAllowanceComponent {
 
 
   editRecord() {
-    this.fixedAllowanceForm.patchValue(this.selectedRecord);
+    this.fixedAllowanceForm.patchValue({
+      label: this.selectedRecord.label,
+      isProvidentFundAffected: this.selectedRecord.isProvidentFundAffected,
+      isESICAffected: this.selectedRecord.isESICAffected,
+      isGratuityFundAffected: this.selectedRecord.isGratuityFundAffected,
+      isLWFAffected: this.selectedRecord.isLWFAffected,
+      isProfessionalTaxAffected: this.selectedRecord.isProfessionalTaxAffected,
+      isTDSAffected: this.selectedRecord.isTDSAffected,
+    });
+    console.log(this.selectedRecord);
+    console.log(this.fixedAllowanceForm.value);
   }
 
-  clearForm() {
-    this.fixedAllowanceForm.patchValue({
-      label: '',
-      isProvidentFundAffected: false,
-      isESICAffected: false,
-      isGratuityFundAffected: false,
-      isLWFAffected: false,
-      isProfessionalTaxAffected: false,
-      isTDSAffected: false,
-      })
-  }
+ 
 
   deleteRecord(_id: string) {
     this.payroll.deleteAllowanceTemplate(_id).subscribe((res: any) => {

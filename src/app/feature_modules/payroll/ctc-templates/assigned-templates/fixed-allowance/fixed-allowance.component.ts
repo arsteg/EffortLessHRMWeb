@@ -15,6 +15,7 @@ export class AssignedFixedAllowanceComponent {
   fixedAllowanceForm: FormGroup;
   combinedDataChange: any;
   @Input() selectedRecord: any;
+  @Input() ctcTemplateFixedAllowance: any;
 
   constructor(
     private payroll: PayrollService,
@@ -27,24 +28,22 @@ export class AssignedFixedAllowanceComponent {
 
   ngOnInit() {
     this.initForm();
-    if (this.isEdit) {
-      this.patchFormValues();
-    }
+    this.patchFormValues();
   }
 
   initForm() {
     const allowancesControl = this.fixedAllowanceForm.get('fixedAllowance') as FormArray;
-    this.fixedAllowances = this.selectedRecord.ctcTemplateFixedAllowances || [];
-    this.fixedAllowances.forEach(fa => {
-      allowancesControl.push(this.fb.group({
-        fixedAllowance: [fa.fixedAllowance?._id || ''],
-        fixedAllowanceLabel: [fa.fixedAllowance?.label || ''],
-        criteria: ['Amount'],
-        value: [''],
-        valueType: [0],
-        minimumAmount: [0]
-      }));
-    });
+    this.fixedAllowances = this.selectedRecord.ctcTemplateFixedAllowances || this.ctcTemplateFixedAllowance;
+      this.fixedAllowances.forEach(fa => {
+        allowancesControl.push(this.fb.group({
+          fixedAllowance: [fa.fixedAllowance?._id || ''],
+          fixedAllowanceLabel: [fa.fixedAllowance?.label || ''],
+          criteria: ['Amount'],
+          value: [''],
+          valueType: [0],
+          minimumAmount: [0]
+        }));
+      });
 
     this.fixedAllowanceForm.valueChanges.subscribe(() => {
       if (this.fixedAllowanceForm.valid) {
@@ -62,16 +61,31 @@ export class AssignedFixedAllowanceComponent {
   patchFormValues() {
     const allowancesControl = this.fixedAllowanceForm.get('fixedAllowance') as FormArray;
     allowancesControl.clear();
-    this.selectedRecord.ctcTemplateFixedAllowances.forEach((item: any) => {
-      allowancesControl.push(this.fb.group({
-        fixedAllowance: [item.fixedAllowance?._id || ''],
-        fixedAllowanceLabel: [item.fixedAllowance?.label || ''],
-        criteria: [item.criteria || 'Amount'],
-        value: [item.value || ''],
-        valueType: [item.valueType || 0],
-        minimumAmount: [item.minimumAmount || 0]
-      }));
-    });
+    if (this.isEdit) {
+      this.selectedRecord.ctcTemplateFixedAllowances.forEach((item: any) => {
+        allowancesControl.push(this.fb.group({
+          fixedAllowance: [item.fixedAllowance?._id || ''],
+          fixedAllowanceLabel: [item.fixedAllowance?.label || ''],
+          criteria: [item.criteria || 'Amount'],
+          value: [item.value || ''],
+          valueType: [item.valueType || 0],
+          minimumAmount: [item.minimumAmount || 0]
+        }));
+      });
+    }
+    else if(!this.isEdit) {
+      this.ctcTemplateFixedAllowance.forEach((item: any) => {
+        allowancesControl.push(this.fb.group({
+          fixedAllowance: [item.fixedAllowance?._id || ''],
+          fixedAllowanceLabel: [item.fixedAllowance?.label || ''],
+          criteria: [item.criteria || 'Amount'],
+          value: [item.value || ''],
+          valueType: [item.valueType || 0],
+          minimumAmount: [item.minimumAmount || 0]
+        }));
+      });
+      console.log("Added fixed allowances", this.ctcTemplateFixedAllowance);
+    }
   }
 
   get allowances() {

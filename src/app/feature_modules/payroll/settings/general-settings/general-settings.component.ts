@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-general-settings',
@@ -34,9 +34,9 @@ export class GeneralSettingsComponent {
   pfTemplates: any;
   gratuityTemplate: any;
   public sortOrder: string = '';
+  dialogRef: MatDialogRef<any>;
 
   constructor(private fb: FormBuilder,
-    private modalService: NgbModal,
     private payroll: PayrollService,
     private dialog: MatDialog,
     private toast: ToastrService,
@@ -183,40 +183,29 @@ export class GeneralSettingsComponent {
           this.resetSettings();
         });
       }
-
     });
   }
   open(content: any) {
     this.payroll.generalSettings.next(this.generalSettings);
     this.payroll.fixedAllowance.next(this.fixedAllowance);
-    console.log(this.fixedAllowance);
-    console.log(this.isEdit)
     if (this.isEdit) {
       this.payroll.data.next(this.selectedRecord);
-      console.log(this.selectedRecord)
       this.payroll.generalSettings.next(this.generalSettings);
     }
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
+    this.dialogRef = this.dialog.open(content, {
+      width: '600px',
+      disableClose: true,
+    });
 
-    }, (reason) => {
-      const new_record = this.payroll.addResponse.getValue();
-      console.log(new_record)
-      this.roundingRules.push(new_record);
-      console.log(this.roundingRules)
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    this.dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        const new_record = this.payroll.addResponse.getValue();
+        this.roundingRules.push(new_record);
+      }
     });
   }
 
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
-  }
+ 
 
   clearForm() { }
 
@@ -306,7 +295,10 @@ export class GeneralSettingsComponent {
 
   onClose(event) {
     if (event) {
-      this.modalService.dismissAll();
+
+
+
+      this.dialogRef.close();
       this.loadRecords();
     }
   }

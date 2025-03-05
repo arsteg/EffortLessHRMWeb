@@ -119,27 +119,32 @@
             <div class="form-check mt-2 col-md-6">
                 <label for="">From what period is the variable deduction effective?</label>
                 <div class="d-flex justify-content-between">
-                    <select id="" formControlName="deductionEffectiveFromMonth">
-                        <option value="" selected disabled>Select Month</option>
-                        <option value="m" *ngFor="let m of months">{{m}}</option>
-                    </select>
-
-                    <select id="" formControlName="deductionEffectiveFromYear">
-                        <option value="" selected [disabled]>Select Year </option>
-                        <option *ngFor="let year of years" [value]="year">{{ year }}</option>
-                    </select>
-                </div>
-                <div
-                    *ngIf="variableDeductionForm.get('deductionEffectiveFromMonth').invalid && (variableDeductionForm.get('deductionEffectiveFromMonth').dirty || variableDeductionForm.get('deductionEffectiveFromMonth').touched)">
-                    <small class="text-danger"
-                        *ngIf="variableDeductionForm.get('deductionEffectiveFromMonth')['errors']['required']">Field is
-                        required</small>
-                </div>
-                <div
-                    *ngIf="variableDeductionForm.get('deductionEffectiveFromYear').invalid && (variableDeductionForm.get('deductionEffectiveFromYear').dirty || variableDeductionForm.get('deductionEffectiveFromYear').touched)">
-                    <small class="text-danger"
-                        *ngIf="variableDeductionForm.get('deductionEffectiveFromYear')['errors']['required']">Field is
-                        required</small>
+                    <div>
+                        <select id="" formControlName="deductionEffectiveFromMonth">
+                            <option value="" selected disabled>Select Month</option>
+                            <option value="m" *ngFor="let m of months">{{m}}</option>
+                        </select>
+                        <div
+                            *ngIf="variableDeductionForm.get('deductionEffectiveFromMonth').invalid && (variableDeductionForm.get('deductionEffectiveFromMonth').dirty || variableDeductionForm.get('deductionEffectiveFromMonth').touched)">
+                            <small class="text-danger"
+                                *ngIf="variableDeductionForm.get('deductionEffectiveFromMonth')['errors']['required']">Field
+                                is
+                                required</small>
+                        </div>
+                    </div>
+                    <div>
+                        <select id="" formControlName="deductionEffectiveFromYear">
+                            <option value="" selected [disabled]>Select Year </option>
+                            <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+                        </select>
+                        <div
+                            *ngIf="variableDeductionForm.get('deductionEffectiveFromYear').invalid && (variableDeductionForm.get('deductionEffectiveFromYear').dirty || variableDeductionForm.get('deductionEffectiveFromYear').touched)">
+                            <small class="text-danger"
+                                *ngIf="variableDeductionForm.get('deductionEffectiveFromYear')['errors']['required']">Field
+                                is
+                                required</small>
+                        </div>
+                    </div>
                 </div>
             </div>
 

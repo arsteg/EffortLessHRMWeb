@@ -9,11 +9,14 @@ import { PayrollService } from 'src/app/_services/payroll.service';
 export class OtherBenefitComponent {
   otherBenefits: any;
   @Input() data: any;
-  selectedRecord: any;
+  @Input() selectedRecord: any;
+  @Input() ctcTemplateOtherBenefit: any;
 
   constructor(private payroll: PayrollService) { }
 
   ngOnInit() {
-    this.selectedRecord = this.payroll?.selectedCTCTemplate.getValue();
+    console.log(this.selectedRecord);
+    this.otherBenefits = this.selectedRecord?.ctcTemplateOtherBenefitAllowances || this.ctcTemplateOtherBenefit;
+    console.log(this.otherBenefits);
   }
 }

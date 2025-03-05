@@ -43,7 +43,11 @@ export class UpdateCTCTemplateComponent {
     this.route.params.subscribe(param => {
       const id = param['id'];
       if (id) {
+        this.isEdit = true;
         this.getRecordById(id);
+      }
+      else {
+        this.isEdit = false;
       }
     });
     this.getDataOfAllPayrollSettings();
@@ -73,8 +77,11 @@ export class UpdateCTCTemplateComponent {
       this.router.navigate([`assigned-templates`], { relativeTo: this.route });
     }
     else {
-    this.router.navigate(['assigned-templates'], { relativeTo: this.route });
+      console.log(this.ctcTemplateForm.value)
+      this.payroll.getFormValues.next(this.ctcTemplateForm.value);
+      this.router.navigate(['assigned-templates'], { relativeTo: this.route });
     }
+    this.showAssignedTemplates = false;
   }
 
   getRecordById(id: string) {
@@ -96,134 +103,144 @@ export class UpdateCTCTemplateComponent {
 
   onDropdownChange(event: any, type: string) {
     const selectedValues = event.value;
+    if (!this.selectedRecord) {
+      this.selectedRecord = {
+        ctcTemplateFixedAllowances: [],
+        ctcTemplateFixedDeductions: [],
+        ctcTemplateEmployerContributions: [],
+        ctcTemplateOtherBenefitAllowances: [],
+        ctcTemplateEmployeeDeductions: [],
+        ctcTemplateVariableAllowances: [],
+        ctcTemplateVariableDeductions: []
+      };
+    }
     switch (type) {
       case 'fixedAllowance':
-        // Filter out the deselected options
         this.selectedRecord.ctcTemplateFixedAllowances = this.selectedRecord.ctcTemplateFixedAllowances.filter(allowance =>
           selectedValues.includes(allowance.fixedAllowance._id));
-
-        // Add newly selected options
         selectedValues.forEach(value => {
           const selectedAllowance = this.fixedAllowances.find(fa => fa._id === value);
-          if (!this.selectedRecord.ctcTemplateFixedAllowances.find(allowance => allowance.fixedAllowance._id === value)) {
-            this.selectedRecord.ctcTemplateFixedAllowances.push({
-              fixedAllowance: { _id: value, label: selectedAllowance.label },
-              value: '',
-              criteria: '',
-              minAmount: ''
-            });
-          }
+          this.selectedRecord.ctcTemplateFixedAllowances.push({
+            fixedAllowance: { _id: value, label: selectedAllowance.label },
+            value: '',
+            criteria: '',
+            minAmount: ''
+          });
         });
+        this.ctcTemplateForm.patchValue({
+          ctcTemplateFixedAllowance: this.selectedRecord.ctcTemplateFixedAllowances.map(item => item.fixedAllowance._id)
+        });
+        this.payroll.fixedAllowances.next(this.selectedRecord.ctcTemplateFixedAllowances);
         break;
 
       case 'fixedDeduction':
-        // Filter out the deselected options
         this.selectedRecord.ctcTemplateFixedDeductions = this.selectedRecord.ctcTemplateFixedDeductions.filter(deduction =>
-          selectedValues.includes(deduction.fixedDeduction));
-
-        // Add newly selected options
+          selectedValues.includes(deduction.fixedDeduction._id));
         selectedValues.forEach(value => {
           const selectedDeduction = this.fixedDeduction.find(fa => fa._id === value);
-          if (!this.selectedRecord.ctcTemplateFixedDeductions.find(deduction => deduction.fixedDeduction === value)) {
-            this.selectedRecord.ctcTemplateFixedDeductions.push({
-              fixedDeduction: { _id: value, label: selectedDeduction.label },
-              value: '',
-              criteria: '',
-              minAmount: ''
-            });
-          }
+          this.selectedRecord.ctcTemplateFixedDeductions.push({
+            fixedDeduction: { _id: value, label: selectedDeduction.label },
+            value: '',
+            criteria: '',
+            minAmount: ''
+          });
         });
+        this.ctcTemplateForm.patchValue({
+          ctcTemplateFixedDeduction: this.selectedRecord.ctcTemplateFixedDeductions.map(item => item.fixedDeduction._id)
+        });
+        this.payroll.fixedDeductions.next(this.selectedRecord.ctcTemplateFixedDeductions);
         break;
 
       case 'fixedContribution':
-        // Filter out the deselected options
-        this.selectedRecord.ctcTemplateEmployerContributions = this.selectedRecord.ctcTemplateEmployerContributions.filter(contribution => selectedValues.includes(contribution.fixedContribution));
-
-        // Add newly selected options
+        this.selectedRecord.ctcTemplateEmployerContributions = this.selectedRecord.ctcTemplateEmployerContributions.filter(contribution =>
+          selectedValues.includes(contribution.fixedContribution._id));
         selectedValues.forEach(value => {
           const selectedContribution = this.fixedContribution.find(fa => fa._id === value);
-          if (!this.selectedRecord.ctcTemplateEmployerContributions.find(contribution => contribution.fixedContribution === value)) {
-            this.selectedRecord.ctcTemplateEmployerContributions.push({
-              fixedContribution: { _id: value, label: selectedContribution.label },
-              value: '',
-              criteria: '',
-              minAmount: ''
-            });
-          }
+          this.selectedRecord.ctcTemplateEmployerContributions.push({
+            fixedContribution: { _id: value, label: selectedContribution.label },
+            value: '',
+            criteria: '',
+            minAmount: ''
+          });
         });
+        this.ctcTemplateForm.patchValue({
+          ctcTemplateEmployerContribution: this.selectedRecord.ctcTemplateEmployerContributions.map(item => item.fixedContribution._id)
+        });
+        this.payroll.fixedContributions.next(this.selectedRecord.ctcTemplateEmployerContributions);
         break;
 
       case 'otherBenefit':
-        // Filter out the deselected options
-        this.selectedRecord.ctcTemplateOtherBenefitAllowances = this.selectedRecord.ctcTemplateOtherBenefitAllowances.filter(otherbenefits => selectedValues.includes(otherbenefits.otherBenefit));
-
-        // Add newly selected options
+        this.selectedRecord.ctcTemplateOtherBenefitAllowances = this.selectedRecord.ctcTemplateOtherBenefitAllowances.filter(otherbenefits =>
+          selectedValues.includes(otherbenefits.otherBenefit._id));
         selectedValues.forEach(value => {
           const selectedBenefit = this.otherBenefits.find(fa => fa._id === value);
-          if (!this.selectedRecord.ctcTemplateOtherBenefitAllowances.find(otherbenefits => otherbenefits.otherBenefit === value)) {
-            this.selectedRecord.ctcTemplateOtherBenefitAllowances.push({
-              otherBenefit: { _id: value, label: selectedBenefit.label },
-              value: '',
-              criteria: '',
-              minAmount: ''
-            });
-          }
+          this.selectedRecord.ctcTemplateOtherBenefitAllowances.push({
+            otherBenefit: { _id: value, label: selectedBenefit.label },
+            value: '',
+            criteria: '',
+            minAmount: ''
+          });
         });
+        this.ctcTemplateForm.patchValue({
+          ctcTemplateOtherBenefitAllowance: this.selectedRecord.ctcTemplateOtherBenefitAllowances.map(item => item.otherBenefit._id)
+        });
+        this.payroll.otherBenefits.next(this.selectedRecord.ctcTemplateOtherBenefitAllowances);
         break;
 
       case 'employeeDeduction':
-        // Filter out the deselected options
-        this.selectedRecord.ctcTemplateEmployeeDeductions = this.selectedRecord.ctcTemplateEmployeeDeductions.filter(empDeduction => selectedValues.includes(empDeduction.employeeDeduction));
-
-        // Add newly selected options
+        this.selectedRecord.ctcTemplateEmployeeDeductions = this.selectedRecord.ctcTemplateEmployeeDeductions.filter(empDeduction =>
+          selectedValues.includes(empDeduction.employeeDeduction._id));
         selectedValues.forEach(value => {
           const selectedEmpDeduction = this.fixedContribution.find(fa => fa._id === value);
-          if (!this.selectedRecord.ctcTemplateEmployeeDeductions.find(empDeduction => empDeduction.otherBenefit === value)) {
-            this.selectedRecord.ctcTemplateEmployeeDeductions.push({
-              employeeDeduction: { _id: value, label: selectedEmpDeduction.label },
-              value: '',
-              criteria: '',
-              minAmount: ''
-            });
-          }
+          this.selectedRecord.ctcTemplateEmployeeDeductions.push({
+            employeeDeduction: { _id: value, label: selectedEmpDeduction.label },
+            value: '',
+            criteria: '',
+            minAmount: ''
+          });
         });
+        this.ctcTemplateForm.patchValue({
+          ctcTemplateEmployeeDeduction: this.selectedRecord.ctcTemplateEmployeeDeductions.map(item => item.employeeDeduction._id)
+        });
+        this.payroll.employeeDeduction.next(this.selectedRecord.ctcTemplateEmployeeDeductions);
         break;
 
       case 'variableAllowance':
-        // Filter out the deselected options
-        this.selectedRecord.ctcTemplateVariableAllowances = this.selectedRecord.ctcTemplateVariableAllowances.filter(varallowance => selectedValues.includes(varallowance.variableAllowance));
-
-        // Add newly selected options
+        this.selectedRecord.ctcTemplateVariableAllowances = this.selectedRecord.ctcTemplateVariableAllowances.filter(varallowance =>
+          selectedValues.includes(varallowance.variableAllowance._id));
         selectedValues.forEach(value => {
           const selectedVarAllowance = this.variableAllowance.find(fa => fa._id === value);
-          if (!this.selectedRecord.ctcTemplateVariableAllowances.find(varallowance => varallowance.variableAllowance === value)) {
-            this.selectedRecord.ctcTemplateVariableAllowances.push({
-              variableAllowance: { _id: value, label: selectedVarAllowance.label },
-              value: '',
-              criteria: '',
-              minAmount: ''
-            });
-          }
+          this.selectedRecord.ctcTemplateVariableAllowances.push({
+            variableAllowance: { _id: value, label: selectedVarAllowance.label },
+            value: '',
+            criteria: '',
+            minAmount: ''
+          });
         });
+        this.ctcTemplateForm.patchValue({
+          ctcTemplateVariableAllowance: this.selectedRecord.ctcTemplateVariableAllowances.map(item => item.variableAllowance._id)
+        });
+        this.payroll.variableAllowances.next(this.selectedRecord.ctcTemplateVariableAllowances);
         break;
 
       case 'variableDeduction':
-        // Filter out the deselected options
-        this.selectedRecord.ctcTemplateVariableDeductions = this.selectedRecord.ctcTemplateVariableDeductions.filter(vardeduction => selectedValues.includes(vardeduction.variableDeduction));
-
-        // Add newly selected options
+        this.selectedRecord.ctcTemplateVariableDeductions = this.selectedRecord.ctcTemplateVariableDeductions.filter(vardeduction =>
+          selectedValues.includes(vardeduction.variableDeduction._id));
         selectedValues.forEach(value => {
           const selectedVarDeduction = this.variableDeduction.find(fa => fa._id === value);
-          if (!this.selectedRecord.ctcTemplateVariableDeductions.find(vardeduction => vardeduction.variableDeduction === value)) {
-            this.selectedRecord.ctcTemplateVariableDeductions.push({
-              variableDeduction: { _id: value, label: selectedVarDeduction.label },
-              value: '',
-              criteria: '',
-              minAmount: ''
-            });
-          }
+          this.selectedRecord.ctcTemplateVariableDeductions.push({
+            variableDeduction: { _id: value, label: selectedVarDeduction.label },
+            value: '',
+            criteria: '',
+            minAmount: ''
+          });
         });
+        this.ctcTemplateForm.patchValue({
+          ctcTemplateVariableDeduction: this.selectedRecord.ctcTemplateVariableDeductions.map(item => item.variableDeduction._id)
+        });
+        this.payroll.variableDeductions.next(this.selectedRecord.ctcTemplateVariableDeductions);
         break;
+
       default:
         console.error(`Unknown type: ${type}`);
     }
@@ -269,13 +286,34 @@ export class UpdateCTCTemplateComponent {
   onSubmission() {
     let payload = {
       name: this.ctcTemplateForm.value.name,
-      ctcTemplateFixedAllowance: (this.ctcTemplateForm.value.ctcTemplateFixedAllowance || []).filter(Boolean).map(fixedAllowance => ({ fixedAllowance })),
-      ctcTemplateFixedDeduction: (this.ctcTemplateForm.value.ctcTemplateFixedDeduction || []).filter(Boolean).map(fixedDeduction => ({ fixedDeduction })),
-      ctcTemplateEmployerContribution: (this.ctcTemplateForm.value.ctcTemplateEmployerContribution || []).filter(Boolean).map(fixedContribution => ({ fixedContribution })),
-      ctcTemplateOtherBenefitAllowance: (this.ctcTemplateForm.value.ctcTemplateOtherBenefitAllowance || []).filter(Boolean).map(otherBenefit => ({ otherBenefit })),
-      ctcTemplateEmployeeDeduction: (this.ctcTemplateForm.value.ctcTemplateEmployeeDeduction || []).filter(Boolean).map(employeeDeduction => ({ employeeDeduction })),
-      ctcTemplateVariableAllowance: (this.ctcTemplateForm.value.ctcTemplateVariableAllowance || []).filter(Boolean).map(variableAllowance => ({ variableAllowance })),
-      ctcTemplateVariableDeduction: (this.ctcTemplateForm.value.ctcTemplateVariableDeduction || []).filter(Boolean).map(variableDeduction => ({ variableDeduction }))
+      ctcTemplateFixedAllowance: (this.ctcTemplateForm.value.ctcTemplateFixedAllowance || []).filter(Boolean).map(fixedAllowance => {
+        const allowance = this.fixedAllowances.find(fa => fa._id === fixedAllowance);
+        return { fixedAllowance: { _id: fixedAllowance, label: allowance ? allowance.label : '' } };
+      }),
+      ctcTemplateFixedDeduction: (this.ctcTemplateForm.value.ctcTemplateFixedDeduction || []).filter(Boolean).map(fixedDeduction => {
+        const deduction = this.fixedDeduction.find(fd => fd._id === fixedDeduction);
+        return { fixedDeduction: { _id: fixedDeduction, label: deduction ? deduction.label : '' } };
+      }),
+      ctcTemplateEmployerContribution: (this.ctcTemplateForm.value.ctcTemplateEmployerContribution || []).filter(Boolean).map(fixedContribution => {
+        const contribution = this.fixedContribution.find(fc => fc._id === fixedContribution);
+        return { fixedContribution: { _id: fixedContribution, label: contribution ? contribution.label : '' } };
+      }),
+      ctcTemplateOtherBenefitAllowance: (this.ctcTemplateForm.value.ctcTemplateOtherBenefitAllowance || []).filter(Boolean).map(otherBenefit => {
+        const benefit = this.otherBenefits.find(ob => ob._id === otherBenefit);
+        return { otherBenefit: { _id: otherBenefit, label: benefit ? benefit.label : '' } };
+      }),
+      ctcTemplateEmployeeDeduction: (this.ctcTemplateForm.value.ctcTemplateEmployeeDeduction || []).filter(Boolean).map(employeeDeduction => {
+        const empDeduction = this.fixedContribution.find(ed => ed._id === employeeDeduction);
+        return { employeeDeduction: { _id: employeeDeduction, label: empDeduction ? empDeduction.label : '' } };
+      }),
+      ctcTemplateVariableAllowance: (this.ctcTemplateForm.value.ctcTemplateVariableAllowance || []).filter(Boolean).map(variableAllowance => {
+        const varAllowance = this.variableAllowance.find(va => va._id === variableAllowance);
+        return { variableAllowance: { _id: variableAllowance, label: varAllowance ? varAllowance.label : '' } };
+      }),
+      ctcTemplateVariableDeduction: (this.ctcTemplateForm.value.ctcTemplateVariableDeduction || []).filter(Boolean).map(variableDeduction => {
+        const varDeduction = this.variableDeduction.find(vd => vd._id === variableDeduction);
+        return { variableDeduction: { _id: variableDeduction, label: varDeduction ? varDeduction.label : '' } };
+      })
     };
 
     if (this.isEdit) {
@@ -289,6 +327,19 @@ export class UpdateCTCTemplateComponent {
         ctcTemplateVariableAllowance: this.selectedRecord.ctcTemplateVariableAllowances,
         ctcTemplateVariableDeduction: this.selectedRecord.ctcTemplateVariableDeductions
       };
+    } else {
+      payload = {
+        ...payload,
+        ctcTemplateFixedAllowance: this.selectedRecord.ctcTemplateFixedAllowances,
+        ctcTemplateFixedDeduction: this.selectedRecord.ctcTemplateFixedDeductions,
+        ctcTemplateEmployerContribution: this.selectedRecord.ctcTemplateEmployerContributions,
+        ctcTemplateOtherBenefitAllowance: this.selectedRecord.ctcTemplateOtherBenefitAllowances,
+        ctcTemplateEmployeeDeduction: this.selectedRecord.ctcTemplateEmployeeDeductions,
+        ctcTemplateVariableAllowance: this.selectedRecord.ctcTemplateVariableAllowances,
+        ctcTemplateVariableDeduction: this.selectedRecord.ctcTemplateVariableDeductions
+      };
+      this.payroll.getFormValues.next(payload);
+      console.log(payload);
     }
 
     this.payroll.selectedCTCTemplate.next(payload);

@@ -17,6 +17,7 @@ import { ProjectService } from './project.service';
 })
 export class CommonService extends baseService {
 
+  private readonly token = this.getToken();
   allAssignee: any[] = [];
   projectList: any[] = [];
   firstletter: string;
@@ -33,7 +34,8 @@ export class CommonService extends baseService {
   private readonly httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*'
+      'Access-Control-Allow-Origin': '*',
+      'Authorization': `Bearer ${this.token}`
     }),
     withCredentials: true
   };
@@ -206,4 +208,8 @@ export class CommonService extends baseService {
     }
     return [];
   }
+  setSelectedUser(payload: any): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrlDotNet}/common/setSelectedUser`, payload, this.httpOptions);
+  }  
+
 }

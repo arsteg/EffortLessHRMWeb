@@ -3,7 +3,7 @@
   <span class="breadcrumb-item active" (click)="goBack()" style="cursor: pointer;">
     CTC Template
   </span>
-  <span class="breadcrumb-item text-muted">Update CTC Template</span>
+  <span class="breadcrumb-item text-muted">{{isEdit? 'Update': 'Add'}} CTC Template</span>
 </div>
 
 <form [formGroup]="ctcTemplateForm" class="row container px-3">
@@ -96,7 +96,7 @@
 
   <div class="d-flex border-top mt-2 py-2 justify-content-between">
     <button mat-raised-button type="button">Cancel</button>
-    <button mat-raised-button type="button" class="addBtn" (click)="showAssignedTemplates = false; getAssignedTemplates()">Proceed</button>
+    <button mat-raised-button type="button" class="addBtn" (click)="getAssignedTemplates()">Proceed</button>
   </div>
 </form>
 }

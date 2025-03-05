@@ -34,7 +34,6 @@ export class ShiftComponent {
     private dialog: MatDialog,
     private exportService: ExportService,
     private toast: ToastrService,
-    private commonService: CommonService,
     private fb: FormBuilder,
   ) {
     this.shiftForm = this.fb.group({
@@ -45,24 +44,24 @@ export class ShiftComponent {
       startTime: ['', Validators.required],
       endTime: ['', Validators.required],
       minHoursPerDayToGetCreditForFullDay: ['', Validators.required],
-      isCheckoutTimeNextDay: [true],
+      isCheckoutTimeNextDay: [false],
       // isLatestDepartureTimeNextDay: [true],
       earliestArrival: ['', Validators.required],
       latestDeparture: ['', Validators.required],
       firstHalfDuration: ['', Validators.required],
       secondHalfDuration: ['', Validators.required],
       company: [''],
-      isLateComingAllowed: [true],
+      isLateComingAllowed: [false],
       noOfDaysLateComing: [0],
       graceTimeLimitForLateComing: [0],
-      willLateComingDeductfromPresentDays: [true],
+      willLateComingDeductfromPresentDays: [false],
       numberOflateComingDaysAllowed: [0],
       numberOfDaysToBeDeducted: [''],
       maximumTimeLimitForLateComing: [0],
-      isEarlyGoingAllowed: [true],
+      isEarlyGoingAllowed: [false],
       enterNumberOfDaysForEarlyGoing: [0],
       graceTimeLimitForEarlyGoing: [0],
-      isHalfDayApplicable: [true],
+      isHalfDayApplicable: [false],
       minHoursPerDayToGetCreditforHalfDay: ['', this.minHoursValidator()],
       maxLateComingAllowedMinutesFirstHalfAttendance: [0],
     })
@@ -198,7 +197,6 @@ export class ShiftComponent {
   }
 
   onSubmission() {
-    if (this.shiftForm.valid) {
       if (!this.isEdit) {
         this.attendanceService.addShift(this.shiftForm.value).subscribe((res: any) => {
           this.loadRecords();
@@ -215,10 +213,7 @@ export class ShiftComponent {
           this.shiftForm.reset();
         })
       }
-    } 
-    else {
-      this.shiftForm.markAllAsTouched();
-    }
+   
   }
   
   deleteTemplate(id: string) {

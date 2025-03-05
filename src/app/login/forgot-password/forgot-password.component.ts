@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { NgForm, Validators } from '@angular/forms';
-import { first } from 'rxjs';
+import { NgForm } from '@angular/forms';
 import { NotificationService } from '../../_services/notification.service';
 import { AuthenticationService } from '../../_services/authentication.service';
 import { signup } from 'src/app/models/user';
@@ -39,17 +38,6 @@ export class ForgotPasswordComponent implements OnInit {
           this.notifyService.showError("There is no user with email address.", "error");
         }
       })
-      // this.authenticationService.forgotPassword(this.user.email)
-      //   .pipe(first()).subscribe(
-      //     data => {
-
-      //       this.loading = false;
-      //       this.notifyService.showSuccess("Your Reset password Link send Successfully , Please check your email", "success");
-      //     },
-      //     error => {
-      //       this.notifyService.showError("There is no user with email address.", "error");
-      //       this.loading = false;
-      //     });
     } else {
       this.loading = false;
     }

@@ -33,4 +33,19 @@ export class updateUserNotification{
   action: string;
 }
 
+export enum WebSocketContentType {
+  Text = 'text',
+  JSON = 'json',
+  Image = 'image',
+  Audio = 'audio',
+  Video = 'video',
+  File = 'file'
+}
 
+export interface WebSocketNotification {
+  type: string;          // 'notification'
+  contentType: WebSocketContentType;  // Content type enum
+  userId: string;         // User ID
+  message: string;        // Notification message
+  timestamp: Date;        // Timestamp of the notification
+} 
