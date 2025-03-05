@@ -43,13 +43,12 @@ const routes: Routes = [
           { path: 'pf-charges', component: PfChargesComponent }
         ]
       },
-      
       {
         path: 'ctc-template',
         component: CtcTemplatesComponent
       },
       {
-        path: 'ctc-template/update-ctc-template',
+        path: 'ctc-template/create-ctc-template',
         component: UpdateCTCTemplateComponent,
         children: [
           {

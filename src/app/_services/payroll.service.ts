@@ -38,6 +38,7 @@ export class PayrollService {
   fixedAllowances: any = new BehaviorSubject('');
   fixedDeductions: any = new BehaviorSubject('');
   otherBenefits: any = new BehaviorSubject('');
+  employeeDeduction: any = new BehaviorSubject('');
   fixedContributions: any = new BehaviorSubject('');
   variableAllowances: any = new BehaviorSubject('');
   variableDeductions: any = new BehaviorSubject('');

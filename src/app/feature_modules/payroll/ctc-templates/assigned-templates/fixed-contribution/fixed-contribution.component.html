@@ -1,5 +1,5 @@
 <div class="mt-2 p-2">
-  <table mat-table [dataSource]="selectedRecord.ctcTemplateEmployerContributions">
+  <table mat-table [dataSource]="employerContributions">
     <ng-container matColumnDef="category">
       <th mat-header-cell *matHeaderCellDef> Category </th>
       <td mat-cell *matCellDef="let empContributions"> {{empContributions?.fixedContribution?.label}} </td>

@@ -16,6 +16,7 @@ export class VarAllowanceComponent {
   variableAllowanceForm: FormGroup;
   combinedDataChange: any;
   selectedRecord: any;
+  @Input() ctcTemplateVariableAllowance: any;
 
   constructor(
     private payroll: PayrollService,
@@ -30,14 +31,12 @@ export class VarAllowanceComponent {
     this.initForm();
     this.selectedRecord = this.payroll?.selectedCTCTemplate.getValue();
 
-    if (this.isEdit) {
       this.patchFormValues();
-    }
   }
 
   initForm() {
     const allowancesControl = this.variableAllowanceForm.get('variableAllowance') as FormArray;
-    this.variableAllowances = this.selectedRecord?.ctcTemplateVariableAllowances || [];
+    this.variableAllowances = this.selectedRecord?.ctcTemplateVariableAllowances || this.ctcTemplateVariableAllowance;
 
     this.variableAllowances.forEach(fa => {
       allowancesControl.push(this.fb.group({
@@ -67,7 +66,7 @@ export class VarAllowanceComponent {
   patchFormValues() {
     const allowancesControl = this.variableAllowanceForm.get('variableAllowance') as FormArray;
     allowancesControl.clear();
-
+   if(this.isEdit) {
     this.selectedRecord.ctcTemplateVariableAllowances.forEach((item: any, index: number) => {
       allowancesControl.push(this.fb.group({
         // variableAllowance: [item.variableAllowance?.label || ''],
@@ -79,6 +78,19 @@ export class VarAllowanceComponent {
         minimumAmount: [item.minimumAmount || 0]
       }));
     });
+  }
+  else if(!this.isEdit) {
+    this.ctcTemplateVariableAllowance.forEach((item: any, index: number) => {
+      allowancesControl.push(this.fb.group({
+        variableAllowance: [item.variableAllowance?._id || ''],
+        variableAllowanceLabel: [item.variableAllowance?.label || ''],
+        criteria: [item.criteria || 'Amount'],
+        value: [item.value || ''],
+        valueType: item.valueType || '',
+        minimumAmount: [item.minimumAmount || 0]
+      }));
+    });
+  }
   }
 
   get allowances() {

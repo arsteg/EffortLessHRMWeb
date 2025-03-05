@@ -115,30 +115,32 @@ export class FixedAllowanceComponent {
 
   editRecord() {
     this.fixedAllowanceForm.patchValue({
-      ...this.selectedRecord,
       label: this.selectedRecord.label,
-      isProvidentFundAffected: this.selectedRecord.isProvidentFundAffected ? true: false,
-      isESICAffected: this.selectedRecord.isESICAffected ? true: false,
-      isGratuityFundAffected: this.selectedRecord.isGratuityFundAffected ? true: false,
-      isLWFAffected: this.selectedRecord.isLWFAffected ? true: false,
-      isProfessionalTaxAffected: this.selectedRecord.isProfessionalTaxAffected ? true: false,
-      isTDSAffected: this.selectedRecord.isTDSAffected ? true: false,
+      isProvidentFundAffected: this.selectedRecord.isProvidentFundAffected,
+      isESICAffected: this.selectedRecord.isESICAffected,
+      isGratuityFundAffected: this.selectedRecord.isGratuityFundAffected,
+      isLWFAffected: this.selectedRecord.isLWFAffected,
+      isProfessionalTaxAffected: this.selectedRecord.isProfessionalTaxAffected,
+      isTDSAffected: this.selectedRecord.isTDSAffected,
     });
     console.log(this.selectedRecord);
-    console.log(this.fixedAllowanceForm)
-  } 
+    console.log(this.fixedAllowanceForm.value);
+  }
+
+ 
 
   deleteRecord(_id: string) {
     this.payroll.deleteAllowanceTemplate(_id).subscribe((res: any) => {
-        const index = this.fixedAllowance.findIndex(record => record._id === _id);
-        if (index !== -1) {
-            this.fixedAllowance.splice(index, 1);
-        }
-        this.toast.success('Successfully Deleted!!!', 'Fixed Allowance');
+      const index = this.fixedAllowance.findIndex(res => res._id === _id);
+      if (index !== -1) {
+        this.fixedAllowance.splice(index, 1);
+      }
+      this.toast.success('Successfully Deleted!!!', 'Rounding Rules');
     },
-    (err) => {
-        this.toast.error('This Cannot be deleted as it is already used in the system', 'Fixed Allowance');
-    });
+      (err) => {
+        this.toast.error('This Can not be delete as it is already used in the system', 'Rounding Rules');
+      })
+
   }
 
 

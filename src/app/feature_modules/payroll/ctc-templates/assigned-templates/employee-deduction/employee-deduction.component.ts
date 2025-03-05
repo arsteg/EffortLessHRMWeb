@@ -1,5 +1,4 @@
 import { Component, Input } from '@angular/core';
-import { PayrollService } from 'src/app/_services/payroll.service';
 
 @Component({
   selector: 'app-employee-deduction',
@@ -8,11 +7,12 @@ import { PayrollService } from 'src/app/_services/payroll.service';
 })
 export class EmployeeDeductionComponent {
   employeeDeduction: any;
-  selectedRecord: any;
+  @Input() selectedRecord: any;
+  @Input() ctcTemplateEmployeeDeduction: any;
 
-  constructor(private payroll: PayrollService) { }
+  constructor() { }
 
   ngOnInit() {
-    this.selectedRecord = this.payroll?.selectedCTCTemplate.getValue();
+    this.employeeDeduction = this.selectedRecord?.ctcTemplateEmployeeDeductions || this.ctcTemplateEmployeeDeduction;
   }
 }

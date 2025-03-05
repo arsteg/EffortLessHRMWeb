@@ -110,6 +110,6 @@ export class CtcTemplatesComponent {
     this.payroll.showTable.next(false);
     // this.payroll.selectedCTCTemplate.next();
     this.payroll.showAssignedTemplate.next(true);
-    this.router.navigate(['home/payroll/ctc-template/update-ctc-template']);
+    this.router.navigate(['home/payroll/ctc-template/create-ctc-template']);
   }
 }
