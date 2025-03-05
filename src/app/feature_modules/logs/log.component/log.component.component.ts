@@ -20,7 +20,7 @@ import { WebSocketService } from 'src/app/_services/web-socket.service';
 })
 
 export class LogComponentComponent implements OnInit, OnDestroy {
-  userId = '62dfa8d13babb9ac2072863c'; // Replace with the selected user ID
+  userId = ''; // Replace with the selected user ID
   logs: any[] = [];
   private logSubscription: Subscription | null = null;
   private webSocketSubscription: Subscription | null = null;
@@ -29,7 +29,7 @@ export class LogComponentComponent implements OnInit, OnDestroy {
   selectedCompany: string = '';
   displayedColumns: string[] = ['timestamp', 'message'];  
   message = '';
-  messages: WebSocketNotification[] = [];
+  messages: MatTableDataSource<any> = new MatTableDataSource([]);
 
   constructor(
     private logService: LogService,
@@ -50,13 +50,12 @@ export class LogComponentComponent implements OnInit, OnDestroy {
     this.webSocketService.connect();
     this.webSocketSubscription = this.webSocketService.messages$.subscribe({
       next: (message) => {
-        this.messages.push(message);        
+        this.messages.data = [...this.messages.data, message]; // Update the data source
+        console.log(this.messages.data);
       },
       error: (error) => console.error('WebSocket subscription error:', error)
     });
   }
-
- 
 
   onCompanyChange() {
     this.userId = '';
@@ -66,7 +65,6 @@ export class LogComponentComponent implements OnInit, OnDestroy {
     if (this.selectedCompany) {
       this.userService.getUsersByCompany(this.selectedCompany).subscribe({
         next: (response) => {
-          console.log('Users API response:', response);  // Add this for debugging
           this.users = response.data?.users;
         },
         error: (error) => {
@@ -106,13 +104,23 @@ export class LogComponentComponent implements OnInit, OnDestroy {
       });
     }
   }
+
   ngOnDestroy() {
     // Clean up the subscription
     if (this.logSubscription) {
       this.logSubscription.unsubscribe();
     }
     // Disconnect the WebSocket connection
-    this.logService.disconnect();
+    this.webSocketService.disconnect();
+  }
+
+  onClear(){
+    this.messages.data = [];
+  }
+
+  onStop() {
+    this.userId = '';
+    this.users = [];
   }
 }
 

@@ -138,7 +138,7 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'changePassword', component: ChangePasswordComponent },
   { path: 'resetPassword/:token', component: ResetPasswordComponent },
-  { path: 'logger', component: LogComponentComponent },
+  { path: 'live-log', component: LogComponentComponent },
 
   // Fallback route
   { path: '**', redirectTo: 'landing' },
