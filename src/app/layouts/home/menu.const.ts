@@ -163,6 +163,13 @@ export const SideBarAdminMenu = [
     lightIcon: 'assets/Sidenav-Icons/light-Icons/expenses.png',
     url: 'subscription/plans',
   },
+  {
+    id: '22',
+    title: 'Feedback Form',
+    icon: 'assets/Sidenav-Icons/feedback.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/feedback.png',    
+    url: 'feedback-form',
+  },
 ];
 
 /**
