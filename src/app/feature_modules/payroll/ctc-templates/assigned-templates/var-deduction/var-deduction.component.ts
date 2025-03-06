@@ -16,6 +16,7 @@ export class VarDeductionComponent {
   variableDeductionForm: FormGroup;
   combinedDataChange: any;
   selectedRecord: any;
+  @Input() ctcTemplateVariableDeduction: any;
 
   constructor(
     private payroll: PayrollService,
@@ -29,16 +30,12 @@ export class VarDeductionComponent {
   ngOnInit() {
     this.initForm();
     this.selectedRecord = this.payroll?.selectedCTCTemplate.getValue();
-
-    if (this.isEdit) {
       this.patchFormValues();
-    }
   }
 
   initForm() {
     const allowancesControl = this.variableDeductionForm.get('variableDeduction') as FormArray;
-    this.variableDeductions = this.selectedRecord?.ctcTemplateVariableDeductions || [];
-
+    this.variableDeductions = this.selectedRecord?.ctcTemplateVariableDeductions || this.ctcTemplateVariableDeduction;
     this.variableDeductions.forEach(fa => {
       allowancesControl.push(this.fb.group({
         variableDeduction: [fa.variableDeduction?._id || ''],
@@ -66,17 +63,30 @@ export class VarDeductionComponent {
   patchFormValues() {
     const allowancesControl = this.variableDeductionForm.get('variableDeduction') as FormArray;
     allowancesControl.clear();
-
-    this.selectedRecord.ctcTemplateVariableDeductions.forEach((item: any, index: number) => {
-      allowancesControl.push(this.fb.group({
-        variableDeduction: [item.variableDeduction?._id || ''],
-        variableDeductionLabel: [item.variableDeduction?.label || ''],
-        criteria: [item.criteria || 'Amount'],
-        value: [item.value || ''],
-        valueType: item.valueType || '',
-        minimumAmount: [item.minimumAmount || 0]
-      }));
-    });
+    if (this.isEdit) {
+      this.selectedRecord.ctcTemplateVariableDeductions.forEach((item: any, index: number) => {
+        allowancesControl.push(this.fb.group({
+          variableDeduction: [item.variableDeduction?._id || ''],
+          variableDeductionLabel: [item.variableDeduction?.label || ''],
+          criteria: [item.criteria || 'Amount'],
+          value: [item.value || ''],
+          valueType: item.valueType || '',
+          minimumAmount: [item.minimumAmount || 0]
+        }));
+      });
+    }
+    else if (!this.isEdit) {
+      this.ctcTemplateVariableDeduction.forEach((item: any, index: number) => {
+        allowancesControl.push(this.fb.group({
+          variableDeduction: [item.variableDeduction?._id || ''],
+          variableDeductionLabel: [item.variableDeduction?.label || ''],
+          criteria: [item.criteria || 'Amount'],
+          value: [item.value || ''],
+          valueType: item.valueType || '',
+          minimumAmount: [item.minimumAmount || 0]
+        }));
+      })
+    }
   }
 
   get allowances() {

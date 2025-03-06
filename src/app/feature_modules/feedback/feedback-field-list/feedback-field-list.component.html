@@ -1,0 +1,51 @@
+<div class="feedbackContainer bg-white">
+  <div class="row py-2">
+    <div class="col-8 tableContainer">
+      <div class="d-flex justify-content-between">
+        <h2 class="contentHeading p-2">Feedback Fields: {{ fieldsFiltered?.length }}</h2>
+        <div class="d-flex align-items-center">
+          <span class="bi bi-search searchIcon mb-3"></span>
+          <input type="text" placeholder="Search ..." [(ngModel)]="searchQuery" (input)="filterFields()"
+            class="form-control search mt-2 mb-3">
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th class="text-left">Name</th>
+            <th class="text-left">Data Type</th>
+            <th class="text-left">Description</th>
+            <th class="text-left">Is Required</th>
+            <th class="text-right">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let field of fieldsFiltered">
+            <td class="text-left">{{ field.name }}</td>
+            <td class="text-left">{{ field.dataType }}</td>
+            <td class="text-left">{{ field.description }}</td>
+            <td class="text-left">{{ field.isRequired }}</td>
+            <td class="text-right">
+              <button class="actions" mat-mini-fab title="Edit Field" (click)="editField(field)">
+                <i class="bi bi-pencil-fill"></i>
+              </button>
+              <button class="actions ms-2" mat-mini-fab title="Delete Field" (click)="deleteField(field._id)">
+                <i class="bi bi-trash"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-4 border-start">
+      <h2 class="contentHeading p-2">Add/Edit Feedback Field</h2>
+      <app-feedback-field-form 
+        [field]="selectedField" 
+        [isEdit]="isEdit" 
+        (fieldCreated)="onFieldCreated()" 
+        (fieldUpdated)="onFieldUpdated()"
+        (cancel)="clearForm()">
+      </app-feedback-field-form>
+    </div>
+  </div>
+</div>

@@ -182,12 +182,11 @@ export class UserService {
     return this.http.delete<User>(`${environment.apiUrlDotNet}/users/deleteuser/${id}`, this.httpOptions);
   }
 
-  updateUser(id, updateUser): Observable<updateUser> {
+  updateUser(id, updateUser:any): Observable<updateUser> {
     return this.http.patch<updateUser>(`${environment.apiUrlDotNet}/users/updateUser/${id}`, updateUser, this.httpOptions);
   }
 
   // Employement Details
-
   addJobInformation(payload: any): Observable<any> {
     return this.http.post<any>(`${environment.apiUrlDotNet}/users/user-employment`, payload, this.httpOptions);
   }
@@ -268,4 +267,7 @@ export class UserService {
   updateAppointment(id: string, payload: any): Observable<any> {
     return this.http.put<any>(`${environment.apiUrlDotNet}/users/appointments/${id}`, payload, this.httpOptions);
   }
+  getUsersByCompany(companyId: string) {
+    return this.http.get<any>(`${environment.apiUrlDotNet}/users/getUsersByCompany/${companyId}`,this.httpOptions);
+  }  
 }

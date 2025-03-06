@@ -102,7 +102,7 @@ export class VariableDeductionComponent {
     const payload = {
       ...formValue
     };
-    if (this.variableDeductionForm.valid) {
+    // if (this.variableDeductionForm.valid) {
       if (!this.isEdit) {
         this.payroll.addVariableDeduction(payload).subscribe((res: any) => {
           this.variableDeduction.push(res.data);
@@ -121,10 +121,10 @@ export class VariableDeductionComponent {
             this.toast.error('Variable Deduction Can not be Updated', 'Variable Deduction');
           })
       }
-    }
-    else {
-      this.markFormGroupTouched(this.variableDeductionForm);
-    }
+    // }
+    // else {
+    //   this.markFormGroupTouched(this.variableDeductionForm);
+    // }
   }
 
   markFormGroupTouched(formGroup: FormGroup) {

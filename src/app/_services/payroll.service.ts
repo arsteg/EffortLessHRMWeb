@@ -33,11 +33,12 @@ export class PayrollService {
   payrollUsers: any = new BehaviorSubject('');
   allUsers: any = new BehaviorSubject('');
   payslip: any = new BehaviorSubject('');
-  
+  getFormValues: any = new BehaviorSubject('');
   
   fixedAllowances: any = new BehaviorSubject('');
   fixedDeductions: any = new BehaviorSubject('');
   otherBenefits: any = new BehaviorSubject('');
+  employeeDeduction: any = new BehaviorSubject('');
   fixedContributions: any = new BehaviorSubject('');
   variableAllowances: any = new BehaviorSubject('');
   variableDeductions: any = new BehaviorSubject('');

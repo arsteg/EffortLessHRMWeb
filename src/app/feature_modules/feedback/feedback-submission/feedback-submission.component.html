@@ -1,0 +1,77 @@
+<form [formGroup]="feedbackForm" (ngSubmit)="onSubmit()">
+  <div class="card mb-3">
+    <div class="card-header">
+      <h5 class="mb-0">Submit Feedback</h5>
+    </div>
+    <div class="card-body">
+      <div class="mb-3">
+        <label for="storeId" class="form-label">Store ID</label>
+        <input id="storeId" type="text" class="form-control" formControlName="storeId" required>
+        <div class="invalid-feedback" *If="feedbackForm.get('storeId')?.hasError('required')">
+          Store ID is required
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="tableId" class="form-label">Table ID</label>
+        <input id="tableId" type="text" class="form-control" formControlName="tableId">
+      </div>
+
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input id="email" type="email" class="form-control" formControlName="email">
+        <div class="invalid-feedback" *If="feedbackForm.get('email')?.hasError('email')">
+          Invalid email
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="phoneNumber" class="form-label">Phone Number</label>
+        <input id="phoneNumber" type="text" class="form-control" formControlName="phoneNumber">
+        <div class="invalid-feedback" *If="feedbackForm.get('phoneNumber')?.hasError('pattern')">
+          Invalid phone number
+        </div>
+      </div>
+
+      <div *For="let field of fields">
+        <div class="mb-3" *If="field.dataType === 'string' || field.dataType === 'number'">
+          <label class="form-label">{{ field.name }} {{ field.isRequired ? '*' : '' }}</label>
+          <input [type]="field.dataType === 'number' ? 'number' : 'text'" class="form-control"
+                 [formControlName]="field._id!">
+          <div class="invalid-feedback" *If="feedbackForm.get(field._id!)?.hasError('required')">
+            This field is required
+          </div>
+        </div>
+
+        <div class="mb-3" *If="field.dataType === 'rating'">
+          <label class="form-label">{{ field.name }} {{ field.isRequired ? '*' : '' }}</label>
+          <select class="form-select" [formControlName]="field._id!">
+            <option *ngFor="let rating of [1, 2, 3, 4, 5]" [value]="rating">{{ rating }}</option>
+          </select>
+          <div class="invalid-feedback" *If="feedbackForm.get(field._id!)?.hasError('required')">
+            This field is required
+          </div>
+        </div>
+
+        <div class="mb-3" *If="field.dataType === 'date'">
+          <label class="form-label">{{ field.name }} {{ field.isRequired ? '*' : '' }}</label>
+          <input type="date" class="form-control" [formControlName]="field._id!">
+          <div class="invalid-feedback" *If="feedbackForm.get(field._id!)?.hasError('required')">
+            This field is required
+          </div>
+        </div>
+
+        <div class="form-check mb-3" *if="field.dataType === 'boolean'">
+          <input type="checkbox" class="form-check-input" [formControlName]="field._id!"
+                 id="checkbox-{{ field._id }}">
+          <label class="form-check-label" for="checkbox-{{ field._id }}">
+            {{ field.name }} {{ field.isRequired ? '*' : '' }}
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer text-end">
+      <button type="submit" class="btn btn-primary" [disabled]="feedbackForm.invalid">Submit</button>
+    </div>
+  </div>
+</form>

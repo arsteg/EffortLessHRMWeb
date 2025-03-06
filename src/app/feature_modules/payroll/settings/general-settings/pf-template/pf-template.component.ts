@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { MatDialogRef } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { PayrollService } from 'src/app/_services/payroll.service';
 
@@ -15,7 +15,7 @@ export class PfTemplateComponent {
   @Input() changeMode: boolean = false;
   pfTemplateForm: FormGroup;
   fixedAllowance: any;
-
+  dialogRef: MatDialogRef<any>;
 
   constructor(private toastr: ToastrService,
     private fb: FormBuilder,
@@ -28,12 +28,11 @@ export class PfTemplateComponent {
   }
 
   ngOnInit() {
-    console.log(this.payroll.generalSettings.getValue());
     if (this.changeMode) {
       this.payroll.data.subscribe(res => {
         this.pfTemplateForm.patchValue({
-          name: res.name,
-          roundingType: res.roundingType
+          templateName: res.templateName,
+          allowanceApplicable: res.allowanceApplicable
         })
       })
     }
@@ -41,7 +40,7 @@ export class PfTemplateComponent {
   }
 
   closeModal() {
-    this.close.emit(true);
+    this.dialogRef.close();
   }
 
   onSubmission() {

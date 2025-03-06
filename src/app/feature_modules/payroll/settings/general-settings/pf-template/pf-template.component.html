@@ -1,33 +1,30 @@
-<div class="modal-body">
-    <div class=" d-flex justify-content-between">
-        <div class="">
-            <h4 class="modal-title text-start">{{changeMode ? 'Update' : 'Add'}} PF template</h4>
-        </div>
-        <div class=""><button type="button" data-bs-dismiss="modal" (click)="closeModal()"
-                class="btn-close text-end"></button>
-        </div>
-    </div>
-    <hr class="mt-0">
-    <form [formGroup]="pfTemplateForm" (ngSubmit)="onSubmission()">
-        <div class="form-group">
-            <label for="">Template Name</label>
-            <input type="text" class="form-control" formControlName="templateName">
-        </div>
+<h1 mat-dialog-title>{{changeMode ? 'Update' : 'Add'}} PF Template</h1>
+<hr class="mt-0">
+<div mat-dialog-content>
+    <mat-form [formGroup]="pfTemplateForm" (ngSubmit)="onSubmission()">
+        <div class="row container">
+            <div class="form-group col-md-12">
+                <mat-form-field appearance="fill" class="w-100">
+                    <mat-label>Template Name</mat-label>
+                    <input matInput type="text" formControlName="templateName">
+                </mat-form-field>
+            </div>
 
-        <div class="form-group mt-3">
-            <mat-form-field appearance="outline" class="w-100">
-                <mat-label>Allowance Applicable</mat-label>
-                <mat-select multiple formControlName="allowanceApplicable">
-                    <mat-option *ngFor="let fa of fixedAllowance" [value]="fa?._id">
-                        {{fa?.label}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-        </div>
+            <div class="form-group col-md-12 mt-3">
+                <mat-form-field appearance="fill" class="w-100">
+                    <mat-label>Allowance Applicable</mat-label>
+                    <mat-select multiple formControlName="allowanceApplicable">
+                        <mat-option *ngFor="let fa of fixedAllowance" [value]="fa?._id">
+                            {{fa?.label}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
 
-        <div class="d-flex justify-content-between mt-2">
-            <button mat-raised-button type="reset">Cancel</button>
-            <button mat-raised-button type="submit" class="addBtn">Submit</button>
+            <div class="d-flex justify-content-between my-2">
+                <button mat-raised-button type="button" (click)="closeModal()">Close</button>
+                <button mat-raised-button type="submit" class="addBtn">Submit</button>
+            </div>
         </div>
-    </form>
+    </mat-form>
 </div>
