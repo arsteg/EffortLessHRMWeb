@@ -1,0 +1,64 @@
+/* Existing styles */
+.container {
+  max-width: 100%;
+  padding: 15px;
+}
+
+.card {
+  border-radius: 8px;
+}
+
+.form-label {
+  font-weight: 500;
+}
+
+.form-control, .form-select {
+  border-radius: 4px;
+}
+
+.btn-primary {
+  padding: 8px 20px;
+}
+
+/* Star Rating Styles */
+.star-rating {
+  cursor: pointer;
+}
+
+.star {
+  font-size: 1.5rem;
+  color: #ccc; /* Unselected stars */
+  transition: color 0.2s; /* Smooth transition */
+}
+
+.star.filled {
+  color: #f39c12; /* Selected stars */
+}
+
+/* Hover effect: handled via previewRatings, no need for complex CSS */
+.star-rating .star:hover ~ .star {
+  color: #ccc; /* Ensure stars to the right don’t fill */
+}
+
+@media (max-width: 576px) {
+  .card-header h5 {
+    font-size: 1.2rem;
+  }
+  
+  .form-label {
+    font-size: 0.9rem;
+  }
+  
+  .btn-primary {
+    width: 100%;
+    padding: 10px;
+  }
+  
+  .text-end {
+    text-align: center !important;
+  }
+  
+  .star {
+    font-size: 1.2rem;
+  }
+}
