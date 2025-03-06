@@ -1,3 +1,5 @@
+import { FeedbackField } from "./feedback-field.model";
+
 export interface Feedback {
     _id?: string;
     company: string;
@@ -7,6 +9,6 @@ export interface Feedback {
       email?: string;
       phoneNumber?: string;
     };
-    feedbackValues: { field: string; value: any }[];
+    feedbackValues: { field: any; value: any }[];
     submittedAt?: string;
   }

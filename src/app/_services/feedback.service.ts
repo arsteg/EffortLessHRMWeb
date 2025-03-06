@@ -43,7 +43,7 @@ export class FeedbackService {
   // Feedback Field APIs
   createFeedbackField(field: FeedbackField): Observable<response<FeedbackField>> {
     return this.http.post<response<FeedbackField>>(
-      `${this.apiUrl}/feedback/fields/create`,
+      `${environment.apiUrlDotNet}/feedback/fields/create`,
       field,
       this.httpOptions
     ).pipe(
@@ -62,7 +62,7 @@ export class FeedbackService {
 
   updateFeedbackField(id: string, field: Partial<FeedbackField>): Observable<response<FeedbackField>> {
     return this.http.patch<response<FeedbackField>>(
-      `${this.apiUrl}/feedback/fields/update/${id}`,
+      `${environment.apiUrlDotNet}/feedback/fields/update/${id}`,
       field,
       this.httpOptions
     ).pipe(
@@ -72,7 +72,7 @@ export class FeedbackService {
 
   deleteFeedbackField(id: string): Observable<response<any>> {
     return this.http.delete<response<any>>(
-      `${this.apiUrl}/feedback/fields/delete/${id}`,
+      `${environment.apiUrlDotNet}/feedback/fields/delete/${id}`,
       this.httpOptions
     ).pipe(
       catchError(this.handleHttpError)
@@ -80,10 +80,18 @@ export class FeedbackService {
   }
 
   // Feedback Submission APIs
-  submitFeedback(feedback: Feedback): Observable<response<Feedback>> {
+  submitFeedback(feedback: Feedback): Observable<response<any>> {
     return this.http.post<response<Feedback>>(
-      `${this.apiUrl}/feedback/submit`,
+      `${environment.apiUrlDotNet}/feedback/submit`,
       feedback,
+      this.httpOptions
+    ).pipe(
+      catchError(this.handleHttpError)
+    );
+  }
+  getFeedbackByCompany(startDate?: string, endDate?: string): Observable<any> {
+    return this.http.get<any>(
+      `${environment.apiUrlDotNet}/feedback?startDate=${startDate}&endDate=${endDate}`,
       this.httpOptions
     ).pipe(
       catchError(this.handleHttpError)
