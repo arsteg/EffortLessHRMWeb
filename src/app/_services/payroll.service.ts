@@ -34,7 +34,7 @@ export class PayrollService {
   allUsers: any = new BehaviorSubject('');
   payslip: any = new BehaviorSubject('');
   getFormValues: any = new BehaviorSubject('');
-  
+
   fixedAllowances: any = new BehaviorSubject('');
   fixedDeductions: any = new BehaviorSubject('');
   otherBenefits: any = new BehaviorSubject('');
@@ -42,10 +42,14 @@ export class PayrollService {
   fixedContributions: any = new BehaviorSubject('');
   variableAllowances: any = new BehaviorSubject('');
   variableDeductions: any = new BehaviorSubject('');
-  
+
   constructor(private http: HttpClient) { }
   public getToken() {
     return localStorage.getItem('jwtToken');
+  }
+
+  getAllStates(): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrlDotNet}/location/states`, this.httpOptions);
   }
 
   // general settings CRUD
@@ -156,6 +160,11 @@ export class PayrollService {
   }
 
   // PT-Slab Crud
+
+  // State-wise pt-slabs
+  getStateWisePTSlabs():Observable<any>{
+    return this.http.get<any>(`${environment.apiUrlDotNet}/payroll/state-wise-pt-slabs`, this.httpOptions);
+  }
   addPTSlab(payload: any): Observable<any> {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/pt-slabs`, payload, this.httpOptions);
     return response;
@@ -659,7 +668,7 @@ export class PayrollService {
     return response;
   }
 
-  getAllGeneratedPayroll():Observable<any> {
+  getAllGeneratedPayroll(): Observable<any> {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/generatedPayroll-by-company`, {}, this.httpOptions);
     return response;
   }
