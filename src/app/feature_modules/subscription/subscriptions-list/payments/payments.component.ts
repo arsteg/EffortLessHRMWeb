@@ -29,7 +29,7 @@ export class PaymentsComponent {
 
   fetchPayments(subscriptionId: string) {
     this.loading.set(true);
-    this.subscriptionService.getInvoiceBySubscription(subscriptionId)
+    this.subscriptionService.getInvoiceByCompany()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(
         (data: any) => {

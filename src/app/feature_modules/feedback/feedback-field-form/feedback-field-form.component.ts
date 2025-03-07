@@ -123,7 +123,6 @@ export class FeedbackFieldFormComponent {
       }
     }
   }
-
   onCancel(): void {
     this.fieldForm.reset({
       name: '',

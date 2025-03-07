@@ -4,8 +4,8 @@ import { PlansComponent } from './plans/plans.component';
 import { SubscriptionsComponent } from './subscriptions/subscriptions.component';
 
 const routes: Routes = [
-  {path: '', component: PlansComponent},
-  {path: 'plans', component: SubscriptionsComponent},
+  {path: '', component: SubscriptionsComponent},
+  {path: 'plans', component: PlansComponent},
 ];
 
 @NgModule({

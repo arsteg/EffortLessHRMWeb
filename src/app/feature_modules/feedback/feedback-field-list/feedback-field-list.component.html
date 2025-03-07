@@ -5,8 +5,7 @@
         <h2 class="contentHeading p-2">Feedback Fields: {{ fieldsFiltered?.length }}</h2>
         <div class="d-flex align-items-center">
           <span class="bi bi-search searchIcon mb-3"></span>
-          <input type="text" placeholder="Search ..." [(ngModel)]="searchQuery" (input)="filterFields()"
-            class="form-control search mt-2 mb-3">
+          <input type="text" placeholder="Search ..." [(ngModel)]="searchQuery" (ngModelChange)="onSearchInput($event)" class="form-control search mt-2 mb-3">
         </div>
       </div>
       <table>
@@ -20,7 +19,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let field of fieldsFiltered">
+          <tr *ngFor="let field of fieldsFiltered;trackBy: trackById">
             <td class="text-left">{{ field.name }}</td>
             <td class="text-left">{{ field.dataType }}</td>
             <td class="text-left">{{ field.description }}</td>
@@ -33,6 +32,9 @@
                 <i class="bi bi-trash"></i>
               </button>
             </td>
+          </tr>
+          <tr *ngIf="fieldsFiltered.length === 0">
+            <td colspan="5" class="text-center">No feedback fields found.</td>
           </tr>
         </tbody>
       </table>

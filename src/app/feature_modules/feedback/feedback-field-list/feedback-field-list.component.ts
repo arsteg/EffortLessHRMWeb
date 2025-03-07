@@ -5,6 +5,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
 import { FeedbackFieldFormComponent } from '../feedback-field-form/feedback-field-form.component';
 import { ReactiveFormsModule,FormsModule  } from '@angular/forms';
+import { debounceTime, Subject } from 'rxjs';
 
 
 @Component({
@@ -21,11 +22,21 @@ export class FeedbackFieldListComponent implements OnInit {
   searchQuery: string = '';
   selectedField: FeedbackField | null = null;
   private _isEdit = false;
+  private searchSubject = new Subject<string>();
 
   constructor(
     private feedbackService: FeedbackService,
     private snackBar: MatSnackBar
-  ) {}
+  ) {
+    this.searchSubject.pipe(debounceTime(300)).subscribe(query => {
+      this.searchQuery = query;
+      this.filterFields();
+    });
+  }
+  
+  onSearchInput(query: string): void {
+    this.searchSubject.next(query);
+  }
 
   ngOnInit(): void {
     this.loadFields();
@@ -69,7 +80,11 @@ export class FeedbackFieldListComponent implements OnInit {
     this.selectedField = { ...field }; // Create a copy to avoid direct mutation
   }
 
-  deleteField(id: string): void {
+  deleteField(id: string | undefined): void {
+    if (!id) {
+      this.snackBar.open('Invalid field ID', 'Close', { duration: 3000 });
+      return;
+    }
     if (confirm('Are you sure you want to delete this field?')) {
       this.feedbackService.deleteFeedbackField(id).subscribe({
         next: () => {
@@ -77,11 +92,10 @@ export class FeedbackFieldListComponent implements OnInit {
           this.fieldsFiltered = this.fieldsFiltered.filter(f => f._id !== id);
           this.snackBar.open('Field deleted successfully', 'Close', { duration: 3000 });
         },
-        error: (err) => this.snackBar.open('Failed to delete field', 'Close', { duration: 3000 })
+        error: () => this.snackBar.open('Failed to delete field', 'Close', { duration: 3000 })
       });
     }
-  }
-
+  }  
   filterFields(): void {
     this.fieldsFiltered = this.fields.filter(field =>
       field.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
@@ -94,4 +108,12 @@ export class FeedbackFieldListComponent implements OnInit {
     this.selectedField = null;
     this.isEdit = false;
   }
+  trackById(index: number, field: FeedbackField): string {
+    return field._id || index.toString();
+  }
+
+  private showError(message: string): void {
+    this.snackBar.open(message, 'Close', { duration: 3000 });
+  }
+
 }

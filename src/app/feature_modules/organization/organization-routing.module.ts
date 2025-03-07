@@ -50,6 +50,7 @@ const routes: Routes = [
       { path: 'employee-tree', component: AssetManagerComponent },
       { path: 'documents', component: DocumentManagerComponent },
       { path: 'assets', component: AssetManagerComponent },
+      { path: 'subscription', loadChildren: () => import('../subscription/subscription.module').then(m => m.SubscriptionModule) }
     ]
   },
 ]

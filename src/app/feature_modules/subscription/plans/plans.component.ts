@@ -51,10 +51,11 @@ export class PlansComponent {
   selectedPlan: any;
   loading = false;
   loadingPlans = false;
+  loadingSubscription = false;
 
   ngOnInit() {
-    if (!this.hasActiveSubscription) {
-      this.credentials();
+    this.credentials();
+    if (!this.hasActiveSubscription && !this.hasCreatedSubscription) {
       this.getPlan();
     } else {
       this.getSubscription(this.subscription.id);
@@ -73,11 +74,16 @@ export class PlansComponent {
   }
 
   get hasActiveSubscription() {
-    return this.subscription?.status === 'active'
+    return this.subscription?.status === 'active' || this.subscription?.status === 'authenticated' 
+  }
+
+  get hasCreatedSubscription() {
+    return this.subscription?.status === 'created'
   }
 
   getSubscription(id) {
-    this.subscriptionService.getSubscriptionById(id)
+  this.loadingSubscription = true;
+  this.subscriptionService.getSubscriptionById(id)
       .pipe(takeUntilDestroyed(this.destoryRef))
       .subscribe((data: any) => {
         console.log(data);
@@ -85,6 +91,8 @@ export class PlansComponent {
         this.subscribedPlan = data.data.subscription.currentPlanId;
         this.subscription = data.data.subscription.razorpaySubscription;
         this.scheduledChanges = data.data.subscription.scheduledChanges;
+        this.selectedPlan = this.subscribedPlan;
+        this.loadingSubscription = false;
       })
   }
 
@@ -107,17 +115,23 @@ export class PlansComponent {
     }
     const payload = {
       currentPlanId: this.selectedPlan._id,
-      quantity: this.selectedPlan.quantity,
+      quantity: this.selectedPlan.quantity || 1,
     };
     this.loading = true;
-    this.subscriptionService.createSubscription(payload)
-      .subscribe((data: any) => {
-        this.makePayment(data.data.subscription.subscriptionId, this.selectedPlan);
-      });
+    // if company have already created subscription
+    if(this.hasCreatedSubscription){
+      this.makePayment(this.subscription.id);
+    } else {
+      // Create new subscription
+      this.subscriptionService.createSubscription(payload)
+        .subscribe((data: any) => {
+          this.makePayment(data.data.subscription.subscriptionId);
+        });
+    }
     return true;
   }
 
-  makePayment(id: string, plan: any) {
+  makePayment(id: string) {
     console.log(this.user)
     const options = {
       "key": this.rzCred, // TODO: Set in environment file or backend
@@ -194,6 +208,7 @@ export class PlansComponent {
       .subscribe((data: any) => {
         this.subscription = data.data.subscription.razorpaySubscription;
         this.scheduledChanges = data.data.subscription.scheduledChanges;
+        this.subscribedPlan = data.data.subscription.currentPlanId;
         this.authService.companySubscription.next(data.data.subscription.razorpaySubscription);
         localStorage.setItem('subscription', JSON.stringify(data.data.subscription.razorpaySubscription));
         this.dialog.closeAll();
@@ -204,6 +219,8 @@ export class PlansComponent {
         this.snackBar.open(message, 'Close', {duration: 5000});
       });
   }
+
+  payForNewPlan() {}
 
   cancelChangePlan(){
     this.subscriptionService.cancelChangeSubscription(this.subscriptionId)

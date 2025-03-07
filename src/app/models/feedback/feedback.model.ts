@@ -8,6 +8,7 @@ export interface Feedback {
     provider?: {
       email?: string;
       phoneNumber?: string;
+      name?: string;
     };
     feedbackValues: { field: any; value: any }[];
     submittedAt?: string;

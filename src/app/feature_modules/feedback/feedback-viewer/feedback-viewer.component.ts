@@ -28,28 +28,51 @@ export class FeedbackViewerComponent implements OnInit {
   constructor(private feedbackService: FeedbackService) {}
 
   ngOnInit(): void {
+    this.setDefaultDates();
     this.loadFeedbacks();
     this.setupSearch();
     this.setupFilters();
   }
+// Method to set default dates
+private setDefaultDates(): void {
+  const today = new Date();
+  const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
 
-  loadFeedbacks(): void {
-    const startDate = this.startDateControl.value || '';
-    const endDate = this.endDateControl.value || '';
-    const skip = this.pageIndex * this.pageSize;
-    const limit = this.pageSize;
+  // Format dates as YYYY-MM-DD for input[type="date"]
+  const formatDate = (date: Date) => date.toISOString().split('T')[0];
+  
+  this.startDateControl.setValue(formatDate(firstDayOfMonth));
+  this.endDateControl.setValue(formatDate(today));
+}
 
-    this.feedbackService.getFeedbackByCompany(startDate, endDate).subscribe({
-      next: (response) => {
-        this.dataSource = response.data.slice(skip, skip + limit);
-        this.totalFeedbacks = response.data.length;
-      },
-      error: (err) => {
-        console.error('Error loading feedbacks:', err);
-        this.dataSource = [];
-      }
-    });
+loadFeedbacks(): void {
+  let startDate = this.startDateControl.value || '';
+  let endDate = this.endDateControl.value || '';
+  const skip = this.pageIndex * this.pageSize;
+  const limit = this.pageSize;
+
+  // Convert dates to UTC if they exist
+  if (startDate) {
+    startDate = new Date(startDate).toISOString(); // e.g., "2025-03-01T00:00:00.000Z"
   }
+  if (endDate) {
+    // Set endDate to the end of the day in UTC
+    const endDateObj = new Date(endDate);
+    endDateObj.setUTCHours(23, 59, 59, 999); // End of the day
+    endDate = endDateObj.toISOString(); // e.g., "2025-03-07T23:59:59.999Z"
+  }
+
+  this.feedbackService.getFeedbackByCompany(startDate, endDate).subscribe({
+    next: (response) => {
+      this.dataSource = response.data.slice(skip, skip + limit);
+      this.totalFeedbacks = response.data.length;
+    },
+    error: (err) => {
+      console.error('Error loading feedbacks:', err);
+      this.dataSource = [];
+    }
+  });
+}
 
   setupSearch(): void {
     this.searchControl.valueChanges
@@ -107,11 +130,11 @@ export class FeedbackViewerComponent implements OnInit {
     }
     return feedback.feedbackValues
       .map((fv) => {
-        if (fv.field.dataType === 'rating' && typeof fv.value === 'number') {
+        if (fv.field?.dataType === 'rating' && typeof fv.value === 'number') {
           const stars = '★'.repeat(fv.value) + '☆'.repeat(5 - fv.value);
-          return `${fv.field.name}: <span class="text-warning">${stars}</span>`;
+          return `${fv.field?.name}: <span class="text-warning">${stars}</span>`;
         }
-        return `${fv.field.name}: ${fv.value || 'N/A'}`;
+        return `${fv.field?.name}: ${fv.value || 'N/A'}`;
       })
       .join('<br>');
     return "";
