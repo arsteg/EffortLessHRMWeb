@@ -49,8 +49,9 @@ export class CreatePlanComponent {
       description: new FormControl(''),
       notes1: new FormControl(''),
       notes2: new FormControl(''),
-      quantity: new FormControl('1', [Validators.min(1)]),
-      type: new FormControl('', [Validators.required]),
+      quantity: new FormControl('1', [Validators.min(1), Validators.required]),
+      type: new FormControl('fixed', [Validators.required]),
+      users: new FormControl('1', [Validators.min(1), Validators.required])
     });
   }
 
