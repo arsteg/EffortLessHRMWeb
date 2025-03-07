@@ -10,12 +10,15 @@
 <form [formGroup]="addStateForm" (ngSubmit)="onSubmission()">
     <div class="form-group">
         <label>State Name</label>
-        <input type="text" class="form-control" formControlName="state">
+        <select class="form-control" formControlName="state">
+            <option value="" selected [disabled]>Select State</option>
+            <option *ngFor="let state of states" [value]="state">{{ state }}</option>
+        </select>
     </div>
     
     <div class="form-group mt-2">
         <label>Frequency</label>
-        <select   formControlName="frequency">
+        <select class="form-control" formControlName="frequency">
             <option value="" selected [disabled]>Select Frequency</option>
             <option value="Monthly">Monthly</option>
             <option value="Half Yearly">Half Yearly</option>

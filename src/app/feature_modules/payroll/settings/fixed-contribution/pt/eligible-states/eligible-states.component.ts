@@ -15,7 +15,7 @@ export class EligibleStatesComponent implements OnInit {
   isEdit: boolean = false;
   eligibleStates: any[] = [];
   eligibleStateForm: FormGroup;
-  states: any[] = [];
+  states: any;
   eleState: any;
 
   constructor(private modalService: NgbModal,
@@ -29,7 +29,21 @@ export class EligibleStatesComponent implements OnInit {
     });
 
     this.getEligibleStates();
+    this.getAllStates();
     this.getState();
+  }
+
+  getAllStates() {
+    this.payroll.getAllStates().subscribe((res: any) => {
+      this.states = res.data;
+      // Ensure all states are in the form array
+      this.states.forEach(state => {
+        const exists = this.eligibleStateForm.value.states.some(s => s.state === state._id);
+        if (!exists) {
+          this.addStateControl(state._id, false);
+        }
+      });
+    });
   }
 
   addStateControl(stateId: string, isEligible: boolean): void {
@@ -57,7 +71,7 @@ export class EligibleStatesComponent implements OnInit {
   }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
@@ -82,33 +96,37 @@ export class EligibleStatesComponent implements OnInit {
     this.modalService.dismissAll();
   }
 
+  // getEligibleStates() {
+  //   this.payroll.getEligibleStates().subscribe((res: any) => {
+  //     this.eleState = res.data;
+
+  //     this.eligibleStateForm = this.fb.group({
+  //       states: this.fb.array(this.eleState.map(data =>
+  //         this.fb.group({
+  //           state: [data.state.state],
+  //           isEligible: [data.isEligible]
+  //         })
+  //       ))
+  //     });
+  //   });
+  // }
   getEligibleStates() {
-    this.payroll.getEligibleStates().subscribe((data: any) => {
-      this.eligibleStates = data.data.map(state => ({
-        ...state,
-        isEligible: state.isEligible
-      }));
+    this.payroll.getEligibleStates().subscribe((res: any) => {
+      this.eleState = res.data;
+      this.eligibleStates = res.data; // Update eligibleStates array
+      
+      // Clear existing form array
+      const statesArray = this.eligibleStateForm.get('states') as FormArray;
+      while (statesArray.length !== 0) {
+        statesArray.removeAt(0);
+      }
 
-      this.eleState = this.eligibleStates.filter(state => state.isEligible);
-
-
-      this.eligibleStateForm = this.fb.group({
-        states: this.fb.array(this.eligibleStates.map(state =>
-          this.fb.group({
-            state: [state.state],
-            isEligible: [state.isEligible]
-          })
-        ))
+      // Populate form array with current eligible states
+      this.eleState.forEach(data => {
+        this.addStateControl(data.state._id || data.state.state, data.isEligible);
       });
-
     });
   }
-  getMatchingState(stateID: string) {
-    const matchingState = this.states?.find(rec => rec._id === stateID);
-    return matchingState ? matchingState?.state : '';
-  }
-
-
   onSubmission() {
     this.payroll.updateEligibleState(this.eligibleStateForm.value).subscribe((data: any) => {
       this.eligibleStates = data.data;

@@ -18,44 +18,102 @@
     </div>
     <table>
         <thead>
+            <th>State</th>
             <th>From</th>
             <th>To</th>
-            <th>Employee Percentage</th>
-            <th>Employee Amount</th>
-            <th>12th Month Value</th>
+            <th>PT Amount</th>
             <th>12th Month Amount</th>
-            <th>Actions</th>
+            <th>Frequency</th>
+            <th>PT Slabs</th>
 
         </thead>
         <tbody>
-            <tr *ngFor="let data of ptSlab | search:searchText">
-                <td>{{data?.fromAmount}}</td>
-                <td>{{data?.toAmount}}</td>
-                <td>{{data?.employeePercentage}}</td>
-                <td>{{data?.employeeAmount}}</td>
-                <td>{{data?.twelfthMonthValue}}</td>
-                <td>{{data?.twelfthMonthAmount}}</td>
-                <td>
+            <ng-container *ngFor="let data of ptSlab | search:searchText">
+                <tr *ngFor="let slab of data?.slabs">
+                    <td>{{data?.name}}</td>
+                    <td>{{slab?.fromAmount || ('Upto ' + (slab?.toAmount))}}</td>
+                    <td>{{slab?.toAmount || ('above ' + (slab?.fromAmount))}}</td>
+                    <td>{{slab?.employeeAmount}}</td>
+                    <td>{{slab?.twelfthMonthAmount}}</td>
+                    <td>{{data?.frequency}}</td>
+                    <td>
+                        <button class="actions" mat-mini-fab matTooltip="View" matTooltipPosition="before"
+                        data-bs-toggle="viewModal" data-bs-target="#viewModal"
+                        (click)=" open(viewModal); selectedRecord = data;  isEdit= true; editRecord();">
+                        <i class="bi bi-eye-fill"></i>
+                    </button>
 
-                    <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before"
-                        data-bs-toggle="modal" data-bs-target="#modal"
-                        (click)=" open(modal); selectedRecord = data;  isEdit= true; editRecord();">
-                        <i class="bi bi-pencil-fill"></i>
-                    </button>
-                    <button class="actions ms-2" mat-mini-fab matTooltip="Delete" matTooltipPosition="after"
-                        aria-label="Example icon button with a menu icon" (click)="deleteDialog(data?._id)">
-                        <i class="bi bi-trash"></i>
-                    </button>
-                </td>
-            </tr>
+                        <!-- <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before"
+                            data-bs-toggle="modal" data-bs-target="#modal"
+                            (click)=" open(modal); selectedRecord = data;  isEdit= true; editRecord();">
+                            <i class="bi bi-pencil-fill"></i>
+                        </button>
+                        <button class="actions ms-2" mat-mini-fab matTooltip="Delete" matTooltipPosition="after"
+                            aria-label="Example icon button with a menu icon" (click)="deleteDialog(data?._id)">
+                            <i class="bi bi-trash"></i>
+                        </button> -->
+                    </td>
+                </tr>
+            </ng-container>
         </tbody>
     </table>
 </div>
 
+<ng-template #viewModal let-viewModal>
+    <div class="modal-header border-bottom mb-2 pt-0 d-flex justify-content-between">
+        <div>
+            <h1 class="modal-title text-muted mb-0">Professional Tax Slab</h1>
+        </div>
+        <div class=""><button type="button" data-bs-dismiss="viewModal" class="btn-close text-end"
+                (click)="closeModal()"></button>
+        </div>
+    </div>
+    <div class="modal-content">
+        <!-- Header Section -->
+        <div class="">
+          <div class="row">
+            <div class="col-6">
+              <label><strong>Deduction Cycle</strong></label>
+              <p>{{ selectedRecord?.deductionFrequency | titlecase}}</p>
+            </div>
+            <div class="col-6">
+              <label><strong>Professional Tax Eligible State</strong></label>
+              <p>{{ selectedRecord?.name }}</p>
+            </div>
+          </div>
+        </div>
+    
+        <!-- Table Section -->
+        <div class="modal-body">
+          <table class="pt-slab-table">
+            <thead>
+              <tr>
+                <th>Tax Slab Amount (₹)</th>
+                <th>Monthly Tax Amount (₹)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let slab of selectedRecord?.slabs">
+                <td>{{ slab.fromAmount | number }} - {{ slab.toAmount ? (slab.toAmount | number) : 'above ' + (slab.fromAmount | number) }}</td>
+                <td>{{ slab.employeeAmount | number }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+    
+        <!-- Footer Section -->
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="closeModal()">Okay</button>
+        </div>
+      </div>
+
+</ng-template>
+
+
 <ng-template #modal let-modal>
     <div class="modal-header border-bottom mb-2 pt-0 d-flex justify-content-between">
         <div>
-            <h1 class="modal-title text-muted mb-0">{{isEdit? 'Update': 'Add'}} Fixed Allowance</h1>
+            <h1 class="modal-title text-muted mb-0">{{isEdit? 'Update': 'Add'}} Professional Tax Slab</h1>
         </div>
         <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
                 (click)="closeModal()"></button>
@@ -63,6 +121,18 @@
     </div>
     <form [formGroup]="ptSlabForm" (ngSubmit)="onSubmission()">
         <div class="row">
+            <div class="form-group col-md-6">
+                <label for="state">Eligible State <span class="text-danger">*</span></label>
+                <select class="form-control" id="state" formControlName="state">
+                    <option [value]="data?.state?._id" *ngFor="let data of states">{{data?.state?.state}}</option>
+                </select>
+                <div
+                    *ngIf="ptSlabForm.get('state').invalid && (ptSlabForm.get('state').dirty || ptSlabForm.get('state').touched)">
+                    <small class="text-danger" *ngIf="ptSlabForm.get('state')['errors']['required']">State is
+                        required</small>
+                </div>
+            </div>
+
             <div class="form-group col-md-6">
                 <label for="">From Amount <span class="text-danger">*</span></label>
                 <input type="number" class="form-control" formControlName="fromAmount">
@@ -85,7 +155,7 @@
         </div>
         <div class="row">
             <div class="form-group col-md-6 mt-2">
-                <label for="">Employee Percentage <span class="text-danger">*</span></label>
+                <label for="">Employee Percentage of Professional tax<span class="text-danger">*</span></label>
                 <input type="number" class="form-control" formControlName="employeePercentage">
                 <div
                     *ngIf="ptSlabForm.get('employeePercentage').invalid && (ptSlabForm.get('employeePercentage').dirty || ptSlabForm.get('employeePercentage').touched)">
@@ -96,7 +166,7 @@
             </div>
 
             <div class="form-group col-md-6 mt-2">
-                <label for="">Employee Amount <span class="text-danger">*</span></label>
+                <label for="">Employee Amount of Professional tax<span class="text-danger">*</span></label>
                 <input type="number" class="form-control" formControlName="employeeAmount">
                 <div
                     *ngIf="ptSlabForm.get('employeeAmount').invalid && (ptSlabForm.get('employeeAmount').dirty || ptSlabForm.get('employeeAmount').touched)">

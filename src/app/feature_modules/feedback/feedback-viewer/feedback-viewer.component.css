@@ -1,66 +1,63 @@
-/* src/app/components/feedback-viewer/feedback-viewer.component.scss */
+/* feedback-viewer.component.css */
 .container {
-  padding: 20px;
+  max-width: 100%;
+  padding: 15px;
 }
 
-.filter-bar {
-  display: flex;
-  gap: 20px;
-  padding: 20px;
-  margin-bottom: 20px;
-  background-color: #f5f5f5;
+.card {
   border-radius: 8px;
 }
 
-.search-field {
-  flex: 1;
+.card-header {
+  padding: 1rem;
 }
 
-.table-responsive {
-  border-radius: 8px;
-  overflow: hidden;
+.form-label {
+  font-weight: 500;
+}
+
+.form-control {
+  border-radius: 4px;
+}
+
+.btn-danger {
+  padding: 8px 20px;
+  border-radius: 4px;
 }
 
 .table {
-  margin-bottom: 0;
+  margin-bottom: 0; /* Remove extra margin inside card */
 }
 
-thead th {
-  background-color: #343a40;
-  color: white;
-}
-
-td, th {
-  padding: 10px;
-  vertical-align: middle;
-}
-
-td {
-  word-wrap: break-word;
-  max-width: 0;
-}
-
-button {
-  margin-left: 10px;
-}
-
-.btn-sm {
-  padding: 0.25rem 0.5rem;
+.table-responsive {
+  border-radius: 4px;
+  overflow-x: auto;
 }
 
 .pagination .page-link {
   cursor: pointer;
+  padding: 8px 12px;
 }
 
-.text-warning {
-  color: #ffc107 !important;
-}
-
-/* Shadow effects */
-.shadow-sm {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.shadow {
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+@media (max-width: 576px) {
+  .card-header h5 {
+    font-size: 1.2rem;
+  }
+  
+  .form-label {
+    font-size: 0.9rem;
+  }
+  
+  .btn-danger {
+    width: 100%;
+    padding: 10px;
+  }
+  
+  .text-center {
+    text-align: center !important;
+  }
+  
+  .pagination {
+    flex-wrap: wrap;
+  }
 }

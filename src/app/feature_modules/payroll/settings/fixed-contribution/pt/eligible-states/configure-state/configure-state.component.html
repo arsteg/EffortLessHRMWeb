@@ -20,12 +20,14 @@
     <table>
         <thead>
             <th class="w-50">State</th>
+            <th>Frequency</th>
             <th class="w-50 text-center">Actions</th>
         </thead>
 
         <tbody>
             <tr *ngFor="let data of configuredState">
                 <td class="w-50">{{data?.state}}</td>
+                <td>{{data?.frequency}}</td>
                 <td class="w-50 text-center">
                     <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before"
                         data-bs-toggle="modal" data-bs-target="#modal"
