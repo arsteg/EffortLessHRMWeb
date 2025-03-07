@@ -165,18 +165,11 @@ export const SideBarAdminMenu = [
   },
   {
     id: '22',
-    title: 'Feedback Form',
+    title: 'Feedback',
     icon: 'assets/Sidenav-Icons/feedback.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/feedback.png',    
-    url: 'feedback-form',
-  },
-  {
-    id: '23',
-    title: 'Feedback Viewer',
-    icon: 'assets/Sidenav-Icons/feedback.png',
-    lightIcon: 'assets/Sidenav-Icons/light-Icons/feedback.png',    
-    url: 'feedback-viewer',
-  },
+    url: 'feedback',
+  }  
 ];
 
 /**

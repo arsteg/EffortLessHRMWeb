@@ -17,8 +17,7 @@ import { SubtaskComponent } from './tasks/subtask/subtask.component';
 import { SubscriptionComponent } from './layouts/subscription/subscription.component';
 import { LogComponentComponent } from './feature_modules/logs/log.component/log.component.component';
 import { FeedbackSubmissionComponent } from './feature_modules/feedback/feedback-submission/feedback-submission.component';
-import { FeedbackFieldListComponent } from './feature_modules/feedback/feedback-field-list/feedback-field-list.component';
-import { FeedbackViewerComponent } from './feature_modules/feedback/feedback-viewer/feedback-viewer.component';
+import { FeedbackSettingsComponent } from './feature_modules/feedback/feedback.settings.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'landing', pathMatch: 'full' },
@@ -124,9 +123,7 @@ const routes: Routes = [
       { path: 'edit-task', component: EditTaskComponent }, // TODO: Shared Component
       { path: 'tags', component: TagComponent }, // TODO: Shared Component
       { path: 'comments', component: TaskCommentComponent }, //TODO: Shared component
-      { path: 'feedback-form', component: FeedbackFieldListComponent },
-      { path: 'feedback-viewer', component: FeedbackViewerComponent }
-      
+      { path: 'feedback', component: FeedbackSettingsComponent }
     ]
   },
   {
