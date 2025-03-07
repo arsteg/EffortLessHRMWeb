@@ -4,6 +4,7 @@ import { FeedbackService } from 'src/app/_services/feedback.service';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { FeedbackField } from 'src/app/models/feedback/feedback-field.model';
 import { CommonModule } from '@angular/common';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-feedback-submission',
@@ -21,15 +22,16 @@ export class FeedbackSubmissionComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private feedbackService: FeedbackService,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private snackBar: MatSnackBar
   ) {
     this.companyId = '';
-    this.feedbackForm = this.fb.group({
-      senderName: ['', Validators.required],
+    this.feedbackForm = this.fb.group({      
       storeId: [''],
       tableId: [''],
       email: ['', [Validators.email]],
       phoneNumber: ['', [Validators.pattern(/^\+?[1-9]\d{1,14}$/)]],
+      name: [''],
       feedbackValues: this.fb.group({})
     });
   }
@@ -52,8 +54,8 @@ export class FeedbackSubmissionComponent implements OnInit {
         });
       },
       error: (err) => {
-        console.error('Failed to load feedback fields:', err);
-        alert('Failed to load feedback fields');
+        console.error('Failed to load feedback fields:', err);        
+        this.snackBar.open('Failed to load feedback fields', 'Close', { duration: 3000 });
       }
     });
   }
@@ -67,11 +69,11 @@ export class FeedbackSubmissionComponent implements OnInit {
     const feedback = {
       company: this.companyId,
       storeId: this.feedbackForm.get('storeId')?.value,
-      tableId: this.feedbackForm.get('tableId')?.value || undefined,
-      senderName: this.feedbackForm.get('senderName')?.value,
+      tableId: this.feedbackForm.get('tableId')?.value || undefined,      
       provider: {
         email: this.feedbackForm.get('email')?.value || undefined,
-        phoneNumber: this.feedbackForm.get('phoneNumber')?.value || undefined
+        phoneNumber: this.feedbackForm.get('phoneNumber')?.value || undefined,
+        name: this.feedbackForm.get('name')?.value || undefined
       },
       feedbackValues: Object.entries(this.feedbackForm.get('feedbackValues')?.value).map(([field, value]) => ({
         field,
@@ -81,19 +83,19 @@ export class FeedbackSubmissionComponent implements OnInit {
 
     this.feedbackService.submitFeedback(feedback).subscribe({
       next: () => {
-        this.feedbackForm.reset({
-          senderName: '',
+        this.feedbackForm.reset({          
           storeId: '',
           tableId: '',
           email: '',
+          name: '',
           phoneNumber: '',
           feedbackValues: {}
-        });
-        alert('Feedback submitted successfully');
+        });        
+        this.snackBar.open('Feedback submitted successfully', 'Close', { duration: 3000 });
       },
       error: (err) => {
-        console.error('Failed to submit feedback:', err);
-        alert('Failed to submit feedback');
+        console.error('Failed to submit feedback:', err);        
+        this.snackBar.open('Failed to submit feedback', 'Close', { duration: 3000 });
       }
     });
   }
