@@ -64,6 +64,10 @@ export class SubscriptionService extends baseService {
     return this.http.get(`${environment.apiUrlDotNet}/pricing/subscription-invoice/${id}`, this.httpOptions);
   }
 
+  getInvoiceByCompany(){
+    return this.http.post(`${environment.apiUrlDotNet}/pricing/company-invoices`, {}, this.httpOptions);
+  }
+
   activateSubscription(id: string){
     return this.http.post(`${environment.apiUrlDotNet}/pricing/activate-subscription/${id}`, {}, this.httpOptions);
   }

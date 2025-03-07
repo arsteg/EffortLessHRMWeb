@@ -156,13 +156,13 @@ export const SideBarAdminMenu = [
     lightIcon: 'assets/Sidenav-Icons/light-Icons/settings.png',
     url: 'interview-process',
   },
-  {
-    id: '21',
-    title: 'Subscriptions',
-    icon: 'assets/Sidenav-Icons/expenses.png',
-    lightIcon: 'assets/Sidenav-Icons/light-Icons/expenses.png',
-    url: 'subscription/plans',
-  },
+  // {
+  //   id: '21',
+  //   title: 'Subscriptions',
+  //   icon: 'assets/Sidenav-Icons/expenses.png',
+  //   lightIcon: 'assets/Sidenav-Icons/light-Icons/expenses.png',
+  //   url: 'subscription/plans',
+  // },
   {
     id: '22',
     title: 'Feedback',

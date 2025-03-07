@@ -17,9 +17,9 @@ export class AuthGuard  {
       if (loggedIn) {
         const subscription = this.authService.companySubscription.getValue();
         const user = this.authService.currentUserSubject.getValue();
-
-        if(subscription?.status !== 'active' && !user.freeCompany) {
-           this.router.navigate(['/subscription']);
+        const subscriptionActive = ['active', 'authenticated'];
+        if(!subscriptionActive.includes(subscription?.status) && !user.freeCompany) {
+           this.router.navigate(['/subscription/plans']);
            return true;
         }
         return true;

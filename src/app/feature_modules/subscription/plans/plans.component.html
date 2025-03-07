@@ -61,6 +61,25 @@
                 }
             </div>
         </div>
+    } @else if(hasCreatedSubscription && subscribedPlan){
+        <div class="card w-25 container p-0">
+            <div class="card-header">
+                <h2 class="m-0">
+                    {{subscribedPlan.name}}
+                </h2>
+            </div>
+            <div class="card-body">
+                <h2>{{subscribedPlan.currentprice | currency: 'INR'}} {{subscribedPlan.type!=="fixed" ? "per user" : ''}} /
+                    @switch(subscribedPlan.frequency){
+                        @case('weekly'){Week}
+                        @case('monthly'){Month}
+                        @case('yearly'){Year}
+                    }   
+                </h2>     
+                <p>Your subscription is created and waiting for payment.</p>
+                <button mat-raised-button color="accent" class="btn btn-block" (click)="payNow()">Pay Now</button>
+            </div>
+        </div>
     } @else {
         <div class="container">
             @if(loadingPlans && !plans.length){
@@ -102,16 +121,18 @@
                         </div>
                     }
                  </div>
-                 <div class="text-center mt-3">
-                    <span>Click on a plan to select and then click on Pay button to continue</span>
-                    <br>
-                    <button mat-raised-button color="accent" class="btn btn-block" (click)="payNow()" [disabled]="loading || !selectedPlan">
-                        @if(loading){
-                            <span class="spinner-border spinner-border-sm" role="status"></span>
-                        }
-                        Pay
-                    </button>
-                 </div>
+                 @if(!loadingSubscription){
+                     <div class="text-center mt-3">
+                        <span>Click on a plan to select and then click on Pay button to continue</span>
+                        <br>
+                        <button mat-raised-button color="accent" class="btn btn-block" (click)="payNow()" [disabled]="loading || !selectedPlan">
+                            @if(loading){
+                                <span class="spinner-border spinner-border-sm" role="status"></span>
+                            }
+                            Pay
+                        </button>
+                     </div>
+                 }
             }
         </div>
     }
@@ -123,7 +144,7 @@
         <form [formGroup]="changePlanForm" (submit)="changePlan()">
             <mat-radio-group formControlName="currentPlanId">
                 @for (plan of plans; track plan) {
-                  <mat-radio-button [value]="plan._id" [disabled]="plan._id === subscribedPlan._id">
+                  <mat-radio-button [value]="plan._id" class="w-100 d-block" [disabled]="plan._id === subscribedPlan._id">
                     <div class="border p-2 mb-2">
                         <div>{{plan.currentprice | currency:'INR'}} | {{plan.name}}</div>
                         <div>{{plan.description}}</div>
