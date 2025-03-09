@@ -1,4 +1,4 @@
-import { CurrencyPipe, DatePipe, NgClass, } from '@angular/common';
+import { CurrencyPipe, DatePipe, NgClass } from '@angular/common';
 import { Component, inject, DestroyRef, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { SubscriptionService } from 'src/app/_services/subscription.service';
@@ -52,6 +52,7 @@ export class PlansComponent {
   loading = false;
   loadingPlans = false;
   loadingSubscription = false;
+  confirmPayment = null;
 
   ngOnInit() {
     this.credentials();
@@ -202,8 +203,23 @@ export class PlansComponent {
       });
   }
 
+  confirmChangePlan() {
+    const payload = {...this.changePlanForm.value};
+    payload.confirmation = true;
+    this.subscriptionService.changeSubscription(this.subscriptionId, payload)
+      .subscribe((response: any) => {
+        this.confirmPayment = response.data;
+        this.dialog.afterAllClosed.subscribe(() => {
+          this.confirmPayment = null;
+        });
+      }, (error: any)=>{
+        const message = error.error.message || 'An error occurred';
+        this.snackBar.open(message, 'Close', {duration: 5000});
+      });
+  }
+
   changePlan() {
-    const payload = this.changePlanForm.value;
+    const payload = {...this.changePlanForm.value};
     this.subscriptionService.changeSubscription(this.subscriptionId, payload)
       .subscribe((data: any) => {
         this.subscription = data.data.subscription.razorpaySubscription;
@@ -213,14 +229,15 @@ export class PlansComponent {
         localStorage.setItem('subscription', JSON.stringify(data.data.subscription.razorpaySubscription));
         this.dialog.closeAll();
         this.snackBar.open('Plan changed successfully', 'Close', {duration: 5000});
+        this.dialog.afterAllClosed.subscribe(() => {
+          this.confirmPayment = null;
+        });
       }, (error: any)=>{
         this.dialog.closeAll();
         const message = error.error.message || 'An error occurred';
         this.snackBar.open(message, 'Close', {duration: 5000});
       });
   }
-
-  payForNewPlan() {}
 
   cancelChangePlan(){
     this.subscriptionService.cancelChangeSubscription(this.subscriptionId)

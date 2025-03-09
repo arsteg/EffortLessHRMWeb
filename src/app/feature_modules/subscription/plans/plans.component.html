@@ -22,8 +22,8 @@
                     @if(subscription.created_at){
                         <li>Created at: {{subscription.created_at*1000 | date: 'dd MMM, yyyy - hh:mm a'}}</li>
                     }
-                    @if(subscription.current_start){
-                        <li>Started at: {{subscription.current_start*1000 | date: 'dd MMM, yyyy - hh:mm a'}}</li>
+                    @if(subscription.current_start || subscription.start_at){
+                        <li>Started at: {{(subscription.current_start || subscription.start_at)*1000 | date: 'dd MMM, yyyy - hh:mm a'}}</li>
                     }
                     @if(subscription.current_end){
                         <li>Next Payment: {{subscription.current_end*1000 | date: 'dd MMM, yyyy - hh:mm a'}}</li>
@@ -75,9 +75,12 @@
                         @case('monthly'){Month}
                         @case('yearly'){Year}
                     }   
-                </h2>     
-                <p>Your subscription is created and waiting for payment.</p>
-                <button mat-raised-button color="accent" class="btn btn-block" (click)="payNow()">Pay Now</button>
+                </h2>
+                @if(subscription){
+                    <p>Your subscription will be charged on {{subscription.start_at*1000 | date}}.</p>
+                }
+                <p>Your subscription is created and waiting for payment authentication.</p>
+                <button mat-raised-button color="accent" class="btn btn-block" (click)="payNow()">Authenticate Payment</button>
             </div>
         </div>
     } @else {
@@ -87,9 +90,9 @@
                     <span class="spinner-border spinner-border-lg" role="status"></span>
                 </div>
             } @else {
-                <div class="row gap-4">
+                <div class="row gap-4 justify-content-center">
                     @for(plan of plans; track plan){
-                        <div class="col-12 col-md-4 card p-0" (click)="selectedPlan = plan" [ngClass]="{'selected': selectedPlan && selectedPlan._id === plan._id}">
+                        <div class="col-12 col-md-3 card p-0" (click)="selectedPlan = plan" [ngClass]="{'selected': selectedPlan && selectedPlan._id === plan._id}">
                             <div class="card-header">
                                 <h2 class="m-0">{{plan.name}}</h2>
                             </div> 
@@ -142,28 +145,35 @@
     <h1 mat-dialog-title>Select new Plan</h1>
     <div mat-dialog-content>
         <form [formGroup]="changePlanForm" (submit)="changePlan()">
-            <mat-radio-group formControlName="currentPlanId">
-                @for (plan of plans; track plan) {
-                  <mat-radio-button [value]="plan._id" class="w-100 d-block" [disabled]="plan._id === subscribedPlan._id">
-                    <div class="border p-2 mb-2">
-                        <div>{{plan.currentprice | currency:'INR'}} | {{plan.name}}</div>
-                        <div>{{plan.description}}</div>
-                        @if(plan.notes){
-                            @if(plan.notes.note1){
-                                <div>{{plan.notes.note1}}</div>
+            @if(confirmPayment){
+                <p>Your current subscription will be canceled, and a new subscription will be initiated with the adjusted remaining days, which will be charged on the {{confirmPayment.startDate *1000 | date}}.</p>
+            } @else {
+                <mat-radio-group formControlName="currentPlanId">
+                    @for (plan of plans; track plan) {
+                      <mat-radio-button [value]="plan._id" class="w-100 d-block border mb-2" [disabled]="plan._id === subscribedPlan._id">
+                        <div class="p-2 mb-2">
+                            <div>{{plan.currentprice | currency:'INR'}} | {{plan.name}}</div>
+                            <div>{{plan.description}}</div>
+                            @if(plan.notes){
+                                @if(plan.notes.note1){
+                                    <div>{{plan.notes.note1}}</div>
+                                }
+                                @if(plan.notes.note2){
+                                    <div>{{plan.notes.note2}}</div>
+                                }
                             }
-                            @if(plan.notes.note2){
-                                <div>{{plan.notes.note2}}</div>
-                            }
-                        }
-                    </div>
-                </mat-radio-button>
-                }
-            </mat-radio-group>
-
+                        </div>
+                    </mat-radio-button>
+                    }
+                </mat-radio-group>
+            }
             <div class="d-flex justify-content-between">
                 <button mat-stroked-button type="button" (click)="dialog.closeAll()">Cancel</button>
-                <button mat-raised-button  type="submit" color="primary">Submit</button>
+                @if(confirmPayment){
+                    <button mat-raised-button type="submit" color="primary">Confirm</button>
+                } @else {
+                    <button mat-raised-button type="button" [disabled]="changePlanForm.invalid" color="primary" (click)="confirmChangePlan()">Next</button>
+                }
             </div>
         </form>
     </div>
