@@ -20,6 +20,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { OrganizationRoutingModule } from './organization-routing.module';
 import { AssetsModule } from 'src/app/feature_modules/organization/AssetsManagement/assetManagement.module';
 import { TaxSlabComponent } from './setup/tax-slab/tax-slab.component';
+import { FlexiHolidaysComponent } from './setup/flexi-holidays/flexi-holidays.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { TaxSlabComponent } from './setup/tax-slab/tax-slab.component';
     BandComponent,
     SignatoryDetailsComponent,
     HolidaysComponent,
-    TaxSlabComponent
+    TaxSlabComponent,
+    FlexiHolidaysComponent
   ],
   imports: [
     CommonModule,
