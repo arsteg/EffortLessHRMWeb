@@ -22,7 +22,7 @@ export class BarcodeListComponent implements OnInit {
   isEdit = false;
   barcodeForm: FormGroup;
   private searchSubject = new Subject<string>();
-  baseUrl = 'http://localhost:4200'; // Adjust to your base URL
+  
 
   constructor(
     private feedbackService: FeedbackService,
@@ -79,7 +79,7 @@ export class BarcodeListComponent implements OnInit {
     }
 
     const barcodeData = this.barcodeForm.value;
-    const url = `${this.baseUrl}/#/submit-feedback?storeId=${barcodeData.storeId}&tableId=${barcodeData.tableId}`;
+    const url = `/#/submit-feedback?storeId=${barcodeData.storeId}&tableId=${barcodeData.tableId}`;
 
     if (this.isEdit && this.selectedBarcode?._id) {
       this.feedbackService.updateBarcode(this.selectedBarcode._id, { ...barcodeData, url }).subscribe({
