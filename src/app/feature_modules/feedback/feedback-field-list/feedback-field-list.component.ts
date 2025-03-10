@@ -55,7 +55,7 @@ export class FeedbackFieldListComponent implements OnInit {
   }
 
   loadFields(): void {
-    this.feedbackService.getFeedbackFieldsByCompany().subscribe({
+    this.feedbackService.getFeedbackFieldsByCompany('').subscribe({
       next: (response) => {
         this.fields = response.data;
         this.fieldsFiltered = this.fields; // Initialize filtered list
