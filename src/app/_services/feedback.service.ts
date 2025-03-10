@@ -6,6 +6,8 @@ import { FeedbackField } from '../models/feedback/feedback-field.model';
 import { Feedback} from '../models/feedback/feedback.model';
 import { response } from '../models/response'; // Assuming this is your response model
 import { environment } from 'src/environments/environment';
+import { Barcode } from '../models/feedback/barcode';
+import { APIResponse } from './base';
 
 @Injectable({
   providedIn: 'root'
@@ -89,6 +91,17 @@ export class FeedbackService {
       catchError(this.handleHttpError)
     );
   }
+
+  saveBarcode(storeId:string, tableId:string, url:string): Observable<any> {
+    return this.http.post<response<Feedback>>(
+      `${environment.apiUrlDotNet}/feedback/barcode`,
+      {storeId, tableId, url},
+      this.httpOptions
+    ).pipe(
+      catchError(this.handleHttpError)
+    );
+  }
+
   getFeedbackByCompany(startDate?: string, endDate?: string): Observable<any> {
     return this.http.get<any>(
       `${environment.apiUrlDotNet}/feedback?startDate=${startDate}&endDate=${endDate}`,
@@ -96,5 +109,58 @@ export class FeedbackService {
     ).pipe(
       catchError(this.handleHttpError)
     );
-  }
+  } 
+  
+ // Barcode APIs
+ createBarcode(barcode: { storeId: string; tableId: string; url: string }): Observable<APIResponse<Barcode>> {
+  return this.http.post<APIResponse<Barcode>>(
+    `${environment.apiUrlDotNet}/feedback/qrcodes`,
+    barcode,
+    this.httpOptions
+  ).pipe(
+    catchError(this.handleHttpError)
+  );
+}
+
+getBarcodesByCompany(): Observable<APIResponse<Barcode[]>> {
+  return this.http.get<APIResponse<Barcode[]>>(
+    `${environment.apiUrlDotNet}/feedback/qrcodes`,
+    this.httpOptions
+  ).pipe(
+    catchError(this.handleHttpError)
+  );
+}
+
+getBarcodeById(id: string): Observable<APIResponse<Barcode>> {
+  return this.http.get<APIResponse<Barcode>>(
+    `${environment.apiUrlDotNet}/feedback/qrcodes/${id}`,
+    this.httpOptions
+  ).pipe(
+    catchError(this.handleHttpError)
+  );
+}
+
+updateBarcode(id: string, barcode: Partial<{ storeId: string; tableId: string; url: string }>): Observable<APIResponse<Barcode>> {
+  return this.http.patch<APIResponse<Barcode>>(
+    `${environment.apiUrlDotNet}/feedback/qrcodes/${id}`,
+    barcode,
+    this.httpOptions
+  ).pipe(
+    catchError(this.handleHttpError)
+  );
+}
+
+deleteBarcode(id: string): Observable<APIResponse<any>> {
+  return this.http.delete<APIResponse<any>>(
+    `${environment.apiUrlDotNet}/feedback/qrcodes/${id}`,
+    this.httpOptions
+  ).pipe(
+    catchError(this.handleHttpError)
+  );
+}
+  
+
+  
+
+
 }
