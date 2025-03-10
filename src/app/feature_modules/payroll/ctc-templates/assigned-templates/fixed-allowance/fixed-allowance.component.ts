@@ -84,7 +84,6 @@ export class AssignedFixedAllowanceComponent {
           minimumAmount: [item.minimumAmount || 0]
         }));
       });
-      console.log("Added fixed allowances", this.ctcTemplateFixedAllowance);
     }
   }
 
