@@ -44,8 +44,7 @@ export class FeedbackSubmissionComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {    
-    this.loadFields();
+  ngOnInit(): void {        
     
     // Read query parameters when component initializes
     this.route.queryParams.subscribe(params => {
@@ -59,10 +58,12 @@ export class FeedbackSubmissionComponent implements OnInit {
       console.log('Company ID:', this.companyId); // "64e2fa0fdcba5e7546d029f5"
     });
 
+    this.loadFields(this.companyId);
+
   }
 
-  loadFields(): void {
-    this.feedbackService.getFeedbackFieldsByCompany().subscribe({
+  loadFields(companyId): void {
+    this.feedbackService.getFeedbackFieldsByCompany(companyId).subscribe({
       next: (response) => {
         this.fields = response.data;
         const feedbackValues = this.feedbackForm.get('feedbackValues') as FormGroup;

@@ -53,9 +53,9 @@ export class FeedbackService {
     );
   }
 
-  getFeedbackFieldsByCompany(): Observable<any> {
+  getFeedbackFieldsByCompany(companyId:string): Observable<any> {
     return this.http.get<any>(
-      `${environment.apiUrlDotNet}/feedback/fields`,
+      `${environment.apiUrlDotNet}/feedback/Allfields/${companyId}`,
       this.httpOptions
     ).pipe(
       catchError(this.handleHttpError)
