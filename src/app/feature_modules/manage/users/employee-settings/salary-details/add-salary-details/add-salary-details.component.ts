@@ -76,14 +76,15 @@ export class AddSalaryDetailsComponent {
   }
 
   ngOnInit(): void {
+    console.log(this.edit)
     this.salaryDetailsForm.get('frequencyToEnterCTC')?.setValue('Yearly');
-    this.salaryDetailsForm.value.get('frequencyToEnterCTC')?.disable(); 
+    this.salaryDetailsForm.get('frequencyToEnterCTC')?.disable();
     this.logUrlSegmentsForUser();
     if (this.edit) {
       this.getSalaryDetailsById();
       this.disableFormControls(this.salaryDetailsForm);
     }
-    if (this.edit === false) {
+    if (this.edit == false) {
       this.salaryDetailsForm.patchValue({ CTCTemplate: 'manual' });
       this.addFixedAllowance();
       this.addOtherBenefit();

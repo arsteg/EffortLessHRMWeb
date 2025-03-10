@@ -5,6 +5,7 @@ import { AuthenticationService } from 'src/app/_services/authentication.service'
 import { FeedbackField } from 'src/app/models/feedback/feedback-field.model';
 import { CommonModule } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-feedback-submission',
@@ -16,14 +17,21 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class FeedbackSubmissionComponent implements OnInit {
   feedbackForm: FormGroup;
   fields: FeedbackField[] = [];
+  
   companyId: string;
+  storeId: string | null = null;
+  tableId: string | null = null;
+
+  
+
   private previewRatings: { [fieldId: string]: number | null } = {};
 
   constructor(
     private fb: FormBuilder,
     private feedbackService: FeedbackService,
     private authService: AuthenticationService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private route: ActivatedRoute
   ) {
     this.companyId = '';
     this.feedbackForm = this.fb.group({      
@@ -36,8 +44,21 @@ export class FeedbackSubmissionComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
+  ngOnInit(): void {    
     this.loadFields();
+    
+    // Read query parameters when component initializes
+    this.route.queryParams.subscribe(params => {
+      this.storeId = params['storeId'];
+      this.tableId = params['tableId'];
+      this.companyId = params['companyId'];
+      
+      // Now you can use these values
+      console.log('Store ID:', this.storeId);    // "001"
+      console.log('Table ID:', this.tableId);    // "003"
+      console.log('Company ID:', this.companyId); // "64e2fa0fdcba5e7546d029f5"
+    });
+
   }
 
   loadFields(): void {
@@ -68,8 +89,8 @@ export class FeedbackSubmissionComponent implements OnInit {
 
     const feedback = {
       company: this.companyId,
-      storeId: this.feedbackForm.get('storeId')?.value,
-      tableId: this.feedbackForm.get('tableId')?.value || undefined,      
+      storeId: this.storeId,
+      tableId: this.tableId,      
       provider: {
         email: this.feedbackForm.get('email')?.value || undefined,
         phoneNumber: this.feedbackForm.get('phoneNumber')?.value || undefined,
@@ -83,9 +104,7 @@ export class FeedbackSubmissionComponent implements OnInit {
 
     this.feedbackService.submitFeedback(feedback).subscribe({
       next: () => {
-        this.feedbackForm.reset({          
-          storeId: '',
-          tableId: '',
+        this.feedbackForm.reset({                    
           email: '',
           name: '',
           phoneNumber: '',

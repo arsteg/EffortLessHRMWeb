@@ -14,7 +14,8 @@ export class UpdateStateComponent implements OnInit {
   @Input() data: any;
   addStateForm: FormGroup;
   @Output() close = new EventEmitter<void>();
-
+  states: any;
+  
   constructor(private payroll: PayrollService,
     private fb: FormBuilder,
     private toast: ToastrService
@@ -32,6 +33,14 @@ export class UpdateStateComponent implements OnInit {
         frequency: this.data.frequency
       });
     }
+    this.getAllStates();
+  }
+
+  getAllStates() {
+    this.payroll.getAllStates().subscribe((res: any) => {
+      this.states = res.data;
+      console.log(this.states);
+    });
   }
 
   closeModal() {

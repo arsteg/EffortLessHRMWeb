@@ -1,30 +1,30 @@
-<h2>Professional Tax Contribution</h2>
+<h2>Professional Tax</h2>
 <hr>
 
 
 <ul class="nav nav-tabs">
-    <li class="nav-item">
+    <!-- <li class="nav-item">
         <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabEligibleStates'}"
             (click)="selectTab('tabEligibleStates')">PT Eligible States</a>
-    </li>
+    </li> -->
     <li class="nav-item">
         <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabPTSlab'}" (click)="selectTab('tabPTSlab')">PT
             Slab</a>
     </li>
-    <li class="nav-item">
+    <!-- <li class="nav-item">
         <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabDeduction'}"
             (click)="selectTab('tabDeduction')">Deduction Month</a>
-    </li>
+    </li> -->
 </ul>
 
 <div class="tab-content pt-0">
-    <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabEligibleStates'}" id="tabEligibleStates">
+    <!-- <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabEligibleStates'}" id="tabEligibleStates">
         <app-eligible-states></app-eligible-states>
-    </div>
+    </div> -->
     <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabPTSlab'}" id="tabPTSlab">
         <app-pt-slab></app-pt-slab>
     </div>
-    <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabDeduction'}" id="tabDeduction">
+    <!-- <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabDeduction'}" id="tabDeduction">
         <app-pt-deduction></app-pt-deduction>
-    </div>
+    </div> -->
 </div>

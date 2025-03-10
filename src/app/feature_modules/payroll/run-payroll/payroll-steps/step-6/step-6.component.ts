@@ -2,9 +2,8 @@ import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
-import { forkJoin, map } from 'rxjs';
-import { CommonService } from 'src/app/_services/common.Service';
 import { PayrollService } from 'src/app/_services/payroll.service';
+import { UserService } from 'src/app/_services/users.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
@@ -24,14 +23,15 @@ export class Step6Component {
   payrollUsers: any;
   payrollUser: any;
   selectedPayrollUser: any;
+  professionalTaxSlabs: any;
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
 
   constructor(
     private payrollService: PayrollService,
     private fb: FormBuilder,
-    private commonService: CommonService,
     private dialog: MatDialog,
-    private toast: ToastrService
+    private toast: ToastrService,
+    private userService: UserService
   ) {
     this.flexiBenefitsForm = this.fb.group({
       PayrollUser: ['', Validators.required],
@@ -41,6 +41,7 @@ export class Step6Component {
   }
 
   ngOnInit() {
+    this.getProfessionalTaxSlabs();
     this.payrollService.allUsers.subscribe(res => {
       this.allUsers = res;
     });
@@ -50,10 +51,75 @@ export class Step6Component {
     this.getFlexiBenefitsByPayroll();
   }
 
+  getProfessionalTaxSlabs(callback?: Function) {
+    this.payrollService.getStateWisePTSlabs().subscribe((res: any) => {
+      this.professionalTaxSlabs = res.data;
+      if (callback) callback(); // Execute callback after slabs are loaded
+    });
+  }
+  
   onUserSelectedFromChild(user: any) {
     this.selectedUserId = user.value.user;
     this.selectedPayrollUser = user.value._id;
-    if (this.changeMode != 'Add') { this.getFlexiBenefitsProfessionalTax(); }
+  
+    if (this.changeMode !== 'Add') {
+      this.getFlexiBenefitsProfessionalTax();
+    } else {
+      let payload = { userId: this.selectedUserId };
+  
+      this.userService.getUserById(payload).subscribe((res: any) => {
+        const result = res.data;
+        if (result.length > 0) {
+          const userState = result[0].state;
+  
+          // Ensure professional tax slabs are available before proceeding
+          if (!this.professionalTaxSlabs) {
+            this.getProfessionalTaxSlabs(() => this.processTaxSlabs(userState));
+          } else {
+            this.processTaxSlabs(userState);
+          }
+        }
+      });
+    }
+  }
+  
+  processTaxSlabs(userState: string) {
+    console.log("Available Professional Tax Slabs:", this.professionalTaxSlabs);
+  
+    // Find the matching state in professional tax slabs
+    const stateSlab = this.professionalTaxSlabs?.states.find(
+      (slab: any) => slab.name.toLowerCase() === userState.toLowerCase()
+    );
+  
+    if (!stateSlab || !stateSlab.slabs) {
+      console.log("No professional tax slab found for state:", userState);
+      return;
+    }
+  
+    // Fetch salary details for the user
+    this.userService.getSalaryByUserId(this.selectedUserId).subscribe((res: any) => {
+      const lastSalaryRecord = res.data[res.data.length - 1];
+      let ctc;
+  
+      if (lastSalaryRecord.enteringAmount === 'Monthly') {
+        ctc = lastSalaryRecord.Amount;
+      } else if (lastSalaryRecord.enteringAmount === 'Yearly') {
+        ctc = lastSalaryRecord.Amount / 12; // Convert yearly salary to monthly
+      }
+  
+      console.log("User CTC (Monthly):", ctc);
+  
+      // Find the matching slab where CTC falls within the range
+      const matchingSlab = stateSlab.slabs.find(
+        (slab: any) => (ctc >= slab.fromAmount) && (ctc <= (slab.toAmount || 999999999999))
+      );
+  
+      if (matchingSlab) {
+        this.flexiBenefitsForm.patchValue({
+          TotalProfessionalTaxAmount: matchingSlab.employeeAmount || 0
+        });
+      }
+    });
   }
 
   getUser(employeeId: string) {
@@ -112,6 +178,8 @@ export class Step6Component {
   }
 
   openDialog() {
+    this.flexiBenefitsForm.get('TotalProfessionalTaxAmount').disable();
+
     if (this.changeMode == 'Update') {
       this.payrollService.getPayrollUserById(this.selectedRecord.PayrollUser).subscribe((res: any) => {
         this.payrollUser = res.data;

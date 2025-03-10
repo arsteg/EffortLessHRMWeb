@@ -31,7 +31,7 @@
       </div>
 
       <div class="col-6">
-        <mat-form-field>
+        <mat-form-field appearance="outline">
           <mat-select formControlName="frequency">
             <mat-option value="weekly">Weekly</mat-option>
             <mat-option value="monthly">Monthly</mat-option>
@@ -42,21 +42,26 @@
 
       <div class="col-6">
         <mat-form-field appearance="outline">
-          <mat-label>Interval*</mat-label>
-          <input matInput formControlName="interval">
+          <mat-label>Interval</mat-label>
+          <input matInput formControlName="interval" type="number">
           @if((planForm.get('interval').dirty || planForm.get('interval').touched)){
+            <mat-error>   
               @if(planForm.get('interval').errors?.['min']){
-                <mat-error> Minimum interval should be at least 1</mat-error>
+                Minimum interval should be at least 1
               }
+              @if(planForm.get('users').errors?.['required']){
+                Interval is required
+              }
+            </mat-error>
           }
         </mat-form-field>
       </div>
 
-      <div class="col-12">
+      <!-- <div class="col-12">
           <mat-label>Plan Type</mat-label>
           <mat-radio-group matInput formControlName="type">
             <mat-radio-button value="fixed">Fixed Amount</mat-radio-button>
-            <mat-radio-button value="max_average">Max Average</mat-radio-button>
+            <mat-radio-button value="max_average" disabled>Max Average</mat-radio-button>
             <mat-radio-button value="prorata" disabled>Prorata</mat-radio-button>
           </mat-radio-group>
           <div>
@@ -77,14 +82,31 @@
               }
             </small>
           </div>
+      </div> -->
+
+      <div class="col-12">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Users</mat-label>
+          <input matInput formControlName="users" type="number">
+          @if((planForm.get('users').dirty || planForm.get('users').touched) && planForm.get('users').errors){
+            <mat-error>
+              @if(planForm.get('users').errors?.['required']){
+                Amount is required
+              }
+              @if(planForm.get('users').errors?.['min']){
+                Minimum amount should be at least 1
+              }
+            </mat-error>
+          }
+          <mat-hint>Number of users allowed to use the software in this plan</mat-hint>
+        </mat-form-field>
       </div>
 
       <div class="col-12">
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="outline" class="w-100">
           <mat-label>Description</mat-label>
           <textarea
             matInput
-            class="form-control"
             formControlName="description"
           ></textarea>
         </mat-form-field>

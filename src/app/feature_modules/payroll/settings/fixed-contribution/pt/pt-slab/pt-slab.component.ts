@@ -21,6 +21,7 @@ export class PtSlabComponent {
   totalRecords: number;
   currentPage: number = 1;
   searchText: string = '';
+  states: any;
 
   constructor(private fb: FormBuilder,
     private modalService: NgbModal,
@@ -28,8 +29,9 @@ export class PtSlabComponent {
     private toast: ToastrService,
     private dialog: MatDialog) {
     this.ptSlabForm = this.fb.group({
-      fromAmount: ['', Validators.required],
-      toAmount: ['', Validators.required],
+      state: ['', Validators.required],
+      fromAmount: [0],
+      toAmount: [0],
       employeePercentage: [0, Validators.required],
       employeeAmount: [0, Validators.required],
       twelfthMonthValue: [0, Validators.required],
@@ -38,16 +40,28 @@ export class PtSlabComponent {
   }
 
   ngOnInit() {
-    this.getPtSlab();
+    this.payroll.getStateWisePTSlabs().subscribe((res: any) => {
+      this.ptSlab = res.data.states;
+    });
+    // this.getPtSlab();
+    this.getElegibleStates();
   }
+
+  getElegibleStates() {
+    this.payroll.getEligibleStates().subscribe((res: any) => {
+      this.states = res.data;
+    });
+  }
+
   onPageChange(page: number) {
     this.currentPage = page;
     this.getPtSlab();
   }
   clearForm(){
     this.ptSlabForm.patchValue({
-      fromAmount: '',
-      toAmount: '',
+      state: '',
+      fromAmount: 0,
+      toAmount: 0,
       employeePercentage: 0,
       employeeAmount: 0,
       twelfthMonthValue: 0,
@@ -69,18 +83,20 @@ export class PtSlabComponent {
       this.totalRecords = res.total;
     })
   }
+
   editRecord() {
     this.ptSlabForm.patchValue(this.selectedRecord);
     this.isEdit = true;
   }
+
   closeModal() {
     this.modalService.dismissAll();
   }
 
   onSubmission() {
     this.payroll.addPTSlab(this.ptSlabForm.value).subscribe((res) => {
-      this.ptSlab.push(res.data);
-      this.ptSlabForm.reset();
+      this.getPtSlab();
+      this.clearForm();
       this.toast.success('Successfully Added!!!', 'PT Slab');
     },
       (err) => {
@@ -100,9 +116,7 @@ export class PtSlabComponent {
       (err) => {
         this.toast.error('PT Slab can not be deleted', 'Error');
       })
-
   }
-
 
   deleteDialog(id: string): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
@@ -118,9 +132,7 @@ export class PtSlabComponent {
   open(content: any) {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
-
     }, (reason) => {
-
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
     });
   }

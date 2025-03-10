@@ -7,15 +7,15 @@ import { PayrollService } from 'src/app/_services/payroll.service';
   styleUrl: './pt.component.css'
 })
 export class PtComponent {
-  activeTab: string = 'tabEligibleStates';
+  activeTab: string = 'tabPTSlab';
   states: any;
   @Input() selectedReport: any;
   constructor(private payrollService: PayrollService) { }
 
   ngOnInit() {
-    this.payrollService.getEligibleStates().subscribe((res: any) => {
-      this.states = res.data;
-    })
+    // this.payrollService.getEligibleStates().subscribe((res: any) => {
+    //   this.states = res.data;
+    // })
   }
 
   selectTab(tabId: string) {

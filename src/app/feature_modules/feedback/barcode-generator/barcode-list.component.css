@@ -1,0 +1,75 @@
+/* src/app/components/barcode-list/barcode-list.component.css */
+.barcodeContainer {
+  padding: 15px;
+}
+
+.contentHeading {
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.tableContainer {
+  padding: 0 15px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 10px;
+}
+
+th {
+  background-color: #343a40;
+  color: white;
+}
+
+tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+tr:hover {
+  background-color: #e9ecef;
+}
+
+.search {
+  width: 200px;
+}
+
+.searchIcon {
+  margin-right: 5px;
+}
+
+.actions {
+  width: 36px;
+  height: 36px;
+  line-height: 36px;
+}
+
+.form-label {
+  font-weight: 500;
+}
+
+.form-control {
+  border-radius: 4px;
+}
+
+.btn-primary, .btn-secondary {
+  padding: 8px 20px;
+  border-radius: 4px;
+}
+
+@media (max-width: 576px) {
+  .contentHeading {
+    font-size: 1.2rem;
+  }
+  .search {
+    width: 100%;
+  }
+  .btn-primary, .btn-secondary {
+    width: 100%;
+    margin-top: 10px;
+  }
+}
