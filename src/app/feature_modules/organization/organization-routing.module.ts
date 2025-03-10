@@ -15,6 +15,7 @@ import { DocumentManagerComponent } from 'src/app/feature_modules/organization/d
 import { ProfileComponent } from './setup/profile/profile.component';
 import { AssetManagerComponent } from 'src/app/feature_modules/organization/AssetsManagement/assetAssetManager/asset.component';
 import { TaxSlabComponent } from './setup/tax-slab/tax-slab.component';
+import { FlexiHolidaysComponent } from './setup/flexi-holidays/flexi-holidays.component';
 
 const routes: Routes = [
   {
@@ -43,6 +44,7 @@ const routes: Routes = [
           { path: 'band', component: BandComponent },
           { path: 'signatory-details', component: SignatoryDetailsComponent },
           { path: 'holiday', component: HolidaysComponent },
+          { path: 'flexi-holiday', component: FlexiHolidaysComponent },
           { path: 'tax-slab', component: TaxSlabComponent }
         ]
       },
