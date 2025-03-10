@@ -15,8 +15,6 @@ export class OtherBenefitComponent {
   constructor(private payroll: PayrollService) { }
 
   ngOnInit() {
-    console.log(this.selectedRecord);
     this.otherBenefits = this.selectedRecord?.ctcTemplateOtherBenefitAllowances || this.ctcTemplateOtherBenefit;
-    console.log(this.otherBenefits);
   }
 }

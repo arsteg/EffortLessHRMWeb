@@ -30,7 +30,6 @@ export class VarAllowanceComponent {
   ngOnInit() {
     this.initForm();
     this.selectedRecord = this.payroll?.selectedCTCTemplate.getValue();
-
       this.patchFormValues();
   }
 

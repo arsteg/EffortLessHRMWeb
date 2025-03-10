@@ -30,6 +30,9 @@ export class AssignedTemplatesComponent {
   ) { }
 
   ngOnInit() {
+    this.payroll.selectedCTCTemplate.subscribe(res => {
+      this.selectedRecord = res;
+    });
     this.updateForm();
     this.selectedRecord = this.payroll.selectedCTCTemplate.getValue();
   }
@@ -72,15 +75,12 @@ export class AssignedTemplatesComponent {
         this.variableDeductionData = res;
       });
       this.payroll.otherBenefits.subscribe(res => {
-        console.log('Other benefits: ', res)
         this.otherBenefitsData = res;
       });
       this.payroll.employeeDeduction.subscribe(res => {
-        console.log('Employee deductions: ', res)
         this.employeeDeductionsData = res;
       });
       this.payroll.fixedContributions.subscribe(res => {
-        console.log('Employer contributions: ', res)
         this.employerContributionsData = res;
       });
     }
@@ -110,12 +110,13 @@ export class AssignedTemplatesComponent {
       ctcTemplateFixedDeduction: this.fixedDeductionData || [],
       ctcTemplateVariableAllowance: this.variableAllowanceData || [],
       ctcTemplateVariableDeduction: this.variableDeductionData || [],
-      ctcTemplateEmployerContribution: this.selectedRecord?.ctcTemplateEmployerContributions.filter(Boolean).map(fixedContribution => ({ fixedContribution: fixedContribution.fixedContribution._id, value: 'As per the Norms' })) || template?.ctcTemplateEmployerContributions || [],
-      ctcTemplateOtherBenefitAllowance: this.selectedRecord?.ctcTemplateOtherBenefitAllowances.filter(Boolean).map(otherBenefit => ({ otherBenefit: otherBenefit.otherBenefit._id, value: 'As per the Norms' })) || template?.ctcTemplateOtherBenefitAllowances || [],
-      ctcTemplateEmployeeDeduction: this.selectedRecord?.ctcTemplateEmployeeDeductions.filter(Boolean).map(employeeDeduction => ({ employeeDeduction: employeeDeduction.employeeDeduction._id, value: 'As per the Norms' })) || template?.ctcTemplateEmployeeDeductions || [],
+      ctcTemplateEmployerContribution:  this.employerContributionsData || this.selectedRecord?.ctcTemplateEmployerContributions.filter(Boolean).map(fixedContribution => ({ fixedContribution: fixedContribution.fixedContribution._id, value: 'As per the Norms' })) || [],
+      ctcTemplateOtherBenefitAllowance: this.otherBenefitsData || this.selectedRecord?.ctcTemplateOtherBenefitAllowances.filter(Boolean).map(otherBenefit => ({ otherBenefit: otherBenefit.otherBenefit._id, value: 'As per the Norms' })) || template?.ctcTemplateOtherBenefitAllowances || [],
+      ctcTemplateEmployeeDeduction: this.employeeDeductionsData || this.selectedRecord?.ctcTemplateEmployeeDeductions.filter(Boolean).map(employeeDeduction => ({ employeeDeduction: employeeDeduction.employeeDeduction._id, value: 'As per the Norms' })) || template?.ctcTemplateEmployeeDeductions || [],
     };
     if (this.isEdit) {
-      this.payroll.updateCTCTemplate(this.selectedRecord._id, payload).subscribe((res: any) => {
+      const id = this.payroll.selectedCTCTemplate.getValue()._id;
+      this.payroll.updateCTCTemplate(id, payload).subscribe((res: any) => {
         this.recordUpdated.emit(res.data);
         this.toast.success('CTC Template updated successfully');
       }, err => {
