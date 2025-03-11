@@ -30,7 +30,7 @@ export class PfChargesComponent {
     // Initialize the form
     this.pfChargeForm = this.fb.group({
       name: ['', Validators.required],
-      frequency: ['monthly', Validators.required],
+      frequency: ['yearly', Validators.required],
       percentage: [100, [Validators.required, Validators.min(0), Validators.max(100)]]
     });
   }
@@ -66,6 +66,7 @@ export class PfChargesComponent {
     if (this.pfChargeForm.valid) {
       this.dialog.closeAll(); // Close the dialog
       console.log('Form Value:', this.pfChargeForm.value);
+      this.pfChargeForm.value.frequency = 'yearly';
       this.payroll.addPFCharges(this.pfChargeForm.value).subscribe((res: any) => {
         this.toast.success('PF Charge added successfully');
         this.loadPFCharges(); // Refresh the list
