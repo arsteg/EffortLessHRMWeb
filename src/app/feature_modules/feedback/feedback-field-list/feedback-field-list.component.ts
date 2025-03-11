@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { FeedbackFieldFormComponent } from '../feedback-field-form/feedback-field-form.component';
 import { ReactiveFormsModule,FormsModule  } from '@angular/forms';
 import { debounceTime, Subject } from 'rxjs';
+import { CookieService } from 'src/app/_services/cookie.service';
 
 
 @Component({
@@ -26,7 +27,7 @@ export class FeedbackFieldListComponent implements OnInit {
 
   constructor(
     private feedbackService: FeedbackService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar, private cookieService: CookieService
   ) {
     this.searchSubject.pipe(debounceTime(300)).subscribe(query => {
       this.searchQuery = query;
@@ -55,7 +56,7 @@ export class FeedbackFieldListComponent implements OnInit {
   }
 
   loadFields(): void {
-    const companyId= this.getCookie('companyId');
+    const companyId= this.cookieService.getCookie('companyId');
     this.feedbackService.getFeedbackFieldsByCompany(companyId).subscribe({
       next: (response) => {
         this.fields = response.data;
@@ -116,11 +117,4 @@ export class FeedbackFieldListComponent implements OnInit {
   private showError(message: string): void {
     this.snackBar.open(message, 'Close', { duration: 3000 });
   }
-  private getCookie(name: string): string {
-    const value = "; " + document.cookie;
-    const parts = value.split("; " + name + "=");
-    if (parts.length == 2) return parts.pop()?.split(";").shift() || "";
-    return "";
-  }
-
 }

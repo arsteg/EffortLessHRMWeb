@@ -63,9 +63,8 @@ export class FeedbackSubmissionComponent implements OnInit {
     });
   }
 
-  loadFields(): void {
-    const companyId = this.cookieService.getCookie('companyId') || 'none';
-    this.feedbackService.getFeedbackFieldsByCompany(companyId).subscribe({
+  loadFields(): void {    
+    this.feedbackService.getFeedbackFieldsByCompany(this.companyId).subscribe({
       next: (response) => {
         this.fields = response.data;
         const feedbackValues = this.feedbackForm.get('feedbackValues') as FormGroup;
@@ -113,7 +112,7 @@ export class FeedbackSubmissionComponent implements OnInit {
           phoneNumber: '',
           feedbackValues: {}
         });        
-        this.snackBar.open('Feedback submitted successfully', 'Close', { duration: 3000 });
+        this.snackBar.open('Thank you for your valuable feedback! We appreciate your time and input. Your feedback helps us improve.', 'Close', { duration: 5000 });
       },
       error: (err) => {
         console.error('Failed to submit feedback:', err);        
