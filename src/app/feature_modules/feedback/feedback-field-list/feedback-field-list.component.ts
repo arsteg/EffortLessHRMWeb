@@ -55,7 +55,8 @@ export class FeedbackFieldListComponent implements OnInit {
   }
 
   loadFields(): void {
-    this.feedbackService.getFeedbackFieldsByCompany('').subscribe({
+    const companyId= this.getCookie('companyId');
+    this.feedbackService.getFeedbackFieldsByCompany(companyId).subscribe({
       next: (response) => {
         this.fields = response.data;
         this.fieldsFiltered = this.fields; // Initialize filtered list
@@ -114,6 +115,12 @@ export class FeedbackFieldListComponent implements OnInit {
 
   private showError(message: string): void {
     this.snackBar.open(message, 'Close', { duration: 3000 });
+  }
+  private getCookie(name: string): string {
+    const value = "; " + document.cookie;
+    const parts = value.split("; " + name + "=");
+    if (parts.length == 2) return parts.pop()?.split(";").shift() || "";
+    return "";
   }
 
 }
