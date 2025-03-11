@@ -7,14 +7,14 @@
       <!-- Sender Name -->
       <div class="mb-3">
         <label for="senderName" class="form-label">Your Name <span class="text-muted">(optional)</span></label>
-        <input id="senderName" type="text" class="form-control" formControlName="name">
+        <input id="senderName" type="text" class="form-control" formControlName="name" aria-label="Your Name">
       </div>
 
       <!-- Store ID (Hidden) -->
       <div class="mb-3" style="display: none;">
         <label for="storeId" class="form-label">Store ID <span class="text-danger">*</span></label>
         <input id="storeId" type="text" class="form-control" formControlName="storeId">
-        <div class="text-danger mt-1" *ngIf="feedbackForm.get('storeId')?.touched && feedbackForm.get('storeId')?.hasError('required')">
+        <div class="text-danger mt-1" *ngIf="showValidationError('storeId')">
           Store ID is required.
         </div>
       </div>
@@ -44,30 +44,30 @@
       </div>
 
       <!-- Dynamic Feedback Fields -->
-      <div *ngFor="let field of fields" class="mb-4">
+      <div *ngFor="let field of fields trackBy: trackByFieldId" class="mb-4">
         <div class="mb-2">
           <label class="form-label fw-bold">{{ field.name }} <span class="text-danger" *ngIf="field.isRequired">*</span></label>
           <div class="text-muted small">{{ field.description }}</div>
         </div>
 
         <!-- Number Field -->
-        <div *ngIf="field.dataType.toLowerCase() === 'number'" class="mb-3">
-          <input type="number" class="form-control" [formControlName]="field._id!">
-          <div class="text-danger mt-1" *ngIf="getFieldControl(field._id!)?.touched && getFieldControl(field._id!)?.hasError('required')">
+        <div *ngIf="field.dataType.toLowerCase() === FieldType.Number" class="mb-3">
+          <input type="number" class="form-control" [formControlName]="field._id!" (input)="onTextareaChange(field._id!, $event)">
+          <div class="text-danger mt-1" *ngIf="showValidationError(field._id!)">
             {{ field.name }} is required.
           </div>
         </div>
 
         <!-- String Field (Multiline) -->
-        <div *ngIf="field.dataType.toLowerCase() === 'string'" class="mb-3">
-          <textarea class="form-control" [formControlName]="field._id!" rows="3" placeholder="Enter your feedback here"></textarea>
-          <div class="text-danger mt-1" *ngIf="getFieldControl(field._id!)?.touched && getFieldControl(field._id!)?.hasError('required')">
+        <div *ngIf="field.dataType.toLowerCase() === FieldType.String" class="mb-3">
+          <textarea class="form-control" [formControlName]="field._id!" rows="3" placeholder="Enter your feedback here"   (input)="onTextareaChange(field._id!, $event)"></textarea>
+          <div class="text-danger mt-1" *ngIf="showValidationError(field._id!)">
             {{ field.name }} is required.
           </div>
         </div>
 
         <!-- Rating -->
-        <div *ngIf="field.dataType.toLowerCase() === 'rating'" class="mb-3">
+        <div *ngIf="field.dataType.toLowerCase() === FieldType.Rating" class="mb-3">
           <div class="star-rating d-flex align-items-center" (mouseleave)="resetPreview(field._id!)">
             <span *ngFor="let star of [1, 2, 3, 4, 5]; let i = index"
                   class="star mx-1"
@@ -77,24 +77,24 @@
               <i class="bi bi-star-fill"></i>
             </span>
           </div>
-          <div class="text-danger mt-1" *ngIf="getFieldControl(field._id!)?.touched && getFieldControl(field._id!)?.hasError('required')">
+          <div class="text-danger mt-1" *ngIf="showValidationError(field._id!)">
             {{ field.name }} is required.
           </div>
         </div>
 
         <!-- Date -->
-        <div *ngIf="field.dataType.toLowerCase() === 'date'" class="mb-3">
-          <input type="date" class="form-control" [formControlName]="field._id!">
-          <div class="text-danger mt-1" *ngIf="getFieldControl(field._id!)?.touched && getFieldControl(field._id!)?.hasError('required')">
+        <div *ngIf="field.dataType.toLowerCase() === FieldType.Date" class="mb-3">
+          <input type="date" class="form-control" [formControlName]="field._id!" (input)="onTextareaChange(field._id!, $event)">
+          <div class="text-danger mt-1" *ngIf="showValidationError(field._id!)">
             {{ field.name }} is required.
           </div>
         </div>
 
         <!-- Boolean -->
-        <div *ngIf="field.dataType.toLowerCase() === 'boolean'" class="form-check mb-3">
-          <input type="checkbox" class="form-check-input" [formControlName]="field._id!" id="checkbox-{{ field._id }}">
+        <div *ngIf="field.dataType.toLowerCase() === FieldType.Date" class="form-check mb-3">
+          <input type="checkbox" class="form-check-input" [formControlName]="field._id!" id="checkbox-{{ field._id }}"  (change)="onCheckboxChange(field._id!, $event)">
           <label class="form-check-label" for="checkbox-{{ field._id }}"></label>
-          <div class="text-danger mt-1" *ngIf="getFieldControl(field._id!)?.touched && getFieldControl(field._id!)?.hasError('required')">
+          <div class="text-danger mt-1" *ngIf="showValidationError(field._id!)">
             {{ field.name }} is required.
           </div>
         </div>

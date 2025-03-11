@@ -1,0 +1,45 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="tableContainer bg-white py-2">
+            <table>
+                <thead>
+                    <th [appSort]="holidays" data-name="label"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Holiday Name
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th [appSort]="holidays" data-name="date"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Date
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                   
+                    <th [appSort]="holidays" data-name="isHolidayOccurEveryYearOnSameDay"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Reoccur Every Year
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th [appSort]="holidays" data-name="holidaysAppliesFor"
+                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Apply To
+                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                    </th>
+                    <th>Actions</th>
+                </thead>
+                
+                <tbody>
+                    <tr *ngFor="let holiday of holidays | search : searchText; let i = index">
+                        <td>{{holiday?.label}}</td>
+                        <td>{{holiday?.date | date: 'mediumDate'}}</td>
+                       
+                        <td>
+                            <span *ngIf="holiday?.isHolidayOccurEveryYearOnSameDay == true">Yes</span>
+                            <span *ngIf="holiday?.isHolidayOccurEveryYearOnSameDay == false">No</span>
+                        </td>
+                        <td>{{holiday?.holidaysAppliesFor}}</td>
+                        <td>
+                            <input type="checkbox" [(ngModel)]="holiday.isSelected" (change)="onCheckboxChange(holiday, $event)">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+

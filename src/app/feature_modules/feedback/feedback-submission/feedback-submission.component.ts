@@ -6,6 +6,9 @@ import { FeedbackField } from 'src/app/models/feedback/feedback-field.model';
 import { CommonModule } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
+import { CookieService } from 'src/app/_services/cookie.service';
+import {FieldType} from 'src/app/models/feedback/feedback.model';
+
 
 @Component({
   selector: 'app-feedback-submission',
@@ -21,7 +24,7 @@ export class FeedbackSubmissionComponent implements OnInit {
   companyId: string;
   storeId: string | null = null;
   tableId: string | null = null;
-
+  FieldType = FieldType;
   
 
   private previewRatings: { [fieldId: string]: number | null } = {};
@@ -31,7 +34,7 @@ export class FeedbackSubmissionComponent implements OnInit {
     private feedbackService: FeedbackService,
     private authService: AuthenticationService,
     private snackBar: MatSnackBar,
-    private route: ActivatedRoute
+    private route: ActivatedRoute, private cookieService: CookieService
   ) {
     this.companyId = '';
     this.feedbackForm = this.fb.group({      
@@ -44,7 +47,8 @@ export class FeedbackSubmissionComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {        
+  ngOnInit(): void {    
+    this.loadFields();
     
     // Read query parameters when component initializes
     this.route.queryParams.subscribe(params => {
@@ -57,12 +61,10 @@ export class FeedbackSubmissionComponent implements OnInit {
       console.log('Table ID:', this.tableId);    // "003"
       console.log('Company ID:', this.companyId); // "64e2fa0fdcba5e7546d029f5"
     });
-
-    this.loadFields(this.companyId);
-
   }
 
-  loadFields(companyId): void {
+  loadFields(): void {
+    const companyId = this.cookieService.getCookie('companyId') || 'none';
     this.feedbackService.getFeedbackFieldsByCompany(companyId).subscribe({
       next: (response) => {
         this.fields = response.data;
@@ -144,5 +146,35 @@ export class FeedbackSubmissionComponent implements OnInit {
   getDisplayedRating(fieldId: string): number | null {
     const controlValue = this.getFieldControl(fieldId)?.value;
     return this.previewRatings[fieldId] !== null ? this.previewRatings[fieldId] : (controlValue || null);
+  }
+ 
+  onTextareaChange(fieldId: string, event: Event): void {
+    const value = (event.target as HTMLTextAreaElement).value; // Get the value from the textarea
+    this.setTextareaValue(fieldId, value); // Call the setTextareaValue method
+  }
+  setTextareaValue(fieldId: string, value: string): void {
+    const control = this.getFieldControl(fieldId);
+    if (control) {
+      control.setValue(value); // Set the value of the textarea
+      control.markAsTouched(); // Mark the control as touched
+    }
+  }
+  onCheckboxChange(fieldId: string, event: Event): void {
+    const isChecked = (event.target as HTMLInputElement).checked; // Get the checkbox value
+    this.setCheckboxValue(fieldId, isChecked); // Update the form control
+  }
+  setCheckboxValue(fieldId: string, value: boolean): void {
+    const control = this.getFieldControl(fieldId);
+    if (control) {
+      control.setValue(value); // Set the value of the checkbox
+      control.markAsTouched(); // Mark the control as touched
+    }
+  }
+  showValidationError(fieldId: string): boolean {
+    const control = this.getFieldControl(fieldId);
+    return control?.touched && control?.hasError('required');
+  }
+  trackByFieldId(index: number, field: FeedbackField): string {
+    return field._id!;
   }
 }
