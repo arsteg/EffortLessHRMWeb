@@ -47,14 +47,15 @@ export class FeedbackSubmissionComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {    
-    this.loadFields();
+  ngOnInit(): void {   
+    
     
     // Read query parameters when component initializes
     this.route.queryParams.subscribe(params => {
       this.storeId = params['storeId'];
       this.tableId = params['tableId'];
       this.companyId = params['companyId'];
+      this.loadFields();  
       
       // Now you can use these values
       console.log('Store ID:', this.storeId);    // "001"
