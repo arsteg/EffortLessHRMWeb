@@ -55,9 +55,8 @@ export class FeedbackFieldListComponent implements OnInit {
     }
   }
 
-  loadFields(): void {
-    const companyId= this.cookieService.getCookie('companyId');
-    this.feedbackService.getFeedbackFieldsByCompany(companyId).subscribe({
+  loadFields(): void {    
+    this.feedbackService.getFeedbackFieldsByCompany('').subscribe({
       next: (response) => {
         this.fields = response.data;
         this.fieldsFiltered = this.fields; // Initialize filtered list
