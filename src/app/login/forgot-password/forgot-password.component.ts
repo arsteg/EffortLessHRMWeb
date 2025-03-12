@@ -24,6 +24,11 @@ export class ForgotPasswordComponent implements OnInit {
   }
   get f() { return this.forgotPasswordForm.controls; }
 
+  reset() {
+    this.submitted = false;
+    this.forgotPasswordForm.reset();
+  }
+
   onSubmit() {
     this.submitted = true;
     this.user.email = this.forgotPasswordForm.value.email;
@@ -34,7 +39,7 @@ export class ForgotPasswordComponent implements OnInit {
         if (res.status == 'success') {
           this.notifyService.showSuccess("Your Reset password Link send Successfully , Please check your email", "success");
         }
-        else if(res.status == 'failure'){
+        else if (res.status == 'failure') {
           this.notifyService.showError("There is no user with email address.", "error");
         }
       })
