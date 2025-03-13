@@ -23,12 +23,7 @@
             <mat-form-field appearance="outline" class="col-md-6 my-2 border-bottom">
                 <mat-label>For what frequency would you like to enter the CTC amount?</mat-label>
                 <input matInput type="text" value="Yearly" formControlName="frequencyToEnterCTC">
-                <!-- <mat-select formControlName="frequencyToEnterCTC">
-                    <mat-option value="Monthly">Monthly</mat-option>
-                    <mat-option value="Quaterly">Quaterly</mat-option>
-                    <mat-option value="Half Yearly">Half Yearly</mat-option>
-                    <mat-option value="Yearly">Yearly</mat-option>
-                </mat-select> -->
+                
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="col-md-6 my-2 border-bottom">
@@ -41,7 +36,7 @@
                 </mat-select>
             </mat-form-field>
 
-            <mat-form-field appearance="outline" class="col-md-6 my-2 border-bottom">
+            <!-- <mat-form-field appearance="outline" class="col-md-6 my-2 border-bottom">
                 <mat-label>How are you entering the amount?</mat-label>
                 <mat-select formControlName="enteringAmount">
                     <mat-option value="Monthly">Monthly</mat-option>
@@ -49,10 +44,10 @@
                     <mat-option value="Half Yearly">Half Yearly</mat-option>
                     <mat-option value="Yearly">Yearly</mat-option>
                 </mat-select>
-            </mat-form-field>
+            </mat-form-field> -->
 
             <mat-form-field appearance="outline" class="col-md-6 my-2 border-bottom">
-                <mat-label>Enter Monthly Gross Amount</mat-label>
+                <mat-label>Enter Yearly Gross Amount</mat-label>
                 <input matInput type="number" formControlName="Amount">
             </mat-form-field>
 
@@ -164,7 +159,7 @@
                             </mat-radio-group>
                         </div>
 
-                        <div class="col-md-6 my-2 border-bottom">
+                        <!-- <div class="col-md-6 my-2 border-bottom">
                             <mat-form-field appearance="outline">
                                 <mat-label>Gratuity Template</mat-label>
                                 <mat-select formControlName="gratuityTemplate">
@@ -172,7 +167,7 @@
                                     <mat-option value="Template 2">Template 2</mat-option>
                                 </mat-select>
                             </mat-form-field>
-                        </div>
+                        </div> -->
 
                         <div class="col-md-6 my-2 border-bottom">
                             <mat-label>Income Tax Deduction</mat-label>
@@ -523,7 +518,9 @@
 
                                 <mat-form-field appearance="outline" class="col-md-4 my-2 border-bottom">
                                     <mat-label>PF Charge</mat-label>
-                                    <input matInput type="text" formControlName="pfCharge">
+                                    <mat-select formControlName="pfCharge">
+                                        <mat-option [value]="pf?._id" *ngFor="let pf of pfCharge">{{ pf?.name }}</mat-option>
+                                    </mat-select>
                                 </mat-form-field>
                                 <mat-form-field appearance="outline" class="col-md-4 my-2 border-bottom">
                                     <mat-label>Monthly Amount</mat-label>

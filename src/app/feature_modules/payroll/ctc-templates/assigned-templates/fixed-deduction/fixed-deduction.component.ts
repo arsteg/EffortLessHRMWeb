@@ -54,8 +54,6 @@ export class AssignedFixedDeductionComponent {
           return rest;
         });
         this.formDataChange.emit(formValue);
-      } else {
-        console.log("Form is invalid or incomplete");
       }
     });
   }
@@ -76,7 +74,6 @@ export class AssignedFixedDeductionComponent {
           minimumAmount: [item.minimumAmount || 0]
         }));
       });
-      console.log(this.selectedRecord.ctcTemplateFixedDeductions);
     }
     else if(!this.isEdit) {
       this.ctcTemplateFixedDeduction.forEach((item: any) => {

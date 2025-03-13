@@ -20,6 +20,21 @@
   padding: 8px 20px;
 }
 
+/* Disabled button styles */
+.btn-primary:disabled {
+  background-color: #cccccc; /* Gray background */
+  border-color: #cccccc; /* Gray border */
+  color: #666666; /* Darker text color */
+  cursor: not-allowed; /* Change cursor to indicate it's not clickable */
+  opacity: 1; /* Override default opacity */
+}
+
+/* Hover effect for disabled button */
+.btn-primary:disabled:hover {
+  background-color: #cccccc; /* Keep the same color on hover */
+  border-color: #cccccc; /* Keep the same border color on hover */
+}
+
 /* Star Rating Styles */
 .star-rating {
   cursor: pointer;

@@ -44,7 +44,7 @@ export class AddSalaryDetailsComponent {
       frequencyToEnterCTC: [''],
       CTCTemplate: ['manual'],
       isEmployerPartInclusiveInSalaryStructure: [false],
-      enteringAmount: ['Monthly'],
+      enteringAmount: ['Yearly'],
       Amount: [0],
       totalCTCExcludingVariableAndOtherBenefits: [0],
       totalCTCIncludingVariable: [0],
@@ -60,7 +60,7 @@ export class AddSalaryDetailsComponent {
         isPTDeduction: [false],
         isLWFDeduction: [false],
         isGratuityApplicable: [false],
-        gratuityTemplate: [''],
+        // gratuityTemplate: [''],
         isIncomeTaxDeduction: [false],
         isPFChargesApplicable: [false],
         isRoundOffApplicable: [false]
@@ -76,7 +76,10 @@ export class AddSalaryDetailsComponent {
   }
 
   ngOnInit(): void {
-    console.log(this.edit)
+    this.getAllPFCharges();
+    this.salaryDetailsForm.get('salaryComponentPFCharge')?.valueChanges.subscribe(() => {
+      this.updateYearlyAmount();
+    });
     this.salaryDetailsForm.get('frequencyToEnterCTC')?.setValue('Yearly');
     this.salaryDetailsForm.get('frequencyToEnterCTC')?.disable();
     this.logUrlSegmentsForUser();
@@ -103,6 +106,15 @@ export class AddSalaryDetailsComponent {
         }
       });
     }
+  }
+
+  getAllPFCharges() {
+    let payload = {
+      skip: '', next: ''
+    }
+    this.payrollService.getAllPFCharges(payload).subscribe((res: any) => {
+      this.pfCharge = res.data;
+    });
   }
 
   disableFormControls(formGroup: FormGroup | FormArray) {
@@ -169,6 +181,14 @@ export class AddSalaryDetailsComponent {
 
   get pfChargeArray(): FormArray {
     return this.salaryDetailsForm.get('salaryComponentPFCharge') as FormArray;
+  }
+
+  updateYearlyAmount() {
+    const salaryComponentPFCharge = this.salaryDetailsForm.get('salaryComponentPFCharge') as FormArray;
+    salaryComponentPFCharge.controls.forEach((group: FormGroup) => {
+      const monthlyAmount = group.get('monthlyAmount')?.value || 0;
+      group.get('yearlyAmount')?.setValue(monthlyAmount * 12, { emitEvent: false });
+    });
   }
 
   handleMonthlyAmountChanges() {
@@ -267,11 +287,7 @@ export class AddSalaryDetailsComponent {
       monthlyAmount: [0, Validators.required],
       yearlyAmount: [0, Validators.required],
     });
-    if (!allowanceGroup.touched && allowanceGroup.pristine) {
-      this.salaryDetailsForm.value.salaryComponentPFCharge = [];
-    } else {
-      this.pfChargeArray.push(allowanceGroup);
-    }
+    this.pfChargeArray.push(allowanceGroup);
   }
 
   logUrlSegmentsForUser() {

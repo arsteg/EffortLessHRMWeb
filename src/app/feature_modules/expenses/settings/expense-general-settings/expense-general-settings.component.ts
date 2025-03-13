@@ -46,16 +46,7 @@ export class ExpenseGeneralSettingsComponent {
   }
 
   ngOnInit() {
-    if (this.changeMode == 'Add') {
-      this.addTemplateForm.reset();
-    }
-    else if (this.changeMode == 'Next') {
-      this.expenseService.selectedTemplate.subscribe((template: any) => {
-        if (template._id) {
-          this.setFormValues()
-        }
-      })
-    }
+    this.setFormValues()
     this.getAllExpensesCategories();
     this.getAllUsers();
     this.addTemplateForm.get('approvalLevel').valueChanges.subscribe((value: any) => {
@@ -99,34 +90,29 @@ export class ExpenseGeneralSettingsComponent {
   }
 
   setFormValues() {
-    if (this.changeMode == 'Add') { this.addTemplateForm.reset(); }
-    const templateData = this.selectedTemplate;
-    if (this.changeMode == 'Next') {
-      this.expenseService.getCategoriesByTemplate(templateData?._id).subscribe((res: any) => {
-        this.categoryList = res.data;
-
-        let expenseCategories = this.categoryList.map(category => category.expenseCategory);
-        this.addTemplateForm.patchValue({
-          policyLabel: templateData.policyLabel,
-          approvalType: templateData.approvalType,
-          approvalLevel: templateData.approvalLevel,
-          downloadableFormats: templateData.downloadableFormats,
-          applyforSameCategorySamedate: templateData.applyforSameCategorySamedate,
-          advanceAmount: templateData.advanceAmount,
-          firstApprovalEmployee: templateData.firstApprovalEmployee,
-          secondApprovalEmployee: templateData.secondApprovalEmployee,
-          expenseCategories: expenseCategories
-        });
-        this.checkedFormats = templateData.downloadableFormats;
-
-      });
+    if (this.changeMode === 'Add') {
+      this.addTemplateForm.reset();
     }
-  }
+    const templateData = this.selectedTemplate;
+    if (this.changeMode === 'Next') {
+      // Map applicableCategories to an array of _id strings
+      let expenseCategories = templateData?.applicableCategories
+        ? templateData.applicableCategories.map(category => category.expenseCategory._id)
+        : [];
 
-  getCategoriesByTemplate(id: string) {
-    this.expenseService.getCategoriesByTemplate(id).subscribe((res: any) => {
-      let categoryList = res.data;
-    })
+      this.addTemplateForm.patchValue({
+        policyLabel: templateData.policyLabel,
+        approvalType: templateData.approvalType,
+        approvalLevel: templateData.approvalLevel,
+        downloadableFormats: templateData.downloadableFormats,
+        applyforSameCategorySamedate: templateData.applyforSameCategorySamedate,
+        advanceAmount: templateData.advanceAmount,
+        firstApprovalEmployee: templateData.firstApprovalEmployee,
+        secondApprovalEmployee: templateData.secondApprovalEmployee,
+        expenseCategories: expenseCategories // Array of _id strings
+      });
+      this.checkedFormats = templateData.downloadableFormats;
+    }
   }
 
   closeModal() {

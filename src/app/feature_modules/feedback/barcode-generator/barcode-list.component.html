@@ -1,0 +1,82 @@
+<div class="feedbackContainer bg-white">
+  <div class="row py-2">
+    <div class="col-8 tableContainer">
+      <div class="d-flex justify-content-between">
+        <h2 class="contentHeading p-2">Barcodes: {{ barcodesFiltered.length }}</h2>
+        <div class="d-flex align-items-center">
+          <span class="bi bi-search searchIcon mb-3"></span>
+          <input type="text" placeholder="Search ..." [(ngModel)]="searchQuery" (ngModelChange)="onSearchInput($event)" class="form-control search mt-2 mb-3">
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr>            
+            <th class="text-left">Name</th>
+            <th class="text-left">Store ID</th>
+            <th class="text-left">Table ID</th>
+            <th class="text-left">URL</th>
+            <th class="text-left">QRCode</th>
+            <th class="text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let barcode of barcodesFiltered; trackBy: trackById">            
+            <td class="text-left">{{ barcode.name }}</td>
+            <td class="text-left">{{ barcode.storeId }}</td>
+            <td class="text-left">{{ barcode.tableId }}</td>
+            <td class="text-left">{{ barcode.url }}</td>
+            <td class="text-left">
+              <img [src]="barcode.qrCodeDataUrl" alt="QR Code" style="width: 100px; height: 100px;">              
+            <td class="text-right">
+              <button class="actions" mat-mini-fab title="Edit Barcode" (click)="editBarcode(barcode)">
+                <i class="bi bi-pencil-fill"></i>
+              </button>
+              <button class="actions ms-2" mat-mini-fab title="Delete Barcode" (click)="deleteBarcode(barcode._id)">
+                <i class="bi bi-trash"></i>
+              </button>
+              <button class="actions ms-2" mat-mini-fab title="Print Barcode" (click)="printBarcode(barcode)">
+                <i class="bi bi-printer"></i>
+              </button>
+              <button class="actions ms-2" mat-mini-fab title="Download Barcode" (click)="downloadBarcode(barcode)">
+                <i class="bi bi-download"></i>
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="barcodesFiltered.length === 0">
+            <td colspan="5" class="text-center">No barcodes found.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-4 border-start">
+      <h2 class="contentHeading p-2">{{ isEdit ? 'Edit Barcode' : 'Add Barcode' }}</h2>
+      <form [formGroup]="barcodeForm" (ngSubmit)="addBarcode()" class="p-3">        
+        <div class="mb-3">
+          <label for="name" class="form-label fw-bold">Name <span class="text-danger">*</span></label>
+          <input id="name" type="text" class="form-control" formControlName="name">
+          <div class="text-danger mt-1" *ngIf="barcodeForm.get('name')?.touched && barcodeForm.get('name')?.hasError('required')">
+            Name is required.
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="storeId" class="form-label fw-bold">Store ID <span class="text-danger">*</span></label>
+          <input id="storeId" type="text" class="form-control" formControlName="storeId">
+          <div class="text-danger mt-1" *ngIf="barcodeForm.get('storeId')?.touched && barcodeForm.get('storeId')?.hasError('required')">
+            Store ID is required.
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="tableId" class="form-label fw-bold">Table ID <span class="text-danger">*</span></label>
+          <input id="tableId" type="text" class="form-control" formControlName="tableId">
+          <div class="text-danger mt-1" *ngIf="barcodeForm.get('tableId')?.touched && barcodeForm.get('tableId')?.hasError('required')">
+            Table ID is required.
+          </div>
+        </div>
+        <div class="d-flex justify-content-between">
+          <button type="submit" class="btn btn-primary">{{ isEdit ? 'Update' : 'Add' }}</button>
+          <button type="button" class="btn btn-secondary" (click)="clearForm()" *ngIf="isEdit">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
