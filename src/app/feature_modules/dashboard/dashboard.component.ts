@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ViewEncapsulation } from '@angular/core';
 import { CommonService } from 'src/app/_services/common.Service';
 import { ManageTeamService } from 'src/app/_services/manage-team.service';
 import { TimeLogService } from 'src/app/_services/timeLogService';
@@ -19,10 +19,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { UpcomingPaymentModel } from 'src/app/models/dashboard/upcomingPaymentModel';
 import { LastInvoiceModel } from 'src/app/models/dashboard/lastInvoiceModel';
 import { SubscriptionService } from 'src/app/_services/subscription.service';
+import {LegendPosition, Color, ScaleType} from '@swimlane/ngx-charts';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class DashboardComponent extends StatefulComponent implements OnInit {
 
@@ -62,6 +64,13 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
   readonly dialog = inject(MatDialog);
   upcomingPayment:UpcomingPaymentModel;
   lastInvoice:LastInvoiceModel;
+  legendPosition: LegendPosition = LegendPosition.Right;
+  colorScheme: Color = {
+    domain: ['#ff9800', '#46a35e', '#a8385d', '#7aa3e5'],
+    group: ScaleType.Ordinal, // Required for correct type
+    selectable: true,
+    name: 'custom',
+  };
 
   constructor(
     private timelog: TimeLogService,
@@ -121,6 +130,8 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
     this.dashboardService.HoursWorked(this.currentUser.id, currentDate).subscribe(response => {
       this.hoursWorked = response.data;
       this.hoursWorked.increased = this.hoursWorked.today > this.hoursWorked.previousDay;
+      this.hoursWorked.chartData = [{name: 'Today', value: this.hoursWorked.today}, {name: 'Yesterday', value: this.hoursWorked.previousDay}];
+      this.hoursWorked.chartColors = [{name:'Today', value: '#ff9800'}, {name:'Yesterday', value: '#46a35e'}];
       if (this.hoursWorked.increased) {
         const change = this.hoursWorked.today - this.hoursWorked.previousDay;
         this.hoursWorked.change = change * 100 / this.hoursWorked.previousDay;
@@ -140,6 +151,8 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
     this.dashboardService.weeklySummary(this.currentUser.id, currentDate).subscribe(response => {
       this.weeklySummary = response.data;
       this.weeklySummary.increased = this.weeklySummary.currentWeek > this.weeklySummary.previousWeek;
+      this.weeklySummary.chartData = [{name: 'This week', value: this.weeklySummary.currentWeek}, {name: 'Last week', value: this.weeklySummary.previousWeek}];
+      this.weeklySummary.chartColors = [{name:'This week', value: '#ff9800'}, {name:'Last week', value: '#46a35e'}];
       if (this.weeklySummary.increased) {
         const change = this.weeklySummary.currentWeek - this.weeklySummary.previousWeek;
         this.weeklySummary.change = change * 100 / this.weeklySummary.previousWeek;
@@ -160,6 +173,8 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
     this.dashboardService.monthlySummary(this.currentUser.id, currentDate).subscribe(response => {
       this.monthlySummary = response.data;
       this.monthlySummary.increased = this.monthlySummary.currentMonth > this.monthlySummary.previousMonth;
+      this.monthlySummary.chartData = [{name: 'This month', value: this.monthlySummary.currentMonth}, {name: 'Last month', value: this.monthlySummary.previousMonth}];
+      this.monthlySummary.chartColors = [{name:'This month', value: '#ff9800'}, {name:'Last month', value: '#46a35e'}];
       if (this.monthlySummary.increased) {
         const change = this.monthlySummary.currentMonth - this.monthlySummary.previousMonth;
         this.monthlySummary.change = change * 100 / this.monthlySummary.previousMonth;

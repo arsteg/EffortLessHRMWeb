@@ -53,3 +53,7 @@ input {
 .activity__summary li {
     font-size: 15px;
 }
+
+.chart-legend .legend-label-text{
+    white-space: normal !important;  /* Prevent text truncation */
+}
