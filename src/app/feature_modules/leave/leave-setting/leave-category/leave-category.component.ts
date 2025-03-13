@@ -70,7 +70,29 @@ export class LeaveCategoryComponent implements OnInit {
   }
   reset() {
     this.isEdit = false;
-    this.categoryForm.reset();
+    this.categoryForm.reset({
+      canEmployeeApply: false,
+      isHalfDayTypeOfLeave: false,
+      displayLeaveBalanceInPayslip: false,
+      isAnnualHolidayLeavePartOfNumberOfDaysTaken: false,
+      isWeeklyOffLeavePartOfNumberOfDaysTaken: false,
+      isEligibleForLeaveEncashmentDuringRollover: false,
+      isDocumentRequired: false,
+      isDocumentMandatory: false,
+      isEligibleForEncashmentRecoveryDuringFNF: false,
+      isWeeklyOffHolidayPartHalfDayIncludedDaTaken: false,
+      isEmployeesAllowedToNegativeLeaveBalance: false,
+      isRoundOffLeaveAccrualNearestPointFiveUnit: false,
+      isIntraCycleLapseApplicableForThisCategory: false,
+      isProRateFirstMonthAccrualForNewJoinees: false,
+      isPaidLeave: false,
+      isEmployeeAccrualLeaveInAdvance: false,
+      submitBefore: 0,
+      minimumNumberOfDaysAllowed: 0,
+      maximumNumberConsecutiveLeaveDaysAllowed: 0,
+      dayOfTheMonthEmployeeNeedJoinToGetCreditForThatMonth: 0,
+      dayOfMonthEmployeeNeedToResignToGetCreditforTheMonth: 0
+    });
   }
   open(content: any) {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
@@ -105,7 +127,7 @@ export class LeaveCategoryComponent implements OnInit {
           const leaveCategory = res.data;
           this.leaveCategory.push(leaveCategory);
           this.toast.success('Leave Category Created', 'Successfully!!!');
-          this.categoryForm.reset();
+         this.reset();
         },
           err => {
             this.toast.error('Leave Category Can not be Created', 'Error!!!')
@@ -119,7 +141,7 @@ export class LeaveCategoryComponent implements OnInit {
           if (index !== -1) {
             this.leaveCategory[index] = updatedLeaveCategory;
             this.toast.success('Leave Category Updated', 'Successfully!!!');
-            this.categoryForm.reset();
+            this.reset();
           }
         },
           err => {
@@ -148,7 +170,7 @@ export class LeaveCategoryComponent implements OnInit {
       abbreviation: leaveCategory.abbreviation,
       canEmployeeApply: leaveCategory.canEmployeeApply,
       isHalfDayTypeOfLeave: leaveCategory.isHalfDayTypeOfLeave,
-      submitBefore: leaveCategory.submitBefore,
+      submitBefore: leaveCategory.submitBefore || 0,
       displayLeaveBalanceInPayslip: leaveCategory.displayLeaveBalanceInPayslip,
       leaveAccrualPeriod: leaveCategory.leaveAccrualPeriod,
       isAnnualHolidayLeavePartOfNumberOfDaysTaken: leaveCategory.isAnnualHolidayLeavePartOfNumberOfDaysTaken,
