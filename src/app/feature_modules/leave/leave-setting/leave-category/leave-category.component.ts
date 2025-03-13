@@ -157,10 +157,10 @@ export class LeaveCategoryComponent implements OnInit {
     if (this.isEdit) {
       this.leaveService.getLeaveCategorById(this.selectedLeaveCategory._id).subscribe((res: any) => {
         this.categoryForm.patchValue(res.data)
-        console.log(this.categoryForm.value);
       })
     }
   }
+
   editCategory() {
     const leaveCategory = this.selectedLeaveCategory;
     this.isEdit = true;
@@ -224,7 +224,7 @@ export class LeaveCategoryComponent implements OnInit {
     });
   }
 
-  // //Pagging related functions
+  //Pagging related functions
   nextPagination() {
     if (!this.isNextButtonDisabled()) {
       const newSkip = (parseInt(this.skip) + parseInt(this.next)).toString();
