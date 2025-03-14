@@ -1,0 +1,70 @@
+<div>
+   @if(view === 'admin'){
+      <nav mat-tab-nav-bar mat-stretch-tabs="false" mat-align-tabs="start" [tabPanel]="tabPanel">
+      <a mat-tab-link
+         routerLink="settings"
+            routerLinkActive #rla1="routerLinkActive"
+         [active]="rla1.isActive">Settings</a>
+      <a mat-tab-link
+         routerLink="leave-grant"
+            routerLinkActive #rla2="routerLinkActive"
+         [active]="rla2.isActive">Leave Grant</a>
+      <a mat-tab-link
+         routerLink="leave-balance"
+            routerLinkActive #rla3="routerLinkActive"
+         [active]="rla3.isActive">Leave Balance</a>
+         <a mat-tab-link
+         routerLink="leave-application"
+            routerLinkActive #rla3="routerLinkActive"
+         [active]="rla3.isActive">Leave Application</a>
+         
+         <a mat-tab-link
+         routerLink="short-leave"
+            routerLinkActive #rla3="routerLinkActive"
+         [active]="rla3.isActive">Short Leave</a>
+      </nav>
+      <mat-tab-nav-panel #tabPanel>
+         <router-outlet></router-outlet>
+      </mat-tab-nav-panel>
+   } @else if(view === 'user') {
+      <nav mat-tab-nav-bar mat-stretch-tabs="false" mat-align-tabs="start" [tabPanel]="tabPanel">
+         <a mat-tab-link
+            routerLink="my-application"
+               routerLinkActive #rla1="routerLinkActive"
+            [active]="rla1.isActive">My Leave Application</a>
+         <a mat-tab-link
+            routerLink="my-leave-balance"
+               routerLinkActive #rla2="routerLinkActive"
+            [active]="rla2.isActive">My Leave Balance</a>
+         <a mat-tab-link
+            routerLink="my-leave-grant"
+               routerLinkActive #rla3="routerLinkActive"
+            [active]="rla3.isActive">My Leave Grant</a>
+            <a mat-tab-link
+            routerLink="my-short-leave"
+               routerLinkActive #rla1="routerLinkActive"
+            [active]="rla1.isActive">My Short Leave</a>
+         <a mat-tab-link
+            routerLink="team-application"
+               routerLinkActive #rla2="routerLinkActive"
+            [active]="rla2.isActive">Team Application</a>
+         <a mat-tab-link
+            routerLink="my-team-balance"
+               routerLinkActive #rla3="routerLinkActive"
+            [active]="rla3.isActive">My Team Balance</a>
+              
+            <a mat-tab-link
+            routerLink="team-leave-grant"
+               routerLinkActive #rla2="routerLinkActive"
+            [active]="rla2.isActive">Team Leave Grant</a>
+         <a mat-tab-link
+            routerLink="team-short-leave"
+               routerLinkActive #rla3="routerLinkActive"
+            [active]="rla3.isActive">Team Short Leave</a>
+      </nav>
+      <mat-tab-nav-panel #tabPanel>
+         <router-outlet></router-outlet>
+      </mat-tab-nav-panel>
+   }
+  </div>
+  

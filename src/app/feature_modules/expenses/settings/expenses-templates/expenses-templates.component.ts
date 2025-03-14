@@ -139,7 +139,7 @@ export class ExpensesTemplatesComponent implements OnInit {
       this.dataSource.filterPredicate = (data: any, filter: string) => {
         return data.policyLabel.toLowerCase().includes(filter);
       };
-      this.getAllCategoriesOfAllTemplate();
+      // this.getAllCategoriesOfAllTemplate();
     });
   }
 

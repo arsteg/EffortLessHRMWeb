@@ -8,7 +8,7 @@ import { LeaveAssignmentComponent } from './leave-setting/leave-assignment/leave
 import { LeaveCategoryComponent } from './leave-setting/leave-category/leave-category.component';
 import { LeaveTemplateComponent } from './leave-setting/leave-template/leave-template.component';
 import { LeaveManagementComponent } from './leave-grant/leave-grant.component';
-import { LeaveComponent } from './leave/leave.component';
+import { LeaveComponent } from './leave.component';
 import { GeneralSettingsComponent } from './leave-setting/general-settings/general-settings.component';
 import { CommonComponentsModule } from 'src/app/common/commonComponents.module';
 import { AddCategoryLeaveComponent } from './leave-setting/leave-template/add-category-leave/add-category-leave.component';
@@ -45,13 +45,14 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { LeaveRoutingModule } from './leave-routing.module';
 
 @NgModule({
-  declarations: [LeaveApplicationComponent,
+  declarations: [
+    LeaveComponent,
+    LeaveApplicationComponent,
     LeaveSettingComponent,
     LeaveAssignmentComponent,
     LeaveCategoryComponent,
-    LeaveTemplateComponent,
     LeaveManagementComponent,
-    LeaveComponent,
+    LeaveTemplateComponent,
     GeneralSettingsComponent,
     CreateLeaveComponent,
     AddCategoryLeaveComponent,

@@ -23,7 +23,7 @@ export class LeaveTemplateComponent implements OnInit {
   public sortOrder: string = ''; // 'asc' or 'desc'
   recordsPerPageOptions: number[] = [5, 10, 25, 50, 100]; // Add the available options for records per page
   recordsPerPage: number = 10; // Default records per page
-  totalRecords: number=0; // Total number of records
+  totalRecords: number = 0; // Total number of records
   currentPage: number = 1;
   skip: string = '0';
   next = '10';
@@ -34,12 +34,12 @@ export class LeaveTemplateComponent implements OnInit {
     private dialog: MatDialog,
     private toast: ToastrService) { }
 
-  ngOnInit(): void {   
+  ngOnInit(): void {
     this.getLeaveTemplates();
   }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
@@ -79,7 +79,7 @@ export class LeaveTemplateComponent implements OnInit {
         this.templates = res.data;
         this.getLeaveTemplates();
         //this.LeaveTableRefreshed.emit();
-        
+
       },
       (error) => {
         console.error('Error refreshing leave template table:', error);
@@ -90,18 +90,18 @@ export class LeaveTemplateComponent implements OnInit {
   getLeaveTemplates() {
     const requestBody = { "skip": this.skip, "next": this.next };
     this.leaveService.getLeavetemplates(requestBody).subscribe((res: any) => {
-      if(res.status=="success"){
+      if (res.status == "success") {
         this.leaveTemplate = res.data;
         this.totalRecords = res.total;
         this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
       }
     })
   }
-  
+
   deleteTemplate(_id: string) {
     this.leaveService.deleteTemplate(_id).subscribe((res: any) => {
       this.getLeaveTemplates();
-      if(res != null){
+      if (res != null) {
         const index = this.templates.findIndex(temp => temp._id === _id);
         if (index !== -1) {
           this.templates.splice(index, 1);
@@ -130,14 +130,15 @@ export class LeaveTemplateComponent implements OnInit {
       this.isEdit == true;
     }
   }
-  calculateTotalEmployees(leaveTemp: any): number {
-    let totalEmployees = 0;
+  calculateTotalEmployees(leaveTemp: any) {
+    let totalEmployees: any;
     for (const category of leaveTemp.applicableCategories) {
-      totalEmployees += category.templateApplicableCategoryEmployee.length;
+      if (category?.templateApplicableCategoryEmployee.length === 0) {
+        totalEmployees = 'All Employees';
+      }
+      else { totalEmployees = category?.templateApplicableCategoryEmployee.length; }
     }
-  
     return totalEmployees;
-    console.log(totalEmployees)
   }
 
   // //Pagging related functions

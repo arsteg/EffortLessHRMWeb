@@ -114,7 +114,7 @@
                                 <label for="" class="">Please choose the type of leave&nbsp;<span
                                         class="text-danger">*</span></label>
                                 <select name="" id="" class="form-control" formControlName="leaveType">
-                                    <option selected value="" disabled>Select Type of Leave</option>
+                                    <option [selected] value="" [disabled]>Select type of Leave Category</option>
                                     <option value="general-leave">General Leave</option>
                                     <option value="annual-non-accural-leave">Annual Non-Accrual Leave</option>
                                 </select>
@@ -174,7 +174,7 @@
 
                             <div class="col-sm-12 col-md-6 my-2">
                                 <label for="" class="">Do you want to provide a half-day option for this type of
-                                    leave?</label>
+                                    leave?<span class="text-danger">*</span></label>
                                 <div class="d-flex">
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" id="isHalfDayTypeOfLeaveTrue"
@@ -199,7 +199,7 @@
 
                             <div class="col-sm-12 col-md-6 my-2">
                                 <label for="" class="">Number of days before which the leave application must be
-                                    submitted (leave blank for no limit)</label>
+                                    submitted<span class="text-danger">*</span></label>
                                 <input type="number" placeholder="Days" value="0" formControlName="submitBefore"
                                     class="form-control">
                             </div>
@@ -207,7 +207,7 @@
                             <div class="col-sm-12 col-md-6 my-2">
                                 <label for="" class="">Would you like to display used leave balance in the
                                     employee's
-                                    payslips?
+                                    payslips?<span class="text-danger">*</span>
                                 </label>
                                 <div class="d-flex">
                                     <div class="form-check">
@@ -234,9 +234,9 @@
                             </div>
 
                             <!-- If leave type is general leave -->
-                            <div class="row" *ngIf="categoryForm.value.leaveType === 'general-leave'">
+                            <ng-container *ngIf="categoryForm.value.leaveType === 'general-leave'">
                                 <div class="col-sm-12 col-md-6 my-2">
-                                    <label for="">Select your leave accrual period</label>
+                                    <label for="">Select your leave accrual period<span class="text-danger">*</span></label>
                                     <select id="" formControlName="leaveAccrualPeriod">
                                         <option value="Annually">Annually</option>
                                         <option value="Semi-Annually">Semi-Annually</option>
@@ -500,8 +500,7 @@
                                 </div>
 
                                 <div class="col-sm-12 col-md-6 my-2">
-                                    <label for=""> Minimum number of days allowed (leave blank for no
-                                        limit)</label>
+                                    <label for=""> Minimum number of days allowed</label>
                                     <input type="number" class="w-100" formControlName="minimumNumberOfDaysAllowed">
                                 </div>
 
@@ -516,8 +515,7 @@
                                 </div>
 
                                 <div class="col-sm-12 col-md-6 my-2">
-                                    <label for=""> Maximum number of consecutive leave days allowed (leave blank for no
-                                        limit)</label>
+                                    <label for=""> Maximum number of consecutive leave days allowed</label>
                                     <input type="number" class="w-100"
                                         formControlName="maximumNumberConsecutiveLeaveDaysAllowed">
                                 </div>
@@ -541,10 +539,10 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </ng-container>
 
                             <!-- If Leave type is annual leave -->
-                            <div class="row" *ngIf="categoryForm.value.leaveType === 'annual-non-accural-leave'">
+                            <ng-container *ngIf="categoryForm.value.leaveType === 'annual-non-accural-leave'">
                                 <div class="col-sm-12 col-md-6 my-2">
                                     <label for="">If an Annual Holiday is part of the leave request, should it
                                         be included in the number of days taken?</label>
@@ -718,13 +716,10 @@
                                         </div>
                                     </div>
                                 </div>
-
-                            </div>
+                            </ng-container>
                         </div>
-
                     </div>
                     <div class="modal-footer d-flex justify-content-between mt-3">
-
                         <div>
                             <button mat-raised-button class="mx-2" 
                                 (click)="getLeaveCategoryById()" type="reset">Cancel</button>
@@ -733,7 +728,6 @@
                             <button mat-raised-button class="addBtn" type="submit">{{!isEdit ? 'Add' :
                                 'Update'}}</button>
                         </div>
-
                     </div>
                 </div>
             </form>

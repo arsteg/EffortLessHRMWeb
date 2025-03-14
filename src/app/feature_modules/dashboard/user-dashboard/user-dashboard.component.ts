@@ -8,6 +8,7 @@ import { ManageTeamService } from 'src/app/_services/manage-team.service';
 import { TimeLogService } from 'src/app/_services/timeLogService';
 import { CommonService } from 'src/app/_services/common.Service';
 import { HoursWorked, MonthlySummary, WeeklySummary, ProjectTask } from 'src/app/models/dashboard/userdashboardModel';
+import {LegendPosition, Color, ScaleType} from '@swimlane/ngx-charts';
 
 
 @Component({
@@ -37,6 +38,13 @@ export class UserDashboardComponent implements OnInit {
   dayWorkStatusByUser:any[];
   selectedDate:Date= new Date;
   view: [number, number]=[300, 200];
+ legendPosition: LegendPosition = LegendPosition.Right;
+  colorScheme: Color = {
+    domain: ['#ff9800', '#46a35e', '#a8385d', '#7aa3e5'],
+    group: ScaleType.Ordinal, // Required for correct type
+    selectable: true,
+    name: 'custom',
+  };
 
   constructor(
     private timelog: TimeLogService,
@@ -50,6 +58,7 @@ export class UserDashboardComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.currentProfile = JSON.parse(localStorage.getItem('currentUser'));
     this.populateDashboard(this.selectedDate);
     this.getDayWorkStatusByUser(this.currentUser.id);
   }
@@ -128,6 +137,8 @@ export class UserDashboardComponent implements OnInit {
     this.dashboardService.HoursWorked(this.currentUser.id, selectedDate).subscribe(response => {
       this.hoursWorked = response.data;
       this.hoursWorked.increased = this.hoursWorked.today > this.hoursWorked.previousDay;
+      this.hoursWorked.chartData = [{name: 'Today', value: this.hoursWorked.today}, {name: 'Yesterday', value: this.hoursWorked.previousDay}];
+      this.hoursWorked.chartColors = [{name:'Today', value: '#ff9800'}, {name:'Yesterday', value: '#46a35e'}];
       const change = this.hoursWorked.today - this.hoursWorked.previousDay;
      if(change!=0  )
       {
@@ -156,6 +167,8 @@ export class UserDashboardComponent implements OnInit {
     this.dashboardService.weeklySummary(this.currentUser.id, selectedDate).subscribe(response => {
       this.weeklySummary = response.data;
       this.weeklySummary.increased = this.weeklySummary.currentWeek > this.weeklySummary.previousWeek;
+      this.weeklySummary.chartData = [{name: 'This week', value: this.weeklySummary.currentWeek}, {name: 'Last week', value: this.weeklySummary.previousWeek}];
+      this.weeklySummary.chartColors = [{name:'This week', value: '#ff9800'}, {name:'Last week', value: '#46a35e'}];
       const change = this.weeklySummary.currentWeek - this.weeklySummary.previousWeek;
       if(change!=0){
       if (this.weeklySummary.increased) {
@@ -176,6 +189,8 @@ export class UserDashboardComponent implements OnInit {
     this.dashboardService.monthlySummary(this.currentUser.id, selectedDate).subscribe(response => {
       this.monthlySummary = response.data;
       this.monthlySummary.increased = this.monthlySummary.currentMonth > this.monthlySummary.previousMonth;
+      this.monthlySummary.chartData = [{name: 'This month', value: this.monthlySummary.currentMonth}, {name: 'Last month', value: this.monthlySummary.previousMonth}];
+      this.monthlySummary.chartColors = [{name:'This month', value: '#ff9800'}, {name:'Last month', value: '#46a35e'}];
       const change = this.monthlySummary.currentMonth - this.monthlySummary.previousMonth;
       if(change!=0){
       if (this.monthlySummary.increased) {
