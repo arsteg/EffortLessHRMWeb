@@ -210,7 +210,7 @@
               </thead>
               <tbody>
                 <ng-container *ngFor="let projectTask of projectTasks">
-                  <tr>
+                  <tr class="sticky-top">
                     <td colspan="2" class="text-center">
                       <span class="fw-bold">{{projectTask?.projectName}}</span>
                     </td>
@@ -292,7 +292,7 @@
               </thead>
               <tbody>
                 <ng-container *ngFor="let projectTask of dayWorkStatusByUser">
-                  <tr>
+                  <tr class="sticky-top">
                     <td colspan="2" class="text-center">
                       <span class="fw-bold">{{projectTask?.projectName}}</span>
                     </td>
