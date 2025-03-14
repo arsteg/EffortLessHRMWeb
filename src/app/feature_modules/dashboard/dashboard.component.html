@@ -22,29 +22,26 @@
     </div>
     <!--Subscription Info-->
     <div class="card shadow-sm mt-4" *ngIf="subscription">
-      <div class="d-flex align-items-center p-2">
-        <div class="p-2">
+      <div class="d-flex align-items-center p-2 flex-wrap subscription-box">
+        <div class="col-12 col-sm-3 p-2">
           <h1 class="m-0">Subscription</h1>
         </div>
         <ng-container>
-          <div class="vr"></div>
-          <div class="col p-2">
+          <div class="col-12 col-sm-3 p-2">
             <p class="m-0 text-muted">{{subscription?.currentPlanId.frequency | titlecase}} Subscription</p>
             <h3 class="m-0">{{subscription?.currentPlanId.name}}</h3>
             <h3 class="m-0">{{subscription?.razorpaySubscription.status | titlecase}}</h3>
           </div>
         </ng-container>
         <ng-container>
-          <div class="vr"></div>
-          <div class="col p-2" *ngIf="upcomingPayment">
+          <div class="col-12 col-sm-3 p-2" *ngIf="upcomingPayment">
             <p class="m-0 text-muted">Next payment</p>
             <h3 class="m-0">Due Date: {{(upcomingPayment?.due_date | date) || ''}}</h3>
             <h3 class="m-0">Amount: {{(upcomingPayment?.total_due_amount | currency: 'INR') || ''}}</h3>
           </div>
         </ng-container>
         <ng-container>
-          <div class="vr"></div>
-          <div class="col p-2" *ngIf="lastInvoice">
+          <div class="col-12 col-sm-3 p-2" *ngIf="lastInvoice">
             <p class="m-0 text-muted">Last payment</p>
             <h3 class="m-0">Amount: {{(lastInvoice?.amount | currency: 'INR') || ''}}</h3>
             <h3 class="m-0">Method:
@@ -95,10 +92,10 @@
           <mat-tab-group>
             <mat-tab label="Daily">
               <div class="mx-auto w-75" style="height: 200px">
-                <ngx-charts-pie-chart [results]="hoursWorked?.chartData" [legend]="false" [labels]="true"
-                  [tooltipDisabled]="true" [doughnut]="true" [legendPosition]="legendPosition"
+                <ngx-charts-bar-vertical [results]="hoursWorked?.chartData" [legend]="false" [xAxis]="true"
+                  [tooltipDisabled]="true" [legendPosition]="legendPosition"
                   [customColors]="hoursWorked?.chartColors">
-                </ngx-charts-pie-chart>
+                </ngx-charts-bar-vertical>
               </div>
               <div class="w-100 d-flex justify-content-between align-items-center">
                 <div class="col-5">
@@ -116,19 +113,21 @@
                 </div>
               </div>
 
-              <p class="d-flex align-items-center justify-content-center mt-2">
-                <span style="color: rgb(255, 190, 91)" [style.color]="hoursWorked?.changeColor">{{
-                  hoursWorked?.changeDisplay}}% </span><span class="text-dark"> Yesterday </span>
-                <mat-icon *ngIf="hoursWorked?.increased" class="text-success">arrow_upward</mat-icon>
-                <mat-icon *ngIf="!hoursWorked?.increased" class="text-danger">arrow_downward</mat-icon>
-              </p>
+              @if(hoursWorked?.change){
+                <p class="d-flex align-items-center justify-content-center mt-2">
+                  <span style="color: rgb(255, 190, 91)" [style.color]="hoursWorked?.changeColor">{{
+                    hoursWorked?.changeDisplay}} </span><span class="text-dark"> Yesterday </span>
+                  <mat-icon *ngIf="hoursWorked?.increased" class="text-success">arrow_upward</mat-icon>
+                  <mat-icon *ngIf="!hoursWorked?.increased" class="text-danger">arrow_downward</mat-icon>
+                </p>
+              }
             </mat-tab>
             <mat-tab label="Weekly">
               <div class="mx-auto w-75" style="height: 200px">
-                <ngx-charts-pie-chart [results]="weeklySummary?.chartData" [legend]="false" [labels]="true"
-                  [tooltipDisabled]="true" [doughnut]="true" [legendPosition]="legendPosition"
+                <ngx-charts-bar-vertical [results]="weeklySummary?.chartData" [legend]="false" [xAxis]="true"
+                  [tooltipDisabled]="true" [legendPosition]="legendPosition"
                   [customColors]="weeklySummary?.chartColors">
-                </ngx-charts-pie-chart>
+                </ngx-charts-bar-vertical>
               </div>
               <div class="w-100 d-flex justify-content-between align-items-center">
                 <div class="col-5">
@@ -145,20 +144,21 @@
                   </div>
                 </div>
               </div>
-
-              <p class="d-flex align-items-center justify-content-center mt-2">
-                <span style="color: rgb(255, 190, 91)" [style.color]="weeklySummary?.changeColor">{{
-                  weeklySummary?.changeDisplay}}% </span><span class="text-dark"> last week </span>
-                <mat-icon *ngIf="weeklySummary?.increased" class="text-success">arrow_upward</mat-icon>
-                <mat-icon *ngIf="!weeklySummary?.increased" class="text-danger">arrow_downward</mat-icon>
-              </p>
+              @if(weeklySummary?.change){
+                <p class="d-flex align-items-center justify-content-center mt-2">
+                  <span style="color: rgb(255, 190, 91)" [style.color]="weeklySummary?.changeColor">{{
+                    weeklySummary?.changeDisplay}} </span><span class="text-dark"> last week </span>
+                  <mat-icon *ngIf="weeklySummary?.increased" class="text-success">arrow_upward</mat-icon>
+                  <mat-icon *ngIf="!weeklySummary?.increased" class="text-danger">arrow_downward</mat-icon>
+                </p>
+              }
             </mat-tab>
             <mat-tab label="Monthly">
               <div class="mx-auto w-75" style="height: 200px">
-                <ngx-charts-pie-chart [results]="monthlySummary?.chartData" [legend]="false" [labels]="true"
-                  [tooltipDisabled]="true" [doughnut]="true" [legendPosition]="legendPosition"
+                <ngx-charts-bar-vertical [results]="monthlySummary?.chartData" [legend]="false" [xAxis]="true"
+                  [tooltipDisabled]="true" [legendPosition]="legendPosition"
                   [customColors]="monthlySummary?.chartColors">
-                </ngx-charts-pie-chart>
+                </ngx-charts-bar-vertical>
               </div>
               <div class="w-100 d-flex justify-content-between align-items-center">
                 <div class="col-5">
@@ -176,12 +176,14 @@
                 </div>
               </div>
 
-              <p class="d-flex align-items-center justify-content-center mt-2">
-                <span style="color: rgb(255, 190, 91)" [style.color]="monthlySummary?.changeColor">{{
-                  monthlySummary?.changeDisplay}}% </span><span class="text-dark"> a week before </span>
-                <mat-icon *ngIf="monthlySummary?.increased" class="text-success">arrow_upward</mat-icon>
-                <mat-icon *ngIf="!monthlySummary?.increased" class="text-danger">arrow_downward</mat-icon>
-              </p>
+              @if(monthlySummary?.change){
+                <p class="d-flex align-items-center justify-content-center mt-2">
+                  <span style="color: rgb(255, 190, 91)" [style.color]="monthlySummary?.changeColor">{{
+                    monthlySummary?.changeDisplay}} </span><span class="text-dark"> a week before </span>
+                  <mat-icon *ngIf="monthlySummary?.increased" class="text-success">arrow_upward</mat-icon>
+                  <mat-icon *ngIf="!monthlySummary?.increased" class="text-danger">arrow_downward</mat-icon>
+                </p>
+              }
             </mat-tab>
           </mat-tab-group>
         </div>
@@ -201,21 +203,22 @@
             </select>
           </div>
           <div style="max-height: 300px; overflow-y: auto">
-            <table class="mt-2 p-2 rounded">
+            <table class="table table-striped">
               <thead>
-                <th>Project</th>
                 <th>Task</th>
                 <th>Time</th>
               </thead>
               <tbody>
                 <ng-container *ngFor="let projectTask of projectTasks">
-                  <tr *ngFor="let task of projectTask.tasks;let i = index ">
-                    <td>
-                      {{i==0?projectTask?.projectName:''}}
+                  <tr>
+                    <td colspan="2" class="text-center">
+                      <span class="fw-bold">{{projectTask?.projectName}}</span>
                     </td>
+                  </tr>
+                  <tr *ngFor="let task of projectTask.tasks;let i = index ">
                     <td class="py-2">{{task?.taskName}}</td>
                     <td>
-                      <span class="dash-percent"> {{ task?.totalTime | milliSecondsToTime }} </span>
+                      <span> {{ task?.totalTime | milliSecondsToTime }} </span>
                     </td>
                   </tr>
                 </ng-container>
@@ -282,21 +285,22 @@
             </select>
           </div>
           <div style="max-height: 185px; overflow-y: auto">
-            <table class="mt-2 p-2 rounded">
+            <table class="table table-striped">
               <thead>
-                <th>Project</th>
                 <th>Task</th>
                 <th>Time</th>
               </thead>
               <tbody>
                 <ng-container *ngFor="let projectTask of dayWorkStatusByUser">
-                  <tr *ngFor="let task of projectTask.tasks;let i = index ">
-                    <td>
-                      {{i==0?projectTask?.projectName:''}}
+                  <tr>
+                    <td colspan="2" class="text-center">
+                      <span class="fw-bold">{{projectTask?.projectName}}</span>
                     </td>
+                  </tr>
+                  <tr *ngFor="let task of projectTask.tasks;let i = index ">
                     <td class="py-2">{{task?.taskName}}</td>
                     <td>
-                      <span class="dash-percent"> {{ ((task?.count*10)*60*1000) | milliSecondsToTime }} </span>
+                      <span> {{ ((task?.count*10)*60*1000) | milliSecondsToTime }} </span>
                     </td>
                   </tr>
                 </ng-container>

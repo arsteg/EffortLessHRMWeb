@@ -1,3 +1,16 @@
+.subscription-box {
+    div:not(:last-child){
+        border-right: 1px solid #ddd;
+    }
+}
+@media (max-width: 575px) {
+    .subscription-box {
+        div:not(:last-child){
+            border-right: 0;
+        }
+    }
+}
+
 .date {
     box-shadow: 0 0px 20px 0 #dedbdb;
 }

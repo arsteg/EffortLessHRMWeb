@@ -135,13 +135,13 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
       if (this.hoursWorked.increased) {
         const change = this.hoursWorked.today - this.hoursWorked.previousDay;
         this.hoursWorked.change = change * 100 / this.hoursWorked.previousDay;
-        this.hoursWorked.changeDisplay = `+${this.hoursWorked.change.toFixed(2)}`;
+        this.hoursWorked.changeDisplay = isNaN(this.hoursWorked.change) ? '' :`+${this.hoursWorked.change.toFixed(2)}%`;
         this.hoursWorked.changeColor = '#08ad08';
       }
       else {
         const change = this.hoursWorked.previousDay - this.hoursWorked.today;
         this.hoursWorked.change = change * 100 / this.hoursWorked.previousDay;
-        this.hoursWorked.changeDisplay = `-${this.hoursWorked.change.toFixed(2)}`;
+        this.hoursWorked.changeDisplay = isNaN(this.hoursWorked.change) ? '' :`-${this.hoursWorked.change.toFixed(2)}%`;
       }
     },
       err => {
@@ -156,13 +156,13 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
       if (this.weeklySummary.increased) {
         const change = this.weeklySummary.currentWeek - this.weeklySummary.previousWeek;
         this.weeklySummary.change = change * 100 / this.weeklySummary.previousWeek;
-        this.weeklySummary.changeDisplay = `+${this.weeklySummary.change.toFixed(2)}`;
+        this.weeklySummary.changeDisplay = isNaN(this.weeklySummary.change) ? '' :`+${this.weeklySummary.change.toFixed(2)}%`;
         this.weeklySummary.changeColor = '#08ad08';
       }
       else {
         const change = this.weeklySummary.previousWeek - this.weeklySummary.currentWeek;
         this.weeklySummary.change = change * 100 / this.weeklySummary.previousWeek;
-        this.weeklySummary.changeDisplay = `-${this.weeklySummary.change.toFixed(2)}`;
+        this.weeklySummary.changeDisplay = isNaN(this.monthlySummary.change) ? '' : `-${this.weeklySummary.change.toFixed(2)}%`;
       }
 
     },
@@ -178,13 +178,13 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
       if (this.monthlySummary.increased) {
         const change = this.monthlySummary.currentMonth - this.monthlySummary.previousMonth;
         this.monthlySummary.change = change * 100 / this.monthlySummary.previousMonth;
-        this.monthlySummary.changeDisplay = `+${this.monthlySummary.change.toFixed(2)}`;
+        this.monthlySummary.changeDisplay = isNaN(this.monthlySummary.change) ? '' : `+${this.monthlySummary.change.toFixed(2)}%`;
         this.monthlySummary.changeColor = '#08ad08';
       }
       else {
         const change = this.monthlySummary.previousMonth - this.monthlySummary.currentMonth;
         this.monthlySummary.change = change * 100 / this.monthlySummary.previousMonth;
-        this.monthlySummary.changeDisplay = `-${this.monthlySummary.change.toFixed(2)}`;
+        this.monthlySummary.changeDisplay = isNaN(this.monthlySummary.change) ? '' : `-${this.monthlySummary.change.toFixed(2)}%`;
       }
     },
       err => {
