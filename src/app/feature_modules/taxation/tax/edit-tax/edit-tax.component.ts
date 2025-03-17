@@ -27,25 +27,19 @@ export class EditTaxComponent {
   }
 
   logUrlSegmentsForUser() {
-    const urlPath = this.router.url;
-    const segments = urlPath.split('/').filter(segment => segment);
-    if (segments.length >= 3) {
-      const employee = segments[segments.length - 3];
-      forkJoin([
-        this.userService.getUserByEmpCode(employee),
+    forkJoin([
         this.taxService.getAllTaxSections()
       ]).subscribe((results: any[]) => {
-        this.selectedUser = results[0].data;
         this.taxSections = results[1].data;
         if (this.taxSections?.length) {
           const sectionId = this.taxSections[0]?._id;
           this.selectTab(sectionId);
         }
       });
-    }
+    // }
   }
 
-  selectTab(tabId: string) {
+  selectTab(tabId) {
     this.activeTab = tabId;
     this.activeTabName = this.taxSections.find((section: any) => section._id === tabId)?.section;
   }

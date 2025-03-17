@@ -13,7 +13,7 @@ export class TaxComponentsComponent {
   selectedRecord: any;
   isEdit: boolean = false;
   searchText: string = '';
-  data;
+  data: any;
   taxDecalaration = [];
   taxComponents = [];
   filteredIncomeTaxComponents = [];
@@ -112,7 +112,6 @@ export class TaxComponentsComponent {
       console.error('Error fetching all tax components:', error);
     });
   }
-
 
   createFormGroup(component: any): FormGroup {
     return this.fb.group({

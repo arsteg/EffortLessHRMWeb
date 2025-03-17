@@ -8,7 +8,7 @@ import { CompanyService } from 'src/app/_services/company.service';
 import { company } from 'src/app/models/company';
 import { UserService } from 'src/app/_services/users.service';
 import { CommonService } from 'src/app/_services/common.Service';
-import { WebSocketService } from 'src/app/_services/web-socket.service';
+import { WebSocketNotificationType, WebSocketService } from 'src/app/_services/web-socket.service';
 
 @Component({
   selector: 'app-log.component',
@@ -18,107 +18,86 @@ import { WebSocketService } from 'src/app/_services/web-socket.service';
   styleUrl: './log.component.component.css'
 })
 
-export class LogComponentComponent implements OnInit, OnDestroy {
-  userId = ''; // Replace with the selected user ID
-  logs: any[] = [];
-  private logSubscription: Subscription | null = null;
-  private webSocketSubscription: Subscription | null = null;
+export class LogComponent implements OnInit, OnDestroy {
+  selectedUserId: string = '';
   companies: company[] = [];
   users: any[] = [];
   selectedCompany: string = '';
-  displayedColumns: string[] = ['timestamp', 'message'];  
-  message = '';
+  displayedColumns: string[] = ['timestamp', 'message'];
   messages: MatTableDataSource<any> = new MatTableDataSource([]);
+  private webSocketSubscription: Subscription | null = null;
 
-  constructor(   
+  constructor(
     private toast: ToastrService,
     private companyService: CompanyService,
     private userService: UserService,
     private webSocketService: WebSocketService,
     private commonService: CommonService
-  ) {    
-  }
+  ) {}
 
   ngOnInit() {
     this.loadCompanies();
-    this.connectToWebSocket();
+    this.subscribeToLogs();
   }
 
-  connectToWebSocket() {
-    this.webSocketService.connect();
-    this.webSocketSubscription = this.webSocketService.messages$.subscribe({
-      next: (message) => {
-        this.messages.data = [...this.messages.data, message]; // Update the data source
-        console.log(this.messages.data);
-      },
-      error: (error) => console.error('WebSocket subscription error:', error)
+  private subscribeToLogs(): void {
+    this.webSocketSubscription = this.webSocketService
+      .getMessagesByType(WebSocketNotificationType.LOG)
+      .subscribe({
+        next: (message) => {
+          this.messages.data = [...this.messages.data, message];
+          console.log('Log received:', message);
+        },
+        error: (error) => console.error('WebSocket log subscription error:', error)
+      });
+  }
+
+  loadCompanies(): void {
+    this.companyService.getCompanies().subscribe({
+      next: (response) => this.companies = response.data,
+      error: (error) => console.error('Error loading companies:', error)
     });
   }
 
-  onCompanyChange() {
-    this.userId = '';
+  onCompanyChange(): void {
+    this.selectedUserId = '';
     this.users = [];
-    this.logs = [];
-  
+    this.messages.data = [];
     if (this.selectedCompany) {
       this.userService.getUsersByCompany(this.selectedCompany).subscribe({
-        next: (response) => {
-          this.users = response.data?.users;
-        },
-        error: (error) => {
-          console.error('Error loading users:', error);
-        }
+        next: (response) => this.users = response.data?.users || [],
+        error: (error) => console.error('Error loading users:', error)
       });
     }
   }
 
-  loadCompanies() {
-    this.companyService.getCompanies().subscribe({
-      next: (response) => {
-        this.companies = response.data;
-      },
-      error: (error) => {
-        console.error('Error loading companies:', error);
-        // Handle error appropriately
-      }
-    });
-  }
-
-  onUserChange() {
-    // Clear previous logs
-    this.logs = [];
-
-    if (this.userId) {
-      this.commonService.setSelectedUser({
-        "userId": this.userId
-      }).subscribe({
-        next: (response) => {
+  onUserChange(): void {
+    this.messages.data = [];
+    if (this.selectedUserId) {
+      this.commonService.setSelectedUser({ userId: this.selectedUserId }).subscribe({
+        next: () => {
           this.toast.success('User for log set successfully');
+          this.webSocketService.connect(this.selectedUserId);
         },
-        error: (error) => {
-          console.error('Error loading logs:', error);
-          // Handle error appropriately
-        }
+        error: (error) => console.error('Error setting selected user:', error)
       });
     }
   }
 
-  ngOnDestroy() {
-    // Clean up the subscription
-    if (this.logSubscription) {
-      this.logSubscription.unsubscribe();
-    }
-    // Disconnect the WebSocket connection
-    this.webSocketService.disconnect();
-  }
-
-  onClear(){
+  onClear(): void {
     this.messages.data = [];
   }
 
-  onStop() {
-    this.userId = '';
+  onStop(): void {
+    this.selectedUserId = '';
     this.users = [];
+    this.messages.data = [];
+  }
+
+  ngOnDestroy() {
+    this.webSocketSubscription?.unsubscribe();
+    // Commenting out disconnect to keep WebSocket alive across components
+    // this.webSocketService.disconnect();
   }
 }
 
