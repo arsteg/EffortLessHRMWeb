@@ -1,40 +1,45 @@
-<div class="main-content pt-2">
-    <div class="container-fluid">
-        <div class="tabs">
-            <button class="btn" routerLink="organization-profile" routerLinkActive="active">
-                Organization Profile
-            </button>
-            <button class="btn" routerLink="zone" routerLinkActive="active">
+<div class="main-content px-2">
+    <div>
+        <nav mat-tab-nav-bar mat-stretch-tabs="false" mat-align-tabs="start" [tabPanel]="tabPanel">
+            <a mat-tab-link routerLink="organization-profile" routerLinkActive #rla1="routerLinkActive"
+                [active]="rla1.isActive">Organization Setup</a>
+
+            <a mat-tab-link routerLinkActive #rla2="routerLinkActive" [active]="rla2.isActive" routerLink="zone">
                 Zone
-            </button>
-            <button class="btn" routerLink="location" routerLinkActive="active">
+            </a>
+            <a mat-tab-link routerLinkActive #rla3="routerLinkActive" [active]="rla3.isActive" routerLink="location">
                 Location
-            </button>
-            <button class="btn" routerLink="department" routerLinkActive="active">
+            </a>
+            <a mat-tab-link routerLinkActive #rla4="routerLinkActive" [active]="rla4.isActive" routerLink="department">
                 Department
-            </button>
-            <button class="btn" routerLink="sub-department" routerLinkActive="active">
+            </a>
+            <a mat-tab-link routerLinkActive #rla5="routerLinkActive" [active]="rla5.isActive"
+                routerLink="sub-department">
                 Sub-Department
-            </button>
-            <button class="btn" routerLink="designation" routerLinkActive="active">
+            </a>
+            <a mat-tab-link routerLinkActive #rla6="routerLinkActive" [active]="rla6.isActive" routerLink="designation">
                 Designation
-            </button>
-            <button class="btn" routerLink="band" routerLinkActive="active">
+            </a>
+            <a mat-tab-link routerLinkActive #rla7="routerLinkActive" [active]="rla7.isActive" routerLink="band">
                 Band
-            </button>
-            <button class="btn" routerLink="signatory-details" routerLinkActive="active">
+            </a>
+            <a mat-tab-link routerLinkActive #rla8="routerLinkActive" [active]="rla8.isActive"
+                routerLink="signatory-details">
                 Signatory Details
-            </button>
-            <button class="btn" routerLink="holiday" routerLinkActive="active">
+            </a>
+            <a mat-tab-link routerLinkActive #rla9="routerLinkActive" [active]="rla9.isActive" routerLink="holiday">
                 Holiday
-            </button>
-            <button class="btn" routerLink="flexi-holiday" routerLinkActive="active">
-               Flexi Holiday
-            </button>
-            <button class="btn" routerLink="tax-slab" routerLinkActive="active">
+            </a>
+            <a mat-tab-link routerLinkActive #rla10="routerLinkActive" [active]="rla10.isActive"
+                routerLink="flexi-holiday">
+                Flexi Holiday
+            </a>
+            <a mat-tab-link routerLinkActive #rla11="routerLinkActive" [active]="rla11.isActive" routerLink="tax-slab">
                 Tax Slab
-            </button>
-        </div>
-        <router-outlet></router-outlet>
+            </a>
+        </nav>
+        <mat-tab-nav-panel #tabPanel>
+            <router-outlet></router-outlet>
+        </mat-tab-nav-panel>
     </div>
 </div>

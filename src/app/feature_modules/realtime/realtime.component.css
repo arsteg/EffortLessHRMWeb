@@ -55,3 +55,9 @@
 td:last-child, th:last-child {
     padding-right: 10px;
 }
+
+.large-icon{
+    /* font-size: 75px;
+    width: 75px;
+    height: 75px; */
+}

@@ -1,35 +1,44 @@
-<div class="main-content contentData py-0">
-    <div class="container-fluid px-0">
-        <ng-container *ngIf="view === 'admin'">
-            <div class="d-flex bg-white subMenu w-100">
-                <a routerLink="organization-setup" class="btn rounded-pill submenuTab" 
-                   [routerLinkActive]="'active'">Organization Setup</a>
-                <a routerLink="employee-field" class="btn rounded-pill submenuTab" 
-                   [routerLinkActive]="'active'">Employee Fields</a>
-                <a routerLink="employee-tree" class="btn rounded-pill submenuTab" 
-                   [routerLinkActive]="'active'">Employee Tree</a>
-                <a routerLink="documents" class="btn rounded-pill submenuTab"
-                   [routerLinkActive]="'active'">Documents</a>
-                <a routerLink="assets" class="btn rounded-pill submenuTab"
-                   [routerLinkActive]="'active'">Assets Management</a>
-               <a routerLink="subscription" class="btn rounded-pill submenuTab"
-                   [routerLinkActive]="'active'">Subscriptions</a>
-            </div>
-            <router-outlet></router-outlet>
-        </ng-container>
+<div class="">
+   <div class="container-fluid px-0">
+      <ng-container *ngIf="view === 'admin'">
+         <nav mat-tab-nav-bar mat-stretch-tabs="false" mat-align-tabs="start" [tabPanel]="tabPanel">
+            <a mat-tab-link routerLink="organization-setup" routerLinkActive #rla1="routerLinkActive"
+               [active]="rla1.isActive">Organization Setup</a>
 
-        <ng-container *ngIf="view === 'user'">
-            <div class="d-flex bg-white subMenu w-100">
-                <a routerLink="company-policies" class="btn rounded-pill submenuTab" 
-                   [routerLinkActive]="'active'">Company Policies</a>
-                <a routerLink="organization-tree" class="btn rounded-pill submenuTab" 
-                   [routerLinkActive]="'active'">Organization Tree</a>
-                <a routerLink="employee-tree" class="btn rounded-pill submenuTab" 
-                   [routerLinkActive]="'active'">Employee Tree</a>
-                <a routerLink="assets" class="btn rounded-pill submenuTab" 
-                   [routerLinkActive]="'active'">Assets</a>
-            </div>
+            <a mat-tab-link routerLink="employee-field" routerLinkActive #rla2="routerLinkActive"
+               [active]="rla2.isActive">Employee Fields</a>
+
+            <a mat-tab-link routerLink="employee-tree" routerLinkActive #rla3="routerLinkActive"
+               [active]="rla3.isActive">Employee Tree</a>
+
+            <a mat-tab-link routerLink="documents" routerLinkActive #rla4="routerLinkActive"
+               [active]="rla4.isActive">Documents</a>
+
+            <a mat-tab-link routerLink="assets" routerLinkActive #rla5="routerLinkActive"
+               [active]="rla5.isActive">Assets Management</a>
+
+            <a mat-tab-link routerLink="subscription" routerLinkActive #rla6="routerLinkActive"
+               [active]="rla6.isActive">Subscriptions</a>
+         </nav>
+         <mat-tab-nav-panel #tabPanel>
             <router-outlet></router-outlet>
-        </ng-container>
-    </div>
+         </mat-tab-nav-panel>
+      </ng-container>
+
+      <ng-container *ngIf="view === 'user'">
+         <nav mat-tab-nav-bar mat-stretch-tabs="false" mat-align-tabs="start" [tabPanel]="tabPanel2">
+            <a mat-tab-link routerLinkActive #rla7="routerLinkActive" [active]="rla7.isActive"
+               routerLink="company-policies">Company Policies</a>
+            <a mat-tab-link routerLinkActive #rla8="routerLinkActive" [active]="rla8.isActive"
+               routerLink="organization-tree">Organization Tree</a>
+            <a mat-tab-link routerLinkActive #rla9="routerLinkActive" [active]="rla9.isActive"
+               routerLink="employee-tree">Employee Tree</a>
+            <a mat-tab-link routerLinkActive #rla10="routerLinkActive" [active]="rla10.isActive"
+               routerLink="assets">Assets</a>
+         </nav>
+         <mat-tab-nav-panel #tabPanel2>
+            <router-outlet></router-outlet>
+         </mat-tab-nav-panel>
+      </ng-container>
+   </div>
 </div>
