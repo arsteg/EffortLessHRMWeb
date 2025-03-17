@@ -16,7 +16,7 @@ import { forkJoin } from 'rxjs';
 export class TaxComponent {
   searchText: string = '';
   selectedRecord: any;
-  taxList: any;
+  taxList: any[];
   offcanvasData = 'Initial data';
   showOffcanvas: boolean = false;
   isEdit: boolean = false;
@@ -33,6 +33,7 @@ export class TaxComponent {
   years: string[] = [];
   totalIncomeTaxComponentsLength: any;
   public sortOrder: string = '';
+  user = JSON.parse(localStorage.getItem('currentUser'));
 
   constructor(
     private componentFactoryResolver: ComponentFactoryResolver,
@@ -57,7 +58,12 @@ export class TaxComponent {
   }
 
   ngOnInit() {
-    this.logUrlSegmentsForUser();
+    // this.logUrlSegmentsForUser();
+    this.userService.getTaxDeclarationByUserId(this.user.id, { skip: '', next: '' }).subscribe((res: any) => {
+      this.taxList = res.data;
+      this.totalRecords = res.total;
+      this.uniqueFinancialYears = this.getUniqueFinancialYears(this.taxList);
+    });
   }
 
   openOffcanvas(isEdit: boolean, record: any = null) {
@@ -106,17 +112,17 @@ export class TaxComponent {
     this.getTaxDeclaration();
   }
 
-  logUrlSegmentsForUser() {
-    const urlPath = this.router.url;
-    const segments = urlPath.split('/').filter(segment => segment);
-    if (segments.length >= 3) {
-      const employee = segments[segments.length - 3];
-      this.userService.getUserByEmpCode(employee).subscribe((res: any) => {
-        this.selectedUser = res.data;
-        this.getTaxDeclaration();
-      });
-    }
-  }
+  // logUrlSegmentsForUser() {
+  //   const urlPath = this.router.url;
+  //   const segments = urlPath.split('/').filter(segment => segment);
+  //   if (segments.length >= 3) {
+  //     const employee = segments[segments.length - 3];
+  //     this.userService.getUserByEmpCode(employee).subscribe((res: any) => {
+  //       this.selectedUser = res.data;
+  //       this.getTaxDeclaration();
+  //     });
+  //   }
+  // }
 
   getTaxDeclaration() {
     const pagination = {
@@ -145,7 +151,6 @@ export class TaxComponent {
             ...component,
             section: allSections.find((section: any) => section._id === component.section)?.section
           }));
-
           // Calculate the sum of each component
           const componentSums = this.calculateComponentSums(mappedIncomeTaxComponents);
 
@@ -224,7 +229,7 @@ export class TaxComponent {
   taxDeclaration() {
     let payload = {
       financialYear: this.taxDeclarationForm.value.financialYear,
-      user: this.selectedUser[0]._id,
+      user: this.user.id,
       employeeIncomeTaxDeclarationComponent: [],
       employeeIncomeTaxDeclarationHRA: []
     };

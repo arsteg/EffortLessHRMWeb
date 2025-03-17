@@ -56,7 +56,7 @@
                     <td>{{tax?.componentSums?.componentSums?.['Interest on Home Loan'] || 0}}</td>
                     <td>{{tax?.componentSums?.componentSums?.['Previous Employment Information'] || 0}}</td>
                     <td class="action text-center">
-                        <div ngbDropdown class="dropdown-center">
+                        <!-- <div ngbDropdown class="dropdown-center">
                             <button class="actions ms-2" mat-mini-fab ngbDropdownToggle aria-expanded="false"
                                 aria-label="Example icon button with a menu icon">
                                 <i class="bi bi-send"></i>
@@ -81,7 +81,28 @@
                                     <span class="pt-1 text-muted">Edit</span>
                                 </li>
                             </ul>
-                        </div>
+                        </div> -->
+                        <mat-menu #menu="matMenu">
+                            <button mat-menu-item>
+                              <mat-icon class="text-danger">arrow_downward</mat-icon>
+                              <span class="ms-2">Download</span>
+                            </button>
+                          
+                            <button mat-menu-item (click)="selectedRecord = tax; openOffcanvas(true, tax);">
+                              <mat-icon class="text-primary">calculate</mat-icon>
+                              <span class="ms-2">Tax Calculator</span>
+                            </button>
+                          
+                            <button mat-menu-item (click)="selectedRecord = tax; isEdit = true; taxView = true;">
+                              <mat-icon class="text-success">edit</mat-icon>
+                              <span class="ms-2">Edit</span>
+                            </button>
+                          </mat-menu>
+                          
+                          <button mat-mini-fab [matMenuTriggerFor]="menu" class="actions ms-2" aria-label="Actions">
+                            <mat-icon>send</mat-icon>
+                          </button>
+                          
                     </td>
                 </tr>
             </tbody>

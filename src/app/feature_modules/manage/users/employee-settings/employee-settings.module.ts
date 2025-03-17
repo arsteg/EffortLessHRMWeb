@@ -1,13 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { EmployeeSettingsRoutingModule } from './employee-settings-routing.module';
-import { RentInformationComponent } from './tax/edit-tax/rent-information/rent-information.component';
-import { EditTaxComponent } from './tax/edit-tax/edit-tax.component';
-import { TaxComponentsComponent } from './tax/edit-tax/tax-components/tax-components.component';
-import { TaxCalculatorComponent } from './tax/tax-calculator/tax-calculator.component';
 import { EmployeeProfileComponent } from './employee-profile/employee-profile.component';
-import { TaxComponent } from './tax/tax.component';
 import { ViewLoansAdvancesComponent } from './loans-advances/view-loans-advances/view-loans-advances.component';
 import { AddSalaryDetailsComponent } from './salary-details/add-salary-details/add-salary-details.component';
 import { UserLoansAdvancesComponent } from './loans-advances/loans-advances.component';
@@ -32,12 +26,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     UserLoansAdvancesComponent,
     AddSalaryDetailsComponent,
     ViewLoansAdvancesComponent,
-    TaxComponent,
     EmployeeProfileComponent,
-    TaxCalculatorComponent,
-    TaxComponentsComponent,
-    EditTaxComponent,
-    RentInformationComponent],
+    ],
   imports: [
     CommonModule,
     EmployeeSettingsRoutingModule,
