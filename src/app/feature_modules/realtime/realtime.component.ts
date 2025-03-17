@@ -34,13 +34,14 @@ export class RealtimeComponent implements OnInit {
   user: any;
   role: any;
   showAllUserLiveButton: boolean = false;
+  teamUser;
 
   constructor(private timelog: TimeLogService,
     public commonService: CommonService,
     private projectService: ProjectService,
     private exportService: ExportService,
     private dialog: MatDialog,
-  ){
+  ) {
 
   }
 
@@ -83,7 +84,6 @@ export class RealtimeComponent implements OnInit {
       });
     }
   }
-  teamUser;
   populateUsers() {
     this.members = [];
     this.members.push({ id: this.currentUser.id, name: "Me", email: this.currentUser.id });
@@ -127,6 +127,7 @@ export class RealtimeComponent implements OnInit {
 
   @ViewChild('realTime') content!: ElementRef
   exportToPdf() {
+    console.log(this.content?.nativeElement, this.content)
     this.exportService.exportToPdf('RealTime', 'RealTime Report', this.content.nativeElement)
   }
 
@@ -134,11 +135,10 @@ export class RealtimeComponent implements OnInit {
   getRealtime() {
     this.timelog.getTeamMembers(this.member.id).subscribe((response: any) => {
       this.teamUser = response.data;
-
       let realtime = new RealTime();
       realtime.projects = this.selectedProject;
       realtime.tasks = this.selectedTask;
-      realtime.users = (this.role.toLowerCase() === "admin") ? this.selectedUser : [...this.teamUser , this.currentUser.id];
+      realtime.users = (this.role.toLowerCase() === "admin") ? this.selectedUser : [...this.teamUser, this.currentUser.id];
       this.timelog.realTime(realtime).subscribe(result => {
         this.realtime = result.data[0];
         this.showAllUserLiveButton = this.realtime.onlineUsers.length > 1;
@@ -146,24 +146,23 @@ export class RealtimeComponent implements OnInit {
     });
   }
 
-  multipleUserLiveScreen(){
+  multipleUserLiveScreen() {
     let userIds: string[] = [];
     for (let item of this.realtime.onlineUsers) {
-      if(item.user.id != this.currentUser.id)
-      {
+      if (item.user.id != this.currentUser.id) {
         userIds = userIds.concat(item.user.id);
       }
     }
     this.openLiveScreen(userIds);
   }
 
-  singleUserLiveScreen(id){
+  singleUserLiveScreen(id) {
     let userIds: string[] = [];
     userIds.push(id);
     this.openLiveScreen(userIds);
   }
 
-  openLiveScreen(userIds){
+  openLiveScreen(userIds) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.width = '60vw';
     dialogConfig.height = 'auto';

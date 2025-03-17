@@ -1,31 +1,38 @@
 <div class="main-content">
   <div class="container-fluid">
-<div class="tabs">
-  <button mat-raised-button (click)="selectTab(1)" [class.active]="selectedTab === 1">Asset Status</button>
-  <button mat-raised-button (click)="selectTab(2)" [class.active]="selectedTab === 2">Asset Type</button>
-  <button mat-raised-button (click)="selectTab(3)" [class.active]="selectedTab === 3">Assets</button>
-  <button mat-raised-button (click)="selectTab(4)" [class.active]="selectedTab === 4">Asset Assignment</button>
-  <button mat-raised-button (click)="selectTab(5)" [class.active]="selectedTab === 5">Vendor</button>
-  <button mat-raised-button (click)="selectTab(6)" [class.active]="selectedTab === 6">Vendor Assets</button>
-</div>
+    <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+      <mat-tab label="Asset Status">
+        <ng-template matTabContent>
+          <app-asset-status></app-asset-status>
+        </ng-template>
+      </mat-tab>
 
-<div *ngIf="selectedTab === 1" class="tab-content">
-  <app-asset-status></app-asset-status>
-</div>
-<div *ngIf="selectedTab === 2" class="tab-content">
-  <app-asset-type></app-asset-type>
-</div>
-<div *ngIf="selectedTab === 3" class="tab-content">
-  <app-asset></app-asset>
-</div>
-<div *ngIf="selectedTab === 4" class="tab-content">
-  <app-assign-assets></app-assign-assets>
-</div>
-<div *ngIf="selectedTab === 5" class="tab-content">
-  <app-vendor></app-vendor>
-</div>
-<div *ngIf="selectedTab === 6" class="tab-content">
-  <app-vendor-assets></app-vendor-assets>
-</div>
-</div>
+      <mat-tab label="Asset Type">
+        <ng-template matTabContent>
+          <app-asset-type></app-asset-type>
+        </ng-template>
+      </mat-tab>
+      <mat-tab label="Assets">
+        <ng-template matTabContent>
+          <app-asset></app-asset>
+        </ng-template>
+      </mat-tab>
+      <mat-tab label="Asset Assignment">
+        <ng-template matTabContent>
+          <app-assign-assets></app-assign-assets>
+        </ng-template>
+      </mat-tab>
+      <mat-tab label="Vendor">
+        <ng-template matTabContent>
+          <app-vendor></app-vendor>
+        </ng-template>
+      </mat-tab>
+      <mat-tab label="Vendor Assets">
+        <ng-template matTabContent>
+          <app-vendor-assets></app-vendor-assets>
+        </ng-template>
+      </mat-tab>
+    </mat-tab-group>
+
+  </div>
 </div>

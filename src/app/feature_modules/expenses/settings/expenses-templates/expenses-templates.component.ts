@@ -139,7 +139,6 @@ export class ExpensesTemplatesComponent implements OnInit {
       this.dataSource.filterPredicate = (data: any, filter: string) => {
         return data.policyLabel.toLowerCase().includes(filter);
       };
-      this.getAllCategoriesOfAllTemplate();
     });
   }
 
@@ -221,19 +220,15 @@ export class ExpensesTemplatesComponent implements OnInit {
 
   categoriesAddOrUpdate(templateId: string, categories: any) {
     if (this.changeMode === 'Add') {
-      console.log('add')
       this.addOrUpdateCategories(categories);
     } else {
-      console.log('update')
       this.addOrUpdateCategories(categories);
     }
   }
 
   addOrUpdateCategories(categories: any) {
     if (this.changeMode == 'Add') {
-      console.log(categories)
       categories = this.addTemplateForm.get('expenseCategories').value
-      console.log(categories)
       this.expenseService.addTemplateApplicableCategories(categories).subscribe(
         (res: any) => {
           this.toast.success('Categories Added successfully!');
@@ -245,7 +240,6 @@ export class ExpensesTemplatesComponent implements OnInit {
     }
     else {
       if (categories.length === 0) {
-        console.log('if empty')
         this.expenseService.addTemplateApplicableCategories(categories).subscribe(
           (res: any) => {
             this.toast.success('Categories updated successfully!');
@@ -255,7 +249,6 @@ export class ExpensesTemplatesComponent implements OnInit {
           }
         );
       }
-      else console.log('Handle Update case')
     }
   }
 
@@ -268,7 +261,6 @@ export class ExpensesTemplatesComponent implements OnInit {
   }
   isSelected(categoryId: string): boolean {
     const selectedCategories = this.addTemplateForm.get('expenseCategories').value;
-    console.log(selectedCategories.includes(categoryId))
     return selectedCategories.includes(categoryId);
   }
 

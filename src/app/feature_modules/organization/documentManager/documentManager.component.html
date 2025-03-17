@@ -1,28 +1,39 @@
 <div class="main-content">
   <div class="container-fluid">
-<div class="tabs">
-  <button mat-raised-button (click)="selectTab(1)" [class.active]="selectedTab === 1">Company Policy Documents</button>
-  <button mat-raised-button (click)="selectTab(2)" [class.active]="selectedTab === 2">Document Category</button>
-  <button mat-raised-button (click)="selectTab(3)" [class.active]="selectedTab === 3">Document</button>
-  <button mat-raised-button (click)="selectTab(4)" [class.active]="selectedTab === 4">Template Fields</button>
-  <button mat-raised-button (click)="selectTab(5)" [class.active]="selectedTab === 5">Template</button>
-  <button mat-raised-button (click)="selectTab(6)" [class.active]="selectedTab === 6">User Document</button>
-</div>
 
-<div *ngIf="selectedTab === 1" class="tab-content">
-<app-company-policy-document></app-company-policy-document>
-</div>
-<div *ngIf="selectedTab === 2" class="tab-content">
-<app-document-Category></app-document-Category>
-</div>
-<div *ngIf="selectedTab === 3" class="tab-content">
-<app-document></app-document>
-</div>
-<div *ngIf="selectedTab === 5" class="tab-content">
-<app-document-template></app-document-template>
-</div>
-<div *ngIf="selectedTab === 6" class="tab-content">
-<app-user-document></app-user-document>
-</div>
-</div>
+    <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+      <mat-tab label="Company Policy Documents">
+        <ng-template matTabContent>
+          <app-company-policy-document></app-company-policy-document>
+        </ng-template>
+      </mat-tab>
+
+      <mat-tab label="Document Category">
+        <ng-template matTabContent>
+          <app-document-Category></app-document-Category>
+        </ng-template>
+      </mat-tab>
+      <mat-tab label="Document">
+        <ng-template matTabContent>
+          <app-document></app-document>
+        </ng-template>
+      </mat-tab>
+      <mat-tab label="Template Fields">
+        <ng-template matTabContent>
+          
+        </ng-template>
+      </mat-tab>
+      <mat-tab label="Template">
+        <ng-template matTabContent>
+          <app-document-template></app-document-template>
+        </ng-template>
+      </mat-tab>
+      <mat-tab label="User Document">
+        <ng-template matTabContent>
+          <app-user-document></app-user-document>
+        </ng-template>
+      </mat-tab>
+    </mat-tab-group>
+
+  </div>
 </div>

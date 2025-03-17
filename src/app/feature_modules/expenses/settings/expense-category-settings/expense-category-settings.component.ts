@@ -1,5 +1,5 @@
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, Input } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { ExpensesService } from 'src/app/_services/expenses.service';
@@ -21,6 +21,7 @@ export class ExpenseCategorySettingsComponent {
   @Output() close: any = new EventEmitter();
   @Output() changeStep: any = new EventEmitter();
   @Output() updateExpenseTemplateTable: EventEmitter<void> = new EventEmitter<void>();
+  @Input() selectedTemplate: any;
   step = 1;
   categoryLabel: any[];
   steps: any;

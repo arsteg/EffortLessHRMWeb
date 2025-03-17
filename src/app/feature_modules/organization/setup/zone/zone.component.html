@@ -1,66 +1,60 @@
-<div class="main-content">
-    <div class="container-fluid">
-        <div class="tableContainer bg-white py-2">
-            <div class="d-flex justify-content-between align-items-center mb-2 px-3">
-                <p class="mb-0">({{zones?.length}}) Records Found</p>
-                <div class="d-flex align-items-center">
-                    <span class="bi bi-search searchIcon"></span>
 
-                    <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
-                        name="searchText" aria-label="default input example">
-                    <button mat-raised-button class="addBtn rounded-pill ms-3"
-                        (click)="isEdit=false; open(addModal)">Add New</button>
+        <div class="tableContainer py-2">
+            <div class="row m-0">
+                <div class="col-auto">
+                    <mat-form-field>
+                        <mat-label>Search</mat-label>
+                        <input type="text" matInput (keyup)="applyFilter($event)" >
+                        <mat-icon matPrefix>search</mat-icon>
+                    </mat-form-field>
+                </div>
+                <div class="col-auto ms-auto">
+                    <button mat-stroked-button (click)="isEdit=false; open(addModal)">Add New</button>
                 </div>
             </div>
-            <table>
-                <thead>
-                    <th [appSort]="zones" data-name="startDate"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Start Date
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                    <th [appSort]="zones" data-name="zoneCode"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Zone Code
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                    <th [appSort]="zones" data-name="zoneName"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Zone Name
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                    <th [appSort]="zones" data-name="description"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Description
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                    <th [appSort]="zones" data-name="status"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Status
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                    <th>Actions</th>
-                </thead>
-                
-                <tbody>
-                    <tr *ngFor="let zone of zones | search : searchText; let i = index">
-                        <td>{{zone?.startDate | date: 'mediumDate'}}</td>
-                        <td>{{zone?.zoneCode}}</td>
-                        <td>{{zone?.zoneName}}</td>
-                        <td>{{zone?.description}}</td>
-                        <td>{{zone?.status}}</td>
-                        <td>
-                            <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before"
-                                aria-label="Example icon button with a menu icon"
-                                (click)="selectedZone = zone; isEdit= true; edit(zone); open(addModal)">
-                                <i class="bi bi-pencil-fill"></i>
+            <div class="table-responsive">
+                <table mat-table [dataSource]="zones" matSort>
+                    <ng-container matColumnDef="startDate">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Start Date</th>
+                      <td mat-cell *matCellDef="let zone"> {{zone?.startDate | date: 'mediumDate'}} </td>
+                    </ng-container>
+                  
+                    <ng-container matColumnDef="zoneCode">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Zone Code</th>
+                      <td mat-cell *matCellDef="let zone"> {{zone?.zoneCode}} </td>
+                    </ng-container>
+                  
+                    <ng-container matColumnDef="zoneName">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Zone Name</th>
+                      <td mat-cell *matCellDef="let zone"> {{zone?.zoneName}} </td>
+                    </ng-container>
+                  
+                    <ng-container matColumnDef="description">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Description</th>
+                      <td mat-cell *matCellDef="let zone"> {{zone?.description}} </td>
+                    </ng-container>
+    
+                    <ng-container matColumnDef="status">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+                        <td mat-cell *matCellDef="let zone"> {{zone?.status}} </td>
+                      </ng-container>
+    
+                    <ng-container matColumnDef="action">
+                        <th mat-header-cell *matHeaderCellDef>Action</th>
+                        <td mat-cell *matCellDef="let zone"> 
+                            <button mat-stroked-button (click)="selectedZone = zone; isEdit= true; edit(zone); open(addModal)">
+                                <mat-icon>edit</mat-icon> Edit
                             </button>
-                            <button class="actions ms-2" mat-mini-fab matTooltip="Delete" matTooltipPosition="after"
-                                aria-label="Example icon button with a menu icon" (click)="deleteDialog(zone?._id)">
-                                <i class="bi bi-trash"></i>
+                            <button mat-stroked-button (click)="deleteDialog(zone?._id)" class="ms-1">
+                                <mat-icon>delete</mat-icon> Delete
                             </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                      </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="['startDate', 'zoneCode', 'zoneName', 'description', 'status','action']"></tr>
+                    <tr mat-row *matRowDef="let row; columns: ['startDate', 'zoneCode', 'zoneName', 'description', 'status','action'];"></tr>
+                </table>
+            </div>
         </div>
-    </div>
-</div>
+    
 
 <!-- add company -->
 <ng-template #addModal let-modal>
