@@ -7,7 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 import { ManageTeamService } from 'src/app/_services/manage-team.service';
 import { TimeLogService } from 'src/app/_services/timeLogService';
-import { SocketService } from 'src/app/_services/socket.Service';
+
 
 @Component({
   selector: 'app-event-notification-viewer',
