@@ -6,7 +6,7 @@ import { environment } from 'src/environments/environment';
 import { Observable, catchError, throwError } from 'rxjs';
 import { TimeLogService } from 'src/app/_services/timeLogService';
 import { CommonService } from 'src/app/_services/common.Service';
-import { SocketService } from 'src/app/_services/socket.Service';
+//import { SocketService } from 'src/app/_services/socket.Service';
 
 @Component({
   selector: 'app-live-screen',
@@ -26,8 +26,7 @@ export class LiveScreenComponent {
   private _sanitizer: DomSanitizer,
   private http: HttpClient,
   private timelog: TimeLogService,
-  public commonService: CommonService,
-  private socketService : SocketService
+  public commonService: CommonService  
 ) {
     this.userIds = data.id;
     this.isSingle = this.userIds.length == 1;
@@ -50,15 +49,15 @@ export class LiveScreenComponent {
     });
 
     //this.testuserid = this.userIds[0];//JSON.parse(localStorage.getItem('currentUser')).id
-    this.socketService.registerUser(this.userIds[0]);
+    //this.socketService.registerUser(this.userIds[0]);
 
     // // Emit user details to the server
     // let aaa:any="664229eec5a0b7f0dc0b7e0f";
     // this.socketService.emitUser(aaa);
 
-    this.socketService.getImageOnline().subscribe((message) => {
-      this.imageVideoSingleUser = this._sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + message);
-    });
+    // this.socketService.getImageOnline().subscribe((message) => {
+    //   this.imageVideoSingleUser = this._sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + message);
+    // });
 
     // //this.socket.connect();
     // this.socket.on('connect', () => {

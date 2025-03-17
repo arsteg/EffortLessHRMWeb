@@ -11,7 +11,6 @@ import { teamMember } from 'src/app/models/teamMember';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { Observable, Subscription } from 'rxjs';
 import { User } from 'src/app/models/user';
-import { SocketService } from 'src/app/_services/socket.Service';
 import { StatefulComponent } from 'src/app/common/statefulComponent/statefulComponent';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PaymentsComponent } from '../subscription/subscriptions-list/payments/payments.component';
@@ -77,8 +76,7 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
     private manageTeamService: ManageTeamService,
     private auth: AuthenticationService,
     private dashboardService: DashboardService,
-    private toastr: ToastrService,
-    private socketService : SocketService,
+    private toastr: ToastrService,    
     protected override commonService: CommonService,
     activatedRoute: ActivatedRoute,
     private subscriptionService: SubscriptionService,
@@ -99,19 +97,19 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
     //region event notifications
     // Register the user when the component initializes
     this.userId = JSON.parse(localStorage.getItem('currentUser')).id
-    this.socketService.registerUser(this.userId);
+    //this.socketService.registerUser(this.userId);
 
     // Emit user details to the server
-    this.socketService.emitUser(this.currentUser.id);
+    //this.socketService.emitUser(this.currentUser.id);
 
     //Subscribe to get the list of users online
-    this.socketService.getUsersOnline().subscribe((response) => {
-      if(response.status=='success'){
-        console.log(`This is the message from web socket as a notification: ${response.data}`);
-      }
-      else{
-      }
-    });
+    // this.socketService.getUsersOnline().subscribe((response) => {
+    //   if(response.status=='success'){
+    //     console.log(`This is the message from web socket as a notification: ${response.data}`);
+    //   }
+    //   else{
+    //   }
+    // });
 
     //end region
 

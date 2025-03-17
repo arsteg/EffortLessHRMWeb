@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { LogService } from 'src/app/_services/log.service';
 import { SharedModule } from 'src/app/shared/shared.Module';
 import { MatTableDataSource } from '@angular/material/table';
 import { ToastrService } from 'ngx-toastr';
@@ -31,8 +30,7 @@ export class LogComponentComponent implements OnInit, OnDestroy {
   message = '';
   messages: MatTableDataSource<any> = new MatTableDataSource([]);
 
-  constructor(
-    private logService: LogService,
+  constructor(   
     private toast: ToastrService,
     private companyService: CompanyService,
     private userService: UserService,
