@@ -1,42 +1,29 @@
-<div class="main-content">
-    <div class="container-fluid">
-        <div class="tableContainer bg-white py-2">
-            <!-- <div class="d-flex justify-content-between align-items-center mb-2 px-3">
-                <p class="mb-0">() Records Found</p>
-                <div class="d-flex align-items-center">
-                    <span class="bi bi-search searchIcon"></span>
-
-                    <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
-                        name="searchText" aria-label="default input example">
-                    <button mat-raised-button class="addBtn rounded-pill ms-3"
-                        (click)="clearselectedRequest(); open(addModal)">Add New</button>
-                </div>
-            </div> -->
-            <table>
-                <thead>
-                    <th>Company Logo</th>
-                    <th>Registered Company Name</th>
-                    <th>Head Office Address</th>
-                    <th>Contact Number</th>
-                    <th>Parent Company</th>
-                    <th>Actions</th>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+<div class="tableContainer py-2">
+    <!--USE MAT TABLE instead of following table-->
+    <table>
+        <thead>
+            <th>Company Logo</th>
+            <th>Registered Company Name</th>
+            <th>Head Office Address</th>
+            <th>Contact Number</th>
+            <th>Parent Company</th>
+            <th>Actions</th>
+        </thead>
+        <tbody>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
 </div>
 
 <!-- add company -->
+<!-- Use mat dialog instead of bootstrap-->
 <ng-template #addModal let-modal>
     <div class="modal-header d-flex justify-content-between border-bottom mb-2 pt-0">
         <div>
@@ -48,7 +35,6 @@
     </div>
 
     <form [formGroup]="companyForm" (ngSubmit)="onSubmission()">
-
         <div class="form-group">
             <label for="">Company Name</label>
             <input type="text" class="form-control" formControlName="companyName" placeholder="Enter Company Name">
@@ -58,9 +44,6 @@
             <button mat-raised-button type="reset">Cancel</button>
             <button mat-raised-button class="addBtn" type="submit" [disabled]="!companyForm.valid">Submit</button>
         </div>
-
-
-
     </form>
 
 </ng-template>

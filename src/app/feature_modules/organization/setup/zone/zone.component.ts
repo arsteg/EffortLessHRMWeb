@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { MatTableDataSource } from '@angular/material/table';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { CompanyService } from 'src/app/_services/company.service';
@@ -12,7 +13,7 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
   styleUrl: './zone.component.css'
 })
 export class ZoneComponent {
-  zones: any;
+  zones = new MatTableDataSource([]);
   zoneForm: FormGroup;
   closeResult: string;
   isEdit: boolean = false;
@@ -40,15 +41,20 @@ export class ZoneComponent {
 
   getZones() {
     this.companyService.getZones().subscribe(res => {
-      this.zones = res.data;
+      this.zones.data = res.data;
     });
+  }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.zones.filter = filterValue.trim().toLowerCase();
   }
 
   onSubmission() {
     // add zone
     if (!this.isEdit) {
       this.companyService.addZone(this.zoneForm.value).subscribe(res => {
-        this.zones.push(res.data);
+        this.zones.data.push(res.data);
         this.toast.success('Zone added successfully', 'Success');
         this.zoneForm.reset();
       },
@@ -59,9 +65,9 @@ export class ZoneComponent {
     else if (this.isEdit) {
       this.companyService.updateZone(this.selectedZone._id, this.zoneForm.value).subscribe(res => {
         this.toast.success('Zone updated successfully', 'Success');
-        const index = this.zones.findIndex(z => z._id === this.selectedZone._id);
+        const index = this.zones.data.findIndex(z => z._id === this.selectedZone._id);
         if (index !== -1) {
-          this.zones[index] = { ...this.selectedZone, ...this.zoneForm.value };
+          this.zones.data[index] = { ...this.selectedZone, ...this.zoneForm.value };
         }
         this.zoneForm.reset();
         this.isEdit = false;
