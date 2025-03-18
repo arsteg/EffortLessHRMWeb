@@ -5,7 +5,6 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
-// Enums for notification and content types
 export enum WebSocketNotificationType {
   LOG = 'log',
   ALERT = 'alert',
@@ -23,7 +22,6 @@ export enum WebSocketContentType {
   JSON = 'json'
 }
 
-// Interface for WebSocket messages
 export interface WebSocketMessage {
   notificationType: WebSocketNotificationType;
   contentType: WebSocketContentType;
@@ -31,7 +29,6 @@ export interface WebSocketMessage {
   timestamp: string;
 }
 
-// src/app/_services/web-socket.service.ts
 @Injectable({
   providedIn: 'root'
 })
@@ -71,13 +68,13 @@ export class WebSocketService implements OnDestroy {
   }
 
   disconnect(): void {
-    if (this.socket$) {
+    if (this.socket$ && !this.socket$.closed) {
       this.socket$.complete();
-      this.socket$ = null;
-      this.userId = null;
-      this.messagesSubject.next(null);
-      console.log('WebSocket disconnected');
     }
+    this.socket$ = null;
+    this.userId = null;
+    this.messagesSubject.next(null);
+    console.log('WebSocket disconnected');
   }
 
   getMessagesByType(type: WebSocketNotificationType): Observable<WebSocketMessage> {
@@ -96,7 +93,8 @@ export class WebSocketService implements OnDestroy {
   }
 
   isConnected(): boolean {
-    return !!this.socket$ && !this.socket$.closed;
+    // Check if socket exists and isn't closed
+    return this.socket$ !== null && this.socket$ !== undefined && !this.socket$.closed;
   }
 
   getUserId(): string | null {

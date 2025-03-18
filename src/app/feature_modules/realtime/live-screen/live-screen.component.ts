@@ -1,162 +1,77 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
-import { Observable, catchError, throwError } from 'rxjs';
-import { TimeLogService } from 'src/app/_services/timeLogService';
+import { Subscription } from 'rxjs';
+import { WebSocketService, WebSocketNotificationType } from 'src/app/_services/web-socket.service';
 import { CommonService } from 'src/app/_services/common.Service';
-//import { SocketService } from 'src/app/_services/socket.Service';
+import { TimeLogService } from 'src/app/_services/timeLogService';
 
 @Component({
   selector: 'app-live-screen',
   templateUrl: './live-screen.component.html',
-  styleUrl: './live-screen.component.css'
+  styleUrls: ['./live-screen.component.css']
 })
-export class LiveScreenComponent {
-  userIds: string;
-  intervalId: any;
-  imageVideo: { [key: string]: SafeUrl } = {};
-  imageVideoSingleUser: SafeUrl;
-  liveScreenFor: any;
-  isSingle:boolean=false;
-  allUsers:any;
+export class LiveScreenComponent implements OnInit, OnDestroy {
+  userIds: string[];
+  isSingle: boolean;
+  imageUrls: { [key: string]: SafeUrl } = {};
+  allUsers: any[] = [];
+  private wsSubscription: Subscription = new Subscription();
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any,
-  private _sanitizer: DomSanitizer,
-  private http: HttpClient,
-  private timelog: TimeLogService,
-  public commonService: CommonService  
-) {
-    this.userIds = data.id;
-    this.isSingle = this.userIds.length == 1;
-    const requestBody = { users: this.userIds };
-    this.timelog.createLiveScreenRecord(requestBody).subscribe(result => {
-      let response = result;
-
-      // if (!this.intervalId) {
-      //   this.intervalId = setInterval(() => {
-      //     this.backgroundTask();
-      //   }, 500);
-      // }
-    });
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private sanitizer: DomSanitizer,
+    private wsService: WebSocketService,
+    private commonService: CommonService,
+    private timelog: TimeLogService
+  ) {
+    this.userIds = Array.isArray(data.id) ? data.id : [data.id];
+    this.isSingle = this.userIds.length === 1;
   }
 
-
-  ngOnInit(){
+  ngOnInit(): void {
+    // Load user details
     this.commonService.populateUsers().subscribe(result => {
-      this.allUsers = result && result.data && result.data.data;
+      this.allUsers = result?.data?.data || [];
     });
 
-    //this.testuserid = this.userIds[0];//JSON.parse(localStorage.getItem('currentUser')).id
-    //this.socketService.registerUser(this.userIds[0]);
-
-    // // Emit user details to the server
-    // let aaa:any="664229eec5a0b7f0dc0b7e0f";
-    // this.socketService.emitUser(aaa);
-
-    // this.socketService.getImageOnline().subscribe((message) => {
-    //   this.imageVideoSingleUser = this._sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + message);
-    // });
-
-    // //this.socket.connect();
-    // this.socket.on('connect', () => {
-    //   this.socket.emit('message', '664229eec5a0b7f0dc0b7e0f'); // Send user ID or any initial message
-    // });
-
-
-    // this.socket.on('message', (data: string) => {
-    //   let testdata = data;
-    //   this.imageVideoSingleUser = this._sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + testdata);
-    // });
-    // //send message to server
-    // this.socket.emit('message', "664229eec5a0b7f0dc0b7e0f");
-  }
-
-  backgroundTask() {
-    if(this.userIds.length == 1){
-      const requestBody = { "users": this.userIds[0] };
-      this.getLiveImages(requestBody).subscribe(result => {
-        if(result.status){
-          result.data.forEach(data => {
-            this.imageVideoSingleUser = this._sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + data.fileString);
-          });
-        }
-      },
-      error => {
-        console.error(error);
-      });
-    }
-    else{
-      const requestBody = { "users": this.userIds };
-      this.getMultipleUsersLiveScreen(requestBody).subscribe(result => {
-        if(result.status){
-          result.data.forEach(data => {
-            data.forEach(item => {
-              this.imageVideo[item.user.id] = this._sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + item.fileString);
-              console.log("item.user = " + item.user.id);
-            });
-          });
-        }
-      },
-      error => {
-        console.error(error);
-      });
-    }
-  }
-
-  getUserDetail(id: string) {
-    const matchingUser = this.allUsers?.find(user => user._id === id);
-    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'N/A';
-  }
-
-  getLiveImages(selectedUser : any): Observable<any> {
-    let token = localStorage.getItem('jwtToken');
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Authorization': `Bearer ${token}`
-      }),
-      withCredentials: true
-    };
-    return this.http.post<any>(`${environment.apiUrlDotNet}/liveTracking/getUsersLiveScreen`, selectedUser, httpOptions)
-    .pipe(
-      catchError(error => {
-        console.error(error);
-        return throwError(error);
-      })
-    );
-  }
-
-  getMultipleUsersLiveScreen(selectedUser : any): Observable<any> {
-    let token = localStorage.getItem('jwtToken');
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Authorization': `Bearer ${token}`
-      }),
-      withCredentials: true
-    };
-    return this.http.post<any>(`${environment.apiUrlDotNet}/liveTracking/getMultipleUsersLiveScreen`, selectedUser, httpOptions)
-    .pipe(
-      catchError(error => {
-        console.error(error);
-        return throwError(error);
-      })
-    );
-  }
-
-  ngOnDestroy() {
-    //this.socket.disconnect();
-    // Clear the interval to stop the background task
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
-    }
-    const requestBody = { users: this.userIds };
-      this.timelog.removeLiveScreenRecord(requestBody).subscribe(result => {
-        let response = result;
+    // Connect WebSocket and subscribe to screenshots
+    this.userIds.forEach(userId => {      
+      this.wsService.connect(userId);
+      
+      const sub = this.wsService.getMessagesByType(WebSocketNotificationType.SCREENSHOT)
+        .subscribe(message => {
+          if (message.contentType === 'image' ) {
+            const imageUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
+              `data:image/jpeg;base64,${message.content}`
+            );
+            this.imageUrls[userId] = imageUrl;
+          }
+        });
+      this.wsSubscription.add(sub);
     });
+
+    // Create live screen record
+    this.timelog.createLiveScreenRecord({ users: this.userIds })
+      .subscribe({
+        error: (err) => console.error('Failed to create live screen record:', err)
+      });
+  }
+
+  getUserName(userId: string): string {
+    const user = this.allUsers.find(u => u._id === userId);
+    return user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
+  }
+
+  ngOnDestroy(): void {
+    // Clean up WebSocket connections
+    this.wsSubscription.unsubscribe();
+    this.userIds.forEach(userId => this.wsService.disconnect());
+    
+    // Remove live screen record
+    this.timelog.removeLiveScreenRecord({ users: this.userIds })
+      .subscribe({
+        error: (err) => console.error('Failed to remove live screen record:', err)
+      });
   }
 }
