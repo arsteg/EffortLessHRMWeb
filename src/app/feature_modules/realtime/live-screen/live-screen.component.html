@@ -1,37 +1,49 @@
-<div class="live-screen-container">
-    <!-- Single User View -->
-    <div *ngIf="isSingle" class="single-view">
-      <div class="header">
-        <button mat-icon-button class="close-btn" mat-dialog-close>
-          <mat-icon>close</mat-icon>
-        </button>
-      </div>
-      <div class="image-wrapper">
-        <div class="user-label">{{ getUserName(userIds[0]) }}'s Screen</div>
-        <img [src]="imageUrls[userIds[0]]" 
-             [alt]="getUserName(userIds[0])" 
-             class="screen-image"
-             *ngIf="imageUrls[userIds[0]]">
-        <div class="no-image" *ngIf="!imageUrls[userIds[0]]">Waiting for screenshot...</div>
-      </div>
+<div class="live-screen-container" [ngClass]="{'minimized': isMinimized, 'maximized': isMaximized}">
+  <!-- Single User View -->
+  <div *ngIf="isSingle" class="single-view">
+    <div class="header">
+      <button class="minimize-btn" (click)="minimizeDialog()" title="Minimize">
+        <i class="fas fa-minus"></i>
+      </button>
+      <button class="maximize-btn" (click)="toggleMaximize()" [title]="isMaximized ? 'Restore' : 'Maximize'">
+        <i class="fas" [ngClass]="isMaximized ? 'fa-compress' : 'fa-expand'"></i>
+      </button>
+      <button class="close-btn" mat-dialog-close title="Close">
+        <i class="fas fa-times"></i>
+      </button>
     </div>
-  
-    <!-- Multiple Users View -->
-    <div *ngIf="!isSingle" class="multi-view">
-      <div class="header">
-        <button mat-icon-button class="close-btn" mat-dialog-close>
-          <mat-icon>close</mat-icon>
-        </button>
-      </div>
-      <div class="screens-grid">
-        <div *ngFor="let userId of userIds" class="screen-card">
-          <div class="user-label">{{ getUserName(userId) }}'s Screen</div>
-          <img [src]="imageUrls[userId]" 
-               [alt]="getUserName(userId)" 
-               class="screen-image"
-               *ngIf="imageUrls[userId]">
-          <div class="no-image" *ngIf="!imageUrls[userId]">Waiting for screenshot...</div>
-        </div>
+    <div class="image-wrapper">
+      <div class="user-label">{{ getUserName(userIds[0]) }}'s Screen</div>
+      <img [src]="imageUrls[userIds[0]]" 
+           [alt]="getUserName(userIds[0])" 
+           class="screen-image"
+           *ngIf="imageUrls[userIds[0]]">
+      <div class="no-image" *ngIf="!imageUrls[userIds[0]]">Waiting for screenshot...</div>
+    </div>
+  </div>
+
+  <!-- Multiple Users View -->
+  <div *ngIf="!isSingle" class="multi-view">
+    <div class="header">
+      <button class="minimize-btn" (click)="minimizeDialog()" title="Minimize">
+        <i class="fas fa-minus"></i>
+      </button>
+      <button class="maximize-btn" (click)="toggleMaximize()" [title]="isMaximized ? 'Restore' : 'Maximize'">
+        <i class="fas" [ngClass]="isMaximized ? 'fa-compress' : 'fa-expand'"></i>
+      </button>
+      <button class="close-btn" mat-dialog-close title="Close">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="screens-grid">
+      <div *ngFor="let userId of userIds" class="screen-card">
+        <div class="user-label">{{ getUserName(userId) }}'s Screen</div>
+        <img [src]="imageUrls[userId]" 
+             [alt]="getUserName(userId)" 
+             class="screen-image"
+             *ngIf="imageUrls[userId]">
+        <div class="no-image" *ngIf="!imageUrls[userId]">Waiting for screenshot...</div>
       </div>
     </div>
   </div>
+</div>

@@ -179,10 +179,12 @@ export class RealtimeComponent implements OnInit {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.width = '60vw';
     dialogConfig.height = 'auto';
+    dialogConfig.maxWidth = '100vw'; // Prevent dialog from exceeding viewport
     dialogConfig.data = { id: userIds };
-
+    dialogConfig.panelClass = 'no-padding-dialog'; // Custom class for styling
+  
     const dialogRef = this.dialog.open(LiveScreenComponent, dialogConfig);
-
+  
     dialogRef.afterClosed().subscribe(result => {
       console.log('The modal was closed');
     });
