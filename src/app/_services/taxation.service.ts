@@ -19,6 +19,7 @@ export class TaxationService {
   };
 
   taxByUser = new BehaviorSubject<any>(null);
+  activeTab = new BehaviorSubject<any>('');
 
   constructor(private http: HttpClient) { }
   public getToken() {

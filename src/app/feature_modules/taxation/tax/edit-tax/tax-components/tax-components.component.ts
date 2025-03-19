@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { TaxationService } from 'src/app/_services/taxation.service';
 import { UserService } from 'src/app/_services/users.service';
@@ -27,8 +27,8 @@ export class TaxComponentsComponent {
   @Input() selectedData: any;
   @Output() tabSelected = new EventEmitter<string>();
   @Output() taxComponentsSaved = new EventEmitter<any>();
-
   incomeTaxDecComponentForm: FormGroup;
+  activeTab: string = '';
 
   constructor(private taxService: TaxationService,
     private fb: FormBuilder,
@@ -46,18 +46,20 @@ export class TaxComponentsComponent {
       remark: [''],
       documentLink: [''],
       employeeIncomeTaxDeclarationAttachments: this.fb.array([])
-    })
+    });
+    this.incomeTaxDecComponentForm.get('approvalStatus').disable();
   }
+
   ngOnChanges(changes: SimpleChanges) {
-    // Detect changes to the sectionId or selectedData inputs
     if (changes['sectionId'] || changes['selectedData']) {
       this.fetchAndMatchTaxComponents();
     }
   }
   ngOnInit() {
-    this.getAllTaxDecalarationByUser();
+    this.taxService.activeTab.subscribe(res => {
+      this.activeTab = res;
+    })
     this.getSections();
-    this.fetchAndMatchTaxComponents();
   }
 
   onRowEdit(index: any) {
@@ -75,10 +77,7 @@ export class TaxComponentsComponent {
       next: ''
     };
     this.taxService.getAllTaxComponents(pagination).subscribe((res: any) => {
-      this.taxComponents = res.data.filter((taxComponent: any) => {
-        return taxComponent.section === this.sectionId;
-        
-      });
+      this.taxComponents = res.data.filter(data => data.section.section == this.activeTab);
       this.totalRecords = res.total;
 
       for (let taxComponent of this.taxComponents) {
@@ -94,7 +93,6 @@ export class TaxComponentsComponent {
       const formArray = this.fb.array(this.taxComponents.map(component => this.createFormGroup(component)));
       this.incomeTaxDecComponentForm.setControl('incomeTaxComponent', formArray);
       this.taxComponents.forEach((component, index) => {
-
         const taxDecalaration = this.selectedData.incomeTaxDeclarationComponent.find((data) => data.incomeTaxComponent === component._id);
         if (taxDecalaration) {
           const formArray = this.incomeTaxDecComponentForm.get('incomeTaxComponent') as FormArray;
@@ -104,8 +102,10 @@ export class TaxComponentsComponent {
             approvedAmount: taxDecalaration.approvedAmount,
             approvalStatus: taxDecalaration.approvalStatus,
             remark: taxDecalaration.remark,
-            documentLink: taxDecalaration.documentLink
+            employeeIncomeTaxDeclarationAttachments: taxDecalaration.employeeIncomeTaxDeclarationAttachments
           });
+          formArray.at(index).get('approvalStatus').disable();
+
         }
       });
     }, (error) => {
@@ -124,16 +124,9 @@ export class TaxComponentsComponent {
       remark: [component.remark],
       isEditable: [false],
       documentLink: [component.documentLink],
-      employeeIncomeTaxDeclarationAttachments: this.fb.array([])
-    });
-  }
-
-  getAllTaxDecalarationByUser() {
-    const taxDeclarations = this.taxService.taxByUser.getValue();
-    taxDeclarations.forEach(item => {
-      item.incomeTaxDeclarationComponent.forEach(component => {
-        this.incomeTaxComponents.push(component);
-      });
+      employeeIncomeTaxDeclarationAttachments: this.fb.array(
+        component.employeeIncomeTaxDeclarationAttachments?.map(attachment => this.fb.group(attachment)) || []
+      ),
     });
   }
 
@@ -142,10 +135,10 @@ export class TaxComponentsComponent {
     let payload = {
       employeeIncomeTaxDeclaration: this.selectedData._id,
       incomeTaxComponent: this.selectedComponent,
-      maximumAmount: rowData.maximumAmount,
-      appliedAmount: rowData.appliedAmount,
-      approvedAmount: rowData.approvedAmount,
-      approvalStatus: rowData.approvalStatus,
+      maximumAmount: rowData.maximumAmount || 0,
+      appliedAmount: rowData.appliedAmount || 0,
+      approvedAmount: rowData.approvedAmount || 0,
+      approvalStatus: rowData.approvalStatus || 'Pending',
       remark: rowData.remark,
       employeeIncomeTaxDeclarationAttachments: rowData.employeeIncomeTaxDeclarationAttachments
     }

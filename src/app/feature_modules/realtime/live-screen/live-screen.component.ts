@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 import { WebSocketService, WebSocketNotificationType } from 'src/app/_services/web-socket.service';
@@ -17,9 +17,13 @@ export class LiveScreenComponent implements OnInit, OnDestroy {
   imageUrls: { [key: string]: SafeUrl } = {};
   allUsers: any[] = [];
   private wsSubscription: Subscription = new Subscription();
+  isMinimized: boolean = false;
+  isMaximized: boolean = false;
+  originalSize: { width: string; height: string } = { width: '60vw', height: 'auto' };
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
+    private dialogRef: MatDialogRef<LiveScreenComponent>,
     private sanitizer: DomSanitizer,
     private wsService: WebSocketService,
     private commonService: CommonService,
@@ -30,18 +34,15 @@ export class LiveScreenComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Load user details
     this.commonService.populateUsers().subscribe(result => {
       this.allUsers = result?.data?.data || [];
     });
 
-    // Connect WebSocket and subscribe to screenshots
     this.userIds.forEach(userId => {      
       this.wsService.connect(userId);
-      
       const sub = this.wsService.getMessagesByType(WebSocketNotificationType.SCREENSHOT)
         .subscribe(message => {
-          if (message.contentType === 'image' ) {
+          if (message.contentType === 'image') {
             const imageUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
               `data:image/jpeg;base64,${message.content}`
             );
@@ -51,7 +52,6 @@ export class LiveScreenComponent implements OnInit, OnDestroy {
       this.wsSubscription.add(sub);
     });
 
-    // Create live screen record
     this.timelog.createLiveScreenRecord({ users: this.userIds })
       .subscribe({
         error: (err) => console.error('Failed to create live screen record:', err)
@@ -63,12 +63,29 @@ export class LiveScreenComponent implements OnInit, OnDestroy {
     return user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
   }
 
+  minimizeDialog(): void {
+    this.isMinimized = !this.isMinimized;
+    this.isMaximized = false;
+    if (this.isMinimized) {
+      this.dialogRef.updateSize('300px', '50px');
+    } else {
+      this.dialogRef.updateSize(this.originalSize.width, this.originalSize.height);
+    }
+  }
+
+  toggleMaximize(): void {
+    this.isMaximized = !this.isMaximized;
+    this.isMinimized = false;
+    if (this.isMaximized) {
+      this.dialogRef.updateSize('100vw', '100vh');
+    } else {
+      this.dialogRef.updateSize(this.originalSize.width, this.originalSize.height);
+    }
+  }
+
   ngOnDestroy(): void {
-    // Clean up WebSocket connections
     this.wsSubscription.unsubscribe();
     this.userIds.forEach(userId => this.wsService.disconnect());
-    
-    // Remove live screen record
     this.timelog.removeLiveScreenRecord({ users: this.userIds })
       .subscribe({
         error: (err) => console.error('Failed to remove live screen record:', err)

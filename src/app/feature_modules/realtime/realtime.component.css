@@ -61,3 +61,7 @@ td:last-child, th:last-child {
     width: 75px;
     height: 75px; */
 }
+.custom-dialog .mat-dialog-container {
+    padding: 0;
+    overflow: visible; /* Allows resizing beyond the container */
+  }

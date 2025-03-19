@@ -96,7 +96,7 @@ export class RentInformationComponent {
       landlordName: ['', [Validators.required, Validators.min(0)]],
       landlordPan: ['', Validators.required],
       landlordAddress: ['', Validators.required],
-      approvalStatus: ['', Validators.required],
+      approvalStatus: ['Pending', Validators.required],
       isEditable: [false],
       documentLink: ['', Validators.required],
       employeeIncomeTaxDeclarationAttachments: this.fb.array([])
@@ -143,8 +143,6 @@ export class RentInformationComponent {
       console.error('Error converting file to base64:', error);
     });
   }
-
-
 
   convertFileToBase64(file: File): Promise<string> {
     return new Promise((resolve, reject) => {

@@ -12,6 +12,7 @@ import { CommonModule } from '@angular/common';
 import { TaxComponent } from './tax/tax.component';
 import { UserTaxDeclarationComponent } from './user-tax-declaration/user-tax-declaration.component';
 import { TaxComponentsComponent } from './tax/edit-tax/tax-components/tax-components.component';
+import { TaxComponentBySectionComponent } from './tax-component-by-section/tax-component-by-section.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { TaxComponentsComponent } from './tax/edit-tax/tax-components/tax-compon
     RentInformationComponent,
     TaxSectionComponent,
     TaxDeclarationComponent,
-    TaxComponentsComponent
+    TaxComponentsComponent,
+    TaxComponentBySectionComponent
   ],
   imports: [
     CommonModule,

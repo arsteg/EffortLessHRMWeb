@@ -7,11 +7,11 @@ import { TaxationService } from 'src/app/_services/taxation.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
-  selector: 'app-tax-components',
-  templateUrl: './tax-components.component.html',
-  styleUrl: './tax-components.component.css'
+  selector: 'app-tax-component-by-section',
+  templateUrl: './tax-component-by-section.component.html',
+  styleUrls: ['./tax-component-by-section.component.css']
 })
-export class TaxComponentsComponent {
+export class TaxComponentBySectionComponent {
   searchText: string = '';
   closeResult: string = '';
   taxComponentForm: FormGroup;
@@ -105,6 +105,7 @@ export class TaxComponentsComponent {
     };
     this.taxService.getAllTaxComponents(pagination).subscribe((res: any) => {
       this.taxComponents = res.data;
+      console.log(this.taxComponents);
       this.totalRecords = res.total;
     })
   }

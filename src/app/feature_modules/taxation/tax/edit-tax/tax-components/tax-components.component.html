@@ -15,7 +15,9 @@
             <tr *ngFor="let group of incomeTaxDecComponentForm.get('incomeTaxComponent')['controls']; let i = index"
                 [formGroupName]="i">
                 <td>{{ taxComponents[i]?.componantName }}</td>
-                <td>{{ getSection(taxComponents[i]?.section) }}</td>
+                <td>
+                    {{ taxComponents[i]?.section.section }}
+                </td>
                 <td>
                     <input formControlName="maximumAmount" type="number" [readonly]="!group.get('isEditable')?.value" />
                 </td>
@@ -27,27 +29,40 @@
                         [readonly]="!group.get('isEditable')?.value" />
                 </td>
                 <td>
-                    <select formControlName="approvalStatus" [readonly]="!group.get('isEditable')?.value">
+                    <!-- <select formControlName="approvalStatus" [readonly]="!group.get('isEditable')?.value">
                         <option value="Pending">Pending</option>
                         <option value="Approved">Approved</option>
                         <option value="Rejected">Rejected</option>
-                    </select>
+                    </select> -->
+                    <input type="text" [disabled] formControlName="approvalStatus">
                 </td>
                 <td>
                     <input formControlName="remark" type="text" [readonly]="!group.get('isEditable')?.value" />
                 </td>
+
                 <td class="text-center">
+                    <div class="attachment-container" *ngIf="group.get('employeeIncomeTaxDeclarationAttachments')?.value?.length">
+                        <div *ngFor="let attachment of group.get('employeeIncomeTaxDeclarationAttachments')?.value; let j = index">
+                          {{ attachment.attachmentName }}
+                          <a *ngIf="attachment.documentLink" [href]="attachment.documentLink" target="_blank">View</a>
+                        </div>
+                      </div>
+                      <div *ngIf="!group.get('employeeIncomeTaxDeclarationAttachments')?.value?.length" class="text-muted">
+                        No attachments
+                      </div>
                     <div class="attachment-container">
-                        <label for="attachment-{{i}}">
+                        <label [readonly]="!group.get('isEditable')?.value" for="attachment-{{i}}">
                             <i class="bi bi-paperclip"
                                 matTooltip="{{ group.get('documentLink')?.value ? group.get('documentLink')?.value.split('/').pop().split('.').slice(0, -1).join('.') : 'Add Attachment File' }}"
-                                matTooltipPosition="below"></i>
+                                matTooltipPosition="below">
+                            </i>
                         </label>
-                        <input type="file" id="attachment-{{i}}" [readonly]="!group.get('isEditable')?.value"
+                        <input type="file" id="attachment-{{i}}" [disabled]="!group.get('isEditable')?.value"
                             (change)="uploadAttachment($event, i)" style="display: none;" />
                     </div>
+                   
                 </td>
-                
+
                 <td>
                     @if(!group.get('isEditable')?.value){
                     <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before" type="button"
