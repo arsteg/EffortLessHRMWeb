@@ -20,7 +20,7 @@
                 </h3>
 
                 <div class="mt-2 bg-white tableContainer">
-                        @if(activeTabName !== 'Rent Information'){
+                        @if(!isHRA){
                         <app-tax-components [sectionId]="activeTab" [selectedData]="selectedRecord"
                             [selectedUser]="selectedUser" (tabSelected)="selectTab($event)">
                         </app-tax-components>
