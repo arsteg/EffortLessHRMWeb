@@ -16,31 +16,32 @@
         <table class="px-2">
             <thead>
                 <th class="pe-lg-0 pe-3" [appSort]="taxList" data-name="financialYear"
-                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Financial&nbsp;Year
+                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Financial&nbsp;Year
                     <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                 </th>
                 <th class="pe-lg-0 pe-3" [appSort]="taxList" data-name="financialYear"
-                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">80C&nbsp;Deductions
+                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">80C&nbsp;Deductions
                     <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                 </th>
                 <th class="pe-lg-0 pe-3" [appSort]="taxList" data-name="financialYear"
-                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Section&nbsp;10&nbsp;Exemptions
+                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Section&nbsp;10&nbsp;Exemptions
                     <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                 </th>
                 <th class="pe-lg-0 pe-3" [appSort]="taxList" data-name="financialYear"
-                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Chapter&nbsp;VI&nbsp;Deductions
+                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Chapter&nbsp;VI&nbsp;Deductions
                     <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                 </th>
                 <th class="pe-lg-0 pe-3" [appSort]="taxList" data-name="financialYear"
-                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Total&nbsp;Prequisites
+                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Total&nbsp;Prequisites
                     <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                 </th>
                 <th class="pe-lg-0 pe-3" [appSort]="taxList" data-name="financialYear"
-                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Interest&nbsp;on&nbsp;Home&nbsp;Loan
+                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Interest&nbsp;on&nbsp;Home&nbsp;Loan
                     <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                 </th>
                 <th class="pe-lg-0 pe-3" [appSort]="taxList" data-name="financialYear"
-                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Previous&nbsp;Employment&nbsp;Information
+                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                    Previous&nbsp;Employment&nbsp;Information
                     <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                 </th>
                 <th class="pe-lg-0 pe-3">Actions</th>
@@ -56,53 +57,27 @@
                     <td>{{tax?.componentSums?.componentSums?.['Interest on Home Loan'] || 0}}</td>
                     <td>{{tax?.componentSums?.componentSums?.['Previous Employment Information'] || 0}}</td>
                     <td class="action text-center">
-                        <!-- <div ngbDropdown class="dropdown-center">
-                            <button class="actions ms-2" mat-mini-fab ngbDropdownToggle aria-expanded="false"
-                                aria-label="Example icon button with a menu icon">
-                                <i class="bi bi-send"></i>
-                            </button>
-
-                            <ul ngbDropdownMenu class="dropdown-menu py-0">
-                                <li class="d-flex border-bottom action-list">
-                                    <i class="bi bi-arrow-down text-danger dropdown-item w-25"></i>
-                                    <span class="pt-1 text-muted">Download</span>
-                                </li>
-
-                                <li class="d-flex border-bottom action-list" data-bs-toggle="offcanvas"
-                                    (click)="selectedRecord = tax; openOffcanvas(true, tax);"
-                                    data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
-                                    <i class="bi bi-calculator text-primary dropdown-item w-25"></i>
-                                    <span class="pt-1 text-muted">Tax Calculator</span>
-                                </li>
-
-                                <li class="d-flex action-list"
-                                    (click)="selectedRecord = tax; isEdit= true; taxView = true;">
-                                    <i class="bi bi-pencil text-success dropdown-item w-25"></i>
-                                    <span class="pt-1 text-muted">Edit</span>
-                                </li>
-                            </ul>
-                        </div> -->
                         <mat-menu #menu="matMenu">
                             <button mat-menu-item>
-                              <mat-icon class="text-danger">arrow_downward</mat-icon>
-                              <span class="ms-2">Download</span>
+                                <mat-icon class="text-danger">arrow_downward</mat-icon>
+                                <span class="ms-2">Download</span>
                             </button>
-                          
-                            <button mat-menu-item (click)="selectedRecord = tax; openOffcanvas(true, tax);">
-                              <mat-icon class="text-primary">calculate</mat-icon>
-                              <span class="ms-2">Tax Calculator</span>
+
+                            <button mat-menu-item (click)="getTaxDeclaration(); selectedRecord = tax; openOffcanvas(true, tax);">
+                                <mat-icon class="text-primary">calculate</mat-icon>
+                                <span class="ms-2">Tax Calculator</span>
                             </button>
-                          
+
                             <button mat-menu-item (click)="selectedRecord = tax; isEdit = true; taxView = true;">
-                              <mat-icon class="text-success">edit</mat-icon>
-                              <span class="ms-2">Edit</span>
+                                <mat-icon class="text-success">edit</mat-icon>
+                                <span class="ms-2">Edit</span>
                             </button>
-                          </mat-menu>
-                          
-                          <button mat-mini-fab [matMenuTriggerFor]="menu" class="actions ms-2" aria-label="Actions">
+                        </mat-menu>
+
+                        <button mat-mini-fab [matMenuTriggerFor]="menu" class="actions ms-2" aria-label="Actions">
                             <mat-icon>send</mat-icon>
-                          </button>
-                          
+                        </button>
+
                     </td>
                 </tr>
             </tbody>
@@ -120,8 +95,9 @@
     <div class="offcanvas-header">
         <h2>Employee Tax Calculator</h2>
         <div class="d-flex justify-content-between px-4">
-            <label for="">{{selectedUser?.firstName | titlecase}}&nbsp;{{selectedUser?.lastName | titlecase}} | {{selectedRecord?.financialYear}}</label>
-            
+            <label for="">{{selectedUser?.firstName | titlecase}}&nbsp;{{selectedUser?.lastName | titlecase}} |
+                {{selectedRecord?.financialYear}}</label>
+
         </div>
     </div>
     <hr>
@@ -142,7 +118,8 @@
             <h1 class="modal-title text-muted mb-0">{{isEdit == true ? 'Update': 'Add'}} Tax
             </h1>
         </div>
-        <div class=""><button type="button" (click)="modal.close('Escape clicked')" data-bs-dismiss="modal" class="btn-close text-end"></button>
+        <div class=""><button type="button" (click)="modal.close('Escape clicked')" data-bs-dismiss="modal"
+                class="btn-close text-end"></button>
         </div>
     </div>
 

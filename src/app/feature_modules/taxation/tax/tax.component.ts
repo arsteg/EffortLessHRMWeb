@@ -112,18 +112,6 @@ export class TaxComponent {
     this.getTaxDeclaration();
   }
 
-  // logUrlSegmentsForUser() {
-  //   const urlPath = this.router.url;
-  //   const segments = urlPath.split('/').filter(segment => segment);
-  //   if (segments.length >= 3) {
-  //     const employee = segments[segments.length - 3];
-  //     this.userService.getUserByEmpCode(employee).subscribe((res: any) => {
-  //       this.selectedUser = res.data;
-  //       this.getTaxDeclaration();
-  //     });
-  //   }
-  // }
-
   getTaxDeclaration() {
     const pagination = {
       skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
@@ -151,16 +139,12 @@ export class TaxComponent {
             ...component,
             section: allSections.find((section: any) => section._id === component.section)?.section
           }));
-          // Calculate the sum of each component
           const componentSums = this.calculateComponentSums(mappedIncomeTaxComponents);
-
-          // Update the tax item with the calculated sums and hra
           tax.totalRentDeclared = this.getTotalRentDeclared(tax.incomeTaxDeclarationHRA);
           const hra = tax.totalRentDeclared;
           tax.componentSums = { componentSums, hra };
           this.taxService.taxByUser.next(tax.componentSums);
         });
-
         this.totalRecords = res.total;
         this.uniqueFinancialYears = this.getUniqueFinancialYears(this.taxList);
       });
