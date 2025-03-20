@@ -210,6 +210,8 @@ export class CommonService extends baseService {
   }
   setSelectedUser(payload: any): Observable<any> {
     return this.http.post<any>(`${environment.apiUrlDotNet}/common/setSelectedUser`, payload, this.httpOptions);
-  }  
-
+  }
+  getOnlineUsersByCompany(): Observable<any> {    
+    return this.http.get<any>(`${environment.apiUrlDotNet}/common/getOnlineUsersByCompany`, this.httpOptions);
+  }
 }

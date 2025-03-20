@@ -31,6 +31,7 @@ export class RealtimeComponent implements OnInit {
   member: any;
   p: number = 1;
   onlineUserData: any;
+  onlineUsers: any;
   user: any;
   role: any;
   showAllUserLiveButton: boolean = false;
@@ -56,6 +57,7 @@ export class RealtimeComponent implements OnInit {
       this.populateUsers();
       this.getProjectList();
       this.getRealtime();
+      this.getOnlineUsersByCompany();
     })
   }
   getCurrentUser() {
@@ -157,7 +159,11 @@ export class RealtimeComponent implements OnInit {
       })
     });
   }
-
+  getOnlineUsersByCompany() {
+    this.commonService.getOnlineUsersByCompany().subscribe((response: any) => {
+      this.onlineUsers = response.data.onlineUsers;
+    })
+  }
   multipleUserLiveScreen() {
     let userIds: string[] = [];
     for (let item of this.realtime.onlineUsers) {
