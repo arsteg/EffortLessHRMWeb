@@ -19,29 +19,35 @@
       </div>
     </div>
 
-    <div class="stats-row">
-      <div class="stat-card total-members">
-        <div class="stat-content">
-          <mat-icon class="stat-icon">people</mat-icon>
-          <div class="stat-label">Total Members</div>
+    <div class="row">
+      <div class="col-12 col-md-4">
+        <div class="card stat-card">
+          <div>
+            <mat-icon class="stat-icon">people</mat-icon>
+            <div class="stat-label">Number of Members</div>
+          </div>
+          <div class="stat-value">{{ realtime?.totalMember }}</div>
         </div>
-        <div class="stat-value">{{ realtime?.totalMember }}</div>
       </div>
 
-      <div class="stat-card working-now">
-        <div class="stat-content">
-          <mat-icon class="stat-icon">groups</mat-icon>
-          <div class="stat-label">Working Now</div>
+      <div class="col-12 col-md-4">
+        <div class="card stat-card">
+          <div>
+            <mat-icon class="stat-icon" color="accent">groups</mat-icon>
+            <div class="stat-label">Working Now</div>
+          </div>
+          <div class="stat-value">{{ realtime?.activeMember }}</div>
         </div>
-        <div class="stat-value">{{ realtime?.activeMember }}</div>
       </div>
 
-      <div class="stat-card non-productive">
-        <div class="stat-content">
-          <mat-icon class="stat-icon">do_not_disturb</mat-icon>
-          <div class="stat-label">Non-Productive</div>
+      <div class="col-12 col-md-4">
+        <div class="card stat-card">
+          <div>
+            <mat-icon class="stat-icon">do_not_disturb</mat-icon>
+            <div class="stat-label">Currently Non-Productive</div>
+          </div>
+          <div class="stat-value">{{ realtime?.totalNonProductiveMember }}</div>
         </div>
-        <div class="stat-value">{{ realtime?.totalNonProductiveMember }}</div>
       </div>
     </div>
 
