@@ -4,8 +4,8 @@
   padding: 0;
   position: relative;
   resize: both;
-  overflow-y: auto; /* Vertical scroll only */
-  overflow-x: hidden; /* Prevent horizontal scroll */
+  overflow-y: auto;
+  overflow-x: hidden;
   min-width: 300px;
   min-height: 200px;
   max-height: 100vh;
@@ -15,10 +15,8 @@
   border: 1px solid #e0e0e0;
   transition: all 0.3s ease;
   width: 100%;
-  max-width: 100%; /* Explicitly cap width */
+  max-width: 100%;
   box-sizing: border-box;
-  /* Debugging: Remove after fixing */
-  /* border: 1px solid red; */
 }
 
 .header {
@@ -32,12 +30,10 @@
   flex-shrink: 0;
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden; /* Extra precaution */
+  overflow-x: hidden;
   box-sizing: border-box;
-  /* Debugging: Remove after fixing */
-  /* border: 1px solid blue; */
+  cursor: move; /* Already present, just confirming */
 }
-
 .minimize-btn, .maximize-btn, .close-btn {
   display: flex;
   align-items: center;
@@ -54,7 +50,7 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   transition: all 0.2s ease;
   position: relative;
-  flex-shrink: 0; /* Prevent button shrinkage */
+  flex-shrink: 0;
 }
 
 .minimize-btn:hover, .maximize-btn:hover, .close-btn:hover {
@@ -69,7 +65,7 @@
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Tooltip Styling */
+/* Tooltip Styling remains unchanged */
 .minimize-btn:hover::after, .maximize-btn:hover::after, .close-btn:hover::after {
   content: attr(title);
   position: absolute;
@@ -127,8 +123,6 @@
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
-  /* Debugging: Remove after fixing */
-  /* border: 1px solid green; */
 }
 
 .image-wrapper, .screen-card {
@@ -144,8 +138,6 @@
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
-  /* Debugging: Remove after fixing */
-  /* border: 1px solid purple; */
 }
 
 .image-wrapper:hover, .screen-card:hover {
@@ -167,7 +159,7 @@
   justify-content: center;
   min-height: 32px;
   box-sizing: border-box;
-  overflow-x: hidden; /* Prevent label overflow */
+  overflow-x: hidden;
 }
 
 .screen-image {
@@ -205,19 +197,30 @@
   flex: 1;
   overflow-x: hidden;
   box-sizing: border-box;
-  /* Debugging: Remove after fixing */
-  /* border: 1px solid orange; */
 }
 
-.screen-card {
-  margin-bottom: 15px;
+/* Drag styles */
+.cdk-drag-preview {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  opacity: 0.9;
+}
+
+.cdk-drag-placeholder {
+  opacity: 0.3;
+  background: #e0e0e0;
+  border-radius: 8px;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 /* Minimize state */
 .live-screen-container.minimized {
   height: 50px;
   overflow: hidden;
-  width: 300px; /* Consistent with dialog update */
+  width: 300px;
 }
 
 /* Maximize state */
