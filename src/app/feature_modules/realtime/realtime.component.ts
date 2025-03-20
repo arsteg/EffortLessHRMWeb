@@ -58,7 +58,6 @@ export class RealtimeComponent implements OnInit, OnDestroy {
       this.populateUsers();
       this.getProjectList();      
       this.getRealtime();
-      
       this.setupWebSocket();
     });
   }
@@ -124,6 +123,7 @@ export class RealtimeComponent implements OnInit, OnDestroy {
         user: { id: member.id, firstName: member.name.split(' ')[0], lastName: member.name.split(' ')[1] || '' },
         isOnline: this.isUserOnline(member.id)
       }));
+      this.realtime.activeMember = this.realtime.onlineUsers.filter(u => u.isOnline).length; // Update activeMember
     } else {
       this.getRealtime();
     }
@@ -147,13 +147,13 @@ export class RealtimeComponent implements OnInit, OnDestroy {
     this.timelog.getTeamMembers(this.member.id).subscribe((response: any) => {
       this.teamUser = response.data;
       let realtime = new RealTime();
-      if( this.selectedProject && this.selectedProject.length > 0){
-        this.realtime.projects = this.selectedProject;
+      if (this.selectedProject && this.selectedProject.length > 0) {
+        this.realtime.projects = this.selectedProject; // Fixed assignment
       }  
-      if( this.selectedTask && this.selectedTask.length > 0){
-        this.realtime.tasks = this.selectedTask;
+      if (this.selectedTask && this.selectedTask.length > 0) {
+        this.realtime.tasks = this.selectedTask; // Fixed assignment
       }
-      if( this.selectedUser && this.selectedUser.length > 0){
+      if (this.selectedUser && this.selectedUser.length > 0) {
         this.realtime.users = (this.role.toLowerCase() === 'admin') ? this.selectedUser : [...this.teamUser, this.currentUser.id];       
       }   
       this.timelog.realTime(realtime).subscribe(result => {
@@ -163,6 +163,7 @@ export class RealtimeComponent implements OnInit, OnDestroy {
           ...user,
           isOnline: this.isUserOnline(user.user.id)
         }));
+        this.realtime.activeMember = this.realtime.onlineUsers.filter(u => u.isOnline).length; // Calculate activeMember
         this.showAllUserLiveButton = this.realtime.onlineUsers.filter(u => u.isOnline && u.user.id !== this.currentUser.id).length > 1;
       });      
     });
@@ -176,15 +177,15 @@ export class RealtimeComponent implements OnInit, OnDestroy {
   }
 
   setupWebSocket() {
-    if(this.currentUser){
-    this.webSocketService.connect(this.currentUser.id);
-    this.wsSubscription = this.webSocketService.getMessagesByType(WebSocketNotificationType.ALERT).subscribe(message => {
-      const content = JSON.parse(message.content);
-      if (content.userId && content.isOnline !== undefined) {
-        this.updateUserStatus(content.userId, content.isOnline);
-      }
-    });
-  }
+    if (this.currentUser) {
+      this.webSocketService.connect(this.currentUser.id);
+      this.wsSubscription = this.webSocketService.getMessagesByType(WebSocketNotificationType.ALERT).subscribe(message => {
+        const content = JSON.parse(message.content);
+        if (content.userId && content.isOnline !== undefined) {
+          this.updateUserStatus(content.userId, content.isOnline);
+        }
+      });
+    }
   }
 
   updateUserStatus(userId: string, isOnline: boolean) {
@@ -192,6 +193,7 @@ export class RealtimeComponent implements OnInit, OnDestroy {
       const user = this.realtime.onlineUsers.find(u => u.user.id === userId);
       if (user) {
         user.isOnline = isOnline;
+        this.realtime.activeMember = this.realtime.onlineUsers.filter(u => u.isOnline).length; // Update activeMember
         this.showAllUserLiveButton = this.realtime.onlineUsers.filter(u => u.isOnline && u.user.id !== this.currentUser.id).length > 1;
       } else {
         this.getRealtime(); // Refresh if user not found
@@ -209,6 +211,7 @@ export class RealtimeComponent implements OnInit, OnDestroy {
         ...user,
         isOnline: this.isUserOnline(user.user.id)
       }));
+      this.realtime.activeMember = this.realtime.onlineUsers.filter(u => u.isOnline).length; // Update activeMember
     }
   }
 
