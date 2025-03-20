@@ -63,7 +63,6 @@ export class ExpenseCategorySettingsComponent {
 
 
   ngOnInit() {
-    console.log(this.selectedTemplate);
     let id = this.expenseService.selectedTemplate.getValue()._id;
     this.expenseService.getCategoriesByTemplate(id).subscribe((res: any) => {
       let categoryList = res.data;

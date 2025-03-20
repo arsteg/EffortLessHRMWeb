@@ -71,7 +71,10 @@ export class RealtimeComponent implements OnInit {
   }
   getProjectList() {
     //Admin and Manager can see the list of all projects
-    if (this.role.toLowerCase() == "admin" || null) {
+    if(this.currentUser==null){
+      return;
+    }
+    if (this.role?.toLowerCase() == "admin" || null) {
       this.projectService.getprojects('', '').subscribe((response: any) => {
         this.projectList = response && response.data && response.data['projectList'];
         this.projectList = this.projectList.filter(project => project !== null);
@@ -82,13 +85,16 @@ export class RealtimeComponent implements OnInit {
         this.projectList = response && response.data && response.data['projectList'];
         this.projectList = this.projectList.filter(project => project !== null);
       });
-    }
+    } 
   }
   populateUsers() {
+    if(!this.currentUser){
+      return; 
+    }
     this.members = [];
-    this.members.push({ id: this.currentUser.id, name: "Me", email: this.currentUser.id });
+    this.members.push({ id: this.currentUser?.id, name: "Me", email: this.currentUser?.id });
     this.member = this.currentUser;
-    this.timelog.getTeamMembers(this.member.id).subscribe({
+    this.timelog.getTeamMembers(this.member?.id).subscribe({
       next: (response: { data: any[]; }) => {
 
         this.teamUser = response.data;
@@ -111,10 +117,13 @@ export class RealtimeComponent implements OnInit {
     });
   }
 
-  filterData() {
+ filterData() {
+  if (this.selectedUser.length === 0) {
+    this.realtime.onlineUsers = this.members; // Show all members if no filter is selected
+  } else {
     this.getRealtime();
   }
-
+}
 
 
 
@@ -133,6 +142,9 @@ export class RealtimeComponent implements OnInit {
 
 
   getRealtime() {
+    if(this.members == null){
+      return;
+    }
     this.timelog.getTeamMembers(this.member.id).subscribe((response: any) => {
       this.teamUser = response.data;
       let realtime = new RealTime();
@@ -153,6 +165,7 @@ export class RealtimeComponent implements OnInit {
         userIds = userIds.concat(item.user.id);
       }
     }
+    
     this.openLiveScreen(userIds);
   }
 
@@ -166,10 +179,12 @@ export class RealtimeComponent implements OnInit {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.width = '60vw';
     dialogConfig.height = 'auto';
+    dialogConfig.maxWidth = '100vw'; // Prevent dialog from exceeding viewport
     dialogConfig.data = { id: userIds };
-
+    dialogConfig.panelClass = 'no-padding-dialog'; // Custom class for styling
+  
     const dialogRef = this.dialog.open(LiveScreenComponent, dialogConfig);
-
+  
     dialogRef.afterClosed().subscribe(result => {
       console.log('The modal was closed');
     });

@@ -6,7 +6,6 @@ import { EmployeeProfileComponent } from './employee-profile/employee-profile.co
 import { EmploymentDetailsComponent } from './employment-details/employment-details.component';
 import { SalaryDetailsComponent } from './salary-details/salary-details.component';
 import { StatutoryDetailsComponent } from './statutory-details/statutory-details.component';
-import { TaxComponent } from './tax/tax.component';
 import { UserLoansAdvancesComponent } from './loans-advances/loans-advances.component';
 
 const routes: Routes = [
@@ -21,7 +20,6 @@ const routes: Routes = [
       { path: 'salary-details', component: SalaryDetailsComponent },
       { path: 'statutory-details', component: StatutoryDetailsComponent },
       { path: 'loans-advances', component: UserLoansAdvancesComponent },
-      { path: 'tax', component: TaxComponent },
     ],
   },
 ];

@@ -15,7 +15,7 @@ import { EditTaskComponent } from './tasks/edit-task/edit-task.component';
 import { TaskCommentComponent } from './tasks/task-comment/task-comment.component';
 import { SubtaskComponent } from './tasks/subtask/subtask.component';
 import { SubscriptionComponent } from './layouts/subscription/subscription.component';
-import { LogComponentComponent } from './feature_modules/logs/log.component/log.component.component';
+import { LogComponent } from './feature_modules/logs/log.component/log.component.component';
 import { FeedbackSubmissionComponent } from './feature_modules/feedback/feedback-submission/feedback-submission.component';
 import { FeedbackSettingsComponent } from './feature_modules/feedback/feedback.settings.component';
 
@@ -141,7 +141,7 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'changePassword', component: ChangePasswordComponent },
   { path: 'resetPassword/:token', component: ResetPasswordComponent },
-  { path: 'live-logs', component: LogComponentComponent },
+  { path: 'live-logs', component: LogComponent },
   { path: 'submit-feedback', component: FeedbackSubmissionComponent},
   // Fallback route
   { path: '**', redirectTo: 'landing' },

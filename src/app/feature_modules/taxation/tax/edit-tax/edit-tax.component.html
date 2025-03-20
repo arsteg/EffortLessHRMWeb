@@ -16,12 +16,11 @@
             <div class="tab-pane active">
 
                 <h3 class="mb-0 d-flex">
-                    <p class="mb-0">Financial Year: {{selectedRecord?.financialYear}}</p> <span class="mx-3"> | </span>
-                    <p>{{selectedUser?.firstName | titlecase}}&nbsp;{{selectedUser?.lastName | titlecase}}</p>
+                    <p class="mb-0">Financial Year: {{selectedRecord?.financialYear}}</p>
                 </h3>
 
                 <div class="mt-2 bg-white tableContainer">
-                        @if(activeTabName !== 'Rent Information'){
+                        @if(!isHRA){
                         <app-tax-components [sectionId]="activeTab" [selectedData]="selectedRecord"
                             [selectedUser]="selectedUser" (tabSelected)="selectTab($event)">
                         </app-tax-components>
@@ -30,7 +29,6 @@
                             [selectedUser]="selectedUser"></app-rent-information>
                         }
                 </div>
-
             </div>
         </div>
     </div>

@@ -1,65 +1,49 @@
-<style>
-    .image-container {
-        position: relative;
-    }
-
-    .username {
-        background-color: white;
-        color: black;
-        text-align: center;
-    }
-
-    .image-container-multi {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-    }
-
-    .username-multi {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        background-color: white;
-        color: black;
-        text-align: center;
-        padding: 5px;
-    }
-</style>
-
-<div>
-    <div *ngIf="isSingle">
-        <div class="row col-lg-12 mx-auto">
-            <div class="d-flex justify-content-end px-0">
-                <mat-dialog-actions>
-                    <button mat-button mat-dialog-close><mat-icon>close</mat-icon></button>
-                </mat-dialog-actions>
-            </div>
-        </div>
-        <div class="row col-lg-12 mx-auto image-container">
-            <span class="username">{{ getUserDetail(this.userIds[0]) }}'s screen</span>
-            <img [src]="imageVideoSingleUser" [alt]="getUserDetail(this.userIds[0])"
-                style="width: 100%; height: 100%;" />
-        </div>
+<div class="live-screen-container" [ngClass]="{'minimized': isMinimized, 'maximized': isMaximized}">
+  <!-- Single User View -->
+  <div *ngIf="isSingle" class="single-view">
+    <div class="header">
+      <button class="minimize-btn" (click)="minimizeDialog()" title="Minimize">
+        <i class="fas fa-minus"></i>
+      </button>
+      <button class="maximize-btn" (click)="toggleMaximize()" [title]="isMaximized ? 'Restore' : 'Maximize'">
+        <i class="fas" [ngClass]="isMaximized ? 'fa-compress' : 'fa-expand'"></i>
+      </button>
+      <button class="close-btn" mat-dialog-close title="Close">
+        <i class="fas fa-times"></i>
+      </button>
     </div>
-
-    <div *ngIf="!isSingle">
-        <div class="container">
-            <div class="row col-lg-12 mx-auto">
-                <div class="d-flex justify-content-end px-0">
-                    <mat-dialog-actions>
-                        <button mat-button mat-dialog-close><mat-icon>close</mat-icon></button>
-                    </mat-dialog-actions>
-                </div>
-            </div>
-            <div class="row m-12">
-                <!-- <div *ngFor="let user of userIds" class="col-sm-6 col-md-4 col-lg-3 mb-3"> -->
-                <div *ngFor="let user of userIds" class="col-sm-6 image-container-multi">
-                    <span class="username-multi">{{ getUserDetail(user) }}'s screen</span>
-                    <img [src]="imageVideo[user]" [alt]="getUserDetail(user)" class="img-fluid rounded" />
-                </div>
-            </div>
-        </div>
+    <div class="image-wrapper">
+      <div class="user-label">{{ getUserName(userIds[0]) }}'s Screen</div>
+      <img [src]="imageUrls[userIds[0]]" 
+           [alt]="getUserName(userIds[0])" 
+           class="screen-image"
+           *ngIf="imageUrls[userIds[0]]">
+      <div class="no-image" *ngIf="!imageUrls[userIds[0]]">Waiting for screenshot...</div>
     </div>
+  </div>
+
+  <!-- Multiple Users View -->
+  <div *ngIf="!isSingle" class="multi-view">
+    <div class="header">
+      <button class="minimize-btn" (click)="minimizeDialog()" title="Minimize">
+        <i class="fas fa-minus"></i>
+      </button>
+      <button class="maximize-btn" (click)="toggleMaximize()" [title]="isMaximized ? 'Restore' : 'Maximize'">
+        <i class="fas" [ngClass]="isMaximized ? 'fa-compress' : 'fa-expand'"></i>
+      </button>
+      <button class="close-btn" mat-dialog-close title="Close">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="screens-grid">
+      <div *ngFor="let userId of userIds" class="screen-card">
+        <div class="user-label">{{ getUserName(userId) }}'s Screen</div>
+        <img [src]="imageUrls[userId]" 
+             [alt]="getUserName(userId)" 
+             class="screen-image"
+             *ngIf="imageUrls[userId]">
+        <div class="no-image" *ngIf="!imageUrls[userId]">Waiting for screenshot...</div>
+      </div>
+    </div>
+  </div>
 </div>

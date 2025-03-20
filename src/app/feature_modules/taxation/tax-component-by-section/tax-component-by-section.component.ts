@@ -7,11 +7,11 @@ import { TaxationService } from 'src/app/_services/taxation.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
-  selector: 'app-tax-components',
-  templateUrl: './tax-components.component.html',
-  styleUrl: './tax-components.component.css'
+  selector: 'app-tax-component-by-section',
+  templateUrl: './tax-component-by-section.component.html',
+  styleUrls: ['./tax-component-by-section.component.css']
 })
-export class TaxComponentsComponent {
+export class TaxComponentBySectionComponent {
   searchText: string = '';
   closeResult: string = '';
   taxComponentForm: FormGroup;
@@ -54,7 +54,7 @@ export class TaxComponentsComponent {
   }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
@@ -108,6 +108,25 @@ export class TaxComponentsComponent {
       this.totalRecords = res.total;
     })
   }
+
+  checkForHRARecord() {
+    const formValue = this.taxComponentForm.value;
+  
+    if (formValue.section) {
+      const selectedSection = this.taxComponents.find(section => section.section._id === formValue.section);
+  
+      if (selectedSection && selectedSection.section.isHRA) {
+        const existingHRAComponent = this.taxComponents.some(component => component.section.isHRA);
+        
+        if (existingHRAComponent) {
+          this.toast.error('HRA already exists! You cannot create multiple HRA Components.');
+          return;
+        }
+      }
+    }
+  }
+  
+
   setFormValues(data) {
     this.taxComponentForm.patchValue(data);
   }
@@ -137,7 +156,7 @@ export class TaxComponentsComponent {
     });
   }
 
-  getAllSections(){
+  getAllSections() {
     this.taxService.getAllTaxSections().subscribe((res: any) => {
       this.sections = res.data;
     })
