@@ -22,7 +22,7 @@ export class TaxSectionComponent {
   totalRecords: number
   recordsPerPage: number = 10;
   currentPage: number = 1;
-  sections: any;
+  sections: any[];
   public sortOrder: string = '';
 
   constructor(private modalService: NgbModal,
@@ -31,7 +31,8 @@ export class TaxSectionComponent {
     private fb: FormBuilder,
     private dialog: MatDialog) {
     this.taxSectionForm = this.fb.group({
-      section: ['']
+      section: [''],
+      isHRA: [false]
     })
   }
 
@@ -50,7 +51,7 @@ export class TaxSectionComponent {
   }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
@@ -58,18 +59,32 @@ export class TaxSectionComponent {
   }
 
   onSubmit() {
-    if(!this.isEdit) {
-      this.taxService.addTaxSection(this.taxSectionForm.value).subscribe((res: any) => {
+    const formValue = this.taxSectionForm.value;
+
+    // Check if the section is marked as HRA
+    if (formValue.isHRA) {
+      const hraSection = this.sections.find(section => section.isHRA);
+      if (hraSection) {
+        this.toast.error('HRA already exists! You cannot create multiple HRA sections.');
+        return;
+      }
+    }
+
+    if (!this.isEdit) {
+      this.taxService.addTaxSection(formValue).subscribe((res: any) => {
         this.sections.push(res.data);
-        this.taxSectionForm.reset();
+        this.taxSectionForm.reset({
+          section: '',
+          isHRA: false
+        });
         this.toast.success('Tax section added successfully');
       },
         err => {
           this.toast.error('Tax Section Can not be Created', 'Error');
         })
     }
-    else if(this.isEdit){
-      this.taxService.updateTaxSection(this.selectedRecord._id, this.taxSectionForm.value).subscribe((res: any) => {
+    else if (this.isEdit) {
+      this.taxService.updateTaxSection(this.selectedRecord._id, formValue).subscribe((res: any) => {
         this.toast.success('Tax section updated successfully');
         this.isEdit = false;
         this.taxSectionForm.reset();

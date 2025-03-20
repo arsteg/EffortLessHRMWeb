@@ -7,6 +7,7 @@ import { ExpensesService } from 'src/app/_services/expenses.service';
 import { ExpenseCategory } from 'src/app/models/expenses';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { MatTableDataSource } from '@angular/material/table';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-expenses-categories',
@@ -14,35 +15,13 @@ import { MatTableDataSource } from '@angular/material/table';
   styleUrls: ['./expenses-categories.component.css']
 })
 export class ExpensesCategoriesComponent implements OnInit {
-  changeMode: 'Add' | 'Update' = 'Add';
   closeResult: string = '';
-  selectedExpenseType: string = '';
-  selectedFieldType: string = '';
-  selectedFieldName: string = '';
-  categoryFields: any[] = [];
   expenseCategories = new MatTableDataSource<any>();
-  addCategory: ExpenseCategory;
   addCategoryForm: FormGroup;
-  fieldType: string = '';
-  fieldName: string;
-  dropdownOption: any[] = [];
-  options: string[] = [];
-  newOption: string = '';
   isEdit = false;
-  removedFieldId: string = '';
-  public sortOrder: string = '';
   selectedField: any;
   selectedCategory: any;
   field: any = []
-  fname: string;
-  ftype: string;
-  f: any = [{
-    addName: 'user name:',
-    type: 'text',
-    value: 'First',
-    id: 'user'
-  }]
-  value: any;
   updatedCategory: any;
   originalFields: any[] = [];
   totalRecords: number;
@@ -64,10 +43,6 @@ export class ExpensesCategoriesComponent implements OnInit {
       expenseCategory: [''],
       fields: this.fb.array([]),
     });
-  }
-
-  handleSubmit(event) {
-    console.log(event)
   }
 
   ngOnInit(): void {
@@ -162,8 +137,6 @@ export class ExpensesCategoriesComponent implements OnInit {
   }
 
   onCancel() {
-    // this.isEdit = false;
-    // this.addCategoryForm.reset();
     if (this.isEdit) {
       this.addCategoryForm.patchValue({
 
@@ -173,35 +146,32 @@ export class ExpensesCategoriesComponent implements OnInit {
   }
 
   addExpenseCategory() {
-    if (this.changeMode === 'Add') {
-      let categoryPayload = {
-        type: this.addCategoryForm.value['type'],
-        label: this.addCategoryForm.value['label'],
-        isMandatory: this.addCategoryForm.value['isMandatory']
-      };
+    let categoryPayload = {
+      type: this.addCategoryForm.value['type'],
+      label: this.addCategoryForm.value['label'],
+      isMandatory: this.addCategoryForm.value['isMandatory']
+    };
 
-      this.expenses.addCategory(categoryPayload).subscribe((res: any) => {
-        const newCategory = res.data;
-        this.expenseCategories.data.push(newCategory)
-        if (this.addCategoryForm.value['fields'].length > 0) {
-          let fieldsPayload = {
-            fields: this.addCategoryForm.value['fields'],
-            expenseCategory: newCategory._id
-          };
-          console.log(fieldsPayload)
-          this.expenses.addCategoryField(fieldsPayload).subscribe((result: any) => {
-            console.log(result.data);
-          });
-        }
-        this.clearselectedRequest();
-        this.toast.success('New Expense Category Added', 'Successfully!!!')
-      },
-        err => {
-          this.toast.error('This category is already exist', 'Error!!!')
+    this.expenses.addCategory(categoryPayload).subscribe((res: any) => {
+      const newCategory = res.data;
+      this.expenseCategories.data.push(newCategory)
+      if (this.addCategoryForm.value['fields'].length > 0) {
+        let fieldsPayload = {
+          fields: this.addCategoryForm.value['fields'],
+          expenseCategory: newCategory._id
+        };
+        console.log(fieldsPayload)
+        this.expenses.addCategoryField(fieldsPayload).subscribe((result: any) => {
+          console.log(result.data);
         });
-    }
-    else if (this.changeMode === 'Update') {
-    }
+      }
+      this.clearselectedRequest();
+      this.toast.success('New Expense Category Added', 'Successfully!!!')
+    },
+      err => {
+        this.toast.error('This category is already exist', 'Error!!!')
+      });
+
   }
 
   deleteCategory(id: string) {
@@ -242,13 +212,12 @@ export class ExpensesCategoriesComponent implements OnInit {
       label: this.addCategoryForm.value['label'],
       isMandatory: this.addCategoryForm.value['isMandatory']
     };
+    /**Update Category */
+    const apiCalls = {};
+    const updateCategory$ = this.expenses.updateCategory(this.selectedCategory?._id, categoryPayload);
+    apiCalls['updateCategory']=updateCategory$;
 
-    this.expenses.updateCategory(this.selectedCategory?._id, categoryPayload).subscribe((res: any) => {
-      this.getAllExpensesCategories();
-      this.toast.success('Expense Category Updated', 'Succesffully')
-      this.updatedCategory = res.data._id;
-    });
-
+    /**Update fields */
     if (this.addCategoryForm.get('fields')) {
       const updateFields = (this.addCategoryForm.value['fields'] as any[]).filter(
         (field) => field.id && !this.originalFields.some((originalField) => isEqual(field, originalField))
@@ -258,16 +227,10 @@ export class ExpensesCategoriesComponent implements OnInit {
         const fieldsPayload = {
           fields: updateFields
         };
-
-        this.expenses.updateCategoryField(fieldsPayload).subscribe((res: any) => {
-          (this.addCategoryForm.get('fields') as FormArray).clear();
-          this.addCategoryForm.reset({
-            isMandatory: false
-          });
-          this.isEdit = false;
-          this.toast.success('Expense Category Applicable field Updated', 'Successfully');
-        });
+        const updateField$ = this.expenses.updateCategoryField(fieldsPayload);
+        apiCalls['updateField']=updateField$;
       }
+      /**Add New fields */
       const newFields = (this.addCategoryForm.value['fields'] as any[]).filter(
         (field) => !field.id && !this.originalFields.some((originalField) => isEqual(field, originalField))
       );
@@ -276,13 +239,29 @@ export class ExpensesCategoriesComponent implements OnInit {
           fields: newFields,
           expenseCategory: this.selectedCategory._id
         };
-        this.expenses.addCategoryField(fieldsPayload).subscribe((res: any) => {
-          this.toast.success('Expense Category Applicable field Added', 'Successfully')
-        });
+        const addField$ = this.expenses.addCategoryField(fieldsPayload);
+        apiCalls['addField']=addField$;
       }
 
     }
-    this.getAllExpensesCategories();
+    forkJoin(apiCalls).subscribe((result: { [key: string]: any })=>{
+      if(result['updateCategory']){
+          this.toast.success('Expense Category Updated', 'Succesffully')
+          this.updatedCategory = result['updateCategory']?.data._id;
+      }
+      if(result['updateField']){
+        (this.addCategoryForm.get('fields') as FormArray).clear();
+        this.addCategoryForm.reset({
+          isMandatory: false
+        });
+        this.isEdit = false;
+          this.toast.success('Expense Category Applicable field Updated', 'Successfully');
+      }
+      if(result['addField']){
+        this.toast.success('Expense Category Applicable field Added', 'Successfully')
+      }
+      this.getAllExpensesCategories();
+    })
   }
 
   editCategory() {

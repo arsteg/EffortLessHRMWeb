@@ -2,7 +2,6 @@
     <table>
         <thead>
             <th style="width:12%">Component Name</th>
-            <th>Section</th>
             <th>Maximum Amount</th>
             <th>Applied Amount</th>
             <th>Approved Amount</th>
@@ -16,9 +15,6 @@
                 [formGroupName]="i">
                 <td>{{ taxComponents[i]?.componantName }}</td>
                 <td>
-                    {{ taxComponents[i]?.section.section }}
-                </td>
-                <td>
                     <input formControlName="maximumAmount" type="number" [readonly]="!group.get('isEditable')?.value" />
                 </td>
                 <td>
@@ -29,11 +25,6 @@
                         [readonly]="!group.get('isEditable')?.value" />
                 </td>
                 <td>
-                    <!-- <select formControlName="approvalStatus" [readonly]="!group.get('isEditable')?.value">
-                        <option value="Pending">Pending</option>
-                        <option value="Approved">Approved</option>
-                        <option value="Rejected">Rejected</option>
-                    </select> -->
                     <input type="text" [disabled] formControlName="approvalStatus">
                 </td>
                 <td>

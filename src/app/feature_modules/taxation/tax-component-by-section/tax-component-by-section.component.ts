@@ -54,7 +54,7 @@ export class TaxComponentBySectionComponent {
   }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
@@ -105,10 +105,28 @@ export class TaxComponentBySectionComponent {
     };
     this.taxService.getAllTaxComponents(pagination).subscribe((res: any) => {
       this.taxComponents = res.data;
-      console.log(this.taxComponents);
       this.totalRecords = res.total;
     })
   }
+
+  checkForHRARecord() {
+    const formValue = this.taxComponentForm.value;
+  
+    if (formValue.section) {
+      const selectedSection = this.taxComponents.find(section => section.section._id === formValue.section);
+  
+      if (selectedSection && selectedSection.section.isHRA) {
+        const existingHRAComponent = this.taxComponents.some(component => component.section.isHRA);
+        
+        if (existingHRAComponent) {
+          this.toast.error('HRA already exists! You cannot create multiple HRA Components.');
+          return;
+        }
+      }
+    }
+  }
+  
+
   setFormValues(data) {
     this.taxComponentForm.patchValue(data);
   }
@@ -138,7 +156,7 @@ export class TaxComponentBySectionComponent {
     });
   }
 
-  getAllSections(){
+  getAllSections() {
     this.taxService.getAllTaxSections().subscribe((res: any) => {
       this.sections = res.data;
     })

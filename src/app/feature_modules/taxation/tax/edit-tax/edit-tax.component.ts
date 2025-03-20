@@ -15,19 +15,19 @@ export class EditTaxComponent {
   taxSections: any;
   @Output() backToSalaryDetails = new EventEmitter<void>();
   @Input() selectedRecord: any;
+  isHRA: any;
 
   constructor(private taxService: TaxationService,) { }
 
   ngOnInit() {
-    this.logUrlSegmentsForUser();
+    this.getSections();
   }
 
-  logUrlSegmentsForUser() {
+  getSections() {
     this.taxService.getAllTaxSections().subscribe((results: any) => {
       this.taxSections = results.data;
       if (this.taxSections?.length) {
         const sectionId = this.taxSections[0]?._id;
-        // .log(sectionId)
         this.selectTab(sectionId);
       }
     });
@@ -35,7 +35,11 @@ export class EditTaxComponent {
 
   selectTab(tabId) {
     this.activeTab = tabId;
-    this.activeTabName = this.taxSections.find((section: any) => section._id === tabId)?.section;
+    const selectedSection = this.taxSections.find((section: any) => section._id === tabId);
+    
+    this.activeTabName = selectedSection?.section || '';  
+    this.isHRA = selectedSection?.isHRA || false;
     this.taxService.activeTab.next(this.activeTabName);
   }
+  
 }

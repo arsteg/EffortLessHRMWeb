@@ -34,6 +34,8 @@ export class TaxComponent {
   totalIncomeTaxComponentsLength: any;
   public sortOrder: string = '';
   user = JSON.parse(localStorage.getItem('currentUser'));
+  sections: any;
+  sectionComponents: any;
 
   constructor(
     private componentFactoryResolver: ComponentFactoryResolver,
@@ -42,7 +44,6 @@ export class TaxComponent {
     private fb: FormBuilder,
     private taxService: TaxationService,
     private toastr: ToastrService,
-    private router: Router
   ) {
     this.taxDeclarationForm = this.fb.group({
       financialYear: [''],
@@ -58,11 +59,23 @@ export class TaxComponent {
   }
 
   ngOnInit() {
-    // this.logUrlSegmentsForUser();
+    this.getSections();
     this.userService.getTaxDeclarationByUserId(this.user.id, { skip: '', next: '' }).subscribe((res: any) => {
       this.taxList = res.data;
       this.totalRecords = res.total;
       this.uniqueFinancialYears = this.getUniqueFinancialYears(this.taxList);
+    });
+  }
+
+  getSections() {
+    this.taxService?.getAllTaxSections().subscribe((res: any) => {
+      this.sections = res.data;
+      this.taxService.getAllTaxComponents({ skip: '', next: '' }).subscribe((res: any) => {
+        this.sectionComponents = res.data;
+        this.sections.forEach(section => {
+          section.componentCount = this.sectionComponents.filter(comp => comp.section._id === section._id).length;
+        });
+      });
     });
   }
 

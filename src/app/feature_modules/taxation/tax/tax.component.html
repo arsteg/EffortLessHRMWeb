@@ -19,30 +19,8 @@
                     (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Financial&nbsp;Year
                     <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                 </th>
-                <th class="pe-lg-0 pe-3" [appSort]="taxList" data-name="financialYear"
-                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">80C&nbsp;Deductions
-                    <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                </th>
-                <th class="pe-lg-0 pe-3" [appSort]="taxList" data-name="financialYear"
-                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Section&nbsp;10&nbsp;Exemptions
-                    <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                </th>
-                <th class="pe-lg-0 pe-3" [appSort]="taxList" data-name="financialYear"
-                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Chapter&nbsp;VI&nbsp;Deductions
-                    <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                </th>
-                <th class="pe-lg-0 pe-3" [appSort]="taxList" data-name="financialYear"
-                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Total&nbsp;Prequisites
-                    <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                </th>
-                <th class="pe-lg-0 pe-3" [appSort]="taxList" data-name="financialYear"
-                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Interest&nbsp;on&nbsp;Home&nbsp;Loan
-                    <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                </th>
-                <th class="pe-lg-0 pe-3" [appSort]="taxList" data-name="financialYear"
-                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-                    Previous&nbsp;Employment&nbsp;Information
-                    <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                <th *ngFor="let section of sections">
+                    {{ section?.section }}
                 </th>
                 <th class="pe-lg-0 pe-3">Actions</th>
             </thead>
@@ -50,12 +28,9 @@
             <tbody>
                 <tr *ngFor="let tax of taxList | search:searchText">
                     <td>{{tax?.financialYear}}</td>
-                    <td>{{tax?.componentSums?.componentSums?.['80C Deduction'] || 0}}</td>
-                    <td>{{tax?.componentSums?.componentSums?.['Section 10'] || 0}}</td>
-                    <td>{{tax?.componentSums?.componentSums?.['Chapter VI Deductions'] || 0}}</td>
-                    <td>{{tax?.componentSums?.componentSums?.['Prequisites'] || 0}}</td>
-                    <td>{{tax?.componentSums?.componentSums?.['Interest on Home Loan'] || 0}}</td>
-                    <td>{{tax?.componentSums?.componentSums?.['Previous Employment Information'] || 0}}</td>
+                    <td *ngFor="let section of sections">
+                        {{ section?.componentCount }}
+                    </td>
                     <td class="action text-center">
                         <mat-menu #menu="matMenu">
                             <button mat-menu-item>
@@ -63,7 +38,8 @@
                                 <span class="ms-2">Download</span>
                             </button>
 
-                            <button mat-menu-item (click)="getTaxDeclaration(); selectedRecord = tax; openOffcanvas(true, tax);">
+                            <button mat-menu-item
+                                (click)="getTaxDeclaration(); selectedRecord = tax; openOffcanvas(true, tax);">
                                 <mat-icon class="text-primary">calculate</mat-icon>
                                 <span class="ms-2">Tax Calculator</span>
                             </button>
