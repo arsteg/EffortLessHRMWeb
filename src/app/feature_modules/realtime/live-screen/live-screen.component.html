@@ -1,17 +1,21 @@
-<div class="live-screen-container" [ngClass]="{'minimized': isMinimized, 'maximized': isMaximized}">
+<div class="live-screen-container" 
+     [ngClass]="{'minimized': isMinimized, 'maximized': isMaximized}">
+  <!-- Drag Handle -->
+  <div class="header" #header>
+    <button class="minimize-btn" (click)="minimizeDialog()" title="Minimize">
+      <i class="fas fa-minus"></i>
+    </button>
+    <button class="maximize-btn" (click)="toggleMaximize()" [title]="isMaximized ? 'Restore' : 'Maximize'">
+      <i class="fas fa-compress" *ngIf="isMaximized"></i>
+      <i class="fas fa-expand" *ngIf="!isMaximized"></i>
+    </button>
+    <button class="close-btn" mat-dialog-close title="Close">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
   <!-- Single User View -->
   <div *ngIf="isSingle" class="single-view">
-    <div class="header">
-      <button class="minimize-btn" (click)="minimizeDialog()" title="Minimize">
-        <i class="fas fa-minus"></i>
-      </button>
-      <button class="maximize-btn" (click)="toggleMaximize()" [title]="isMaximized ? 'Restore' : 'Maximize'">
-        <i class="fas" [ngClass]="isMaximized ? 'fa-compress' : 'fa-expand'"></i>
-      </button>
-      <button class="close-btn" mat-dialog-close title="Close">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
     <div class="image-wrapper">
       <div class="user-label">{{ getUserName(userIds[0]) }}'s Screen</div>
       <img [src]="imageUrls[userIds[0]]" 
@@ -24,20 +28,14 @@
 
   <!-- Multiple Users View -->
   <div *ngIf="!isSingle" class="multi-view">
-    <div class="header">
-      <button class="minimize-btn" (click)="minimizeDialog()" title="Minimize">
-        <i class="fas fa-minus"></i>
-      </button>
-      <button class="maximize-btn" (click)="toggleMaximize()" [title]="isMaximized ? 'Restore' : 'Maximize'">
-        <i class="fas" [ngClass]="isMaximized ? 'fa-compress' : 'fa-expand'"></i>
-      </button>
-      <button class="close-btn" mat-dialog-close title="Close">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-    <div class="screens-grid">
-      <div *ngFor="let userId of userIds" class="screen-card">
-        <div class="user-label">{{ getUserName(userId) }}'s Screen</div>
+    <div class="screens-grid" 
+         cdkDropList 
+         [cdkDropListData]="userIds" 
+         (cdkDropListDropped)="drop($event)">
+      <div *ngFor="let userId of userIds" 
+           class="screen-card" 
+           cdkDrag>
+        <div class="user-label">{{ getUserName(userId) }}</div>
         <img [src]="imageUrls[userId]" 
              [alt]="getUserName(userId)" 
              class="screen-image"
