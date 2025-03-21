@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { CommonService } from 'src/app/_services/common.Service';
-import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-expense-general-settings',
@@ -17,19 +16,15 @@ export class ExpenseGeneralSettingsComponent {
   expenseCategories: any = [];
   users: any = [];
   @Input() changeMode: any;
-  @Input() modal: any;
   @Input() selectedTemplate: any;
   @Output() close: any = new EventEmitter();
   @Output() changeStep: any = new EventEmitter();
-  closeResult: string = '';
-  categoryList: any;
 
   constructor(
     private fb: FormBuilder,
     private expenseService: ExpensesService,
     private commonService: CommonService,
     private toast: ToastrService,
-    private modalService: NgbModal,
   ) {
     this.addTemplateForm = this.fb.group({
       policyLabel: ['', Validators.required],
@@ -152,8 +147,7 @@ export class ExpenseGeneralSettingsComponent {
     if (this.changeMode === 'Add') {
       this.expenseService.addTemplate(payload).subscribe((res: any) => {
         this.expenseService.selectedTemplate.next(res.data);
-        const response = res.categories;
-        this.expenseService.categories.next(response);
+        this.expenseService.categories.next(res.categories);
         this.toast.success('Template Created Successfully!');
         this.changeStep.emit(2);
       }, err => {
@@ -179,23 +173,5 @@ export class ExpenseGeneralSettingsComponent {
       });
     }
   }
-
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
-  }
-  open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-    });
-  }
-
 
 }

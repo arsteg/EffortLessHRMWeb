@@ -166,10 +166,12 @@ export class ExpensesCategoriesComponent implements OnInit {
         });
       }
       this.clearselectedRequest();
-      this.toast.success('New Expense Category Added', 'Successfully!!!')
+      this.toast.success('New Expense Category Added', 'Successfully!');
+      this.dialogRef.close();
+      this.getAllExpensesCategories();
     },
       err => {
-        this.toast.error('This category is already exist', 'Error!!!')
+        this.toast.error('This category is already exist', 'Error!')
       });
 
   }

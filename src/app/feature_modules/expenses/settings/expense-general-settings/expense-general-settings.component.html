@@ -1,100 +1,72 @@
-<div class="modal-header border-bottom mb-2 pt-0 d-flex justify-content-between">
-    <div>
-        <h1 class="modal-title text-muted mb-0" *ngIf="changeMode == 'Next'">Update Expense Template</h1>
-        <h1 class="modal-title text-muted mb-0" *ngIf="changeMode == 'Add'">Add Expense Template</h1>
+<h1 mat-dialog-title *ngIf="changeMode == 'Next'">Update Expense Template</h1>
+<h1 mat-dialog-title *ngIf="changeMode == 'Add'">Add Expense Template</h1>
 
-    </div>
-    <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
-            (click)="closeModal()"></button>
-    </div>
-</div>
-
-<form action="" [formGroup]="addTemplateForm" (ngSubmit)="createTemplate()">
+<form mat-dialog-content [formGroup]="addTemplateForm" (ngSubmit)="createTemplate()">
     <div class="formBody px-2">
-        <div class="form-group">
-            <label for="">Please provide a label for this Policy<span class="text-danger">*</span></label>
-            <input type="text" class="input form-control" placeholder="Enter Label" formControlName="policyLabel"
-                required>
-            <div *ngIf="addTemplateForm.get('policyLabel').invalid && addTemplateForm.get('policyLabel').touched"
-                class="text-danger error">
-                Please Enter Label of Expense Template!
+        <mat-form-field class="w-100">
+            <mat-label>Label for expense template</mat-label>
+            <input type="text" matInput placeholder="Enter Label" formControlName="policyLabel" required>
+            <mat-error *ngIf="addTemplateForm.get('policyLabel').invalid && addTemplateForm.get('policyLabel').touched">
+                Please enter label of expense template.
+            </mat-error>
+        </mat-form-field>
+
+        <div class="row mb-4">
+            <div class="col-12 col-md-6">
+                <div class="d-flex flex-column">
+                    <mat-label>Levels of approvals<span class="text-danger">*</span></mat-label>
+                    <mat-radio-group formControlName="approvalLevel" required>
+                        <mat-radio-button value="1">1 Level</mat-radio-button>
+                        <mat-radio-button value="2">2 level</mat-radio-button>
+                    </mat-radio-group>
+                    <div *ngIf="addTemplateForm.get('approvalLevel').invalid && addTemplateForm.get('approvalLevel').touched"
+                        class="text-danger error">
+                        Please select approval levels.
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="d-flex flex-column">
+                    <mat-label>Add approvers<span class="text-danger">*</span></mat-label>
+                    <mat-radio-group formControlName="approvalType" required>
+                        <mat-radio-button value="template-wise">Template Wise</mat-radio-button>
+                        <mat-radio-button value="employee-wise">Employee Wise</mat-radio-button>
+                    </mat-radio-group>
+                    <div *ngIf="addTemplateForm.get('approvalType').invalid && addTemplateForm.get('approvalType').touched"
+                        class="text-danger error">
+                        Please select approval type.
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="form-group mt-2">
-            <label for="">How many levels of approvals you want to add?<span class="text-danger">*</span></label>
-            <div class="d-flex">
 
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" id="level" formControlName="approvalLevel" value="1"
-                        required>
-                    <label class="form-check-label" for="level">
-                        1 Level
-                    </label>
-                </div>
-                <div class="form-check ms-4">
-                    <input class="form-check-input" type="radio" id="level2" formControlName="approvalLevel" required
-                        value="2">
-                    <label class="form-check-label" for="level2">
-                        2 Level
-                    </label>
-                </div>
-            </div>
-            <div *ngIf="addTemplateForm.get('approvalLevel').invalid && addTemplateForm.get('approvalLevel').touched"
-                class="text-danger error">
-                Please Select Approval Type!
-            </div>
-        </div>
-        <div class="mt-2 form-group">
-            <label for="">How would you like to add approvers?<span class="text-danger">*</span></label>
-            <div class="d-flex">
-
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" id="template-wise" formControlName="approvalType"
-                        value="template-wise" required>
-                    <label class="form-check-label" for="template-wise">
-                        Template Wise
-                    </label>
-                </div>
-                <div class="form-check ms-4">
-                    <input class="form-check-input" type="radio" id="employee-wise" formControlName="approvalType"
-                        required value="employee-wise">
-                    <label class="form-check-label" for="employee-wise">
-                        Employee Wise
-                    </label>
-                </div>
-            </div>
-            <div *ngIf="addTemplateForm.get('approvalType').invalid && addTemplateForm.get('approvalType').touched"
-                class="text-danger error">
-                Please Select Approval Type!
-            </div>
-        </div>
-
-        <div class="row mt-2 d-flex align-items-end" *ngIf="addTemplateForm.get('approvalType').value === 'template-wise'">
+        <div class="row mt-2 d-flex align-items-end"
+            *ngIf="addTemplateForm.get('approvalType').value === 'template-wise'">
             <div class="col-md-6">
-                <label for="firstApprovalEmployee">Please Select An Employee For First Approver? <span
-                        class="text-danger">*</span></label>
-                <select name="" id="firstApprovalEmployee" formControlName="firstApprovalEmployee" required
-                    class="ms-2 form-control">
-                    <option [disabled] value="">Select First Approval</option>
-                    <option [value]="user?.id" *ngFor="let user of users; let i = index">{{user?.firstName |
-                        titlecase}} {{user.lastName | titlecase}}</option>
-
-                </select>
+                <mat-form-field class="w-100">
+                    <mat-label>First Approver</mat-label>
+                    <mat-select formControlName="firstApprovalEmployee" required>
+                        <mat-option [value]="user?.id" *ngFor="let user of users; let i = index">{{user?.firstName |
+                            titlecase}} {{user.lastName | titlecase}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
             </div>
             <div class="col-md-6" *ngIf="addTemplateForm.get('approvalLevel').value === '2'">
-                <label for="secondApprovalEmployee">Please Select An Employee For Second Approver? <span
-                        class="text-danger">*</span></label>
-                <select name="" id="secondApprovalEmployee" formControlName="secondApprovalEmployee" required
-                    class="ms-2 form-control">
-                    <option [disabled] value="">Select Second Approval</option>
-                    <option [value]="user?.id" *ngFor="let user of users; let i = index">{{user?.firstName |
-                        titlecase}} {{user.lastName | titlecase}}</option>
-                </select>
+                <mat-form-field class="w-100">
+                    <mat-label>Second Approver</mat-label>
+                    <mat-select formControlName="secondApprovalEmployee" required>
+                        <mat-option [value]="user?.id" *ngFor="let user of users; let i = index"
+                            [disabled]="user?.id === addTemplateForm.get('firstApprovalEmployee').value">
+                            {{user?.firstName | titlecase}} {{user.lastName | titlecase}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
             </div>
         </div>
-        <div class="mt-2">
-            <mat-form-field appearance="outline" class="w-100">
+
+        <div>
+            <mat-form-field class="w-100">
                 <mat-label>What expense categories are applicable in this expense template?</mat-label>
                 <mat-select multiple formControlName="expenseCategories">
                     <mat-option [value]="categories?._id" *ngFor="let categories of expenseCategories; let i = index">
@@ -105,44 +77,37 @@
         </div>
 
         <div class="mt-2">
-            <label for="">Do you want to make these attachment formats downloadable?</label>
-            <div class="d-flex justify-content-between">
+            <mat-label>Do you want to make these attachment formats downloadable?</mat-label>
+            <div class="d-flex flex-wrap">
                 <ng-container *ngFor="let format of downloadableFormat; let i = index">
-                    <label class="d-flex align-items-center">
-                        <input class="form-check-input checks mx-1" type="checkbox"
-                            [disabled]="isDisabledFormat(format)" [checked]="isCheckedFormats(format)"
-                            (change)="onFormatsChange($event, format)" />
+                    <mat-checkbox [disabled]="isDisabledFormat(format)"
+                        [checked]="isCheckedFormats(format)" (change)="onFormatsChange($event, format)">
                         {{format}}
-                    </label>
+                    </mat-checkbox>
                 </ng-container>
             </div>
         </div>
 
-        <div class="mt-2">
-            <div class="d-flex align-items-center">
-                <label for="">Would you like to restrict that the employee can’t apply expense for same category on
-                    same incurred date?</label>
-                <div class="form-check form-switch">
-                    <input class="form-check-input toggleBtn ms-5" type="checkbox" role="switch"
-                        id="flexSwitchCheckDefault" formControlName="applyforSameCategorySamedate">
+        <div class="row my-4">
+            <div class="col-12 col-md-12">
+                <div class="d-flex ">
+                    <mat-label>Restriction for same category on same incurred date</mat-label>
+                    <mat-slide-toggle class="ms-auto" formControlName="applyforSameCategorySamedate"></mat-slide-toggle>
                 </div>
             </div>
-        </div>
 
-        <div class="my-2">
-            <div class="d-flex align-items-center">
-                <label for="">Can employee add advance amount while applying expense?</label>
-                <div class="form-check form-switch">
-                    <input class="form-check-input ms-5 toggleBtn" type="checkbox" role="switch"
-                        id="flexSwitchCheckDefault" formControlName="advanceAmount">
+            <div class="col-12 col-md-12">
+                <div class="my-2 d-flex">
+                    <mat-label>Option to add advance amount while applying expense</mat-label>
+                    <mat-slide-toggle class="ms-auto" formControlName="advanceAmount"></mat-slide-toggle>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="d-flex border-top py-2 justify-content-between">
-        <button mat-raised-button type="button" (click)="setFormValues()">Cancel</button>
-        <button mat-raised-button class="addBtn" type="submit"
+        <button mat-raised-button type="button" (click)="closeModal()">Cancel</button>
+        <button mat-raised-button color="accent" type="submit"
             [disabled]="!addTemplateForm.valid">{{changeMode}}</button>
     </div>
 </form>
