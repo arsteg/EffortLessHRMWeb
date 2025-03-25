@@ -1,30 +1,31 @@
+// log.component.ts
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { SharedModule } from 'src/app/shared/shared.Module';
 import { MatTableDataSource } from '@angular/material/table';
 import { ToastrService } from 'ngx-toastr';
-import { WebSocketNotification } from 'src/app/models/eventNotification/eventNotitication';
+import { SharedModule } from 'src/app/shared/shared.Module';
+import { WebSocketNotificationType, WebSocketService } from 'src/app/_services/web-socket.service';
 import { CompanyService } from 'src/app/_services/company.service';
-import { company } from 'src/app/models/company';
 import { UserService } from 'src/app/_services/users.service';
 import { CommonService } from 'src/app/_services/common.Service';
-import { WebSocketNotificationType, WebSocketService } from 'src/app/_services/web-socket.service';
+import { company } from 'src/app/models/company';
 
 @Component({
-  selector: 'app-log.component',
+  selector: 'app-log',
   standalone: true,
-  imports: [ SharedModule ],
+  imports: [SharedModule],
   templateUrl: './log.component.component.html',
-  styleUrl: './log.component.component.css'
+  styleUrls: ['./log.component.component.css']
 })
-
 export class LogComponent implements OnInit, OnDestroy {
   selectedUserId: string = '';
+  selectedCompany: string = '';
+  selectedLogLevels: string[] = [];
   companies: company[] = [];
   users: any[] = [];
-  selectedCompany: string = '';
-  displayedColumns: string[] = ['timestamp', 'message'];
   messages: MatTableDataSource<any> = new MatTableDataSource([]);
+  displayedColumns: string[] = ['timestamp', 'message'];
+  logLevels: string[] = ['trace', 'debug', 'info', 'warn', 'error', 'fatal'];
   private webSocketSubscription: Subscription | null = null;
 
   constructor(
@@ -35,9 +36,14 @@ export class LogComponent implements OnInit, OnDestroy {
     private commonService: CommonService
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadCompanies();
     this.subscribeToLogs();
+    this.fetchLogLevel();
+  }
+
+  ngOnDestroy(): void {
+    this.webSocketSubscription?.unsubscribe();
   }
 
   private subscribeToLogs(): void {
@@ -78,10 +84,31 @@ export class LogComponent implements OnInit, OnDestroy {
         next: () => {
           this.toast.success('User for log set successfully');
           this.webSocketService.connect(this.selectedUserId);
+          this.fetchLogLevel();
         },
         error: (error) => console.error('Error setting selected user:', error)
       });
     }
+  }
+
+  fetchLogLevel(): void {   
+    
+    this.commonService.getLogLevels().subscribe({
+      next: (response) => {
+        this.selectedLogLevels = response.data || [];
+      },
+      error: (error) => console.error('Error fetching log levels:', error)
+    });
+  }
+
+  updateLogLevel(): void {  
+
+    this.commonService.setLogLevels(this.selectedLogLevels).subscribe({
+      next: () => {
+        this.toast.success('Log levels updated successfully');
+      },
+      error: (error) => console.error('Error updating log levels:', error)
+    });
   }
 
   onClear(): void {
@@ -90,14 +117,9 @@ export class LogComponent implements OnInit, OnDestroy {
 
   onStop(): void {
     this.selectedUserId = '';
+    this.selectedCompany = '';
     this.users = [];
     this.messages.data = [];
-  }
-
-  ngOnDestroy() {
-    this.webSocketSubscription?.unsubscribe();
-    // Commenting out disconnect to keep WebSocket alive across components
-    // this.webSocketService.disconnect();
+    this.selectedLogLevels = [];
   }
 }
-
