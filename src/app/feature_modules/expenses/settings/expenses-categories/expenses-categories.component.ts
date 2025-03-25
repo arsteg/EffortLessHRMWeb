@@ -1,10 +1,9 @@
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray, Validators, FormControl } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { isEqual } from 'date-fns';
 import { ToastrService } from 'ngx-toastr';
 import { ExpensesService } from 'src/app/_services/expenses.service';
-import { ExpenseCategory } from 'src/app/models/expenses';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { forkJoin } from 'rxjs';
@@ -29,6 +28,13 @@ export class ExpensesCategoriesComponent implements OnInit {
   currentPage: number = 1;
   displayedColumns: string[] = ['label', 'type', 'actions'];
   dialogRef: MatDialogRef<any>;
+  expenseTypes = {
+    perDay: 'Per Day',
+    time: 'Time',
+    distance: 'Distance',
+    dateRange: 'Date Range',
+    other: 'Other'
+  }
 
   constructor(
     private dialog: MatDialog,
@@ -47,6 +53,10 @@ export class ExpensesCategoriesComponent implements OnInit {
 
   ngOnInit(): void {
     this.getAllExpensesCategories();
+  }
+
+  originalOrder = (a: unknown, b: unknown): number => {
+    return 0;
   }
 
   open(content: any) {
@@ -217,7 +227,7 @@ export class ExpensesCategoriesComponent implements OnInit {
     /**Update Category */
     const apiCalls = {};
     const updateCategory$ = this.expenses.updateCategory(this.selectedCategory?._id, categoryPayload);
-    apiCalls['updateCategory']=updateCategory$;
+    apiCalls['updateCategory'] = updateCategory$;
 
     /**Update fields */
     if (this.addCategoryForm.get('fields')) {
@@ -230,7 +240,7 @@ export class ExpensesCategoriesComponent implements OnInit {
           fields: updateFields
         };
         const updateField$ = this.expenses.updateCategoryField(fieldsPayload);
-        apiCalls['updateField']=updateField$;
+        apiCalls['updateField'] = updateField$;
       }
       /**Add New fields */
       const newFields = (this.addCategoryForm.value['fields'] as any[]).filter(
@@ -242,24 +252,24 @@ export class ExpensesCategoriesComponent implements OnInit {
           expenseCategory: this.selectedCategory._id
         };
         const addField$ = this.expenses.addCategoryField(fieldsPayload);
-        apiCalls['addField']=addField$;
+        apiCalls['addField'] = addField$;
       }
 
     }
-    forkJoin(apiCalls).subscribe((result: { [key: string]: any })=>{
-      if(result['updateCategory']){
-          this.toast.success('Expense Category Updated', 'Succesffully')
-          this.updatedCategory = result['updateCategory']?.data._id;
+    forkJoin(apiCalls).subscribe((result: { [key: string]: any }) => {
+      if (result['updateCategory']) {
+        this.toast.success('Expense Category Updated', 'Succesffully')
+        this.updatedCategory = result['updateCategory']?.data._id;
       }
-      if(result['updateField']){
+      if (result['updateField']) {
         (this.addCategoryForm.get('fields') as FormArray).clear();
         this.addCategoryForm.reset({
           isMandatory: false
         });
         this.isEdit = false;
-          this.toast.success('Expense Category Applicable field Updated', 'Successfully');
+        this.toast.success('Expense Category Applicable field Updated', 'Successfully');
       }
-      if(result['addField']){
+      if (result['addField']) {
         this.toast.success('Expense Category Applicable field Added', 'Successfully')
       }
       this.getAllExpensesCategories();

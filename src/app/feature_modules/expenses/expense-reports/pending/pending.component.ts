@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Output, Input, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatMenuTrigger } from '@angular/material/menu';
@@ -35,6 +35,7 @@ export class PendingComponent {
   totalRecords: number;
   recordsPerPage: number = 10;
   currentPage: number = 1;
+  dialogRef: MatDialogRef<any>;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatMenuTrigger) menuTrigger: MatMenuTrigger;
@@ -58,22 +59,12 @@ export class PendingComponent {
   ngOnInit() {
     this.commonService.populateUsers().subscribe((res: any) => {
       this.users = res.data.data;
+      this.getExpenseReport();
     });
-    this.getExpenseReport();
   }
 
   refreshExpenseReportTable() {
     this.getExpenseReport();
-  }
-
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
   }
 
   onCancel() {
@@ -88,18 +79,16 @@ export class PendingComponent {
   }
 
   open(content: any) {
-    console.log(content);
     this.expenseService.expenseReportExpense.next(this.selectedReport);
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-    });
+    this.dialogRef =  this.dialog.open(content, {
+      width: '600px',
+      disableClose: true
+    })
   }
 
   onClose(event) {
     if (event) {
-      this.modalService.dismissAll();
+      this.dialogRef.close();
       this.getExpenseReport();
     }
   }

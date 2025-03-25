@@ -1,18 +1,11 @@
-import { Component, Output, EventEmitter, Input, ChangeDetectorRef } from '@angular/core';
+import { Component, Output, EventEmitter, Input } from '@angular/core';
 import { CommonService } from 'src/app/_services/common.Service';
 import { CreateReportComponent } from '../create-report/create-report.component';
-import {
-  MatDialog,
-  MatDialogActions,
-  MatDialogClose,
-  MatDialogContent,
-  MatDialogTitle,
-} from '@angular/material/dialog';
+import {  MatDialog } from '@angular/material/dialog';
 import { ExpensesService } from 'src/app/_services/expenses.service';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
-import { Observable, Subscription, map } from 'rxjs';
 
 @Component({
   selector: 'app-add-expense-report',
@@ -30,15 +23,14 @@ export class AddExpenseReportComponent {
   category: any;
   expenseReportExpenses: any[] = [];
   selectedExpenseReportExpense: any;
-  private updateTableSubscription: Subscription;
   allCategories: any;
+  noCategoryError: boolean;
 
   constructor(private dialog: MatDialog,
     private commonService: CommonService,
     public expenseService: ExpensesService,
     private fb: FormBuilder,
-    private toast: ToastrService,
-    private cdr: ChangeDetectorRef) {
+    private toast: ToastrService,) {
 
     this.addExpenseForm = this.fb.group({
       employee: [{ value: '', disabled: this.changeMode }, Validators.required],
@@ -50,18 +42,17 @@ export class AddExpenseReportComponent {
   }
 
   ngOnInit() {
-    console.log(this.changeMode)
     this.expenseService.changeMode.next(this.changeMode)
     if (this.changeMode == 'Add') {
-      console.log('reset')
       this.addExpenseForm.reset();
     }
     else {
+      const {employee, title, amount, status} = this.expenseService.selectedReport.getValue();
       this.addExpenseForm.patchValue({
-        employee: this.expenseService.selectedReport.getValue().employee,
-        title: this.expenseService.selectedReport.getValue().title,
-        amount: this.expenseService.selectedReport.getValue().amount,
-        status: this.expenseService.selectedReport.getValue().status
+        employee: employee,
+        title: title,
+        amount: amount,
+        status: status
       });
       this.getExpenseReportExpensesByReportId();
     }
@@ -82,6 +73,7 @@ export class AddExpenseReportComponent {
     })
   }
   openSecondModal(isEdit: boolean) {
+    this.isEdit = isEdit;
     this.expenseService.isEdit.next(isEdit);
     const dialogRef = this.dialog.open(CreateReportComponent, {
       width: '50%',
@@ -123,18 +115,15 @@ export class AddExpenseReportComponent {
     this.close.emit(true);
   }
 
-  noCategoryError: boolean;
   getCategoryByUser() {
     const user = this.addExpenseForm.value.employee;
     this.expenseService.selectedUser.next(user);
-    if (this.changeMode) {
-
+    this.noCategoryError = false;
+    if (this.changeMode && user) {
       this.expenseService.getExpenseCategoryByUser(user).subscribe((res: any) => {
-
         this.expenseService.tempAndCat.next(res);
         if (!res || res.data == null) {
           this.noCategoryError = true;
-          // this.toast.warning('User is not Assigned to any Expense Categories', 'Warning')
         }
       })
     }
@@ -151,34 +140,37 @@ export class AddExpenseReportComponent {
       let formArray = this.expenseService.expenseReportExpense.getValue();
       payload.expenseReportExpenses = [formArray];
     }
-    if(this.addExpenseForm.valid)
-   { if (this.changeMode == 'Add') {
-      console.log(payload);
-      this.expenseService.addExpensePendingReport(payload).subscribe((res: any) => {
-        this.toast.success('Expense Template Applicable Category Added Successfully!');
-        this.addExpenseForm.reset();
-        this.expenseService.expenseReportExpense.next();
-        payload.expenseReportExpenses = [];
-        this.expenseReportExpenses = [];
-        this.addExpenseForm.value.expenseReportExpenses = [];
-      },
-        err => {
-          this.toast.error('Expense Template Applicable Category Can not be Added', 'ERROR!');
-        }
-      )
+    if (this.addExpenseForm.valid) {
+      if (this.changeMode == 'Add') {
+        console.log(payload);
+        this.expenseService.addExpensePendingReport(payload).subscribe((res: any) => {
+          this.toast.success('Expense Template Applicable Category Added Successfully!');
+          this.addExpenseForm.reset();
+          this.expenseService.expenseReportExpense.next();
+          payload.expenseReportExpenses = [];
+          this.expenseReportExpenses = [];
+          this.addExpenseForm.value.expenseReportExpenses = [];
+          this.expenseService.selectedReport.next(res.data);
+          console.log(res.data);
+        },
+          err => {
+            this.toast.error('Expense Template Applicable Category Can not be Added', 'ERROR!');
+          }
+        )
+      }
+      else {
+        let id = this.expenseService.selectedReport.getValue()._id
+        this.expenseService.updateExpenseReport(id, payload).subscribe((res: any) => {
+          // this.updateExpenseReportTable.emit();
+          this.expenseService.expenseReportExpense.next();
+          this.toast.success('Expense Template  Updated Successfully!');
+        },
+          err => {
+            this.toast.error('Expense Template Applicable Category Can not be Updated', 'ERROR!')
+          }
+        )
+      }
     }
-    else {
-      let id = this.expenseService.selectedReport.getValue()._id
-      this.expenseService.updateExpenseReport(id, payload).subscribe((res: any) => {
-        // this.updateExpenseReportTable.emit();
-        this.expenseService.expenseReportExpense.next();
-        this.toast.success('Expense Template  Updated Successfully!');
-      },
-        err => {
-          this.toast.error('Expense Template Applicable Category Can not be Updated', 'ERROR!')
-        }
-      )
-    }}
     else { this.addExpenseForm.markAllAsTouched(); }
     this.updateExpenseReportTable.emit();
   }

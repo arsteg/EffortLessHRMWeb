@@ -11,14 +11,14 @@
                 <mat-icon>add</mat-icon>Add New
             </button>
         </div>
-        <table mat-table [dataSource]="expenseCategories" matSort>
+        <table mat-table [dataSource]="expenseCategories">
             <ng-container matColumnDef="label">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Expense Name</th>
+                <th mat-header-cell *matHeaderCellDef>Expense Name</th>
                 <td mat-cell *matCellDef="let category">{{category.label}}</td>
             </ng-container>
             <ng-container matColumnDef="type">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Type</th>
-                <td mat-cell *matCellDef="let category">{{category.type}}</td>
+                <th mat-header-cell *matHeaderCellDef>Type</th>
+                <td mat-cell *matCellDef="let category">{{expenseTypes[category.type]}}</td>
             </ng-container>
             <ng-container matColumnDef="actions">
                 <th mat-header-cell *matHeaderCellDef>Actions</th>
@@ -56,11 +56,9 @@
             <mat-form-field class="w-100">
                 <mat-label>Choose the type of expense</mat-label>
                 <mat-select formControlName="type" required name="expenseType">
-                    <mat-option value="perDay">Per Day</mat-option>
-                    <mat-option value="time">Time</mat-option>
-                    <mat-option value="distance">Distance</mat-option>
-                    <mat-option value="dateRange">Date Range</mat-option>
-                    <mat-option value="other">Other</mat-option>
+                    @for(expenseType of expenseTypes | keyvalue: originalOrder; track expenseType.key){
+                    <mat-option [value]="expenseType.key">{{expenseType.value}}</mat-option>
+                    }
                 </mat-select>
                 <mat-hint>
                     Select how this expense should be calculated (Per Day, Date Range, Time, Distance, or Other)
@@ -148,12 +146,10 @@
                     Is field mandatory while submitting expense request?
                     <span class="text-danger">*</span>
                 </mat-label>
-
                 <mat-radio-group formControlName="isMandatory" required>
                     <mat-radio-button [value]="true">Yes</mat-radio-button>
                     <mat-radio-button [value]="false">No</mat-radio-button>
                 </mat-radio-group>
-
             </div>
 
             <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">

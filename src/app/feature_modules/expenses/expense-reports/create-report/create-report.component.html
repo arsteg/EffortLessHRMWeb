@@ -1,128 +1,129 @@
-<div class="d-flex justify-content-between">
-    <h1 mat-dialog-title> {{expenseService.isEdit.getValue() == true? 'Update': 'Add'}} Expense</h1>
-    <div mat-dialog-actions>
-        <button mat-button mat-dialog-close type="button"><mat-icon aria-hidden="false" aria-label="Example close icon"
-                fontIcon="close"></mat-icon></button>
-    </div>
-</div>
+<h1 mat-dialog-title> {{expenseService.isEdit.getValue() == true? 'Update': 'Add'}} Expense</h1>
 
-<div mat-dialog-content>
+
+<div>
     <form [formGroup]="expenseReportform" (ngSubmit)="onSubmission()">
-        <div class="form-group">
+        <div mat-dialog-content>
+            <div class="row">
+                <div class="col-md-6 col-12">
+                    <mat-form-field class="w-100" appearance="fill">
+                        <mat-label>Select Category</mat-label>
+                        <mat-select formControlName="expenseCategory" required
+                            (selectionChange)="onCategorySelection($event.value)">
+                            <mat-option value="">-Select Category-</mat-option>
+                            <mat-option *ngFor="let category of categories"
+                                [value]="category._id">{{category?.label}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-6 col-12">
+                    <mat-form-field class="w-100" appearance="fill">
+                        <mat-label>Select Date</mat-label>
+                        <input matInput [matDatepicker]="picker" formControlName="incurredDate" required>
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+                </div>
 
-            <label for="firstApprovalEmployee">Select Category<span class="text-danger">*</span></label>
+                <div class="col-md-6 col-12">
+                    <mat-form-field class="w-100" appearance="fill">
+                        <mat-label>Type</mat-label>
+                        <mat-select formControlName="type" required (selectionChange)="onTypeChange($event.value)">
+                            <mat-option value="">Select Applicable Category Field</mat-option>
+                            <mat-option [value]="field?.label" *ngFor="let field of applicableCategoryFields">{{
+                                field?.label }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-6 col-12">
+                    <mat-form-field class="w-100" appearance="fill">
+                        <mat-label>Quantity</mat-label>
+                        <input matInput type="number" formControlName="quantity" (input)="updateTotalRate()">
+                        <mat-hint>Rate per {{categoryType?.type}} Category {{ selectedRate }}</mat-hint>
+                    </mat-form-field>
+                </div>
 
-            <!-- <select name="expenseCategory" *ngIf="this.expenseService.isEdit.getValue() == true"
-                id="firstApprovalEmployee" formControlName="expenseCategory" required class="ms-2 form-control">
-                <option value="">Select Category</option>
-                <option *ngFor="let category of categories" [value]="category._id">{{category?.label}}</option>
-            </select> -->
-            <!-- *ngIf="this.expenseService.isEdit.getValue() == false" -->
-            <select name="expenseCategory" 
-                id="firstApprovalEmployee" formControlName="expenseCategory" required class="ms-2 form-control"
-                (ngModelChange)="onCategorySelection($event)">
-                <option value="">-Select Category-</option>
-                <option *ngFor="let category of categories" [value]="category._id">{{category?.label}}</option>
-            </select>
+                <div class="col-md-6 col-12">
+                    <mat-form-field class="w-100" appearance="fill">
+                        <mat-label>Amount</mat-label>
+                        <input matInput type="number" formControlName="amount" [value]="totalRate">
+                    </mat-form-field>
+                </div>
 
-        </div>
-
-        <div class="mt-2">
-            <label for="">Select Date</label>
-            <div class=" col-12 form-group mb-3">
-                <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
-                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="incurredDate" />
             </div>
-        </div>
 
-        <div class="form-group mt-2">
-            <label for="">Type<span class="text-danger">*</span></label>
-            <select name="type" id="type" formControlName="type" required class="ms-2 form-control"
-                (ngModelChange)="onTypeChange($event)">
-                <option value="">Select Applicable Category Field</option>
-                <option [value]="field?.label" *ngFor="let field of applicableCategoryFields">{{ field?.label }}</option>
-            </select>
-        </div>
+            <div formArrayName="expenseReportExpenseFields" class="row">
+                <div class="col-md-6 col-12"
+                    *ngFor="let fieldGroup of expenseReportform.get('expenseReportExpenseFields')['controls']; let i = index">
+                    <div [formGroupName]="i">
+                        <ng-container [ngSwitch]="applicationfields[i]?.fieldType">
+                            <mat-form-field appearance="fill" class="w-100" *ngSwitchCase="'Dropdown'">
+                                <mat-label>{{ applicationfields[i]?.fieldName | titlecase}}</mat-label>
+                                <mat-select formControlName="value">
+                                    <mat-option value="">Select</mat-option>
+                                    <mat-option [value]="values?.value"
+                                        *ngFor="let values of applicationfields[i]?.expenseApplicationFieldValues">
+                                        {{values?.value}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
 
-        <div class="form-group mt-2">
-            <label for="">Quantity<span class="text-danger">*</span></label>
-            <input type="number" formControlName="quantity" (input)="updateTotalRate()"><br>
-            <strong>Rate per {{categoryType?.type}} Category {{ selectedRate }}</strong><br>
-        </div>
+                            <mat-form-field appearance="fill" class="w-100" *ngSwitchCase="'Textfield'">
+                                <mat-label>{{ applicationfields[i]?.fieldName | titlecase}}</mat-label>
+                                <input matInput type="text" formControlName="value">
+                            </mat-form-field>
 
-        <div class="mt-2">
-            <label for="">Amount</label>
-            <div class=" col-12 form-group mb-3">
-                <input type="number" class="form-control" formControlName="amount" [value]="totalRate" />
-            </div>
-        </div>
+                            <mat-form-field appearance="fill" class="w-100" *ngSwitchCase="'Number'">
+                                <mat-label>{{ applicationfields[i]?.fieldName | titlecase}}</mat-label>
+                                <input matInput type="number" formControlName="value">
+                            </mat-form-field>
 
-        <div formArrayName="expenseReportExpenseFields">
-            <div
-                *ngFor="let fieldGroup of expenseReportform.get('expenseReportExpenseFields')['controls']; let i = index">
-                <div [formGroupName]="i">
-                    <label>{{ applicationfields[i]?.fieldName | titlecase}}</label>
-                    <select class="w-100" formControlName="value" *ngIf="applicationfields[i]?.fieldType == 'Dropdown'">
-                        <option value="">Select Category Application field</option>
-                        <option [value]="values?.value"
-                            *ngFor="let values of applicationfields[i]?.expenseApplicationFieldValues">
-                            {{values?.value}}</option>
-                    </select>
-                    <input class="w-100" type="text" formControlName="value"
-                        *ngIf="applicationfields[i]?.fieldType == 'Textfield'">
-                    <input class="w-100" type="number" formControlName="value"
-                        *ngIf="applicationfields[i]?.fieldType == 'Number'">
-                    <div *ngIf="applicationfields[i]?.fieldType =='DateRange'">
-                        <label for="">From Date</label>
-                        <input class="w-100" type="text" class="form-control" #dp="bsDatepicker" bsDatepicker
-                            [bsValue]="bsValue" [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
-                            formControlName="fromDate" />
+                            <mat-form-field appearance="fill" class="w-100" *ngSwitchCase="'DateRange'">
+                                <mat-label>{{ applicationfields[i]?.fieldName | titlecase}}</mat-label>
+                                <mat-date-range-input [rangePicker]="picker">
+                                    <input matStartDate placeholder="Start date" formControlName="fromDate">
+                                    <input matEndDate placeholder="End date" formControlName="toDate">
+                                </mat-date-range-input>
+                                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                                <mat-date-range-picker #picker></mat-date-range-picker>
+                            </mat-form-field>
 
-                        <label for="" class="mt-2">To Date</label>
-                        <input class="w-100" type="text" class="form-control" #dp="bsDatepicker" bsDatepicker
-                            [bsValue]="bsValue" [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
-                            formControlName="toDate" />
-
+                            <mat-form-field appearance="fill" class="w-100" *ngSwitchCase="'Date'">
+                                <mat-label>{{ applicationfields[i]?.fieldName | titlecase}}</mat-label>
+                                <input matInput [matDatepicker]="datePicker" formControlName="value">
+                                <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+                                <mat-datepicker #datePicker></mat-datepicker>
+                            </mat-form-field>
+                        </ng-container>
                     </div>
-                    <input class="w-100" formControlName="value" *ngIf="applicationfields[i]?.fieldType == 'Date'"
-                        type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
-                        [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" />
-
-
                 </div>
             </div>
+
+            <section class="example-section">
+                <mat-radio-group (change)="toggleIsReimbursable($event)">
+                    <mat-radio-button class="example-margin" value="true"
+                        [checked]="expenseReportform.get('isReimbursable').value === true">Reimbursable</mat-radio-button>
+                    <mat-radio-button class="example-margin" value="false"
+                        [checked]="expenseReportform.get('isBillable').value === true">Billable</mat-radio-button>
+                </mat-radio-group>
+            </section>
+
+            <div class="mb-3">
+                <mat-form-field appearance="fill" class="w-100">
+                    <mat-label>Reason</mat-label>
+                    <textarea matInput formControlName="reason" rows="3"></textarea>
+                </mat-form-field>
+            </div>
+
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="inputGroupFile01">Upload</label>
+                <input type="file" class="form-control" formControlName="expenseAttachments"
+                    (change)="onFileSelect($event)" id="inputGroupFile01">
+            </div>
         </div>
-
-
-        <section class="example-section">
-            <mat-radio-group (change)="toggleIsReimbursable($event)">
-                <mat-radio-button class="example-margin" value="true"
-                    [checked]="expenseReportform.get('isReimbursable').value === true">Reimbursable</mat-radio-button>
-                <mat-radio-button class="example-margin" value="false"
-                    [checked]="expenseReportform.get('isBillable').value === true">Billable</mat-radio-button>
-            </mat-radio-group>
-        </section>
-
-        <div class="mb-3">
-            <label for="exampleFormControlTextarea1" class="form-label">
-                Reason
-            </label>
-            <textarea class="form-control" id="exampleFormControlTextarea1" formControlName="reason"
-                rows="3"></textarea>
+        <div mat-dialog-actions class="d-flex justify-content-between">
+            <button mat-raised-button type="button" mat-dialog-close>Cancel</button>
+            <button mat-button type="submit" color="primary" [disabled]="expenseReportform.invalid">Submit</button>
         </div>
-
-        <div class="input-group mb-3">
-            <label class="input-group-text" for="inputGroupFile01">Upload</label>
-            <input type="file" class="form-control" formControlName="expenseAttachments" (change)="onFileSelect($event)"
-                id="inputGroupFile01">
-        </div>
-
-        <div class="d-flex justify-content-between">
-            <button mat-raised-button type="reset">Cancel</button>
-            <button mat-button type="submit" class="addBtn">Submit</button>
-
-        </div>
-
-
     </form>
 </div>

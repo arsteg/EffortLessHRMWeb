@@ -77,36 +77,17 @@ export class ExpenseCategorySettingsComponent {
           expenseTemplate: [id]
         });
         const expenseCategoriesArray = this.firstForm.get('expenseCategories') as FormArray;
-        this.steps.forEach(async (step) => {
+        this.steps.forEach(async (step: any) => {
           const matchingCategory = this.allExpenseCategories.find(category => category._id === step.expenseCategory._id);
           if (matchingCategory) {
             const categoryId = matchingCategory._id;
-
             if (categoryId === step.expenseCategory._id) {
               this.typeCategory = matchingCategory.type;
             }
             // Fetch category details by ID
             const categoryDetails = await this.expenseService.getExpenseCategoryById(categoryId).toPromise();
-
             expenseCategoriesArray.push(this._formBuilder.group({
               expenseCategory: categoryId,
-              isMaximumAmountPerExpenseSet: false,
-              maximumAmountPerExpense: 0,
-              isMaximumAmountWithoutReceiptSet: false,
-              maximumAmountWithoutReceipt: 0,
-              maximumExpensesCanApply: 0,
-              isTimePeroidSet: false,
-              timePeroid: '',
-              expiryDay: 0,
-              isEmployeeCanAddInTotalDirectly: false,
-              ratePerDay: 0,
-              expenseTemplateCategoryFieldValues: this._formBuilder.array([]),
-              categoryType: categoryDetails.data.type,
-              _id: ''
-            }));
-
-            const formGroupIndex = expenseCategoriesArray.length - 1;
-            expenseCategoriesArray.at(formGroupIndex).patchValue({
               isMaximumAmountPerExpenseSet: step.isMaximumAmountPerExpenseSet,
               maximumAmountPerExpense: step.maximumAmountPerExpense,
               isMaximumAmountWithoutReceiptSet: step.isMaximumAmountWithoutReceiptSet,
@@ -117,17 +98,15 @@ export class ExpenseCategorySettingsComponent {
               expiryDay: step.expiryDay,
               isEmployeeCanAddInTotalDirectly: step.isEmployeeCanAddInTotalDirectly,
               ratePerDay: step.ratePerDay,
-              expenseTemplateCategoryFieldValues: [],
+              expenseTemplateCategoryFieldValues: this._formBuilder.array([]),
               categoryType: categoryDetails.data.type,
-              _id: step._id
-            });
+              _id: step.expenseCategory._id
+            }));
+            const formGroupIndex = expenseCategoriesArray.length - 1;
             const formGroup = expenseCategoriesArray.at(formGroupIndex);
-            this.toggleControl(formGroup, 'isMaximumAmountPerExpenseSet', 'maximumAmountPerExpense');
-            this.toggleControl(formGroup, 'isMaximumAmountWithoutReceiptSet', 'maximumAmountWithoutReceipt');
-            this.toggleControl(formGroup, 'isTimePeroidSet', 'timePeroid');
-            this.toggleControl(formGroup, 'isEmployeeCanAddInTotalDirectly', 'expiryDay');
-           
             if (step.expenseTemplateCategoryFieldValues.length && step.expenseTemplateCategoryFieldValues.length >= 1) {
+              const fieldsArray = expenseCategoriesArray.at(formGroupIndex).get('expenseTemplateCategoryFieldValues') as FormArray;
+              fieldsArray.clear();
               step.expenseTemplateCategoryFieldValues?.forEach((value) => {
                 if (value.expenseTemplateCategory === step._id && categoryDetails.data._id === step.expenseCategory._id) {
                   const fieldFormGroup = this._formBuilder.group({
@@ -135,12 +114,14 @@ export class ExpenseCategorySettingsComponent {
                     rate: value.rate,
                     type: value.type
                   });
-                  const fieldsArray = (expenseCategoriesArray.at(formGroupIndex).get('expenseTemplateCategoryFieldValues') as FormArray);
                   fieldsArray.push(fieldFormGroup);
                 }
               });
             }
-
+            this.toggleControl(formGroup, 'isMaximumAmountPerExpenseSet', 'maximumAmountPerExpense');
+            this.toggleControl(formGroup, 'isMaximumAmountWithoutReceiptSet', 'maximumAmountWithoutReceipt');
+            this.toggleControl(formGroup, 'isTimePeroidSet', 'timePeroid');
+            this.toggleControl(formGroup, 'isEmployeeCanAddInTotalDirectly', 'expiryDay');
           }
         });
       });
