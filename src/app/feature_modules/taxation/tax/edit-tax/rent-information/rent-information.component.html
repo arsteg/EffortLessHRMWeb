@@ -1,22 +1,30 @@
 <div>
     <form class="d-flex justify-content-between p-2" [formGroup]="formGroup" (ngSubmit)="onSubmission()">
-        <input type="number" class="form-control" placeholder="Per Month Rent" formControlName="rentDeclared">
-
-        <select id="" class="mx-2 form-control" placeholder="City Type" formControlName="cityType">
-            <option value="" disabled selected>Select City Type -</option>
-            <option value="Metro">Metro</option>
-            <option value="Non-Metro">Non-Metro</option>
-        </select>
-
-        <input type="text" class="form-control" placeholder="Landlord Name" formControlName="landlordName">
-
-        <input type="text" class="form-control mx-2" placeholder="Landlord PAN Number" formControlName="landlordPan">
-
-        <input type="text" class="form-control" placeholder="Landlord Address" formControlName="landlordAddress">
-
-        <input type="text" class="form-control mx-2" placeholder="Remarks" formControlName="approvalStatus">
-
-        <button mat-raised-button class="addBtn w-50" type="submit">Apply&nbsp;to&nbsp;All</button>
+        <div class="form-group">
+            <input type="number" class="form-control" placeholder="Per Month Rent" formControlName="rentDeclared">
+        </div>
+        <div class="form-group">
+            <select id="" class="mx-2 form-control" placeholder="City Type" formControlName="cityType">
+                <option value="" [disabled] [selected]>Select City Type -</option>
+                <option value="Metro">Metro</option>
+                <option value="Non-Metro">Non-Metro</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="Landlord Name" formControlName="landlordName">
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="Landlord PAN Number"
+                formControlName="landlordPan" (input)="convertToUppercase()">
+            <div *ngIf="(formGroup.get('landlordPan')?.touched || formGroup.get('landlordPan')?.dirty) && formGroup.get('landlordPan')?.invalid"
+                class="error-message">
+                Please enter a valid PAN number (e.g., ABCDE1234F)
+            </div>
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="Landlord Address" formControlName="landlordAddress">
+        </div>
+        <button mat-raised-button color="accent" type="submit">Apply&nbsp;to&nbsp;All</button>
 
     </form>
     <form [formGroup]="formGroup">
@@ -25,7 +33,7 @@
                 <th>Month</th>
                 <th>Rent Declared</th>
                 <th>Verified Amount(In Rs.)</th>
-                <th>City Type</th>
+                <th>Metro</th>
                 <th>Landlord Name</th>
                 <th>Landlord PAN</th>
                 <th>Landlord Address</th>
@@ -42,15 +50,15 @@
                         </div>
                     </td>
                     <td>
-                        <input type="number" class="form-control" formControlName="rentDeclared"
+                        <input type="number" class="form-control w-75" formControlName="rentDeclared"
                             [readonly]="!group.get('isEditable')?.value" />
                     </td>
-                    <td><input type="number" class="form-control" formControlName="verifiedAmount"
+                    <td><input type="number" class="form-control w-75" formControlName="verifiedAmount"
                             [readonly]="!group.get('isEditable')?.value" /></td>
                     <td>
                         <select id="" class="form-control" formControlName="cityType"
                             [readonly]="!group.get('isEditable')?.value">
-                            <option value="" disabled selected>Select City Type</option>
+                            <option value="" disabled selected>City Type --</option>
                             <option value="Metro">Metro</option>
                             <option value="Non-Metro">Non-Metro</option>
                         </select>
@@ -60,15 +68,23 @@
                             [readonly]="!group.get('isEditable')?.value" />
                     </td>
                     <td>
-                        <input type="text" class="form-control" formControlName="landlordPan"
-                            [readonly]="!group.get('isEditable')?.value" />
+                        <input type="text" class="form-control w-75" formControlName="landlordPan"
+                            [readonly]="!group.get('isEditable')?.value" (input)="convertToUppercaseSelectedPAN(i)" />
+                        <div *ngIf="group.get('landlordPan')?.invalid" class="error-message">
+                            Please enter a valid PAN number (e.g., ABCDE1234F)
+                        </div>
                     </td>
                     <td>
                         <input type="text" class="form-control" formControlName="landlordAddress"
                             [readonly]="!group.get('isEditable')?.value" />
                     </td>
                     <td>
-                        {{group.get('approvalStatus')?.value}}
+                        <ng-container [ngSwitch]="group.get('approvalStatus')?.value">
+                            <mat-icon *ngSwitchCase="'Pending'" color="warn">hourglass_empty</mat-icon>
+                            <mat-icon *ngSwitchCase="'Approved'" color="primary">check_circle</mat-icon>
+                            <mat-icon *ngSwitchCase="'Rejected'" color="accent">cancel</mat-icon>
+                            <span *ngSwitchDefault>{{ group.get('approvalStatus')?.value }}</span>
+                        </ng-container>
                     </td>
 
                     <td class="text-center">

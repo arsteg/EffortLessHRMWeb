@@ -25,7 +25,13 @@
                         [readonly]="!group.get('isEditable')?.value" />
                 </td>
                 <td>
-                    <input type="text" [disabled] formControlName="approvalStatus">
+                    <!-- <input type="text" [disabled] formControlName="approvalStatus"> -->
+                    <ng-container [ngSwitch]="group.get('approvalStatus')?.value">
+                        <mat-icon *ngSwitchCase="'Pending'" color="warn">hourglass_empty</mat-icon>
+                        <mat-icon *ngSwitchCase="'Approved'" color="primary">check_circle</mat-icon>
+                        <mat-icon *ngSwitchCase="'Rejected'" color="accent">cancel</mat-icon>
+                        <span *ngSwitchDefault>{{ group.get('approvalStatus')?.value }}</span>
+                      </ng-container>
                 </td>
                 <td>
                     <input formControlName="remark" type="text" [readonly]="!group.get('isEditable')?.value" />
