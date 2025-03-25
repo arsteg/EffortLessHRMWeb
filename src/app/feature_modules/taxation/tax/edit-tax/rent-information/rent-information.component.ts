@@ -29,12 +29,12 @@ export class RentInformationComponent {
     this.formGroup = this.fb.group({
       employeeIncomeTaxDeclaration: [''],
       employeeIncomeTaxDeclarationHRA: this.fb.array([]),
-      rentDeclared: [0],
+      rentDeclared: [],
       month: [''],
       verifiedAmount: [0],
       cityType: [''],
       landlordName: [''],
-      landlordPan: [''],
+      landlordPan: ['',[ Validators.pattern(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/), Validators.required]],
       landlordAddress: [''],
       approvalStatus: [''],
       documentLink: [''],
@@ -87,14 +87,28 @@ export class RentInformationComponent {
     return attachments;
   }
 
+  convertToUppercase() {
+    const control = this.formGroup.get('landlordPan');
+    if (control) {
+      control.setValue(control.value.toUpperCase(), { emitEvent: false });
+    }
+  }
+  convertToUppercaseSelectedPAN(index: number) {
+    const control = (this.formGroup.get('employeeIncomeTaxDeclarationHRA') as FormArray).at(index).get('landlordPan');
+    if (control) {
+      control.setValue(control.value.toUpperCase(), { emitEvent: false });
+    }
+  }
+
+  
   createEmployeeIncomeTaxDeclarationComponent(month): FormGroup {
     return this.fb.group({
-      rentDeclared: ['', Validators.required],
+      rentDeclared: [, Validators.required],
       month: [month, Validators.required],
       verifiedAmount: [0, [Validators.required, Validators.min(0)]],
       cityType: ['', [Validators.required, Validators.min(0)]],
       landlordName: ['', [Validators.required, Validators.min(0)]],
-      landlordPan: ['', Validators.required],
+      landlordPan: ['', [Validators.pattern(/^[a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}$/), Validators.required]],
       landlordAddress: ['', Validators.required],
       approvalStatus: ['Pending', Validators.required],
       isEditable: [false],
@@ -198,7 +212,7 @@ export class RentInformationComponent {
     const landlordName = this.formGroup.value.landlordName;
     const landlordPan = this.formGroup.value.landlordPan;
     const landlordAddress = this.formGroup.value.landlordAddress;
-    const approvalStatus = this.formGroup.value.approvalStatus;
+    const approvalStatus = 'Pending';
     const documentLink = this.formGroup.value.documentLink
     const verifiedAmount = 0;
     const months = this.getMonthsArray();

@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./taxation.component.css']
 })
 export class TaxationComponent implements OnInit {
-  selectedTab: number = 3;
+  selectedTab: number = 6;
   view = localStorage.getItem('adminView');
 
   constructor(
