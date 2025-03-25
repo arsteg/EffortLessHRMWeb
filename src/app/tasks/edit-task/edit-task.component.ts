@@ -619,14 +619,6 @@ export class EditTaskComponent implements OnInit {
     });
   }
 
-  downloadAttachment(url: string, attachmentName: string) {
-    const link = document.createElement('a');
-    link.href = url;
-    link.target = '_blank';
-    link.download = attachmentName;
-    link.click();
-  }
-
   goBack() {
     if (this.view === 'admin') { this.router.navigate(['home/manage/tasks']); }
     else if (this.view === 'user') { this.router.navigate(['home/tasks']); }

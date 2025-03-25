@@ -120,4 +120,10 @@ export class TaxationService {
     var response = this.http.put<any>(`${environment.apiUrlDotNet}/users/employee-income-tax-declarations-hra`, payload, this.httpOptions);
     return response;
   }
+
+  getAllTaxDeclarationsByCompany(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/users/employee-income-tax-declarations-by-company`, payload, this.httpOptions);
+    return response;
+  }
+
 }

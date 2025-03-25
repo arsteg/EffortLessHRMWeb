@@ -221,6 +221,7 @@ export class RealtimeComponent implements OnInit, OnDestroy {
           const content = JSON.parse(message.content);
           if (content.userId && content.isOnline !== undefined) {
             this.updateUserStatus(content.userId, content.isOnline);
+            console.log('User status updated:', content.userId, 'isOnline:', content.isOnline);
           }
         },
         error: err => console.error('WebSocket error:', err)

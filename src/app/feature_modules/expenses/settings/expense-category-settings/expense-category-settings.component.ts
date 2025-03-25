@@ -52,6 +52,7 @@ export class ExpenseCategorySettingsComponent {
       { label: 'Rate', placeholder: 'Rate per Hour', formControlName: 'rate', type: 'number' }
     ]
   }
+  loader = true;
   constructor(private _formBuilder: FormBuilder,
     private expenseService: ExpensesService,
     private toast: ToastrService
@@ -65,46 +66,28 @@ export class ExpenseCategorySettingsComponent {
   ngOnInit() {
     let id = this.expenseService.selectedTemplate.getValue()._id;
     this.expenseService.getCategoriesByTemplate(id).subscribe((res: any) => {
-      let categoryList = res.data;
-      this.expenseCategory = categoryList.map(category => ({ expensecategory: category.expenseCategory }));
-      this.expenseService.allExpenseCategories.subscribe((res: any) => {
-        this.allExpenseCategories = res;
-        this.steps = categoryList;
+      this.loader = false;
+      let applicableCategories = res.data;
+      this.expenseCategory = applicableCategories.map(category => { return category.expenseCategory });
+      this.expenseService.allExpenseCategories.subscribe((categories: any) => {
+        this.allExpenseCategories = categories;
+        this.steps = applicableCategories;
         this.firstForm = this._formBuilder.group({
           expenseCategories: this._formBuilder.array([]),
           expenseTemplate: [id]
         });
         const expenseCategoriesArray = this.firstForm.get('expenseCategories') as FormArray;
-        this.steps.forEach(async (step) => {
-          const matchingCategory = this.allExpenseCategories.find(category => category._id === step.expenseCategory);
+        this.steps.forEach(async (step: any) => {
+          const matchingCategory = this.allExpenseCategories.find(category => category._id === step.expenseCategory._id);
           if (matchingCategory) {
             const categoryId = matchingCategory._id;
-
-            if (matchingCategory._id === step.expenseCategory) {
+            if (categoryId === step.expenseCategory._id) {
               this.typeCategory = matchingCategory.type;
             }
             // Fetch category details by ID
             const categoryDetails = await this.expenseService.getExpenseCategoryById(categoryId).toPromise();
-
             expenseCategoriesArray.push(this._formBuilder.group({
               expenseCategory: categoryId,
-              isMaximumAmountPerExpenseSet: false,
-              maximumAmountPerExpense: 0,
-              isMaximumAmountWithoutReceiptSet: false,
-              maximumAmountWithoutReceipt: 0,
-              maximumExpensesCanApply: 0,
-              isTimePeroidSet: false,
-              timePeroid: '',
-              expiryDay: 0,
-              isEmployeeCanAddInTotalDirectly: false,
-              ratePerDay: 0,
-              expenseTemplateCategoryFieldValues: this._formBuilder.array([]),
-              categoryType: categoryDetails.data.type,
-              _id: ''
-            }));
-
-            const formGroupIndex = expenseCategoriesArray.length - 1;
-            expenseCategoriesArray.at(formGroupIndex).patchValue({
               isMaximumAmountPerExpenseSet: step.isMaximumAmountPerExpenseSet,
               maximumAmountPerExpense: step.maximumAmountPerExpense,
               isMaximumAmountWithoutReceiptSet: step.isMaximumAmountWithoutReceiptSet,
@@ -115,77 +98,47 @@ export class ExpenseCategorySettingsComponent {
               expiryDay: step.expiryDay,
               isEmployeeCanAddInTotalDirectly: step.isEmployeeCanAddInTotalDirectly,
               ratePerDay: step.ratePerDay,
-              expenseTemplateCategoryFieldValues: [],
+              expenseTemplateCategoryFieldValues: this._formBuilder.array([]),
               categoryType: categoryDetails.data.type,
-              _id: step._id
-            });
-                const formGroup = expenseCategoriesArray.at(formGroupIndex);
-
-                if (!formGroup.get('isMaximumAmountPerExpenseSet').value) {
-                  formGroup.get('maximumAmountPerExpense').disable();
-                }
-
-                formGroup.get('isMaximumAmountPerExpenseSet').valueChanges.subscribe((value) => {
-                  if (value) {
-                    formGroup.get('maximumAmountPerExpense').enable();
-                  } else {
-                    formGroup.get('maximumAmountPerExpense').disable();
-                  }
-                });
-
-                if (!formGroup.get('isMaximumAmountWithoutReceiptSet').value) {
-                  formGroup.get('maximumAmountWithoutReceipt').disable();
-                }
-
-                formGroup.get('isMaximumAmountWithoutReceiptSet').valueChanges.subscribe((value) => {
-                  if (value) {
-                    formGroup.get('maximumAmountWithoutReceipt').enable();
-                  } else {
-                    formGroup.get('maximumAmountWithoutReceipt').disable();
-                  }
-                });
-
-                if (!formGroup.get('isTimePeroidSet').value) {
-                  formGroup.get('timePeroid').disable();
-                }
-
-                formGroup.get('isTimePeroidSet').valueChanges.subscribe((value) => {
-                  if (value) {
-                    formGroup.get('timePeroid').enable();
-                  } else {
-                    formGroup.get('timePeroid').disable();
-                  }
-                });
-
-                if (!formGroup.get('isEmployeeCanAddInTotalDirectly').value) {
-                  formGroup.get('expiryDay').disable();
-                }
-
-                formGroup.get('isEmployeeCanAddInTotalDirectly').valueChanges.subscribe((value) => {
-                  if (value) {
-                    formGroup.get('expiryDay').enable();
-                  } else {
-                    formGroup.get('expiryDay').disable();
-                  }
-                });
-
-                if (step.expenseTemplateCategoryFieldValues.length && step.expenseTemplateCategoryFieldValues.length >= 1) {
-                  step.expenseTemplateCategoryFieldValues?.forEach((value) => {
-                    if (value.expenseTemplateCategory === step._id && categoryDetails.data._id === step.expenseCategory) {
-                      const fieldFormGroup = this._formBuilder.group({
-                        label: value.label,
-                        rate: value.rate,
-                        type: value.type
-                      });
-                      const fieldsArray = (expenseCategoriesArray.at(formGroupIndex).get('expenseTemplateCategoryFieldValues') as FormArray);
-                      fieldsArray.push(fieldFormGroup);
-                    }
+              _id: step.expenseCategory._id
+            }));
+            const formGroupIndex = expenseCategoriesArray.length - 1;
+            const formGroup = expenseCategoriesArray.at(formGroupIndex);
+            if (step.expenseTemplateCategoryFieldValues.length && step.expenseTemplateCategoryFieldValues.length >= 1) {
+              const fieldsArray = expenseCategoriesArray.at(formGroupIndex).get('expenseTemplateCategoryFieldValues') as FormArray;
+              fieldsArray.clear();
+              step.expenseTemplateCategoryFieldValues?.forEach((value) => {
+                if (value.expenseTemplateCategory === step._id && categoryDetails.data._id === step.expenseCategory._id) {
+                  const fieldFormGroup = this._formBuilder.group({
+                    label: value.label,
+                    rate: value.rate,
+                    type: value.type
                   });
+                  fieldsArray.push(fieldFormGroup);
                 }
-
-              }
+              });
+            }
+            this.toggleControl(formGroup, 'isMaximumAmountPerExpenseSet', 'maximumAmountPerExpense');
+            this.toggleControl(formGroup, 'isMaximumAmountWithoutReceiptSet', 'maximumAmountWithoutReceipt');
+            this.toggleControl(formGroup, 'isTimePeroidSet', 'timePeroid');
+            this.toggleControl(formGroup, 'isEmployeeCanAddInTotalDirectly', 'expiryDay');
+          }
         });
       });
+    });
+  }
+
+  toggleControl(formGroup, toggler, control){
+    if (!formGroup.get(toggler).value) {
+      formGroup.get(control).disable();
+    }
+
+    formGroup.get(toggler).valueChanges.subscribe((value) => {
+      if (value) {
+        formGroup.get(control).enable();
+      } else {
+        formGroup.get(control).disable();
+      }
     });
   }
 

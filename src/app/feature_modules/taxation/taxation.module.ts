@@ -13,6 +13,7 @@ import { TaxComponent } from './tax/tax.component';
 import { UserTaxDeclarationComponent } from './user-tax-declaration/user-tax-declaration.component';
 import { TaxComponentsComponent } from './tax/edit-tax/tax-components/tax-components.component';
 import { TaxComponentBySectionComponent } from './tax-component-by-section/tax-component-by-section.component';
+import { TaxDeclarationByCompanyComponent } from './tax-declaration-by-company/tax-declaration-by-company.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { TaxComponentBySectionComponent } from './tax-component-by-section/tax-c
     TaxSectionComponent,
     TaxDeclarationComponent,
     TaxComponentsComponent,
-    TaxComponentBySectionComponent
+    TaxComponentBySectionComponent,
+    TaxDeclarationByCompanyComponent
   ],
   imports: [
     CommonModule,

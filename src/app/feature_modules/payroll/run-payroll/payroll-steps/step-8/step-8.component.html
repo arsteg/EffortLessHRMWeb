@@ -75,7 +75,12 @@
                 <div class=" col-md-6">
                     <mat-form-field appearance="outline" class="my-2">
                         <mat-label>Tax Calculation Method</mat-label>
-                        <input matInput type="text" formControlName="TaxCalculatedMethod" placeholder="Enter tax calculation method">
+                        <mat-select formControlName="TaxCalculatedMethod" placeholder="Select tax calculation method">
+                            <mat-option value="Automatic">Automatic</mat-option>
+                            <mat-option value="Manual">Manual</mat-option>
+                            <mat-option value="Old Regime">Old Regime</mat-option>
+                            <mat-option value="New Regime">New Regime</mat-option>
+                        </mat-select>
                         <mat-error *ngIf="taxForm.get('TaxCalculatedMethod').hasError('required')">Tax Calculation Method is required</mat-error>
                     </mat-form-field>
                 </div>

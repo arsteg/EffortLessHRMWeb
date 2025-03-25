@@ -1,117 +1,207 @@
-<div class="d-flex justify-content-between">
-  <button type="button" data-bs-dismiss="modal" class="btn-close text-end" (click)="closeModal()"></button>
-</div>
-<mat-stepper #stepper [formGroup]="firstForm">
-  <ng-container>
-    <mat-step *ngFor="let categoryCtrl of firstForm?.get('expenseCategories')?.controls; let i = index">
-      <form [formGroup]="categoryCtrl">
-        <ng-template matStepLabel>{{ getCategoryLabel(expenseCategory[i]?.expensecategory) }}
-          <span [matTooltip]="getCategoryLabel(expenseCategory[i]?.expensecategory)" matTooltipPosition="below"></span>
-        </ng-template>
+<h1 mat-dialog-title>Categories setting for {{selectedTemplate.policyLabel}}</h1>
+<div mat-dialog-content>
+  @if(!loader){
+  <mat-vertical-stepper #stepper [formGroup]="firstForm" [linear]="true">
+    <ng-container *ngFor="let categoryCtrl of firstForm?.get('expenseCategories')?.controls; let i = index">
+      <mat-step [stepControl]="categoryCtrl">
+        <form [formGroup]="categoryCtrl">
+          <ng-template matStepLabel>{{ getCategoryLabel(categoryCtrl.value._id) }}
+            <span [matTooltip]="getCategoryLabel(categoryCtrl.value._id)" matTooltipPosition="below"></span>
+          </ng-template>
 
-
-        <div class="d-flex" *ngIf="categoryCtrl.get('categoryType').value == 'dateRange'">
-          <label for="">Would you like the employee to enter Total Expense amount in an expense application?</label>
-          <div class="form-check form-switch ms-2">
-            <input formControlName="isEmployeeCanAddInTotalDirectly" id="total{{i}}" class="form-check-input" type="checkbox">
+          @if(categoryCtrl.get('categoryType').value == 'dateRange'){
+          <div class="d-flex align-items-center">
+            <mat-label>Would you like the employee to enter Total Expense amount in an expense application?</mat-label>
+            <mat-checkbox formControlName="isEmployeeCanAddInTotalDirectly"></mat-checkbox>
           </div>
-        </div>
 
-        <div class="d-flex justify-content-between my-2" *ngIf="categoryCtrl.get('categoryType').value == 'dateRange'">
-          <label for="" class="w-50">Rate Per Day</label>
-          <input formControlName="ratePerDay" id="rate{{i}}" class="form-control w-50" type="number">
-        </div>
-
-        <div class="d-flex">
-          <label class="w-50">Maximum amount limit per individual expense</label>
-          <div class="form-check form-switch ms-2">
-            <input formControlName="isMaximumAmountPerExpenseSet" id="maxAmount{{i}}" class="form-check-input"
-              type="checkbox">
+          <div class="d-flex align-items-center my-2">
+            <mat-label class="w-50">Rate per day</mat-label>
+            <mat-form-field class="ms-auto">
+              <input type="number" matInput formControlName="ratePerDay">
+            </mat-form-field>
           </div>
-          <input formControlName="maximumAmountPerExpense" type="number" class="form-control w-50"
-            [attr.disabled]="!categoryCtrl.get('isMaximumAmountPerExpenseSet').value ? true : null">
-        </div>
+          }
 
-        <div class="d-flex mt-2">
-          <label class="w-50">Maximum amount permitted per expense without receipt</label>
-          <div class="form-check form-switch ms-2">
-            <input formControlName="isMaximumAmountWithoutReceiptSet" id="maxAmountWithoutReceipt{{i}}"
-              class="form-check-input" type="checkbox">
+          <div class="d-flex align-items-center">
+            <mat-label class="w-50">Maximum amount limit per individual expense</mat-label>
+            <div class="ms-auto">
+              <mat-slide-toggle formControlName="isMaximumAmountPerExpenseSet"></mat-slide-toggle>
+            </div>
+            <mat-form-field class="ms-4">
+              <input type="number" matInput formControlName="maximumAmountPerExpense" [attr.disabled]="!categoryCtrl.get('isMaximumAmountPerExpenseSet').value ? true : null">
+            </mat-form-field>
           </div>
-          <input formControlName="maximumAmountWithoutReceipt" type="number" class="form-control w-50"
-            [attr.disabled]="!categoryCtrl.get('isMaximumAmountWithoutReceiptSet').value ? true : null">
-        </div>
 
-        <div class="d-flex mt-2" *ngIf="categoryCtrl.get('categoryType').value != 'dateRange'">
-          <label class="w-50">Times in a </label>
-          <div class="form-check form-switch ms-2">
-            <input formControlName="isTimePeroidSet" id="timePeroid{{i}}" class="form-check-input" type="checkbox">
+          <div class="d-flex align-items-center mt-2">
+            <label class="w-50">Maximum amount permitted per expense without receipt</label>
+            <div class="ms-auto">
+              <mat-slide-toggle formControlName="isMaximumAmountWithoutReceiptSet"></mat-slide-toggle>
+            </div>
+            <mat-form-field class="ms-4">
+              <input type="number" matInput formControlName="maximumAmountWithoutReceipt" [attr.disabled]="!categoryCtrl.get('isMaximumAmountWithoutReceiptSet').value ? true : null">
+            </mat-form-field>
           </div>
-          <select class="form-select w-50" formControlName="timePeroid" aria-label="Default select example"
-            [attr.disabled]="!categoryCtrl.get('isTimePeroidSet').value ? true : null">
-            <option value="" disabled selected>Select Time</option>
-            <option value="Day">Day</option>
-            <option value="Week">Week</option>
-            <option value="Month">Month</option>
-          </select>
-        </div>
 
-        <div class="d-flex  mt-2" *ngIf="categoryCtrl.get('categoryType').value != 'dateRange'">
-          <label class="w-50">Expense will expire Days after incurred date </label>
-          <div class="form-check form-switch ms-2">
-            <input formControlName="isEmployeeCanAddInTotalDirectly" id="employeeCanAdd{{i}}" class="form-check-input"
-              type="checkbox">
+          @if(categoryCtrl.get('categoryType').value != 'dateRange'){
+          <div class="d-flex align-items-center mt-2">
+            <label class="w-50">Times in a </label>
+            <div class="ms-auto">
+              <mat-slide-toggle formControlName="isTimePeroidSet"></mat-slide-toggle>
+            </div>
+            <mat-form-field class="ms-4">
+              <mat-select formControlName="timePeroid"
+                [attr.disabled]="!categoryCtrl.get('isTimePeroidSet').value ? true : null">
+                <mat-option value="" disabled selected>Select Time</mat-option>
+                <mat-option value="Day">Day</mat-option>
+                <mat-option value="Week">Week</mat-option>
+                <mat-option value="Month">Month</mat-option>
+              </mat-select>
+            </mat-form-field>
           </div>
-          <input formControlName="expiryDay" type="number" class="form-control w-50"
-            [attr.disabled]="!categoryCtrl.get('isEmployeeCanAddInTotalDirectly').value ? true : null">
-        </div>
 
+          <div class="d-flex align-items-center mt-2">
+            <label class="w-50">Expense will expire Days after incurred date </label>
+            <div class="ms-auto">
+              <mat-slide-toggle formControlName="isEmployeeCanAddInTotalDirectly"></mat-slide-toggle>
+            </div>
+            <mat-form-field class="ms-4">
+              <input type="number" matInput formControlName="expiryDay" [attr.disabled]="!categoryCtrl.get('isEmployeeCanAddInTotalDirectly').value ? true : null">
+            </mat-form-field>
+          </div>
 
+          <div class="d-flex align-items-center mt-2">
+            <label class="w-50">An employee can apply maximum</label>
+            <mat-form-field class="ms-auto">
+              <input type="number" matInput formControlName="maximumExpensesCanApply">
+            </mat-form-field>
+          </div>
+          
+          <div class="d-flex">
+            <button class="ms-auto" mat-stroked-button color="secondary" type="button" (click)="addField(i)">Add Fields</button>
+          </div>
 
-        <div class="d-flex mt-2" *ngIf="categoryCtrl.get('categoryType').value != 'dateRange'">
-          <label class="w-50">An employee can apply maximum</label>
-          <input formControlName="maximumExpensesCanApply" type="number" class="form-control w-50">
-        </div>
+          <div formArrayName="expenseTemplateCategoryFieldValues">
+            <div *ngIf="i === stepper.selectedIndex">
+              <div
+                *ngFor="let fieldCtrl of categoryCtrl.get('expenseTemplateCategoryFieldValues').controls; let j = index">
+                <div [formGroupName]="j">
+                  <div class="d-flex pt-2 align-items-center">
+                    <mat-form-field>
+                      <mat-label>Label</mat-label>
+                      <input matInput formControlName="label" placeholder="Label">
+                    </mat-form-field>
 
-        <button class="submenuTab active rounded-pill ms-4" type="button"
-          *ngIf="categoryCtrl.get('categoryType').value != 'dateRange'" (click)="addField(i)">Add Fields</button>
-        <div formArrayName="expenseTemplateCategoryFieldValues"
-          *ngIf="categoryCtrl.get('categoryType').value != 'dateRange'">
-          <div *ngIf="i === stepper.selectedIndex">
-            <div
-              *ngFor="let fieldCtrl of categoryCtrl.get('expenseTemplateCategoryFieldValues').controls; let j = index">
-              <div [formGroupName]="j">
-                <div class="d-flex pt-2 align-items-center justify-content-between">
-                  <input formControlName="label" placeholder="Label" class="w-50 form-control">
-                  <select *ngIf="categoryCtrl.get('categoryType').value === 'distance'" formControlName="type"
-                    class="form-control w-50 ms-2">
-                    <option value="km">KM</option>
-                    <option value="miles">Miles</option>
-                  </select>
-                  <input formControlName="rate" type="number" placeholder="Rate" class="w-50 mx-2 form-control">
-                  <button (click)="removeField(i, j)" class="rounded-pill btn submenuTab active">
-                    <i class="bi bi-trash"></i>
-                  </button>
+                    @if(categoryCtrl.get('categoryType').value === 'distance'){
+                      <mat-form-field>
+                        <mat-select formControlName="type">
+                          <mat-option value="km">KM</mat-option>
+                          <mat-option value="miles">Miles</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    }
+
+                    <mat-form-field>
+                      <mat-label>Rate</mat-label>
+                      <input matInput type="number" placeholder="Rate" formControlName="rate">
+                    </mat-form-field>
+
+                    <button (click)="removeField(i, j)" mat-icon-button type="button" color="warn">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+          }
 
+          <div class="mt-3">
+            @if(i>0){
+                <button mat-button matStepperPrevious color="primary">Back</button>
+            }
+            <button mat-stroked-button matStepperNext color="accent">Next</button>
+          </div>
+        </form>
+      </mat-step>
+    </ng-container>
+      <mat-step>
+        <ng-template matStepLabel>Review</ng-template>
+    
+        @for(categoryCtrl of firstForm?.get('expenseCategories')?.controls; track categoryCtrl; let i = $index){
+          <!-- {{categoryCtrl.value | json}} -->
+          <div class="mb-2">
+            <h4 class="mb-1 fw-bold text-dark">{{ getCategoryLabel(categoryCtrl.value._id)}}</h4>
+            <ul class="list-group border border-warning">
+              @if(categoryCtrl.get('categoryType').value == 'dateRange'){
+                <li class="list-group-item p-1 d-flex justify-content-between">
+                  Would you like the employee to enter Total Expense amount in an expense application? <b>{{categoryCtrl.value['isEmployeeCanAddInTotalDirectly']}}</b>
+                </li>
+                <li class="list-group-item p-1 d-flex justify-content-between">
+                  Rate per day <b>{{categoryCtrl.value['ratePerDay']}}</b>
+                </li>
+              }
+              @if(categoryCtrl.value['isMaximumAmountPerExpenseSet']){
+                <li class="list-group-item p-1 d-flex justify-content-between">
+                  Maximum amount limit per individual expense <b>{{categoryCtrl.value['maximumAmountPerExpense']}}</b>
+                </li>
+              }
+              @if(categoryCtrl.value['isMaximumAmountWithoutReceiptSet']){
+                <li class="list-group-item p-1 d-flex justify-content-between">
+                  Maximum amount permitted per expense without receipt <b>{{categoryCtrl.value['maximumAmountWithoutReceipt']}}</b>
+                </li>
+              }
+              @if(categoryCtrl.get('categoryType').value != 'dateRange'){
+                @if(categoryCtrl.value['isTimePeroidSet']){
+                  <li class="list-group-item p-1 d-flex justify-content-between">
+                    Times in a  <b>{{categoryCtrl.value['timePeroid']}}</b>
+                  </li>
+                }
+                <li class="list-group-item p-1 d-flex justify-content-between">
+                  Expense will expire Days after incurred date  <b>{{categoryCtrl.value['expiryDay']}}</b>
+                </li>
+                <li class="list-group-item p-1 d-flex justify-content-between">
+                  An employee can apply maximum <b>{{categoryCtrl.value['maximumExpensesCanApply']}}</b>
+                </li>
+              }
+            </ul>
+            @if(categoryCtrl.get('expenseTemplateCategoryFieldValues').controls.length){
+              <table class="mt-2 table table-bordered table-sm">
+                <thead>
+                  <tr>
+                    <th>Label</th>
+                    @if(categoryCtrl.get('categoryType').value === 'distance'){
+                      <th>Type</th>
+                    }
+                    <th>Rate</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for(field of categoryCtrl.get('expenseTemplateCategoryFieldValues').controls; track field;){
+                    <tr>
+                      <td>{{field.value.label}}</td>
+                      @if(categoryCtrl.get('categoryType').value === 'distance'){
+                        <td>{{field.value.type}}</td>
+                      }
+                      <td>{{field.value.rate}}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            }
+          </div>
+        }
         <div class="mt-3">
-          <button mat-button matStepperNext class="addBtn">Next</button>
+          <button mat-button matStepperPrevious color="primary">Back</button>
         </div>
-      </form>
-    </mat-step>
-  </ng-container>
-  <mat-step>
-    <ng-template matStepLabel>Done</ng-template>
-
-    <p>You are now done.</p>
-    <div>
-      <button mat-button matStepperPrevious>Back</button>
-      <button mat-button (click)="stepper.reset()">Reset</button>
-      <button mat-button (click)="onSubmit()" class="addBtn">Submit</button>
-    </div>
-  </mat-step>
-</mat-stepper>
+      </mat-step>
+    </mat-vertical-stepper>
+  } @else {
+    <h2>Loading...</h2>
+    <p>Please wait while categories are loading.</p>
+  }
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button type="button" (click)="closeModal()">Cancel</button>
+  <button mat-raised-button class="ms-auto" color="accent" (click)="onSubmit()">Submit</button>
+</div>

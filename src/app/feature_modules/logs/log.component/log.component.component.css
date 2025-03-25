@@ -1,4 +1,18 @@
+/* log.component.component.css */
 .table-container {
-  max-height: 650px; /* Adjust the height as needed */
+  max-height: 650px;
   overflow: auto;
+}
+
+.main-content {
+  padding: 16px;
+}
+
+.flex-item {
+  min-width: 200px;
+  margin-bottom: 16px;
+}
+
+.buttons-container {
+  gap: 8px;
 }

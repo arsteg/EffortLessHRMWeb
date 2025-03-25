@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal, NgbModalConfig } from '@ng-bootstrap/ng-bootstrap';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
@@ -37,6 +37,7 @@ export class ExpensesTemplatesComponent implements OnInit {
   currentPage: number = 1;
   displayedColumns: string[] = ['policyLabel', 'matchingCategories', 'actions'];
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
+  dialogRef: MatDialogRef<any>;
 
   constructor(
     private modalService: NgbModal,
@@ -56,8 +57,7 @@ export class ExpensesTemplatesComponent implements OnInit {
 
   onClose(event) {
     if (event) {
-      this.modalService.dismissAll();
-      // this.addTemplateForm.reset();
+      this.dialogRef.close();
     }
   }
 
@@ -65,21 +65,10 @@ export class ExpensesTemplatesComponent implements OnInit {
     this.step = event;
   }
 
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
-  }
-
-  open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+   open(content: any) {
+    this.dialogRef = this.dialog.open(content, {
+      width: '800px',
+      disableClose: false
     });
   }
 

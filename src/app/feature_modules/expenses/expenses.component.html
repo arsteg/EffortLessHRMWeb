@@ -1,40 +1,27 @@
 <div>
    @if(view === 'admin'){
-      <nav mat-tab-nav-bar mat-stretch-tabs="false" mat-align-tabs="start" [tabPanel]="tabPanel">
-      <a mat-tab-link
-         routerLink="settings"
-            routerLinkActive #rla1="routerLinkActive"
+   <nav mat-tab-nav-bar mat-stretch-tabs="false" mat-align-tabs="start" [tabPanel]="tabPanel">
+      <a mat-tab-link routerLink="settings" routerLinkActive #rla1="routerLinkActive"
          [active]="rla1.isActive">Settings</a>
-      <a mat-tab-link
-         routerLink="expense-reports"
-            routerLinkActive #rla2="routerLinkActive"
+      <a mat-tab-link routerLink="expense-reports" routerLinkActive #rla2="routerLinkActive"
          [active]="rla2.isActive">Expense Reports</a>
-      <a mat-tab-link
-         routerLink="advance-reports"
-            routerLinkActive #rla3="routerLinkActive"
+      <a mat-tab-link routerLink="advance-reports" routerLinkActive #rla3="routerLinkActive"
          [active]="rla3.isActive">Advance Reports</a>
-      </nav>
-      <mat-tab-nav-panel #tabPanel>
-         <router-outlet></router-outlet>
-      </mat-tab-nav-panel>
+   </nav>
+   <mat-tab-nav-panel #tabPanel>
+      <router-outlet></router-outlet>
+   </mat-tab-nav-panel>
    } @else if(view === 'user') {
-      <nav mat-tab-nav-bar mat-stretch-tabs="false" mat-align-tabs="start" [tabPanel]="tabPanel">
-         <a mat-tab-link
-            routerLink="my-expense"
-               routerLinkActive #rla1="routerLinkActive"
-            [active]="rla1.isActive">My Expenses</a>
-         <a mat-tab-link
-            routerLink="team-expense"
-               routerLinkActive #rla2="routerLinkActive"
-            [active]="rla2.isActive">Team Expenses</a>
-         <a mat-tab-link
-            routerLink="general-information"
-               routerLinkActive #rla3="routerLinkActive"
-            [active]="rla3.isActive">General Information</a>
-      </nav>
-      <mat-tab-nav-panel #tabPanel>
-         <router-outlet></router-outlet>
-      </mat-tab-nav-panel>
+   <nav mat-tab-nav-bar mat-stretch-tabs="false" mat-align-tabs="start" [tabPanel]="tabPanel">
+      <a mat-tab-link routerLink="my-expense" routerLinkActive #rla1="routerLinkActive" [active]="rla1.isActive">My
+         Expenses</a>
+      <a mat-tab-link routerLink="team-expense" routerLinkActive #rla2="routerLinkActive" [active]="rla2.isActive">Team
+         Expenses</a>
+      <a mat-tab-link routerLink="general-information" routerLinkActive #rla3="routerLinkActive"
+         [active]="rla3.isActive">General Information</a>
+   </nav>
+   <mat-tab-nav-panel #tabPanel>
+      <router-outlet></router-outlet>
+   </mat-tab-nav-panel>
    }
-  </div>
-  
+</div>

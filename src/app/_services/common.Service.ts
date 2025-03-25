@@ -214,4 +214,10 @@ export class CommonService extends baseService {
   getOnlineUsersByCompany(): Observable<any> {    
     return this.http.get<any>(`${environment.apiUrlDotNet}/common/getOnlineUsersByCompany`, this.httpOptions);
   }
+  setLogLevels(logLevels: string[]): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrlDotNet}/common/setLogLevels`, {logLevels}, this.httpOptions);
+  }
+  getLogLevels(): Observable<any> {    
+    return this.http.get<any>(`${environment.apiUrlDotNet}/common/getLogLevels`, this.httpOptions);
+  }
 }

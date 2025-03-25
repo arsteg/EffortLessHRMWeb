@@ -87,8 +87,11 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
     });
   }
 
-  setFormValues() {
+  setFormValues(template: any, modal: any, changeMode: any) {
+    this.changeMode = changeMode;
     this.showApproverFields = true;
+    this.isEdit = true
+    this.selectedTemplateAssignment = template;
     const data = this.selectedTemplateAssignment;
     this.expenseService.getTemplateAssignmentById(data.user).subscribe((res: any) => {
       const templateAssignment = res.data[0];
@@ -148,6 +151,7 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
         }
       });
     });
+    this.open(modal);
   }
 
   onTemplateSelectionChange(event: any) {
@@ -237,14 +241,16 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
       this.closeResult = `Closed with: ${result}`;
     });
   }
-  clearSelection() {
+  clearSelection(modal?) {
     if (this.changeMode == 'Add') {
+      this.isEdit = false;
+      this.open(modal);
       this.templateAssignmentForm.get('user')?.enable();
       this.templateAssignmentForm.get('expenseTemplate')?.enable();
       this.templateAssignmentForm.reset();
     }
     if (this.changeMode == 'Update') {
-      this.setFormValues();
+      this.setFormValues(null, modal ,this.changeMode);
     }
   }
 

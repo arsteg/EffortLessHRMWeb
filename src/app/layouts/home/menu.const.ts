@@ -35,7 +35,7 @@ export const SideBarAdminMenu = [
     title: 'Organization',
     icon: 'assets/Sidenav-Icons/organization.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/organization.png',
-    url: 'organization',
+    url: 'organization/organization-setup/organization-profile',
   },
   {
     id: '5',
@@ -56,7 +56,7 @@ export const SideBarAdminMenu = [
     title: 'Attendance',
     icon: 'assets/Sidenav-Icons/attendance.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/attendance.png',
-    url: 'attendance',
+    url: 'attendance/settings/general-settings',
   },
   {
     id: '8',
@@ -70,14 +70,14 @@ export const SideBarAdminMenu = [
     title: 'Leave',
     icon: 'assets/Sidenav-Icons/leave.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/leave.png',
-    url: 'leave',
+    url: 'leave/settings/general-setting',
   },
   {
     id: '10',
     title: 'Expenses',
     icon: 'assets/Sidenav-Icons/expenses.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/expenses.png',
-    url: 'expense',
+    url: 'expense/settings/expense-category',
   },
   {
     id: '11',
@@ -91,7 +91,7 @@ export const SideBarAdminMenu = [
     title: 'Payroll',
     icon: 'assets/Sidenav-Icons/payroll.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/payroll.png',
-    url: 'payroll',
+    url: 'payroll/settings/general-settings',
   },
   {
     id: '13',
@@ -224,7 +224,7 @@ export const SideBarUserMenu = [
     title: 'Organization',
     icon: 'assets/Sidenav-Icons/organization.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/organization.png',
-    url: 'organization',
+    url: 'organization/company-policies',
   },
   {
     id: '6',
@@ -238,14 +238,14 @@ export const SideBarUserMenu = [
     title: 'Leave',
     icon: 'assets/Sidenav-Icons/leave.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/leave.png',
-    url: 'leave',
+    url: 'leave/my-application',
   },
   {
     id: '8',
     title: 'Attendance',
     icon: 'assets/Sidenav-Icons/attendance.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/attendance.png',
-    url: 'attendance',
+    url: 'attendance/my-attendance-records',
   },
   {
     id: '9',
@@ -266,7 +266,7 @@ export const SideBarUserMenu = [
     title: 'Expenses',
     icon: 'assets/Sidenav-Icons/expenses.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/expenses.png',
-    url: 'expense',
+    url: 'expense/my-expense',
   },
   {
     id: '12',
