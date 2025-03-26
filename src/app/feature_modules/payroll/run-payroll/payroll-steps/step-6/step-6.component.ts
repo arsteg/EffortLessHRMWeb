@@ -25,6 +25,8 @@ export class Step6Component {
   selectedPayrollUser: any;
   professionalTaxSlabs: any;
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
+  noSalaryRecordFound: boolean = false;
+
 
   constructor(
     private payrollService: PayrollService,
@@ -57,21 +59,21 @@ export class Step6Component {
       if (callback) callback(); // Execute callback after slabs are loaded
     });
   }
-  
+
   onUserSelectedFromChild(user: any) {
     this.selectedUserId = user.value.user;
     this.selectedPayrollUser = user.value._id;
-  
+
     if (this.changeMode !== 'Add') {
       this.getFlexiBenefitsProfessionalTax();
     } else {
       let payload = { userId: this.selectedUserId };
-  
+
       this.userService.getUserById(payload).subscribe((res: any) => {
         const result = res.data;
         if (result.length > 0) {
-          const userState = result[0].state;
-  
+          const userState = result[0];
+          console.log("User State:", userState);
           // Ensure professional tax slabs are available before proceeding
           if (!this.professionalTaxSlabs) {
             this.getProfessionalTaxSlabs(() => this.processTaxSlabs(userState));
@@ -82,39 +84,40 @@ export class Step6Component {
       });
     }
   }
-  
-  processTaxSlabs(userState: string) {
-    console.log("Available Professional Tax Slabs:", this.professionalTaxSlabs);
-  
-    // Find the matching state in professional tax slabs
+
+  processTaxSlabs(userState: any) {
     const stateSlab = this.professionalTaxSlabs?.states.find(
-      (slab: any) => slab.name.toLowerCase() === userState.toLowerCase()
+      (slab: any) => slab.name.toLowerCase() === userState?.state.toLowerCase()
     );
-  
+
     if (!stateSlab || !stateSlab.slabs) {
-      console.log("No professional tax slab found for state:", userState);
       return;
     }
-  
+
     // Fetch salary details for the user
     this.userService.getSalaryByUserId(this.selectedUserId).subscribe((res: any) => {
+      if (!res.data || res.data.length === 0) {
+        this.noSalaryRecordFound = true;
+      }
       const lastSalaryRecord = res.data[res.data.length - 1];
       let ctc;
-  
-      if (lastSalaryRecord.enteringAmount === 'Monthly') {
+
+      if (lastSalaryRecord?.enteringAmount === 'Monthly') {
         ctc = lastSalaryRecord.Amount;
-      } else if (lastSalaryRecord.enteringAmount === 'Yearly') {
+      } else if (lastSalaryRecord?.enteringAmount === 'Yearly') {
         ctc = lastSalaryRecord.Amount / 12; // Convert yearly salary to monthly
       }
-  
-      console.log("User CTC (Monthly):", ctc);
-  
-      // Find the matching slab where CTC falls within the range
+
+      
       const matchingSlab = stateSlab.slabs.find(
         (slab: any) => (ctc >= slab.fromAmount) && (ctc <= (slab.toAmount || 999999999999))
       );
-  
-      if (matchingSlab) {
+      if (userState?.state === 'Maharashtra' && userState?.Gender === 'female' && ctc <= 25000) {
+        this.flexiBenefitsForm.patchValue({
+          TotalProfessionalTaxAmount: 0
+        });
+      }
+      else {
         this.flexiBenefitsForm.patchValue({
           TotalProfessionalTaxAmount: matchingSlab.employeeAmount || 0
         });
