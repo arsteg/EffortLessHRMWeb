@@ -115,6 +115,10 @@
                 </mat-form-field>
             </div>
 
+            @if(expenseReportform.get('expenseAttachments').value){
+                <a [href]="expenseReportform.get('expenseAttachments').value" target="_blank">View Attachment</a>
+            }
+
             <div class="input-group mb-3">
                 <label class="input-group-text" for="inputGroupFile01">Upload</label>
                 <input type="file" class="form-control" formControlName="expenseAttachments"

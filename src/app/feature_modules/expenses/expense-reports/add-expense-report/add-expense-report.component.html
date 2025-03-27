@@ -102,7 +102,8 @@
     </div>
     <div>
       <button (click)="openSecondModal(false);" type="button" [disabled]="!addExpenseForm.valid && !noCategoryError"
-        mat-button color="primary">Add Expense</button>
+        mat-stroked-button color="primary">
+        <mat-icon>add</mat-icon>Add Expense</button>
     </div>
     <div mat-dialog-actions class="d-flex justify-content-between px-0">
       <button mat-raised-button type="button" (click)="closeModal()">Cancel</button>
