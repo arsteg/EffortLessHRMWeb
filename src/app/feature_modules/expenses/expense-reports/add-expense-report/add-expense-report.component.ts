@@ -74,7 +74,6 @@ export class AddExpenseReportComponent {
   }
   openSecondModal(isEdit: boolean) {
     this.isEdit = isEdit;
-    this.expenseService.isEdit.next(isEdit);
     const dialogRef = this.dialog.open(CreateReportComponent, {
       width: '50%',
       data: { isEdit: this.isEdit }
