@@ -30,6 +30,7 @@ export class AddSalaryDetailsComponent {
   salaryDetails: any;
   payrollCTCTemplates: any;
   addButtons: boolean = true;
+  statutorySettings: any;
 
   constructor(private fb: FormBuilder,
     private userService: UserService,
@@ -88,6 +89,7 @@ export class AddSalaryDetailsComponent {
       this.disableFormControls(this.salaryDetailsForm);
     }
     if (this.edit == false) {
+      this.getStatutorySettings();
       this.salaryDetailsForm.patchValue({ CTCTemplate: 'manual' });
       this.addFixedAllowance();
       this.addOtherBenefit();
@@ -303,9 +305,9 @@ export class AddSalaryDetailsComponent {
 
   onSubmissionSalaryDetails(): void {
     const payload = this.salaryDetailsForm.value;
+    this.salaryDetailsForm.get('employeeSalaryTaxAndStatutorySetting')?.enable();
     payload.employeeSalaryTaxAndStatutorySetting = [this.employeeSalaryTaxAndStatutorySetting.value];
-    payload.user = this.selectedUser[0].id;
-
+    payload.user = this.userService.selectedEmployee.getValue().id;
     payload.salaryComponentFixedAllowance = payload.salaryComponentFixedAllowance.map(item => ({
       fixedAllowance: item.fixedAllowance,
       monthlyAmount: item.monthlyAmount || 0,
@@ -601,5 +603,25 @@ export class AddSalaryDetailsComponent {
     this.salaryDetailsForm.get('salaryComponentVariableAllowance').enable();
     this.salaryDetailsForm.get('salaryComponentVariableDeduction').enable();
     this.salaryDetailsForm.get('salaryComponentPFCharge').enable();
+  }
+
+  getStatutorySettings() {
+    let userId = this.userService.selectedEmployee.getValue().id;
+    this.userService.getStatutoryByUserId(userId).subscribe((res: any) => {
+      this.statutorySettings = res.data[0];
+      this.salaryDetailsForm.get('employeeSalaryTaxAndStatutorySetting')?.patchValue({
+        isPFDeduction: this.statutorySettings.isEmployeeEligibleForProvidentFundDeduction,
+        isEmployeeProvidentFundCappedAtPFCeiling:this.statutorySettings. willEmployeeProvidentFundContributionCappedAtProvidentFundCeiling,
+        isEmployerProvidentFundCappedAtPFCeiling: this.statutorySettings.willEmployerProvidentFundContributionBeCappedAtProvidentFundCeiling,
+        fixedAmountForProvidentFundWage: this.statutorySettings.fixedAmountForYourProvidentFundWage,
+        isESICDeduction: this.statutorySettings.isESICDeductedFromSalary,
+        isPTDeduction: this.statutorySettings.isTaxDeductedFromPlayslip,
+        isLWFDeduction: this.statutorySettings.isLWFDeductedFromPlayslip,
+        isGratuityApplicable: this.statutorySettings.isGratuityEligible,
+        isIncomeTaxDeduction: this.statutorySettings.isIncomeTaxDeducted,
+        isRoundOffApplicable: this.statutorySettings.roundOffApplicable
+      });
+      this.salaryDetailsForm.get('employeeSalaryTaxAndStatutorySetting')?.disable();
+    })
   }
 }
