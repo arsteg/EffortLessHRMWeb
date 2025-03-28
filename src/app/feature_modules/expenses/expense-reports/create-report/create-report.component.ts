@@ -70,12 +70,12 @@ export class CreateReportComponent {
   ngOnInit() {
     this.isEdit = this.data ? this.data.isEdit : false;
     const user = this.expenseService.tabIndex.getValue() === 1 ? this.user.id : this.expenseService.selectedUser.getValue();
-    this.expenseService.getExpenseCategoryByUser(user).subscribe((res: any) => {
-      this.categories = res.data;
-    });
-
-    if (this.expenseService.isEdit.getValue() == true) {
+    if (this.isEdit) {
       this.loadExpenseReportData();
+    } else {
+      this.expenseService.getExpenseCategoryByUser(user).subscribe((res: any) => {
+        this.categories = res.data;
+      });
     }
     this.updateTotalRate();
   }
@@ -142,7 +142,7 @@ export class CreateReportComponent {
   }
 
   submitExpenseReport(payload) {
-    if (this.expenseService.isEdit.getValue() == true) {
+    if (this.isEdit) {
       this.updateExpenseReport(payload);
     } else {
       this.addExpenseReport(payload);
@@ -240,15 +240,15 @@ export class CreateReportComponent {
   }
 
   onCategorySelection(categoryId: string) {
-    const isEdit = this.expenseService.isEdit.getValue();
     this.expenseService.getApplicationFieldbyCategory(categoryId).subscribe((res: any) => {
       this.applicationfields = res.data;
       this.expenseFieldsArray.clear();
-      this.populateExpenseFieldsArray(isEdit);
+      this.populateExpenseFieldsArray(this.isEdit);
     });
     const user = this.expenseService.selectedUser.getValue();
     this.expenseService.getExpenseCategoryByUser(user).subscribe((response: any) => {
       const results = response.details;
+      this.categories = response.data;
       this.expenseService.getApplicableFieldByTemplateAndCategory(results[0]?.expenseTemplate, categoryId).subscribe((res: any) => {
         this.applicableCategoryFields = res.data['expenseTemplateCategoryFieldValues'];
       });

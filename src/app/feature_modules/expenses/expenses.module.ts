@@ -51,6 +51,8 @@ import { SupervisorsComponent } from './general-information/supervisors/supervis
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ExpensesRoutingModule } from './expenses-routing.module';
+import { ApproveDialogComponent } from './expense-reports/pending/approve-dialog.component';
+import { RejectDialogComponent } from './expense-reports/pending/reject-dialog.component';
 
 @NgModule({
   declarations: [
@@ -66,6 +68,8 @@ import { ExpensesRoutingModule } from './expenses-routing.module';
     ExpenseCategorySettingsComponent,
     ExpenseReportsComponent,
     PendingComponent,
+    ApproveDialogComponent,
+    RejectDialogComponent,
     ApprovedComponent,
     CancelledComponent,
     RejectedComponent,

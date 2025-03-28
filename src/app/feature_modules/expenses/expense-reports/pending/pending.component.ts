@@ -1,15 +1,17 @@
 import { Component, EventEmitter, Output, Input, ViewChild } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { ExportService } from 'src/app/_services/export.service';
+import { ApproveDialogComponent } from './approve-dialog.component';
+import { RejectDialogComponent } from './reject-dialog.component';
 
 @Component({
   selector: 'app-pending',
@@ -17,7 +19,6 @@ import { ExportService } from 'src/app/_services/export.service';
   styleUrl: './pending.component.css'
 })
 export class PendingComponent {
-  [x: string]: any;
   searchText: string = '';
   expenseCategories: any;
   @Input() isEdit: boolean = false;
@@ -41,12 +42,12 @@ export class PendingComponent {
   @ViewChild(MatMenuTrigger) menuTrigger: MatMenuTrigger;
 
   constructor(private modalService: NgbModal,
-    private expenseService: ExpensesService,
-    private commonService: CommonService,
-    private dialog: MatDialog,
-    private toast: ToastrService,
-    private exportService: ExportService,
-    private fb: FormBuilder) {
+              private expenseService: ExpensesService,
+              private commonService: CommonService,
+              private dialog: MatDialog,
+              private toast: ToastrService,
+              private exportService: ExportService,
+              private fb: FormBuilder) {
     this.updateExpenseReport = this.fb.group({
       employee: [''],
       title: [''],
@@ -67,23 +68,17 @@ export class PendingComponent {
     this.getExpenseReport();
   }
 
-  onCancel() {
-    this.isEdit = false;
-  }
-
   clearform() {
     this.isEdit = false;
-    if (!this.isEdit) {
-      this.changeMode = 'Add';
-    }
+    this.changeMode = 'Add';
   }
 
   open(content: any) {
     this.expenseService.expenseReportExpense.next(this.selectedReport);
-    this.dialogRef =  this.dialog.open(content, {
+    this.dialogRef = this.dialog.open(content, {
       width: '600px',
       disableClose: true
-    })
+    });
   }
 
   onClose(event) {
@@ -95,12 +90,6 @@ export class PendingComponent {
 
   onChangeStep(event) {
     this.step = event;
-  }
-
-  onChangeMode(event) {
-    if (this.isEdit = true) {
-      this.changeMode = event;
-    }
   }
 
   onPageChange(event) {
@@ -121,12 +110,10 @@ export class PendingComponent {
       status: 'Level 1 Approval Pending'
     };
     this.expenseService.getExpenseReport(pagination).subscribe((res: any) => {
-      this.expenseReport = res.data.map((data) => {
-        return {
-          ...data,
-          user: this.getUser(data?.employee)
-        };
-      });
+      this.expenseReport = res.data.map((data) => ({
+        ...data,
+        user: this.getUser(data?.employee)
+      }));
       this.dataSource.data = this.expenseReport;
       this.totalRecords = res.total;
     });
@@ -140,20 +127,16 @@ export class PendingComponent {
       if (result === 'delete') {
         this.deleteReport(id);
       }
-      err => {
-        this.toast.error('Can not be Deleted', 'Error!');
-      }
     });
   }
 
   deleteReport(id: string) {
-    this.expenseService.deleteExpenseReport(id).subscribe((res: any) => {
+    this.expenseService.deleteExpenseReport(id).subscribe(() => {
       this.dataSource.data = this.dataSource.data.filter(report => report._id !== id);
       this.toast.success('Successfully Deleted!!!', 'Expense Report');
-    },
-      (err) => {
-        this.toast.error('This Expense Report is already being used!', 'Error!');
-      });
+    }, () => {
+      this.toast.error('This Expense Report is already being used!', 'Error!');
+    });
   }
 
   getUser(employeeId: string) {
@@ -179,56 +162,58 @@ export class PendingComponent {
     this.exportService.exportToCSV('Expense-pending-Report', 'Expense-Pending-Report', dataToExport);
   }
 
-  updateApprovedReport() {
-    let id = this.selectedReport._id;
-    let payload = {
+  updateReportStatus(result: any) {
+    const id = this.selectedReport._id;
+    const payload = {
       employee: this.selectedReport.employee,
       title: this.selectedReport.title,
-      status: 'Approved',
-      primaryApprovalReason: this.updateExpenseReport.value.primaryApprovalReason,
+      status: result.approved? 'Approved' : 'Rejected',
+      primaryApprovalReason: result.reason,
       secondaryApprovalReason: ''
     };
-    this.expenseService.updateExpenseReport(id, payload).subscribe((res: any) => {
-      this.dataSource.data = this.dataSource.data.filter(report => report._id !== id);
-    });
-  }
-
-  updateRejectedReport() {
-    let id = this.selectedReport._id;
-    let payload = {
-      employee: this.selectedReport.employee,
-      title: this.selectedReport.title,
-      status: 'Rejected',
-      primaryApprovalReason: this.updateExpenseReport.value.primaryApprovalReason,
-      secondaryApprovalReason: ''
-    };
-    this.expenseService.updateExpenseReport(id, payload).subscribe((res: any) => {
+    this.expenseService.updateExpenseReport(id, payload).subscribe(() => {
       this.dataSource.data = this.dataSource.data.filter(report => report._id !== id);
     });
   }
 
   calculateTotalAmount(expenseReport: any): number {
-    let totalAmount = 0;
-    if (expenseReport.expenseReportExpense && expenseReport.expenseReportExpense.length > 0) {
-      for (const expense of expenseReport.expenseReportExpense) {
-        totalAmount += expense.amount;
-      }
-    }
-    return totalAmount;
+    return expenseReport.expenseReportExpense?.reduce((total, expense) => total + expense.amount, 0) || 0;
   }
 
   calculateTotalisReimbursable(expenseReport: any, isReimbursable: boolean, isBillable: boolean): number {
-    let totalAmount = 0;
-    if (expenseReport.expenseReportExpense && expenseReport.expenseReportExpense.length > 0) {
-      for (const expense of expenseReport.expenseReportExpense) {
-        if (expense.isReimbursable === isReimbursable) {
-          totalAmount += expense.amount;
-        }
-        else if (expense.isBillable === isBillable) {
-          totalAmount += expense.amount;
-        }
+    return expenseReport.expenseReportExpense?.reduce((total, expense) => {
+      if (expense.isReimbursable === isReimbursable || expense.isBillable === isBillable) {
+        return total + expense.amount;
       }
-    }
-    return totalAmount;
+      return total;
+    }, 0) || 0;
+  }
+
+  openApproveDialog(expenseReport: any) {
+    this.selectedReport = expenseReport;
+    const dialogRef = this.dialog.open(ApproveDialogComponent, {
+      width: '500px',
+      data: { report: this.selectedReport }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result.approved) {
+        this.updateReportStatus(result);
+      }
+    });
+  }
+
+  openRejectDialog(expenseReport: any) {
+    this.selectedReport = expenseReport;
+    const dialogRef = this.dialog.open(RejectDialogComponent, {
+      width: '500px',
+      data: { report: this.selectedReport }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result.rejected) {
+        this.updateReportStatus(result);
+      }
+    });
   }
 }

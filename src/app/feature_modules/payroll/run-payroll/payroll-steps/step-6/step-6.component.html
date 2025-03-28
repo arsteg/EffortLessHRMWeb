@@ -61,6 +61,7 @@
                 <div class="form-group mt-2 col-md-6" *ngIf="changeMode != 'Update'">
                     <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
                         [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
+                     <div *ngIf="noSalaryRecordFound">No salary records found for the selected user to pass the professional Tax</div>
                 </div>
 
                 <div class="form-group col-md-6" *ngIf="changeMode === 'Update'">

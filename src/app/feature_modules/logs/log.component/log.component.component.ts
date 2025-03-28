@@ -48,7 +48,7 @@ export class LogComponent implements OnInit, OnDestroy {
 
   private subscribeToLogs(): void {
     this.webSocketSubscription = this.webSocketService
-      .getMessagesByType(WebSocketNotificationType.SCREENSHOT)
+      .getMessagesByType(WebSocketNotificationType.LOG)
       .subscribe({
         next: (message) => {
           this.messages.data = [...this.messages.data, message];
