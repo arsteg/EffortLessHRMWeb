@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { PayrollService } from 'src/app/_services/payroll.service';
+import { TaxationService } from 'src/app/_services/taxation.service';
 import { UserService } from 'src/app/_services/users.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 
@@ -29,13 +30,15 @@ export class Step8Component {
   taxPayableOldRegime: number = 0;
   taxPayableNewRegime: number = 0;
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
+  totalTaxApprovedAmount = 0;
 
   constructor(
     private fb: FormBuilder,
     private payrollService: PayrollService,
     private dialog: MatDialog,
     private toast: ToastrService,
-    private userService: UserService
+    private userService: UserService,
+    private taxService: TaxationService
   ) {
     this.taxForm = this.fb.group({
       PayrollUser: ['', Validators.required],
@@ -82,6 +85,7 @@ export class Step8Component {
     if (this.changeMode === 'Add') {
       this.calculateTax();
       this.getStatutoryDetails();
+      this.getEmployeeTaxDeclarationByUser();
     }
     if (this.changeMode === 'Update') { this.getIncomeTax(); }
   }
@@ -162,7 +166,10 @@ export class Step8Component {
 
   getStatutoryDetails() {
     this.userService.getStatutoryByUserId(this.selectedUserId).subscribe((res: any) => {
-      this.statutoryDetails = res.data[0].taxRegime;
+      this.statutoryDetails = res?.data[0]?.taxRegime;
+      if(res.data.length === 0) {
+        this.toast.error('Statutory Details not found for this user', 'Error');
+      }
       this.taxForm.patchValue({
         TaxCalculatedMethod: this.statutoryDetails
       });
@@ -170,64 +177,24 @@ export class Step8Component {
     })
   }
 
-
+  ctc: number = 0;
   calculateTax() {
     if (!this.selectedUserId) return;
+    else {
+      this.userService.getSalaryByUserId(this.selectedUserId).subscribe((res: any) => {
+        const lastSalaryRecord = res.data?.[res.data.length - 1];
+        let grossSalary = parseFloat(lastSalaryRecord?.Amount) || 0;
 
-    this.userService.getSalaryByUserId(this.selectedUserId).subscribe((res: any) => {
-      const lastSalaryRecord = res.data?.[res.data.length - 1];
-      let grossSalary = parseFloat(lastSalaryRecord?.Amount) || 0;
-
-      if (lastSalaryRecord?.enteringAmount === 'Monthly') {
-        grossSalary *= 12;
-      }
-
-      this.userService.getTaxDeclarationByUserId(this.selectedUserId, { skip: '', next: '' }).subscribe((res: any) => {
-        const taxDeclarations = res.data || [];
-        const deductions = taxDeclarations[0]?.incomeTaxDeclarationComponent?.reduce((sum, element) => {
-          return sum + (element.approvedAmount || 0);
-        }, 0) || 0;
-
-        this.taxableSalary = Math.max(grossSalary - deductions, 0);
-
-        if (!this.taxableSalary) {
-          console.warn('Taxable Salary is 0 or invalid');
-          return;
+        if (lastSalaryRecord?.enteringAmount === 'Monthly') {
+          grossSalary *= 12;
         }
-
-        // Calculate Annual Tax for Both Regimes
-        const yearlyTaxOldRegime = this.calculateOldRegimeTax(this.taxableSalary);
-        const yearlyTaxNewRegime = this.calculateNewRegimeTax(this.taxableSalary);
-
-        // Compute Monthly TDS
-        const monthlyTDSOldRegime = yearlyTaxOldRegime / 12;
-        const monthlyTDSNewRegime = yearlyTaxNewRegime / 12;
-
-        if (this.statutoryDetails === 'Old Regime') {
-          this.taxForm.patchValue({
-            TaxCalculated: yearlyTaxOldRegime,
-            TDSCalculated: parseFloat(monthlyTDSOldRegime.toFixed(2)),
-          });
-        }
-        else if (this.statutoryDetails === 'New Regime') {
-          this.taxForm.patchValue({
-            TaxCalculated: yearlyTaxNewRegime,
-            TDSCalculated: parseFloat(monthlyTDSNewRegime.toFixed(2)),
-          });
-        }
-
-        // Disable fields
-        this.taxForm.get('TaxCalculated')?.disable();
-        this.taxForm.get('TDSCalculated')?.disable();
+        this.ctc = grossSalary;
       });
-    });
+    }
   }
-
-
 
   calculateOldRegimeTax(taxableSalary: number): number {
     let tax = 0;
-
     if (taxableSalary <= 250000) {
       tax = 0;
     } else if (taxableSalary <= 500000) {
@@ -237,18 +204,15 @@ export class Step8Component {
     } else {
       tax = 112500 + (taxableSalary - 1000000) * 0.3;
     }
-
-    if (taxableSalary <= 500000) {
+    if (taxableSalary <= 500000 && tax <= 12500) {
       tax = 0;
     }
-
-    // Add 4% Cess
-    return tax + tax * 0.04;
+    const cess = tax * 0.04;
+    return tax + cess;
   }
 
   calculateNewRegimeTax(taxableSalary: number): number {
     let tax = 0;
-
     if (taxableSalary <= 300000) {
       tax = 0;
     } else if (taxableSalary <= 600000) {
@@ -262,14 +226,63 @@ export class Step8Component {
     } else {
       tax = 150000 + (taxableSalary - 1500000) * 0.3;
     }
-
-    // Apply Section 87A rebate if taxable salary is ≤ ₹7,00,000
     if (taxableSalary <= 700000) {
       tax = 0;
     }
-
-    // Add 4% Cess
     return tax + tax * 0.04;
   }
 
+  getEmployeeTaxDeclarationByUser() {
+    this.taxService.getTaxDeclarationsByUser(this.selectedUserId, { skip: '', next: '' }).subscribe((res: any) => {
+      const taxDeclarations = res.data;
+      let employeeIncomeTaxDeclaration: any;
+
+      taxDeclarations.forEach((declaration: any) => {
+        const financialYear = declaration.financialYear;
+
+        const endYear = financialYear.split('-')[1];
+        if (endYear === this.selectedPayroll?.year) {
+          employeeIncomeTaxDeclaration = declaration;
+          let totalComponentApprovedAmount = 0;
+
+          employeeIncomeTaxDeclaration.incomeTaxDeclarationComponent.forEach((component: any) => {
+            if (component.approvalStatus === 'Approved') {
+              totalComponentApprovedAmount += component.approvedAmount || 0;
+            }
+          });
+          let totalHRAApprovedAmount = 0;
+
+          employeeIncomeTaxDeclaration.incomeTaxDeclarationHRA.forEach((hra: any) => {
+            if (hra.approvalStatus === 'Approved') {
+              totalHRAApprovedAmount += hra.verifiedAmount || 0;
+            }
+          });
+
+          this.totalTaxApprovedAmount = totalComponentApprovedAmount + totalHRAApprovedAmount;
+          if (this.taxForm.get('TaxCalculatedMethod').value === 'Old Regime') {
+            this.ctc = this.ctc - this.totalTaxApprovedAmount;
+          }
+          const yearlyTaxOldRegime = this.calculateOldRegimeTax(this.ctc);
+          const yearlyTaxNewRegime = this.calculateNewRegimeTax(this.ctc);
+
+          if (this.taxForm.get('TaxCalculatedMethod').value === 'Old Regime') {
+            this.taxForm.patchValue({
+              TaxCalculated: yearlyTaxOldRegime,
+              TDSCalculated: parseFloat((yearlyTaxOldRegime / 12).toFixed(2)),
+            });
+            this.taxForm.get('TaxCalculated').disable();
+            this.taxForm.get('TDSCalculated').disable();
+          }
+          else if (this.taxForm.get('TaxCalculatedMethod').value === 'New Regime') {
+            this.taxForm.patchValue({
+              TaxCalculated: yearlyTaxNewRegime,
+              TDSCalculated: parseFloat((yearlyTaxNewRegime / 12).toFixed(2)),
+            });
+            this.taxForm.get('TaxCalculated').disable();
+            this.taxForm.get('TDSCalculated').disable();
+          }
+        }
+      });
+    });
+  }
 }
