@@ -108,6 +108,7 @@ export class SalaryDetailsComponent {
       const employee = segments[segments.length - 3];
       this.userService.getUserByEmpCode(employee).subscribe((res: any) => {
         this.selectedUser = res.data;
+        this.userService.selectedEmployee.next(this.selectedUser[0]);
         this.getSalaryDetails();
       })
     }

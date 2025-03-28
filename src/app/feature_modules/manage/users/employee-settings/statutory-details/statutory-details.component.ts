@@ -72,6 +72,7 @@ export class StatutoryDetailsComponent {
 
   onSubmission() {
     this.statutoryDetailsForm.value.user = this.selectedUser[0].id;
+    this.statutoryDetailsForm.value.taxRegimeUpdatedBy = this.selectedUser[0]?.id
     this.userService.getStatutoryByUserId(this.selectedUser[0].id).subscribe((res: any) => {
       if (res.data.length === 0) {
         this.userService.addStatutoryDetails(this.statutoryDetailsForm.value).subscribe((res: any) => {
