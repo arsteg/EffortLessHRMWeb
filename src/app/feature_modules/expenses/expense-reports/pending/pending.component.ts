@@ -41,7 +41,7 @@ export class PendingComponent {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatMenuTrigger) menuTrigger: MatMenuTrigger;
 
-  constructor(private modalService: NgbModal,
+  constructor(
               private expenseService: ExpensesService,
               private commonService: CommonService,
               private dialog: MatDialog,
@@ -76,7 +76,7 @@ export class PendingComponent {
   open(content: any) {
     this.expenseService.expenseReportExpense.next(this.selectedReport);
     this.dialogRef = this.dialog.open(content, {
-      width: '600px',
+      width: '50%',
       disableClose: true
     });
   }

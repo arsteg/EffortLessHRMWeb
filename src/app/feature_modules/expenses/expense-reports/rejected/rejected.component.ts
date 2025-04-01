@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
-import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { ExportService } from 'src/app/_services/export.service';
 import { CommonService } from 'src/app/_services/common.Service';
@@ -32,8 +32,10 @@ export class RejectedComponent {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   currentPage: number = 1;
+  dialogRef: MatDialogRef<any>;
 
-  constructor(private modalService: NgbModal,
+  constructor(
+    private dialog: MatDialog,
     private expenseService: ExpensesService,
     private commonService: CommonService,
     private exportService: ExportService) { }
@@ -86,25 +88,13 @@ export class RejectedComponent {
     console.log(this.selectedReport)
     this.expenseService.selectedReport.next(this.selectedReport)
   }
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
-  }
+
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-    });
+    this.dialogRef = this.dialog.open(content, { width: '50%' });
   }
   onClose(event) {
     if (event) {
-      this.modalService.dismissAll();
+      this.dialogRef.close();
       this.getExpenseReport();
     }
   }

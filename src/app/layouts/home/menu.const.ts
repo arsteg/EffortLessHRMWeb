@@ -77,7 +77,7 @@ export const SideBarAdminMenu = [
     title: 'Expenses',
     icon: 'assets/Sidenav-Icons/expenses.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/expenses.png',
-    url: 'expense/settings/expense-category',
+    url: 'expense',
   },
   {
     id: '11',

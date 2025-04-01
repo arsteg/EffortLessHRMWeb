@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { ViewExpenseReportExpensesComponent } from '../view-expense-report-expenses/view-expense-report-expenses.component';
 import { CommonService } from 'src/app/_services/common.Service';
@@ -22,7 +21,6 @@ export class ViewReportComponent {
   category: any;
 
   constructor(private expenseService: ExpensesService,
-    private modalService: NgbModal,
     private dialog: MatDialog,
     private commonService: CommonService) { }
 
@@ -44,32 +42,19 @@ export class ViewReportComponent {
     return matchingUser ? `${matchingUser?.firstName} ${matchingUser?.lastName}` : 'User Not Found';
   }
   getCategory() {
-    // let category = this.expenseService.report.getValue().expenseCategory
-    let payload ={
+    let payload = {
       next: '',
       skip: ''
     }
     this.expenseService.getExpenseCatgories(payload).subscribe(res => {
       this.category = res.data;
-      console.log(this.category);
     })
   }
+
   getCategoryById(categoryId: string) {
     const matchingCategory = this.category?.find(cat => cat?._id === categoryId);
     return matchingCategory ? matchingCategory?.label : 'Category Not Found';
   }
-
-  // calculateTotalAmount(): number {
-  //   let totalAmount = 0;
-  //   if (Array.isArray(this.expenseReportExpenses)) {
-  //     for (let report of this.expenseReportExpenses) {
-  //       if (report && typeof report.amount === 'number') {
-  //         totalAmount += report.amount;
-  //       }
-  //     }
-  //   }
-  //   return totalAmount;
-  // }
 
   calculateSumOfReimbursableAmounts(): number {
     let sum = 0;
@@ -99,42 +84,19 @@ export class ViewReportComponent {
     const fileContent = this.selectedReport.documentLink;
     window.open(fileContent, '_blank');
   }
+
   closeModal() {
     this.close.emit(true);
   }
-  onClose(event) {
-    if (event) {
-      this.modalService.dismissAll();
-    }
-  }
-  open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-    });
-  }
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
-  }
 
   openSecondModal(selectedReport: any): void {
-    console.log(selectedReport);
     this.expenseService.report.next(selectedReport);
-    const dialogRef = this.dialog.open(ViewExpenseReportExpensesComponent, {
-      width: '50%',
+    this.dialog.open(ViewExpenseReportExpensesComponent, {
+      width: '600px',
       data: { report: selectedReport }
     });
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The modal was closed');
-    });
   }
+
   getFileNameFromUrl(url: string): string {
     const urlParts = url.split('/');
     const fileName = urlParts[urlParts.length - 1];

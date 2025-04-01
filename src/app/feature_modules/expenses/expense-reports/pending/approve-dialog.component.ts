@@ -13,11 +13,11 @@ import { FormBuilder, FormGroup } from '@angular/forms';
           <textarea matInput formControlName="reason"></textarea>
         </mat-form-field>
       </form>
+      <mat-dialog-actions class="d-flex justify-content-between px-0">
+        <button mat-raised-button (click)="onCancel()">Cancel</button>
+        <button mat-raised-button (click)="onApprove()" color="accent">Approve</button>
+      </mat-dialog-actions>
     </mat-dialog-content>
-    <mat-dialog-actions class="d-flex justify-content-between">
-      <button mat-raised-button (click)="onCancel()">Cancel</button>
-      <button mat-raised-button (click)="onApprove()" color="accent">Approve</button>
-    </mat-dialog-actions>
   `
 })
 export class ApproveDialogComponent {
@@ -38,6 +38,6 @@ export class ApproveDialogComponent {
   }
 
   onApprove(): void {
-    this.dialogRef.close({'approved': true, 'reason': this.form.value.reason});
+    this.dialogRef.close({ 'approved': true, 'reason': this.form.value.reason });
   }
 }

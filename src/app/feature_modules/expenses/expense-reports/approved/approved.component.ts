@@ -3,12 +3,10 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
-import { Observable } from 'rxjs';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { CommonService } from 'src/app/_services/common.Service';
-import { map } from 'rxjs/operators';
 import { ExportService } from 'src/app/_services/export.service';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-approved',
@@ -33,8 +31,10 @@ export class ApprovedComponent {
   currentPage: number = 1;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatMenuTrigger) menuTrigger: MatMenuTrigger;
+  dialogRef: MatDialogRef<any>;
 
-  constructor(private modalService: NgbModal,
+  constructor(
+    private dialog: MatDialog,
     private expenseService: ExpensesService,
     private commonService: CommonService,
     private fb: FormBuilder,
@@ -55,27 +55,17 @@ export class ApprovedComponent {
     this.getExpenseReport();
   }
 
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
-  }
-
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    this.expenseService.expenseReportExpense.next(this.selectedReport);
+    this.dialogRef = this.dialog.open(content, {
+      width: '50%',
+      disableClose: true
     });
   }
 
   onClose(event) {
     if (event) {
-      this.modalService.dismissAll();
+      this.dialog.closeAll();
       this.getExpenseReport();
     }
   }
@@ -141,6 +131,7 @@ export class ApprovedComponent {
     this.expenseService.updateExpenseReport(id, payload).subscribe((res: any) => {
       this.expenseReport = this.expenseReport.filter(report => report._id !== id);
       this.displayedData.data = this.expenseReport;
+      this.dialogRef.close();
     });
   }
 

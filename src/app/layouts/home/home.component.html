@@ -67,7 +67,7 @@
       <div class="expandedMenu">
         <ul class="nav flex-column" id="nav_accordion" *ngFor="let menu of menuList">
           <li class="nav-item has-submenu">
-            <a class="nav-link sidebar-links ps-0" [ngClass]="{'active': menu.url== ''}" [routerLink]="menu.url"
+            <a class="nav-link sidebar-links ps-0"  [routerLink]="menu.url"
               routerLinkActive="active" [routerLinkOptions]="{ exact: false }" (click)="clickMenu(menu.id)">
               <span [ngClass]="menu.icon" class="ms-3 collapse-icons"></span>
               <img [ngClass]="{'active': menu.url== ''}" class="item" [src]="menu.icon" height="25" alt="">

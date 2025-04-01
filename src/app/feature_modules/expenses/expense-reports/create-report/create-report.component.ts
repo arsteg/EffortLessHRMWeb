@@ -26,7 +26,7 @@ export class CreateReportComponent {
   maxDate = new Date();
   minDate = new Date();
   labelPosition: true | false = true;
-  attachments: attachments[] = [];
+  attachments: '';
   selectedFiles: any = [];
   selectedCategoryId: string;
   applicationfields: any;
