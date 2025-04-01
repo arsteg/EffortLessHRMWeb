@@ -26,7 +26,7 @@ export class ProjectListComponent implements OnInit {
   addUserForm: FormGroup;
   allAssignee: any[];
   member: any;
-  userId: string = 'All Projects';
+  userId: string = '';
   addUser: addUser[] = [];
   projectUserList: any;
   isChecked: true;
@@ -126,7 +126,7 @@ export class ProjectListComponent implements OnInit {
   }
 
   onMemberSelectionChange(user) {
-    if (this.userId == 'All Projects') {
+    if (this.userId == '') {
       this.getProjectList();
     }
     else { this.getProjectsByUser(); }
