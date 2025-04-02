@@ -25,6 +25,7 @@ export class AddExpenseReportComponent {
   selectedExpenseReportExpense: any;
   allCategories: any;
   noCategoryError: boolean;
+  validations: any;
 
   constructor(private dialog: MatDialog,
     private commonService: CommonService,
@@ -121,6 +122,12 @@ export class AddExpenseReportComponent {
     if (this.changeMode && user) {
       this.expenseService.getExpenseCategoryByUser(user).subscribe((res: any) => {
         this.expenseService.tempAndCat.next(res);
+        if(res?.details?.length){
+          this.validations = res.details[0];
+          this.addExpenseForm.get('amount').setValidators([Validators.max(this.validations.maximumAmountPerExpense)]);
+        } else {
+          this.addExpenseForm.get('amount').setValidators(null);
+        }
         if (!res || res.data == null) {
           this.noCategoryError = true;
         }

@@ -155,7 +155,7 @@
             </div>
             <select class="custom-select p-2" formControlName="task" [disabled]="changeMode === 'update'">
               <option selected value="undefined" disabled>Choose Any Task</option>
-              <option *ngFor="let task of tasks" [value]="task?.id">
+              <option *ngFor="let task of tasks" [value]="task?._id">
                 {{task.taskName}}
               </option>
             </select>

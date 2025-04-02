@@ -1,71 +1,60 @@
-<div class="d-flex justify-content-between">
-    <h1 mat-dialog-title class="modal-title text-muted mb-0"> {{changeMode}} Advance Report</h1>
-    <div mat-dialog-actions>
-        <button mat-button mat-dialog-close (click)="closeModal()"><mat-icon aria-hidden="false"
-                aria-label="Example close icon" fontIcon="close"></mat-icon></button>
-    </div>
-</div>
-<hr>
+<h1 mat-dialog-title>{{changeMode}} Advance Report</h1>
 <div mat-dialog-content>
     <form [formGroup]="addAdvanceReport" (ngSubmit)="onSubmission()">
-        <div>
-            <label for="member">Select an Employee for Advance Report <span class="text-danger">*</span></label>
-            <select id="member" name="member" class="form-control" formControlName="employee"
-                class="form-select form-select-sm" aria-label=".form-select-sm example" (change)="onEmployeeSelected()">
-                <option value="" [disabled] [selected]>Select Employee</option>
-                <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
-                    {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
-                </option>
-            </select>
-            <div *ngIf="addAdvanceReport.get('employee').invalid && addAdvanceReport.get('employee').touched"
-                class="text-danger error">
-                Please Select Employee!
+        <div class="row">
+            <div class="col-12">
+                <mat-form-field class="w-100">
+                    <mat-label>Select an Employee for Advance Report</mat-label>
+                    <mat-select formControlName="employee" (selectionChange)="onEmployeeSelected()">
+                        <mat-option value="" disabled [selected]>Select Employee</mat-option>
+                        <mat-option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                            {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error
+                        *ngIf="addAdvanceReport.get('employee').invalid && addAdvanceReport.get('employee').touched">
+                        Please select employee.
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <div class="col-12">
+                <mat-form-field class="w-100">
+                    <mat-label>Select Advance Category</mat-label>
+                    <mat-select formControlName="category" required>
+                        <mat-option value="" disabled [selected]>Select Advance Category</mat-option>
+                        <mat-option *ngFor="let category of categoriesByUser" [value]="category?.advanceCategory">
+                            {{getCategory(category?.advanceCategory)}}</mat-option>
+                    </mat-select>
+                    <mat-error
+                        *ngIf="addAdvanceReport.get('category').invalid && addAdvanceReport.get('category').touched">
+                        Please select advance category of employee.
+                    </mat-error>
+                    <mat-hint *ngIf="categoriesByUser?.length === 0">No category found for this user. Please assign an advance template first</mat-hint>
+                </mat-form-field>
+            </div>
+
+            <div class="col-12">
+                <mat-form-field class="w-100">
+                    <mat-label>Amount</mat-label>
+                    <input type="number" matInput formControlName="amount" />
+                    <mat-error *ngIf="addAdvanceReport.get('amount').invalid && addAdvanceReport.get('amount').touched">
+                        Please add amount.
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <div class="col-12">
+                <mat-form-field class="w-100">
+                    <mat-label>Comment</mat-label>
+                    <textarea matInput formControlName="comment" rows="3"></textarea>
+                </mat-form-field>
             </div>
         </div>
-
-        <div class="form-group mt-2">
-            <label for="firstApprovalEmployee">Select Advance Category<span class="text-danger">*</span></label>
-            <select name="" id="firstApprovalEmployee" formControlName="category" required class="ms-2 form-control">
-                <option value="" [disabled] [selected]>Select Advance Category</option>
-                <option *ngFor="let category of categoriesByUser" [value]="category?.advanceCategory">
-                    {{getCategory(category?.advanceCategory)}}</option>
-            </select>
-            <pre>{{addAdvanceReport.get('category').value}}</pre>
-            <div *ngIf="addAdvanceReport.get('category').invalid && addAdvanceReport.get('category').touched"
-                class="text-danger error">
-                Please Select Advance Category of employee!
-            </div>
-        </div>
-
-        <div class="mt-2">
-            <label for="">Amount <span class="text-danger">*</span></label>
-            <div class=" col-12 form-group">
-                <input type="number" class="form-control" formControlName="amount" />
-            </div>
-            <div *ngIf="addAdvanceReport.get('amount').invalid && addAdvanceReport.get('amount').touched"
-                class="text-danger error">
-                Please add Amount!
-            </div>
-        </div>
-
-
-
-        <div class="my-3">
-            <label for="exampleFormControlTextarea1" class="form-label">
-                Comment
-            </label>
-            <textarea class="form-control" id="exampleFormControlTextarea1" formControlName="comment"
-                rows="3"></textarea>
-        </div>
-
-
 
         <div class="d-flex justify-content-between">
-            <button mat-raised-button type="button" (click)="resetFormValues()">Cancel</button>
-            <button mat-button type="submit" class="addBtn">Submit</button>
-
+            <button mat-raised-button type="button" (click)="closeModal()">Cancel</button>
+            <button mat-raised-button type="submit" color="accent">{{changeMode}}</button>
         </div>
-
-
     </form>
 </div>

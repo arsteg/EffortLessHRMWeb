@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { CommonService } from 'src/app/_services/common.Service';
-import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ViewReportsComponent } from '../view-reports/view-reports.component';
 import { StatusUpdateComponent } from '../status-update/status-update.component';
 import { FormControl } from '@angular/forms';
@@ -27,8 +26,6 @@ export class ShowReportComponent {
   @Input() status: string;
   @Input() actionOptions: { approve: boolean, reject: boolean, cancel: boolean, view: boolean, edit: boolean, delete: boolean };
   employee = new FormControl('');
-  reportSummary: any;
-  totalAmount: number = 0;
   p: number = 1;
   public sortOrder: string = '';
   totalRecords: number
@@ -42,7 +39,6 @@ export class ShowReportComponent {
   constructor(private commonService: CommonService,
     private expenseService: ExpensesService,
     private dialog: MatDialog,
-    private modalService: NgbModal,
     private exportService: ExportService,
     private toast: ToastrService) { }
 
@@ -58,8 +54,6 @@ export class ShowReportComponent {
     }).subscribe(({ users, categories, reports }) => {
       this.allAssignee = users && users.data && users.data.data;
       this.allCategory = categories.data;
-      const rawReports = reports.data
-      this.totalAmount = rawReports.reduce((total, report) => total + report.amount, 0);
       this.advanceReport = reports.data.filter(leave => leave.status === this.status);
       this.dataSource.data = this.advanceReport;
       this.totalRecords = reports?.total;
@@ -84,8 +78,6 @@ export class ShowReportComponent {
       status: this.status
     };
     this.expenseService.getAdvanceReport(pagination).subscribe((res: any) => {
-      const rawReports = res.data
-      this.totalAmount = rawReports.reduce((total, report) => total + report.amount, 0);
       this.advanceReport = res.data.filter(leave => leave.status === this.status);
       this.dataSource.data = this.advanceReport;
       this.totalRecords = res.total;
@@ -103,21 +95,14 @@ export class ShowReportComponent {
   }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    const dialogRef = this.dialog.open(content, {
+      width: '500px',
     });
-  }
-
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
+    dialogRef.afterClosed().subscribe(result => {
+      if(result === 'success'){
+        this.refreshExpenseReportTable();
+      }
+    });
   }
 
   refreshExpenseReportTable() {
@@ -126,19 +111,23 @@ export class ShowReportComponent {
 
   onClose(event) {
     if (event) {
-      this.modalService.dismissAll();
+      this.dialog.closeAll();
     }
   }
 
   openStatusModal(report: any, status: string): void {
-    report.status = status;
     this.expenseService.advanceReport.next(report);
     const dialogRef = this.dialog.open(StatusUpdateComponent, {
-      width: '50%',
-      data: { report }
+      width: '500px',
+      data: { 
+        report,
+        'status': status
+      }
     });
     dialogRef.afterClosed().subscribe(result => {
-      this.refreshExpenseReportTable();
+      if(result === 'success'){
+        this.refreshExpenseReportTable();
+      }
     });
   }
 
@@ -147,7 +136,7 @@ export class ShowReportComponent {
     selectedReport.categoryLabel = this.getCategory(selectedReport.category);
     this.expenseService.advanceReport.next(selectedReport);
     const dialogRef = this.dialog.open(ViewReportsComponent, {
-      width: '50%',
+      width: '500px',
       data: { report: selectedReport }
     });
     dialogRef.afterClosed().subscribe(result => {
@@ -160,8 +149,7 @@ export class ShowReportComponent {
 
   getAdvanceByUser() {
     this.expenseService.getAdvanceByUser(this.employee.value).subscribe((res: any) => {
-      this.reportSummary = res.details;
-      this.totalAmount = this.reportSummary.reduce((acc, curr) => acc + curr.amount, 0);
+      this.dataSource.data = res.details.filter((report=> report.status === this.status)) || [];
     });
   }
 

@@ -1,132 +1,110 @@
 <div class="py-3 tableContainer">
-    <div class="d-flex justify-content-between align-items-start mb-2 px-3">
-        <mat-form-field appearance="outline">
-          <mat-label>Search</mat-label>
-          <input matInput (keyup)="applyFilter($event)" placeholder="Search...">
-          <mat-icon matSuffix>search</mat-icon>
-        </mat-form-field>
-        <div>
-            <button mat-raised-button color="accent" class="me-1" (click)="changeMode='Add'; open(addModal)">
-              <mat-icon>add</mat-icon>Add Expense
-            </button>
-            <button class="me-1" mat-stroked-button (click)="exportToCsv()">
-                <mat-icon>download</mat-icon> Download
-            </button>
-        </div>
-      </div>
-    <div class="d-flex align-items-center px-3">
-        <mat-form-field appearance="outline"  class="w-25">
-            <mat-label>Select an employee to see advance balances</mat-label>
-            <mat-select [formControl]="employee" (selectionChange)="selectedEmployee()">
-                <mat-option *ngFor="let assignee of allAssignee" [value]="assignee.id">
-                    {{ assignee?.firstName | titlecase }} {{ assignee?.lastName | titlecase }}
-                </mat-option>
-                </mat-select>
-        </mat-form-field>
-        <div class="ms-auto d-flex justify-content-between gap-3">
-            <mat-card appearance="outlined">
-                <mat-card-header>
-                    <mat-card-title>Total Pending Advance:</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <p *ngIf="status === 'Level 1 Approval Pending'">{{totalAmount}}</p>
-                </mat-card-content>
-            </mat-card>
-            <mat-card appearance="outlined">
-                <mat-card-header>
-                    <mat-card-title>Total Approved Advance:</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <p *ngIf="status === 'Approved'">{{totalAmount}}</p>
-                </mat-card-content>
-            </mat-card>
-            <mat-card appearance="outlined">
-                <mat-card-header>
-                    <mat-card-title>Total Remaining Advance:</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <p>{{totalAmount}}</p>
-                </mat-card-content>
-            </mat-card>
-        </div>
+  <div class="d-flex align-items-start mb-2 px-3">
+    <mat-form-field appearance="outline">
+      <mat-label>Search</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="Search...">
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="ms-2 w-25">
+      <mat-label>Advance balances by employee</mat-label>
+      <mat-select [formControl]="employee" (selectionChange)="selectedEmployee()">
+        <mat-option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+          {{ assignee?.firstName | titlecase }} {{ assignee?.lastName | titlecase }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div class="ms-auto">
+      <button mat-raised-button color="accent" class="me-1" (click)="changeMode='Add'; open(addModal)">
+        <mat-icon>add</mat-icon>Add Advance
+      </button>
+      <button class="me-1" mat-stroked-button (click)="exportToCsv()">
+        <mat-icon>download</mat-icon> Download
+      </button>
     </div>
-    <table mat-table [dataSource]="dataSource">
-        <ng-container matColumnDef="employee">
-          <th mat-header-cell *matHeaderCellDef> Employee Name </th>
-          <td mat-cell *matCellDef="let report"> {{getUser(report?.employee)}} </td>
-        </ng-container>
+  </div>
+
   
-        <ng-container matColumnDef="amount">
-          <th mat-header-cell *matHeaderCellDef> Amount </th>
-          <td mat-cell *matCellDef="let report"> {{report?.amount}} </td>
-        </ng-container>
-  
-        <ng-container matColumnDef="category">
-          <th mat-header-cell *matHeaderCellDef> Category Name </th>
-          <td mat-cell *matCellDef="let report"> {{getCategory(report?.category)}} </td>
-        </ng-container>
-  
-        <ng-container matColumnDef="comment">
-          <th mat-header-cell *matHeaderCellDef> Comment </th>
-          <td mat-cell *matCellDef="let report"> {{report?.primaryApprovalReason || report?.comment}} </td>
-        </ng-container>
-  
-        <ng-container matColumnDef="status">
-          <th mat-header-cell *matHeaderCellDef> Status </th>
-          <td mat-cell *matCellDef="let report"> {{report?.status}} </td>
-        </ng-container>
-  
-        <ng-container matColumnDef="action">
-          <th mat-header-cell *matHeaderCellDef class="text-center"> Action </th>
-          <td mat-cell *matCellDef="let report" class="text-center">
-            <button mat-icon-button [matMenuTriggerFor]="menu">
-              <mat-icon>more_vert</mat-icon>
-            </button>
-            <mat-menu #menu="matMenu">
-              <button mat-menu-item *ngIf="actionOptions.approve" (click)="openStatusModal(report, 'Approved')">
-                <mat-icon>check_circle</mat-icon>
-                <span>Approve</span>
-              </button>
-              <button mat-menu-item (click)="openStatusModal(report, 'Rejected')" *ngIf="actionOptions.reject">
-                <mat-icon>cancel</mat-icon>
-                <span>Reject</span>
-              </button>
-              <button mat-menu-item (click)="openStatusModal(report, 'Cancelled')" *ngIf="actionOptions.cancel">
-                <mat-icon>close</mat-icon>
-                <span>Cancel</span>
-              </button>
-              <button mat-menu-item (click)="openSecondModal(report)" *ngIf="actionOptions.view">
-                <mat-icon>visibility</mat-icon>
-                <span>View</span>
-              </button>
-              <button mat-menu-item (click)="selectedRecord = report; changeMode='Update'; open(addModal);" *ngIf="actionOptions.edit">
-                <mat-icon>edit</mat-icon>
-                <span>Edit</span>
-              </button>
-              <button mat-menu-item (click)="deleteExpenseReport(report?._id)" *ngIf="actionOptions.delete">
-                <mat-icon>delete</mat-icon>
-                <span>Delete</span>
-              </button>
-            </mat-menu>
-          </td>
-        </ng-container>
-  
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
-      <mat-paginator [length]="totalRecords" [pageSize]="recordsPerPage" [pageSizeOptions]="[5, 10, 25, 50, 100]" (page)="onPageChange($event)">
-      </mat-paginator>
+  <table mat-table [dataSource]="dataSource">
+    <ng-container matColumnDef="employee">
+      <th mat-header-cell *matHeaderCellDef> Employee Name </th>
+      <td mat-cell *matCellDef="let report"> {{getUser(report?.employee)}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="amount">
+      <th mat-header-cell *matHeaderCellDef> Amount </th>
+      <td mat-cell *matCellDef="let report"> {{report?.amount}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="category">
+      <th mat-header-cell *matHeaderCellDef> Category Name </th>
+      <td mat-cell *matCellDef="let report"> {{getCategory(report?.category)}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="comment">
+      <th mat-header-cell *matHeaderCellDef> Comment </th>
+      <td mat-cell *matCellDef="let report"> {{report?.primaryApprovalReason || report?.comment}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef> Status </th>
+      <td mat-cell *matCellDef="let report"> {{report?.status}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="action">
+      <th mat-header-cell *matHeaderCellDef class="text-center"> Action </th>
+      <td mat-cell *matCellDef="let report" class="text-center">
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item *ngIf="actionOptions.approve" (click)="openStatusModal(report, 'Approved')">
+            <mat-icon>check_circle</mat-icon>
+            <span>Approve</span>
+          </button>
+          <button mat-menu-item (click)="openStatusModal(report, 'Rejected')" *ngIf="actionOptions.reject">
+            <mat-icon>cancel</mat-icon>
+            <span>Reject</span>
+          </button>
+          <button mat-menu-item (click)="openStatusModal(report, 'Cancelled')" *ngIf="actionOptions.cancel">
+            <mat-icon>close</mat-icon>
+            <span>Cancel</span>
+          </button>
+          <button mat-menu-item (click)="openSecondModal(report)" *ngIf="actionOptions.view">
+            <mat-icon>visibility</mat-icon>
+            <span>View</span>
+          </button>
+          <button mat-menu-item (click)="selectedRecord = report; changeMode='Update'; open(addModal);"
+            *ngIf="actionOptions.edit">
+            <mat-icon>edit</mat-icon>
+            <span>Edit</span>
+          </button>
+          <button mat-menu-item (click)="deleteExpenseReport(report?._id)" *ngIf="actionOptions.delete">
+            <mat-icon>delete</mat-icon>
+            <span>Delete</span>
+          </button>
+        </mat-menu>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+  <mat-paginator [length]="totalRecords" [pageSize]="recordsPerPage" [pageSizeOptions]="[5, 10, 25, 50, 100]"
+    (page)="onPageChange($event)">
+  </mat-paginator>
 </div>
 
 <ng-template #addModal let-modal>
-    <app-add-advance-report (close)="onClose($event)" [changeMode]="changeMode" [selectedRecord]="selectedRecord"
-        (advanceReportRefreshed)="refreshExpenseReportTable()"></app-add-advance-report>
+  <app-add-advance-report (close)="onClose($event)" [changeMode]="changeMode" [selectedRecord]="selectedRecord"
+    (advanceReportRefreshed)="refreshExpenseReportTable()"></app-add-advance-report>
 </ng-template>
 
 <ng-template #viewModal let-modal>
-    <app-view-reports (close)="onClose($event)"></app-view-reports>
+  <app-view-reports (close)="onClose($event)"></app-view-reports>
 </ng-template>
 
 <ng-template #statusUpdate let-modal>
-    <app-status-update (advanceReportRefreshed)="refreshExpenseReportTable()"></app-status-update>
+  <app-status-update (advanceReportRefreshed)="refreshExpenseReportTable()"></app-status-update>
 </ng-template>

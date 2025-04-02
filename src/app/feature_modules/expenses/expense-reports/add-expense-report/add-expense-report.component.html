@@ -32,7 +32,12 @@
       <mat-label>Amount for expense report</mat-label>
       <input type="number" matInput formControlName="amount" placeholder="Enter amount" required>
       <mat-error *ngIf="addExpenseForm.get('amount').invalid && addExpenseForm.get('amount').touched">
-        Please add amount.
+        @if(addExpenseForm.get('amount').errors['required']){
+          Please add amount.
+        }
+        @if(addExpenseForm.get('amount').errors['max']){
+          Can not enter amount more than {{this.validations.maximumAmountPerExpense}}.
+        }
       </mat-error>
     </mat-form-field>
 
@@ -107,7 +112,7 @@
     </div>
     <div mat-dialog-actions class="d-flex justify-content-between px-0">
       <button mat-raised-button type="button" (click)="closeModal()">Cancel</button>
-      <button mat-raised-button type="submit" color="accent">{{changeMode}}</button>
+      <button mat-raised-button type="submit" color="accent" [disabled]="addExpenseForm.invalid">{{changeMode}}</button>
     </div>
   </form>
 </div>

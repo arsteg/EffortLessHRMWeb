@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, inject } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 
@@ -13,9 +13,9 @@ export class StatusUpdateComponent {
   updateExpenseReport: FormGroup;
   updateReport: any;
   @Output() advanceReportRefreshed: EventEmitter<void> = new EventEmitter<void>();
-  
+  data = inject(MAT_DIALOG_DATA);
 
-  constructor(private dialog: MatDialog,
+  constructor(
     public expenseService: ExpensesService,
     private fb: FormBuilder,
     private toast: ToastrService,
@@ -31,9 +31,6 @@ export class StatusUpdateComponent {
     })
   }
 
-  ngOnInit() {
-  }
-
   updateApprovedReport() {
     this.updateReport = this.expenseService.advanceReport.getValue();
     let id = this.expenseService.advanceReport.getValue()._id;
@@ -42,17 +39,17 @@ export class StatusUpdateComponent {
       category: this.updateReport.category,
       amount: this.updateReport.amount,
       comment: this.updateReport.comment,
-      status: this.updateReport.status,
+      status: this.data.status,
       primaryApprovalReason: this.updateExpenseReport.value.primaryApprovalReason,
       secondaryApprovalReason: this.updateExpenseReport.value.primaryApprovalReason
     }
     this.expenseService.updateAdvanceReport(id, payload).subscribe((res: any) => {
       this.toast.success('Status Updated Successfully!');
       this.advanceReportRefreshed.emit();
-      this.dialogRef.close();
+      this.dialogRef.close('success');
     });
     this.advanceReportRefreshed.emit();
   }
 
-  
+
 }

@@ -21,7 +21,7 @@ export class RequestManualTimeComponent implements OnInit {
   reason: string = '';
   managers: { id: string, name: string }[] = [];
   projects: { id: string, projectName: string }[] = [];
-  tasks: { id: string, taskName: string }[] = [];
+  tasks: { _id: string, taskName: string }[] = [];
   today: string = new Date().toISOString().split('T')[0];
   id: string;
   projectId: string;
@@ -133,7 +133,6 @@ export class RequestManualTimeComponent implements OnInit {
     return this.authenticationService.getUserTaskListByProject(this.id, projectId, '', '')
       .pipe(tap(res => {
         this.tasks = res && res['taskList'];
-        console.log(this.tasks);
       }));
   }
 
