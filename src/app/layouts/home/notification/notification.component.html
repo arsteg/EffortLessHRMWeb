@@ -4,7 +4,7 @@
    
     <ul class="dropdown-menu dropdown-menu-default drpLog shadow mt-1 px-3" [class.show]="dropdownOpen" aria-labelledby="notificationDropdown">
         <div class="arrow up"></div>
-        <li *ngFor="let notification of todaysNotifications" class="border-bottom align-content-center text-muted py-3">
+        <li *ngFor="let notification of eventNotifications" class="border-bottom align-content-center text-muted py-3">
           <div class="d-flex">
             <i [ngClass]="getIcon(notification.notificationType?.name)" class="me-2"></i>
             <span class="content" *ngIf="notification.notificationType?.name === 'Appraisal'">Congratulations&nbsp;</span>
@@ -13,7 +13,7 @@
           </div>
           <small class="ps-4 notificationDate">{{ notification?.date | date: 'mediumDate' }}</small>
         </li>
-        <li style="width: 325px; height: 35px; cursor: pointer; color: #76bc21;" class="mt-2" (click)="getAllNotifications()">
+        <li style="width: 325px; height: 35px; cursor: pointer; color: #76bc21;" class="mt-2" (click)="getEventNotificationsByUserId()">
           <a style="margin-left: 20px;">
             <i class="bi bi-hand-index-thumb-fill me-2"></i><b class="">See all notifications</b>
           </a>

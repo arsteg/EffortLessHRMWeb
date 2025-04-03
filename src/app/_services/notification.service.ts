@@ -35,16 +35,22 @@ export class NotificationService {
     var response = this.http.get<any>(`${environment.apiUrlDotNet}/eventNotifications/All`, this.httpOptions);
     return response;
   }
+  getEventNotificationsByUser(id:string): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/eventNotifications/user/${id}/notifications`, this.httpOptions);
+    return response;
+  }
   getNotificationsTypeById(id: string): Observable<any> {
     var response = this.http.get<any>(`${environment.apiUrlDotNet}/eventNotifications/eventNotificationType/${id}`, this.httpOptions);
     return response;
-  }
-
-  deleteEventNotification(id: string): Observable<any> {
-    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/eventNotifications/${id}`, this.httpOptions);
-    return response;
-  }
+  } 
   
+  deleteEventNotification(userId: string, notificationId: string): Observable<any> {
+    const body = { userId: userId, notificationId: notificationId };
+    return this.http.delete<any>(
+        `${environment.apiUrlDotNet}/eventNotifications/user/notification`, { ...this.httpOptions,body: body}
+    );
+}
+
   // ----------------
   showSuccess(message, title){
       this.toastr.success(message, title)
