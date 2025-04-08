@@ -29,7 +29,6 @@ export class NotificationComponent implements OnInit, OnDestroy {
       this.subscribeToWebSocketNotifications();
       this.getEventNotificationsByUserId();
     } else {
-      console.warn('User ID not found in localStorage.');
     }
   }
 
@@ -48,16 +47,13 @@ export class NotificationComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.notificationService.getEventNotificationsByUser(this.userId).subscribe({
       next: (response: any) => {
-        console.log('Raw API Response:', response);
         let allNotifications = response.data || response;
-        console.log('All Notifications:', allNotifications);
         allNotifications.sort((a: Notification, b: Notification) => new Date(b.date).getTime() - new Date(a.date).getTime());
         this.eventNotifications = seeAll ? [...allNotifications] : allNotifications.slice(0, 3);
         this.updateUnreadStatus();
         this.loading = false;
       },
       error: (error) => {
-        console.error('Failed to fetch notifications:', error);
         this.loading = false;
       },
     });
@@ -73,8 +69,6 @@ export class NotificationComponent implements OnInit, OnDestroy {
   markAllAsRead() {
     this.eventNotifications.forEach(n => n.status = 'read');
     this.updateUnreadStatus();
-    console.log('Marked all as read');
-    // Call API to update backend if needed
   }
 
   getIcon(type: string): string {
@@ -90,7 +84,6 @@ export class NotificationComponent implements OnInit, OnDestroy {
 
   private subscribeToWebSocketNotifications() {
     if (!this.userId) {
-      console.warn('User ID not found. Cannot connect to WebSocket.');
       return;
     }
     try {
@@ -99,7 +92,6 @@ export class NotificationComponent implements OnInit, OnDestroy {
         this.webSocketSubscription = this.webSocketService.getMessagesByType(WebSocketNotificationType.NOTIFICATION)
           .subscribe({
             next: (message: WebSocketMessage) => {
-              console.log('Received WebSocket notification:', message);
               this.handleWebSocketNotification(message);
             },
             error: (error) => console.error('WebSocket subscription error:', error),
@@ -113,18 +105,15 @@ export class NotificationComponent implements OnInit, OnDestroy {
   }
 
   private handleWebSocketNotification(message: WebSocketMessage) {
-    console.log('Raw message:', message);
     if (message?.contentType === 'json') {
       let notification: Notification;
       if (typeof message.content === 'object' && message.content !== null) {
         notification = message.content as Notification; // Use as-is if already an object
       } else {
-        console.warn('Unsupported content format:', message.content);
         return;
       }
 
       if (!notification.date || !notification.description) {
-        console.warn('Invalid notification data:', notification);
         return;
       }
       notification.status = 'unread';
@@ -133,7 +122,6 @@ export class NotificationComponent implements OnInit, OnDestroy {
         .slice(0, 3);
       this.updateUnreadStatus();
       this.cdr.detectChanges();
-      console.log('Updated notifications:', this.eventNotifications);
     } else {
       console.warn('Unsupported WebSocket content type:', message.contentType);
     }
