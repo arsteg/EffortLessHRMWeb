@@ -63,7 +63,8 @@ export class NotificationComponent implements OnInit, OnDestroy {
     });
   }
 
-  deleteNotification(notificationId: string) {
+  deleteNotification(event: Event, notificationId: string) {
+    event.stopPropagation();
     this.notificationService.deleteEventNotification(this.userId, notificationId).subscribe((response: any) => {
       this.eventNotifications = this.eventNotifications.filter(item => item._id !== notificationId);
     });

@@ -20,6 +20,7 @@
     <div class="notification-container">
       <ng-container *ngFor="let notification of eventNotifications">
         <mat-list-item class="border-bottom py-3 px-0" >
+          <span class="new-notification" *ngIf="notification.status === 'unread'"></span>
           <div class="d-flex align-items-center w-100">
             <button mat-icon-button class="ps-0">
             <mat-icon>launch</mat-icon>
@@ -32,7 +33,7 @@
               >{{ notification.name }}: {{ notification.description }}</span>
               <small class="notification-date">{{ notification.date | date: 'MMM d, y' }}</small>
             </div>
-            <i class="fa fa-times-circle ms-auto text-danger" (click)="deleteNotification(notification?._id); $event.stopPropagation()"></i>
+            <i class="fa fa-times-circle ms-auto text-danger" (click)="deleteNotification($event, notification?._id);"></i>
           </div>
         </mat-list-item>
       </ng-container>

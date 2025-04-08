@@ -72,6 +72,7 @@ mat-list {
   color: #333;
   display: block;
   margin-bottom: 4px;
+  cursor: pointer;
 }
 
 .notification-description {
@@ -87,7 +88,6 @@ mat-list {
 
 .bold-text {
   font-weight: 600;
-  cursor: pointer;
 }
 
 .notification-date {

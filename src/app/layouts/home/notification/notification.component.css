@@ -9,6 +9,16 @@
   padding: 8px;
 }
 
+  .new-notification{
+  top: 20px;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  background-color: #ff9800;
+  border-radius: 50%;
+  position: absolute;
+}
+
 .notification-dot {
   position: absolute;
   top: 6px;
@@ -76,7 +86,7 @@
 mat-list-item.border-bottom {
   border-bottom: 1px solid #eee;
   min-height: 70px;
-  /* Ensure enough height for the border */
+  cursor: pointer;
 }
 
 .notification-image {
@@ -90,19 +100,20 @@ mat-list-item.border-bottom {
 .notification-content {
   flex-grow: 1;
   overflow: hidden;
-  width: 100%
+  width: 100%;
+  cursor: pointer;
 }
 
 .notification-text {
   font-size: 14px;
   color: #333;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
   word-break: break-word;
   max-width: 100%;
+  cursor: pointer;
 }
 
 .bold-text {
@@ -131,17 +142,6 @@ mat-list-item.border-bottom {
   background-color: #f77012;
   color: #fff;
   cursor: pointer;
-}
-
-.new-notification {
-  width: 15px;
-  height: 15px;
-  background-color: #e88e07;
-  border: 2px solid #fff;
-  border-radius: 50%;
-  position: absolute;
-  top: 20px;
-  left: 25px;
 }
 
 .dropdown-menu-default {
