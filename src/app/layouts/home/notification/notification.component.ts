@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
 import { NotificationService } from 'src/app/_services/notification.service';
 import { WebSocketService, WebSocketMessage, WebSocketNotificationType } from 'src/app/_services/web-socket.service';
 import { Subscription } from 'rxjs';
@@ -9,23 +9,28 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./notification.component.css']
 })
 export class NotificationComponent implements OnInit, OnDestroy {
-  userId: string;
+  userId: string | null = null;
   dropdownOpen: boolean = false;
-  eventNotifications: any[] = []; // Explicitly typed as an array
+  eventNotifications: Notification[] = [];
   loading = false;
-  notificationType: any;
   private webSocketSubscription: Subscription | undefined;
+  hasUnreadNotifications: boolean = false; // Track unread notifications
 
   constructor(
     private notificationService: NotificationService,
-    private webSocketService: WebSocketService
+    private webSocketService: WebSocketService,
+    private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
-    const storedUser = JSON.parse(localStorage.getItem('currentUser'));
-    this.userId = storedUser ? storedUser.id : null;    
-    this.subscribeToWebSocketNotifications();
-    this.getEventNotificationsByUserId() // Fetch notifications for the logged-in user
+    const storedUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+    this.userId = storedUser?.id || null;
+    if (this.userId) {
+      this.subscribeToWebSocketNotifications();
+      this.getEventNotificationsByUserId();
+    } else {
+      console.warn('User ID not found in localStorage.');
+    }
   }
 
   ngOnDestroy() {
@@ -38,38 +43,23 @@ export class NotificationComponent implements OnInit, OnDestroy {
     this.dropdownOpen = !this.dropdownOpen;
   }
 
-  // getNotificationsofToday() {
-  //   this.notificationService.getNotificationsofToday().subscribe((response: any) => {
-  //     this.todaysNotifications = response.data;
-  //     this.todaysNotifications.forEach(notification => {
-  //       this.getNotificationType(notification);
-  //     });
-  //   });
-  // }
-
-  getEventNotificationsByUserId() {
-    this.notificationService.getEventNotificationsByUser(this.userId).subscribe((response: any) => {
-      this.eventNotifications = response.data;
-      this.eventNotifications.forEach(notification => {
-        //this.getNotificationType(notification);
-      });
-    });
-  }
-
-  // getAllNotifications() {
-  //   this.loading = true;
-  //   this.notificationService.getAllNotificationsofLoggedInUser().subscribe((response: any) => {
-  //     this.loading = false;
-  //     this.todaysNotifications = response.data;
-  //     this.todaysNotifications.forEach(notification => {
-  //       this.getNotificationType(notification);
-  //     });
-  //   });
-  // }
-
-  getNotificationType(notification: any) {
-    this.notificationService.getNotificationsTypeById(notification.eventNotificationType).subscribe((response: any) => {
-      notification.notificationType = response.data;
+  getEventNotificationsByUserId(seeAll: boolean = false) {
+    if (!this.userId) return;
+    this.loading = true;
+    this.notificationService.getEventNotificationsByUser(this.userId).subscribe({
+      next: (response: any) => {
+        console.log('Raw API Response:', response);
+        let allNotifications = response.data || response;
+        console.log('All Notifications:', allNotifications);
+        allNotifications.sort((a: Notification, b: Notification) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        this.eventNotifications = seeAll ? [...allNotifications] : allNotifications.slice(0, 3);
+        this.updateUnreadStatus();
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Failed to fetch notifications:', error);
+        this.loading = false;
+      },
     });
   }
 
@@ -79,55 +69,87 @@ export class NotificationComponent implements OnInit, OnDestroy {
     });
   }
 
-  getIcon(type: string): string {
-    switch (type) {
-      case 'Birthday':
-        return 'fa fa-birthday-cake';
-      case 'Appraisal':
-        return 'fa fa-plus-circle';
-      case 'Holiday':
-        return 'fa fa-taxi';
-      case 'National Holiday':
-        return 'fa fa-flag-o';
-      case 'Task':
-        return 'fa fa-list';
-      default:
-        return '';
-    }
+  markAllAsRead() {
+    this.eventNotifications.forEach(n => n.status = 'read');
+    this.updateUnreadStatus();
+    console.log('Marked all as read');
+    // Call API to update backend if needed
   }
 
-  private subscribeToWebSocketNotifications() {    // Assuming the WebSocket connection is already established elsewhere with a userId
-    
-    if (this.userId) {
-      this.webSocketService.connect(this.userId); // Connect to WebSocket with userId
-    } else {
+  getIcon(type: string): string {
+    const iconMap: { [key: string]: string } = {
+      'Birthday': 'fa fa-birthday-cake',
+      'Appraisal': 'fa fa-plus-circle',
+      'Holiday': 'fa fa-taxi',
+      'National Holiday': 'fa fa-flag-o',
+      'Task': 'fa fa-list',
+    };
+    return iconMap[type] || '';
+  }
+
+  private subscribeToWebSocketNotifications() {
+    if (!this.userId) {
       console.warn('User ID not found. Cannot connect to WebSocket.');
+      return;
     }
-    if (this.webSocketService.isConnected()) {
-      this.webSocketSubscription = this.webSocketService.getMessagesByType(WebSocketNotificationType.NOTIFICATION)
-        .subscribe((message: WebSocketMessage) => {
-          console.log('Received WebSocket notification:', message);
-          this.handleWebSocketNotification(message);
-        });
-    } else {
-      console.warn('WebSocket is not connected. Cannot subscribe to notifications.');
-      // Optionally, connect here if you have the userId available
-      // const userId = 'some-user-id'; // Replace with actual userId source
-      // this.webSocketService.connect(userId);
-      // Then subscribe after connection
+    try {
+      this.webSocketService.connect(this.userId);
+      if (this.webSocketService.isConnected()) {
+        this.webSocketSubscription = this.webSocketService.getMessagesByType(WebSocketNotificationType.NOTIFICATION)
+          .subscribe({
+            next: (message: WebSocketMessage) => {
+              console.log('Received WebSocket notification:', message);
+              this.handleWebSocketNotification(message);
+            },
+            error: (error) => console.error('WebSocket subscription error:', error),
+          });
+      } else {
+        console.warn('WebSocket is not connected. Attempting to reconnect...');
+      }
+    } catch (error) {
+      console.error('WebSocket connection error:', error);
     }
   }
 
   private handleWebSocketNotification(message: WebSocketMessage) {
-    // Assuming the content is JSON stringified event notification data
-    if (message.contentType === 'json') {
-      const notification = JSON.parse(message.content);
-      // Fetch notification type if not included in the message
-      this.getNotificationType(notification);
-      // Add to the list (assuming it's a new notification)
-      this.eventNotifications.unshift(notification); // Add to the top of the list
+    console.log('Raw message:', message);
+    if (message?.contentType === 'json') {
+      let notification: Notification;
+      if (typeof message.content === 'object' && message.content !== null) {
+        notification = message.content as Notification; // Use as-is if already an object
+      } else {
+        console.warn('Unsupported content format:', message.content);
+        return;
+      }
+
+      if (!notification.date || !notification.description) {
+        console.warn('Invalid notification data:', notification);
+        return;
+      }
+      notification.status = 'unread';
+      this.eventNotifications = [notification, ...this.eventNotifications]
+        .sort((a: Notification, b: Notification) => new Date(b.date).getTime() - new Date(a.date).getTime())
+        .slice(0, 3);
+      this.updateUnreadStatus();
+      this.cdr.detectChanges();
+      console.log('Updated notifications:', this.eventNotifications);
     } else {
       console.warn('Unsupported WebSocket content type:', message.contentType);
     }
   }
+
+  private updateUnreadStatus() {
+    this.hasUnreadNotifications = this.eventNotifications.some(n => n.status === 'unread');
+  }
+}
+
+interface Notification {
+  _id: string;
+  description: string;
+  date: Date;
+  eventNotificationType: string;
+  notificationType?: { name: string };
+  profileImage?: string;
+  status?: string; // 'unread' or 'read'
+  name?: string; // Added for displaying name in the notification
 }
