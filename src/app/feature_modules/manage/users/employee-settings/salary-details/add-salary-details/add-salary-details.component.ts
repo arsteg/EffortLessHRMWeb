@@ -47,6 +47,7 @@ export class AddSalaryDetailsComponent {
       isEmployerPartInclusiveInSalaryStructure: [false],
       enteringAmount: ['Yearly'],
       Amount: [0],
+      BasicSalary: [0],
       totalCTCExcludingVariableAndOtherBenefits: [0],
       totalCTCIncludingVariable: [0],
       employeeSalaryTaxAndStatutorySetting: this.fb.group({
@@ -83,6 +84,7 @@ export class AddSalaryDetailsComponent {
     });
     this.salaryDetailsForm.get('frequencyToEnterCTC')?.setValue('Yearly');
     this.salaryDetailsForm.get('frequencyToEnterCTC')?.disable();
+    this.salaryDetailsForm.get('BasicSalary')?.disable();
     this.logUrlSegmentsForUser();
     if (this.edit) {
       this.getSalaryDetailsById();
@@ -304,6 +306,8 @@ export class AddSalaryDetailsComponent {
   }
 
   onSubmissionSalaryDetails(): void {
+    this.salaryDetailsForm.get('BasicSalary').enable();
+    this.salaryDetailsForm.get('BasicSalary')?.setValue((this.salaryDetailsForm.get('Amount')?.value * 0.4) / 12);
     const payload = this.salaryDetailsForm.value;
     this.salaryDetailsForm.get('employeeSalaryTaxAndStatutorySetting')?.enable();
     payload.employeeSalaryTaxAndStatutorySetting = [this.employeeSalaryTaxAndStatutorySetting.value];
@@ -346,12 +350,14 @@ export class AddSalaryDetailsComponent {
 
     payload.salaryComponentPFCharge = payload.salaryComponentPFCharge.filter(item => item?.pfCharge !== '');
     payload.frequencyToEnterCTC = 'Yearly';
+    payload.BasicSalary = payload.Amount * 0.4; // added 40% of CTC as Basic Salary
     this.userService.addSalaryDetails(payload).subscribe((res: any) => {
       this.toast.success('The salary details have been successfully added.')
     },
       err => {
         this.toast.error('The salary details can not be added', 'Error')
-      })
+      });
+    this.salaryDetailsForm.get('BasicSalary')?.disable();
   }
 
   getCTCTemplates() {
@@ -611,7 +617,7 @@ export class AddSalaryDetailsComponent {
       this.statutorySettings = res.data[0];
       this.salaryDetailsForm.get('employeeSalaryTaxAndStatutorySetting')?.patchValue({
         isPFDeduction: this.statutorySettings.isEmployeeEligibleForProvidentFundDeduction,
-        isEmployeeProvidentFundCappedAtPFCeiling:this.statutorySettings. willEmployeeProvidentFundContributionCappedAtProvidentFundCeiling,
+        isEmployeeProvidentFundCappedAtPFCeiling: this.statutorySettings.willEmployeeProvidentFundContributionCappedAtProvidentFundCeiling,
         isEmployerProvidentFundCappedAtPFCeiling: this.statutorySettings.willEmployerProvidentFundContributionBeCappedAtProvidentFundCeiling,
         fixedAmountForProvidentFundWage: this.statutorySettings.fixedAmountForYourProvidentFundWage,
         isESICDeduction: this.statutorySettings.isESICDeductedFromSalary,
