@@ -25,7 +25,6 @@
                         [readonly]="!group.get('isEditable')?.value" />
                 </td>
                 <td>
-                    <!-- <input type="text" [disabled] formControlName="approvalStatus"> -->
                     <ng-container [ngSwitch]="group.get('approvalStatus')?.value">
                         <mat-icon *ngSwitchCase="'Pending'" color="warn">hourglass_empty</mat-icon>
                         <mat-icon *ngSwitchCase="'Approved'" color="primary">check_circle</mat-icon>
@@ -36,8 +35,33 @@
                 <td>
                     <input formControlName="remark" type="text" [readonly]="!group.get('isEditable')?.value" />
                 </td>
-
                 <td class="text-center">
+                    <div class="attachment-container">
+                        <ng-container *ngIf="group.get('employeeIncomeTaxDeclarationAttachments')?.value?.length > 0; else noAttachment">
+                            <div *ngFor="let attachment of group.get('employeeIncomeTaxDeclarationAttachments')?.value; let j = index">
+                                <span class="attachment-name" 
+                                      matTooltip="{{ attachment.documentLink || 'No link available' }}"
+                                      matTooltipPosition="below">
+                                    {{ attachment.attachmentName }}
+                                </span>
+                                <a *ngIf="attachment.documentLink" [href]="attachment.documentLink" target="_blank" class="ms-2">View</a>
+                            </div>
+                        </ng-container>
+                        <ng-template #noAttachment>
+                            <!-- Show only the icon if no attachments -->
+                            <label for="attachment-{{i}}">
+                                <i class="bi bi-paperclip" 
+                                   matTooltip="Add Attachment File" 
+                                   matTooltipPosition="below"></i>
+                            </label>
+                        </ng-template>
+                        <input type="file" id="attachment-{{i}}" 
+                               [disabled]="!group.get('isEditable')?.value" 
+                               (change)="uploadAttachment($event, i)" 
+                               style="display: none;" />
+                    </div>
+                </td>
+                <!-- <td class="text-center">
                     <div class="attachment-container" *ngIf="group.get('employeeIncomeTaxDeclarationAttachments')?.value?.length">
                         <div *ngFor="let attachment of group.get('employeeIncomeTaxDeclarationAttachments')?.value; let j = index">
                           {{ attachment.attachmentName }}
@@ -58,7 +82,7 @@
                             (change)="uploadAttachment($event, i)" style="display: none;" />
                     </div>
                    
-                </td>
+                </td> -->
 
                 <td>
                     @if(!group.get('isEditable')?.value){

@@ -32,7 +32,8 @@ export class TaxSectionComponent {
     private dialog: MatDialog) {
     this.taxSectionForm = this.fb.group({
       section: [''],
-      isHRA: [false]
+      isHRA: [false],
+      maximumAmount: [0]
     })
   }
 
@@ -75,7 +76,8 @@ export class TaxSectionComponent {
         this.sections.push(res.data);
         this.taxSectionForm.reset({
           section: '',
-          isHRA: false
+          isHRA: false,
+          maximumAmount: 0
         });
         this.toast.success('Tax section added successfully');
       },

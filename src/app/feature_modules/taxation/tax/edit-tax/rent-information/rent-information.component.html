@@ -1,8 +1,8 @@
 <div>
+    <small>For the Metro City Max Amount would be {{metroDeclaredRent}}<span class="text-danger">*</span></small><br>
+    <small>For the Non-Metro City Max Amount would be {{nonMetroDeclaredRent}}<span class="text-danger">*</span></small>
+
     <form class="d-flex justify-content-between p-2" [formGroup]="formGroup" (ngSubmit)="onSubmission()">
-        <div class="form-group">
-            <input type="number" class="form-control" placeholder="Per Month Rent" formControlName="rentDeclared">
-        </div>
         <div class="form-group">
             <select id="" class="mx-2 form-control" placeholder="City Type" formControlName="cityType">
                 <option value="" [disabled] [selected]>Select City Type -</option>
@@ -10,12 +10,26 @@
                 <option value="Non-Metro">Non-Metro</option>
             </select>
         </div>
+
+        <div class="form-group">
+            <input type="number" class="form-control" placeholder="Per Month Rent" formControlName="rentDeclared">
+            <small *ngIf="
+              formGroup.get('rentDeclared')?.touched &&
+              formGroup.get('rentDeclared')?.hasError('exceedLimit')
+            " class="error-message">
+                You cannot declare rent more than
+                {{ formGroup.get('cityType')?.value === 'Metro' ? metroDeclaredRent : nonMetroDeclaredRent | number:
+                '1.2-2' }}
+                for the selected city type.
+            </small>
+        </div>
+
         <div class="form-group">
             <input type="text" class="form-control" placeholder="Landlord Name" formControlName="landlordName">
         </div>
         <div class="form-group">
-            <input type="text" class="form-control" placeholder="Landlord PAN Number"
-                formControlName="landlordPan" (input)="convertToUppercase()">
+            <input type="text" class="form-control" placeholder="Landlord PAN Number" formControlName="landlordPan"
+                (input)="convertToUppercase()">
             <div *ngIf="(formGroup.get('landlordPan')?.touched || formGroup.get('landlordPan')?.dirty) && formGroup.get('landlordPan')?.invalid"
                 class="error-message">
                 Please enter a valid PAN number (e.g., ABCDE1234F)
@@ -24,16 +38,17 @@
         <div class="form-group">
             <input type="text" class="form-control" placeholder="Landlord Address" formControlName="landlordAddress">
         </div>
-        <button mat-raised-button color="accent" type="submit">Apply&nbsp;to&nbsp;All</button>
+        <button mat-raised-button color="accent" [disabled]="!formGroup.valid"
+            type="submit">Apply&nbsp;to&nbsp;All</button>
 
     </form>
     <form [formGroup]="formGroup">
         <table>
             <thead>
                 <th>Month</th>
+                <th>Metro</th>
                 <th>Rent Declared</th>
                 <th>Verified Amount(In Rs.)</th>
-                <th>Metro</th>
                 <th>Landlord Name</th>
                 <th>Landlord PAN</th>
                 <th>Landlord Address</th>
@@ -49,12 +64,7 @@
                             {{ getMonthsArray()[i] }}
                         </div>
                     </td>
-                    <td>
-                        <input type="number" class="form-control w-75" formControlName="rentDeclared"
-                            [readonly]="!group.get('isEditable')?.value" />
-                    </td>
-                    <td><input type="number" class="form-control w-75" formControlName="verifiedAmount"
-                            [readonly]="!group.get('isEditable')?.value" /></td>
+
                     <td>
                         <select id="" class="form-control" formControlName="cityType"
                             [readonly]="!group.get('isEditable')?.value">
@@ -63,6 +73,23 @@
                             <option value="Non-Metro">Non-Metro</option>
                         </select>
                     </td>
+
+                    <td>
+                        <input type="number" class="form-control w-75" formControlName="rentDeclared"
+                            [readonly]="!group.get('isEditable')?.value" />
+                        <small *ngIf="
+                            group.get('rentDeclared')?.touched &&
+                            group.get('rentDeclared')?.hasError('exceedLimit')
+                          " class="error-message">
+                            You cannot declare rent more than
+                            {{ group.get('cityType')?.value === 'Metro' ? metroDeclaredRent : nonMetroDeclaredRent |
+                            number: '1.2-2' }}
+                            for the selected city type.
+                        </small>
+                    </td>
+                    <td><input type="number" class="form-control w-75" formControlName="verifiedAmount"
+                            [readonly]="!group.get('isEditable')?.value" /></td>
+
                     <td>
                         <input type="text" class="form-control" formControlName="landlordName"
                             [readonly]="!group.get('isEditable')?.value" />
@@ -70,9 +97,10 @@
                     <td>
                         <input type="text" class="form-control w-75" formControlName="landlordPan"
                             [readonly]="!group.get('isEditable')?.value" (input)="convertToUppercaseSelectedPAN(i)" />
-                        <div *ngIf="group.get('landlordPan')?.invalid" class="error-message">
+                        <small *ngIf="group.get('landlordPan')?.dirty && group.get('landlordPan')?.invalid"
+                            class="error-message">
                             Please enter a valid PAN number (e.g., ABCDE1234F)
-                        </div>
+                        </small>
                     </td>
                     <td>
                         <input type="text" class="form-control" formControlName="landlordAddress"
@@ -89,16 +117,29 @@
 
                     <td class="text-center">
                         <div class="attachment-container">
-                            <label for="attachment-{{i}}">
-                                <i class="bi bi-paperclip"
-                                    matTooltip="{{ group.get('documentLink')?.value ? group.get('documentLink')?.value.split('/').pop().split('.').slice(0, -1).join('.') : 'Add Attachment File' }}"
-                                    matTooltipPosition="below"></i>
-                            </label>
-                            <input type="file" id="attachment-{{i}}" [readonly]="!group.get('isEditable')?.value"
+                            <ng-container
+                                *ngIf="group.get('employeeIncomeTaxDeclarationAttachments')?.controls?.length; else noAttachment">
+                                <div
+                                    *ngFor="let attachment of group.get('employeeIncomeTaxDeclarationAttachments')['controls']; let j = index">
+                                    <span class="attachment-name me-2"
+                                        matTooltip="{{ attachment.get('attachmentName').value }}"
+                                        matTooltipPosition="below">
+                                        <a (click)="downloadAttachment(attachment.value, i, j)"
+                                            style="cursor: pointer; text-decoration: underline; color: rgba(244, 135, 0, 1);">
+                                            {{ attachment.get('attachmentName')?.value || 'Unnamed Attachment' }}</a>
+                                    </span>
+                                </div>
+                            </ng-container>
+                            <ng-template #noAttachment>
+                                <label for="attachment-{{ i }}">
+                                    <i class="bi bi-paperclip" matTooltip="Add Attachment File"
+                                        matTooltipPosition="below"></i>
+                                </label>
+                            </ng-template>
+                            <input type="file" id="attachment-{{ i }}" [readonly]="!group.get('isEditable')?.value"
                                 (change)="uploadAttachment($event, i)" style="display: none;" />
                         </div>
                     </td>
-
                     <td>
                         @if(!group.get('isEditable')?.value){
                         <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before" type="button"
@@ -106,7 +147,8 @@
                         } @else {
                         <div class="d-flex">
                             <button class="actions" mat-mini-fab matTooltip="Update" matTooltipPosition="below"
-                                type="button" (click)="onSubmissionRowData(i)"> <i class="bi bi-check"></i></button>
+                                type="button" [disabled]="!group.valid" (click)="onSubmissionRowData(i)"> <i
+                                    class="bi bi-check"></i></button>
                             <button class="actions" mat-mini-fab matTooltip="Close" matTooltipPosition="below"
                                 type="button" (click)="cancelEditing(i)"> <i class="bi bi-x"></i></button>
                         </div>

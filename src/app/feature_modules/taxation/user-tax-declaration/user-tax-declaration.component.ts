@@ -6,10 +6,18 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./user-tax-declaration.component.css']
 })
 export class UserTaxDeclarationComponent implements OnInit {
+  showTaxCalculator = false;
 
   constructor() { }
 
   ngOnInit(): void {
   }
 
+  onTaxViewChange(isTaxViewVisible: any) {
+    this.showTaxCalculator = isTaxViewVisible;
+  }
+
+  hideTaxCalculator() {
+    this.showTaxCalculator = false;
+  }
 }

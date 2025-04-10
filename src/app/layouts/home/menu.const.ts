@@ -98,7 +98,7 @@ export const SideBarAdminMenu = [
     title: 'Taxation',
     icon: 'assets/Sidenav-Icons/taxation.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/taxation.png',
-    url: 'taxation',
+    url: 'taxation/sections',
   },
   {
     id: '14',

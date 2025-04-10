@@ -1,35 +1,32 @@
-<div class="main-content contentData">
-    <div class="container-fluid px-0">
+    <div>
+        @if(view === 'admin'){
+           <nav mat-tab-nav-bar mat-stretch-tabs="false" mat-align-tabs="start" [tabPanel]="tabPanel">
+           <a mat-tab-link>Settings</a>
+           <a mat-tab-link>Tax Exemptions</a>
+           <a mat-tab-link
+              routerLink="sections"
+                 routerLinkActive #rla1="routerLinkActive"
+              [active]="rla1.isActive">Income Tax Sections</a>
+              <a mat-tab-link
+              routerLink="components"
+                 routerLinkActive #rla4="routerLinkActive"
+              [active]="rla4.isActive">Income Tax Sections Components</a>
+              
+              <a mat-tab-link>Tax Overrides</a>
 
-        <div *ngIf="view=== 'admin'">
-            <div class=" d-flex bg-white subMenu w-100">
-                <button class="btn rounded-pill submenuTab" (click)="selectTab(1)"
-                    [class.active]="selectedTab === 1">Settings</button>
-                <button class="btn rounded-pill submenuTab" (click)="selectTab(2)" [class.active]="selectedTab === 2">
-                    Tax Exemptions</button>
-                <button class="btn rounded-pill submenuTab" (click)="selectTab(3)" [class.active]="selectedTab === 3">
-                    Income Tax Sections</button>
-                <button class="btn rounded-pill submenuTab" (click)="selectTab(4)" [class.active]="selectedTab === 4">
-                    Tax Overrides</button>
-                <button class="btn rounded-pill submenuTab" (click)="selectTab(5)" [class.active]="selectedTab === 5">
-                    eTDS</button>
-                <button class="btn rounded-pill submenuTab" (click)="selectTab(6)"
-                    [class.active]="selectedTab === 6">Tax Declarations</button>
-            </div>
-
-            <div *ngIf="selectedTab === 1" class="tab-content pt-0">
-            </div>
-            <div *ngIf="selectedTab === 2" class="tab-content pt-0">
-            </div>
-            <div *ngIf="selectedTab === 3" class="tab-content pt-0">
-                <app-tax-declaration></app-tax-declaration>
-            </div>
-            <div *ngIf="selectedTab === 4" class="tab-content pt-0">
-            </div>
-            <div *ngIf="selectedTab === 5" class="tab-content pt-0">
-            </div>
-            <div *ngIf="selectedTab === 6" class="tab-content pt-0">
-                <app-tax-declaration-by-company></app-tax-declaration-by-company>
-            </div>
-        </div>
-    </div>
+              <a mat-tab-link>eTDS</a>
+              <a mat-tab-link
+              routerLink="all-tax-declarations"
+                 routerLinkActive #rla7="routerLinkActive"
+              [active]="rla7.isActive">Tax Declarations</a>
+           </nav>
+           <mat-tab-nav-panel #tabPanel>
+              <router-outlet></router-outlet>
+           </mat-tab-nav-panel>
+        } @else if(view === 'user') {
+           <mat-tab-nav-panel #tabPanel>
+              <router-outlet></router-outlet>
+           </mat-tab-nav-panel>
+        }
+       </div>
+       
