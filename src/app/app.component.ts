@@ -16,4 +16,10 @@ export class AppComponent {
   ngOnInit() {
 
   }
+
+  isChatbotOpen = false;
+
+  toggleChatbot(): void {
+    this.isChatbotOpen = !this.isChatbotOpen;
+  }
 }
