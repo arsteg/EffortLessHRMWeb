@@ -78,7 +78,6 @@ export class RentInformationComponent {
           landlordAddress: data.landlordAddress,
           approvalStatus: data.approvalStatus,
           documentLink: data.documentLink,
-          // employeeIncomeTaxDeclarationAttachments: data.employeeIncomeTaxDeclarationAttachments || []
         });
         // Initialize attachments FormArray with data
         const attachmentsArray = formGroup.get('employeeIncomeTaxDeclarationAttachments') as FormArray;
@@ -93,7 +92,6 @@ export class RentInformationComponent {
             }));
           });
         }
-        console.log(data.employeeIncomeTaxDeclarationAttachments)
         this.employeeIncomeTaxDeclarationHRA.push(formGroup);
       } else {
         const formGroup = this.createEmployeeIncomeTaxDeclarationComponent(month);

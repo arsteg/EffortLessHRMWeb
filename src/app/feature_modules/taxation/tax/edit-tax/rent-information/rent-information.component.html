@@ -108,9 +108,9 @@
                     </td>
                     <td>
                         <ng-container [ngSwitch]="group.get('approvalStatus')?.value">
-                            <mat-icon *ngSwitchCase="'Pending'" color="warn">hourglass_empty</mat-icon>
-                            <mat-icon *ngSwitchCase="'Approved'" color="primary">check_circle</mat-icon>
-                            <mat-icon *ngSwitchCase="'Rejected'" color="accent">cancel</mat-icon>
+                            <mat-icon *ngSwitchCase="'Pending'" color="warn" matTooltip="Pending" matTooltipPosition="below">hourglass_empty</mat-icon>
+                            <mat-icon *ngSwitchCase="'Approved'" color="primary" matTooltip="Approved" matTooltipPosition="below">check_circle</mat-icon>
+                            <mat-icon *ngSwitchCase="'Rejected'" color="accent" matTooltip="Rejected" matTooltipPosition="below">cancel</mat-icon>
                             <span *ngSwitchDefault>{{ group.get('approvalStatus')?.value }}</span>
                         </ng-container>
                     </td>
@@ -122,7 +122,7 @@
                                 <div
                                     *ngFor="let attachment of group.get('employeeIncomeTaxDeclarationAttachments')['controls']; let j = index">
                                     <span class="attachment-name me-2"
-                                        matTooltip="{{ attachment.get('attachmentName').value }}"
+                                        matTooltip="Download Attachment"
                                         matTooltipPosition="below">
                                         <a (click)="downloadAttachment(attachment.value, i, j)"
                                             style="cursor: pointer; text-decoration: underline; color: rgba(244, 135, 0, 1);">
