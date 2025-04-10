@@ -211,6 +211,19 @@ export class RentInformationComponent {
     return months;
   }
 
+  removeAttachment(rowIndex: number, attachmentIndex: number) {
+    const employeeIncomeTaxDeclarationHRA = this.formGroup.get('employeeIncomeTaxDeclarationHRA') as FormArray;
+    const selectedFormGroup = employeeIncomeTaxDeclarationHRA.at(rowIndex) as FormGroup;
+    const attachmentsArray = selectedFormGroup.get('employeeIncomeTaxDeclarationAttachments') as FormArray;
+
+    if (attachmentsArray.length > attachmentIndex) {
+      attachmentsArray.removeAt(attachmentIndex);
+      this.toast.success('Attachment removed successfully', 'Success!');
+    } else {
+      this.toast.error('Attachment not found', 'Error!');
+    }
+  }
+
   uploadAttachment(event: any, index: number) {
     const file = event.target.files[0];
     if (!file) {

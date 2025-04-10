@@ -174,6 +174,19 @@ export class TaxComponentsComponent {
     const matchingRecord = this.taxSections?.find((tax: any) => tax?._id === sectionId);
     return matchingRecord ? matchingRecord?.section : '';
   }
+  
+  removeAttachment(rowIndex: number, attachmentIndex: number) {
+    const incomeTaxComponent = this.incomeTaxDecComponentForm.get('incomeTaxComponent') as FormArray;
+    const selectedFormGroup = incomeTaxComponent.at(rowIndex) as FormGroup;
+    const attachmentsArray = selectedFormGroup.get('employeeIncomeTaxDeclarationAttachments') as FormArray;
+
+    if (attachmentsArray.length > attachmentIndex) {
+      attachmentsArray.removeAt(attachmentIndex);
+      this.toast.success('Attachment removed successfully', 'Success!');
+    } else {
+      this.toast.error('Attachment not found', 'Error!');
+    }
+  }
 
   uploadAttachment(event: any, index: number) {
     const file = event.target.files[0];

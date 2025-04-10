@@ -108,9 +108,12 @@
                     </td>
                     <td>
                         <ng-container [ngSwitch]="group.get('approvalStatus')?.value">
-                            <mat-icon *ngSwitchCase="'Pending'" color="warn" matTooltip="Pending" matTooltipPosition="below">hourglass_empty</mat-icon>
-                            <mat-icon *ngSwitchCase="'Approved'" color="primary" matTooltip="Approved" matTooltipPosition="below">check_circle</mat-icon>
-                            <mat-icon *ngSwitchCase="'Rejected'" color="accent" matTooltip="Rejected" matTooltipPosition="below">cancel</mat-icon>
+                            <mat-icon *ngSwitchCase="'Pending'" color="warn" matTooltip="Pending"
+                                matTooltipPosition="below">hourglass_empty</mat-icon>
+                            <mat-icon *ngSwitchCase="'Approved'" color="primary" matTooltip="Approved"
+                                matTooltipPosition="below">check_circle</mat-icon>
+                            <mat-icon *ngSwitchCase="'Rejected'" color="accent" matTooltip="Rejected"
+                                matTooltipPosition="below">cancel</mat-icon>
                             <span *ngSwitchDefault>{{ group.get('approvalStatus')?.value }}</span>
                         </ng-container>
                     </td>
@@ -121,17 +124,21 @@
                                 *ngIf="group.get('employeeIncomeTaxDeclarationAttachments')?.controls?.length; else noAttachment">
                                 <div
                                     *ngFor="let attachment of group.get('employeeIncomeTaxDeclarationAttachments')['controls']; let j = index">
-                                    <span class="attachment-name me-2"
-                                        matTooltip="Download Attachment"
+                                    <span class="attachment-name me-2" matTooltip="Download Attachment"
                                         matTooltipPosition="below">
                                         <a (click)="downloadAttachment(attachment.value, i, j)"
                                             style="cursor: pointer; text-decoration: underline; color: rgba(244, 135, 0, 1);">
                                             {{ attachment.get('attachmentName')?.value || 'Unnamed Attachment' }}</a>
                                     </span>
+                                    <ng-container *ngIf="group.get('isEditable')?.value">
+                                        <i class="bi bi-x-circle text-danger ms-2" matTooltip="Remove Attachment"
+                                            matTooltipPosition="below" style="cursor: pointer;"
+                                            (click)="removeAttachment(i, j)"></i>
+                                    </ng-container>
                                 </div>
                             </ng-container>
                             <ng-template #noAttachment>
-                                <label for="attachment-{{ i }}">
+                                <label for="attachment-{{ i }}" *ngIf="group.get('isEditable')?.value">
                                     <i class="bi bi-paperclip" matTooltip="Add Attachment File"
                                         matTooltipPosition="below"></i>
                                 </label>
