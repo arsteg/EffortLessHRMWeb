@@ -57,6 +57,7 @@ import { UserProfileComponent } from './feature_modules/manage/users/user-profil
 import { SubscriptionComponent } from './layouts/subscription/subscription.component';
 import { ErrorInterceptor } from './_helpers/error.interceptor';
 import { ChatbotComponent } from './chat/chatbot/chatbot.component';
+import { EffortlessTranslateModule } from './translate/translate.module';
 
 const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
 
@@ -101,6 +102,7 @@ const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
     QuillModule.forRoot(),
     FullCalendarModule,
     FormsModule,
+    EffortlessTranslateModule,
     SocketIoModule.forRoot(config),
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],

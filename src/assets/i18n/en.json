@@ -1,0 +1,19 @@
+{
+    "welcome_message": "Welcome to the HRMS & Time Tracker",
+    "login": {
+      "title": "Login",
+      "username": "Username",
+      "password": "Password",
+      "submit": "Sign In",
+      "error": "Invalid credentials"
+    },
+    "dashboard": {
+      "title": "Dashboard",
+      "greeting": "Hello, {{name}}!",
+      "time_tracked": "Time Tracked Today: {{hours}} hours"
+    },
+    "settings": {
+      "language": "Language",
+      "select_language": "Select Language"
+    }
+  }
