@@ -29,7 +29,7 @@
                 <tr *ngFor="let tax of taxList | search:searchText">
                     <td>{{tax?.financialYear}}</td>
                     <td *ngFor="let section of sections">
-                        {{ section?.componentCount }}
+                        {{ getComponentCountForSection(tax, section) }}
                     </td>
                     <td class="action text-center">
                         <mat-menu #menu="matMenu">
@@ -71,7 +71,7 @@
         <ol class="breadcrumb">
             <li class="breadcrumb-item active" (click)="taxView = false; taxEditView = false;">My Tax Declarations</li>
             <li *ngIf="taxView" aria-current="page">Tax Calculator</li>
-            <li *ngIf="taxEditView" aria-current="page">Tax Declaration of Year
+            <li *ngIf="taxEditView" aria-current="page">&nbsp;/&nbsp;Tax Declaration of Year
                 {{selectedRecord?.financialYear}}</li>
         </ol>
     </nav>
