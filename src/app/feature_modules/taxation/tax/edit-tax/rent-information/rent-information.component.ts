@@ -21,6 +21,7 @@ export class RentInformationComponent {
   formGroup: FormGroup;
   metroDeclaredRent: number = 0;
   nonMetroDeclaredRent: number = 0;
+  @Input() sectionId: string;
 
   constructor(
     private fb: FormBuilder,
@@ -41,6 +42,7 @@ export class RentInformationComponent {
       approvalStatus: [''],
       documentLink: [''],
       isEditable: [false],
+      section: [''],
       employeeIncomeTaxDeclarationAttachments: this.fb.array([])
     });
 
@@ -51,6 +53,7 @@ export class RentInformationComponent {
   }
 
   ngOnInit() {
+    console.log(this.sectionId)
     const months = this.getMonthsArray();
     this.formGroup.setControl('employeeIncomeTaxDeclarationHRA', this.fb.array([]));
 
@@ -58,7 +61,7 @@ export class RentInformationComponent {
     this.userService.getSalaryByUserId(this.selectedRecord?.user?._id).subscribe((res: any) => {
       const result = res.data[res.data.length - 1]; // Fixed length issue
       const basicSalary = result.BasicSalary;
-      this.metroDeclaredRent = (basicSalary * 0.5) / 12;      
+      this.metroDeclaredRent = (basicSalary * 0.5) / 12;
       this.nonMetroDeclaredRent = (basicSalary * 0.4) / 12;
       this.validateRentDeclared();
     }, (error) => {
@@ -197,6 +200,7 @@ export class RentInformationComponent {
       approvalStatus: ['Pending', Validators.required],
       isEditable: [false],
       documentLink: ['', Validators.required],
+      section: [''],
       employeeIncomeTaxDeclarationAttachments: this.fb.array([])
     });
   }
@@ -289,7 +293,7 @@ export class RentInformationComponent {
     document.body.removeChild(link);
     window.URL.revokeObjectURL(url); // Clean up
   }
-  
+
   cancelEditing(i) {
     const control = this.formGroup.get(`employeeIncomeTaxDeclarationHRA.${i}`) as FormGroup;
     control.patchValue(this.employeeIncomeTaxDeclarationHRA[i]);
@@ -327,6 +331,7 @@ export class RentInformationComponent {
         landlordAddress: form.value.landlordAddress,
         approvalStatus: form.value.approvalStatus,
         documentLink: 'string',
+        section: this.sectionId,
         employeeIncomeTaxDeclarationAttachments: form.value.employeeIncomeTaxDeclarationAttachments,
       };
       this.taxService.updateIncTaxDecHRA(payload).subscribe(
@@ -364,6 +369,9 @@ export class RentInformationComponent {
     const documentLink = this.formGroup.value.documentLink;
     const verifiedAmount = 0;
     const months = this.getMonthsArray();
+
+    const section = this.sectionId;
+
     this.employeeIncomeTaxDeclaration.reset();
     months.forEach((month, index) => {
       this.employeeIncomeTaxDeclaration.push(
@@ -377,7 +385,8 @@ export class RentInformationComponent {
           month: month,
           verifiedAmount,
           employeeIncomeTaxDeclarationAttachments: [],
-          documentLink
+          documentLink,
+          section
         })
       );
     });
