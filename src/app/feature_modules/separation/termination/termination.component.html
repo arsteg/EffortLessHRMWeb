@@ -70,11 +70,11 @@
                             <mat-icon>gavel</mat-icon>
                             <span>Appeal</span>
                         </button>
-                        <button mat-menu-item (click)="isEditMode = true; selectedRecord = element; openDialog(element)">
+                        <button mat-menu-item *ngIf="element.termination_status !== terminationStatuses.Completed" (click)="isEditMode = true; selectedRecord = element; openDialog(element)">
                             <mat-icon>edit</mat-icon>
                             <span>Edit</span>
                         </button>
-                        <button mat-menu-item (click)="updateTerminationStatus(selectedStatus, terminationStatuses.Deleted)">
+                        <button mat-menu-item *ngIf="element.termination_status !== terminationStatuses.Completed" (click)="updateTerminationStatus(selectedStatus, terminationStatuses.Deleted)">
                             <mat-icon>delete</mat-icon>
                             <span>Delete</span>
                         </button>

@@ -57,11 +57,11 @@
                     <mat-icon>more_vert</mat-icon>
                 </button>
                 <mat-menu #menu="matMenu">
-                    <button mat-menu-item (click)="selectedRecord = element;isEditMode = true; openDialog(element)">
+                    <button mat-menu-item *ngIf="element.resignation_status== resignationStatuses.Completed" (click)="selectedRecord = element;isEditMode = true; openDialog(element)">
                         <mat-icon>edit</mat-icon>
                         <span>Edit</span>
                     </button>
-                    <button mat-menu-item (click)="selectedRecord = element; deleteDialog(element._id)">
+                    <button mat-menu-item *ngIf="element.resignation_status== resignationStatuses.Completed" (click)="selectedRecord = element; deleteDialog(element._id)">
                         <mat-icon>delete</mat-icon>
                         <span>Delete</span>
                     </button>

@@ -114,7 +114,6 @@ export class HolidaysComponent {
   }
   
     formData.year = this.currentYear || this.selectedYear;
-    console.log(formData);
    if(this.holidayForm.valid){
     if (!this.isEdit) {
       this.companyService.addHolidays(formData).subscribe(res => {

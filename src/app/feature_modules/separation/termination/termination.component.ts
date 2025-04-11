@@ -1,7 +1,9 @@
 import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
+import { AssetManagementService } from 'src/app/_services/assetManagement.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { SeparationService } from 'src/app/_services/separation.service';
 interface TerminationStatus {
@@ -49,6 +51,7 @@ export class TerminationComponent {
     private dialog: MatDialog,
     private fb: FormBuilder,
     private commonService: CommonService,
+    private assetManagementService: AssetManagementService,
     private toast: ToastrService) {
     this.terminationForm = this.fb.group({
       user: [''],
@@ -100,8 +103,7 @@ export class TerminationComponent {
   }
   getallTerminationStatusList() {
     this.separationService.getTerminationStatusList().subscribe((res: any) => {
-      console.log(res);
-      this.terminationStatuses = res;       
+    this.terminationStatuses = res.data.statusList;       
     })
   }
   getTerminations() {
@@ -121,9 +123,28 @@ export class TerminationComponent {
     const matchingUser = this.users.find(user => user.id === userId);
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'User Removed';
   }
-
+  onCompanyPropertyReturnedChange() {    // If user tries to check the box
+   
+      this.assetManagementService.getEmployeeAssets(this.terminationForm.get('user')?.value).subscribe(
+        response => {
+          const assignedAssets = response.data;  
+          if (assignedAssets && assignedAssets.length > 0) {
+            this.toast.error('Asset is still assigned. Please release it first for company_property_returned', 'Warning');    
+            return;      
+          }
+        },
+        error => {
+          this.toast.error('Failed to verify assigned assets', 'Error');
+          console.error(error);
+        });   
+  }
+  
   onSubmit() {       
-      if (this.terminationForm.valid) {       
+      if (this.terminationForm.valid) {     
+        if (this.terminationForm.get('company_property_returned')?.value === true) 
+        {
+          this.onCompanyPropertyReturnedChange();
+        }
         if (this.isEditMode) {
            this.separationService.updateTerminationById(this.selectedRecord._id, this.terminationForm.value).subscribe((res: any) => {
             this.getTerminations();           

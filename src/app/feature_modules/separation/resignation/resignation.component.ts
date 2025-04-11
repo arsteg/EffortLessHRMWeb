@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { CommonService } from 'src/app/_services/common.Service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { UserService } from 'src/app/_services/users.service';
+import { AssetManagementService } from 'src/app/_services/assetManagement.service';
 interface ResignationStatus {
   Pending: string,
   Completed: string,
@@ -46,6 +47,7 @@ export class ResignationComponent implements OnInit {
     private separationService: SeparationService,
     private toast: ToastrService,
     private userService: UserService,
+     private assetManagementService: AssetManagementService,
     private commonService: CommonService) {
     this.resignationForm = this.fb.group({
       user: [''],
@@ -95,12 +97,29 @@ export class ResignationComponent implements OnInit {
   resetForm(): void {
     this.resignationForm.reset();
   }
-
+  onCompanyPropertyReturnedChange() {    // If user tries to check the box
+   
+    this.assetManagementService.getEmployeeAssets(this.resignationForm.get('user')?.value).subscribe(
+      response => {
+        const assignedAssets = response.data;  
+        if (assignedAssets && assignedAssets.length > 0) {
+          this.toast.error('The asset is currently assigned. Please unassign it before confirming the return of company property.', 'Warning');    
+          return;      
+        }
+      },
+      error => {
+        this.toast.error('Failed to verify assigned assets', 'Error');
+        console.error(error);
+      });   
+}
   onSubmit(): void {
     this.resignationForm.patchValue({
       user: this.currentUser.id
     });
-
+    if (this.resignationForm.get('company_property_returned')?.value === true) 
+      {
+        this.onCompanyPropertyReturnedChange();
+      }
     if (this.resignationForm.valid) {
         if (this.isEditMode) {
          this.separationService.updateResignationById(  this.selectedRecord._id, this.resignationForm.value).subscribe((res: any) => {
@@ -150,12 +169,11 @@ export class ResignationComponent implements OnInit {
         this.resignationRecords=res.data;
         // this.dataSource.data = this.resignationRecords;
       });
-    }
-    
+    }    
   }
   getallResignationStatusList() {
     this.separationService.getResignationStatusList().subscribe((res: any) => {
-      this.resignationStatuses = res;      
+      this.resignationStatuses = res.data.statusList;      
     })
   }
   getMatchingUser(userId: string) {
