@@ -21,7 +21,8 @@
 
                 <div class="mt-2 bg-white tableContainer">
                         @if(!isHRA){
-                        <app-tax-components [sectionId]="activeTab" [selectedData]="selectedRecord"
+                        <app-tax-components [sectionId]="activeTab" [selectedData]="component"
+                        [selectedTaxDeclaration]="selectedRecord"
                             [selectedUser]="selectedUser" (tabSelected)="selectTab($event)">
                         </app-tax-components>
                         } @else {

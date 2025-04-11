@@ -1,1 +1,9 @@
 <router-outlet></router-outlet>
+
+<!-- Chatbot Icon -->
+<div class="chatbot-icon" (click)="toggleChatbot()">
+    <img src="assets/chat.png" alt="Chatbot" />
+  </div>
+
+  <!-- Chatbot Component (conditionally shown) -->
+  <app-chatbot *ngIf="isChatbotOpen"></app-chatbot>

@@ -1,4 +1,4 @@
-import { Component, ComponentFactoryResolver, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ComponentFactoryResolver, EventEmitter, Output, ViewChild, ViewContainerRef } from '@angular/core';
 import { TaxCalculatorComponent } from './tax-calculator/tax-calculator.component';
 import { UserService } from 'src/app/_services/users.service';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
@@ -36,9 +36,10 @@ export class TaxComponent {
   user = JSON.parse(localStorage.getItem('currentUser'));
   sections: any;
   sectionComponents: any;
+  @Output() taxViewChange = new EventEmitter<boolean>();
+  taxEditView: boolean = false;
 
   constructor(
-    private componentFactoryResolver: ComponentFactoryResolver,
     private userService: UserService,
     private modalService: NgbModal,
     private fb: FormBuilder,
@@ -66,6 +67,36 @@ export class TaxComponent {
       this.uniqueFinancialYears = this.getUniqueFinancialYears(this.taxList);
     });
   }
+  goBackToMainView() {
+    this.taxView = false;
+    this.taxEditView = false; // Ensure edit view is also hidden
+    this.isEdit = false;
+    this.selectedRecord = null;
+    this.taxViewChange.emit(false);
+  }
+
+  // Handle back from edit view
+  goBackToSalaryDetails() {
+    this.taxView = false;
+    this.taxEditView = false; // Hide edit view
+    this.isEdit = false;
+    this.selectedRecord = null;
+  }
+
+  // When opening edit view
+  openEditView(tax: any) {
+    this.selectedRecord = tax;
+    this.isEdit = true;
+    this.taxView = false; // Hide calculator
+    this.taxEditView = true; // Show edit view
+  }
+  // When opening calculator view
+  openCalculatorView(tax: any) {
+    this.selectedRecord = tax;
+    this.isEdit = false;
+    this.taxView = true;
+    this.taxViewChange.emit(true);
+  }
 
   getSections() {
     this.taxService?.getAllTaxSections().subscribe((res: any) => {
@@ -79,42 +110,6 @@ export class TaxComponent {
     });
   }
 
-  openOffcanvas(isEdit: boolean, record: any = null) {
-    this.isEdit = isEdit;
-    this.selectedRecord = record;
-    this.showOffcanvas = true;
-    this.offcanvasContent.clear();
-
-    // Create the component factory
-    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(TaxCalculatorComponent);
-
-    // Create the component and set the inputs
-    const componentRef = this.offcanvasContent.createComponent(componentFactory);
-    componentRef.instance.selectedRecord = this.selectedRecord;
-    componentRef.instance.isEdit = this.isEdit;
-  }
-
-  closeOffcanvas() {
-    this.showOffcanvas = false;
-    this.isEdit = false;
-    this.selectedRecord = null;
-  }
-
-  getAge(dob: Date) {
-    const today = new Date();
-    const birthDate = new Date(dob);
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const m = today.getMonth() - birthDate.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
-    }
-    return age;
-  }
-
-  goBackToSalaryDetails() {
-    this.taxView = false;
-  }
-
   onPageChange(page: number) {
     this.currentPage = page;
     this.getTaxDeclaration();
@@ -126,12 +121,15 @@ export class TaxComponent {
   }
 
   getTaxDeclaration() {
+    this.taxView = true; // Show calculator
+    this.taxEditView = false; // Hide edit view
+    this.taxViewChange.emit(true);
+
     const pagination = {
       skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
       next: this.recordsPerPage.toString()
     };
-
-    this.userService.getTaxDeclarationByUserId(this.selectedUser[0]?._id, pagination).subscribe((res: any) => {
+    this.userService.getTaxDeclarationByUserId(this.user?.id, pagination).subscribe((res: any) => {
       this.taxList = res.data;
 
       const sectionIds = this.taxList.flatMap((tax: any) =>
@@ -230,11 +228,21 @@ export class TaxComponent {
       employeeIncomeTaxDeclarationComponent: [],
       employeeIncomeTaxDeclarationHRA: []
     };
-    this.taxService.addIncomeTax(payload).subscribe((res: any) => {
-      this.taxList.push(res.data);
-      this.toastr.success('Tax Declaration Added Successfully');
-    }, err => {
-      this.toastr.error('Something went wrong');
+    // if user selected Old regime
+    this.userService.getStatutoryByUserId(this.user.id).subscribe((res: any) => {
+      if (res.data[0].taxRegime === 'Old Regime') {
+        this.taxService.addIncomeTax(payload).subscribe((res: any) => {
+          this.taxList.push(res.data);
+          this.toastr.success('Tax Declaration Added Successfully');
+          this.modalService.dismissAll();
+        }, err => {
+          this.toastr.error('Something went wrong');
+        });
+      }
+      else if (res.data[0].taxRegime === 'New Regime'){
+        this.toastr.error('Tax Declaration is not allowed in New Regime');
+        this.modalService.dismissAll();
+      }
     });
   }
 }

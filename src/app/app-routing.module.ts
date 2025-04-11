@@ -18,6 +18,7 @@ import { SubscriptionComponent } from './layouts/subscription/subscription.compo
 import { LogComponent } from './feature_modules/logs/log.component/log.component.component';
 import { FeedbackSubmissionComponent } from './feature_modules/feedback/feedback-submission/feedback-submission.component';
 import { FeedbackSettingsComponent } from './feature_modules/feedback/feedback.settings.component';
+import { NotificationDetailsComponent } from './layouts/home/notification/notification-details/notification-details.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'landing', pathMatch: 'full' },
@@ -123,7 +124,8 @@ const routes: Routes = [
       { path: 'edit-task', component: EditTaskComponent }, // TODO: Shared Component
       { path: 'tags', component: TagComponent }, // TODO: Shared Component
       { path: 'comments', component: TaskCommentComponent }, //TODO: Shared component
-      { path: 'feedback', component: FeedbackSettingsComponent }
+      { path: 'feedback', component: FeedbackSettingsComponent },
+      { path: 'notifications', component: NotificationDetailsComponent },
     ]
   },
   {
@@ -142,7 +144,7 @@ const routes: Routes = [
   { path: 'changePassword', component: ChangePasswordComponent },
   { path: 'resetPassword/:token', component: ResetPasswordComponent },
   { path: 'live-logs', component: LogComponent },
-  { path: 'submit-feedback', component: FeedbackSubmissionComponent},
+  { path: 'submit-feedback', component: FeedbackSubmissionComponent },
   // Fallback route
   { path: '**', redirectTo: 'landing' },
 

@@ -7,7 +7,7 @@ import { UserService } from 'src/app/_services/users.service';
 @Component({
   selector: 'app-tax-components',
   templateUrl: './tax-components.component.html',
-  styleUrl: './tax-components.component.css'
+  styleUrls: ['./tax-components.component.css']
 })
 export class TaxComponentsComponent {
   selectedRecord: any;
@@ -23,6 +23,7 @@ export class TaxComponentsComponent {
   selectedComponent: string;
 
   @Input() sectionId: string;
+  @Input() selectedTaxDeclaration: any;
   selectedUser = this.userService.getData();
   @Input() selectedData: any;
   @Output() tabSelected = new EventEmitter<string>();
@@ -30,24 +31,15 @@ export class TaxComponentsComponent {
   incomeTaxDecComponentForm: FormGroup;
   activeTab: string = '';
 
-  constructor(private taxService: TaxationService,
+  constructor(
+    private taxService: TaxationService,
     private fb: FormBuilder,
     private toast: ToastrService,
     private userService: UserService
   ) {
     this.incomeTaxDecComponentForm = this.fb.group({
-      employeeIncomeTaxDeclaration: [''],
-      incomeTaxComponent: [''],
-      section: [''],
-      maximumAmount: [0],
-      appliedAmount: [0],
-      approvedAmount: [0],
-      approvalStatus: [''],
-      remark: [''],
-      documentLink: [''],
-      employeeIncomeTaxDeclarationAttachments: this.fb.array([])
+      incomeTaxComponent: this.fb.array([])
     });
-    this.incomeTaxDecComponentForm.get('approvalStatus').disable();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -55,11 +47,82 @@ export class TaxComponentsComponent {
       this.fetchAndMatchTaxComponents();
     }
   }
+
   ngOnInit() {
     this.taxService.activeTab.subscribe(res => {
       this.activeTab = res;
-    })
+      this.fetchAndMatchTaxComponents();
+    });
     this.getSections();
+  }
+
+  fetchAndMatchTaxComponents() {
+    const pagination = { skip: '', next: '' };
+    this.taxService.getAllTaxComponents(pagination).subscribe((res: any) => {
+      this.taxComponents = res.data.filter(data => data.section.section === this.activeTab);
+      this.totalRecords = res.total;
+  
+      const formArray = this.fb.array(
+        this.taxComponents.map(component => {
+          const taxDeclarationComponent = this.selectedTaxDeclaration?.incomeTaxDeclarationComponent?.find(
+            data => data.incomeTaxComponent?._id === component._id
+          );
+          const formGroup = this.createFormGroup(taxDeclarationComponent || component);
+  
+          formGroup.patchValue({
+            incomeTaxComponent: taxDeclarationComponent ? taxDeclarationComponent.incomeTaxComponent : component._id,
+            section: taxDeclarationComponent ? taxDeclarationComponent.section : component.section,
+            maximumAmount: taxDeclarationComponent ? taxDeclarationComponent.maximumAmount : component.maximumAmount || 0,
+            appliedAmount: taxDeclarationComponent ? taxDeclarationComponent.appliedAmount : component.appliedAmount || 0,
+            approvedAmount: taxDeclarationComponent ? taxDeclarationComponent.approvedAmount : component.approvedAmount || 0,
+            approvalStatus: taxDeclarationComponent ? taxDeclarationComponent.approvalStatus : component.approvalStatus || 'Pending',
+            remark: taxDeclarationComponent ? taxDeclarationComponent.remark : component.remark || '',
+            isEditable: false,
+            documentLink: taxDeclarationComponent ? taxDeclarationComponent.documentLink : component.documentLink || ''
+          });
+  
+          const attachmentsArray = formGroup.get('employeeIncomeTaxDeclarationAttachments') as FormArray;
+          while (attachmentsArray.length !== 0) {
+            attachmentsArray.removeAt(0);
+          }
+          if (taxDeclarationComponent?.employeeIncomeTaxDeclarationAttachments?.length > 0) {
+            taxDeclarationComponent.employeeIncomeTaxDeclarationAttachments.forEach(attachment => {
+              attachmentsArray.push(this.fb.group({
+                attachmentType: attachment.attachmentType || '',
+                attachmentName: attachment.attachmentName || '',
+                attachmentSize: attachment.attachmentSize || 0,
+                extention: attachment.extention || '',
+                file: attachment.file || ''
+              }));
+            });
+          }
+  
+          return formGroup;
+        })
+      );
+  
+      this.incomeTaxDecComponentForm.setControl('incomeTaxComponent', formArray);
+        formArray.controls.forEach((control: FormGroup) => {
+      });
+    }, (error) => {
+    });
+  }
+
+  createFormGroup(data: any): FormGroup {
+    return this.fb.group({
+      incomeTaxComponent: [data._id || data.incomeTaxComponent],
+      section: [data.section || ''],
+      maximumAmount: [data.maximumAmount || 0],
+      appliedAmount: [data.appliedAmount || 0],
+      approvedAmount: [data.approvedAmount || 0],
+      approvalStatus: [data.approvalStatus || 'Pending'],
+      remark: [data.remark || ''],
+      isEditable: [false],
+      documentLink: [data.documentLink || ''],
+      employeeIncomeTaxDeclarationAttachments: this.fb.array(
+        data.employeeIncomeTaxDeclarationAttachments?.map(attachment => this.fb.group(attachment)) || []
+      )
+    });
   }
 
   onRowEdit(index: any) {
@@ -71,69 +134,10 @@ export class TaxComponentsComponent {
     this.tabSelected.emit(section);
   }
 
-  fetchAndMatchTaxComponents() {
-    const pagination = {
-      skip: '',
-      next: ''
-    };
-    this.taxService.getAllTaxComponents(pagination).subscribe((res: any) => {
-      this.taxComponents = res.data.filter(data => data.section.section == this.activeTab);
-      this.totalRecords = res.total;
-
-      for (let taxComponent of this.taxComponents) {
-        const taxDecalarations = this.selectedData.incomeTaxDeclarationComponent.filter((data) => { return data.incomeTaxComponent === taxComponent._id });
-        if (taxDecalarations.length > 0) {
-          taxDecalarations.forEach((item, index) => {
-            if (item.section === taxComponent.section) {
-              this.taxComponents[index] = { ...taxComponent, ...item };
-            }
-          })
-        }
-      }
-      const formArray = this.fb.array(this.taxComponents.map(component => this.createFormGroup(component)));
-      this.incomeTaxDecComponentForm.setControl('incomeTaxComponent', formArray);
-      this.taxComponents.forEach((component, index) => {
-        const taxDecalaration = this.selectedData.incomeTaxDeclarationComponent.find((data) => data.incomeTaxComponent === component._id);
-        if (taxDecalaration) {
-          const formArray = this.incomeTaxDecComponentForm.get('incomeTaxComponent') as FormArray;
-          formArray.at(index).patchValue({
-            maximumAmount: taxDecalaration.maximumAmount,
-            appliedAmount: taxDecalaration.appliedAmount,
-            approvedAmount: taxDecalaration.approvedAmount,
-            approvalStatus: taxDecalaration.approvalStatus,
-            remark: taxDecalaration.remark,
-            employeeIncomeTaxDeclarationAttachments: taxDecalaration.employeeIncomeTaxDeclarationAttachments
-          });
-          formArray.at(index).get('approvalStatus').disable();
-
-        }
-      });
-    }, (error) => {
-      console.error('Error fetching all tax components:', error);
-    });
-  }
-
-  createFormGroup(component: any): FormGroup {
-    return this.fb.group({
-      incomeTaxComponent: [component._id],
-      section: [component.section],
-      maximumAmount: [component.maximumAmount],
-      appliedAmount: [component.appliedAmount],
-      approvedAmount: [component.approvedAmount],
-      approvalStatus: [component.approvalStatus],
-      remark: [component.remark],
-      isEditable: [false],
-      documentLink: [component.documentLink],
-      employeeIncomeTaxDeclarationAttachments: this.fb.array(
-        component.employeeIncomeTaxDeclarationAttachments?.map(attachment => this.fb.group(attachment)) || []
-      ),
-    });
-  }
-
-  updateRow(i) {
+  updateRow(i: number) {
     const rowData = this.incomeTaxDecComponentForm.get(`incomeTaxComponent.${i}`).value;
     let payload = {
-      employeeIncomeTaxDeclaration: this.selectedData._id,
+      employeeIncomeTaxDeclaration: this.selectedTaxDeclaration?._id,
       incomeTaxComponent: this.selectedComponent,
       maximumAmount: rowData.maximumAmount || 0,
       appliedAmount: rowData.appliedAmount || 0,
@@ -141,44 +145,23 @@ export class TaxComponentsComponent {
       approvalStatus: rowData.approvalStatus || 'Pending',
       remark: rowData.remark,
       employeeIncomeTaxDeclarationAttachments: rowData.employeeIncomeTaxDeclarationAttachments
-    }
-    this.taxService.updateIncTaxDecComponent(payload).subscribe((res: any) => {
-      this.toast.success('Income Tax Declaration Component Updated Successfully', 'Success!');
-      const control = this.incomeTaxDecComponentForm.get(`incomeTaxComponent.${i}`) as FormGroup;
-      control.get('isEditable').setValue(false);
-    },
-      (error) => { this.toast.error('Can not be Updated', 'Error!') })
+    };
+    this.taxService.updateIncTaxDecComponent(payload).subscribe(
+      (res: any) => {
+        this.toast.success('Income Tax Declaration Component Updated Successfully', 'Success!');
+        const control = this.incomeTaxDecComponentForm.get(`incomeTaxComponent.${i}`) as FormGroup;
+        control.get('isEditable').setValue(false);
+      },
+      (error) => {
+        this.toast.error('Can not be Updated', 'Error!');
+      }
+    );
   }
 
-  cancelEditing(i) {
+  cancelEditing(i: number) {
     const control = this.incomeTaxDecComponentForm.get(`incomeTaxComponent.${i}`) as FormGroup;
     control.patchValue(this.taxComponents[i]);
     control.get('isEditable').setValue(false);
-  }
-
-  deleteRecord(id: string): void {
-    // const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-    //   width: '400px',
-
-    // });
-    // dialogRef.afterClosed().subscribe(result => {
-    //   if (result === 'delete') {
-    //     this.deleteAdvanceCategory(id);
-    //   }
-    //   err => {
-    //     this.toast.error('Can not be Deleted', 'Error!')
-    //   }
-    // });
-  }
-  deleteAdvanceCategory(id: string) {
-    // this.expenseService.deleteAdvanceCategory(id).subscribe((res: any) => {
-    //   this.getAllAdvanceCategories();
-    //   this.toast.success('Successfully Deleted!!!', 'Advance Category')
-    // },
-    //   (err) => {
-    //     this.toast.error('This category is already being used in an expense template!'
-    //       , 'Advance Category, Can not be deleted!')
-    //   })
   }
 
   getSections() {
@@ -190,6 +173,19 @@ export class TaxComponentsComponent {
   getSection(sectionId: string) {
     const matchingRecord = this.taxSections?.find((tax: any) => tax?._id === sectionId);
     return matchingRecord ? matchingRecord?.section : '';
+  }
+  
+  removeAttachment(rowIndex: number, attachmentIndex: number) {
+    const incomeTaxComponent = this.incomeTaxDecComponentForm.get('incomeTaxComponent') as FormArray;
+    const selectedFormGroup = incomeTaxComponent.at(rowIndex) as FormGroup;
+    const attachmentsArray = selectedFormGroup.get('employeeIncomeTaxDeclarationAttachments') as FormArray;
+
+    if (attachmentsArray.length > attachmentIndex) {
+      attachmentsArray.removeAt(attachmentIndex);
+      this.toast.success('Attachment removed successfully', 'Success!');
+    } else {
+      this.toast.error('Attachment not found', 'Error!');
+    }
   }
 
   uploadAttachment(event: any, index: number) {
@@ -212,7 +208,8 @@ export class TaxComponentsComponent {
       }
 
       const fileNameParts = file.name.split('.');
-      const extention = fileNameParts[fileNameParts.length - 1];
+      const extention = fileNameParts.length > 1 ? '.' + fileNameParts.pop() : '';
+
       const attachment = this.fb.group({
         attachmentType: file.type,
         attachmentName: file.name,
@@ -223,19 +220,37 @@ export class TaxComponentsComponent {
 
       attachments.push(attachment);
     }).catch(error => {
-      console.error('Error converting file to base64:', error);
     });
   }
+
   convertFileToBase64(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onloadend = () => {
         const base64String = reader.result as string;
-        resolve(base64String);
+        const base64Data = base64String.split(',')[1];
+        resolve(base64Data);
       };
       reader.onerror = reject;
       reader.readAsDataURL(file);
     });
   }
 
+  downloadAttachment(attachment: any, rowIndex: number, attachmentIndex: number) {
+    const byteCharacters = atob(attachment?.file);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: attachment.attachmentType });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = attachment.attachmentName || `attachment_${rowIndex}_${attachmentIndex}${attachment.extention}`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  }
 }

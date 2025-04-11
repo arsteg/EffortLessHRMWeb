@@ -25,39 +25,45 @@
                         [readonly]="!group.get('isEditable')?.value" />
                 </td>
                 <td>
-                    <!-- <input type="text" [disabled] formControlName="approvalStatus"> -->
                     <ng-container [ngSwitch]="group.get('approvalStatus')?.value">
                         <mat-icon *ngSwitchCase="'Pending'" color="warn">hourglass_empty</mat-icon>
                         <mat-icon *ngSwitchCase="'Approved'" color="primary">check_circle</mat-icon>
                         <mat-icon *ngSwitchCase="'Rejected'" color="accent">cancel</mat-icon>
                         <span *ngSwitchDefault>{{ group.get('approvalStatus')?.value }}</span>
-                      </ng-container>
+                    </ng-container>
                 </td>
                 <td>
                     <input formControlName="remark" type="text" [readonly]="!group.get('isEditable')?.value" />
                 </td>
-
                 <td class="text-center">
-                    <div class="attachment-container" *ngIf="group.get('employeeIncomeTaxDeclarationAttachments')?.value?.length">
-                        <div *ngFor="let attachment of group.get('employeeIncomeTaxDeclarationAttachments')?.value; let j = index">
-                          {{ attachment.attachmentName }}
-                          <a *ngIf="attachment.documentLink" [href]="attachment.documentLink" target="_blank">View</a>
-                        </div>
-                      </div>
-                      <div *ngIf="!group.get('employeeIncomeTaxDeclarationAttachments')?.value?.length" class="text-muted">
-                        No attachments
-                      </div>
                     <div class="attachment-container">
-                        <label [readonly]="!group.get('isEditable')?.value" for="attachment-{{i}}">
-                            <i class="bi bi-paperclip"
-                                matTooltip="{{ group.get('documentLink')?.value ? group.get('documentLink')?.value.split('/').pop().split('.').slice(0, -1).join('.') : 'Add Attachment File' }}"
-                                matTooltipPosition="below">
-                            </i>
-                        </label>
+                        <ng-container
+                            *ngIf="group.get('employeeIncomeTaxDeclarationAttachments')?.value?.length > 0; else noAttachment">
+                            <div
+                                *ngFor="let attachment of group.get('employeeIncomeTaxDeclarationAttachments')?.value; let j = index">
+                                <span class="attachment-name me-2" matTooltip="Download Attachment"
+                                    matTooltipPosition="below">
+                                    <a (click)="downloadAttachment(attachment, i, j)"
+                                        style="cursor: pointer; text-decoration: underline; color: rgba(244, 135, 0, 1);">
+                                        {{ attachment.attachmentName || 'Unnamed Attachment' }}</a>
+                                </span>
+                                <ng-container *ngIf="group.get('isEditable')?.value">
+                                    <i class="bi bi-x-circle text-danger ms-2" matTooltip="Remove Attachment"
+                                        matTooltipPosition="below" style="cursor: pointer;"
+                                        (click)="removeAttachment(i, j)"></i>
+                                </ng-container>
+                            </div>
+                        </ng-container>
+                        <ng-template #noAttachment>
+                            <!-- Show only the icon if no attachments -->
+                            <label for="attachment-{{i}}" *ngIf="group.get('isEditable')?.value">
+                                <i class="bi bi-paperclip" matTooltip="Add Attachment File"
+                                    matTooltipPosition="below"></i>
+                            </label>
+                        </ng-template>
                         <input type="file" id="attachment-{{i}}" [disabled]="!group.get('isEditable')?.value"
                             (change)="uploadAttachment($event, i)" style="display: none;" />
                     </div>
-                   
                 </td>
 
                 <td>
