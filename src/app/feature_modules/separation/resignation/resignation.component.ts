@@ -6,7 +6,14 @@ import { SeparationService } from 'src/app/_services/separation.service';
 import { ToastrService } from 'ngx-toastr';
 import { CommonService } from 'src/app/_services/common.Service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
-
+import { UserService } from 'src/app/_services/users.service';
+interface ResignationStatus {
+  Pending: string,
+  Completed: string,
+  InProgress:string,
+  Approved:string,    
+  Deleted:string
+}
 @Component({
   selector: 'app-resignation',
   templateUrl: './resignation.component.html',
@@ -33,31 +40,33 @@ export class ResignationComponent implements OnInit {
   allResignations: any[] =[];
   selectedStatus: string;
   changedStatus: string;
-
+  resignationStatuses: ResignationStatus;
   constructor(private fb: FormBuilder,
     private dialog: MatDialog,
     private separationService: SeparationService,
     private toast: ToastrService,
+    private userService: UserService,
     private commonService: CommonService) {
     this.resignationForm = this.fb.group({
       user: [''],
       resignation_date: [''],
       last_working_day: [''],
-      notice_period: [0],
+      notice_period: [{ value: '', disabled: true }],
       resignation_reason: [''],
       exit_interview_date: [''],
       handover_complete: [false],
       company_property_returned: [false],
       final_pay_processed: [false],
-      exit_feedback: [''],
-      resignation_status: ['pending']
+      exit_feedback: ['']
     });
   }
 
   ngOnInit(): void {
     this.commonService.populateUsers().subscribe((res: any) => {
-      this.users = res.data['data'];
+      this.users = res.data['data'];      
+      this.getallResignationStatusList();
       this.getResignationByUser();
+      this.loadNoticePeriod();
     });
   }
 
@@ -89,24 +98,22 @@ export class ResignationComponent implements OnInit {
 
   onSubmit(): void {
     this.resignationForm.patchValue({
-      user: this.currentUser.id,
-      resignation_status: 'pending'
+      user: this.currentUser.id
     });
 
     if (this.resignationForm.valid) {
-      const resignation = this.resignationForm.value;
-      if (this.isEditMode) {
-        let id;
-        this.separationService.updateResignationById(id, this.resignationForm.value).subscribe((res: any) => {
-          const index = this.resignationRecords.findIndex(item => item.user === resignation.user);
-          this.resignationRecords[index] = resignation;
-          this.dataSource.data = this.resignationRecords;
-        });
+        if (this.isEditMode) {
+         this.separationService.updateResignationById(  this.selectedRecord._id, this.resignationForm.value).subscribe((res: any) => {
+         this.getResignationByUser();
+         this.resignationForm.reset();
+         this.toast.success('Resignation updated', 'Successfully');
+        },
+        err => { this.toast.error('Resignation cannot be updated', 'Error'); });
+      
       } else {
-        this.separationService.addResignation(this.resignationForm.value).subscribe((res: any) => {
-          this.resignationRecords = res.data;
-
-          this.resignationForm.reset();
+        this.separationService.addResignation(this.resignationForm.value).subscribe((res: any) => {  
+          this.getResignationByUser();     
+         this.resignationForm.reset();
           this.toast.success('Resignation Added', 'Successfully');
         },
           err => { this.toast.error('Resignation cannot be added', 'Error'); });
@@ -114,27 +121,54 @@ export class ResignationComponent implements OnInit {
       this.dialogRef.close();
     }
   }
-
-  getResignationByUser() {
-    if (this.view == 'user') {
-      this.separationService.getResignationsByUserId(this.currentUser.id).subscribe((res: any) => {
-        this.resignationRecords = res.data;
-        // this.dataSource.data = this.resignationRecords;
+  private loadNoticePeriod(): void {
+    if (this.currentUser?.id) {
+      this.userService.getJobInformationByUserId(this.currentUser.id).subscribe({
+        next: (res: any) => {
+           if (res.data && res.data.length > 0) {
+            this.resignationForm.patchValue({
+              notice_period: res.data[0].notice_period || 'N/A'
+            });
+          }
+        },
+        error: (err) => {
+          console.error('Error fetching job information:', err);
+          this.resignationForm.patchValue({ notice_period: 'N/A' });
+          this.toast.error('Failed to load notice period', 'Error');
+        }
       });
     }
-    else if (this.view == 'admin'){
+  }
+  getResignationByUser() {
+    if (this.view === 'admin'){
       this.separationService.getResignationsByCompany().subscribe((res: any)=>{
         this.allResignations = res.data;
       })
     }
+    if (this.view === 'user') {
+      this.separationService.getResignationsByUserId(this.currentUser.id).subscribe((res: any) => {
+        this.resignationRecords=res.data;
+        // this.dataSource.data = this.resignationRecords;
+      });
+    }
+    
   }
-
+  getallResignationStatusList() {
+    this.separationService.getResignationStatusList().subscribe((res: any) => {
+      this.resignationStatuses = res;      
+    })
+  }
   getMatchingUser(userId: string) {
     const matchingUser = this.users.find(user => user.id === userId);
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'User Removed';
   }
 
   updateResignationStatus(resignation: string, status: string) {
+    // If status is being changed to Completed, check the company_property_returned flag
+  if (status === this.resignationStatuses.Completed && this.selectedRecord && !this.selectedRecord.company_property_returned) {
+    this.toast.error('Cannot mark as Completed. Company property has not been returned.', 'Error');
+    return;
+  }
     let payload = {
       resignation_status: status
     }
@@ -147,17 +181,7 @@ export class ResignationComponent implements OnInit {
     (err) => {
       this.toast.error('Status Update Failed', 'Error');
     });
-  }
-
-  deleteResignation(id: string) {
-    this.separationService.deleteResignationById(id).subscribe((res: any) => {
-      this.getResignationByUser();
-      this.toast.success('Successfully Deleted!!!', 'Resignation')
-    },
-      (err) => {
-        this.toast.error('This Resignation Can not be deleted!', 'Error')
-      })
-  }
+  } 
 
   deleteDialog(id: string): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
@@ -165,9 +189,9 @@ export class ResignationComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'delete') {
-        this.selectedRecord.resignation_status != 'Pending'
+        this.selectedRecord.resignation_status == this.resignationStatuses.Pending
         {
-          this.deleteResignation(id);
+          this.updateResignationStatus(id,this.resignationStatuses.Deleted);
         }
       }
       err => {

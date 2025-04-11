@@ -4,12 +4,18 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { CommonService } from 'src/app/_services/common.Service';
 import { SeparationService } from 'src/app/_services/separation.service';
-
+interface TerminationStatus {
+  Appealed: string;
+  Pending: string;
+  Completed: string;
+  Deleted: string;
+}
 @Component({
   selector: 'app-termination',
   templateUrl: './termination.component.html',
   styleUrls: ['./termination.component.css']
 })
+
 export class TerminationComponent {
 
   view = localStorage.getItem('adminView');
@@ -17,8 +23,10 @@ export class TerminationComponent {
   dialogRef: MatDialogRef<any>;
   terminationForm: FormGroup;
   users: any[] = [];
-  terminations: any;
-  userTerminations: any;
+  terminations: any[] = [];
+  userTerminations:  any[] = [];
+  terminationStatuses: TerminationStatus;  
+  selectedRecord: any;
   displayedColumns: string[] = [
     'user',
     'termination_date', 'termination_reason', 'notice_given',
@@ -29,7 +37,7 @@ export class TerminationComponent {
   userTerminationColumns: string[] = ['termination_date', 'termination_reason', 'notice_given',
     'performance_warnings', 'severance_paid', 'final_pay_processed',
     'company_property_returned', 'exit_interview_date', 'legal_compliance',
-    'unemployment_claim', 'termination_status'];
+    'unemployment_claim'];
 
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
   @ViewChild('updateStatusResignation') updateStatusResignation: TemplateRef<any>;
@@ -53,7 +61,6 @@ export class TerminationComponent {
       company_property_returned: [true],
       exit_interview_date: [''],
       legal_compliance: [true],
-      termination_status: ['pending'],
       unemployment_claim: [true]
     });
   }
@@ -61,7 +68,8 @@ export class TerminationComponent {
   ngOnInit() {
     this.commonService.populateUsers().subscribe((res: any) => {
       this.users = res.data['data'];
-    });
+    }); 
+    this.getallTerminationStatusList();
     this.getTerminations();
   }
 
@@ -90,7 +98,12 @@ export class TerminationComponent {
   closeDialog(): void {
     this.dialogRef.close();
   }
-
+  getallTerminationStatusList() {
+    this.separationService.getTerminationStatusList().subscribe((res: any) => {
+      console.log(res);
+      this.terminationStatuses = res;       
+    })
+  }
   getTerminations() {
     if (this.view === 'admin') {
       this.separationService.getTerminationByCompany().subscribe((res: any) => {
@@ -109,19 +122,33 @@ export class TerminationComponent {
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'User Removed';
   }
 
-  onSubmit() {
-    this.terminationForm.patchValue({ termination_status: 'pending' });
-    this.separationService.addTermination(this.terminationForm.value).subscribe((res: any) => {
-      this.getTerminations();
-      this.resetForm();
-      this.toast.success('Termination Created', 'Successfully');
-    },
-      err => {
-        this.toast.error('Termination can not be Created', 'Error');
-      });
+  onSubmit() {       
+      if (this.terminationForm.valid) {       
+        if (this.isEditMode) {
+           this.separationService.updateTerminationById(this.selectedRecord._id, this.terminationForm.value).subscribe((res: any) => {
+            this.getTerminations();           
+            this.toast.success('Termination Updated', 'Successfully');
+            this.resetForm();
+          });
+        } else {
+          this.separationService.addTermination(this.terminationForm.value).subscribe((res: any) => {
+            this.getTerminations();
+            this.toast.success('Termination Added', 'Successfully');
+            this.resetForm();
+          },
+            err => { this.toast.error('Termination cannot be added', 'Error'); });
+        }
+        this.dialogRef.close();
+      }
+  }
+  updateTerminationStatus(id: string, status: string) {
+    
+  // If status is being changed to Completed, check the company_property_returned flag
+  if (status === this.terminationStatuses.Completed && this.selectedRecord && !this.selectedRecord.company_property_returned) {
+    this.toast.error('Cannot mark as Completed. Company property has not been returned.', 'Error');
+    return;
   }
 
-  updateTerminationStatus(id: string, status: string) {
     const payload = { termination_status: status };
     this.separationService.updateTerminationStatus(id, payload).subscribe((res: any) => {
       this.getTerminations();
@@ -131,11 +158,5 @@ export class TerminationComponent {
       (err) => {
         this.toast.error('Status Update Failed', 'Error');
       });
-  }
-
-  deleteTermination(id: string) {
-    this.separationService.deleteTerminationById(id).subscribe((res: any) => {
-      this.getTerminations();
-    });
   }
 }

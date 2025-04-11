@@ -45,15 +45,13 @@ export class SeparationService {
     return this.http.put<any>(`${this.apiUrl}/separation/resignations/${id}`, payload, this.httpOptions);
   }
 
-  deleteResignationById(id: string): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/separation/resignations/${id}`, this.httpOptions);
-  }
-
   updateResignationStatus(id: string, status: any): Observable<any> {
     return this.http.patch<any>(`${this.apiUrl}/separation/resignations-by-status/${id}`,  status, this.httpOptions);
   }
   
-
+  getResignationStatusList(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/common/get-resignation-status-list`, this.httpOptions);
+  }
   // Termination API methods
   addTermination(payload: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/separation/termination`, payload, this.httpOptions);
@@ -72,13 +70,11 @@ export class SeparationService {
   }
 
   updateTerminationById(id: string, payload: any): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/separation/resignations/${id}`, payload, this.httpOptions);
+    return this.http.put<any>(`${this.apiUrl}/separation/termination/${id}`, payload, this.httpOptions);
   }
-
-  deleteTerminationById(id: string): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/separation/termination/${id}`, this.httpOptions);
+  getTerminationStatusList(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/common/get-termination-status-list`, this.httpOptions);
   }
-
   updateTerminationStatus(id: string, status: any): Observable<any> {
     return this.http.put<any>(`${this.apiUrl}/separation/termination-by-status/${id}`,  status, this.httpOptions);
   }
