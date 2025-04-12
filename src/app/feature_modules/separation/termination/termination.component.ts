@@ -123,45 +123,57 @@ export class TerminationComponent {
     const matchingUser = this.users.find(user => user.id === userId);
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'User Removed';
   }
-  onCompanyPropertyReturnedChange() {    // If user tries to check the box
-   
-      this.assetManagementService.getEmployeeAssets(this.terminationForm.get('user')?.value).subscribe(
-        response => {
-          const assignedAssets = response.data;  
-          if (assignedAssets && assignedAssets.length > 0) {
-            this.toast.error('Asset is still assigned. Please release it first for company_property_returned', 'Warning');    
-            return;      
+    
+  onSubmit() {
+    if (this.terminationForm.valid) {
+      const companyPropertyReturned = this.terminationForm.get('company_property_returned')?.value;
+      const userId = this.terminationForm.get('user')?.value;
+  
+      if (companyPropertyReturned) {
+        this.assetManagementService.getEmployeeAssets(userId).subscribe(
+          (response) => {
+            const assignedAssets = response?.data ?? [];  
+            if (assignedAssets.length > 0) {
+              this.toast.error(
+                'Assets are still assigned. Please release them before marking company property as returned.',
+                'Warning'
+              );
+              return;
+            } else {
+              this.saveTermination(); // If assets are fine, proceed
+            }
+          },
+          (error) => {
+            console.error('Asset Fetch Error:', error);
+            this.toast.error('Failed to verify assigned assets', 'Error');
           }
-        },
-        error => {
-          this.toast.error('Failed to verify assigned assets', 'Error');
-          console.error(error);
-        });   
+        );
+      } else {
+        this.saveTermination(); // If company_property_returned is not checked, no need to validate
+      }
+    }
+  }
+  saveTermination() {
+    if (this.isEditMode) {
+      this.separationService.updateTerminationById(this.selectedRecord._id, this.terminationForm.value).subscribe((res: any) => {
+        this.getTerminations();
+        this.toast.success('Termination Updated', 'Successfully');
+        this.resetForm();
+        this.closeDialog();
+      });
+    } else {
+      this.separationService.addTermination(this.terminationForm.value).subscribe((res: any) => {
+        this.getTerminations();
+        this.toast.success('Termination Added', 'Successfully');
+        this.resetForm();
+        this.closeDialog();
+      },
+        err => {
+          this.toast.error('Termination cannot be added', 'Error');
+        });
+    }
   }
   
-  onSubmit() {       
-      if (this.terminationForm.valid) {     
-        if (this.terminationForm.get('company_property_returned')?.value === true) 
-        {
-          this.onCompanyPropertyReturnedChange();
-        }
-        if (this.isEditMode) {
-           this.separationService.updateTerminationById(this.selectedRecord._id, this.terminationForm.value).subscribe((res: any) => {
-            this.getTerminations();           
-            this.toast.success('Termination Updated', 'Successfully');
-            this.resetForm();
-          });
-        } else {
-          this.separationService.addTermination(this.terminationForm.value).subscribe((res: any) => {
-            this.getTerminations();
-            this.toast.success('Termination Added', 'Successfully');
-            this.resetForm();
-          },
-            err => { this.toast.error('Termination cannot be added', 'Error'); });
-        }
-        this.dialogRef.close();
-      }
-  }
   updateTerminationStatus(id: string, status: string) {
     
   // If status is being changed to Completed, check the company_property_returned flag

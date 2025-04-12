@@ -68,15 +68,15 @@ export class ResignationComponent implements OnInit {
       this.users = res.data['data'];      
       this.getallResignationStatusList();
       this.getResignationByUser();
-      this.loadNoticePeriod();
     });
   }
 
-  openDialog(resignation?: any): void {
+  openDialog(resignation?: any): void { 
     this.isEditMode = !!resignation;
     if (this.isEditMode) {
       this.resignationForm.patchValue(resignation);
     } else {
+      this.loadNoticePeriod();
       this.resignationForm.reset();
     }
     this.dialogRef = this.dialog.open(this.dialogTemplate, {
@@ -97,49 +97,69 @@ export class ResignationComponent implements OnInit {
   resetForm(): void {
     this.resignationForm.reset();
   }
-  onCompanyPropertyReturnedChange() {    // If user tries to check the box
-   
-    this.assetManagementService.getEmployeeAssets(this.resignationForm.get('user')?.value).subscribe(
-      response => {
-        const assignedAssets = response.data;  
-        if (assignedAssets && assignedAssets.length > 0) {
-          this.toast.error('The asset is currently assigned. Please unassign it before confirming the return of company property.', 'Warning');    
-          return;      
-        }
-      },
-      error => {
-        this.toast.error('Failed to verify assigned assets', 'Error');
-        console.error(error);
-      });   
-}
+
   onSubmit(): void {
     this.resignationForm.patchValue({
       user: this.currentUser.id
     });
-    if (this.resignationForm.get('company_property_returned')?.value === true) 
-      {
-        this.onCompanyPropertyReturnedChange();
-      }
-    if (this.resignationForm.valid) {
-        if (this.isEditMode) {
-         this.separationService.updateResignationById(  this.selectedRecord._id, this.resignationForm.value).subscribe((res: any) => {
-         this.getResignationByUser();
-         this.resignationForm.reset();
-         this.toast.success('Resignation updated', 'Successfully');
+
+    const companyPropertyReturned = this.resignationForm.get('company_property_returned')?.value;
+    const userId = this.currentUser.id;
+
+    if (companyPropertyReturned) {
+      this.assetManagementService.getEmployeeAssets(userId).subscribe(
+        (response) => {
+          const assignedAssets = response?.data ?? [];
+
+          if (assignedAssets.length > 0) {
+            this.toast.error(
+              'Assets are still assigned. Please release them before marking company property as returned.',
+              'Warning'
+            );
+            return;
+          } else {
+            this.saveResignation(); // Proceed if no assets assigned
+          }
         },
-        err => { this.toast.error('Resignation cannot be updated', 'Error'); });
-      
-      } else {
-        this.separationService.addResignation(this.resignationForm.value).subscribe((res: any) => {  
-          this.getResignationByUser();     
-         this.resignationForm.reset();
-          this.toast.success('Resignation Added', 'Successfully');
-        },
-          err => { this.toast.error('Resignation cannot be added', 'Error'); });
-      }
-      this.dialogRef.close();
+        (error) => {
+          console.error('Asset Fetch Error:', error);
+          this.toast.error('Failed to verify assigned assets', 'Error');
+        }
+      );
+    } else {
+      this.saveResignation(); // Skip asset check if not marked as returned
     }
   }
+  saveResignation() {
+    if (this.resignationForm.valid) {
+      if (this.isEditMode) {
+        this.separationService.updateResignationById(this.selectedRecord._id, this.resignationForm.value).subscribe(
+          (res: any) => {
+            this.getResignationByUser();
+            this.resignationForm.reset();
+            this.toast.success('Resignation updated', 'Successfully');
+            this.dialogRef.close();
+          },
+          err => {
+            this.toast.error('Resignation cannot be updated', 'Error');
+          }
+        );
+      } else {
+        this.separationService.addResignation(this.resignationForm.value).subscribe(
+          (res: any) => {
+            this.getResignationByUser();
+            this.resignationForm.reset();
+            this.toast.success('Resignation Added', 'Successfully');
+            this.dialogRef.close();
+          },
+          err => {
+            this.toast.error('Resignation cannot be added', 'Error');
+          }
+        );
+      }
+    }
+  }
+
   private loadNoticePeriod(): void {
     if (this.currentUser?.id) {
       this.userService.getJobInformationByUserId(this.currentUser.id).subscribe({
@@ -148,6 +168,10 @@ export class ResignationComponent implements OnInit {
             this.resignationForm.patchValue({
               notice_period: res.data[0].notice_period || 'N/A'
             });
+          }
+          else{
+            this.toast.error('Unable to fetch Notice Period. Job information is missing. Please ask Admin to complete your job details first', 'Error');
+            this.dialogRef.close();
           }
         },
         error: (err) => {
