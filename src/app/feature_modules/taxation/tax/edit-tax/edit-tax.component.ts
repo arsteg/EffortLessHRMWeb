@@ -15,11 +15,13 @@ export class EditTaxComponent {
   taxSections: any;
   @Output() backToSalaryDetails = new EventEmitter<void>();
   @Input() selectedRecord: any;
+  component: any;
   isHRA: any;
 
   constructor(private taxService: TaxationService,) { }
 
   ngOnInit() {
+    this.component = this.selectedRecord.incomeTaxDeclarationComponent;
     this.getSections();
   }
 
@@ -36,10 +38,10 @@ export class EditTaxComponent {
   selectTab(tabId) {
     this.activeTab = tabId;
     const selectedSection = this.taxSections.find((section: any) => section._id === tabId);
-    
-    this.activeTabName = selectedSection?.section || '';  
+
+    this.activeTabName = selectedSection?.section || '';
     this.isHRA = selectedSection?.isHRA || false;
     this.taxService.activeTab.next(this.activeTabName);
   }
-  
+
 }

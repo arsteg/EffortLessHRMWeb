@@ -32,6 +32,7 @@ export class TaxCalculatorComponent {
   taxableSalary: number = 0;
   taxPayableOldRegime: number = 0;
   taxPayableNewRegime: number = 0;
+  user= JSON.parse(localStorage.getItem('currentUser'));
 
   constructor(private modalService: NgbModal,
     private userService: UserService,
@@ -78,7 +79,7 @@ export class TaxCalculatorComponent {
   }
 
   getSalaryByUser() {
-    this.userService.getSalaryByUserId(this.selectedRecord.user).subscribe((res: any) => {
+    this.userService.getSalaryByUserId(this.user?.id).subscribe((res: any) => {
       const record = res.data;
       this.salaryDetail = record[record.length - 1];
       if (this.salaryDetail.enteringAmount == 'Yearly') {
@@ -108,11 +109,7 @@ export class TaxCalculatorComponent {
     if (this.salaryDetail?.Amount) {
       const deductions = (this.incomeTaxDeclarationHRA || 0) + (this.section80C || 0) + (this.chapterVIa || 0);
       this.taxableSalary = this.grossSalary - deductions;
-
-      // Calculate tax for old regime
       this.taxPayableOldRegime = this.calculateOldRegimeTax(this.taxableSalary);
-
-      // Calculate tax for new regime
       this.taxPayableNewRegime = this.calculateNewRegimeTax(this.taxableSalary);
     }
   }

@@ -26,4 +26,8 @@ export class AIReportService {
       return this.http.post<any>(`${environment.apiUrlDotNet}/openai/generateQueryFromText`, query, httpOptions);
     }
 
+    chatBot(userMessage: string): Observable<any> {    
+      const httpOptions = this.getHttpOptions();
+      return this.http.post<any>(`${environment.apiUrlDotNet}/openai/chatBot`, {userMessage}, httpOptions);
+    }
 }

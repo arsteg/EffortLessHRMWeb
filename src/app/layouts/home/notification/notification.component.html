@@ -1,24 +1,50 @@
-<div class="dropdown ">
-    <img width="25" height="25" src="https://img.icons8.com/ios/50/FFFFFF/appointment-reminders--v1.png"
-        alt="appointment-reminders--v1" id="notificationDropdown" (click)="toggleDropdown()" />
-   
-    <ul class="dropdown-menu dropdown-menu-default drpLog shadow mt-1 px-3" [class.show]="dropdownOpen" aria-labelledby="notificationDropdown">
-        <div class="arrow up"></div>
-        <li *ngFor="let notification of todaysNotifications" class="border-bottom align-content-center text-muted py-3">
-          <div class="d-flex">
-            <i [ngClass]="getIcon(notification.notificationType?.name)" class="me-2"></i>
-            <span class="content" *ngIf="notification.notificationType?.name === 'Appraisal'">Congratulations&nbsp;</span>
-            <label class="notification">{{ notification?.description }}</label>
-            <i class="fa fa-times-circle ms-auto text-danger" (click)="deleteNotification(notification?._id)"></i>
+<div class="dropdown">
+  <button
+    mat-icon-button
+    [matMenuTriggerFor]="notificationMenu"
+    aria-label="Notifications"
+    class="notification-bell"
+    [ngClass]="{'has-unread': hasUnreadNotifications}"
+  >
+    <span class="bi bi-bell text-light mb-0"></span>
+    <span class="notification-dot" *ngIf="hasUnreadNotifications"></span>
+  </button>
+
+  <mat-menu #notificationMenu="matMenu" class="dropdown-menu-default drpLog shadow">
+    <!-- Header Section -->
+    <div class="dropdown-header">
+      <span class="header-title border-bottom">Notifications</span>
+    </div>
+
+    <!-- Notification Items -->
+    <div class="notification-container">
+      <ng-container *ngFor="let notification of eventNotifications">
+        <mat-list-item class="border-bottom py-3 px-0" >
+          <span class="new-notification" *ngIf="notification.status === 'unread'"></span>
+          <div class="d-flex align-items-center w-100">
+            <button mat-icon-button class="ps-0">
+            <mat-icon>launch</mat-icon>
+          </button>
+
+            <div class="notification-content">
+              <span
+                class="notification-text"
+                [ngClass]="{'bold-text': notification.status === 'unread'}"
+              >{{ notification.name }}: {{ notification.description }}</span>
+              <small class="notification-date">{{ notification.date | date: 'MMM d, y' }}</small>
+            </div>
+            <i class="fa fa-times-circle ms-auto text-danger" (click)="deleteNotification($event, notification?._id);"></i>
           </div>
-          <small class="ps-4 notificationDate">{{ notification?.date | date: 'mediumDate' }}</small>
-        </li>
-        <li style="width: 325px; height: 35px; cursor: pointer; color: #76bc21;" class="mt-2" (click)="getAllNotifications()">
-          <a style="margin-left: 20px;">
-            <i class="bi bi-hand-index-thumb-fill me-2"></i><b class="">See all notifications</b>
-          </a>
-          <span *ngIf="loading" class="spinner-border spinner-border-sm ms-2"></span>
-        </li>
-      </ul>
-      
+        </mat-list-item>
+      </ng-container>
+    </div>
+
+    <!-- Footer Buttons -->
+    <div class="p-2">
+      <div class="d-flex justify-content-between w-100">
+        <button mat-button  (click)="markAllAsRead()">Mark all as read</button>
+        <button mat-button class="action-button" [routerLink]="'./notifications'">See all</button>
+      </div>
+    </div>
+  </mat-menu>
 </div>

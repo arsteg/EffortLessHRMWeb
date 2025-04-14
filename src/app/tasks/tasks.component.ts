@@ -595,8 +595,8 @@ export class TasksComponent implements OnInit {
       this.toast.error('Task Cannot be Deleted: Please update Project', 'Error!');
       return;
     }
-    this.tasksService.deleteTask(this.selectedTask.id).subscribe(response => {
-      const index = this.tasks.findIndex(task => task.id === this.selectedTask.id);
+    this.tasksService.deleteTask(this.selectedTask._id).subscribe(response => {
+      const index = this.tasks.findIndex(task => task.id === this.selectedTask._id);
       if (index !== -1) {
         this.tasks.splice(index, 1);
       }

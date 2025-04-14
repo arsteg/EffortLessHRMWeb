@@ -45,7 +45,6 @@ export class WebSocketService implements OnDestroy {
   connect(userId: string): void {
     if (this.isConnected()) {
       if (this.userId === userId) {
-        console.log(`Already connected as user ${userId}`);
         return;
       }
       this.disconnect();
@@ -53,13 +52,11 @@ export class WebSocketService implements OnDestroy {
 
     this.userId = userId;
     this.socket$ = webSocket<WebSocketMessage>(this.SOCKET_URL);
-    console.log(`Connecting WebSocket for user ${userId}`);
 
     this.socket$.next({ type: 'auth', userId } as any);
 
     this.socket$.subscribe({
       next: (message) => {
-        console.log(`Received message for user ${userId}:`, message);
         this.messagesSubject.next(message);
       },
       error: (err) => console.error(`WebSocket error for user ${userId}:`, err),
@@ -74,7 +71,6 @@ export class WebSocketService implements OnDestroy {
     this.socket$ = null;
     this.userId = null;
     this.messagesSubject.next(null);
-    console.log('WebSocket disconnected');
   }
 
   getMessagesByType(type: WebSocketNotificationType): Observable<WebSocketMessage> {
@@ -88,7 +84,6 @@ export class WebSocketService implements OnDestroy {
     if (this.isConnected()) {
       this.socket$!.next(message);
     } else {
-      console.error('WebSocket is not connected');
     }
   }
 

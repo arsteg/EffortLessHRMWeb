@@ -56,7 +56,6 @@
                                     </td>
                                     <td>{{component?.maximumAmount}}</td>
                                     <td>
-                                        <!-- *ngFor="let file of component?.employeeIncomeTaxDeclarationAttachments" -->
                                         <ng-container
                                             *ngFor="let file of component?.employeeIncomeTaxDeclarationAttachments">
                                             <a [href]="file?.documentLink" style="cursor: pointer;">
