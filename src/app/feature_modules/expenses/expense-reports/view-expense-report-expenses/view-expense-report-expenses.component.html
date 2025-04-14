@@ -40,7 +40,17 @@
            
             <tr *ngFor="let field of expenseReportExpense?.expenseReportExpenseFields; let i = index">
                 <td class="fw-bold">{{ field.type }}</td>
-                <td>{{ field.value }}</td>
+                <td>
+                    @if(field.type === 'DateRange'){
+                        {{ field.fromDate | date: 'mediumDate' }} - {{ field.toDate | date: 'mediumDate' }}
+                    }
+                    @else if(field.type === 'Date'){
+                        {{ field.value | date: 'mediumDate' }}
+                    }
+                    @else{
+                        {{ field.value }}
+                    }
+                </td>
             </tr>
 
             <tr>

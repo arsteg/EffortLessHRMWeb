@@ -49,7 +49,7 @@
             <mat-icon>more_vert</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
-            <button mat-menu-item (click)="open(viewModal); selectedReport = expenseReport;">
+            <button mat-menu-item (click)="open(viewModal, expenseReport);">
               <mat-icon>visibility</mat-icon>
               <span>View</span>
             </button>
@@ -70,8 +70,8 @@
 </ng-template>
 
 <ng-template #addModal let-modal>
-  <app-add-expense-report (changeStep)="onChangeStep($event)" [changeMode]="changeMode" *ngIf="step == 1"
-    (close)="onClose($event)" (updateExpenseReportTable)="refreshExpenseReportTable()"></app-add-expense-report>
+  <add-expense (changeStep)="onChangeStep($event)" [changeMode]="changeMode" *ngIf="step == 1"
+    (close)="onClose($event)" (updateExpenseReportTable)="refreshExpenseReportTable()"></add-expense>
   <app-create-report *ngIf="step == 2" (changeStep)="onChangeStep($event)" [changeMode]="changeMode"
     (close)="onClose($event)" (updateExpenseReportTable)="refreshExpenseReportTable()"></app-create-report>
 </ng-template>

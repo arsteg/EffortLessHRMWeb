@@ -1,4 +1,4 @@
-<div class="main-content px-2">
+<div class="main-content px-2 pt-2">
     <div class="py-3 tableContainer">
         <div class="d-flex justify-content-between align-items-start mb-2 px-3">
             <mat-form-field appearance="outline">
@@ -7,12 +7,12 @@
                 <mat-icon matSuffix>search</mat-icon>
             </mat-form-field>
             <div>
-                <button mat-raised-button color="accent" class="rounded-pill"
+                <button mat-raised-button color="accent" class="me-1"
                     (click)="open(addModal); step=1">
                     <mat-icon>add</mat-icon>Add Expense
                 </button>
-                <button class="rounded-pill" mat-stroked-button (click)="exportToCsv()">
-                    <mat-icon>download</mat-icon> Download
+                <button class="me-1" mat-stroked-button (click)="exportToCsv()">
+                    <mat-icon>download</mat-icon>Download
                 </button>
             </div>
         </div>
@@ -57,7 +57,7 @@
                   <mat-icon>more_vert</mat-icon>
                 </button>
                 <mat-menu #menu="matMenu">
-                  <button mat-menu-item (click)=" open(viewModal); selectedReport = report;">
+                  <button mat-menu-item (click)=" open(viewModal, report);">
                     <mat-icon>visibility</mat-icon>
                     <span>View</span>
                   </button>
@@ -74,9 +74,9 @@
 </div>
 
 <ng-template #addModal let-modal>
-    <app-add-my-expense (changeStep)="onChangeStep($event)" [selectedTab]="selectedTab" [changeMode]="changeMode"
+    <add-expense (changeStep)="onChangeStep($event)" [selectedTab]="selectedTab" [changeMode]="changeMode"
         *ngIf="step == 1" (close)="onClose($event)"
-        (expenseTemplateReportRefreshed)="refreshExpenseReportTable()"></app-add-my-expense>
+        (updateExpenseReportTable)="refreshExpenseReportTable()" [selfExpense]="true"></add-expense>
     <app-create-report *ngIf="step == 2" (changeStep)="onChangeStep($event)" [changeMode]="changeMode"
         (close)="onClose($event)" (expenseTemplateReportRefreshed)="refreshExpenseReportTable()"></app-create-report>
 </ng-template>

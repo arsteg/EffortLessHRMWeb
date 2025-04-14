@@ -1,10 +1,6 @@
 import { Component, Output, EventEmitter, Input } from '@angular/core';
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
-import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { ExpensesService } from 'src/app/_services/expenses.service';
-import { StatusUpdateComponent } from '../../advance-reports/status-update/status-update.component';
-import { MatDialog } from '@angular/material/dialog';
-import { ViewReportsComponent } from '../../advance-reports/view-reports/view-reports.component';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { CommonService } from 'src/app/_services/common.Service';
 import { ExportService } from 'src/app/_services/export.service';
 import { ViewReportComponent } from '../../expense-reports/view-report/view-report.component';
@@ -22,7 +18,6 @@ export class ShowMyExpensesComponent {
   searchText: string = '';
   isEdit: boolean = false;
   changeMode: 'Add' | 'Update' = 'Add';
-  @Output() expenseTemplateReportRefreshed: EventEmitter<void> = new EventEmitter<void>();
   @Input() actionOptions: { view: boolean };
   @Input() status: string;
   expenseReport: any;
@@ -37,10 +32,10 @@ export class ShowMyExpensesComponent {
   selectedReport;
   displayedColumns: string[] = ['title', 'totalAmount', 'amount', 'reimbursable', 'billable', 'status', 'actions'];
   dataSource: any = new MatTableDataSource([]);
+  dialogRef: MatDialogRef<any>;
 
-  constructor(private modalService: NgbModal,
+  constructor(
     private expenseService: ExpensesService,
-    private auth: AuthenticationService,
     private dialog: MatDialog,
     private commonService: CommonService,
     private exportService: ExportService) { }
@@ -59,24 +54,21 @@ export class ShowMyExpensesComponent {
     });
   }
 
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
-  }
-
-  open(content: any) {
+  open(content: any, selectedReport?: any) {
     this.expenseService.tabIndex.next(this.selectedTab);
-    this.expenseService.expenseReportExpense.next(this.selectedReport);
-
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    if(selectedReport){
+      this.selectedReport = selectedReport;
+      this.expenseService.expenseReportExpense.next(selectedReport);
+    } else {
+      this.expenseService.expenseReportExpense.next(null);
+    }
+    this.dialogRef = this.dialog.open(content, {
+      width: '50%',
+      disableClose: true
+    })
+    this.dialogRef.afterClosed().subscribe((result) => {
+      this.expenseService.expenseReportExpense.next(null);
+      this.expenseService.selectedReport.next(null);
     });
   }
 
@@ -93,7 +85,7 @@ export class ShowMyExpensesComponent {
 
   onClose(event) {
     if (event) {
-      this.modalService.dismissAll();
+      this.dialogRef.close();
     }
   }
 
@@ -133,20 +125,6 @@ export class ShowMyExpensesComponent {
     const matchingUser = this.allAssignee?.find(user => user._id === employeeId);
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : '';
   }
-
-  openSecondModal(selectedReport: any): void {
-    const categoryLabel = this.getCategory(selectedReport.category);
-    selectedReport.category = categoryLabel;
-    // this.expenseService.advanceReport.next(selectedReport);
-    this.expenseService.expenseReportExpense.next(selectedReport);
-    const dialogRef = this.dialog.open(ViewReportComponent, {
-      width: '50%',
-      // data: { report: selectedReport }
-    });
-    dialogRef.afterClosed().subscribe(result => {
-    });
-  }
-
 
   calculateTotalAmount(expenseReport: any): number {
     let totalAmount = 0;

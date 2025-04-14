@@ -63,11 +63,11 @@
               <mat-icon>cancel</mat-icon>
               <span>Reject</span>
             </button>
-            <button mat-menu-item (click)="open(viewModal); selectedReport = expenseReport;">
+            <button mat-menu-item (click)="open(viewModal, expenseReport);">
               <mat-icon>visibility</mat-icon>
               <span>View</span>
             </button>
-            <button mat-menu-item (click)="open(addModal); editReport(expenseReport); changeMode='Update'">
+            <button mat-menu-item (click)="open(addModal, expenseReport); editReport(expenseReport); changeMode='Update'">
               <mat-icon>edit</mat-icon>
               <span>Edit</span>
             </button>
@@ -95,6 +95,6 @@
 
 <!-- Add/Update Modal -->
 <ng-template #addModal let-modal>
-  <app-add-expense-report (changeStep)="onChangeStep($event)" [changeMode]="changeMode" *ngIf="step == 1" (close)="onClose($event)" (updateExpenseReportTable)="refreshExpenseReportTable()"></app-add-expense-report>
+  <add-expense (changeStep)="onChangeStep($event)" [changeMode]="changeMode" *ngIf="step == 1" (close)="onClose($event)" (updateExpenseReportTable)="refreshExpenseReportTable()"></add-expense>
   <app-create-report *ngIf="step == 2" (changeStep)="onChangeStep($event)" [changeMode]="changeMode" (close)="onClose($event)" (updateExpenseReportTable)="refreshExpenseReportTable()"></app-create-report>
 </ng-template>

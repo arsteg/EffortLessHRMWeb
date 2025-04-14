@@ -19,7 +19,6 @@ import { ApprovedComponent } from './expense-reports/approved/approved.component
 import { CancelledComponent } from './expense-reports/cancelled/cancelled.component';
 import { RejectedComponent } from './expense-reports/rejected/rejected.component';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
-import { AddExpenseReportComponent } from './expense-reports/add-expense-report/add-expense-report.component';
 import { CreateReportComponent } from './expense-reports/create-report/create-report.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import {MatIconModule} from '@angular/material/icon';
@@ -40,9 +39,7 @@ import { StatusUpdateComponent } from './advance-reports/status-update/status-up
 import { TeamExpenseComponent } from './team-expense/team-expense.component';
 import { GeneralInformationComponent } from './general-information/general-information.component';
 import { ShowMyExpensesComponent } from './my-expense/show-my-expenses/show-my-expenses.component';
-import { AddMyExpenseComponent } from './my-expense/add-my-expense/add-my-expense.component';
 import { ShowTeamExpensesComponent } from './team-expense/show-team-expenses/show-team-expenses.component';
-import { AddTeamExpensesComponent } from './team-expense/add-team-expenses/add-team-expenses.component';
 import { PendingTeamExpensesComponent } from './team-expense/pending-team-expenses/pending-team-expenses.component';
 import { ApprovedTeamExpensesComponent } from './team-expense/approved-team-expenses/approved-team-expenses.component';
 import { RejectedTeamExpensesComponent } from './team-expense/rejected-team-expenses/rejected-team-expenses.component';
@@ -53,6 +50,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ExpensesRoutingModule } from './expenses-routing.module';
 import { ApproveDialogComponent } from './expense-reports/pending/approve-dialog.component';
 import { RejectDialogComponent } from './expense-reports/pending/reject-dialog.component';
+import {AddExpenseComponent} from './add-expense/add-expense.component';
 
 @NgModule({
   declarations: [
@@ -73,7 +71,6 @@ import { RejectDialogComponent } from './expense-reports/pending/reject-dialog.c
     ApprovedComponent,
     CancelledComponent,
     RejectedComponent,
-    AddExpenseReportComponent,
     CreateReportComponent,
     ViewReportComponent,
     ViewExpenseReportExpensesComponent,
@@ -89,14 +86,13 @@ import { RejectDialogComponent } from './expense-reports/pending/reject-dialog.c
     TeamExpenseComponent,
     GeneralInformationComponent,
     ShowMyExpensesComponent,
-    AddMyExpenseComponent,
     ShowTeamExpensesComponent,
-    AddTeamExpensesComponent,
     PendingTeamExpensesComponent,
     ApprovedTeamExpensesComponent,
     RejectedTeamExpensesComponent,
     ApplicableExpenseSettingsComponent,
     SupervisorsComponent,
+    AddExpenseComponent,
   ],
   imports: [
     CommonModule,

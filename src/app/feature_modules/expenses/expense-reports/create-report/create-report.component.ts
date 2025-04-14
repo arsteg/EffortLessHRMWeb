@@ -1,5 +1,4 @@
 import { Component, Output, EventEmitter, Input, Inject, ChangeDetectorRef } from '@angular/core';
-import { AddExpenseReportComponent } from '../add-expense-report/add-expense-report.component';
 import {
   MAT_DIALOG_DATA,
   MatDialogRef,
@@ -43,7 +42,7 @@ export class CreateReportComponent {
 
   constructor(public expenseService: ExpensesService,
     private fb: FormBuilder,
-    private dialogRef: MatDialogRef<AddExpenseReportComponent>,
+    private dialogRef: MatDialogRef<any>,
     @Inject(MAT_DIALOG_DATA) public data: { isEdit: boolean },
     private toast: ToastrService) {
     this.expenseReportform = this.fb.group({
@@ -85,8 +84,8 @@ export class CreateReportComponent {
     expenseFieldsArray.clear();
     this.expenseService.expenseReportExpense.subscribe(res => {
       this.expenseReportform.patchValue({
-        expenseCategory: res.expenseCategory,
-        incurredDate: res.incurredDate,
+        expenseCategory: res?.expenseCategory,
+        incurredDate: res?.incurredDate,
         amount: res.amount,
         isReimbursable: res.isReimbursable,
         isBillable: res.isBillable,
@@ -95,7 +94,7 @@ export class CreateReportComponent {
         quantity: res.quantity,
         type: res.type,
         expenseAttachments: res.documentLink,
-        expenseTemplateCategoryFieldValues: res.expenseTemplateCategoryFieldValues,
+        expenseTemplateCategoryFieldValues: res?.expenseTemplateCategoryFieldValues,
         expenseReportExpenseFields: res.expenseReportExpenseFields
       });
     });
@@ -120,7 +119,7 @@ export class CreateReportComponent {
       expenseTemplateCategoryFieldValues: '',
       quantity: this.expenseReportform.value.quantity,
       type: this.expenseReportform.value.type,
-      amount: this.totalRate || this.expenseReportform.value.amount,
+      amount: this.expenseReportform.value.amount || this.totalRate,
       isReimbursable: this.expenseReportform.value.isReimbursable,
       isBillable: this.expenseReportform.value.isBillable,
       reason: this.expenseReportform.value.reason,

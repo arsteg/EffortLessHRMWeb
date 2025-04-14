@@ -42,12 +42,12 @@ export class PendingComponent {
   @ViewChild(MatMenuTrigger) menuTrigger: MatMenuTrigger;
 
   constructor(
-              private expenseService: ExpensesService,
-              private commonService: CommonService,
-              private dialog: MatDialog,
-              private toast: ToastrService,
-              private exportService: ExportService,
-              private fb: FormBuilder) {
+    private expenseService: ExpensesService,
+    private commonService: CommonService,
+    private dialog: MatDialog,
+    private toast: ToastrService,
+    private exportService: ExportService,
+    private fb: FormBuilder) {
     this.updateExpenseReport = this.fb.group({
       employee: [''],
       title: [''],
@@ -73,11 +73,20 @@ export class PendingComponent {
     this.changeMode = 'Add';
   }
 
-  open(content: any) {
-    this.expenseService.expenseReportExpense.next(this.selectedReport);
+  open(content: any, selectedReport?: any) {
+    if (selectedReport) {
+      this.selectedReport = selectedReport;
+      this.expenseService.expenseReportExpense.next(selectedReport);
+    } else {
+      this.expenseService.expenseReportExpense.next(null);
+    }
     this.dialogRef = this.dialog.open(content, {
       width: '50%',
       disableClose: true
+    });
+    this.dialogRef.afterClosed().subscribe((result) => {
+      this.expenseService.expenseReportExpense.next(null);
+      this.expenseService.selectedReport.next(null);
     });
   }
 
@@ -167,7 +176,7 @@ export class PendingComponent {
     const payload = {
       employee: this.selectedReport.employee,
       title: this.selectedReport.title,
-      status: result.approved? 'Approved' : 'Rejected',
+      status: result.approved ? 'Approved' : 'Rejected',
       primaryApprovalReason: result.reason,
       secondaryApprovalReason: ''
     };

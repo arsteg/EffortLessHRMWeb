@@ -90,10 +90,20 @@ export class CancelledComponent {
   }
 
   
-  open(content: any) {
+  open(content: any, selectedReport?: any) {
+    if(selectedReport){
+      this.selectedReport = selectedReport;
+      this.expenseService.expenseReportExpense.next(selectedReport);
+    } else {
+      this.expenseService.expenseReportExpense.next(null);
+    }
     this.dialogRef = this.dialog.open(content, {
       width: '50%',
       disableClose: true
+    });
+    this.dialogRef.afterClosed().subscribe((result) => {
+      this.expenseService.expenseReportExpense.next(null);
+      this.expenseService.selectedReport.next(null);
     });
   }
 
