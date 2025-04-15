@@ -99,4 +99,17 @@ export class Step9Component {
     return null;
   }
 
+  changeStatus(element: any, status: string): void {
+    // Update the status of the record
+    const updatedRecord = { ...element, status };
+    // this.payrollService.update(updatedRecord).subscribe(
+    //   (response) => {
+    //     console.log(`Status updated to ${status} for record`, element);
+    //     // Optionally refresh the table data
+    //   },
+    //   (error) => {
+    //     console.error('Error updating status:', error);
+    //   }
+    // );
+  }
 }
