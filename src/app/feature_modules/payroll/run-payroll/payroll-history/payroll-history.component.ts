@@ -1,8 +1,7 @@
-import { Component, EventEmitter, Output, TemplateRef, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Output, TemplateRef, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
-import { forkJoin } from 'rxjs';
 import { CommonService } from 'src/app/_services/common.Service';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { UserService } from 'src/app/_services/users.service';
@@ -30,17 +29,22 @@ export class PayrollHistoryComponent {
   @Output() changeView = new EventEmitter<void>();
   @ViewChild('addDialogTemplate') addDialogTemplate: TemplateRef<any>;
   @ViewChild('addUserModal') addUserModal: TemplateRef<any>;
-  salaries: any;
+  salaries: any[] = [];
+  addedUserIds: string[] = [];
 
   months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-  constructor(private dialog: MatDialog,
+  constructor(
+    private dialog: MatDialog,
     private payrollService: PayrollService,
     private fb: FormBuilder,
     private toast: ToastrService,
     private commonService: CommonService,
-    private userService: UserService
+    private userService: UserService,
+    private cdr: ChangeDetectorRef
   ) {
+    this.salaries = [];
+    this.addedUserIds = [];
     this.payrollForm = this.fb.group({
       date: [Date, Validators.required],
       status: ['', Validators.required],
@@ -55,7 +59,7 @@ export class PayrollHistoryComponent {
       totalGrossSalary: [0],
       totalTakeHome: [0],
       status: ['Active']
-    })
+    });
   }
 
   ngOnInit() {
@@ -96,6 +100,33 @@ export class PayrollHistoryComponent {
   }
 
   openAddUserDialog() {
+    this.salaries = [];
+    this.addedUserIds = [];
+    this.payrollUserForm.reset({
+      payroll: '',
+      user: '',
+      totalFlexiBenefits: 0,
+      totalCTC: 0,
+      totalGrossSalary: 0,
+      totalTakeHome: 0,
+      status: 'Active'
+    });
+    this.payrollUserForm.get('user').setErrors(null);
+
+    // Fetch users already added to the selected payroll
+    const payrollUsersPayload = { skip: '', next: '', payroll: this.selectedPayroll };
+    this.payrollService.getPayrollUsers(payrollUsersPayload).subscribe(
+      (res: any) => {
+        this.addedUserIds = res.data.map(user => user.user);
+        this.cdr.detectChanges();
+      },
+      (err) => {
+        this.toast.error('Error fetching payroll users');
+        this.addedUserIds = [];
+        this.cdr.detectChanges();
+      }
+    );
+
     const dialogRef = this.dialog.open(this.addUserModal, {
       width: '600px',
       disableClose: true
@@ -107,6 +138,17 @@ export class PayrollHistoryComponent {
   }
 
   closeAddUserDialog() {
+    this.payrollUserForm.reset({
+      payroll: '',
+      user: '',
+      totalFlexiBenefits: 0,
+      totalCTC: 0,
+      totalGrossSalary: 0,
+      totalTakeHome: 0,
+      status: 'Active'
+    });
+    this.salaries = [];
+    this.addedUserIds = [];
     this.dialog.closeAll();
   }
 
@@ -144,7 +186,7 @@ export class PayrollHistoryComponent {
     this.commonService.populateUsers().subscribe((res: any) => {
       this.users = res.data.data;
       this.payrollService.allUsers.next(this.users);
-    })
+    });
   }
 
   getMonthName(monthNumber: number): string {
@@ -152,7 +194,6 @@ export class PayrollHistoryComponent {
       "January", "February", "March", "April", "May", "June",
       "July", "August", "September", "October", "November", "December"
     ];
-
     return monthNames[monthNumber - 1] || "Invalid month";
   }
 
@@ -162,100 +203,123 @@ export class PayrollHistoryComponent {
         this.getPayrollWithUserCounts();
         this.toast.success('Payroll Created', 'Successfully!');
         this.closeAddDialog();
-      },
-        err => {
-          this.toast.error('Payroll cannot be created', 'Error!');
-        });
+      }, err => {
+        this.toast.error('Payroll cannot be created', 'Error!');
+      });
     } else {
       this.payrollForm.markAllAsTouched();
     }
   }
 
   updatePayrollUser() {
-    console.log('submission')
-    this.payrollUserForm.get('totalGrossSalary').enable();
-    this.payrollUserForm.get('totalCTC').enable();
-    console.log(this.payrollUserForm.value);
-    if (this.payrollUserForm.valid && this.salaries.length > 0) {
+    if (this.payrollUserForm.valid && this.salaries?.length > 0) {
+      this.payrollUserForm.get('totalGrossSalary').enable();
+      this.payrollUserForm.get('totalCTC').enable();
       this.payrollUserForm.value.payroll = this.selectedPayroll;
 
       this.userService.getSalaryByUserId(this.payrollUserForm.value.user).subscribe((res: any) => {
         const lastSalaryRecord = res.data[res.data.length - 1];
         this.payrollUserForm.value.totalGrossSalary = lastSalaryRecord.Amount;
 
-        this.payrollService.addPayrollUser(this.payrollUserForm.value).subscribe((res: any) => {
-          this.getPayrollWithUserCounts();
-          this.toast.success('Employee added to the payroll', 'Successfully');
-          this.payrollUserForm.patchValue({
-            user: '',
-            payroll: this.selectedPayroll,
-            totalFlexiBenefits: 0,
-            totalCTC: 0,
-            totalGrossSalary: 0,
-            totalTakeHome: 0,
-            status: 'Active'
-          })
-        })
-      })
+        this.payrollService.addPayrollUser(this.payrollUserForm.value).subscribe(
+          (res: any) => {
+            this.getPayrollWithUserCounts();
+            this.toast.success('Employee added to the payroll', 'Successfully');
+            this.payrollUserForm.reset({
+              payroll: '',
+              user: '',
+              totalFlexiBenefits: 0,
+              totalCTC: 0,
+              totalGrossSalary: 0,
+              totalTakeHome: 0,
+              status: 'Active'
+            });
+            this.salaries = [];
+            this.closeAddUserDialog();
+          },
+          (err) => {
+            this.toast.error('Error adding employee to payroll');
+          }
+        );
+      });
     } else {
       this.payrollUserForm.markAllAsTouched();
-      if (this.salaries.length === 0) {
+      if (this.salaries?.length === 0) {
         this.toast.error('Please add the Salary details first to add the selected user in payroll.');
+      } else if (this.payrollUserForm.get('user').hasError('userExists')) {
+        this.toast.error('This employee is already added to the payroll.');
       }
     }
   }
 
-  // getGrossSalaryBySalaryStructure(): void {
-  //   this.userService.getSalaryByUserId(this.payrollUserForm.value.user).subscribe((res: any) => {
-  //     this.salaries = res.data;
-  //     const lastSalaryRecord = res.data[res.data.length - 1];
-  //     console.log(lastSalaryRecord)
-  //     if (lastSalaryRecord?.enteringAmount == 'Monthly') {
-  //       const ctc = lastSalaryRecord?.Amount * 12;
-  //     }
-  //     return this.payrollUserForm.patchValue({
-  //       totalGrossSalary: lastSalaryRecord.Amount,
-  //       totalCTC: ctc
-  //     });
-
-  //     this.payrollUserForm.get('totalGrossSalary').disable();
-  //     this.payrollUserForm.get('totalCTC').disable();
-  //   });
-  // }
   getGrossSalaryBySalaryStructure(): void {
-    this.userService.getSalaryByUserId(this.payrollUserForm.value.user).subscribe((res: any) => {
-      this.salaries = res.data;
-      const lastSalaryRecord = res.data[res.data.length - 1];
-  
-      if (!lastSalaryRecord) return;
-  
-      let ctc;
-      if (lastSalaryRecord.enteringAmount === 'Monthly') {
-        ctc = lastSalaryRecord.Amount * 12;
-      } else if (lastSalaryRecord.enteringAmount === 'Yearly') {
-        ctc = lastSalaryRecord.Amount / 12;
-      } else {
-        ctc = lastSalaryRecord.Amount;
-      }
-  
-      this.payrollUserForm.patchValue({
-        totalGrossSalary: lastSalaryRecord.Amount,
-        totalCTC: ctc
-      });
-  
-      this.payrollUserForm.get('totalGrossSalary')?.disable();
-      this.payrollUserForm.get('totalCTC')?.disable();
+    this.salaries = [];
+    this.payrollUserForm.get('user').setErrors(null);
+    this.payrollUserForm.patchValue({
+      totalGrossSalary: 0,
+      totalCTC: 0,
+      totalFlexiBenefits: 0,
+      totalTakeHome: 0
     });
+    this.payrollUserForm.get('totalGrossSalary')?.enable();
+    this.payrollUserForm.get('totalCTC')?.enable();
+
+    if (this.payrollUserForm.value.user) {
+      // Check if user is already added to the payroll
+      if (this.addedUserIds.includes(this.payrollUserForm.value.user)) {
+        this.payrollUserForm.get('user').setErrors({ userExists: true });
+        this.cdr.detectChanges();
+        return;
+      }
+
+      this.userService.getSalaryByUserId(this.payrollUserForm.value.user).subscribe(
+        (res: any) => {
+          this.salaries = res.data || [];
+          if (this.salaries.length === 0) {
+            this.payrollUserForm.get('user').setErrors({ noSalary: true });
+            this.cdr.detectChanges();
+            return;
+          }
+          const lastSalaryRecord = this.salaries[this.salaries.length - 1];
+          let ctc;
+          if (lastSalaryRecord.enteringAmount === 'Monthly') {
+            ctc = lastSalaryRecord.Amount * 12;
+          } else if (lastSalaryRecord.enteringAmount === 'Yearly') {
+            ctc = lastSalaryRecord.Amount / 12;
+          } else {
+            ctc = lastSalaryRecord.Amount;
+          }
+          this.payrollUserForm.patchValue({
+            totalGrossSalary: lastSalaryRecord.Amount,
+            totalCTC: ctc
+          });
+          this.payrollUserForm.get('totalGrossSalary')?.disable();
+          this.payrollUserForm.get('totalCTC')?.disable();
+          this.cdr.detectChanges();
+        },
+        (error) => {
+          this.salaries = [];
+          this.payrollUserForm.get('user').setErrors({ noSalary: true });
+          this.toast.error('Error fetching salary details');
+          this.cdr.detectChanges();
+        }
+      );
+    } else {
+      this.salaries = [];
+      this.cdr.detectChanges();
+    }
   }
-  
+
   deleteTemplate(_id: string) {
-    this.payrollService.deletePayroll(_id).subscribe((res: any) => {
-      this.getPayrollWithUserCounts();
-      this.toast.success('Successfully Deleted!!!', 'Payroll')
-    },
+    this.payrollService.deletePayroll(_id).subscribe(
+      (res: any) => {
+        this.getPayrollWithUserCounts();
+        this.toast.success('Successfully Deleted!!!', 'Payroll');
+      },
       (err) => {
-        this.toast.error('This Payroll Can not be deleted!')
-      })
+        this.toast.error('This Payroll Can not be deleted!');
+      }
+    );
   }
 
   deleteDialog(id: string): void {
