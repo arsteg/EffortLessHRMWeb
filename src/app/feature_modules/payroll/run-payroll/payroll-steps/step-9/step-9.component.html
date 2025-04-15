@@ -75,6 +75,47 @@
                         <mat-icon>visibility</mat-icon>
                         <span>View</span>
                     </button>
+                    <mat-divider></mat-divider>
+                    <button mat-menu-item (click)="changeStatus(element, 'InProgress')">
+                        <mat-icon>play_arrow</mat-icon>
+                        <span>In Progress</span>
+                    </button>
+                    <button mat-menu-item (click)="changeStatus(element, 'Pending')">
+                        <mat-icon>pause</mat-icon>
+                        <span>Pending</span>
+                    </button>
+                    <button mat-menu-item (click)="changeStatus(element, 'OnHold')">
+                        <mat-icon>hourglass_empty</mat-icon>
+                        <span>On Hold</span>
+                    </button>
+                    <button mat-menu-item (click)="changeStatus(element, 'Processed')">
+                        <mat-icon>done</mat-icon>
+                        <span>Processed</span>
+                    </button>
+                    <button mat-menu-item (click)="changeStatus(element, 'Approved')">
+                        <mat-icon>check_circle</mat-icon>
+                        <span>Approved</span>
+                    </button>
+                    <button mat-menu-item (click)="changeStatus(element, 'Paid')">
+                        <mat-icon>payment</mat-icon>
+                        <span>Paid</span>
+                    </button>
+                    <button mat-menu-item (click)="changeStatus(element, 'Cleared')">
+                        <mat-icon>verified</mat-icon>
+                        <span>Cleared</span>
+                    </button>
+                    <button mat-menu-item (click)="changeStatus(element, 'Rejected')">
+                        <mat-icon>cancel</mat-icon>
+                        <span>Rejected</span>
+                    </button>
+                    <button mat-menu-item (click)="changeStatus(element, 'Finalized')">
+                        <mat-icon>assignment_turned_in</mat-icon>
+                        <span>Finalized</span>
+                    </button>
+                    <button mat-menu-item (click)="changeStatus(element, 'Exit Interview Completed')">
+                        <mat-icon>exit_to_app</mat-icon>
+                        <span>Exit Interview Completed</span>
+                    </button>
                 </mat-menu>
             </td>
         </ng-container>
