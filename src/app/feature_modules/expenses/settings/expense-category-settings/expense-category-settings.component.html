@@ -80,7 +80,9 @@
           <div class="d-flex">
             <button class="ms-auto" mat-stroked-button color="secondary" type="button" (click)="addField(i)">Add Fields</button>
           </div>
-
+          @if(!categoryCtrl.get('expenseTemplateCategoryFieldValues').value.length){
+            <div class="text-danger">Please add at least one field.</div>
+          }
           <div formArrayName="expenseTemplateCategoryFieldValues">
             <div *ngIf="i === stepper.selectedIndex">
               <div
@@ -89,12 +91,17 @@
                   <div class="d-flex pt-2 align-items-center">
                     <mat-form-field>
                       <mat-label>Label</mat-label>
-                      <input matInput formControlName="label" placeholder="Label">
+                      <input matInput formControlName="label" placeholder="Label" required>
+                      @if(fieldCtrl.get('label').invalid && fieldCtrl.get('label').touched){
+                        <mat-error>
+                          Please enter label.
+                        </mat-error>
+                      }
                     </mat-form-field>
 
                     @if(categoryCtrl.get('categoryType').value === 'distance'){
                       <mat-form-field>
-                        <mat-select formControlName="type">
+                        <mat-select formControlName="type" required>
                           <mat-option value="km">KM</mat-option>
                           <mat-option value="miles">Miles</mat-option>
                         </mat-select>
@@ -103,7 +110,12 @@
 
                     <mat-form-field>
                       <mat-label>Rate</mat-label>
-                      <input matInput type="number" placeholder="Rate" formControlName="rate">
+                      <input matInput type="number" placeholder="Rate" formControlName="rate" required>
+                      @if(fieldCtrl.get('rate').invalid && fieldCtrl.get('rate').touched){
+                        <mat-error>
+                          Please enter rate.
+                        </mat-error>
+                      }
                     </mat-form-field>
 
                     <button (click)="removeField(i, j)" mat-icon-button type="button" color="warn">

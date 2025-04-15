@@ -54,7 +54,7 @@ export class ShowReportComponent {
     }).subscribe(({ users, categories, reports }) => {
       this.allAssignee = users && users.data && users.data.data;
       this.allCategory = categories.data;
-      this.advanceReport = reports.data.filter(leave => leave.status === this.status);
+      this.advanceReport = reports.data;
       this.dataSource.data = this.advanceReport;
       this.totalRecords = reports?.total;
     });
@@ -78,7 +78,7 @@ export class ShowReportComponent {
       status: this.status
     };
     this.expenseService.getAdvanceReport(pagination).subscribe((res: any) => {
-      this.advanceReport = res.data.filter(leave => leave.status === this.status);
+      this.advanceReport = res.data;
       this.dataSource.data = this.advanceReport;
       this.totalRecords = res.total;
     });

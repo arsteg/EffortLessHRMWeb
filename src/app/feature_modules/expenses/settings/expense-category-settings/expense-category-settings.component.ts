@@ -98,7 +98,7 @@ export class ExpenseCategorySettingsComponent {
               expiryDay: step.expiryDay,
               isEmployeeCanAddInTotalDirectly: step.isEmployeeCanAddInTotalDirectly,
               ratePerDay: step.ratePerDay,
-              expenseTemplateCategoryFieldValues: this._formBuilder.array([]),
+              expenseTemplateCategoryFieldValues: this._formBuilder.array([], Validators.required),
               categoryType: categoryDetails.data.type,
               _id: step.expenseCategory._id
             }));
@@ -144,9 +144,9 @@ export class ExpenseCategorySettingsComponent {
 
   addField(expenseCategoryIndex: number) {
     const newField = this._formBuilder.group({
-      label: [''],
+      label: ['', Validators.required],
       type: [''],
-      rate: []
+      rate: ['', Validators.required]
     });
     const expenseCategoriesArray = this.firstForm.get('expenseCategories') as FormArray;
     const expenseCategoryFormGroup = expenseCategoriesArray.at(expenseCategoryIndex) as FormGroup;

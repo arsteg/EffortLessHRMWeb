@@ -40,12 +40,20 @@ export class StatusUpdateComponent {
       amount: this.updateReport.amount,
       comment: this.updateReport.comment,
       status: this.data.status,
-      primaryApprovalReason: this.updateExpenseReport.value.primaryApprovalReason,
-      secondaryApprovalReason: this.updateExpenseReport.value.primaryApprovalReason
+    }
+
+    if(this.updateReport.status === 'Level 1 Approval Pending'){
+      payload['primaryApprovalReason'] = this.updateExpenseReport.value.primaryApprovalReason;
+    }
+    if(this.updateReport.status === 'Level 2 Approval Pending'){
+      payload['secondaryApprovalReason']= this.updateExpenseReport.value.primaryApprovalReason
     }
     this.expenseService.updateAdvanceReport(id, payload).subscribe((res: any) => {
       this.toast.success('Status Updated Successfully!');
       this.advanceReportRefreshed.emit();
+      this.dialogRef.close('success');
+    }, (error)=>{
+      this.toast.error(error);
       this.dialogRef.close('success');
     });
     this.advanceReportRefreshed.emit();

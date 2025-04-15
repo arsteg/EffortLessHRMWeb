@@ -35,6 +35,10 @@ export class AddExpenseComponent {
     public expenseService: ExpensesService,
     private fb: FormBuilder,
     private toast: ToastrService,) {
+   
+  }
+
+  initForm(){
     this.addExpenseForm = this.fb.group({
       employee: [this.selfExpense ? this.currentUser.id : '', Validators.required],
       title: ['', Validators.required],
@@ -45,6 +49,7 @@ export class AddExpenseComponent {
   }
 
   ngOnInit() {
+    this.initForm();
     this.expenseService.changeMode.next(this.changeMode)
     if (this.changeMode !== 'Add') {
       const { employee, title, amount, status } = this.expenseService.selectedReport.getValue();

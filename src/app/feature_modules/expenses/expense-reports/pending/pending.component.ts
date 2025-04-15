@@ -177,11 +177,17 @@ export class PendingComponent {
       employee: this.selectedReport.employee,
       title: this.selectedReport.title,
       status: result.approved ? 'Approved' : 'Rejected',
-      primaryApprovalReason: result.reason,
-      secondaryApprovalReason: ''
     };
+    if(this.selectedReport.status === 'Level 1 Approval Pending'){
+      payload['primaryApprovalReason'] = result.reason;
+    }
+    if(this.selectedReport.status === 'Level 2 Approval Pending'){
+      payload['secondaryApprovalReason']= result.reason;
+    }
     this.expenseService.updateExpenseReport(id, payload).subscribe(() => {
       this.dataSource.data = this.dataSource.data.filter(report => report._id !== id);
+    }, (error)=>{
+      this.toast.error(error, 'Expense Report');
     });
   }
 
