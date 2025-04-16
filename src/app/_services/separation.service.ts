@@ -75,8 +75,20 @@ export class SeparationService {
   getTerminationStatusList(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/common/get-termination-status-list`, this.httpOptions);
   }
+  getTerminationAppealStatusList(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/common/get-termination-appeal-status-list`, this.httpOptions);
+  }
   updateTerminationStatus(id: string, status: any): Observable<any> {
     return this.http.put<any>(`${this.apiUrl}/separation/termination-by-status/${id}`,  status, this.httpOptions);
   }
-
+ 
+  submitTerminationAppeal(payload: any): Observable<any[]> {
+    return this.http.post<any[]>(`${this.apiUrl}/separation/termination-appeal`, payload, this.httpOptions);
+  }
+  reviewTerminationAppeal(id: string, payload: any): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/separation/termination-appeal/${id}`,  payload, this.httpOptions);
+  }
+  getTerminationAppealByTerminationId(terminationId: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/separation/termination-appeal-by-termination/${terminationId}`, this.httpOptions);
+  }
 }

@@ -6,11 +6,18 @@ import { ToastrService } from 'ngx-toastr';
 import { AssetManagementService } from 'src/app/_services/assetManagement.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { SeparationService } from 'src/app/_services/separation.service';
+
 interface TerminationStatus {
   Appealed: string;
   Pending: string;
   Completed: string;
   Deleted: string;
+  Reinstated: string
+}
+interface TerminationAppealStatus {
+  Pending: string;
+  Approved: string;
+  Rejected: string;
 }
 @Component({
   selector: 'app-termination',
@@ -27,8 +34,13 @@ export class TerminationComponent {
   users: any[] = [];
   terminations: any[] = [];
   userTerminations:  any[] = [];
-  terminationStatuses: TerminationStatus;  
+  terminationStatuses: TerminationStatus;    
+  terminationAppealStatuses: TerminationAppealStatus;  
+  
   selectedRecord: any;
+  appealForm: FormGroup;
+  reviewAppealForm: FormGroup;
+  selectedAppeal: any;
   displayedColumns: string[] = [
     'user',
     'termination_date', 'termination_reason', 'notice_given',
@@ -39,13 +51,17 @@ export class TerminationComponent {
   userTerminationColumns: string[] = ['termination_date', 'termination_reason', 'notice_given',
     'performance_warnings', 'severance_paid', 'final_pay_processed',
     'company_property_returned', 'exit_interview_date', 'legal_compliance',
-    'unemployment_claim'];
+    'unemployment_claim', 'actions'];
 
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
   @ViewChild('updateStatusResignation') updateStatusResignation: TemplateRef<any>;
+  @ViewChild('appealDialog') appealDialog: TemplateRef<any>;
+  @ViewChild('reviewAppealDialog') reviewAppealDialog: TemplateRef<any>;
+
   selectedStatus: string;
   changedStatus: string;
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  appealStatusKeys: any;
 
   constructor(private separationService: SeparationService,
     private dialog: MatDialog,
@@ -66,6 +82,14 @@ export class TerminationComponent {
       legal_compliance: [true],
       unemployment_claim: [true]
     });
+    this.appealForm = this.fb.group({
+      appeal_reason: ['']
+    });
+    
+    this.reviewAppealForm = this.fb.group({
+      appeal_status: [''],
+      decision_notes: ['']
+    });
   }
 
   ngOnInit() {
@@ -73,6 +97,7 @@ export class TerminationComponent {
       this.users = res.data['data'];
     }); 
     this.getallTerminationStatusList();
+    this.getallTerminationAppealStatusList();
     this.getTerminations();
   }
 
@@ -104,6 +129,12 @@ export class TerminationComponent {
   getallTerminationStatusList() {
     this.separationService.getTerminationStatusList().subscribe((res: any) => {
     this.terminationStatuses = res.data.statusList;       
+    })
+  }
+  getallTerminationAppealStatusList() {
+    this.separationService.getTerminationAppealStatusList().subscribe((res: any) => {
+    this.terminationAppealStatuses = res.data.appealStatusList;       
+    this.appealStatusKeys = Object.keys(this.terminationAppealStatuses); // Moved here
     })
   }
   getTerminations() {
@@ -192,4 +223,97 @@ export class TerminationComponent {
         this.toast.error('Status Update Failed', 'Error');
       });
   }
+
+  openAppealDialog(record: any): void {
+    this.selectedRecord = record;
+    this.separationService.getTerminationAppealByTerminationId(this.selectedRecord._id).subscribe({
+      next: (appeal: any) => {
+        this.appealForm.patchValue({
+          appeal_reason: appeal.data.appeal_reason        
+        });
+        this.selectedAppeal = appeal.data;
+      },
+      error: (err) => {
+        console.error('Error fetching appeal:', err);
+        // Optional: Show error message to user
+      }
+    });
+    this.dialogRef = this.dialog.open(this.appealDialog, { disableClose: true });
+  }
+  
+  submitAppeal(): void {
+    const appealReason = this.appealForm.get('appeal_reason')?.value;
+  
+    if (!appealReason) {
+      this.toast.error('Please enter an appeal reason', 'Error');
+      return;
+    }
+  
+    const payload = {
+      user: this.currentUser.id,
+      termination: this.selectedRecord._id,
+      appeal_reason: appealReason
+    };
+  
+    // Check if we're updating an existing appeal
+    if (this.selectedAppeal?._id) {
+      this.separationService.reviewTerminationAppeal(this.selectedAppeal._id, payload).subscribe(
+        (res: any) => {
+          this.toast.success('Appeal updated successfully', 'Success');
+          this.dialogRef.close();
+          this.getTerminations();
+        },
+        (err) => {
+          this.toast.error(err.error.message || 'Failed to update appeal', 'Error');
+        }
+      );
+    } else {
+      // Submitting new appeal
+      this.separationService.submitTerminationAppeal(payload).subscribe(
+        (res: any) => {
+          this.toast.success('Appeal submitted successfully', 'Success');
+          this.dialogRef.close();
+          this.getTerminations();
+        },
+        (err) => {
+          this.toast.error(err.error.message || 'Failed to submit appeal', 'Error');
+        }
+      );
+    }
+  }
+  
+  openReviewDialog(termination: any): void {  
+  
+    this.separationService.getTerminationAppealByTerminationId(termination).subscribe({
+      next: (appeal: any) => {
+        this.reviewAppealForm.patchValue({
+          appeal_status: appeal.data.appeal_status,
+          decision_notes: appeal.data.decision_notes,
+          appeal_reason: appeal.data.appeal_reason
+        });
+        this.selectedAppeal = appeal.data;
+        this.dialogRef = this.dialog.open(this.reviewAppealDialog, { disableClose: true });
+      },
+      error: (err) => {
+        console.error('Error fetching appeal:', err);
+        // Optional: Show error message to user
+      }
+    });
+  }
+  
+  
+  submitAppealReview(): void {
+    const payload = this.reviewAppealForm.value;
+    this.separationService.reviewTerminationAppeal(this.selectedAppeal._id, payload).subscribe(
+      (res: any) => {
+        this.toast.success('Appeal reviewed successfully', 'Success');
+        this.dialogRef.close();
+        this.getTerminations();
+      },
+      (err) => {
+        this.toast.error(err.error.message || 'Review failed', 'Error');
+      }
+    );
+  }
+    
 }
