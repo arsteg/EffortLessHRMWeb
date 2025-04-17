@@ -85,43 +85,116 @@ export class Step6Component {
     }
   }
 
+  // processTaxSlabs(userState: any) {
+  //   const stateSlab = this.professionalTaxSlabs?.states.find(
+  //     (slab: any) => slab.name.toLowerCase() === userState?.state.toLowerCase()
+  //   );
+
+  //   if (!stateSlab || !stateSlab.slabs) {
+  //     return;
+  //   }
+
+  //   // Fetch salary details for the user
+  //   this.userService.getSalaryByUserId(this.selectedUserId).subscribe((res: any) => {
+  //     if (!res.data || res.data.length === 0) {
+  //       this.noSalaryRecordFound = true;
+  //     }
+  //     const lastSalaryRecord = res.data[res.data.length - 1];
+  //     let ctc;
+
+  //     if (lastSalaryRecord?.enteringAmount === 'Monthly') {
+  //       ctc = lastSalaryRecord.Amount;
+  //     } else if (lastSalaryRecord?.enteringAmount === 'Yearly') {
+  //       ctc = lastSalaryRecord.Amount / 12; // Convert yearly salary to monthly
+  //     }
+
+      
+  //     const matchingSlab = stateSlab.slabs.find(
+  //       (slab: any) => (ctc >= slab.fromAmount) && (ctc <= (slab.toAmount || 999999999999))
+  //     );
+  //     if (userState?.state === 'Maharashtra' && userState?.Gender === 'female' && ctc <= 25000) {
+  //       this.flexiBenefitsForm.patchValue({
+  //         TotalProfessionalTaxAmount: 0
+  //       });
+  //     }
+  //     else {
+  //       this.flexiBenefitsForm.patchValue({
+  //         TotalProfessionalTaxAmount: matchingSlab.employeeAmount || 0
+  //       });
+  //     }
+  //   });
+  // }
   processTaxSlabs(userState: any) {
     const stateSlab = this.professionalTaxSlabs?.states.find(
       (slab: any) => slab.name.toLowerCase() === userState?.state.toLowerCase()
     );
-
+  
     if (!stateSlab || !stateSlab.slabs) {
+      this.noSalaryRecordFound = true;
+      this.toast.error('No professional tax slabs found for the state.', 'Error');
       return;
     }
-
+  
     // Fetch salary details for the user
     this.userService.getSalaryByUserId(this.selectedUserId).subscribe((res: any) => {
       if (!res.data || res.data.length === 0) {
         this.noSalaryRecordFound = true;
+        this.toast.error('No salary records found for the user.', 'Error');
+        return;
       }
+  
       const lastSalaryRecord = res.data[res.data.length - 1];
       let ctc;
-
+  
+      // Determine CTC based on enteringAmount
       if (lastSalaryRecord?.enteringAmount === 'Monthly') {
-        ctc = lastSalaryRecord.Amount;
+        ctc = lastSalaryRecord.Amount * 12; // Convert to yearly CTC
       } else if (lastSalaryRecord?.enteringAmount === 'Yearly') {
-        ctc = lastSalaryRecord.Amount / 12; // Convert yearly salary to monthly
+        ctc = lastSalaryRecord.Amount; // Already yearly CTC
+      } else {
+        this.noSalaryRecordFound = true;
+        this.toast.error('Invalid salary amount type.', 'Error');
+        return;
       }
-
-      
+  
+      // Calculate basic salary (40% of CTC)
+      const basicSalaryAnnual = ctc * 0.4;
+      const basicSalaryMonthly = basicSalaryAnnual / 12;
+  
+      // Calculate total variable allowances where isProfessionalTaxAffected = true
+      let totalVariableAllowances = 0;
+      const variableAllowances = lastSalaryRecord.variableAllowanceList || [];
+      variableAllowances.forEach((allowance: any) => {
+        if (allowance.variableAllowance.isProfessionalTaxAffected) {
+          totalVariableAllowances += allowance.monthlyAmount;
+        }
+      });
+  
+      // Calculate gross monthly salary for professional tax
+      const grossMonthlySalary = basicSalaryMonthly + totalVariableAllowances;
+  
+      // Find matching professional tax slab
       const matchingSlab = stateSlab.slabs.find(
-        (slab: any) => (ctc >= slab.fromAmount) && (ctc <= (slab.toAmount || 999999999999))
+        (slab: any) => grossMonthlySalary >= slab.fromAmount && grossMonthlySalary <= (slab.toAmount || 999999999999)
       );
-      if (userState?.state === 'Maharashtra' && userState?.Gender === 'female' && ctc <= 25000) {
-        this.flexiBenefitsForm.patchValue({
-          TotalProfessionalTaxAmount: 0
-        });
+  
+      let professionalTaxAmount = matchingSlab ? matchingSlab.employeeAmount : 0;
+  
+      // Handle exemptions (e.g., Maharashtra women <= ₹25,000)
+      if (userState?.state === 'Maharashtra' && userState?.Gender === 'female' && grossMonthlySalary <= 25000) {
+        professionalTaxAmount = 0;
       }
-      else {
-        this.flexiBenefitsForm.patchValue({
-          TotalProfessionalTaxAmount: matchingSlab.employeeAmount || 0
-        });
+  
+      // Handle special case for Maharashtra (February: ₹300 for salaries > ₹10,000)
+      const currentMonth = new Date().getMonth() + 1; // 1 = January, 2 = February, etc.
+      if (userState?.state === 'Maharashtra' && currentMonth === 2 && grossMonthlySalary > 10000) {
+        professionalTaxAmount = 300;
       }
+  
+      // Update form with calculated professional tax
+      this.flexiBenefitsForm.patchValue({
+        TotalProfessionalTaxAmount: professionalTaxAmount
+      });
     });
   }
 
@@ -160,6 +233,7 @@ export class Step6Component {
 
   onSubmission() {
     this.flexiBenefitsForm.get('PayrollUser').enable();
+    this.flexiBenefitsForm.get('TotalProfessionalTaxAmount').enable();
     this.flexiBenefitsForm.value.PayrollUser = this.selectedPayrollUser;
     if (this.changeMode == 'Add') {
       this.payrollService.addFlexi(this.flexiBenefitsForm.value).subscribe((res: any) => {
