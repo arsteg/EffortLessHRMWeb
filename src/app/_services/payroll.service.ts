@@ -162,7 +162,7 @@ export class PayrollService {
   // PT-Slab Crud
 
   // State-wise pt-slabs
-  getStateWisePTSlabs():Observable<any>{
+  getStateWisePTSlabs(): Observable<any> {
     return this.http.get<any>(`${environment.apiUrlDotNet}/payroll/state-wise-pt-slabs`, this.httpOptions);
   }
   addPTSlab(payload: any): Observable<any> {
@@ -997,5 +997,10 @@ export class PayrollService {
   getFnFIncomeTaxByPayrollFnF(payrollFnF: string): Observable<any> {
     var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/payroll-fnf-income-tax-by-payroll-fnf/${payrollFnF}`, this.httpOptions);
     return response;
+  }
+
+  // get Payroll status
+  getPayrollStatus(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/common/get-payroll-status-list`, this.httpOptions);
   }
 }

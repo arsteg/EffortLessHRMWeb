@@ -1,9 +1,20 @@
 import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { MatTableDataSource } from '@angular/material/table';
-import { CommonService } from 'src/app/_services/common.Service';
 import { PayrollService } from 'src/app/_services/payroll.service';
-import { UserService } from 'src/app/_services/users.service';
+
+interface PayrollStatus {
+  InProgress: string,
+  Pending: string,
+  OnHold: string,
+  Processed: string,
+  Approved: string,
+  Paid: string,
+  Cleared: string,
+  Rejected: string,
+  Finilized: string,
+  Exit_Interview_Completed: string
+}
 
 @Component({
   selector: 'app-step-9',
@@ -18,9 +29,15 @@ export class Step9Component {
   selectedRecord: any;
   payrollUser: any;
   @Input() selectedPayroll: any;
-  generatedPayroll: any;
+  generatedPayroll: any[] = [];
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
-
+  @ViewChild('updateStatusResignation') updateStatusResignation: TemplateRef<any>;
+  isEditMode: boolean = false;
+  payrollStatus: PayrollStatus;
+  payrollForm: FormGroup;
+  changedStatus: string;
+  selectedStatus: string;
+  dialogRef: any;
   displayedColumns = [
     'PayrollUsers',
     'totalOvertime',
@@ -33,6 +50,7 @@ export class Step9Component {
     'totalIncomeTax',
     'yearlySalary',
     'monthlySalary',
+    'payroll_status',
     'actions'
   ];
 
@@ -42,6 +60,7 @@ export class Step9Component {
   ) { }
 
   ngOnInit() {
+    this.getPayrollStatus();
     this.payrollService.allUsers.subscribe(res => {
       this.allUsers = res;
     });
@@ -51,24 +70,46 @@ export class Step9Component {
     this.getGeneratedPayroll();
   }
 
+  getPayrollStatus() {
+    this.payrollService.getPayrollStatus().subscribe((res: any) => {
+      this.payrollStatus = res.data.statusList;
+    },
+      (error) => {
+        console.error('Error fetching payroll status:', error);
+      }
+    );
+  }
+
   getGeneratedPayroll() {
-    this.payrollService.generatedPayrollByPayroll(this.selectedPayroll?._id).subscribe((res: any) => {
-      this.generatedPayroll = res.data.map((record) => {
-        return {
-          ...record,
-          totalOvertime: parseFloat(record?.totalOvertime).toFixed(2),
-          totalFixedAllowance: parseFloat(record?.totalFixedAllowance).toFixed(2),
-          totalOtherBenefit: parseFloat(record?.totalOtherBenefit).toFixed(2),
-          totalFixedDeduction: parseFloat(record?.totalFixedDeduction).toFixed(2),
-          totalLoanAdvance: parseFloat(record?.totalLoanAdvance).toFixed(2),
-          totalFlexiBenefits: parseFloat(record?.totalFlexiBenefits).toFixed(2),
-          totalPfTax: parseFloat(record?.totalPfTax).toFixed(2),
-          totalIncomeTax: parseFloat(record?.totalIncomeTax).toFixed(2),
-          yearlySalary: parseFloat(record?.yearlySalary).toFixed(2),
-          monthlySalary: parseFloat(record?.monthlySalary).toFixed(2),
-        }
-      });
-    })
+    if (!this.selectedPayroll?._id) {
+      console.warn('No selected payroll ID');
+      this.generatedPayroll = [];
+      return;
+    }
+    this.payrollService.generatedPayrollByPayroll(this.selectedPayroll?._id).subscribe(
+      (res: any) => {
+        this.generatedPayroll = res.data.map((record) => {
+          return {
+            ...record,
+            totalOvertime: parseFloat(record?.totalOvertime || 0).toFixed(2),
+            totalFixedAllowance: parseFloat(record?.totalFixedAllowance || 0).toFixed(2),
+            totalOtherBenefit: parseFloat(record?.totalOtherBenefit || 0).toFixed(2),
+            totalFixedDeduction: parseFloat(record?.totalFixedDeduction || 0).toFixed(2),
+            totalLoanAdvance: parseFloat(record?.totalLoanAdvance || 0).toFixed(2),
+            totalFlexiBenefits: parseFloat(record?.totalFlexiBenefits || 0).toFixed(2),
+            totalPfTax: parseFloat(record?.totalPfTax || 0).toFixed(2),
+            totalIncomeTax: parseFloat(record?.totalIncomeTax || 0).toFixed(2),
+            yearlySalary: parseFloat(record?.yearlySalary || 0).toFixed(2),
+            monthlySalary: parseFloat(record?.monthlySalary || 0).toFixed(2),
+            payroll_status: record?.payroll_status || 'Pending'
+          };
+        });
+      },
+      (error) => {
+        console.error('Error fetching generated payroll:', error);
+        this.generatedPayroll = [];
+      }
+    );
   }
 
   getUser(employeeId: string) {
@@ -76,7 +117,13 @@ export class Step9Component {
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'N/A';
   }
 
-  openDialog() {
+  openDialog(data?: any): void {
+    this.isEditMode = !!data;
+    if (this.isEditMode) {
+      this.payrollForm?.patchValue(data);
+    } else {
+      this.payrollForm?.reset();
+    }
     this.dialog.open(this.dialogTemplate, {
       width: '80%',
       height: '80%',
@@ -86,6 +133,12 @@ export class Step9Component {
 
   closeDialog() {
     this.dialog.closeAll();
+  }
+
+  openUpdateStatusDialog(): void {
+    this.dialogRef = this.dialog.open(this.updateStatusResignation, {
+      disableClose: true
+    });
   }
 
   getCompanyNameFromCookies(): string | null {
@@ -99,16 +152,16 @@ export class Step9Component {
     return null;
   }
 
-  changeStatus(element: any, status: string): void {
-    // Update the status of the record
-    const updatedRecord = { ...element, status };
-    // this.payrollService.update(updatedRecord).subscribe(
+  changeStatus(recordId: string, status: string): void {
+    if (!recordId || !status) {
+      return;
+    }
+    const updatedRecord = { _id: recordId, payroll_status: status };
+    // this.payrollService.updatePayrollRecord(updatedRecord).subscribe(
     //   (response) => {
-    //     console.log(`Status updated to ${status} for record`, element);
-    //     // Optionally refresh the table data
+    //     this.getGeneratedPayroll(); // Refresh table data
     //   },
     //   (error) => {
-    //     console.error('Error updating status:', error);
     //   }
     // );
   }

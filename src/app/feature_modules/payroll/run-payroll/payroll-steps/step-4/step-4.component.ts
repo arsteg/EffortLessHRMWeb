@@ -2,7 +2,6 @@ import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
-import { forkJoin, map, switchMap } from 'rxjs';
 import { CommonService } from 'src/app/_services/common.Service';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { UserService } from 'src/app/_services/users.service';
@@ -130,7 +129,6 @@ export class Step4Component {
     this.loanAdvanceForm.get('payrollUser').enable();
     this.loanAdvanceForm.value.payrollUser = this.selectedPayrollUser;
     this.loanAdvanceForm.value.amount = 0;
-    console.log(this.loanAdvanceForm.value.payrollUser);
     if (this.changeMode === 'Add') {
       this.payrollService.addLoanAdvance(this.loanAdvanceForm.value).subscribe(
         (res: any) => {
