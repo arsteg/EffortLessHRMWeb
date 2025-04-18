@@ -214,7 +214,6 @@ export class ResignationComponent implements OnInit {
     let payload = {
       resignation_status: status
     }
-    console.log(payload)
     this.separationService.updateResignationStatus(resignation, payload).subscribe((res: any) => {
       this.getResignationByUser();
       this.closeDialog();

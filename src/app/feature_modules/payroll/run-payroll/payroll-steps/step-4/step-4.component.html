@@ -56,7 +56,7 @@
     <div mat-dialog-content>
         <form [formGroup]="loanAdvanceForm" (ngSubmit)="onSubmission()">
             <div class="row">
-                <div class="form-group col-md-6" *ngIf="changeMode != 'Update'">
+                <div class="form-group mt-2 col-md-12" *ngIf="changeMode != 'Update'">
                     <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
                         [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
                 </div>
@@ -69,8 +69,8 @@
                 </div>
 
                 <div class="form-group col-md-6">
-                    <mat-form-field appearance="outline" class="my-2">
-                        <mat-label>Loans and Advances on the selection of Payroll User</mat-label>
+                    <mat-form-field appearance="outline" class="my-2 w-100">
+                        <mat-label>Select Loans and Advances</mat-label>
                         <mat-select formControlName="loanAndAdvance">
                             <mat-option *ngFor="let loanAdvance of userloanAdvances" [value]="loanAdvance._id">
                                 {{ loanAdvance?.loanAdvancesCategory?.name }}
@@ -80,7 +80,7 @@
                 </div>
 
                 <div class="form-group col-md-6">
-                    <mat-form-field appearance="outline" class="my-2">
+                    <mat-form-field appearance="outline" class="my-2 w-100">
                         <mat-label>Type of Amount</mat-label>
                         <mat-select formControlName="type">
                             <mat-option value="Disbursement">Disbursement</mat-option>
@@ -90,7 +90,7 @@
                 </div>
 
                 <div class="form-group col-md-6">
-                    <mat-form-field appearance="outline" class="my-2">
+                    <mat-form-field appearance="outline" class="my-2 w-100">
                         <mat-label>Enter Disbursement Amount</mat-label>
                         <input matInput type="number" formControlName="disbursementAmount">
                         <mat-error *ngIf="loanAdvanceForm.get('disbursementAmount')?.invalid && loanAdvanceForm.get('disbursementAmount')?.touched">
@@ -100,7 +100,7 @@
                 </div>
 
                 <div class="form-group col-md-6">
-                    <mat-form-field appearance="outline" class="my-2">
+                    <mat-form-field appearance="outline" class="my-2 w-100">
                         <mat-label>Status for Loan/Advance Payroll</mat-label>
                         <mat-select formControlName="status">
                             <mat-option value="Pending">Pending</mat-option>

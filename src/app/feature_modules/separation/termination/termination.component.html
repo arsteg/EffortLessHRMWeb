@@ -56,31 +56,32 @@
             <ng-container matColumnDef="actions">
                 <th mat-header-cell *matHeaderCellDef> Actions </th>
                 <td mat-cell *matCellDef="let element">
-                    <button mat-icon-button [matMenuTriggerFor]="menu">
-                        <mat-icon>more_vert</mat-icon>
-                    </button>
-                    <mat-menu #menu="matMenu">
-                        <button mat-menu-item *ngIf="element.termination_status !== terminationStatuses.Completed"
-                            (click)="selectedStatus = element._id; changedStatus = terminationStatuses.Completed; openUpdateStatusDialog()">
-                            <mat-icon>check_circle</mat-icon>
-                            <span>Complete</span>
-                        </button>
-                        <button mat-menu-item *ngIf="element.termination_status !== terminationStatuses.Appealed"
-                            (click)="selectedStatus = element._id; changedStatus = terminationStatuses.Appealed; openUpdateStatusDialog()">
-                            <mat-icon>gavel</mat-icon>
-                            <span>Appeal</span>
-                        </button>
-                        <button mat-menu-item *ngIf="element.termination_status !== terminationStatuses.Completed" (click)="isEditMode = true; selectedRecord = element; openDialog(element)">
-                            <mat-icon>edit</mat-icon>
-                            <span>Edit</span>
-                        </button>
-                        <button mat-menu-item *ngIf="element.termination_status !== terminationStatuses.Completed" (click)="updateTerminationStatus(selectedStatus, terminationStatuses.Deleted)">
-                            <mat-icon>delete</mat-icon>
-                            <span>Delete</span>
-                        </button>
-                    </mat-menu>
+                  <button mat-icon-button [matMenuTriggerFor]="menu">
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                  <mat-menu #menu="matMenu">
+                    <ng-container>
+                      <button mat-menu-item *ngIf="element.termination_status !== terminationStatuses.Completed && element.termination_status !== terminationStatuses.Reinstated" (click)="selectedStatus = element._id; changedStatus = terminationStatuses.Completed; openUpdateStatusDialog()">
+                        <mat-icon>check_circle</mat-icon>
+                        <span>Complete</span>
+                      </button>                     
+                      <button mat-menu-item *ngIf="element.termination_status === terminationStatuses.Completed || element.termination_status === terminationStatuses.Reinstated || element.termination_status === terminationStatuses.Appealed" (click)="openReviewDialog(element._id)">
+                        <mat-icon>rate_review</mat-icon>
+                        <span>Review Appeal</span>
+                      </button>  
+                      <button mat-menu-item *ngIf="element.termination_status !== terminationStatuses.Completed && element.termination_status !== terminationStatuses.Reinstated" (click)="isEditMode = true; selectedRecord = element; openDialog(element)">
+                        <mat-icon>edit</mat-icon>
+                        <span>Edit</span>
+                      </button>
+                      <button mat-menu-item *ngIf="element.termination_status !== terminationStatuses.Completed && element.termination_status !== terminationStatuses.Reinstated" (click)="updateTerminationStatus(selectedStatus, terminationStatuses.Deleted)">
+                        <mat-icon>delete</mat-icon>
+                        <span>Delete</span>
+                      </button>
+                    </ng-container>
+                  </mat-menu>
                 </td>
-            </ng-container>
+              </ng-container>
+              
             <!-- Header and Row Declarations -->
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
@@ -135,6 +136,22 @@
             <ng-container matColumnDef="termination_status">
                 <th mat-header-cell *matHeaderCellDef> Termination Status </th>
                 <td mat-cell *matCellDef="let element"> {{element?.termination_status | titlecase}} </td>
+            </ng-container>
+            <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef> Actions </th>
+                <td mat-cell *matCellDef="let element">
+                    <button mat-icon-button [matMenuTriggerFor]="menu">
+                        <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu">
+                        <button mat-menu-item
+                        (click)="openAppealDialog(element)">
+                  <mat-icon>gavel</mat-icon>
+                  <span>Appeal</span>
+                </button>
+                
+                </mat-menu>
+                </td>
             </ng-container>
             <!-- Header and Row Declarations -->
             <tr mat-header-row *matHeaderRowDef="userTerminationColumns"></tr>
@@ -219,3 +236,61 @@
         </div>
     </div>
 </ng-template>
+<ng-template #appealDialog>
+    <form [formGroup]="appealForm" (ngSubmit)="submitAppeal()">
+      <div class="p-3">
+        <h2 mat-dialog-title class="d-flex justify-content-between align-items-center" translate="yes" >
+            {{ 'separation.appeal_request' | translate }}
+          <button mat-icon-button (click)="closeDialog()" type="button">
+            <mat-icon>close</mat-icon>
+          </button>
+        </h2>
+  
+        <mat-form-field appearance="outline" class="w-100 mt-3">
+          <mat-label><p >{{ 'separation.appeal_reason' | translate }}</p></mat-label>
+          <textarea matInput formControlName="appeal_reason" rows="4"  placeholder="Enter your reason here..."></textarea>
+        </mat-form-field>
+  
+        <div class="d-flex justify-content-end mt-3">
+          <button mat-stroked-button type="button" (click)="closeDialog()">Cancel</button>
+          <button mat-raised-button color="primary" [disabled]="selectedAppeal?.appeal_status" type="submit">Submit</button>
+        </div>
+      </div>
+    </form>
+  </ng-template>
+  
+  <ng-template #reviewAppealDialog>
+    <form [formGroup]="reviewAppealForm" (ngSubmit)="submitAppealReview()">
+      <div class="p-3">
+        <h2 mat-dialog-title class="d-flex justify-content-between align-items-center">
+            {{ 'separation.appeal_heading' | translate }}
+          <button mat-icon-button type="button" (click)="closeDialog()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </h2>
+        <mat-form-field appearance="outline" class="w-100 mt-3">
+            <mat-label>   {{ 'separation.appeal_reason' | translate }} </mat-label>
+            <textarea matInput [value]="selectedAppeal?.appeal_reason" rows="4" disabled></textarea>
+          </mat-form-field>
+        <mat-form-field appearance="outline" class="w-100 mt-3">
+          <mat-label> {{ 'separation.appeal_status' | translate }} Appeal Status</mat-label>
+          <mat-select formControlName="appeal_status">
+            <mat-option *ngFor="let key of appealStatusKeys" [value]="terminationAppealStatuses[key]">
+                {{ terminationAppealStatuses[key] }}
+              </mat-option>  </mat-select>
+        </mat-form-field>
+  
+        <mat-form-field appearance="outline" class="w-100 mt-3">
+          <mat-label> {{ 'separation.decision_notes' | translate }} Decision Notes</mat-label>
+          <textarea matInput formControlName="decision_notes" rows="4" placeholder="Write your notes here..."></textarea>
+        </mat-form-field>
+  
+        <div class="d-flex justify-content-end mt-3">
+          <button mat-stroked-button type="button" (click)="closeDialog()">Cancel</button>
+          <button mat-raised-button color="primary" type="submit">Submit</button>
+        </div>
+      </div>
+    </form>
+  </ng-template>
+  
+  

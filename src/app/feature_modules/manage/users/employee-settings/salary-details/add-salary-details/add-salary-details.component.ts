@@ -69,7 +69,7 @@ export class AddSalaryDetailsComponent {
       salaryComponentFixedAllowance: this.fb.array([]),
       salaryComponentOtherBenefits: this.fb.array([]),
       salaryComponentEmployerContribution: this.fb.array([]),
-      salaryComponentEmployeeDeduction: this.fb.array([]), // New FormArray for employee deductions
+      salaryComponentEmployeeDeduction: this.fb.array([]),
       salaryComponentFixedDeduction: this.fb.array([]),
       salaryComponentVariableAllowance: this.fb.array([]),
       salaryComponentVariableDeduction: this.fb.array([]),
@@ -96,13 +96,19 @@ export class AddSalaryDetailsComponent {
       this.addFixedAllowance();
       this.addOtherBenefit();
       this.addEmployerContribution();
-      this.addEmployeeDeduction(); // Initialize employee deduction
+      this.addEmployeeDeduction();
       this.addFixedDeduction();
       this.addVariableAllowance();
       this.addVariableDeduction();
       this.addPFCharge();
       this.getCTCTemplates();
 
+      this.salaryDetailsForm.get('Amount').valueChanges.subscribe((amount) => {
+        const ctcTemplateId = this.salaryDetailsForm.get('CTCTemplate').value;
+        if (ctcTemplateId && ctcTemplateId !== 'manual') {
+          this.getCTCTemplateById(ctcTemplateId);
+        }
+      });
       this.salaryDetailsForm.get('Amount')?.valueChanges.subscribe((amount) => {
         const basicSalary = amount ? (amount * 0.4) / 12 : 0;
         this.salaryDetailsForm.get('BasicSalary')?.setValue(basicSalary, { emitEvent: false });
@@ -199,7 +205,7 @@ export class AddSalaryDetailsComponent {
     const arrays = [
       this.otherBenefitsArray,
       this.employerContributionArray,
-      this.employeeDeductionArray // Added for employee deductions
+      this.employeeDeductionArray
     ];
     arrays.forEach(array => {
       array.controls.forEach((group: FormGroup) => {
@@ -312,108 +318,42 @@ export class AddSalaryDetailsComponent {
     const statutorySettings = this.salaryDetailsForm.get('employeeSalaryTaxAndStatutorySetting')?.value;
     const grossSalary = this.calculateGrossSalary();
 
-    // Employer Contributions
+    // Employer Contributions from CTC Template
     const employerContributionArray = this.salaryDetailsForm.get('salaryComponentEmployerContribution') as FormArray;
     employerContributionArray.clear();
-
-    if (statutorySettings.isPFDeduction) {
-      let pfWage = basicSalary;
-      if (statutorySettings.fixedAmountForProvidentFundWage) {
-        pfWage = statutorySettings.fixedAmountForProvidentFundWage;
-      } else if (statutorySettings.isEmployerProvidentFundCappedAtPFCeiling) {
-        pfWage = Math.min(pfWage, 15000);
+    if (this.ctcTemplates && this.salaryDetailsForm.get('CTCTemplate').value !== 'manual') {
+      const templateId = this.salaryDetailsForm.get('CTCTemplate').value;
+      const selectedTemplate = this.ctcTemplates.find((t: any) => t._id === templateId);
+      if (selectedTemplate && selectedTemplate.ctcTemplateEmployerContributions) {
+        selectedTemplate.ctcTemplateEmployerContributions.forEach((contribution: any) => {
+          employerContributionArray.push(this.fb.group({
+            employerContribution: [contribution.fixedContribution?._id],
+            employerContributionLabel: [contribution.fixedContribution?.label],
+            monthlyAmount: [contribution.value || 0],
+            yearlyAmount: [(contribution.value || 0) * 12]
+          }));
+        });
       }
-      const monthlyPf = pfWage * 0.12;
-      employerContributionArray.push(this.fb.group({
-        employerContribution: ['pf'],
-        employerContributionLabel: ['Provident Fund'],
-        monthlyAmount: [monthlyPf],
-        yearlyAmount: [monthlyPf * 12]
-      }));
     }
-
-    if (statutorySettings.isGratuityApplicable) {
-      const monthlyGratuity = basicSalary * 0.0481;
-      employerContributionArray.push(this.fb.group({
-        employerContribution: ['gratuity'],
-        employerContributionLabel: ['Gratuity'],
-        monthlyAmount: [monthlyGratuity],
-        yearlyAmount: [monthlyGratuity * 12]
-      }));
-    }
-
-    if (statutorySettings.isESICDeduction && grossSalary <= 21000) {
-      const monthlyEsi = grossSalary * 0.0325;
-      employerContributionArray.push(this.fb.group({
-        employerContribution: ['esi'],
-        employerContributionLabel: ['ESI'],
-        monthlyAmount: [monthlyEsi],
-        yearlyAmount: [monthlyEsi * 12]
-      }));
-    }
-
     this.salaryDetailsForm.setControl('salaryComponentEmployerContribution', employerContributionArray);
 
-    // Employee Deductions
+    // Employee Deductions from CTC Template
     const employeeDeductionArray = this.salaryDetailsForm.get('salaryComponentEmployeeDeduction') as FormArray;
     employeeDeductionArray.clear();
-
-    if (statutorySettings.isPFDeduction) {
-      let pfWage = basicSalary;
-      if (statutorySettings.fixedAmountForProvidentFundWage) {
-        pfWage = statutorySettings.fixedAmountForProvidentFundWage;
-      } else if (statutorySettings.isEmployeeProvidentFundCappedAtPFCeiling) {
-        pfWage = Math.min(pfWage, 15000);
+    if (this.ctcTemplates && this.salaryDetailsForm.get('CTCTemplate').value !== 'manual') {
+      const templateId = this.salaryDetailsForm.get('CTCTemplate').value;
+      const selectedTemplate = this.ctcTemplates.find((t: any) => t._id === templateId);
+      if (selectedTemplate && selectedTemplate.ctcTemplateEmployerContributions) {
+        selectedTemplate.ctcTemplateEmployerContributions.forEach((contribution: any) => {
+          employeeDeductionArray.push(this.fb.group({
+            employeeDeduction: [contribution.fixedContribution?._id],
+            employeeDeductionLabel: [contribution.fixedContribution?.label],
+            monthlyAmount: [contribution.value || 0],
+            yearlyAmount: [(contribution.value || 0) * 12]
+          }));
+        });
       }
-      const monthlyPf = pfWage * 0.12;
-      employeeDeductionArray.push(this.fb.group({
-        employeeDeduction: ['pf'],
-        employeeDeductionLabel: ['Provident Fund'],
-        monthlyAmount: [monthlyPf],
-        yearlyAmount: [monthlyPf * 12]
-      }));
     }
-
-    if (statutorySettings.isESICDeduction && grossSalary <= 21000) {
-      const monthlyEsi = grossSalary * 0.0075;
-      employeeDeductionArray.push(this.fb.group({
-        employeeDeduction: ['esi'],
-        employeeDeductionLabel: ['ESI'],
-        monthlyAmount: [monthlyEsi],
-        yearlyAmount: [monthlyEsi * 12]
-      }));
-    }
-
-    if (statutorySettings.isPTDeduction) {
-      const monthlyPt = grossSalary > 15000 ? 200 : 0; // Karnataka PT example
-      employeeDeductionArray.push(this.fb.group({
-        employeeDeduction: ['pt'],
-        employeeDeductionLabel: ['Professional Tax'],
-        monthlyAmount: [monthlyPt],
-        yearlyAmount: [monthlyPt * 12]
-      }));
-    }
-
-    if (statutorySettings.isLWFDeduction) {
-      const monthlyLwf = 20;
-      employeeDeductionArray.push(this.fb.group({
-        employeeDeduction: ['lwf'],
-        employeeDeductionLabel: ['Labour Welfare Fund'],
-        monthlyAmount: [monthlyLwf],
-        yearlyAmount: [monthlyLwf * 12]
-      }));
-    }
-
-    if (statutorySettings.isIncomeTaxDeduction) {
-      const monthlyTax = this.calculateIncomeTax(grossSalary * 12);
-      employeeDeductionArray.push(this.fb.group({
-        employeeDeduction: ['incomeTax'],
-        employeeDeductionLabel: ['Income Tax'],
-        monthlyAmount: [monthlyTax],
-        yearlyAmount: [monthlyTax * 12]
-      }));
-    }
-
     this.salaryDetailsForm.setControl('salaryComponentEmployeeDeduction', employeeDeductionArray);
     this.handleMonthlyAmountChanges(); // Ensure yearly amounts update
   }
@@ -613,11 +553,23 @@ export class AddSalaryDetailsComponent {
           employerContributionArray.push(this.fb.group({
             employerContribution: [fixedContribution?.fixedContribution?._id],
             employerContributionLabel: [fixedContribution?.fixedContribution?.label],
-            monthlyAmount: [0],
-            yearlyAmount: [0]
+            monthlyAmount: [fixedContribution.value || 0],
+            yearlyAmount: [(fixedContribution.value || 0) * 12]
           }));
         });
         this.salaryDetailsForm.setControl('salaryComponentEmployerContribution', employerContributionArray);
+
+        const employeeDeductionArray = this.salaryDetailsForm.get('salaryComponentEmployeeDeduction') as FormArray;
+        employeeDeductionArray.clear();
+        ctcTemplate.data.ctcTemplateEmployerContributions.forEach((fixedContribution: any) => {
+          employeeDeductionArray.push(this.fb.group({
+            employeeDeduction: [fixedContribution?.fixedContribution?._id],
+            employeeDeductionLabel: [fixedContribution?.fixedContribution?.label],
+            monthlyAmount: [fixedContribution.value || 0],
+            yearlyAmount: [(fixedContribution.value || 0) * 12]
+          }));
+        });
+        this.salaryDetailsForm.setControl('salaryComponentEmployeeDeduction', employeeDeductionArray);
 
         const fixedDeductionArray = this.salaryDetailsForm.get('salaryComponentFixedDeduction') as FormArray;
         fixedDeductionArray.clear();

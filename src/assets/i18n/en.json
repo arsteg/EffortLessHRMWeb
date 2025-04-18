@@ -7,6 +7,13 @@
       "submit": "Sign In",
       "error": "Invalid credentials"
     },
+    "separation":{
+      "appeal_heading": "Review Appeal",
+      "appeal_reason" : "Appeal Reason",
+      "decision_notes" : "Decision Notes",
+      "appeal_status" : "Appeal Status",
+      "appeal_request":"Appeal Request"
+    },
     "dashboard": {
       "title": "Dashboard",
       "greeting": "Hello, {{name}}!",
