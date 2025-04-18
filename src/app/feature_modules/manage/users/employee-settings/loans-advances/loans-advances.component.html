@@ -46,10 +46,10 @@
             <ng-container matColumnDef="actions">
                 <th mat-header-cell *matHeaderCellDef>Actions</th>
                 <td mat-cell *matCellDef="let data">
-                    <button mat-icon-button title="Edit" (click)="isEdit = true; selectedRecord = data; edit(); openDialog()">
+                    <button *ngIf="data?.status === 'Requested'" mat-icon-button matTooltip="Edit" matTooltipPosition="left" (click)="isEdit = true; selectedRecord = data; edit(); openDialog()">
                         <mat-icon>edit</mat-icon>
                     </button>
-                    <button mat-icon-button title="Delete" (click)="deleteLoansAdvances(data?._id)">
+                    <button mat-icon-button matTooltip="Delete" matTooltipPosition="right" (click)="deleteLoansAdvances(data?._id)">
                         <mat-icon>delete</mat-icon>
                     </button>
                 </td>

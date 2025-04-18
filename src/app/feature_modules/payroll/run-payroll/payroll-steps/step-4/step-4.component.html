@@ -36,7 +36,8 @@
                         <mat-icon>more_vert</mat-icon>
                     </button>
                     <mat-menu #menu="matMenu">
-                        <button mat-menu-item (click)="selectedRecord = data; changeMode = 'Update'; setFormValues(data); openDialog()">
+                        <button mat-menu-item
+                            (click)="selectedRecord = data; changeMode = 'Update'; setFormValues(data); openDialog()">
                             <mat-icon>edit</mat-icon>
                             <span>Edit</span>
                         </button>
@@ -50,7 +51,6 @@
         </tbody>
     </table>
 </div>
-
 <ng-template #dialogTemplate>
     <h1 mat-dialog-title>{{changeMode}} Loans/Advances</h1>
     <div mat-dialog-content>
@@ -64,15 +64,15 @@
                 <div class="form-group col-md-6" *ngIf="changeMode === 'Update'">
                     <mat-form-field appearance="outline" class="my-2">
                         <mat-label>Payroll User</mat-label>
-                        <input matInput type="text" [disabled] formControlName="payrollUser">
+                        <input matInput type="text" [disabled]="true" formControlName="payrollUser">
                     </mat-form-field>
                 </div>
 
                 <div class="form-group col-md-6">
                     <mat-form-field appearance="outline" class="my-2 w-100">
-                        <mat-label>Select Loans and Advances</mat-label>
+                        <mat-label [selected] [disabled]>Select Loans and Advances</mat-label>
                         <mat-select formControlName="loanAndAdvance">
-                            <mat-option *ngFor="let loanAdvance of userloanAdvances" [value]="loanAdvance._id">
+                            <mat-option *ngFor="let loanAdvance of userloanAdvances" [value]="loanAdvance?._id">
                                 {{ loanAdvance?.loanAdvancesCategory?.name }}
                             </mat-option>
                         </mat-select>
@@ -89,29 +89,29 @@
                     </mat-form-field>
                 </div>
 
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-6" *ngIf="loanAdvanceForm.get('type').value != 'Repayment'">
                     <mat-form-field appearance="outline" class="my-2 w-100">
                         <mat-label>Enter Disbursement Amount</mat-label>
-                        <input matInput type="number" formControlName="disbursementAmount">
-                        <mat-error *ngIf="loanAdvanceForm.get('disbursementAmount')?.invalid && loanAdvanceForm.get('disbursementAmount')?.touched">
+                        <input matInput type="number" formControlName="disbursementAmount"
+                            [readonly]="loanAdvanceForm.get('type').value === 'Disbursement'">
+                        <mat-error
+                            *ngIf="loanAdvanceForm.get('disbursementAmount')?.invalid && loanAdvanceForm.get('disbursementAmount')?.touched">
                             Disbursement Amount must be greater than 0.
                         </mat-error>
                     </mat-form-field>
                 </div>
 
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-6" *ngIf="loanAdvanceForm.get('type').value === 'Repayment'">
                     <mat-form-field appearance="outline" class="my-2 w-100">
-                        <mat-label>Status for Loan/Advance Payroll</mat-label>
-                        <mat-select formControlName="status">
-                            <mat-option value="Pending">Pending</mat-option>
-                            <mat-option value="Approved">Approved</mat-option>
-                        </mat-select>
+                        <mat-label>Repayment Amount</mat-label>
+                        <input matInput type="number" formControlName="amount" readonly>
                     </mat-form-field>
                 </div>
             </div>
             <div class="d-flex justify-content-between mt-3">
                 <button type="button" (click)="closeDialog()" mat-raised-button>Cancel</button>
-                <button type="submit" class="addBtn" mat-raised-button>Save</button>
+                <button type="submit" mat-raised-button
+                   >Save</button>
             </div>
         </form>
     </div>
