@@ -35,23 +35,20 @@ export class AddExpenseComponent {
     public expenseService: ExpensesService,
     private fb: FormBuilder,
     private toast: ToastrService,) {
-   
+
   }
 
-  initForm(){
+  initForm() {
     this.addExpenseForm = this.fb.group({
       employee: [this.selfExpense ? this.currentUser.id : '', Validators.required],
       title: ['', Validators.required],
       status: [''],
-      amount: [''],
+      amount: [0],
       expenseReportExpenses: []
     });
-  }
-
-  ngOnInit() {
-    this.initForm();
-    this.expenseService.changeMode.next(this.changeMode)
+    this.expenseService.changeMode.next(this.changeMode);
     if (this.changeMode !== 'Add') {
+      console.log(this.expenseService.selectedReport.getValue())
       const { employee, title, amount, status } = this.expenseService.selectedReport.getValue();
       this.addExpenseForm.patchValue({
         employee: employee,
@@ -59,13 +56,20 @@ export class AddExpenseComponent {
         amount: amount,
         status: status
       });
-      this.getExpenseReportExpensesByReportId();
     }
+  }
+
+  ngOnInit() {
+    this.initForm();
+    this.getUsers();
+    this.getCategoryByUser();
+    this.getAllCatgeories();
+  }
+  
+  getUsers(){
     this.commonService.populateUsers().subscribe((res: any) => {
       this.users = res.data.data;
     });
-    this.getCategoryByUser();
-    this.getAllCatgeories();
   }
 
   getAllCatgeories() {
@@ -79,6 +83,11 @@ export class AddExpenseComponent {
   }
   openSecondModal(isEdit: boolean) {
     this.isEdit = isEdit;
+    const selectedReport = this.expenseService.selectedReport.getValue();
+    if (selectedReport) {
+      selectedReport.expenseReportExpense = this.expenseReportExpenses;
+      this.expenseService.selectedReport.next(selectedReport);
+    }
     const dialogRef = this.dialog.open(CreateReportComponent, {
       width: '50%',
       data: { isEdit: this.isEdit }
@@ -87,6 +96,8 @@ export class AddExpenseComponent {
       const id = this.expenseService.selectedReport.getValue();
       this.expenseService.getExpenseReportExpensesByReportId(id._id).subscribe((res: any) => {
         this.expenseReportExpenses = res.data;
+        this.setCalculcatedExpenseAmount();
+        this.createReport();
       })
     });
   }
@@ -114,7 +125,6 @@ export class AddExpenseComponent {
 
   closeModal() {
     this.close.emit(true);
-    this.updateExpenseReportTable.emit();
   }
 
   getCategoryByUser() {
@@ -126,9 +136,9 @@ export class AddExpenseComponent {
         this.expenseService.tempAndCat.next(res);
         if (res?.details?.length) {
           this.validations = res.details[0];
-          this.addExpenseForm.get('amount').setValidators([Validators.max(this.validations.maximumAmountPerExpense)]);
-        } else {
-          this.addExpenseForm.get('amount').setValidators(null);
+          if(this.changeMode !== 'Add'){
+            this.getExpenseReportExpensesByReportId();
+          }
         }
         if (!res || res.data == null) {
           this.noCategoryError = true;
@@ -140,7 +150,7 @@ export class AddExpenseComponent {
     let payload = {
       employee: this.selfExpense ? this.currentUser.id : this.addExpenseForm.value.employee,
       title: this.addExpenseForm.value.title,
-      amount: this.addExpenseForm.value.amount,
+      amount: this.addExpenseForm.getRawValue().amount,
       status: 'Level 1 Approval Pending',
       expenseReportExpenses: []
     }
@@ -151,9 +161,9 @@ export class AddExpenseComponent {
     if (this.addExpenseForm.valid) {
       if (this.changeMode == 'Add' && !this.reportId) {
         this.expenseService.addExpensePendingReport(payload).subscribe((res: any) => {
-          this.toast.success('Expense Template Applicable Category Added Successfully!');
           this.expenseService.selectedReport.next(res.data.expenseReport);
           this.reportId = res.data.expenseReport._id;
+          this.toast.success('Expense Template Applicable Category Added Successfully!');
         },
           err => {
             this.toast.error('Expense Template Applicable Category Can not be Added', 'ERROR!');
@@ -163,8 +173,8 @@ export class AddExpenseComponent {
       else {
         let id = this.expenseService.selectedReport.getValue()._id
         this.expenseService.updateExpenseReport(id, payload).subscribe((res: any) => {
-          this.expenseService.selectedReport.next(res.data.expenseReport);
-          this.toast.success('Expense Template  Updated Successfully!');
+          this.expenseService.selectedReport.next(res.data);
+          this.toast.success('Expense Template Updated Successfully!');
         },
           err => {
             this.toast.error('Expense Template Applicable Category Can not be Updated', 'ERROR!')
@@ -184,7 +194,7 @@ export class AddExpenseComponent {
   }
 
   getCategoryLabel(expenseCategoryId: string): string {
-    const matchingCategory = this.allCategories.find(category => category._id === expenseCategoryId);
+    const matchingCategory = this.allCategories?.find(category => category._id === expenseCategoryId);
     return matchingCategory ? matchingCategory.label : '';
   }
 
@@ -219,7 +229,19 @@ export class AddExpenseComponent {
     if (this.changeMode === 'Update') {
       this.expenseService.getExpenseReportExpensesByReportId(this.reportId).subscribe((res: any) => {
         this.expenseReportExpenses = res.data;
+        this.setCalculcatedExpenseAmount();
       })
+    }
+  }
+
+  setCalculcatedExpenseAmount(){
+    if (this.expenseReportExpenses.length > 0 && !this.validations?.expenseTemplate?.advanceAmount) {
+      this.addExpenseForm.get('amount').setValue(0);
+      this.addExpenseForm.get('amount').disable();
+      this.addExpenseForm.get('amount').updateValueAndValidity();
+    } else {
+      this.addExpenseForm.get('amount').enable();
+      this.addExpenseForm.get('amount').updateValueAndValidity();
     }
   }
 }

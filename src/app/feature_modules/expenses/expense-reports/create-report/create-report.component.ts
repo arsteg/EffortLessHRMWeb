@@ -1,12 +1,13 @@
-import { Component, Output, EventEmitter, Input, Inject, ChangeDetectorRef } from '@angular/core';
+import { Component, Output, EventEmitter, Input, Inject, DestroyRef, inject } from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialogRef,
 } from '@angular/material/dialog';
 import { ExpensesService } from 'src/app/_services/expenses.service';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { attachments } from 'src/app/models/expenses';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-create-report',
@@ -39,6 +40,8 @@ export class CreateReportComponent {
   @Input() changeMode: string;
   user = JSON.parse(localStorage.getItem('currentUser'));
   @Output() expenseReportExpensesEmitter = new EventEmitter<any>();
+  private readonly destroyRef = inject(DestroyRef);
+  expenseData: any;
 
   constructor(public expenseService: ExpensesService,
     private fb: FormBuilder,
@@ -67,6 +70,7 @@ export class CreateReportComponent {
   }
 
   ngOnInit() {
+    this.initChanges();
     this.isEdit = this.data ? this.data.isEdit : false;
     const user = this.expenseService.tabIndex.getValue() === 1 ? this.user.id : this.expenseService.selectedUser.getValue();
     if (this.isEdit) {
@@ -76,13 +80,18 @@ export class CreateReportComponent {
         this.categories = res.data;
       });
     }
-    this.updateTotalRate();
+  }
+
+  initChanges() {
+    this.expenseReportform.get('amount').valueChanges.subscribe((value: string) => {
+      this.setPermissions();
+    });
   }
 
   loadExpenseReportData() {
     const expenseFieldsArray = this.expenseReportform.get('expenseReportExpenseFields') as FormArray;
     expenseFieldsArray.clear();
-    this.expenseService.expenseReportExpense.subscribe(res => {
+    this.expenseService.expenseReportExpense.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(res => {
       this.expenseReportform.patchValue({
         expenseCategory: res?.expenseCategory,
         incurredDate: res?.incurredDate,
@@ -104,7 +113,6 @@ export class CreateReportComponent {
 
   onSubmission() {
     const payload = this.createPayload();
-
     if (this.selectedFiles.length > 0) {
       this.processAttachments(payload);
     } else {
@@ -157,11 +165,11 @@ export class CreateReportComponent {
     this.expenseService.updateExpenseReportExpenses(expenseReportExpId, payload).subscribe(
       (result: any) => {
         this.expenseService.expenseReportExpense.next(result.data);
-        this.toast.success('Expense Report of Expenses is Updated!', 'Successfully!!!');
+        this.toast.success('Expenses are updated!');
         this.dialogRef.close();
       },
       (err) => {
-        this.toast.error('This expense report of expenses cannot be Updated!', 'Error');
+        this.toast.error(err || 'This expense report of expenses cannot be updated!');
       }
     );
   }
@@ -173,12 +181,12 @@ export class CreateReportComponent {
     this.expenseService.addExpenseReportExpenses(payload).subscribe(
       (result: any) => {
         this.expenseService.expenseReportExpense.next(result.data);
-        this.toast.success('Expense Report of Expenses is Created!', 'Successfully!!!');
+        this.toast.success('Expenses are added!');
         this.dialogRef.close();
         this.closeModal();
       },
       (err) => {
-        this.toast.error('This expense report of expenses can not be Added!', 'Error');
+        this.toast.error(err || 'This expense report of expenses can not be added!');
       }
     );
   }
@@ -248,10 +256,49 @@ export class CreateReportComponent {
     this.expenseService.getExpenseCategoryByUser(user).subscribe((response: any) => {
       const results = response.details;
       this.categories = response.data;
-      this.expenseService.getApplicableFieldByTemplateAndCategory(results[0]?.expenseTemplate, categoryId).subscribe((res: any) => {
+      this.expenseService.getApplicableFieldByTemplateAndCategory(results[0]?.expenseTemplate._id, categoryId).subscribe((res: any) => {
         this.applicableCategoryFields = res.data['expenseTemplateCategoryFieldValues'];
+        this.expenseData = res.data;
+        this.setPermissions();
       });
     });
+  }
+
+  setPermissions() {
+    let report = this.expenseService.selectedReport.getValue();
+    if (this.expenseData?.expenseTemplate?.applyforSameCategorySamedate) {
+      if (report?.expenseReportExpense?.length) {
+        const sameDateRecord = report.expenseReportExpense.find((expense) => {
+          return expense.incurredDate === new Date(this.expenseReportform.value.incurredDate)?.toISOString() &&
+            expense.expenseCategory === this.expenseReportform.value.expenseCategory &&
+            expense._id !== this.expenseReportform.value.expenseReport;
+        });
+        if (sameDateRecord) {
+          this.expenseReportform.get('incurredDate').setErrors({ 'duplicate': true });
+        }
+      }
+    }
+
+    // Max amount permission
+    if (this.expenseData?.isMaximumAmountPerExpenseSet) {
+      let maxAmount = this.expenseData.maximumAmountPerExpense;
+      if (this.expenseReportform.get('amount').value > maxAmount) {
+        this.expenseReportform.get('amount').setErrors({ 'exceeds': true });
+      } else {
+        this.expenseReportform.get('amount').setErrors(null);
+      }
+    }
+    // Max amount without receipt
+    if (this.expenseData?.isMaximumAmountWithoutReceiptSet) {
+      let maxAmount = this.expenseData.maximumAmountWithoutReceipt;
+      if (this.expenseReportform.get('amount').value > maxAmount) {
+        this.expenseReportform.get('expenseAttachments').setValidators([Validators.required]);
+        this.expenseReportform.get('expenseAttachments').updateValueAndValidity();
+      } else {
+        this.expenseReportform.get('expenseAttachments').setValidators([]);
+        this.expenseReportform.get('expenseAttachments').updateValueAndValidity();
+      }
+    }
   }
 
   populateExpenseFieldsArray(isEdit: boolean) {
@@ -283,5 +330,7 @@ export class CreateReportComponent {
   updateTotalRate() {
     const quantity = this.expenseReportform.get('quantity').value;
     this.totalRate = this.selectedRate * quantity;
+    this.expenseReportform.patchValue({ amount: this.totalRate });
+    this.setPermissions();
   }
 }
