@@ -29,7 +29,8 @@
               <mat-slide-toggle formControlName="isMaximumAmountPerExpenseSet"></mat-slide-toggle>
             </div>
             <mat-form-field class="ms-4">
-              <input type="number" matInput formControlName="maximumAmountPerExpense" [attr.disabled]="!categoryCtrl.get('isMaximumAmountPerExpenseSet').value ? true : null">
+              <input type="number" matInput formControlName="maximumAmountPerExpense"
+                [attr.disabled]="!categoryCtrl.get('isMaximumAmountPerExpenseSet').value ? true : null">
             </mat-form-field>
           </div>
 
@@ -39,7 +40,8 @@
               <mat-slide-toggle formControlName="isMaximumAmountWithoutReceiptSet"></mat-slide-toggle>
             </div>
             <mat-form-field class="ms-4">
-              <input type="number" matInput formControlName="maximumAmountWithoutReceipt" [attr.disabled]="!categoryCtrl.get('isMaximumAmountWithoutReceiptSet').value ? true : null">
+              <input type="number" matInput formControlName="maximumAmountWithoutReceipt"
+                [attr.disabled]="!categoryCtrl.get('isMaximumAmountWithoutReceiptSet').value ? true : null">
             </mat-form-field>
           </div>
 
@@ -66,7 +68,8 @@
               <mat-slide-toggle formControlName="isEmployeeCanAddInTotalDirectly"></mat-slide-toggle>
             </div>
             <mat-form-field class="ms-4">
-              <input type="number" matInput formControlName="expiryDay" [attr.disabled]="!categoryCtrl.get('isEmployeeCanAddInTotalDirectly').value ? true : null">
+              <input type="number" matInput formControlName="expiryDay"
+                [attr.disabled]="!categoryCtrl.get('isEmployeeCanAddInTotalDirectly').value ? true : null">
             </mat-form-field>
           </div>
 
@@ -76,12 +79,14 @@
               <input type="number" matInput formControlName="maximumExpensesCanApply">
             </mat-form-field>
           </div>
-          
+          }
+
           <div class="d-flex">
-            <button class="ms-auto" mat-stroked-button color="secondary" type="button" (click)="addField(i)">Add Fields</button>
+            <button class="ms-auto" mat-stroked-button color="secondary" type="button" (click)="addField(i)">Add
+              Fields</button>
           </div>
           @if(!categoryCtrl.get('expenseTemplateCategoryFieldValues').value.length){
-            <div class="text-danger">Please add at least one field.</div>
+          <div class="text-danger">Please add at least one field.</div>
           }
           <div formArrayName="expenseTemplateCategoryFieldValues">
             <div *ngIf="i === stepper.selectedIndex">
@@ -93,28 +98,28 @@
                       <mat-label>Label</mat-label>
                       <input matInput formControlName="label" placeholder="Label" required>
                       @if(fieldCtrl.get('label').invalid && fieldCtrl.get('label').touched){
-                        <mat-error>
-                          Please enter label.
-                        </mat-error>
+                      <mat-error>
+                        Please enter label.
+                      </mat-error>
                       }
                     </mat-form-field>
 
                     @if(categoryCtrl.get('categoryType').value === 'distance'){
-                      <mat-form-field>
-                        <mat-select formControlName="type" required>
-                          <mat-option value="km">KM</mat-option>
-                          <mat-option value="miles">Miles</mat-option>
-                        </mat-select>
-                      </mat-form-field>
+                    <mat-form-field>
+                      <mat-select formControlName="type" required>
+                        <mat-option value="km">KM</mat-option>
+                        <mat-option value="miles">Miles</mat-option>
+                      </mat-select>
+                    </mat-form-field>
                     }
 
                     <mat-form-field>
                       <mat-label>Rate</mat-label>
                       <input matInput type="number" placeholder="Rate" formControlName="rate" required>
                       @if(fieldCtrl.get('rate').invalid && fieldCtrl.get('rate').touched){
-                        <mat-error>
-                          Please enter rate.
-                        </mat-error>
+                      <mat-error>
+                        Please enter rate.
+                      </mat-error>
                       }
                     </mat-form-field>
 
@@ -126,91 +131,92 @@
               </div>
             </div>
           </div>
-          }
 
           <div class="mt-3">
             @if(i>0){
-                <button mat-button matStepperPrevious color="primary">Back</button>
+            <button mat-button matStepperPrevious color="primary">Back</button>
             }
             <button mat-stroked-button matStepperNext color="accent">Next</button>
           </div>
         </form>
       </mat-step>
     </ng-container>
-      <mat-step>
-        <ng-template matStepLabel>Review</ng-template>
-    
-        @for(categoryCtrl of firstForm?.get('expenseCategories')?.controls; track categoryCtrl; let i = $index){
-          <!-- {{categoryCtrl.value | json}} -->
-          <div class="mb-2">
-            <h4 class="mb-1 fw-bold text-dark">{{ getCategoryLabel(categoryCtrl.value._id)}}</h4>
-            <ul class="list-group border border-warning">
-              @if(categoryCtrl.get('categoryType').value == 'dateRange'){
-                <li class="list-group-item p-1 d-flex justify-content-between">
-                  Would you like the employee to enter Total Expense amount in an expense application? <b>{{categoryCtrl.value['isEmployeeCanAddInTotalDirectly']}}</b>
-                </li>
-                <li class="list-group-item p-1 d-flex justify-content-between">
-                  Rate per day <b>{{categoryCtrl.value['ratePerDay']}}</b>
-                </li>
+    <mat-step>
+      <ng-template matStepLabel>Review</ng-template>
+
+      @for(categoryCtrl of firstForm?.get('expenseCategories')?.controls; track categoryCtrl; let i = $index){
+      <!-- {{categoryCtrl.value | json}} -->
+      <div class="mb-2">
+        <h4 class="mb-1 fw-bold text-dark">{{ getCategoryLabel(categoryCtrl.value._id)}}</h4>
+        <ul class="list-group border border-warning">
+          @if(categoryCtrl.get('categoryType').value == 'dateRange'){
+          <li class="list-group-item p-1 d-flex justify-content-between">
+            Would you like the employee to enter Total Expense amount in an expense application?
+            <b>{{categoryCtrl.value['isEmployeeCanAddInTotalDirectly']}}</b>
+          </li>
+          <li class="list-group-item p-1 d-flex justify-content-between">
+            Rate per day <b>{{categoryCtrl.value['ratePerDay']}}</b>
+          </li>
+          }
+          @if(categoryCtrl.value['isMaximumAmountPerExpenseSet']){
+          <li class="list-group-item p-1 d-flex justify-content-between">
+            Maximum amount limit per individual expense <b>{{categoryCtrl.value['maximumAmountPerExpense']}}</b>
+          </li>
+          }
+          @if(categoryCtrl.value['isMaximumAmountWithoutReceiptSet']){
+          <li class="list-group-item p-1 d-flex justify-content-between">
+            Maximum amount permitted per expense without receipt
+            <b>{{categoryCtrl.value['maximumAmountWithoutReceipt']}}</b>
+          </li>
+          }
+          @if(categoryCtrl.get('categoryType').value != 'dateRange'){
+          @if(categoryCtrl.value['isTimePeroidSet']){
+          <li class="list-group-item p-1 d-flex justify-content-between">
+            Times in a <b>{{categoryCtrl.value['timePeroid']}}</b>
+          </li>
+          }
+          <li class="list-group-item p-1 d-flex justify-content-between">
+            Expense will expire Days after incurred date <b>{{categoryCtrl.value['expiryDay']}}</b>
+          </li>
+          <li class="list-group-item p-1 d-flex justify-content-between">
+            An employee can apply maximum <b>{{categoryCtrl.value['maximumExpensesCanApply']}}</b>
+          </li>
+          }
+        </ul>
+        @if(categoryCtrl.get('expenseTemplateCategoryFieldValues').controls.length){
+        <table class="mt-2 table table-bordered table-sm">
+          <thead>
+            <tr>
+              <th>Label</th>
+              @if(categoryCtrl.get('categoryType').value === 'distance'){
+              <th>Type</th>
               }
-              @if(categoryCtrl.value['isMaximumAmountPerExpenseSet']){
-                <li class="list-group-item p-1 d-flex justify-content-between">
-                  Maximum amount limit per individual expense <b>{{categoryCtrl.value['maximumAmountPerExpense']}}</b>
-                </li>
+              <th>Rate</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for(field of categoryCtrl.get('expenseTemplateCategoryFieldValues').controls; track field;){
+            <tr>
+              <td>{{field.value.label}}</td>
+              @if(categoryCtrl.get('categoryType').value === 'distance'){
+              <td>{{field.value.type}}</td>
               }
-              @if(categoryCtrl.value['isMaximumAmountWithoutReceiptSet']){
-                <li class="list-group-item p-1 d-flex justify-content-between">
-                  Maximum amount permitted per expense without receipt <b>{{categoryCtrl.value['maximumAmountWithoutReceipt']}}</b>
-                </li>
-              }
-              @if(categoryCtrl.get('categoryType').value != 'dateRange'){
-                @if(categoryCtrl.value['isTimePeroidSet']){
-                  <li class="list-group-item p-1 d-flex justify-content-between">
-                    Times in a  <b>{{categoryCtrl.value['timePeroid']}}</b>
-                  </li>
-                }
-                <li class="list-group-item p-1 d-flex justify-content-between">
-                  Expense will expire Days after incurred date  <b>{{categoryCtrl.value['expiryDay']}}</b>
-                </li>
-                <li class="list-group-item p-1 d-flex justify-content-between">
-                  An employee can apply maximum <b>{{categoryCtrl.value['maximumExpensesCanApply']}}</b>
-                </li>
-              }
-            </ul>
-            @if(categoryCtrl.get('expenseTemplateCategoryFieldValues').controls.length){
-              <table class="mt-2 table table-bordered table-sm">
-                <thead>
-                  <tr>
-                    <th>Label</th>
-                    @if(categoryCtrl.get('categoryType').value === 'distance'){
-                      <th>Type</th>
-                    }
-                    <th>Rate</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @for(field of categoryCtrl.get('expenseTemplateCategoryFieldValues').controls; track field;){
-                    <tr>
-                      <td>{{field.value.label}}</td>
-                      @if(categoryCtrl.get('categoryType').value === 'distance'){
-                        <td>{{field.value.type}}</td>
-                      }
-                      <td>{{field.value.rate}}</td>
-                    </tr>
-                  }
-                </tbody>
-              </table>
+              <td>{{field.value.rate}}</td>
+            </tr>
             }
-          </div>
+          </tbody>
+        </table>
         }
-        <div class="mt-3">
-          <button mat-button matStepperPrevious color="primary">Back</button>
-        </div>
-      </mat-step>
-    </mat-vertical-stepper>
+      </div>
+      }
+      <div class="mt-3">
+        <button mat-button matStepperPrevious color="primary">Back</button>
+      </div>
+    </mat-step>
+  </mat-vertical-stepper>
   } @else {
-    <h2>Loading...</h2>
-    <p>Please wait while categories are loading.</p>
+  <h2>Loading...</h2>
+  <p>Please wait while categories are loading.</p>
   }
 </div>
 <div mat-dialog-actions>

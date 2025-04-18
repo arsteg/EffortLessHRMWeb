@@ -192,7 +192,7 @@ export class PendingComponent {
   }
 
   calculateTotalAmount(expenseReport: any): number {
-    return expenseReport.expenseReportExpense?.reduce((total, expense) => total + expense.amount, 0) || 0;
+    return expenseReport.expenseReportExpense?.reduce((total, expense) => total + expense.amount, 0) + parseFloat(expenseReport.amount) || 0;
   }
 
   calculateTotalisReimbursable(expenseReport: any, isReimbursable: boolean, isBillable: boolean): number {

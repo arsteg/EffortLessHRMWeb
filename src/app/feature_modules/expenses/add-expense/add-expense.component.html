@@ -30,14 +30,17 @@
         </mat-form-field>
 
         <mat-form-field class="w-100">
-            <mat-label>Amount for expense report</mat-label>
+            <mat-label>
+                @if(validations?.expenseTemplate?.advanceAmount){
+                    Advance amount (if any)
+                } @else {
+                    Amount for expense report
+                }
+            </mat-label>
             <input type="number" matInput formControlName="amount" placeholder="Enter amount" required>
             <mat-error *ngIf="addExpenseForm.get('amount').invalid && addExpenseForm.get('amount').touched">
                 @if(addExpenseForm.get('amount').errors['required']){
                 Please add amount.
-                }
-                @if(addExpenseForm.get('amount').errors['max']){
-                Can not enter amount more than {{this.validations.maximumAmountPerExpense}}.
                 }
             </mat-error>
         </mat-form-field>
@@ -92,11 +95,11 @@
                     <td mat-cell *matCellDef="let expenseReportExp">
                         <button mat-stroked-button type="button" [disabled]="!expenseReportExp?._id"
                             (click)="openSecondModal(true); getSelectedExpenseReportExpense(expenseReportExp)"
-                            matTooltipPosition="before" class="w-100 mt-1">
+                            class="me-1">
                             Edit
                         </button>
                         <button mat-stroked-button type="button" [disabled]="!expenseReportExp?._id"
-                            (click)="deleteExpenseReportExpense(expenseReportExp?._id)" color="warn" class="w-100 mb-1">
+                            (click)="deleteExpenseReportExpense(expenseReportExp?._id)" color="warn" class="me-1">
                             Delete
                         </button>
                     </td>
