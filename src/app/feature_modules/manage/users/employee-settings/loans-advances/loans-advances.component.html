@@ -38,6 +38,11 @@
                 <td mat-cell *matCellDef="let data">{{data?.monthlyInstallment}}</td>
             </ng-container>
 
+            <ng-container matColumnDef="remianingInstallment">
+                <th mat-header-cell *matHeaderCellDef>Remaining&nbsp;Installment</th>
+                <td mat-cell *matCellDef="let data">{{data?.remianingInstallment}}</td>
+            </ng-container>
+
             <ng-container matColumnDef="amount">
                 <th mat-header-cell *matHeaderCellDef>Total&nbsp;Amount</th>
                 <td mat-cell *matCellDef="let data">{{data?.amount}}</td>
@@ -60,8 +65,8 @@
                 </td>
             </ng-container>
 
-            <tr mat-header-row *matHeaderRowDef="['loanAdvancesCategory', 'noOfInstallment', 'monthlyInstallment', 'amount', 'status', 'actions']"></tr>
-            <tr mat-row *matRowDef="let row; columns: ['loanAdvancesCategory', 'noOfInstallment', 'monthlyInstallment', 'amount', 'status', 'actions'];"></tr>
+            <tr mat-header-row *matHeaderRowDef="['loanAdvancesCategory', 'noOfInstallment', 'monthlyInstallment','remianingInstallment', 'amount', 'status', 'actions']"></tr>
+            <tr mat-row *matRowDef="let row; columns: ['loanAdvancesCategory', 'noOfInstallment', 'monthlyInstallment','remianingInstallment', 'amount', 'status', 'actions'];"></tr>
         </table>
     </div>
 </div>

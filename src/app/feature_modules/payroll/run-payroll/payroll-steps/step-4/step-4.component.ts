@@ -166,8 +166,10 @@ export class Step4Component {
           this.toast.success('Loan/Advance created', 'Successfully!');
           this.closeDialog();
         },
-        (err) => {
-          this.toast.error('Loan/Advance cannot be created', 'Error!');
+        (err) => {        
+          const errorMessage = err?.error?.message || err?.message || err 
+          || 'Something went wrong.';
+          this.toast.error(errorMessage, 'Error!');
         }
       );
     }
@@ -225,7 +227,9 @@ export class Step4Component {
         this.toast.success('Successfully Deleted!!!', 'Loan/Advance');
       },
       (err) => {
-        this.toast.error('This Loan/Advance cannot be deleted!');
+        const errorMessage = err?.error?.message || err?.message || err 
+          || 'Something went wrong.';
+          this.toast.error(errorMessage, 'Error!');
       }
     );
   }

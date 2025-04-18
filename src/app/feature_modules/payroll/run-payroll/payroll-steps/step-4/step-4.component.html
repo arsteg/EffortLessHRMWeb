@@ -21,7 +21,6 @@
             <th>Loan Category</th>
             <th>Total Amount</th>
             <th>Disbursed Amount</th>
-            <th>Status</th>
             <th>Actions</th>
         </thead>
         <tbody>
@@ -30,17 +29,11 @@
                 <td>{{data?.loanAndAdvance?.loanAdvancesCategory?.name}}</td>
                 <td>{{data?.amount}}</td>
                 <td>{{data?.disbursementAmount}}</td>
-                <td>{{data?.status}}</td>
                 <td>
                     <button mat-icon-button [matMenuTriggerFor]="menu">
                         <mat-icon>more_vert</mat-icon>
                     </button>
-                    <mat-menu #menu="matMenu">
-                        <button mat-menu-item
-                            (click)="selectedRecord = data; changeMode = 'Update'; setFormValues(data); openDialog()">
-                            <mat-icon>edit</mat-icon>
-                            <span>Edit</span>
-                        </button>
+                    <mat-menu #menu="matMenu">                        
                         <button mat-menu-item (click)="deleteDialog(data?._id)">
                             <mat-icon>delete</mat-icon>
                             <span>Delete</span>

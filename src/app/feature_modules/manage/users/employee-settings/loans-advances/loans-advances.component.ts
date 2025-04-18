@@ -84,7 +84,9 @@ export class UserLoansAdvancesComponent {
       this.loadRecords();
       this.toast.success('Successfully Deleted!!!', 'Loan/Advance')
     }, (err) => {
-      this.toast.error('This Loan/Advance Can not be deleted!', 'Error!')
+      const errorMessage = err?.error?.message || err?.message || err 
+          || 'Something went wrong.';
+          this.toast.error(errorMessage, 'Error!');
     })
   }
 
@@ -112,7 +114,9 @@ export class UserLoansAdvancesComponent {
         this.loansAdvancesForm.reset();
         this.toast.success('Successfully Added!!!', 'Loan/Advance')
       }, err => {
-        this.toast.error('This Loan/Advance Can not be added!', 'Error!')
+        const errorMessage = err?.error?.message || err?.message || err 
+        || 'Something went wrong.';
+        this.toast.error(errorMessage, 'Error!');
       })
     } else if (this.isEdit) {
       this.loansAdvancesForm.get('amount').enable();
@@ -122,7 +126,9 @@ export class UserLoansAdvancesComponent {
         this.loansAdvancesForm.reset();
         this.toast.success('Successfully Updated!!!', 'Loan/Advance')
       }, err => {
-        this.toast.error('This Loan/Advance Can not be Updated!', 'Error!')
+        const errorMessage = err?.error?.message || err?.message || err 
+        || 'Something went wrong.';
+        this.toast.error(errorMessage, 'Error!');
       })
     }
     this.loansAdvancesForm.get('amount').disable();
