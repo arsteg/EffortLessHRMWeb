@@ -54,7 +54,7 @@ export class GeneralTemplateSettingsComponent {
       minimumMinutesRequiredPerWeek: [0, Validators.required],
       notifyEmployeeMinHours: [true, Validators.required],
       isShortTimeLeaveDeductible: [true, Validators.required],
-      weeklyOfDays: [null],
+      weeklyOfDays: [[], Validators.required],
       weklyofHalfDay: [null],
       alternateWeekOffRoutine: ['none', Validators.required],
       daysForAlternateWeekOffRoutine: [null],
@@ -194,8 +194,16 @@ export class GeneralTemplateSettingsComponent {
   onDaysChange(event: any, day: string, type: string) {
     let selectedDays: string[];
     if (type === 'weeklyOfDays') {
-      selectedDays = this.selectedWeeklyDays;
-      this.addTemplateForm.patchValue({ weeklyOfDays: selectedDays });
+      const index = this.selectedWeeklyDays.indexOf(day);
+      if (event.target.checked && index === -1) {
+        this.selectedWeeklyDays.push(day);
+      } else if (!event.target.checked && index > -1) {
+        this.selectedWeeklyDays.splice(index, 1);
+      }
+  
+      this.addTemplateForm.get('weeklyOfDays')?.setValue(this.selectedWeeklyDays);
+      this.addTemplateForm.get('weeklyOfDays')?.markAsTouched();
+      this.addTemplateForm.get('weeklyOfDays')?.updateValueAndValidity();
     } else if (type === 'weklyofHalfDay') {
       selectedDays = this.selectedHalfDays;
       this.addTemplateForm.patchValue({ weklyofHalfDay: selectedDays });
