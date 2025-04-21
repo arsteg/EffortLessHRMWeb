@@ -51,6 +51,8 @@ import { ExpensesRoutingModule } from './expenses-routing.module';
 import { ApproveDialogComponent } from './expense-reports/pending/approve-dialog.component';
 import { RejectDialogComponent } from './expense-reports/pending/reject-dialog.component';
 import {AddExpenseComponent} from './add-expense/add-expense.component';
+import { TranslateModule } from '@ngx-translate/core';
+// import { EffortlessTranslateModule } from 'src/app/translate/translate.module';
 
 @NgModule({
   declarations: [
@@ -108,7 +110,7 @@ import {AddExpenseComponent} from './add-expense/add-expense.component';
     MatRadioModule,
     MatTooltipModule,
     NgbModule,
-    ExpensesRoutingModule
+    ExpensesRoutingModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

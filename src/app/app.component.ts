@@ -24,7 +24,9 @@ export class AppComponent {
      // Use browser language if supported, else fallback to default
     const browserLang = translate.getBrowserLang();
     const langToUse = savedLang || (browserLang && translate.getLangs().includes(browserLang) ? browserLang : 'en');
-    translate.use(browserLang && translate.getLangs().includes(browserLang) ? browserLang : 'en');
+    translate.use(langToUse).subscribe(() => {
+      console.log('Language initialized:', langToUse);
+    });
 
   }
   ngOnInit() {
