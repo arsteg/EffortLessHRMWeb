@@ -174,9 +174,10 @@ export class TerminationComponent {
               this.saveTermination(); // If assets are fine, proceed
             }
           },
-          (error) => {
-            console.error('Asset Fetch Error:', error);
-            this.toast.error('Failed to verify assigned assets', 'Error');
+          (err) => {
+            const errorMessage = err?.error?.message || err?.message || err 
+          || 'Failed to verify assigned assets';
+          this.toast.error(errorMessage, 'Error!');
           }
         );
       } else {
@@ -200,7 +201,9 @@ export class TerminationComponent {
         this.closeDialog();
       },
         err => {
-          this.toast.error('Termination cannot be added', 'Error');
+          const errorMessage = err?.error?.message || err?.message || err 
+          || 'Termination cannot be added.';
+          this.toast.error(errorMessage, 'Error!');
         });
     }
   }
@@ -220,7 +223,9 @@ export class TerminationComponent {
       this.toast.success('Status Updated Successfully', 'Termination');
     },
       (err) => {
-        this.toast.error('Status Update Failed', 'Error');
+        const errorMessage = err?.error?.message || err?.message || err 
+        || 'Status Update Failed.';
+        this.toast.error(errorMessage, 'Error!');
       });
   }
 
@@ -234,8 +239,9 @@ export class TerminationComponent {
         this.selectedAppeal = appeal.data;
       },
       error: (err) => {
-        console.error('Error fetching appeal:', err);
-        // Optional: Show error message to user
+        const errorMessage = err?.error?.message || err?.message || err 
+          || 'Error fetching appeal.';
+          this.toast.error(errorMessage, 'Error!');
       }
     });
     this.dialogRef = this.dialog.open(this.appealDialog, { disableClose: true });
@@ -276,7 +282,9 @@ export class TerminationComponent {
           this.getTerminations();
         },
         (err) => {
-          this.toast.error(err.error.message || 'Failed to submit appeal', 'Error');
+          const errorMessage = err?.error?.message || err?.message || err 
+          || 'Failed to submit appeal.';
+          this.toast.error(errorMessage, 'Error!');
         }
       );
     }
@@ -295,8 +303,9 @@ export class TerminationComponent {
         this.dialogRef = this.dialog.open(this.reviewAppealDialog, { disableClose: true });
       },
       error: (err) => {
-        console.error('Error fetching appeal:', err);
-        // Optional: Show error message to user
+        const errorMessage = err?.error?.message || err?.message || err 
+          || 'Error fetching appeal.';
+          this.toast.error(errorMessage, 'Error!');
       }
     });
   }
@@ -311,7 +320,9 @@ export class TerminationComponent {
         this.getTerminations();
       },
       (err) => {
-        this.toast.error(err.error.message || 'Review failed', 'Error');
+        const errorMessage = err?.error?.message || err?.message || err 
+        || 'Review failed.';
+        this.toast.error(errorMessage, 'Error!');
       }
     );
   }

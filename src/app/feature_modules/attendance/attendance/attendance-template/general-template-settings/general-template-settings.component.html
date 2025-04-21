@@ -127,7 +127,10 @@
             </ng-container>
         </div>
     </div>
-
+    <div *ngIf="addTemplateForm.get('weeklyOfDays').invalid && addTemplateForm.get('weeklyOfDays').touched"
+    class="text-danger mt-2">
+ At least one day must be selected as Weekly Off.
+</div>
     <div class="form-group my-3">
         <label for="">Which week off is a half day? </label>
         <div class="d-flex justify-content-between">

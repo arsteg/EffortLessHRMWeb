@@ -121,9 +121,10 @@ export class ResignationComponent implements OnInit {
             this.saveResignation(); // Proceed if no assets assigned
           }
         },
-        (error) => {
-          console.error('Asset Fetch Error:', error);
-          this.toast.error('Failed to verify assigned assets', 'Error');
+        (err) => {         
+          const errorMessage = err?.error?.message || err?.message || err 
+          || 'Failed to verify assigned assets.';
+          this.toast.error(errorMessage, 'Error!');
         }
       );
     } else {
@@ -141,7 +142,9 @@ export class ResignationComponent implements OnInit {
             this.dialogRef.close();
           },
           err => {
-            this.toast.error('Resignation cannot be updated', 'Error');
+            const errorMessage = err?.error?.message || err?.message || err 
+          || 'Resignation cannot be updated.';
+          this.toast.error(errorMessage, 'Error!');
           }
         );
       } else {
@@ -153,7 +156,9 @@ export class ResignationComponent implements OnInit {
             this.dialogRef.close();
           },
           err => {
-            this.toast.error('Resignation cannot be added', 'Error');
+            const errorMessage = err?.error?.message || err?.message || err 
+            || 'Resignation cannot be added.';
+            this.toast.error(errorMessage, 'Error!');
           }
         );
       }
@@ -174,10 +179,11 @@ export class ResignationComponent implements OnInit {
             this.dialogRef.close();
           }
         },
-        error: (err) => {
-          console.error('Error fetching job information:', err);
+        error: (err) => {          
           this.resignationForm.patchValue({ notice_period: 'N/A' });
-          this.toast.error('Failed to load notice period', 'Error');
+          const errorMessage = err?.error?.message || err?.message || err 
+          || 'Failed to load notice period';
+          this.toast.error(errorMessage, 'Error!');
         }
       });
     }
@@ -220,7 +226,9 @@ export class ResignationComponent implements OnInit {
       this.toast.success('Status Updated Successfully', 'Resignation');
     },
     (err) => {
-      this.toast.error('Status Update Failed', 'Error');
+      const errorMessage = err?.error?.message || err?.message || err 
+      || 'Status Update Failed';
+      this.toast.error(errorMessage, 'Error!');
     });
   } 
 
@@ -236,7 +244,9 @@ export class ResignationComponent implements OnInit {
         }
       }
       err => {
-        this.toast.error('Can not be Deleted', 'Error!')
+        const errorMessage = err?.error?.message || err?.message || err 
+          || 'Can not be Deleted.';
+          this.toast.error(errorMessage, 'Error!');
       }
     });
   }

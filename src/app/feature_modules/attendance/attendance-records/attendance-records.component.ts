@@ -10,6 +10,8 @@ import { LeaveService } from 'src/app/_services/leave.service';
 import { CompanyService } from 'src/app/_services/company.service';
 import { forkJoin, map } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
+import * as XLSX from 'xlsx';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-attendance-records',
@@ -63,6 +65,7 @@ export class AttendanceRecordsComponent {
     private attendanceService: AttendanceService,
     private leaveService: LeaveService,
     private companyService: CompanyService,
+    private translate: TranslateService,
     private toast: ToastrService
   ) { }
 
@@ -88,51 +91,142 @@ export class AttendanceRecordsComponent {
     this.loadDatesForSelectedMonth();
   }
 
+ 
   downloadAttendance() {
-    const csvContent = this.convertToCSV(this.attendanceData);
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'attendance.csv';
-    link.click();
+    this.translate.get([
+      'attendance.default_headers',
+      'attendance.sheet_names',
+      'attendance.instructions_title',
+      'attendance.note_use_sheet_name',
+      'attendance.note_use_correct_format',
+      'attendance.note_no_column_change',
+      'attendance.note_fields_required',
+      'attendance.note_fill_and_upload',
+      'attendance.instructions_table'
+    ]).subscribe((translations: any) => {
+  
+      // 1. Sheet names from translations
+      const sheetNames = translations['attendance.sheet_names'];
+      const attendanceSheetName = sheetNames['data'];
+      const instructionSheetName = sheetNames['instructions'];
+  
+      // 2. Use headers from translations
+      const defaultAttendanceHeaders = translations['attendance.default_headers'];
+      const attendanceSheet = XLSX.utils.json_to_sheet(
+        this.attendanceData.length ? this.attendanceData : defaultAttendanceHeaders
+      );
+  
+      // 3. Prepare instructions sheet
+      const instructionSheet: any = {};
+      const notes = [
+        translations['attendance.instructions_title'],
+        translations['attendance.note_use_sheet_name'],
+        translations['attendance.note_use_correct_format'],
+        translations['attendance.note_no_column_change'],
+        translations['attendance.note_fields_required'],
+        translations['attendance.note_fill_and_upload']
+      ];
+  
+      notes.forEach((note: string, index: number) => {
+        const cellRef = `A${index + 1}`;
+        instructionSheet[cellRef] = { t: 's', v: note };
+      });
+  
+      // 4. Add instruction table (Field | Data Type | Sample Value)
+      const instructionData = translations['attendance.instructions_table'];
+      XLSX.utils.sheet_add_json(instructionSheet, instructionData, {
+        origin: `A${notes.length + 2}`,
+        skipHeader: false
+      });
+  
+      // 5. Manually define sheet range
+      const totalRows = notes.length + instructionData.length + 3;
+      instructionSheet['!ref'] = `A1:C${totalRows}`;
+  
+      // 6. Create and export workbook
+      const workbook: XLSX.WorkBook = {
+        Sheets: {
+          [attendanceSheetName]: attendanceSheet,
+          [instructionSheetName]: instructionSheet
+        },
+        SheetNames: [attendanceSheetName, instructionSheetName]
+      };
+  
+      const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+      const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+  
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'attendance_template.xlsx';
+      link.click();
+    });
   }
-
-  convertToCSV(data: any[]): string {
-    const header = ['Employee Code', 'Date', 'Start Time', 'End Time'].join(',');
-    const rows = data.map(item =>
-      `"${item.employeeCode}","${item.date}","${item.startTime}","${item.endTime}"`
-    ).join('\n');
-    return `${header}\n${rows}`;
-  }
-
+  
   uploadAttendance(event: any) {
     const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        const csvData = e.target.result;
-        const parsedData = this.parseCSV(csvData);
-        if (parsedData.length === 0) {
-          this.toast.warning('CSV file is empty or invalid.');
-          return;
-        }
-        if (this.validateCSV(parsedData)) {
-          console.log(parsedData);
-          this.attendanceService.uploadAttendanceRecords(parsedData).subscribe(
-            (res: any) => {
-              this.toast.success('CSV file uploaded successfully!');
-            },
-            (error: any) => {
-              this.toast.error('Failed to upload CSV file. Please try again.');
-            }
-          );
-        } else {
-          this.toast.error('Invalid CSV file. Please check the columns and data.');
-        }
-      };
-      reader.readAsText(file, 'UTF-8');
+    if (!file) return;
+  
+    // ✅ 1. Validate file type by extension
+    const allowedExtensions = ['xlsx', 'xls'];
+    const fileExtension = file.name.split('.').pop()?.toLowerCase();
+  
+    if (!fileExtension || !allowedExtensions.includes(fileExtension)) {
+      this.toast.error(this.translate.instant('attendance.invalid_file_type'));
+      return;
     }
-  }
+  
+    const reader = new FileReader();
+  
+    reader.onload = (e: any) => {
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: 'array' });
+  
+      const expectedSheetName = this.translate.instant('attendance.sheet_names.data');
+      const defaultHeaders = this.translate.instant('attendance.default_headers');
+      const expectedHeaders: string[] = Object.keys(defaultHeaders[0]);
+  
+      // ✅ 2. Check if 'Attendance Data' sheet exists
+      if (!workbook.SheetNames.includes(expectedSheetName)) {
+        this.toast.error(this.translate.instant('attendance.sheet_not_found'));
+        return;
+      }
+  
+      const worksheet = workbook.Sheets[expectedSheetName];
+      const parsedData: any[] = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
+  
+      // ✅ 3. Remove empty rows
+      const cleanedData = parsedData.filter(row =>
+        Object.values(row).some(cell => String(cell).trim() !== '')
+      );
+  
+      if (cleanedData.length === 0) {
+        this.toast.warning(this.translate.instant('attendance.excel_empty_or_invalid'));
+        return;
+      }
+  
+      // ✅ 4. Validate headers
+      const fileHeaders = Object.keys(cleanedData[0]);
+      const allHeadersPresent = expectedHeaders.every(h => fileHeaders.includes(h));
+      if (!allHeadersPresent) {
+        this.toast.error(this.translate.instant('attendance.invalid_headers'));
+        return;
+      }
+      // ✅ 5. Proceed with API call
+      this.attendanceService.uploadAttendanceRecords(cleanedData).subscribe(
+        (res: any) => {
+          this.toast.success(this.translate.instant('attendance.upload_success'));
+        },
+        (error: any) => {
+          const errorMessage = error?.error?.message || error?.message || error 
+          ||this.translate.instant('attendance.upload_failed');
+          this.toast.error(errorMessage, 'Error!');
+        }
+      );
+    };
+  
+    reader.readAsArrayBuffer(file);
+  } 
+  
 
   parseCSV(csvData: string): any[] {
     const rows = csvData.split('\n').map(row => row.trim()).filter(row => row);
