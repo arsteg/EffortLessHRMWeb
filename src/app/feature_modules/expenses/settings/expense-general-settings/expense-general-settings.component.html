@@ -1,40 +1,40 @@
-<h1 mat-dialog-title *ngIf="changeMode == 'Next'">Update Expense Template</h1>
-<h1 mat-dialog-title *ngIf="changeMode == 'Add'">Add Expense Template</h1>
+<h1 mat-dialog-title *ngIf="changeMode == 'Next'">{{'expenses.update' | translate}} {{'expenses.expense_template' | translate}}</h1>
+<h1 mat-dialog-title *ngIf="changeMode == 'Add'">{{'expenses.add' | translate}} {{'expenses.expense_template' | translate}}</h1>
 
 <form mat-dialog-content [formGroup]="addTemplateForm" (ngSubmit)="createTemplate()">
     <div class="formBody px-2">
         <mat-form-field class="w-100">
-            <mat-label>Label for expense template</mat-label>
+            <mat-label>{{'expenses.label_for_expense_template' | translate}}</mat-label>
             <input type="text" matInput placeholder="Enter Label" formControlName="policyLabel" required>
             <mat-error *ngIf="addTemplateForm.get('policyLabel').invalid && addTemplateForm.get('policyLabel').touched">
-                Please enter label of expense template.
+                {{'expenses.label_for_expense_template_error' | translate}}
             </mat-error>
         </mat-form-field>
 
         <div class="row mb-4">
             <div class="col-12 col-md-6">
                 <div class="d-flex flex-column">
-                    <mat-label>Levels of approvals<span class="text-danger">*</span></mat-label>
+                    <mat-label>{{'expenses.levels_of_approvals' | translate}}</mat-label>
                     <mat-radio-group formControlName="approvalLevel" required>
-                        <mat-radio-button value="1">1 Level</mat-radio-button>
-                        <mat-radio-button value="2">2 level</mat-radio-button>
+                        <mat-radio-button value="1">{{'expenses.level_1' | translate}}</mat-radio-button>
+                        <mat-radio-button value="2">{{'expenses.level_2' | translate}}</mat-radio-button>
                     </mat-radio-group>
                     <div *ngIf="addTemplateForm.get('approvalLevel').invalid && addTemplateForm.get('approvalLevel').touched"
                         class="text-danger error">
-                        Please select approval levels.
+                        {{ 'expenses.levels_of_approvals_error' | translate }}
                     </div>
                 </div>
             </div>
             <div class="col-12 col-md-6">
                 <div class="d-flex flex-column">
-                    <mat-label>Add approvers<span class="text-danger">*</span></mat-label>
+                    <mat-label>{{'expenses.add_approvers' | translate}}<span class="text-danger">*</span></mat-label>
                     <mat-radio-group formControlName="approvalType" required>
-                        <mat-radio-button value="template-wise">Template Wise</mat-radio-button>
-                        <mat-radio-button value="employee-wise">Employee Wise</mat-radio-button>
+                        <mat-radio-button value="template-wise">{{'expenses.template_wise' | translate}}</mat-radio-button>
+                        <mat-radio-button value="employee-wise">{{'expenses.employee_wise' | translate}}</mat-radio-button>
                     </mat-radio-group>
                     <div *ngIf="addTemplateForm.get('approvalType').invalid && addTemplateForm.get('approvalType').touched"
                         class="text-danger error">
-                        Please select approval type.
+                       {{ 'expenses.add_approvers_error' | translate }}
                     </div>
                 </div>
             </div>
@@ -45,7 +45,7 @@
             *ngIf="addTemplateForm.get('approvalType').value === 'template-wise'">
             <div class="col-md-6">
                 <mat-form-field class="w-100">
-                    <mat-label>First Approver</mat-label>
+                    <mat-label>{{'expenses.first_approver' | translate}}</mat-label>
                     <mat-select formControlName="firstApprovalEmployee" required>
                         <mat-option [value]="user?.id" *ngFor="let user of users; let i = index">{{user?.firstName |
                             titlecase}} {{user.lastName | titlecase}}</mat-option>
@@ -54,7 +54,7 @@
             </div>
             <div class="col-md-6" *ngIf="addTemplateForm.get('approvalLevel').value === '2'">
                 <mat-form-field class="w-100">
-                    <mat-label>Second Approver</mat-label>
+                    <mat-label>{{'expenses.second_approver' | translate}}</mat-label>
                     <mat-select formControlName="secondApprovalEmployee" required>
                         <mat-option [value]="user?.id" *ngFor="let user of users; let i = index"
                             [disabled]="user?.id === addTemplateForm.get('firstApprovalEmployee').value">
@@ -67,7 +67,7 @@
 
         <div>
             <mat-form-field class="w-100">
-                <mat-label>What expense categories are applicable in this expense template?</mat-label>
+                <mat-label>{{'expenses.select_applicable_categories' | translate}}</mat-label>
                 <mat-select multiple formControlName="expenseCategories">
                     <mat-option [value]="categories?._id" *ngFor="let categories of expenseCategories; let i = index">
                         {{categories?.label}}
@@ -77,7 +77,7 @@
         </div>
 
         <div class="mt-2">
-            <mat-label>Do you want to make these attachment formats downloadable?</mat-label>
+            <mat-label>{{'expenses.is_downloadable' | translate}}</mat-label>
             <div class="d-flex flex-wrap">
                 <ng-container *ngFor="let format of downloadableFormat; let i = index">
                     <mat-checkbox [disabled]="isDisabledFormat(format)"
@@ -91,14 +91,14 @@
         <div class="row my-4">
             <div class="col-12 col-md-12">
                 <div class="d-flex ">
-                    <mat-label>Restriction for same category on same incurred date</mat-label>
+                    <mat-label>{{'expenses.restriction_same_date_category' | translate}} </mat-label>
                     <mat-slide-toggle class="ms-auto" formControlName="applyforSameCategorySamedate"></mat-slide-toggle>
                 </div>
             </div>
 
             <div class="col-12 col-md-12">
                 <div class="my-2 d-flex">
-                    <mat-label>Option to add advance amount while applying expense</mat-label>
+                    <mat-label>{{'expenses.enable_advance_amount' | translate}}</mat-label>
                     <mat-slide-toggle class="ms-auto" formControlName="advanceAmount"></mat-slide-toggle>
                 </div>
             </div>
@@ -106,8 +106,8 @@
     </div>
 
     <div class="d-flex border-top py-2 justify-content-between">
-        <button mat-raised-button type="button" (click)="closeModal()">Cancel</button>
+        <button mat-raised-button type="button" (click)="closeModal()">{{'expenses.cancel' | translate}}</button>
         <button mat-raised-button color="accent" type="submit"
-            [disabled]="!addTemplateForm.valid">{{changeMode}}</button>
+            [disabled]="!addTemplateForm.valid">{{changeMode === 'Add' ? ('expenses.add' | translate) : ('expenses.next' | translate)}}</button>
     </div>
 </form>
