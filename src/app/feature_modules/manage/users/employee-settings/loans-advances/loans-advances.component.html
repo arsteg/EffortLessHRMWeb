@@ -1,109 +1,132 @@
 <div class="tableContainer bg-white">
     <div class="d-md-flex d-block justify-content-between align-items-center p-2">
-        <div class="d-flex mb-md-0 mb-2">
-            <p class="mb-0 me-2">({{totalRecords}}) Records Found</p> <span>&nbsp; | &nbsp;</span>
-            <label class="me-auto">{{selectedUser?.firstName | titlecase}}&nbsp;{{selectedUser?.lastName |
-                titlecase}}</label>
+      <div class="d-flex mb-md-0 mb-2">
+        <p class="mb-0 me-2">({{totalRecords}}) Records Found</p> <span> | </span>
+        <label class="me-auto">{{selectedUser?.firstName | titlecase}} {{selectedUser?.lastName | titlecase}}</label>
+      </div>
+  
+      <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center justify-content-end">
+          <span class="bi bi-search searchIcon"></span>
+          <input class="form-control" type="text" placeholder="Search..." [(ngModel)]="searchText" name="searchText" aria-label="default input example">
         </div>
-
-        <div class="d-flex align-items-center justify-content-between">
-            <div class="d-flex align-items-center justify-content-end">
-                <span class="bi bi-search searchIcon"></span>
-                <input class="form-control" type="text" placeholder="Search..." [(ngModel)]="searchText"
-                    name="searchText" aria-label="default input example">
-            </div>
-            <button class="addBtn ms-2" mat-raised-button (click)="isEdit = false; openDialog()">Add</button>
-        </div>
+        <button class="addBtn ms-2" mat-raised-button (click)="isEdit = false; openDialog()">Add</button>
+      </div>
     </div>
-
+  
     <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
-        [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
-        (recordsPerPageChange)="onRecordsPerPageChange($event)">
+      [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
+      (recordsPerPageChange)="onRecordsPerPageChange($event)">
     </app-pagination>
-
+  
     <div class="px-2 mt-2 table-responsive">
-        <table mat-table [dataSource]="loansAdvances" >
-            <ng-container matColumnDef="loanAdvancesCategory">
-                <th mat-header-cell *matHeaderCellDef>Category</th>
-                <td mat-cell *matCellDef="let data">{{data?.loanAdvancesCategory?.name}}</td>
-            </ng-container>
-
-            <ng-container matColumnDef="noOfInstallment">
-                <th mat-header-cell *matHeaderCellDef>Total&nbsp;Installments&nbsp;</th>
-                <td mat-cell *matCellDef="let data">{{data?.noOfInstallment}}</td>
-            </ng-container>
-
-            <ng-container matColumnDef="monthlyInstallment">
-                <th mat-header-cell *matHeaderCellDef>Installment&nbsp;Amount</th>
-                <td mat-cell *matCellDef="let data">{{data?.monthlyInstallment}}</td>
-            </ng-container>
-
-            <ng-container matColumnDef="remianingInstallment">
-                <th mat-header-cell *matHeaderCellDef>Remaining&nbsp;Installment</th>
-                <td mat-cell *matCellDef="let data">{{data?.remianingInstallment}}</td>
-            </ng-container>
-
-            <ng-container matColumnDef="amount">
-                <th mat-header-cell *matHeaderCellDef>Total&nbsp;Amount</th>
-                <td mat-cell *matCellDef="let data">{{data?.amount}}</td>
-            </ng-container>
-
-            <ng-container matColumnDef="status">
-                <th mat-header-cell *matHeaderCellDef>Status</th>
-                <td mat-cell *matCellDef="let data">{{data?.status}}</td>
-            </ng-container>
-
-            <ng-container matColumnDef="actions">
-                <th mat-header-cell *matHeaderCellDef>Actions</th>
-                <td mat-cell *matCellDef="let data">
-                    <button *ngIf="data?.status === 'Requested'" mat-icon-button matTooltip="Edit" matTooltipPosition="left" (click)="isEdit = true; selectedRecord = data; edit(); openDialog()">
-                        <mat-icon>edit</mat-icon>
-                    </button>
-                    <button mat-icon-button matTooltip="Delete" matTooltipPosition="right" (click)="deleteLoansAdvances(data?._id)">
-                        <mat-icon>delete</mat-icon>
-                    </button>
-                </td>
-            </ng-container>
-
-            <tr mat-header-row *matHeaderRowDef="['loanAdvancesCategory', 'noOfInstallment', 'monthlyInstallment','remianingInstallment', 'amount', 'status', 'actions']"></tr>
-            <tr mat-row *matRowDef="let row; columns: ['loanAdvancesCategory', 'noOfInstallment', 'monthlyInstallment','remianingInstallment', 'amount', 'status', 'actions'];"></tr>
-        </table>
+      <table mat-table [dataSource]="loansAdvances">
+        <ng-container matColumnDef="loanAdvancesCategory">
+          <th mat-header-cell *matHeaderCellDef>Category</th>
+          <td mat-cell *matCellDef="let data">{{data?.loanAdvancesCategory?.name}}</td>
+        </ng-container>
+  
+        <ng-container matColumnDef="noOfInstallment">
+          <th mat-header-cell *matHeaderCellDef>Total Installments</th>
+          <td mat-cell *matCellDef="let data">{{data?.noOfInstallment}}</td>
+        </ng-container>
+  
+        <ng-container matColumnDef="monthlyInstallment">
+          <th mat-header-cell *matHeaderCellDef>Installment Amount</th>
+          <td mat-cell *matCellDef="let data">{{data?.monthlyInstallment}}</td>
+        </ng-container>
+  
+        <ng-container matColumnDef="remainingInstallment">
+          <th mat-header-cell *matHeaderCellDef>Remaining Installment</th>
+          <td mat-cell *matCellDef="let data">{{data?.remainingInstallment}}</td>
+        </ng-container>
+  
+        <ng-container matColumnDef="amount">
+          <th mat-header-cell *matHeaderCellDef>Total Amount</th>
+          <td mat-cell *matCellDef="let data">{{data?.amount}}</td>
+        </ng-container>
+  
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let data">{{data?.status}}</td>
+        </ng-container>
+  
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let data">
+            <button *ngIf="data?.status === 'Requested'" mat-icon-button matTooltip="Edit" matTooltipPosition="left"
+              (click)="isEdit = true; selectedRecord = data; edit(); openDialog()">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button matTooltip="Delete" matTooltipPosition="right" (click)="deleteLoansAdvances(data?._id)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+  
+        <tr mat-header-row *matHeaderRowDef="['loanAdvancesCategory', 'noOfInstallment', 'monthlyInstallment', 'remainingInstallment', 'amount', 'status', 'actions']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['loanAdvancesCategory', 'noOfInstallment', 'monthlyInstallment', 'remainingInstallment', 'amount', 'status', 'actions'];"></tr>
+      </table>
     </div>
-</div>
-
-<ng-template #dialogTemplate let-dialogRef="dialogRef">
+  </div>
+  
+  <ng-template #dialogTemplate let-dialogRef="dialogRef">
     <h1 mat-dialog-title>{{isEdit ? 'Update' : 'Add'}} Loan/Advance</h1>
     <div mat-dialog-content>
-        <form [formGroup]="loansAdvancesForm" (ngSubmit)="onSubmission()">
-            <mat-form-field appearance="outline" class="pt-2 w-100">
-                <mat-label>Select Category</mat-label>
-                <mat-select formControlName="loanAdvancesCategory">
-                    <mat-option value="" disabled>Select Category</mat-option>
-                    <mat-option [value]="loansAdvancesCatgeory?._id"
-                        *ngFor="let loansAdvancesCatgeory of loansAdvancesCategories">{{loansAdvancesCatgeory?.name}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="w-100 my-2">
-                <mat-label>Enter Number of Installments</mat-label>
-                <input matInput type="number" formControlName="noOfInstallment">
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="w-100 my-2">
-                <mat-label>Enter Amount of Monthly Installment</mat-label>
-                <input matInput type="number" formControlName="monthlyInstallment">
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="w-100 my-2">
-                <mat-label>Total Amount</mat-label>
-                <input matInput type="number" formControlName="amount">
-            </mat-form-field>
-
-            <div class="d-flex justify-content-between mt-3 pt-2 border-top">
-                <button mat-raised-button type="reset" (click)="dialogRef.close()">Cancel</button>
-                <button mat-raised-button class="addBtn" type="submit">Save</button>
-            </div>
-        </form>
+      <form [formGroup]="loansAdvancesForm" (ngSubmit)="onSubmission()">
+        <mat-form-field appearance="outline" class="pt-2 w-100">
+          <mat-label>Select Category</mat-label>
+          <mat-select formControlName="loanAdvancesCategory">
+            <mat-option value="" disabled>Select Category</mat-option>
+            <mat-option [value]="loansAdvancesCatgeory?._id"
+              *ngFor="let loansAdvancesCatgeory of loansAdvancesCategories">{{loansAdvancesCatgeory?.name}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="loansAdvancesForm.get('loanAdvancesCategory')?.hasError('required')">
+            Category is required
+          </mat-error>
+        </mat-form-field>
+  
+        <mat-form-field appearance="outline" class="w-100 my-2">
+          <mat-label>Enter Number of Installments</mat-label>
+          <input matInput type="number" formControlName="noOfInstallment">
+          <mat-error *ngIf="loansAdvancesForm.get('noOfInstallment')?.hasError('required')">
+            Number of installments is required
+          </mat-error>
+          <mat-error *ngIf="loansAdvancesForm.get('noOfInstallment')?.hasError('min')">
+            Minimum 1 installment required
+          </mat-error>
+          <mat-error *ngIf="loansAdvancesForm.get('noOfInstallment')?.hasError('max')">
+            Maximum 36 installments allowed
+          </mat-error>
+          <mat-error *ngIf="loansAdvancesForm.hasError('exceedSalary')">
+            Total loan amount exceeds annual salary. Increase installments or reduce EMI.
+          </mat-error>
+        </mat-form-field>
+  
+        <mat-form-field appearance="outline" class="w-100 my-2">
+          <mat-label>Enter Amount of Monthly Installment</mat-label>
+          <input matInput type="number" formControlName="monthlyInstallment">
+          <mat-error *ngIf="loansAdvancesForm.get('monthlyInstallment')?.hasError('required')">
+            Monthly installment amount is required
+          </mat-error>
+          <mat-error *ngIf="loansAdvancesForm.get('monthlyInstallment')?.hasError('min')">
+            Minimum monthly installment is $100
+          </mat-error>
+          <mat-error *ngIf="loansAdvancesForm.get('monthlyInstallment')?.hasError('highEMI')">
+            Monthly EMI exceeds 50% of monthly salary. Increase number of installments.
+          </mat-error>
+        </mat-form-field>
+  
+        <mat-form-field appearance="outline" class="w-100 my-2">
+          <mat-label>Total Amount</mat-label>
+          <input matInput type="number" formControlName="amount" readonly>
+        </mat-form-field>
+  
+        <div class="d-flex justify-content-between mt-3 pt-2 border-top">
+          <button mat-raised-button type="reset" (click)="dialogRef.close()">Cancel</button>
+          <button mat-raised-button class="addBtn" type="submit">Save</button>
+        </div>
+      </form>
     </div>
-</ng-template>
+  </ng-template>

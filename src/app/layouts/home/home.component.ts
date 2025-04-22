@@ -37,7 +37,7 @@ export class HomeComponent implements OnInit {
     private auth: AuthenticationService,
     private commonService: CommonService,
     private dialog: MatDialog
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.showSidebar();
@@ -45,8 +45,7 @@ export class HomeComponent implements OnInit {
     let roleId = localStorage.getItem('roleId');
     this.adminView = localStorage.getItem('adminView');
     this.auth.getRole(roleId).subscribe((response: any) => {
-      let role = response && response.data && response.data[0].Name;
-
+      let role = response && response.data && response.data[0].RoleName;
       this.commonService.setCurrentUserRole(role);
       if (this.adminView) {
         if (this.adminView?.toLowerCase() == 'admin') {
@@ -64,6 +63,7 @@ export class HomeComponent implements OnInit {
         if (role && role?.toLowerCase() == 'admin') {
           this.menuList = SideBarAdminMenu;
           this.portalType = role?.toLowerCase();
+
         }
         if (role && role?.toLowerCase() == 'user') {
           this.menuList = SideBarUserMenu;
@@ -71,6 +71,7 @@ export class HomeComponent implements OnInit {
         this.adminView = role?.toLowerCase();
       }
       this.portalType = role && role?.toLowerCase();
+
     });
 
     let currentUser = JSON.parse(localStorage.getItem('currentUser'));
