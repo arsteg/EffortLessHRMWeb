@@ -1,16 +1,16 @@
 <div class="main-content px-2">
     <mat-tab-group animationDuration="0ms" mat-stretch-tabs="false" mat-align-tabs="start">
-        <mat-tab label="Pending">
+        <mat-tab label="{{'expenses.pending' | translate}}">
             <ng-template matTabContent>
                 <app-pending-team-expenses></app-pending-team-expenses>
             </ng-template>
         </mat-tab>
-        <mat-tab label="Approved">
+        <mat-tab label="{{'expenses.approved' | translate}}">
             <ng-template matTabContent>
                 <app-approved-team-expenses></app-approved-team-expenses>
             </ng-template>
         </mat-tab>
-        <mat-tab label="Rejected">
+        <mat-tab label="{{'expenses.rejected' | translate}}">
             <ng-template matTabContent>
                 <app-rejected-team-expenses></app-rejected-team-expenses>
             </ng-template>

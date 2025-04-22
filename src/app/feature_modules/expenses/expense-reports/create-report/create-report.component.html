@@ -1,13 +1,13 @@
-<h1 mat-dialog-title> {{expenseService.isEdit.getValue() == true? 'Update': 'Add'}} Expense</h1>
+<h1 mat-dialog-title> {{expenseService.isEdit.getValue()? ('expenses.update' | translate): ('expenses.add' | translate)}} {{'expenses.expense' | translate}}</h1>
 <form [formGroup]="expenseReportform" (ngSubmit)="onSubmission()">
     <div mat-dialog-content>
         <div class="row">
             <div class="col-md-6 col-12">
                 <mat-form-field class="w-100" appearance="fill">
-                    <mat-label>Select Category</mat-label>
+                    <mat-label>{{'expenses.select_category' | translate}}</mat-label>
                     <mat-select formControlName="expenseCategory" required
                         (selectionChange)="onCategorySelection($event.value)">
-                        <mat-option value="">-Select Category-</mat-option>
+                        <mat-option value="">-{{'expenses.select_category' | translate}}-</mat-option>
                         <mat-option *ngFor="let category of categories"
                             [value]="category._id">{{category?.label}}</mat-option>
                     </mat-select>
@@ -15,7 +15,7 @@
             </div>
             <div class="col-md-6 col-12">
                 <mat-form-field class="w-100" appearance="fill">
-                    <mat-label>Select Date</mat-label>
+                    <mat-label>{{'expenses.incurred_date' | translate}}</mat-label>
                     <input matInput [matDatepicker]="picker" formControlName="incurredDate" required
                         (dateChange)="setPermissions()">
                     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
@@ -23,10 +23,10 @@
                     @if(expenseReportform.get('incurredDate').errors && expenseReportform.get('incurredDate').touched){
                     <mat-error>
                         @if(expenseReportform.get('incurredDate').errors['required']){
-                        Please select incurred date.
+                        {{'expenses.date_required' | translate}}
                         }
                         @if(expenseReportform.get('incurredDate').errors['duplicate']){
-                        Only one claim per day is allowed for this category.
+                        {{'expenses.date_duplicate_for_category' | translate}}
                         }
                     </mat-error>
                     }
@@ -36,9 +36,9 @@
 
             <div class="col-md-6 col-12">
                 <mat-form-field class="w-100" appearance="fill">
-                    <mat-label>Type</mat-label>
+                    <mat-label>{{'expenses.type' | translate}}</mat-label>
                     <mat-select formControlName="type" required (selectionChange)="onTypeChange($event.value)">
-                        <mat-option value="">Select Applicable Category Field</mat-option>
+                        <mat-option value="">{{'expenses.applicable_category_field' | translate}}</mat-option>
                         <mat-option [value]="field?.label" *ngFor="let field of applicableCategoryFields">{{
                             field?.label }}</mat-option>
                     </mat-select>
@@ -47,24 +47,24 @@
 
             <div class="col-md-6 col-12">
                 <mat-form-field class="w-100" appearance="fill">
-                    <mat-label>Quantity</mat-label>
+                    <mat-label>{{'expenses.quantity' | translate}}</mat-label>
                     <input matInput type="number" formControlName="quantity" (input)="updateTotalRate()">
-                    <mat-hint>Rate per {{categoryType?.type}} Category {{ selectedRate }}</mat-hint>
+                    <mat-hint>{{'expenses.rate_per' | translate}} {{categoryType?.type}} {{'expenses.category' | translate}} {{ selectedRate }}</mat-hint>
                 </mat-form-field>
             </div>
 
             <div class="col-md-6 col-12">
                 <mat-form-field class="w-100" appearance="fill">
-                    <mat-label>Amount</mat-label>
+                    <mat-label>{{'expenses.amount' | translate}}</mat-label>
                     <input matInput type="number" formControlName="amount" [value]="totalRate"
                         (change)="setPermissions()">
                     @if(expenseReportform.get('amount').errors && expenseReportform.get('amount').touched){
                     <mat-error>
                         @if(expenseReportform.get('amount').errors['required']){
-                        Please enter amount.
+                        {{'expenses.amount_error' | translate}}
                         }
                         @if(expenseReportform.get('amount').errors['exceeds']){
-                        Total amount should not exceed {{expenseData.maximumAmountPerExpense}}.
+                        {{'expenses.amount_limit' | translate}} {{expenseData.maximumAmountPerExpense}}.
                         }
                     </mat-error>
                     }
@@ -81,7 +81,7 @@
                         <mat-form-field appearance="fill" class="w-100" *ngSwitchCase="'Dropdown'">
                             <mat-label>{{ applicationfields[i]?.fieldName | titlecase}}</mat-label>
                             <mat-select formControlName="value">
-                                <mat-option value="">Select</mat-option>
+                                <mat-option value="">{{'select' | translate}}</mat-option>
                                 <mat-option [value]="values?.value"
                                     *ngFor="let values of applicationfields[i]?.expenseApplicationFieldValues">
                                     {{values?.value}}
@@ -123,37 +123,37 @@
         <section class="example-section">
             <mat-radio-group (change)="toggleIsReimbursable($event)">
                 <mat-radio-button class="example-margin" value="true"
-                    [checked]="expenseReportform.get('isReimbursable').value === true">Reimbursable</mat-radio-button>
+                    [checked]="expenseReportform.get('isReimbursable').value === true">{{'expenses.reimbursable' | translate}}</mat-radio-button>
                 <mat-radio-button class="example-margin" value="false"
-                    [checked]="expenseReportform.get('isBillable').value === true">Billable</mat-radio-button>
+                    [checked]="expenseReportform.get('isBillable').value === true">{{'expenses.billable' | translate}}</mat-radio-button>
             </mat-radio-group>
         </section>
 
         <div class="mb-3">
             <mat-form-field appearance="fill" class="w-100">
-                <mat-label>Reason</mat-label>
+                <mat-label>{{'reason' | translate}}</mat-label>
                 <textarea matInput formControlName="reason" rows="3"></textarea>
             </mat-form-field>
         </div>
 
         @if(expenseReportform.get('expenseAttachments').value){
-        <a [href]="expenseReportform.get('expenseAttachments').value" target="_blank">View Attachment</a>
+        <a [href]="expenseReportform.get('expenseAttachments').value" target="_blank" translate>expenses.view_attachment</a>
         }
 
         <div class="input-group mb-3">
-            <label class="input-group-text" for="inputGroupFile01">Upload</label>
+            <label class="input-group-text" for="inputGroupFile01" translate>expenses.upload</label>
             <input type="file" class="form-control" formControlName="expenseAttachments" (change)="onFileSelect($event)"
                 id="inputGroupFile01">
         </div>
         @if(expenseReportform.get('expenseAttachments').errors &&
         expenseReportform.get('expenseAttachments').errors['required']){
         <div>
-            <small class="text-danger">Please upload receipt.</small>
+            <small class="text-danger" translate>expenses.upload_error</small>
         </div>
         }
         <div mat-dialog-actions class="d-flex justify-content-between">
-            <button mat-raised-button type="button" mat-dialog-close>Cancel</button>
-            <button mat-button type="submit" color="primary" [disabled]="expenseReportform.invalid">Submit</button>
+            <button mat-raised-button type="button" mat-dialog-close>{{'expenses.cancel' | translate}}</button>
+            <button mat-button type="submit" color="primary" [disabled]="expenseReportform.invalid">{{'expenses.submit' | translate}}</button>
         </div>
     </div>
 </form>

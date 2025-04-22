@@ -1,60 +1,62 @@
-<h1 mat-dialog-title>{{changeMode}} Advance Report</h1>
+<h1 mat-dialog-title>{{changeMode === 'Add' ? ('expenses.add' | translate) : ('expenses.update' | translate)}} {{'expenses.advance_report' | translate}}</h1>
 <div mat-dialog-content>
     <form [formGroup]="addAdvanceReport" (ngSubmit)="onSubmission()">
         <div class="row">
             <div class="col-12">
                 <mat-form-field class="w-100">
-                    <mat-label>Select an Employee for Advance Report</mat-label>
+                    <mat-label>{{'expenses.employee' | translate}}</mat-label>
                     <mat-select formControlName="employee" (selectionChange)="onEmployeeSelected()">
-                        <mat-option value="" disabled [selected]>Select Employee</mat-option>
+                        <mat-option value="" disabled [selected]>{{'expenses.template_for_default_option' | translate}}</mat-option>
                         <mat-option *ngFor="let assignee of allAssignee" [value]="assignee.id">
                             {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
                         </mat-option>
                     </mat-select>
                     <mat-error
                         *ngIf="addAdvanceReport.get('employee').invalid && addAdvanceReport.get('employee').touched">
-                        Please select employee.
+                        {{'expenses.template_for_error' | translate}}
                     </mat-error>
                 </mat-form-field>
             </div>
 
             <div class="col-12">
                 <mat-form-field class="w-100">
-                    <mat-label>Select Advance Category</mat-label>
+                    <mat-label>{{'expenses.advance_category' | translate}}</mat-label>
                     <mat-select formControlName="category" required>
-                        <mat-option value="" disabled [selected]>Select Advance Category</mat-option>
+                        <mat-option value="" disabled [selected]>{{'expenses.select_advance_category' | translate}}</mat-option>
                         <mat-option *ngFor="let category of categoriesByUser" [value]="category?.advanceCategory">
                             {{getCategory(category?.advanceCategory)}}</mat-option>
                     </mat-select>
                     <mat-error
                         *ngIf="addAdvanceReport.get('category').invalid && addAdvanceReport.get('category').touched">
-                        Please select advance category of employee.
+                        {{'expenses.advance_category_error' | translate}}
                     </mat-error>
-                    <mat-hint *ngIf="categoriesByUser?.length === 0">No category found for this user. Please assign an advance template first</mat-hint>
+                    <mat-hint *ngIf="categoriesByUser?.length === 0">{{'expenses.no_category_error' | translate}}</mat-hint>
                 </mat-form-field>
             </div>
 
             <div class="col-12">
                 <mat-form-field class="w-100">
-                    <mat-label>Amount</mat-label>
+                    <mat-label>{{'expenses.amount' | translate}}</mat-label>
                     <input type="number" matInput formControlName="amount" />
                     <mat-error *ngIf="addAdvanceReport.get('amount').invalid && addAdvanceReport.get('amount').touched">
-                        Please add amount.
+                        {{'expenses.amount_error' | translate}}
                     </mat-error>
                 </mat-form-field>
             </div>
 
             <div class="col-12">
                 <mat-form-field class="w-100">
-                    <mat-label>Comment</mat-label>
+                    <mat-label>{{'comment' | translate}}</mat-label>
                     <textarea matInput formControlName="comment" rows="3"></textarea>
                 </mat-form-field>
             </div>
         </div>
 
         <div class="d-flex justify-content-between">
-            <button mat-raised-button type="button" (click)="closeModal()">Cancel</button>
-            <button mat-raised-button type="submit" color="accent">{{changeMode}}</button>
+            <button mat-raised-button type="button" (click)="closeModal()">{{'expenses.cancel' | translate}}</button>
+            <button mat-raised-button type="submit" color="accent">
+                {{changeMode === 'Add' ? ('expenses.add' | translate) : ('expenses.update' | translate)}}
+            </button>
         </div>
     </form>
 </div>

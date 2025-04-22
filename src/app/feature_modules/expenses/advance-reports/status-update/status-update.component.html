@@ -1,22 +1,28 @@
-<h1 mat-dialog-title *ngIf="data.status === 'Rejected'">Are you sure you want to reject this request?</h1>
-<h1 mat-dialog-title *ngIf="data.status === 'Approved'">Are you sure you want to approve this request?</h1>
-<h1 mat-dialog-title *ngIf="data.status === 'Cancelled'">Are you sure you want to cancel this request?</h1>
+<h1 mat-dialog-title *ngIf="data.status === 'Rejected'">{{'expenses.reject_msg' | translate}}</h1>
+<h1 mat-dialog-title *ngIf="data.status === 'Approved'">{{'expenses.approve_msg' | translate}}</h1>
+<h1 mat-dialog-title *ngIf="data.status === 'Cancelled'">{{'expenses.cancel_msg' | translate}}</h1>
 
 
 <div mat-dialog-content>
     <form [formGroup]="updateExpenseReport" (ngSubmit)="updateApprovedReport()">
         <mat-form-field class="w-100">
-            <mat-label>Leave a comment</mat-label>
+            <mat-label>{{'comment' | translate}}</mat-label>
             <textarea matInput formControlName="primaryApprovalReason" rows="3"></textarea>
         </mat-form-field>
 
         <div class="d-flex justify-content-between">
-            <button mat-raised-button type="button" mat-dialog-close>No</button>
+            <button mat-raised-button type="button" mat-dialog-close>{{'expenses.no' | translate}}</button>
             <button mat-raised-button type="submit" [color]="data.status==='Rejected'?'warn':'accent'">
                 @switch(data.status){
-                @case('Rejected'){Reject}
-                @case('Approved'){Approve}
-                @case('Cancelled'){Cancel}
+                @case('Rejected'){
+                    {{'expenses.reject' | translate}}
+                }
+                @case('Approved'){
+                    {{'expenses.approve' | translate}}
+                }
+                @case('Cancelled'){
+                    {{'expenses.cancel' | translate}}
+                }
                 }
             </button>
         </div>

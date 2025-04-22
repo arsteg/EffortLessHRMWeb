@@ -1,16 +1,16 @@
 <div class="tableContainer py-3">
     <table mat-table [dataSource]="dataSource">
         <ng-container matColumnDef="expenseCategory">
-            <th mat-header-cell *matHeaderCellDef> Expense Category </th>
+            <th mat-header-cell *matHeaderCellDef> {{'expenses.expense_category' | translate}} </th>
             <td mat-cell *matCellDef="let element"> {{element?.expenseCategory.label}} </td>
         </ng-container>
 
         <ng-container matColumnDef="policyInformation">
             <th mat-header-cell *matHeaderCellDef> Policy Information </th>
             <td mat-cell *matCellDef="let element">
-                Maximum amount for single expense: {{element?.maximumExpensesCanApply}}<br>
-                Maximum amount without receipt : {{element?.maximumAmountWithoutReceipt}}<br>
-                Maximum time can request: {{element?.maximumExpensesCanApply}}
+                {{'expenses.amount_limit_single_expense' | translate}}: {{element?.maximumAmountPerExpense}}<br>
+                {{'expenses.amount_limit_without_receipt' | translate}}: {{element?.maximumAmountWithoutReceipt}}<br>
+                {{'expenses.request_limit' | translate}}: {{element?.maximumExpensesCanApply}}
             </td>
         </ng-container>
 

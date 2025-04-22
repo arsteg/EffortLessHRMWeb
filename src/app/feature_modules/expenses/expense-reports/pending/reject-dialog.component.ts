@@ -5,17 +5,17 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 @Component({
   selector: 'app-reject-dialog',
   template: `
-    <h2 mat-dialog-title>Reject Expense Report</h2>
+    <h2 mat-dialog-title>{{'expenses.reject' | translate}} {{'expenses.expense_report' | translate}}</h2>
     <mat-dialog-content>
       <form [formGroup]="form">
         <mat-form-field  class="w-100">
-          <mat-label>Reason</mat-label>
+          <mat-label>{{'reason' | translate}}</mat-label>
           <textarea matInput formControlName="reason"></textarea>
         </mat-form-field>
       </form>
       <mat-dialog-actions class="d-flex justify-content-between px-0">
-        <button mat-raised-button (click)="onCancel()">Cancel</button>
-        <button mat-raised-button (click)="onReject()" color="warn">Reject</button>
+        <button mat-raised-button (click)="onCancel()">{{'expenses.cancel' | translate}}</button>
+        <button mat-raised-button (click)="onReject()" color="warn">{{'expenses.reject' | translate}}</button>
       </mat-dialog-actions>
     </mat-dialog-content>
   `,

@@ -1,46 +1,46 @@
-<h1 mat-dialog-title>{{changeMode}} Expense Report</h1>
+<h1 mat-dialog-title>{{changeMode === 'Add' ? ('expenses.add' | translate) : ('expenses.update' | translate)}} {{'expenses.expense_report' | translate}}</h1>
 
 <div mat-dialog-content>
     <form [formGroup]="addExpenseForm" (ngSubmit)="createReport()">
         @if(!selfExpense){
         <mat-form-field class="w-100">
-            <mat-label>Select an employee</mat-label>
+            <mat-label>{{'expenses.expense_template_for' | translate}}</mat-label>
             <mat-select required (selectionChange)="getCategoryByUser()" formControlName="employee" required>
-                <mat-option selected>Select Employee</mat-option>
+                <mat-option selected>{{'expenses.template_for_default_option' | translate}}</mat-option>
                 <mat-option [value]="user?.id" *ngFor="let user of users; let i = index">{{user?.firstName |
                     titlecase}} {{user.lastName | titlecase}}</mat-option>
             </mat-select>
             <mat-error>
                 <span *ngIf="addExpenseForm.get('employee').invalid && addExpenseForm.get('employee').touched">
-                    Please select employee for this expense report.
+                    {{'expenses.template_for_error' | translate}}
                 </span>
             </mat-error>
             <mat-hint class="text-danger" *ngIf="noCategoryError">
-                Selected user is not assigned to any expense category.
+                {{'expenses.template_for_no_category' | translate}}
             </mat-hint>
         </mat-form-field>
         }
 
         <mat-form-field class="w-100">
-            <mat-label>Label for expense report</mat-label>
-            <input type="text" matInput formControlName="title" placeholder="Enter Label" required>
+            <mat-label>{{'expenses.label_for_expense_template' | translate}}</mat-label>
+            <input type="text" matInput formControlName="title" required>
             <mat-error *ngIf="addExpenseForm.get('title').invalid && addExpenseForm.get('title').touched">
-                Please enter label for expense report.
+                {{'expenses.label_for_expense_template_error' | translate}}
             </mat-error>
         </mat-form-field>
 
         <mat-form-field class="w-100">
             <mat-label>
                 @if(validations?.expenseTemplate?.advanceAmount){
-                    Advance amount (if any)
+                    {{'expenses.advance_amount' | translate}}
                 } @else {
-                    Amount for expense report
+                    {{'expenses.amount' | translate}}
                 }
             </mat-label>
-            <input type="number" matInput formControlName="amount" placeholder="Enter amount" required>
+            <input type="number" matInput formControlName="amount" required>
             <mat-error *ngIf="addExpenseForm.get('amount').invalid && addExpenseForm.get('amount').touched">
                 @if(addExpenseForm.get('amount').errors['required']){
-                Please add amount.
+                {{'expenses.amount_error' | translate}}
                 }
             </mat-error>
         </mat-form-field>
@@ -49,25 +49,25 @@
         <div class="mb-2">
             <table mat-table [dataSource]="expenseReportExpenses" class="mat-elevation-z2 mt-2">
                 <ng-container matColumnDef="incurredDate">
-                    <th mat-header-cell *matHeaderCellDef> Incurred Date </th>
+                    <th mat-header-cell *matHeaderCellDef>{{'expenses.incurred_date' | translate}}</th>
                     <td mat-cell *matCellDef="let expenseReportExp"> {{expenseReportExp?.incurredDate |
                         date:'mediumDate' }} </td>
                 </ng-container>
 
                 <ng-container matColumnDef="category">
-                    <th mat-header-cell *matHeaderCellDef> Category </th>
+                    <th mat-header-cell *matHeaderCellDef> {{'expenses.category' | translate}} </th>
                     <td mat-cell *matCellDef="let expenseReportExp">
                         {{getCategoryLabel(expenseReportExp?.expenseCategory)}}
                     </td>
                 </ng-container>
 
                 <ng-container matColumnDef="amount">
-                    <th mat-header-cell *matHeaderCellDef> Amount </th>
+                    <th mat-header-cell *matHeaderCellDef> {{'expenses.amount' | translate}} </th>
                     <td mat-cell *matCellDef="let expenseReportExp"> {{expenseReportExp?.amount}} </td>
                 </ng-container>
 
                 <ng-container matColumnDef="reimbursable">
-                    <th mat-header-cell *matHeaderCellDef> Reimbursable </th>
+                    <th mat-header-cell *matHeaderCellDef> {{'expenses.reimbursable' | translate}} </th>
                     <td mat-cell *matCellDef="let expenseReportExp">
                         <span *ngIf="expenseReportExp.isReimbursable == true; else notReimbursable">
                             <mat-icon color="accent">check</mat-icon>
@@ -79,7 +79,7 @@
                 </ng-container>
 
                 <ng-container matColumnDef="billable">
-                    <th mat-header-cell *matHeaderCellDef> Billable </th>
+                    <th mat-header-cell *matHeaderCellDef> {{'expenses.billable' | translate}} </th>
                     <td mat-cell *matCellDef="let expenseReportExp">
                         <span *ngIf="expenseReportExp.isBillable == true; else notBillable">
                             <mat-icon color="accent">check</mat-icon>
@@ -91,16 +91,16 @@
                 </ng-container>
 
                 <ng-container matColumnDef="actions">
-                    <th mat-header-cell *matHeaderCellDef> Actions </th>
+                    <th mat-header-cell *matHeaderCellDef> {{'expenses.actions' | translate}} </th>
                     <td mat-cell *matCellDef="let expenseReportExp">
                         <button mat-stroked-button type="button" [disabled]="!expenseReportExp?._id"
                             (click)="openSecondModal(true); getSelectedExpenseReportExpense(expenseReportExp)"
                             class="me-1">
-                            Edit
+                            {{'expenses.edit' | translate}}
                         </button>
                         <button mat-stroked-button type="button" [disabled]="!expenseReportExp?._id"
                             (click)="deleteExpenseReportExpense(expenseReportExp?._id)" color="warn" class="me-1">
-                            Delete
+                            {{'expenses.delete' | translate}}
                         </button>
                     </td>
                 </ng-container>
@@ -116,13 +116,15 @@
         <div>
             <button (click)="openSecondModal(false);" type="button"
                 [disabled]="!addExpenseForm.valid && !noCategoryError" mat-stroked-button color="primary">
-                <mat-icon>add</mat-icon>Add Expense</button>
+                <mat-icon>add</mat-icon>{{'expenses.add_expense' | translate}}</button>
         </div>
         }
         <div mat-dialog-actions class="d-flex justify-content-between px-0">
-            <button mat-raised-button type="button" (click)="closeModal()">Cancel</button>
+            <button mat-raised-button type="button" (click)="closeModal()">{{'expenses.cancel' | translate}}</button>
             <button mat-raised-button type="submit" color="accent"
-                [disabled]="addExpenseForm.invalid">{{changeMode}}</button>
+                [disabled]="addExpenseForm.invalid">
+                {{changeMode === 'Add' ? ('expenses.add' | translate) : ('expenses.update' | translate)}}
+            </button>
         </div>
     </form>
 </div>

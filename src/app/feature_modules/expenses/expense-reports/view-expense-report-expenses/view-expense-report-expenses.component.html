@@ -1,5 +1,5 @@
 <div class=" d-flex justify-content-between">
-    <h1 mat-dialog-title>Expense Report Expenses Details</h1>
+    <h1 mat-dialog-title>{{'expenses.expense_report' | translate}} {{'expenses.expense_details' | translate}}</h1>
     <div mat-dialog-actions>
         <button mat-icon-button mat-dialog-close>
             <mat-icon fontIcon="close">close</mat-icon>
@@ -10,15 +10,15 @@
     <div class="table-responsive">
         <table class="table table-bordered table-sm">
             <tr>
-                <td class="fw-bold">Expense Name</td>
+                <td class="fw-bold">{{'expenses.expense_name' | translate}}</td>
                 <td>{{category?.label}}</td>
             </tr>
             <tr>
-                <td class="fw-bold">Incurred Date</td>
+                <td class="fw-bold">{{'expenses.incurred_date' | translate}}</td>
                 <td>{{expenseReportExpense?.incurredDate | date: 'mediumDate'}}</td>
             </tr>
             <tr>
-                <td class="fw-bold">Reimbursable</td>
+                <td class="fw-bold">{{'expenses.reimbursable' | translate}}</td>
                 <td>
                     @if(expenseReportExpense?.isReimbursable){
                         <span><mat-icon color="accent">check</mat-icon></span>
@@ -28,7 +28,7 @@
                 </td>
             </tr>
             <tr>
-                <td class="fw-bold">Billable</td>
+                <td class="fw-bold">{{'expenses.billable' | translate}}</td>
                 <td>
                     @if(expenseReportExpense?.isBillable){
                         <span><mat-icon color="accent">check</mat-icon></span>
@@ -54,11 +54,11 @@
             </tr>
 
             <tr>
-                <td class="fw-bold">Rate Fix</td>
+                <td class="fw-bold">{{'expenses.amount' | translate}}</td>
                 <td>{{expenseReportExpense?.amount}}</td>
             </tr>
             <tr>
-                <td class="fw-bold">Expense Reason</td>
+                <td class="fw-bold">{{'reason' | translate}}</td>
                 <td>{{expenseReportExpense?.reason}}</td>
             </tr>
         </table>

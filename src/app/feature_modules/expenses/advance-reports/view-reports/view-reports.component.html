@@ -1,5 +1,5 @@
 <div class="d-flex justify-content-between align-items-center">
-    <h1 mat-dialog-title> Advance Expense Details</h1>
+    <h1 mat-dialog-title> {{'expenses.advance_reports' | translate}} {{'expenses.expense_details' | translate}}</h1>
     <button mat-icon-button mat-dialog-close>
         <mat-icon>close</mat-icon>
     </button>
@@ -9,31 +9,32 @@
     <div class="">
         <table class="table table-bordered">
             <tr>
-                <td class="fw-bold">Employee Name</td>
+                <td class="fw-bold">{{'expenses.employee' | translate}}</td>
                 <td>{{getUser(report?.employee)}}</td>
             </tr>
             <tr>
-                <td class="fw-bold">Category Name</td>
+                <td class="fw-bold">{{'expenses.category' | translate}}</td>
                 <td>{{getCategory(report?.category)}}</td>
             </tr>
             <tr>
-                <td class="fw-bold">Amount</td>
+                <td class="fw-bold">{{'expenses.amount' | translate}}</td>
                 <td>{{advanceReport?.amount}}</td>
             </tr>
             <tr>
-                <td class="fw-bold">Status</td>
+                <td class="fw-bold">{{'status' | translate}}</td>
                 <td>{{advanceReport?.status}}</td>
             </tr>
 
             <tr>
-                <td class="fw-bold">Admin
+                <td class="fw-bold">{{'admin' | translate}}
                     @switch(expenseService.advanceReport.getValue().status){
-                        @case('Level 1 Approval Pending'){Pending}
-                        @case('Approved'){Approved}
-                        @case('Rejected'){Rejected}
-                        @case('Cancelled'){Cancelled}
+                        @case('Level 1 Approval Pending'){ {{'expenses.pending' | translate}} }
+                        @case('Level 2 Approval Pending'){ {{'expenses.pending' | translate}} }
+                        @case('Approved'){ {{'expenses.approved' | translate}} }
+                        @case('Rejected'){ {{'expenses.rejected' | translate}} }
+                        @case('Cancelled'){ {{'expenses.cancelled' | translate}} }
                     }
-                    Comment
+                    {{'comment' | translate}}
                 </td>
                 <td>{{advanceReport?.primaryApprovalReason || advanceReport?.comment }}</td>
             </tr>
