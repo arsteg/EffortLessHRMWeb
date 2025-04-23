@@ -123,9 +123,10 @@
         <div class="row">
             <div class="form-group col-md-6">
                 <label for="state">Eligible State <span class="text-danger">*</span></label>
-                <select class="form-control" id="state" formControlName="state">
-                    <option [value]="data?.state?._id" *ngFor="let data of states">{{data?.state?.state}}</option>
-                </select>
+                <select class="form-control" id="state" formControlName="state" [(ngModel)]="selectedState"  >
+                    <option *ngFor="let state of states" [value]="state">
+                        {{ state }}
+                      </option>      </select>
                 <div
                     *ngIf="ptSlabForm.get('state').invalid && (ptSlabForm.get('state').dirty || ptSlabForm.get('state').touched)">
                     <small class="text-danger" *ngIf="ptSlabForm.get('state')['errors']['required']">State is
