@@ -751,8 +751,8 @@ export class AddSalaryDetailsComponent {
         isESICDeduction: this.statutorySettings.isESICDeductedFromSalary,
         isPTDeduction: this.statutorySettings.isTaxDeductedFromPlayslip,
         isLWFDeduction: this.statutorySettings.isLWFDeductedFromPlayslip,
-        isGratuityApplicable: this.statutorySettings.isGratuityEligible,
-        isIncomeTaxDeduction: this.statutorySettings.isIncomeTaxDeducted,
+        isGratuityApplicable: this.statutorySettings?.isGratuityEligible,
+        isIncomeTaxDeduction: this.statutorySettings?.isIncomeTaxDeducted,
         isRoundOffApplicable: this.statutorySettings.roundOffApplicable
       });
       this.salaryDetailsForm.get('employeeSalaryTaxAndStatutorySetting')?.disable();

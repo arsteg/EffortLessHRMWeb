@@ -44,31 +44,32 @@ export class ChatbotComponent implements AfterViewInit {
 
     this.aiReportService.chatBot(userMessage).subscribe({
       next: (response) => {
-        const botResponse = response.data.answer || 'Sorry, I couldn’t find an answer to that question.';
-        const [textPart, imagePath] = botResponse.split('Path:');
-
-        // Add text response
-        this.messages.push({ sender: 'bot', text: textPart.trim() });
-
-        // Add image message if imagePath exists
-        const trimmedImagePath = imagePath?.trim();
-        if (trimmedImagePath) {
-          this.messages.push({ sender: 'bot', imageUrl: trimmedImagePath });
+      // Create temporary array to hold all new messages
+      const newMessages = response.data.map((item: { type: string, content: string }) => {
+        if (item.type === 'text') {
+        return { sender: 'bot', text: item.content };
+        } else if (item.type === 'image') {
+        return { sender: 'bot', imageUrl: item.content };
         }
+        return null;
+      }).filter(Boolean);
 
-        // Scroll to bottom only if the user was at the bottom
-        if (this.wasAtBottom) {
-          setTimeout(() => this.scrollToBottom(), 0); // Ensure DOM updates before scrolling
-        }
+      // Add all messages at once
+      this.messages.push(...newMessages);
 
-        this.isLoading = false;
+      // Scroll to bottom only if the user was at the bottom
+      if (this.wasAtBottom) {
+        setTimeout(() => this.scrollToBottom(), 0);
+      }
+
+      this.isLoading = false;
       },
       error: (error) => {
-        this.messages.push({ sender: 'bot', text: 'Sorry, something went wrong. Please try again later.' });
-        if (this.wasAtBottom) {
-          setTimeout(() => this.scrollToBottom(), 0);
-        }
-        this.isLoading = false;
+      this.messages.push({ sender: 'bot', text: 'Sorry, something went wrong. Please try again later.' });
+      if (this.wasAtBottom) {
+        setTimeout(() => this.scrollToBottom(), 0);
+      }
+      this.isLoading = false;
       }
     });
   }
@@ -125,3 +126,39 @@ export class ChatbotComponent implements AfterViewInit {
     chatContainer.scrollTop = chatContainer.scrollHeight;
   }
 }
+
+
+
+
+// this.aiReportService.chatBot(userMessage).subscribe({
+//   next: (response) => {
+//     const botResponse = response.data.answer || 'Sorry, I couldn’t find an answer to that question.';
+//     const [textPart, imagePath] = botResponse.split('Path:');
+
+
+//     // Add image message if imagePath exists
+//     //Will change this and store in single variable
+//     const trimmedImagePath = imagePath?.trim();
+//     if (trimmedImagePath) {
+//       this.messages.push({ sender: 'bot', text: textPart.trim(), imageUrl: trimmedImagePath });
+//     }
+//     else{
+//       // Add text response
+//       this.messages.push({ sender: 'bot', text: textPart.trim() });
+//     }
+
+//     // Scroll to bottom only if the user was at the bottom
+//     if (this.wasAtBottom) {
+//       setTimeout(() => this.scrollToBottom(), 0); // Ensure DOM updates before scrolling
+//     }
+
+//     this.isLoading = false;
+//   },
+//   error: (error) => {
+//     this.messages.push({ sender: 'bot', text: 'Sorry, something went wrong. Please try again later.' });
+//     if (this.wasAtBottom) {
+//       setTimeout(() => this.scrollToBottom(), 0);
+//     }
+//     this.isLoading = false;
+//   }
+// });
