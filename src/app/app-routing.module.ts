@@ -56,7 +56,9 @@ const routes: Routes = [
       },
       {
         path: 'attendance',
-        loadChildren: () => import('./feature_modules/attendance/attendance.module').then(m => m.AttendanceModule)
+        loadChildren: () => import('./feature_modules/attendance/attendance.module').then(m => m.AttendanceModule),
+        resolve: { translation: TranslationResolver },
+        data: { moduleKey: 'attendance' }
       },
       {
         path: 'timesheets',
@@ -78,7 +80,9 @@ const routes: Routes = [
       },
       {
         path: 'payroll',
-        loadChildren: () => import('./feature_modules/payroll/payroll.module').then(m => m.PayrollModule)
+        loadChildren: () => import('./feature_modules/payroll/payroll.module').then(m => m.PayrollModule),
+        resolve: { translation: TranslationResolver },
+        data: { moduleKey: 'payroll' }
       },
       {
         path: 'taxation',
@@ -90,7 +94,9 @@ const routes: Routes = [
       },
       {
         path: 'separation',
-        loadChildren: () => import('./feature_modules/separation/separation.module').then(m => m.SeparationModule)
+        loadChildren: () => import('./feature_modules/separation/separation.module').then(m => m.SeparationModule),
+        resolve: { translation: TranslationResolver },
+        data: { moduleKey: 'separation' }
       },
       {
         path: 'settings',

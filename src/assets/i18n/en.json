@@ -18,62 +18,8 @@
       "password": "Password",
       "submit": "Sign In",
       "error": "Invalid credentials"
-    },
-    "separation":{
-      "appeal_heading": "Review Appeal",
-      "appeal_reason" : "Appeal Reason",
-      "decision_notes" : "Decision Notes",
-      "appeal_status" : "Appeal Status",
-      "appeal_request":"Appeal Request"
-    },
-   "attendance": {
-      "instructions_title": "Instructions:",
-      "note_use_sheet_name": "1. Please use sheet name as \"Attendance Data\" while uploading.",
-      "note_use_correct_format": "2. Use proper Employee Code and Date/Time format as shown below.",
-      "note_no_column_change": "3. Do not alter column headers in the attendance sheet.",
-      "note_fields_required": "4. All fields are mandatory.",
-      "note_fill_and_upload": "5. You can fill data in the same Excel under the sheet named 'Attendance Data' and upload it.",
-      "sheet_not_found": "Sheet named 'Attendance Data' not found. Please use the correct template.",
-      "excel_empty_or_invalid": "Excel file is empty or invalid.",
-      "invalid_headers": "Invalid headers in Excel file. Please use the correct template.",
-      "upload_success": "Excel file uploaded successfully!",
-      "upload_failed": "Failed to upload Excel file. Please try again.",
-      "invalid_file_type": "Invalid file type. Please upload a valid Excel file (.xlsx or .xls).",
-      "sheet_names": {
-        "data": "Attendance Data",
-        "instructions": "Instructions"
-      },
-      "default_headers": [
-        {
-          "EmpCode": "",
-          "Date": "",
-          "StartTime": "",
-          "EndTime": ""
-        }
-      ],
-      "instructions_table": [
-        {
-          "Field": "EmpCode",
-          "Data Type": "String",
-          "Sample Value": "EMP001"
-        },
-        {
-          "Field": "Date",
-          "Data Type": "Date (YYYY-MM-DD)",
-          "Sample Value": "2025-04-19"
-        },
-        {
-          "Field": "StartTime",
-          "Data Type": "Time (HH:mm)",
-          "Sample Value": "09:00"
-        },
-        {
-          "Field": "EndTime",
-          "Data Type": "Time (HH:mm)",
-          "Sample Value": "18:00"
-        }
-      ]
-    },
+    }, 
+  
     "dashboard": {
       "title": "Dashboard",
       "greeting": "Hello, {{name}}!",

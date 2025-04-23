@@ -73,7 +73,7 @@
                         <mat-icon>edit</mat-icon>
                         <span>Edit</span>
                       </button>
-                      <button mat-menu-item *ngIf="element.termination_status !== terminationStatuses.Completed && element.termination_status !== terminationStatuses.Reinstated" (click)="updateTerminationStatus(selectedStatus, terminationStatuses.Deleted)">
+                      <button mat-menu-item *ngIf="element.termination_status !== terminationStatuses.Completed && element.termination_status !== terminationStatuses.Reinstated" (click)="updateTerminationStatus(element._id, terminationStatuses.Deleted)">
                         <mat-icon>delete</mat-icon>
                         <span>Delete</span>
                       </button>

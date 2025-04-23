@@ -8,7 +8,8 @@ import { CommonService } from 'src/app/_services/common.Service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { UserService } from 'src/app/_services/users.service';
 import { AssetManagementService } from 'src/app/_services/assetManagement.service';
-interface ResignationStatus {
+
+import { TranslateService } from '@ngx-translate/core';interface ResignationStatus {
   Pending: string,
   Completed: string,
   InProgress:string,
@@ -48,6 +49,7 @@ export class ResignationComponent implements OnInit {
     private toast: ToastrService,
     private userService: UserService,
      private assetManagementService: AssetManagementService,
+     private translate: TranslateService,
     private commonService: CommonService) {
     this.resignationForm = this.fb.group({
       user: [''],
@@ -113,8 +115,8 @@ export class ResignationComponent implements OnInit {
 
           if (assignedAssets.length > 0) {
             this.toast.error(
-              'Assets are still assigned. Please release them before marking company property as returned.',
-              'Warning'
+              this.translate.instant('separation.assest_return_warning'),
+              this.translate.instant('common.warning')
             );
             return;
           } else {
@@ -123,7 +125,8 @@ export class ResignationComponent implements OnInit {
         },
         (err) => {         
           const errorMessage = err?.error?.message || err?.message || err 
-          || 'Failed to verify assigned assets.';
+          ||  this.translate.instant('separation.assest_verify_failed')
+          ;
           this.toast.error(errorMessage, 'Error!');
         }
       );
@@ -138,12 +141,12 @@ export class ResignationComponent implements OnInit {
           (res: any) => {
             this.getResignationByUser();
             this.resignationForm.reset();
-            this.toast.success('Resignation updated', 'Successfully');
+            this.toast.success( this.translate.instant('separation.update_success'),  this.translate.instant('separation.success'));
             this.dialogRef.close();
           },
           err => {
             const errorMessage = err?.error?.message || err?.message || err 
-          || 'Resignation cannot be updated.';
+          || this.translate.instant('separation.update_fail');
           this.toast.error(errorMessage, 'Error!');
           }
         );
@@ -152,12 +155,12 @@ export class ResignationComponent implements OnInit {
           (res: any) => {
             this.getResignationByUser();
             this.resignationForm.reset();
-            this.toast.success('Resignation Added', 'Successfully');
+            this.toast.success(this.translate.instant('separation.add_success'), this.translate.instant('separation.success'));
             this.dialogRef.close();
           },
           err => {
             const errorMessage = err?.error?.message || err?.message || err 
-            || 'Resignation cannot be added.';
+            ||this.translate.instant('separation.add_fail');;
             this.toast.error(errorMessage, 'Error!');
           }
         );
@@ -175,14 +178,16 @@ export class ResignationComponent implements OnInit {
             });
           }
           else{
-            this.toast.error('Unable to fetch Notice Period. Job information is missing. Please ask Admin to complete your job details first', 'Error');
-            this.dialogRef.close();
+            this.toast.error(
+              this.translate.instant('separation.notice_period_fetch_fail'),
+              this.translate.instant('common.error')
+            );    this.dialogRef.close();
           }
         },
         error: (err) => {          
           this.resignationForm.patchValue({ notice_period: 'N/A' });
           const errorMessage = err?.error?.message || err?.message || err 
-          || 'Failed to load notice period';
+          || this.translate.instant('separation.notice_period_load_fail');
           this.toast.error(errorMessage, 'Error!');
         }
       });
@@ -214,8 +219,11 @@ export class ResignationComponent implements OnInit {
   updateResignationStatus(resignation: string, status: string) {
     // If status is being changed to Completed, check the company_property_returned flag
   if (status === this.resignationStatuses.Completed && this.selectedRecord && !this.selectedRecord.company_property_returned) {
-    this.toast.error('Cannot mark as Completed. Company property has not been returned.', 'Error');
-    return;
+    this.toast.error(
+      this.translate.instant('separation.company_property_not_returned'),
+      this.translate.instant('common.error')
+    );
+      return;
   }
     let payload = {
       resignation_status: status
@@ -223,11 +231,14 @@ export class ResignationComponent implements OnInit {
     this.separationService.updateResignationStatus(resignation, payload).subscribe((res: any) => {
       this.getResignationByUser();
       this.closeDialog();
-      this.toast.success('Status Updated Successfully', 'Resignation');
+      this.toast.success(
+        this.translate.instant('separation.status_update_success')
+      );
+      
     },
     (err) => {
       const errorMessage = err?.error?.message || err?.message || err 
-      || 'Status Update Failed';
+      || this.translate.instant('separation.status_update_fail');
       this.toast.error(errorMessage, 'Error!');
     });
   } 
@@ -245,7 +256,7 @@ export class ResignationComponent implements OnInit {
       }
       err => {
         const errorMessage = err?.error?.message || err?.message || err 
-          || 'Can not be Deleted.';
+          || this.translate.instant('separation.cannot_be_deleted');
           this.toast.error(errorMessage, 'Error!');
       }
     });

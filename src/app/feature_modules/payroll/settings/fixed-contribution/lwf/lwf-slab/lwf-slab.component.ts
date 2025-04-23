@@ -48,7 +48,7 @@ export class LwfSlabComponent {
       this.eligibleStates = res.data;
     }); 
     this.getCompanyState();
-    this.getLwfSlab();
+    
   }
 
   onPageChange(page: number) {
@@ -83,6 +83,7 @@ export class LwfSlabComponent {
   {
     this.companyService.getCompany().subscribe((res: any) => {
       this.selectedState = res.data.company.state;
+      this.getLwfSlab();
     })
   }
   editRecord() {
@@ -101,14 +102,16 @@ export class LwfSlabComponent {
     };
   
     if (!this.isEdit) {
-      this.payrollService.addLWF(payload).subscribe((res) => {       
+      this.payrollService.addLWF(payload).subscribe((res) => {  
+        this.getLwfSlab();     
         this.toast.success('Successfully Added!!!', 'LWF Slab');
       }, (err) => {
         const errorMessage = err?.error?.message || err?.message || err 
         || 'LWF Slab can not be added.';
         this.toast.error(errorMessage, 'Error!');  });
     } else {
-      this.payrollService.updateLWF(this.selectedData._id, payload).subscribe((res) => {         
+      this.payrollService.updateLWF(this.selectedData._id, payload).subscribe((res) => {      
+        this.getLwfSlab();   
         this.lwfSLabForm.reset();
         this.toast.success('Successfully Updated!!!', 'LWF Slab');
       }, (err) => {
@@ -116,8 +119,7 @@ export class LwfSlabComponent {
         || 'LWF Slab can not be updated.';
         this.toast.error(errorMessage, 'Error!');
       });
-    }
-    this.getLwfSlab();
+    }  
     this.closeModal(); // Optionally close the modal after submission
   }  
 
