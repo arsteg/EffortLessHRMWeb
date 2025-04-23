@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray, Validators, FormControl } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { isEqual } from 'date-fns';
@@ -7,13 +7,14 @@ import { ExpensesService } from 'src/app/_services/expenses.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { forkJoin } from 'rxjs';
-
+import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-expenses-categories',
   templateUrl: './expenses-categories.component.html',
   styleUrls: ['./expenses-categories.component.css']
 })
 export class ExpensesCategoriesComponent implements OnInit {
+  private readonly translate = inject(TranslateService);
   closeResult: string = '';
   expenseCategories = new MatTableDataSource<any>();
   addCategoryForm: FormGroup;
@@ -104,7 +105,7 @@ export class ExpensesCategoriesComponent implements OnInit {
       console.log(this.fields.value[index].id);
       this.expenses.deleteApplicationField(this.fields.value[index].id).subscribe((res: any) => {
         this.fields.removeAt(index);
-        this.toast.success('Successfully Deleted!!!', 'Expense Category Field');
+        this.toast.success(this.translate.instant('expenses.delete_success'));
       });
     }
     else {
@@ -176,12 +177,12 @@ export class ExpensesCategoriesComponent implements OnInit {
         });
       }
       this.clearselectedRequest();
-      this.toast.success('New Expense Category Added', 'Successfully!');
+      this.toast.success(this.translate.instant('expenses.category_added_success'));
       this.dialogRef.close();
       this.getAllExpensesCategories();
     },
       err => {
-        this.toast.error('This category is already exist', 'Error!')
+        this.toast.error(err || this.translate.instant('expenses.category_added_error'));
       });
 
   }
@@ -189,11 +190,10 @@ export class ExpensesCategoriesComponent implements OnInit {
   deleteCategory(id: string) {
     this.expenses.deleteCategory(id).subscribe((res: any) => {
       this.getAllExpensesCategories();
-      this.toast.success('Successfully Deleted!!!', 'Expense Category')
+      this.toast.success(this.translate.instant('expenses.delete_success'));
     },
       (err) => {
-        this.toast.error('This category is already being used in an expense template!'
-          , 'Expense Category, Can not be deleted!')
+        this.toast.error(err || this.translate.instant('expenses.delete_error'));
       })
   }
 
@@ -206,7 +206,7 @@ export class ExpensesCategoriesComponent implements OnInit {
         this.deleteCategory(id);
       }
       err => {
-        this.toast.error('Can not be Deleted', 'Error!')
+        this.toast.error(err || this.translate.instant('expenses.delete_error'));
       }
     });
   }
@@ -258,7 +258,7 @@ export class ExpensesCategoriesComponent implements OnInit {
     }
     forkJoin(apiCalls).subscribe((result: { [key: string]: any }) => {
       if (result['updateCategory']) {
-        this.toast.success('Expense Category Updated', 'Succesffully')
+        this.toast.success(this.translate.instant('expenses.category_updated_success'));
         this.updatedCategory = result['updateCategory']?.data._id;
       }
       if (result['updateField']) {
@@ -267,10 +267,10 @@ export class ExpensesCategoriesComponent implements OnInit {
           isMandatory: false
         });
         this.isEdit = false;
-        this.toast.success('Expense Category Applicable field Updated', 'Successfully');
+        this.toast.success(this.translate.instant('expenses.category_applicable_field_updated_success'));
       }
       if (result['addField']) {
-        this.toast.success('Expense Category Applicable field Added', 'Successfully')
+        this.toast.success(this.translate.instant('expenses.category_applicable_field_added_success'))
       }
       this.getAllExpensesCategories();
     })

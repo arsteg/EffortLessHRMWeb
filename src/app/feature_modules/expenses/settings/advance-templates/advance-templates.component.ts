@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
@@ -8,6 +8,7 @@ import { CommonService } from 'src/app/_services/common.Service';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-advance-templates',
@@ -15,6 +16,7 @@ import { MatTableDataSource } from '@angular/material/table';
   styleUrl: './advance-templates.component.css'
 })
 export class AdvanceTemplatesComponent implements OnInit {
+  private readonly translate = inject(TranslateService);
   searchText: '';
   isEdit = false;
   changeMode: 'Add' | 'Update' = 'Add';
@@ -168,11 +170,11 @@ export class AdvanceTemplatesComponent implements OnInit {
                 advanceCategory: newCategory._id
               };
             }
-            this.toast.success('New Advance Template Added', 'Successfully!!!');
+            this.toast.success(this.translate.instant('expenses.template_created_success'));
             this.addAdvanceTempForm.reset();
           },
           err => {
-            this.toast.error('Advance template already in use, Try with another Label', 'Error!!!');
+            this.toast.error(err || this.translate.instant('expenses.template_created_error'));
           }
         );
         this.addAdvanceTempForm.reset();
@@ -188,13 +190,13 @@ export class AdvanceTemplatesComponent implements OnInit {
         };
         this.expenseService.updateAdvanceTemplates(this.selectedTemplate._id, payload).subscribe((res: any) => {
           this.addAdvanceTempForm.reset();
-          this.toast.success(' Advance Template Updated', 'Successfully!!!');
+          this.toast.success(this.translate.instant('expenses.template_updated_success'));
           this.isEdit = false;
           this.changeMode == 'Add';
           this.getAllTemplates();
         },
           (err) => {
-            this.toast.error('Advance template can not be updated', 'Error')
+            this.toast.error(this.translate.instant('expenses.template_updated_error'));
           });
       }
     }
@@ -244,7 +246,7 @@ export class AdvanceTemplatesComponent implements OnInit {
         this.deleteAdvanceTemlate(id);
       }
       err => {
-        this.toast.error('Can not be Deleted', 'Error!')
+        this.toast.error(err || this.translate.instant('expenses.delete_error'));
       }
     });
   }
@@ -252,11 +254,10 @@ export class AdvanceTemplatesComponent implements OnInit {
   deleteAdvanceTemlate(id: string) {
     this.expenseService.deleteAdvanceTemplates(id).subscribe((res: any) => {
       this.getAllTemplates();
-      this.toast.success('Successfully Deleted!!!', 'Advance Template')
+      this.toast.success(this.translate.instant('expenses.delete_success'));
     },
       (err) => {
-        this.toast.error('This category is already being used in an expense template!'
-          , 'Advance Category, Can not be deleted!')
+        this.toast.error(err || this.translate.instant('expenses.delete_error'));
       })
   }
 

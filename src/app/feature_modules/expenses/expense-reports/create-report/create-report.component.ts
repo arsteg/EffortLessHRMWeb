@@ -6,7 +6,7 @@ import {
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { attachments } from 'src/app/models/expenses';
+import { TranslateService } from '@ngx-translate/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -15,6 +15,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrl: './create-report.component.css'
 })
 export class CreateReportComponent {
+  private readonly translate = inject(TranslateService);
   @Output() changeStep: any = new EventEmitter();
   @Output() close: any = new EventEmitter();
   categories: any;
@@ -165,11 +166,11 @@ export class CreateReportComponent {
     this.expenseService.updateExpenseReportExpenses(expenseReportExpId, payload).subscribe(
       (result: any) => {
         this.expenseService.expenseReportExpense.next(result.data);
-        this.toast.success('Expenses are updated!');
+        this.toast.success(this.translate.instant('expenses.expense_updated_success'));
         this.dialogRef.close();
       },
       (err) => {
-        this.toast.error(err || 'This expense report of expenses cannot be updated!');
+        this.toast.error(err || this.translate.instant('expenses.expense_updated_error'));
       }
     );
   }
@@ -181,12 +182,12 @@ export class CreateReportComponent {
     this.expenseService.addExpenseReportExpenses(payload).subscribe(
       (result: any) => {
         this.expenseService.expenseReportExpense.next(result.data);
-        this.toast.success('Expenses are added!');
+        this.toast.success(this.translate.instant('expenses.expense_created_success'));
         this.dialogRef.close();
         this.closeModal();
       },
       (err) => {
-        this.toast.error(err || 'This expense report of expenses can not be added!');
+        this.toast.error(err || this.translate.instant('expenses.expense_created_error'));
       }
     );
   }

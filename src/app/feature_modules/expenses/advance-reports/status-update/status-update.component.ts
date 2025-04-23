@@ -3,13 +3,14 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { ExpensesService } from 'src/app/_services/expenses.service';
-
+import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-status-update',
   templateUrl: './status-update.component.html',
   styleUrl: './status-update.component.css'
 })
 export class StatusUpdateComponent {
+  private translate: TranslateService = inject(TranslateService);
   updateExpenseReport: FormGroup;
   updateReport: any;
   @Output() advanceReportRefreshed: EventEmitter<void> = new EventEmitter<void>();
@@ -49,7 +50,7 @@ export class StatusUpdateComponent {
       payload['secondaryApprovalReason']= this.updateExpenseReport.value.primaryApprovalReason
     }
     this.expenseService.updateAdvanceReport(id, payload).subscribe((res: any) => {
-      this.toast.success('Status Updated Successfully!');
+      this.toast.success(this.translate.instant('expenses.status_updated_success'));
       this.advanceReportRefreshed.emit();
       this.dialogRef.close('success');
     }, (error)=>{

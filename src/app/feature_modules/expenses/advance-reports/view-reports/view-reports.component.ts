@@ -1,13 +1,14 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, inject } from '@angular/core';
 import { CommonService } from 'src/app/_services/common.Service';
 import { ExpensesService } from 'src/app/_services/expenses.service';
-
+import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-view-reports',
   templateUrl: './view-reports.component.html',
   styleUrl: './view-reports.component.css'
 })
 export class ViewReportsComponent {
+  private translate: TranslateService = inject(TranslateService);
   @Output() close: any = new EventEmitter();
   advanceReport: any;
   report: any;
@@ -43,7 +44,7 @@ export class ViewReportsComponent {
 
   getCategory(categoryId: string) {
     const matchingCategory = this.allCategory?.find(category => category?._id === categoryId);
-    return matchingCategory ? `${matchingCategory?.label}` : 'Category does not exist';
+    return matchingCategory ? `${matchingCategory?.label}` : this.translate.instant('expenses.category_not_found');
   }
 
 }

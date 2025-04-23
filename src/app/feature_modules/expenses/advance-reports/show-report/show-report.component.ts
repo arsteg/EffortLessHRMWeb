@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { CommonService } from 'src/app/_services/common.Service';
@@ -10,12 +10,14 @@ import { ToastrService } from 'ngx-toastr';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { forkJoin } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-show-report',
   templateUrl: './show-report.component.html',
   styleUrl: './show-report.component.css'
 })
 export class ShowReportComponent {
+  private translate: TranslateService = inject(TranslateService);
   searchText: string = '';
   allAssignee: any[];
   allCategory: any[];
@@ -91,7 +93,7 @@ export class ShowReportComponent {
 
   getCategory(categoryId: string) {
     const matchingCategory = this.allCategory?.find(category => category?._id === categoryId);
-    return matchingCategory ? `${matchingCategory?.label}` : 'Category does not exist';
+    return matchingCategory ? `${matchingCategory?.label}` : this.translate.instant('expenses.category_not_found');
   }
 
   open(content: any) {
@@ -173,18 +175,17 @@ export class ShowReportComponent {
         this.deleteReport(id);
       }
       err => {
-        this.toast.error('Can not be Deleted', 'Error!')
+        this.toast.error(this.translate.instant('expenses.delete_error'))
       }
     });
   }
   deleteReport(id: string) {
     this.expenseService.deleteAdvanceReport(id).subscribe((res: any) => {
       this.advanceReport = this.advanceReport.filter(report => report._id !== id);
-      this.toast.success('Successfully Deleted!!!', 'Advance Expense Report');
+      this.toast.success(this.translate.instant('expenses.delete_success'));
     },
       (err) => {
-        this.toast.error('This Advance Expense Report is already being used!'
-          , 'Error!')
+        this.toast.error(this.translate.instant('expenses.delete_error'));
       })
   }
 

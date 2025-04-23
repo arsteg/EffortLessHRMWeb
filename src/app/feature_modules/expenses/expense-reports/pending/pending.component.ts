@@ -1,10 +1,10 @@
-import { Component, EventEmitter, Output, Input, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Output, Input, ViewChild, inject } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { CommonService } from 'src/app/_services/common.Service';
@@ -19,6 +19,7 @@ import { RejectDialogComponent } from './reject-dialog.component';
   styleUrl: './pending.component.css'
 })
 export class PendingComponent {
+  private readonly translate = inject(TranslateService);
   searchText: string = '';
   expenseCategories: any;
   @Input() isEdit: boolean = false;
@@ -142,15 +143,15 @@ export class PendingComponent {
   deleteReport(id: string) {
     this.expenseService.deleteExpenseReport(id).subscribe(() => {
       this.dataSource.data = this.dataSource.data.filter(report => report._id !== id);
-      this.toast.success('Successfully Deleted!!!', 'Expense Report');
+      this.toast.success(this.translate.instant('expenses.delete_success'));
     }, () => {
-      this.toast.error('This Expense Report is already being used!', 'Error!');
+      this.toast.error(this.translate.instant('expenses.delete_error'));
     });
   }
 
   getUser(employeeId: string) {
     const matchingUser = this.users.find(user => user._id === employeeId);
-    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'User Not Found';
+    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : this.translate.instant('expenses.user_not_found');
   }
 
   editReport(report: any) {
@@ -187,7 +188,7 @@ export class PendingComponent {
     this.expenseService.updateExpenseReport(id, payload).subscribe(() => {
       this.dataSource.data = this.dataSource.data.filter(report => report._id !== id);
     }, (error)=>{
-      this.toast.error(error, 'Expense Report');
+      this.toast.error(error, this.translate.instant('expenses.expense_report'));
     });
   }
 
