@@ -90,7 +90,7 @@
 
             <div class="form-group">
                 <label for="">Employer Percentage <span class="text-danger">*</span></label>
-                <input type="number" class="form-control" formControlName="fromAmount">
+                <input type="number" class="form-control" formControlName="employerPercentage">
                 <div
                     *ngIf="contributionForm.get('employerPercentage').invalid && (contributionForm.get('employerPercentage').dirty || contributionForm.get('employerPercentage').touched)">
                     <small class="text-danger"

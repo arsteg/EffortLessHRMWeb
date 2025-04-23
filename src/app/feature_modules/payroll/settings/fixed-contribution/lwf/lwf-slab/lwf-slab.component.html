@@ -1,31 +1,40 @@
 <div class="tableContainer bg-white py-2">
-    <div class=" d-flex justify-content-end mb-2">
+    <div class="d-flex justify-content-end mb-2">
         <div class="align-items-center d-flex justify-content-end">
             <label for="">State</label>
-            <select class="w-auto mx-1" id="">
-                <option value="" *ngFor="let state of eligibleStates" value="{{getMatchingState(state?.state)}}">{{getMatchingState(state?.state)}}</option>
-            </select>
-        </div>
-        <button mat-raised-button class="addBtn" (click)="open(modal); isEdit=false; clearForm()">Add</button>
+            <select class="w-auto mx-1"
+            [(ngModel)]="selectedState"
+            name="selectedState"  (change)="getLwfSlab()"
+            (blur)="stateTouched = true"
+            [disabled]="true"
+            required>
+      <option value="" disabled selected>Select State</option>
+      <option *ngFor="let state of eligibleStates" [value]="state">
+        {{ state }}
+      </option>
+    </select>
+    <div *ngIf="stateTouched && !selectedState" class="text-danger ms-2">
+      Please select a state
     </div>
+    
+          </div>
+        <button mat-raised-button class="addBtn" (click)="handleAdd(modal); isEdit = false; clearForm()">Add</button>
+      </div>
+      
     <table>
-        <thead>
-            <th>From Amount</th>
-            <th>To Amount</th>
-            <th>Employee Percentage/Limit</th>
+        <thead>           
             <th>Employee Amount/Limit</th>
-            <th>Employer Percentage/Limit</th>
             <th>Employer Amount/Limit</th>
+            <th>Active</th>
+         
+            
             <th class="text-center">Actions</th>
         </thead>
         <tbody>
             <tr *ngFor="let data of lwfSlabs">
-                <td>{{data?.fromAmount}}</td>
-                <td>{{data?.toAmount}}</td>
-                <td>{{data?.employeePercent}}</td>
                 <td>{{data?.employeeAmount}}</td>
-                <td>{{data?.employerPercentage}}</td>
                 <td>{{data?.employerAmount}}</td>
+                <td>{{data?.isActive}}</td>
                 <td>
                     <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before"
                         data-bs-toggle="modal" data-bs-target="#modal"
@@ -52,63 +61,8 @@
         </div>
     </div>
     <form [formGroup]="lwfSLabForm" (ngSubmit)="onSubmission()">
+       
         <div class="row">
-            <div class="form-group col-md-6">
-                <label for="">From Amount <span class="text-danger">*</span></label>
-                <input type="number" class="form-control" formControlName="fromAmount">
-                <div
-                    *ngIf="lwfSLabForm.get('fromAmount').invalid && (lwfSLabForm.get('fromAmount').dirty || lwfSLabForm.get('fromAmount').touched)">
-                    <small class="text-danger" *ngIf="lwfSLabForm.get('fromAmount')['errors']['required']">Field is
-                        required</small>
-                </div>
-            </div>
-
-            <div class="form-group col-md-6 mt-2">
-                <label for="">To Amount <span class="text-danger">*</span></label>
-                <input type="number" class="form-control" formControlName="toAmount">
-                <div
-                    *ngIf="lwfSLabForm.get('toAmount').invalid && (lwfSLabForm.get('toAmount').dirty || lwfSLabForm.get('toAmount').touched)">
-                    <small class="text-danger" *ngIf="lwfSLabForm.get('toAmount')['errors']['required']">Field is
-                        required</small>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-md-6 mt-2">
-                <label for="">Employee Percentage <span class="text-danger">*</span></label>
-                <input type="number" class="form-control" formControlName="employeePercent">
-                <div
-                    *ngIf="lwfSLabForm.get('employeePercent').invalid && (lwfSLabForm.get('employeePercent').dirty || lwfSLabForm.get('employeePercent').touched)">
-                    <small class="text-danger" *ngIf="lwfSLabForm.get('employeePercent')['errors']['required']">Field
-                        is
-                        required</small>
-                </div>
-            </div>
-
-            <div class="form-group col-md-6 mt-2">
-                <label for="">Employee Amount <span class="text-danger">*</span></label>
-                <input type="number" class="form-control" formControlName="employeeAmount">
-                <div
-                    *ngIf="lwfSLabForm.get('employeeAmount').invalid && (lwfSLabForm.get('employeeAmount').dirty || lwfSLabForm.get('employeeAmount').touched)">
-                    <small class="text-danger" *ngIf="lwfSLabForm.get('employeeAmount')['errors']['required']">Field is
-                        required</small>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-
-            <div class="form-group col-md-6 mt-2">
-                <label for="">Employer Percentage <span class="text-danger">*</span></label>
-                <input type="number" class="form-control" formControlName="employerPercentage">
-                <div
-                    *ngIf="lwfSLabForm.get('employerPercentage').invalid && (lwfSLabForm.get('employerPercentage').dirty || lwfSLabForm.get('employerPercentage').touched)">
-                    <small class="text-danger" *ngIf="lwfSLabForm.get('employerPercentage')['errors']['required']">Field
-                        is
-                        required</small>
-                </div>
-            </div>
-
             <div class="form-group col-md-6 mt-2">
                 <label for="">Employer Amount <span class="text-danger">*</span></label>
                 <input type="number" class="form-control" formControlName="employerAmount">
@@ -119,7 +73,16 @@
                         required</small>
                 </div>
             </div>
-        </div>
+            <div class="form-group col-md-6 mt-2">
+                <label for="">Employee Amount <span class="text-danger">*</span></label>
+                <input type="number" class="form-control" formControlName="employeeAmount">
+                <div
+                    *ngIf="lwfSLabForm.get('employeeAmount').invalid && (lwfSLabForm.get('employeeAmount').dirty || lwfSLabForm.get('employeeAmount').touched)">
+                    <small class="text-danger" *ngIf="lwfSLabForm.get('employeeAmount')['errors']['required']">Field is
+                        required</small>
+                </div>
+            </div>
+        </div>     
 
         <div class="d-flex border-top mt-2 py-2 justify-content-between">
             <button mat-raised-button type="reset" (click)="clearForm()">Cancel</button>

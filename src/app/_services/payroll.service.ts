@@ -220,8 +220,6 @@ export class PayrollService {
     return response;
   }
 
-  // pt-deduction month CRUD
-
   addDeductionMonth(payload: any): Observable<any> {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/pt-deduction-months`, payload, this.httpOptions);
     return response;
@@ -256,7 +254,11 @@ export class PayrollService {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/lwf-fixed-contribution-slabs-list`, payload, this.httpOptions);
     return response;
   }
-
+  getLWFByState(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/lwf-fixed-contribution-slabs-list-by-state`, payload, this.httpOptions);
+    return response;
+  }
+ 
   // LWF_deduction month CRUD
   addLWFDeductionMonth(payload: any): Observable<any> {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/lwf-fixed-deduction-months`, payload, this.httpOptions);

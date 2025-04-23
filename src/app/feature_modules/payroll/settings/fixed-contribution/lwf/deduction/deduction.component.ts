@@ -46,8 +46,10 @@ export class DeductionComponent implements OnInit {
       data => {
         this.updateFormValues(data.data);
       },
-      error => {
-        console.log(error);
+      err => {
+        const errorMessage = err?.error?.message || err?.message || err 
+        || 'LWF Slab can not be updated.';
+        this.toast.error(errorMessage, 'Error!');
       }
     );
   }
@@ -60,8 +62,6 @@ export class DeductionComponent implements OnInit {
         monthForm.patchValue({ processMonth: deduction.processMonth });
       }
     });
-
-    console.log(this.deductionForm.value);
   }
 
   onSelectionChange(month: string, value: boolean) {
@@ -69,7 +69,6 @@ export class DeductionComponent implements OnInit {
     if (monthForm) {
       monthForm.patchValue({ processMonth: value });
     }
-    console.log(this.deductionForm.value);
   }
 
   onSubmit() {
@@ -78,8 +77,10 @@ export class DeductionComponent implements OnInit {
       data => {
         this.toast.success('Deduction month updated successfully');
       },
-      error => {
-        this.toast.error('Error updating deduction month');
+      err => {
+        const errorMessage = err?.error?.message || err?.message || err 
+        || 'LWF Slab can not be updated.';
+        this.toast.error(errorMessage, 'Error!');
       }
     );
   }

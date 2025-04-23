@@ -18,10 +18,9 @@ export class CeilingAmountComponent {
   currentPage: number = 1;
   isEdit = false;
   closeResult: string = '';
-  selectedData: any;
   ceilingAmount: any;
   ceilingAmountForm: FormGroup;
-  @Input() selectedRecord: any;
+  selectedRecord: any;
 
   constructor(private payroll: PayrollService,
     private modalService: NgbModal,
@@ -30,15 +29,13 @@ export class CeilingAmountComponent {
     private dialog: MatDialog
   ) {
     this.ceilingAmountForm = this.fb.group({
-      defaultValue: [0, Validators.required],
-      maxAmount: [0, Validators.required],
-      company: [this.selectedRecord?._id, Validators.required],
+      employeeCount: [0, Validators.required],
+      maxGrossAmount: [0, Validators.required]
     });
-    console.log(this.selectedRecord);
+    
   }
 
   ngOnInit(): void {
-    console.log(this.payroll.generalSettings.getValue())
     this.getCeilingAmount();
   }
 
@@ -64,20 +61,24 @@ export class CeilingAmountComponent {
   }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-
-    }, (reason) => {
-
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-    });
-    const modalElement = document.querySelector('#modal');
-  const focusableElement = modalElement.querySelector('input, button, select, textarea');
-  if (focusableElement) {
-    (focusableElement as HTMLElement).focus();
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then(
+      (result) => {
+        this.closeResult = `Closed with: ${result}`;
+      },
+      (reason) => {
+        this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+      }
+    );
+  
+    // Delay DOM access to ensure modal is rendered
+    setTimeout(() => {
+      const focusableElement = document.querySelector('input[formControlName="employeeCount"]');
+      if (focusableElement) {
+        (focusableElement as HTMLElement).focus();
+      }
+    }, 100);
   }
-  }
-
+  
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
@@ -96,7 +97,7 @@ export class CeilingAmountComponent {
       this.payroll.addESICCeiling(this.ceilingAmountForm.value).subscribe((res: any) => {
         this.ceilingAmount.push(res.data);
         this.toast.success('Successfully Added!!!', 'ESIC Ceiling Amount');
-        this.ceilingAmountForm.patchValue({ defaultValue: 0, maxAmount: 0 })
+        this.ceilingAmountForm.patchValue({ employeeCount: 0, maxGrossAmount: 0 })
       },
         (err) => {
           this.toast.error('ESIC Ceiling Amount Can not be Added', 'ESIC Ceiling Amount');
@@ -110,7 +111,7 @@ export class CeilingAmountComponent {
         }
         this.toast.success('Successfully Updated!!!', 'ESIC Ceiling Amount');
         this.isEdit = false;
-        this.ceilingAmountForm.patchValue({ defaultValue: 0, maxAmount: 0 })
+        this.ceilingAmountForm.patchValue({ employeeCount: 0, maxGrossAmount: 0})
 
       },
         (err) => {
@@ -119,14 +120,13 @@ export class CeilingAmountComponent {
     }
   }
 
-  editRecord() {
-    this.ceilingAmountForm.patchValue(this.selectedData);
+  editRecord() {    
+    this.ceilingAmountForm.patchValue(this.selectedRecord);
   }
 
   clearForm() {
     this.ceilingAmountForm.patchValue({
-      defaultValue: 0,
-      maxAmount: 0,
+      employeeCount: 0, maxGrossAmount: 0
     })
   }
 
