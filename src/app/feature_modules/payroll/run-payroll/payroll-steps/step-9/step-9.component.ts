@@ -25,7 +25,6 @@ export class Step9Component {
   searchText: string = '';
   closeResult: string = '';
   allUsers: any;
-
   selectedRecord: any;
   payrollUser: any;
   @Input() selectedPayroll: any;
@@ -50,6 +49,8 @@ export class Step9Component {
     'totalIncomeTax',
     'yearlySalary',
     'monthlySalary',
+    'totalEmployeeStatutoryContribution',
+    'totalEmployeeStatutoryDeduction',
     'payroll_status',
     'actions'
   ];
