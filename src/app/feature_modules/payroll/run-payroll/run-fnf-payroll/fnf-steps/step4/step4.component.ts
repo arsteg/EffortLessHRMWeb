@@ -6,6 +6,7 @@ import { PayrollService } from 'src/app/_services/payroll.service';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { CommonService } from 'src/app/_services/common.Service';
+import { UserService } from 'src/app/_services/users.service';
 
 @Component({
   selector: 'app-step4',
@@ -13,7 +14,7 @@ import { CommonService } from 'src/app/_services/common.Service';
   styleUrl: './step4.component.css'
 })
 export class FNFStep4Component implements OnInit {
-  displayedColumns: string[] = ['userName', 'terminationDate', 'noticePeriod', 'gratuityEligible', 'yearsOfService', 'gratuityAmount', 'severancePay', 'retirementBenefits', 'redeploymentCompensation', 'outplacementServices', 'status', 'actions'];
+  displayedColumns: string[] = ['userName', 'terminationDate', 'noticePeriod', 'gratuityEligible', 'yearsOfService', 'gratuityAmount', 'severancePay', 'outplacementServices', 'status', 'actions'];
   terminationCompensation = new MatTableDataSource<any>();
   terminationCompensationForm: FormGroup;
   selectedTerminationCompensation: any;
@@ -30,17 +31,16 @@ export class FNFStep4Component implements OnInit {
   constructor(private fb: FormBuilder,
     private payrollService: PayrollService,
     public dialog: MatDialog,
-    private toast: ToastrService) {
+    private toast: ToastrService,
+    private userService: UserService) {
     this.terminationCompensationForm = this.fb.group({
       payrollFNFUser: ['', Validators.required],
       terminationDate: [Date, Validators.required],
-      noticePeriod: [0, Validators.required],
+      noticePeriod: [null, Validators.required],
       gratuityEligible: [0, Validators.required],
       yearsOfService: [0, Validators.required],
       gratuityAmount: [0, Validators.required],
       severancePay: [0, Validators.required],
-      retirementBenefits: [0, Validators.required],
-      redeploymentCompensation: [0, Validators.required],
       outplacementServices: [0, Validators.required],
       status: ['pending', Validators.required]
     });
@@ -50,24 +50,31 @@ export class FNFStep4Component implements OnInit {
     console.log(this.settledUsers)
     this.fetchTerminationCompensation(this.selectedFnF);
   }
-
+  jobInformation: any;
   onUserChange(fnfUserId: string): void {
     this.selectedFNFUser = fnfUserId;
-    const fnfUser = this.selectedFnF.userList[0].user;
-
-    this.payrollService.getFnFTerminationCompensationByPayrollFnFUser(fnfUserId).subscribe((res: any) => {
-      this.terminationCompensation.data = res.data;
-      this.terminationCompensation.data.forEach((compensation: any) => {
-        const user = this.userList.find(user => user._id === fnfUser);
-        console.log(user);
-        compensation.userName = user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
+    this.userService.getJobInformationByUserId(fnfUserId).subscribe((res: any) => {
+      this.jobInformation = res.data;
+      this.selectedFNFUser = this.fnfUsers[0]._id;
+      this.terminationCompensationForm.patchValue({
+        noticePeriod: this.fnfUsers[0].noticePeriod,
       });
     });
+    // const fnfUser = this.selectedFnF.userList[0].user;
+
+    // this.payrollService.getFnFTerminationCompensationByPayrollFnFUser(fnfUserId).subscribe((res: any) => {
+    //   this.terminationCompensation.data = res.data;
+    //   this.terminationCompensation.data.forEach((compensation: any) => {
+    //     const user = this.userList.find(user => user._id === fnfUser);
+    //     console.log(user);
+    //     compensation.userName = user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
+    //   });
+    // });
   }
 
   openDialog(isEdit: boolean): void {
     this.isEdit = isEdit;
-    if(!this.isEdit){
+    if (!this.isEdit) {
       this.terminationCompensationForm.reset({
         payrollFNFUser: '',
         terminationDate: '',
@@ -76,8 +83,6 @@ export class FNFStep4Component implements OnInit {
         yearsOfService: 0,
         gratuityAmount: 0,
         severancePay: 0,
-        retirementBenefits: 0,
-        redeploymentCompensation: 0,
         outplacementServices: 0,
         status: 'pending'
       });
@@ -100,8 +105,6 @@ export class FNFStep4Component implements OnInit {
       yearsOfService: compensation.yearsOfService,
       gratuityAmount: compensation.gratuityAmount,
       severancePay: compensation.severancePay,
-      retirementBenefits: compensation.retirementBenefits,
-      redeploymentCompensation: compensation.redeploymentCompensation,
       outplacementServices: compensation.outplacementServices,
       status: compensation.status
     });
@@ -135,8 +138,6 @@ export class FNFStep4Component implements OnInit {
               yearsOfService: 0,
               gratuityAmount: 0,
               severancePay: 0,
-              retirementBenefits: 0,
-              redeploymentCompensation: 0,
               outplacementServices: 0,
               status: 'pending'
             });
@@ -182,8 +183,6 @@ export class FNFStep4Component implements OnInit {
         yearsOfService: this.selectedTerminationCompensation.yearsOfService,
         gratuityAmount: this.selectedTerminationCompensation.gratuityAmount,
         severancePay: this.selectedTerminationCompensation.severancePay,
-        retirementBenefits: this.selectedTerminationCompensation.retirementBenefits,
-        redeploymentCompensation: this.selectedTerminationCompensation.redeploymentCompensation,
         outplacementServices: this.selectedTerminationCompensation.outplacementServices,
         status: this.selectedTerminationCompensation.status
       });
@@ -218,13 +217,13 @@ export class FNFStep4Component implements OnInit {
       (res: any) => {
         this.terminationCompensation.data = res.data;
 
-        
+
         this.terminationCompensation.data.forEach((item: any) => {
           const matchedUser = this.selectedFnF.userList.find((user: any) => user._id === item.payrollFNFUser);
           item.userName = this.getMatchedSettledUser(matchedUser.user);
         });
         console.log(this.terminationCompensation.data)
-        
+
         if (this.isEdit && this.selectedTerminationCompensation) {
           this.terminationCompensationForm.patchValue({
             payrollFNFUser: this.selectedTerminationCompensation.payrollFNFUser,

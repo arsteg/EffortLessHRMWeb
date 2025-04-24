@@ -70,7 +70,7 @@
 
 <div *ngIf="!showFnFPayroll">
     <button mat-raised-button (click)="goBack()">Back to Table</button>
-    <mat-horizontal-stepper [linear]="false" #stepper>
+    <mat-horizontal-stepper orientation="vertical" [linear]="false" #stepper>
         <mat-step>
             <ng-template matStepLabel>Step 1</ng-template>
             <ng-template matStepContent><app-step1 
