@@ -25,11 +25,12 @@
                 <ng-container matColumnDef="details">
                     <th mat-header-cell *matHeaderCellDef> Full & Final Users </th>
                     <td mat-cell *matCellDef="let element">
-                        <mat-icon matTooltip="{{element.details | titlecase}}" matTooltipPosition="below">info</mat-icon>
+                        <mat-icon matTooltip="{{element.details | titlecase}}"
+                            matTooltipPosition="below">info</mat-icon>
                     </td>
                 </ng-container>
-               
-                  
+
+
 
                 <ng-container matColumnDef="status">
                     <th mat-header-cell *matHeaderCellDef> Status </th>
@@ -72,92 +73,80 @@
     <button mat-raised-button (click)="goBack()">Back to Table</button>
     <mat-horizontal-stepper orientation="vertical" [linear]="false" #stepper>
         <mat-step>
-            <ng-template matStepLabel>Step 1</ng-template>
-            <ng-template matStepContent><app-step1 
-                [isSteps]="showFnFSteps"
-                [settledUsers]="settledUser"
-                [selectedFnF]="selectedFnF"></app-step1></ng-template>
-            <div>
-                <button mat-button matStepperNext>Next</button>
-            </div>
+            <ng-template matStepLabel>Attendance Summary</ng-template>
+            <ng-template matStepContent><app-step1 [isSteps]="showFnFSteps" [settledUsers]="settledUser"
+                    [selectedFnF]="selectedFnF"></app-step1>
+                <button mat-button matStepperNext>Next</button></ng-template>
         </mat-step>
         <mat-step>
-            <ng-template matStepLabel>Step 2</ng-template>
-            <ng-template matStepContent><app-step2 
-                [isSteps]="showFnFSteps"
-                [settledUsers]="settledUser"
-                [selectedFnF]="selectedFnF"></app-step2></ng-template>
-            <div>
-                <button mat-button matStepperPrevious>Back</button>
-                <button mat-button matStepperNext>Next</button>
-            </div>
+            <ng-template matStepLabel>Variable Pay</ng-template>
+            <ng-template matStepContent><app-step2 [isSteps]="showFnFSteps" [settledUsers]="settledUser"
+                    [selectedFnF]="selectedFnF"></app-step2>
+                <div>
+                    <button mat-button matStepperPrevious>Back</button>
+                    <button mat-button matStepperNext>Next</button>
+                </div>
+            </ng-template>
         </mat-step>
         <mat-step>
-            <ng-template matStepLabel>Step 3</ng-template>
-            <ng-template matStepContent><app-step3 
-                [isSteps]="showFnFSteps"
-                [settledUsers]="settledUser"
-                [selectedFnF]="selectedFnF"></app-step3></ng-template>
-            <div>
-                <button mat-button matStepperPrevious>Back</button>
-                <button mat-button matStepperNext>Next</button>
-            </div>
+            <ng-template matStepLabel>Manual Arrears</ng-template>
+            <ng-template matStepContent><app-step3 [isSteps]="showFnFSteps" [settledUsers]="settledUser"
+                    [selectedFnF]="selectedFnF"></app-step3>
+                <div>
+                    <button mat-button matStepperPrevious>Back</button>
+                    <button mat-button matStepperNext>Next</button>
+                </div>
+            </ng-template>
         </mat-step>
         <mat-step>
-            <ng-template matStepLabel>Step 4</ng-template>
-            <ng-template matStepContent><app-step4 
-                [isSteps]="showFnFSteps"
-                [settledUsers]="settledUser"
-                [selectedFnF]="selectedFnF"></app-step4></ng-template>
-            <div>
-                <button mat-button matStepperPrevious>Back</button>
-                <button mat-button matStepperNext>Next</button>
-            </div>
+            <ng-template matStepLabel>Termination/Resignation Compensation</ng-template>
+            <ng-template matStepContent><app-step4 [isSteps]="showFnFSteps" [settledUsers]="settledUser"
+                    [selectedFnF]="selectedFnF"></app-step4>
+                <div>
+                    <button mat-button matStepperPrevious>Back</button>
+                    <button mat-button matStepperNext>Next</button>
+                </div>
+            </ng-template>
         </mat-step>
         <mat-step>
-            <ng-template matStepLabel>Step 5</ng-template>
-            <ng-template matStepContent><app-step5 
-                [isSteps]="showFnFSteps"
-                [settledUsers]="settledUser"
-                [selectedFnF]="selectedFnF"></app-step5></ng-template>
-            <div>
-                <button mat-button matStepperPrevious>Back</button>
-                <button mat-button matStepperNext>Next</button>
-            </div>
+            <ng-template matStepLabel>Loan/Advances</ng-template>
+            <ng-template matStepContent><app-step5 [isSteps]="showFnFSteps" [settledUsers]="settledUser"
+                    [selectedFnF]="selectedFnF"></app-step5>
+                <div>
+                    <button mat-button matStepperPrevious>Back</button>
+                    <button mat-button matStepperNext>Next</button>
+                </div>
+            </ng-template>
         </mat-step>
         <mat-step>
-            <ng-template matStepLabel>Step 6</ng-template>
-            <ng-template matStepContent><app-step6 
-                [isSteps]="showFnFSteps"
-                [settledUsers]="settledUser"
-                [selectedFnF]="selectedFnF"></app-step6></ng-template>
-            <div>
-                <button mat-button matStepperPrevious>Back</button>
-                <button mat-button matStepperNext>Next</button>
-            </div>
+            <ng-template matStepLabel>Statutory Benefits</ng-template>
+            <ng-template matStepContent><app-step6 [isSteps]="showFnFSteps" [settledUsers]="settledUser"
+                    [selectedFnF]="selectedFnF"></app-step6>
+                <div>
+                    <button mat-button matStepperPrevious>Back</button>
+                    <button mat-button matStepperNext>Next</button>
+                </div>
+            </ng-template>
         </mat-step>
         <mat-step>
-            <ng-template matStepLabel>Step 7</ng-template>
-            <ng-template matStepContent><app-step7 
-                [isSteps]="showFnFSteps"
-                [settledUsers]="settledUser"
-                [selectedFnF]="selectedFnF"></app-step7></ng-template>
-            <div>
-                <button mat-button matStepperPrevious>Back</button>
-                <button mat-button matStepperNext>Next</button>
-            </div>
+            <ng-template matStepLabel>Overtime</ng-template>
+            <ng-template matStepContent><app-step7 [isSteps]="showFnFSteps" [settledUsers]="settledUser"
+                    [selectedFnF]="selectedFnF"></app-step7>
+                <div>
+                    <button mat-button matStepperPrevious>Back</button>
+                    <button mat-button matStepperNext>Next</button>
+                </div>
+            </ng-template>
         </mat-step>
-        
         <mat-step>
-            <ng-template matStepLabel>Step 8</ng-template>
-            <ng-template matStepContent><app-step8 
-                [isSteps]="showFnFSteps"
-                [settledUsers]="settledUser"
-                [selectedFnF]="selectedFnF"></app-step8></ng-template>
-            <div>
-                <button mat-button matStepperPrevious>Back</button>
-                <button mat-button (click)="completeFnF()">Complete</button>
-            </div>
+            <ng-template matStepLabel>Income Tax</ng-template>
+            <ng-template matStepContent><app-step8 [isSteps]="showFnFSteps" [settledUsers]="settledUser"
+                    [selectedFnF]="selectedFnF"></app-step8>
+                <div>
+                    <button mat-button matStepperPrevious>Back</button>
+                    <button mat-button (click)="completeFnF()">Complete</button>
+                </div>
+            </ng-template>
         </mat-step>
 
     </mat-horizontal-stepper>
@@ -220,7 +209,8 @@
         <form [formGroup]="fnfUserForm" (ngSubmit)="onFnFUserSubmission()">
 
             <div class="form-group my-2">
-                <app-fnf-users  [selectedFnF]="selectedFnF" (changeUser)="onUserSelectedFromChild($event)"></app-fnf-users>
+                <app-fnf-users [selectedFnF]="selectedFnF"
+                    (changeUser)="onUserSelectedFromChild($event)"></app-fnf-users>
             </div>
             <div class="form-group my-2">
                 <mat-form-field appearance="outline" class="w-100">
