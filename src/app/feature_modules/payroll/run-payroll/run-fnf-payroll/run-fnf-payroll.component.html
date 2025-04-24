@@ -7,8 +7,15 @@
                     <span class="bi bi-search searchIcon"></span>
                     <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
                         name="searchText" aria-label="default input example">
-
-                    <button class="addBtn ms-2 w-100" mat-raised-button (click)="open(modal)">Add FnF Payroll</button>
+                        <button 
+                        class="ms-2 w-100" 
+                        mat-raised-button color="primary"
+                        [matTooltip]="settledUser.length === 0 ? 'There is no User available to add in FNF payroll' : ''"
+                        [matTooltipDisabled]="settledUser.length > 0"
+                        (click)="settledUser.length > 0 ? open(modal) : null"
+                      >
+                        Add FnF Payroll
+                      </button>
                 </div>
             </div>
             <table mat-table [dataSource]="fnfPayroll" class="shadow">
