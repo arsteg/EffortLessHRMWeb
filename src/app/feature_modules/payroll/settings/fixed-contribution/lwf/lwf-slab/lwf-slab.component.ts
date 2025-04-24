@@ -39,7 +39,11 @@ export class LwfSlabComponent {
       fixedContribution: ['', Validators.required],
       employeeAmount: [0, Validators.required],
       employerAmount: [0, Validators.required],
-      
+      employeePercentage: [0],
+      employerPercentage: [0],
+      maxContribution: [0],
+      minAmount: [0],
+      maxAmount: [0]
     })
   }
 
@@ -59,8 +63,13 @@ export class LwfSlabComponent {
     this.isEdit = false;
     this.lwfSLabForm.patchValue({
       fixedContribution: this.selectedRecord?._id,
-      employeeAmount: 0,
-      employerAmount: 0
+      employeeAmount: 0, // Default value for employeeAmount
+      employerAmount: 0, // Default value for employerAmount
+      employeePercentage: 0, // Default value for employeePercentage
+      employerPercentage: 0, // Default value for employerPercentage
+      maxContribution: 0, // Default value for maxContribution
+      minAmount: 0, // Default value for minAmount
+      maxAmount: 0 // Default value for maxAmount
     })
   }
   onRecordsPerPageChange(recordsPerPage: number) {
