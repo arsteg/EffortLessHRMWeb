@@ -36,9 +36,9 @@
 
         <ng-container matColumnDef="totalLoanAdvance">
             <th mat-header-cell *matHeaderCellDef> Total Loans/Advances </th>
-            <td mat-cell *matCellDef="let element"> {{element?.totalLoanAdvance}} </td>
+            <td mat-cell *matCellDef="let element"> {{element?.totalLoanAdvance[0]?.amount || element?.totalLoanAdvance[0]?.disbursementAmount }}</td>
         </ng-container>
-
+        
         <ng-container matColumnDef="totalFlexiBenefits">
             <th mat-header-cell *matHeaderCellDef> Total Flexi Benefits </th>
             <td mat-cell *matCellDef="let element"> {{element?.totalFlexiBenefits}} </td>
@@ -72,68 +72,49 @@
         <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef> Actions </th>
             <td mat-cell *matCellDef="let element">
-              <button mat-icon-button [matMenuTriggerFor]="menu">
-                <mat-icon>more_vert</mat-icon>
-              </button>
-              <mat-menu #menu="matMenu">
-                <!-- Existing actions -->
-                <button mat-menu-item *ngIf="element?.payroll_status !== payrollStatus.Cleared"
+                <button mat-icon-button [matMenuTriggerFor]="menu">
+                    <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                    
+                    <button mat-menu-item 
+                        (click)="selectedStatus = element._id; selectedRecord = element; openDialog()">
+                        <mat-icon>remove_red_eye</mat-icon>
+                        <span>View</span>
+                    </button>
+                    <mat-divider></mat-divider>
+                    
+                    <button mat-menu-item *ngIf="element?.payroll_status !== payrollStatus.Cleared"
                         (click)="selectedStatus = element._id; changedStatus = payrollStatus.Cleared; openUpdateStatusDialog()">
-                  <mat-icon>check_circle</mat-icon>
-                  <span>Complete</span>
-                </button>
-                <button mat-menu-item *ngIf="element?.payroll_status !== payrollStatus.InProgress"
-                        (click)="selectedStatus = element._id; changedStatus = payrollStatus.InProgress; openUpdateStatusDialog()">
-                  <mat-icon>gavel</mat-icon>
-                  <span>Appeal</span>
-                </button>
-                <!-- Divider for clarity -->
-                <mat-divider></mat-divider>
-                <!-- New status options -->
-                <button mat-menu-item *ngIf="element?.payroll_status !== payrollStatus.Pending"
+                        <mat-icon>check_circle</mat-icon>
+                        <span>Complete</span>
+                    </button>
+                    
+                    
+                    <!-- New status options -->
+                    <button mat-menu-item *ngIf="element?.payroll_status !== payrollStatus.Pending"
                         (click)="selectedStatus = element._id; changedStatus = payrollStatus.Pending; openUpdateStatusDialog()">
-                  <mat-icon>hourglass_empty</mat-icon>
-                  <span>Pending</span>
-                </button>
-                <button mat-menu-item *ngIf="element?.payroll_status !== payrollStatus.OnHold"
+                        <mat-icon>hourglass_empty</mat-icon>
+                        <span>Pending</span>
+                    </button>
+                    <button mat-menu-item *ngIf="element?.payroll_status !== payrollStatus.OnHold"
                         (click)="selectedStatus = element._id; changedStatus = payrollStatus.OnHold; openUpdateStatusDialog()">
-                  <mat-icon>pause</mat-icon>
-                  <span>On Hold</span>
-                </button>
-                <button mat-menu-item *ngIf="element?.payroll_status !== payrollStatus.Processed"
+                        <mat-icon>pause</mat-icon>
+                        <span>On Hold</span>
+                    </button>
+                    <button mat-menu-item *ngIf="element?.payroll_status !== payrollStatus.OnHold"
+                        (click)="selectedStatus = element._id; changedStatus = payrollStatus.OnHold; openUpdateStatusDialog()">
+                        <mat-icon>pause</mat-icon>
+                        <span>In Process</span>
+                    </button>
+                    <button mat-menu-item *ngIf="element?.payroll_status !== payrollStatus.Processed"
                         (click)="selectedStatus = element._id; changedStatus = payrollStatus.Processed; openUpdateStatusDialog()">
-                  <mat-icon>settings</mat-icon>
-                  <span>Processed</span>
-                </button>
-                <button mat-menu-item *ngIf="element?.payroll_status !== payrollStatus.Approved"
-                        (click)="selectedStatus = element._id; changedStatus = payrollStatus.Approved; openUpdateStatusDialog()">
-                  <mat-icon>thumb_up</mat-icon>
-                  <span>Approved</span>
-                </button>
-                <button mat-menu-item *ngIf="element?.payroll_status !== payrollStatus.Paid"
-                        (click)="selectedStatus = element._id; changedStatus = payrollStatus.Paid; openUpdateStatusDialog()">
-                  <mat-icon>payment</mat-icon>
-                  <span>Paid</span>
-                </button>
-                <button mat-menu-item *ngIf="element?.payroll_status !== payrollStatus.Rejected"
-                        (click)="selectedStatus = element._id; changedStatus = payrollStatus.Rejected; openUpdateStatusDialog()">
-                  <mat-icon>thumb_down</mat-icon>
-                  <span>Rejected</span>
-                </button>
-                <button mat-menu-item *ngIf="element?.payroll_status !== payrollStatus.Finilized"
-                        (click)="selectedStatus = element._id; changedStatus = payrollStatus.Finilized; openUpdateStatusDialog()">
-                  <mat-icon>done_all</mat-icon>
-                  <span>Finalized</span>
-                </button>
-                <button mat-menu-item *ngIf="element?.payroll_status !== payrollStatus.Exit_Interview_Completed"
-                        (click)="selectedStatus = element._id; changedStatus = payrollStatus.Exit_Interview_Completed; openUpdateStatusDialog()">
-                  <mat-icon>exit_to_app</mat-icon>
-                  <span>Exit Interview Completed</span>
-                </button>
-               
-              </mat-menu>
+                        <mat-icon>settings</mat-icon>
+                        <span>Processed</span>
+                    </button>
+                </mat-menu>
             </td>
-          </ng-container>
+        </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
@@ -144,8 +125,8 @@
     <div mat-dialog-title class="d-flex justify-content-between align-items-center">
         <h1 class="mat-title pt-3">
             <label>
-                <h1>{{getCompanyNameFromCookies()}}</h1>
-            </label> Generated Payroll
+                <h1>{{getCompanyNameFromCookies()}}&nbsp;Generated Payroll</h1>
+            </label>
         </h1>
         <button mat-icon-button mat-dialog-close>
             <mat-icon>close</mat-icon>

@@ -63,8 +63,8 @@ export class StatutoryDetailsComponent {
     if (segments.length >= 3) {
       const employee = segments[segments.length - 3];
       this.userService.getUserByEmpCode(employee).subscribe((res: any) => {
-        this.selectedUser = res.data;
-        this.payrollService.getGeneralSettings(this.selectedUser[0]?.company?._id).subscribe((res: any) => {
+        this.selectedUser = res.data[0];
+        this.payrollService.getGeneralSettings(this.selectedUser?.company?._id).subscribe((res: any) => {
           this.generalSettings = res.data;
         });
         this.getStatutoryDetailsByUser();
@@ -74,16 +74,16 @@ export class StatutoryDetailsComponent {
 
   getStatutoryDetailsByUser() {
     forkJoin([
-      this.userService.getStatutoryByUserId(this.selectedUser[0]?.id)
+      this.userService.getStatutoryByUserId(this.selectedUser?.id)
     ]).subscribe((results: any[]) => {
       this.statutoryDetailsForm.patchValue(results[0].data[0]);
     });
   }
 
   onSubmission() {
-    this.statutoryDetailsForm.value.user = this.selectedUser[0].id;
-    this.statutoryDetailsForm.value.taxRegimeUpdatedBy = this.selectedUser[0]?.id
-    this.userService.getStatutoryByUserId(this.selectedUser[0].id).subscribe((res: any) => {
+    this.statutoryDetailsForm.value.user = this.selectedUser.id;
+    this.statutoryDetailsForm.value.taxRegimeUpdatedBy = this.selectedUser?.id
+    this.userService.getStatutoryByUserId(this.selectedUser.id).subscribe((res: any) => {
       this.statutoryDetailsForm.get('isGratuityEligible').enable();
       console.log(this.statutoryDetailsForm.value);
       if (res.data.length === 0) {
@@ -117,7 +117,7 @@ export class StatutoryDetailsComponent {
     }
 
     // Calculate year difference
-    const createdOn = new Date(this.selectedUser[0]?.createdOn);
+    const createdOn = new Date(this.selectedUser?.createdOn);
     const currentDate = new Date();
     const yearDiff = currentDate.getFullYear() - createdOn.getFullYear();
     const monthDiff = currentDate.getMonth() - createdOn.getMonth();

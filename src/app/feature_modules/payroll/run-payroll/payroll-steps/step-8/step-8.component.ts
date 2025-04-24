@@ -34,6 +34,8 @@ export class Step8Component {
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
   totalTaxApprovedAmount = 0;
   ctc: number = 0;
+  taxCalulationMethod: boolean = false;
+  isIncomeTaxDeductionFalse: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -70,8 +72,15 @@ export class Step8Component {
     this.taxForm.get('TaxCalculatedMethod').enable();
     this.taxForm.get('TaxCalculated')?.enable();
     this.taxForm.get('TDSCalculated')?.enable();
+    
     this.taxForm.value.PayrollUser = this.selectedPayrollUser;
-    this.payrollService.addIncomeTax(this.taxForm.value).subscribe((res: any) => {
+    let payload = {
+      PayrollUser: this.selectedPayrollUser,
+      TaxCalculatedMethod: this.taxForm.value.TaxCalculatedMethod,  
+      TaxCalculated: this.taxForm.value.TaxCalculated,
+      TDSCalculated: this.taxForm.value.TDSCalculated
+    }
+    this.payrollService.addIncomeTax(payload).subscribe((res: any) => {
       this.getIncomeTaxByPayroll();
       this.taxForm.reset();
       this.toast.success('Payroll Income Tax Added', 'Successfully!');
@@ -90,7 +99,6 @@ export class Step8Component {
         tax: this.calculateTax(),
         statutory: this.getStatutoryDetails()
       }).pipe(
-        // After forkJoin completes, call getEmployeeTaxDeclarationByUser
         switchMap(() => this.getEmployeeTaxDeclarationByUser()),
         catchError(err => {
           this.toast.error('Error processing user selection', 'Error');
@@ -155,6 +163,7 @@ export class Step8Component {
 
   closeDialog() {
     this.changeMode = 'Update';
+    this.taxCalulationMethod = false;
     this.dialog.closeAll();
   }
 
@@ -181,39 +190,53 @@ export class Step8Component {
   getStatutoryDetails(): Observable<any> {
     return this.userService.getStatutoryByUserId(this.selectedUserId).pipe(
       catchError(err => {
-        this.toast.error('Statutory Details not found for this user', 'Error');
+        this.taxCalulationMethod = true;
         return of({ data: [] }); // Return empty data to prevent forkJoin from failing
       }),
       switchMap((res: any) => {
-        this.statutoryDetails = res?.data[0]?.taxRegime;
-        if (res.data.length === 0) {
-          this.toast.error('Statutory Details not found for this user', 'Error');
+        this.statutoryDetails = res?.data?.taxRegime;
+        if (res.status === 'error' || !this.statutoryDetails) {
+          this.taxCalulationMethod = true;
+          this.taxForm.patchValue({
+            TaxCalculatedMethod: '',
+            TaxCalculated: null,
+            TDSCalculated: null
+          })
+          // this.taxForm.get('TaxCalculatedMethod').enable();
         } else {
+          this.taxCalulationMethod = false;
           this.taxForm.patchValue({
             TaxCalculatedMethod: this.statutoryDetails
           });
           this.taxForm.get('TaxCalculatedMethod').disable();
         }
-        return of(res); // Return the response to continue the pipeline
+        return of(res);
       })
     );
   }
 
   calculateTax(): Observable<any> {
     if (!this.selectedUserId) {
-      return of(null); // Return empty Observable if no userId
+      this.isIncomeTaxDeductionFalse = false;
+      return of(null);
     }
 
     return this.userService.getSalaryByUserId(this.selectedUserId).pipe(
       catchError(err => {
-        this.toast.error('Salary details not found for this user', 'Error');
-        return of({ data: [] }); // Return empty data to prevent forkJoin from failing
+        this.isIncomeTaxDeductionFalse = false; // Reset flag on error
+        return of({ data: [] });
       }),
       switchMap((res: any) => {
         const lastSalaryRecord = res.data?.[res.data.length - 1];
         if (!lastSalaryRecord) {
-          this.toast.error('Salary details not found for this user', 'Error');
+          this.isIncomeTaxDeductionFalse = false; // Reset flag if no salary record
+          return (null);
+        }
+        if (lastSalaryRecord.isIncomeTaxDeduction === false) {
+          this.isIncomeTaxDeductionFalse = true; // Set flag to show validation
           return of(null);
+        } else {
+          this.isIncomeTaxDeductionFalse = false; // Reset flag
         }
 
         const fixedAllowances = lastSalaryRecord?.fixedAllowanceList || [];
@@ -222,9 +245,7 @@ export class Step8Component {
 
         let grossSalary = parseFloat(lastSalaryRecord?.Amount) || 0;
         this.ctc = grossSalary;
-
         let taxableSalary = basicSalary;
-
         fixedAllowances.forEach(allowance => {
           if (allowance?.fixedAllowance?.isTDSAffected) {
             taxableSalary += parseFloat(allowance.yearlyAmount) || 0;
@@ -238,7 +259,7 @@ export class Step8Component {
         });
 
         this.taxableSalary = taxableSalary > grossSalary ? grossSalary : taxableSalary;
-        return of(lastSalaryRecord); // Return the salary record
+        return of(lastSalaryRecord);
       })
     );
   }
@@ -286,7 +307,6 @@ export class Step8Component {
   getEmployeeTaxDeclarationByUser(): Observable<any> {
     return this.taxService.getTaxDeclarationsByUser(this.selectedUserId, { skip: '', next: '' }).pipe(
       catchError(err => {
-        this.toast.error('Error fetching tax declarations', 'Error');
         return of({ data: [] }); // Return empty data to prevent forkJoin from failing
       }),
       switchMap((res: any) => {
@@ -346,9 +366,7 @@ export class Step8Component {
           }
         });
 
-        if (!employeeIncomeTaxDeclaration) {
-          this.toast.error('No tax declaration found for the selected financial year', 'Error');
-        }
+
         return of(res); // Return the response
       })
     );

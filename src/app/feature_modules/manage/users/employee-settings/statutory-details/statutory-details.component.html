@@ -1,5 +1,5 @@
 <div class="px-2">
-    <label class="me-auto">{{selectedUser[0]?.firstName | titlecase}}&nbsp;{{selectedUser[0]?.lastName | titlecase}} |
+    <label class="me-auto">{{selectedUser?.firstName | titlecase}}&nbsp;{{selectedUser?.lastName | titlecase}} |
         Statutory Details</label>
 
     <form [formGroup]="statutoryDetailsForm" (ngSubmit)="onSubmission()">
