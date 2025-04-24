@@ -82,7 +82,6 @@ export class Step9Component {
 
   getGeneratedPayroll() {
     if (!this.selectedPayroll?._id) {
-      console.warn('No selected payroll ID');
       this.generatedPayroll = [];
       return;
     }
@@ -95,7 +94,7 @@ export class Step9Component {
             totalFixedAllowance: parseFloat(record?.totalFixedAllowance || 0).toFixed(2),
             totalOtherBenefit: parseFloat(record?.totalOtherBenefit || 0).toFixed(2),
             totalFixedDeduction: parseFloat(record?.totalFixedDeduction || 0).toFixed(2),
-            totalLoanAdvance: parseFloat(record?.totalLoanAdvance || 0).toFixed(2),
+            totalLoanAdvance: record?.totalLoanAdvance,
             totalFlexiBenefits: parseFloat(record?.totalFlexiBenefits || 0).toFixed(2),
             totalPfTax: parseFloat(record?.totalPfTax || 0).toFixed(2),
             totalIncomeTax: parseFloat(record?.totalIncomeTax || 0).toFixed(2),

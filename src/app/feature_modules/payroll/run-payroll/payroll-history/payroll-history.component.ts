@@ -54,10 +54,8 @@ export class PayrollHistoryComponent {
     this.payrollUserForm = this.fb.group({
       payroll: [''],
       user: ['', Validators.required],
-      totalFlexiBenefits: [0],
       totalCTC: [0],
       totalGrossSalary: [0],
-      totalTakeHome: [0],
       status: ['Active']
     });
   }
@@ -105,10 +103,8 @@ export class PayrollHistoryComponent {
     this.payrollUserForm.reset({
       payroll: '',
       user: '',
-      totalFlexiBenefits: 0,
       totalCTC: 0,
       totalGrossSalary: 0,
-      totalTakeHome: 0,
       status: 'Active'
     });
     this.payrollUserForm.get('user').setErrors(null);
@@ -141,10 +137,8 @@ export class PayrollHistoryComponent {
     this.payrollUserForm.reset({
       payroll: '',
       user: '',
-      totalFlexiBenefits: 0,
       totalCTC: 0,
       totalGrossSalary: 0,
-      totalTakeHome: 0,
       status: 'Active'
     });
     this.salaries = [];
@@ -228,10 +222,8 @@ export class PayrollHistoryComponent {
             this.payrollUserForm.reset({
               payroll: '',
               user: '',
-              totalFlexiBenefits: 0,
               totalCTC: 0,
               totalGrossSalary: 0,
-              totalTakeHome: 0,
               status: 'Active'
             });
             this.salaries = [];
@@ -281,17 +273,9 @@ export class PayrollHistoryComponent {
             return;
           }
           const lastSalaryRecord = this.salaries[this.salaries.length - 1];
-          let ctc;
-          if (lastSalaryRecord.enteringAmount === 'Monthly') {
-            ctc = lastSalaryRecord.Amount * 12;
-          } else if (lastSalaryRecord.enteringAmount === 'Yearly') {
-            ctc = lastSalaryRecord.Amount / 12;
-          } else {
-            ctc = lastSalaryRecord.Amount;
-          }
           this.payrollUserForm.patchValue({
-            totalGrossSalary: lastSalaryRecord.Amount,
-            totalCTC: ctc
+            totalGrossSalary: (lastSalaryRecord?.Amount / 12).toFixed(2),
+            totalCTC: lastSalaryRecord?.Amount?.toFixed(2)
           });
           this.payrollUserForm.get('totalGrossSalary')?.disable();
           this.payrollUserForm.get('totalCTC')?.disable();
@@ -302,8 +286,7 @@ export class PayrollHistoryComponent {
           this.payrollUserForm.get('user').setErrors({ noSalary: true });
           this.toast.error('Error fetching salary details');
           this.cdr.detectChanges();
-        }
-      );
+        });
     } else {
       this.salaries = [];
       this.cdr.detectChanges();

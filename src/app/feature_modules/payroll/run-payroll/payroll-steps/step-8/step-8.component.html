@@ -58,48 +58,55 @@
 <ng-template #dialogTemplate>
     <h1 mat-dialog-title>{{changeMode}} Income Tax</h1>
     <div mat-dialog-content>
-        <form [formGroup]="taxForm" (ngSubmit)="onSubmission()">
-            <div class="row">
-                <div class="mt-2 col-md-6" *ngIf="changeMode != 'Update'">
-                    <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
-                        [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
-                </div>
-
-                <div class=" col-md-6" *ngIf="changeMode === 'Update'">
-                    <mat-form-field appearance="outline" class="my-2">
-                        <mat-label>Payroll User</mat-label>
-                        <input matInput type="text" [disabled] formControlName="PayrollUser">
-                    </mat-form-field>
-                </div>
-
-                <div class=" col-md-6">
-                    <mat-form-field appearance="outline" class="my-2">
-                        <mat-label>Tax Calculation Method</mat-label>
-                        <input matInput type="text" formControlName="TaxCalculatedMethod" placeholder="Enter tax calculation method">
-                        <mat-error *ngIf="taxForm.get('TaxCalculatedMethod').hasError('required')">Tax Calculation Method is required</mat-error>
-                    </mat-form-field>
-                </div>
-
-                <div class=" col-md-6">
-                    <mat-form-field appearance="outline" class="my-2">
-                        <mat-label>Tax Calculated (Yearly)</mat-label>
-                        <input matInput type="number" formControlName="TaxCalculated" placeholder="Enter calculated tax amount">
-                        <mat-error *ngIf="taxForm.get('TaxCalculated').hasError('required')">Tax Calculated is required</mat-error>
-                    </mat-form-field>
-                </div>
-
-                <div class=" col-md-6">
-                    <mat-form-field appearance="outline" class="my-2">
-                        <mat-label>TDS Calculated (Monthly)</mat-label>
-                        <input matInput type="number" formControlName="TDSCalculated" placeholder="Enter TDS amount">
-                        <mat-error *ngIf="taxForm.get('TDSCalculated').hasError('required')">TDS Calculated is required</mat-error>
-                    </mat-form-field>
-                </div>
-            </div>
-            <div class="d-flex justify-content-between mt-3">
-                <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
-                <button mat-raised-button class="addBtn" type="submit">Save</button>
-            </div>
-        </form>
+      <form [formGroup]="taxForm" (ngSubmit)="onSubmission()">
+        <div class="row">
+          <!-- Existing validation for isIncomeTaxDeductionFalse if applicable -->
+          <div class="col-12" *ngIf="taxCalulationMethod === true">
+            <mat-error class="alert alert-danger">
+              Income tax deduction is disabled for this user. Please enable it to proceed.
+            </mat-error>
+          </div>
+  
+          <div class="mt-2 col-md-6" *ngIf="changeMode != 'Update'">
+            <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
+              [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
+          </div>
+  
+          <div class="col-md-6" *ngIf="changeMode === 'Update'">
+            <mat-form-field appearance="outline" class="my-2">
+              <mat-label>Payroll User</mat-label>
+              <input matInput type="text" [disabled]="true" formControlName="PayrollUser">
+            </mat-form-field>
+          </div>
+  
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="my-2">
+              <mat-label>Tax Calculation Method</mat-label>
+              <input matInput type="text" formControlName="TaxCalculatedMethod" placeholder="Enter tax calculation method">
+              <mat-error *ngIf="taxForm.get('TaxCalculatedMethod').hasError('required')">Tax Calculation Method is required</mat-error>
+            </mat-form-field>
+          </div>
+  
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="my-2">
+              <mat-label>Tax Calculated (Yearly)</mat-label>
+              <input matInput type="number" formControlName="TaxCalculated" placeholder="Enter calculated tax amount">
+              <mat-error *ngIf="taxForm.get('TaxCalculated').hasError('required')">Tax Calculated is required</mat-error>
+            </mat-form-field>
+          </div>
+  
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="my-2">
+              <mat-label>TDS Calculated (Monthly)</mat-label>
+              <input matInput type="number" formControlName="TDSCalculated" placeholder="Enter TDS amount">
+              <mat-error *ngIf="taxForm.get('TDSCalculated').hasError('required')">TDS Calculated is required</mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="d-flex justify-content-between mt-3">
+          <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
+          <button mat-raised-button class="addBtn" type="submit" [disabled]="taxCalulationMethod || isIncomeTaxDeductionFalse">Save</button>
+        </div>
+      </form>
     </div>
-</ng-template>
+  </ng-template>
