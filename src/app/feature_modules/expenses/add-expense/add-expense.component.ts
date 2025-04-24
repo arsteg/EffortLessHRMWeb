@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, Input } from '@angular/core';
+import { Component, Output, EventEmitter, Input, inject } from '@angular/core';
 import { CommonService } from 'src/app/_services/common.Service';
 import { CreateReportComponent } from '../expense-reports/create-report/create-report.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -6,13 +6,14 @@ import { ExpensesService } from 'src/app/_services/expenses.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
-
+import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'add-expense',
   templateUrl: './add-expense.component.html',
   styleUrl: './add-expense.component.css'
 })
 export class AddExpenseComponent {
+  private translate: TranslateService = inject(TranslateService);
   @Input() changeMode: string;
   @Input() selfExpense: boolean = false;
   @Output() close: any = new EventEmitter();
@@ -97,7 +98,9 @@ export class AddExpenseComponent {
       this.expenseService.getExpenseReportExpensesByReportId(id._id).subscribe((res: any) => {
         this.expenseReportExpenses = res.data;
         this.setCalculcatedExpenseAmount();
-        this.createReport();
+        if(result === 'close'){
+          this.createReport(false);
+        }
       })
     });
   }
@@ -146,7 +149,7 @@ export class AddExpenseComponent {
       })
     }
   }
-  createReport() {
+  createReport(showToaster=true) {
     let payload = {
       employee: this.selfExpense ? this.currentUser.id : this.addExpenseForm.value.employee,
       title: this.addExpenseForm.value.title,
@@ -163,10 +166,11 @@ export class AddExpenseComponent {
         this.expenseService.addExpensePendingReport(payload).subscribe((res: any) => {
           this.expenseService.selectedReport.next(res.data.expenseReport);
           this.reportId = res.data.expenseReport._id;
-          this.toast.success('Expense Template Applicable Category Added Successfully!');
+          this.toast.success(this.translate.instant('expenses.expense_report_created_success'));
+          
         },
           err => {
-            this.toast.error('Expense Template Applicable Category Can not be Added', 'ERROR!');
+            this.toast.error(this.translate.instant('expenses.expense_report_created_error'));
           }
         )
       }
@@ -174,10 +178,12 @@ export class AddExpenseComponent {
         let id = this.expenseService.selectedReport.getValue()._id
         this.expenseService.updateExpenseReport(id, payload).subscribe((res: any) => {
           this.expenseService.selectedReport.next(res.data);
-          this.toast.success('Expense Template Updated Successfully!');
+          if(showToaster){
+            this.toast.success(this.translate.instant('expenses.expense_report_updated_success'));
+          }
         },
           err => {
-            this.toast.error('Expense Template Applicable Category Can not be Updated', 'ERROR!')
+            this.toast.error(this.translate.instant('expenses.expense_report_updated_error'));
           }
         )
       }
@@ -208,7 +214,7 @@ export class AddExpenseComponent {
         this.deleteReport(id);
       }
       err => {
-        this.toast.error('Can not be Deleted', 'Error!')
+        this.toast.error(this.translate.instant('expenses.delete_error'));
       }
     });
   }
@@ -217,10 +223,10 @@ export class AddExpenseComponent {
     this.expenseService.deleteExpenseReportExpenses(id).subscribe((res: any) => {
       this.expenseReportExpenses = this.expenseReportExpenses.filter(report => report._id !== id);
       this.ngOnInit();
-      this.toast.success('Successfully Deleted!!!', 'Expense Report')
+      this.toast.success(this.translate.instant('expenses.delete_success'));
     },
       (err) => {
-        this.toast.error('Can not be deleted!')
+        this.toast.error(this.translate.instant('expenses.delete_error'));
       })
   }
 

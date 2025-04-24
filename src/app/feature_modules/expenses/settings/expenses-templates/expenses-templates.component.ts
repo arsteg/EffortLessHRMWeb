@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ViewChild, inject } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal, NgbModalConfig } from '@ng-bootstrap/ng-bootstrap';
 import { ExpensesService } from 'src/app/_services/expenses.service';
@@ -8,6 +8,7 @@ import { ToastrService } from 'ngx-toastr';
 import { CommonService } from 'src/app/_services/common.Service';
 import { PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-expenses-templates',
@@ -15,6 +16,7 @@ import { MatTableDataSource } from '@angular/material/table';
   styleUrls: ['./expenses-templates.component.css'],
 })
 export class ExpensesTemplatesComponent implements OnInit {
+  private readonly translate = inject(TranslateService);
   searchText: string = '';
   changeMode: 'Add' | 'Next' = 'Add';
   closeResult: string = '';
@@ -82,11 +84,10 @@ export class ExpensesTemplatesComponent implements OnInit {
       if (index !== -1) {
         this.templates.splice(index, 1);
       }
-      this.toast.success('Successfully Deleted!!!', 'Expense Template')
+      this.toast.success(this.translate.instant('expenses.delete_success'));
     },
       (err) => {
-        this.toast.error('This Template is already being used!'
-          , 'Expense template, Can not be deleted!')
+        this.toast.error(err || this.translate.instant('expenses.delete_error'));
       })
   }
 

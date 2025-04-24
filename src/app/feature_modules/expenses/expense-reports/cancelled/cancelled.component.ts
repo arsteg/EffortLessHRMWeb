@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Output, ViewChild, inject } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
@@ -7,13 +7,14 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { ExportService } from 'src/app/_services/export.service';
 import { CommonService } from 'src/app/_services/common.Service';
-
+import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-cancelled',
   templateUrl: './cancelled.component.html',
   styleUrl: './cancelled.component.css'
 })
 export class CancelledComponent {
+  private readonly translate = inject(TranslateService);
   closeResult: string = '';
   step: number = 1;
   searchText: string = '';
@@ -86,7 +87,7 @@ export class CancelledComponent {
 
   getUser(employeeId: string) {
     const matchingUser = this.users.find(user => user._id === employeeId);
-    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'User Not Found';
+    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : this.translate.instant('expenses.user_not_found');
   }
 
   

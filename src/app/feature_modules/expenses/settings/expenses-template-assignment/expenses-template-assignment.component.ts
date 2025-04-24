@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild, Inject  } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, inject  } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ExpensesService } from 'src/app/_services/expenses.service';
@@ -7,13 +7,14 @@ import { CommonService } from 'src/app/_services/common.Service';
 import { ToastrService } from 'ngx-toastr';
 import { MatTableDataSource } from '@angular/material/table';
 import { forkJoin } from 'rxjs';
-
+import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-expenses-template-assignment',
   templateUrl: './expenses-template-assignment.component.html',
   styleUrls: ['./expenses-template-assignment.component.css']
 })
 export class ExpensesTemplateAssignmentComponent implements OnInit {
+  private readonly translate = inject(TranslateService);
   searchText: string = '';
   isEdit: boolean = false;
   changeMode: 'Add' | 'View' | 'Update' = 'Add';
@@ -260,7 +261,7 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
       if (index !== -1) {
         this.templateAssignments.splice(index, 1);
       }
-      this.toast.success('Deleted Successfully!');
+      this.toast.success(this.translate.instant('expenses.delete_success'));
     })
   }
 
@@ -275,7 +276,7 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
 
       }
       (err) => {
-        this.toast.error('Can not be Deleted', 'Error!');
+        this.toast.error(err || this.translate.instant('expenses.delete_error'));
       };
     });
   }
@@ -353,11 +354,11 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
     this.expenseService.addTemplateAssignment(payload).subscribe((res: any) => {
       const newTemplateAssignment = res.data;
       if (this.changeMode == 'Add') {
-        this.toast.success('Advance Template Assigned!', 'Successfully')
+        this.toast.success(this.translate.instant('expenses.template_assigned_success'));
         this.templateAssignments.push(newTemplateAssignment);
       }
       if (this.changeMode == 'Update') {
-        this.toast.success('Advance Template Assignment Updated!', 'Successfully')
+        this.toast.success(this.translate.instant('expenses.template_assigned_update_success'));
         this.changeMode = 'Add';
         this.templateAssignmentForm.get('user').enable();
         this.templateAssignmentForm.get('expenseTemplate').enable();
@@ -368,8 +369,8 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
       this.showApproverFields = false;
     },
       (err) => {
-        if (this.changeMode == 'Add') { this.toast.error('Advance Template Cannot be created!', 'Error') }
-        if (this.changeMode == 'Update') { this.toast.error('Advance Template Cannot be Updated!', 'Error') }
+        if (this.changeMode == 'Add') { this.toast.error(err || this.translate.instant('expenses.template_assigned_error')) }
+        if (this.changeMode == 'Update') { this.toast.error(err || this.translate.instant('expenses.template_assigned_update_error')) }
       });
 
     this.templateAssignmentForm.get('user').disable();

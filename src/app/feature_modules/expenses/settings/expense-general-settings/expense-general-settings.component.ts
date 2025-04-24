@@ -1,15 +1,16 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject  } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { CommonService } from 'src/app/_services/common.Service';
-
+import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-expense-general-settings',
   templateUrl: './expense-general-settings.component.html',
   styleUrl: './expense-general-settings.component.css'
 })
 export class ExpenseGeneralSettingsComponent {
+  private readonly translate = inject(TranslateService);
   addTemplateForm: FormGroup;
   checkedFormats: any = ['DOCX', 'XLS', 'TXT', 'DOC', 'XLSX']
   downloadableFormat = ['PDF', 'PNG', 'JPG', 'DOCX', 'XLS', 'TXT', 'DOC', 'XLSX'];
@@ -148,10 +149,10 @@ export class ExpenseGeneralSettingsComponent {
       this.expenseService.addTemplate(payload).subscribe((res: any) => {
         this.expenseService.selectedTemplate.next(res.data);
         this.expenseService.categories.next(res.categories);
-        this.toast.success('Template Created Successfully!');
+        this.toast.success(this.translate.instant('expenses.template_created_success'));
         this.changeStep.emit(2);
       }, err => {
-        this.toast.error('Please try again with different Template Label', 'ERROR!');
+        this.toast.error(err || this.translate.instant('expenses.template_created_error'));
       });
     } else {
       let templateId = this.expenseService.selectedTemplate.getValue()._id;
@@ -166,10 +167,10 @@ export class ExpenseGeneralSettingsComponent {
 
       }
       this.expenseService.updateTemplate(templateId, payload).subscribe((res: any) => {
-        this.toast.success('Template Updated Successfully!');
+        this.toast.success(this.translate.instant('expenses.template_updated_success'));
         this.changeStep.emit(2);
       }, err => {
-        this.toast.error('Template Can not be Updated', 'ERROR!');
+        this.toast.error(err || this.translate.instant('expenses.template_updated_error'));
       });
     }
   }

@@ -10,6 +10,8 @@
     "comment":"Comment",
     "confirmation":"Confirmation",
     "supervisors":"Supervisors",
+    "cancel":"Cancel",
+    "delete":"Delete",
     "name":"Name",
     "level":"Level",
     "login": {

@@ -30,6 +30,7 @@ export class AddSalaryDetailsComponent {
   payrollCTCTemplates: any;
   addButtons: boolean = true;
   statutorySettings: any;
+  payrollGeneralSettings: any
 
   constructor(
     private fb: FormBuilder,
@@ -78,6 +79,7 @@ export class AddSalaryDetailsComponent {
   }
 
   ngOnInit(): void {
+    this.logUrlSegmentsForUser();
     this.getAllPFCharges();
     this.salaryDetailsForm.get('salaryComponentPFCharge')?.valueChanges.subscribe(() => {
       this.updateYearlyAmount();
@@ -85,12 +87,14 @@ export class AddSalaryDetailsComponent {
     this.salaryDetailsForm.get('frequencyToEnterCTC')?.setValue('Yearly');
     this.salaryDetailsForm.get('frequencyToEnterCTC')?.disable();
     this.salaryDetailsForm.get('BasicSalary')?.disable();
-    this.logUrlSegmentsForUser();
     if (this.edit) {
       this.getSalaryDetailsById();
       this.disableFormControls(this.salaryDetailsForm);
     }
     if (!this.edit) {
+      this.payrollService.getGeneralSettings(this.selectedUser?.company?._id).subscribe((res: any) => {
+        this.payrollGeneralSettings = res.data;
+      });
       this.getStatutorySettings();
       this.salaryDetailsForm.patchValue({ CTCTemplate: 'manual' });
       this.addFixedAllowance();
@@ -307,18 +311,12 @@ export class AddSalaryDetailsComponent {
     if (segments.length >= 3) {
       const employee = segments[segments.length - 3];
       this.userService.getUserByEmpCode(employee).subscribe((res: any) => {
-        this.selectedUser = res.data;
+        this.selectedUser = res.data[0];
       });
     }
   }
 
   calculateStatutoryComponents(): void {
-    const ctc = this.salaryDetailsForm.get('Amount')?.value || 0;
-    const basicSalary = (ctc * 0.4) / 12; // Monthly basic (40% of CTC)
-    const statutorySettings = this.salaryDetailsForm.get('employeeSalaryTaxAndStatutorySetting')?.value;
-    const grossSalary = this.calculateGrossSalary();
-
-    // Employer Contributions from CTC Template
     const employerContributionArray = this.salaryDetailsForm.get('salaryComponentEmployerContribution') as FormArray;
     employerContributionArray.clear();
     if (this.ctcTemplates && this.salaryDetailsForm.get('CTCTemplate').value !== 'manual') {
@@ -393,7 +391,6 @@ export class AddSalaryDetailsComponent {
       });
       gross = (ctc / 12 - totalContributions);
     }
-
     return gross;
   }
 
@@ -742,7 +739,7 @@ export class AddSalaryDetailsComponent {
   getStatutorySettings() {
     let userId = this.userService.selectedEmployee.getValue().id;
     this.userService.getStatutoryByUserId(userId).subscribe((res: any) => {
-      this.statutorySettings = res.data[0];
+      this.statutorySettings = res.data;
       this.salaryDetailsForm.get('employeeSalaryTaxAndStatutorySetting')?.patchValue({
         isPFDeduction: this.statutorySettings.isEmployeeEligibleForProvidentFundDeduction,
         isEmployeeProvidentFundCappedAtPFCeiling: this.statutorySettings.willEmployeeProvidentFundContributionCappedAtProvidentFundCeiling,
@@ -751,9 +748,9 @@ export class AddSalaryDetailsComponent {
         isESICDeduction: this.statutorySettings.isESICDeductedFromSalary,
         isPTDeduction: this.statutorySettings.isTaxDeductedFromPlayslip,
         isLWFDeduction: this.statutorySettings.isLWFDeductedFromPlayslip,
-        isGratuityApplicable: this.statutorySettings.isGratuityEligible,
-        isIncomeTaxDeduction: this.statutorySettings.isIncomeTaxDeducted,
-        isRoundOffApplicable: this.statutorySettings.roundOffApplicable
+        isGratuityApplicable: this.statutorySettings?.isGratuityEligible,
+        isRoundOffApplicable: this.statutorySettings.roundOffApplicable,
+        isIncomeTaxDeduction: this.payrollGeneralSettings?.isAllowTDSFromEffortlessHRM
       });
       this.salaryDetailsForm.get('employeeSalaryTaxAndStatutorySetting')?.disable();
       this.calculateStatutoryComponents();

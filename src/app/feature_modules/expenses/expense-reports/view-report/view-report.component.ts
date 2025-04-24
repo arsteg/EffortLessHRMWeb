@@ -1,15 +1,16 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { ViewExpenseReportExpensesComponent } from '../view-expense-report-expenses/view-expense-report-expenses.component';
 import { CommonService } from 'src/app/_services/common.Service';
-
+import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-view-report',
   templateUrl: './view-report.component.html',
   styleUrl: './view-report.component.css'
 })
 export class ViewReportComponent {
+  private readonly translate = inject(TranslateService);
   expenseReportExpenses: any;
   selectedReport: any;
   @Input() report: any;
@@ -39,7 +40,7 @@ export class ViewReportComponent {
   }
   getUser(employeeId: string) {
     const matchingUser = this.users?.find(user => user?._id === employeeId);
-    return matchingUser ? `${matchingUser?.firstName} ${matchingUser?.lastName}` : 'User Not Found';
+    return matchingUser ? `${matchingUser?.firstName} ${matchingUser?.lastName}` : this.translate.instant('expenses.user_not_found');
   }
   getCategory() {
     let payload = {
@@ -53,7 +54,7 @@ export class ViewReportComponent {
 
   getCategoryById(categoryId: string) {
     const matchingCategory = this.category?.find(cat => cat?._id === categoryId);
-    return matchingCategory ? matchingCategory?.label : 'Category Not Found';
+    return matchingCategory ? matchingCategory?.label :  this.translate.instant('expenses.category_not_found');
   }
 
   calculateSumOfReimbursableAmounts(): number {

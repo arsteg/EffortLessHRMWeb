@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -7,6 +7,7 @@ import { ViewReportComponent } from '../../expense-reports/view-report/view-repo
 import { MatTableDataSource } from '@angular/material/table';
 import { ApproveDialogComponent } from '../../expense-reports/pending/approve-dialog.component';
 import { RejectDialogComponent } from '../../expense-reports/pending/reject-dialog.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-show-team-expenses',
@@ -14,6 +15,7 @@ import { RejectDialogComponent } from '../../expense-reports/pending/reject-dial
   styleUrl: './show-team-expenses.component.css'
 })
 export class ShowTeamExpensesComponent {
+  private readonly translate = inject(TranslateService);
   closeResult: string = '';
   p: number = 1;
   step: number = 1;
@@ -165,12 +167,12 @@ export class ShowTeamExpensesComponent {
 
   getCategory(categoryId: string) {
     const matchingCategory = this.allCategory?.find(category => category._id === categoryId);
-    return matchingCategory ? `${matchingCategory.label}` : 'Category Not Found';
+    return matchingCategory ? `${matchingCategory.label}` : this.translate.instant('expenses.category_not_found');
   }
 
   getUser(employeeId: string) {
     const matchingUser = this.allAssignee?.find(user => user._id === employeeId);
-    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'User Not Found';
+    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : this.translate.instant('expenses.user_not_found');;
   }
   openSecondModal(selectedReport: any): void {
     console.log(selectedReport)

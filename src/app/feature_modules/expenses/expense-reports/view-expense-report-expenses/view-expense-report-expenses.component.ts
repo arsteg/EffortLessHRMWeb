@@ -18,7 +18,6 @@ export class ViewExpenseReportExpensesComponent {
     let id = this.expenseService.report.getValue()._id;
     this.expenseService.getExpenseReportExpensesById(id).subscribe(res => {
       this.expenseReportExpense = res.data;
-      console.log('Expense report expenses: ',this.expenseReportExpense)
     });
     this.getCategory();
   }
