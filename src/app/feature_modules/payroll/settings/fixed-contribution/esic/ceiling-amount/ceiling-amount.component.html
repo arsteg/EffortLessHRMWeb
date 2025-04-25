@@ -14,8 +14,8 @@
     </div>
     <table>
         <thead>
-            <th>Employee Count</th>
-            <th>gross monthly salary</th>
+            <th>Minimum Employee Count</th>
+            <th>Gross Monthly Salary Limit</th>
             <th>Actions</th>
 
         </thead>
@@ -52,7 +52,7 @@
     </div>
     <form [formGroup]="ceilingAmountForm" (ngSubmit)="onSubmission()">
         <div class="form-group">
-            <label for="">Employee Count <span class="text-danger">*</span></label>
+            <label for="">Minimum Employee Count <span class="text-danger">*</span></label>
             <input type="number" class="form-control" formControlName="employeeCount">
             <div
                 *ngIf="ceilingAmountForm.get('employeeCount').invalid && (ceilingAmountForm.get('employeeCount').dirty || ceilingAmountForm.get('employeeCount').touched)">
