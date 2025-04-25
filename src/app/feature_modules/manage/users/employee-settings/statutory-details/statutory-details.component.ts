@@ -24,7 +24,7 @@ export class StatutoryDetailsComponent {
   ) {
     this.statutoryDetailsForm = this.fb.group({
       user: [''],
-      isEmployeeEligibleForProvidentFundDeduction: [true],
+      isEmployeeEligibleForPFDeduction: [true],
       isEmployeePFCappedAtPFCeiling: [true],
       isEmployerPFCappedAtPFCeiling: [true],
       providentFundJoiningDate: [],
@@ -64,6 +64,8 @@ export class StatutoryDetailsComponent {
       const employee = segments[segments.length - 3];
       this.userService.getUserByEmpCode(employee).subscribe((res: any) => {
         this.selectedUser = res.data[0];
+        console.log(res.data[0]);
+        console.log(this.selectedUser);
         this.payrollService.getGeneralSettings(this.selectedUser?.company?._id).subscribe((res: any) => {
           this.generalSettings = res.data;
         });
@@ -74,19 +76,31 @@ export class StatutoryDetailsComponent {
 
   getStatutoryDetailsByUser() {
     forkJoin([
-      this.userService.getStatutoryByUserId(this.selectedUser?.id)
+      this.userService.getStatutoryByUserId(this.selectedUser?._id)
     ]).subscribe((results: any[]) => {
-      this.statutoryDetailsForm.patchValue(results[0].data[0]);
+      this.statutoryDetailsForm.patchValue(results[0].data);
+      const userId = this.selectedUser?._id;
+
+    this.statutoryDetailsForm.patchValue({
+      user: userId,
+      taxRegimeUpdatedBy: userId
+    });
     });
   }
 
   onSubmission() {
-    this.statutoryDetailsForm.value.user = this.selectedUser.id;
-    this.statutoryDetailsForm.value.taxRegimeUpdatedBy = this.selectedUser?.id
-    this.userService.getStatutoryByUserId(this.selectedUser.id).subscribe((res: any) => {
+    const userId = this.selectedUser?._id;
+
+    this.statutoryDetailsForm.patchValue({
+      user: userId,
+      taxRegimeUpdatedBy: userId
+    });
+  
+    this.userService.getStatutoryByUserId(this.selectedUser?._id).subscribe((res: any) => {
       this.statutoryDetailsForm.get('isGratuityEligible').enable();
+      console.log(this.selectedUser?._id);
       console.log(this.statutoryDetailsForm.value);
-      if (res.data.length === 0) {
+      if (!res.data || res.data.length === 0) {
         this.userService.addStatutoryDetails(this.statutoryDetailsForm.value).subscribe((res: any) => {
           this.getStatutoryDetailsByUser();
           this.toast.success('Statutory Details Added Successfully');
@@ -94,7 +108,7 @@ export class StatutoryDetailsComponent {
           this.toast.error('Statutory Details Add Failed');
         })
       } else {
-        this.userService.updateStatutoryDetails(res.data[0]?._id, this.statutoryDetailsForm.value).subscribe((res: any) => {
+        this.userService.updateStatutoryDetails(res.data?._id, this.statutoryDetailsForm.value).subscribe((res: any) => {
           this.getStatutoryDetailsByUser();
           this.toast.success('Statutory Details Updated Successfully');
         }, error => {

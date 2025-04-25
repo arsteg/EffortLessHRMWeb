@@ -8,7 +8,28 @@
         </div>
 
         <div class="row p-2">
-
+            <div class="form-group col-md-6 mb-2">
+                <label for="">Is this Employee Eligiable for the Provident Fund Deduction?
+                    </label>
+                <div class="d-flex">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio"
+                            formControlName="isEmployeeEligibleForPFDeduction"
+                            id="isEmployeeEligibleForPFDeduction-Yes" required
+                            [value]="true">
+                        <label class="form-check-label"
+                            for="isEmployeeEligibleForPFDeduction-Yes">Yes</label>
+                    </div>
+                    <div class="form-check ms-3">
+                        <input class="form-check-input" type="radio"
+                            formControlName="isEmployeeEligibleForPFDeduction"
+                            id="isEmployeeEligibleForPFDeduction-No" required
+                            [value]="false">
+                        <label class="form-check-label"
+                            for="isEmployeeEligibleForPFDeduction-No">No</label>
+                    </div>
+                </div>
+            </div>
             <div class="form-group col-md-6 mb-2">
                 <label for="">Will this Employee's Provident Fund contribution be capped at the provident Fund Ceiling?
                     (Rs 15,000)</label>

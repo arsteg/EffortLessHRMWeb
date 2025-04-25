@@ -741,7 +741,7 @@ export class AddSalaryDetailsComponent {
     this.userService.getStatutoryByUserId(userId).subscribe((res: any) => {
       this.statutorySettings = res.data;
       this.salaryDetailsForm.get('employeeSalaryTaxAndStatutorySetting')?.patchValue({
-        isPFDeduction: this.statutorySettings.isEmployeeEligibleForProvidentFundDeduction,
+        isPFDeduction: this.statutorySettings.isEmployeeEligibleForPFDeduction,
         isEmployeePFCappedAtPFCeiling: this.statutorySettings.isEmployeePFCappedAtPFCeiling,
         isEmployerPFCappedAtPFCeiling: this.statutorySettings.isEmployerPFCappedAtPFCeiling,
         fixedAmountForProvidentFundWage: this.statutorySettings.fixedAmountForYourProvidentFundWage,
