@@ -1,6 +1,5 @@
 <div class="border-top">
     <div class="d-flex justify-content-between align-items-baseline pt-2">
-        <div><label>Termination Compensation</label></div>
         <div class="d-flex">
             <app-fnf-users [isStep]="isSteps" [selectedFnF]="selectedFnF" (changeUser)="onUserChange($event)"></app-fnf-users>
             <button mat-raised-button class="addBtn ms-2 mt-1" (click)="openDialog(false)">Add Termination
@@ -14,7 +13,7 @@
         </ng-container>
 
         <ng-container matColumnDef="terminationDate">
-            <th mat-header-cell *matHeaderCellDef> Termination Date </th>
+            <th mat-header-cell *matHeaderCellDef> Termination/Resigned Date </th>
             <td mat-cell *matCellDef="let element"> {{element.terminationDate | date: 'mediumDate'}} </td>
         </ng-container>
 
@@ -41,16 +40,6 @@
         <ng-container matColumnDef="severancePay">
             <th mat-header-cell *matHeaderCellDef> Severance Pay </th>
             <td mat-cell *matCellDef="let element"> {{element.severancePay}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="retirementBenefits">
-            <th mat-header-cell *matHeaderCellDef> Retirement Benefits </th>
-            <td mat-cell *matCellDef="let element"> {{element.retirementBenefits}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="redeploymentCompensation">
-            <th mat-header-cell *matHeaderCellDef> Redeployment Compensation </th>
-            <td mat-cell *matCellDef="let element"> {{element.redeploymentCompensation}} </td>
         </ng-container>
 
         <ng-container matColumnDef="outplacementServices">
@@ -90,7 +79,7 @@
 <ng-template #dialogTemplate>
     <div class="modal-header border-bottom justify-content-between d-flex mb-2 p-3" style="z-index: 1050;">
         <div>
-            <h1 class="modal-title text-muted mb-0">{{ isEdit ? 'Edit' : 'Add' }} Termination Compensation For FnF
+            <h1 class="modal-title text-muted mb-0">{{ isEdit ? 'Edit' : 'Add' }} Compensation For FnF
                 Payroll</h1>
         </div>
         <div class=""><button type="button" class="btn-close text-end" (click)="dialog.closeAll()"></button></div>
@@ -102,25 +91,24 @@
                 <mat-form-field appearance="outline" class="my-2">
                     <mat-label>Selected FnF User</mat-label>
                     <input matInput type="text" formControlName="payrollFNFUser">
-
                 </mat-form-field>
                 }
                 @else if (!isEdit) {
                 <app-fnf-users [isStep]="isSteps" [selectedFnF]="selectedFnF" (changeUser)="onUserChange($event)"></app-fnf-users>
                 }
                 <mat-form-field appearance="outline" class="col-md-6 my-2">
-                    <mat-label>Termination Date</mat-label>
+                    <mat-label>Termination/Resigned Date</mat-label>
                     <input matInput [matDatepicker]="picker" formControlName="terminationDate">
                     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                     <mat-datepicker #picker></mat-datepicker>
                     <mat-error
-                        *ngIf="terminationCompensationForm.get('terminationDate').hasError('required')">Termination Date
+                        *ngIf="terminationCompensationForm.get('terminationDate').hasError('required')">Termination/Resigned Date
                         is required</mat-error>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="col-md-6 my-2" >
+                <mat-form-field appearance="outline" class="col-md-6 my-2">
                     <mat-label>Notice Period</mat-label>
-                    <input matInput type="number" formControlName="noticePeriod">
+                    <input matInput type="number" formControlName="noticePeriod" readonly>
                     <mat-error *ngIf="terminationCompensationForm.get('noticePeriod').hasError('required')">Notice
                         Period is required</mat-error>
                 </mat-form-field>
@@ -151,22 +139,6 @@
                     <input matInput type="number" formControlName="severancePay">
                     <mat-error *ngIf="terminationCompensationForm.get('severancePay').hasError('required')">Severance
                         Pay is required</mat-error>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline" class="col-md-6 my-2" >
-                    <mat-label>Retirement Benefits</mat-label>
-                    <input matInput type="number" formControlName="retirementBenefits">
-                    <mat-error
-                        *ngIf="terminationCompensationForm.get('retirementBenefits').hasError('required')">Retirement
-                        Benefits is required</mat-error>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline" class="col-md-6 my-2" >
-                    <mat-label>Redeployment Compensation</mat-label>
-                    <input matInput type="number" formControlName="redeploymentCompensation">
-                    <mat-error
-                        *ngIf="terminationCompensationForm.get('redeploymentCompensation').hasError('required')">Redeployment
-                        Compensation is required</mat-error>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="col-md-6 my-2" >

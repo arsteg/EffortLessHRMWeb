@@ -39,8 +39,8 @@
                     <label>Do you want to keep password for salary register or not?</label>
                     <div class="d-flex">
                         <mat-radio-group formControlName="isPasswordForSalaryRegister">
-                            <mat-radio-button value="true">Yes</mat-radio-button>
-                            <mat-radio-button value="false">No</mat-radio-button>
+                            <mat-radio-button [value]="true">Yes</mat-radio-button>
+                            <mat-radio-button [value]="false">No</mat-radio-button>
                         </mat-radio-group>
                     </div>
                 </div>
@@ -61,8 +61,8 @@
                     <label>Is Company eligible for Gratuity?</label>
                     <div class="d-flex">
                         <mat-radio-group formControlName="isGraduityEligible">
-                            <mat-radio-button value="true">Yes</mat-radio-button>
-                            <mat-radio-button value="false">No</mat-radio-button>
+                            <mat-radio-button [value]="true">Yes</mat-radio-button>
+                            <mat-radio-button [value]="false">No</mat-radio-button>
                         </mat-radio-group>
                     </div>
                 </div>
@@ -70,8 +70,8 @@
                     <label>Do you wish to calculate overtime from EffortlessHRM?</label>
                     <div class="d-flex">
                         <mat-radio-group formControlName="isAllowToCalculateOvertime">
-                            <mat-radio-button value="true">Yes</mat-radio-button>
-                            <mat-radio-button value="false">No</mat-radio-button>
+                            <mat-radio-button [value]="true">Yes</mat-radio-button>
+                            <mat-radio-button [value]="false">No</mat-radio-button>
                         </mat-radio-group>
                     </div>
                 </div>
@@ -103,8 +103,8 @@
                     <label>Do you wish to calculate your TDS from EffortlessHRM?</label>
                     <div class="d-flex">
                         <mat-radio-group formControlName="isAllowTDSFromEffortlessHRM">
-                            <mat-radio-button value="true">Yes</mat-radio-button>
-                            <mat-radio-button value="false">No</mat-radio-button>
+                            <mat-radio-button [value]="true">Yes</mat-radio-button>
+                            <mat-radio-button [value]="false">No</mat-radio-button>
                         </mat-radio-group>
                     </div>
                 </div>
@@ -128,7 +128,7 @@
             </ul>
             <div class="tab-content pt-0">
                 <div class="d-flex justify-content-between px-2 align-items-center">
-                    <div> <button class="btn addBtn" (click)="open(modal); clearForm(); isEdit= false">Add</button>
+                    <div> <button class="btn addBtn" (click)="open(modal); isEdit= false">Add</button>
                     </div>
                     <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
                         [recordsPerPage]="recordsPerPage" [currentPage]="currentPage"
