@@ -55,8 +55,8 @@ export class AddSalaryDetailsComponent {
         isVariableAllowancePartOfCTC: [false],
         isPFDeduction: [false],
         isProvidentPensionDeduction: [false],
-        isEmployeeProvidentFundCappedAtPFCeiling: [false],
-        isEmployerProvidentFundCappedAtPFCeiling: [false],
+        isEmployeePFCappedAtPFCeiling: [false],
+        isEmployerPFCappedAtPFCeiling: [false],
         fixedAmountForProvidentFundWage: [0],
         pfTemplate: [''],
         isESICDeduction: [false],
@@ -742,8 +742,8 @@ export class AddSalaryDetailsComponent {
       this.statutorySettings = res.data;
       this.salaryDetailsForm.get('employeeSalaryTaxAndStatutorySetting')?.patchValue({
         isPFDeduction: this.statutorySettings.isEmployeeEligibleForProvidentFundDeduction,
-        isEmployeeProvidentFundCappedAtPFCeiling: this.statutorySettings.willEmployeeProvidentFundContributionCappedAtProvidentFundCeiling,
-        isEmployerProvidentFundCappedAtPFCeiling: this.statutorySettings.willEmployerProvidentFundContributionBeCappedAtProvidentFundCeiling,
+        isEmployeePFCappedAtPFCeiling: this.statutorySettings.isEmployeePFCappedAtPFCeiling,
+        isEmployerPFCappedAtPFCeiling: this.statutorySettings.isEmployerPFCappedAtPFCeiling,
         fixedAmountForProvidentFundWage: this.statutorySettings.fixedAmountForYourProvidentFundWage,
         isESICDeduction: this.statutorySettings.isESICDeductedFromSalary,
         isPTDeduction: this.statutorySettings.isTaxDeductedFromPlayslip,

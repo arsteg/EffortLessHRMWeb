@@ -25,8 +25,8 @@ export class StatutoryDetailsComponent {
     this.statutoryDetailsForm = this.fb.group({
       user: [''],
       isEmployeeEligibleForProvidentFundDeduction: [true],
-      willEmployeeProvidentFundContributionCappedAtProvidentFundCeiling: [true],
-      willEmployerProvidentFundContributionBeCappedAtProvidentFundCeiling: [true],
+      isEmployeePFCappedAtPFCeiling: [true],
+      isEmployerPFCappedAtPFCeiling: [true],
       providentFundJoiningDate: [],
       providentFundNumber: [0],
       UANNumber: [0],
