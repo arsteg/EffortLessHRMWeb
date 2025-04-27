@@ -4,7 +4,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { RoleService } from 'src/app/_services/role.service';
 import { UserService } from 'src/app/_services/users.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { AuthenticationService } from 'src/app/_services/authentication.service';
 
 @Component({
   selector: 'app-employee-profile',
@@ -21,9 +22,11 @@ export class EmployeeProfileComponent {
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
+    public authService: AuthenticationService,
     private toast: ToastrService,
     private roleService: RoleService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     this.userForm = this.fb.group({
       firstName: ['', [Validators.required, Validators.pattern('^[A-Za-z]{2,}$')]],
@@ -64,11 +67,9 @@ export class EmployeeProfileComponent {
   }
 
   logUrlSegmentsForUser() {
-    const urlPath = this.router.url;
-    const segments = urlPath.split('/').filter(segment => segment);
-    if (segments.length >= 3) {
-      const employee = segments[segments.length - 3];
-      this.userService.getUserByEmpCode(employee).subscribe((res: any) => {
+    const empCode = this.route.parent.snapshot.paramMap.get('empCode') || this.authService.currentUserValue?.empCode;
+    if (empCode) {
+      this.userService.getUserByEmpCode(empCode).subscribe((res: any) => {
         const formattedDOB = res?.data[0]?.DOB ? formatDate(res?.data[0]?.DOB, 'yyyy-MM-dd', 'en') : null;
         const formattedMarriageAniversary = res.data[0]?.MarraigeAniversary ? formatDate(res.data[0]?.MarraigeAniversary, 'yyyy-MM-dd', 'en') : null;
         this.userForm.patchValue({

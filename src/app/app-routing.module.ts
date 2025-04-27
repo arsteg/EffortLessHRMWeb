@@ -137,6 +137,10 @@ const routes: Routes = [
       { path: 'comments', component: TaskCommentComponent }, //TODO: Shared component
       { path: 'feedback', component: FeedbackSettingsComponent },
       { path: 'notifications', component: NotificationDetailsComponent },
+      {
+        path: 'profile', 
+        loadChildren: () => import('./feature_modules/manage/users/employee-settings/employee-settings.module').then(m => m.EmployeeSettingsModule)
+       }
     ]
   },
   {

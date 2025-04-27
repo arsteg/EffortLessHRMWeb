@@ -105,6 +105,7 @@ export class AuthenticationService {
             id:  user.data.user.id,
             lastName: user.data.user.lastName,
             freeCompany: user.data.user.company.freeCompany,
+            empCode: user.data.user.appointment?.[0]?.empCode,
           }
         );
         this.companySubscription.next(user.data.companySubscription);
