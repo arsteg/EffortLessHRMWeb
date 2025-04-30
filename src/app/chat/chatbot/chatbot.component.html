@@ -5,7 +5,10 @@
     <div class="chat-messages" #chatMessages>
         <div *ngFor="let message of messages" [ngClass]="{'bot': message.sender === 'bot', 'user': message.sender === 'user'}" class="message">
             <div class="message-bubble">
-                <span>{{ message.text }}</span>
+                <div *ngIf="message.text">{{ message.text }}</div>
+                <div *ngIf="message.imageUrl">
+                    <img [src]="message.imageUrl" alt="Bot image response" style="max-width: 100%; border-radius: 10px; margin-top: 8px; max-height: 200px;" />
+                </div>
             </div>
         </div>
         <div *ngIf="isLoading" class="loading-indicator">
@@ -24,30 +27,17 @@
             {{ isRecording ? '⏹️' : '🎙️' }}
         </button>
     </div>
-    <!-- <div *ngIf="isLoading" class="loading-indicator">
-        <span>Typing...</span>
-    </div> -->
 </div>
 
-<!-- <div class="chat-container">
-    <div class="chat-header">
-        <h2>AI Assistant</h2>
-    </div>
-    <div class="chat-messages">
-        <div *ngFor="let message of messages" [ngClass]="{'bot': message.sender === 'bot', 'user': message.sender === 'user'}" class="message">
-            <div class="message-bubble">
-                <span>{{ message.text }}</span>
-            </div>
+
+<!-- <div class="chat-messages" #chatMessages>
+    <div *ngFor="let message of messages" [ngClass]="{'bot': message.sender === 'bot', 'user': message.sender === 'user'}" class="message">
+        <div class="message-bubble">
+            <span>{{ message.text }}</span>
+            <img *ngIf="message.imageUrl" [src]="message.imageUrl" alt="Bot image response" style="max-width: 100%; border-radius: 10px; margin-top: 8px; max-height: 200px;" />
         </div>
     </div>
-    <div class="chat-input">
-        <input type="text" placeholder="Type your message..." #messageInput>
-        <button (click)="sendMessage(messageInput.value)" [disabled]="isLoading">Send</button>
-        <button (click)="toggleVoiceInput(messageInput)" [disabled]="isLoading" class="voice-button">
-            {{ isRecording ? '⏹️' : '🎙️' }}
-        </button>
-    </div>
     <div *ngIf="isLoading" class="loading-indicator">
-        <span>Loading...</span>
+        <span>Typing...</span>
     </div>
 </div> -->

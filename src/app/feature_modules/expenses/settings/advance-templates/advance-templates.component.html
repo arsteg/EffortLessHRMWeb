@@ -2,28 +2,28 @@
     <div class="py-3 bg-white tableContainer">
         <div class="d-flex justify-content-between align-items-start mb-2 px-3">
             <mat-form-field appearance="outline">
-                <mat-label>Search</mat-label>
-                <input matInput (keyup)="applyFilter($event)" placeholder="Search...">
+                <mat-label>{{'expenses.search' | translate}}</mat-label>
+                <input matInput (keyup)="applyFilter($event)">
                 <mat-icon matSuffix>search</mat-icon>
             </mat-form-field>
             <button mat-raised-button color="accent" class="me-1"
                 (click)="isEdit = false; clearselectedRequest(); open(addModal)">
-                <mat-icon>add</mat-icon>Add New
+                <mat-icon>add</mat-icon>{{'expenses.add_new' | translate}}
             </button>
         </div>
         <table mat-table [dataSource]="dataSource" matSort>
             <ng-container matColumnDef="policyLabel">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Advance Template Name</th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'expenses.advance_template_label' | translate}}</th>
                 <td mat-cell *matCellDef="let advance">{{advance?.policyLabel}}</td>
             </ng-container>
 
             <ng-container matColumnDef="advanceCategories">
-                <th mat-header-cell *matHeaderCellDef>Number of Advance Categories</th>
+                <th mat-header-cell *matHeaderCellDef>{{'expenses.number_of_advance_categories' | translate}}</th>
                 <td mat-cell *matCellDef="let advance">{{advance?.advanceCategories?.length}}</td>
             </ng-container>
 
             <ng-container matColumnDef="actions">
-                <th mat-header-cell *matHeaderCellDef>Actions</th>
+                <th mat-header-cell *matHeaderCellDef>{{'expenses.actions' | translate}}</th>
                 <td mat-cell *matCellDef="let advance">
                     <button mat-icon-button [matMenuTriggerFor]="menu">
                         <mat-icon>more_vert</mat-icon>
@@ -32,11 +32,11 @@
                         <button mat-menu-item
                             (click)="isEdit = true; selectedTemplate= advance; editadvanceCategory(); open(addModal);">
                             <mat-icon>edit</mat-icon>
-                            <span>Edit</span>
+                            <span>{{'expenses.edit' | translate}}</span>
                         </button>
                         <button mat-menu-item (click)="deleteAdvancecate(advance?._id)">
                             <mat-icon>delete</mat-icon>
-                            <span>Delete</span>
+                            <span>{{'expenses.delete' | translate}}</span>
                         </button>
                     </mat-menu>
                 </td>
@@ -54,21 +54,21 @@
 
 <ng-template #addModal let-modal>
 
-    <h1 mat-dialog-title>{{isEdit? 'Update': 'Add'}} Advance Template</h1>
+    <h1 mat-dialog-title>{{isEdit?('expenses.update' | translate): ('expenses.add' | translate)}} {{'expenses.advance_template' | translate}}</h1>
     <div mat-dialog-content>
         <form action="" [formGroup]="addAdvanceTempForm" (ngSubmit)="addAdvanceTemplate()">
 
             <mat-form-field class="w-100">
-                <mat-label>Advance Template Label</mat-label>
+                <mat-label>{{'expenses.advance_template_label' | translate}}</mat-label>
                 <input type="text" matInput placeholder="Add Custom Label" formControlName="policyLabel" required>
                 <mat-error
                     *ngIf="addAdvanceTempForm.get('policyLabel').invalid && addAdvanceTempForm.get('policyLabel').touched">
-                    Please add label for advance template
+                    {{'expenses.advance_template_label_error' | translate}}
                 </mat-error>
             </mat-form-field>
 
             <mat-form-field class="w-100">
-                <mat-label>What expense categories are applicable in this expense template?</mat-label>
+                <mat-label>{{'expenses.select_applicable_categories' | translate}}</mat-label>
                 <mat-select multiple formControlName="advanceCategories" required>
                     <mat-option [value]="advanceCategory?._id"
                         *ngFor="let advanceCategory of advanceCategoriesall; let i = index">
@@ -77,56 +77,56 @@
                 </mat-select>
                 <mat-error
                     *ngIf="addAdvanceTempForm.get('advanceCategories').invalid && addAdvanceTempForm.get('advanceCategories').touched">
-                    Please select expense categories
+                    {{'expenses.expense_categories_error' | translate}}
                 </mat-error>
             </mat-form-field>
 
             <div class="mt-2">
-                <mat-label>How many levels of approvals you want to add?</mat-label>
+                <mat-label>{{'expenses.levels_of_approvals' | translate}}</mat-label>
                 <br>
                 <mat-radio-group formControlName="approvalLevel" required>
-                    <mat-radio-button value="1">1 Level</mat-radio-button>
-                    <mat-radio-button value="2">2 Level</mat-radio-button>
+                    <mat-radio-button value="1">{{'expenses.level_1' | translate}}</mat-radio-button>
+                    <mat-radio-button value="2">{{'expenses.level_2' | translate}}</mat-radio-button>
                 </mat-radio-group>
                 <mat-error *ngIf="addAdvanceTempForm.get('approvalLevel').invalid && addAdvanceTempForm.get('approvalLevel').touched">
-                    Please select approval level
+                    {{'expenses.levels_of_approvals_error'| translate}}
                 </mat-error>
             </div>
 
             <div class="mt-2">
-                <mat-label>How would you like to add approvers?</mat-label>
+                <mat-label>{{'expenses.add_approvers' | translate}}</mat-label>
                 <br>
                 <mat-radio-group formControlName="approvalType" required>
-                    <mat-radio-button value="template-wise">Template Wise</mat-radio-button>
-                    <mat-radio-button value="employee-wise">Employee Wise</mat-radio-button>
+                    <mat-radio-button value="template-wise">{{'expenses.template_wise' | translate}}</mat-radio-button>
+                    <mat-radio-button value="employee-wise">{{'expenses.employee_wise' | translate}}</mat-radio-button>
                 </mat-radio-group>
                 <mat-error *ngIf="addAdvanceTempForm.get('approvalType').invalid && addAdvanceTempForm.get('approvalType').touched">
-                    Please select approval type
+                    {{'expenses.add_approvers_error' | translate}}
                 </mat-error>
             </div>
 
             <div class="row mt-2" *ngIf="addAdvanceTempForm.get('approvalType').value === 'template-wise'">
                 <div class="col-md-6">
                     <mat-form-field class="w-100">
-                        <mat-label>First Approver</mat-label>
+                        <mat-label>{{'expenses.first_approver' | translate}}</mat-label>
                         <mat-select formControlName="firstApprovalEmployee" required>
                             <mat-option [value]="user?.id" *ngFor="let user of users; let i = index">{{user?.firstName |
                                 titlecase}} {{user.lastName | titlecase}}</mat-option>
                         </mat-select>
                         <mat-error *ngIf="addAdvanceTempForm.get('firstApprovalEmployee').invalid && addAdvanceTempForm.get('firstApprovalEmployee').touched">
-                            Please select first approver
+                           {{'expeses.first_approver_error' | translate}}
                         </mat-error>
                     </mat-form-field>
                 </div>
                 <div class="col-md-6" *ngIf="addAdvanceTempForm.get('approvalLevel').value === '2'">
                     <mat-form-field class="w-100">
-                        <mat-label>Second Approver</mat-label>
+                        <mat-label>{{'expenses.second_approver' | translate}}</mat-label>
                         <mat-select formControlName="secondApprovalEmployee" required>
                             <mat-option [value]="user?.id" *ngFor="let user of users; let i = index">{{user?.firstName |
                                 titlecase}} {{user.lastName | titlecase}}</mat-option>
                         </mat-select>
                         <mat-error *ngIf="addAdvanceTempForm.get('secondApprovalEmployee').invalid && addAdvanceTempForm.get('secondApprovalEmployee').touched">
-                            Please select second approver
+                            {{'expeses.second_approver_error' | translate}}
                         </mat-error>
                     </mat-form-field>
                 </div>
@@ -135,12 +135,13 @@
             <div class="mt-2">
                 <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
                     <div>
-                        <button mat-raised-button type="button" (click)="dialogRef.close()">Cancel</button>
-                        <button mat-stroked-button type="button" (click)="editadvanceCategory()">Reset</button>
+                        <button mat-raised-button type="button" (click)="dialogRef.close()">{{'expenses.cancel' | translate}}</button>
+                        <button mat-stroked-button type="button" (click)="editadvanceCategory()">{{'expenses.reset' | translate}}</button>
                     </div>
-                    <button mat-raised-button class="addBtn" type="submit"
-                        [disabled]="!addAdvanceTempForm.valid">{{isEdit?
-                        'Update': 'Add'}}</button>
+                    <button mat-raised-button color="accent" type="submit"
+                        [disabled]="!addAdvanceTempForm.valid">
+                        {{isEdit?('expenses.update' | translate): ('expenses.add' | translate)}}
+                    </button>
                 </div>
             </div>
         </form>

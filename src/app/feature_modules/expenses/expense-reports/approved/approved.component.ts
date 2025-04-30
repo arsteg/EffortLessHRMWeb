@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Output, ViewChild, inject } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
@@ -7,13 +7,14 @@ import { ExpensesService } from 'src/app/_services/expenses.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { ExportService } from 'src/app/_services/export.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-
+import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-approved',
   templateUrl: './approved.component.html',
   styleUrl: './approved.component.css'
 })
 export class ApprovedComponent {
+  private translate: TranslateService = inject(TranslateService);
   closeResult: string = '';
   step: number = 1;
   searchText: string = '';
@@ -55,11 +56,20 @@ export class ApprovedComponent {
     this.getExpenseReport();
   }
 
-  open(content: any) {
-    this.expenseService.expenseReportExpense.next(this.selectedReport);
+  open(content: any, selectedReport?: any) {
+    if(selectedReport){
+      this.selectedReport = selectedReport;
+      this.expenseService.expenseReportExpense.next(selectedReport);
+    } else {
+      this.expenseService.expenseReportExpense.next(null);
+    }
     this.dialogRef = this.dialog.open(content, {
       width: '50%',
       disableClose: true
+    });
+    this.dialogRef.afterClosed().subscribe((result) => {
+      this.expenseService.expenseReportExpense.next(null);
+      this.expenseService.selectedReport.next(null);
     });
   }
 
@@ -116,7 +126,7 @@ export class ApprovedComponent {
 
   getUser(employeeId: string) {
     const matchingUser = this.users.find(user => user._id === employeeId);
-    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'User Not Found';
+    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : this.translate.instant('expenses.user_not_found');
   }
 
   updateCancelledReport() {

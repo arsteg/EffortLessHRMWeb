@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { ToastrService } from 'ngx-toastr';
@@ -6,13 +6,14 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-
+import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-advance-categories',
   templateUrl: './advance-categories.component.html',
   styleUrl: './advance-categories.component.css'
 })
 export class AdvanceCategoriesComponent implements OnInit {
+  private readonly translate = inject(TranslateService);
   searchText: '';
   isEdit = false;
   field: any = [];
@@ -94,13 +95,13 @@ export class AdvanceCategoriesComponent implements OnInit {
 
       this.expenseService.addAdvanceCategory(payload).subscribe((res: any) => {
         const newCategory = res.data;
-        this.toast.success('Advance Category Created!', 'Successfully');
+        this.toast.success(this.translate.instant('expenses.category_added_success'));
         this.advanceCategories.data.push(newCategory);
         this.advanceCategories._updateChangeSubscription();
         this.addCategory.reset();
       },
         err => {
-          this.toast.error('This category is already exist', 'Error!!!');
+          this.toast.error(err || this.translate.instant('expenses.category_added_error'));
         });
     }
     if (this.isEdit) {
@@ -111,13 +112,13 @@ export class AdvanceCategoriesComponent implements OnInit {
       if (this.addCategory.get('label').dirty) {
         this.expenseService.updateAdvanceCategory(this.selectedCategory?._id, categoryPayload).subscribe((res: any) => {
           this.updatedCategory = res.data._id;
-          this.toast.success('Advance Category Updated!', 'Successfully');
+          this.toast.success(this.translate.instant('expenses.category_updated_success'));
           this.addCategory.reset();
           this.isEdit = false;
           this.getAllAdvanceCategories();
         },
           (err) => {
-            this.toast.error('Advance Category can not be Updated!', 'Error');
+            this.toast.error(err || this.translate.instant('expenses.category_updated_error'));
           });
       }
     }
@@ -144,7 +145,7 @@ export class AdvanceCategoriesComponent implements OnInit {
         this.deleteAdvanceCategory(id);
       }
       err => {
-        this.toast.error('Can not be Deleted', 'Error!');
+        this.toast.error(err || this.translate.instant('expenses.delete_error'));
       }
     });
   }
@@ -152,10 +153,10 @@ export class AdvanceCategoriesComponent implements OnInit {
   deleteAdvanceCategory(id: string) {
     this.expenseService.deleteAdvanceCategory(id).subscribe((res: any) => {
       this.getAllAdvanceCategories();
-      this.toast.success('Successfully Deleted!!!', 'Advance Category');
+      this.toast.success(this.translate.instant('expenses.delete_success'));
     },
       (err) => {
-        this.toast.error('This category is already being used in an expense template!', 'Advance Category, Can not be deleted!');
+        this.toast.error(err || this.translate.instant('expenses.delete_error'));
       });
   }
 }

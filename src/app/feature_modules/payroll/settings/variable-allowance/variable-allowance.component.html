@@ -49,7 +49,7 @@
                 <ng-container matColumnDef="isTDSAffected">
                     <th mat-header-cell *matHeaderCellDef> LWF </th>
                     <td mat-cell *matCellDef="let va">
-                        <span *ngIf="va?.isTDSAffected else fixed">
+                        <span *ngIf="va?.isLWFAffected else fixed">
                             <mat-icon style="color: green;">check</mat-icon>
                         </span>
                         <ng-template #fixed>

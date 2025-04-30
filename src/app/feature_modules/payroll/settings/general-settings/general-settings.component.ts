@@ -205,10 +205,6 @@ export class GeneralSettingsComponent {
     });
   }
 
- 
-
-  clearForm() { }
-
   deleteRecord(_id: string) {
     console.log(this.activeTab)
     if (this.activeTab === 'tabRoundingRules') {

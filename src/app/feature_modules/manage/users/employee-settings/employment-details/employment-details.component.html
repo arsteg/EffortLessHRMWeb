@@ -72,7 +72,7 @@
 
       <form [formGroup]="jobInformationForm" (ngSubmit)="onSubmissionJobInformation()">
         <div class="d-flex justify-content-end mb-2">
-          <button mat-raised-button class="addBtn">Save</button>
+          <button mat-raised-button color="primary">Save</button>
         </div>
         <div class="row">
           <mat-form-field appearance="outline" class="col-md-6">
@@ -173,33 +173,12 @@
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="col-md-6">
-            <mat-label>Organization</mat-label>
-            <input type="text" matInput [value]="this.selectedUser?.company?.companyName" disabled>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="col-md-6">
             <mat-label>Zone</mat-label>
             <mat-select formControlName="zone">
               <mat-option *ngFor="let zone of zones" [value]="zone?._id">{{zone?.zoneName}}</mat-option>
             </mat-select>
             <mat-error *ngIf="jobInformationForm.get('zone')?.hasError('required') && jobInformationForm.get('zone')?.touched">
               Zone is required.
-            </mat-error>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="col-md-6">
-            <mat-label>Biometric Employee Code</mat-label>
-            <input matInput formControlName="biometricEmployeeCode">
-            <mat-error *ngIf="jobInformationForm.get('biometricEmployeeCode')?.hasError('required') && jobInformationForm.get('biometricEmployeeCode')?.touched">
-              Biometric Employee Code is required.
-            </mat-error>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="col-md-6">
-            <mat-label>Previous Experience (Months)</mat-label>
-            <input matInput formControlName="previousExperience">
-            <mat-error *ngIf="jobInformationForm.get('previousExperience')?.hasError('required') && jobInformationForm.get('previousExperience')?.touched">
-              Previous Experience is required.
             </mat-error>
           </mat-form-field>
 

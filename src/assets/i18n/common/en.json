@@ -1,0 +1,7 @@
+{
+    "common": {
+    "warning": "Warning",
+    "success": "Success",
+    "error": "Error"
+  }
+}

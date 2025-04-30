@@ -14,6 +14,7 @@ export class EmployeeSettingsComponent {
   selectedIndex: number;
   employeeForm: FormGroup;
   selectedTab: string;
+  isProfileView = false;
 
   constructor(private userService: UserService,
     private router: Router,
@@ -21,10 +22,11 @@ export class EmployeeSettingsComponent {
 
   ngOnInit() {
     const urlPath = this.router.url;
+    this.isProfileView = urlPath.includes('/profile');
     const segments = urlPath.split('/').filter(segment => segment);
     const lastRoute = segments[segments.length - 1];
 
-    const tabRoutes = ['employee-profile', 'employment-details', 'salary-details', 'statutory-details', 'loans-advances', 'tax'];
+    const tabRoutes = ['employee-profile', 'employment-details', 'salary-details', 'statutory-details', 'loans-advances'];
     this.selectedIndex = tabRoutes.indexOf(lastRoute);
 
     switch (this.selectedIndex) {
@@ -63,12 +65,14 @@ export class EmployeeSettingsComponent {
     if (this.selectedTab) {
       this.userService.toggleEmployeesDetails.next(false);
     }
-    this.router.navigate(['/' + newPath], { relativeTo: this.route });
+    this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
+      this.router.navigate(['/' + newPath], { relativeTo: this.route })
+    );
   }
 
   onTabChange(event: any) {
     this.selectedTab = event.tab.textLabel;
-    const tabRoutes = ['employee-profile', 'employment-details', 'salary-details', 'statutory-details', 'loans-advances', 'tax'];
+    const tabRoutes = ['employee-profile', 'employment-details', 'salary-details', 'statutory-details', 'loans-advances'];
     this.router.navigate([tabRoutes[event.index]], { relativeTo: this.route });
   }
 }

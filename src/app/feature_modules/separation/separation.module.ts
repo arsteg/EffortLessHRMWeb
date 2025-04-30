@@ -15,7 +15,7 @@ import { SeparationComponent } from './separation.component';
 import { SeparationRoutingModule } from './separation-routing.module';
 import { ResignationComponent } from './resignation/resignation.component';
 import { TerminationComponent } from './termination/termination.component';
-
+import { TranslateModule } from '@ngx-translate/core';
 @NgModule({
   declarations: [
     SeparationComponent,
@@ -35,7 +35,8 @@ import { TerminationComponent } from './termination/termination.component';
     MatButtonModule,
     MatNativeDateModule,
     MatIconModule,
-    MatMenuModule
+    MatMenuModule,
+    TranslateModule
   ]
 })
 export class SeparationModule { }

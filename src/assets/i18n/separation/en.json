@@ -1,0 +1,31 @@
+{
+    "separation":{
+        "appeal_heading": "Review Appeal",
+        "appeal_reason" : "Appeal Reason",
+        "decision_notes" : "Decision Notes",
+        "appeal_status" : "Appeal Status",
+        "appeal_request":"Appeal Request",
+        "update_success":"Updated Successfully",
+        "update_fail":"Updated Failed",
+        "add_success":"Added Successfully",
+        "add_fail":"Added Failed",
+        "assest_verify_failed":"Failed to verify assigned assets.",
+        "assest_return_warning": "Assets are still assigned. Please release them before marking company property as returned.",
+        "notice_period_fetch_fail": "Unable to fetch Notice Period. Job information is missing. Please ask Admin to complete your job details first.",
+        "notice_period_load_fail": "Failed to load notice period.",
+        "company_property_not_returned": "Cannot mark as Completed. Company property has not been returned.",
+        "status_update_success": "Status Updated Successfully",
+        "status_update_fail": "Status Update Failed",
+        "cannot_be_deleted": "Cannot be Deleted",
+        "appeal_reason_required": "Please enter an appeal reason",
+        "appeal_updated_success": "Appeal updated successfully",
+        "appeal_update_fail": "Failed to update appeal", 
+        "appeal_submitted_success": "Appeal submitted successfully",         
+        "appeal_submit_fail": "Failed to submit appeal.",
+        "fetch_appeal_fail": "Error fetching appeal.",  
+        "appeal_review_success": "Appeal reviewed successfully", 
+        "termination_add_fail": "Termination cannot be added.",
+        "termination_add_success": "Termination Added",  
+        "termination_update_success": "Termination Updated"
+      }
+}

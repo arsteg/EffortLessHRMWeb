@@ -29,8 +29,6 @@ export class ContributionComponent {
     private dialog: MatDialog
   ) { 
     this.contributionForm = this.fb.group({
-      fromAmount: [0, Validators.required],
-      toAmount: [0, Validators.required],
       employeePercentage: [0, Validators.required],
       employerPercentage: [0, Validators.required],
     })
@@ -117,8 +115,6 @@ export class ContributionComponent {
 
   clearForm() {
     this.contributionForm.patchValue({
-      fromAmount: 0,
-      toAmount: 0,
       employeePercentage: 0,
       employerPercentage: 0,
     })

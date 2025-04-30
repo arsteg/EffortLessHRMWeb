@@ -1,11 +1,13 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { CommonService } from 'src/app/_services/common.Service';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ViewReportComponent } from '../../expense-reports/view-report/view-report.component';
 import { MatTableDataSource } from '@angular/material/table';
+import { ApproveDialogComponent } from '../../expense-reports/pending/approve-dialog.component';
+import { RejectDialogComponent } from '../../expense-reports/pending/reject-dialog.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-show-team-expenses',
@@ -13,6 +15,7 @@ import { MatTableDataSource } from '@angular/material/table';
   styleUrl: './show-team-expenses.component.css'
 })
 export class ShowTeamExpensesComponent {
+  private readonly translate = inject(TranslateService);
   closeResult: string = '';
   p: number = 1;
   step: number = 1;
@@ -34,10 +37,10 @@ export class ShowTeamExpensesComponent {
   updateExpenseReport: FormGroup;
   @Input() selectedTab: number;
   dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
-  displayedColumns: string[] = ['title', 'employeeName','totalAmount', 'amount', 'reimbursable', 'billable', 'status', 'actions'];
+  displayedColumns: string[] = ['title', 'employeeName', 'totalAmount', 'amount', 'reimbursable', 'billable', 'status', 'actions'];
+  dialogRef: MatDialogRef<any>;
 
-  constructor(private modalService: NgbModal,
-    private expenseService: ExpensesService,
+  constructor(private expenseService: ExpensesService,
     private commonService: CommonService,
     private dialog: MatDialog,
     private fb: FormBuilder) {
@@ -57,21 +60,20 @@ export class ShowTeamExpensesComponent {
     });
   }
 
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
+  open(content: any, selectedReport?: any) {
+    if (selectedReport) {
+      this.selectedReport = selectedReport;
+      this.expenseService.expenseReportExpense.next(selectedReport);
     } else {
-      return `with: ${reason}`;
+      this.expenseService.expenseReportExpense.next(null);
     }
-  }
-  open(content: any) {
-    this.expenseService.expenseReportExpense.next(this.selectedReport);
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    this.dialogRef = this.dialog.open(content, {
+      width: '50%',
+      disableClose: true,
+    });
+    this.dialogRef.afterClosed().subscribe((result) => {
+      this.expenseService.expenseReportExpense.next([]);
+      this.expenseService.selectedReport.next(null);
     });
   }
   onChangeStep(event) {
@@ -84,19 +86,11 @@ export class ShowTeamExpensesComponent {
   }
   onClose(event) {
     if (event) {
-      this.modalService.dismissAll();
+      this.dialogRef.close();
     }
   }
   refreshExpenseReportTable() {
-    // this.expenseService.getExpenseReport().subscribe(
-    //   (res) => {
-    //     this.expenseReport = res.data;
-    //     this.expenseTemplateReportRefreshed.emit();
-    //   },
-    //   (error) => {
-    //     console.error('Error refreshing expense template table:', error);
-    //   }
-    // );
+    this.getExpenseReport();
   }
   onPageChange(event: any) {
     this.currentPage = event.pageIndex + 1;
@@ -129,44 +123,56 @@ export class ShowTeamExpensesComponent {
     });
   }
 
-  updateApprovedReport() {
-    let id = this.selectedReport._id;
-    console.log(id)
-    let payload = {
+  updateReportStatus(result: any) {
+    const id = this.selectedReport._id;
+    const payload = {
       employee: this.selectedReport.employee,
       title: this.selectedReport.title,
-      status: 'Approved',
-      primaryApprovalReason: this.updateExpenseReport.value.primaryApprovalReason,
+      status: result.approved ? 'Approved' : 'Rejected',
+      primaryApprovalReason: result.reason,
       secondaryApprovalReason: ''
-    }
-    console.log(id, payload);
-    this.expenseService.updateExpenseReport(id, payload).subscribe((res: any) => {
-      this.expenseReport = this.expenseReport.filter(report => report._id !== id);
-    })
+    };
+    this.expenseService.updateExpenseReport(id, payload).subscribe(() => {
+      this.dataSource.data = this.dataSource.data.filter(report => report._id !== id);
+    });
   }
 
-  updateRejectedReport() {
-    let id = this.selectedReport._id;
-    let payload = {
-      employee: this.selectedReport.employee,
-      title: this.selectedReport.title,
-      status: 'Rejected',
-      primaryApprovalReason: this.updateExpenseReport.value.primaryApprovalReason,
-      secondaryApprovalReason: ''
-    }
-    this.expenseService.updateExpenseReport(id, payload).subscribe((res: any) => {
-      this.expenseReport = this.expenseReport.filter(report => report._id !== id);
-    })
+  openApproveDialog(expenseReport: any) {
+    this.selectedReport = expenseReport;
+    const dialogRef = this.dialog.open(ApproveDialogComponent, {
+      width: '500px',
+      data: { report: this.selectedReport }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result.approved) {
+        this.updateReportStatus(result);
+      }
+    });
+  }
+
+  openRejectDialog(expenseReport: any) {
+    this.selectedReport = expenseReport;
+    const dialogRef = this.dialog.open(RejectDialogComponent, {
+      width: '500px',
+      data: { report: this.selectedReport }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result.rejected) {
+        this.updateReportStatus(result);
+      }
+    });
   }
 
   getCategory(categoryId: string) {
     const matchingCategory = this.allCategory?.find(category => category._id === categoryId);
-    return matchingCategory ? `${matchingCategory.label}` : 'Category Not Found';
+    return matchingCategory ? `${matchingCategory.label}` : this.translate.instant('expenses.category_not_found');
   }
 
   getUser(employeeId: string) {
     const matchingUser = this.allAssignee?.find(user => user._id === employeeId);
-    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'User Not Found';
+    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : this.translate.instant('expenses.user_not_found');;
   }
   openSecondModal(selectedReport: any): void {
     console.log(selectedReport)

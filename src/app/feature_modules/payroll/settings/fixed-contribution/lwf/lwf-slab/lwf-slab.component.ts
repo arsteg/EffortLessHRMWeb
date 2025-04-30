@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
+import { CompanyService } from 'src/app/_services/company.service';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 
@@ -22,9 +23,13 @@ export class LwfSlabComponent {
   totalRecords: number;
   currentPage: number = 1;
   searchText: string = '';
+  selectedState: string = '';
+  stateTouched: boolean = false;
   @Input() selectedRecord: any;
   eligibleStates: any;
+  route: any;
   constructor(private payrollService: PayrollService,
+    private companyService: CompanyService,
     private fb: FormBuilder,
     private modalService: NgbModal,
     private toast: ToastrService,
@@ -32,24 +37,22 @@ export class LwfSlabComponent {
   ) {
     this.lwfSLabForm = this.fb.group({
       fixedContribution: ['', Validators.required],
-      fromAmount: [this.selectedRecord?._id, Validators.required],
-      toAmount: ['', Validators.required],
-      employeePercent: [0, Validators.required],
       employeeAmount: [0, Validators.required],
-      employerPercentage: [0, Validators.required],
-      employerAmount: [0, Validators.required]
+      employerAmount: [0, Validators.required],
+      employeePercentage: [0],
+      employerPercentage: [0],
+      maxContribution: [0],
+      minAmount: [0],
+      maxAmount: [0]
     })
   }
 
   ngOnInit() {
-    this.payrollService.getEligibleStates().subscribe((res: any) => {
+    this.payrollService.getAllStates().subscribe((res: any) => {
       this.eligibleStates = res.data;
-    });
-    this.payrollService.getAllConfiguredStates().subscribe((res: any) => {
-      this.states = res.data;
-    });
-    this.getLwfSlab();
-
+    }); 
+    this.getCompanyState();
+    
   }
 
   onPageChange(page: number) {
@@ -60,12 +63,13 @@ export class LwfSlabComponent {
     this.isEdit = false;
     this.lwfSLabForm.patchValue({
       fixedContribution: this.selectedRecord?._id,
-      fromAmount: 0,
-      toAmount: 0,
-      employeePercent: 0,
-      employeeAmount: 0,
-      employerPercentage: 0,
-      employerAmount: 0
+      employeeAmount: 0, // Default value for employeeAmount
+      employerAmount: 0, // Default value for employerAmount
+      employeePercentage: 0, // Default value for employeePercentage
+      employerPercentage: 0, // Default value for employerPercentage
+      maxContribution: 0, // Default value for maxContribution
+      minAmount: 0, // Default value for minAmount
+      maxAmount: 0 // Default value for maxAmount
     })
   }
   onRecordsPerPageChange(recordsPerPage: number) {
@@ -76,11 +80,19 @@ export class LwfSlabComponent {
   getLwfSlab() {
     const pagination = {
       skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
-      next: this.recordsPerPage.toString()
+      next: this.recordsPerPage.toString(),
+      state:this.selectedState
     };
-    this.payrollService.getLWF(pagination).subscribe((res: any) => {
+    this.payrollService.getLWFByState(pagination).subscribe((res: any) => {
       this.lwfSlabs = res.data;
       this.totalRecords = res.total;
+    })
+  }
+  getCompanyState()
+  {
+    this.companyService.getCompany().subscribe((res: any) => {
+      this.selectedState = res.data.company.state;
+      this.getLwfSlab();
     })
   }
   editRecord() {
@@ -93,29 +105,32 @@ export class LwfSlabComponent {
   }
 
   onSubmission() {
+    const payload = {
+      ...this.lwfSLabForm.value,
+      state: this.selectedState
+    };
+  
     if (!this.isEdit) {
-      this.payrollService.addLWF(this.lwfSLabForm.value).subscribe((res) => {
-        this.lwfSlabs.push(res.data);
-        this.lwfSLabForm.reset();
+      this.payrollService.addLWF(payload).subscribe((res) => {  
+        this.getLwfSlab();     
         this.toast.success('Successfully Added!!!', 'LWF Slab');
-      },
-        (err) => {
-          this.toast.error('LWF Slab can not be added', 'LWF Slab');
-        }
-      )
-    }
-    else {
-      this.payrollService.updateLWF(this.selectedData._id, this.lwfSLabForm.value).subscribe((res) => {
-        this.lwfSlabs.push(res.data);
+      }, (err) => {
+        const errorMessage = err?.error?.message || err?.message || err 
+        || 'LWF Slab can not be added.';
+        this.toast.error(errorMessage, 'Error!');  });
+    } else {
+      this.payrollService.updateLWF(this.selectedData._id, payload).subscribe((res) => {      
+        this.getLwfSlab();   
         this.lwfSLabForm.reset();
         this.toast.success('Successfully Updated!!!', 'LWF Slab');
-      },
-        (err) => {
-          this.toast.error('LWF Slab can not be updated', 'LWF Slab');
-        }
-      )
-    }
-  }
+      }, (err) => {
+        const errorMessage = err?.error?.message || err?.message || err 
+        || 'LWF Slab can not be updated.';
+        this.toast.error(errorMessage, 'Error!');
+      });
+    }  
+    this.closeModal(); // Optionally close the modal after submission
+  }  
 
   deleteRecord(_id: string) {
     this.payrollService.deleteLWF(_id).subscribe((res: any) => {
@@ -126,8 +141,9 @@ export class LwfSlabComponent {
       this.toast.success('Successfully Deleted!!!', 'LWF Slab');
     },
       (err) => {
-        this.toast.error('LWF Slab can not be deleted', 'LWF Slab');
-      })
+        const errorMessage = err?.error?.message || err?.message || err 
+        || 'LWF Slab can not be deleted.';
+        this.toast.error(errorMessage, 'Error!');   })
 
   }
 
@@ -142,13 +158,22 @@ export class LwfSlabComponent {
       }
     });
   }
-
+  handleAdd(modal: any) {
+    this.stateTouched = true;
+    if (!this.selectedState) {
+      this.toast.warning('Please select a state before adding.');
+      return;
+    }
+  
+    this.isEdit = false;
+    this.clearForm();
+    this.open(modal);
+  }
+  
   open(content: any) {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
-
     }, (reason) => {
-
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
     });
   }
@@ -162,9 +187,4 @@ export class LwfSlabComponent {
       return `with: ${reason}`;
     }
   }
-  getMatchingState(stateID: string) {
-    const matchingState = this.states?.find(rec => rec._id === stateID);
-    return matchingState ? matchingState?.state : '';
-  }
-
 }

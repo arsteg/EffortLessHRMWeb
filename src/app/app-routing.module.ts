@@ -19,6 +19,7 @@ import { LogComponent } from './feature_modules/logs/log.component/log.component
 import { FeedbackSubmissionComponent } from './feature_modules/feedback/feedback-submission/feedback-submission.component';
 import { FeedbackSettingsComponent } from './feature_modules/feedback/feedback.settings.component';
 import { NotificationDetailsComponent } from './layouts/home/notification/notification-details/notification-details.component';
+import { TranslationResolver } from './_helpers/translation.resolver';
 
 const routes: Routes = [
   { path: '', redirectTo: 'landing', pathMatch: 'full' },
@@ -30,6 +31,8 @@ const routes: Routes = [
       {
         path: 'dashboard',
         loadChildren: () => import('./feature_modules/dashboard/dashboard.module').then(m => m.DashboardModule),
+        resolve: { translation: TranslationResolver },
+        data: { moduleKey: 'dashboard' }
       },
       {
         path: 'screenshots',
@@ -53,7 +56,9 @@ const routes: Routes = [
       },
       {
         path: 'attendance',
-        loadChildren: () => import('./feature_modules/attendance/attendance.module').then(m => m.AttendanceModule)
+        loadChildren: () => import('./feature_modules/attendance/attendance.module').then(m => m.AttendanceModule),
+        resolve: { translation: TranslationResolver },
+        data: { moduleKey: 'attendance' }
       },
       {
         path: 'timesheets',
@@ -65,7 +70,9 @@ const routes: Routes = [
       },
       {
         path: 'expense',
-        loadChildren: () => import('./feature_modules/expenses/expenses.module').then(m => m.ExpensesModule)
+        loadChildren: () => import('./feature_modules/expenses/expenses.module').then(m => m.ExpensesModule),
+        resolve: { translation: TranslationResolver },
+        data: { moduleKey: 'expenses' }
       },
       {
         path: 'alerts',
@@ -73,7 +80,9 @@ const routes: Routes = [
       },
       {
         path: 'payroll',
-        loadChildren: () => import('./feature_modules/payroll/payroll.module').then(m => m.PayrollModule)
+        loadChildren: () => import('./feature_modules/payroll/payroll.module').then(m => m.PayrollModule),
+        resolve: { translation: TranslationResolver },
+        data: { moduleKey: 'payroll' }
       },
       {
         path: 'taxation',
@@ -85,7 +94,9 @@ const routes: Routes = [
       },
       {
         path: 'separation',
-        loadChildren: () => import('./feature_modules/separation/separation.module').then(m => m.SeparationModule)
+        loadChildren: () => import('./feature_modules/separation/separation.module').then(m => m.SeparationModule),
+        resolve: { translation: TranslationResolver },
+        data: { moduleKey: 'separation' }
       },
       {
         path: 'settings',
@@ -126,6 +137,10 @@ const routes: Routes = [
       { path: 'comments', component: TaskCommentComponent }, //TODO: Shared component
       { path: 'feedback', component: FeedbackSettingsComponent },
       { path: 'notifications', component: NotificationDetailsComponent },
+      {
+        path: 'profile', 
+        loadChildren: () => import('./feature_modules/manage/users/employee-settings/employee-settings.module').then(m => m.EmployeeSettingsModule)
+       }
     ]
   },
   {

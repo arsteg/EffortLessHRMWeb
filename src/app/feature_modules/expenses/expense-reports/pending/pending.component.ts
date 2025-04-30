@@ -1,10 +1,10 @@
-import { Component, EventEmitter, Output, Input, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Output, Input, ViewChild, inject } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { CommonService } from 'src/app/_services/common.Service';
@@ -19,6 +19,7 @@ import { RejectDialogComponent } from './reject-dialog.component';
   styleUrl: './pending.component.css'
 })
 export class PendingComponent {
+  private readonly translate = inject(TranslateService);
   searchText: string = '';
   expenseCategories: any;
   @Input() isEdit: boolean = false;
@@ -42,12 +43,12 @@ export class PendingComponent {
   @ViewChild(MatMenuTrigger) menuTrigger: MatMenuTrigger;
 
   constructor(
-              private expenseService: ExpensesService,
-              private commonService: CommonService,
-              private dialog: MatDialog,
-              private toast: ToastrService,
-              private exportService: ExportService,
-              private fb: FormBuilder) {
+    private expenseService: ExpensesService,
+    private commonService: CommonService,
+    private dialog: MatDialog,
+    private toast: ToastrService,
+    private exportService: ExportService,
+    private fb: FormBuilder) {
     this.updateExpenseReport = this.fb.group({
       employee: [''],
       title: [''],
@@ -73,11 +74,20 @@ export class PendingComponent {
     this.changeMode = 'Add';
   }
 
-  open(content: any) {
-    this.expenseService.expenseReportExpense.next(this.selectedReport);
+  open(content: any, selectedReport?: any) {
+    if (selectedReport) {
+      this.selectedReport = selectedReport;
+      this.expenseService.expenseReportExpense.next(selectedReport);
+    } else {
+      this.expenseService.expenseReportExpense.next(null);
+    }
     this.dialogRef = this.dialog.open(content, {
       width: '50%',
       disableClose: true
+    });
+    this.dialogRef.afterClosed().subscribe((result) => {
+      this.expenseService.expenseReportExpense.next(null);
+      this.expenseService.selectedReport.next(null);
     });
   }
 
@@ -133,15 +143,15 @@ export class PendingComponent {
   deleteReport(id: string) {
     this.expenseService.deleteExpenseReport(id).subscribe(() => {
       this.dataSource.data = this.dataSource.data.filter(report => report._id !== id);
-      this.toast.success('Successfully Deleted!!!', 'Expense Report');
+      this.toast.success(this.translate.instant('expenses.delete_success'));
     }, () => {
-      this.toast.error('This Expense Report is already being used!', 'Error!');
+      this.toast.error(this.translate.instant('expenses.delete_error'));
     });
   }
 
   getUser(employeeId: string) {
     const matchingUser = this.users.find(user => user._id === employeeId);
-    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'User Not Found';
+    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : this.translate.instant('expenses.user_not_found');
   }
 
   editReport(report: any) {
@@ -167,17 +177,23 @@ export class PendingComponent {
     const payload = {
       employee: this.selectedReport.employee,
       title: this.selectedReport.title,
-      status: result.approved? 'Approved' : 'Rejected',
-      primaryApprovalReason: result.reason,
-      secondaryApprovalReason: ''
+      status: result.approved ? 'Approved' : 'Rejected',
     };
+    if(this.selectedReport.status === 'Level 1 Approval Pending'){
+      payload['primaryApprovalReason'] = result.reason;
+    }
+    if(this.selectedReport.status === 'Level 2 Approval Pending'){
+      payload['secondaryApprovalReason']= result.reason;
+    }
     this.expenseService.updateExpenseReport(id, payload).subscribe(() => {
       this.dataSource.data = this.dataSource.data.filter(report => report._id !== id);
+    }, (error)=>{
+      this.toast.error(error, this.translate.instant('expenses.expense_report'));
     });
   }
 
   calculateTotalAmount(expenseReport: any): number {
-    return expenseReport.expenseReportExpense?.reduce((total, expense) => total + expense.amount, 0) || 0;
+    return expenseReport.expenseReportExpense?.reduce((total, expense) => total + expense.amount, 0) + parseFloat(expenseReport.amount) || 0;
   }
 
   calculateTotalisReimbursable(expenseReport: any, isReimbursable: boolean, isBillable: boolean): number {

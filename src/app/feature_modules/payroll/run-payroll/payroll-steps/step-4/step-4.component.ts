@@ -2,7 +2,6 @@ import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
-import { forkJoin, map, switchMap } from 'rxjs';
 import { CommonService } from 'src/app/_services/common.Service';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { UserService } from 'src/app/_services/users.service';
@@ -11,7 +10,7 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 @Component({
   selector: 'app-step-4',
   templateUrl: './step-4.component.html',
-  styleUrl: './step-4.component.css'
+  styleUrls: ['./step-4.component.css']
 })
 export class Step4Component {
   searchText: string = '';
@@ -22,7 +21,7 @@ export class Step4Component {
   allLoanAdvances: any;
   allUsers: any;
   @Input() selectedPayroll: any;
-  changeMode: 'Add' | 'Update' = 'Update';
+  changeMode: 'Add' | 'Update' = 'Add';
   selectedRecord: any;
   payrollUsers: any;
   matchedLoanAdvances: any;
@@ -41,9 +40,16 @@ export class Step4Component {
       payrollUser: ['', Validators.required],
       loanAndAdvance: ['', Validators.required],
       disbursementAmount: [0, [Validators.required, Validators.min(1)]],
-      status: ['Pending'],
-      type: [''],
+      type: ['', Validators.required],
       amount: [0]
+    });
+
+    // Listen to changes in loanAndAdvance and type to update amounts
+    this.loanAdvanceForm.get('loanAndAdvance').valueChanges.subscribe(() => {
+      this.updateAmountFields();
+    });
+    this.loanAdvanceForm.get('type').valueChanges.subscribe(() => {
+      this.updateAmountFields();
     });
   }
 
@@ -65,29 +71,30 @@ export class Step4Component {
   }
 
   closeDialog() {
-    this.changeMode = 'Update';
+    this.changeMode = 'Add';
     this.dialog.closeAll();
   }
 
   clearForm() {
-    this.loanAdvanceForm.patchValue({
+    this.loanAdvanceForm.reset({
       payrollUser: '',
       loanAndAdvance: '',
       disbursementAmount: 0,
-      status: 'Pending',
       type: '',
       amount: 0
-    })
+    });
   }
 
   onUserSelectedFromChild(userId: any) {
     this.selectedUserId = userId.value.user;
     this.selectedPayrollUser = userId.value._id;
-    if (this.changeMode === 'Update') { this.getLoanAdvances(); }
-    if (this.changeMode === 'Add') { this.getLoanAdvancesOfUser(); }
+    if (this.changeMode === 'Update') {
+      this.getLoanAdvances();
+    }
+    if (this.changeMode === 'Add') {
+      this.getLoanAdvancesOfUser();
+    }
   }
-
-
 
   getUser(employeeId: string) {
     const matchingUser = this.allUsers?.find(user => user._id === employeeId);
@@ -102,7 +109,7 @@ export class Step4Component {
       } else {
         this.userloanAdvances.unshift({ loanAdvancesCategory: { name: 'Loans/Advances not Assigned to the Selected User' } });
       }
-    })
+    });
   }
 
   getMatchingCategory(loanAdvance: string) {
@@ -118,19 +125,37 @@ export class Step4Component {
         payrollUser: this.getUser(payrollUser),
         loanAndAdvance: form.loanAndAdvance,
         disbursementAmount: form.disbursementAmount,
-        status: form.status,
         type: form.type,
         amount: form.amount
       });
       this.loanAdvanceForm.get('payrollUser').disable();
-    })
+    });
+  }
+
+  updateAmountFields() {
+    const selectedLoanId = this.loanAdvanceForm.get('loanAndAdvance').value;
+    const type = this.loanAdvanceForm.get('type').value;
+    const selectedLoan = this.userloanAdvances?.find(loan => loan._id === selectedLoanId);
+
+    if (selectedLoan && type) {
+      if (type === 'Disbursement') {
+        this.loanAdvanceForm.patchValue({
+          disbursementAmount: selectedLoan.amount || 0,
+          amount: 0
+        });
+      } else if (type === 'Repayment') {
+        this.loanAdvanceForm.patchValue({
+          disbursementAmount: 0,
+          amount: selectedLoan.monthlyInstallment || 0
+        });
+      }
+    }
   }
 
   onSubmission() {
     this.loanAdvanceForm.get('payrollUser').enable();
-    this.loanAdvanceForm.value.payrollUser = this.selectedPayrollUser;
-    this.loanAdvanceForm.value.amount = 0;
-    console.log(this.loanAdvanceForm.value.payrollUser);
+    this.loanAdvanceForm.patchValue({ payrollUser: this.selectedPayrollUser });
+    console.log(this.loanAdvanceForm.value);
     if (this.changeMode === 'Add') {
       this.payrollService.addLoanAdvance(this.loanAdvanceForm.value).subscribe(
         (res: any) => {
@@ -141,8 +166,10 @@ export class Step4Component {
           this.toast.success('Loan/Advance created', 'Successfully!');
           this.closeDialog();
         },
-        (err) => {
-          this.toast.error('Loan/Advance cannot be created', 'Error!');
+        (err) => {        
+          const errorMessage = err?.error?.message || err?.message || err 
+          || 'Something went wrong.';
+          this.toast.error(errorMessage, 'Error!');
         }
       );
     }
@@ -175,8 +202,8 @@ export class Step4Component {
           payrollUserDetails: payrollUser ? this.getUser(payrollUser.user) : null
         };
       });
-      this.matchedLoanAdvances = userRequests
-    })
+      this.matchedLoanAdvances = userRequests;
+    });
   }
 
   getLoanAdvanceByPayroll() {
@@ -189,18 +216,22 @@ export class Step4Component {
           payrollUserDetails: payrollUser ? this.getUser(payrollUser.user) : null
         };
       });
-      this.matchedLoanAdvances = userRequests
+      this.matchedLoanAdvances = userRequests;
     });
   }
 
   deleteTemplate(_id: string) {
-    this.payrollService.deleteLoanAdvance(_id).subscribe((res: any) => {
-      this.getLoanAdvanceByPayroll();
-      this.toast.success('Successfully Deleted!!!', 'Loan/Advance')
-    },
+    this.payrollService.deleteLoanAdvance(_id).subscribe(
+      (res: any) => {
+        this.getLoanAdvanceByPayroll();
+        this.toast.success('Successfully Deleted!!!', 'Loan/Advance');
+      },
       (err) => {
-        this.toast.error('This Loan/Advance Can not be deleted!')
-      })
+        const errorMessage = err?.error?.message || err?.message || err 
+          || 'Something went wrong.';
+          this.toast.error(errorMessage, 'Error!');
+      }
+    );
   }
 
   deleteDialog(id: string): void {

@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { CommonService } from 'src/app/_services/common.Service';
@@ -7,7 +7,7 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { forkJoin } from 'rxjs';
-
+import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-advance-template-assignment',
   templateUrl: './advance-template-assignment.component.html',
@@ -15,6 +15,7 @@ import { forkJoin } from 'rxjs';
 })
 
 export class AdvanceTemplateAssignmentComponent {
+  private readonly translate = inject(TranslateService);
   searchText: '';
   isEdit = false;
   changeMode: 'Add' | 'View' | 'Update' = 'Add';
@@ -229,7 +230,7 @@ export class AdvanceTemplateAssignmentComponent {
 
     if (this.changeMode === 'Update') {
       this.expenseService.addAdvanceTemplateAssignment(payload).subscribe((res: any) => {
-        this.toast.success('Advance Template Assignment Updated', 'Successfully')
+        this.toast.success(this.translate.instant('expenses.template_assigned_update_success'));
         this.getAssignments();
         this.showApproverFields = false;
         this.changeMode = 'Add';
@@ -238,18 +239,18 @@ export class AdvanceTemplateAssignmentComponent {
         this.addTemplateAssignmentForm.reset();
       },
         (err) => {
-          this.toast.error('Advance Template Assignment Cannot be Updated!', 'Error')
+          this.toast.error(err || this.translate.instant('expenses.template_assigned_update_error'));
         });
     }
     if (this.changeMode === 'Add') {
       this.expenseService.addAdvanceTemplateAssignment(payload).subscribe((res: any) => {
         const newTemplateAssignment = res.data;
         this.templateAssignments.push(newTemplateAssignment);
-        this.toast.success('Advance Template Assigned!', 'Successfully')
+        this.toast.success(this.translate.instant('expenses.template_assigned_success'))
         this.addTemplateAssignmentForm.reset();
       },
         (err) => {
-          this.toast.error('Advance Template Cannot be Created!', 'Error')
+          this.toast.error(this.translate.instant('expenses.template_assigned_error'));
         });
     }
     this.addTemplateAssignmentForm.get('primaryApprover')?.disable();
@@ -335,10 +336,10 @@ export class AdvanceTemplateAssignmentComponent {
     let _id = id._id;
     this.expenseService.deleteAdvanceTemplateAssignment(_id).subscribe((res: any) => {
       this.templateAssignments.splice(index)
-      this.toast.success('Successfully Deleted!!!', 'Advance Template Assgnment')
+      this.toast.success(this.translate.instant('expenses.delete_success'));
     },
       (err) => {
-        this.toast.error('Can not be deleted!')
+        this.toast.error(err || this.translate.instant('expenses.delete_error'));
       })
   }
 
@@ -351,7 +352,7 @@ export class AdvanceTemplateAssignmentComponent {
         this.deleteAdvanceTemplateAssignment(id, index);
       }
       err => {
-        this.toast.error('Can not be Deleted', 'Error!')
+        this.toast.error(err || this.translate.instant('expenses.delete_error'))
       }
     });
   }

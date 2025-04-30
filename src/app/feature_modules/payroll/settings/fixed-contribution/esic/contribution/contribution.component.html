@@ -17,8 +17,6 @@
     </div>
     <table>
         <thead>
-            <th>From Amount</th>
-            <th>To Amount</th>
             <th>Employee Percentage</th>
             <th>Employer Percentage</th>
             <th>Actions</th>
@@ -26,8 +24,6 @@
         </thead>
         <tbody>
             <tr *ngFor="let data of contribution | search:searchText">
-                <td>{{data?.fromAmount}}</td>
-                <td>{{data?.toAmount}}</td>
                 <td>{{data?.employeePercentage}}</td>
                 <td>{{data?.employerPercentage}}</td>
                 <td>
@@ -56,27 +52,7 @@
         </div>
     </div>
     <div class="modal-body">
-        <form [formGroup]="contributionForm" (ngSubmit)="onSubmission()">
-            <div class="form-group">
-                <label for="">From Amount <span class="text-danger">*</span></label>
-                <input type="number" class="form-control" formControlName="fromAmount">
-                <div
-                    *ngIf="contributionForm.get('fromAmount').invalid && (contributionForm.get('fromAmount').dirty || contributionForm.get('fromAmount').touched)">
-                    <small class="text-danger" *ngIf="contributionForm.get('fromAmount')['errors']['required']">Field is
-                        required</small>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="">To Amount <span class="text-danger">*</span></label>
-                <input type="number" class="form-control" formControlName="toAmount">
-                <div
-                    *ngIf="contributionForm.get('toAmount').invalid && (contributionForm.get('toAmount').dirty || contributionForm.get('toAmount').touched)">
-                    <small class="text-danger" *ngIf="contributionForm.get('toAmount')['errors']['required']">Field is
-                        required</small>
-                </div>
-            </div>
-
+        <form [formGroup]="contributionForm" (ngSubmit)="onSubmission()">            
             <div class="form-group">
                 <label for="">Employee Percentage <span class="text-danger">*</span></label>
                 <input type="number" class="form-control" formControlName="employeePercentage">
@@ -90,7 +66,7 @@
 
             <div class="form-group">
                 <label for="">Employer Percentage <span class="text-danger">*</span></label>
-                <input type="number" class="form-control" formControlName="fromAmount">
+                <input type="number" class="form-control" formControlName="employerPercentage">
                 <div
                     *ngIf="contributionForm.get('employerPercentage').invalid && (contributionForm.get('employerPercentage').dirty || contributionForm.get('employerPercentage').touched)">
                     <small class="text-danger"

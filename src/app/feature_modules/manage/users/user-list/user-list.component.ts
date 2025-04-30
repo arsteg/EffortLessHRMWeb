@@ -71,9 +71,6 @@ export class UserListComponent implements OnInit {
       this.usersList = new MatTableDataSource(result && result.data && result.data.data);
     });
     this.firstLetter = this.commonservice.firstletter;
-    this.UserService.toggleEmployeesDetails.subscribe((showDetails) => {
-      this.showEmployeeDetails = showDetails;
-    });
   }
 
   passwordMatchValidator(group: FormGroup) {
@@ -129,7 +126,6 @@ export class UserListComponent implements OnInit {
   toggleView(data: any) {
     this.isEdit = true;
     this.UserService.setData(data, this.isEdit);
-    this.UserService.toggleEmployeesDetails.next(this.showEmployeeDetails);
 
     const empCode = data.appointment[0]?.empCode;
     if (empCode) {

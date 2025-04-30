@@ -1,11 +1,12 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { UserService } from 'src/app/_services/users.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { forkJoin } from 'rxjs';
+import { AuthenticationService } from 'src/app/_services/authentication.service';
 
 @Component({
   selector: 'app-salary-details',
@@ -28,7 +29,10 @@ export class SalaryDetailsComponent {
     private userService: UserService,
     private toast: ToastrService,
     private dialog: MatDialog,
-    private router: Router
+    private router: Router,
+    public authService: AuthenticationService,
+    private route: ActivatedRoute,
+
   ) { }
 
   ngOnInit(): void {
@@ -102,11 +106,9 @@ export class SalaryDetailsComponent {
   }
 
   logUrlSegmentsForUser() {
-    const urlPath = this.router.url;
-    const segments = urlPath.split('/').filter(segment => segment);
-    if (segments.length >= 3) {
-      const employee = segments[segments.length - 3];
-      this.userService.getUserByEmpCode(employee).subscribe((res: any) => {
+    const empCode = this.route.parent.snapshot.paramMap.get('empCode') || this.authService.currentUserValue?.empCode;
+    if (empCode) {
+      this.userService.getUserByEmpCode(empCode).subscribe((res: any) => {
         this.selectedUser = res.data;
         this.userService.selectedEmployee.next(this.selectedUser[0]);
         this.getSalaryDetails();

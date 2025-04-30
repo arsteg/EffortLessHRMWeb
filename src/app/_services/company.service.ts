@@ -68,7 +68,9 @@ export class CompanyService {
   getSubDepartments(): Observable<any> {
     return this.http.get<any>(`${environment.apiUrlDotNet}/company/subDepartments`, this.httpOptions);
   }
-
+  getCompany(): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrlDotNet}/company`, this.httpOptions);
+  }
   // departments Crud
   addDepartments(payload: any): Observable<any> {
     return this.http.post<any>(`${environment.apiUrlDotNet}/company/departments`, payload, this.httpOptions);

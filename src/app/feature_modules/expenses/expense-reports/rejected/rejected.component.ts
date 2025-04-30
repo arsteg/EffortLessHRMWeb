@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Output, ViewChild, inject } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { ExportService } from 'src/app/_services/export.service';
@@ -6,13 +6,14 @@ import { CommonService } from 'src/app/_services/common.Service';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
-
+import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-rejected',
   templateUrl: './rejected.component.html',
   styleUrl: './rejected.component.css'
 })
 export class RejectedComponent {
+  private readonly translate = inject(TranslateService);
   closeResult: string = '';
   step: number = 1;
   searchText: string = '';
@@ -79,7 +80,7 @@ export class RejectedComponent {
 
   getUser(employeeId: string) {
     const matchingUser = this.users.find(user => user._id === employeeId);
-    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'User Not Found';
+    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : this.translate.instant('expenses.user_not_found');
   }
 
   editReport(report: any) {
@@ -89,8 +90,18 @@ export class RejectedComponent {
     this.expenseService.selectedReport.next(this.selectedReport)
   }
 
-  open(content: any) {
+  open(content: any, selectedReport?: any) {
+    if (selectedReport) {
+      this.selectedReport = selectedReport;
+      this.expenseService.expenseReportExpense.next(selectedReport);
+    } else {
+      this.expenseService.expenseReportExpense.next(null);
+    }
     this.dialogRef = this.dialog.open(content, { width: '50%' });
+    this.dialogRef.afterClosed().subscribe((result) => {
+      this.expenseService.expenseReportExpense.next(null);
+      this.expenseService.selectedReport.next(null);
+    });
   }
   onClose(event) {
     if (event) {

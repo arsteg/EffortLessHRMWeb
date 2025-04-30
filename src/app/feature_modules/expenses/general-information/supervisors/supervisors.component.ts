@@ -12,7 +12,7 @@ import { MatTableDataSource } from '@angular/material/table';
 export class SupervisorsComponent {
   supervisors: any;
   allAssignee: any;
-  displayedColumns: string[] = ['name', 'level'];
+  displayedColumns: string[] = ['primary', 'secondary'];
   dataSource: MatTableDataSource<any>;
 
   constructor(private auth: AuthenticationService,
@@ -36,7 +36,7 @@ export class SupervisorsComponent {
 
   getUser(employeeId: string) {
     const matchingUser = this.allAssignee?.find(user => user._id === employeeId);
-    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'User Not Found';
+    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'N/A';
   }
 
 }

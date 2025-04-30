@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
+import { CompanyService } from 'src/app/_services/company.service';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 
@@ -17,7 +18,8 @@ export class PtSlabComponent {
   isEdit: boolean = false;
   ptSlabForm: FormGroup;
   closeResult: string = '';
-  recordsPerPage: number = 10;
+  recordsPerPage: number = 10;  
+  selectedState: string = '';
   totalRecords: number;
   currentPage: number = 1;
   searchText: string = '';
@@ -25,11 +27,12 @@ export class PtSlabComponent {
 
   constructor(private fb: FormBuilder,
     private modalService: NgbModal,
-    private payroll: PayrollService,
+    private payrollService: PayrollService,    
+    private companyService: CompanyService,
     private toast: ToastrService,
     private dialog: MatDialog) {
     this.ptSlabForm = this.fb.group({
-      state: ['', Validators.required],
+      state: [{ value: this.selectedState, disabled: true }, Validators.required],
       fromAmount: [0],
       toAmount: [0],
       employeePercentage: [0, Validators.required],
@@ -40,17 +43,24 @@ export class PtSlabComponent {
   }
 
   ngOnInit() {
-    this.payroll.getStateWisePTSlabs().subscribe((res: any) => {
+    this.payrollService.getStateWisePTSlabs().subscribe((res: any) => {
       this.ptSlab = res.data.states;
     });
-    // this.getPtSlab();
-    this.getElegibleStates();
-  }
-
-  getElegibleStates() {
-    this.payroll.getEligibleStates().subscribe((res: any) => {
+    this.payrollService.getAllStates().subscribe((res: any) => {
       this.states = res.data;
     });
+    // this.getPtSlab();
+    this.getCompanyState();
+  }
+  getCompanyState()
+  {
+    this.companyService.getCompany().subscribe((res: any) => {
+      this.selectedState = res.data.company.state;
+       // ✅ Patch it into the form after fetching
+    this.ptSlabForm.patchValue({
+      state: this.selectedState
+    });
+    })
   }
 
   onPageChange(page: number) {
@@ -78,7 +88,7 @@ export class PtSlabComponent {
       skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
       next: this.recordsPerPage.toString()
     };
-    this.payroll.getPTSlab(pagination).subscribe((res: any) => {
+    this.payrollService.getPTSlab(pagination).subscribe((res: any) => {
       this.ptSlab = res.data;
       this.totalRecords = res.total;
     })
@@ -94,7 +104,11 @@ export class PtSlabComponent {
   }
 
   onSubmission() {
-    this.payroll.addPTSlab(this.ptSlabForm.value).subscribe((res) => {
+    const payload = {
+      ...this.ptSlabForm.value,
+      state: this.selectedState
+    };
+    this.payrollService.addPTSlab(this.ptSlabForm.value).subscribe((res) => {
       this.getPtSlab();
       this.clearForm();
       this.toast.success('Successfully Added!!!', 'PT Slab');
@@ -106,7 +120,7 @@ export class PtSlabComponent {
   }
 
   deleteRecord(_id: string) {
-    this.payroll.deletePTSlab(_id).subscribe((res: any) => {
+    this.payrollService.deletePTSlab(_id).subscribe((res: any) => {
       const index = this.ptSlab.findIndex(res => res._id === _id);
       if (index !== -1) {
         this.ptSlab.splice(index, 1);

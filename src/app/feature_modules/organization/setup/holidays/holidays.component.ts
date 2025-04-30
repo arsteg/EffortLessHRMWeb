@@ -38,9 +38,9 @@ export class HolidaysComponent {
       label: ['', Validators.required],
       date: ['', Validators.required],
       isHolidayOccurEveryYearOnSameDay: [true, Validators.required],
-      isMandatoryForFlexiHoliday: [true, Validators.required],
-      holidaysAppliesFor: ['', Validators.required],
-      year: [''],
+      isMandatoryForFlexiHoliday: [{ value: true, disabled: true }, Validators.required], // ✅ disabled
+      holidaysAppliesFor: [{ value: 'All-Employees', disabled: true }, Validators.required], // ✅ disabled
+    year: [''],
       users: [[]]
     });
     this.currentYear = new Date().getFullYear();
@@ -52,8 +52,20 @@ export class HolidaysComponent {
     this.commonService.populateUsers().subscribe((res: any) => {
       this.members = res.data.data;
     });
+    this.holidayForm.reset(this.getDefaultFormValues());
   }
-
+  private getDefaultFormValues() {
+    return {
+      label: '',
+      date: '',
+      isHolidayOccurEveryYearOnSameDay: true,
+      isMandatoryForFlexiHoliday: true,
+      holidaysAppliesFor: 'All-Employees',
+      year: '',
+      users: []
+    };
+  }
+  
   getYearOptions(): number[] {
     const currentYear = new Date().getFullYear();
     return [currentYear - 1, currentYear, currentYear + 1];
@@ -88,39 +100,38 @@ export class HolidaysComponent {
   }
 
   onSubmission() {
-    
-    if (this.holidayForm.value.holidaysAppliesFor === 'specific-employees' &&
-      (!this.holidayForm.value.users || this.holidayForm.value.users.length === 0)) {
+    const formData = this.holidayForm.getRawValue();
+    if (formData.holidaysAppliesFor === 'specific-employees' &&
+      (!formData.users || formData.users.length === 0)) {
     this.holidayForm.get('users').setErrors({ required: true });  // Set 'required' error manually
     return;
   }
   
-  if (this.holidayForm.value.holidaysAppliesFor !== 'all-employees') {
-    const formattedUsers = (this.holidayForm.value?.users || []).map(user => ({ user }));
+  if (formData.holidaysAppliesFor !== 'all-employees') {
+    const formattedUsers = (formData?.users || []).map(user => ({ user }));
   
     this.holidayForm.patchValue({ users: formattedUsers });
   }
   
-    this.holidayForm.value.year = this.currentYear || this.selectedYear;
-    console.log(this.holidayForm.value);
+    formData.year = this.currentYear || this.selectedYear;
    if(this.holidayForm.valid){
     if (!this.isEdit) {
-      this.companyService.addHolidays(this.holidayForm.value).subscribe(res => {
+      this.companyService.addHolidays(formData).subscribe(res => {
         this.holidays.push(res.data);
         this.toast.success('Holiday added successfully', 'Success');
-        this.holidayForm.reset();
+        this.holidayForm.reset(this.getDefaultFormValues());
       },
         err => { this.toast.error('Holiday Can not be Added', 'Error') }
       );
     }
     else if (this.isEdit) {
-      this.companyService.updateHolidays(this.selectedRecord._id, this.holidayForm.value).subscribe(res => {
+      this.companyService.updateHolidays(this.selectedRecord._id, formData).subscribe(res => {
         this.toast.success('Holiday updated successfully', 'Success');
         const index = this.holidays.findIndex((z) => z._id === this.selectedRecord._id);
         if (index !== -1) {
           this.holidays[index] = { ...res.data };
         }
-        this.holidayForm.reset();
+        this.holidayForm.reset(this.getDefaultFormValues());
         this.isEdit = false;
       },
         err => { this.toast.error('Holiday Can not be Updated', 'Error') }
@@ -151,7 +162,7 @@ export class HolidaysComponent {
 
   clearselectedRequest() {
     this.isEdit = false;
-    this.holidayForm.reset();
+    this.holidayForm.reset(this.getDefaultFormValues());
   }
 
   private getDismissReason(reason: any): string {

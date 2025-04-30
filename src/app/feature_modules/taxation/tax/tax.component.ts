@@ -101,12 +101,6 @@ export class TaxComponent {
   getSections() {
     this.taxService?.getAllTaxSections().subscribe((res: any) => {
       this.sections = res.data;
-      this.taxService.getAllTaxComponents({ skip: '', next: '' }).subscribe((res: any) => {
-        this.sectionComponents = res.data;
-        this.sections.forEach(section => {
-          section.componentCount = this.sectionComponents.filter(comp => comp.section._id === section._id).length;
-        });
-      });
     });
   }
 
@@ -239,10 +233,23 @@ export class TaxComponent {
           this.toastr.error('Something went wrong');
         });
       }
-      else if (res.data[0].taxRegime === 'New Regime'){
+      else if (res.data[0].taxRegime === 'New Regime') {
         this.toastr.error('Tax Declaration is not allowed in New Regime');
         this.modalService.dismissAll();
       }
     });
   }
+
+  getComponentCountForSection(tax: any, section: any): number {
+    let componentCount = tax.incomeTaxDeclarationComponent?.filter(
+      (comp: any) => comp?.incomeTaxComponent?.section?._id === section._id
+    ).length || 0;
+  
+    if (section.isHRA === true) {
+      componentCount += tax.incomeTaxDeclarationHRA?.length || 0;
+    }
+  
+    return componentCount;
+  }
+  
 }

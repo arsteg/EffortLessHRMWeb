@@ -138,23 +138,29 @@
         <mat-form-field appearance="outline" class="col-md-6 my-2">
           <mat-label>Employee Selection for Payroll</mat-label>
           <mat-select formControlName="user" (selectionChange)="getGrossSalaryBySalaryStructure()">
-            <mat-option *ngFor="let user of users" [value]="user?.id">{{user?.firstName | titlecase}} {{user.lastName |
+            <mat-option *ngFor="let user of users" [value]="user?.id"
+            >{{user?.firstName | titlecase}} {{user.lastName |
               titlecase}}</mat-option>
           </mat-select>
-          <mat-error *ngIf="payrollUserForm.get('user').invalid && payrollUserForm.get('user').touched">
+          <mat-error *ngIf="payrollUserForm.get('user').touched && payrollUserForm.get('user').hasError('required')">
             Please Choose an Employee to Assign the Payroll!
           </mat-error>
-          <mat-error *ngIf="!salaries?.length">Please add the Salary details first to add the selected user in
-            payroll.</mat-error>
+          <mat-error *ngIf="payrollUserForm.get('user').valid && payrollUserForm.get('user').hasError('noSalary')">
+            Please add the Salary details first to add the selected user in payroll.
+          </mat-error>
+          
+          <mat-error *ngIf="payrollUserForm.get('user')?.hasError('noSalary')">
+            Please add the Salary details first to add the selected user in payroll.
+          </mat-error>
+
+          <mat-error *ngIf="payrollUserForm.get('user').hasError('userExists')">
+            This employee is already added to the payroll.
+          </mat-error>
         </mat-form-field>
       </div>
 
       <div class="row">
-        <mat-form-field appearance="outline" class="col-md-6 my-2">
-          <mat-label>Total Flexi Benefits</mat-label>
-          <input matInput type="number" formControlName="totalFlexiBenefits" placeholder="Enter Total Flexi Benefits">
-        </mat-form-field>
-
+        
         <mat-form-field appearance="outline" class="col-md-6 my-2">
           <mat-label>Total CTC</mat-label>
           <input matInput type="number" formControlName="totalCTC" placeholder="Enter Total CTC">
@@ -167,10 +173,7 @@
           <input matInput type="number" formControlName="totalGrossSalary" placeholder="Enter Total Gross Salary">
         </mat-form-field>
 
-        <mat-form-field appearance="outline" class="col-md-6 my-2">
-          <mat-label>Total Take Home</mat-label>
-          <input matInput type="number" formControlName="totalTakeHome" placeholder="Enter Total Take Home">
-        </mat-form-field>
+       
       </div>
 
       <mat-form-field appearance="outline" class="col-md-6 my-2">
@@ -184,7 +187,8 @@
   </div>
   <div mat-dialog-actions>
     <button mat-button (click)="closeAddUserDialog()" type="button">Cancel</button>
-    <button mat-raised-button color="primary" (click)="updatePayrollUser()" type="submit">Save</button>
+    <button mat-raised-button color="primary" (click)="updatePayrollUser()"
+      [disabled]="payrollUserForm.invalid" type="submit">Save</button>
   </div>
 </ng-template>
 

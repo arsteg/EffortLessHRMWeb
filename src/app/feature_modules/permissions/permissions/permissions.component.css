@@ -1,5 +1,11 @@
-:host ::ng-deep .pagination .ngx-pagination .current {
-  background: #76bc21 !important;
-    border: transparent !important;
-    border-radius: 20px !important;
-  }
+.tableContainer {
+  padding: 16px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.me-1 {
+  margin-right: 8px;
+}

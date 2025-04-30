@@ -5,7 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { CompanyService } from 'src/app/_services/company.service';
 import { UserService } from 'src/app/_services/users.service';
 import { forkJoin } from 'rxjs';
-
+import { AuthenticationService } from 'src/app/_services/authentication.service';
 @Component({
   selector: 'app-employment-details',
   templateUrl: './employment-details.component.html',
@@ -33,7 +33,9 @@ export class EmploymentDetailsComponent {
     private fb: FormBuilder,
     private toast: ToastrService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    public authService: AuthenticationService,
+
   ) {
     this.appointmentForm = this.fb.group(
       {
@@ -46,7 +48,7 @@ export class EmploymentDetailsComponent {
 
     this.jobInformationForm = this.fb.group({
       user: ['', Validators.required],
-      effectiveFrom: ['', Validators.required],
+      effectiveFrom: [, Validators.required],
       location: ['', Validators.required],
       designation: ['', Validators.required],
       employmentType: ['', Validators.required],
@@ -54,7 +56,7 @@ export class EmploymentDetailsComponent {
       department: ['', Validators.required],
       band: ['', Validators.required],
       subDepartments: ['', Validators.required],
-      employmentStatusEffectiveFrom: ['', Validators.required],
+      employmentStatusEffectiveFrom: [, Validators.required],
       zone: ['', Validators.required],
       noticePeriod: ['0', Validators.required]
     });
@@ -101,6 +103,7 @@ export class EmploymentDetailsComponent {
 
   onSubmissionJobInformation() {
     if (this.jobInformationForm.valid) {
+      this.jobInformationForm.value.user = this.selectedUser[0]?._id;
       this.userService.getJobInformationByUserId(this.selectedUser[0]._id).subscribe((res: any) => {
         if (res.data.length <= 0) {
           this.jobInformationForm.value.user = this.selectedUser[0]._id;
@@ -121,12 +124,9 @@ export class EmploymentDetailsComponent {
   }
 
   logUrlSegmentsForUser() {
-    const urlPath = this.router.url;
-    const segments = urlPath.split('/').filter(segment => segment);
-    if (segments.length >= 3) {
-      const employee = segments[segments.length - 3];
-      console.log(employee)
-      this.userService.getUserByEmpCode(employee).subscribe((res: any) => {
+    const empCode = this.route.parent.snapshot.paramMap.get('empCode') || this.authService.currentUserValue?.empCode;
+    if (empCode) {
+      this.userService.getUserByEmpCode(empCode).subscribe((res: any) => {
         this.selectedUser = res.data;
         this.getData(); // Call getData after setting selectedUser
       })

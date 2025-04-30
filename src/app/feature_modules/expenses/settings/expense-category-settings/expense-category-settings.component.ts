@@ -1,8 +1,9 @@
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
-import { Component, Output, EventEmitter, Input } from '@angular/core';
+import { Component, Output, EventEmitter, Input, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { ExpensesService } from 'src/app/_services/expenses.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-expense-category-settings',
@@ -16,6 +17,7 @@ import { ExpensesService } from 'src/app/_services/expenses.service';
   ]
 })
 export class ExpenseCategorySettingsComponent {
+  private readonly translate = inject(TranslateService);
   allExpenseCategories: any = [];
   isEditable = false;
   @Output() close: any = new EventEmitter();
@@ -98,7 +100,7 @@ export class ExpenseCategorySettingsComponent {
               expiryDay: step.expiryDay,
               isEmployeeCanAddInTotalDirectly: step.isEmployeeCanAddInTotalDirectly,
               ratePerDay: step.ratePerDay,
-              expenseTemplateCategoryFieldValues: this._formBuilder.array([]),
+              expenseTemplateCategoryFieldValues: this._formBuilder.array([], Validators.required),
               categoryType: categoryDetails.data.type,
               _id: step.expenseCategory._id
             }));
@@ -144,9 +146,9 @@ export class ExpenseCategorySettingsComponent {
 
   addField(expenseCategoryIndex: number) {
     const newField = this._formBuilder.group({
-      label: [''],
+      label: ['', Validators.required],
       type: [''],
-      rate: []
+      rate: ['', Validators.required]
     });
     const expenseCategoriesArray = this.firstForm.get('expenseCategories') as FormArray;
     const expenseCategoryFormGroup = expenseCategoriesArray.at(expenseCategoryIndex) as FormGroup;
@@ -183,12 +185,12 @@ export class ExpenseCategorySettingsComponent {
       delete category.categoryType;
     });
     this.expenseService.addTemplateApplicableCategories(formData).subscribe((res: any) => {
-      this.toast.success('Expense Template Applicable Category Updated Successfully!');
+      this.toast.success(this.translate.instant('expenses.applicable_category_updated_success'));
       this.updateExpenseTemplateTable.emit();
       this.closeModal();
     },
       err => {
-        this.toast.error('Expense Template Applicable Category Can not be Updated', 'ERROR!');
+        this.toast.error(err || this.translate.instant('expenses.applicable_category_updated_error'));
       })
   }
 

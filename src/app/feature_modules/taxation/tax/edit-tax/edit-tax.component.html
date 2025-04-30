@@ -26,7 +26,7 @@
                             [selectedUser]="selectedUser" (tabSelected)="selectTab($event)">
                         </app-tax-components>
                         } @else {
-                        <app-rent-information [selectedRecord]="selectedRecord"
+                        <app-rent-information [sectionId]="activeTab" [selectedRecord]="selectedRecord"
                             [selectedUser]="selectedUser"></app-rent-information>
                         }
                 </div>

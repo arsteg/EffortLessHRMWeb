@@ -12,6 +12,7 @@ export class User {
     name:string;
     email: string;
     freeCompany: boolean;
+    empCode?: number;
 }
 export class updateUser{
   firstName: string;
@@ -63,6 +64,7 @@ export class signup{
   updatedBy: String;
   createdOn: Date;
   updatedOn: Date;
+  empCode?: number;
 }
 export class changeUserPassword{
   passwordCurrent:string;

@@ -1,5 +1,5 @@
 <div class="d-flex justify-content-between align-items-center">
-    <h1 mat-dialog-title>Show Expense Report</h1>
+    <h1 mat-dialog-title>{{'expenses.expense_report' |  translate}}</h1>
     <div mat-dialog-actions>
         <button mat-icon-button (click)="closeModal()">
             <mat-icon>close</mat-icon>
@@ -11,19 +11,19 @@
     <div class="table-responsive">
         <table class="table table-bordered">
             <tr>
-                <td class="fw-bold">Employee</td>
+                <td class="fw-bold">{{'expenses.employee' |  translate}}</td>
                 <td>{{getUser(report?.employee)}}</td>
             </tr>
             <tr>
-                <td class="fw-bold">Expense Report Title</td>
+                <td class="fw-bold">{{'expenses.report_title' |  translate}}</td>
                 <td>{{report?.title}}</td>
             </tr>
             <tr>
-                <td class="fw-bold">Status</td>
+                <td class="fw-bold">{{'status' |  translate}}</td>
                 <td>{{report?.status}}</td>
             </tr>
             <tr>
-                <td class="fw-bold">Total Amount</td>
+                <td class="fw-bold">{{'expenses.amount' |  translate}}</td>
                 <td>{{report?.amount}}</td>
             </tr>
         </table>
@@ -34,13 +34,13 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th>Incurred Date</th>
-                        <th>Category</th>
-                        <th>Amount</th>
-                        <th>Reimbursable</th>
-                        <th>Billable</th>
-                        <th>Attachment</th>
-                        <th>Actions</th>
+                        <th>{{'expenses.incurred_date' |  translate}}</th>
+                        <th>{{'expenses.category' |  translate}}</th>
+                        <th>{{'expenses.amount' |  translate}}</th>
+                        <th>{{'expenses.reimbursable' |  translate}}</th>
+                        <th>{{'expenses.billable' |  translate}}</th>
+                        <th>{{'expenses.attachment' |  translate}}</th>
+                        <th>{{'expenses.actions' |  translate}}</th>
                     </tr>
                 </thead>
                 <tbody>
