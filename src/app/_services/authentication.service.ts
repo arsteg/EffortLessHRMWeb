@@ -214,4 +214,122 @@ export class AuthenticationService {
     return this.http.post(`${environment.apiUrlDotNet}/task/getUserTaskListByProject`, { userId, projectId, skip, next }, httpOptions)
   }
 
+  // Roles
+  getRoles(): Observable<any> {
+    const httpOptions = this.getHttpOptions();
+    return this.http.get(`${environment.apiUrlDotNet}/auth/roles`, httpOptions);
+  }
+
+  getRoleById(id: string): Observable<any> {
+    const httpOptions = this.getHttpOptions();
+    return this.http.get(`${environment.apiUrlDotNet}/auth/role/${id}`, httpOptions);
+  }
+
+  createRole(role: { name: string; description: string }): Observable<any> {
+    const httpOptions = this.getHttpOptions();
+    return this.http.post(`${environment.apiUrlDotNet}/auth/role`, role, httpOptions);
+  }
+
+  updateRole(id: string, role: { name: string; description: string }): Observable<any> {
+    const httpOptions = this.getHttpOptions();
+    return this.http.post(`${environment.apiUrlDotNet}/auth/role/update/${id}`, role, httpOptions);
+  }
+
+  deleteRole(id: string): Observable<any> {
+    const httpOptions = this.getHttpOptions();
+    return this.http.delete(`${environment.apiUrlDotNet}/auth/role/${id}`, httpOptions);
+  }
+
+  // Permissions
+  getPermissions(): Observable<any> {
+    const httpOptions = this.getHttpOptions();
+    return this.http.get(`${environment.apiUrlDotNet}/auth/permissions`, httpOptions);
+  }
+
+  getPermissionById(id: string): Observable<any> {
+    const httpOptions = this.getHttpOptions();
+    return this.http.get(`${environment.apiUrlDotNet}/auth/permission/${id}`, httpOptions);
+  }
+
+  createPermission(permission: {
+    permissionName: string;
+    permissionDetails?: string;
+    resource: string;
+    action: string;
+    uiElement?: string;
+    parentPermission?: string;
+  }): Observable<any> {
+    const httpOptions = this.getHttpOptions();
+    return this.http.post(`${environment.apiUrlDotNet}/auth/permission/create`, permission, httpOptions);
+  }
+
+  updatePermission(id: string, permission: {
+    permissionName: string;
+    permissionDetails?: string;
+    resource: string;
+    action: string;
+    uiElement?: string;
+    parentPermission?: string;
+  }): Observable<any> {
+    const httpOptions = this.getHttpOptions();
+    return this.http.post(`${environment.apiUrlDotNet}/auth/permission/update/${id}`, permission, httpOptions);
+  }
+
+  deletePermission(id: string): Observable<any> {
+    const httpOptions = this.getHttpOptions();
+    return this.http.delete(`${environment.apiUrlDotNet}/auth/permission/delete/${id}`, httpOptions);
+  }
+
+  // UserRoles
+  getUserRoles(): Observable<any> {
+    const httpOptions = this.getHttpOptions();
+    return this.http.get(`${environment.apiUrlDotNet}/auth/userRoles`, httpOptions);
+  }
+
+  getUserRoleById(id: string): Observable<any> {
+    const httpOptions = this.getHttpOptions();
+    return this.http.get(`${environment.apiUrlDotNet}/auth/userRole/${id}`, httpOptions);
+  }
+
+  createUserRole(userRole: { userId: string; roleId: string }): Observable<any> {
+    const httpOptions = this.getHttpOptions();
+    return this.http.post(`${environment.apiUrlDotNet}/auth/userRole/create`, userRole, httpOptions);
+  }
+
+  updateUserRole(id: string, userRole: { userId: string; roleId: string }): Observable<any> {
+    const httpOptions = this.getHttpOptions();
+    return this.http.post(`${environment.apiUrlDotNet}/auth/userRole/update/${id}`, userRole, httpOptions);
+  }
+
+  deleteUserRole(id: string): Observable<any> {
+    const httpOptions = this.getHttpOptions();
+    return this.http.delete(`${environment.apiUrlDotNet}/auth/userRole/delete/${id}`, httpOptions);
+  }
+
+  // RolePermissions
+  getRolePermissions(): Observable<any> {
+    const httpOptions = this.getHttpOptions();
+    return this.http.get(`${environment.apiUrlDotNet}/auth/rolePermissions`, httpOptions);
+  }
+
+  getRolePermissionById(id: string): Observable<any> {
+    const httpOptions = this.getHttpOptions();
+    return this.http.get(`${environment.apiUrlDotNet}/auth/rolePermission/${id}`, httpOptions);
+  }
+
+  createRolePermission(rolePermission: { roleId: string; permissionId: string }): Observable<any> {
+    const httpOptions = this.getHttpOptions();
+    return this.http.post(`${environment.apiUrlDotNet}/auth/rolePermission/create`, rolePermission, httpOptions);
+  }
+
+  updateRolePermission(id: string, rolePermission: { roleId: string; permissionId: string }): Observable<any> {
+    const httpOptions = this.getHttpOptions();
+    return this.http.post(`${environment.apiUrlDotNet}/auth/rolePermission/update/${id}`, rolePermission, httpOptions);
+  }
+
+  deleteRolePermission(id: string): Observable<any> {
+    const httpOptions = this.getHttpOptions();
+    return this.http.delete(`${environment.apiUrlDotNet}/auth/rolePermission/delete/${id}`, httpOptions);
+  }
+
 }

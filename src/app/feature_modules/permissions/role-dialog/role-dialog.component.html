@@ -1,0 +1,22 @@
+<h2 mat-dialog-title>{{isEdit ? ('permissions.edit_role' | translate) : ('permissions.add_role' | translate)}}</h2>
+<mat-dialog-content>
+  <form [formGroup]="roleForm">
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>{{'permissions.name' | translate}}</mat-label>
+      <input matInput formControlName="name" required>
+      <mat-error *ngIf="roleForm.get('name')?.hasError('required')">
+        {{'permissions.name_required' | translate}}
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>{{'permissions.description' | translate}}</mat-label>
+      <input matInput formControlName="description">
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">{{'cancel' | translate}}</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="roleForm.invalid">
+    {{isEdit ? ('update' | translate) : ('add' | translate)}}
+  </button>
+</mat-dialog-actions>
