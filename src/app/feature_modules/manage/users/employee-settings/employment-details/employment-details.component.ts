@@ -48,7 +48,7 @@ export class EmploymentDetailsComponent {
 
     this.jobInformationForm = this.fb.group({
       user: ['', Validators.required],
-      effectiveFrom: ['', Validators.required],
+      effectiveFrom: [, Validators.required],
       location: ['', Validators.required],
       designation: ['', Validators.required],
       employmentType: ['', Validators.required],
@@ -56,7 +56,7 @@ export class EmploymentDetailsComponent {
       department: ['', Validators.required],
       band: ['', Validators.required],
       subDepartments: ['', Validators.required],
-      employmentStatusEffectiveFrom: ['', Validators.required],
+      employmentStatusEffectiveFrom: [, Validators.required],
       zone: ['', Validators.required],
       noticePeriod: ['0', Validators.required]
     });
@@ -103,6 +103,7 @@ export class EmploymentDetailsComponent {
 
   onSubmissionJobInformation() {
     if (this.jobInformationForm.valid) {
+      this.jobInformationForm.value.user = this.selectedUser[0]?._id;
       this.userService.getJobInformationByUserId(this.selectedUser[0]._id).subscribe((res: any) => {
         if (res.data.length <= 0) {
           this.jobInformationForm.value.user = this.selectedUser[0]._id;
