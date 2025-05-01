@@ -74,7 +74,7 @@ export class LoginComponent implements OnInit {
           localStorage.setItem('rememberMe', JSON.stringify(this.loginForm.value.rememberMe));
           localStorage.setItem('roleId', data.data.user?.role?.id);
           localStorage.setItem('subscription', JSON.stringify(data.data.companySubscription));
-          if (data.data.user?.role?.RoleName === 'Admin') {
+          if (data.data.user?.role?.name === 'Admin') {
             localStorage.setItem('adminView', 'admin');
             this.router.navigateByUrl( this.returnUrl);
           } else {
