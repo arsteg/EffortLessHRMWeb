@@ -45,7 +45,7 @@ export class HomeComponent implements OnInit {
     let roleId = localStorage.getItem('roleId');
     this.adminView = localStorage.getItem('adminView');
     this.auth.getRole(roleId).subscribe((response: any) => {
-      let role = response && response.data && response.data[0].RoleName;
+      let role = response && response.data && response.data[0].name;
       this.commonService.setCurrentUserRole(role);
       if (this.adminView) {
         if (this.adminView?.toLowerCase() == 'admin') {
