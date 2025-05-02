@@ -20,6 +20,7 @@ import { FeedbackSubmissionComponent } from './feature_modules/feedback/feedback
 import { FeedbackSettingsComponent } from './feature_modules/feedback/feedback.settings.component';
 import { NotificationDetailsComponent } from './layouts/home/notification/notification-details/notification-details.component';
 import { TranslationResolver } from './_helpers/translation.resolver';
+import { HelpdeskDashboardComponent } from './feature_modules/helpdesk/helpdesk-dashboard/helpdesk-dashboard.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'landing', pathMatch: 'full' },
@@ -131,6 +132,9 @@ const routes: Routes = [
       {
         path: 'subscription',
         loadChildren: () => import('./feature_modules/subscription/subscription.module').then(m => m.SubscriptionModule)
+      },
+      {
+        path: 'helpdesk', component: HelpdeskDashboardComponent
       },
       { path: 'tasks', component: TasksComponent }, // TODO: Shared Component
       { path: 'SubTask', component: SubtaskComponent }, // TODO: Shared Component

@@ -1,0 +1,79 @@
+<div class="mainContent">
+    <div class="py-3 tableContainer">
+        <div class="d-flex justify-content-between align-items-start mb-2 px-3">
+            <mat-form-field appearance="outline">
+                <mat-label>Search</mat-label>
+                <input matInput (keyup)="applyFilter($event)">
+                <mat-icon matSuffix>search</mat-icon>
+            </mat-form-field>
+            <button mat-raised-button color="accent" class="me-1"
+                (click)="toggleHelpdesk();">
+                <mat-icon>add</mat-icon>Ticket
+            </button>
+        </div>
+        <table mat-table [dataSource]="helpdeskData" matSort matSortActive="createdOn" matSortDirection="asc">
+            <ng-container matColumnDef="createdOn">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header="createdOn">Date</th>
+                <td mat-cell *matCellDef="let helpdesk">{{ helpdesk.createdOn | date:'medium' }}</td>
+              </ng-container>
+              
+              <ng-container matColumnDef="description">
+                <th mat-header-cell *matHeaderCellDef>Description</th>
+                <td mat-cell *matCellDef="let helpdesk">{{ helpdesk.description }}</td>
+              </ng-container>
+              
+              <ng-container matColumnDef="files">
+                <th mat-header-cell *matHeaderCellDef>Files</th>
+                <td mat-cell *matCellDef="let helpdesk">
+                  <ng-container *ngIf="helpdesk.files">
+                    <ng-container *ngFor="let file of helpdesk.files.split(','); let i = index">
+                      <a [href]="file.trim()" target="_blank">File {{ i + 1 }}</a><span *ngIf="i < helpdesk.files.split(',').length - 1">, </span>
+                    </ng-container>
+                  </ng-container>
+                </td>
+              </ng-container>
+              
+              <ng-container matColumnDef="video">
+                <th mat-header-cell *matHeaderCellDef>Videos</th>
+                <td mat-cell *matCellDef="let helpdesk">
+                  <ng-container *ngIf="helpdesk.video">
+                    <ng-container *ngFor="let video of helpdesk.video.split(','); let i = index">
+                      <a [href]="video.trim()" target="_blank">Video {{ i + 1 }}</a><span *ngIf="i < helpdesk.video.split(',').length - 1">, </span>
+                    </ng-container>
+                  </ng-container>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header="status">Status</th>
+                <td mat-cell *matCellDef="let helpdesk">{{ helpdesk.status }}</td>
+              </ng-container>
+              <ng-container matColumnDef="remarks">
+                <th mat-header-cell *matHeaderCellDef>Remarks</th>
+                <td mat-cell *matCellDef="let helpdesk">{{ helpdesk.remarks }}</td>
+              </ng-container>
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef>Actions</th>
+                <td mat-cell *matCellDef="let helpdesk">
+                  <button mat-icon-button [matMenuTriggerFor]="menu">
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                  <mat-menu #menu="matMenu">
+                    <button *ngIf="isAdminView" mat-menu-item (click)="openUpdateDialog(helpdesk)">
+                      <mat-icon>edit</mat-icon>
+                      <span>Update</span>
+                    </button>
+                    <button *ngIf="!isAdminView" mat-menu-item (click)="deleteHelpdesk(helpdesk._id)">
+                      <mat-icon>delete</mat-icon>
+                      <span>Delete</span>
+                    </button>
+                  </mat-menu>
+                </td>
+              </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+        <mat-paginator [length]="totalRecords" [pageSize]="recordsPerPage" [pageSizeOptions]="[5, 10, 25, 50, 100]"
+            (page)="onPageChange($event)">
+        </mat-paginator>
+    </div>
+</div>

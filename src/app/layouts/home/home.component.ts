@@ -5,6 +5,7 @@ import { AuthenticationService } from 'src/app/_services/authentication.service'
 import { CommonService } from 'src/app/_services/common.Service';
 import { MatDialog } from '@angular/material/dialog';
 import { SideBarAdminMenu, SideBarUserMenu } from './menu.const';
+import { HelpDeskComponent } from 'src/app/feature_modules/helpdesk/help-desk/help-desk.component';
 declare var bootstrap: any;
 
 @Component({
@@ -177,5 +178,15 @@ export class HomeComponent implements OnInit {
     const nestedOffcanvasElement = document.getElementById('nestedOffcanvas');
     const nestedOffcanvas = new bootstrap.Offcanvas(nestedOffcanvasElement);
     nestedOffcanvas.show();
+  }
+
+  toggleHelpdesk(): void {
+    this.dialog.open(HelpDeskComponent, {
+      width: '90vw',
+      maxWidth: '700px',
+      height: 'auto',
+      maxHeight: '90vh',
+      disableClose: false, // true if you don't want click outside to close
+    });
   }
 }

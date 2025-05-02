@@ -1,0 +1,89 @@
+
+<div class="container mt-4">
+    <!-- Recording Section -->
+    <div class="card mb-0">
+        <!-- <div class="card-header">
+            <h1>Help Desk Request</h1>
+        </div> -->
+        <h1>Help Desk Request</h1>
+        <div class="card-body">
+            <!-- Description Input -->
+            <div class="form-group mb-3">
+                <label for="description">Description:</label>
+                <textarea class="form-control" 
+                    id="description" 
+                    rows="3" 
+                    [(ngModel)]="description"
+                    #descModel="ngModel" 
+                    required
+                    placeholder="Enter your description here..."></textarea>
+                    <div class="text-danger" *ngIf="descModel.invalid && descModel.touched">
+                        Description is required.
+                    </div>
+            </div>
+
+            <!-- Recording Controls -->
+            <div class="mb-3">
+                <button class="btn btn-primary me-2" *ngIf="!isRecording" (click)="startRecording()">
+                    <i class="fas fa-video"></i> Start Recording
+                </button>
+                <button class="btn btn-danger me-2" *ngIf="isRecording" (click)="stopRecording()">
+                    <i class="fas fa-stop"></i> Stop Recording
+                </button><i class="fas fa-video"></i> (You can record a video of your screen to explain your issue better.)
+                <!-- Video Preview -->
+                <div class="mb-3" *ngIf="recordedVideoUrl">
+                    <h6>Recorded Video Preview:</h6>
+                    <video [src]="recordedVideoUrl" controls class="w-100" style="max-width: 700px;"></video>
+                    <button class="btn btn-sm btn-danger mt-2" (click)="removeRecordedVideo()">Remove Video</button>
+                </div>
+            </div>
+
+            <!-- Image Upload -->
+            <div class="mb-3">
+                <label for="fileUpload" class="form-label">Upload Files (Images, PDFs, Documents, Text):</label>
+                <input
+                    type="file"
+                    class="form-control"
+                    id="fileUpload"
+                    multiple
+                    accept="image/*,application/pdf,.doc,.docx,.xls,.xlsx,.txt"
+                    (change)="onFileUpload($event)"
+                />
+            </div>
+
+            <!-- Preview Images -->
+            <div class="mb-3" *ngIf="uploadedFiles?.length">
+                <h6>File Previews:</h6>
+                <div class="d-flex flex-wrap gap-2">
+                  <div *ngFor="let file of uploadedFiles" class="position-relative">
+                    <!-- Image Preview -->
+                    <img
+                      *ngIf="file.type.startsWith('image/')"
+                      [src]="file.data"
+                      class="img-thumbnail"
+                      style="height: 100px;"
+                    />
+                    <!-- Non-Image File -->
+                    <div
+                      *ngIf="!file.type.startsWith('image/')"
+                      class="border p-2 rounded"
+                      style="width: 150px;"
+                    >
+                      <span>{{ file.name }}</span><br />
+                      <small>{{ file.type }}</small>
+                    </div>
+                    <button
+                      class="btn btn-sm btn-danger position-absolute top-0 end-0"
+                      (click)="removeFile(file)"
+                    >
+                      ×
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+            <!-- Submit Button -->
+            <button class="btn btn-success" (click)="submitRequest()">Submit Request</button>
+        </div>
+    </div>
+</div>

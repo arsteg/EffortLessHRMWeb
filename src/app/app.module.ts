@@ -58,6 +58,9 @@ import { SubscriptionComponent } from './layouts/subscription/subscription.compo
 import { ErrorInterceptor } from './_helpers/error.interceptor';
 import { ChatbotComponent } from './chat/chatbot/chatbot.component';
 import { EffortlessTranslateModule } from './translate/translate.module';
+import { HelpDeskComponent } from './feature_modules/helpdesk/help-desk/help-desk.component';
+import { HelpdeskDashboardComponent } from './feature_modules/helpdesk/helpdesk-dashboard/helpdesk-dashboard.component';
+import { UpdateHelpdeskTaskComponent } from './feature_modules/helpdesk/update-helpdesk-task/update-helpdesk-task.component';
 
 const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
 
@@ -79,6 +82,9 @@ const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
     NotificationComponent,
     UserProfileComponent, // imported from manage, to be used in home profile
     ChatbotComponent,
+    HelpDeskComponent,
+    HelpdeskDashboardComponent,
+    UpdateHelpdeskTaskComponent,
   ],
   imports: [
     BrowserModule,

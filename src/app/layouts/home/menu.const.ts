@@ -169,6 +169,13 @@ export const SideBarAdminMenu = [
     icon: 'assets/Sidenav-Icons/feedback.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/feedback.png',    
     url: 'feedback',
+  },
+  {
+    id: '23',
+    title: 'Helpdesk',
+    icon: 'assets/Sidenav-Icons/helpdesk.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/helpdesk.png',    
+    url: 'helpdesk',
   }  
 ];
 
@@ -302,4 +309,11 @@ export const SideBarUserMenu = [
     lightIcon: 'assets/Sidenav-Icons/light-Icons/settings.png',
     url: 'settings/user-preferences',
   },
+  {
+    id: '17',
+    title: 'Helpdesk',
+    icon: 'assets/Sidenav-Icons/helpdesk.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/helpdesk.png',    
+    url: 'helpdesk',
+  }
 ];
