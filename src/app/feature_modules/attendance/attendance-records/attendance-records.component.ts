@@ -115,7 +115,26 @@ export class AttendanceRecordsComponent {
       const attendanceSheet = XLSX.utils.json_to_sheet(
         this.attendanceData.length ? this.attendanceData : defaultAttendanceHeaders
       );
-  
+    // 3. Set column widths only (not formatting here)
+      attendanceSheet['!cols'] = [
+        { wch: 10 }, // EmpCode
+        { wch: 15 }, // Date
+        { wch: 10 }, // StartTime
+        { wch: 10 }, // EndTime
+      ];
+
+      // 4. Force all Date column values to be text formatted
+      Object.keys(attendanceSheet).forEach(cell => {
+        if (cell.startsWith('B') && cell !== 'B1') { // Column B is Date
+          const cellObj = attendanceSheet[cell];
+
+          // Only apply if value exists
+          if (cellObj && typeof cellObj.v === 'string') {
+            cellObj.t = 's';    // Set cell type to string
+            cellObj.z = '@';    // Format as plain text
+          }
+        }
+      });
       // 3. Prepare instructions sheet
       const instructionSheet: any = {};
       const notes = [
