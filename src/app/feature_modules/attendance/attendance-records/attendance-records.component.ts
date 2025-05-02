@@ -192,7 +192,9 @@ export class AttendanceRecordsComponent {
       }
   
       const worksheet = workbook.Sheets[expectedSheetName];
-      const parsedData: any[] = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
+      const parsedData: any[] = XLSX.utils.sheet_to_json(worksheet, { defval: '',  raw: false   
+          // Forces text parsing instead of native types 
+        });
   
       // ✅ 3. Remove empty rows
       const cleanedData = parsedData.filter(row =>
