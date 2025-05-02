@@ -46,14 +46,6 @@ export class PermissionsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.translate.setDefaultLang('en');
-    this.translate.use('en');
-    this.translate.get('permissions.confirm_delete').subscribe((text) => {
-      console.log('Translation for permissions.confirm_delete:', text);
-    });
-    this.translate.getTranslation('en').subscribe((translations) => {
-      console.log('All translations:', translations);
-    });
     this.loadRoles();
     this.loadPermissions();
     this.loadUserRoles();
