@@ -69,6 +69,30 @@ export class FNFStep2Component implements OnInit {
       month: this.selectedFnF?.month,
       year: this.selectedFnF?.year
     });
+
+    this.variablePayForm.get('variableAllowance')?.valueChanges.subscribe(() => {
+      this.calculateVariablePayAmount();
+    });
+
+    this.variablePayForm.get('variableDeduction')?.valueChanges.subscribe(() => {
+      this.calculateVariablePayAmount();
+    });
+  }
+
+  calculateVariablePayAmount(): void {
+    const selectedAllowanceKey = this.variablePayForm.get('variableAllowance')?.value;
+    const selectedDeductionKey = this.variablePayForm.get('variableDeduction')?.value;
+
+    const selectedAllowance = this.variableAllowance?.find(a => a.variableAllowance === selectedAllowanceKey);
+    const selectedDeduction = this.variableDeduction?.find(d => d.variableDeduction === selectedDeductionKey);
+    const allowanceAmount = selectedAllowance?.monthlyAmount || 0;
+    const deductionAmount = selectedDeduction?.monthlyAmount || 0;
+
+    const calculatedAmount = allowanceAmount - deductionAmount;
+
+    this.variablePayForm.patchValue({
+      amount: calculatedAmount
+    });
   }
 
   getVariableAllowanceList() {
@@ -185,7 +209,7 @@ export class FNFStep2Component implements OnInit {
 
     if (this.variablePayForm.valid) {
       this.variablePayForm.get('payrollFNFUser').enable();
-      
+
       const payload = this.variablePayForm.value;
       if (this.selectedVariablePay || this.isEdit) {
         this.variablePayForm.patchValue({
@@ -280,19 +304,11 @@ export class FNFStep2Component implements OnInit {
   getSalarydetailsByUser() {
     this.userService.getSalaryByUserId(this.selectedFnFUserId).subscribe((res: any) => {
       this.salary = res.data[res.data.length - 1];
-      this.variableAllowance = this.salary.variableAllowanceList;
+      this.variableAllowance = this.salary['variableAllowanceList'];
       this.variableDeduction = this.salary.variableDeductionList;
-    })    
+    })
   }
 
-  getVariableAllowance(templateId: string) {
-    const matchingTemp = this.varAllowances?.find(temp => temp._id === templateId);
-    return matchingTemp ? matchingTemp?.label : '';
-  }
-
-  getVariableDeduction(templateId: string) {
-    const matchingTemp = this.varDeductions?.find(temp => temp._id === templateId);
-    return matchingTemp ? matchingTemp?.label : '';
-  }
+  // amount = selectedVariableAllowance.amount - selectedVariableDeduction.amount;
 
 }
