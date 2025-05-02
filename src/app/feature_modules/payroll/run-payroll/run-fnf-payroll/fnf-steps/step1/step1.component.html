@@ -93,7 +93,7 @@
                 }
                 <mat-form-field appearance="outline" class="col-md-6 my-2">
                     <mat-label>Total Days</mat-label>
-                    <input matInput type="number" formControlName="totalDays">
+                    <input matInput type="number" formControlName="totalDays" readonly>
                     <mat-error *ngIf="attendanceSummaryForm.get('totalDays').hasError('required')">Total Days is
                         required</mat-error>
                 </mat-form-field>
@@ -145,7 +145,7 @@
 
                 <mat-form-field appearance="outline" class="col-md-6 my-2">
                     <mat-label>Overtime Hours</mat-label>
-                    <input matInput type="number" formControlName="overtimeHours">
+                    <input matInput type="number" formControlName="overtimeHours" readonly>
                     <mat-error *ngIf="attendanceSummaryForm.get('overtimeHours').hasError('required')">Overtime Hours is
                         required</mat-error>
                 </mat-form-field>
