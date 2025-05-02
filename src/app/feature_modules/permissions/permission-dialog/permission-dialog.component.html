@@ -1,0 +1,49 @@
+<h2 mat-dialog-title>{{isEdit ? ('permissions.edit_permission') : ('permissions.add_permission')}}</h2>
+<div mat-dialog-content>
+  <form [formGroup]="permissionForm" #form="ngForm">
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>{{'permissions.permission_name' | translate}}</mat-label>
+      <input matInput formControlName="permissionName" required>
+      <div class="mat-error" *ngIf="permissionForm.get('permissionName')?.hasError('required')">
+        {{'permissions.permission_name_required' | translate}}
+      </div>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>{{'permissions.permission_details' | translate}}</mat-label>
+      <input matInput formControlName="permissionDetails">
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>{{'permissions.resource' | translate}}</mat-label>
+      <input matInput formControlName="resource" required>
+      <div class="mat-error" *ngIf="permissionForm.get('resource')?.hasError('required')">
+        {{'permissions.resource_required' | translate}}
+      </div>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>{{'permissions.action' | translate}}</mat-label>
+      <input matInput formControlName="action" required>
+      <div class="mat-error" *ngIf="permissionForm.get('action')?.hasError('required')">
+        {{'permissions.action_required' | translate}}
+      </div>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>{{'permissions.ui_element' | translate}}</mat-label>
+      <input matInput formControlName="uiElement">
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>{{'permissions.parent_permission' | translate}}</mat-label>
+      <mat-select formControlName="parentPermission">
+        <mat-option value="">{{'none' | translate}}</mat-option>
+        <mat-option *ngFor="let permission of data.permissions" [value]="permission._id">
+          {{permission.permissionName}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
+</div>
+<mat-dialog-actions>
+  <button mat-button (click)="onCancel()">{{'cancel' | translate}}</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="permissionForm.invalid">
+    {{isEdit ? ('update' | translate) : ('add' | translate)}}
+  </button>
+</mat-dialog-actions>

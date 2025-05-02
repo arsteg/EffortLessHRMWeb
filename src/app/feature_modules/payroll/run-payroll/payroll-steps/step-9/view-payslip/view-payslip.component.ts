@@ -16,27 +16,38 @@ export class ViewPayslipComponent {
   constructor() { }
 
   ngOnInit() {
+    console.log(this.viewPayroll);
     this.calculateSalaryAfterLOP();
     this.netSalary =
-    Number(this.viewPayroll?.totalFixedAllowance) + Number(this.viewPayroll?.totalOvertime + Number(this.viewPayroll?.totalFlexiBenefits)) -
-    (Number(this.viewPayroll?.totalFixedDeduction) + Number(this.viewPayroll?.totalPfTax) + Number(this.viewPayroll?.totalIncomeTax));
-
+      Number(this.viewPayroll?.totalFixedAllowance) + Number(this.viewPayroll?.totalOvertime + Number(this.viewPayroll?.totalFlexiBenefits)) -
+      (Number(this.viewPayroll?.totalFixedDeduction) + Number(this.viewPayroll?.totalPfTax) + Number(this.viewPayroll?.totalIncomeTax));
+    if (this.viewPayroll?.totalLoanAdvance?.length) {
+      this.viewPayroll.totalLoanAdvance.forEach(loan => {
+        if (loan.type === "Disbursement") {
+          this.netSalary += Number(loan.disbursementAmount || 0);
+        } else {
+          this.netSalary -= Number(loan.amount || 0);
+        }
+      });
+    }
     this.calculateTotalPayWithOvertime();
   }
 
   calculateSalaryAfterLOP() {
-    const monthlySalary = this.viewPayroll.monthlySalary;
-    const totalDays = this.viewPayroll?.attendanceSummary[0].totalDays;
+    const monthlySalary = this.viewPayroll?.monthlySalary;
+    const totalDays = this.viewPayroll?.attendanceSummary[0]?.totalDays;
     const payableDays = this.viewPayroll?.attendanceSummary[0]?.payableDays;
     const perDayPay = monthlySalary / totalDays;
     const lopSalary = perDayPay * payableDays;
     this.salaryAfterLOP = lopSalary.toFixed(2);
+    console.log(this.salaryAfterLOP);
   }
 
   calculateTotalPayWithOvertime() {
     const lopSalary = parseFloat(this.salaryAfterLOP);
     const totalOvertime = parseFloat(this.viewPayroll?.totalOvertime);
     this.totalPayWithOvertime = (lopSalary + totalOvertime).toFixed(2);
+    console.log(this.totalPayWithOvertime);
     this.totalPayWithOvertime -= (this.viewPayroll?.totalLoanAdvance);
   }
 }

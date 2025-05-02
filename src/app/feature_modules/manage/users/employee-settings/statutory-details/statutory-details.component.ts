@@ -1,10 +1,11 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { UserService } from 'src/app/_services/users.service';
 import { forkJoin } from 'rxjs';
 import { PayrollService } from 'src/app/_services/payroll.service';
+import { AuthenticationService } from 'src/app/_services/authentication.service';
 
 @Component({
   selector: 'app-statutory-details',
@@ -20,7 +21,9 @@ export class StatutoryDetailsComponent {
     private userService: UserService,
     private toast: ToastrService,
     private router: Router,
-    private payrollService: PayrollService
+    private payrollService: PayrollService,
+    private route: ActivatedRoute,
+    public authService: AuthenticationService
   ) {
     this.statutoryDetailsForm = this.fb.group({
       user: [''],
@@ -58,14 +61,10 @@ export class StatutoryDetailsComponent {
     }, 1000);
   }
   logUrlSegmentsForUser() {
-    const urlPath = this.router.url;
-    const segments = urlPath.split('/').filter(segment => segment);
-    if (segments.length >= 3) {
-      const employee = segments[segments.length - 3];
-      this.userService.getUserByEmpCode(employee).subscribe((res: any) => {
+    const empCode = this.route.snapshot.paramMap.get('empCode') || this.authService.currentUserValue?.empCode;
+    if (empCode) {
+      this.userService.getUserByEmpCode(empCode).subscribe((res: any) => {
         this.selectedUser = res.data[0];
-        console.log(res.data[0]);
-        console.log(this.selectedUser);
         this.payrollService.getGeneralSettings(this.selectedUser?.company?._id).subscribe((res: any) => {
           this.generalSettings = res.data;
         });

@@ -1,0 +1,33 @@
+<h2 mat-dialog-title>{{isEdit ? ('permissions.edit_role_permission' | translate) : ('permissions.add_role_permission' | translate)}}</h2>
+<mat-dialog-content>
+  <form [formGroup]="rolePermissionForm">
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>{{'permissions.role' | translate}}</mat-label>
+      <mat-select formControlName="roleId" required>
+        <mat-option *ngFor="let role of data.roles" [value]="role._id">
+          {{role.name}}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="rolePermissionForm.get('roleId')?.hasError('required')">
+        {{'permissions.role_required' | translate}}
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>{{'permissions.permission' | translate}}</mat-label>
+      <mat-select formControlName="permissionId" required>
+        <mat-option *ngFor="let permission of data.permissions" [value]="permission._id">
+          {{permission.permissionName}}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="rolePermissionForm.get('permissionId')?.hasError('required')">
+        {{'permissions.permission_required' | translate}}
+      </mat-error>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">{{'cancel' | translate}}</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="rolePermissionForm.invalid">
+    {{isEdit ? ('update' | translate) : ('add' | translate)}}
+  </button>
+</mat-dialog-actions>

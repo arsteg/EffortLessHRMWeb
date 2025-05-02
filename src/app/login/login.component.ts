@@ -68,12 +68,13 @@ export class LoginComponent implements OnInit {
           this.user.firstName = data.data.user.firstName;
           this.user.lastName = data.data.user.lastName;
           this.user.freeCompany = data.data.user.company.freeCompany;
+          this.user.empCode = data.data.user?.appointment[0]?.empCode;
           localStorage.setItem('jwtToken', data.token);
           localStorage.setItem('currentUser', JSON.stringify(this.user));
           localStorage.setItem('rememberMe', JSON.stringify(this.loginForm.value.rememberMe));
           localStorage.setItem('roleId', data.data.user?.role?.id);
           localStorage.setItem('subscription', JSON.stringify(data.data.companySubscription));
-          if (data.data.user?.role?.RoleName === 'Admin') {
+          if (data.data.user?.role?.name === 'Admin') {
             localStorage.setItem('adminView', 'admin');
             this.router.navigateByUrl( this.returnUrl);
           } else {

@@ -4,7 +4,7 @@ export enum Role {
 }
 export class userRole{
   _id : string;
-  RoleName : string; 
+  name : string; 
   RoleId : number;
   __v : number;
   id : string;
