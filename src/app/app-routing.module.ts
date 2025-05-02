@@ -104,7 +104,9 @@ const routes: Routes = [
       },
       {
         path: 'permissions',
-        loadChildren: () => import('./feature_modules/permissions/permissions.module').then(m => m.PermissionsModule)
+        loadChildren: () => import('./feature_modules/permissions/permissions.module').then(m => m.PermissionsModule),
+        resolve: { translation: TranslationResolver },
+        data: { moduleKey: 'permissions' }
       },
       {
         path: 'roles',
