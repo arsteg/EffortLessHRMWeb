@@ -72,13 +72,13 @@ export class LoginComponent implements OnInit {
           localStorage.setItem('jwtToken', data.token);
           localStorage.setItem('currentUser', JSON.stringify(this.user));
           localStorage.setItem('rememberMe', JSON.stringify(this.loginForm.value.rememberMe));
-          localStorage.setItem('roleId', data.data.user?.role?.id);
+          localStorage.setItem('role', data.data.user?.role?.RoleName);
           localStorage.setItem('subscription', JSON.stringify(data.data.companySubscription));
-          if (data.data.user?.role?.name === 'Admin') {
+          if (data.data.user?.role?.RoleName === 'Admin') {
             localStorage.setItem('adminView', 'admin');
             this.router.navigateByUrl( this.returnUrl);
           } else {
-            localStorage.setItem('adminView', 'user');
+            localStorage.setItem('adminView','user');
             this.router.navigateByUrl(this.returnUrl);
           }
         }
@@ -96,4 +96,4 @@ export class LoginComponent implements OnInit {
   getCurrentYear(): number {
     return new Date().getFullYear();
   }
-}
+} 

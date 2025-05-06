@@ -124,11 +124,11 @@
             <p class="position">{{currentProfile?.jobTitle}}</p>
             <p class="email contentHeading">{{currentProfile?.email}}</p>
             <div class="my-4 d-flex justify-content-center">
-              <div class="mx-4" *ngIf="portalType == 'admin'">
-                <button mat-raised-button class="addBtn" (click)="switchView('user')" *ngIf="adminView == 'admin'">
+              <div class="mx-4" *ngIf="portalType === 'admin'">
+                <button mat-raised-button class="addBtn" (click)="switchView('user')" *ngIf="adminView === 'admin'">
                   User Portal
                 </button>
-                <button mat-raised-button class="addBtn" (click)="switchView('admin')" *ngIf="adminView == 'user'">
+                <button mat-raised-button class="addBtn" (click)="switchView('admin')" *ngIf="adminView === 'user'">
                   Admin Portal
                 </button>
               </div>
@@ -151,9 +151,4 @@
       <app-user-profile [currentProfile]="currentProfile"></app-user-profile>
     </div>
   </div>
-</div>
-
-<!-- Helpdesk Icon -->
-<div class="chatbot-icon" style="margin-bottom: 50px;" (click)="toggleHelpdesk()">
-  <img src="assets/helpdesk.png" alt="helpdesk" />
 </div>
