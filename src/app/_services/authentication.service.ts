@@ -283,7 +283,7 @@ export class AuthenticationService {
   // UserRoles
   getUserRoles(): Observable<any> {
     const httpOptions = this.getHttpOptions();
-    return this.http.get(`${environment.apiUrlDotNet}/auth/userRoles`, httpOptions);
+    return this.http.get(`${environment.apiUrlDotNet}/auth/userRolesv1`, httpOptions);
   }
 
   getUserRoleById(id: string): Observable<any> {
@@ -293,17 +293,17 @@ export class AuthenticationService {
 
   createUserRole(userRole: { userId: string; roleId: string }): Observable<any> {
     const httpOptions = this.getHttpOptions();
-    return this.http.post(`${environment.apiUrlDotNet}/auth/userRole/create`, userRole, httpOptions);
+    return this.http.post(`${environment.apiUrlDotNet}/auth/userRole/createuserrolev1`, userRole, httpOptions);
   }
 
   updateUserRole(id: string, userRole: { userId: string; roleId: string }): Observable<any> {
     const httpOptions = this.getHttpOptions();
-    return this.http.post(`${environment.apiUrlDotNet}/auth/userRole/update/${id}`, userRole, httpOptions);
+    return this.http.post(`${environment.apiUrlDotNet}/auth/userRole/updateuserrole/${id}`, userRole, httpOptions);
   }
 
   deleteUserRole(id: string): Observable<any> {
     const httpOptions = this.getHttpOptions();
-    return this.http.delete(`${environment.apiUrlDotNet}/auth/userRole/delete/${id}`, httpOptions);
+    return this.http.delete(`${environment.apiUrlDotNet}/auth/userRole/deleteuserrole/${id}`, httpOptions);
   }
 
   // RolePermissions
