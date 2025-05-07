@@ -29,11 +29,42 @@ export class FNFStep9Component {
   selectedRecord: any;
   payrollUser: any;
   @Input() selectedPayroll: any;
-  generatedPayroll: any[] = [];
+  // generatedPayroll: any[] = [];
+  generatedPayroll = [
+    {
+      _id: '12345',
+      PayrollUser: {
+        user: {
+          name: 'John Doe'
+        }
+      },
+      totalOvertime: 1200,
+      totalFixedAllowance: 5000,
+      totalOtherBenefit: 1500,
+      totalFixedDeduction: 800,
+      totalLoanAdvance: [
+        {
+          amount: 3000
+        }
+      ],
+      totalFlexiBenefits: 700,
+      totalPfTax: 900,
+      totalIncomeTax: 1000,
+      yearlySalary: 1200000,
+      monthlySalary: 100000,
+      totalEmployeeStatutoryContribution: 600,
+      totalEmployeeStatutoryDeduction: 400,
+      payroll_status: 'pending'
+    }
+  ];
+
+  payrollStatus: any;
+  statusKeys: string[] = [];
+
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
   @ViewChild('updateStatusResignation') updateStatusResignation: TemplateRef<any>;
   isEditMode: boolean = false;
-  payrollStatus: PayrollStatus;
+  // payrollStatus: PayrollStatus;
   payrollForm: FormGroup;
   changedStatus: string;
   selectedStatus: string;
@@ -62,7 +93,7 @@ export class FNFStep9Component {
   ) { }
 
   ngOnInit() {
-    this.getPayrollStatus();
+    this.getFNFPayrollStatus();
     this.payrollService.allUsers.subscribe(res => {
       this.allUsers = res;
     });
@@ -72,9 +103,10 @@ export class FNFStep9Component {
     this.getGeneratedPayroll();
   }
 
-  getPayrollStatus() {
-    this.payrollService.getPayrollStatus().subscribe((res: any) => {
-      this.payrollStatus = res.data.statusList;
+  getFNFPayrollStatus() {
+    this.payrollService.getFnFPayrollStatus().subscribe((res: any) => {
+      this.payrollStatus = res.data; // e.g., ['draft', 'pending', 'approved', 'rejected']
+      console.log('Payroll Status:', this.payrollStatus);
     },
       (error) => {
         console.error('Error fetching payroll status:', error);
@@ -83,34 +115,7 @@ export class FNFStep9Component {
   }
 
   getGeneratedPayroll() {
-    if (!this.selectedPayroll?._id) {
-      this.generatedPayroll = [];
-      return;
-    }
-    this.payrollService.generatedPayrollByPayroll(this.selectedPayroll?._id).subscribe(
-      (res: any) => {
-        this.generatedPayroll = res.data.map((record) => {
-          return {
-            ...record,
-            totalOvertime: parseFloat(record?.totalOvertime || 0).toFixed(2),
-            totalFixedAllowance: parseFloat(record?.totalFixedAllowance || 0).toFixed(2),
-            totalOtherBenefit: parseFloat(record?.totalOtherBenefit || 0).toFixed(2),
-            totalFixedDeduction: parseFloat(record?.totalFixedDeduction || 0).toFixed(2),
-            totalLoanAdvance: record?.totalLoanAdvance,
-            totalFlexiBenefits: parseFloat(record?.totalFlexiBenefits || 0).toFixed(2),
-            totalPfTax: parseFloat(record?.totalPfTax || 0).toFixed(2),
-            totalIncomeTax: parseFloat(record?.totalIncomeTax || 0).toFixed(2),
-            yearlySalary: parseFloat(record?.yearlySalary || 0).toFixed(2),
-            monthlySalary: parseFloat(record?.monthlySalary || 0).toFixed(2),
-            payroll_status: record?.payroll_status || 'Pending'
-          };
-        });
-      },
-      (error) => {
-        console.error('Error fetching generated payroll:', error);
-        this.generatedPayroll = [];
-      }
-    );
+   console.log(this.generatedPayroll)
   }
 
   getUser(employeeId: string) {
