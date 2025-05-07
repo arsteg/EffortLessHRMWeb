@@ -3,12 +3,6 @@
   cursor: pointer;
 }
 
-.notification-bell {
-  position: relative;
-  border-radius: 50%;
-  padding: 8px;
-}
-
   .new-notification{
   top: 20px;
   left: 2px;

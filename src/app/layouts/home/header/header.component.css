@@ -1,0 +1,13 @@
+.navbar{
+    background: var(--orange-10);
+    border-bottom: 1px solid var(--orange-20);
+    padding: var(--size-2) 0;
+}
+
+.profile-menu{
+    cursor: pointer;
+    border-radius: var(--size-20);
+    &:hover{
+        background: var(--bg-grey);
+    }
+}

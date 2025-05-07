@@ -5,36 +5,29 @@
     width: 400px;
     margin: 0 auto;
     border: 1px solid #ccc;
-    border-radius: 8px;
+    border-radius: var(--size-8);
     overflow: hidden;
-    background-color: #f9f9f9;
+    background-color: var(--neutral-grey);
 }
 
 .chat-header {
-    background-color: #0078d7;
-    color: white;
-    padding: 10px;
-    text-align: center;
-    font-size: 18px;
+    background-color: var(--orange-60);
+    color: var(--white);
+    padding: var(--size-10);
+    font-size: var(--size-18);
     font-weight: bold;
 }
 
 .chat-messages {
     flex: 1;
-    padding: 10px;
+    padding: var(--size-10);
     overflow-y: auto;
-    background-color: #ffffff;
+    background-color: var(--white);
 }
-
-/* .chat-messages {
-    max-height: 400px;
-    overflow-y: auto;
-    padding: 10px;
-  } */
 
 .message {
     display: flex;
-    margin-bottom: 10px;
+    margin-bottom: var(--size-10);
 }
 
 .message.user {
@@ -47,58 +40,41 @@
 
 .message-bubble {
     max-width: 70%;
-    padding: 10px;
+    padding: var(--size-10);
     border-radius: 15px;
     font-size: 14px;
     line-height: 1.4;
 }
 
 .message.user .message-bubble {
-    background-color: #0078d7;
-    color: white;
+    background-color: var(--orange-60);
+    color: var(--white);
     border-top-right-radius: 0;
 }
 
 .message.bot .message-bubble {
-    background-color: #e5e5e5;
-    color: black;
+    background-color: var(--neutral-grey);
     border-top-left-radius: 0;
 }
 
 .chat-input {
     display: flex;
-    padding: 10px;
+    padding: var(--size-10);
     border-top: 1px solid #ccc;
-    background-color: #f1f1f1;
+    background-color: var(--neutral-grey);
 }
 
 .chat-input input {
     flex: 1;
-    padding: 10px;
+    padding: var(--size-10);
     border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
-}
-
-.chat-input button {
-    margin-left: 10px;
-    padding: 10px 20px;
-    background-color: #0078d7;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.chat-input button:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
+    border-radius: var(--size-4);
+    font-size: var(--size-14);
 }
 
 .loading-indicator {
     text-align: center;
-    padding: 10px;
-    font-size: 14px;
-    color: #666;
+    padding: var(--size-10);
+    font-size: var(--size-14);
+    color: var(--grey);
 }

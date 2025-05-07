@@ -1,0 +1,59 @@
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid d-flex">
+        <div class="d-flex p-2">
+            <img src="assets/logo/expanded-logo.svg" alt="Effortless HRM" width="110">
+            <button mat-icon-button (click)="toggleMenu()" class="ms-0 ms-md-5">
+                <mat-icon svgIcon="menu"></mat-icon>
+            </button>
+        </div>
+  
+        <div class="d-flex justify-content-end">
+            <div class="text-right">
+                <div class=" d-flex align-items-center">
+                    <app-notification></app-notification>
+                    <section>
+                        <div class="d-flex align-items-center ms-3 profile-menu" #profileMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="profileMenu"> 
+                            <!-- (click)="toggleProfileMenu()"-->
+                            <!-- <img src="assets/images/profile.png" height="48"> -->
+                            <button mat-icon-button>
+                                <mat-icon>person</mat-icon>
+                            </button>
+                            
+                            <p class="ps-2 mb-0 d-lg-block d-none">
+                                @if(loggedInUser) {
+                                    {{loggedInUser?.firstName + ' ' + loggedInUser?.lastName}}
+                                }
+                            </p>
+                            <mat-icon>keyboard_arrow_down</mat-icon>
+                        </div>
+
+                        <mat-menu #profileMenu="matMenu" class="dropdown-menu-default drpLog shadow">
+                            @if(loggedInUser) {
+                                <div class="text-center p-2">
+                                    <img src="../assets/profile-image.png" class="profile-img mb-5" width="100" height="100" alt="Profile Picture">
+                                    <p class="employee-id">{{loggedInUser?.firstName}} {{loggedInUser?.lastName}}</p>
+                                    <p class="position">{{loggedInUser?.jobTitle}}</p>
+                                    <p class="email contentHeading">{{loggedInUser?.email}}</p>
+                                </div>
+                                <mat-divider></mat-divider>
+                            }
+                            <button mat-menu-item>
+                                <mat-icon>switch</mat-icon>
+                                <span>Switch to Admin</span>
+                                <!-- <span>Switch to User</span> -->
+                              </button>
+                            <button mat-menu-item [routerLink]="'profile'">
+                              <mat-icon>person</mat-icon>
+                              <span>Profile</span>
+                            </button>
+                            <button mat-menu-item (click)="onLogout()">
+                              <mat-icon>logout</mat-icon>
+                              <span>Sign out</span>
+                            </button>
+                          </mat-menu>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+  </nav>

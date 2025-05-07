@@ -1,19 +1,19 @@
 
-<div>
+<div style="position:absolute; margin: 0 50%;z-index:1;width: 100px;">
   <label for="language">{{ 'settings.language' | translate }}</label>
   <select id="language" (change)="switchLanguage($event)">
     <option value="en">English</option>
     <option value="es">Español</option>
     <option value="fr">Français</option>
   </select>
+</div>
 
   <router-outlet></router-outlet>
-</div>
 
 <!-- Chatbot Icon -->
 <div class="chatbot-icon" (click)="toggleChatbot()">
-    <img src="assets/chat.png" alt="Chatbot" />
-  </div>
+    <mat-icon>{{isChatbotOpen ? 'close' : 'chat'}}</mat-icon>
+</div>
 
   <!-- Chatbot Component (conditionally shown) -->
   <app-chatbot *ngIf="isChatbotOpen"></app-chatbot>
