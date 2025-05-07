@@ -2,61 +2,73 @@ import { Component, inject, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
-import { TranslateService } from '@ngx-translate/core';
-import { MatDialog } from '@angular/material/dialog';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
-import { MatSelectModule } from '@angular/material/select';
-import { MatInputModule } from '@angular/material/input'; 
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatCardModule } from '@angular/material/card';
-import { MatTooltipModule } from '@angular/material/tooltip';
-
-import { MatDividerModule } from '@angular/material/divider';
-import { MatSnackBar } from '@angular/material/snack-bar';  
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-user-role-dialog',
   templateUrl: './user-role-dialog.component.html',
 })
 export class UserRoleDialogComponent {
-  private readonly translate = inject(TranslateService);
   userRoleForm: FormGroup;
   isEdit: boolean = false;
+  availableUsers: any[] = [];
 
   constructor(
     public dialogRef: MatDialogRef<UserRoleDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { userRole?: any; users: any[]; roles: any[] },
+    @Inject(MAT_DIALOG_DATA) public data: { userRole?: any; users: any[]; roles: any[], existingUserRoles?: any[] },
     private fb: FormBuilder,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private toastr: ToastrService
   ) {
     this.userRoleForm = this.fb.group({
       userId: ['', Validators.required],
       roleId: ['', Validators.required],
     });
+    
+    const assignedUserIds = (data.existingUserRoles || []).map(ur => typeof ur.userId === 'object' ? ur.userId._id : ur.userId);
 
     if (data.userRole) {
       this.isEdit = true;
-      //this.userRoleForm.patchValue(data.userRole);
       this.userRoleForm.patchValue({
         userId: typeof data.userRole.userId === 'object' ? data.userRole.userId._id : data.userRole.userId,
         roleId: typeof data.userRole.roleId === 'object' ? data.userRole.roleId._id : data.userRole.roleId
       });
-    }
+
+      const currentUserId = typeof data.userRole.userId === 'object'
+        ? data.userRole.userId._id
+        : data.userRole.userId; 
+
+      this.availableUsers = data.users.filter(user =>
+        !assignedUserIds.includes(user._id) || user._id === currentUserId
+      );
   }
+  else {
+    this.availableUsers = data.users.filter(user => !assignedUserIds.includes(user._id));
+  }
+}
 
   onSubmit() {
     if (this.userRoleForm.valid) {
       const userRoleData = this.userRoleForm.value;
       if (this.isEdit) {
-        this.authService.updateUserRole(this.data.userRole._id, userRoleData).subscribe(() => {
-          this.dialogRef.close(true);
+        this.authService.updateUserRole(this.data.userRole._id, userRoleData).subscribe({
+          next: () => {
+            this.dialogRef.close(true);
+          },
+          error: (error) => { 
+            const errorMessage = error || 'Failed to update user role';
+            this.toastr.error(errorMessage);
+          }
         });
       } else {
-        this.authService.createUserRole(userRoleData).subscribe(() => {
-          this.dialogRef.close(true);
+        this.authService.createUserRole(userRoleData).subscribe({
+          next: () => {
+            this.dialogRef.close(true);
+          },
+          error: (error) => { 
+            const errorMessage = error || 'Failed to create role permission';
+            this.toastr.error(errorMessage);
+          }
         });
       }
     }

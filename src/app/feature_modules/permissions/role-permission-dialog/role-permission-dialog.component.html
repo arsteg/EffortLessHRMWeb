@@ -4,7 +4,7 @@
     <mat-form-field appearance="outline" class="w-100">
       <mat-label>{{'permissions.role' | translate}}</mat-label>
       <mat-select formControlName="roleId" required>
-        <mat-option *ngFor="let role of data.roles" [value]="role._id">
+        <mat-option *ngFor="let role of availableRoles" [value]="role._id">
           {{role.name}}
         </mat-option>
       </mat-select>

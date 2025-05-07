@@ -69,7 +69,7 @@
             <button mat-raised-button color="accent" class="me-1" (click)="openAddEditDialog('permission')">
               <mat-icon>add</mat-icon>{{'permissions.add_permission' | translate}}
             </button>
-            <button class="me-1" mat-stroked-button>
+            <button class="me-1" mat-stroked-button *ngIf="false">
               <mat-icon (click)="exportToCsv()">download</mat-icon>{{'download' | translate}}
             </button>
           </div>
@@ -131,7 +131,7 @@
             <button mat-raised-button color="accent" class="me-1" (click)="openAddEditDialog('userRole')">
               <mat-icon>add</mat-icon>{{'permissions.add_user_role' | translate}}
             </button>
-            <button class="me-1" mat-stroked-button>
+            <button class="me-1" mat-stroked-button *ngIf="false">
               <mat-icon>download</mat-icon>{{'download' | translate}}
             </button>
           </div>
@@ -189,7 +189,7 @@
             <button mat-raised-button color="accent" class="me-1" (click)="openAddEditDialog('rolePermission')">
               <mat-icon>add</mat-icon>{{'permissions.add_role_permission' | translate}}
             </button>
-            <button class="me-1" mat-stroked-button>
+            <button class="me-1" mat-stroked-button *ngIf="false">
               <mat-icon>download</mat-icon>{{'download' | translate}}
             </button>
           </div>

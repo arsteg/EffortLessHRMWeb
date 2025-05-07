@@ -93,6 +93,7 @@ export class PermissionsComponent implements OnInit {
   loadPermissions() {
     this.authService.getPermissions().subscribe((res: any) => {
       this.permissionsDataSource.data = res.data.permissionList;
+      this.permissions = res.data.permissionList;
       this.totalRecords = res.total || res.data.length || res.data.permissionList.length;
     });
   }
@@ -112,8 +113,8 @@ export class PermissionsComponent implements OnInit {
     this.authService.getRolePermissions().subscribe((res: any) => {
       this.rolePermissionsDataSource.data = res.data.map((rp: any) => ({
         ...rp,
-        role: this.getRoleName(rp.roleId),
-        permission: this.getPermissionName(rp.permissionId),
+        role: this.getRoleName(rp.roleId._id),
+        permission: this.getPermissionName(rp.permissionId._id),
       }));
       this.totalRecords = res.total || res.data.length;
     });
@@ -155,13 +156,13 @@ export class PermissionsComponent implements OnInit {
       case 'userRole':
         dialogRef = this.dialog.open(UserRoleDialogComponent, {
           width: '500px',
-          data: { userRole: item, users: this.users, roles: this.roles },
+          data: { userRole: item, users: this.users, roles: this.roles, existingUserRoles: this.userRolesDataSource.data },
         });
         break;
       case 'rolePermission':
         dialogRef = this.dialog.open(RolePermissionDialogComponent, {
           width: '500px',
-          data: { rolePermission: item, roles: this.roles, permissions: this.permissions },
+          data: { rolePermission: item, roles: this.roles, permissions: this.permissions, existingRolePermissions: this.rolePermissionsDataSource.data },
         });
         break;
     }
