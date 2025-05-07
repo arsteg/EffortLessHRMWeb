@@ -39,7 +39,11 @@ export class UserRoleDialogComponent {
 
     if (data.userRole) {
       this.isEdit = true;
-      this.userRoleForm.patchValue(data.userRole);
+      //this.userRoleForm.patchValue(data.userRole);
+      this.userRoleForm.patchValue({
+        userId: typeof data.userRole.userId === 'object' ? data.userRole.userId._id : data.userRole.userId,
+        roleId: typeof data.userRole.roleId === 'object' ? data.userRole.roleId._id : data.userRole.roleId
+      });
     }
   }
 

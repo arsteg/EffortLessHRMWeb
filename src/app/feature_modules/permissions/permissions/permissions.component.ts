@@ -9,6 +9,8 @@ import { RoleDialogComponent } from '../role-dialog/role-dialog.component';
 import { PermissionDialogComponent } from '../permission-dialog/permission-dialog.component';
 import { UserRoleDialogComponent } from '../user-role-dialog/user-role-dialog.component';
 import { RolePermissionDialogComponent } from '../role-permission-dialog/role-permission-dialog.component';
+import { ExportService } from 'src/app/_services/export.service';
+import { UserService } from 'src/app/_services/users.service';
 
 
 @Component({
@@ -30,10 +32,10 @@ export class PermissionsComponent implements OnInit {
   rolePermissionsDataSource = new MatTableDataSource<RolePermission>([]);
 
   // Displayed columns for each tab
-  rolesColumns: string[] = ['name', 'description', 'company', 'actions'];
+  rolesColumns: string[] = ['name', 'description', 'actions'];
   permissionsColumns: string[] = ['permissionName', 'resource', 'action', 'uiElement', 'actions'];
-  userRolesColumns: string[] = ['user', 'role', 'company', 'actions'];
-  rolePermissionsColumns: string[] = ['role', 'permission', 'company', 'actions'];
+  userRolesColumns: string[] = ['user', 'role', 'actions'];
+  rolePermissionsColumns: string[] = ['role', 'permission', 'actions'];
 
   users: any[] = [];
   roles: Role[] = [];
@@ -42,21 +44,24 @@ export class PermissionsComponent implements OnInit {
   constructor(
     private authService: AuthenticationService,
     private dialog: MatDialog,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private exportService: ExportService,
+    private userService: UserService
   ) {}
 
   ngOnInit() {
+    this.loadUsers();
     this.loadRoles();
     this.loadPermissions();
     this.loadUserRoles();
     this.loadRolePermissions();
-    this.loadUsers();
     
   }
 
   switchTab(tabIndex: number) {
     this.currentTab = tabIndex;
     this.currentPage = 1;
+    this.loadUsers();
     this.loadData();
   }
 
@@ -80,14 +85,15 @@ export class PermissionsComponent implements OnInit {
   loadRoles() {
     this.authService.getRoles().subscribe((res: any) => {
       this.rolesDataSource.data = res.data;
+      this.roles = res.data;
       this.totalRecords = res.total || res.data.length;
     });
   }
 
   loadPermissions() {
     this.authService.getPermissions().subscribe((res: any) => {
-      this.permissionsDataSource.data = res.data;
-      this.totalRecords = res.total || res.data.length;
+      this.permissionsDataSource.data = res.data.permissionList;
+      this.totalRecords = res.total || res.data.length || res.data.permissionList.length;
     });
   }
 
@@ -95,8 +101,8 @@ export class PermissionsComponent implements OnInit {
     this.authService.getUserRoles().subscribe((res: any) => {
       this.userRolesDataSource.data = res.data.map((ur: any) => ({
         ...ur,
-        user: this.getUserName(ur.userId),
-        role: this.getRoleName(ur.roleId),
+        user: this.getUserName(ur.userId._id),
+        role: this.getRoleName(ur.roleId._id),
       }));
       this.totalRecords = res.total || res.data.length;
     });
@@ -115,8 +121,8 @@ export class PermissionsComponent implements OnInit {
 
   loadUsers() {
     // Assuming a method to get users exists or needs to be added
-    this.authService.GetMe('').subscribe((res: any) => {
-      this.users = res.data;
+    this.userService.getUserList().subscribe((res: any) => {
+      this.users = res.data.data;
     });
   }
 
@@ -199,5 +205,10 @@ export class PermissionsComponent implements OnInit {
   getPermissionName(permissionId: string): string {
     const permission = this.permissions.find(p => p._id === permissionId);
     return permission ? permission.permissionName : 'Unknown';
+  }
+
+  exportToCsv() {
+    const dataToExport = this.permissionsDataSource.data;
+    this.exportService.exportToCSV('Permissions', '', dataToExport);
   }
 }

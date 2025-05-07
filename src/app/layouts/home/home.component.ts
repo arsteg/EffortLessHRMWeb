@@ -5,7 +5,6 @@ import { AuthenticationService } from 'src/app/_services/authentication.service'
 import { CommonService } from 'src/app/_services/common.Service';
 import { MatDialog } from '@angular/material/dialog';
 import { SideBarAdminMenu, SideBarUserMenu } from './menu.const';
-import { HelpDeskComponent } from 'src/app/feature_modules/helpdesk/help-desk/help-desk.component';
 import { MatMenuTrigger } from '@angular/material/menu';
 
 declare var bootstrap: any;
@@ -43,37 +42,42 @@ export class HomeComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    let roleId = localStorage.getItem('roleId');
+    this.showSidebar();
+
+    let role = localStorage.getItem('role');
     this.adminView = localStorage.getItem('adminView');
-    this.auth.getRole(roleId).subscribe((response: any) => {
-      let role = response && response.data && response.data[0].name;
-      this.commonService.setCurrentUserRole(role);
-      if (this.adminView) {
-        if (this.adminView?.toLowerCase() == 'admin') {
-          this.adminView = 'admin';
-          localStorage.setItem('adminView', 'admin');
-          this.menuList = SideBarAdminMenu;
-          this.portalType = this.adminView?.toLowerCase();
-        }
-        if (this.adminView?.toLowerCase() == 'user') {
-          this.adminView = 'user';
-          this.menuList = SideBarUserMenu;
-          localStorage.setItem('adminView', 'user');
-        }
-      } else {
-        if (role && role?.toLowerCase() == 'admin') {
-          this.menuList = SideBarAdminMenu;
-          this.portalType = role?.toLowerCase();
-
-        }
-        if (role && role?.toLowerCase() == 'user') {
-          this.menuList = SideBarUserMenu;
-        }
-        this.adminView = role?.toLowerCase();
+    // this.auth.getRole(roleId).subscribe((response: any) => {
+    // let role = response && response.data && response.data[0].RoleName;
+    this.commonService.setCurrentUserRole(role);
+    console.log(role);
+    console.log(this.adminView);
+    if (this.adminView) {
+      if (this.adminView?.toLowerCase() == 'admin') {
+        this.adminView = 'admin';
+        localStorage.setItem('adminView', 'admin');
+        this.menuList = SideBarAdminMenu;
+        this.portalType = this.adminView?.toLowerCase();
+        console.log(this.portalType);
       }
-      this.portalType = role && role?.toLowerCase();
-
-    });
+      if (this.adminView?.toLowerCase() == 'user') {
+        this.adminView = 'user';
+        this.menuList = SideBarUserMenu;
+        localStorage.setItem('adminView', 'user');
+      }
+    } else {
+      if (role && role?.toLowerCase() == 'admin') {
+        this.menuList = SideBarAdminMenu;
+        this.portalType = role?.toLowerCase();
+        console.log(this.portalType)
+      }
+      if (role && role?.toLowerCase() == 'user') {
+        this.menuList = SideBarUserMenu;
+      }
+      this.adminView = role?.toLowerCase();
+    }
+    // this.portalType = roleId && roleId?.toLowerCase();
+    // console.log(this.portalType)
+    // });
 
     let currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.auth.GetMe(currentUser.id).subscribe((response: any) => {
@@ -100,7 +104,7 @@ export class HomeComponent implements OnInit {
   }
 
   onLogout() {
-    localStorage.removeItem('roleName');
+    localStorage.removeItem('role');
     localStorage.removeItem('jwtToken');
     localStorage.removeItem('user.email');
     localStorage.removeItem('adminView');
@@ -131,15 +135,5 @@ export class HomeComponent implements OnInit {
     const nestedOffcanvasElement = document.getElementById('nestedOffcanvas');
     const nestedOffcanvas = new bootstrap.Offcanvas(nestedOffcanvasElement);
     nestedOffcanvas.show();
-  }
-
-  toggleHelpdesk(): void {
-    this.dialog.open(HelpDeskComponent, {
-      width: '90vw',
-      maxWidth: '700px',
-      height: 'auto',
-      maxHeight: '90vh',
-      disableClose: false, // true if you don't want click outside to close
-    });
   }
 }

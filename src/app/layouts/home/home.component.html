@@ -32,11 +32,11 @@
           <div class="text-center">
             
             <div class="my-4 d-flex justify-content-center">
-              <div class="mx-4" *ngIf="portalType == 'admin'">
-                <button mat-raised-button class="addBtn" (click)="switchView('user')" *ngIf="adminView == 'admin'">
+              <div class="mx-4" *ngIf="portalType === 'admin'">
+                <button mat-raised-button class="addBtn" (click)="switchView('user')" *ngIf="adminView === 'admin'">
                   User Portal
                 </button>
-                <button mat-raised-button class="addBtn" (click)="switchView('admin')" *ngIf="adminView == 'user'">
+                <button mat-raised-button class="addBtn" (click)="switchView('admin')" *ngIf="adminView === 'user'">
                   Admin Portal
                 </button>
               </div>

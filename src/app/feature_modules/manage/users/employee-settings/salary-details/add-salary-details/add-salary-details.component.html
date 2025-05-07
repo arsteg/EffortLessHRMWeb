@@ -160,13 +160,14 @@
                             </mat-radio-group>
                         </div>
 
-                        <div class="col-md-6 my-2 border-bottom">
+                        <!-- It may require in future -->
+                        <!-- <div class="col-md-6 my-2 border-bottom">
                             <mat-label>PF Charges Applicable</mat-label>
                             <mat-radio-group formControlName="isPFChargesApplicable">
                                 <mat-radio-button class="example-margin" [value]="true">Yes</mat-radio-button>
                                 <mat-radio-button class="example-margin" [value]="false">No</mat-radio-button>
                             </mat-radio-group>
-                        </div>
+                        </div> -->
 
                         <div class="col-md-6 my-2 border-bottom">
                             <mat-label>Round Off Applicable</mat-label>
@@ -523,7 +524,8 @@
                 </div>
             </mat-expansion-panel>
 
-            <mat-expansion-panel [expanded]="true">
+            <!-- It may require in Future -->
+            <!-- <mat-expansion-panel [expanded]="true">
                 <mat-expansion-panel-header class="header">
                     <mat-panel-title>
                         Salary Component PF Charge
@@ -553,7 +555,7 @@
                     </div>
                     <button *ngIf="!edit" mat-raised-button (click)="addPFCharge()" type="button">Add PF Charge</button>
                 </div>
-            </mat-expansion-panel>
+            </mat-expansion-panel> -->
         </mat-accordion>
     </form>
 </div>
