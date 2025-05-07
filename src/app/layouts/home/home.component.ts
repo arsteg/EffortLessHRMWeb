@@ -103,7 +103,7 @@ export class HomeComponent implements OnInit {
   }
 
   onLogout() {
-    localStorage.removeItem('roleName');
+    localStorage.removeItem('role');
     localStorage.removeItem('jwtToken');
     localStorage.removeItem('user.email');
     localStorage.removeItem('adminView');
