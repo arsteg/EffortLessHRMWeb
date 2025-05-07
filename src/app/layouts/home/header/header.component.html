@@ -37,11 +37,19 @@
                                 </div>
                                 <mat-divider></mat-divider>
                             }
-                            <button mat-menu-item>
-                                <mat-icon>switch</mat-icon>
-                                <span>Switch to Admin</span>
-                                <!-- <span>Switch to User</span> -->
-                              </button>
+                            @if(profileSwitch){
+                                @if(role === 'admin'){
+                                    <button mat-menu-item (click)="switchView('user')">
+                                        <mat-icon>toggle_on</mat-icon>
+                                        <span>Switch to User</span>
+                                    </button>
+                                } @else {
+                                    <button mat-menu-item (click)="switchView('admin')">
+                                        <mat-icon>toggle_off</mat-icon>
+                                        <span>Switch to Admin</span>
+                                    </button>
+                                }
+                            }
                             <button mat-menu-item [routerLink]="'profile'">
                               <mat-icon>person</mat-icon>
                               <span>Profile</span>

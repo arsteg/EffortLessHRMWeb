@@ -8,19 +8,18 @@ import { Router } from '@angular/router';
 })
 export class HeaderComponent {
   private router = inject(Router);
-  @Output()
-  onMenuToggled = new EventEmitter<boolean>();
-  @Output()
-  onProfileMenuToggled = new EventEmitter<boolean>();
-  @Input()
-  loggedInUser: any;
+  @Output() onMenuToggled = new EventEmitter<boolean>();
+  @Output() onProfileSwitch = new EventEmitter<string>();
+  @Input() loggedInUser: any;
+  @Input() profileSwitch: any;
+  @Input() role: any;
 
   toggleMenu(){
     this.onMenuToggled.emit();
   }
 
-  toggleProfileMenu() {
-    this.onProfileMenuToggled.emit();
+  switchView(view:string){
+    this.onProfileSwitch.emit(view);
   }
 
   onLogout() {

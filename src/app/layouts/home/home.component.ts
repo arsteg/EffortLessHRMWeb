@@ -42,8 +42,6 @@ export class HomeComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.showSidebar();
-
     let role = localStorage.getItem('role');
     this.adminView = localStorage.getItem('adminView');
     // this.auth.getRole(roleId).subscribe((response: any) => {
@@ -114,26 +112,5 @@ export class HomeComponent implements OnInit {
     localStorage.removeItem('loginTime');
     window.location.reload();
     this.router.navigateByUrl('/login');
-  }
-
-  openMainOffcanvas() {
-    // const mainOffcanvasElement = document.getElementById('mainOffcanvas');
-    // const mainOffcanvas = new bootstrap.Offcanvas(mainOffcanvasElement);
-    // mainOffcanvas.show();
-    console.log('openMainOffcanvas');
-    this.profileMenu.openMenu();
-  }
-
-  openNestedOffcanvas() {
-    const mainOffcanvasElement = document.getElementById('mainOffcanvas');
-    const mainOffcanvas = bootstrap.Offcanvas.getInstance(mainOffcanvasElement);
-    if (mainOffcanvas) {
-      mainOffcanvas.hide();
-    }
-    this.isEdit = true;
-
-    const nestedOffcanvasElement = document.getElementById('nestedOffcanvas');
-    const nestedOffcanvas = new bootstrap.Offcanvas(nestedOffcanvasElement);
-    nestedOffcanvas.show();
   }
 }
