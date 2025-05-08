@@ -82,8 +82,10 @@
                 </div>
               </div>
 
-            <!-- Submit Button -->
-            <button class="btn btn-success" (click)="submitRequest()">Submit Request</button>
+          <div class="d-flex justify-content-between mt-2">
+            <button type="button" (click)="closeDialog()" mat-raised-button>Cancel</button>
+            <button type="submit" mat-raised-button (click)="submitRequest()" class="addBtn">Submit Request</button>
+          </div>
         </div>
     </div>
 </div>
