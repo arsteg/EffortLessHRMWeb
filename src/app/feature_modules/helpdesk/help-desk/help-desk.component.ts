@@ -247,4 +247,8 @@ export class HelpDeskComponent {
         return 'btn-secondary';
     }
   }
+
+  closeDialog(): void {
+    this.dialogRef.close();
+  }
 }
