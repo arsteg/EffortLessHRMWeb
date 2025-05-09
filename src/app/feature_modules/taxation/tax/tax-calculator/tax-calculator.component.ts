@@ -49,7 +49,6 @@ export class TaxCalculatorComponent implements OnInit {
   ) {}
 
   ngOnChanges(changes: SimpleChanges) {
-    console.log(this.selectedRecord)
     if (changes['selectedRecord'] && this.selectedRecord) {
       this.calculateIncomeTaxComponentsTotal();
       this.calculateHraVerifiedTotal();
@@ -127,12 +126,15 @@ export class TaxCalculatorComponent implements OnInit {
 
   calculateTax() {
     if (this.salaryDetail?.Amount) {
-      const deductions = (this.hraVerifiedTotal || 0) + (this.section80C || 0) + (this.chapterVIa || 0);
-      this.taxableSalary = this.grossSalary - deductions;
-      this.taxPayableOldRegime = this.calculateOldRegimeTax(this.taxableSalary);
-      this.taxPayableNewRegime = this.calculateNewRegimeTax(this.taxableSalary);
+        this.calculateHraVerifiedTotal();
+        this.calculateIncomeTaxComponentsTotal();
+        const componentDeductions = Object.values(this.incomeTaxComponentsTotal || {}).reduce((sum, amount) => sum + (amount || 0), 0);
+        const totalDeductions = (this.hraVerifiedTotal || 0) + componentDeductions;
+        this.taxableSalary = this.grossSalary - totalDeductions;
+        this.taxPayableOldRegime = this.calculateOldRegimeTax(this.taxableSalary);
+        this.taxPayableNewRegime = this.calculateNewRegimeTax(this.taxableSalary);
     }
-  }
+}
 
   calculateOldRegimeTax(taxableSalary: number): number {
     let tax = 0;
