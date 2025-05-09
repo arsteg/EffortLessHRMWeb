@@ -1,23 +1,24 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, SimpleChanges, OnInit } from '@angular/core';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { TaxationService } from 'src/app/_services/taxation.service';
 import { UserService } from 'src/app/_services/users.service';
+import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-tax-calculator',
   templateUrl: './tax-calculator.component.html',
-  styleUrl: './tax-calculator.component.css'
+  styleUrls: ['./tax-calculator.component.css']
 })
-export class TaxCalculatorComponent {
+export class TaxCalculatorComponent implements OnInit {
   @Input() isEdit: boolean;
   @Input() selectedRecord: any = null;
 
   incomeTaxDeclarationHRA: any;
-  incomeTaxComponentsTotal: any;
+  incomeTaxComponentsTotal: { [key: string]: number } = {};
   salaryDetail: any;
-  grossSalary: any;
-  taxSections: any;
-  taxComponents: any;
+  grossSalary: number = 0;
+  taxSections: any[] = [];
+  taxComponents: any[] = [];
 
   cityType: string;
   closeResult: string = '';
@@ -32,12 +33,29 @@ export class TaxCalculatorComponent {
   taxableSalary: number = 0;
   taxPayableOldRegime: number = 0;
   taxPayableNewRegime: number = 0;
-  user= JSON.parse(localStorage.getItem('currentUser'));
+ newRegime: number = 0;
+  user = JSON.parse(localStorage.getItem('currentUser'));
+  hraVerifiedTotal: number = 0;
 
-  constructor(private modalService: NgbModal,
+  // Form controls
+  grossSalaryControl = new FormControl({ value: 0, disabled: true });
+  hraControl = new FormControl(0);
+  sectionControls: { [key: string]: FormControl } = {};
+
+  constructor(
+    private modalService: NgbModal,
     private userService: UserService,
     private taxService: TaxationService
-  ) { }
+  ) {}
+
+  ngOnChanges(changes: SimpleChanges) {
+    console.log(this.selectedRecord)
+    if (changes['selectedRecord'] && this.selectedRecord) {
+      this.calculateIncomeTaxComponentsTotal();
+      this.calculateHraVerifiedTotal();
+      this.updateFormControls();
+    }
+  }
 
   ngOnInit() {
     this.getTaxSections();
@@ -45,60 +63,62 @@ export class TaxCalculatorComponent {
     this.getSalaryByUser();
   }
 
+  calculateIncomeTaxComponentsTotal() {
+    if (this.selectedRecord?.incomeTaxDeclarationComponent?.length) {
+      this.incomeTaxComponentsTotal = {};
+      this.selectedRecord.incomeTaxDeclarationComponent.forEach(declaration => {
+        const sectionId = declaration.incomeTaxComponent?.section?._id;
+        const approvedAmount = declaration.approvedAmount || 0;
+        if (sectionId) {
+          this.incomeTaxComponentsTotal[sectionId] = (this.incomeTaxComponentsTotal[sectionId] || 0) + approvedAmount;
+        }
+      });
+    }
+  }
+
+  calculateHraVerifiedTotal() {
+    if (this.selectedRecord?.incomeTaxDeclarationHRA?.length) {
+      this.hraVerifiedTotal = this.selectedRecord.incomeTaxDeclarationHRA.reduce((sum, hra) => {
+        return sum + (hra.verifiedAmount || 0);
+      }, 0);
+      this.hraControl.setValue(this.hraVerifiedTotal);
+    }
+  }
+
   getTaxSections() {
     this.taxService.getAllTaxSections().subscribe((res: any) => {
       this.taxSections = res.data;
-      this.filterComponents();
+      this.initializeSectionControls();
     });
   }
 
   getTaxComponents() {
     this.taxService.getAllTaxComponents({ skip: '', next: '' }).subscribe((res: any) => {
       this.taxComponents = res.data;
-      this.filterComponents();
     });
-  }
-
-  filterComponents() {
-    if (this.taxSections && this.taxComponents && this.selectedRecord?.incomeTaxDeclarationComponent) {
-      this.taxSections.forEach(section => {
-        const items = this.taxComponents
-          .filter(component => component.section === section._id && this.selectedRecord.incomeTaxDeclarationComponent.some(declaration => declaration.incomeTaxComponent === component._id))
-          .map(component => {
-            const declaration = this.selectedRecord.incomeTaxDeclarationComponent.find(declaration => declaration.incomeTaxComponent === component._id);
-            return {
-              name: component.componantName,
-              amount: declaration ? declaration.approvedAmount : 0
-            };
-          });
-
-        section.items = items;
-        section.total = items.reduce((sum, item) => sum + item.amount, 0);
-      });
-    }
   }
 
   getSalaryByUser() {
     this.userService.getSalaryByUserId(this.user?.id).subscribe((res: any) => {
       const record = res.data;
       this.salaryDetail = record[record.length - 1];
-      if (this.salaryDetail.enteringAmount == 'Yearly') {
-        this.grossSalary = this.salaryDetail?.Amount;
+      if (this.salaryDetail?.enteringAmount === 'Yearly') {
+        this.grossSalary = this.salaryDetail?.Amount || 0;
+      } else {
+        this.grossSalary = (this.salaryDetail?.Amount || 0) * 12;
       }
-      else {
-        this.grossSalary = this.salaryDetail?.Amount * 12;
-      }
+      this.grossSalaryControl.setValue(this.grossSalary);
       this.calculateSum();
     });
   }
 
   calculateSum() {
-    if (this.salaryDetail && this.salaryDetail.fixedAllowanceList) {
+    if (this.salaryDetail?.fixedAllowanceList) {
       this.fixedAllowanceSum = this.salaryDetail.fixedAllowanceList.reduce((sum, allowance) => {
         return sum + (allowance.monthlyAmount || 0);
       }, 0);
     }
-    if (this.salaryDetail && this.salaryDetail.variableAllowanceList) {
+    if (this.salaryDetail?.variableAllowanceList) {
       this.variableAllowanceSum = this.salaryDetail.variableAllowanceList.reduce((sum, allowance) => {
         return sum + (allowance.monthlyAmount || 0);
       }, 0);
@@ -107,7 +127,7 @@ export class TaxCalculatorComponent {
 
   calculateTax() {
     if (this.salaryDetail?.Amount) {
-      const deductions = (this.incomeTaxDeclarationHRA || 0) + (this.section80C || 0) + (this.chapterVIa || 0);
+      const deductions = (this.hraVerifiedTotal || 0) + (this.section80C || 0) + (this.chapterVIa || 0);
       this.taxableSalary = this.grossSalary - deductions;
       this.taxPayableOldRegime = this.calculateOldRegimeTax(this.taxableSalary);
       this.taxPayableNewRegime = this.calculateNewRegimeTax(this.taxableSalary);
@@ -148,6 +168,42 @@ export class TaxCalculatorComponent {
     return tax;
   }
 
+  initializeSectionControls() {
+    this.taxSections.forEach(section => {
+      this.sectionControls[section._id] = new FormControl(this.incomeTaxComponentsTotal[section._id] || 0);
+    });
+  }
+
+  updateFormControls() {
+    this.hraControl.setValue(this.hraVerifiedTotal || 0);
+    Object.keys(this.incomeTaxComponentsTotal).forEach(sectionId => {
+      if (this.sectionControls[sectionId]) {
+        this.sectionControls[sectionId].setValue(this.incomeTaxComponentsTotal[sectionId] || 0);
+      }
+    });
+  }
+
+  getComponentsForSection(sectionId: string) {
+    return this.selectedRecord?.incomeTaxDeclarationComponent?.filter(
+      component => component.incomeTaxComponent?.section?._id === sectionId
+    ) || [];
+  }
+
+  trackBySection(index: number, section: any): string {
+    return section._id;
+  }
+
+  open(content: any) {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then(
+      (result) => {
+        this.closeResult = `Closed with: ${result}`;
+      },
+      (reason) => {
+        this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+      }
+    );
+  }
+
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
@@ -156,13 +212,5 @@ export class TaxCalculatorComponent {
     } else {
       return `with: ${reason}`;
     }
-  }
-
-  open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-    });
   }
 }
